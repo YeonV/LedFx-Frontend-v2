@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import logo from "../assets/logo.png";
 import logoCircle from "../assets/ring.png";
-
+import Guide from "../components/Guide";
 export default function Home() {
   return (
     <>
@@ -38,9 +38,7 @@ export default function Home() {
           </ul>
         </CardContent>
         <CardActions>
-          <Button disabled variant="outlined">
-            Tour
-          </Button>
+          <Guide />
           <Button disabled variant="outlined">
             Docs
           </Button>
