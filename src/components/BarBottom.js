@@ -5,9 +5,10 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import Settings from "@material-ui/icons/Settings";
 import HomeIcon from "@material-ui/icons/Home";
 import Wallpaper from "@material-ui/icons/Wallpaper";
-import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
+// import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
 import SettingsInputComponent from "@material-ui/icons/SettingsInputComponent";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+// import { useHistory, Link } from "react-router-dom";
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
 export default function LabelBottomNavigation() {
   const classes = useStyles();
   const [value, setValue] = React.useState("home");
-  const history = useHistory();
+  // const history = useHistory();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
