@@ -24,7 +24,8 @@ import {
 import logoAsset from "../assets/logo.png";
 import { drawerWidth } from "../utils";
 import blademod from "../assets/blademod.svg";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+// import { useHistory, Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -124,7 +125,7 @@ const LeftBar = () => {
   const displays = useStore((state) => state.displays);
   const open = useStore((state) => state.bars.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
-  const history = useHistory();
+  // const history = useHistory();
 
   const handleDrawerClose = () => {
     setOpen(false);
