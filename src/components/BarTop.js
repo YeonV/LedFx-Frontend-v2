@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
+    "@media (max-width: 480px)": {
+      width: `calc(100% - 100vw)`,
+      marginLeft: "100vw",
+    },
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -94,7 +98,7 @@ const TopBar = () => {
         </IconButton>
 
         <Typography variant="h6" noWrap>
-          LedFx - BladeMod 2.0
+          LedFx
         </Typography>
         <IconButton
           aria-label="display more actions"
