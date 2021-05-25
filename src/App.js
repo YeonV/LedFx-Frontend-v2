@@ -18,6 +18,7 @@ import DialogNoHost from "./components/DialogNoHost";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Devices from "./pages/Devices";
+import Device from "./pages/Device";
 import Scenes from "./pages/Scenes";
 import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
@@ -121,6 +122,7 @@ export default function PersistentDrawerLeft() {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/devices" component={Devices} />
+              <Route path="/device/:displayId" component={Device} />
               <Route path="/scenes" component={Scenes} />
               <Route path="/integrations" component={Integrations} />
               <Route path="/settings" component={Settings} />
