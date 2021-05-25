@@ -121,7 +121,14 @@ export default function PersistentDrawerLeft() {
               <img src={logo} className="Logo" alt="logo" />
             </div>
           </div>
-          <Card variant="outlined" style={{ background: "#303030" }}>
+          <Card
+            variant="outlined"
+            style={{
+              background: "#303030",
+              maxWidth: "400px",
+              margin: "0 auto",
+            }}
+          >
             <CardHeader title="Welcome to LedFx" />
             <CardContent>
               Complete Frontend Rewrite... from scratch
