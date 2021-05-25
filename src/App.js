@@ -107,7 +107,7 @@ export default function PersistentDrawerLeft() {
     <MuiThemeProvider theme={curacaoDarkTheme}>
       <div className={classes.root}>
         <CssBaseline />
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <MessageBar />
           <TopBar />
           <LeftBar />
