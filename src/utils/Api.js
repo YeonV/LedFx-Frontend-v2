@@ -5,13 +5,6 @@ import { devtools, persist } from "zustand/middleware";
 const useStore = create(
   persist(
     devtools((set, get) => ({
-      bears: 0,
-      increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-      removeAllBears: () => set({ bears: 0 }),
-
-      currentName: "",
-      setCurrentName: (currentName) => set({ currentName }),
-
       host: "http://localhost:8888",
       setHost: (host) => {
         window.localStorage.setItem("ledfx-host", host);
@@ -78,6 +71,33 @@ const useStore = create(
         const resp = await Ledfx("/api/displays", set);
         if (resp && resp.displays) {
           set({ displays: resp.displays });
+        } else {
+          set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      scenes: {},
+      getScenes: async () => {
+        const resp = await Ledfx("/api/scenes", set);
+        if (resp && resp.scenes) {
+          set({ scenes: resp.scenes });
+        } else {
+          set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      integrations: {},
+      getIntegrations: async () => {
+        const resp = await Ledfx("/api/integrations", set);
+        if (resp && resp.integrations) {
+          set({ integrations: resp.integrations });
+        } else {
+          set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      schemas: {},
+      getSchemas: async () => {
+        const resp = await Ledfx("/api/schema", set);
+        if (resp) {
+          set({ schemas: resp });
         } else {
           set({ dialogs: { nohost: { open: true } } });
         }
