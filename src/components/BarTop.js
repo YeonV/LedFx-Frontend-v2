@@ -129,13 +129,13 @@ const TopBar = () => {
             </ListItemIcon>
             Export Config
           </MenuItem>
-          <MenuItem onClick={shutdown}>
+          <MenuItem onClick={restart}>
             <ListItemIcon>
               <Refresh />
             </ListItemIcon>
             Restart
           </MenuItem>
-          <MenuItem onClick={restart}>
+          <MenuItem onClick={shutdown}>
             <ListItemIcon>
               <PowerSettingsNewIcon />
             </ListItemIcon>
