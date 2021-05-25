@@ -2,7 +2,15 @@ import React from "react";
 import useStore from "../utils/Api";
 import { camelToSnake } from "../utils";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { ChevronLeft, ChevronRight, Inbox, Mail } from "@material-ui/icons";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Settings,
+  Home,
+  Wallpaper,
+  SettingsInputSvideo,
+  SettingsInputComponent,
+} from "@material-ui/icons";
 import {
   ListItem,
   ListItemIcon,
@@ -16,6 +24,7 @@ import {
 import logoAsset from "../assets/logo.png";
 import { drawerWidth } from "../utils";
 import blademod from "../assets/blademod.svg";
+import { useHistory, Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -42,6 +51,15 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    overflowX: "hidden",
+  },
+  "@media (max-width: 480px)": {
+    drawer: {
+      width: "100vw",
+    },
+    drawerPaper: {
+      width: "100vw",
+    },
   },
   drawerHeader: {
     display: "flex",
@@ -106,6 +124,7 @@ const LeftBar = () => {
   const displays = useStore((state) => state.displays);
   const open = useStore((state) => state.bars.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
+  const history = useHistory();
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -148,12 +167,8 @@ const LeftBar = () => {
             <ListItemIcon>
               <Icon
                 color={
-                  // d.effect && d.effect.active === true
-                  //   ? isViewActive(`/displays/${d.id}`)
-                  //     ? "inherit"
-                  //     : "primary"
-                  //   : "inherit"
-                  "inherit"
+                  d.effect && d.effect.active === true ? "primary" : "inherit"
+                  // "inherit"
                 }
                 style={{ position: "relative" }}
               >
@@ -180,14 +195,46 @@ const LeftBar = () => {
       </List>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text}>
+        <Link key={"Home"} to={"/"}>
+          <ListItem>
             <ListItemIcon>
-              {index % 2 === 0 ? <Inbox /> : <Mail />}
+              <Home />
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText style={{ color: "#fff" }} primary={"Home"} />
           </ListItem>
-        ))}
+        </Link>
+        <Link key={"Devices"} to={"Devices"}>
+          <ListItem>
+            <ListItemIcon>
+              <SettingsInputComponent />
+            </ListItemIcon>
+            <ListItemText style={{ color: "#fff" }} primary={"Devices"} />
+          </ListItem>
+        </Link>
+        <Link key={"Scenes"} to={"Scenes"}>
+          <ListItem>
+            <ListItemIcon>
+              <Wallpaper />
+            </ListItemIcon>
+            <ListItemText style={{ color: "#fff" }} primary={"Scenes"} />
+          </ListItem>
+        </Link>
+        <Link key={"Integrations"} to={"Integrations"}>
+          <ListItem>
+            <ListItemIcon>
+              <SettingsInputSvideo />
+            </ListItemIcon>
+            <ListItemText style={{ color: "#fff" }} primary={"Integrations"} />
+          </ListItem>
+        </Link>
+        <Link key={"Settings"} to={"Settings"}>
+          <ListItem>
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
+            <ListItemText style={{ color: "#fff" }} primary={"Settings"} />
+          </ListItem>
+        </Link>
       </List>
     </Drawer>
   );

@@ -3,8 +3,7 @@ import useStore from "./utils/Api";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import logo from "./assets/logo.png";
-import logoCircle from "./assets/ring.png";
+
 import "./App.css";
 import "./assets/materialdesignicons.css";
 import LeftBar from "./components/BarLeft";
@@ -14,14 +13,14 @@ import MessageBar from "./utils/MessageBar";
 import { drawerWidth } from "./utils";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
-} from "@material-ui/core";
+
 import DialogNoHost from "./components/DialogNoHost";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Devices from "./pages/Devices";
+import Scenes from "./pages/Scenes";
+import Settings from "./pages/Settings";
+import Integrations from "./pages/Integrations";
 
 const curacaoDarkTheme = createMuiTheme({
   palette: {
@@ -80,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
+    "@media (max-width: 480px)": {
+      marginLeft: "-100vw",
+    },
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
@@ -105,51 +107,29 @@ export default function PersistentDrawerLeft() {
     <MuiThemeProvider theme={curacaoDarkTheme}>
       <div className={classes.root}>
         <CssBaseline />
-        <MessageBar />
-        <TopBar />
-        <LeftBar />
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: leftBarOpen,
-          })}
-        >
-          <div className={classes.drawerHeader} />
-
-          <div className="Content">
-            <div style={{ position: "relative" }}>
-              <img src={logoCircle} className="App-logo" alt="logo-circle" />
-              <img src={logo} className="Logo" alt="logo" />
-            </div>
-          </div>
-          <Card
-            variant="outlined"
-            style={{
-              background: "#303030",
-              maxWidth: "400px",
-              margin: "0 auto",
-            }}
+        <Router>
+          <MessageBar />
+          <TopBar />
+          <LeftBar />
+          <main
+            className={clsx(classes.content, {
+              [classes.contentShift]: leftBarOpen,
+            })}
           >
-            <CardHeader title="Welcome to LedFx" />
-            <CardContent>
-              Complete Frontend Rewrite... from scratch
-              <ul>
-                <li>Modern React</li>
-                <li>Zustand as State-Management</li>
-                <li>Typescript supported</li>
-                <li>Mobile First</li>
-                <li>...</li>
-                <li>by Blade</li>
-              </ul>
-            </CardContent>
-            <CardActions>
-              <Button variant="outlined">Start Tour</Button>
-              <Button variant="outlined"> Docs</Button>
-              <Button variant="outlined"> Scan for WLED</Button>
-            </CardActions>
-          </Card>
-          <DialogNoHost />
-        </main>
-        <BottomBar />
+            <div className={classes.drawerHeader} />
+
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/devices" component={Devices} />
+              <Route path="/scenes" component={Scenes} />
+              <Route path="/integrations" component={Integrations} />
+              <Route path="/settings" component={Settings} />
+            </Switch>
+
+            <DialogNoHost />
+          </main>
+          <BottomBar />
+        </Router>
       </div>
     </MuiThemeProvider>
   );
