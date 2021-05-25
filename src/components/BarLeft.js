@@ -164,34 +164,46 @@ const LeftBar = () => {
       <Divider />
       <List>
         {Object.keys(displays).map((d, i) => (
-          <ListItem button key={displays[d].config.name}>
-            <ListItemIcon>
-              <Icon
-                color={
-                  d.effect && d.effect.active === true ? "primary" : "inherit"
-                  // "inherit"
-                }
-                style={{ position: "relative" }}
-              >
-                {displays[d].config.icon_name &&
-                displays[d].config.icon_name.startsWith("wled") ? (
-                  // <Wled />
-                  <div>wled</div>
-                ) : displays[d].config.icon_name.startsWith("mdi:") ? (
-                  <span
-                    className={`mdi mdi-${
-                      displays[d].config.icon_name.split("mdi:")[1]
-                    }`}
-                  ></span>
-                ) : (
-                  camelToSnake(
-                    displays[d].config.icon_name || "SettingsInputComponent"
-                  )
-                )}
-              </Icon>
-            </ListItemIcon>
-            <ListItemText primary={displays[d].config.name} />
-          </ListItem>
+          <Link
+            style={{ textDecoration: "none" }}
+            key={i}
+            to={`/device/${displays[d].id}`}
+            onClick={() => {
+              handleDrawerClose();
+            }}
+          >
+            <ListItem button key={displays[d].config.name}>
+              <ListItemIcon>
+                <Icon
+                  color={
+                    d.effect && d.effect.active === true ? "primary" : "inherit"
+                    // "inherit"
+                  }
+                  style={{ position: "relative" }}
+                >
+                  {displays[d].config.icon_name &&
+                  displays[d].config.icon_name.startsWith("wled") ? (
+                    // <Wled />
+                    <div>wled</div>
+                  ) : displays[d].config.icon_name.startsWith("mdi:") ? (
+                    <span
+                      className={`mdi mdi-${
+                        displays[d].config.icon_name.split("mdi:")[1]
+                      }`}
+                    ></span>
+                  ) : (
+                    camelToSnake(
+                      displays[d].config.icon_name || "SettingsInputComponent"
+                    )
+                  )}
+                </Icon>
+              </ListItemIcon>
+              <ListItemText
+                style={{ color: "#fff" }}
+                primary={displays[d].config.name}
+              />
+            </ListItem>
+          </Link>
         ))}
       </List>
       <Divider />

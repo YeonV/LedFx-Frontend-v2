@@ -38,9 +38,15 @@ export default function Home() {
           </ul>
         </CardContent>
         <CardActions>
-          <Button variant="outlined">Tour</Button>
-          <Button variant="outlined">Docs</Button>
-          <Button variant="outlined">Scan</Button>
+          <Button disabled variant="outlined">
+            Tour
+          </Button>
+          <Button disabled variant="outlined">
+            Docs
+          </Button>
+          <Button disabled variant="outlined">
+            Scan
+          </Button>
         </CardActions>
       </Card>
     </>
