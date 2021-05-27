@@ -14,6 +14,9 @@ export const Ledfx = async (path, set, method = "GET", body) => {
       case "PUT":
         response = await api.put(path, body);
         break;
+      case "DELETE":
+        response = await api.delete(path);
+        break;
       case "POST":
         response = await api.post(path, body);
         break;

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@material-ui/core";
 import Tour from "reactour";
 const steps = [
   {
-    selector: ".first-step",
+    selector: ".step-one",
     content: (
       <div>
         <h2>LedFx Guide</h2>
@@ -16,7 +16,7 @@ const steps = [
     },
   },
   {
-    selector: ".first-step",
+    selector: ".step-two",
     content: (
       <div>
         <h2>DAMN</h2>

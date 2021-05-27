@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import useStore from "../utils/Api";
+import { useEffect } from "react";
+import useStore from "../utils/apiStore";
 
 const Settings = () => {
   const getSystemConfig = useStore((state) => state.getSystemConfig);

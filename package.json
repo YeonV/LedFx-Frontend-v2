@@ -1,6 +1,8 @@
 {
-  "name": "ledfx-zustand",
-  "version": "0.1.0",
+  "name": "ledfx",
+  "version": "1.9.9",
+  "description": "LedFx - BladeMOD",
+  "author": "YeonV aka Blade",
   "private": true,
   "homepage": "https://yeonv.github.io/LedFx-Frontend-v2",
   "dependencies": {
@@ -13,8 +15,12 @@
     "@testing-library/user-event": "^13.1.9",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
+    "moment": "^2.29.1",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
+    "react-colorful": "^5.2.0",
     "react-dom": "^17.0.2",
+    "react-moment": "^1.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "reactour": "^1.18.4",
