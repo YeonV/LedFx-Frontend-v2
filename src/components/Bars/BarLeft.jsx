@@ -9,7 +9,7 @@ import {
   Settings,
   Home,
   Wallpaper,
-  SettingsInputSvideo,
+  // SettingsInputSvideo,
   SettingsInputComponent,
 } from "@material-ui/icons";
 import {
@@ -135,14 +135,14 @@ const LeftBar = () => {
             <ListItemText style={{ color: "#fff" }} primary={"Scenes"} />
           </ListItem>
         </Link>
-        <Link key={"Integrations"} to={"/Integrations"}>
+        {/* <Link key={"Integrations"} to={"/Integrations"}>
           <ListItem>
             <ListItemIcon>
               <SettingsInputSvideo />
             </ListItemIcon>
             <ListItemText style={{ color: "#fff" }} primary={"Integrations"} />
           </ListItem>
-        </Link>
+        </Link> */}
         <Link key={"Settings"} to={"/Settings"}>
           <ListItem>
             <ListItemIcon>

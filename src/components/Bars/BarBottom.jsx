@@ -9,7 +9,6 @@ import { useLocation } from 'react-router-dom'
 // import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
 import SettingsInputComponent from "@material-ui/icons/SettingsInputComponent";
 import { Link } from "react-router-dom";
-// import { useHistory, Link } from "react-router-dom";
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -22,13 +21,12 @@ const useStyles = makeStyles({
 export default function LabelBottomNavigation() {
   const classes = useStyles();
   const { pathname } = useLocation();
-  console.log(pathname)
   const [value, setValue] = useState(pathname);
 
-  // const history = useHistory();
   useEffect(() => {
     setValue(pathname)
   }, [pathname])
+
   return (
     <BottomNavigation
       value={value}
