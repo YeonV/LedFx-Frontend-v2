@@ -2,6 +2,7 @@ import useStore from "../../utils/apiStore";
 import { camelToSnake } from "../../utils/helpers";
 import { useTheme } from "@material-ui/core/styles";
 import useStyles from "./BarLeft.styles";
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -118,7 +119,7 @@ const LeftBar = () => {
             <ListItemText style={{ color: "#fff" }} primary={"Home"} />
           </ListItem>
         </Link>
-        <Link key={"Devices"} to={"Devices"}>
+        <Link key={"Devices"} to={"/Devices"}>
           <ListItem>
             <ListItemIcon>
               <SettingsInputComponent />
@@ -126,7 +127,7 @@ const LeftBar = () => {
             <ListItemText style={{ color: "#fff" }} primary={"Devices"} />
           </ListItem>
         </Link>
-        <Link key={"Scenes"} to={"Scenes"}>
+        <Link key={"Scenes"} to={"/Scenes"}>
           <ListItem>
             <ListItemIcon>
               <Wallpaper />
@@ -134,7 +135,7 @@ const LeftBar = () => {
             <ListItemText style={{ color: "#fff" }} primary={"Scenes"} />
           </ListItem>
         </Link>
-        <Link key={"Integrations"} to={"Integrations"}>
+        <Link key={"Integrations"} to={"/Integrations"}>
           <ListItem>
             <ListItemIcon>
               <SettingsInputSvideo />
@@ -142,7 +143,7 @@ const LeftBar = () => {
             <ListItemText style={{ color: "#fff" }} primary={"Integrations"} />
           </ListItem>
         </Link>
-        <Link key={"Settings"} to={"Settings"}>
+        <Link key={"Settings"} to={"/Settings"}>
           <ListItem>
             <ListItemIcon>
               <Settings />
