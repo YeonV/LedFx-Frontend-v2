@@ -1,5 +1,5 @@
-import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useState } from "react";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import Settings from "@material-ui/icons/Settings";
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 export default function LabelBottomNavigation() {
   const classes = useStyles();
-  const [value, setValue] = React.useState("home");
+  const [value, setValue] = useState("home");
   // const history = useHistory();
   const handleChange = (event, newValue) => {
     setValue(newValue);

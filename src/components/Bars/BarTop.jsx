@@ -1,6 +1,6 @@
-import React from "react";
-import useStore from "../utils/Api";
+import useStore from "../../utils/apiStore";
 import { makeStyles } from "@material-ui/core/styles";
+import { useState } from "react";
 import clsx from "clsx";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -10,14 +10,14 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import MenuIcon from "@material-ui/icons/Menu";
-import { drawerWidth } from "../utils";
+import { drawerWidth } from "../../utils/helpers";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import Refresh from "@material-ui/icons/Refresh";
 import Play from "@material-ui/icons/PlayCircleOutline";
 import Language from "@material-ui/icons/Language";
 import CloudDownload from "@material-ui/icons/CloudDownload";
-import { download } from "../utils";
+import { download } from "../../utils/helpers";
 const useStyles = makeStyles((theme) => ({
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    "@media (max-width: 480px)": {
+    "@media (max-width: 580px)": {
       width: `calc(100% - 100vw)`,
       marginLeft: "100vw",
     },
@@ -66,7 +66,7 @@ const TopBar = () => {
     togglePause();
     setAnchorEl(null);
   };
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

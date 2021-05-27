@@ -9749,8 +9749,12 @@ fsevents@^1.2.7:
     clsx: ^1.1.1
     eslint-config-react-app: ^6.0.0
     gh-pages: ^3.2.0
+    moment: ^2.29.1
+    prop-types: ^15.7.2
     react: ^17.0.2
+    react-colorful: ^5.2.0
     react-dom: ^17.0.2
+    react-moment: ^1.1.1
     react-router-dom: ^5.2.0
     react-scripts: 4.0.3
     reactour: ^1.18.4
@@ -10439,6 +10443,13 @@ fsevents@^1.2.7:
   bin:
     mkdirp: bin/cmd.js
   checksum: 1aa3a6a2d7514f094a91329ec09994f5d32d2955a4985ecbb3d86f2aaeafc4aa11521f98d606144c1d49cd9835004d9a73342709b8c692c92e59eacf37412468
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.29.1":
+  version: 2.29.1
+  resolution: "moment@npm:2.29.1"
+  checksum: 86729013febf7160de5b93da69273dd304d674b0224f9544b3abd09a87671ddd2cdd57598261ce57588910d63747ffd5590965e83c790d8bf327083c0e0a06e0
   languageName: node
   linkType: hard
 
@@ -12675,6 +12686,16 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-colorful@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "react-colorful@npm:5.2.0"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 26fede88e7fe118329f9dbf9117d9fb485105e77d050d27b3a71c4933bfd42166ffcbae2043c68d05e278b44501bc3a34a6effbe6c06043c2880c71b3daacb4d
+  languageName: node
+  linkType: hard
+
 "react-dev-utils@npm:^11.0.3":
   version: 11.0.4
   resolution: "react-dev-utils@npm:11.0.4"
@@ -12761,6 +12782,17 @@ fsevents@^1.2.7:
   version: 17.0.1
   resolution: "react-is@npm:17.0.1"
   checksum: 5a83dfc78e7adcb93d632bf367b0733db650e3abd2e9c57c33b87e50d201212c1884b0d7bcf13e692f1556189fa1b87f9f3e0ba10fe858fd6aebe83ed4fcd1ea
+  languageName: node
+  linkType: hard
+
+"react-moment@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "react-moment@npm:1.1.1"
+  peerDependencies:
+    moment: ^2.29.0
+    prop-types: ^15.7.0
+    react: ^16.0 || ^17.0.0
+  checksum: f32240af16b783d9d3f565a170f21f9953ed2fa0ec0a065363138038c0d2239b63f8c4636dddda464551b34df3ed428942d70fed11a1ac3b6728c43f504a77ab
   languageName: node
   linkType: hard
 
