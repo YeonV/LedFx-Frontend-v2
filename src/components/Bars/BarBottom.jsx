@@ -1,10 +1,11 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import Settings from "@material-ui/icons/Settings";
 import HomeIcon from "@material-ui/icons/Home";
 import Wallpaper from "@material-ui/icons/Wallpaper";
+import { useLocation } from 'react-router-dom'
 // import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
 import SettingsInputComponent from "@material-ui/icons/SettingsInputComponent";
 import { Link } from "react-router-dom";
@@ -20,29 +21,30 @@ const useStyles = makeStyles({
 
 export default function LabelBottomNavigation() {
   const classes = useStyles();
-  const [value, setValue] = useState("home");
-  // const history = useHistory();
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const { pathname } = useLocation();
+  console.log(pathname)
+  const [value, setValue] = useState(pathname);
 
+  // const history = useHistory();
+  useEffect(() => {
+    setValue(pathname)
+  }, [pathname])
   return (
     <BottomNavigation
       value={value}
-      onChange={handleChange}
       className={classes.root}
       showLabels
     >
       <BottomNavigationAction
         component={Link}
         label="Home"
-        value="home"
+        value="/"
         to={"/"}
         icon={<HomeIcon />}
       />
       <BottomNavigationAction
         label="Devices"
-        value="devices"
+        value="/Devices"
         component={Link}
         to={"/Devices"}
         icon={<SettingsInputComponent />}
@@ -51,7 +53,7 @@ export default function LabelBottomNavigation() {
         component={Link}
         to={"/Scenes"}
         label="Scenes"
-        value="scenes"
+        value="/Scenes"
         icon={<Wallpaper />}
       />
 
@@ -65,7 +67,7 @@ export default function LabelBottomNavigation() {
 
       <BottomNavigationAction
         label="Settings"
-        value="settings"
+        value="/Settings"
         icon={<Settings />}
         component={Link}
         to={"/Settings"}
