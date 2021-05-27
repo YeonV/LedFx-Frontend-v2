@@ -50,7 +50,6 @@ New [LedFx](https://github.com/LedFx/LedFx)-client for devs & bros only
 Keep it simple, nice (and then clean). Sanity is more important than clean-code:
 We don't want to chain-open 20 files to traceback whats happening.
 If you have 3 lines of styles, you can keep it in the component, there is not a MUST to splitcode everything. If feel its getting bigger and taking too much space, please keep a sane naming when splitting, i.e: `Blade.js` -> `Blade.styles.js`
-## Screens
 </p>
 </details>
 
