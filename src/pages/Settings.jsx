@@ -3,14 +3,13 @@ import useStore from "../utils/apiStore";
 
 const Settings = () => {
   const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const getSchemas = useStore((state) => state.getSchemas);
   const config = useStore((state) => state.config);
-  const schemas = useStore((state) => state.schemas);
-  console.log(schemas);
+
   useEffect(() => {
     getSystemConfig();
-    getSchemas();
-  }, [getSystemConfig, getSchemas]);
+
+  }, [getSystemConfig]);
+
   return (
     <div>
       <h1>Settings</h1>
