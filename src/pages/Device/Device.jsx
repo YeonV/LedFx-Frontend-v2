@@ -38,7 +38,6 @@ const Device = ({
   useEffect(() => {
     getDisplays();
     getSchemas();
-    console.log(effectType);
     effectType && getPresets(effectType);
   }, [getDisplays, getSchemas, getPresets, effectType]);
 

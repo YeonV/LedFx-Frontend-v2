@@ -9,7 +9,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Delete from "@material-ui/icons/Delete";
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -18,6 +17,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Wled from "../assets/Wled";
 import { camelToSnake } from "../utils/helpers";
+import Popover from "../components/Popover";
 
 const useStyles = makeStyles({
   root: {
@@ -62,6 +62,7 @@ const Scenes = () => {
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const addScene = useStore((state) => state.addScene);
+  const deleteScene = useStore((state) => state.deleteScene);
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -77,8 +78,18 @@ const Scenes = () => {
   };
   const handleAddScene = (e) => {
     console.log(name, image)
-    addScene({ name: name, scene_image: image })
+    addScene({ name: name, scene_image: image }).then(() => {
+      getScenes()
+    });
     setOpen(false);
+  };
+  const handleDeleteScene = (e) => {
+    console.log(e)
+    deleteScene(e).then(() => {
+      getScenes()
+    });
+    setOpen(false);
+
   };
 
   const sceneImage = (iconName) => iconName &&
@@ -132,7 +143,7 @@ const Scenes = () => {
               {s}
             </Typography>
             <Button size="small" color="secondary">
-              <Delete />
+              <Popover onConfirm={() => handleDeleteScene(s)} variant="outlined" />
             </Button>
           </CardActions>
         </Card>
