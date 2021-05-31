@@ -38,30 +38,12 @@ const useStyles = makeStyles({
   },
 });
 
-const images = [
-  "image:https://cdn.pixabay.com/photo/2019/12/18/04/11/dj-4702977_960_720.jpg",
-  "mdi:desk",
-  "image:https://cdn.pixabay.com/photo/2017/05/05/17/21/bulb-2287759_960_720.jpg",
-  "wled",
-  "image:https://material-ui.com/static/images/cards/contemplative-reptile.jpg",
-  "Wallpaper",
-  "Wallpaper",
-  "Wallpaper",
-  "Wallpaper",
-  "Wallpaper",
-  "Wallpaper",
-  "Wallpaper"
-]
-
-
-
-
-
 const Scenes = () => {
   const classes = useStyles();
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const addScene = useStore((state) => state.addScene);
+  const activateScene = useStore((state) => state.activateScene);
   const deleteScene = useStore((state) => state.deleteScene);
 
   const [open, setOpen] = useState(false);
@@ -77,14 +59,21 @@ const Scenes = () => {
     setOpen(false);
   };
   const handleAddScene = (e) => {
-    console.log(name, image)
     addScene({ name: name, scene_image: image }).then(() => {
       getScenes()
     });
+    setName("");
+    setImage("");
     setOpen(false);
   };
-  const handleDeleteScene = (e) => {
+
+  const handleActivateScene = (e) => {
     console.log(e)
+    activateScene(e)
+    setOpen(false);
+  };
+
+  const handleDeleteScene = (e) => {
     deleteScene(e).then(() => {
       getScenes()
     });
@@ -130,8 +119,8 @@ const Scenes = () => {
       <h1>Scenes</h1>
       <Grid container spacing={2}>
         {scenes && Object.keys(scenes).map((s, i) => <Grid item key={i}><Card className={classes.root}>
-          <CardActionArea style={{ background: '#090909' }}>
-            {sceneImage(images[i])}
+          <CardActionArea style={{ background: '#090909' }} onClick={() => handleActivateScene({ id: s })}>
+            {sceneImage(scenes[s].scene_image || 'Wallpaper')}
             {/* <CardMedia
               className={classes.media}
               image={images[i % 3]}
@@ -140,11 +129,11 @@ const Scenes = () => {
           </CardActionArea>
           <CardActions style={{ justifyContent: 'space-between', width: '100%' }}>
             <Typography gutterBottom variant="h5" component="h2">
-              {s}
+              {scenes[s].name || s}
             </Typography>
-            <Button size="small" color="secondary">
-              <Popover onConfirm={() => handleDeleteScene(s)} variant="outlined" />
-            </Button>
+
+            <Popover onConfirm={() => handleDeleteScene(s)} variant="outlined" />
+
           </CardActions>
         </Card>
         </Grid>)}
@@ -167,10 +156,10 @@ const Scenes = () => {
             <DialogContent>
               <DialogContentText>
                 Image is optional and can be one of:
-                <li>Icon</li>
-                <li>mdi:Icon</li>
-                <li>wled</li>
-                <li>CustomUrl</li>
+                <li>Wled</li>
+                <li>IconName</li>
+                <li>mdi:icon-name</li>
+                <li>image:custom-url</li>
               </DialogContentText>
               <TextField
                 autoFocus
