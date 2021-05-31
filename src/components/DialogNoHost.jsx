@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,6 +13,7 @@ export default function DialogNoHost() {
   const edit = useStore((state) => state.dialogs.nohost.edit);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const setHost = useStore((state) => state.setHost);
+  const storedURL = window.localStorage.getItem("ledfx-host")
   const [value, setValue] = useState("http://localhost:8888");
 
   const handleClose = () => {
@@ -23,7 +24,9 @@ export default function DialogNoHost() {
     setDialogOpen(false);
     window.location = window.location.href;
   };
-
+  useEffect(() => {
+    storedURL && setValue(storedURL)
+  }, [storedURL])
   return (
     <Dialog
       open={dialogOpen}
