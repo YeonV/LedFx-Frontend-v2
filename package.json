@@ -36,9 +36,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "yarn build",
+    "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
