@@ -150,7 +150,7 @@ const Scenes = () => {
         </Grid>)}
         <Grid item><Card className={classes.root}>
           <CardActionArea style={{ background: '#090909' }} onClick={() => addSceneDialog()}>
-            {sceneImage("AddCircle")}
+            {sceneImage("Add")}
             {/* <CardMedia
               className={classes.media}
               image={images[i % 3]}
