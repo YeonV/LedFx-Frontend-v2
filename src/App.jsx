@@ -19,7 +19,7 @@ import Home from './pages/Home';
 import Devices from './pages/Devices';
 import Device from './pages/Device/Device';
 import Scenes from './pages/Scenes';
-import Settings from './pages/Settings';
+import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations';
 
 const curacaoDarkTheme = createMuiTheme({

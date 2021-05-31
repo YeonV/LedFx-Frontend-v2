@@ -300,6 +300,38 @@ const useStore = create(
           set({ dialogs: { nohost: { open: true } } });
         }
       },
+      settings: {},
+      getAudioInputs: async () => {
+        const resp = await Ledfx('/api/audio/devices', set);
+        if (resp) {
+          console.log(resp)
+          set({
+            settings: get().settings,
+            ...{"settings": {
+              "audio_inputs": resp,
+            }},
+
+          });
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      setAudioInput: async (index) => {
+        const resp = await Ledfx('/api/audio/devices', set, 'PUT', {index: parseInt(index)});
+        if (resp && resp.status === 'success') {
+          set({
+            settings: get().settings,
+            ...{"settings": {
+              audio_inputs: get().settings.audio_inputs,
+              "active_device_index": parseInt(index),
+            }},
+
+          });
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+     
 
       togglePause: async () => {
         const resp = await Ledfx('/api/displays', set, 'PUT', {});
