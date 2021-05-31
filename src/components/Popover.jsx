@@ -26,6 +26,7 @@ export default function Popover({
   className,
   startIcon,
   style = {},
+  disabled=false,
 }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -49,6 +50,7 @@ export default function Popover({
         className={className}
         style={style}
         startIcon={startIcon}
+        disabled={disabled}
       >
         {label}
         {!startIcon && icon}
