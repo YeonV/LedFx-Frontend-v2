@@ -104,11 +104,25 @@ const useStore = create(
           }
         );
         console.log(resp);
-        // if (resp && resp.displays) {
-        //   set({ displays: resp.displays });
-        // } else {
-        //   set({ dialogs: { nohost: { open: true } } });
-        // }
+
+        if (resp && resp.effect) {
+
+          set({
+            displays: get().displays, ...{
+              [displayId]: {
+                effect: {
+                  type: resp.effect.type,
+                  name: resp.effect.name,
+                  config: resp.effect.config,
+                }
+              },
+            }
+
+
+          });
+        } else {
+          console.log("NOT GOOD:", resp)
+        }
       },
       updateDisplayEffect: async (displayId, { type, config, active }) => {
         const resp = await Ledfx(
@@ -122,10 +136,26 @@ const useStore = create(
           }
         );
         if (resp && resp.status && resp.status === "success") {
-          // set({ displays: resp.displays });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
+          if (resp && resp.effect) {
+
+            set({
+              displays: get().displays, ...{
+                [displayId]: {
+                  effect: {
+                    type: resp.effect.type,
+                    name: resp.effect.name,
+                    config: resp.effect.config,
+                  }
+                },
+              }
+
+
+            });
+          }
         }
+        // else {
+        // set({ dialogs: { nohost: { open: true } } });
+        // }
       },
       presets: {},
       getPresets: async (effectId) => {
@@ -195,6 +225,23 @@ const useStore = create(
         } else {
           // set({ dialogs: { nohost: { open: true } } });
         }
+      },
+      addScene: async ({ name, scene_image }) => {
+        const resp = await Ledfx(
+          '/api/scenes',
+          set,
+          "POST",
+          {
+            name,
+            scene_image
+          }
+        );
+        console.log(resp);
+        // if (resp && resp.preset) {
+        //   // set({ presets: resp.preset });
+        // } else {
+        //   // set({ dialogs: { nohost: { open: true } } });
+        // }
       },
       integrations: {},
       getIntegrations: async () => {

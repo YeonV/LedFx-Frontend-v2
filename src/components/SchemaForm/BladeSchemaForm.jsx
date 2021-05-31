@@ -34,7 +34,6 @@ const BladeSchemaForm = (props) => {
   const {
     effects,
     display,
-    displays,
     schema,
     model,
     display_id,
@@ -67,7 +66,8 @@ const BladeSchemaForm = (props) => {
   const [_selectVariant, _setSelectVariant] = useState(selectVariant);
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
-  const setDisplayEffect = useStore((state) => state.setDisplayEffect);
+  const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
+  const getDisplays = useStore((state) => state.getDisplays);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -78,10 +78,12 @@ const BladeSchemaForm = (props) => {
   };
 
   const handleEffectConfig = (display_id, config) =>
-    setDisplayEffect(display_id, {
+    updateDisplayEffect(display_id, {
       displayId: display_id,
       type: selectedType,
       config: config,
+    }).then(() => {
+      getDisplays()
     });
 
   return (
@@ -102,7 +104,7 @@ const BladeSchemaForm = (props) => {
           model &&
           Object.keys(model).indexOf(k) !== -1 && (
             <BladeColorDropDown
-              displays={displays}
+              // displays={displays}
               display={display}
               effects={effects}
               selectedType={selectedType}

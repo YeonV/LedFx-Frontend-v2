@@ -69,7 +69,6 @@ const EffectsCard = ({ displayId }) => {
           display.effect &&
           display.effect.config && (
             <BladeSchemaForm
-              displays={displays}
               display={display}
               effects={effects}
               schema={effects[effectType].schema}

@@ -86,10 +86,10 @@ const LeftBar = () => {
                   }
                   style={{ position: "relative" }}
                 >
-                  {displays[d].config.icon_name &&
+                  {displays && displays[d] && displays[d].config && displays[d].config.icon_name &&
                     displays[d].config.icon_name.startsWith("wled") ? (
                     <Wled />
-                  ) : displays[d].config.icon_name.startsWith("mdi:") ? (
+                  ) : (displays && displays[d] && displays[d].config && displays[d].config.icon_name && displays[d].config.icon_name.startsWith("mdi:")) ? (
                     <span
                       className={`mdi mdi-${displays[d].config.icon_name.split("mdi:")[1]
                         }`}
