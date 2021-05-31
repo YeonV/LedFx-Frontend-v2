@@ -1,6 +1,4 @@
-
-import useStore from "../../utils/apiStore";
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Button,
   Card,
@@ -11,19 +9,20 @@ import {
   Icon,
   Popover,
   Typography,
-} from "@material-ui/core";
-import NetworkCheckIcon from "@material-ui/icons/NetworkCheck";
-import { makeStyles } from "@material-ui/core/styles";
+} from '@material-ui/core';
+import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
+import { makeStyles } from '@material-ui/core/styles';
 
-import Wled from "../../assets/Wled";
-import Moment from "react-moment";
-import moment from "moment";
+import Moment from 'react-moment';
+import moment from 'moment';
+import useStore from '../../utils/apiStore';
+import Wled from '../../assets/Wled';
 
 const useStyles = makeStyles((theme) => ({
   title: {
     color: theme.palette.text.secondary,
   },
-  deviceCard: { width: "100%", maxWidth: "540px" },
+  deviceCard: { width: '100%', maxWidth: '540px' },
 }));
 
 const InfoCard = ({ display, style }) => {
@@ -54,259 +53,263 @@ const InfoCard = ({ display, style }) => {
         .then((res) => setWledData(res))
         .catch((err) => console.error(err));
 
-      if (response.statusText === "OK") {
+      if (response.statusText === 'OK') {
         setPingData(response.data);
       }
     } catch (error) {
-      console.log("Error pinging display", error.message);
+      console.log('Error pinging display', error.message);
     }
   };
   return (
     <>
       <Card className={classes.deviceCard} style={style}>
         <CardContent>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h5">
-              {display.config[display.id] &&
-                display.config[display.id].is_device
-                ? "Device Config"
-                : "Virtual Config"}
+              {display.config[display.id]
+                && display.config[display.id].is_device
+                ? 'Device Config'
+                : 'Virtual Config'}
             </Typography>
-            {display.config[display.id] &&
-              display.config[display.id].is_device && (
-                <>
-                  <Button variant="outlined" onClick={handleClick}>
-                    <NetworkCheckIcon />
-                  </Button>
-                  <Popover
-                    id={display.id}
-                    open={Boolean(anchorEl)}
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "right",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
+            {display.config[display.id]
+              && display.config[display.id].is_device && (
+              <>
+                <Button variant="outlined" onClick={handleClick}>
+                  <NetworkCheckIcon />
+                </Button>
+                <Popover
+                  id={display.id}
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  style={{
+                    marginTop: '0.25rem',
+                  }}
+                >
+                  <div
                     style={{
-                      marginTop: "0.25rem",
+                      padding: '1rem',
+                      fontVariant: 'all-small-caps',
                     }}
                   >
-                    <div
-                      style={{
-                        padding: "1rem",
-                        fontVariant: "all-small-caps",
-                      }}
-                    >
-                      {!pingData ? (
-                        <div
+                    {!pingData ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                          minWidth: '220px',
+                          minHeight: '90px',
+                        }}
+                      >
+                        <Typography className={classes.title}>
+                          pinging...
+                        </Typography>
+                        <CircularProgress color="primary" />
+                      </div>
+                    ) : (
+                      <>
+                        <Grid
+                          container
+                          spacing={4}
                           style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            flexDirection: "column",
-                            minWidth: "220px",
-                            minHeight: "90px",
+                            width: 'calc(max(38.5vw, 480px))',
+                            paddingLeft: '0.5rem',
                           }}
                         >
-                          <Typography className={classes.title}>
-                            pinging...
-                          </Typography>
-                          <CircularProgress color="primary" />
-                        </div>
-                      ) : (
-                        <>
-                          <Grid
-                            container
-                            spacing={4}
-                            style={{
-                              width: "calc(max(38.5vw, 480px))",
-                              paddingLeft: "0.5rem",
-                            }}
-                          >
-                            <Grid item xs={12} lg={6}>
-                              <Divider
+                          <Grid item xs={12} lg={6}>
+                            <Divider
+                              style={{
+                                marginBottom: '0.25rem',
+                              }}
+                            />
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                fontSize: '1.5rem',
+                              }}
+                            >
+                              <Icon
                                 style={{
-                                  marginBottom: "0.25rem",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "flex-start",
-                                  fontSize: "1.5rem",
+                                  marginRight: '0.7rem',
                                 }}
                               >
-                                <Icon
-                                  style={{
-                                    marginRight: "0.7rem",
-                                  }}
-                                >
-                                  <Wled />
-                                </Icon>
+                                <Wled />
+                              </Icon>
 
-                                {wledData.name}
-                              </div>
-                              <Divider
+                              {wledData.name}
+                            </div>
+                            <Divider
+                              style={{
+                                margin: '0.25rem 0 1rem 0',
+                              }}
+                            />
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '180px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                MAXIMUM PING
+                              </Typography>
+                              <Typography>
+                                {pingData.max_ping
+                                  ? pingData.max_ping.toFixed(2)
+                                  : 0}
+                                {' '}
+                                ms
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                AVERAGE PING
+                              </Typography>
+                              <Typography>
+                                {pingData.avg_ping
+                                  ? pingData.avg_ping.toFixed(2)
+                                  : 0}
+                                {' '}
+                                ms
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                MINIMUM PING
+                              </Typography>
+                              <Typography>
+                                {pingData.min_ping
+                                  ? pingData.min_ping.toFixed(2)
+                                  : 0}
+                                {' '}
+                                ms
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                PACKETS LOST
+                              </Typography>
+                              <Typography
                                 style={{
-                                  margin: "0.25rem 0 1rem 0",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "180px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  MAXIMUM PING
-                                </Typography>
-                                <Typography>
-                                  {pingData.max_ping
-                                    ? pingData.max_ping.toFixed(2)
-                                    : 0}{" "}
-                                  ms
-                                </Typography>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
-                                }}
-                              >
-                                <Typography className={classes.title}>
-                                  AVERAGE PING
-                                </Typography>
-                                <Typography>
-                                  {pingData.avg_ping
-                                    ? pingData.avg_ping.toFixed(2)
-                                    : 0}{" "}
-                                  ms
-                                </Typography>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
-                                }}
-                              >
-                                <Typography className={classes.title}>
-                                  MINIMUM PING
-                                </Typography>
-                                <Typography>
-                                  {pingData.min_ping
-                                    ? pingData.min_ping.toFixed(2)
-                                    : 0}{" "}
-                                  ms
-                                </Typography>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
-                                }}
-                              >
-                                <Typography className={classes.title}>
-                                  PACKETS LOST
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {pingData.packetlosspercent
-                                    ? pingData.packetlosspercent.toFixed(2)
-                                    : 0}
+                                {pingData.packetlosspercent
+                                  ? pingData.packetlosspercent.toFixed(2)
+                                  : 0}
                                   &nbsp;%&nbsp;
-                                </Typography>
-                              </div>
-                              <Divider style={{ margin: "1rem 0" }} />
-                              <div
+                              </Typography>
+                            </div>
+                            <Divider style={{ margin: '1rem 0' }} />
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                WiFi Signal strength
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  WiFi Signal strength
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.wifi.signal}%
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.wifi.signal}
+                                %
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                WiFi Channel
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  WiFi Channel
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.wifi.channel}
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.wifi.channel}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                MAC
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  MAC
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.mac}
-                                </Typography>
-                              </div>
+                                {wledData.mac}
+                              </Typography>
+                            </div>
 
-                              {wledData.leds.fps > 0 && (
-                                <div
+                            {wledData.leds.fps > 0 && (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  minWidth: '220px',
+                                }}
+                              >
+                                <Typography className={classes.title}>
+                                  Frames Per Second
+                                </Typography>
+                                <Typography
                                   style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    minWidth: "220px",
+                                    paddingRight: '0.1rem',
                                   }}
                                 >
-                                  <Typography className={classes.title}>
-                                    Frames Per Second
-                                  </Typography>
-                                  <Typography
-                                    style={{
-                                      paddingRight: "0.1rem",
-                                    }}
-                                  >
-                                    {wledData.leds.fps}
-                                  </Typography>
-                                </div>
-                              )}
-                            </Grid>
-                            <Grid item xs={12} lg={6}>
-                              {/* <div
+                                  {wledData.leds.fps}
+                                </Typography>
+                              </div>
+                            )}
+                          </Grid>
+                          <Grid item xs={12} lg={6}>
+                            {/* <div
                                                                 style={{
                                                                     display: 'flex',
                                                                     justifyContent: 'space-between',
@@ -326,256 +329,263 @@ const InfoCard = ({ display, style }) => {
                                                                     {wledData.name}
                                                                 </Typography>
                                                             </div> */}
-                              <Divider style={{ margin: " 0 0 0.5rem 0" }} />
-                              <div
+                            <Divider style={{ margin: ' 0 0 0.5rem 0' }} />
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Version
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Version
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.ver}
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.ver}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Chip
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Chip
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.arch}
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.arch}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                LED Count
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  LED Count
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.leds.count}
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.leds.count}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                RGBW
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  RGBW
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {JSON.stringify(wledData.leds.rgbw)}
-                                </Typography>
-                              </div>
-                              <div
+                                {JSON.stringify(wledData.leds.rgbw)}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Estimated Power
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Estimated Power
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.leds.pwr
-                                    .toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                  mA
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.leds.pwr
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                mA
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Max power
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Max power
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.leds.maxpwr
-                                    .toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                  mA
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.leds.maxpwr
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                mA
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Live Mode
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Live Mode
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {JSON.stringify(wledData.live)}
-                                </Typography>
-                              </div>
-                              <div
+                                {JSON.stringify(wledData.live)}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Live Mode Source
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Live Mode Source
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.lip}
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.lip}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Live Mode Protocol
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  Live Mode Protocol
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.lm}
-                                </Typography>
-                              </div>
-                              <div
+                                {wledData.lm}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                UDP Port
+                              </Typography>
+                              <Typography
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
+                                  paddingRight: '0.1rem',
                                 }}
                               >
-                                <Typography className={classes.title}>
-                                  UDP Port
-                                </Typography>
-                                <Typography
-                                  style={{
-                                    paddingRight: "0.1rem",
-                                  }}
-                                >
-                                  {wledData.udpport}
-                                </Typography>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  minWidth: "220px",
-                                }}
+                                {wledData.udpport}
+                              </Typography>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                minWidth: '220px',
+                              }}
+                            >
+                              <Typography className={classes.title}>
+                                Uptime
+                              </Typography>
+                              <Moment
+                                interval={1000}
+                                format="hh:mm:ss"
+                                durationFromNow
                               >
-                                <Typography className={classes.title}>
-                                  Uptime
-                                </Typography>
-                                <Moment
-                                  interval={1000}
-                                  format="hh:mm:ss"
-                                  durationFromNow
-                                >
-                                  {moment().add(wledData.uptime * -1, "s")}
-                                </Moment>
-                              </div>
-                            </Grid>
+                                {moment().add(wledData.uptime * -1, 's')}
+                              </Moment>
+                            </div>
                           </Grid>
-                        </>
-                      )}
-                    </div>
-                  </Popover>
-                </>
-              )}
+                        </Grid>
+                      </>
+                    )}
+                  </div>
+                </Popover>
+              </>
+            )}
           </div>
           <Typography className={classes.title} variant="subtitle1">
-            Total Pixels:{" "}
-            {display.config[display.id] &&
-              display.config[display.id].pixel_count}
+            Total Pixels:
+            {' '}
+            {display.config[display.id]
+              && display.config[display.id].pixel_count}
           </Typography>
           <br />
           <Typography variant="caption">
-            Active:{" "}
+            Active:
+            {' '}
             {JSON.stringify(
-              display.config[display.id] && display.config[display.id].active
+              display.config[display.id] && display.config[display.id].active,
             )}
             <br />
-            Type:{" "}
+            Type:
+            {' '}
             {JSON.stringify(
-              display.config[display.id] &&
-              display.config[display.id].config.icon_name
+              display.config[display.id]
+              && display.config[display.id].config.icon_name,
             )}
             <br />
-            Center Offset:{" "}
-            {display.config[display.id] &&
-              display.config[display.id].config.center_offset}
+            Center Offset:
+            {' '}
+            {display.config[display.id]
+              && display.config[display.id].config.center_offset}
             <br />
-            Crossfade:{" "}
+            Crossfade:
+            {' '}
             {JSON.stringify(
-              display.config[display.id] &&
-              display.config[display.id].config.crossfade
+              display.config[display.id]
+              && display.config[display.id].config.crossfade,
             )}
             <br />
-            Max Brightness:{" "}
-            {display.config[display.id] &&
-              display.config[display.id].config.max_brightness * 100 + "%"}
+            Max Brightness:
+            {' '}
+            {display.config[display.id]
+              && `${display.config[display.id].config.max_brightness * 100}%`}
             <br />
-            Preview only:{" "}
+            Preview only:
+            {' '}
             {JSON.stringify(
-              display.config[display.id] &&
-              display.config[display.id].config.preview_only
+              display.config[display.id]
+              && display.config[display.id].config.preview_only,
             )}
             <br />
           </Typography>
@@ -628,22 +638,23 @@ const InfoCard = ({ display, style }) => {
                                     : ''} */}
         </CardContent>
       </Card>
-      <Card className={classes.deviceCard} style={{ marginTop: "1rem" }}>
+      <Card className={classes.deviceCard} style={{ marginTop: '1rem' }}>
         <CardContent>
           <Typography variant="h5">
             {display.config[display.id] && display.config[display.id].is_device
-              ? "Device Segments"
-              : "Virtual Segments"}
+              ? 'Device Segments'
+              : 'Virtual Segments'}
           </Typography>
           <Typography variant="subtitle1">
-            Segments:{" "}
-            {display.config[display.id] &&
-              display.config[display.id].segments.length}
+            Segments:
+            {' '}
+            {display.config[display.id]
+              && display.config[display.id].segments.length}
           </Typography>
           <br />
-          {display.config[display.id] &&
-            display.config[display.id].segments.map((s, i) => (
-              <li key={i}>{s.join(",")}</li>
+          {display.config[display.id]
+            && display.config[display.id].segments.map((s, i) => (
+              <li key={i}>{s.join(',')}</li>
             ))}
         </CardContent>
       </Card>

@@ -1,23 +1,23 @@
-import axios from "axios";
+import axios from 'axios';
 
-const baseURL = "http://localhost:8888";
-const storedURL = window.localStorage.getItem("ledfx-host");
+const baseURL = 'http://localhost:8888';
+const storedURL = window.localStorage.getItem('ledfx-host');
 
 const api = axios.create({
   baseURL: storedURL || baseURL,
 });
 
-export const Ledfx = async (path, set, method = "GET", body) => {
+export const Ledfx = async (path, set, method = 'GET', body) => {
   try {
     let response = null;
     switch (method) {
-      case "PUT":
+      case 'PUT':
         response = await api.put(path, body);
         break;
-      case "DELETE":
+      case 'DELETE':
         response = await api.delete(path, body);
         break;
-      case "POST":
+      case 'POST':
         response = await api.post(path, body);
         break;
 
@@ -31,7 +31,7 @@ export const Ledfx = async (path, set, method = "GET", body) => {
         ui: {
           snackbar: {
             isOpen: true,
-            messageType: response.payload.type || "error",
+            messageType: response.payload.type || 'error',
             message:
               response.payload.message || JSON.stringify(response.payload),
           },
@@ -45,7 +45,7 @@ export const Ledfx = async (path, set, method = "GET", body) => {
       ui: {
         snackbar: {
           isOpen: true,
-          messageType: "error",
+          messageType: 'error',
           message: response.error || JSON.stringify(response),
         },
       },
@@ -55,7 +55,7 @@ export const Ledfx = async (path, set, method = "GET", body) => {
       ui: {
         snackbar: {
           isOpen: true,
-          type: "error",
+          type: 'error',
           message: JSON.stringify(error),
         },
       },

@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import useStore from "../utils/apiStore";
+import { useEffect } from 'react';
+import useStore from '../utils/apiStore';
 
 const Integrations = () => {
   const getIntegrations = useStore((state) => state.getIntegrations);
@@ -10,8 +10,8 @@ const Integrations = () => {
   return (
     <div>
       <h1>Integrations</h1>
-      {integrations &&
-        Object.keys(integrations).map((s, i) => <div key={i}>{s}</div>)}
+      {integrations
+        && Object.keys(integrations).map((s, i) => <div key={i}>{s}</div>)}
     </div>
   );
 };

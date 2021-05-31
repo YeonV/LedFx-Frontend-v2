@@ -1,26 +1,26 @@
-import useStore from "../../utils/apiStore";
-import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
-import clsx from "clsx";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import MenuIcon from "@material-ui/icons/Menu";
-import { drawerWidth } from "../../utils/helpers";
-import MoreIcon from "@material-ui/icons/MoreVert";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import Refresh from "@material-ui/icons/Refresh";
-import Play from "@material-ui/icons/PlayCircleOutline";
-import Language from "@material-ui/icons/Language";
-import CloudDownload from "@material-ui/icons/CloudDownload";
-import { download } from "../../utils/helpers";
+import { makeStyles } from '@material-ui/core/styles';
+import { useState } from 'react';
+import clsx from 'clsx';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import MenuIcon from '@material-ui/icons/Menu';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import Refresh from '@material-ui/icons/Refresh';
+import Play from '@material-ui/icons/PlayCircleOutline';
+import Language from '@material-ui/icons/Language';
+import CloudDownload from '@material-ui/icons/CloudDownload';
+import { drawerWidth, download } from '../../utils/helpers';
+import useStore from '../../utils/apiStore';
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -28,11 +28,11 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    "@media (max-width: 580px)": {
-      width: `calc(100% - 100vw)`,
-      marginLeft: "100vw",
+    '@media (max-width: 580px)': {
+      width: 'calc(100% - 100vw)',
+      marginLeft: '100vw',
     },
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   hide: {
-    display: "none",
+    display: 'none',
   },
 }));
 
@@ -75,8 +75,8 @@ const TopBar = () => {
   const configDownload = async () => {
     download(
       { config, ...{ ledfx_presets: undefined } },
-      "config.json",
-      "application/json"
+      'config.json',
+      'application/json',
     );
   };
   return (
@@ -86,7 +86,7 @@ const TopBar = () => {
         [classes.appBarShift]: open,
       })}
     >
-      <Toolbar style={{ justifyContent: "space-between" }}>
+      <Toolbar style={{ justifyContent: 'space-between' }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"

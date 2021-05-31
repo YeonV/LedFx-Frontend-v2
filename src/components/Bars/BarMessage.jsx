@@ -1,8 +1,8 @@
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
-import IconButton from "@material-ui/core/IconButton";
-import { Icon } from "@material-ui/core";
-import useStore from "../../utils/apiStore";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import { Icon } from '@material-ui/core';
+import useStore from '../../utils/apiStore';
 
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
@@ -17,8 +17,8 @@ const MessageBar = () => {
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "center",
+        vertical: 'bottom',
+        horizontal: 'center',
       }}
       open={isOpen}
       autoHideDuration={1000 + (message || 0).length * 60}

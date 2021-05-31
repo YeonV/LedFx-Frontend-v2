@@ -4,15 +4,16 @@ import {
   CardHeader,
   CardContent,
   CardActions,
-} from "@material-ui/core";
-import logo from "../assets/logo.png";
-import logoCircle from "../assets/ring.png";
-import Guide from "../components/Guide";
+} from '@material-ui/core';
+import logo from '../assets/logo.png';
+import logoCircle from '../assets/ring.png';
+import Guide from '../components/Guide';
+
 export default function Home() {
   return (
     <>
       <div className="Content">
-        <div style={{ position: "relative" }}>
+        <div style={{ position: 'relative' }}>
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
           <img src={logo} className="Logo" alt="logo" />
         </div>
@@ -20,9 +21,9 @@ export default function Home() {
       <Card
         variant="outlined"
         style={{
-          background: "#303030",
-          maxWidth: "400px",
-          margin: "0 auto",
+          background: '#303030',
+          maxWidth: '400px',
+          margin: '0 auto',
         }}
       >
         <CardHeader title="Welcome to LedFx" />

@@ -1,12 +1,6 @@
-import useStore from "../../utils/apiStore";
-import { useState } from "react";
-import PropTypes from "prop-types";
-import BladeColorDropDown from "./BladeColorDropDown";
-import BladeBoolean from "./BladeBoolean";
-import BladeSelect from "./BladeSelect";
-import BladeSlider from "./BladeSlider";
-
-import { makeStyles } from "@material-ui/core/styles";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Fab,
   Dialog,
@@ -19,14 +13,19 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
-} from "@material-ui/core";
-import SettingsIcon from "@material-ui/icons/Settings";
+} from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
+import useStore from '../../utils/apiStore';
+import BladeColorDropDown from './BladeColorDropDown';
+import BladeBoolean from './BladeBoolean';
+import BladeSelect from './BladeSelect';
+import BladeSlider from './BladeSlider';
 
 const useStyles = makeStyles({
   bladeSchemaForm: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
 });
 
@@ -38,23 +37,23 @@ const BladeSchemaForm = (props) => {
     model,
     display_id,
     selectedType,
-    colorMode = "picker",
+    colorMode = 'picker',
     colorKeys = [],
-    boolMode = "switch",
-    boolVariant = "outlined",
-    selectVariant = "outlined",
-    sliderVariant = "outlined",
+    boolMode = 'switch',
+    boolVariant = 'outlined',
+    selectVariant = 'outlined',
+    sliderVariant = 'outlined',
   } = props;
   const pickerKeys = [
-    "color",
-    "background_color",
-    "color_lows",
-    "color_mids",
-    "color_high",
-    "strobe_color",
-    "lows_colour",
-    "mids_colour",
-    "high_colour",
+    'color',
+    'background_color',
+    'color_lows',
+    'color_mids',
+    'color_high',
+    'strobe_color',
+    'lows_colour',
+    'mids_colour',
+    'high_colour',
     ...colorKeys,
   ];
 
@@ -77,48 +76,46 @@ const BladeSchemaForm = (props) => {
     setOpen(false);
   };
 
-  const handleEffectConfig = (display_id, config) =>
-    updateDisplayEffect(display_id, {
-      displayId: display_id,
-      type: selectedType,
-      config: config,
-    }).then(() => {
-      getDisplays()
-    });
+  const handleEffectConfig = (display_id, config) => updateDisplayEffect(display_id, {
+    displayId: display_id,
+    type: selectedType,
+    config,
+  }).then(() => {
+    getDisplays();
+  });
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {parseInt(window.localStorage.getItem("BladeMod")) > 2 && (
+      {parseInt(window.localStorage.getItem('BladeMod')) > 2 && (
         <Fab
           onClick={handleClickOpen}
           variant="round"
           color="primary"
           size="small"
-          style={{ position: "absolute", right: "1rem", top: "1rem" }}
+          style={{ position: 'absolute', right: '1rem', top: '1rem' }}
         >
           <SettingsIcon />
         </Fab>
       )}
       {pickerKeys.map(
-        (k) =>
-          model &&
-          Object.keys(model).indexOf(k) !== -1 && (
-            <BladeColorDropDown
-              // displays={displays}
-              display={display}
-              effects={effects}
-              selectedType={selectedType}
-              model={model}
-              key={k}
-              type={_colorMode === "select" ? "text" : "color"}
-              clr={k}
-            />
-          )
+        (k) => model
+          && Object.keys(model).indexOf(k) !== -1 && (
+          <BladeColorDropDown
+            // displays={displays}
+            display={display}
+            effects={effects}
+            selectedType={selectedType}
+            model={model}
+            key={k}
+            type={_colorMode === 'select' ? 'text' : 'color'}
+            clr={k}
+          />
+        ),
       )}
 
       {Object.keys(schema.properties).map((s, i) => {
         switch (schema.properties[s].type) {
-          case "boolean":
+          case 'boolean':
             return (
               <BladeBoolean
                 type={_boolMode}
@@ -134,7 +131,7 @@ const BladeSchemaForm = (props) => {
                 }}
               />
             );
-          case "string":
+          case 'string':
             return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ? (
               <BladeSelect
                 model={model}
@@ -153,14 +150,14 @@ const BladeSchemaForm = (props) => {
                 <BladeColorDropDown
                   selectedType={selectedType}
                   model={model}
-                  type={"colorNew"}
-                  clr={"blade_color"}
+                  type="colorNew"
+                  clr="blade_color"
                   key={i}
                 />
               )
             );
 
-          case "number":
+          case 'number':
             return (
               <BladeSlider
                 variant={_sliderVariant}
@@ -176,7 +173,7 @@ const BladeSchemaForm = (props) => {
               />
             );
 
-          case "integer":
+          case 'integer':
             return (
               <BladeSlider
                 variant={_sliderVariant}
@@ -194,7 +191,12 @@ const BladeSchemaForm = (props) => {
             );
 
           default:
-            return <>Unsupported type: {schema.properties[s].type}</>;
+            return (
+              <>
+                Unsupported type:
+                {schema.properties[s].type}
+              </>
+            );
         }
       })}
       <Dialog
@@ -217,8 +219,8 @@ const BladeSchemaForm = (props) => {
               value={_colorMode}
               onChange={(e) => _setColorMode(e.target.value)}
             >
-              <MenuItem value={"picker"}>Picker</MenuItem>
-              <MenuItem value={"select"}>Select</MenuItem>
+              <MenuItem value="picker">Picker</MenuItem>
+              <MenuItem value="select">Select</MenuItem>
             </Select>
           </FormControl>
           <FormControl>
@@ -229,9 +231,9 @@ const BladeSchemaForm = (props) => {
               value={_boolMode}
               onChange={(e) => _setBoolMode(e.target.value)}
             >
-              <MenuItem value={"switch"}>Switch</MenuItem>
-              <MenuItem value={"checkbox"}>Checkbox</MenuItem>
-              <MenuItem value={"button"}>Button</MenuItem>
+              <MenuItem value="switch">Switch</MenuItem>
+              <MenuItem value="checkbox">Checkbox</MenuItem>
+              <MenuItem value="button">Button</MenuItem>
             </Select>
           </FormControl>
           <FormControl>
@@ -242,8 +244,8 @@ const BladeSchemaForm = (props) => {
               value={_boolVariant}
               onChange={(e) => _setBoolVariant(e.target.value)}
             >
-              <MenuItem value={"text"}>Text</MenuItem>
-              <MenuItem value={"outlined"}>Outlined</MenuItem>
+              <MenuItem value="text">Text</MenuItem>
+              <MenuItem value="outlined">Outlined</MenuItem>
             </Select>
           </FormControl>
           <FormControl>
@@ -254,9 +256,9 @@ const BladeSchemaForm = (props) => {
               value={_selectVariant}
               onChange={(e) => _setSelectVariant(e.target.value)}
             >
-              <MenuItem value={"text"}>Text</MenuItem>
-              <MenuItem value={"outlined"}>Outlined</MenuItem>
-              <MenuItem value={"contained"}>Contained</MenuItem>
+              <MenuItem value="text">Text</MenuItem>
+              <MenuItem value="outlined">Outlined</MenuItem>
+              <MenuItem value="contained">Contained</MenuItem>
             </Select>
           </FormControl>
           <FormControl>
@@ -267,8 +269,8 @@ const BladeSchemaForm = (props) => {
               value={_sliderVariant}
               onChange={(e) => _setSliderVariant(e.target.value)}
             >
-              <MenuItem value={"text"}>Text</MenuItem>
-              <MenuItem value={"outlined"}>Outlined</MenuItem>
+              <MenuItem value="text">Text</MenuItem>
+              <MenuItem value="outlined">Outlined</MenuItem>
             </Select>
           </FormControl>
 
@@ -284,9 +286,9 @@ const BladeSchemaForm = (props) => {
 };
 
 BladeSchemaForm.propTypes = {
-  colorMode: PropTypes.oneOf(["picker", "select"]),
-  boolMode: PropTypes.oneOf(["switch", "checkbox", "button"]),
-  boolVariant: PropTypes.oneOf(["outlined", "contained", "text"]),
+  colorMode: PropTypes.oneOf(['picker', 'select']),
+  boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
+  boolVariant: PropTypes.oneOf(['outlined', 'contained', 'text']),
   selectVariant: PropTypes.string, // outlined | any
   sliderVariant: PropTypes.string, // outlined | any
   colorKeys: PropTypes.array,

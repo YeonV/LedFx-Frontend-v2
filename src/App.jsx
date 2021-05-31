@@ -1,43 +1,41 @@
-import { useEffect } from "react";
-import useStore from "./utils/apiStore";
-import useStyles from "./App.styles";
-import "./App.css";
-import "./assets/materialdesignicons.css";
+import { useEffect } from 'react';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import clsx from 'clsx';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-import clsx from "clsx";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import useStore from './utils/apiStore';
+import useStyles from './App.styles';
+import './App.css';
+import './assets/materialdesignicons.css';
 
-import LeftBar from "./components/Bars/BarLeft";
-import TopBar from "./components/Bars/BarTop";
-import BottomBar from "./components/Bars/BarBottom";
-import MessageBar from "./components/Bars/BarMessage";
+import LeftBar from './components/Bars/BarLeft';
+import TopBar from './components/Bars/BarTop';
+import BottomBar from './components/Bars/BarBottom';
+import MessageBar from './components/Bars/BarMessage';
 
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { createMuiTheme } from "@material-ui/core/styles";
-
-import DialogNoHost from "./components/DialogNoHost";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Devices from "./pages/Devices";
-import Device from "./pages/Device/Device";
-import Scenes from "./pages/Scenes";
-import Settings from "./pages/Settings";
-import Integrations from "./pages/Integrations";
+import DialogNoHost from './components/DialogNoHost';
+import Home from './pages/Home';
+import Devices from './pages/Devices';
+import Device from './pages/Device/Device';
+import Scenes from './pages/Scenes';
+import Settings from './pages/Settings';
+import Integrations from './pages/Integrations';
 
 const curacaoDarkTheme = createMuiTheme({
   palette: {
-    type: "dark",
+    type: 'dark',
     primary: {
-      main: "#0dbedc",
+      main: '#0dbedc',
     },
     secondary: {
-      main: "#999",
+      main: '#999',
     },
-    background: { default: "#030303", paper: "#151515" },
+    background: { default: '#030303', paper: '#151515' },
   },
   props: {
     MuiCard: {
-      variant: "outlined",
+      variant: 'outlined',
     },
   },
 });

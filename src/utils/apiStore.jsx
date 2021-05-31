@@ -1,15 +1,15 @@
-import { Ledfx } from "./apiProxy";
-import create from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import create from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+import { Ledfx } from './apiProxy';
 
 const useStore = create(
   persist(
     devtools((set, get) => ({
-      host: "http://localhost:8888",
+      host: 'http://localhost:8888',
       setHost: (host) => {
-        window.localStorage.setItem("ledfx-host", host);
+        window.localStorage.setItem('ledfx-host', host);
         return set((state) => ({
-          host: host,
+          host,
         }));
       },
 
@@ -25,30 +25,28 @@ const useStore = create(
           open: false,
         },
       },
-      setDialogOpen: (open, edit = false) =>
-        set((state) => ({
-          dialogs: {
-            nohost: {
-              open: open,
-              edit: edit,
-            },
+      setDialogOpen: (open, edit = false) => set((state) => ({
+        dialogs: {
+          nohost: {
+            open,
+            edit,
           },
-        })),
+        },
+      })),
       ui: {
         snackbar: {
           isOpen: false,
-          type: "error",
-          message: "NO MESSAGE",
+          type: 'error',
+          message: 'NO MESSAGE',
         },
       },
-      setLeftBarOpen: (open) =>
-        set((state) => ({
-          bars: {
-            leftBar: {
-              open: open,
-            },
+      setLeftBarOpen: (open) => set((state) => ({
+        bars: {
+          leftBar: {
+            open,
           },
-        })),
+        },
+      })),
       showSnackbar: ({ messageType, message }) => {
         set({
           ui: {
@@ -72,7 +70,7 @@ const useStore = create(
 
       displays: {},
       getDisplays: async () => {
-        const resp = await Ledfx("/api/displays", set);
+        const resp = await Ledfx('/api/displays', set);
         if (resp && resp.displays) {
           set({ displays: resp.displays });
         } else {
@@ -83,7 +81,7 @@ const useStore = create(
         const resp = await Ledfx(
           `/api/displays/${displayId}/effects`,
           set,
-          "DELETE"
+          'DELETE',
         );
         console.log(resp);
         // if (resp && resp.displays) {
@@ -96,59 +94,57 @@ const useStore = create(
         const resp = await Ledfx(
           `/api/displays/${displayId}/effects`,
           set,
-          "POST",
+          'POST',
           {
             type,
             config,
             active,
-          }
+          },
         );
         console.log(resp);
 
         if (resp && resp.effect) {
-
           set({
-            displays: get().displays, ...{
+            displays: get().displays,
+            ...{
               [displayId]: {
                 effect: {
                   type: resp.effect.type,
                   name: resp.effect.name,
                   config: resp.effect.config,
-                }
+                },
               },
-            }
-
+            },
 
           });
         } else {
-          console.log("NOT GOOD:", resp)
+          console.log('NOT GOOD:', resp);
         }
       },
       updateDisplayEffect: async (displayId, { type, config, active }) => {
         const resp = await Ledfx(
           `/api/displays/${displayId}/effects`,
           set,
-          "PUT",
+          'PUT',
           {
             type,
             config,
             active,
-          }
+          },
         );
-        if (resp && resp.status && resp.status === "success") {
+        if (resp && resp.status && resp.status === 'success') {
           if (resp && resp.effect) {
-
             set({
-              displays: get().displays, ...{
+              displays: get().displays,
+              ...{
                 [displayId]: {
                   effect: {
                     type: resp.effect.type,
                     name: resp.effect.name,
                     config: resp.effect.config,
-                  }
+                  },
                 },
-              }
-
+              },
 
             });
           }
@@ -160,7 +156,7 @@ const useStore = create(
       presets: {},
       getPresets: async (effectId) => {
         const resp = await Ledfx(`/api/effects/${effectId}/presets`, set);
-        if (resp && resp.status === "success") {
+        if (resp && resp.status === 'success') {
           set({ presets: resp });
         } else {
           // set({ dialogs: { nohost: { open: true } } });
@@ -170,10 +166,10 @@ const useStore = create(
         const resp = await Ledfx(
           `/api/displays/${effectId}/presets`,
           set,
-          "POST",
+          'POST',
           {
             name,
-          }
+          },
         );
         if (resp && resp.preset) {
           // set({ presets: resp.preset });
@@ -186,15 +182,15 @@ const useStore = create(
         const resp = await Ledfx(
           `/api/displays/${displayId}/presets`,
           set,
-          "PUT",
+          'PUT',
           {
-            category: category,
+            category,
             effect_id: effectType,
             preset_id: presetId,
-          }
+          },
         );
         if (resp && resp.status) {
-          console.log(resp)
+          console.log(resp);
           // set({ presets: resp.preset });
           console.log(resp);
         } else {
@@ -205,11 +201,11 @@ const useStore = create(
         const resp = await Ledfx(
           `/api/displays/${displayId}/presets`,
           set,
-          "DELETE",
+          'DELETE',
           {
             preset_id: presetId,
-            category: "user_presets",
-          }
+            category: 'user_presets',
+          },
         );
         if (resp && resp.preset) {
           // set({ presets: resp.preset });
@@ -220,7 +216,7 @@ const useStore = create(
       },
       scenes: {},
       getScenes: async () => {
-        const resp = await Ledfx("/api/scenes", set);
+        const resp = await Ledfx('/api/scenes', set);
         if (resp && resp.scenes) {
           set({ scenes: resp.scenes });
         } else {
@@ -231,29 +227,29 @@ const useStore = create(
         const resp = await Ledfx(
           '/api/scenes',
           set,
-          "POST",
+          'POST',
           {
             name,
-            scene_image
-          }
+            scene_image,
+          },
         );
 
         if (resp && resp.status && resp.status === 'success') {
           // set({ presets: resp.preset });
         } else {
           // set({ dialogs: { nohost: { open: true } } });
-          console.log("problems while adding Scene", resp)
+          console.log('problems while adding Scene', resp);
         }
       },
       activateScene: async ({ id }) => {
         const resp = await Ledfx(
           '/api/scenes',
           set,
-          "PUT",
+          'PUT',
           {
             id,
             action: 'activate',
-          }
+          },
 
         );
 
@@ -261,25 +257,25 @@ const useStore = create(
           // set({ presets: resp.preset });
         } else {
           // set({ dialogs: { nohost: { open: true } } });
-          console.log("problems while adding Scene", resp)
+          console.log('problems while adding Scene', resp);
         }
       },
       deleteScene: async (name) => {
         const resp = await Ledfx(
           '/api/scenes',
           set,
-          "DELETE",
-          { data: { id: name } }
+          'DELETE',
+          { data: { id: name } },
         );
         if (resp && resp.status && resp.status === 'success') {
           // set({ presets: resp.preset });
         } else {
-          console.log("problems while adding Scene", resp)
+          console.log('problems while adding Scene', resp);
         }
       },
       integrations: {},
       getIntegrations: async () => {
-        const resp = await Ledfx("/api/integrations", set);
+        const resp = await Ledfx('/api/integrations', set);
         if (resp && resp.integrations) {
           set({ integrations: resp.integrations });
         } else {
@@ -288,7 +284,7 @@ const useStore = create(
       },
       schemas: {},
       getSchemas: async () => {
-        const resp = await Ledfx("/api/schema", set);
+        const resp = await Ledfx('/api/schema', set);
         if (resp) {
           set({ schemas: resp });
         } else {
@@ -297,7 +293,7 @@ const useStore = create(
       },
       config: {},
       getSystemConfig: async () => {
-        const resp = await Ledfx("/api/config", set);
+        const resp = await Ledfx('/api/config', set);
         if (resp && resp.config) {
           set({ config: { ...resp.config, ...{ ledfx_presets: undefined } } });
         } else {
@@ -306,24 +302,24 @@ const useStore = create(
       },
 
       togglePause: async () => {
-        const resp = await Ledfx("/api/displays", set, "PUT", {});
+        const resp = await Ledfx('/api/displays', set, 'PUT', {});
         if (resp && resp.data) {
           console.log(resp.data);
         }
       },
       shutdown: async () => {
-        const resp = await Ledfx("/api/power", set, "POST", {
+        const resp = await Ledfx('/api/power', set, 'POST', {
           timeout: 0,
-          action: "shutdown",
+          action: 'shutdown',
         });
         if (resp && resp.data) {
           console.log(resp.data);
         }
       },
       restart: async () => {
-        const resp = await Ledfx("/api/power", set, "POST", {
+        const resp = await Ledfx('/api/power', set, 'POST', {
           timeout: 0,
-          action: "restart",
+          action: 'restart',
         });
         if (resp && resp.data) {
           console.log(resp.data);
@@ -348,8 +344,8 @@ const useStore = create(
           };
         }
       },
-    }))
-  )
+    })),
+  ),
 );
 
 export default useStore;

@@ -1,66 +1,68 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { FormControlLabel, Switch, Checkbox, Button } from "@material-ui/core/";
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  FormControlLabel, Switch, Checkbox, Button,
+} from '@material-ui/core/';
+
 const useStyles = makeStyles((theme) => ({
   paper: {
-    border: "1px solid",
-    display: "flex",
-    flexWrap: "wrap",
-    maxWidth: "320px",
+    border: '1px solid',
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: '320px',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
   },
   wrapper: {
     // minWidth: "140px",
-    padding: "10px 10px 2px 10px",
-    border: `1px solid #999`,
-    borderRadius: "10px",
-    position: "relative",
+    padding: '10px 10px 2px 10px',
+    border: '1px solid #999',
+    borderRadius: '10px',
+    position: 'relative',
     // margin: "0.5rem",
-    display: "flex",
-    alignItems: "center",
-    order: "-3",
+    display: 'flex',
+    alignItems: 'center',
+    order: '-3',
     // "@media (max-width: 580px)": {
-    flexBasis: "31%",
-    minWidth: "unset",
-    margin: "0.5rem 0",
+    flexBasis: '31%',
+    minWidth: 'unset',
+    margin: '0.5rem 0',
     // },
-    "& > label": {
-      top: "-0.7rem",
-      display: "flex",
-      alignItems: "center",
-      left: "1rem",
-      padding: "0 0.3rem",
-      position: "absolute",
-      fontVariant: "all-small-caps",
+    '& > label': {
+      top: '-0.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      left: '1rem',
+      padding: '0 0.3rem',
+      position: 'absolute',
+      fontVariant: 'all-small-caps',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: "border-box",
+      boxSizing: 'border-box',
     },
   },
 }));
 const BladeBoolean = ({
   onClick,
-  type = "switch",
-  variant = "outlined",
+  type = 'switch',
+  variant = 'outlined',
   schema,
   model,
   model_id,
 }) => {
   // console.log(schema);
   const classes = useStyles();
-  const Frame = ({ children }) =>
-    variant === "outlined" ? (
-      <div className={classes.wrapper}>
-        <label>{schema.title}</label>
-        {children}
-      </div>
-    ) : variant === "text" ? (
-      <FormControlLabel control={children} label={schema.title} />
-    ) : (
-      { children }
-    );
+  const Frame = ({ children }) => (variant === 'outlined' ? (
+    <div className={classes.wrapper}>
+      <label>{schema.title}</label>
+      {children}
+    </div>
+  ) : variant === 'text' ? (
+    <FormControlLabel control={children} label={schema.title} />
+  ) : (
+    { children }
+  ));
   // console.log(model_id);
   switch (type) {
-    case "switch":
+    case 'switch':
       return (
         <Frame>
           <Switch
@@ -72,7 +74,7 @@ const BladeBoolean = ({
           />
         </Frame>
       );
-    case "checkbox":
+    case 'checkbox':
       return (
         <Frame>
           <Checkbox
@@ -84,11 +86,11 @@ const BladeBoolean = ({
           />
         </Frame>
       );
-    case "button":
+    case 'button':
       return (
         <Button
-          color={"primary"}
-          variant={model[model_id] ? "contained" : "outlined"}
+          color="primary"
+          variant={model[model_id] ? 'contained' : 'outlined'}
           onClick={() => onClick(model_id, !model[model_id])}
         >
           {schema.title}

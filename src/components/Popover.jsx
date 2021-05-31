@@ -7,7 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   typography: {
     padding: theme.spacing(2),
   },
@@ -29,7 +29,7 @@ export default function Popover({
 }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = event => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -59,11 +59,11 @@ export default function Popover({
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: vertical,
+          vertical,
           horizontal: direction,
         }}
         transformOrigin={{
-          vertical: vertical,
+          vertical,
           horizontal: direction === 'center' ? 'center' : 'right',
         }}
       >

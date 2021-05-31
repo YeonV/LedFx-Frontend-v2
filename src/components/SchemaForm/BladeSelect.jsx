@@ -1,35 +1,36 @@
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import { Select, MenuItem } from "@material-ui/core/";
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import { Select, MenuItem } from '@material-ui/core/';
+
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    minWidth: "200px",
-    padding: "16px 1.2rem 6px 1.2rem",
-    border: `1px solid #999`,
-    borderRadius: "10px",
-    position: "relative",
+    minWidth: '200px',
+    padding: '16px 1.2rem 6px 1.2rem',
+    border: '1px solid #999',
+    borderRadius: '10px',
+    position: 'relative',
     // margin: "0.5rem",
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     // "@media (max-width: 580px)": {
-    width: "48%",
-    margin: "0.5rem 0",
+    width: '48%',
+    margin: '0.5rem 0',
     // },
-    "& > label": {
-      top: "-0.7rem",
-      display: "flex",
-      alignItems: "center",
-      left: "1rem",
-      padding: "0 0.3rem",
-      position: "absolute",
-      fontVariant: "all-small-caps",
+    '& > label': {
+      top: '-0.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      left: '1rem',
+      padding: '0 0.3rem',
+      position: 'absolute',
+      fontVariant: 'all-small-caps',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: "border-box",
+      boxSizing: 'border-box',
     },
   },
 }));
 const BladeSelect = ({
-  variant = "outlined",
+  variant = 'outlined',
   schema,
   model,
   model_id,
@@ -38,22 +39,21 @@ const BladeSelect = ({
   // console.log(model, schema, model_id);
   const classes = useStyles();
 
-  const Frame = ({ children }) =>
-    variant === "outlined" ? (
-      <div className={classes.wrapper}>
-        <label>{schema.title}</label>
-        {children}
-      </div>
-    ) : (
-      children
-    );
+  const Frame = ({ children }) => (variant === 'outlined' ? (
+    <div className={classes.wrapper}>
+      <label>{schema.title}</label>
+      {children}
+    </div>
+  ) : (
+    children
+  ));
 
   return (
     <Frame>
-      {variant === "contained" ? (
+      {variant === 'contained' ? (
         <Select
           variant="filled"
-          style={{ flexGrow: variant === "outlined" ? 1 : "unset" }}
+          style={{ flexGrow: variant === 'outlined' ? 1 : 'unset' }}
           disableUnderline
           defaultValue={schema.default}
           value={model && model[model_id]}
@@ -67,7 +67,7 @@ const BladeSelect = ({
         </Select>
       ) : (
         <Select
-          style={{ flexGrow: variant === "outlined" ? 1 : "unset" }}
+          style={{ flexGrow: variant === 'outlined' ? 1 : 'unset' }}
           disableUnderline
           defaultValue={schema.default}
           value={model && model[model_id]}

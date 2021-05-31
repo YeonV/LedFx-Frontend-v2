@@ -1,21 +1,21 @@
-import { useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import useStore from "../../utils/apiStore";
-import { Grid } from "@material-ui/core/";
-import EffectsCard from "./Effects";
-import PresetsCard from "./_Presets";
-import MelbankCard from "./Melbank";
-import TransitionCard from "./Transition";
-import InfoCard from "./_Info";
+import { useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core/';
+import useStore from '../../utils/apiStore';
+import EffectsCard from './Effects';
+import PresetsCard from './_Presets';
+import MelbankCard from './Melbank';
+import TransitionCard from './Transition';
+import InfoCard from './_Info';
 
 const useStyles = makeStyles((theme) => ({
   displayWrapper: {
-    justifyContent: "center",
-    "@media (max-width: 1400px)": {
-      justifyContent: "flex-start",
+    justifyContent: 'center',
+    '@media (max-width: 1400px)': {
+      justifyContent: 'flex-start',
     },
   },
-  girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: "540px" },
+  girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px' },
 }));
 
 const Device = ({
@@ -64,8 +64,8 @@ const Device = ({
           </Grid>
           <Grid item className={classes.girdItem}>
             <MelbankCard />
-            <TransitionCard display={display} style={{ marginTop: "1rem" }} />
-            <InfoCard display={display} style={{ marginTop: "1rem" }} />
+            <TransitionCard display={display} style={{ marginTop: '1rem' }} />
+            <InfoCard display={display} style={{ marginTop: '1rem' }} />
           </Grid>
         </>
       )}
