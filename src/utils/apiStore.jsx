@@ -236,12 +236,26 @@ const useStore = create(
             scene_image
           }
         );
-        console.log(resp);
-        // if (resp && resp.preset) {
-        //   // set({ presets: resp.preset });
-        // } else {
-        //   // set({ dialogs: { nohost: { open: true } } });
-        // }
+
+        if (resp && resp.status && resp.status === 'success') {
+          // set({ presets: resp.preset });
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+          console.log("problems while adding Scene", resp)
+        }
+      },
+      deleteScene: async (name) => {
+        const resp = await Ledfx(
+          '/api/scenes',
+          set,
+          "DELETE",
+          { data: { id: name } }
+        );
+        if (resp && resp.status && resp.status === 'success') {
+          // set({ presets: resp.preset });
+        } else {
+          console.log("problems while adding Scene", resp)
+        }
       },
       integrations: {},
       getIntegrations: async () => {
