@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BladeEffectDropDown = ({ effects, display }) => {
   const classes = useStyles();
-  const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
+  const setDisplayEffect = useStore((state) => state.setDisplayEffect);
   const getDisplays = useStore((state) => state.getDisplays);
 
   const effectNames =
@@ -87,7 +87,7 @@ const BladeEffectDropDown = ({ effects, display }) => {
     setFormats(newFormats);
   };
   const onEffectTypeChange = (e) =>
-    updateDisplayEffect(display.id, {
+    setDisplayEffect(display.id, {
       type: e.target.value,
     }).then(() => {
       getDisplays()
