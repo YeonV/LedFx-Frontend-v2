@@ -1,4 +1,6 @@
 import useStore from "../../utils/apiStore";
+import { useState } from "react";
+
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,7 +9,6 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   FormRow: {
@@ -58,9 +59,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BladeEffectDropDown = ({ effects, displays, display }) => {
+const BladeEffectDropDown = ({ effects, display }) => {
   const classes = useStyles();
   const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
+  const getDisplays = useStore((state) => state.getDisplays);
 
   const effectNames =
     effects &&
@@ -87,6 +89,8 @@ const BladeEffectDropDown = ({ effects, displays, display }) => {
   const onEffectTypeChange = (e) =>
     updateDisplayEffect(display.id, {
       type: e.target.value,
+    }).then(() => {
+      getDisplays()
     });
 
   return (

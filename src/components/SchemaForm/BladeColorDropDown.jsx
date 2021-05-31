@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 const BladeColorDropDown = ({
   effects = {},
   display = {},
-  displays = {},
   clr = "color",
   type = "both",
   selectedType,
@@ -50,7 +49,10 @@ const BladeColorDropDown = ({
   const classes = useStyles();
 
   const setDisplayEffect = useStore((state) => state.setDisplayEffect);
+  const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
+  const getDisplays = useStore((state) => state.getDisplays);
 
+  const displays = useStore((state) => state.displays);
   const effectyz =
     displays[Object.keys(displays).find((d) => d === display.id)];
   const curEffSchema = effects[selectedType];
@@ -58,26 +60,27 @@ const BladeColorDropDown = ({
     curEffSchema &&
     curEffSchema.schema.properties[clr] &&
     curEffSchema.schema.properties[clr].enum;
-  const sendColor = (e) => {
-    return (
-      display &&
-      setDisplayEffect(display.id, {
-        displayId: display.id,
-        type: effectyz.effect.type,
-        config: { [clr]: e },
-      })
-    );
-  };
-  const onEffectTypeChange = (e) => {
-    return (
-      display &&
-      setDisplayEffect(display.id, {
-        displayId: display.id,
-        type: display.config[display.id].effect.type,
-        config: { [clr]: e.target.value },
-      })
-    );
-  };
+
+  const sendColor = (e) =>
+    display &&
+    updateDisplayEffect(display.id, {
+      displayId: display.id,
+      type: effectyz.effect.type,
+      config: { [clr]: e },
+    }).then(() => {
+      getDisplays()
+    });
+
+  const onEffectTypeChange = (e) =>
+    display &&
+    setDisplayEffect(display.id, {
+      displayId: display.id,
+      type: display.config[display.id].effect.type,
+      config: { [clr]: e.target.value },
+    }).then(() => {
+      getDisplays()
+    });
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       {(type === "text" || type === "both") && (
