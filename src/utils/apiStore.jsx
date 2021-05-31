@@ -193,16 +193,17 @@ const useStore = create(
             preset_id: presetId,
           }
         );
-        if (resp && resp.preset) {
+        if (resp && resp.status) {
+          console.log(resp)
           // set({ presets: resp.preset });
           console.log(resp);
         } else {
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
-      removePreset: async (effectId, presetId) => {
+      removePreset: async (displayId, presetId) => {
         const resp = await Ledfx(
-          `/api/effects/${effectId}/presets`,
+          `/api/displays/${displayId}/presets`,
           set,
           "DELETE",
           {
@@ -235,6 +236,25 @@ const useStore = create(
             name,
             scene_image
           }
+        );
+
+        if (resp && resp.status && resp.status === 'success') {
+          // set({ presets: resp.preset });
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+          console.log("problems while adding Scene", resp)
+        }
+      },
+      activateScene: async ({ id }) => {
+        const resp = await Ledfx(
+          '/api/scenes',
+          set,
+          "PUT",
+          {
+            id,
+            action: 'activate',
+          }
+
         );
 
         if (resp && resp.status && resp.status === 'success') {

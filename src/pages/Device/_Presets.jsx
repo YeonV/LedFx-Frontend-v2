@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const PresetsCard = ({ display, effectType, presets }) => {
+    console.log(presets.default_presets, presets.custom_presets)
     const classes = useStyles();
     const [name, setName] = useState('');
     const isNameValid = validateTextInput(name, presets);
@@ -46,43 +47,50 @@ const PresetsCard = ({ display, effectType, presets }) => {
 
     const activatePreset = useStore((state) => state.activatePreset);
     const addPreset = useStore((state) => state.addPreset);
+    const getPresets = useStore((state) => state.getPresets);
+    const getDisplays = useStore((state) => state.getDisplays);
     const removePreset = useStore((state) => state.removePreset);
 
 
     const handleActivatePreset = (displayId, category, effectType, presetId) => () => {
+        console.log(displayId, category, effectType, presetId)
         activatePreset(displayId, category, effectType, presetId)
         setName('');
     };
 
     const renderPresetsButton = (list, CATEGORY) => {
-        if (!list?.length)
+        if (!Object.keys(list)?.length)
             return (
                 <Button className={classes.presetButton} disabled>
                     No Saved Presets
                 </Button>
             );
-        return list.map(preset => <Grid item key={preset.id}>
+        return Object.keys(list).map(preset => <Grid item key={preset}>
             <Button
                 className={classes.presetButton}
                 onClick={handleActivatePreset(
                     display.id,
                     CATEGORY,
-                    presets.effectType,
-                    preset.id
+                    effectType,
+                    preset
                 )}
-                onDoubleClick={handleRemovePreset(effectType, preset.id)}
+                onDoubleClick={handleRemovePreset(display.id, list[preset].id)}
             >
-                {preset.name}
+                {list[preset].name}
             </Button>
         </Grid>
         );
     };
 
-    const handleAddPreset = () => addPreset(display.id, name);
-    const handleRemovePreset = (effectId, presetId) => () => removePreset(effectId, {
-        preset_id: presetId,
-        category: "user_presets"
+    const handleAddPreset = () => addPreset(display.id, name).then(() => {
+        getDisplays()
+        // getPresets(effectType)
     });
+    const handleRemovePreset = (displayId, presetId) => () => removePreset(displayId, presetId)
+        .then(() => {
+            getDisplays()
+            // getPresets(effectType)
+        });
 
     return (
         <Card variant="outlined" className={classes.deviceCard}>
@@ -90,11 +98,11 @@ const PresetsCard = ({ display, effectType, presets }) => {
             <CardContent className={classes.content}>
                 <Typography variant="subtitle2">LedFx Presets</Typography>
                 <Grid container className={classes.buttonGrid}>
-                    {renderPresetsButton(presets?.defaultPresets, DEFAULT_CAT)}
+                    {renderPresetsButton(presets?.default_presets, DEFAULT_CAT)}
                 </Grid>
                 <Typography variant="subtitle2">My Presets</Typography>
                 <Grid container className={classes.buttonGrid}>
-                    {renderPresetsButton(presets?.customPresets, CUSTOM_CAT)}
+                    {renderPresetsButton(presets?.custom_presets, CUSTOM_CAT)}
                 </Grid>
                 <Typography variant="h6">Add Preset</Typography>
                 <Typography variant="body1" color="textSecondary">
