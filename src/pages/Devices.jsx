@@ -79,7 +79,7 @@ const Devices = () => {
           <Card className={classes.displayCardPortrait} key={i}>
             <div className={classes.displayCardContainer}>
               <NavLink
-                to={`/displays/${displays[display].id}`}
+                to={`/device/${displays[display].id}`}
                 className={classes.displayLink}
                 color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
               >
