@@ -16,14 +16,14 @@ const AudioCard = ({  }) => {
     const classes = useStyles();    
     const getAudioInputs = useStore((state) => state.getAudioInputs)
     const setAudioInput = useStore((state) => state.setAudioInput)
-    const devices = useStore((state) => state.settings && state.settings.audio_inputs && state.settings.audio_inputs.devices)
-    const active_device_index = useStore((state)=>state.settings && state.settings.audio_inputs && state.settings.audio_inputs.active_device_index)
+    const devices = useStore((state) => state?.settings?.audio_inputs?.devices)
+    const active_device_index = useStore((state)=>  state?.settings?.audio_inputs?.active_device_index)
     
     useEffect(() => {
       getAudioInputs();      
     }, [getAudioInputs]);
 
-    return (Object.entries(devices).length > 0 ? (
+    return (devices && Object.entries(devices).length > 0) ? (
         <FormControl className={classes.form} >
             <InputLabel id="audio-input-select-label">Audio Input Device</InputLabel>
             <Select
@@ -39,7 +39,7 @@ const AudioCard = ({  }) => {
                 )}
             </Select>
         </FormControl>
-    )  : (<></>))
+    )  : (<></>)
 };
 
 export default AudioCard;
