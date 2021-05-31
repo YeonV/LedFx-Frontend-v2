@@ -70,7 +70,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "gh-pages": "^3.2.0",
     "react-is": "^17.0.2",
-    "webpack": "^5.38.1",
-    "proxy": "http://localhost:8888"
+    "webpack": "^5.38.1"
   }
 }
