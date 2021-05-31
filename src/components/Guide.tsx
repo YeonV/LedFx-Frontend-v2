@@ -4,7 +4,7 @@ import Tour from 'reactour';
 
 const steps = [
   {
-    selector: '.step-one',
+    selector: '.step-zero',
     content: (
       <div>
         <h2>LedFx Guide</h2>
@@ -17,11 +17,35 @@ const steps = [
     },
   },
   {
+    selector: '.step-one',
+    content: (
+      <div>
+        <h2>Bottom Navigation</h2>
+        Access your views here
+      </div>
+    ),
+    style: {
+      backgroundColor: '#303030',
+    },
+  },
+  {
     selector: '.step-two',
     content: (
       <div>
-        <h2>DAMN</h2>
-        Still no guides yet :P
+        <h2>Top-Menu</h2>
+        for global actions
+      </div>
+    ),
+    style: {
+      backgroundColor: '#303030',
+    },
+  },
+  {
+    selector: '.step-three',
+    content: (
+      <div>
+        <h2>Devices Quick-Access</h2>
+        Directly jump to a device
       </div>
     ),
     style: {
@@ -34,7 +58,7 @@ const Guide:React.FC = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   return (
     <>
-      <Button onClick={() => setIsTourOpen(true)} variant="outlined">
+      <Button onClick={() => setIsTourOpen(true)} variant="outlined" className="step-zero">
         Tour
       </Button>
       <Tour

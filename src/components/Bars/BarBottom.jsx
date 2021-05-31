@@ -35,6 +35,7 @@ export default function LabelBottomNavigation() {
     >
       <BottomNavigationAction
         component={Link}
+        className={'step-one'}
         label="Home"
         value="/"
         to="/"

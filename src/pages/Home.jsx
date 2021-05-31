@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <div className="Content">
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative' }} >
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
           <img src={logo} className="Logo" alt="logo" />
         </div>
@@ -39,7 +39,7 @@ export default function Home() {
           </ul>
         </CardContent>
         <CardActions>
-          <Guide />
+          <Guide className={'step-one'} />
           <Button disabled variant="outlined">
             Docs
           </Button>

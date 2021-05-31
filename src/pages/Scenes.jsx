@@ -21,7 +21,12 @@ import Popover from '../components/Popover';
 
 const useStyles = makeStyles({
   root: {
-    width: 'min(95vw, 345px)',
+    width: 'min(95vw, 345px)',   
+  },
+  '@media (max-width: 580px)': {
+    root: {
+    width: '95vw',
+    },
   },
   media: {
     height: 140,

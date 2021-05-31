@@ -2,11 +2,11 @@ import { useTheme } from '@material-ui/core/styles';
 import {
   ChevronLeft,
   ChevronRight,
-  Settings,
-  Home,
-  Wallpaper,
+  // Settings,
+  // Home,
+  // Wallpaper,
   // SettingsInputSvideo,
-  SettingsInputComponent,
+  // SettingsInputComponent,
 } from '@material-ui/icons';
 import {
   ListItem,
@@ -110,7 +110,7 @@ const LeftBar = () => {
         ))}
       </List>
       <Divider />
-      <List>
+      {/* <List>
         <Link key="Home" to="/">
           <ListItem>
             <ListItemIcon>
@@ -135,14 +135,14 @@ const LeftBar = () => {
             <ListItemText style={{ color: '#fff' }} primary="Scenes" />
           </ListItem>
         </Link>
-        {/* <Link key={"Integrations"} to={"/Integrations"}>
+        <Link key={"Integrations"} to={"/Integrations"}>
           <ListItem>
             <ListItemIcon>
               <SettingsInputSvideo />
             </ListItemIcon>
             <ListItemText style={{ color: "#fff" }} primary={"Integrations"} />
           </ListItem>
-        </Link> */}
+        </Link>
         <Link key="Settings" to="/Settings">
           <ListItem>
             <ListItemIcon>
@@ -151,7 +151,7 @@ const LeftBar = () => {
             <ListItemText style={{ color: '#fff' }} primary="Settings" />
           </ListItem>
         </Link>
-      </List>
+      </List> */}
     </Drawer>
   );
 };

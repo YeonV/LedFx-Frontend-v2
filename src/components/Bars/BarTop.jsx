@@ -92,7 +92,7 @@ const TopBar = () => {
           aria-label="open drawer"
           onClick={handleLeftBarOpen}
           edge="start"
-          className={clsx(classes.menuButton, open && classes.hide)}
+          className={clsx(classes.menuButton,"step-three", open && classes.hide)}
         >
           <MenuIcon />
         </IconButton>
@@ -100,11 +100,13 @@ const TopBar = () => {
         <Typography variant="h6" noWrap>
           LedFx
         </Typography>
+        
         <IconButton
           aria-label="display more actions"
           edge="end"
           color="inherit"
           onClick={handleClick}
+          className={'step-two'}
         >
           <MoreIcon />
         </IconButton>
