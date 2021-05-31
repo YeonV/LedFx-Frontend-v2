@@ -4,12 +4,13 @@
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
-  "homepage": "https://yeonv.github.io/LedFx-Frontend-v2",
+  "homepage": ".",
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
+    "@testing-library/dom": "^7.31.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
@@ -19,12 +20,14 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-colorful": "^5.2.0",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^17.0.2",
     "react-moment": "^1.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "reactour": "^1.18.4",
-    "styled-components": "^4.0.0",
+    "serve": "^11.3.2",
+    "styled-components": "^5.3.0",
     "web-vitals": "^1.1.2",
     "zustand": "^3.5.1"
   },
@@ -55,7 +58,19 @@
     ]
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.27.0",
     "eslint-config-react-app": "^6.0.0",
-    "gh-pages": "^3.2.0"
+    "eslint-plugin-flowtype": "^5.7.2",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "gh-pages": "^3.2.0",
+    "react-is": "^17.0.2",
+    "webpack": "^5.38.1",
+    "proxy": "http://localhost:8888"
   }
 }
