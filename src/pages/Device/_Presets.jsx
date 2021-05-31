@@ -47,7 +47,7 @@ const PresetsCard = ({ display, effectType, presets }) => {
 
     const activatePreset = useStore((state) => state.activatePreset);
     const addPreset = useStore((state) => state.addPreset);
-    const getPresets = useStore((state) => state.getPresets);
+    // const getPresets = useStore((state) => state.getPresets);
     const getDisplays = useStore((state) => state.getDisplays);
     const removePreset = useStore((state) => state.removePreset);
 
