@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import useStore from "../../utils/apiStore";
-import BladeEffectDropDown from "../../components/SchemaForm/BladeEffectDropDown";
-import BladeSchemaForm from "../../components/SchemaForm/BladeSchemaForm";
-import { Button, Card, CardContent } from "@material-ui/core/";
-import { Casino, Delete } from "@material-ui/icons/";
+import { useEffect } from 'react';
+import { Button, Card, CardContent } from '@material-ui/core/';
+import { Casino, Delete } from '@material-ui/icons/';
+import useStore from '../../utils/apiStore';
+import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
+import BladeSchemaForm from '../../components/SchemaForm/BladeSchemaForm';
 
 const EffectsCard = ({ displayId }) => {
   const getDisplays = useStore((state) => state.getDisplays);
@@ -20,7 +20,7 @@ const EffectsCard = ({ displayId }) => {
     setDisplayEffect({
       displayId: display.id,
       type: effectType,
-      config: "RANDOMIZE",
+      config: 'RANDOMIZE',
     });
   };
 
@@ -33,22 +33,22 @@ const EffectsCard = ({ displayId }) => {
     getSchemas();
   }, [getDisplays, getSchemas, effectType]);
   return (
-    <Card style={{ width: "100%", maxWidth: "540px" }}>
+    <Card style={{ width: '100%', maxWidth: '540px' }}>
       <CardContent>
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            margin: "0 .5rem",
+            display: 'flex',
+            justifyContent: 'space-between',
+            margin: '0 .5rem',
           }}
         >
           <h1>{display && display.config.name}</h1>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             {effectType && (
               <Button
                 onClick={() => handleRandomize()}
                 variant="outlined"
-                style={{ marginRight: ".5rem" }}
+                style={{ marginRight: '.5rem' }}
               >
                 <Casino />
               </Button>
@@ -63,20 +63,20 @@ const EffectsCard = ({ displayId }) => {
           effects={effects}
           display={display}
         />
-        {displays &&
-          display &&
-          effects &&
-          display.effect &&
-          display.effect.config && (
-            <BladeSchemaForm
-              display={display}
-              effects={effects}
-              schema={effects[effectType].schema}
-              model={display.effect.config}
-              display_id={displayId}
-              selectedType={effectType}
-            />
-          )}
+        {displays
+          && display
+          && effects
+          && display.effect
+          && display.effect.config && (
+          <BladeSchemaForm
+            display={display}
+            effects={effects}
+            schema={effects[effectType].schema}
+            model={display.effect.config}
+            display_id={displayId}
+            selectedType={effectType}
+          />
+        )}
       </CardContent>
     </Card>
   );

@@ -1,7 +1,5 @@
-import { useEffect } from "react";
-import useStore from "../utils/apiStore";
-import { makeStyles } from "@material-ui/core/styles";
-import Wled from '../assets/Wled';
+import { useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
@@ -9,11 +7,13 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import BuildIcon from '@material-ui/icons/Build';
 import { NavLink } from 'react-router-dom';
-import { camelToSnake } from '../utils/helpers'
-import Popover from '../components/Popover'
+import Wled from '../assets/Wled';
+import useStore from '../utils/apiStore';
+import { camelToSnake } from '../utils/helpers';
+import Popover from '../components/Popover';
 // import TypeBadge from './TypeBadge';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   displayCardPortrait: {
     padding: '1rem',
     margin: '0.5rem',
@@ -47,14 +47,14 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
-  }
+  },
 }));
 
 const Devices = () => {
   const classes = useStyles();
   const getDisplays = useStore((state) => state.getDisplays);
   const displays = useStore((state) => state.displays);
-  const variant = "outlined";
+  const variant = 'outlined';
   const color = 'secondary';
 
   const handleDeleteDevice = () => {
@@ -75,71 +75,70 @@ const Devices = () => {
     <div>
       <h1>Devices</h1>
       <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-0.5rem' }}>
-        {displays && Object.keys(displays).map((display, i) => <Card className={classes.displayCardPortrait} key={i} >
-          <div className={classes.displayCardContainer} >
-            <NavLink
-              to={'/displays/' + displays[display].id}
-              className={classes.displayLink}
-              color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
-
-            >
-              <Icon
+        {displays && Object.keys(displays).map((display, i) => (
+          <Card className={classes.displayCardPortrait} key={i}>
+            <div className={classes.displayCardContainer}>
+              <NavLink
+                to={`/displays/${displays[display].id}`}
+                className={classes.displayLink}
                 color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
-                className={classes.displayIcon}
               >
-                {displays[display].config && displays[display].config.icon_name && displays[display].config.icon_name.startsWith('wled') ? (
-                  <Wled />
-                ) : (displays[display].config && displays[display].config.icon_name.startsWith('mdi:')) ? (
-                  <span
-                    className={`mdi mdi-${displays[display].config && displays[display].config.icon_name.split('mdi:')[1]}`}
-                  ></span>
-                ) : (
-                  camelToSnake((displays[display].config && displays[display].config.icon_name) || 'SettingsInputComponent')
+                <Icon
+                  color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
+                  className={classes.displayIcon}
+                >
+                  {displays[display].config && displays[display].config.icon_name && displays[display].config.icon_name.startsWith('wled') ? (
+                    <Wled />
+                  ) : (displays[display].config && displays[display].config.icon_name.startsWith('mdi:')) ? (
+                    <span
+                      className={`mdi mdi-${displays[display].config && displays[display].config.icon_name.split('mdi:')[1]}`}
+                    />
+                  ) : (
+                    camelToSnake((displays[display].config && displays[display].config.icon_name) || 'SettingsInputComponent')
+                  )}
+                </Icon>
+              </NavLink>
+              <NavLink
+                to={`/device/${displays[display].id}`}
+                className={classes.displayLink}
+                color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
+              >
+                {display && displays[display].config && displays[display].config.name}
+              </NavLink>
+
+              <div>
+                {/* <TypeBadge variant={variant} display={display} /> */}
+                {display && displays[display].config && displays[display].config.preview_only && (
+                  <Button
+                    variant="text"
+                    disabled
+                    size="small"
+
+                    className={classes.previewButton}
+                  >
+                    <VisibilityIcon />
+                  </Button>
                 )}
-              </Icon>
-            </NavLink>
-            <NavLink
-              to={'/device/' + displays[display].id}
-              className={classes.displayLink}
-              color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
-            >
-              {display && displays[display].config && displays[display].config.name}
-            </NavLink>
-
-
-            <div>
-              {/* <TypeBadge variant={variant} display={display} /> */}
-              {display && displays[display].config && displays[display].config.preview_only && (
-                <Button
-                  variant={'text'}
-                  disabled
-                  size="small"
-
-                  className={classes.previewButton}
-                >
-                  <VisibilityIcon />
-                </Button>
-              )}
-            </div>
-            <div>
-              <Popover
-                variant={variant}
-                // color={color}
-                onConfirm={handleDeleteDevice}
-                className={classes.deleteButton}
-              />
-
-              {displays[display].is_device ? (
-                <Button
+              </div>
+              <div>
+                <Popover
                   variant={variant}
-                  color={color}
-                  size="small"
-                  className={classes.editButton}
-                  onClick={handleEditDevice}
-                >
-                  <BuildIcon />
-                </Button>
-              ) : (<></>
+                  // color={color}
+                  onConfirm={handleDeleteDevice}
+                  className={classes.deleteButton}
+                />
+
+                {displays[display].is_device ? (
+                  <Button
+                    variant={variant}
+                    color={color}
+                    size="small"
+                    className={classes.editButton}
+                    onClick={handleEditDevice}
+                  >
+                    <BuildIcon />
+                  </Button>
+                ) : (<></>
                 // <DisplaySegmentsDialog
                 //   variant={variant}
                 //   color={color}
@@ -147,19 +146,20 @@ const Devices = () => {
                 //   className={classes.editButton}
                 //   icon={<TuneIcon />}
                 // />
-              )}
-              <Button
-                variant={variant}
-                size="small"
-                color={color}
-                className={classes.editButton}
-                onClick={handleEditDisplay}
-              >
-                <SettingsIcon />
-              </Button>
+                )}
+                <Button
+                  variant={variant}
+                  size="small"
+                  color={color}
+                  className={classes.editButton}
+                  onClick={handleEditDisplay}
+                >
+                  <SettingsIcon />
+                </Button>
+              </div>
             </div>
-          </div>
-        </Card>)}
+          </Card>
+        ))}
       </div>
     </div>
   );

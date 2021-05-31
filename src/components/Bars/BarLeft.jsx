@@ -1,8 +1,4 @@
-import useStore from "../../utils/apiStore";
-import { camelToSnake } from "../../utils/helpers";
-import { useTheme } from "@material-ui/core/styles";
-import useStyles from "./BarLeft.styles";
-
+import { useTheme } from '@material-ui/core/styles';
 import {
   ChevronLeft,
   ChevronRight,
@@ -11,7 +7,7 @@ import {
   Wallpaper,
   // SettingsInputSvideo,
   SettingsInputComponent,
-} from "@material-ui/icons";
+} from '@material-ui/icons';
 import {
   ListItem,
   ListItemIcon,
@@ -21,10 +17,14 @@ import {
   Icon,
   Divider,
   IconButton,
-} from "@material-ui/core";
-import logoAsset from "../../assets/logo.png";
-import Wled from "../../assets/Wled";
-import { Link } from "react-router-dom";
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import useStore from '../../utils/apiStore';
+import { camelToSnake } from '../../utils/helpers';
+import useStyles from './BarLeft.styles';
+
+import logoAsset from '../../assets/logo.png';
+import Wled from '../../assets/Wled';
 // import { useHistory, Link } from "react-router-dom";
 
 const LeftBar = () => {
@@ -46,7 +46,7 @@ const LeftBar = () => {
         </div>
         LedFx
       </a>
-      <div className={classes.devbadge}></div>
+      <div className={classes.devbadge} />
     </div>
   );
 
@@ -63,14 +63,14 @@ const LeftBar = () => {
       <div className={classes.drawerHeader}>
         {logo}
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === "ltr" ? <ChevronLeft /> : <ChevronRight />}
+          {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
         </IconButton>
       </div>
       <Divider />
       <List>
         {Object.keys(displays).map((d, i) => (
           <Link
-            style={{ textDecoration: "none" }}
+            style={{ textDecoration: 'none' }}
             key={i}
             to={`/device/${displays[d].id}`}
             onClick={() => {
@@ -81,28 +81,28 @@ const LeftBar = () => {
               <ListItemIcon>
                 <Icon
                   color={
-                    d.effect && d.effect.active === true ? "primary" : "inherit"
+                    d.effect && d.effect.active === true ? 'primary' : 'inherit'
                     // "inherit"
                   }
-                  style={{ position: "relative" }}
+                  style={{ position: 'relative' }}
                 >
-                  {displays && displays[d] && displays[d].config && displays[d].config.icon_name &&
-                    displays[d].config.icon_name.startsWith("wled") ? (
-                    <Wled />
-                  ) : (displays && displays[d] && displays[d].config && displays[d].config.icon_name && displays[d].config.icon_name.startsWith("mdi:")) ? (
-                    <span
-                      className={`mdi mdi-${displays[d].config.icon_name.split("mdi:")[1]
+                  {displays && displays[d] && displays[d].config && displays[d].config.icon_name
+                    && displays[d].config.icon_name.startsWith('wled') ? (
+                      <Wled />
+                    ) : (displays && displays[d] && displays[d].config && displays[d].config.icon_name && displays[d].config.icon_name.startsWith('mdi:')) ? (
+                      <span
+                        className={`mdi mdi-${displays[d].config.icon_name.split('mdi:')[1]
                         }`}
-                    ></span>
-                  ) : (
-                    camelToSnake(
-                      displays[d].config.icon_name || "SettingsInputComponent"
-                    )
-                  )}
+                      />
+                    ) : (
+                      camelToSnake(
+                        displays[d].config.icon_name || 'SettingsInputComponent',
+                      )
+                    )}
                 </Icon>
               </ListItemIcon>
               <ListItemText
-                style={{ color: "#fff" }}
+                style={{ color: '#fff' }}
                 primary={displays[d].config.name}
               />
             </ListItem>
@@ -111,28 +111,28 @@ const LeftBar = () => {
       </List>
       <Divider />
       <List>
-        <Link key={"Home"} to={"/"}>
+        <Link key="Home" to="/">
           <ListItem>
             <ListItemIcon>
               <Home />
             </ListItemIcon>
-            <ListItemText style={{ color: "#fff" }} primary={"Home"} />
+            <ListItemText style={{ color: '#fff' }} primary="Home" />
           </ListItem>
         </Link>
-        <Link key={"Devices"} to={"/Devices"}>
+        <Link key="Devices" to="/Devices">
           <ListItem>
             <ListItemIcon>
               <SettingsInputComponent />
             </ListItemIcon>
-            <ListItemText style={{ color: "#fff" }} primary={"Devices"} />
+            <ListItemText style={{ color: '#fff' }} primary="Devices" />
           </ListItem>
         </Link>
-        <Link key={"Scenes"} to={"/Scenes"}>
+        <Link key="Scenes" to="/Scenes">
           <ListItem>
             <ListItemIcon>
               <Wallpaper />
             </ListItemIcon>
-            <ListItemText style={{ color: "#fff" }} primary={"Scenes"} />
+            <ListItemText style={{ color: '#fff' }} primary="Scenes" />
           </ListItem>
         </Link>
         {/* <Link key={"Integrations"} to={"/Integrations"}>
@@ -143,12 +143,12 @@ const LeftBar = () => {
             <ListItemText style={{ color: "#fff" }} primary={"Integrations"} />
           </ListItem>
         </Link> */}
-        <Link key={"Settings"} to={"/Settings"}>
+        <Link key="Settings" to="/Settings">
           <ListItem>
             <ListItemIcon>
               <Settings />
             </ListItemIcon>
-            <ListItemText style={{ color: "#fff" }} primary={"Settings"} />
+            <ListItemText style={{ color: '#fff' }} primary="Settings" />
           </ListItem>
         </Link>
       </List>

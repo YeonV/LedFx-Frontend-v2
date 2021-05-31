@@ -1,39 +1,40 @@
-import PropTypes from "prop-types";
-import { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Slider, Input } from "@material-ui/core/";
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Slider, Input } from '@material-ui/core/';
+
 const useStyles = makeStyles((theme) => ({
   input: {
-    marginLeft: "1rem",
+    marginLeft: '1rem',
   },
   wrapper: {
-    minWidth: "250px",
-    padding: "16px 1.2rem 6px 1.2rem",
-    border: `1px solid #999`,
-    borderRadius: "10px",
-    position: "relative",
+    minWidth: '250px',
+    padding: '16px 1.2rem 6px 1.2rem',
+    border: '1px solid #999',
+    borderRadius: '10px',
+    position: 'relative',
     // margin: "0.5rem",
-    display: "flex",
+    display: 'flex',
     order: 1,
     // "@media (max-width: 580px)": {
-    width: "100%",
-    margin: "0.5rem 0",
+    width: '100%',
+    margin: '0.5rem 0',
     // },
-    "& > label": {
-      top: "-0.7rem",
-      display: "flex",
-      alignItems: "center",
-      left: "1rem",
-      padding: "0 0.3rem",
-      position: "absolute",
-      fontVariant: "all-small-caps",
+    '& > label': {
+      top: '-0.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      left: '1rem',
+      padding: '0 0.3rem',
+      position: 'absolute',
+      fontVariant: 'all-small-caps',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: "border-box",
+      boxSizing: 'border-box',
     },
   },
 }));
 const BladeSlider = ({
-  variant = "outlined",
+  variant = 'outlined',
   schema,
   model,
   model_id,
@@ -41,7 +42,7 @@ const BladeSlider = ({
   onChange,
 }) => {
   const classes = useStyles();
-  return variant === "outlined" ? (
+  return variant === 'outlined' ? (
     <div className={classes.wrapper}>
       <label>{schema.title}</label>
       <BladeSliderInner
@@ -62,7 +63,9 @@ const BladeSlider = ({
   );
 };
 
-const BladeSliderInner = ({ schema, model, model_id, step, onChange }) => {
+const BladeSliderInner = ({
+  schema, model, model_id, step, onChange,
+}) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
   const [value, setValue] = useState(model[model_id] || schema.default);
@@ -74,7 +77,7 @@ const BladeSliderInner = ({ schema, model, model_id, step, onChange }) => {
   };
 
   const handleInputChange = (event) => {
-    setValue(event.target.value === "" ? "" : Number(event.target.value));
+    setValue(event.target.value === '' ? '' : Number(event.target.value));
   };
   const handleBlur = () => {
     if (value < schema.minimum) {
@@ -93,7 +96,7 @@ const BladeSliderInner = ({ schema, model, model_id, step, onChange }) => {
         step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
         min={schema.minimum}
         max={schema.maximum}
-        value={typeof value === "number" ? value : 0}
+        value={typeof value === 'number' ? value : 0}
         onChange={handleSliderChange}
         onChangeCommitted={(e, b) => onChange(model_id, b)}
       // defaultValue={model[model_id] || schema.default}
@@ -110,8 +113,8 @@ const BladeSliderInner = ({ schema, model, model_id, step, onChange }) => {
           step: schema.maximum > 1 ? 0.1 : 0.01,
           min: schema.minimum,
           max: schema.maximum,
-          type: "number",
-          "aria-labelledby": "input-slider",
+          type: 'number',
+          'aria-labelledby': 'input-slider',
         }}
       />
     </>

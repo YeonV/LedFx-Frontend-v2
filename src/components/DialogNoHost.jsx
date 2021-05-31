@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import useStore from "../utils/apiStore";
+import { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import useStore from '../utils/apiStore';
 
 export default function DialogNoHost() {
   const dialogOpen = useStore((state) => state.dialogs.nohost.open);
   const edit = useStore((state) => state.dialogs.nohost.edit);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const setHost = useStore((state) => state.setHost);
-  const storedURL = window.localStorage.getItem("ledfx-host")
-  const [value, setValue] = useState("http://localhost:8888");
+  const storedURL = window.localStorage.getItem('ledfx-host');
+  const [value, setValue] = useState('http://localhost:8888');
 
   const handleClose = () => {
     setDialogOpen(false);
@@ -25,8 +25,8 @@ export default function DialogNoHost() {
     window.location = window.location.href;
   };
   useEffect(() => {
-    storedURL && setValue(storedURL)
-  }, [storedURL])
+    storedURL && setValue(storedURL);
+  }, [storedURL]);
   return (
     <Dialog
       open={dialogOpen}
@@ -34,7 +34,7 @@ export default function DialogNoHost() {
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">
-        {edit ? "LedFx-Core Host" : "No LedFx-Core found"}
+        {edit ? 'LedFx-Core Host' : 'No LedFx-Core found'}
       </DialogTitle>
       <DialogContent>
         {!edit && (

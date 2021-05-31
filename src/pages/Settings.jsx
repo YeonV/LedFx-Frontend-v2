@@ -1,19 +1,18 @@
-import { useEffect } from "react";
-import useStore from "../utils/apiStore";
+import { useEffect } from 'react';
+import useStore from '../utils/apiStore';
 
-const Settings = () => {
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const config = useStore((state) => state.config);
+const Settings:React.FC = ():JSX.Element => {
+  const getSystemConfig = useStore((state:any) => state.getSystemConfig);
+  const config = useStore((state:any) => state.config);
 
   useEffect(() => {
     getSystemConfig();
-
   }, [getSystemConfig]);
 
   return (
     <div>
       <h1>Settings</h1>
-      {config && Object.keys(config).map((s, i) => <div key={i}>{s}</div>)}
+      {config && Object.keys(config).map((s) => <div key={s}>{s}</div>)}
     </div>
   );
 };

@@ -1,41 +1,42 @@
-import { useState, useCallback, useRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Popper from "@material-ui/core/Popper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import useClickOutside from "../../utils/useClickOutside";
-import { HslStringColorPicker } from "react-colorful";
+import { useState, useCallback, useRef } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Popper from '@material-ui/core/Popper';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { HslStringColorPicker } from 'react-colorful';
+import useClickOutside from '../../utils/useClickOutside';
+
 const useStyles = makeStyles((theme) => ({
   paper: {
-    border: "1px solid",
-    display: "flex",
-    flexWrap: "wrap",
-    maxWidth: "320px",
+    border: '1px solid',
+    display: 'flex',
+    flexWrap: 'wrap',
+    maxWidth: '320px',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
   },
   picker: {
-    width: "150px",
-    height: "30px",
-    margin: "15px 10px 10px 10px",
-    borderRadius: "10px",
-    cursor: "pointer",
-    border: `1px solid #fff`,
+    width: '150px',
+    height: '30px',
+    margin: '15px 10px 10px 10px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    border: '1px solid #fff',
   },
   wrapper: {
-    border: `1px solid #999`,
-    borderRadius: "10px",
-    position: "relative",
-    margin: "0.5rem",
-    "& > label": {
-      top: "-0.7rem",
-      display: "flex",
-      alignItems: "center",
-      left: "1rem",
-      padding: "0 0.3rem",
-      position: "absolute",
-      fontVariant: "all-small-caps",
+    border: '1px solid #999',
+    borderRadius: '10px',
+    position: 'relative',
+    margin: '0.5rem',
+    '& > label': {
+      top: '-0.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      left: '1rem',
+      padding: '0 0.3rem',
+      position: 'absolute',
+      fontVariant: 'all-small-caps',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: "border-box",
+      boxSizing: 'border-box',
     },
   },
 }));
@@ -44,7 +45,7 @@ const BladeColorNewPicker = ({ sendColor, col, clr }) => {
   const classes = useStyles();
   const popover = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [colorNew, setColorNew] = useState("hsl(0, 100%, 25%)");
+  const [colorNew, setColorNew] = useState('hsl(0, 100%, 25%)');
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -64,22 +65,22 @@ const BladeColorNewPicker = ({ sendColor, col, clr }) => {
   }, []);
   useClickOutside(popover, handleClose);
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
+  const id = open ? 'simple-popper' : undefined;
 
   return (
     <div className={classes.wrapper}>
       <label>
         {/* <Palette /> */}
-        {clr.replaceAll("_", " ")}
+        {clr.replaceAll('_', ' ')}
       </label>
       <div
         className={classes.picker}
         style={{
-          backgroundColor: colorNew.replaceAll('"', "").replaceAll("'", ""),
+          backgroundColor: colorNew.replaceAll('"', '').replaceAll("'", ''),
         }}
         aria-describedby={id}
         onClick={handleClick}
-      ></div>
+      />
       <ClickAwayListener
         onClickAway={() => {
           // console.log('anchorEl');

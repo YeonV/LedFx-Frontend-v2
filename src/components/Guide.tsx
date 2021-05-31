@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Button } from "@material-ui/core";
-import Tour from "reactour";
+import { useState } from 'react';
+import { Button } from '@material-ui/core';
+import Tour from 'reactour';
+
 const steps = [
   {
-    selector: ".step-one",
+    selector: '.step-one',
     content: (
       <div>
         <h2>LedFx Guide</h2>
@@ -12,11 +13,11 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: "#303030",
+      backgroundColor: '#303030',
     },
   },
   {
-    selector: ".step-two",
+    selector: '.step-two',
     content: (
       <div>
         <h2>DAMN</h2>
@@ -24,11 +25,12 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: "#303030",
+      backgroundColor: '#303030',
     },
   },
 ];
-const Guide = () => {
+
+const Guide:React.FC = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   return (
     <>
@@ -37,7 +39,7 @@ const Guide = () => {
       </Button>
       <Tour
         steps={steps}
-        accentColor={"#0dbedc"}
+        accentColor="#0dbedc"
         isOpen={isTourOpen}
         onRequestClose={() => setIsTourOpen(false)}
       />
