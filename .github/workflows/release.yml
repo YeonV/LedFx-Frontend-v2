@@ -47,13 +47,13 @@ jobs:
         run: yarn build
       - name: Preparing Archive
         run: |
-          mv build ledfx_frontend
-          printf "${{ env.MESSAGES }}" >> ledfx_frontend/messages.md
+          mv build ledfx_frontend_v2
+          printf "${{ env.MESSAGES }}" >> ledfx_frontend_v2/messages.md
       - name: Create Archive
         uses: thedoctor0/zip-release@master
         with:
-          filename: "ledfx_frontend.zip"
-          path: "ledfx_frontend"
+          filename: "ledfx_frontend_v2.zip"
+          path: "ledfx_frontend_v2"
           exclusions: "*.git* /*node_modules/* .editorconfig"
       - name: Create Release
         id: create_release
@@ -76,6 +76,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./ledfx_frontend.zip
-          asset_name: ledfx_frontend.zip
+          asset_path: ./ledfx_frontend_v2.zip
+          asset_name: ledfx_frontend_v2.zip
           asset_content_type: application/zip
