@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     overflowX: 'hidden',
   },
-  '@media (max-width: 580px)': {
-    drawer: {
-      width: '100vw',
-    },
-    drawerPaper: {
-      width: '100vw',
-    },
-  },
+  // '@media (max-width: 580px)': {
+  //   drawer: {
+  //     width: '100vw',
+  //   },
+  //   drawerPaper: {
+  //     width: '100vw',
+  //   },
+  // },
   drawerHeader: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -80,8 +80,8 @@ const useStyles = makeStyles((theme) => ({
   },
   devbadge: {
     backgroundImage: `url(${blademod})`,
-    backgroundColor: '#0dbedc',
-    border: '1px solid #0dbedc',
+    backgroundColor: theme.palette.primary.main,
+    border: theme.palette.primary.main,
     color: '#fff',
     borderRadius: '15px',
     width: '150px',

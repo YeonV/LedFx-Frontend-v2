@@ -23,11 +23,49 @@ const useStore = create(
       dialogs: {
         nohost: {
           open: false,
+          edit: false
+        },
+        addScene: {
+          open: false,
+        },
+        addDevice: {
+          open: false,
+        },
+        addVirtual: {
+          open: false,
         },
       },
       setDialogOpen: (open, edit = false) => set((state) => ({
         dialogs: {
+          ...state.dialogs,
           nohost: {
+            open,
+            edit,
+          },
+        },
+      })),
+      setDialogOpenAddScene: (open, edit = false) => set((state) => ({
+        dialogs: {
+          ...state.dialogs,
+          addScene: {
+            open,
+            edit,
+          },
+        },
+      })),
+      setDialogOpenAddDevice: (open, edit = false) => set((state) => ({
+        dialogs: {
+          ...state.dialogs,
+          addDevice: {
+            open,
+            edit,
+          },
+        },
+      })),
+      setDialogOpenAddVirtual: (open, edit = false) => set((state) => ({
+        dialogs: {
+          ...state.dialogs,
+          addVirtual: {
             open,
             edit,
           },
@@ -67,7 +105,16 @@ const useStore = create(
       },
 
       // API
-
+      devices: {},
+      getDevices: async () => {
+        const resp = await Ledfx('/api/devices', set);
+        // console.log("YZ", resp)
+        if (resp && resp.devices) {
+          set({ devices: resp.devices });
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
       displays: {},
       getDisplays: async () => {
         const resp = await Ledfx('/api/displays', set);
@@ -153,6 +200,37 @@ const useStore = create(
         // set({ dialogs: { nohost: { open: true } } });
         // }
       },
+      updateDisplaySegments: async ({displayId, segments }) => {
+        const resp = await Ledfx(
+          `/api/displays/${displayId}`,
+          set,
+          'POST',
+          {
+            segments: [...segments],
+        },
+        );
+        if (resp && resp.status && resp.status === 'success') {
+          if (resp && resp.effect) {
+            set({
+              displays: get().displays,
+              ...{
+                [displayId]: {
+                  effect: {
+                    type: resp.effect.type,
+                    name: resp.effect.name,
+                    config: resp.effect.config,
+                  },
+                },
+              },
+
+            });
+          }
+        }
+        // else {
+        // set({ dialogs: { nohost: { open: true } } });
+        // }
+      },
+
       presets: {},
       getPresets: async (effectId) => {
         const resp = await Ledfx(`/api/effects/${effectId}/presets`, set);

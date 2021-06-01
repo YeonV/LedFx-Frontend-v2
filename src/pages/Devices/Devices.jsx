@@ -5,13 +5,15 @@ import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import SettingsIcon from '@material-ui/icons/Settings';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import TuneIcon from '@material-ui/icons/Tune';
 import BuildIcon from '@material-ui/icons/Build';
 import { NavLink } from 'react-router-dom';
-import Wled from '../assets/Wled';
-import useStore from '../utils/apiStore';
-import { camelToSnake } from '../utils/helpers';
-import Popover from '../components/Popover';
+import Wled from '../../assets/Wled';
+import useStore from '../../utils/apiStore';
+import { camelToSnake } from '../../utils/helpers';
+import Popover from '../../components/Popover';
 // import TypeBadge from './TypeBadge';
+import DisplaySegmentsDialog from './EditVirtuals';
 
 const useStyles = makeStyles((theme) => ({
   displayCardPortrait: {
@@ -48,6 +50,28 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     justifyContent: 'space-between',
   },
+  iconMedia: {
+    height: 140,
+    display: 'flex',
+    alignItems: 'center',
+    margin: '0 auto',
+    fontSize: 100,
+    '& > span:before': {
+      position: 'relative',
+    },
+  },
+  editButton: {
+    minWidth: 32,
+    marginLeft: theme.spacing(1),
+  },
+  cardWrapper: {
+    display: 'flex', flexWrap: 'wrap', margin: '-0.5rem',
+  },
+  '@media (max-width: 580px)' : {
+    cardWrapper:{
+      justifyContent: 'center'
+    }
+  }
 }));
 
 const Devices = () => {
@@ -72,9 +96,7 @@ const Devices = () => {
     getDisplays();
   }, [getDisplays]);
   return (
-    <div>
-      <h1>Devices</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', margin: '-0.5rem' }}>
+      <div className={classes.cardWrapper}>
         {displays && Object.keys(displays).map((display, i) => (
           <Card className={classes.displayCardPortrait} key={i}>
             <div className={classes.displayCardContainer}>
@@ -138,14 +160,14 @@ const Devices = () => {
                   >
                     <BuildIcon />
                   </Button>
-                ) : (<></>
-                // <DisplaySegmentsDialog
-                //   variant={variant}
-                //   color={color}
-                //   display={display}
-                //   className={classes.editButton}
-                //   icon={<TuneIcon />}
-                // />
+                ) : (
+                  <DisplaySegmentsDialog
+                    variant={variant}
+                    color={color}
+                    display={displays[display]}
+                    className={classes.editButton}
+                    icon={<TuneIcon />}
+                  />
                 )}
                 <Button
                   variant={variant}
@@ -161,7 +183,6 @@ const Devices = () => {
           </Card>
         ))}
       </div>
-    </div>
   );
 };
 

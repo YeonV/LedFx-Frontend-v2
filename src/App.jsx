@@ -16,9 +16,9 @@ import MessageBar from './components/Bars/BarMessage';
 
 import DialogNoHost from './components/DialogNoHost';
 import Home from './pages/Home';
-import Devices from './pages/Devices';
+import Devices from './pages/Devices/Devices';
 import Device from './pages/Device/Device';
-import Scenes from './pages/Scenes';
+import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations';
 
@@ -26,10 +26,12 @@ const curacaoDarkTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#0dbedc',
+      // main: '#0dbedc',
+      main: '#800000',
     },
     secondary: {
-      main: '#999',
+      // main: '#04424D',
+      main: '#800000',
     },
     background: { default: '#030303', paper: '#151515' },
   },

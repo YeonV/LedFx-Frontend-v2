@@ -9,8 +9,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import useStore from '../utils/apiStore';
 
 export default function DialogNoHost() {
-  const dialogOpen = useStore((state) => state.dialogs.nohost.open);
-  const edit = useStore((state) => state.dialogs.nohost.edit);
+  const dialogOpen = useStore((state) => state.dialogs.nohost?.open||false);
+  const edit = useStore((state) => state.dialogs.nohost?.edit||false);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const setHost = useStore((state) => state.setHost);
   const storedURL = window.localStorage.getItem('ledfx-host');

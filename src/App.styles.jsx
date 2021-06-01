@@ -40,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
-    '@media (max-width: 580px)': {
-      marginLeft: '-100vw',
-      padding: '0 10px',
-    },
+    // '@media (max-width: 580px)': {
+    //   marginLeft: '-100vw',
+    //   padding: '0 10px',
+    // },
   },
   contentShift: {
     transition: theme.transitions.create('margin', {

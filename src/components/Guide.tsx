@@ -63,7 +63,7 @@ const Guide:React.FC = () => {
       </Button>
       <Tour
         steps={steps}
-        accentColor="#0dbedc"
+        accentColor="#800000"
         isOpen={isTourOpen}
         onRequestClose={() => setIsTourOpen(false)}
       />

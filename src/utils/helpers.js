@@ -12,4 +12,34 @@ export const download = (content, fileName, contentType) => {
   a.download = fileName;
   a.click();
 };
+
 export const drawerWidth = 240;
+
+export const getOverlapping = (data) => {
+  const tmp = {};
+  data.forEach(([name, start, end]) => {
+      if (!tmp[name]) {
+          tmp[name] = {};
+          data.forEach(y => {
+              tmp[name].items = [];
+              tmp[name].overlap = false;
+              tmp[name].items.push([start, end]);
+          });
+      } else {
+          tmp[name].items.push([start, end]);
+      }
+  });
+  Object.keys(tmp).forEach(e =>
+      tmp[e].items
+          .sort(([startA], [startB]) => startA > startB)
+          .forEach(([start, end], i) => {
+              if (tmp[e].items[i + 1]) {
+                  const [startNew, endNew] = tmp[e].items[i + 1];
+                  if (startNew <= end && endNew >= start) {
+                      tmp[e].overlap = true;
+                  }
+              }
+          })
+  );
+  return tmp;
+}
