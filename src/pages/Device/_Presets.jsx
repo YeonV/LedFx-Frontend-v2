@@ -35,11 +35,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     paddingBottom: theme.spacing(3),
   },
-  deviceCard: { width: '100%', maxWidth: '540px' },
+  deviceCard: {
+    width: '100%',
+    maxWidth: '540px',
+    '@media (max-width: 580px)': {
+      maxWidth: '87vw'
+    },
+  },
 }));
 
 const PresetsCard = ({ display, effectType, presets }) => {
-  console.log(presets.default_presets, presets.custom_presets);
+  console.log(presets);
   const classes = useStyles();
   const [name, setName] = useState('');
   const isNameValid = validateTextInput(name, presets);
@@ -57,14 +63,14 @@ const PresetsCard = ({ display, effectType, presets }) => {
   };
 
   const renderPresetsButton = (list, CATEGORY) => {
-    if (!Object.keys(list)?.length) {
+    if (list && !Object.keys(list)?.length) {
       return (
         <Button className={classes.presetButton} disabled>
           No Saved Presets
         </Button>
       );
     }
-    return Object.keys(list).map((preset) => (
+    return list && Object.keys(list).map((preset) => (
       <Grid item key={preset}>
         <Button
           className={classes.presetButton}

@@ -29,7 +29,12 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     maxWidth: '540px'
-  }
+  },
+  '@media (max-width: 580px)': {
+    card: {
+      maxWidth: '87vw'
+    },
+  },
 }));
 
 const Settings = () => {

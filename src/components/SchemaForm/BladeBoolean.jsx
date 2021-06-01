@@ -27,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 'unset',
     margin: '0.5rem 0',
     // },
+    
+    "@media (max-width: 580px)": {
+      flexBasis: "37vw",
+    },
     '& > label': {
       top: '-0.7rem',
       display: 'flex',
@@ -50,13 +54,14 @@ const BladeBoolean = ({
 }) => {
   // console.log(schema);
   const classes = useStyles();
+  
   const Frame = ({ children }) => (variant === 'outlined' ? (
     <div className={classes.wrapper}>
-      <label>{schema.title}</label>
+      <label>{schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}</label>
       {children}
     </div>
   ) : variant === 'text' ? (
-    <FormControlLabel control={children} label={schema.title} />
+    <FormControlLabel control={children} label={schema.title.replaceAll('_', ' ').replaceAll('color', 'c')} />
   ) : (
     { children }
   ));
@@ -69,7 +74,7 @@ const BladeBoolean = ({
             defaultValue={(model && model[model_id]) || schema.default}
             checked={model && model[model_id]}
             onChange={(e, b) => onClick(model_id, b)}
-            name={schema.title}
+            name={schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
             color="primary"
           />
         </Frame>
@@ -93,7 +98,7 @@ const BladeBoolean = ({
           variant={model[model_id] ? 'contained' : 'outlined'}
           onClick={() => onClick(model_id, !model[model_id])}
         >
-          {schema.title}
+          {schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
         </Button>
       );
 

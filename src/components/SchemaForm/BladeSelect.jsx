@@ -12,10 +12,10 @@ const useStyles = makeStyles((theme) => ({
     // margin: "0.5rem",
     display: 'flex',
     alignItems: 'center',
-    // "@media (max-width: 580px)": {
-    width: '48%',
-    margin: '0.5rem 0',
-    // },
+    "@media (max-width: 580px)": {
+      width: '100%',
+      margin: '0.5rem 0',
+    },
     '& > label': {
       top: '-0.7rem',
       display: 'flex',

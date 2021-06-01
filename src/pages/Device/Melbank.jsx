@@ -25,7 +25,13 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     marginRight: theme.spacing(3),
   },
-  card: { width: '100%', maxWidth: '540px' },
+  card: { 
+    width: '100%',
+    maxWidth: '540px',    
+    '@media (max-width: 580px)': {    
+      maxWidth: '87vw'
+  },
+  },
 }));
 
 const marks = [
