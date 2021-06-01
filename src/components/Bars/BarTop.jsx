@@ -17,6 +17,8 @@ import Language from '@material-ui/icons/Language';
 import CloudDownload from '@material-ui/icons/CloudDownload';
 import { drawerWidth, download } from '../../utils/helpers';
 import useStore from '../../utils/apiStore';
+import { useLocation, Link } from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -28,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    '@media (max-width: 580px)': {
-      width: 'calc(100% - 100vw)',
-      marginLeft: '100vw',
-    },
+    // '@media (max-width: 580px)': {
+    //   width: 'calc(100% - 100vw)',
+    //   marginLeft: '100vw',
+    // },
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -54,6 +56,8 @@ const TopBar = () => {
   const shutdown = useStore((state) => state.shutdown);
   const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
+
+  const { pathname } = useLocation();
 
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
@@ -79,6 +83,7 @@ const TopBar = () => {
       'application/json',
     );
   };
+  console.log(pathname)
   return (
     <AppBar
       position="fixed"
@@ -98,7 +103,7 @@ const TopBar = () => {
         </IconButton>
 
         <Typography variant="h6" noWrap>
-          LedFx
+           {pathname === '/' ? 'LedFx' : pathname.split('/').pop()}
         </Typography>
         
         <IconButton
