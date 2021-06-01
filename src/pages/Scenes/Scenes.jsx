@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   },
   '@media (max-width: 580px)': {
     root: {
-    width: '95vw',
+    width: '87vw',
     },
   },
   media: {

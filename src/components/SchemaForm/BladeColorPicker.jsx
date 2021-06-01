@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     cursor: 'pointer',
     border: '1px solid #fff',
-    // "@media (max-width: 580px)": {
-    // width: "23vw",
-    // },
+    "@media (max-width: 580px)": {
+      width: "31vw",
+    },
   },
   wrapper: {
     border: '1px solid #999',
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     order: '-2',
     // "@media (max-width: 580px)": {
     flexBasis: '33%',
-    margin: '0',
+    margin: '0.5rem 0',
     // },
     '& > label': {
       top: '-0.7rem',

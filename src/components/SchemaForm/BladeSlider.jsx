@@ -6,6 +6,9 @@ import { Slider, Input } from '@material-ui/core/';
 const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: '1rem',
+    backgroundColor: '#88888888',
+    paddingLeft: '0.5rem',
+    borderRadius: '5px'
   },
   wrapper: {
     minWidth: '250px',

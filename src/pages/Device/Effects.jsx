@@ -1,11 +1,32 @@
 import { useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import { Button, Card, CardContent } from '@material-ui/core/';
 import { Casino, Delete } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
 import BladeSchemaForm from '../../components/SchemaForm/BladeSchemaForm';
 
+const useStyles = makeStyles(theme => ({
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  actionButton: {
+    marginTop: '0.5rem',
+    width: '100%',
+    borderColor: theme.palette.grey[400]
+  },
+  card: {
+    width: '100%',
+    maxWidth: '540px',
+    '@media (max-width: 580px)': {    
+        maxWidth: '87vw'
+    },
+  },
+}));
+
 const EffectsCard = ({ displayId }) => {
+  const classes = useStyles();
   const getDisplays = useStore((state) => state.getDisplays);
   const getSchemas = useStore((state) => state.getSchemas);
   const clearDisplayEffect = useStore((state) => state.clearDisplayEffect);
@@ -33,7 +54,7 @@ const EffectsCard = ({ displayId }) => {
     getSchemas();
   }, [getDisplays, getSchemas, effectType]);
   return (
-    <Card style={{ width: '100%', maxWidth: '540px' }}>
+    <Card className={classes.card}>
       <CardContent>
         <div
           style={{

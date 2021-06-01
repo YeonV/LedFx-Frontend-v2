@@ -24,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     minWidth: '230px',
     height: '240px',
-  },
+    '@media (max-width: 580px)': {
+      width: '87vw',
+    }
+  },  
   displayLink: {
     flexGrow: 0,
     padding: '0 0.5rem',
