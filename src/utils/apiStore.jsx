@@ -30,9 +30,11 @@ const useStore = create(
         },
         addDevice: {
           open: false,
+          edit: {},
         },
         addVirtual: {
           open: false,
+          edit: {},
         },
       },
       setDialogOpen: (open, edit = false) => set((state) => ({
@@ -115,6 +117,36 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
+      addDevice: async (config) => {
+        const resp = await Ledfx(
+          `/api/devices`,
+          set,
+          'POST',
+          config,
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+          return resp;
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      updateDevice: async (deviceId, config) => {
+        const resp = await Ledfx(
+          `/api/devices/${deviceId}`,
+          set,
+          'PUT',
+          config,
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+          return resp;
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
       displays: {},
       getDisplays: async () => {
         const resp = await Ledfx('/api/displays', set);
@@ -124,7 +156,35 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
-      clearDisplayEffect: async (displayId, { type, config, active }) => {
+      addDisplay: async (config) => {
+        const resp = await Ledfx(
+          `/api/displays`,
+          set,
+          'POST',
+          config,
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+          return resp;
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      deleteDisplay: async (displayId) => {
+        const resp = await Ledfx(
+          `/api/displays/${displayId}`,
+          set,
+          'DELETE',
+        );
+        if (resp && resp.preset) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      clearDisplayEffect: async (displayId) => {
         const resp = await Ledfx(
           `/api/displays/${displayId}/effects`,
           set,
@@ -200,14 +260,14 @@ const useStore = create(
         // set({ dialogs: { nohost: { open: true } } });
         // }
       },
-      updateDisplaySegments: async ({displayId, segments }) => {
+      updateDisplaySegments: async ({ displayId, segments }) => {
         const resp = await Ledfx(
           `/api/displays/${displayId}`,
           set,
           'POST',
           {
             segments: [...segments],
-        },
+          },
         );
         if (resp && resp.status && resp.status === 'success') {
           if (resp && resp.effect) {
@@ -275,7 +335,7 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
-      removePreset: async (displayId, presetId) => {
+      deletePreset: async (displayId, presetId) => {
         const resp = await Ledfx(
           `/api/displays/${displayId}/presets`,
           set,
@@ -385,9 +445,11 @@ const useStore = create(
           console.log(resp)
           set({
             settings: get().settings,
-            ...{"settings": {
-              "audio_inputs": resp,
-            }},
+            ...{
+              "settings": {
+                "audio_inputs": resp,
+              }
+            },
 
           });
         } else {
@@ -395,21 +457,23 @@ const useStore = create(
         }
       },
       setAudioInput: async (index) => {
-        const resp = await Ledfx('/api/audio/devices', set, 'PUT', {index: parseInt(index)});
+        const resp = await Ledfx('/api/audio/devices', set, 'PUT', { index: parseInt(index) });
         if (resp && resp.status === 'success') {
           set({
             settings: get().settings,
-            ...{"settings": {
-              audio_inputs: get().settings.audio_inputs,
-              "active_device_index": parseInt(index),
-            }},
+            ...{
+              "settings": {
+                audio_inputs: get().settings.audio_inputs,
+                "active_device_index": parseInt(index),
+              }
+            },
 
           });
         } else {
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
-     
+
 
       togglePause: async () => {
         const resp = await Ledfx('/api/displays', set, 'PUT', {});
