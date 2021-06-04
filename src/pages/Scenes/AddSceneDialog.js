@@ -15,6 +15,7 @@ const AddSceneDialog = () => {
   const [image, setImage] = useState('');
 
   const addScene = useStore((state) => state.addScene);
+  const getScenes = useStore((state) => state.getScenes);
   const open = useStore((state) => state.dialogs.addScene?.open || false);
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);
 
@@ -65,7 +66,7 @@ const AddSceneDialog = () => {
       <Button onClick={handleClose} color="primary">
         Cancel
       </Button>
-      <Button onClick={()=>handleAddScene} color="primary">
+      <Button onClick={handleAddScene} color="primary">
         Add
       </Button>
     </DialogActions>
