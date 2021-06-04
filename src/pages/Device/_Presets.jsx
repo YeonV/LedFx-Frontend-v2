@@ -54,7 +54,7 @@ const PresetsCard = ({ display, effectType, presets }) => {
   const addPreset = useStore((state) => state.addPreset);
   // const getPresets = useStore((state) => state.getPresets);
   const getDisplays = useStore((state) => state.getDisplays);
-  const removePreset = useStore((state) => state.removePreset);
+  const deletePreset = useStore((state) => state.deletePreset);
 
   const handleActivatePreset = (displayId, category, effectType, presetId) => () => {
     console.log(displayId, category, effectType, presetId);
@@ -92,7 +92,7 @@ const PresetsCard = ({ display, effectType, presets }) => {
     getDisplays();
     // getPresets(effectType)
   });
-  const handleRemovePreset = (displayId, presetId) => () => removePreset(displayId, presetId)
+  const handleRemovePreset = (displayId, presetId) => () => deletePreset(displayId, presetId)
     .then(() => {
       getDisplays();
       // getPresets(effectType)

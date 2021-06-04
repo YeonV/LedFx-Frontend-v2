@@ -83,7 +83,7 @@ const TopBar = () => {
       'application/json',
     );
   };
-  console.log(pathname)
+  
   return (
     <AppBar
       position="fixed"
