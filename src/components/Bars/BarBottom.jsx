@@ -36,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
   },
   speedDial: {
-    position: 'absolute',
+    position: 'fixed',
+    left: '50%',
+    transform: 'translateX(-50%)',
     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
       bottom: theme.spacing(2) + 15,
       // right: theme.spacing(2),
@@ -84,7 +86,7 @@ export default function LabelBottomNavigation() {
     setValue(pathname);
   }, [pathname]);
 
-  return (
+  return (<>
     <BottomNavigation
       value={value}
       className={classes.root}
@@ -105,32 +107,8 @@ export default function LabelBottomNavigation() {
         to="/Devices"
         icon={<SettingsInputComponent />}
       />
-      {/* <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={()=>addScene()}>
-        <AddIcon />
-      </Fab> */}
-      <Backdrop open={open} />
-      <SpeedDial
-        ariaLabel="SpeedDial example"
-        className={classes.speedDial}
-        // className={classes.fabButton} 
-        hidden={false}
-        icon={<SpeedDialIcon />}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        open={open}
-        direction={"up"}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            style={{ whiteSpace: 'nowrap' }}
-            tooltipOpen={isTouch}
-            onClick={() => handleAction(action.action)}
-          />
-        ))}
-      </SpeedDial>
+
+
       <BottomNavigationAction
         component={Link}
         to="/Scenes"
@@ -154,9 +132,34 @@ export default function LabelBottomNavigation() {
         component={Link}
         to="/Settings"
       />
-      <AddSceneDialog />
-      <AddDeviceDialog />
-      <AddVirtualDialog />
+
     </BottomNavigation>
+    <AddSceneDialog />
+    <AddDeviceDialog />
+    <AddVirtualDialog />
+    <SpeedDial
+        ariaLabel="SpeedDial example"
+        className={classes.speedDial}
+        // className={classes.fabButton} 
+        hidden={false}
+        icon={<SpeedDialIcon />}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        open={open}
+        direction={"up"}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            style={{ whiteSpace: 'nowrap' }}
+            tooltipOpen={isTouch}
+            onClick={() => handleAction(action.action)}
+          />
+        ))}
+      </SpeedDial>
+    <Backdrop open={open} />
+  </>
   );
 }
