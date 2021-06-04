@@ -25,7 +25,22 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
         response = await api.get(path);
         break;
     }
-
+    
+    if (response.data && response.data.payload){
+      set({
+        ui: {
+          snackbar: {
+            isOpen: true,
+            messageType: response.data.payload.type || 'error',
+            message:
+              response.data.payload.reason || JSON.stringify(response.data.payload),
+          },
+        },
+      });
+      if (response.data.status) {
+        return response.data.status
+      }
+    }
     if (response.payload) {
       set({
         ui: {
@@ -41,6 +56,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
     if (response.status === 200) {
       return response.data || response;
     }
+
     set({
       ui: {
         snackbar: {
@@ -55,11 +71,11 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
       ui: {
         snackbar: {
           isOpen: true,
-          type: 'error',
+          messageType: 'error',
           message: JSON.stringify(error),
         },
       },
     });
-    console.error(error);
+    console.log(error);
   }
 };
