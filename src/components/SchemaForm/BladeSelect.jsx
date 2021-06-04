@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Select, MenuItem } from '@material-ui/core/';
+import { Select, MenuItem, TextField } from '@material-ui/core/';
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -9,11 +9,10 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #999',
     borderRadius: '10px',
     position: 'relative',
-    // margin: "0.5rem",
     display: 'flex',
     alignItems: 'center',
     "@media (max-width: 580px)": {
-      width: '100%',
+      width: '100% !important',
       margin: '0.5rem 0',
     },
     '& > label': {
@@ -35,42 +34,56 @@ const BladeSelect = ({
   model,
   model_id,
   onChange,
+  required=false,
+  style = {}
 }) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
 
   const Frame = ({ children }) => (variant === 'outlined' ? (
-    <div className={classes.wrapper}>
-      <label>{schema.title}</label>
+    <div className={classes.wrapper} style={{ ...style, ...{ order: schema.title === 'Name' ? -2 : required ? -1 : 1 }}}>
+      <label>{schema.title}{required ? '*' : ''}</label>
       {children}
     </div>
   ) : (
     children
   ));
-
+    // console.log(schema)
   return (
     <Frame>
       {variant === 'contained' ? (
-        <Select
-          variant="filled"
-          style={{ flexGrow: variant === 'outlined' ? 1 : 'unset' }}
-          disableUnderline
-          defaultValue={schema.default}
-          value={model && model[model_id]}
-          onChange={(e) => onChange(model_id, e.target.value)}
-        >
-          {schema.enum.map((item, i) => (
-            <MenuItem key={i} value={item}>
-              {item}
-            </MenuItem>
-          ))}
-        </Select>
+        schema.enum 
+        ? (
+          <Select
+            variant="filled"
+            style={{ flexGrow: variant === 'outlined' ? 1 : 'unset' }}
+            disableUnderline
+            defaultValue={schema.default}
+            value={model && model[model_id] || schema.enum[0]}
+            onChange={(e) => onChange(model_id, e.target.value)}
+          >
+            {schema.enum.map((item, i) => (
+              <MenuItem key={i} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>)
+        : (
+          <TextField            
+            helperText={schema.description}
+            defaultValue={model && model[model_id] || (schema.enum && schema.enum[0]) || schema.default || ''}
+            onBlur={(e) => onChange(model_id, e.target.value)}
+
+          />
+        )
       ) : (
+        schema.enum 
+        ? (
         <Select
           style={{ flexGrow: variant === 'outlined' ? 1 : 'unset' }}
           disableUnderline
           defaultValue={schema.default}
-          value={model && model[model_id]}
+          value={model && model[model_id] || schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item, i) => (
@@ -78,7 +91,15 @@ const BladeSelect = ({
               {item}
             </MenuItem>
           ))}
-        </Select>
+        </Select>)
+        : (
+          <TextField            
+            helperText={schema.description}
+            defaultValue={model && model[model_id] || (schema.enum && schema.enum[0]) || schema.default || ''}
+            onBlur={(e) => onChange(model_id, e.target.value)}
+
+          />
+        )
       )}
     </Frame>
   );
