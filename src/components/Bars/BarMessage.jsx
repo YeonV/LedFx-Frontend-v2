@@ -7,7 +7,7 @@ import useStore from '../../utils/apiStore';
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
 const MessageBar = () => {
-  const { isOpen, type, message } = useStore((state) => state.ui.snackbar);
+  const { isOpen, messageType, message } = useStore((state) => state.ui.snackbar);
   const clearSnackbar = useStore((state) => state.clearSnackbar);
 
   function handleClose() {
@@ -35,7 +35,7 @@ const MessageBar = () => {
         </IconButton>,
       ]}
     >
-      <Alert severity={type}>{message}</Alert>
+      <Alert severity={messageType}>{message}</Alert>
     </Snackbar>
   );
 };
