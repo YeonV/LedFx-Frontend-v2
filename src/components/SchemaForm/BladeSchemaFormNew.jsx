@@ -29,33 +29,18 @@ const useStyles = makeStyles({
   },
 });
 
-const BladeSchemaForm = (props) => {
+const BladeSchemaFormNew = (props) => {
   const {
-    effects,
-    display,
     schema,
     model,
-    display_id,
-    selectedType,
     colorMode = 'picker',
-    colorKeys = [],
     boolMode = 'switch',
     boolVariant = 'outlined',
     selectVariant = 'outlined',
     sliderVariant = 'outlined',
+    onModelChange=(e)=>e,
   } = props;
-  const pickerKeys = [
-    'color',
-    'background_color',
-    'color_lows',
-    'color_mids',
-    'color_high',
-    'strobe_color',
-    'lows_colour',
-    'mids_colour',
-    'high_colour',
-    ...colorKeys,
-  ];
+
 
   const classes = useStyles();
 
@@ -65,8 +50,7 @@ const BladeSchemaForm = (props) => {
   const [_selectVariant, _setSelectVariant] = useState(selectVariant);
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
-  const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
-  const getDisplays = useStore((state) => state.getDisplays);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,14 +60,8 @@ const BladeSchemaForm = (props) => {
     setOpen(false);
   };
 
-  const handleEffectConfig = (display_id, config) => updateDisplayEffect(display_id, {
-    displayId: display_id,
-    type: selectedType,
-    config,
-  }).then(() => {
-    getDisplays();
-  });
-
+  
+  // console.log(model)
   return (
     <div className={classes.bladeSchemaForm}>
       {parseInt(window.localStorage.getItem('BladeMod')) > 2 && (
@@ -97,22 +75,9 @@ const BladeSchemaForm = (props) => {
           <SettingsIcon />
         </Fab>
       )}
-      {pickerKeys && pickerKeys.map(
-        (k) => model && model.length && Object.keys(model).indexOf(k) !== -1 && (
-          <BladeColorDropDown
-            // displays={displays}
-            display={display}
-            effects={effects}
-            selectedType={selectedType}
-            model={model}
-            key={k}
-            type={_colorMode === 'select' ? 'text' : 'color'}
-            clr={k}
-          />
-        ),
-      )}
 
-      {Object.keys(schema.properties).map((s, i) => {
+
+      {schema.properties && Object.keys(schema.properties).map((s, i) => {
         switch (schema.properties[s].type) {
           case 'boolean':
             return (
@@ -122,39 +87,31 @@ const BladeSchemaForm = (props) => {
                 key={i}
                 model={model}
                 model_id={s}
+                required={schema.required.indexOf(s) !== -1}
+                style={{ margin: '0.5rem 0', flexBasis: '48%'}}
                 schema={schema.properties[s]}
                 onClick={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return onModelChange(c);
                 }}
               />
             );
           case 'string':
-            return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ? (
-              <BladeSelect
+            return <BladeSelect
                 model={model}
+                style={{ margin: '0.5rem 0', width: '48%'}}
                 variant={_selectVariant}
                 schema={schema.properties[s]}
+                required={schema.required.indexOf(s) !== -1}
                 model_id={s}
                 key={i}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return onModelChange(c);
                 }}
               />
-            ) : (
-              pickerKeys.indexOf(s) === -1 && (
-                <BladeColorDropDown
-                  selectedType={selectedType}
-                  model={model}
-                  type="colorNew"
-                  clr="blade_color"
-                  key={i}
-                />
-              )
-            );
 
           case 'number':
             return (
@@ -163,32 +120,34 @@ const BladeSchemaForm = (props) => {
                 key={i}
                 model_id={s}
                 model={model}
+                required={schema.required.indexOf(s) !== -1}
                 schema={schema.properties[s]}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return onModelChange(c);
                 }}
               />
             );
 
           case 'integer':
-            return (
-              <BladeSlider
+            return <BladeSlider
                 variant={_sliderVariant}
                 step={1}
                 key={i}
                 model_id={s}
                 model={model}
+                required={schema.required.indexOf(s) !== -1}
                 schema={schema.properties[s]}
+                textfield={true}
+                style={{ margin: '0.5rem 0', width: '48%'}}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return onModelChange(c);
                 }}
               />
-            );
-
+            
           default:
             return (
               <>
@@ -284,17 +243,14 @@ const BladeSchemaForm = (props) => {
   );
 };
 
-BladeSchemaForm.propTypes = {
+BladeSchemaFormNew.propTypes = {
   colorMode: PropTypes.oneOf(['picker', 'select']),
   boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
   boolVariant: PropTypes.oneOf(['outlined', 'contained', 'text']),
   selectVariant: PropTypes.string, // outlined | any
   sliderVariant: PropTypes.string, // outlined | any
-  colorKeys: PropTypes.array,
   schema: PropTypes.object.isRequired,
   model: PropTypes.object.isRequired,
-  display_id: PropTypes.string.isRequired,
-  selectedType: PropTypes.string.isRequired,
 };
 
-export default BladeSchemaForm;
+export default BladeSchemaFormNew;
