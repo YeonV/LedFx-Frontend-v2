@@ -80,18 +80,25 @@ const useStyles = makeStyles((theme) => ({
 const Devices = () => {
   const classes = useStyles();
   const getDisplays = useStore((state) => state.getDisplays);
+  const deleteDisplay = useStore((state) => state.deleteDisplay);
+  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
+  const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
   const displays = useStore((state) => state.displays);
   const variant = 'outlined';
   const color = 'secondary';
 
-  const handleDeleteDevice = () => {
-    // onDelete(displays[display].id);
+  const handleDeleteDevice = (display) => {
+    deleteDisplay(displays[display].id).then(()=>{
+      getDisplays();
+    });
   };
 
-  const handleEditDisplay = () => {
+  const handleEditDisplay = (display) => {
+    setDialogOpenAddVirtual(true, display)
     // onEditDisplay(display);
   };
-  const handleEditDevice = () => {
+  const handleEditDevice = (device) => {
+    setDialogOpenAddDevice(true, device)
     // onEditDevice(deviceList.find(d => d.id === displays[display].is_device));
   };
 
@@ -149,7 +156,7 @@ const Devices = () => {
                 <Popover
                   variant={variant}
                   // color={color}
-                  onConfirm={handleDeleteDevice}
+                  onConfirm={() => handleDeleteDevice(display)}
                   className={classes.deleteButton}
                 />
 
@@ -159,7 +166,7 @@ const Devices = () => {
                     color={color}
                     size="small"
                     className={classes.editButton}
-                    onClick={handleEditDevice}
+                    onClick={()=>handleEditDevice(displays[display].is_device)}
                   >
                     <BuildIcon />
                   </Button>
@@ -177,7 +184,7 @@ const Devices = () => {
                   size="small"
                   color={color}
                   className={classes.editButton}
-                  onClick={handleEditDisplay}
+                  onClick={() => handleEditDisplay(display)}
                 >
                   <SettingsIcon />
                 </Button>
