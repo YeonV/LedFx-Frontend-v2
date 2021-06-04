@@ -1,72 +1,200 @@
-import { useState, useEffect } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import useStore from '../../utils/apiStore';
+import { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import useStore from "../../utils/apiStore";
+import BladeSchemaFormNew from "../../components/SchemaForm/BladeSchemaFormNew";
+import { Divider } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    minWidth: "200px",
+    padding: "16px 1.2rem 6px 1.2rem",
+    border: "1px solid #999",
+    borderRadius: "10px",
+    position: "relative",
+    margin: "1rem 0",
+    display: "flex",
+    alignItems: "center",
+    "@media (max-width: 580px)": {
+      width: "100%",
+      margin: "0.5rem 0",
+    },
+    "& > label": {
+      top: "-0.7rem",
+      display: "flex",
+      alignItems: "center",
+      left: "1rem",
+      padding: "0 0.3rem",
+      position: "absolute",
+      fontVariant: "all-small-caps",
+      backgroundColor: theme.palette.background.paper,
+      boxSizing: "border-box",
+    },
+  },
+}));
 
 const AddDeviceDialog = () => {
-  
-  
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
+  const classes = useStyles();
 
+  const getDevices = useStore((state) => state.getDevices);
+  const getDisplays = useStore((state) => state.getDisplays);
   const addDevice = useStore((state) => state.addDevice);
+  const updateDevice = useStore((state) => state.updateDevice);
+  const devices = useStore((state) => state.devices);
   const open = useStore((state) => state.dialogs.addDevice?.open || false);
-  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
+  const deviceId = useStore((state) => state.dialogs.addDevice?.edit || false);
+  const initial = devices[deviceId] || { type: "", config: {} };
+
+  const setDialogOpenAddDevice = useStore(
+    (state) => state.setDialogOpenAddDevice
+  );
+
+  const deviceTypes = useStore((state) => state.schemas?.devices);
+  const showSnackbar = useStore((state) => state.showSnackbar);
+  const [deviceType, setDeviceType] = useState("");
+  const [model, setModel] = useState({});
+
+  const currentSchema = deviceType ? deviceTypes[deviceType].schema : {};
 
   const handleClose = () => {
     setDialogOpenAddDevice(false);
   };
-  const handleAddScene = (e) => {
-    // addDevice({ name, scene_image: image }).then(() => {
-    //   getScenes();
-    // });
-    setName('');
-    setImage('');
-    setDialogOpenAddDevice(false);
-  };
-  return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title">Add Device</DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Coming soon
-      </DialogContentText>
-      <TextField
-        autoFocus
-        margin="dense"
-        id="name"
-        label="Name"
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-        fullWidth
-      />
-      <TextField
-        margin="dense"
-        id="scene_image"
-        label="Image"
-        type="text"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
-        fullWidth
-      />
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleClose} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={()=>handleAddScene} color="primary">
-        Add
-      </Button>
-    </DialogActions>
-  </Dialog>
-  )
-}
+  const handleAddDevice = (e) => {
+    const cleanedModel = Object.fromEntries(
+      Object.entries(model).filter(([_, v]) => v !== "")
+    );
+    const defaultModel = {};
 
-export default AddDeviceDialog
+    for (const key in currentSchema.properties) {
+      currentSchema.properties[key].default !== undefined
+        ? (defaultModel[key] = currentSchema.properties[key].default)
+        : undefined;
+    }
+
+    const valid = currentSchema.required.every((val) =>
+      Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
+    );
+
+    if (!valid) {
+      showSnackbar({
+        message: "Please fill in all required fields.",
+        messageType: "warning",
+      });
+    } else {
+      if (
+        initial.config &&
+        Object.keys(initial.config).length === 0 &&
+        initial.config.constructor === Object
+      ) {
+        // console.log("ADDING");
+        addDevice({
+          type: deviceType,
+          config: { ...defaultModel, ...cleanedModel },
+        }).then((res) => {
+          console.log(res);
+          if (res !== "failed") {
+            setDialogOpenAddDevice(false);
+            getDevices();
+            getDisplays();
+          } else {
+          }
+        });
+      } else {
+        // console.log("EDITING");
+        updateDevice(deviceId, {
+          type: deviceType,
+          config: { ...model },
+        }).then((res) => {
+          console.log(res);
+          if (res !== "failed") {
+            setDialogOpenAddDevice(false);
+            getDevices();
+            getDisplays();
+          } else {
+          }
+        });
+      }
+    }
+  };
+  const handleTypeChange = (value, initial = {}) => {
+    setDeviceType(value);
+    setModel(initial);
+  };
+  const handleModelChange = (config) => {
+    setModel({ ...model, ...config });
+  };
+
+  useEffect(() => {
+    handleTypeChange(initial.type, initial.config);
+  }, [initial.type]);
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">
+        {initial.config &&
+        Object.keys(initial.config).length === 0 &&
+        initial.config.constructor === Object
+          ? "Add"
+          : "Edit"}{" "}
+        {deviceType.toUpperCase()} Device
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          To add a device to LedFx, please first select the type of device you
+          wish to add then provide the necessary configuration.
+        </DialogContentText>
+        <div className={classes.wrapper}>
+          <label>Device Type</label>
+          <Select
+            label="Type"
+            style={{ flexGrow: 1 }}
+            disableUnderline
+            value={deviceType}
+            onChange={(e) => handleTypeChange(e.target.value)}
+          >
+            {deviceTypes &&
+              Object.keys(deviceTypes).map((item, i) => (
+                <MenuItem key={i} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+          </Select>
+        </div>
+        <Divider style={{ marginBottom: "1rem" }} />
+        {model && (
+          <BladeSchemaFormNew
+            schema={currentSchema}
+            model={model}
+            onModelChange={handleModelChange}
+          />
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleAddDevice} color="primary">
+          {initial.config &&
+          Object.keys(initial.config).length === 0 &&
+          initial.config.constructor === Object
+            ? "Add"
+            : "Save"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default AddDeviceDialog;
