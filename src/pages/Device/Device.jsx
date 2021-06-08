@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'flex-start',
     },
   },
-  girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px' },
+  girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px', width: '100%' },
 }));
 
 const Device = ({
