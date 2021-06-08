@@ -1,15 +1,14 @@
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import PixelSlider from './_PixelSlider';
+import PixelSlider from './PixelSlider';
 import PopoverSure from '../../components/Popover';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import useStore from '../../utils/apiStore';
-
-// import { handleSegmentChange, orderSegmentChange, deleteSegment } from 'modules/displays';
+import { swap } from '../../utils/helpers';
 
 const useStyles = makeStyles(theme => ({
     segmentsWrapper: {
@@ -61,23 +60,30 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Segment = ({ s, i, display }) => {
-    // const devices = useSelector(state => state.devices.list);
+const Segment = ({ s, i, display, segments }) => {
     const getDevices = useStore((state) => state.getDevices);
     const devices = useStore((state) => state.devices);
 
     const title = devices && devices[Object.keys(devices).find(d => d === s[0])].config.name;
     const classes = useStyles();
+    const updateDisplaySegments = useStore(state => state.updateDisplaySegments);
+    const getDisplays = useStore(state => state.getDisplays);
 
-    // const dispatch = useDispatch();
     const handleInvert = () => {
-        // dispatch(handleSegmentChange({ segIndex: i, displayId: display.id, invert: true }));
+        const newSegments = segments.map((seg, index) => index === i ? [seg[0], seg[1], seg[2], !seg[3]] : seg);
+        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
     };
     const reorder = direction => {
-        // dispatch(orderSegmentChange({ segIndex: i, displayId: display.id, order: direction }));
+        const newSegments = direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1);
+        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
     };
-    const handleDeleteSegment = direction => {
-        // dispatch(deleteSegment({ segIndex: i, displayId: display.id }));
+    const handleDeleteSegment = () => {
+        const newSegments = segments.filter((seg, index) => index !== i)
+        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
+    };
+    const handleRangeSegment = (start, end) => {
+        const newSegments = segments.map((seg, index) => index === i ? [seg[0], start, end, !seg[3]] : seg);
+        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
     };
 
     useEffect(() => {
@@ -119,7 +125,7 @@ const Segment = ({ s, i, display }) => {
                     </div>
                 </div>
                 <div className={classes.segmentsColPixelSlider}>
-                    <PixelSlider s={s} i={i} display={display} />
+                    <PixelSlider s={s} i={i} display={display} handleRangeSegment={handleRangeSegment} />
                 </div>
                 <div className={classes.segmentsColActions}>
                     <div>

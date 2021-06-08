@@ -99,7 +99,6 @@ const AddDeviceDialog = () => {
           type: deviceType,
           config: { ...defaultModel, ...cleanedModel },
         }).then((res) => {
-          console.log(res);
           if (res !== "failed") {
             setDialogOpenAddDevice(false);
             getDevices();
@@ -113,7 +112,6 @@ const AddDeviceDialog = () => {
           type: deviceType,
           config: { ...model },
         }).then((res) => {
-          console.log(res);
           if (res !== "failed") {
             setDialogOpenAddDevice(false);
             getDevices();
