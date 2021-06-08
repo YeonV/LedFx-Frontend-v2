@@ -12,8 +12,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import useStore from '../../utils/apiStore';
 
-// import { updateDisplayConfig } from 'modules/displays';
-
 function ConfirmationDialogRaw(props) {
     const { onClose, value: valueProp, open, ...other } = props;
     const [value, setValue] = React.useState(valueProp);
@@ -107,8 +105,6 @@ const useStyles = makeStyles(theme => ({
 export default function ConfirmationDialog({ display, config }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    // const dispatch = useDispatch();
-    // const deviceList = useSelector(state => state.devices.list) || [];
     const deviceList = useStore(state => state.devices) || {};
     const updateDisplaySegments = useStore(state => state.updateDisplaySegments);
     const getDisplays = useStore(state => state.getDisplays);
