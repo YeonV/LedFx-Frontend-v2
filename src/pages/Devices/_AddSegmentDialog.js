@@ -44,6 +44,7 @@ function ConfirmationDialogRaw(props) {
     };
 
     delete other.deviceList;
+    // console.log(props.deviceList)
     return (
         <Dialog
             disableBackdropClick
@@ -63,12 +64,12 @@ function ConfirmationDialogRaw(props) {
                     value={value}
                     onChange={handleChange}
                 >
-                    {props.deviceList.map(device => (
+                    {Object.keys(props.deviceList).map(device => (
                         <FormControlLabel
-                            value={device.id}
-                            key={device.id}
+                            value={props.deviceList[device].id}
+                            key={props.deviceList[device].id}
                             control={<Radio />}
-                            label={device.name}
+                            label={props.deviceList[device].config.name}
                         />
                     ))}
                 </RadioGroup>
@@ -109,6 +110,8 @@ export default function ConfirmationDialog({ display, config }) {
     // const dispatch = useDispatch();
     // const deviceList = useSelector(state => state.devices.list) || [];
     const deviceList = useStore(state => state.devices) || {};
+    const updateDisplaySegments = useStore(state => state.updateDisplaySegments);
+    const getDisplays = useStore(state => state.getDisplays);
 
     const handleClickListItem = () => {
         setOpen(true);
@@ -117,19 +120,22 @@ export default function ConfirmationDialog({ display, config }) {
     const handleClose = newValue => {
         setOpen(false);
         if (newValue) {
-            const device = { ...Object.keys(deviceList).find(d => deviceList[d].id === newValue) };
-            const temp = [
-                ...display.segments,
-                [device.id, 0, device.config.pixel_count - 1, false],
-            ];
-            const test = temp.filter(t => t.length === 4);
-            // dispatch(updateDisplayConfig({ id: display.id, data: test }));
+            const device = { ...deviceList[Object.keys(deviceList).find(d => deviceList[d].id === newValue)] };
+            
+            if (device && device.config) {
+                const temp = [
+                    ...display.segments,
+                    [device.id, 0, device.config.pixel_count - 1, false],
+                ];
+                const test = temp.filter(t => t.length === 4);
+                updateDisplaySegments({ displayId: display.id, segments: test }).then(()=>getDisplays());
+            }
         }
     };
 
     return (
         <div className={classes.root}>
-            {deviceList && (deviceList).length > 0 ? (
+            {deviceList && Object.keys(deviceList).length > 0 ? (
                 <>
                     <Button
                         variant="contained"
@@ -152,7 +158,8 @@ export default function ConfirmationDialog({ display, config }) {
                         keepMounted
                         open={open}
                         onClose={handleClose}
-                        value={deviceList[0].id}
+                        value={"144"}
+                        // value={deviceList[0].id}
                         deviceList={deviceList}
                     />
                 </>
