@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from '@material-ui/core/Slider';
 import useStore from '../../utils/apiStore';
 
@@ -6,22 +6,28 @@ import useStore from '../../utils/apiStore';
 // import { handleSegmentChange } from 'modules/displays';
 
 
-const PixelSlider = ({ s, i, display }) => {
+const PixelSlider = ({ s, i, display, handleRangeSegment }) => {
     const getDevices = useStore((state) => state.getDevices);
     const devices = useStore((state) => state.devices);
+    
+    const [range, setRange] = useState([s[1], s[2]])
+
+
 
     useEffect(() => {
         getDevices()
     }, [getDevices])
 
-    const currentDevice = devices[Object.keys(devices).find(reduxItem => reduxItem.id === s[0])];
-    if (!currentDevice) {
+    
+    if (!devices[s[0]]) {
         return <></>;
     }
     const pixelRange = [s[1], s[2]];
+   
 
     const handleChange = (event, newValue) => {
         if (newValue !== pixelRange) {
+            handleRangeSegment(newValue[0],newValue[1])
             // dispatch(handleSegmentChange({ newValue, displayId: display.id, segIndex: i }));
         }
     };
@@ -29,18 +35,20 @@ const PixelSlider = ({ s, i, display }) => {
     const marks = [
         { value: 0, label: 0 },
         {
-            value: currentDevice.config.pixel_count - 1,
-            label: currentDevice.config.pixel_count - 1,
+            value: devices[s[0]].config.pixel_count - 1,
+            label: devices[s[0]].config.pixel_count - 1,
         },
     ];
 
     return (
         <Slider
-            value={pixelRange}
+            // defaultValue={pixelRange}
+            value={range}
             marks={marks}
             min={0}
-            max={currentDevice.config.pixel_count - 1}
-            onChange={handleChange}
+            max={devices[s[0]].config.pixel_count - 1}
+            onChange={(e,n)=>setRange(n)}
+            onChangeCommitted={handleChange}
             aria-labelledby="range-slider"
             valueLabelDisplay="auto"
         />
