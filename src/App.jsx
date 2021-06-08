@@ -21,6 +21,7 @@ import Device from './pages/Device/Device';
 import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations';
+import ScrollToTop from './utils/scrollToTop';
 
 const curacaoDarkTheme = createMuiTheme({
   palette: {
@@ -60,6 +61,7 @@ export default function PersistentDrawerLeft() {
       <div className={classes.root}>
         <CssBaseline />
         <Router basename={process.env.PUBLIC_URL}>
+          <ScrollToTop />
           <MessageBar />
           <TopBar />
           <LeftBar />
