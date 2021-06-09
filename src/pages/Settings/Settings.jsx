@@ -17,6 +17,7 @@ import { Delete, Refresh } from '@material-ui/icons';
 
 import PopoverSure from '../../components/Popover';
 import { download } from '../../utils/helpers';
+import WledCard from './WledCard';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -74,6 +75,7 @@ const Settings = () => {
   }, [getSystemConfig]);
 
   return (
+    <>
     <Card className={classes.card} style={{ marginBottom: '2rem' }}>
       <CardHeader title="General" subheader="Configure LedFx-Settings" />
       <CardContent className={classes.content}>
@@ -155,6 +157,8 @@ const Settings = () => {
 
       </CardContent>
     </Card>
+    <WledCard className={classes.card} />
+    </>
   );
 };
 
