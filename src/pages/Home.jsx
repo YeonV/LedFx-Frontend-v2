@@ -1,15 +1,43 @@
+import { useState } from "react";
 import {
   Button,
   Card,
   CardHeader,
   CardContent,
   CardActions,
+  CircularProgress,
 } from '@material-ui/core';
 import logo from '../assets/logo.png';
 import logoCircle from '../assets/ring.png';
 import Guide from '../components/Guide';
+import useStore from '../utils/apiStore';
+
+
+const sleep = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 
 export default function Home() {
+  const scanForDevices = useStore((state) => state.scanForDevices);
+  const getDevices = useStore((state) => state.getDevices);
+  const getDisplays = useStore((state) => state.getDisplays);
+  const [scanning, setScanning] = useState(false)
+
+  const handleScan = () => {
+    setScanning(true)
+    scanForDevices().then(async () => {
+      for (let sec = 1; sec <= 10; sec++) {
+        await sleep(1000).then(() => {
+          getDevices();
+          getDisplays();
+          setScanning(sec)
+        });
+      }
+    }).then(() => {
+      setScanning(false)
+    })
+  }
   return (
     <>
       <div className="Content">
@@ -43,8 +71,12 @@ export default function Home() {
           <Button disabled variant="outlined">
             Docs
           </Button>
-          <Button disabled variant="outlined">
-            Scan
+          <Button onClick={() => handleScan()} variant="outlined">
+            {scanning ? <CircularProgress
+              variant="determinate"
+              value={(scanning / 10) * 100}
+              size={24}
+            /> : 'Scan'}
           </Button>
         </CardActions>
       </Card>
