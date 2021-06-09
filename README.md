@@ -34,7 +34,7 @@ New [LedFx](https://github.com/LedFx/LedFx)-client for devs & bros only
   - file _(page)_
   - folder: _(page + components)_
 - utils
-  - apiStore _(AppStore + Communication with LedFx-Core)_
+  - apiStore _(AppStore + Communication with LedFx-Core)_ [one big file atm]
 
 ## Rules
 
@@ -61,9 +61,9 @@ If you have 3 lines of styles, you can keep it in the component, there is not a 
 <summary>show</summary>
 <p>
 
-![image](https://user-images.githubusercontent.com/28861537/119760584-8e891b80-beaa-11eb-8ee9-f53217150467.png)
+![image](https://user-images.githubusercontent.com/28861537/121426192-96998e80-c973-11eb-8d0e-b5c615ce018b.png)
+![image](https://user-images.githubusercontent.com/28861537/121426226-a0bb8d00-c973-11eb-80b5-2e5aead112c0.png)
 
-![image](https://user-images.githubusercontent.com/28861537/119760472-5b468c80-beaa-11eb-8928-5964457b7de1.png)
 
 </p>
 </details>
