@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.6e08407b.chunk.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.5c35ee9a.chunk.js",
-    "main.js.map": "/LedFx-Frontend-v2/static/js/main.5c35ee9a.chunk.js.map",
-    "runtime-main.js": "/LedFx-Frontend-v2/static/js/runtime-main.83d1b03c.js",
-    "runtime-main.js.map": "/LedFx-Frontend-v2/static/js/runtime-main.83d1b03c.js.map",
-    "static/js/2.a2537785.chunk.js": "/LedFx-Frontend-v2/static/js/2.a2537785.chunk.js",
-    "static/js/2.a2537785.chunk.js.map": "/LedFx-Frontend-v2/static/js/2.a2537785.chunk.js.map",
-    "static/js/3.0e3471a0.chunk.js": "/LedFx-Frontend-v2/static/js/3.0e3471a0.chunk.js",
-    "static/js/3.0e3471a0.chunk.js.map": "/LedFx-Frontend-v2/static/js/3.0e3471a0.chunk.js.map",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.95b1d606.chunk.js",
+    "main.js.map": "/LedFx-Frontend-v2/static/js/main.95b1d606.chunk.js.map",
+    "runtime-main.js": "/LedFx-Frontend-v2/static/js/runtime-main.59ee0d87.js",
+    "runtime-main.js.map": "/LedFx-Frontend-v2/static/js/runtime-main.59ee0d87.js.map",
+    "static/js/2.2d83b2e1.chunk.js": "/LedFx-Frontend-v2/static/js/2.2d83b2e1.chunk.js",
+    "static/js/2.2d83b2e1.chunk.js.map": "/LedFx-Frontend-v2/static/js/2.2d83b2e1.chunk.js.map",
+    "static/js/3.28208575.chunk.js": "/LedFx-Frontend-v2/static/js/3.28208575.chunk.js",
+    "static/js/3.28208575.chunk.js.map": "/LedFx-Frontend-v2/static/js/3.28208575.chunk.js.map",
     "index.html": "/LedFx-Frontend-v2/index.html",
     "static/css/main.6e08407b.chunk.css.map": "/LedFx-Frontend-v2/static/css/main.6e08407b.chunk.css.map",
-    "static/js/2.a2537785.chunk.js.LICENSE.txt": "/LedFx-Frontend-v2/static/js/2.a2537785.chunk.js.LICENSE.txt",
+    "static/js/2.2d83b2e1.chunk.js.LICENSE.txt": "/LedFx-Frontend-v2/static/js/2.2d83b2e1.chunk.js.LICENSE.txt",
     "static/media/index.css": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.e9db4005.woff2",
     "static/media/blademod.04a8d38d.svg": "/LedFx-Frontend-v2/static/media/blademod.04a8d38d.svg",
     "static/media/ring.1faea45b.png": "/LedFx-Frontend-v2/static/media/ring.1faea45b.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.83d1b03c.js",
-    "static/js/2.a2537785.chunk.js",
+    "static/js/runtime-main.59ee0d87.js",
+    "static/js/2.2d83b2e1.chunk.js",
     "static/css/main.6e08407b.chunk.css",
-    "static/js/main.5c35ee9a.chunk.js"
+    "static/js/main.95b1d606.chunk.js"
   ]
 }
