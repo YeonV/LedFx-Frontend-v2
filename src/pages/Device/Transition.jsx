@@ -30,14 +30,15 @@ const useStyles = makeStyles((theme) => ({
 const TransitionCard = ({ display, style }) => {
   const classes = useStyles();
   const schemas = useStore((state) => state.schemas.displays && state.schemas.displays.schema.properties);
+  const addDisplay = useStore((state) => state.addDisplay);
   const transition_mode = display.config[display.id] && display.config[display.id].config && display.config[display.id].config.transition_mode;
   const transition_time = display.config[display.id] && display.config[display.id].config && display.config[display.id].config.transition_time;
 
-  // const handleSetTransition = (displayId, config) => dispatch(addDisplay({
-  //     "id": displayId, "config": config
-  // }));
+  const handleSetTransition = (displayId, config) => addDisplay({
+      "id": displayId, "config": config
+  });
 
-  const handleSetTransition = (displayId, config) => console.log(displayId, config);
+  // const handleSetTransition = (displayId, config) => console.log(displayId, config);
 
   const onSliderChange = (e, newValue) => handleSetTransition(display.id, {
     transition_time: newValue,
@@ -73,8 +74,8 @@ const TransitionCard = ({ display, style }) => {
             valueLabelDisplay="auto"
           />
         </FormControl>
-        <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-helper-label">Select a transition effect</InputLabel>
+        <FormControl className={classes.formControl} style={{ flexGrow: 0, flexBasis: '140px' }}>
+          <InputLabel id="demo-simple-select-helper-label">Transition Effect</InputLabel>
           <Select
             defaultValue={transition_mode || schemas.transition_mode.default}
             onChange={(e) => {
