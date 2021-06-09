@@ -86,7 +86,7 @@ const BladeSchemaForm = (props) => {
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {parseInt(window.localStorage.getItem('BladeMod')) > 2 && (
+      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <Fab
           onClick={handleClickOpen}
           variant="round"
@@ -98,7 +98,7 @@ const BladeSchemaForm = (props) => {
         </Fab>
       )}
       {pickerKeys && pickerKeys.map(
-        (k) => model && model.length && Object.keys(model).indexOf(k) !== -1 && (
+        (k) => model && Object.keys(model).indexOf(k) !== -1 && (
           <BladeColorDropDown
             // displays={displays}
             display={display}

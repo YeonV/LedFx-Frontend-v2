@@ -4,8 +4,8 @@ import { Grid } from '@material-ui/core/';
 import useStore from '../../utils/apiStore';
 import EffectsCard from './Effects';
 import PresetsCard from './_Presets';
-import MelbankCard from './Melbank';
 import TransitionCard from './Transition';
+import MelbankCard from './Melbank';
 import InfoCard from './_Info';
 
 const useStyles = makeStyles((theme) => ({
@@ -52,6 +52,7 @@ const Device = ({
         <>
           <Grid item className={classes.girdItem}>
             <EffectsCard displayId={displayId} />
+            <TransitionCard display={display} style={{ marginTop: '1rem' }} />
           </Grid>
           <Grid item className={classes.girdItem}>
             {effectType && presets && (
@@ -59,14 +60,16 @@ const Device = ({
                 display={display}
                 presets={presets}
                 effectType={effectType}
+                style={{ marginBottom: '1rem' }}
               />
             )}
+            {parseInt(window.localStorage.getItem('BladeMod')) > 10 && <MelbankCard />}
           </Grid>
-          <Grid item className={classes.girdItem}>
-            <MelbankCard />
-            <TransitionCard display={display} style={{ marginTop: '1rem' }} />
-            <InfoCard display={display} style={{ marginTop: '1rem' }} />
-          </Grid>
+          {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+            <Grid item className={classes.girdItem}>
+              <InfoCard display={display} style={{ marginTop: '1rem' }} />
+            </Grid>
+          )}
         </>
       )}
     </Grid>

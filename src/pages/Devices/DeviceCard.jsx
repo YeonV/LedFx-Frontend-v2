@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceCard = ({ display, i }) => {
+const DeviceCard = ({ display }) => {
   const classes = useStyles();
   const getDisplays = useStore((state) => state.getDisplays);
   const displays = useStore((state) => state.displays);
@@ -156,7 +156,7 @@ const DeviceCard = ({ display, i }) => {
 
 
   return (
-    <Card className={classes.displayCardPortrait} key={i}>
+    <Card className={classes.displayCardPortrait}>
       <div className={classes.displayCardContainer}>
         <NavLink
           to={`/device/${displays[display].id}`}
@@ -214,7 +214,7 @@ const DeviceCard = ({ display, i }) => {
           <div className={classes.buttonBar}>
           <Popover
             variant={variant}
-            // color={color}
+            color={color}
             onConfirm={() => handleDeleteDevice(display)}
             className={classes.deleteButton}
           />

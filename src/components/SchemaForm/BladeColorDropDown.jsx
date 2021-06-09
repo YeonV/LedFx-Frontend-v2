@@ -76,7 +76,7 @@ const BladeColorDropDown = ({
     }).then(() => {
       getDisplays();
     });
-
+  
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       {(type === 'text' || type === 'both') && (

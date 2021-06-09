@@ -3,11 +3,11 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 32vmin;
   pointer-events: none;
 }
 .Logo {
-  height: 26vmin;
+  height: 20vmin;
   pointer-events: none;
   position: absolute;
   top: 50%;

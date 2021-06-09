@@ -45,15 +45,15 @@ const marks = [
   },
   {
     value: 5000,
-    label: '5000Hz',
+    label: '5kHz',
   },
   {
     value: 10000,
-    label: '10000Hz',
+    label: '10kHz',
   },
   {
     value: 20000,
-    label: '20000Hz',
+    label: '20kHz',
   },
 ];
 function ValueLabelComponent(props) {

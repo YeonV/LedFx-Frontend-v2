@@ -29,7 +29,7 @@ const Devices = () => {
   return (
       <div className={classes.cardWrapper}>
         {displays && Object.keys(displays).map((display, i) => (
-          <DeviceCard display={display} i={i} />
+          <DeviceCard display={display} key={i} />
         ))}
       </div>
   );
