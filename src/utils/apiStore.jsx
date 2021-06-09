@@ -438,11 +438,18 @@ const useStore = create(
           set({ dialogs: { nohost: { open: true } } });
         }
       },
+      deleteSystemConfig: async () => {
+        const resp = await Ledfx('/api/config', set, 'DELETE');
+        console.log(resp)
+      },
+      importSystemConfig: async (config) => {
+        const resp = await Ledfx('/api/config', set, 'POST', config);
+        console.log(resp)
+      },
       settings: {},
       getAudioInputs: async () => {
         const resp = await Ledfx('/api/audio/devices', set);
         if (resp) {
-          console.log(resp)
           set({
             settings: get().settings,
             ...{

@@ -16,6 +16,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import { Delete, Refresh } from '@material-ui/icons';
 
 import PopoverSure from '../../components/Popover';
+import { download } from '../../utils/helpers';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -40,20 +41,32 @@ const useStyles = makeStyles(theme => ({
 const Settings = () => {
   const classes = useStyles();
   const getSystemConfig = useStore((state) => state.getSystemConfig);
+  const deleteSystemConfig = useStore((state) => state.deleteSystemConfig);
+  const importSystemConfig = useStore((state) => state.importSystemConfig);
   const shutdown = useStore((state) => state.shutdown);
   const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
 
   const configDownload = async () => {
+    const newConfig = { ...config, ...{ ledfx_presets: undefined } }
     download(
-      { config, ...{ ledfx_presets: undefined } },
+      newConfig,
       'config.json',
       'application/json',
     );
   };
+
   const configDelete = async () => {
-    console.og("coming")
-  };
+    deleteSystemConfig().then(() => window.location = window.location.href)
+  }
+
+  const fileChanged = async (e) => {
+    const fileReader = new FileReader();
+    fileReader.readAsText(e.target.files[0], "UTF-8");
+    fileReader.onload = (e) => {
+      importSystemConfig(e.target.result).then(() => (window.location = window.location.href));
+    };
+  }
 
   useEffect(() => {
     getSystemConfig();
@@ -76,7 +89,7 @@ const Settings = () => {
           onClick={configDownload}
         >
           Export Config
-                </Button>
+        </Button>
         <PopoverSure
           startIcon={<Delete />}
           label="Reset Config"
@@ -87,7 +100,6 @@ const Settings = () => {
           onConfirm={configDelete}
           direction="center"
           vertical="top"
-          disabled={true}
         />
         <input
           hidden
@@ -103,11 +115,9 @@ const Settings = () => {
             startIcon={<CloudDownloadIcon />}
             variant="outlined"
             className={classes.actionButton}
-            disabled={true}
-
           >
             Import Config
-                        </Button>
+          </Button>
         </label>
         <Button
           size="small"
@@ -119,7 +129,7 @@ const Settings = () => {
         >
           Restart LedFx
                         </Button>
-        {parseInt(window.localStorage.getItem('BladeMod')) > 1 && (
+        {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
           <>
 
             <Button
@@ -130,7 +140,7 @@ const Settings = () => {
               disabled
             >
               Check Updates
-                        </Button>
+            </Button>
           </>
         )}
         <Button
@@ -141,7 +151,7 @@ const Settings = () => {
           onClick={shutdown}
         >
           Shutdown
-                </Button>
+        </Button>
 
       </CardContent>
     </Card>
