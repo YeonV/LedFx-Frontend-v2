@@ -438,6 +438,10 @@ const useStore = create(
           set({ dialogs: { nohost: { open: true } } });
         }
       },
+      setSystemConfig: async (config) => {
+        const resp = await Ledfx('/api/config', set, 'PUT', config);
+        console.log(resp)
+      },
       deleteSystemConfig: async () => {
         const resp = await Ledfx('/api/config', set, 'DELETE');
         console.log(resp)
@@ -480,6 +484,28 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
+      scanForDevices: async () => {
+        const resp = await Ledfx('/api/find_devices', set, 'POST', {});
+        if (resp && resp.status === 'success') {
+          console.log(resp)
+        }
+        // if (resp && resp.status === 'success') {
+        //   set({
+        //     settings: get().settings,
+        //     ...{
+        //       "settings": {
+        //         audio_inputs: get().settings.audio_inputs,
+        //         "active_device_index": parseInt(index),
+        //       }
+        //     },
+
+        //   });
+        // } 
+        else {
+          set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+
 
 
       togglePause: async () => {
