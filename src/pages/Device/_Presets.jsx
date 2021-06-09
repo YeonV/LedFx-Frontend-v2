@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PresetsCard = ({ display, effectType, presets }) => {
-  console.log(presets);
+const PresetsCard = ({ display, effectType, presets, style }) => {
+  // console.log(presets);
   const classes = useStyles();
   const [name, setName] = useState('');
   const isNameValid = validateTextInput(name, presets);
@@ -99,7 +99,7 @@ const PresetsCard = ({ display, effectType, presets }) => {
     });
 
   return (
-    <Card variant="outlined" className={classes.deviceCard}>
+    <Card variant="outlined" className={classes.deviceCard} style={style}>
       <CardHeader title="Presets" subheader="Explore different effect configurations" />
       <CardContent className={classes.content}>
         <Typography variant="subtitle2">LedFx Presets</Typography>

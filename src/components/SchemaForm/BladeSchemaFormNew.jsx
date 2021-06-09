@@ -64,7 +64,7 @@ const BladeSchemaFormNew = (props) => {
   // console.log(model)
   return (
     <div className={classes.bladeSchemaForm}>
-      {parseInt(window.localStorage.getItem('BladeMod')) > 2 && (
+      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <Fab
           onClick={handleClickOpen}
           variant="round"
