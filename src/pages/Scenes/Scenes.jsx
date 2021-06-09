@@ -93,7 +93,7 @@ const Scenes = () => {
   }, [getScenes]);
   return (
       <Grid container spacing={2}>
-        {scenes && Object.keys(scenes).map((s, i) => (
+        {scenes && Object.keys(scenes).length ? Object.keys(scenes).map((s, i) => (
           <Grid item key={i}>
             <Card className={classes.root}>
               <CardActionArea style={{ background: '#090909' }} onClick={() => handleActivateScene({ id: s })}>
@@ -109,7 +109,7 @@ const Scenes = () => {
               </CardActions>
             </Card>
           </Grid>
-        ))}
+        )) : (<>No Scenes yet.</>)}
       </Grid>
   );
 };

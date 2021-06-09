@@ -19,18 +19,15 @@ const Devices = () => {
   const getDisplays = useStore((state) => state.getDisplays);
   const displays = useStore((state) => state.displays);
 
-
-
-
   useEffect(() => {
     getDisplays();
   }, [getDisplays]);
 
   return (
       <div className={classes.cardWrapper}>
-        {displays && Object.keys(displays).map((display, i) => (
+        {displays && Object.keys(displays).length ? Object.keys(displays).map((display, i) => (
           <DeviceCard display={display} key={i} />
-        ))}
+        )) : (<>No devices yet</>)}
       </div>
   );
 };
