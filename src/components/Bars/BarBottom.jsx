@@ -8,17 +8,17 @@ import HomeIcon from '@material-ui/icons/Home';
 import Wallpaper from '@material-ui/icons/Wallpaper';
 import { useLocation, Link } from 'react-router-dom';
 import Backdrop from '@material-ui/core/Backdrop';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import useStore from '../../utils/apiStore';
-// import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
+import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
+import DeveloperMode from "@material-ui/icons/DeveloperMode";
 import SettingsInputComponent from '@material-ui/icons/SettingsInputComponent';
 import AddSceneDialog from '../../pages/Scenes/AddSceneDialog';
 import AddDeviceDialog from '../../pages/Devices/AddDeviceDialog';
 import AddVirtualDialog from '../../pages/Devices/AddVirtualDialog';
+import AddIntegrationDialog from '../../pages/Integrations/AddIntegration';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     transform: 'translateX(-50%)',
     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-      bottom: theme.spacing(2) + 15,
+      bottom: theme.spacing(2) + 25,
       // right: theme.spacing(2),
     },
   },
@@ -56,6 +56,8 @@ export default function LabelBottomNavigation() {
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);
   const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
+
   const isTouch = (('ontouchstart' in window) ||
     (navigator.maxTouchPoints > 0) ||
     (navigator.msMaxTouchPoints > 0))
@@ -65,6 +67,10 @@ export default function LabelBottomNavigation() {
     { icon: <Icon><span className={'mdi mdi-led-strip-variant'} style={{ position: 'relative', display: 'flex' }} /></Icon>, name: 'Add Virtual', action: () => setDialogOpenAddVirtual(true) },
     { icon: <Wallpaper />, name: 'Add Scene', action: () => setDialogOpenAddScene(true) },
   ];
+
+  if (parseInt(window.localStorage.getItem('BladeMod')) > 10) {
+    actions.push({ icon: <SettingsInputSvideoIcon />, name: 'Add Integration', action: () => setDialogOpenAddIntegration(true) })
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -90,7 +96,7 @@ export default function LabelBottomNavigation() {
     <BottomNavigation
       value={value}
       className={classes.root}
-      showLabels
+      showLabels={true}
     >
       <BottomNavigationAction
         component={Link}
@@ -107,8 +113,6 @@ export default function LabelBottomNavigation() {
         to="/Devices"
         icon={<SettingsInputComponent />}
       />
-
-
       <BottomNavigationAction
         component={Link}
         to="/Scenes"
@@ -116,15 +120,15 @@ export default function LabelBottomNavigation() {
         value="/Scenes"
         icon={<Wallpaper />}
       />
-
-      {/* <BottomNavigationAction
-        label="Integrations"
-        value="integrations"
-        component={Link}
-        to={"/Integrations"}
-        icon={<SettingsInputSvideoIcon />}
-      /> */}
-
+      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+        <BottomNavigationAction
+          label="Integrations"
+          value="/Integrations"
+          component={Link}
+          to={"/Integrations"}
+          icon={<SettingsInputSvideoIcon />}
+        />
+      )}
       <BottomNavigationAction
         label="Settings"
         value="/Settings"
@@ -132,33 +136,42 @@ export default function LabelBottomNavigation() {
         component={Link}
         to="/Settings"
       />
-
+       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+        <BottomNavigationAction
+          label="Devmode"
+          value="devmode"
+          component={Link}
+          to={"/"}
+          icon={<DeveloperMode />}
+        />
+      )}
     </BottomNavigation>
     <AddSceneDialog />
     <AddDeviceDialog />
     <AddVirtualDialog />
+    <AddIntegrationDialog />
     <SpeedDial
-        ariaLabel="SpeedDial example"
-        className={classes.speedDial}
-        // className={classes.fabButton} 
-        hidden={false}
-        icon={<SpeedDialIcon />}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        open={open}
-        direction={"up"}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            style={{ whiteSpace: 'nowrap' }}
-            tooltipOpen={isTouch}
-            onClick={() => handleAction(action.action)}
-          />
-        ))}
-      </SpeedDial>
+      ariaLabel="SpeedDial example"
+      className={classes.speedDial}
+      // className={classes.fabButton} 
+      hidden={false}
+      icon={<SpeedDialIcon />}
+      onClose={handleClose}
+      onOpen={handleOpen}
+      open={open}
+      direction={"up"}
+    >
+      {actions.map((action) => (
+        <SpeedDialAction
+          key={action.name}
+          icon={action.icon}
+          tooltipTitle={action.name}
+          style={{ whiteSpace: 'nowrap' }}
+          tooltipOpen={isTouch}
+          onClick={() => handleAction(action.action)}
+        />
+      ))}
+    </SpeedDial>
     <Backdrop open={open} />
   </>
   );

@@ -36,6 +36,10 @@ const useStore = create(
           open: false,
           edit: {},
         },
+        addIntegration: {
+          open: false,
+          edit: {},
+        },
       },
       setDialogOpen: (open, edit = false) => set((state) => ({
         dialogs: {
@@ -68,6 +72,15 @@ const useStore = create(
         dialogs: {
           ...state.dialogs,
           addVirtual: {
+            open,
+            edit,
+          },
+        },
+      })),
+      setDialogOpenAddIntegration: (open, edit = false) => set((state) => ({
+        dialogs: {
+          ...state.dialogs,
+          addIntegration: {
             open,
             edit,
           },
@@ -147,6 +160,7 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
+
       displays: {},
       getDisplays: async () => {
         const resp = await Ledfx('/api/displays', set);
@@ -352,6 +366,7 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
+
       scenes: {},
       getScenes: async () => {
         const resp = await Ledfx('/api/scenes', set);
@@ -411,6 +426,7 @@ const useStore = create(
           console.log('problems while adding Scene', resp);
         }
       },
+
       integrations: {},
       getIntegrations: async () => {
         const resp = await Ledfx('/api/integrations', set);
@@ -420,6 +436,67 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
+      addIntegration: async (config) => {
+        const resp = await Ledfx(
+          `/api/integrations`,
+          set,
+          'POST',
+          config,
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+          return resp;
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      updateIntegration: async (config) => {
+        const resp = await Ledfx(
+          `/api/integrations`,
+          set,
+          'POST',
+          config,
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+          return resp;
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      toggleIntegration: async (config) => {
+        const resp = await Ledfx(
+          `/api/integrations`,
+          set,
+          'PUT',
+          config,
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+          return resp;
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+      deleteIntegration: async (config) => {
+        console.log("YZ", config)
+        const resp = await Ledfx(
+          `/api/integrations`,
+          set,
+          'DELETE',
+          {data: {id: config}}
+        );
+        if (resp) {
+          // set({ presets: resp.preset });
+          console.log(resp);
+        } else {
+          // set({ dialogs: { nohost: { open: true } } });
+        }
+      },
+
       schemas: {},
       getSchemas: async () => {
         const resp = await Ledfx('/api/schema', set);
@@ -429,6 +506,7 @@ const useStore = create(
           // set({ dialogs: { nohost: { open: true } } });
         }
       },
+
       config: {},
       getSystemConfig: async () => {
         const resp = await Ledfx('/api/config', set);
@@ -488,24 +566,10 @@ const useStore = create(
         const resp = await Ledfx('/api/find_devices', set, 'POST', {});
         if (resp && resp.status === 'success') {
           console.log(resp)
-        }
-        // if (resp && resp.status === 'success') {
-        //   set({
-        //     settings: get().settings,
-        //     ...{
-        //       "settings": {
-        //         audio_inputs: get().settings.audio_inputs,
-        //         "active_device_index": parseInt(index),
-        //       }
-        //     },
-
-        //   });
-        // } 
-        else {
+        } else {
           set({ dialogs: { nohost: { open: true } } });
         }
       },
-
 
 
       togglePause: async () => {
