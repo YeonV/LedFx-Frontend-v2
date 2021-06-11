@@ -18,6 +18,7 @@ import CloudDownload from '@material-ui/icons/CloudDownload';
 import { drawerWidth, download } from '../../utils/helpers';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link } from 'react-router-dom';
+import { Pause } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +54,7 @@ const TopBar = () => {
   const setLeftBarOpen = useStore((state) => state.setLeftBarOpen);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const togglePause = useStore((state) => state.togglePause);
+  const paused = useStore((state) => state.paused);
   const shutdown = useStore((state) => state.shutdown);
   const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
@@ -68,7 +70,6 @@ const TopBar = () => {
   };
   const changePause = () => {
     togglePause();
-    setAnchorEl(null);
   };
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -83,7 +84,7 @@ const TopBar = () => {
       'application/json',
     );
   };
-  
+
   return (
     <AppBar
       position="fixed"
@@ -97,15 +98,15 @@ const TopBar = () => {
           aria-label="open drawer"
           onClick={handleLeftBarOpen}
           edge="start"
-          className={clsx(classes.menuButton,"step-three", open && classes.hide)}
+          className={clsx(classes.menuButton, "step-three", open && classes.hide)}
         >
           <MenuIcon />
         </IconButton>
 
         <Typography variant="h6" noWrap>
-           {pathname === '/' ? 'LedFx' : pathname.split('/').pop()}
+          {pathname === '/' ? 'LedFx' : pathname.split('/').pop()}
         </Typography>
-        
+
         <IconButton
           aria-label="display more actions"
           edge="end"
@@ -130,9 +131,9 @@ const TopBar = () => {
           </MenuItem>
           <MenuItem onClick={changePause}>
             <ListItemIcon>
-              <Play />
+              {paused ?  <Play /> : <Pause />}
             </ListItemIcon>
-            Play/Pause
+            {paused ? 'Play' : 'Pause'}
           </MenuItem>
           <MenuItem onClick={configDownload}>
             <ListItemIcon>

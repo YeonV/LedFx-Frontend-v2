@@ -164,8 +164,9 @@ const useStore = create(
       displays: {},
       getDisplays: async () => {
         const resp = await Ledfx('/api/displays', set);
-        if (resp && resp.displays) {
+        if (resp && resp.displays && resp.paused) {          
           set({ displays: resp.displays });
+          set({ paused: resp.paused });
         } else {
           // set({ dialogs: { nohost: { open: true } } });
         }
@@ -571,11 +572,12 @@ const useStore = create(
         }
       },
 
-
+      paused: false,
       togglePause: async () => {
-        const resp = await Ledfx('/api/displays', set, 'PUT', {});
-        if (resp && resp.data) {
-          console.log(resp.data);
+        const resp = await Ledfx('/api/displays', set, 'PUT', {});        
+        if (resp) {
+          console.log(resp.paused)    
+          set({paused: resp.paused})
         }
       },
       shutdown: async () => {
