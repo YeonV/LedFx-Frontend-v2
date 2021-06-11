@@ -12,14 +12,22 @@ import useStore from '../../utils/apiStore';
 import Wled from '../../assets/Wled';
 import { camelToSnake } from '../../utils/helpers';
 import Popover from '../../components/Popover';
+import { Button, Divider } from '@material-ui/core';
+import { Info } from '@material-ui/icons';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles({
   root: {
-    width: 'min(95vw, 345px)',   
+    width: 'min(95vw, 345px)',
   },
   '@media (max-width: 580px)': {
     root: {
-    width: '87vw',
+      width: '87vw',
     },
   },
   media: {
@@ -40,9 +48,11 @@ const useStyles = makeStyles({
 const Scenes = () => {
   const classes = useStyles();
   const getScenes = useStore((state) => state.getScenes);
-  const scenes = useStore((state) => state.scenes);  
+  const scenes = useStore((state) => state.scenes);
   const activateScene = useStore((state) => state.activateScene);
   const deleteScene = useStore((state) => state.deleteScene);
+  const [info, setInfo] = useState(false);
+
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);
 
   const handleActivateScene = (e) => {
@@ -58,14 +68,22 @@ const Scenes = () => {
     setDialogOpenAddScene(false);
   };
 
+  const handleInfoOpen = () => {
+    setInfo(true);
+  };
+
+  const handleInfoClose = () => {
+    setInfo(false);
+  };
+
   const sceneImage = (iconName) => (iconName
     && iconName.startsWith('image:') ? (
-      <CardMedia
-        className={classes.media}
-        image={iconName.split('image:')[1]}
-        title="Contemplative Reptile"
-      />
-    )
+    <CardMedia
+      className={classes.media}
+      image={iconName.split('image:')[1]}
+      title="Contemplative Reptile"
+    />
+  )
 
     : (
       <Icon
@@ -78,7 +96,7 @@ const Scenes = () => {
         ) : iconName.startsWith('mdi:') ? (
           <span
             className={`mdi mdi-${iconName.split('mdi:')[1]
-            }`}
+              }`}
           />
         ) : (
           camelToSnake(
@@ -92,25 +110,61 @@ const Scenes = () => {
     getScenes();
   }, [getScenes]);
   return (
-      <Grid container spacing={2}>
-        {scenes && Object.keys(scenes).length ? Object.keys(scenes).map((s, i) => (
-          <Grid item key={i}>
-            <Card className={classes.root}>
-              <CardActionArea style={{ background: '#090909' }} onClick={() => handleActivateScene({ id: s })}>
-                {sceneImage(scenes[s].scene_image || 'Wallpaper')}
-              </CardActionArea>
-              <CardActions style={{ justifyContent: 'space-between', width: '100%' }}>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {scenes[s].name || s}
-                </Typography>
+    <Grid container spacing={2}>
+      {scenes && Object.keys(scenes).length ? Object.keys(scenes).map((s, i) => (
+        <Grid item key={i}>
+          <Card className={classes.root}>
+            <CardActionArea style={{ background: '#090909' }} onClick={() => handleActivateScene({ id: s })}>
+              {sceneImage(scenes[s].scene_image || 'Wallpaper')}
+            </CardActionArea>
+            <CardActions style={{ justifyContent: 'space-between', aligntItems: 'center', width: '100%' }}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {scenes[s].name || s}
+              </Typography>
+              <div>
+                <Popover onConfirm={() => handleDeleteScene(s)} variant="outlined" color="inherit" />
+                <Button onClick={handleInfoOpen} variant="outlined" color="inherit" size="small" style={{ marginLeft: '0.5rem' }}>
+                  <Info />
+                </Button>
 
-                <Popover onConfirm={() => handleDeleteScene(s)} variant="outlined" />
+              </div>
+            </CardActions>
+          </Card>
+          <Dialog
+            open={info}
+            onClose={handleInfoClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            fullWidth={true}
+            maxWidth={"xs"}
+          >
+            <DialogTitle id="alert-dialog-title">Scene: {scenes[s].name || s}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps'}}>
+                <span>Device</span>
+                <span>Effect</span>
+              </div>
+              <Divider />
+              {Object.keys(scenes[s].displays).filter(d=>!!scenes[s].displays[d].type).map(dev=>(
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps'}}>
+                  <span>{dev}</span>
+                  <span>{scenes[s].displays[dev].type}</span>
+                </div>
+              ))}
+                
+               </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleInfoClose} color="primary" autoFocus>
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-              </CardActions>
-            </Card>
-          </Grid>
-        )) : (<>No Scenes yet.</>)}
-      </Grid>
+        </Grid>
+      )) : (<>No Scenes yet.</>)}
+    </Grid>
   );
 };
 
