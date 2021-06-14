@@ -128,34 +128,18 @@ const useStore = create(
           set({ devices: resp.devices });
         }
       },
-      addDevice: async (config) => {
-        const resp = await Ledfx(
-          `/api/devices`,
-          set,
-          'POST',
-          config,
-        );
-        if (resp) {
-          return resp;
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      updateDevice: async (deviceId, config) => {
-        const resp = await Ledfx(
-          `/api/devices/${deviceId}`,
-          set,
-          'PUT',
-          config,
-        );
-        if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-          return resp;
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
+      addDevice: async (config) => await Ledfx(
+        `/api/devices`,
+        set,
+        'POST',
+        config,
+      ),
+      updateDevice: async (deviceId, config) => await Ledfx(
+        `/api/devices/${deviceId}`,
+        set,
+        'PUT',
+        config,
+      ),
 
       displays: {},
       getDisplays: async () => {
@@ -169,47 +153,22 @@ const useStore = create(
           }
         }
       },
-      addDisplay: async (config) => {
-        const resp = await Ledfx(
-          `/api/displays`,
-          set,
-          'POST',
-          config,
-        );
-        if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-          return resp;
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      deleteDisplay: async (displayId) => {
-        const resp = await Ledfx(
-          `/api/displays/${displayId}`,
-          set,
-          'DELETE',
-        );
-        if (resp && resp.preset) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      clearDisplayEffect: async (displayId) => {
-        const resp = await Ledfx(
-          `/api/displays/${displayId}/effects`,
-          set,
-          'DELETE',
-        );
-        console.log(resp);
-        // if (resp && resp.displays) {
-        //   set({ displays: resp.displays });
-        // } else {
-        //   set({ dialogs: { nohost: { open: true } } });
-        // }
-      },
+      addDisplay: async (config) => await Ledfx(
+        `/api/displays`,
+        set,
+        'POST',
+        config,
+      ),
+      deleteDisplay: async (displayId) => await Ledfx(
+        `/api/displays/${displayId}`,
+        set,
+        'DELETE',
+      ),
+      clearDisplayEffect: async (displayId) => await Ledfx(
+        `/api/displays/${displayId}/effects`,
+        set,
+        'DELETE',
+      ),
       setDisplayEffect: async (displayId, { type, config, active }) => {
         const resp = await Ledfx(
           `/api/displays/${displayId}/effects`,
@@ -221,7 +180,6 @@ const useStore = create(
             active,
           },
         );
-        console.log(resp);
 
         if (resp && resp.effect) {
           set({
@@ -237,8 +195,6 @@ const useStore = create(
             },
 
           });
-        } else {
-          console.log('NOT GOOD:', resp);
         }
       },
       updateDisplayEffect: async (displayId, { type, config, active }) => {
@@ -269,9 +225,6 @@ const useStore = create(
             });
           }
         }
-        // else {
-        // set({ dialogs: { nohost: { open: true } } });
-        // }
       },
       updateDisplaySegments: async ({ displayId, segments }) => {
         const resp = await Ledfx(
@@ -299,9 +252,6 @@ const useStore = create(
             });
           }
         }
-        // else {
-        // set({ dialogs: { nohost: { open: true } } });
-        // }
       },
 
       presets: {},
@@ -309,200 +259,103 @@ const useStore = create(
         const resp = await Ledfx(`/api/effects/${effectId}/presets`, set);
         if (resp && resp.status === 'success') {
           set({ presets: resp });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
-      addPreset: async (effectId, name) => {
-        const resp = await Ledfx(
-          `/api/displays/${effectId}/presets`,
-          set,
-          'POST',
-          {
-            name,
-          },
-        );
-        if (resp && resp.preset) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      activatePreset: async (displayId, category, effectType, presetId) => {
-        const resp = await Ledfx(
-          `/api/displays/${displayId}/presets`,
-          set,
-          'PUT',
-          {
-            category,
-            effect_id: effectType,
-            preset_id: presetId,
-          },
-        );
-        if (resp && resp.status) {
-          console.log(resp);
-          // set({ presets: resp.preset });
-          console.log(resp);
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      deletePreset: async (displayId, presetId) => {
-        const resp = await Ledfx(
-          `/api/displays/${displayId}/presets`,
-          set,
-          'DELETE',
-          {
+      addPreset: async (effectId, name) => await Ledfx(
+        `/api/displays/${effectId}/presets`,
+        set,
+        'POST',
+        { name }
+      ),
+      activatePreset: async (displayId, category, effectType, presetId) => await Ledfx(
+        `/api/displays/${displayId}/presets`,
+        set,
+        'PUT',
+        {
+          category,
+          effect_id: effectType,
+          preset_id: presetId,
+        },
+      ),
+      deletePreset: async (effectId, presetId) => await Ledfx(
+        `/api/effects/${effectId}/presets`,
+        set,
+        'DELETE',
+        {
+          data: {
             preset_id: presetId,
             category: 'user_presets',
-          },
-        );
-        if (resp && resp.preset) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
+          }
+        },
+      ),
 
       scenes: {},
       getScenes: async () => {
         const resp = await Ledfx('/api/scenes', set);
         if (resp && resp.scenes) {
           set({ scenes: resp.scenes });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
-      addScene: async ({ name, scene_image }) => {
-        const resp = await Ledfx(
-          '/api/scenes',
-          set,
-          'POST',
-          {
-            name,
-            scene_image,
-          },
-        );
+      addScene: async ({ name, scene_image }) => await Ledfx(
+        '/api/scenes',
+        set,
+        'POST',
+        { name, scene_image },
+      ),
+      activateScene: async ({ id }) => await Ledfx(
+        '/api/scenes',
+        set,
+        'PUT',
+        {
+          id,
+          action: 'activate',
+        },
 
-        if (resp && resp.status && resp.status === 'success') {
-          // set({ presets: resp.preset });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-          console.log('problems while adding Scene', resp);
-        }
-      },
-      activateScene: async ({ id }) => {
-        const resp = await Ledfx(
-          '/api/scenes',
-          set,
-          'PUT',
-          {
-            id,
-            action: 'activate',
-          },
-
-        );
-
-        if (resp && resp.status && resp.status === 'success') {
-          // set({ presets: resp.preset });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-          console.log('problems while adding Scene', resp);
-        }
-      },
-      deleteScene: async (name) => {
-        const resp = await Ledfx(
-          '/api/scenes',
-          set,
-          'DELETE',
-          { data: { id: name } },
-        );
-        if (resp && resp.status && resp.status === 'success') {
-          // set({ presets: resp.preset });
-        } else {
-          console.log('problems while adding Scene', resp);
-        }
-      },
+      ),
+      deleteScene: async (name) => await Ledfx(
+        '/api/scenes',
+        set,
+        'DELETE',
+        { data: { id: name } },
+      ),
 
       integrations: {},
       getIntegrations: async () => {
         const resp = await Ledfx('/api/integrations', set);
         if (resp && resp.integrations) {
           set({ integrations: resp.integrations });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
-      addIntegration: async (config) => {
-        const resp = await Ledfx(
-          `/api/integrations`,
-          set,
-          'POST',
-          config,
-        );
-        if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-          return resp;
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      updateIntegration: async (config) => {
-        const resp = await Ledfx(
-          `/api/integrations`,
-          set,
-          'POST',
-          config,
-        );
-        if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-          return resp;
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      toggleIntegration: async (config) => {
-        const resp = await Ledfx(
-          `/api/integrations`,
-          set,
-          'PUT',
-          config,
-        );
-        if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-          return resp;
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
-      deleteIntegration: async (config) => {
-        console.log("YZ", config)
-        const resp = await Ledfx(
-          `/api/integrations`,
-          set,
-          'DELETE',
-          { data: { id: config } }
-        );
-        if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
-        }
-      },
+      addIntegration: async (config) => await Ledfx(
+        `/api/integrations`,
+        set,
+        'POST',
+        config,
+      ),
+      updateIntegration: async (config) => await Ledfx(
+        `/api/integrations`,
+        set,
+        'POST',
+        config,
+      ),
+      toggleIntegration: async (config) => await Ledfx(
+        `/api/integrations`,
+        set,
+        'PUT',
+        config,
+      ),
+      deleteIntegration: async (config) => await Ledfx(
+        `/api/integrations`,
+        set,
+        'DELETE',
+        { data: { id: config } }
+      ),
 
       schemas: {},
       getSchemas: async () => {
         const resp = await Ledfx('/api/schema', set);
         if (resp) {
           set({ schemas: resp });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
 
@@ -515,18 +368,10 @@ const useStore = create(
           set({ dialogs: { nohost: { open: true } } });
         }
       },
-      setSystemConfig: async (config) => {
-        const resp = await Ledfx('/api/config', set, 'PUT', config);
-        console.log(resp)
-      },
-      deleteSystemConfig: async () => {
-        const resp = await Ledfx('/api/config', set, 'DELETE');
-        console.log(resp)
-      },
-      importSystemConfig: async (config) => {
-        const resp = await Ledfx('/api/config', set, 'POST', config);
-        console.log(resp)
-      },
+      setSystemConfig: async (config) => await Ledfx('/api/config', set, 'PUT', config),
+      deleteSystemConfig: async () => await Ledfx('/api/config', set, 'DELETE'),
+      importSystemConfig: async (config) => await Ledfx('/api/config', set, 'POST', config),
+
       settings: {},
       getAudioInputs: async () => {
         const resp = await Ledfx('/api/audio/devices', set);
@@ -540,8 +385,6 @@ const useStore = create(
             },
 
           });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
       setAudioInput: async (index) => {
@@ -557,14 +400,12 @@ const useStore = create(
             },
 
           });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
       scanForDevices: async () => {
         const resp = await Ledfx('/api/find_devices', set, 'POST', {});
         if (resp && resp.status === 'success') {
-          console.log(resp)
+          
         } else {
           set({ dialogs: { nohost: { open: true } } });
         }
@@ -574,34 +415,19 @@ const useStore = create(
       togglePause: async () => {
         const resp = await Ledfx('/api/displays', set, 'PUT', {});
         if (resp) {
-          console.log(resp.paused)
           set({ paused: resp.paused })
         }
       },
-      shutdown: async () => {
-        const resp = await Ledfx('/api/power', set, 'POST', {
-          timeout: 0,
-          action: 'shutdown',
-        });
-        if (resp && resp.data) {
-          console.log(resp.data);
-        }
-      },
-      restart: async () => {
-        const resp = await Ledfx('/api/power', set, 'POST', {
-          timeout: 0,
-          action: 'restart',
-        });
-        if (resp && resp.data) {
-          console.log(resp.data);
-        }
-      },
-      getPing: async (displayId) => {
-        const resp = await Ledfx(`/api/ping/${displayId}`, set);
-        if (resp && resp.data) {
-          return resp.data;
-        }
-      },
+
+      shutdown: async () => await Ledfx('/api/power', set, 'POST', {
+        timeout: 0,
+        action: 'shutdown',
+      }),
+      restart: async () => await Ledfx('/api/power', set, 'POST', {
+        timeout: 0,
+        action: 'restart',
+      }),
+      getPing: async (displayId) => await Ledfx(`/api/ping/${displayId}`, set),
       getDevice: async (deviceId) => {
         const resp = await Ledfx(`/api/devices/${deviceId}`, set);
         if (resp && resp.data) {
