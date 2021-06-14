@@ -146,8 +146,8 @@ const Scenes = () => {
                 <span>Effect</span>
               </div>
               <Divider />
-              {Object.keys(scenes[s].displays).filter(d=>!!scenes[s].displays[d].type).map(dev=>(
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps'}}>
+              {Object.keys(scenes[s].displays).filter(d=>!!scenes[s].displays[d].type).map((dev,i)=>(
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps'}}>
                   <span>{dev}</span>
                   <span>{scenes[s].displays[dev].type}</span>
                 </div>
