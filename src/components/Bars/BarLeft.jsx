@@ -31,7 +31,7 @@ const LeftBar = () => {
   const classes = useStyles();
   const theme = useTheme();
   const displays = useStore((state) => state.displays);
-  const open = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open);
+  const open = useStore((state) => state.ui.bars?.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
   // const history = useHistory();
 
