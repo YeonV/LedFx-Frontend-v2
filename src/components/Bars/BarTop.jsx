@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TopBar = () => {
   const classes = useStyles();
-  const open = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open);
+  const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
   const setLeftBarOpen = useStore((state) => state.setLeftBarOpen);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const togglePause = useStore((state) => state.togglePause);

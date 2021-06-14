@@ -5,6 +5,7 @@ import { Ledfx } from './apiProxy';
 const useStore = create(
   persist(
     devtools((set, get) => ({
+
       host: 'http://localhost:8888',
       setHost: (host) => {
         window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
@@ -14,7 +15,6 @@ const useStore = create(
       },
 
       // FRONTEND STUFF
-
 
       dialogs: {
         nohost: {
@@ -82,6 +82,7 @@ const useStore = create(
           },
         },
       })),
+
       ui: {
         snackbar: {
           isOpen: false,
@@ -95,15 +96,18 @@ const useStore = create(
         }
       },
       setLeftBarOpen: (open) => set((state) => ({
-        bars: {
+        ui: {
+          ...state.ui,
+          bars: {
           leftBar: {
             open,
           },
-        },
+        }},
       })),
       showSnackbar: ({ messageType, message }) => {
         set({
           ui: {
+            ...state.ui,
             snackbar: { isOpen: true, message, messageType },
           },
         });
@@ -111,6 +115,7 @@ const useStore = create(
       clearSnackbar: () => {
         set({
           ui: {
+            ...state.ui,
             snackbar: {
               isOpen: false,
               type: get().ui.snackbar.type,
