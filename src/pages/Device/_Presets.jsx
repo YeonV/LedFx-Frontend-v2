@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -52,12 +52,11 @@ const PresetsCard = ({ display, effectType, presets, style }) => {
 
   const activatePreset = useStore((state) => state.activatePreset);
   const addPreset = useStore((state) => state.addPreset);
-  // const getPresets = useStore((state) => state.getPresets);
+  const getPresets = useStore((state) => state.getPresets);
   const getDisplays = useStore((state) => state.getDisplays);
   const deletePreset = useStore((state) => state.deletePreset);
 
-  const handleActivatePreset = (displayId, category, effectType, presetId) => () => {
-    console.log(displayId, category, effectType, presetId);
+  const handleActivatePreset = (displayId, category, effectType, presetId) => () => {    
     activatePreset(displayId, category, effectType, presetId);
     setName('');
   };
@@ -80,7 +79,7 @@ const PresetsCard = ({ display, effectType, presets, style }) => {
             effectType,
             preset,
           )}
-          onDoubleClick={handleRemovePreset(display.id, list[preset].id)}
+          onDoubleClick={handleRemovePreset(effectType, preset)}
         >
           {list[preset].name}
         </Button>
@@ -89,14 +88,19 @@ const PresetsCard = ({ display, effectType, presets, style }) => {
   };
 
   const handleAddPreset = () => addPreset(display.id, name).then(() => {
-    getDisplays();
-    // getPresets(effectType)
+    // getDisplays();
+    getPresets(effectType)
   });
-  const handleRemovePreset = (displayId, presetId) => () => deletePreset(displayId, presetId)
+  const handleRemovePreset = (effectType, presetId) => () => deletePreset(effectType, presetId)
     .then(() => {
-      getDisplays();
-      // getPresets(effectType)
+      // getDisplays();
+      getPresets(effectType)
     });
+
+    useEffect(() => {
+      getDisplays();
+      effectType && getPresets(effectType);
+    }, [getDisplays, effectType])
 
   return (
     <Card variant="outlined" className={classes.deviceCard} style={style}>
