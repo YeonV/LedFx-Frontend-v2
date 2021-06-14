@@ -29,7 +29,7 @@ export default function DialogNoHost() {
   const handleSave = () => {
     setHost(hostvalue);
     if (typeof hostvalue !== 'string') {
-      if (!hosts.some(item=> item.title === hostvalue.title)) {
+      if (!hosts.some(h=> h.title === hostvalue.title)) {
         window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts, hostvalue]))
       } else {
         window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]))

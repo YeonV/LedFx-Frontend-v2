@@ -76,88 +76,83 @@ const Settings = () => {
 
   return (
     <>
-    <Card className={classes.card} style={{ marginBottom: '2rem' }}>
-      <CardHeader title="General" subheader="Configure LedFx-Settings" />
-      <CardContent className={classes.content}>
-        <AudioInputs />
+      <Card className={classes.card} style={{ marginBottom: '2rem' }}>
+        <CardHeader title="General" subheader="Configure LedFx-Settings" />
+        <CardContent className={classes.content}>
+          <AudioInputs />
 
-        <Divider style={{ margin: '1rem 0' }} />
-        <Button
-          size="small"
-          startIcon={<CloudUploadIcon />}
-          variant="outlined"
-          className={classes.actionButton}
-          style={{ marginTop: '1.5rem' }}
-          onClick={configDownload}
-        >
-          Export Config
-        </Button>
-        <PopoverSure
-          startIcon={<Delete />}
-          label="Reset Config"
-          size="small"
-          variant="outlined"
-          color="inherit"
-          className={classes.actionButton}
-          onConfirm={configDelete}
-          direction="center"
-          vertical="top"
-        />
-        <input
-          hidden
-          accept="application/json"
-          id="contained-button-file"
-          type="file"
-          onChange={(e) => fileChanged(e)}
-        />
-        <label htmlFor="contained-button-file">
+          <Divider style={{ margin: '1rem 0' }} />
           <Button
-            component="span"
             size="small"
-            startIcon={<CloudDownloadIcon />}
+            startIcon={<CloudUploadIcon />}
             variant="outlined"
             className={classes.actionButton}
+            style={{ marginTop: '1.5rem' }}
+            onClick={configDownload}
           >
-            Import Config
-          </Button>
-        </label>
-        <Button
-          size="small"
-          startIcon={<Refresh />}
-          variant="outlined"
-          className={classes.actionButton}
-          onClick={restart}
-
-        >
-          Restart LedFx
-                        </Button>
-        {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
-          <>
-
+            Export Config
+        </Button>
+          <PopoverSure
+            startIcon={<Delete />}
+            label="Reset Config"
+            size="small"
+            variant="outlined"
+            color="inherit"
+            className={classes.actionButton}
+            onConfirm={configDelete}
+            direction="center"
+            vertical="top"
+          />
+          <input
+            hidden
+            accept="application/json"
+            id="contained-button-file"
+            type="file"
+            onChange={(e) => fileChanged(e)}
+          />
+          <label htmlFor="contained-button-file">
             <Button
+              component="span"
               size="small"
-              startIcon={<Refresh />}
+              startIcon={<CloudDownloadIcon />}
               variant="outlined"
               className={classes.actionButton}
-              disabled
             >
-              Check Updates
-            </Button>
-          </>
-        )}
-        <Button
-          size="small"
-          startIcon={<PowerSettingsNewIcon />}
-          variant="outlined"
-          className={classes.actionButton}
-          onClick={shutdown}
-        >
-          Shutdown
-        </Button>
+              Import Config
+          </Button>
+          </label>
+          <Button
+            size="small"
+            startIcon={<Refresh />}
+            variant="outlined"
+            className={classes.actionButton}
+            onClick={restart}
 
-      </CardContent>
-    </Card>
-    <WledCard className={classes.card} />
+          >
+            Restart LedFx
+          </Button>    
+
+          <Button
+            size="small"
+            startIcon={<PowerSettingsNewIcon />}
+            variant="outlined"
+            className={classes.actionButton}
+            onClick={shutdown}
+          >
+            Shutdown
+        </Button>
+        <Button
+            size="small"
+            startIcon={<Refresh />}
+            variant="outlined"
+            className={classes.actionButton}
+            href={"https://github.com/YeonV/LedFx-Frontend-v2/releases/latest/download/ledfx_frontend_v2.zip"}
+          >
+            Download Latest v2
+          </Button>
+        </CardContent>
+      </Card>
+      <WledCard className={classes.card} />
     </>
   );
 };

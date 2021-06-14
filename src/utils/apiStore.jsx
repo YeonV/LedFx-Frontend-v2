@@ -15,7 +15,7 @@ const useStore = create(
 
       // FRONTEND STUFF
 
-      
+
       dialogs: {
         nohost: {
           open: false,
@@ -160,11 +160,11 @@ const useStore = create(
       displays: {},
       getDisplays: async () => {
         const resp = await Ledfx('/api/displays', set);
-        if (resp && resp.displays && resp.paused) {          
+        if (resp && resp.displays && resp.paused) {
           set({ displays: resp.displays });
           set({ paused: resp.paused });
         } else {
-          if (resp && resp.displays) {          
+          if (resp && resp.displays) {
             set({ displays: resp.displays });
           }
         }
@@ -486,7 +486,7 @@ const useStore = create(
           `/api/integrations`,
           set,
           'DELETE',
-          {data: {id: config}}
+          { data: { id: config } }
         );
         if (resp) {
           // set({ presets: resp.preset });
@@ -510,7 +510,7 @@ const useStore = create(
       getSystemConfig: async () => {
         const resp = await Ledfx('/api/config', set);
         if (resp && resp.config) {
-          set({ config: { ...resp.config, ...{ ledfx_presets: undefined } } });
+          set({ config: { ...resp.config, ...{ ledfx_presets: undefined, devices: undefined, displays: undefined, virtuals: undefined, integrations: undefined, scenes: undefined } } });
         } else {
           set({ dialogs: { nohost: { open: true } } });
         }
@@ -572,10 +572,10 @@ const useStore = create(
 
       paused: false,
       togglePause: async () => {
-        const resp = await Ledfx('/api/displays', set, 'PUT', {});        
+        const resp = await Ledfx('/api/displays', set, 'PUT', {});
         if (resp) {
-          console.log(resp.paused)    
-          set({paused: resp.paused})
+          console.log(resp.paused)
+          set({ paused: resp.paused })
         }
       },
       shutdown: async () => {

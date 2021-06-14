@@ -45,7 +45,7 @@ const curacaoDarkTheme = createMuiTheme({
 
 export default function PersistentDrawerLeft() {
   const classes = useStyles();
-  const leftBarOpen = useStore((state) => state.bars.leftBar.open);
+  const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open);
   const getDisplays = useStore((state) => state.getDisplays);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
