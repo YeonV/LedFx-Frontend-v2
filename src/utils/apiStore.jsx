@@ -105,15 +105,15 @@ const useStore = create(
         }},
       })),
       showSnackbar: ({ messageType, message }) => {
-        set({
+        set((state) => ({
           ui: {
             ...state.ui,
             snackbar: { isOpen: true, message, messageType },
           },
-        });
+        }));
       },
       clearSnackbar: () => {
-        set({
+        set((state) => ({
           ui: {
             ...state.ui,
             snackbar: {
@@ -122,7 +122,7 @@ const useStore = create(
               message: get().ui.snackbar.message,
             },
           },
-        });
+        }));
       },
 
       // API

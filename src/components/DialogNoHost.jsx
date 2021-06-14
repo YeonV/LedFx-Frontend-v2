@@ -27,14 +27,17 @@ export default function DialogNoHost() {
   };
 
   const handleSave = () => {
-    setHost(hostvalue);
+    
     if (typeof hostvalue !== 'string') {
-      if (!hosts.some(h=> h.title === hostvalue.title)) {
+      setHost(hostvalue.title);
+      if (!hosts.some(h=> h.title === hostvalue.title)) {        
         window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts, hostvalue]))
       } else {
         window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]))
       }
-    } 
+    } else {      
+      setHost(hostvalue);
+    }
     setDialogOpen(false);
     window.location = window.location.href;
   };
