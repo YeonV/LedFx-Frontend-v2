@@ -15,11 +15,7 @@ const useStore = create(
 
       // FRONTEND STUFF
 
-      bars: {
-        leftBar: {
-          open: false,
-        },
-      },
+      
       dialogs: {
         nohost: {
           open: false,
@@ -92,6 +88,11 @@ const useStore = create(
           type: 'error',
           message: 'NO MESSAGE',
         },
+        bars: {
+          leftBar: {
+            open: false,
+          },
+        }
       },
       setLeftBarOpen: (open) => set((state) => ({
         bars: {
@@ -123,11 +124,8 @@ const useStore = create(
       devices: {},
       getDevices: async () => {
         const resp = await Ledfx('/api/devices', set);
-        // console.log("YZ", resp)
         if (resp && resp.devices) {
           set({ devices: resp.devices });
-        } else {
-          // set({ dialogs: { nohost: { open: true } } });
         }
       },
       addDevice: async (config) => {
@@ -138,8 +136,6 @@ const useStore = create(
           config,
         );
         if (resp) {
-          // set({ presets: resp.preset });
-          console.log(resp);
           return resp;
         } else {
           // set({ dialogs: { nohost: { open: true } } });
