@@ -7,7 +7,7 @@ const useStore = create(
     devtools((set, get) => ({
       host: 'http://localhost:8888',
       setHost: (host) => {
-        window.localStorage.setItem('ledfx-host', host);
+        window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
         return set((state) => ({
           host,
         }));
@@ -168,7 +168,9 @@ const useStore = create(
           set({ displays: resp.displays });
           set({ paused: resp.paused });
         } else {
-          // set({ dialogs: { nohost: { open: true } } });
+          if (resp && resp.displays) {          
+            set({ displays: resp.displays });
+          }
         }
       },
       addDisplay: async (config) => {

@@ -20,17 +20,21 @@ export default function DialogNoHost() {
   const storedURL = window.localStorage.getItem('ledfx-host');
   const storedURLs = JSON.parse(window.localStorage.getItem('ledfx-hosts')) || [{ title: 'http://localhost:8888' }];
   const [hosts, setHosts] = useState([{ title: 'http://localhost:8888' }]);
-  const [hostvalue, setHostvalue] = useState( [{ title: 'http://localhost:8888' }]);
+  const [hostvalue, setHostvalue] = useState({ title: 'http://localhost:8888' });
 
   const handleClose = () => {
     setDialogOpen(false);
   };
 
   const handleSave = () => {
-    setHost(hostvalue.title);
-    if (!(hosts.indexOf(hostvalue) > -1)) {
-      window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts, hostvalue]))
-    }
+    setHost(hostvalue);
+    if (typeof hostvalue !== 'string') {
+      if (!hosts.some(item=> item.title === hostvalue.title)) {
+        window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts, hostvalue]))
+      } else {
+        window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]))
+      }
+    } 
     setDialogOpen(false);
     window.location = window.location.href;
   };
