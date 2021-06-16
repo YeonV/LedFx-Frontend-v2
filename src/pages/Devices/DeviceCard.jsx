@@ -18,7 +18,8 @@ import EditVirtuals from './EditVirtuals';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
+import PixelGraph from '../Device/PixelGraph';
 
 const useStyles = makeStyles((theme) => ({
   displayCardPortrait: {
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
     flexDirection: 'column',
     minWidth: '230px',
+    width: '230px',
     height: '240px',
     '@media (max-width: 580px)': {
       width: '87vw',
@@ -290,6 +292,7 @@ const DeviceCard = ({ display }) => {
           </Button>
         </div>
       </Collapse>
+      <PixelGraph displayId={displays[display].id} />
     </Card>
   )
 }

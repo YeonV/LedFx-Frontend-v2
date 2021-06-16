@@ -1,20 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
 import { useState, useEffect } from 'react';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import Icon from '@material-ui/core/Icon';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Settings from '@material-ui/icons/Settings';
-import HomeIcon from '@material-ui/icons/Home';
-import Wallpaper from '@material-ui/icons/Wallpaper';
+import { makeStyles } from '@material-ui/core/styles';
+import { BottomNavigation, Icon, BottomNavigationAction, Backdrop } from '@material-ui/core';
+import { Settings, Home, Wallpaper, SettingsInputSvideo, DeveloperMode, SettingsInputComponent } from '@material-ui/icons';
+import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@material-ui/lab';
 import { useLocation, Link } from 'react-router-dom';
-import Backdrop from '@material-ui/core/Backdrop';
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import useStore from '../../utils/apiStore';
-import SettingsInputSvideoIcon from "@material-ui/icons/SettingsInputSvideo";
-import DeveloperMode from "@material-ui/icons/DeveloperMode";
-import SettingsInputComponent from '@material-ui/icons/SettingsInputComponent';
 import AddSceneDialog from '../../pages/Scenes/AddSceneDialog';
 import AddDeviceDialog from '../../pages/Devices/AddDeviceDialog';
 import AddVirtualDialog from '../../pages/Devices/AddVirtualDialog';
@@ -25,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    background: '#121212',
+    background: '#232323',
   },
   fabButton: {
     position: 'absolute',
@@ -41,12 +31,9 @@ const useStyles = makeStyles((theme) => ({
     transform: 'translateX(-50%)',
     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
       bottom: theme.spacing(2) + 25,
-      // right: theme.spacing(2),
     },
   },
 }));
-
-
 
 export default function LabelBottomNavigation() {
   const classes = useStyles();
@@ -58,9 +45,7 @@ export default function LabelBottomNavigation() {
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
 
-  const isTouch = (('ontouchstart' in window) ||
-    (navigator.maxTouchPoints > 0) ||
-    (navigator.msMaxTouchPoints > 0))
+  const isTouch = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0))
 
   const actions = [
     { icon: <SettingsInputComponent />, name: 'Add Device', action: () => setDialogOpenAddDevice(true) },
@@ -69,18 +54,15 @@ export default function LabelBottomNavigation() {
   ];
 
   if (parseInt(window.localStorage.getItem('BladeMod')) > 10) {
-    actions.push({ icon: <SettingsInputSvideoIcon />, name: 'Add Integration', action: () => setDialogOpenAddIntegration(true) })
+    actions.push({ icon: <SettingsInputSvideo />, name: 'Add Integration', action: () => setDialogOpenAddIntegration(true) })
   }
 
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleAction = (action) => {
     action();
-    setOpen(false);
-  };
-  const addScene = () => {
-    setDialogOpenAddScene(true)
     setOpen(false);
   };
 
@@ -104,7 +86,8 @@ export default function LabelBottomNavigation() {
         label="Home"
         value="/"
         to="/"
-        icon={<HomeIcon />}
+        icon={<Home />}
+        style={{ color : '#fefefe'}}
       />
       <BottomNavigationAction
         label="Devices"
@@ -112,6 +95,7 @@ export default function LabelBottomNavigation() {
         component={Link}
         to="/Devices"
         icon={<SettingsInputComponent />}
+        style={{ color : '#fefefe'}}
       />
       <BottomNavigationAction
         component={Link}
@@ -119,6 +103,7 @@ export default function LabelBottomNavigation() {
         label="Scenes"
         value="/Scenes"
         icon={<Wallpaper />}
+        style={{ color : '#fefefe'}}
       />
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <BottomNavigationAction
@@ -126,7 +111,8 @@ export default function LabelBottomNavigation() {
           value="/Integrations"
           component={Link}
           to={"/Integrations"}
-          icon={<SettingsInputSvideoIcon />}
+          icon={<SettingsInputSvideo />}
+          style={{ color : '#fefefe'}}
         />
       )}
       <BottomNavigationAction
@@ -135,14 +121,16 @@ export default function LabelBottomNavigation() {
         icon={<Settings />}
         component={Link}
         to="/Settings"
+        style={{ color : '#fefefe'}}
       />
-       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <BottomNavigationAction
           label="Devmode"
           value="devmode"
           component={Link}
           to={"/"}
           icon={<DeveloperMode />}
+          style={{ color : '#fefefe'}}
         />
       )}
     </BottomNavigation>
@@ -153,7 +141,6 @@ export default function LabelBottomNavigation() {
     <SpeedDial
       ariaLabel="SpeedDial example"
       className={classes.speedDial}
-      // className={classes.fabButton} 
       hidden={false}
       icon={<SpeedDialIcon />}
       onClose={handleClose}

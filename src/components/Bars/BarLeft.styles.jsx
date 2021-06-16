@@ -30,14 +30,6 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     overflowX: 'hidden',
   },
-  // '@media (max-width: 580px)': {
-  //   drawer: {
-  //     width: '100vw',
-  //   },
-  //   drawerPaper: {
-  //     width: '100vw',
-  //   },
-  // },
   drawerHeader: {
     display: 'flex',
     justifyContent: 'space-between',

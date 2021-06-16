@@ -1,31 +1,12 @@
 import { useTheme } from '@material-ui/core/styles';
-import {
-  ChevronLeft,
-  ChevronRight,
-  // Settings,
-  // Home,
-  // Wallpaper,
-  // SettingsInputSvideo,
-  // SettingsInputComponent,
-} from '@material-ui/icons';
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Drawer,
-  List,
-  Icon,
-  Divider,
-  IconButton,
-} from '@material-ui/core';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { ListItem, ListItemIcon, ListItemText, Drawer, List, Icon, Divider, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
 import { camelToSnake } from '../../utils/helpers';
 import useStyles from './BarLeft.styles';
-
 import logoAsset from '../../assets/logo.png';
 import Wled from '../../assets/Wled';
-// import { useHistory, Link } from "react-router-dom";
 
 const LeftBar = () => {
   const classes = useStyles();
@@ -33,11 +14,11 @@ const LeftBar = () => {
   const displays = useStore((state) => state.displays);
   const open = useStore((state) => state.ui.bars?.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
-  // const history = useHistory();
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
   const logo = (
     <div className={classes.logo}>
       <a href="/#" className={classes.logoLink}>
@@ -80,25 +61,21 @@ const LeftBar = () => {
             <ListItem button key={displays[d].config.name}>
               <ListItemIcon>
                 <Icon
-                  color={
-                    d.effect && d.effect.active === true ? 'primary' : 'inherit'
-                    // "inherit"
-                  }
+                  color={d.effect && d.effect.active === true ? 'primary' : 'inherit'}
                   style={{ position: 'relative' }}
                 >
                   {displays && displays[d] && displays[d].config && displays[d].config.icon_name
                     && displays[d].config.icon_name.startsWith('wled') ? (
-                      <Wled />
-                    ) : (displays && displays[d] && displays[d].config && displays[d].config.icon_name && displays[d].config.icon_name.startsWith('mdi:')) ? (
-                      <span
-                        className={`mdi mdi-${displays[d].config.icon_name.split('mdi:')[1]
-                        }`}
-                      />
-                    ) : (
-                      camelToSnake(
-                        displays[d].config.icon_name || 'SettingsInputComponent',
-                      )
-                    )}
+                    <Wled />
+                  ) : (displays && displays[d] && displays[d].config && displays[d].config.icon_name && displays[d].config.icon_name.startsWith('mdi:')) ? (
+                    <span
+                      className={`mdi mdi-${displays[d].config.icon_name.split('mdi:')[1]}`}
+                    />
+                  ) : (
+                    camelToSnake(
+                      displays[d].config.icon_name || 'SettingsInputComponent',
+                    )
+                  )}
                 </Icon>
               </ListItemIcon>
               <ListItemText
@@ -110,48 +87,6 @@ const LeftBar = () => {
         ))}
       </List>
       <Divider />
-      {/* <List>
-        <Link key="Home" to="/">
-          <ListItem>
-            <ListItemIcon>
-              <Home />
-            </ListItemIcon>
-            <ListItemText style={{ color: '#fff' }} primary="Home" />
-          </ListItem>
-        </Link>
-        <Link key="Devices" to="/Devices">
-          <ListItem>
-            <ListItemIcon>
-              <SettingsInputComponent />
-            </ListItemIcon>
-            <ListItemText style={{ color: '#fff' }} primary="Devices" />
-          </ListItem>
-        </Link>
-        <Link key="Scenes" to="/Scenes">
-          <ListItem>
-            <ListItemIcon>
-              <Wallpaper />
-            </ListItemIcon>
-            <ListItemText style={{ color: '#fff' }} primary="Scenes" />
-          </ListItem>
-        </Link>
-        <Link key={"Integrations"} to={"/Integrations"}>
-          <ListItem>
-            <ListItemIcon>
-              <SettingsInputSvideo />
-            </ListItemIcon>
-            <ListItemText style={{ color: "#fff" }} primary={"Integrations"} />
-          </ListItem>
-        </Link>
-        <Link key="Settings" to="/Settings">
-          <ListItem>
-            <ListItemIcon>
-              <Settings />
-            </ListItemIcon>
-            <ListItemText style={{ color: '#fff' }} primary="Settings" />
-          </ListItem>
-        </Link>
-      </List> */}
     </Drawer>
   );
 };

@@ -5,6 +5,7 @@ import { Casino, Delete } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
 import BladeSchemaForm from '../../components/SchemaForm/BladeSchemaForm';
+import PixelGraph from './PixelGraph';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -33,6 +34,7 @@ const EffectsCard = ({ displayId }) => {
   const setDisplayEffect = useStore((state) => state.setDisplayEffect);
   const displays = useStore((state) => state.displays);
   const effects = useStore((state) => state.schemas.effects);
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
 
   const display = displays[displayId];
   const effectType = display && display.effect.type;
@@ -52,7 +54,9 @@ const EffectsCard = ({ displayId }) => {
   useEffect(() => {
     getDisplays();
     getSchemas();
-  }, [getDisplays, getSchemas, effectType]);
+    setPixelGraphs([displayId]);
+  }, [setPixelGraphs, getDisplays, getSchemas, effectType]);
+  
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -79,6 +83,8 @@ const EffectsCard = ({ displayId }) => {
             </Button>
           </div>
         </div>
+        
+        <PixelGraph displayId={displayId} />
         <BladeEffectDropDown
           displayId={displayId}
           effects={effects}
