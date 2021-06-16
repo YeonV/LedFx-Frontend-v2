@@ -16,6 +16,11 @@ const useStore = create(
 
       // FRONTEND STUFF
 
+      pixelGraphs: [],
+      setPixelGraphs: (displays) => set((state) => ({
+        pixelGraphs: [...displays]
+      })),
+
       dialogs: {
         nohost: {
           open: false,
