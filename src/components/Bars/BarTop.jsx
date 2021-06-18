@@ -18,7 +18,7 @@ import CloudDownload from '@material-ui/icons/CloudDownload';
 import { drawerWidth, download } from '../../utils/helpers';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link } from 'react-router-dom';
-import { Pause } from '@material-ui/icons';
+import { BarChart, Pause } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +54,9 @@ const TopBar = () => {
   const setLeftBarOpen = useStore((state) => state.setLeftBarOpen);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const togglePause = useStore((state) => state.togglePause);
+  const toggleGraphs = useStore((state) => state.toggleGraphs);
   const paused = useStore((state) => state.paused);
+  const graphs = useStore((state) => state.graphs);
   const shutdown = useStore((state) => state.shutdown);
   const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
@@ -70,6 +72,10 @@ const TopBar = () => {
   };
   const changePause = () => {
     togglePause();
+  };
+  const changeGraphs = () => {
+    console.log(graphs)
+    toggleGraphs();
   };
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -134,6 +140,12 @@ const TopBar = () => {
               {paused ?  <Play /> : <Pause />}
             </ListItemIcon>
             {paused ? 'Play' : 'Pause'}
+          </MenuItem>
+          <MenuItem onClick={changeGraphs}>
+            <ListItemIcon>
+              <BarChart />
+            </ListItemIcon>
+            {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
           </MenuItem>
           <MenuItem onClick={configDownload}>
             <ListItemIcon>

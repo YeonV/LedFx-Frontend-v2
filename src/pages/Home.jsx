@@ -11,6 +11,19 @@ import logo from '../assets/logo.png';
 import logoCircle from '../assets/ring.png';
 import Guide from '../components/Guide';
 import useStore from '../utils/apiStore';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  Logo: {
+    height: '20vmin',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    color: '#fff000'
+  }
+}));
 
 
 const sleep = ms => {
@@ -19,6 +32,7 @@ const sleep = ms => {
 
 
 export default function Home() {
+  const classes = useStyles();
   const scanForDevices = useStore((state) => state.scanForDevices);
   const getDevices = useStore((state) => state.getDevices);
   const getDisplays = useStore((state) => state.getDisplays);
@@ -43,13 +57,13 @@ export default function Home() {
       <div className="Content">
         <div style={{ position: 'relative' }} >
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
-          <img src={logo} className="Logo" alt="logo" />
+          <img src={logo} className={classes.Logo} alt="logo" />
         </div>
       </div>
       <Card
         variant="outlined"
         style={{
-          background: '#303030',
+          // background: '#303030',
           maxWidth: '400px',
           margin: '0 auto',
         }}
@@ -70,6 +84,14 @@ export default function Home() {
           <Guide className={'step-one'} />
           <Button disabled variant="outlined">
             Docs
+          </Button>
+          <Button variant="outlined" onClick={()=>{
+            window.localStorage.removeItem('undefined')
+            window.localStorage.removeItem('ledfx-host')
+            window.localStorage.removeItem('ledfx-hosts')
+            window.localStorage.removeItem('ledfx-ws')
+            }}>
+            Clear Data
           </Button>
           <Button onClick={() => handleScan()} variant="outlined">
             {scanning ? <CircularProgress
