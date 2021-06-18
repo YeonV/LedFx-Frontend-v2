@@ -16,6 +16,11 @@ const useStore = create(
 
       // FRONTEND STUFF
 
+      pixelGraphs: [],
+      setPixelGraphs: (displays) => set((state) => ({
+        pixelGraphs: [...displays]
+      })),
+
       dialogs: {
         nohost: {
           open: false,
@@ -422,6 +427,11 @@ const useStore = create(
         if (resp) {
           set({ paused: resp.paused })
         }
+      },
+
+      graphs: false,
+      toggleGraphs: () => {
+          set((state) => ({ graphs: !state.graphs }))
       },
 
       shutdown: async () => await Ledfx('/api/power', set, 'POST', {

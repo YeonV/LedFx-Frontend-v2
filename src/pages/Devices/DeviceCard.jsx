@@ -19,6 +19,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import PixelGraph from '../Device/PixelGraph';
 
 const useStyles = makeStyles((theme) => ({
   displayCardPortrait: {
@@ -28,15 +29,16 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
     flexDirection: 'column',
     minWidth: '230px',
-    height: '240px',
-    '@media (max-width: 580px)': {
-      width: '87vw',
+    maxWidth: '400px',
+    // width: '230px',
+    // height: '240px',
+    // '@media (max-width: 580px)': {
+      width: '100%',
       height: 'unset',
-    }
+    // }
   },
   displayLink: {
     flexGrow: 0,
-    padding: '0 0.5rem',
     textDecoration: 'none',
     fontSize: 'large',
     color: 'inherit',
@@ -54,13 +56,13 @@ const useStyles = makeStyles((theme) => ({
   displayCardContainer: {
     display: 'flex',
     alignItems: 'center',
-    flexDirection: 'column',
+    // flexDirection: 'column',
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
-    '@media (max-width: 580px)': {
+    // '@media (max-width: 580px)': {
       flexDirection: 'row',
-    },
+    // },
   },
   iconMedia: {
     height: 140,
@@ -73,38 +75,38 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   editButton: {
-    minWidth: 32,
+    // minWidth: 32,
     marginLeft: theme.spacing(1),
-    '@media (max-width: 580px)': {
+    // '@media (max-width: 580px)': {
       minWidth: 'unset',
-    },
+    // },
   },
   editButtonMobile: {
-    minWidth: 32,
+    // minWidth: 32,
     marginLeft: theme.spacing(1),
-    '@media (max-width: 580px)': {
+    // '@media (max-width: 580px)': {
       minWidth: 'unset',
       flexGrow: 1,
-    },
+    // },
   },
   expand: {
-    display: 'none',
+    // display: 'none',
     transform: 'rotate(0deg)',
     marginLeft: 'auto',
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.shortest,
     }),
-    '@media (max-width: 580px)': {
+    // '@media (max-width: 580px)': {
       display: 'block'
-    },
+    // },
   },
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  buttonBar:{
-    '@media (max-width: 580px)': {
+  buttonBar: {
+    // '@media (max-width: 580px)': {
       display: 'none'
-    },
+    // },
   },
   buttonBarMobile: {
     width: '100%',
@@ -112,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonBarMobileWrapper: {
     display: 'flex',
-    margin: '0 -1rem -1rem -1rem',
+    margin: '0 -0.5rem -1rem -0.5rem',
     padding: '0.5rem 0.5rem 1.5rem 0.5rem',
     background: 'rgba(0,0,0,0.4)',
     '& > div, & > button': {
@@ -129,10 +131,12 @@ const DeviceCard = ({ display }) => {
   const classes = useStyles();
   const getDisplays = useStore((state) => state.getDisplays);
   const displays = useStore((state) => state.displays);
+  const devices = useStore((state) => state.devices);
   const deleteDisplay = useStore((state) => state.deleteDisplay);
   const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
 
+  
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
   const color = 'inherit';
@@ -178,6 +182,7 @@ const DeviceCard = ({ display }) => {
             )}
           </Icon>
         </NavLink>
+        <div  style={{padding: '0 0.5rem'}}>
         <NavLink
           to={`/device/${displays[display].id}`}
           className={classes.displayLink}
@@ -185,7 +190,15 @@ const DeviceCard = ({ display }) => {
         >
           {display && displays[display].config && displays[display].config.name}
         </NavLink>
-
+        {displays[display].effect.name ? (
+          <Typography variant="body1" color="textSecondary">
+            Effect: {displays[display].effect.name}
+          </Typography>
+        ) : (<></>)}
+        {!displays[display].effect.name ? (<Typography variant="body1" color="textSecondary">
+          Streaming from: {devices[Object.keys(devices).find(d => d === display)]?.active_displays}
+        </Typography>) : (<></>)}
+        </div>
         <div>
           {/* <TypeBadge variant={variant} display={display} /> */}
           {display && displays[display].config && displays[display].config.preview_only && (
@@ -200,18 +213,22 @@ const DeviceCard = ({ display }) => {
             </Button>
           )}
         </div>
-        
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-          <div className={classes.buttonBar}>
+
+        <IconButton
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded,
+          })}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+
+
+   
+
+        <div className={classes.buttonBar}>
           <Popover
             variant={variant}
             color={color}
@@ -248,12 +265,12 @@ const DeviceCard = ({ display }) => {
             <SettingsIcon />
           </Button>
         </div>
-       
-      </div>
 
+      </div>
+      <PixelGraph displayId={displays[display].id} />
       <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
         <div className={classes.buttonBarMobileWrapper}>
-        <Popover
+          <Popover
             variant={variant}
             color={color}
             onConfirm={() => handleDeleteDevice(display)}

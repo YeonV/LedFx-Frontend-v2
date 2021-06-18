@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useStore from '../../utils/apiStore';
 import AudioInputs from './AudioInputs';
 
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import { Input } from '@material-ui/core/';
 
 import { Button, Divider } from '@material-ui/core';
 
@@ -18,6 +19,8 @@ import { Delete, Refresh } from '@material-ui/icons';
 import PopoverSure from '../../components/Popover';
 import { download } from '../../utils/helpers';
 import WledCard from './WledCard';
+import Slider from '@material-ui/core/Slider';
+import useSliderStyles from '../../components/SchemaForm/BladeSlider.styles';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -41,12 +44,16 @@ const useStyles = makeStyles(theme => ({
 
 const Settings = () => {
   const classes = useStyles();
+  const sliderClasses = useSliderStyles();
   const getSystemConfig = useStore((state) => state.getSystemConfig);
+  const setSystemConfig = useStore((state) => state.setSystemConfig);
   const deleteSystemConfig = useStore((state) => state.deleteSystemConfig);
   const importSystemConfig = useStore((state) => state.importSystemConfig);
   const shutdown = useStore((state) => state.shutdown);
   const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
+  const [fps, setFps] = useState(30)
+  const [pixelLength, setPixelLength] = useState(50)
 
   const configDownload = async () => {
     const newConfig = { ...config, ...{ ledfx_presets: undefined } }
@@ -69,9 +76,75 @@ const Settings = () => {
     };
   }
 
-  useEffect(() => {
-    getSystemConfig();
 
+  const setSystemSetting = (setting, value) => {
+    setSystemConfig({ config: { [setting]: value } }).then(() => getSystemConfig());
+  }
+
+  const marks = [
+    {
+      value: 1,
+      label: '1',
+    },
+    {
+      value: 15,
+      label: '15',
+    },
+    {
+      value: 30,
+      label: '30',
+    },
+    {
+      value: 45,
+      label: '45',
+    },
+    {
+      value: 60,
+      label: '60',
+    },
+  ];
+
+  const marksPixelLength = [
+    {
+      value: 1,
+      label: '1',
+    },
+    {
+      value: 50,
+      label: '50',
+    },
+    {
+      value: 100,
+      label: '100',
+    },
+    {
+      value: 150,
+      label: '150',
+    },
+    {
+      value: 200,
+      label: '200',
+    },
+    {
+      value: 250,
+      label: '250',
+    },
+    {
+      value: 300,
+      label: '300',
+    },
+  ];
+
+
+  useEffect(() => {
+    getSystemConfig().then(() => {
+      if (typeof config.visualisation_fps === 'number') {
+        setFps(config.visualisation_fps)
+      }
+      if (typeof config.visualisation_maxlen === 'number') {
+        setPixelLength(config.visualisation_maxlen)
+      }
+    });
   }, [getSystemConfig]);
 
   return (
@@ -82,6 +155,73 @@ const Settings = () => {
           <AudioInputs />
 
           <Divider style={{ margin: '1rem 0' }} />
+          {config.visualisation_fps && (<>
+            <div className={sliderClasses.wrapper} style={{ order: 'unset' }}>
+              <label>Frontend FPS</label>
+              <Slider
+                value={fps}
+                marks={marks}
+                step={1}
+                valueLabelDisplay="auto"
+                min={1}
+                max={60}
+                onChangeCommitted={(e, val) => setSystemSetting("visualisation_fps", val)}
+                onChange={(e, val) => {
+                  setFps(val);
+                }}
+              />
+              <Input
+                disableUnderline
+                className={sliderClasses.input}
+                value={fps}
+                margin="dense"
+                onChange={(e, val) => {
+                  setFps(val);
+                }}
+                onBlur={(e, val) => setSystemSetting("visualisation_fps", val)}
+                inputProps={{
+                  min: 1,
+                  max: 60,
+                  type: 'number',
+                  'aria-labelledby': 'input-slider',
+                }}
+              />
+            </div>
+            
+            <div className={sliderClasses.wrapper} style={{ order: 'unset' }}>
+              <label>Frontend max Pixel Length</label>
+              <Slider
+                value={pixelLength}
+                marks={marksPixelLength}
+                step={1}
+                valueLabelDisplay="auto"
+                min={1}
+                max={300}
+                onChangeCommitted={(e, val) => setSystemSetting("visualisation_maxlen", val)}
+                onChange={(e, val) => {
+                  setPixelLength(val);
+                }}
+              />
+              <Input
+                disableUnderline
+                className={sliderClasses.input}
+                value={pixelLength}
+                margin="dense"
+                onChange={(e, val) => {
+                  setPixelLength(val);
+                }}
+                onBlur={(e, val) => setSystemSetting("visualisation_maxlen", val)}
+                inputProps={{
+                  min: 1,
+                  max: 300,
+                  type: 'number',
+                  'aria-labelledby': 'input-slider',
+                }}
+              />
+            </div>
+
+            </>)}
+          <Divider style={{ margin: '1rem 0' }} />
           <Button
             size="small"
             startIcon={<CloudUploadIcon />}
@@ -91,7 +231,7 @@ const Settings = () => {
             onClick={configDownload}
           >
             Export Config
-        </Button>
+          </Button>
           <PopoverSure
             startIcon={<Delete />}
             label="Reset Config"
@@ -119,7 +259,7 @@ const Settings = () => {
               className={classes.actionButton}
             >
               Import Config
-          </Button>
+            </Button>
           </label>
           <Button
             size="small"
@@ -130,7 +270,7 @@ const Settings = () => {
 
           >
             Restart LedFx
-          </Button>    
+          </Button>
 
           <Button
             size="small"
@@ -140,8 +280,8 @@ const Settings = () => {
             onClick={shutdown}
           >
             Shutdown
-        </Button>
-        <Button
+          </Button>
+          <Button
             size="small"
             startIcon={<Refresh />}
             variant="outlined"
