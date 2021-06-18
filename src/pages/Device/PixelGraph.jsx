@@ -10,13 +10,16 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     overflow: 'hidden',
     margin: '1rem 0',
+    '@media (max-width: 580px)': {
+      margin: '0',
+    },
     border: '1px solid',
     borderColor: theme.palette.text.secondary,
   },
   Pixel: { 
     height: '50px',
     width: '20px',
-    borderRadius: '0px',
+    borderRadius: '0',
     flex: 1,
   }
 }));
@@ -27,6 +30,7 @@ const PixelGraph = ({ displayId }) => {
   const [pixels, setPixels] = useState([])
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const displays = useStore((state) => state.displays);
+  const graphs = useStore((state) => state.graphs);
 
 
   useEffect(() => {
@@ -41,6 +45,10 @@ const PixelGraph = ({ displayId }) => {
     }
   }, [displays, pixelGraphs]);
 
+  if (!graphs) {
+    return null
+  }
+  
   return (
     pixels && pixels[0] && pixels[0].length
       ? (<div className={classes.PixelWrapper}>

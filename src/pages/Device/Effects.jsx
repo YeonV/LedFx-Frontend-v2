@@ -35,6 +35,7 @@ const EffectsCard = ({ displayId }) => {
   const displays = useStore((state) => state.displays);
   const effects = useStore((state) => state.schemas.effects);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const graphs = useStore((state) => state.graphs);
 
   const display = displays[displayId];
   const effectType = display && display.effect.type;
@@ -54,8 +55,10 @@ const EffectsCard = ({ displayId }) => {
   useEffect(() => {
     getDisplays();
     getSchemas();
-    setPixelGraphs([displayId]);
-  }, [setPixelGraphs, getDisplays, getSchemas, effectType]);
+    if (graphs) {
+      setPixelGraphs([displayId]);
+    }
+  }, [graphs, setPixelGraphs, getDisplays, getSchemas, effectType]);
   
   return (
     <Card className={classes.card}>

@@ -20,14 +20,18 @@ const Devices = () => {
   const getDisplays = useStore((state) => state.getDisplays);
   const displays = useStore((state) => state.displays);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const graphs = useStore((state) => state.graphs);
 
   useEffect(() => {
     getDisplays();
   }, [getDisplays]);
 
   useEffect(() => {
-    setPixelGraphs(Object.keys(displays))
-  }, [displays, setPixelGraphs]);
+    if (graphs) {
+      setPixelGraphs(Object.keys(displays))
+    }
+  }, [graphs, setPixelGraphs]);
+  // }, [graphs, displays, setPixelGraphs]);
 
   return (
       <div className={classes.cardWrapper}>

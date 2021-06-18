@@ -429,6 +429,11 @@ const useStore = create(
         }
       },
 
+      graphs: false,
+      toggleGraphs: () => {
+          set((state) => ({ graphs: !state.graphs }))
+      },
+
       shutdown: async () => await Ledfx('/api/power', set, 'POST', {
         timeout: 0,
         action: 'shutdown',
