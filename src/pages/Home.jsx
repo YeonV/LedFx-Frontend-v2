@@ -85,6 +85,14 @@ export default function Home() {
           <Button disabled variant="outlined">
             Docs
           </Button>
+          <Button variant="outlined" onClick={()=>{
+            window.localStorage.removeItem('undefined')
+            window.localStorage.removeItem('ledfx-host')
+            window.localStorage.removeItem('ledfx-hosts')
+            window.localStorage.removeItem('ledfx-ws')
+            }}>
+            Clear Data
+          </Button>
           <Button onClick={() => handleScan()} variant="outlined">
             {scanning ? <CircularProgress
               variant="determinate"

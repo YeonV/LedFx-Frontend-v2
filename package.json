@@ -28,6 +28,7 @@
     "react-scripts": "4.0.3",
     "reactour": "^1.18.4",
     "serve": "^11.3.2",
+    "sockette": "^2.0.6",
     "styled-components": "^5.3.0",
     "typescript": "^4.3.2",
     "web-vitals": "^1.1.2",

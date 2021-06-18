@@ -6,19 +6,28 @@ import Sockette from 'sockette';
 
 
 // const ws = new WebSocket(`${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
-// const ws = new WebSocket(`${(window.localStorage.getItem('ledfx-host') && window.localStorage.getItem('ledfx-host').startsWith('https')) ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
+// const ws = new WebSocket(`${(window.localStorage.getItem('ledfx-host') && window.localStorage.getItem('ledfx-host').startsWith('https')) ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0].split(':')[0] || 'localhost:8888'}/api/websocket`);
 // const ws = new WebSocket(`wss://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0].split(':')[0] || 'localhost:8888'}/api/websocket`);
 // const ws = new WebSocket(`${window.localStorage.getItem('ledfx-ws') ? window.localStorage.getItem('ledfx-ws') : 'ws://localhost:8888'}/api/websocket`, (window.localStorage.getItem('ledfx-ws') && window.localStorage.getItem('ledfx-ws').startsWith('wss')) ? 'https' : 'http');
 // const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
-
-
-function createSocket() {  
-const _ws = new Sockette(`${window.localStorage.getItem('ledfx-host') ? window.localStorage.getItem('ledfx-host').replace('https://','wss://').replace('http://','ws://') : 'ws://localhost:8888'}/api/websocket`, {
+function createSocket() {
+const _ws = new Sockette(`${window.localStorage.getItem('ledfx-ws') ? window.localStorage.getItem('ledfx-ws') : 'ws://localhost:8888'}/api/websocket`, {
   timeout: 5e3,
   maxAttempts: 10,
   onopen: e => {
-    // console.log('Connected!', e)
+    console.log('Connected!', e)
     _ws.ws = e.target;
+    // const request = {
+    //   event_filter: {
+    //     vis_id: "144",
+    //     is_device: true,
+    //   },
+    //   event_type: "visualisation_update",
+    //   id: 2,
+    //   type: "subscribe_event",
+    // };
+    // // console.log("Send");
+    // ws.send(JSON.stringify(++request.id && request));    
   },
   onmessage: (event) => {
     if (JSON.parse(event.data).event_type === "visualisation_update") {
@@ -51,6 +60,9 @@ export const HandleWs = () => {
   const graphs = useStore((state) => state.graphs);
   const [wsReady, setWsReady] = useState(false)
   
+  
+
+
   useLayoutEffect(() => {
     if (!(pathname.startsWith("/Devices") || pathname.startsWith("/device"))) {
       setPixelGraphs([]);
@@ -64,7 +76,8 @@ export const HandleWs = () => {
   }, [graphs]);
 
   useEffect(() => {
-    if (pixelGraphs.length > 0 && wsReady) {
+    
+    if (pixelGraphs.length > 0) {
       pixelGraphs.map((d, i) => {
         const getWs = async () => {
           const request = {
@@ -76,7 +89,7 @@ export const HandleWs = () => {
             id: i,
             type: "subscribe_event",
           };
-          // console.log("Send");
+          console.log("Send");
           ws.send(JSON.stringify(++request.id && request));
         };
         getWs();
@@ -92,18 +105,46 @@ export const HandleWs = () => {
             };
             ws.send(JSON.stringify(++request.id && request));
           };
-          // console.log("Clean Up");
+          console.log("Clean Up");
           removeGetWs();
         })
       }
     }
-  }, [wsReady, pixelGraphs]);
+  }, [ pixelGraphs]);
 
-  if (!wsReady) {
-    if (ws.ws) {
-      setWsReady(true)
-    }
-  }  
+  // useEffect(() => {
+  //   ws.onmessage = (event) => {
+  //     console.log("YZ")
+  //     if (JSON.parse(event.data).event_type === "visualisation_update") {
+  //       document.dispatchEvent(
+  //         new CustomEvent("YZ", { detail: {
+  //           id: JSON.parse(event.data).vis_id,
+  //           pixels: JSON.parse(event.data).pixels,
+  //         } })
+  //       );
+  //     }
+  //   };
+  //   ws.onopen = () => {
+  //     setWsReady(true)
+  //   }
+  // }, [ws]);
+
+  // useEffect(() => {
+
+  //   setTimeout(()=>{
+  //     setWsReady(true)
+  //   }, 1000)
+  // }, []);
+
+
+  // console.log(wsReady)
+  // if (!wsReady) {
+  //   if (ws.ws) {
+  //     console.log("NOWWW")
+  //     setWsReady(true)
+  //   }
+  // }
+  
 
   return null;
 }
