@@ -24,18 +24,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const PixelGraph = ({ displayId }) => {
+const PixelGraph = ({ virtId }) => {
 
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
   const pixelGraphs = useStore((state) => state.pixelGraphs);
-  const displays = useStore((state) => state.displays);
+  const virtuals = useStore((state) => state.virtuals);
   const graphs = useStore((state) => state.graphs);
 
 
   useEffect(() => {
     const handleWebsockets = (e) => {
-      if (e.detail.id === displayId) {
+      if (e.detail.id === virtId) {
         setPixels(e.detail.pixels)
       }
     }
@@ -43,7 +43,7 @@ const PixelGraph = ({ displayId }) => {
     return () => {    
       document.removeEventListener("YZ", handleWebsockets)
     }
-  }, [displays, pixelGraphs]);
+  }, [virtuals, pixelGraphs]);
 
   if (!graphs) {
     return null

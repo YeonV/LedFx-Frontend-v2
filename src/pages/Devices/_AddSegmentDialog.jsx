@@ -102,12 +102,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function ConfirmationDialog({ display, config }) {
+export default function ConfirmationDialog({ virtual, config }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const deviceList = useStore(state => state.devices) || {};
-    const updateDisplaySegments = useStore(state => state.updateDisplaySegments);
-    const getDisplays = useStore(state => state.getDisplays);
+    const updateVirtualSegments = useStore(state => state.updateVirtualSegments);
+    const getVirtuals = useStore(state => state.getVirtuals);
 
     const handleClickListItem = () => {
         setOpen(true);
@@ -120,11 +120,11 @@ export default function ConfirmationDialog({ display, config }) {
             
             if (device && device.config) {
                 const temp = [
-                    ...display.segments,
+                    ...virtual.segments,
                     [device.id, 0, device.config.pixel_count - 1, false],
                 ];
                 const test = temp.filter(t => t.length === 4);
-                updateDisplaySegments({ displayId: display.id, segments: test }).then(()=>getDisplays());
+                updateVirtualSegments({ virtId: virtual.id, segments: test }).then(()=>getVirtuals());
             }
         }
     };

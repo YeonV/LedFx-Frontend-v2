@@ -26,15 +26,15 @@ import Integrations from './pages/Integrations/Integrations';
 export default function PersistentDrawerLeft() {
   const classes = useStyles();
   const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
 
   useEffect(() => {
-    getDisplays();
+    getVirtuals();
     getSystemConfig();
     getSchemas();
-  }, [getDisplays, getSystemConfig, getSchemas]);
+  }, [getVirtuals, getSystemConfig, getSchemas]);
 
   return (
     <MuiThemeProvider theme={BladeDarkTheme}>
@@ -56,7 +56,7 @@ export default function PersistentDrawerLeft() {
               <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/devices" component={Devices} />
-                <Route path="/device/:displayId" component={Device} />
+                <Route path="/device/:virtId" component={Device} />
                 <Route path="/scenes" component={Scenes} />
                 <Route path="/integrations" component={Integrations} />
                 <Route path="/settings" component={Settings} />

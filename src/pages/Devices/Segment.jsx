@@ -60,30 +60,30 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Segment = ({ s, i, display, segments }) => {
+const Segment = ({ s, i, virtual, segments }) => {
     const getDevices = useStore((state) => state.getDevices);
     const devices = useStore((state) => state.devices);
 
     const title = devices && devices[Object.keys(devices).find(d => d === s[0])].config.name;
     const classes = useStyles();
-    const updateDisplaySegments = useStore(state => state.updateDisplaySegments);
-    const getDisplays = useStore(state => state.getDisplays);
+    const updateVirtualSegments = useStore(state => state.updateVirtualSegments);
+    const getVirtuals = useStore(state => state.getVirtuals);
 
     const handleInvert = () => {
         const newSegments = segments.map((seg, index) => index === i ? [seg[0], seg[1], seg[2], !seg[3]] : seg);
-        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
+        updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
     const reorder = direction => {
         const newSegments = direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1);
-        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
+        updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
     const handleDeleteSegment = () => {
         const newSegments = segments.filter((seg, index) => index !== i)
-        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
+        updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
     const handleRangeSegment = (start, end) => {
         const newSegments = segments.map((seg, index) => index === i ? [seg[0], start, end, !seg[3]] : seg);
-        updateDisplaySegments({ displayId: display.id, segments: newSegments }).then(() => getDisplays());
+        updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
 
     useEffect(() => {
@@ -109,7 +109,7 @@ const Segment = ({ s, i, display, segments }) => {
                         </div>
                         <div>
                             <Button
-                                disabled={i === display.segments.length - 1}
+                                disabled={i === virtual.segments.length - 1}
                                 variant={'outlined'}
                                 color={'inherit'}
                                 onClick={() => reorder('DOWN')}
@@ -125,7 +125,7 @@ const Segment = ({ s, i, display, segments }) => {
                     </div>
                 </div>
                 <div className={classes.segmentsColPixelSlider}>
-                    <PixelSlider s={s} i={i} display={display} handleRangeSegment={handleRangeSegment} />
+                    <PixelSlider s={s} i={i} virtual={virtual} handleRangeSegment={handleRangeSegment} />
                 </div>
                 <div className={classes.segmentsColActions}>
                     <div>
