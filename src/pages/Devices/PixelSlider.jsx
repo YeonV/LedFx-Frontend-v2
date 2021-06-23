@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Slider from "@material-ui/core/Slider";
 import useStore from "../../utils/apiStore";
 
-const PixelSlider = ({ s, i, display, handleRangeSegment }) => {
+const PixelSlider = ({ s, i, virtual, handleRangeSegment }) => {
   const getDevices = useStore((state) => state.getDevices);
   const devices = useStore((state) => state.devices);
 

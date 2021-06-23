@@ -2,7 +2,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-// import { setDisplayEffect } from "modules/selectedDisplay";
+// import { setVirtualEffect } from "modules/selectedDisplay";
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
 import BladeColorPicker from './BladeColorPicker';
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BladeColorDropDown = ({
   effects = {},
-  display = {},
+  virtual = {},
   clr = 'color',
   type = 'both',
   selectedType,
@@ -48,37 +48,37 @@ const BladeColorDropDown = ({
 }) => {
   const classes = useStyles();
 
-  const setDisplayEffect = useStore((state) => state.setDisplayEffect);
-  const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
+  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
+  const getVirtuals = useStore((state) => state.getVirtuals);
 
-  const displays = useStore((state) => state.displays);
-  const effectyz = displays[Object.keys(displays).find((d) => d === display.id)];
+  const virtuals = useStore((state) => state.virtuals);
+  const effectyz = virtuals[Object.keys(virtuals).find((d) => d === virtual.id)];
   const curEffSchema = effects[selectedType];
   const colors = curEffSchema
     && curEffSchema.schema.properties[clr]
     && curEffSchema.schema.properties[clr].enum;
 
-  const sendColor = (e) => display
-    && updateDisplayEffect(display.id, {
-      displayId: display.id,
+  const sendColor = (e) => virtual
+    && updateVirtualEffect(virtual.id, {
+      virtId: virtual.id,
       type: effectyz.effect.type,
       config: { [clr]: e },
     }).then(() => {
-      getDisplays();
+      getVirtuals();
     });
 
-  const onEffectTypeChange = (e) => display
-    && setDisplayEffect(display.id, {
-      displayId: display.id,
-      type: display.config[display.id].effect.type,
+  const onEffectTypeChange = (e) => virtual
+    && setVirtualEffect(virtual.id, {
+      virtId: virtual.id,
+      type: virtual.config[virtual.id].effect.type,
       config: { [clr]: e.target.value },
     }).then(() => {
-      getDisplays();
+      getVirtuals();
     });
   
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ virtual: 'flex', alignItems: 'center' }}>
       {(type === 'text' || type === 'both') && (
         <FormControl className={classes.FormRow}>
           <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>

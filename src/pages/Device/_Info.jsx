@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
   deviceCard: { width: '100%', maxWidth: '540px' },
 }));
 
-const InfoCard = ({ display, style }) => {
-  // console.log(display);
+const InfoCard = ({ virtual, style }) => {
+  // console.log(virtual);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState();
   const [pingData, setPingData] = useState();
@@ -45,8 +45,8 @@ const InfoCard = ({ display, style }) => {
   };
   const ping = async () => {
     try {
-      const response = await getPing(display.id);
-      const wledResponse = await getDevice(display.id);
+      const response = await getPing(virtual.id);
+      const wledResponse = await getDevice(virtual.id);
       const ip = wledResponse.config.ip_address;
       await fetch(`http://${ip}/json/info`)
         .then((res) => res.json())
@@ -66,19 +66,19 @@ const InfoCard = ({ display, style }) => {
         <CardContent>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h5">
-              {display.config[display.id]
-                && display.config[display.id].is_device
+              {virtual.config[virtual.id]
+                && virtual.config[virtual.id].is_device
                 ? 'Device Config'
                 : 'Virtual Config'}
             </Typography>
-            {display.config[display.id]
-              && display.config[display.id].is_device && (
+            {virtual.config[virtual.id]
+              && virtual.config[virtual.id].is_device && (
               <>
                 <Button variant="outlined" onClick={handleClick}>
                   <NetworkCheckIcon />
                 </Button>
                 <Popover
-                  id={display.id}
+                  id={virtual.id}
                   open={Boolean(anchorEl)}
                   anchorEl={anchorEl}
                   onClose={handleClose}
@@ -546,46 +546,46 @@ const InfoCard = ({ display, style }) => {
           <Typography className={classes.title} variant="subtitle1">
             Total Pixels:
             {' '}
-            {display.config[display.id]
-              && display.config[display.id].pixel_count}
+            {virtual.config[virtual.id]
+              && virtual.config[virtual.id].pixel_count}
           </Typography>
           <br />
           <Typography variant="caption">
             Active:
             {' '}
             {JSON.stringify(
-              display.config[display.id] && display.config[display.id].active,
+              virtual.config[virtual.id] && virtual.config[virtual.id].active,
             )}
             <br />
             Type:
             {' '}
             {JSON.stringify(
-              display.config[display.id]
-              && display.config[display.id].config.icon_name,
+              virtual.config[virtual.id]
+              && virtual.config[virtual.id].config.icon_name,
             )}
             <br />
             Center Offset:
             {' '}
-            {display.config[display.id]
-              && display.config[display.id].config.center_offset}
+            {virtual.config[virtual.id]
+              && virtual.config[virtual.id].config.center_offset}
             <br />
             Crossfade:
             {' '}
             {JSON.stringify(
-              display.config[display.id]
-              && display.config[display.id].config.crossfade,
+              virtual.config[virtual.id]
+              && virtual.config[virtual.id].config.crossfade,
             )}
             <br />
             Max Brightness:
             {' '}
-            {display.config[display.id]
-              && `${display.config[display.id].config.max_brightness * 100}%`}
+            {virtual.config[virtual.id]
+              && `${virtual.config[virtual.id].config.max_brightness * 100}%`}
             <br />
             Preview only:
             {' '}
             {JSON.stringify(
-              display.config[display.id]
-              && display.config[display.id].config.preview_only,
+              virtual.config[virtual.id]
+              && virtual.config[virtual.id].config.preview_only,
             )}
             <br />
           </Typography>
@@ -641,19 +641,19 @@ const InfoCard = ({ display, style }) => {
       <Card className={classes.deviceCard} style={{ marginTop: '1rem' }}>
         <CardContent>
           <Typography variant="h5">
-            {display.config[display.id] && display.config[display.id].is_device
+            {virtual.config[virtual.id] && virtual.config[virtual.id].is_device
               ? 'Device Segments'
               : 'Virtual Segments'}
           </Typography>
           <Typography variant="subtitle1">
             Segments:
             {' '}
-            {display.config[display.id]
-              && display.config[display.id].segments.length}
+            {virtual.config[virtual.id]
+              && virtual.config[virtual.id].segments.length}
           </Typography>
           <br />
-          {display.config[display.id]
-            && display.config[display.id].segments.map((s, i) => (
+          {virtual.config[virtual.id]
+            && virtual.config[virtual.id].segments.map((s, i) => (
               <li key={i}>{s.join(',')}</li>
             ))}
         </CardContent>

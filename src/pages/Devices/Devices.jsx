@@ -17,26 +17,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Devices = () => {
   const classes = useStyles();
-  const getDisplays = useStore((state) => state.getDisplays);
-  const displays = useStore((state) => state.displays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
+  const virtuals = useStore((state) => state.virtuals);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
 
   useEffect(() => {
-    getDisplays();
-  }, [getDisplays]);
+    getVirtuals();
+  }, [getVirtuals]);
 
   useEffect(() => {
     if (graphs) {
-      setPixelGraphs(Object.keys(displays))
+      setPixelGraphs(Object.keys(virtuals))
     }
   }, [graphs, setPixelGraphs]);
-  // }, [graphs, displays, setPixelGraphs]);
+  // }, [graphs, virtuals, setPixelGraphs]);
 
   return (
       <div className={classes.cardWrapper}>
-        {displays && Object.keys(displays).length ? Object.keys(displays).map((display, i) => (
-          <DeviceCard display={display} key={i} />
+        {virtuals && Object.keys(virtuals).length ? Object.keys(virtuals).map((virtual, i) => (
+          <DeviceCard virtual={virtual} key={i} />
         )) : (<>No devices yet</>)}
       </div>
   );

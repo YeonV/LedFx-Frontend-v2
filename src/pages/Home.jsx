@@ -35,7 +35,7 @@ export default function Home() {
   const classes = useStyles();
   const scanForDevices = useStore((state) => state.scanForDevices);
   const getDevices = useStore((state) => state.getDevices);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
   const [scanning, setScanning] = useState(false)
 
   const handleScan = () => {
@@ -44,7 +44,7 @@ export default function Home() {
       for (let sec = 1; sec <= 10; sec++) {
         await sleep(1000).then(() => {
           getDevices();
-          getDisplays();
+          getVirtuals();
           setScanning(sec)
         });
       }
