@@ -372,13 +372,14 @@ const useStore = create(
       config: {},
       getSystemConfig: async () => {
         const resp = await Ledfx('/api/config', set);
-        if (resp && resp.config) {
-          set({ config: { ...resp.config, ...{ ledfx_presets: undefined, devices: undefined, virtuals: undefined, virtuals: undefined, integrations: undefined, scenes: undefined } } });
+        console.log(resp)
+        if (resp && resp.host) {
+          set({ config: { ...resp, ...{ ledfx_presets: undefined, devices: undefined, virtuals: undefined, virtuals: undefined, integrations: undefined, scenes: undefined } } });
         } else {
           set({ dialogs: { nohost: { open: true } } });
         }
       },
-      setSystemConfig: async (config) => await Ledfx('/api/config', set, 'PUT', config),
+      setSystemConfig: async ({config}) => await Ledfx('/api/config', set, 'PUT', config),
       deleteSystemConfig: async () => await Ledfx('/api/config', set, 'DELETE'),
       importSystemConfig: async (config) => await Ledfx('/api/config', set, 'POST', config),
 
