@@ -372,7 +372,6 @@ const useStore = create(
       config: {},
       getSystemConfig: async () => {
         const resp = await Ledfx('/api/config', set);
-        console.log(resp)
         if (resp && resp.host) {
           set({ config: { ...resp, ...{ ledfx_presets: undefined, devices: undefined, virtuals: undefined, virtuals: undefined, integrations: undefined, scenes: undefined } } });
         } else {

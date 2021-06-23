@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     // height: '240px',
     // '@media (max-width: 580px)': {
       width: '100%',
-      height: 'unset',
+      height: '100%',
     // }
   },
   virtualLink: {
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     fontSize: 'large',
     color: 'inherit',
+    alignSelf: 'flex-start',
 
     '&:hover': {
       color: theme.palette.primary.main,
@@ -92,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
   expand: {
     // display: 'none',
     transform: 'rotate(0deg)',
+    alignSelf: 'flex-start',
     marginLeft: 'auto',
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.shortest,
@@ -160,7 +162,7 @@ const DeviceCard = ({ virtual }) => {
 
 
   return (
-    <Card className={classes.virtualCardPortrait}>
+    <Card className={classes.virtualCardPortrait} style={{ order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual].effect.name) ? 100 : 'unset'}}>
       <div className={classes.virtualCardContainer}>
         <NavLink
           to={`/device/${virtuals[virtual].id}`}
@@ -195,8 +197,8 @@ const DeviceCard = ({ virtual }) => {
             Effect: {virtuals[virtual].effect.name}
           </Typography>
         ) : (<></>)}
-        {!virtuals[virtual].effect.name ? (<Typography variant="body1" color="textSecondary">
-          Streaming from: {devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals}
+        {devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 ? (<Typography variant="body1" color="textSecondary">
+          {expanded ? "Streaming from: " : "Streaming..."} {expanded && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.map((s,i)=><li key={i}>{s}</li>)}
         </Typography>) : (<></>)}
         </div>
         <div>

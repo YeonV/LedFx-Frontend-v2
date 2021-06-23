@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     borderRadius: '10px',
     overflow: 'hidden',
-    margin: '1rem 0',
+    margin: '1rem 0 0 0',
     '@media (max-width: 580px)': {
       margin: '0',
     },
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.text.secondary,
   },
   Pixel: { 
-    height: '50px',
+    height: '40px',
     width: '20px',
     borderRadius: '0',
     flex: 1,
