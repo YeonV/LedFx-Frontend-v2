@@ -11,7 +11,7 @@ import Wled from '../../assets/Wled';
 const LeftBar = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const displays = useStore((state) => state.displays);
+  const virtuals = useStore((state) => state.virtuals);
   const open = useStore((state) => state.ui.bars?.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
 
@@ -49,38 +49,38 @@ const LeftBar = () => {
       </div>
       <Divider />
       <List>
-        {Object.keys(displays).map((d, i) => (
+        {Object.keys(virtuals).map((d, i) => (
           <Link
             style={{ textDecoration: 'none' }}
             key={i}
-            to={`/device/${displays[d].id}`}
+            to={`/device/${virtuals[d].id}`}
             onClick={() => {
               handleDrawerClose();
             }}
           >
-            <ListItem button key={displays[d].config.name}>
+            <ListItem button key={virtuals[d].config.name}>
               <ListItemIcon>
                 <Icon
                   color={d.effect && d.effect.active === true ? 'primary' : 'inherit'}
                   style={{ position: 'relative' }}
                 >
-                  {displays && displays[d] && displays[d].config && displays[d].config.icon_name
-                    && displays[d].config.icon_name.startsWith('wled') ? (
+                  {virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name
+                    && virtuals[d].config.icon_name.startsWith('wled') ? (
                     <Wled />
-                  ) : (displays && displays[d] && displays[d].config && displays[d].config.icon_name && displays[d].config.icon_name.startsWith('mdi:')) ? (
+                  ) : (virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name.startsWith('mdi:')) ? (
                     <span
-                      className={`mdi mdi-${displays[d].config.icon_name.split('mdi:')[1]}`}
+                      className={`mdi mdi-${virtuals[d].config.icon_name.split('mdi:')[1]}`}
                     />
                   ) : (
                     camelToSnake(
-                      displays[d].config.icon_name || 'SettingsInputComponent',
+                      virtuals[d].config.icon_name || 'SettingsInputComponent',
                     )
                   )}
                 </Icon>
               </ListItemIcon>
               <ListItemText
                 style={{ color: '#fff' }}
-                primary={displays[d].config.name}
+                primary={virtuals[d].config.name}
               />
             </ListItem>
           </Link>

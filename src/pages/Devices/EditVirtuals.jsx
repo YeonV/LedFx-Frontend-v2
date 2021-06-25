@@ -37,7 +37,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function FullScreenDialog({
-  display,
+  virtual,
   icon,
   className,
   color = 'default',
@@ -53,7 +53,7 @@ export default function FullScreenDialog({
   };
 
   const handleClose = () => {   
-    const output = getOverlapping(display.segments);
+    const output = getOverlapping(virtual.segments);
     const overlap = Object.keys(output).find(k => output[k].overlap);
     if (overlap) {
       showSnackbar({
@@ -70,7 +70,7 @@ export default function FullScreenDialog({
     getDevices()
   }, [getDevices])
 
-  return display && display.config ? (
+  return virtual && virtual.config ? (
     <>
       <Button
         variant={variant}
@@ -95,7 +95,7 @@ export default function FullScreenDialog({
               back
                         </Button>
             <Typography variant="h6" className={classes.title}>
-              {display.config.name}{' '}
+              {virtual.config.name}{' '}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -112,9 +112,9 @@ export default function FullScreenDialog({
         >
           <Typography variant="caption">Segments-Settings</Typography>
         </div>
-        {display.segments.length > 0 &&
-          display.segments.map((s, i) => (
-            <Segment s={s} i={i} key={i} display={display} segments={display.segments} />
+        {virtual.segments.length > 0 &&
+          virtual.segments.map((s, i) => (
+            <Segment s={s} i={i} key={i} virtual={virtual} segments={virtual.segments} />
           ))}
         <div
           style={{
@@ -125,7 +125,7 @@ export default function FullScreenDialog({
             margin: '0 1rem',
           }}
         >
-          <AddSegmentDialog display={display} />
+          <AddSegmentDialog virtual={virtual} />
         </div>
       </Dialog>
     </>

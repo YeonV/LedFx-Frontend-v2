@@ -26,39 +26,39 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const EffectsCard = ({ displayId }) => {
+const EffectsCard = ({ virtId }) => {
   const classes = useStyles();
-  const getDisplays = useStore((state) => state.getDisplays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
   const getSchemas = useStore((state) => state.getSchemas);
-  const clearDisplayEffect = useStore((state) => state.clearDisplayEffect);
-  const setDisplayEffect = useStore((state) => state.setDisplayEffect);
-  const displays = useStore((state) => state.displays);
+  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
+  const virtuals = useStore((state) => state.virtuals);
   const effects = useStore((state) => state.schemas.effects);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
 
-  const display = displays[displayId];
-  const effectType = display && display.effect.type;
+  const virtual = virtuals[virtId];
+  const effectType = virtual && virtual.effect.type;
 
   const handleRandomize = () => {
-    setDisplayEffect({
-      displayId: display.id,
+    setVirtualEffect({
+      virtId: virtual.id,
       type: effectType,
       config: 'RANDOMIZE',
     });
   };
 
   const handleClearEffect = () => {
-    clearDisplayEffect(displayId);
+    clearVirtualEffect(virtId);
   };
 
   useEffect(() => {
-    getDisplays();
+    getVirtuals();
     getSchemas();
     if (graphs) {
-      setPixelGraphs([displayId]);
+      setPixelGraphs([virtId]);
     }
-  }, [graphs, setPixelGraphs, getDisplays, getSchemas, effectType]);
+  }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType]);
   
   return (
     <Card className={classes.card}>
@@ -70,7 +70,7 @@ const EffectsCard = ({ displayId }) => {
             margin: '0 .5rem',
           }}
         >
-          <h1>{display && display.config.name}</h1>
+          <h1>{virtual && virtual.config.name}</h1>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {effectType && (
               <Button
@@ -87,23 +87,23 @@ const EffectsCard = ({ displayId }) => {
           </div>
         </div>
         
-        <PixelGraph displayId={displayId} />
+        <PixelGraph virtId={virtId} />
         <BladeEffectDropDown
-          displayId={displayId}
+          virtId={virtId}
           effects={effects}
-          display={display}
+          virtual={virtual}
         />
-        {displays
-          && display
+        {virtuals
+          && virtual
           && effects
-          && display.effect
-          && display.effect.config && (
+          && virtual.effect
+          && virtual.effect.config && (
           <BladeSchemaForm
-            display={display}
+            virtual={virtual}
             effects={effects}
             schema={effects[effectType].schema}
-            model={display.effect.config}
-            display_id={displayId}
+            model={virtual.effect.config}
+            virtual_id={virtId}
             selectedType={effectType}
           />
         )}

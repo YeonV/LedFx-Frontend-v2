@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PresetsCard = ({ display, effectType, presets, style }) => {
+const PresetsCard = ({ virtual, effectType, presets, style }) => {
   // console.log(presets);
   const classes = useStyles();
   const [name, setName] = useState('');
@@ -53,11 +53,11 @@ const PresetsCard = ({ display, effectType, presets, style }) => {
   const activatePreset = useStore((state) => state.activatePreset);
   const addPreset = useStore((state) => state.addPreset);
   const getPresets = useStore((state) => state.getPresets);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
   const deletePreset = useStore((state) => state.deletePreset);
 
-  const handleActivatePreset = (displayId, category, effectType, presetId) => () => {    
-    activatePreset(displayId, category, effectType, presetId);
+  const handleActivatePreset = (virtId, category, effectType, presetId) => () => {    
+    activatePreset(virtId, category, effectType, presetId);
     setName('');
   };
 
@@ -74,7 +74,7 @@ const PresetsCard = ({ display, effectType, presets, style }) => {
         <Button
           className={classes.presetButton}
           onClick={handleActivatePreset(
-            display.id,
+            virtual.id,
             CATEGORY,
             effectType,
             preset,
@@ -87,20 +87,20 @@ const PresetsCard = ({ display, effectType, presets, style }) => {
     ));
   };
 
-  const handleAddPreset = () => addPreset(display.id, name).then(() => {
-    // getDisplays();
+  const handleAddPreset = () => addPreset(virtual.id, name).then(() => {
+    // getVirtuals();
     getPresets(effectType)
   });
   const handleRemovePreset = (effectType, presetId) => () => deletePreset(effectType, presetId)
     .then(() => {
-      // getDisplays();
+      // getVirtuals();
       getPresets(effectType)
     });
 
     useEffect(() => {
-      getDisplays();
+      getVirtuals();
       effectType && getPresets(effectType);
-    }, [getDisplays, effectType])
+    }, [getVirtuals, effectType])
 
   return (
     <Card variant="outlined" className={classes.deviceCard} style={style}>

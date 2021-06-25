@@ -32,10 +32,10 @@ const useStyles = makeStyles({
 const BladeSchemaForm = (props) => {
   const {
     effects,
-    display,
+    virtual,
     schema,
     model,
-    display_id,
+    virtual_id,
     selectedType,
     colorMode = 'picker',
     colorKeys = [],
@@ -65,8 +65,8 @@ const BladeSchemaForm = (props) => {
   const [_selectVariant, _setSelectVariant] = useState(selectVariant);
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
-  const updateDisplayEffect = useStore((state) => state.updateDisplayEffect);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
+  const getVirtuals = useStore((state) => state.getVirtuals);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,12 +76,12 @@ const BladeSchemaForm = (props) => {
     setOpen(false);
   };
 
-  const handleEffectConfig = (display_id, config) => updateDisplayEffect(display_id, {
-    displayId: display_id,
+  const handleEffectConfig = (virtual_id, config) => updateVirtualEffect(virtual_id, {
+    virtId: virtual_id,
     type: selectedType,
     config,
   }).then(() => {
-    getDisplays();
+    getVirtuals();
   });
 
   return (
@@ -100,8 +100,8 @@ const BladeSchemaForm = (props) => {
       {pickerKeys && pickerKeys.map(
         (k) => model && Object.keys(model).indexOf(k) !== -1 && (
           <BladeColorDropDown
-            // displays={displays}
-            display={display}
+            // virtuals={virtuals}
+            virtual={virtual}
             effects={effects}
             selectedType={selectedType}
             model={model}
@@ -126,7 +126,7 @@ const BladeSchemaForm = (props) => {
                 onClick={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return handleEffectConfig(virtual_id, c);
                 }}
               />
             );
@@ -141,7 +141,7 @@ const BladeSchemaForm = (props) => {
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return handleEffectConfig(virtual_id, c);
                 }}
               />
             ) : (
@@ -167,7 +167,7 @@ const BladeSchemaForm = (props) => {
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return handleEffectConfig(virtual_id, c);
                 }}
               />
             );
@@ -184,7 +184,7 @@ const BladeSchemaForm = (props) => {
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(display_id, c);
+                  return handleEffectConfig(virtual_id, c);
                 }}
               />
             );
@@ -293,7 +293,7 @@ BladeSchemaForm.propTypes = {
   colorKeys: PropTypes.array,
   schema: PropTypes.object.isRequired,
   model: PropTypes.object.isRequired,
-  display_id: PropTypes.string.isRequired,
+  virtual_id: PropTypes.string.isRequired,
   selectedType: PropTypes.string.isRequired,
 };
 

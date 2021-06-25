@@ -17,8 +17,8 @@ const useStore = create(
       // FRONTEND STUFF
 
       pixelGraphs: [],
-      setPixelGraphs: (displays) => set((state) => ({
-        pixelGraphs: [...displays]
+      setPixelGraphs: (virtuals) => set((state) => ({
+        pixelGraphs: [...virtuals]
       })),
 
       dialogs: {
@@ -151,37 +151,37 @@ const useStore = create(
         config,
       ),
 
-      displays: {},
-      getDisplays: async () => {
-        const resp = await Ledfx('/api/displays', set);
-        if (resp && resp.displays && resp.paused) {
-          set({ displays: resp.displays });
+      virtuals: {},
+      getVirtuals: async () => {
+        const resp = await Ledfx('/api/virtuals', set);
+        if (resp && resp.virtuals && resp.paused) {
+          set({ virtuals: resp.virtuals });
           set({ paused: resp.paused });
         } else {
-          if (resp && resp.displays) {
-            set({ displays: resp.displays });
+          if (resp && resp.virtuals) {
+            set({ virtuals: resp.virtuals });
           }
         }
       },
-      addDisplay: async (config) => await Ledfx(
-        `/api/displays`,
+      addVirtual: async (config) => await Ledfx(
+        `/api/virtuals`,
         set,
         'POST',
         config,
       ),
-      deleteDisplay: async (displayId) => await Ledfx(
-        `/api/displays/${displayId}`,
+      deleteVirtual: async (virtId) => await Ledfx(
+        `/api/virtuals/${virtId}`,
         set,
         'DELETE',
       ),
-      clearDisplayEffect: async (displayId) => await Ledfx(
-        `/api/displays/${displayId}/effects`,
+      clearVirtualEffect: async (virtId) => await Ledfx(
+        `/api/virtuals/${virtId}/effects`,
         set,
         'DELETE',
       ),
-      setDisplayEffect: async (displayId, { type, config, active }) => {
+      setVirtualEffect: async (virtId, { type, config, active }) => {
         const resp = await Ledfx(
-          `/api/displays/${displayId}/effects`,
+          `/api/virtuals/${virtId}/effects`,
           set,
           'POST',
           {
@@ -193,9 +193,9 @@ const useStore = create(
 
         if (resp && resp.effect) {
           set({
-            displays: get().displays,
+            virtuals: get().virtuals,
             ...{
-              [displayId]: {
+              [virtId]: {
                 effect: {
                   type: resp.effect.type,
                   name: resp.effect.name,
@@ -207,9 +207,9 @@ const useStore = create(
           });
         }
       },
-      updateDisplayEffect: async (displayId, { type, config, active }) => {
+      updateVirtualEffect: async (virtId, { type, config, active }) => {
         const resp = await Ledfx(
-          `/api/displays/${displayId}/effects`,
+          `/api/virtuals/${virtId}/effects`,
           set,
           'PUT',
           {
@@ -221,9 +221,9 @@ const useStore = create(
         if (resp && resp.status && resp.status === 'success') {
           if (resp && resp.effect) {
             set({
-              displays: get().displays,
+              virtuals: get().virtuals,
               ...{
-                [displayId]: {
+                [virtId]: {
                   effect: {
                     type: resp.effect.type,
                     name: resp.effect.name,
@@ -236,9 +236,9 @@ const useStore = create(
           }
         }
       },
-      updateDisplaySegments: async ({ displayId, segments }) => {
+      updateVirtualSegments: async ({ virtId, segments }) => {
         const resp = await Ledfx(
-          `/api/displays/${displayId}`,
+          `/api/virtuals/${virtId}`,
           set,
           'POST',
           {
@@ -248,9 +248,9 @@ const useStore = create(
         if (resp && resp.status && resp.status === 'success') {
           if (resp && resp.effect) {
             set({
-              displays: get().displays,
+              virtuals: get().virtuals,
               ...{
-                [displayId]: {
+                [virtId]: {
                   effect: {
                     type: resp.effect.type,
                     name: resp.effect.name,
@@ -272,13 +272,13 @@ const useStore = create(
         }
       },
       addPreset: async (effectId, name) => await Ledfx(
-        `/api/displays/${effectId}/presets`,
+        `/api/virtuals/${effectId}/presets`,
         set,
         'POST',
         { name }
       ),
-      activatePreset: async (displayId, category, effectType, presetId) => await Ledfx(
-        `/api/displays/${displayId}/presets`,
+      activatePreset: async (virtId, category, effectType, presetId) => await Ledfx(
+        `/api/virtuals/${virtId}/presets`,
         set,
         'PUT',
         {
@@ -372,13 +372,13 @@ const useStore = create(
       config: {},
       getSystemConfig: async () => {
         const resp = await Ledfx('/api/config', set);
-        if (resp && resp.config) {
-          set({ config: { ...resp.config, ...{ ledfx_presets: undefined, devices: undefined, displays: undefined, virtuals: undefined, integrations: undefined, scenes: undefined } } });
+        if (resp && resp.host) {
+          set({ config: { ...resp, ...{ ledfx_presets: undefined, devices: undefined, virtuals: undefined, virtuals: undefined, integrations: undefined, scenes: undefined } } });
         } else {
           set({ dialogs: { nohost: { open: true } } });
         }
       },
-      setSystemConfig: async (config) => await Ledfx('/api/config', set, 'PUT', config),
+      setSystemConfig: async ({config}) => await Ledfx('/api/config', set, 'PUT', config),
       deleteSystemConfig: async () => await Ledfx('/api/config', set, 'DELETE'),
       importSystemConfig: async (config) => await Ledfx('/api/config', set, 'POST', config),
 
@@ -423,7 +423,7 @@ const useStore = create(
 
       paused: false,
       togglePause: async () => {
-        const resp = await Ledfx('/api/displays', set, 'PUT', {});
+        const resp = await Ledfx('/api/virtuals', set, 'PUT', {});
         if (resp) {
           set({ paused: resp.paused })
         }
@@ -442,7 +442,7 @@ const useStore = create(
         timeout: 0,
         action: 'restart',
       }),
-      getPing: async (displayId) => await Ledfx(`/api/ping/${displayId}`, set),
+      getPing: async (virtId) => await Ledfx(`/api/ping/${virtId}`, set),
       getDevice: async (deviceId) => {
         const resp = await Ledfx(`/api/devices/${deviceId}`, set);
         if (resp && resp.data) {
@@ -451,8 +451,8 @@ const useStore = create(
             id: deviceId,
             name: resp.data.name,
             config: resp.data,
-            displays: resp.data.displays,
-            active_displays: resp.data.active_displays,
+            virtuals: resp.data.virtuals,
+            active_virtuals: resp.data.active_virtuals,
           };
         }
       },

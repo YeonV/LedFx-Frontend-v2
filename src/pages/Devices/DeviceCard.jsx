@@ -22,7 +22,7 @@ import Typography from '@material-ui/core/Typography';
 import PixelGraph from '../Device/PixelGraph';
 
 const useStyles = makeStyles((theme) => ({
-  displayCardPortrait: {
+  virtualCardPortrait: {
     padding: '1rem',
     margin: '0.5rem',
     display: 'flex',
@@ -34,26 +34,27 @@ const useStyles = makeStyles((theme) => ({
     // height: '240px',
     // '@media (max-width: 580px)': {
       width: '100%',
-      height: 'unset',
+      height: '100%',
     // }
   },
-  displayLink: {
+  virtualLink: {
     flexGrow: 0,
     textDecoration: 'none',
     fontSize: 'large',
     color: 'inherit',
+    alignSelf: 'flex-start',
 
     '&:hover': {
       color: theme.palette.primary.main,
     },
   },
-  displayIcon: {
+  virtualIcon: {
     margingBottom: '4px',
     marginRight: '0.5rem',
     position: 'relative',
     fontSize: '50px',
   },
-  displayCardContainer: {
+  virtualCardContainer: {
     display: 'flex',
     alignItems: 'center',
     // flexDirection: 'column',
@@ -92,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
   expand: {
     // display: 'none',
     transform: 'rotate(0deg)',
+    alignSelf: 'flex-start',
     marginLeft: 'auto',
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.shortest,
@@ -127,12 +129,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceCard = ({ display }) => {
+const DeviceCard = ({ virtual }) => {
   const classes = useStyles();
-  const getDisplays = useStore((state) => state.getDisplays);
-  const displays = useStore((state) => state.displays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
+  const virtuals = useStore((state) => state.virtuals);
   const devices = useStore((state) => state.devices);
-  const deleteDisplay = useStore((state) => state.deleteDisplay);
+  const deleteVirtual = useStore((state) => state.deleteVirtual);
   const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
 
@@ -145,14 +147,14 @@ const DeviceCard = ({ display }) => {
     setExpanded(!expanded);
   };
 
-  const handleDeleteDevice = (display) => {
-    deleteDisplay(displays[display].id).then(() => {
-      getDisplays();
+  const handleDeleteDevice = (virtual) => {
+    deleteVirtual(virtuals[virtual].id).then(() => {
+      getVirtuals();
     });
   };
 
-  const handleEditDisplay = (display) => {
-    setDialogOpenAddVirtual(true, display)
+  const handleEditVirtual = (virtual) => {
+    setDialogOpenAddVirtual(true, virtual)
   };
   const handleEditDevice = (device) => {
     setDialogOpenAddDevice(true, device)
@@ -160,48 +162,48 @@ const DeviceCard = ({ display }) => {
 
 
   return (
-    <Card className={classes.displayCardPortrait}>
-      <div className={classes.displayCardContainer}>
+    <Card className={classes.virtualCardPortrait} style={{ order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual].effect.name) ? 100 : 'unset'}}>
+      <div className={classes.virtualCardContainer}>
         <NavLink
-          to={`/device/${displays[display].id}`}
-          className={classes.displayLink}
-          color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
+          to={`/device/${virtuals[virtual].id}`}
+          className={classes.virtualLink}
+          color={virtuals[virtual].effect && virtuals[virtual].effect.active === true ? 'primary' : 'inherit'}
         >
           <Icon
-            color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
-            className={classes.displayIcon}
+            color={virtuals[virtual].effect && virtuals[virtual].effect.active === true ? 'primary' : 'inherit'}
+            className={classes.virtualIcon}
           >
-            {displays[display].config && displays[display].config.icon_name && displays[display].config.icon_name.startsWith('wled') ? (
+            {virtuals[virtual].config && virtuals[virtual].config.icon_name && virtuals[virtual].config.icon_name.startsWith('wled') ? (
               <Wled />
-            ) : (displays[display].config && displays[display].config.icon_name.startsWith('mdi:')) ? (
+            ) : (virtuals[virtual].config && virtuals[virtual].config.icon_name.startsWith('mdi:')) ? (
               <span
-                className={`mdi mdi-${displays[display].config && displays[display].config.icon_name.split('mdi:')[1]}`}
+                className={`mdi mdi-${virtuals[virtual].config && virtuals[virtual].config.icon_name.split('mdi:')[1]}`}
               />
             ) : (
-              camelToSnake((displays[display].config && displays[display].config.icon_name) || 'SettingsInputComponent')
+              camelToSnake((virtuals[virtual].config && virtuals[virtual].config.icon_name) || 'SettingsInputComponent')
             )}
           </Icon>
         </NavLink>
         <div  style={{padding: '0 0.5rem'}}>
         <NavLink
-          to={`/device/${displays[display].id}`}
-          className={classes.displayLink}
-          color={displays[display].effect && displays[display].effect.active === true ? 'primary' : 'inherit'}
+          to={`/device/${virtuals[virtual].id}`}
+          className={classes.virtualLink}
+          color={virtuals[virtual].effect && virtuals[virtual].effect.active === true ? 'primary' : 'inherit'}
         >
-          {display && displays[display].config && displays[display].config.name}
+          {virtual && virtuals[virtual].config && virtuals[virtual].config.name}
         </NavLink>
-        {displays[display].effect.name ? (
+        {virtuals[virtual].effect.name ? (
           <Typography variant="body1" color="textSecondary">
-            Effect: {displays[display].effect.name}
+            Effect: {virtuals[virtual].effect.name}
           </Typography>
         ) : (<></>)}
-        {!displays[display].effect.name ? (<Typography variant="body1" color="textSecondary">
-          Streaming from: {devices[Object.keys(devices).find(d => d === display)]?.active_displays}
+        {devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 ? (<Typography variant="body1" color="textSecondary">
+          {expanded ? "Streaming from: " : "Streaming..."} {expanded && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.map((s,i)=><li key={i}>{s}</li>)}
         </Typography>) : (<></>)}
         </div>
         <div>
-          {/* <TypeBadge variant={variant} display={display} /> */}
-          {display && displays[display].config && displays[display].config.preview_only && (
+          {/* <TypeBadge variant={variant} virtual={virtual} /> */}
+          {virtual && virtuals[virtual].config && virtuals[virtual].config.preview_only && (
             <Button
               variant="text"
               disabled
@@ -232,17 +234,17 @@ const DeviceCard = ({ display }) => {
           <Popover
             variant={variant}
             color={color}
-            onConfirm={() => handleDeleteDevice(display)}
+            onConfirm={() => handleDeleteDevice(virtual)}
             className={classes.deleteButton}
           />
 
-          {displays[display].is_device ? (
+          {virtuals[virtual].is_device ? (
             <Button
               variant={variant}
               color={color}
               size="small"
               className={classes.editButton}
-              onClick={() => handleEditDevice(displays[display].is_device)}
+              onClick={() => handleEditDevice(virtuals[virtual].is_device)}
             >
               <BuildIcon />
             </Button>
@@ -250,7 +252,7 @@ const DeviceCard = ({ display }) => {
             <EditVirtuals
               variant={variant}
               color={color}
-              display={displays[display]}
+              virtual={virtuals[virtual]}
               className={classes.editButton}
               icon={<TuneIcon />}
             />
@@ -260,30 +262,30 @@ const DeviceCard = ({ display }) => {
             size="small"
             color={color}
             className={classes.editButton}
-            onClick={() => handleEditDisplay(display)}
+            onClick={() => handleEditVirtual(virtual)}
           >
             <SettingsIcon />
           </Button>
         </div>
 
       </div>
-      <PixelGraph displayId={displays[display].id} />
+      <PixelGraph virtId={virtuals[virtual].id} />
       <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
         <div className={classes.buttonBarMobileWrapper}>
           <Popover
             variant={variant}
             color={color}
-            onConfirm={() => handleDeleteDevice(display)}
+            onConfirm={() => handleDeleteDevice(virtual)}
             className={classes.deleteButton}
           />
 
-          {displays[display].is_device ? (
+          {virtuals[virtual].is_device ? (
             <Button
               variant={variant}
               color={color}
               size="small"
               className={classes.editButtonMobile}
-              onClick={() => handleEditDevice(displays[display].is_device)}
+              onClick={() => handleEditDevice(virtuals[virtual].is_device)}
             >
               <BuildIcon />
             </Button>
@@ -291,7 +293,7 @@ const DeviceCard = ({ display }) => {
             <EditVirtuals
               variant={variant}
               color={color}
-              display={displays[display]}
+              virtual={virtuals[virtual]}
               className={classes.editButtonMobile}
               icon={<TuneIcon />}
             />
@@ -301,7 +303,7 @@ const DeviceCard = ({ display }) => {
             size="small"
             color={color}
             className={classes.editButtonMobile}
-            onClick={() => handleEditDisplay(display)}
+            onClick={() => handleEditVirtual(virtual)}
           >
             <SettingsIcon />
           </Button>
