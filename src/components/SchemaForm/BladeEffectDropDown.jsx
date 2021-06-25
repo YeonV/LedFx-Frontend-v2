@@ -59,10 +59,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BladeEffectDropDown = ({ effects, display }) => {
+const BladeEffectDropDown = ({ effects, virtual }) => {
   const classes = useStyles();
-  const setDisplayEffect = useStore((state) => state.setDisplayEffect);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
+  const getVirtuals = useStore((state) => state.getVirtuals);
 
   const effectNames = effects
     && Object.keys(effects).map((eid) => ({
@@ -84,10 +84,10 @@ const BladeEffectDropDown = ({ effects, display }) => {
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
   };
-  const onEffectTypeChange = (e) => setDisplayEffect(display.id, {
+  const onEffectTypeChange = (e) => setVirtualEffect(virtual.id, {
     type: e.target.value,
   }).then(() => {
-    getDisplays();
+    getVirtuals();
   });
 
   return (
@@ -97,7 +97,7 @@ const BladeEffectDropDown = ({ effects, display }) => {
           Effect Type
         </InputLabel>
         <Select
-          defaultValue={display && display.effect && display.effect.type}
+          defaultValue={virtual && virtual.effect && virtual.effect.type}
           onChange={(e) => onEffectTypeChange(e)}
           id="grouped-select"
           className={classes.FormSelect}

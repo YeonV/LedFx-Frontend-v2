@@ -27,20 +27,20 @@ const useStyles = makeStyles((theme) => ({
   card: { width: '100%', maxWidth: '540px' },
 }));
 
-const TransitionCard = ({ display, style }) => {
+const TransitionCard = ({ virtual, style }) => {
   const classes = useStyles();
-  const schemas = useStore((state) => state.schemas.displays && state.schemas.displays.schema.properties);
-  const addDisplay = useStore((state) => state.addDisplay);
-  const transition_mode = display.config[display.id] && display.config[display.id].config && display.config[display.id].config.transition_mode;
-  const transition_time = display.config[display.id] && display.config[display.id].config && display.config[display.id].config.transition_time;
+  const schemas = useStore((state) => state.schemas.virtuals && state.schemas.virtuals.schema.properties);
+  const addVirtual = useStore((state) => state.addVirtual);
+  const transition_mode = virtual.config[virtual.id] && virtual.config[virtual.id].config && virtual.config[virtual.id].config.transition_mode;
+  const transition_time = virtual.config[virtual.id] && virtual.config[virtual.id].config && virtual.config[virtual.id].config.transition_time;
 
-  const handleSetTransition = (displayId, config) => addDisplay({
-      "id": displayId, "config": config
+  const handleSetTransition = (virtId, config) => addVirtual({
+      "id": virtId, "config": config
   });
 
-  // const handleSetTransition = (displayId, config) => console.log(displayId, config);
+  // const handleSetTransition = (virtId, config) => console.log(virtId, config);
 
-  const onSliderChange = (e, newValue) => handleSetTransition(display.id, {
+  const onSliderChange = (e, newValue) => handleSetTransition(virtual.id, {
     transition_time: newValue,
   });
 
@@ -79,7 +79,7 @@ const TransitionCard = ({ display, style }) => {
           <Select
             defaultValue={transition_mode || schemas.transition_mode.default}
             onChange={(e) => {
-              handleSetTransition(display.id, { transition_mode: e.target.value });
+              handleSetTransition(virtual.id, { transition_mode: e.target.value });
             }}
           >
             {schemas.transition_mode.enum.map((mode, i) => <MenuItem key={i} value={mode}>{mode}</MenuItem>)}

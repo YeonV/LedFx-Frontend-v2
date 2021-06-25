@@ -10,32 +10,32 @@ import useStore from "../../utils/apiStore";
 import BladeSchemaFormNew from "../../components/SchemaForm/BladeSchemaFormNew";
 
 const AddVirtualDialog = () => {
-  const addDisplay = useStore((state) => state.addDisplay);
+  const addVirtual = useStore((state) => state.addVirtual);
   const getDevices = useStore((state) => state.getDevices);
-  const getDisplays = useStore((state) => state.getDisplays);
-  const displays = useStore((state) => state.displays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
+  const virtuals = useStore((state) => state.virtuals);
 
   const open = useStore((state) => state.dialogs.addVirtual?.open || false);
-  const displayId = useStore(
+  const virtId = useStore(
     (state) => state.dialogs.addVirtual?.edit || false
   );
-  const initial = displays[displayId] || { type: "", config: {} };
+  const initial = virtuals[virtId] || { type: "", config: {} };
 
   const setDialogOpenAddVirtual = useStore(
     (state) => state.setDialogOpenAddVirtual
   );
 
-  const displaysSchemas = useStore((state) => state.schemas?.displays);
+  const virtualsSchemas = useStore((state) => state.schemas?.virtuals);
   const showSnackbar = useStore((state) => state.showSnackbar);
   const [model, setModel] = useState({});
 
-  const currentSchema = (displaysSchemas && displaysSchemas.schema) || {};
+  const currentSchema = (virtualsSchemas && virtualsSchemas.schema) || {};
 
   const handleClose = () => {
     setDialogOpenAddVirtual(false);
     setModel({});
   };
-  const handleAddDisplay = (e) => {
+  const handleAddVirtual = (e) => {
     const cleanedModel = Object.fromEntries(
       Object.entries(model).filter(([_, v]) => v !== "")
     );
@@ -63,28 +63,28 @@ const AddVirtualDialog = () => {
         initial.config.constructor === Object
       ) {
         console.log("ADDING");
-        addDisplay({
+        addVirtual({
           config: { ...defaultModel, ...cleanedModel },
         }).then((res) => {
           console.log(res);
           if (res !== "failed") {
             setDialogOpenAddVirtual(false);
             getDevices();
-            getDisplays();
+            getVirtuals();
           } else {
           }
         });
       } else {
         console.log("EDITING");
-        addDisplay({
-          id: displayId,
+        addVirtual({
+          id: virtId,
           config: { ...model },
         }).then((res) => {
           console.log(res);
           if (res !== "failed") {
             setDialogOpenAddVirtual(false);
             getDevices();
-            getDisplays();
+            getVirtuals();
           } else {
           }
         });
@@ -98,7 +98,7 @@ const AddVirtualDialog = () => {
 
   useEffect(() => {
     handleModelChange(initial.config);
-  }, [displayId]);
+  }, [virtId]);
 
   return (
     <Dialog
@@ -129,7 +129,7 @@ const AddVirtualDialog = () => {
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleAddDisplay} color="primary">
+        <Button onClick={handleAddVirtual} color="primary">
           {initial.config &&
           Object.keys(initial.config).length === 0 &&
           initial.config.constructor === Object

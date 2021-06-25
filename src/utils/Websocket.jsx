@@ -45,7 +45,7 @@ export const WsContext = React.createContext(ws);
 
 export const HandleWs = () => {
   const { pathname } = useLocation();
-  const displays = useStore((state) => state.displays);
+  const virtuals = useStore((state) => state.virtuals);
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
@@ -70,7 +70,7 @@ export const HandleWs = () => {
           const request = {
             event_filter: {
               vis_id: d,
-              is_device: !!displays[d].is_device,
+              is_device: !!virtuals[d].is_device,
             },
             event_type: "visualisation_update",
             id: i,

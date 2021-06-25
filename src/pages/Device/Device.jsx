@@ -9,7 +9,7 @@ import MelbankCard from './Melbank';
 import InfoCard from './_Info';
 
 const useStyles = makeStyles((theme) => ({
-  displayWrapper: {
+  virtualWrapper: {
     justifyContent: 'center',
     '@media (max-width: 1400px)': {
       justifyContent: 'flex-start',
@@ -20,44 +20,44 @@ const useStyles = makeStyles((theme) => ({
 
 const Device = ({
   match: {
-    params: { displayId },
+    params: { virtId },
   },
 }) => {
   const classes = useStyles();
 
-  const getDisplays = useStore((state) => state.getDisplays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
   const getPresets = useStore((state) => state.getPresets);
   const getSchemas = useStore((state) => state.getSchemas);
 
-  const displays = useStore((state) => state.displays);
+  const virtuals = useStore((state) => state.virtuals);
   const presets = useStore((state) => state.presets);
 
-  const display = displays[displayId];
-  const effectType = display && display.effect.type;
+  const virtual = virtuals[virtId];
+  const effectType = virtual && virtual.effect.type;
 
   useEffect(() => {
-    getDisplays();
+    getVirtuals();
     getSchemas();
     effectType && getPresets(effectType);
-  }, [getDisplays, getSchemas, getPresets, effectType]);
+  }, [getVirtuals, getSchemas, getPresets, effectType]);
 
   return (
     <Grid
       container
       direction="row"
       spacing={2}
-      className={classes.displayWrapper}
+      className={classes.virtualWrapper}
     >
-      {display && (
+      {virtual && (
         <>
           <Grid item className={classes.girdItem}>
-            <EffectsCard displayId={displayId} />
-            <TransitionCard display={display} style={{ marginTop: '1rem' }} />
+            <EffectsCard virtId={virtId} />
+            <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />
           </Grid>
           <Grid item className={classes.girdItem}>
             {effectType && presets && (
               <PresetsCard
-                display={display}
+                virtual={virtual}
                 presets={presets}
                 effectType={effectType}
                 style={{ marginBottom: '1rem' }}
@@ -67,7 +67,7 @@ const Device = ({
           </Grid>
           {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
             <Grid item className={classes.girdItem}>
-              <InfoCard display={display} style={{ marginTop: '1rem' }} />
+              <InfoCard virtual={virtual} style={{ marginTop: '1rem' }} />
             </Grid>
           )}
         </>

@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     borderRadius: '10px',
     overflow: 'hidden',
-    margin: '1rem 0',
+    margin: '1rem 0 0 0',
     '@media (max-width: 580px)': {
       margin: '0',
     },
@@ -17,25 +17,25 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.text.secondary,
   },
   Pixel: { 
-    height: '50px',
+    height: '40px',
     width: '20px',
     borderRadius: '0',
     flex: 1,
   }
 }));
 
-const PixelGraph = ({ displayId }) => {
+const PixelGraph = ({ virtId }) => {
 
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
   const pixelGraphs = useStore((state) => state.pixelGraphs);
-  const displays = useStore((state) => state.displays);
+  const virtuals = useStore((state) => state.virtuals);
   const graphs = useStore((state) => state.graphs);
 
 
   useEffect(() => {
     const handleWebsockets = (e) => {
-      if (e.detail.id === displayId) {
+      if (e.detail.id === virtId) {
         setPixels(e.detail.pixels)
       }
     }
@@ -43,7 +43,7 @@ const PixelGraph = ({ displayId }) => {
     return () => {    
       document.removeEventListener("YZ", handleWebsockets)
     }
-  }, [displays, pixelGraphs]);
+  }, [virtuals, pixelGraphs]);
 
   if (!graphs) {
     return null

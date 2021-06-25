@@ -45,7 +45,7 @@ const AddDeviceDialog = () => {
   const classes = useStyles();
 
   const getDevices = useStore((state) => state.getDevices);
-  const getDisplays = useStore((state) => state.getDisplays);
+  const getVirtuals = useStore((state) => state.getVirtuals);
   const addDevice = useStore((state) => state.addDevice);
   const updateDevice = useStore((state) => state.updateDevice);
   const devices = useStore((state) => state.devices);
@@ -102,7 +102,7 @@ const AddDeviceDialog = () => {
           if (res !== "failed") {
             setDialogOpenAddDevice(false);
             getDevices();
-            getDisplays();
+            getVirtuals();
           } else {
           }
         });
@@ -115,7 +115,7 @@ const AddDeviceDialog = () => {
           if (res !== "failed") {
             setDialogOpenAddDevice(false);
             getDevices();
-            getDisplays();
+            getVirtuals();
           } else {
           }
         });
