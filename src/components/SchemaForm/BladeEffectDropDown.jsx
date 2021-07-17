@@ -97,7 +97,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
           Effect Type
         </InputLabel>
         <Select
-          defaultValue={virtual && virtual.effect && virtual.effect.type}
+          value={virtual && virtual.effect && virtual.effect.type || ""}
           onChange={(e) => onEffectTypeChange(e)}
           id="grouped-select"
           className={classes.FormSelect}
