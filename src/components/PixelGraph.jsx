@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import useStore from '../../utils/apiStore';
+import useStore from '../utils/apiStore';
 
 const useStyles = makeStyles((theme) => ({
   PixelWrapper: {

@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
-import DeviceCard from './DeviceCard';
-
+import DeviceCard from './DeviceCard/DeviceCard';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
@@ -31,7 +30,6 @@ const Devices = () => {
       setPixelGraphs(Object.keys(virtuals))
     }
   }, [graphs, setPixelGraphs]);
-  // }, [graphs, virtuals, setPixelGraphs]);
 
   return (
       <div className={classes.cardWrapper}>

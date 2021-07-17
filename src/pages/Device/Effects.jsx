@@ -5,7 +5,7 @@ import { Casino, Delete } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
 import BladeSchemaForm from '../../components/SchemaForm/BladeSchemaForm';
-import PixelGraph from './PixelGraph';
+import PixelGraph from '../../components/PixelGraph';
 
 const useStyles = makeStyles(theme => ({
   content: {

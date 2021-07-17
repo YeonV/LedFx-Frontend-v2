@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
-import IntegrationCard from './IntegrationCard';
+import IntegrationCard from './IntegrationCard/IntegrationCard';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
