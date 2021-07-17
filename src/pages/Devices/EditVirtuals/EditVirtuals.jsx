@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,27 +8,12 @@ import Slide from '@material-ui/core/Slide';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
-import { getOverlapping } from "../../utils/helpers";
-import useStore from '../../utils/apiStore';
+import { getOverlapping } from "../../../utils/helpers";
+import useStore from '../../../utils/apiStore';
 
-import AddSegmentDialog from './_AddSegmentDialog';
-import Segment from './Segment';
-
-const useStyles = makeStyles(theme => ({
-  appBar: {
-    position: 'relative',
-    marginBottom: '1rem',
-    background: theme.palette.background.default,
-    color: theme.palette.text.primary,
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
-  },
-  dialog: {
-    background: theme.palette.background.default,
-  },
-}));
+import AddSegmentDialog from '../_AddSegmentDialog';
+import Segment from '../Segment/Segment';
+import { useEditVirtualsStyles } from './EditVirtuals.styles'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -43,7 +26,7 @@ export default function FullScreenDialog({
   color = 'default',
   variant = 'contained',
 }) {
-  const classes = useStyles();
+  const classes = useEditVirtualsStyles();
   const showSnackbar = useStore((state) => state.showSnackbar);
   const getDevices = useStore((state) => state.getDevices);
   const [open, setOpen] = React.useState(false);
@@ -100,31 +83,14 @@ export default function FullScreenDialog({
           </Toolbar>
         </AppBar>
 
-        <div
-          style={{
-            display: 'flex',
-            borderBottom: '1px dashed #aaa',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '0.5rem 0',
-            margin: '0 1rem',
-          }}
-        >
+        <div className={classes.segmentTitle}>
           <Typography variant="caption">Segments-Settings</Typography>
         </div>
         {virtual.segments.length > 0 &&
           virtual.segments.map((s, i) => (
             <Segment s={s} i={i} key={i} virtual={virtual} segments={virtual.segments} />
           ))}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '0.5rem 0',
-            margin: '0 1rem',
-          }}
-        >
+        <div className={classes.segmentButtonWrapper}>
           <AddSegmentDialog virtual={virtual} />
         </div>
       </Dialog>

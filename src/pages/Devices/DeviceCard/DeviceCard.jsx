@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import Icon from '@material-ui/core/Icon';
@@ -9,129 +8,22 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import TuneIcon from '@material-ui/icons/Tune';
 import BuildIcon from '@material-ui/icons/Build';
 import { NavLink } from 'react-router-dom';
-import Wled from '../../assets/Wled';
-import YZ from '../../assets/YZ';
-import useStore from '../../utils/apiStore';
-import { camelToSnake } from '../../utils/helpers';
-import Popover from '../../components/Popover';
-// import TypeBadge from './TypeBadge';
-import EditVirtuals from './EditVirtuals';
+import Wled from '../../../assets/Wled';
+import YZ from '../../../assets/YZ';
+import useStore from '../../../utils/apiStore';
+import { camelToSnake } from '../../../utils/helpers';
+import Popover from '../../../components/Popover';
+import EditVirtuals from '../EditVirtuals/EditVirtuals';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import PixelGraph from '../Device/PixelGraph';
+import PixelGraph from '../../../components/PixelGraph';
+import { useDeviceCardStyles } from './DeviceCard.styles'
 
-const useStyles = makeStyles((theme) => ({
-  virtualCardPortrait: {
-    padding: '1rem',
-    margin: '0.5rem',
-    display: 'flex',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-    minWidth: '230px',
-    maxWidth: '400px',
-    // width: '230px',
-    // height: '240px',
-    // '@media (max-width: 580px)': {
-      width: '100%',
-      height: '100%',
-    // }
-  },
-  virtualLink: {
-    flexGrow: 0,
-    textDecoration: 'none',
-    fontSize: 'large',
-    color: 'inherit',
-    alignSelf: 'flex-start',
-
-    '&:hover': {
-      color: theme.palette.primary.main,
-    },
-  },
-  virtualIcon: {
-    margingBottom: '4px',
-    marginRight: '0.5rem',
-    position: 'relative',
-    fontSize: '50px',
-  },
-  virtualCardContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    // flexDirection: 'column',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-between',
-    // '@media (max-width: 580px)': {
-      flexDirection: 'row',
-    // },
-  },
-  iconMedia: {
-    height: 140,
-    display: 'flex',
-    alignItems: 'center',
-    margin: '0 auto',
-    fontSize: 100,
-    '& > span:before': {
-      position: 'relative',
-    },
-  },
-  editButton: {
-    // minWidth: 32,
-    marginLeft: theme.spacing(1),
-    // '@media (max-width: 580px)': {
-      minWidth: 'unset',
-    // },
-  },
-  editButtonMobile: {
-    // minWidth: 32,
-    marginLeft: theme.spacing(1),
-    // '@media (max-width: 580px)': {
-      minWidth: 'unset',
-      flexGrow: 1,
-    // },
-  },
-  expand: {
-    // display: 'none',
-    transform: 'rotate(0deg)',
-    alignSelf: 'flex-start',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-    // '@media (max-width: 580px)': {
-      display: 'block'
-    // },
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-  buttonBar: {
-    // '@media (max-width: 580px)': {
-      display: 'none'
-    // },
-  },
-  buttonBarMobile: {
-    width: '100%',
-    textAlign: 'right',
-  },
-  buttonBarMobileWrapper: {
-    display: 'flex',
-    margin: '0 -0.5rem -1rem -0.5rem',
-    padding: '0.5rem 0.5rem 1.5rem 0.5rem',
-    background: 'rgba(0,0,0,0.4)',
-    '& > div, & > button': {
-      flexGrow: 1,
-      flexBasis: '30%'
-    },
-    '& > div > button': {
-      width: '100%'
-    }
-  },
-}));
 
 const DeviceCard = ({ virtual }) => {
-  const classes = useStyles();
+  const classes = useDeviceCardStyles();
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
   const devices = useStore((state) => state.devices);

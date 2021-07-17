@@ -1,25 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
-import clsx from 'clsx';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import MenuIcon from '@material-ui/icons/Menu';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import Refresh from '@material-ui/icons/Refresh';
-import Play from '@material-ui/icons/PlayCircleOutline';
-import Language from '@material-ui/icons/Language';
-import CloudDownload from '@material-ui/icons/CloudDownload';
-import { drawerWidth, download } from '../../utils/helpers';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link } from 'react-router-dom';
-import { BarChart, Pause, Settings } from '@material-ui/icons';
-
+import clsx from 'clsx';
+import {AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon} from '@material-ui/core';
+import {Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings} from '@material-ui/icons';
+import { drawerWidth } from '../../utils/helpers';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -31,10 +17,6 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    // '@media (max-width: 580px)': {
-    //   width: 'calc(100% - 100vw)',
-    //   marginLeft: '100vw',
-    // },
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -57,8 +39,6 @@ const TopBar = () => {
   const toggleGraphs = useStore((state) => state.toggleGraphs);
   const paused = useStore((state) => state.paused);
   const graphs = useStore((state) => state.graphs);
-  const shutdown = useStore((state) => state.shutdown);
-  const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
 
   const { pathname } = useLocation();
@@ -81,14 +61,6 @@ const TopBar = () => {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const configDownload = async () => {
-    download(
-      { config, ...{ ledfx_presets: undefined } },
-      'config.json',
-      'application/json',
-    );
   };
 
   return (
@@ -120,7 +92,7 @@ const TopBar = () => {
           onClick={handleClick}
           className={'step-two'}
         >
-          <MoreIcon />
+          <MoreVert />
         </IconButton>
         <Menu
           id="simple-menu"
@@ -137,7 +109,7 @@ const TopBar = () => {
           </MenuItem>
           <MenuItem onClick={changePause}>
             <ListItemIcon>
-              {paused ?  <Play /> : <Pause />}
+              {paused ?  <PlayCircleOutline /> : <Pause />}
             </ListItemIcon>
             {paused ? 'Play' : 'Pause'}
           </MenuItem>
@@ -147,25 +119,7 @@ const TopBar = () => {
             </ListItemIcon>
             {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
           </MenuItem>
-          {/* <MenuItem onClick={configDownload}>
-            <ListItemIcon>
-              <CloudDownload />
-            </ListItemIcon>
-            Export Config
-          </MenuItem>
-          <MenuItem onClick={restart}>
-            <ListItemIcon>
-              <Refresh />
-            </ListItemIcon>
-            Restart
-          </MenuItem>
-          <MenuItem onClick={shutdown}>
-            <ListItemIcon>
-              <PowerSettingsNewIcon />
-            </ListItemIcon>
-            Shutdown
-          </MenuItem> */}
-          <MenuItem onClick={()=>window.location="/v2/Settings"}>
+          <MenuItem component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />
             </ListItemIcon>
