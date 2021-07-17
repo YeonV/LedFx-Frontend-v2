@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { Button, Card, CardContent } from '@material-ui/core/';
-import { Casino, Delete } from '@material-ui/icons/';
+import { Casino, Clear, Settings } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
 import BladeSchemaForm from '../../components/SchemaForm/BladeSchemaForm';
@@ -20,14 +21,24 @@ const useStyles = makeStyles(theme => ({
   card: {
     width: '100%',
     maxWidth: '540px',
-    '@media (max-width: 580px)': {    
-        maxWidth: '87vw'
+    '@media (max-width: 580px)': {
+      maxWidth: '87vw'
     },
   },
+  pixelbar: {
+    opacity: 1,
+    transitionDuration: 0
+  },
+  pixelbarOut: {
+    opacity: 0.2,
+    transition: 'opacity',
+    transitionDuration: 1000
+  }
 }));
 
 const EffectsCard = ({ virtId }) => {
   const classes = useStyles();
+  const [fade, setFade] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSchemas = useStore((state) => state.getSchemas);
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
@@ -35,6 +46,7 @@ const EffectsCard = ({ virtId }) => {
   const virtuals = useStore((state) => state.virtuals);
   const effects = useStore((state) => state.schemas.effects);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+
   const graphs = useStore((state) => state.graphs);
 
   const virtual = virtuals[virtId];
@@ -49,7 +61,11 @@ const EffectsCard = ({ virtId }) => {
   };
 
   const handleClearEffect = () => {
-    clearVirtualEffect(virtId);
+    clearVirtualEffect(virtId).then(() => {
+      setFade(true)
+      setTimeout(() => { getVirtuals() }, virtual.config.transition_time * 1000)
+      setTimeout(() => { setFade(false) }, virtual.config.transition_time * 1000 + 300)
+    });
   };
 
   useEffect(() => {
@@ -59,7 +75,7 @@ const EffectsCard = ({ virtId }) => {
       setPixelGraphs([virtId]);
     }
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType]);
-  
+
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -73,21 +89,34 @@ const EffectsCard = ({ virtId }) => {
           <h1>{virtual && virtual.config.name}</h1>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {effectType && (
-              <Button
-                onClick={() => handleRandomize()}
-                variant="outlined"
-                style={{ marginRight: '.5rem' }}
-              >
-                <Casino />
-              </Button>
+              <>
+                <Button
+                  onClick={() => handleRandomize()}
+                  variant="outlined"
+                  style={{ marginRight: '.5rem' }}
+                >
+                  <Casino />
+                </Button>
+                <Button variant="outlined" onClick={() => handleClearEffect()}>
+                  <Clear />
+                </Button>
+              </>
             )}
-            <Button variant="outlined" onClick={() => handleClearEffect()}>
-              <Delete />
-            </Button>
+
           </div>
         </div>
-        
-        <PixelGraph virtId={virtId} />
+        <div className={clsx(classes.pixelbar, {
+          [classes.pixelbarOut]: fade,
+        })} style={{ transitionDuration: virtual.config.transition_time * 1000 }}>
+
+          <PixelGraph virtId={virtId} dummy={!(virtuals
+            && virtual
+            && effects
+            && virtual.effect
+            && virtual.effect.config)} />
+
+        </div>
+        <div style={{ height: '1rem' }} />
         <BladeEffectDropDown
           virtId={virtId}
           effects={effects}
@@ -98,15 +127,15 @@ const EffectsCard = ({ virtId }) => {
           && effects
           && virtual.effect
           && virtual.effect.config && (
-          <BladeSchemaForm
-            virtual={virtual}
-            effects={effects}
-            schema={effects[effectType].schema}
-            model={virtual.effect.config}
-            virtual_id={virtId}
-            selectedType={effectType}
-          />
-        )}
+            <BladeSchemaForm
+              virtual={virtual}
+              effects={effects}
+              schema={effects[effectType].schema}
+              model={virtual.effect.config}
+              virtual_id={virtId}
+              selectedType={effectType}
+            />
+          )}
       </CardContent>
     </Card>
   );

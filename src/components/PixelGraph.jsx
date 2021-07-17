@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid',
     borderColor: theme.palette.text.secondary,
   },
-  Pixel: { 
+  Pixel: {
     height: '40px',
     width: '20px',
     borderRadius: '0',
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const PixelGraph = ({ virtId }) => {
+const PixelGraph = ({ virtId, dummy=false }) => {
 
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
@@ -40,7 +40,7 @@ const PixelGraph = ({ virtId }) => {
       }
     }
     document.addEventListener("YZ", handleWebsockets);
-    return () => {    
+    return () => {
       document.removeEventListener("YZ", handleWebsockets)
     }
   }, [virtuals, pixelGraphs]);
@@ -48,16 +48,20 @@ const PixelGraph = ({ virtId }) => {
   if (!graphs) {
     return null
   }
-  
+
   return (
-    pixels && pixels[0] && pixels[0].length
+    dummy
       ? (<div className={classes.PixelWrapper}>
-        {pixels[0].map((p, i) => (
-          <div key={i} className={classes.Pixel} style={{ backgroundColor: `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})` }} />
-        ))}
-      </div>
-      )
-      : (<></>)
+        <div key={1} className={classes.Pixel} style={{ backgroundColor: '#000' }} />
+      </div>)
+      : pixels && pixels[0] && pixels[0].length
+        ? (<div className={classes.PixelWrapper}>
+          {pixels[0].map((p, i) => (
+            <div key={i} className={classes.Pixel} style={{ backgroundColor: `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})` }} />
+          ))}
+        </div>
+        )
+        : (<></>)
   )
 }
 
