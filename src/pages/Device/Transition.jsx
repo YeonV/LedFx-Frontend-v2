@@ -31,14 +31,12 @@ const TransitionCard = ({ virtual, style }) => {
   const classes = useStyles();
   const schemas = useStore((state) => state.schemas.virtuals && state.schemas.virtuals.schema.properties);
   const addVirtual = useStore((state) => state.addVirtual);
-  const transition_mode = virtual.config[virtual.id] && virtual.config[virtual.id].config && virtual.config[virtual.id].config.transition_mode;
-  const transition_time = virtual.config[virtual.id] && virtual.config[virtual.id].config && virtual.config[virtual.id].config.transition_time;
-
+  const transition_mode = virtual && virtual.config && virtual.config.transition_mode;
+  const transition_time = virtual && virtual.config && virtual.config.transition_time;
+  
   const handleSetTransition = (virtId, config) => addVirtual({
       "id": virtId, "config": config
   });
-
-  // const handleSetTransition = (virtId, config) => console.log(virtId, config);
 
   const onSliderChange = (e, newValue) => handleSetTransition(virtual.id, {
     transition_time: newValue,
