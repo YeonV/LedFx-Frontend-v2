@@ -7,6 +7,7 @@ import { camelToSnake } from '../../utils/helpers';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
 import Wled from '../../assets/Wled';
+import YZ from '../../assets/YZ';
 
 const LeftBar = () => {
   const classes = useStyles();
@@ -64,7 +65,9 @@ const LeftBar = () => {
                   color={d.effect && d.effect.active === true ? 'primary' : 'inherit'}
                   style={{ position: 'relative' }}
                 >
-                  {virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name
+                  {virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name.startsWith('yz') ? (
+                    <YZ style={{ transform: 'scale(0.011)', marginTop: '3px'}} />
+                  ) : virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name
                     && virtuals[d].config.icon_name.startsWith('wled') ? (
                     <Wled />
                   ) : (virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name.startsWith('mdi:')) ? (

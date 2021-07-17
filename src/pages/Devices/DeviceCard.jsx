@@ -10,6 +10,7 @@ import TuneIcon from '@material-ui/icons/Tune';
 import BuildIcon from '@material-ui/icons/Build';
 import { NavLink } from 'react-router-dom';
 import Wled from '../../assets/Wled';
+import YZ from '../../assets/YZ';
 import useStore from '../../utils/apiStore';
 import { camelToSnake } from '../../utils/helpers';
 import Popover from '../../components/Popover';
@@ -148,7 +149,7 @@ const DeviceCard = ({ virtual }) => {
   };
 
   const handleDeleteDevice = (virtual) => {
-    deleteVirtual(virtuals[virtual].id).then(() => {
+    deleteVirtual(virtuals[virtual]?.id).then(() => {
       getVirtuals();
     });
   };
@@ -161,40 +162,42 @@ const DeviceCard = ({ virtual }) => {
   };
 
 
-  return (
-    <Card className={classes.virtualCardPortrait} style={{ order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual].effect.name) ? 100 : 'unset'}}>
+  return virtuals[virtual] ? (
+    <Card className={classes.virtualCardPortrait} style={{ order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual]?.effect.name) ? 100 : 'unset'}}>
       <div className={classes.virtualCardContainer}>
         <NavLink
-          to={`/device/${virtuals[virtual].id}`}
+          to={`/device/${virtuals[virtual]?.id}`}
           className={classes.virtualLink}
-          color={virtuals[virtual].effect && virtuals[virtual].effect.active === true ? 'primary' : 'inherit'}
+          color={virtuals[virtual]?.effect && virtuals[virtual]?.effect.active === true ? 'primary' : 'inherit'}
         >
           <Icon
-            color={virtuals[virtual].effect && virtuals[virtual].effect.active === true ? 'primary' : 'inherit'}
+            color={virtuals[virtual]?.effect && virtuals[virtual]?.effect.active === true ? 'primary' : 'inherit'}
             className={classes.virtualIcon}
           >
-            {virtuals[virtual].config && virtuals[virtual].config.icon_name && virtuals[virtual].config.icon_name.startsWith('wled') ? (
+            {virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name.startsWith('yz') ? (
+              <YZ />
+            ) : virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name.startsWith('wled') ? (
               <Wled />
-            ) : (virtuals[virtual].config && virtuals[virtual].config.icon_name.startsWith('mdi:')) ? (
+            ) : (virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name.startsWith('mdi:')) ? (
               <span
-                className={`mdi mdi-${virtuals[virtual].config && virtuals[virtual].config.icon_name.split('mdi:')[1]}`}
+                className={`mdi mdi-${virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name.split('mdi:')[1]}`}
               />
             ) : (
-              camelToSnake((virtuals[virtual].config && virtuals[virtual].config.icon_name) || 'SettingsInputComponent')
+              camelToSnake((virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name) || 'SettingsInputComponent')
             )}
           </Icon>
         </NavLink>
         <div  style={{padding: '0 0.5rem'}}>
         <NavLink
-          to={`/device/${virtuals[virtual].id}`}
+          to={`/device/${virtuals[virtual]?.id}`}
           className={classes.virtualLink}
-          color={virtuals[virtual].effect && virtuals[virtual].effect.active === true ? 'primary' : 'inherit'}
+          color={virtuals[virtual]?.effect && virtuals[virtual]?.effect.active === true ? 'primary' : 'inherit'}
         >
-          {virtual && virtuals[virtual].config && virtuals[virtual].config.name}
+          {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
         </NavLink>
-        {virtuals[virtual].effect.name ? (
+        {virtuals[virtual]?.effect.name ? (
           <Typography variant="body1" color="textSecondary">
-            Effect: {virtuals[virtual].effect.name}
+            Effect: {virtuals[virtual]?.effect.name}
           </Typography>
         ) : (<></>)}
         {devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 ? (<Typography variant="body1" color="textSecondary">
@@ -203,7 +206,7 @@ const DeviceCard = ({ virtual }) => {
         </div>
         <div>
           {/* <TypeBadge variant={variant} virtual={virtual} /> */}
-          {virtual && virtuals[virtual].config && virtuals[virtual].config.preview_only && (
+          {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.preview_only && (
             <Button
               variant="text"
               disabled
@@ -238,13 +241,13 @@ const DeviceCard = ({ virtual }) => {
             className={classes.deleteButton}
           />
 
-          {virtuals[virtual].is_device ? (
+          {virtuals[virtual]?.is_device ? (
             <Button
               variant={variant}
               color={color}
               size="small"
               className={classes.editButton}
-              onClick={() => handleEditDevice(virtuals[virtual].is_device)}
+              onClick={() => handleEditDevice(virtuals[virtual]?.is_device)}
             >
               <BuildIcon />
             </Button>
@@ -269,7 +272,7 @@ const DeviceCard = ({ virtual }) => {
         </div>
 
       </div>
-      <PixelGraph virtId={virtuals[virtual].id} />
+      <PixelGraph virtId={virtuals[virtual]?.id} />
       <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
         <div className={classes.buttonBarMobileWrapper}>
           <Popover
@@ -279,13 +282,13 @@ const DeviceCard = ({ virtual }) => {
             className={classes.deleteButton}
           />
 
-          {virtuals[virtual].is_device ? (
+          {virtuals[virtual]?.is_device ? (
             <Button
               variant={variant}
               color={color}
               size="small"
               className={classes.editButtonMobile}
-              onClick={() => handleEditDevice(virtuals[virtual].is_device)}
+              onClick={() => handleEditDevice(virtuals[virtual]?.is_device)}
             >
               <BuildIcon />
             </Button>
@@ -310,7 +313,7 @@ const DeviceCard = ({ virtual }) => {
         </div>
       </Collapse>
     </Card>
-  )
+  ) : <></>
 }
 
 export default DeviceCard
