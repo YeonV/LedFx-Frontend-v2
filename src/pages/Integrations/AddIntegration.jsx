@@ -165,7 +165,7 @@ const AddIntegrationDialog = () => {
           >
             {integrationsTypes &&
               Object.keys(integrationsTypes).map((item, i) => (
-                <MenuItem key={i} value={item}>
+                <MenuItem key={i} value={item} disabled={item !== "mqtt_hass"}>
                   {item}
                 </MenuItem>
               ))}

@@ -18,7 +18,7 @@ import CloudDownload from '@material-ui/icons/CloudDownload';
 import { drawerWidth, download } from '../../utils/helpers';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link } from 'react-router-dom';
-import { BarChart, Pause } from '@material-ui/icons';
+import { BarChart, Pause, Settings } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -147,7 +147,7 @@ const TopBar = () => {
             </ListItemIcon>
             {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
           </MenuItem>
-          <MenuItem onClick={configDownload}>
+          {/* <MenuItem onClick={configDownload}>
             <ListItemIcon>
               <CloudDownload />
             </ListItemIcon>
@@ -164,6 +164,12 @@ const TopBar = () => {
               <PowerSettingsNewIcon />
             </ListItemIcon>
             Shutdown
+          </MenuItem> */}
+          <MenuItem onClick={()=>window.location="/v2/Settings"}>
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
+            Settings
           </MenuItem>
         </Menu>
       </Toolbar>

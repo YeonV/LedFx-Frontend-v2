@@ -292,7 +292,8 @@ const Settings = () => {
           </Button>
         </CardContent>
       </Card>
-      <WledCard className={classes.card} />
+      {(parseInt(window.localStorage.getItem('BladeMod')) > 10) && 
+        <WledCard className={classes.card} />}
     </>
   );
 };

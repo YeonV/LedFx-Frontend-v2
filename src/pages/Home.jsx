@@ -85,7 +85,7 @@ export default function Home() {
           <Button disabled variant="outlined">
             Docs
           </Button>
-          <Button variant="outlined" onClick={()=>{
+          <Button disabled={!(parseInt(window.localStorage.getItem('BladeMod')) > 10)}  variant="outlined" onClick={()=>{
             window.localStorage.removeItem('undefined')
             window.localStorage.removeItem('ledfx-host')
             window.localStorage.removeItem('ledfx-hosts')

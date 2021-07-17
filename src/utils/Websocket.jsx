@@ -70,7 +70,7 @@ export const HandleWs = () => {
           const request = {
             event_filter: {
               vis_id: d,
-              is_device: !!virtuals[d].is_device,
+              is_device: !!virtuals[d]?.is_device,
             },
             event_type: "visualisation_update",
             id: i,

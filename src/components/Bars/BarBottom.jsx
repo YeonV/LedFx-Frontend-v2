@@ -105,24 +105,25 @@ export default function LabelBottomNavigation() {
         icon={<Wallpaper />}
         style={{ color : '#fefefe'}}
       />
-      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
-        <BottomNavigationAction
+      {parseInt(window.localStorage.getItem('BladeMod')) > 10 
+      ? (<BottomNavigationAction
           label="Integrations"
           value="/Integrations"
           component={Link}
           to={"/Integrations"}
           icon={<SettingsInputSvideo />}
           style={{ color : '#fefefe'}}
-        />
-      )}
-      <BottomNavigationAction
-        label="Settings"
-        value="/Settings"
-        icon={<Settings />}
-        component={Link}
-        to="/Settings"
-        style={{ color : '#fefefe'}}
-      />
+        />) 
+      : (<BottomNavigationAction
+          label="Settings"
+          value="/Settings"
+          icon={<Settings />}
+          component={Link}
+          to="/Settings"
+          style={{ color : '#fefefe'}}
+        />)}
+      
+      {/* 
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <BottomNavigationAction
           label="Devmode"
@@ -132,7 +133,7 @@ export default function LabelBottomNavigation() {
           icon={<DeveloperMode />}
           style={{ color : '#fefefe'}}
         />
-      )}
+      )} */}
     </BottomNavigation>
     <AddSceneDialog />
     <AddDeviceDialog />

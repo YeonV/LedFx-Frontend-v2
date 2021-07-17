@@ -93,7 +93,8 @@ const BladeSelect = ({
           ))}
         </Select>)
         : (
-          <TextField            
+          <TextField  
+            type={schema.description.includes('password') ? "password" : "unset"}
             helperText={schema.description}
             defaultValue={model && model[model_id] || (schema.enum && schema.enum[0]) || schema.default || ''}
             onBlur={(e) => onChange(model_id, e.target.value)}
