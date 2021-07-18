@@ -27,6 +27,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
     }
     
     if (response.data && response.data.payload){
+      // console.log("YZ1", response)
       set({
         ui: {
           snackbar: {
@@ -42,6 +43,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
       }
     }
     if (response.payload) {
+      // console.log("YZ2", response)
       set({
         ui: {
           snackbar: {
@@ -54,6 +56,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
       });
     }
     if (response.status === 200) {
+      // console.log("YZ3", response)
       return response.data || response;
     }
 
@@ -67,15 +70,28 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
       },
     });
   } catch (error) {
+   
+    console.log("YZ4", JSON.parse(JSON.stringify(error)))
+    if (error.message) {
+      return set({
+        ui: {
+          snackbar: {
+            isOpen: true,
+            messageType: 'error',
+            message: JSON.stringify(error.message),
+          },
+        },
+      });
+    }
     set({
       ui: {
         snackbar: {
           isOpen: true,
           messageType: 'error',
-          message: JSON.stringify(error),
+          message: JSON.stringify(error, null, 2),
         },
       },
     });
-    console.log(error);
+    // console.log(error);
   }
 };
