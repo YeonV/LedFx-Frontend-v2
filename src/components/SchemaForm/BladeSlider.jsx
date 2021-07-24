@@ -17,7 +17,7 @@ const BladeSlider = ({
   const classes = useStyles();
   // console.log(schema)
   return variant === 'outlined' ? (
-    <div className={classes.wrapper}  style={{ ...style, ...{ order: required ? -1 : 1 }}}>
+    <div className={classes.wrapper}  style={{ ...style, ...{ order: required ? -1 : 3 }}}>
       <label>{schema.title}{required ? '*' : ''}</label>
       <BladeSliderInner
         schema={schema}
@@ -35,7 +35,7 @@ const BladeSlider = ({
       model_id={model_id}
       onChange={onChange}
       textfield={textfield}
-      style={{ order: required ? -1 : 1 }}
+      style={{ order: required ? -1 : 3 }}
     />
   );
 };

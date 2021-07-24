@@ -100,7 +100,6 @@ const BladeSchemaForm = (props) => {
       {pickerKeys && pickerKeys.map(
         (k) => model && Object.keys(model).indexOf(k) !== -1 && (
           <BladeColorDropDown
-            // virtuals={virtuals}
             virtual={virtual}
             effects={effects}
             selectedType={selectedType}
@@ -181,6 +180,7 @@ const BladeSchemaForm = (props) => {
                 model_id={s}
                 model={model}
                 schema={schema.properties[s]}
+                style={{ margin: '0.5rem 0', flexBasis: '47%'}}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
