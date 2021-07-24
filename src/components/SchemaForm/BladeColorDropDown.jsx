@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
 import BladeColorPicker from './BladeColorPicker';
 import BladeColorNewPicker from './BladeColorNewPicker';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   FormRow: {
@@ -58,15 +59,23 @@ const BladeColorDropDown = ({
   const colors = curEffSchema
     && curEffSchema.schema.properties[clr]
     && curEffSchema.schema.properties[clr].enum;
-
-  const sendColor = (e) => virtual
-    && updateVirtualEffect(virtual.id, {
-      virtId: virtual.id,
-      type: effectyz.effect.type,
-      config: { [clr]: e },
-    }).then(() => {
-      getVirtuals();
-    });
+  
+  
+  
+  const sendColor = (e, v) => { 
+    console.log(virtual,effectyz, v)
+    if (virtual && effectyz && effectyz.effect && effectyz.effect.type) {
+      
+      updateVirtualEffect(virtual.id, {
+        virtId: virtual.id,
+        type: effectyz.effect.type,
+        config: { [clr]: e },
+      }).then(() => {
+        getVirtuals();
+      });
+    }
+ 
+  }
 
   const onEffectTypeChange = (e) => virtual
     && setVirtualEffect(virtual.id, {
@@ -76,9 +85,11 @@ const BladeColorDropDown = ({
     }).then(() => {
       getVirtuals();
     });
+
+   
   
   return (
-    <div style={{ virtual: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       {(type === 'text' || type === 'both') && (
         <FormControl className={classes.FormRow}>
           <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>
@@ -110,15 +121,16 @@ const BladeColorDropDown = ({
         />
       )}
       {type === 'colorNew'
-        && (console.log('DAMN', clr, model, selectedType) || (
+        && (
           <BladeColorNewPicker
             col={model[clr]}
             clr={clr}
             sendColor={sendColor}
             selectedType={selectedType}
             model={model}
+            type={virtual}
           />
-        ))}
+        )}
     </div>
   );
 };

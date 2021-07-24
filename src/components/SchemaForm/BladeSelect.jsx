@@ -11,6 +11,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
+    height: 'auto',
+    margin: '0.5rem 0',
     "@media (max-width: 580px)": {
       width: '100% !important',
       margin: '0.5rem 0',

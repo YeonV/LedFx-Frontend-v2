@@ -122,9 +122,8 @@ const useStore = create(
           ui: {
             ...state.ui,
             snackbar: {
+              ...state.ui.snackbar,
               isOpen: false,
-              type: get().ui.snackbar.type,
-              message: get().ui.snackbar.message,
             },
           },
         }));

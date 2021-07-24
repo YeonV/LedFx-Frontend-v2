@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BladeColorNewPicker = ({ sendColor, col, clr }) => {
+const BladeColorNewPicker = ({ sendColor, col, clr, virtual }) => {
   const classes = useStyles();
   const popover = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -50,8 +50,9 @@ const BladeColorNewPicker = ({ sendColor, col, clr }) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
   const handleColorChange = (e) => {
+    console.log(virtual)
     setColorNew(e);
-    sendColor(e);
+    sendColor(e, virtual);
   };
   // const handleClickaway = event => {
   //     console.log(anchorEl);
@@ -97,7 +98,7 @@ const BladeColorNewPicker = ({ sendColor, col, clr }) => {
           <div className={classes.paper}>
             <HslStringColorPicker
               color={colorNew}
-              onChange={handleColorChange}
+              onChange={(e)=>handleColorChange(e)}
             />
             {/* {Object.keys(coloring).map(c => (
                             <div

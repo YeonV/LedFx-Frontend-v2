@@ -8,13 +8,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px'
   },
   wrapper: {
-    minWidth: '250px',
+    minWidth: '240px',
+    width: '48%',
     padding: '16px 1.2rem 6px 1.2rem',
     border: '1px solid #999',
     borderRadius: '10px',
     position: 'relative',
     display: 'flex',
-    order: 1,
+    order: 3,
     margin: '0.5rem 0',
     "@media (max-width: 580px)": {
       width: '100% !important',

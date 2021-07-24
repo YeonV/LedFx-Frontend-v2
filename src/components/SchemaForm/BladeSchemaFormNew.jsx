@@ -15,8 +15,6 @@ import {
   FormControl,
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
-import useStore from '../../utils/apiStore';
-import BladeColorDropDown from './BladeColorDropDown';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';

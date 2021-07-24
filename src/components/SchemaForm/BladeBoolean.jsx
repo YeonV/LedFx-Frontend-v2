@@ -58,7 +58,7 @@ const BladeBoolean = ({
   const classes = useStyles();
   
   const Frame = ({ children }) => (variant === 'outlined' ? (
-    <div className={classes.wrapper}  style={{ ...style, ...{ order: required ? -1 : 1 }}}>
+    <div className={classes.wrapper}  style={{ ...style, ...{ order: required ? -1 : 5 }}}>
       <label>{schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}{required ? '*' : ''}</label>
       {children}
     </div>

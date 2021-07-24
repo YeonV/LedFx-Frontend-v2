@@ -21,7 +21,7 @@ const MessageBar = () => {
         horizontal: 'center',
       }}
       open={isOpen}
-      autoHideDuration={1000 + (message || 0).length * 60}
+      autoHideDuration={2000 + (message || 0).length * 60}
       onClose={handleClose}
       aria-describedby="client-snackbar"
       action={[
