@@ -75,8 +75,8 @@ const MelbankCard = ({ virtual }) => {
   return (
     <Card variant="outlined" className={classes.card}>
       <CardHeader
-        title="Melbank Selector"
-        subheader="Reactive frequency range"
+        title="Frequency Range"
+        subheader="Adjust the audio range used for this strip"
       />
       <CardContent className={classes.content}>
         <div style={{ padding: '0 25px', width: '100%' }}>
