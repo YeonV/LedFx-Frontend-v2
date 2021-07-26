@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import logo from '../assets/logo.png';
 import logoCircle from '../assets/ring.png';
-import Guide from '../components/Guide';
+import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -81,7 +81,7 @@ export default function Home() {
           </ul>
         </CardContent>
         <CardActions>
-          <Guide className={'step-one'} />
+          <TourHome className={'step-one'} />
           <Button disabled variant="outlined">
             Docs
           </Button>

@@ -54,7 +54,7 @@ const TransitionCard = ({ virtual, style }) => {
   ];
 
   return (
-    <Card variant="outlined" className={classes.card} style={style}>
+    <Card variant="outlined" className={`${classes.card} step-device-two`} style={style}>
       <CardHeader title="Transitions" subheader="Seamlessly blend between effects" />
       <CardContent className={classes.content}>
         <FormControl className={classes.formControl}>

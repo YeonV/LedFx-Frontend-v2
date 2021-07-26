@@ -141,7 +141,7 @@ export default function LabelBottomNavigation() {
     <AddIntegrationDialog />
     <SpeedDial
       ariaLabel="SpeedDial example"
-      className={classes.speedDial}
+      className={`${classes.speedDial} step-four`}
       hidden={false}
       icon={<SpeedDialIcon />}
       onClose={handleClose}

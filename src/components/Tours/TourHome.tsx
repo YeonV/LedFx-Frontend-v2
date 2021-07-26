@@ -34,6 +34,7 @@ const steps = [
       <div>
         <h2>Top-Menu</h2>
         for global actions
+        and access to page-specific tours
       </div>
     ),
     style: {

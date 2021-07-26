@@ -24,7 +24,7 @@ const AudioCard = ({  }) => {
     }, [getAudioInputs]);
 
     return (devices && Object.entries(devices).length > 0) ? (
-        <FormControl className={classes.form} >
+        <FormControl className={`${classes.form} step-settings-one`}>
             <InputLabel id="audio-input-select-label">Audio Input Device</InputLabel>
             <Select
                 labelId="audio-input-select-label"

@@ -4,8 +4,13 @@ import useStore from '../../utils/apiStore';
 import { useLocation, Link } from 'react-router-dom';
 import clsx from 'clsx';
 import {AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon} from '@material-ui/core';
-import {Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings} from '@material-ui/icons';
+import {Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, InfoRounded} from '@material-ui/icons';
 import { drawerWidth } from '../../utils/helpers';
+import TourDevice from '../Tours/TourDevice';
+import TourScenes from '../Tours/TourScenes';
+import TourSettings from '../Tours/TourSettings';
+import TourDevices from '../Tours/TourDevices';
+import TourIntegrations from '../Tours/TourIntegrations';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -40,8 +45,8 @@ const TopBar = () => {
   const paused = useStore((state) => state.paused);
   const graphs = useStore((state) => state.graphs);
   const config = useStore((state) => state.config);
-
   const { pathname } = useLocation();
+  console.log(pathname.split('/'))
 
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
@@ -119,6 +124,13 @@ const TopBar = () => {
             </ListItemIcon>
             {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
           </MenuItem>
+          {pathname.split('/')[1] === 'device' ? <TourDevice /> 
+            : pathname.split('/')[1] === 'Scenes' ? <TourScenes /> 
+            : pathname.split('/')[1] === 'Settings' ? <TourSettings /> 
+            : pathname.split('/')[1] === 'Devices' ? <TourDevices /> 
+            : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations /> 
+            : null}
+          
           <MenuItem component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />

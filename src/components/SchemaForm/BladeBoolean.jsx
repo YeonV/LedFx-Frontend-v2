@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  FormControlLabel, Switch, Checkbox, Button,
+  FormControlLabel, Switch, Checkbox, Button, Typography
 } from '@material-ui/core/';
 
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 'unset',
     margin: '0.5rem 0',
     // },
-    
+
     "@media (max-width: 580px)": {
       flexBasis: "37vw",
     },
@@ -50,15 +50,15 @@ const BladeBoolean = ({
   variant = 'outlined',
   schema,
   model,
-  required=false,
+  required = false,
   model_id,
   style = {},
 }) => {
   // console.log(schema);
   const classes = useStyles();
-  
+
   const Frame = ({ children }) => (variant === 'outlined' ? (
-    <div className={classes.wrapper}  style={{ ...style, ...{ order: required ? -1 : 5 }}}>
+    <div className={classes.wrapper} style={{ ...style, ...{ order: required ? -1 : 5 } }}>
       <label>{schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}{required ? '*' : ''}</label>
       {children}
     </div>
@@ -79,6 +79,12 @@ const BladeBoolean = ({
             name={schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
             color="primary"
           />
+          {schema.description
+            ? <>
+              <Typography variant={'p'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
+            </>
+            : <></>
+          }
         </Frame>
       );
     case 'checkbox':
