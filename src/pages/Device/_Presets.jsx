@@ -103,7 +103,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
     }, [getVirtuals, effectType])
 
   return (
-    <Card variant="outlined" className={classes.deviceCard} style={style}>
+    <Card variant="outlined" className={`${classes.deviceCard} step-device-three`} style={style}>
       <CardHeader title="Presets" subheader="Explore different effect configurations" />
       <CardContent className={classes.content}>
         <Typography variant="subtitle2">LedFx Presets</Typography>

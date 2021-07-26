@@ -92,7 +92,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
 
   return (
     <>
-      <FormControl className={classes.FormRow}>
+      <FormControl className={`${classes.FormRow} step-device-one`}>
         <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>
           Effect Type
         </InputLabel>

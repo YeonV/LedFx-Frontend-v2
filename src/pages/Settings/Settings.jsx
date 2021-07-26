@@ -156,7 +156,7 @@ const Settings = () => {
 
           <Divider style={{ margin: '1rem 0' }} />
           {config.visualisation_fps && (<>
-            <div className={sliderClasses.wrapper} style={{ order: 'unset' }}>
+            <div className={`${sliderClasses.wrapper} step-settings-two`} style={{ order: 'unset', width: "100%" }}>
               <label>Frontend FPS</label>
               <Slider
                 value={fps}
@@ -188,7 +188,7 @@ const Settings = () => {
               />
             </div>
             
-            <div className={sliderClasses.wrapper} style={{ order: 'unset' }}>
+            <div className={`${sliderClasses.wrapper} step-settings-three`} style={{ order: 'unset', width: "100%" }}>
               <label>Frontend max Pixel Length</label>
               <Slider
                 value={pixelLength}

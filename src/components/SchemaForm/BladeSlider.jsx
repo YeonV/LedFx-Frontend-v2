@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Slider, Input, TextField } from '@material-ui/core/';
+import { Slider, Input, TextField, Typography } from '@material-ui/core/';
 import useStyles from './BladeSlider.styles';
 
 const BladeSlider = ({
@@ -10,14 +10,14 @@ const BladeSlider = ({
   model_id,
   step,
   onChange,
-  required=false,
+  required = false,
   textfield = false,
   style = {},
 }) => {
   const classes = useStyles();
   // console.log(schema)
   return variant === 'outlined' ? (
-    <div className={classes.wrapper}  style={{ ...style, ...{ order: required ? -1 : 3 }}}>
+    <div className={classes.wrapper} style={{ ...style, ...{ order: required ? -1 : 3 } }}>
       <label>{schema.title}{required ? '*' : ''}</label>
       <BladeSliderInner
         schema={schema}
@@ -64,22 +64,30 @@ const BladeSliderInner = ({
     }
   };
 
-  return (schema.maximum && !textfield )? (
+  return (schema.maximum && !textfield) ? (
     <>
-      <Slider
-        aria-labelledby="input-slider"
-        valueLabelDisplay="auto"
-        marks
-        step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
-        min={schema.minimum || 0}
-        max={schema.maximum}
-        value={typeof value === 'number' ? value : 0}
-        onChange={handleSliderChange}
-        onChangeCommitted={(e, b) => onChange(model_id, b)}
-        style={style}
-      // defaultValue={model[model_id] || schema.default}
-      // value={model && model[model_id]}
-      />
+      <div>
+        <Slider
+          aria-labelledby="input-slider"
+          valueLabelDisplay="auto"
+          marks
+          step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
+          min={schema.minimum || 0}
+          max={schema.maximum}
+          value={typeof value === 'number' ? value : 0}
+          onChange={handleSliderChange}
+          onChangeCommitted={(e, b) => onChange(model_id, b)}
+          style={style}
+        // defaultValue={model[model_id] || schema.default}
+        // value={model && model[model_id]}
+        />
+        {schema.description
+          ? <>
+            <Typography variant={'p'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
+          </>
+          : <></>
+        }
+      </div>
       <Input
         disableUnderline
         className={classes.input}
@@ -97,12 +105,12 @@ const BladeSliderInner = ({
       />
     </>
   ) : (
-    
+
     <TextField
       // defaultValue={schema.default || 1}
       defaultValue={value}
       // onChange={()=>handleInputChange}
-      onBlur={(e,b) => onChange(model_id, parseInt(e.target.value))}
+      onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
       helperText={schema.description}
       style={style}
     />
