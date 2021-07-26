@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useStore from './utils/apiStore';
