@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, MenuItem, ListItemIcon } from '@material-ui/core';
+import { MenuItem, ListItemIcon } from '@material-ui/core';
 import Tour from 'reactour';
 import { InfoRounded } from '@material-ui/icons';
 
@@ -10,12 +10,13 @@ const steps = [
       <div>
         <h2>Effect Type</h2>
         Choose an effect here.
-        • BASIC: Simple, non reactive effects
-        • 1.0: Audio reactive effects
-        • 2D: [WIP] Effects designed for a 2D LED matrix
-        • BPM: Effects designed for the beat of your music
-        • 2.0: Experimental new audio reactive effects
-
+        <ul style={{ paddingLeft: '1rem' }}>
+          <li>BASIC: Simple, non reactive effects</li>
+          <li>1.0: Audio reactive effects</li>
+          <li>2D: [WIP] Effects designed for a 2D LED matrix</li>
+          <li>BPM: Effects designed for the beat of your music</li>
+          <li>2.0: Experimental new audio reactive effects</li>
+        </ul>
         Each effect has plenty of settings to play with.
         You can tune effects to your liking.
       </div>
