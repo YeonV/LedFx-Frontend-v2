@@ -9,7 +9,15 @@ const steps = [
     content: (
       <div>
         <h2>Effect Type</h2>
-        Text for effect Type
+        Choose an effect here.
+        • BASIC: Simple, non reactive effects
+        • 1.0: Audio reactive effects
+        • 2D: [WIP] Effects designed for a 2D LED matrix
+        • BPM: Effects designed for the beat of your music
+        • 2.0: Experimental new audio reactive effects
+
+        Each effect has plenty of settings to play with.
+        You can tune effects to your liking.
       </div>
     ),
     style: {
@@ -21,7 +29,8 @@ const steps = [
     content: (
       <div>
         <h2>Transitions</h2>
-        Text for Transitions
+        You can adjust the animation between effects
+        Set to 0 for no animation
       </div>
     ),
     style: {
@@ -33,7 +42,8 @@ const steps = [
     content: (
       <div>
         <h2>Presets</h2>
-        Text for Presets
+        These are a way to save and apply the settings of an effect.
+        LedFx has some built in presets, and you can save your own too.
       </div>
     ),
     style: {
@@ -45,7 +55,9 @@ const steps = [
     content: (
       <div>
         <h2>Frequency Range</h2>
-        Text for Frequency Range
+        Adjust the audio frequency range used for effects
+        Most 1.0 effects will work with any frequency range you specify
+        Some effects will bypass this and do their own internal analysis
       </div>
     ),
     style: {
