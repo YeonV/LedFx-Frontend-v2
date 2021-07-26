@@ -44,11 +44,11 @@ const IntegrationCard = ({ integration }) => {
     }).then(() => getIntegrations())
   };
 
-  return (
+  return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
       <CardHeader 
-        title={integration && integrations[integration].config && integrations[integration].config.name} 
-        subheader={integration && integrations[integration].config && integrations[integration].config.description} 
+        title={integrations[integration].config.name} 
+        subheader={integrations[integration].config.description} 
         action={
           <Switch aria-label="status" checked={integrations[integration].active} onClick={() => handleActivateIntegration(integrations[integration])} />
         }
@@ -117,6 +117,8 @@ const IntegrationCard = ({ integration }) => {
       </CardActions>
      
     </Card>
+  ) :(
+    <></>
   )
 }
 
