@@ -7,9 +7,9 @@ const steps = [
     selector: '.step-zero',
     content: (
       <div>
-        <h2>LedFx Guide</h2>
-        Now we are able to create guides for you, to explain every little aspect
-        of LedFx
+        <h2>LedFx Tour</h2>
+        Welcome to LedFx!
+        Feel free to follow this tour and we&apos;ll show you around 😊
       </div>
     ),
     style: {
@@ -20,8 +20,8 @@ const steps = [
     selector: '.step-one',
     content: (
       <div>
-        <h2>Bottom Navigation</h2>
-        Access your views here
+        <h2>Navigation</h2>
+        Go to different pages from here
       </div>
     ),
     style: {
@@ -32,9 +32,12 @@ const steps = [
     selector: '.step-two',
     content: (
       <div>
-        <h2>Top-Menu</h2>
-        for global actions
-        and access to page-specific tours
+        <h2>Menu</h2>
+        LedFx actions and settings can be found up here
+        <ul style={{ paddingLeft: '1rem' }}>
+          <li>👨‍🏫 You can access a tour for other pages in this menu</li>
+          <li>👀 &apos;Enable Graphs&apos; to stream device pixels to this web interface</li>
+        </ul>
       </div>
     ),
     style: {
@@ -57,9 +60,15 @@ const steps = [
     selector: '.step-four',
     content: (
       <div>
-        <h2>Add Quick-Dial button</h2>
-        Text for adding Devices, Virtuals, Scenes, (and integrations?)
-        Note: Desktop hover, mobile click
+        <h2>The Big Red Button</h2>
+        This is where it all begins!
+        <ul style={{ paddingLeft: '1rem' }}>
+          <li>Add Device: Add a networked LED strip</li>
+          <li>Add Virtual: Divide or merge your devices into one virtual strip</li>
+          <li>Add Scene: Save the active effects of all devices</li>
+          <li>Add Integration: Connect LedFx to other software (upcoming...)</li>
+        </ul>
+        I&apos;d recommend you now close this tour and add your first devices to LedFx 🎉
       </div>
     ),
     style: {

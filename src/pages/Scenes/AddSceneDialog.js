@@ -41,10 +41,12 @@ const AddSceneDialog = () => {
     <DialogContent>
       <DialogContentText>
         Image is optional and can be one of:
-        <li>Wled</li>
-        <li>IconName</li>
-        <li>mdi:icon-name</li>
+        <li>icon-name <a href="https://material-ui.com/components/material-icons/">Find icons here</a></li>
+        <li><em>eg. flare</em></li>
+        <li>mdi:icon-name <a href="https://materialdesignicons.com">Find Material Design icons here</a></li>
+        <li><em>eg. mdi:balloon</em></li>
         <li>image:custom-url</li>
+        <li><em>eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg</em></li>
       </DialogContentText>
       <TextField
         autoFocus
