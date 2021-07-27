@@ -17,8 +17,8 @@ const steps = [
           <li>BPM: Effects designed for the beat of your music</li>
           <li>2.0: Experimental new audio reactive effects</li>
         </ul>
-        Each effect has plenty of settings to play with.
-        You can tune effects to your liking.
+        <li>Each effect has plenty of settings to play with</li>
+        <li>You can tune effects to your liking</li>
       </div>
     ),
     style: {
@@ -30,8 +30,8 @@ const steps = [
     content: (
       <div>
         <h2>Transitions</h2>
-        You can adjust the animation between effects
-        Set to 0 for no animation
+        <li>You can adjust the animation between effects</li>
+        <li>Set to 0 for no animation</li>
       </div>
     ),
     style: {
@@ -43,8 +43,8 @@ const steps = [
     content: (
       <div>
         <h2>Presets</h2>
-        These are a way to save and apply the settings of an effect.
-        LedFx has some built in presets, and you can save your own too.
+        Easily save and apply the settings of an effect.
+        LedFx has some built in presets, and you can save your own too
       </div>
     ),
     style: {
@@ -56,9 +56,9 @@ const steps = [
     content: (
       <div>
         <h2>Frequency Range</h2>
-        Adjust the audio frequency range used for effects
-        Most 1.0 effects will work with any frequency range you specify
-        Some effects will bypass this and do their own internal analysis
+        <li>Adjust the audio frequency range used for effects</li>
+        <li>Most 1.0 effects will work with any frequency range you specify</li>
+        <li>Some effects will bypass this and do their own internal analysis</li>
       </div>
     ),
     style: {
