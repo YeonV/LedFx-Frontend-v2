@@ -49,7 +49,6 @@ const BladeSchemaFormNew = (props) => {
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
 
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -58,8 +57,6 @@ const BladeSchemaFormNew = (props) => {
     setOpen(false);
   };
 
-  
-  // console.log(model)
   return (
     <div className={classes.bladeSchemaForm}>
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
@@ -76,6 +73,7 @@ const BladeSchemaFormNew = (props) => {
 
 
       {schema.properties && Object.keys(schema.properties).map((s, i) => {
+        const permitted = schema.permitted_keys && schema.permitted_keys.indexOf(s) > -1
         switch (schema.properties[s].type) {
           case 'boolean':
             return (
@@ -85,7 +83,7 @@ const BladeSchemaFormNew = (props) => {
                 key={i}
                 model={model}
                 model_id={s}
-                required={schema.required.indexOf(s) !== -1}
+                required={schema.required && schema.required.indexOf(s) !== -1}
                 style={{ margin: '0.5rem 0', flexBasis: '48%'}}
                 schema={schema.properties[s]}
                 onClick={(model_id, value) => {
@@ -98,10 +96,11 @@ const BladeSchemaFormNew = (props) => {
           case 'string':
             return <BladeSelect
                 model={model}
+                disabled={!permitted}
                 style={{ margin: '0.5rem 0', width: '48%'}}
                 variant={_selectVariant}
                 schema={schema.properties[s]}
-                required={schema.required.indexOf(s) !== -1}
+                required={schema.required && schema.required.indexOf(s) !== -1}
                 model_id={s}
                 key={i}
                 onChange={(model_id, value) => {
@@ -115,10 +114,11 @@ const BladeSchemaFormNew = (props) => {
             return (
               <BladeSlider
                 variant={_sliderVariant}
+                disabled={!permitted}
                 key={i}
                 model_id={s}
                 model={model}
-                required={schema.required.indexOf(s) !== -1}
+                required={schema.required && schema.required.indexOf(s) !== -1}
                 schema={schema.properties[s]}
                 onChange={(model_id, value) => {
                   const c = {};
@@ -131,11 +131,12 @@ const BladeSchemaFormNew = (props) => {
           case 'integer':
             return <BladeSlider
                 variant={_sliderVariant}
+                disabled={!permitted}
                 step={1}
                 key={i}
                 model_id={s}
                 model={model}
-                required={schema.required.indexOf(s) !== -1}
+                required={schema.required && schema.required.indexOf(s) !== -1}
                 schema={schema.properties[s]}
                 textfield={true}
                 style={{ margin: '0.5rem 0', width: '48%'}}

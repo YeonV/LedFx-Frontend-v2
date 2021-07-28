@@ -81,7 +81,7 @@ const BladeBoolean = ({
           />
           {schema.description
             ? <>
-              <Typography variant={'p'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
+              <Typography variant={'body2'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
             </>
             : <></>
           }

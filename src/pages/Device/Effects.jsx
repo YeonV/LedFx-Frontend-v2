@@ -53,11 +53,15 @@ const EffectsCard = ({ virtId }) => {
   const effectType = virtual && virtual.effect.type;
 
   const handleRandomize = () => {
-    setVirtualEffect({
-      virtId: virtual.id,
-      type: effectType,
-      config: 'RANDOMIZE',
-    });
+    setVirtualEffect(
+     virtual.id,
+      {
+        virtId: virtual.id,
+        type: effectType,
+        config: 'RANDOMIZE',
+        active: true
+      }
+    );
   };
 
   const handleClearEffect = () => {

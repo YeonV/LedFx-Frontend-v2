@@ -46,7 +46,7 @@ const TopBar = () => {
   const graphs = useStore((state) => state.graphs);
   const config = useStore((state) => state.config);
   const { pathname } = useLocation();
-  console.log(pathname.split('/'))
+  // console.log(pathname.split('/'))
 
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
@@ -70,6 +70,7 @@ const TopBar = () => {
 
   return (
     <AppBar
+      color={"secondary"}
       position="fixed"
       className={clsx(classes.appBar, {
         [classes.appBarShift]: open,

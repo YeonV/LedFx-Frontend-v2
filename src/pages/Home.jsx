@@ -12,6 +12,7 @@ import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
 import { makeStyles } from '@material-ui/core/styles';
+import FX from "../assets/FX";
 
 const useStyles = makeStyles((theme) => ({
   Logo: {
@@ -57,8 +58,10 @@ export default function Home() {
       <div className="Content">
         <div style={{ position: 'relative' }} >
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
-          <img src={logo} className={classes.Logo} alt="logo" />
+          <FX />
+          {/* <img src={logo} className={classes.Logo} alt="logo" /> */}
         </div>
+        
       </div>
       <Card
         variant="outlined"

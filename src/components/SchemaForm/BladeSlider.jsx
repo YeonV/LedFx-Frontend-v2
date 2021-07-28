@@ -12,6 +12,7 @@ const BladeSlider = ({
   onChange,
   required = false,
   textfield = false,
+  disabled = false,
   style = {},
 }) => {
   const classes = useStyles();
@@ -23,6 +24,7 @@ const BladeSlider = ({
         schema={schema}
         model={model}
         model_id={model_id}
+        disabled={disabled}
         step={step}
         onChange={onChange}
         textfield={textfield}
@@ -34,6 +36,7 @@ const BladeSlider = ({
       model={model}
       model_id={model_id}
       onChange={onChange}
+      disabled={disabled}
       textfield={textfield}
       style={{ order: required ? -1 : 3 }}
     />
@@ -41,7 +44,7 @@ const BladeSlider = ({
 };
 
 const BladeSliderInner = ({
-  schema, model, model_id, step, onChange, textfield, style
+  schema, model, model_id, step, onChange, textfield, style, disabled
 }) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
@@ -70,6 +73,7 @@ const BladeSliderInner = ({
         <Slider
           aria-labelledby="input-slider"
           valueLabelDisplay="auto"
+          disabled={disabled}
           marks
           step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
           min={schema.minimum || 0}
@@ -83,13 +87,14 @@ const BladeSliderInner = ({
         />
         {schema.description
           ? <>
-            <Typography variant={'p'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
+            <Typography variant={'body2'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
           </>
           : <></>
         }
       </div>
       <Input
         disableUnderline
+        disabled={disabled}
         className={classes.input}
         value={value}
         margin="dense"
@@ -108,6 +113,7 @@ const BladeSliderInner = ({
 
     <TextField
       // defaultValue={schema.default || 1}
+      disabled={disabled}
       defaultValue={value}
       // onChange={()=>handleInputChange}
       onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
