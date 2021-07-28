@@ -5,10 +5,10 @@ export const BladeDarkTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#a00000',
+      main: '#b00000',
     },
     secondary: {
-      main: '#600000',
+      main: '#500000',
     },
     background: { 
       default: '#030303', 

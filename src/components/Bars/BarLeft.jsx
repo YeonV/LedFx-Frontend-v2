@@ -1,4 +1,5 @@
 import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ListItem, ListItemIcon, ListItemText, Drawer, List, Icon, Divider, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -15,9 +16,11 @@ const LeftBar = () => {
   const virtuals = useStore((state) => state.virtuals);
   const open = useStore((state) => state.ui.bars?.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const smallScreen = useMediaQuery('(max-width:768px)');
+  
+  
+  const handleDrawerClose = () => {    
+      setOpen(false)
   };
 
   const logo = (
@@ -56,7 +59,7 @@ const LeftBar = () => {
             key={i}
             to={`/device/${virtuals[d].id}`}
             onClick={() => {
-              handleDrawerClose();
+              smallScreen && handleDrawerClose();
             }}
           >
             <ListItem button key={virtuals[d].config.name}>

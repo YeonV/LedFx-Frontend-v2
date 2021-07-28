@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
   devbadge: {
     backgroundImage: `url(${blademod})`,
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
     border: theme.palette.primary.main,
     color: '#fff',
     borderRadius: '15px',

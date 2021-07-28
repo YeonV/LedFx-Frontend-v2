@@ -73,7 +73,10 @@ const BladeSchemaFormNew = (props) => {
 
 
       {schema.properties && Object.keys(schema.properties).map((s, i) => {
-        const permitted = schema.permitted_keys && schema.permitted_keys.indexOf(s) > -1
+        let permitted = true
+        if (schema.permitted_keys && schema.permitted_keys.indexOf(s) === -1) {
+          permitted = false
+        }
         switch (schema.properties[s].type) {
           case 'boolean':
             return (
