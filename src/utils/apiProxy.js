@@ -34,7 +34,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
             isOpen: true,
             messageType: response.data.payload.type || 'error',
             message:
-              response.data.payload.reason || JSON.stringify(response.data.payload),
+              response.data.payload.reason || response.data.payload.message || JSON.stringify(response.data.payload),
           },
         },
       });
@@ -50,7 +50,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
             isOpen: true,
             messageType: response.payload.type || 'error',
             message:
-              response.payload.message || JSON.stringify(response.payload),
+              response.payload.reason || response.payload.message || JSON.stringify(response.payload),
           },
         },
       });
@@ -71,7 +71,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
     });
   } catch (error) {
    
-    console.log("YZ4", JSON.parse(JSON.stringify(error)))
+    // console.log("YZ4", JSON.parse(JSON.stringify(error)))
     if (error.message) {
       return set({
         ui: {

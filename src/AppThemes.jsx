@@ -5,12 +5,15 @@ export const BladeDarkTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#800000',
+      main: '#a00000',
     },
     secondary: {
-      main: '#800000',
+      main: '#600000',
     },
-    background: { default: '#030303', paper: '#151515' },
+    background: { 
+      default: '#030303', 
+      paper: '#151515' 
+    },
   },
   props: {
     MuiCard: {

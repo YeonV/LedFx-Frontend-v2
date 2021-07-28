@@ -56,7 +56,6 @@ const Scenes = () => {
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);
 
   const handleActivateScene = (e) => {
-    console.log(e);
     activateScene(e);
     setDialogOpenAddScene(false);
   };
@@ -110,7 +109,7 @@ const Scenes = () => {
     getScenes();
   }, [getScenes]);
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} justify="center">
       {scenes && Object.keys(scenes).length ? Object.keys(scenes).map((s, i) => (
         <Grid item key={i}>
           <Card className={classes.root}>

@@ -33,7 +33,8 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.grey[400]
   },
   card: {
-    maxWidth: '540px'
+    maxWidth: '540px',
+    margin: '0 auto', // mobile
   },
   '@media (max-width: 580px)': {
     card: {

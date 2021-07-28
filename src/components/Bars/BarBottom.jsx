@@ -27,10 +27,14 @@ const useStyles = makeStyles((theme) => ({
   },
   speedDial: {
     position: 'fixed',
+    
     left: '50%',
     transform: 'translateX(-50%)',
     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
       bottom: theme.spacing(2) + 25,
+    },
+    '& > button.MuiFab-primary': {
+      backgroundColor: theme.palette.secondary.main,
     },
   },
 }));
@@ -140,6 +144,7 @@ export default function LabelBottomNavigation() {
     <AddVirtualDialog />
     <AddIntegrationDialog />
     <SpeedDial
+      color={'secondary'}
       ariaLabel="SpeedDial example"
       className={`${classes.speedDial} step-four`}
       hidden={false}
@@ -154,6 +159,7 @@ export default function LabelBottomNavigation() {
           key={action.name}
           icon={action.icon}
           tooltipTitle={action.name}
+          tooltipPlacement={'right'}
           style={{ whiteSpace: 'nowrap' }}
           tooltipOpen={isTouch}
           onClick={() => handleAction(action.action)}
