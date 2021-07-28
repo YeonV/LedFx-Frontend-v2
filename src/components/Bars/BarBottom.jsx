@@ -5,6 +5,8 @@ import { Settings, Home, Wallpaper, SettingsInputSvideo, DeveloperMode, Settings
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@material-ui/lab';
 import { useLocation, Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
+import { drawerWidth } from '../../utils/helpers';
+import clsx from 'clsx';
 import AddSceneDialog from '../../pages/Scenes/AddSceneDialog';
 import AddDeviceDialog from '../../pages/Devices/AddDeviceDialog';
 import AddVirtualDialog from '../../pages/Devices/AddVirtualDialog';
@@ -15,7 +17,19 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    background: '#232323',
+    background: '#151515',
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  rootShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   fabButton: {
     position: 'absolute',
@@ -25,17 +39,33 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     margin: '0 auto',
   },
+  
   speedDial: {
     position: 'fixed',
-    
+    marginLeft: 0,
     left: '50%',
     transform: 'translateX(-50%)',
+    transition: theme.transitions.create(['margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
       bottom: theme.spacing(2) + 25,
     },
     '& > button.MuiFab-primary': {
       backgroundColor: theme.palette.secondary.main,
     },
+    '& .MuiSpeedDialAction-staticTooltipLabel': {
+      backgroundColor: 'transparent',
+      marginLeft: '-1rem'
+    },
+  },
+  speedDialShift: {   
+    marginLeft: drawerWidth/2,
+    transition: theme.transitions.create(['margin'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
 }));
 
@@ -48,6 +78,7 @@ export default function LabelBottomNavigation() {
   const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
+  const leftOpen = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
 
   const isTouch = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0))
 
@@ -81,7 +112,9 @@ export default function LabelBottomNavigation() {
   return (<>
     <BottomNavigation
       value={value}
-      className={classes.root}
+      className={clsx(classes.root, {
+        [classes.rootShift]: leftOpen,
+      })}
       showLabels={true}
     >
       <BottomNavigationAction
@@ -90,8 +123,7 @@ export default function LabelBottomNavigation() {
         label="Home"
         value="/"
         to="/"
-        icon={<Home />}
-        style={{ color : '#fefefe'}}
+        icon={<Home  />}
       />
       <BottomNavigationAction
         label="Devices"
@@ -99,7 +131,6 @@ export default function LabelBottomNavigation() {
         component={Link}
         to="/Devices"
         icon={<SettingsInputComponent />}
-        style={{ color : '#fefefe'}}
       />
       <BottomNavigationAction
         component={Link}
@@ -107,7 +138,6 @@ export default function LabelBottomNavigation() {
         label="Scenes"
         value="/Scenes"
         icon={<Wallpaper />}
-        style={{ color : '#fefefe'}}
       />
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 
       ? (<BottomNavigationAction
@@ -116,7 +146,6 @@ export default function LabelBottomNavigation() {
           component={Link}
           to={"/Integrations"}
           icon={<SettingsInputSvideo />}
-          style={{ color : '#fefefe'}}
         />) 
       : (<BottomNavigationAction
           label="Settings"
@@ -124,7 +153,6 @@ export default function LabelBottomNavigation() {
           icon={<Settings />}
           component={Link}
           to="/Settings"
-          style={{ color : '#fefefe'}}
         />)}
       
       {/* 
@@ -145,12 +173,15 @@ export default function LabelBottomNavigation() {
     <AddIntegrationDialog />
     <SpeedDial
       color={'secondary'}
-      ariaLabel="SpeedDial example"
-      className={`${classes.speedDial} step-four`}
+      ariaLabel="SpeedDial"
+      className={`${clsx(classes.speedDial, {
+        [classes.speedDialShift]: leftOpen,
+      })} step-four`}
       hidden={false}
       icon={<SpeedDialIcon />}
+      
       onClose={handleClose}
-      onOpen={handleOpen}
+      onClick={handleOpen}
       open={open}
       direction={"up"}
     >
@@ -159,14 +190,15 @@ export default function LabelBottomNavigation() {
           key={action.name}
           icon={action.icon}
           tooltipTitle={action.name}
+          TooltipClasses={classes.tooltip}
           tooltipPlacement={'right'}
           style={{ whiteSpace: 'nowrap' }}
-          tooltipOpen={isTouch}
+          tooltipOpen={true}
           onClick={() => handleAction(action.action)}
         />
       ))}
     </SpeedDial>
-    <Backdrop open={open} />
+    <Backdrop style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} open={open} />
   </>
   );
 }

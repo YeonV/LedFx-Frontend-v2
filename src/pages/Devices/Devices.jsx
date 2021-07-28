@@ -5,7 +5,7 @@ import DeviceCard from './DeviceCard/DeviceCard';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
-    display: 'flex', flexWrap: 'wrap', margin: '-0.5rem',
+    display: 'flex', flexWrap: 'wrap', margin: '-0.5rem', justifyContent: 'center'
   },
   '@media (max-width: 580px)' : {
     cardWrapper:{

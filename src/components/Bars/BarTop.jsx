@@ -86,7 +86,7 @@ const TopBar = () => {
         >
           <MenuIcon />
         </IconButton>
-
+        {open && <div style={{ width: '48px', height: '48px'}} />}
         <Typography variant="h6" noWrap>
           {pathname === '/' ? 'LedFx' : pathname.split('/').pop()}
         </Typography>
@@ -97,6 +97,7 @@ const TopBar = () => {
           color="inherit"
           onClick={handleClick}
           className={'step-two'}
+          style={{ marginLeft: '1rem' }}
         >
           <MoreVert />
         </IconButton>
