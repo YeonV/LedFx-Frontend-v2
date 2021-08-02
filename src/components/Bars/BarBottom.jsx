@@ -11,6 +11,7 @@ import AddSceneDialog from '../../pages/Scenes/AddSceneDialog';
 import AddDeviceDialog from '../../pages/Devices/AddDeviceDialog';
 import AddVirtualDialog from '../../pages/Devices/AddVirtualDialog';
 import AddIntegrationDialog from '../../pages/Integrations/AddIntegration';
+import SpotifyWidget from '../Spotify/SpotifyWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     margin: '0 auto',
   },
-  
+
   speedDial: {
     position: 'fixed',
     marginLeft: 0,
@@ -60,8 +61,8 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: '-1rem'
     },
   },
-  speedDialShift: {   
-    marginLeft: drawerWidth/2,
+  speedDialShift: {
+    marginLeft: drawerWidth / 2,
     transition: theme.transitions.create(['margin'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -79,6 +80,9 @@ export default function LabelBottomNavigation() {
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
   const leftOpen = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
+
+  const [spotifyEnabled, setSpotifyEnabled] = useState(false)
+  const [spotifyExpanded, setSpotifyExpanded] = useState(false)
 
   const isTouch = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0))
 
@@ -116,6 +120,7 @@ export default function LabelBottomNavigation() {
         [classes.rootShift]: leftOpen,
       })}
       showLabels={true}
+      style={{ bottom: spotifyEnabled ? spotifyExpanded ? 300 : 80 : 0 }}
     >
       <BottomNavigationAction
         component={Link}
@@ -123,7 +128,7 @@ export default function LabelBottomNavigation() {
         label="Home"
         value="/"
         to="/"
-        icon={<Home  />}
+        icon={<Home />}
       />
       <BottomNavigationAction
         label="Devices"
@@ -139,22 +144,21 @@ export default function LabelBottomNavigation() {
         value="/Scenes"
         icon={<Wallpaper />}
       />
-      {parseInt(window.localStorage.getItem('BladeMod')) > 10 
-      ? (<BottomNavigationAction
+      {parseInt(window.localStorage.getItem('BladeMod')) > 10
+        ? (<BottomNavigationAction
           label="Integrations"
           value="/Integrations"
           component={Link}
           to={"/Integrations"}
           icon={<SettingsInputSvideo />}
-        />) 
-      : (<BottomNavigationAction
+        />)
+        : (<BottomNavigationAction
           label="Settings"
           value="/Settings"
           icon={<Settings />}
           component={Link}
           to="/Settings"
         />)}
-      
       {/* 
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <BottomNavigationAction
@@ -167,6 +171,14 @@ export default function LabelBottomNavigation() {
         />
       )} */}
     </BottomNavigation>
+    {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+      <SpotifyWidget 
+        spotifyEnabled={spotifyEnabled}
+        setSpotifyEnabled={setSpotifyEnabled}
+        spotifyExpanded={spotifyExpanded} 
+        setSpotifyExpanded={setSpotifyExpanded} 
+      />
+    )}
     <AddSceneDialog />
     <AddDeviceDialog />
     <AddVirtualDialog />
@@ -177,9 +189,9 @@ export default function LabelBottomNavigation() {
       className={`${clsx(classes.speedDial, {
         [classes.speedDialShift]: leftOpen,
       })} step-four`}
+      style={{ bottom: spotifyEnabled ? spotifyExpanded ? 330 : 110 : 30 }}
       hidden={false}
       icon={<SpeedDialIcon />}
-      
       onClose={handleClose}
       onClick={handleOpen}
       open={open}
@@ -199,6 +211,7 @@ export default function LabelBottomNavigation() {
       ))}
     </SpeedDial>
     <Backdrop style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} open={open} />
+
   </>
   );
 }

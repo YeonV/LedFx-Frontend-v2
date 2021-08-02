@@ -36,7 +36,7 @@ const BladeSchemaFormNew = (props) => {
     boolVariant = 'outlined',
     selectVariant = 'outlined',
     sliderVariant = 'outlined',
-    onModelChange=(e)=>e,
+    onModelChange = (e) => e,
   } = props;
 
 
@@ -77,6 +77,7 @@ const BladeSchemaFormNew = (props) => {
         if (schema.permitted_keys && schema.permitted_keys.indexOf(s) === -1) {
           permitted = false
         }
+        
         switch (schema.properties[s].type) {
           case 'boolean':
             return (
@@ -87,7 +88,7 @@ const BladeSchemaFormNew = (props) => {
                 model={model}
                 model_id={s}
                 required={schema.required && schema.required.indexOf(s) !== -1}
-                style={{ margin: '0.5rem 0', flexBasis: '48%'}}
+                style={{ margin: '0.5rem 0', flexBasis: '48%' }}
                 schema={schema.properties[s]}
                 onClick={(model_id, value) => {
                   const c = {};
@@ -98,20 +99,20 @@ const BladeSchemaFormNew = (props) => {
             );
           case 'string':
             return <BladeSelect
-                model={model}
-                disabled={!permitted}
-                style={{ margin: '0.5rem 0', width: '48%'}}
-                variant={_selectVariant}
-                schema={schema.properties[s]}
-                required={schema.required && schema.required.indexOf(s) !== -1}
-                model_id={s}
-                key={i}
-                onChange={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return onModelChange(c);
-                }}
-              />
+              model={model}
+              disabled={!permitted}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              variant={_selectVariant}
+              schema={schema.properties[s]}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              model_id={s}
+              key={i}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            />
 
           case 'number':
             return (
@@ -133,23 +134,58 @@ const BladeSchemaFormNew = (props) => {
 
           case 'integer':
             return <BladeSlider
-                variant={_sliderVariant}
-                disabled={!permitted}
-                step={1}
-                key={i}
-                model_id={s}
-                model={model}
-                required={schema.required && schema.required.indexOf(s) !== -1}
-                schema={schema.properties[s]}
-                textfield={true}
-                style={{ margin: '0.5rem 0', width: '48%'}}
-                onChange={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return onModelChange(c);
-                }}
-              />
-            
+              variant={_sliderVariant}
+              disabled={!permitted}
+              step={1}
+              key={i}
+              model_id={s}
+              model={model}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              schema={schema.properties[s]}
+              textfield={true}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            />
+          case 'int':
+            return schema.properties[s]?.enum?.length > 10 ? <BladeSlider
+              variant={_sliderVariant}
+              disabled={!permitted}
+              marks={schema.properties[s]?.enum}
+              step={null}
+              key={i}
+              model_id={s}
+              model={model}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              schema={schema.properties[s]}
+              textfield={false}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            /> : <BladeSlider
+              variant={_sliderVariant}
+              disabled={!permitted}
+              marks={schema.properties[s]?.enum}
+              step={null}
+              key={i}
+              model_id={s}
+              model={model}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              schema={schema.properties[s]}
+              textfield={false}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            />
           default:
             return (
               <>
