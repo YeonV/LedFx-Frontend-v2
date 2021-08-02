@@ -10,6 +10,7 @@ const BladeSlider = ({
   model_id,
   step,
   onChange,
+  marks,
   required = false,
   textfield = false,
   disabled = false,
@@ -28,6 +29,7 @@ const BladeSlider = ({
         step={step}
         onChange={onChange}
         textfield={textfield}
+        marks={marks}
       />
     </div>
   ) : (
@@ -39,12 +41,13 @@ const BladeSlider = ({
       disabled={disabled}
       textfield={textfield}
       style={{ order: required ? -1 : 3 }}
+      marks={marks}
     />
   );
 };
 
 const BladeSliderInner = ({
-  schema, model, model_id, step, onChange, textfield, style, disabled
+  schema, model, model_id, step, onChange, textfield, style, disabled, marks
 }) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
@@ -109,6 +112,22 @@ const BladeSliderInner = ({
         }}
       />
     </>
+  ) :  (schema.enum && !textfield) ? (
+    <Slider
+          aria-labelledby="input-slider"
+          valueLabelDisplay="auto"
+          disabled={disabled}
+          marks={marks.map((m,i)=>({value: m, label: (i === 0 || i === marks.length - 1) ? m : ''}))}
+          step={null}
+          min={marks[0]}
+          max={marks[marks.length - 1]}
+          value={typeof value === 'number' ? value : 0}
+          onChange={handleSliderChange}
+          onChangeCommitted={(e, b) => onChange(model_id, b)}
+          style={style}
+        // defaultValue={model[model_id] || schema.default}
+        // value={model && model[model_id]}
+        />
   ) : (
 
     <TextField

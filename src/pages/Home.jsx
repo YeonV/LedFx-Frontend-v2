@@ -7,7 +7,6 @@ import {
   CardActions,
   CircularProgress,
 } from '@material-ui/core';
-import logo from '../assets/logo.png';
 import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
@@ -38,6 +37,7 @@ export default function Home() {
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const [scanning, setScanning] = useState(false)
+  
 
   const handleScan = () => {
     setScanning(true)
@@ -59,7 +59,6 @@ export default function Home() {
         <div style={{ position: 'relative' }} >
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
           <FX />
-          {/* <img src={logo} className={classes.Logo} alt="logo" /> */}
         </div>
         
       </div>

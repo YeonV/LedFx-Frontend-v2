@@ -63,7 +63,7 @@ const Device = ({
                 style={{ marginBottom: '1rem' }}
               />
             )}
-            {parseInt(window.localStorage.getItem('BladeMod')) > 10 && <MelbankCard virtual={virtual} />}
+            <MelbankCard virtual={virtual} />
           </Grid>
           {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
             <Grid item className={classes.girdItem}>

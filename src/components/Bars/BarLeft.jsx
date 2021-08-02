@@ -31,7 +31,7 @@ const LeftBar = () => {
         </div>
         LedFx
       </a>
-      <div className={classes.devbadge} />
+      <div className={classes.devbadge} onClick={()=>window.localStorage.setItem('BladeMod', 0)} onDoubleClick={()=>window.localStorage.setItem('BladeMod', 10)} />
     </div>
   );
 
