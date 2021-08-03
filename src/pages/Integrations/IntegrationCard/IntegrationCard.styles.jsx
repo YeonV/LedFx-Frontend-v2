@@ -10,7 +10,8 @@ export const useIntegrationCardStyles = makeStyles((theme) => ({
       width: '290px',
       justifyContent: 'space-between',
       '@media (max-width: 580px)': {
-        width: '87vw',
+        maxWidth: '97vw',
+        margin: '0 auto',
         height: 'unset',
       }
     },

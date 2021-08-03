@@ -20,6 +20,11 @@
   align-items: center;
   justify-content: center;
 }
+@media (max-width: 580px) {
+  .Content {
+    margin: 0;
+  }
+}
 
 .App-link {
   color: #61dafb;

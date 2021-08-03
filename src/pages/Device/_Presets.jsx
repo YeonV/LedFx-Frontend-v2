@@ -39,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     maxWidth: '540px',
     '@media (max-width: 580px)': {
-      maxWidth: '87vw'
+      maxWidth: '97vw',
+      margin: '0 auto',
     },
   },
 }));

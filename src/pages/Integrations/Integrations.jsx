@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
 import IntegrationCard from './IntegrationCard/IntegrationCard';
+import NoYet from '../../components/NoYet';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
@@ -26,7 +27,7 @@ const Integrations = () => {
     <div className={classes.cardWrapper}>
     {integrations && Object.keys(integrations).length ? Object.keys(integrations).map((integration, i) => (
       <IntegrationCard integration={integration} key={i} />
-    )) : (<>No integrations yet.</>)}
+    )) : (<NoYet type="Integration" />)}
   </div>
   );
 };

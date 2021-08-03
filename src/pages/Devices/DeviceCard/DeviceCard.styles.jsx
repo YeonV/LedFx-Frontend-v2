@@ -68,9 +68,6 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
     expandOpen: {
       transform: 'rotate(180deg)',
     },
-    buttonBar: {
-        display: 'none'
-    },
     buttonBarMobile: {
       width: '100%',
       textAlign: 'right',

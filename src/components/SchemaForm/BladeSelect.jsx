@@ -55,9 +55,9 @@ const BladeSelect = ({
   ) : (
     children
   ));
-// console.log(model, model_id);
+  
   return (
-    <Frame full={schema.enum && schema.enum[0] && schema.enum[0].length > 20}>
+    <Frame full={!(schema.enum && schema.enum.length && Object.values(schema.enum).every(a=>a.length < 20))}>
       {variant === 'contained' ? (
         schema.enum
           ? (
