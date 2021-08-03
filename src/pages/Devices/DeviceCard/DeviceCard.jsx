@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Card from '@material-ui/core/Card';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
@@ -22,9 +24,10 @@ import PixelGraph from '../../../components/PixelGraph';
 import { useDeviceCardStyles } from './DeviceCard.styles'
 
 
-const DeviceCard = ({ virtual }) => {
+const DeviceCard = ({ virtual, index }) => {
   const classes = useDeviceCardStyles();
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down(580));  
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
   const devices = useStore((state) => state.devices);
@@ -128,54 +131,19 @@ const DeviceCard = ({ virtual }) => {
           aria-expanded={expanded}
           aria-label="show more"
         >
-          <ExpandMoreIcon />
+          <ExpandMoreIcon className={`step-devices-two-${index}`} />
         </IconButton>
 
-        <div className={classes.buttonBar}>
-          <Popover
-            variant={variant}
-            color={color}
-            onConfirm={() => handleDeleteDevice(virtual)}
-            className={classes.deleteButton}
-          />
-
-          {virtuals[virtual]?.is_device
-            ? <Button
-              variant={variant}
-              color={color}
-              size="small"
-              className={classes.editButton}
-              onClick={() => handleEditDevice(virtuals[virtual]?.is_device)}
-            >
-              <BuildIcon />
-            </Button>
-            : <EditVirtuals
-              variant={variant}
-              color={color}
-              virtual={virtuals[virtual]}
-              className={classes.editButton}
-              icon={<TuneIcon />}
-            />}
-          <Button
-            variant={variant}
-            size="small"
-            color={color}
-            className={classes.editButton}
-            onClick={() => handleEditVirtual(virtual)}
-          >
-            <SettingsIcon />
-          </Button>
-        </div>
-
       </div>
-      <PixelGraph virtId={virtuals[virtual]?.id} />
-      <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
+      <PixelGraph virtId={virtuals[virtual]?.id} className={`step-devices-seven`} />
+
+      {<Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
         <div className={classes.buttonBarMobileWrapper}>
           <Popover
             variant={variant}
             color={color}
             onConfirm={() => handleDeleteDevice(virtual)}
-            className={classes.deleteButton}
+            className={`step-devices-three-${index}`}
           />
 
           {virtuals[virtual]?.is_device
@@ -183,7 +151,7 @@ const DeviceCard = ({ virtual }) => {
               variant={variant}
               color={color}
               size="small"
-              className={classes.editButtonMobile}
+              className={`${classes.editButton} step-devices-four-${index}`}
               onClick={() => handleEditDevice(virtuals[virtual]?.is_device)}
             >
               <BuildIcon />
@@ -192,20 +160,20 @@ const DeviceCard = ({ virtual }) => {
               variant={variant}
               color={color}
               virtual={virtuals[virtual]}
-              className={classes.editButtonMobile}
+              className={`${classes.editButton} step-devices-six`}
               icon={<TuneIcon />}
             />}
           <Button
             variant={variant}
             size="small"
             color={color}
-            className={classes.editButtonMobile}
+            className={`${classes.editButton} step-devices-five-${index}`}
             onClick={() => handleEditVirtual(virtual)}
           >
             <SettingsIcon />
           </Button>
         </div>
-      </Collapse>
+      </Collapse>}
     </Card>
     : <></>
 }

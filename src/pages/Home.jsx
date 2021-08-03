@@ -10,21 +10,7 @@ import {
 import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
-import { makeStyles } from '@material-ui/core/styles';
 import FX from "../assets/FX";
-
-const useStyles = makeStyles((theme) => ({
-  Logo: {
-    height: '20vmin',
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    color: '#fff000'
-  }
-}));
-
 
 const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -32,7 +18,6 @@ const sleep = ms => {
 
 
 export default function Home() {
-  const classes = useStyles();
   const scanForDevices = useStore((state) => state.scanForDevices);
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
@@ -67,7 +52,7 @@ export default function Home() {
         style={{
           // background: '#303030',
           maxWidth: '400px',
-          margin: '0 auto',
+          margin: '0.5rem auto 2rem auto',
         }}
       >
         <CardHeader title="Welcome to LedFx" />
@@ -84,17 +69,17 @@ export default function Home() {
         </CardContent>
         <CardActions>
           <TourHome className={'step-one'} />
-          <Button disabled variant="outlined">
+          {/* <Button disabled variant="outlined">
             Docs
-          </Button>
-          <Button disabled={!(parseInt(window.localStorage.getItem('BladeMod')) > 10)}  variant="outlined" onClick={()=>{
+          </Button> */}
+          {parseInt(window.localStorage.getItem('BladeMod')) > 10 && <Button disabled={!(parseInt(window.localStorage.getItem('BladeMod')) > 10)}  variant="outlined" onClick={()=>{
             window.localStorage.removeItem('undefined')
             window.localStorage.removeItem('ledfx-host')
             window.localStorage.removeItem('ledfx-hosts')
             window.localStorage.removeItem('ledfx-ws')
             }}>
             Clear Data
-          </Button>
+          </Button>}
           <Button onClick={() => handleScan()} variant="outlined">
             {scanning ? <CircularProgress
               variant="determinate"
@@ -103,7 +88,7 @@ export default function Home() {
             /> : 'Scan'}
           </Button>
         </CardActions>
-      </Card>
+      </Card>      
     </>
   );
 }

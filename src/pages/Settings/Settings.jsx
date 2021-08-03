@@ -38,7 +38,8 @@ const useStyles = makeStyles(theme => ({
   },
   '@media (max-width: 580px)': {
     card: {
-      maxWidth: '87vw'
+      maxWidth: '97vw',
+      margin: '0 auto',
     },
   },
 }));
@@ -153,7 +154,7 @@ const Settings = () => {
       <Card className={classes.card} style={{ marginBottom: '2rem' }}>
         <CardHeader title="General" subheader="Configure LedFx-Settings" />
         <CardContent className={classes.content}>
-          <AudioInputs />
+          <AudioInputs className={'step-settings-one'} />
 
           <Divider style={{ margin: '1rem 0' }} />
           {config.visualisation_fps && (<>
@@ -188,7 +189,7 @@ const Settings = () => {
                 }}
               />
             </div>
-            
+
             <div className={`${sliderClasses.wrapper} step-settings-three`} style={{ order: 'unset', width: "100%" }}>
               <label>Frontend max Pixel Length</label>
               <Slider
@@ -221,80 +222,83 @@ const Settings = () => {
               />
             </div>
 
-            </>)}
+          </>)}
           <Divider style={{ margin: '1rem 0' }} />
-          <Button
-            size="small"
-            startIcon={<CloudUploadIcon />}
-            variant="outlined"
-            className={classes.actionButton}
-            style={{ marginTop: '1.5rem' }}
-            onClick={configDownload}
-          >
-            Export Config
-          </Button>
-          <PopoverSure
-            startIcon={<Delete />}
-            label="Reset Config"
-            size="small"
-            variant="outlined"
-            color="inherit"
-            className={classes.actionButton}
-            onConfirm={configDelete}
-            direction="center"
-            vertical="top"
-          />
-          <input
-            hidden
-            accept="application/json"
-            id="contained-button-file"
-            type="file"
-            onChange={(e) => fileChanged(e)}
-          />
-          <label htmlFor="contained-button-file">
+          <div className={'step-settings-four'}>
             <Button
-              component="span"
               size="small"
-              startIcon={<CloudDownloadIcon />}
+              startIcon={<CloudUploadIcon />}
               variant="outlined"
               className={classes.actionButton}
+              style={{ marginTop: '1.5rem' }}
+              onClick={configDownload}
             >
-              Import Config
+              Export Config
             </Button>
-          </label>
-          <Button
-            size="small"
-            startIcon={<Refresh />}
-            variant="outlined"
-            className={classes.actionButton}
-            onClick={restart}
+            <PopoverSure
+              startIcon={<Delete />}
+              label="Reset Config"
+              size="small"
+              variant="outlined"
+              color="inherit"
+              className={classes.actionButton}
+              onConfirm={configDelete}
+              direction="center"
+              vertical="top"
+            />
+            <input
+              hidden
+              accept="application/json"
+              id="contained-button-file"
+              type="file"
+              onChange={(e) => fileChanged(e)}
+            />
+            <label htmlFor="contained-button-file">
+              <Button
+                component="span"
+                size="small"
+                startIcon={<CloudDownloadIcon />}
+                variant="outlined"
+                className={classes.actionButton}
+              >
+                Import Config
+              </Button>
+            </label>
+            <Button
+              size="small"
+              startIcon={<Refresh />}
+              variant="outlined"
+              className={classes.actionButton}
+              onClick={restart}
 
-          >
-            Restart LedFx
-          </Button>
+            >
+              Restart LedFx
+            </Button>
 
-          <Button
-            size="small"
-            startIcon={<PowerSettingsNewIcon />}
-            variant="outlined"
-            className={classes.actionButton}
-            onClick={shutdown}
-          >
-            Shutdown
-          </Button>
-          <Button
-            size="small"
-            startIcon={<Refresh />}
-            variant="outlined"
-            className={classes.actionButton}
-            href={"https://github.com/YeonV/LedFx-Frontend-v2/releases/latest/download/ledfx_frontend_v2.zip"}
-          >
-            Download Latest v2
-          </Button>
+            <Button
+              size="small"
+              startIcon={<PowerSettingsNewIcon />}
+              variant="outlined"
+              className={classes.actionButton}
+              onClick={shutdown}
+            >
+              Shutdown
+            </Button>
+            <Button
+              size="small"
+              startIcon={<Refresh />}
+              variant="outlined"
+              className={classes.actionButton}
+              href={"https://github.com/YeonV/LedFx-Frontend-v2/releases/latest/download/ledfx_frontend_v2.zip"}
+            >
+              Download Latest v2
+            </Button>
+          </div>
         </CardContent>
       </Card>
-      {(parseInt(window.localStorage.getItem('BladeMod')) > 10) && 
-        <WledCard className={classes.card} />}
+      {(parseInt(window.localStorage.getItem('BladeMod')) > 10) &&
+        <WledCard className={`${classes.card} step-settings-five`} />
+      }
     </>
   );
 };

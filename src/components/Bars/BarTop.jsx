@@ -129,7 +129,7 @@ const TopBar = () => {
           {pathname.split('/')[1] === 'device' ? <TourDevice /> 
             : pathname.split('/')[1] === 'Scenes' ? <TourScenes /> 
             : pathname.split('/')[1] === 'Settings' ? <TourSettings /> 
-            : pathname.split('/')[1] === 'Devices' ? <TourDevices /> 
+            : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} /> 
             : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations /> 
             : null}
           

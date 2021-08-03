@@ -21,8 +21,9 @@ const useStyles = makeStyles(theme => ({
   card: {
     width: '100%',
     maxWidth: '540px',
-    '@media (max-width: 580px)': {
-      maxWidth: '87vw'
+    '@media (max-width: 580px)': {      
+      maxWidth: '97vw',
+      margin: '0 auto',
     },
   },
   pixelbar: {

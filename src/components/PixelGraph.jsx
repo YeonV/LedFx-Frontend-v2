@@ -18,13 +18,12 @@ const useStyles = makeStyles((theme) => ({
   },
   Pixel: {
     height: '40px',
-    width: '20px',
     borderRadius: '0',
     flex: 1,
   }
 }));
 
-const PixelGraph = ({ virtId, dummy=false }) => {
+const PixelGraph = ({ virtId, dummy=false, className }) => {
 
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
@@ -51,11 +50,11 @@ const PixelGraph = ({ virtId, dummy=false }) => {
 
   return (
     dummy
-      ? (<div className={classes.PixelWrapper}>
+      ? (<div className={`${classes.PixelWrapper} ${className}`}>
         <div key={1} className={classes.Pixel} style={{ backgroundColor: '#000' }} />
       </div>)
       : pixels && pixels[0] && pixels[0].length
-        ? (<div className={classes.PixelWrapper}>
+        ? (<div className={`${classes.PixelWrapper} ${className}`}>
           {pixels[0].map((p, i) => (
             <div key={i} className={classes.Pixel} style={{ backgroundColor: `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})` }} />
           ))}

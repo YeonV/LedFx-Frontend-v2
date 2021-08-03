@@ -20,6 +20,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import NoYet from '../../components/NoYet';
 
 const useStyles = makeStyles({
   root: {
@@ -27,8 +28,11 @@ const useStyles = makeStyles({
   },
   '@media (max-width: 580px)': {
     root: {
-      width: '87vw',
+      width: '95vw',
     },
+    sceneTitle: {
+      fontSize: '1rem',
+    }
   },
   media: {
     height: 140,
@@ -117,7 +121,7 @@ const Scenes = () => {
               {sceneImage(scenes[s].scene_image || 'Wallpaper')}
             </CardActionArea>
             <CardActions style={{ justifyContent: 'space-between', aligntItems: 'center', width: '100%' }}>
-              <Typography gutterBottom variant="h5" component="h2">
+              <Typography gutterBottom className={classes.sceneTitle} variant={"h5"} component={"h2"}>
                 {scenes[s].name || s}
               </Typography>
               <div>
@@ -162,7 +166,7 @@ const Scenes = () => {
           </Dialog>
 
         </Grid>
-      )) : (<>No Scenes yet.</>)}
+      )) : (<NoYet type="Scene" />)}
     </Grid>
   );
 };
