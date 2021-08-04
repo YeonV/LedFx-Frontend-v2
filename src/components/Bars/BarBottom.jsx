@@ -11,7 +11,7 @@ import AddSceneDialog from '../Dialogs/AddSceneDialog';
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog';
 import AddVirtualDialog from '../Dialogs/AddVirtualDialog';
 import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog';
-import SpotifyWidget from '../Spotify/SpotifyWidget';
+import SpotifyWidget from '../Integrations/Spotify/SpotifyWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
