@@ -10,7 +10,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import useStore from "../../utils/apiStore";
-import BladeSchemaFormNew from "../../components/SchemaForm/BladeSchemaFormNew";
+import BladeSchemaFormNew from "../SchemaForm/BladeSchemaFormNew";
 import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({

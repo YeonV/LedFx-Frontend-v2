@@ -14,7 +14,7 @@ import LeftBar from './components/Bars/BarLeft';
 import TopBar from './components/Bars/BarTop';
 import BottomBar from './components/Bars/BarBottom';
 import MessageBar from './components/Bars/BarMessage';
-import DialogNoHost from './components/DialogNoHost';
+import NoHostDialog from './components/Dialogs/NoHostDialog';
 import Home from './pages/Home';
 import Devices from './pages/Devices/Devices';
 import Device from './pages/Device/Device';
@@ -61,7 +61,7 @@ export default function PersistentDrawerLeft() {
                 <Route path="/integrations" component={Integrations} />
                 <Route path="/settings" component={Settings} />
               </Switch>
-              <DialogNoHost />
+              <NoHostDialog />
             </main>
             <BottomBar />
           </Router>
