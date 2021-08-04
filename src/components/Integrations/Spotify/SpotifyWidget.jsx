@@ -13,7 +13,7 @@ const SpotifyWidget = ({
 
   return (
     <>         
-      <IconButton onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 303 : 83: 5, right: 10, zIndex: 2 }} >
+      <IconButton onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 363 : 143: 65, right: 10, zIndex: 2 }} >
         <MusicNoteOutlined />
       </IconButton>        
       {spotifyEnabled && <>
