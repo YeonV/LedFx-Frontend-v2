@@ -10,7 +10,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import useStore from "../../utils/apiStore";
-import BladeSchemaFormNew from "../../components/SchemaForm/BladeSchemaFormNew";
+import BladeSchemaFormNew from "../SchemaForm/BladeSchemaFormNew";
 import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -94,7 +94,7 @@ const AddDeviceDialog = () => {
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
       ) {
-        // console.log("ADDING");
+        console.log("ADDING");
         addDevice({
           type: deviceType,
           config: { ...defaultModel, ...cleanedModel },
@@ -107,7 +107,7 @@ const AddDeviceDialog = () => {
           }
         });
       } else {
-        // console.log("EDITING");
+        console.log("EDITING");
         updateDevice(deviceId, {
           type: deviceType,
           config: { ...model },
@@ -134,6 +134,7 @@ const AddDeviceDialog = () => {
     handleTypeChange(initial.type, initial.config);
   }, [initial.type]);
 
+  console.log(Object.keys(initial.config))
   return (
     <Dialog
       open={open}

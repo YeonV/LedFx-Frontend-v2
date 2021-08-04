@@ -11,8 +11,8 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { getOverlapping } from "../../../utils/helpers";
 import useStore from '../../../utils/apiStore';
 
-import AddSegmentDialog from '../_AddSegmentDialog';
-import Segment from '../Segment/Segment';
+import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog';
+import Segment from './Segment';
 import { useEditVirtualsStyles } from './EditVirtuals.styles'
 
 const Transition = React.forwardRef(function Transition(props, ref) {

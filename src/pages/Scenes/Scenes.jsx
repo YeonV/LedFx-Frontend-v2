@@ -56,6 +56,7 @@ const Scenes = () => {
   const activateScene = useStore((state) => state.activateScene);
   const deleteScene = useStore((state) => state.deleteScene);
   const [info, setInfo] = useState(false);
+  const [scene, setScene] = useState();
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);
 
@@ -71,7 +72,8 @@ const Scenes = () => {
     setDialogOpenAddScene(false);
   };
 
-  const handleInfoOpen = () => {
+  const handleInfoOpen = (s) => {
+    setScene(s)
     setInfo(true);
   };
 
@@ -109,6 +111,38 @@ const Scenes = () => {
       </Icon>
     ));
 
+  const SceneDialog = () => scene ? <Dialog
+    open={info}
+    onClose={handleInfoClose}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+    fullWidth={true}
+    maxWidth={"xs"}
+  >
+    <DialogTitle id="alert-dialog-title">Scene: {scenes[scene].name || scene}</DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-description">
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps' }}>
+          <span>Device</span>
+          <span>Effect</span>
+        </div>
+        <Divider />
+        {Object.keys(scenes[scene].virtuals).filter(d => !!scenes[scene].virtuals[d].type).map((dev, i) => (
+          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps' }}>
+            <span>{dev}</span>
+            <span>{scenes[scene].virtuals[dev].type}</span>
+          </div>
+        ))}
+
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleInfoClose} color="primary" autoFocus>
+        Close
+      </Button>
+    </DialogActions>
+  </Dialog> : <></>
+
   useEffect(() => {
     getScenes();
   }, [getScenes]);
@@ -126,49 +160,22 @@ const Scenes = () => {
               </Typography>
               <div>
                 <Popover onConfirm={() => handleDeleteScene(s)} variant="outlined" color="inherit" />
-                <Button onClick={handleInfoOpen} variant="outlined" color="inherit" size="small" style={{ marginLeft: '0.5rem' }}>
+                <Button onClick={() => handleInfoOpen(s)} variant="outlined" color="inherit" size="small" style={{ marginLeft: '0.5rem' }}>
                   <Info />
                 </Button>
 
               </div>
             </CardActions>
           </Card>
-          <Dialog
-            open={info}
-            onClose={handleInfoClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-            fullWidth={true}
-            maxWidth={"xs"}
-          >
-            <DialogTitle id="alert-dialog-title">Scene: {scenes[s].name || s}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps'}}>
-                <span>Device</span>
-                <span>Effect</span>
-              </div>
-              <Divider />
-              {Object.keys(scenes[s].virtuals).filter(d=>!!scenes[s].virtuals[d].type).map((dev,i)=>(
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontVariant: 'all-small-caps'}}>
-                  <span>{dev}</span>
-                  <span>{scenes[s].virtuals[dev].type}</span>
-                </div>
-              ))}
-                
-               </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleInfoClose} color="primary" autoFocus>
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <SceneDialog />
 
         </Grid>
       )) : (<NoYet type="Scene" />)}
     </Grid>
   );
 };
+
+
+
 
 export default Scenes;

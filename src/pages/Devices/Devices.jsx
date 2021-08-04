@@ -18,14 +18,16 @@ const useStyles = makeStyles((theme) => ({
 
 const Devices = () => {
   const classes = useStyles();
+  const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
 
   useEffect(() => {
+    getDevices();
     getVirtuals();
-  }, [getVirtuals]);
+  }, [getDevices, getVirtuals]);
 
   useEffect(() => {
     if (graphs) {

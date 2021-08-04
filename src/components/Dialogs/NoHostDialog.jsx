@@ -7,12 +7,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import useStore from '../utils/apiStore';
+import useStore from '../../utils/apiStore';
 import { Delete } from '@material-ui/icons';
 
 const filter = createFilterOptions();
 
-export default function DialogNoHost() {
+export default function NoHostDialog() {
   const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false);
   const edit = useStore((state) => state.dialogs.nohost?.edit || false);
   const setDialogOpen = useStore((state) => state.setDialogOpen);

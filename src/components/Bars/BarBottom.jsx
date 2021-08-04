@@ -7,10 +7,10 @@ import { useLocation, Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
 import { drawerWidth } from '../../utils/helpers';
 import clsx from 'clsx';
-import AddSceneDialog from '../../pages/Scenes/AddSceneDialog';
-import AddDeviceDialog from '../../pages/Devices/AddDeviceDialog';
-import AddVirtualDialog from '../../pages/Devices/AddVirtualDialog';
-import AddIntegrationDialog from '../../pages/Integrations/AddIntegration';
+import AddSceneDialog from '../Dialogs/AddSceneDialog';
+import AddDeviceDialog from '../Dialogs/AddDeviceDialog';
+import AddVirtualDialog from '../Dialogs/AddVirtualDialog';
+import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog';
 import SpotifyWidget from '../Spotify/SpotifyWidget';
 
 const useStyles = makeStyles((theme) => ({

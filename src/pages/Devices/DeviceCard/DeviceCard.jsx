@@ -152,7 +152,7 @@ const DeviceCard = ({ virtual, index }) => {
               color={color}
               size="small"
               className={`${classes.editButton} step-devices-four-${index}`}
-              onClick={() => handleEditDevice(virtuals[virtual]?.is_device)}
+              onClick={() => console.log(virtuals[virtual],virtuals[virtual]?.is_device) || handleEditDevice(virtuals[virtual]?.is_device)}
             >
               <BuildIcon />
             </Button>

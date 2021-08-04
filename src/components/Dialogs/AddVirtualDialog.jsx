@@ -7,7 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import useStore from "../../utils/apiStore";
-import BladeSchemaFormNew from "../../components/SchemaForm/BladeSchemaFormNew";
+import BladeSchemaFormNew from "../SchemaForm/BladeSchemaFormNew";
 
 const AddVirtualDialog = () => {
   const addVirtual = useStore((state) => state.addVirtual);

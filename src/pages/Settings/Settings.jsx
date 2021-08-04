@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useStore from '../../utils/apiStore';
-import AudioInputs from './AudioInputs';
+import AudioCard from './AudioCard';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -154,7 +154,7 @@ const Settings = () => {
       <Card className={classes.card} style={{ marginBottom: '2rem' }}>
         <CardHeader title="General" subheader="Configure LedFx-Settings" />
         <CardContent className={classes.content}>
-          <AudioInputs className={'step-settings-one'} />
+          <AudioCard className={'step-settings-one'} />
 
           <Divider style={{ margin: '1rem 0' }} />
           {config.visualisation_fps && (<>
