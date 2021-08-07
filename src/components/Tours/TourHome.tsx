@@ -36,7 +36,10 @@ const steps = [
         LedFx actions and settings can be found up here
         <ul style={{ paddingLeft: '1rem' }}>
           <li>👨‍🏫 You can access a tour for other pages in this menu</li>
-          <li>👀 &apos;Enable Graphs&apos; to stream device pixels to this web interface</li>
+          <li>
+            👀 &apos;Enable Graphs&apos; to see a preview of the device LEDs.
+            Leave it off if your browser struggles with too many pixels!
+          </li>
         </ul>
       </div>
     ),
