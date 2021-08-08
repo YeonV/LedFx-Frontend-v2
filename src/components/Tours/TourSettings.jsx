@@ -76,11 +76,11 @@ const steps = [
   },
 ];
 
-const TourSettings: React.FC = () => {
+const TourSettings = ({ cally }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   return (
     <>
-      <MenuItem onClick={() => setIsTourOpen(true)}>
+      <MenuItem onClick={(e) => { setIsTourOpen(true); cally(e); }}>
         <ListItemIcon>
           <InfoRounded />
         </ListItemIcon>

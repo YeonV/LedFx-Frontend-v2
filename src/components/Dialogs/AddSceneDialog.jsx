@@ -30,18 +30,18 @@ const AddSceneDialog = () => {
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
     <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
     <DialogContent>
-      <DialogContentText>
+      
 
         Image is optional and can be one of:
         <ul style={{ paddingLeft: '1rem' }}>
         <li>iconName <Link href="https://material-ui.com/components/material-icons/">Find MUI icons here</Link>        
-        <Typography variant="subtitle1"><em>eg. flare, AccessAlarms</em></Typography></li>
+        <Typography color="textSecondary" variant="subtitle1"><em>eg. flare, AccessAlarms</em></Typography></li>
         <li>mdi:icon-name <Link href="https://materialdesignicons.com">Find Material Design icons here</Link>
-        <Typography variant="subtitle1"><em>eg. mdi:balloon, mdi:led-strip-variant</em></Typography></li>
+        <Typography color="textSecondary" variant="subtitle1"><em>eg. mdi:balloon, mdi:led-strip-variant</em></Typography></li>
         <li>image:custom-url
-        <Typography variant="subtitle1"><em>eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg</em></Typography></li>
+        <Typography color="textSecondary" variant="subtitle1" style={{ wordBreak: 'break-all'}}><em>eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg</em></Typography></li>
         </ul>
-      </DialogContentText>
+      
       <TextField
         autoFocus
         margin="dense"

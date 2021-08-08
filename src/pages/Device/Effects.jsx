@@ -62,7 +62,7 @@ const EffectsCard = ({ virtId }) => {
         config: 'RANDOMIZE',
         active: true
       }
-    );
+    ).then(()=>getVirtuals());
   };
 
   const handleClearEffect = () => {

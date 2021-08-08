@@ -82,7 +82,7 @@ const TourHome:React.FC = () => {
   return (
     <>
       <Button onClick={() => setIsTourOpen(true)} variant="outlined" className="step-zero">
-        Tour
+        Start Tour
       </Button>
       <Tour
         steps={steps}

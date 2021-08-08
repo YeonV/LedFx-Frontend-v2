@@ -21,10 +21,12 @@ import Device from './pages/Device/Device';
 import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
+import { initFrontendConfig } from './utils/helpers';
 
 
-export default function PersistentDrawerLeft() {
+export default function App() {
   const classes = useStyles();
+
   const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
@@ -35,6 +37,10 @@ export default function PersistentDrawerLeft() {
     getSystemConfig();
     getSchemas();
   }, [getVirtuals, getSystemConfig, getSchemas]);
+
+  useEffect(() => {
+    initFrontendConfig();
+  }, []);
 
   return (
     <MuiThemeProvider theme={BladeDarkTheme}>

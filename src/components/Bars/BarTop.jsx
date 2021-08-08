@@ -58,8 +58,7 @@ const TopBar = () => {
   const changePause = () => {
     togglePause();
   };
-  const changeGraphs = () => {
-    console.log(graphs)
+  const changeGraphs = () => {    
     toggleGraphs();
   };
   const [anchorEl, setAnchorEl] = useState(null);
@@ -121,19 +120,19 @@ const TopBar = () => {
             {paused ? 'Play' : 'Pause'}
           </MenuItem>
           <MenuItem onClick={changeGraphs}>
-            <ListItemIcon>
-              <BarChart />
+            <ListItemIcon >
+              <BarChart color={graphs ? "inherit" : "secondary"} />
             </ListItemIcon>
             {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
           </MenuItem>
-          {pathname.split('/')[1] === 'device' ? <TourDevice /> 
-            : pathname.split('/')[1] === 'Scenes' ? <TourScenes /> 
-            : pathname.split('/')[1] === 'Settings' ? <TourSettings /> 
+          {pathname.split('/')[1] === 'device' ? <TourDevice cally={() => setAnchorEl(null)} /> 
+            : pathname.split('/')[1] === 'Scenes' ? <TourScenes cally={() => setAnchorEl(null)} /> 
+            : pathname.split('/')[1] === 'Settings' ? <TourSettings cally={() => setAnchorEl(null)} /> 
             : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} /> 
-            : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations /> 
+            : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} /> 
             : null}
           
-          <MenuItem component={Link} to={"/Settings"} >
+          <MenuItem onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />
             </ListItemIcon>

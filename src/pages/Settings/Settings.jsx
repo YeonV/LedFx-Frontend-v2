@@ -17,7 +17,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import { Delete, Refresh } from '@material-ui/icons';
 
 import PopoverSure from '../../components/Popover';
-import { download } from '../../utils/helpers';
+import { deleteFrontendConfig, download } from '../../utils/helpers';
 import WledCard from './WledCard';
 import Slider from '@material-ui/core/Slider';
 import useSliderStyles from '../../components/SchemaForm/BladeSlider.styles';
@@ -67,6 +67,7 @@ const Settings = () => {
   };
 
   const configDelete = async () => {
+    deleteFrontendConfig();
     deleteSystemConfig().then(() => window.location = window.location.href)
   }
 

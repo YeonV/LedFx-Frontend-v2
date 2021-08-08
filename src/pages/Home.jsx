@@ -11,6 +11,7 @@ import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
 import FX from "../assets/FX";
+// import { deleteFrontendConfig } from "../utils/helpers";
 
 const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -27,7 +28,7 @@ export default function Home() {
   const handleScan = () => {
     setScanning(true)
     scanForDevices().then(async () => {
-      for (let sec = 1; sec <= 10; sec++) {
+      for (let sec = 1; sec <= 30; sec++) {
         await sleep(1000).then(() => {
           getDevices();
           getVirtuals();
@@ -63,7 +64,6 @@ export default function Home() {
             <li>Zustand as State-Management</li>
             <li>Typescript supported</li>
             <li>Mobile First</li>
-            <li>...</li>
             <li>by Blade</li>
           </ul>
         </CardContent>
@@ -72,20 +72,17 @@ export default function Home() {
           {/* <Button disabled variant="outlined">
             Docs
           </Button> */}
-          {parseInt(window.localStorage.getItem('BladeMod')) > 10 && <Button disabled={!(parseInt(window.localStorage.getItem('BladeMod')) > 10)}  variant="outlined" onClick={()=>{
-            window.localStorage.removeItem('undefined')
-            window.localStorage.removeItem('ledfx-host')
-            window.localStorage.removeItem('ledfx-hosts')
-            window.localStorage.removeItem('ledfx-ws')
+          {/* {parseInt(window.localStorage.getItem('BladeMod')) > 10 && <Button disabled={!(parseInt(window.localStorage.getItem('BladeMod')) > 10)}  variant="outlined" onClick={()=>{
+            deleteFrontendConfig()
             }}>
             Clear Data
-          </Button>}
+          </Button>} */}
           <Button onClick={() => handleScan()} variant="outlined">
             {scanning ? <CircularProgress
               variant="determinate"
-              value={(scanning / 10) * 100}
+              value={(scanning / 30) * 100}
               size={24}
-            /> : 'Scan'}
+            /> : 'WLED-scan'}
           </Button>
         </CardActions>
       </Card>      
