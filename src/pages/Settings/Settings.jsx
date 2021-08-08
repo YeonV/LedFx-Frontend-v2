@@ -285,7 +285,7 @@ const Settings = () => {
             >
               Shutdown
             </Button>
-            <Button
+            {/* <Button
               size="small"
               startIcon={<Refresh />}
               variant="outlined"
@@ -293,7 +293,7 @@ const Settings = () => {
               href={"https://github.com/YeonV/LedFx-Frontend-v2/releases/latest/download/ledfx_frontend_v2.zip"}
             >
               Download Latest v2
-            </Button>
+            </Button> */}
           </div>
         </CardContent>
       </Card>
