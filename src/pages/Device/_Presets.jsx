@@ -58,7 +58,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const deletePreset = useStore((state) => state.deletePreset);
 
   const handleActivatePreset = (virtId, category, effectType, presetId) => () => {    
-    activatePreset(virtId, category, effectType, presetId);
+    activatePreset(virtId, category, effectType, presetId).then(()=>getVirtuals());
     setName('');
   };
 

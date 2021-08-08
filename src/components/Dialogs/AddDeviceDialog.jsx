@@ -134,7 +134,6 @@ const AddDeviceDialog = () => {
     handleTypeChange(initial.type, initial.config);
   }, [initial.type]);
 
-  console.log(Object.keys(initial.config))
   return (
     <Dialog
       open={open}

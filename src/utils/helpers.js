@@ -14,6 +14,7 @@ export const download = (content, fileName, contentType) => {
 };
 
 export const drawerWidth = 240;
+export const frontendConfig = 1;
 
 export const getOverlapping = (data) => {
   const tmp = {};
@@ -45,3 +46,18 @@ export const getOverlapping = (data) => {
 }
 
 export const swap = (array, i, j) => [array[i], array[j]] = [array[j], array[i]];
+
+export const deleteFrontendConfig = () => {
+    window.localStorage.removeItem('undefined')
+    window.localStorage.removeItem('ledfx-host')
+    window.localStorage.removeItem('ledfx-hosts')
+    window.localStorage.removeItem('ledfx-ws')
+}
+
+export const initFrontendConfig = () => {
+    if (window.localStorage.getItem('ledfx-frontend') >= frontendConfig) {
+        return
+    }
+    window.localStorage.removeItem('undefined')
+    window.localStorage.setItem('ledfx-frontend', frontendConfig)
+}

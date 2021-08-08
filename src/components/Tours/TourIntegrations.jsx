@@ -5,15 +5,11 @@ import { InfoRounded } from '@material-ui/icons';
 
 const steps = [
   {
-    selector: '.step-scenes-one',
+    selector: '.step-integrations-one',
     content: (
       <div>
-        <h2>Scenes</h2>
-        You can save the current state of LedFx as a scene,
-        while giving it a name and optionally an image or an icon.
-        <p>
-          Note: This includes all active effects for all devices and their effect-settings.
-        </p>
+        <h2>Integrations</h2>
+        Text for Integrations
       </div>
     ),
     style: {
@@ -22,11 +18,11 @@ const steps = [
   },
 ];
 
-const TourScenes: React.FC = () => {
+const TourIntegrations = ({ cally }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   return (
     <>
-      <MenuItem onClick={() => setIsTourOpen(true)}>
+      <MenuItem onClick={(e) => { setIsTourOpen(true); cally(e); }}>
         <ListItemIcon>
           <InfoRounded />
         </ListItemIcon>
@@ -42,4 +38,4 @@ const TourScenes: React.FC = () => {
   );
 };
 
-export default TourScenes;
+export default TourIntegrations;

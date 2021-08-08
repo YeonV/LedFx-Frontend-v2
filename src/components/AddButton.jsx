@@ -7,43 +7,44 @@ import { Add, Send, Wallpaper, SettingsInputComponent, SettingsInputSvideo } fro
 
 
 
-const MenuLine = ({
+const MenuLine = React.forwardRef(({
     icon = <Send fontSize="small" />,
     name = 'MenuItem',
     action
-}) => <MenuItem onClick={action}>
+}, ref) => <MenuItem onClick={action} ref={ref}>
         <ListItemIcon>
             {icon}
         </ListItemIcon>
         <ListItemText primary={name} />
-    </MenuItem>
+    </MenuItem>)
 
 const StyledMenu = withStyles({
     paper: {
-      border: '1px solid rgba(255, 255, 255, 0.12)',
-      transform: 'translateY(-1rem) !important'
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        transform: 'translateY(-1rem) !important'
     },
-  })((props) => (
+})((props) => (
     <Menu
-      elevation={0}
-      getContentAnchorEl={null}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      {...props}
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+        }}
+        {...props}
     />
-  ));
+));
 
 
 const AddButton = ({ className, style, setBackdrop }) => {
     const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);
     const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
     const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
+    const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -58,13 +59,13 @@ const AddButton = ({ className, style, setBackdrop }) => {
     };
 
     const menuitems = [
-        { icon: <SettingsInputComponent />, name: 'Add Device', action: () => { setDialogOpenAddDevice(true);handleClose(); }},
-        { icon: <Icon><span className={'mdi mdi-led-strip-variant'} style={{ position: 'relative', display: 'flex' }} /></Icon>, name: 'Add Virtual', action: () => { setDialogOpenAddVirtual(true);handleClose(); }},
-        { icon: <Wallpaper />, name: 'Add Scene', action: () => { setDialogOpenAddScene(true);handleClose(); }},
+        { icon: <SettingsInputComponent />, name: 'Add Device', action: () => { setDialogOpenAddDevice(true); handleClose(); } },
+        { icon: <Icon><span className={'mdi mdi-led-strip-variant'} style={{ position: 'relative', display: 'flex' }} /></Icon>, name: 'Add Virtual', action: () => { setDialogOpenAddVirtual(true); handleClose(); } },
+        { icon: <Wallpaper />, name: 'Add Scene', action: () => { setDialogOpenAddScene(true); handleClose(); } },
     ];
 
     if (parseInt(window.localStorage.getItem('BladeMod')) > 10) {
-        menuitems.push({ icon: <SettingsInputSvideo />, name: 'Add Integration', action: () => { setDialogOpenAddIntegration(true); handleClose(); }})
+        menuitems.push({ icon: <SettingsInputSvideo />, name: 'Add Integration', action: () => { setDialogOpenAddIntegration(true); handleClose(); } })
     }
 
     return (
@@ -77,7 +78,7 @@ const AddButton = ({ className, style, setBackdrop }) => {
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={handleClose}              
+                onClose={handleClose}
             >
                 {menuitems.map((menuitem) => (
                     <MenuLine
@@ -87,7 +88,7 @@ const AddButton = ({ className, style, setBackdrop }) => {
                         action={menuitem.action}
                     />
                 ))}
-            </StyledMenu>            
+            </StyledMenu>
         </div>
     );
 }
