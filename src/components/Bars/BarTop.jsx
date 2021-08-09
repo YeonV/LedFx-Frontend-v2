@@ -3,8 +3,8 @@ import { useState } from 'react';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link } from 'react-router-dom';
 import clsx from 'clsx';
-import {AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon} from '@material-ui/core';
-import {Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, InfoRounded} from '@material-ui/icons';
+import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon } from '@material-ui/core';
+import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, InfoRounded } from '@material-ui/icons';
 import { drawerWidth } from '../../utils/helpers';
 import TourDevice from '../Tours/TourDevice';
 import TourScenes from '../Tours/TourScenes';
@@ -58,7 +58,7 @@ const TopBar = () => {
   const changePause = () => {
     togglePause();
   };
-  const changeGraphs = () => {    
+  const changeGraphs = () => {
     toggleGraphs();
   };
   const [anchorEl, setAnchorEl] = useState(null);
@@ -85,7 +85,7 @@ const TopBar = () => {
         >
           <MenuIcon />
         </IconButton>
-        {open && <div style={{ width: '48px', height: '48px'}} />}
+        {open && <div style={{ width: '48px', height: '48px' }} />}
         <Typography variant="h6" noWrap>
           {pathname === '/' ? 'LedFx' : pathname.split('/').pop()}
         </Typography>
@@ -115,7 +115,7 @@ const TopBar = () => {
           </MenuItem>
           <MenuItem onClick={changePause}>
             <ListItemIcon>
-              {paused ?  <PlayCircleOutline /> : <Pause />}
+              {paused ? <PlayCircleOutline /> : <Pause />}
             </ListItemIcon>
             {paused ? 'Play' : 'Pause'}
           </MenuItem>
@@ -125,13 +125,12 @@ const TopBar = () => {
             </ListItemIcon>
             {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
           </MenuItem>
-          {pathname.split('/')[1] === 'device' ? <TourDevice cally={() => setAnchorEl(null)} /> 
-            : pathname.split('/')[1] === 'Scenes' ? <TourScenes cally={() => setAnchorEl(null)} /> 
-            : pathname.split('/')[1] === 'Settings' ? <TourSettings cally={() => setAnchorEl(null)} /> 
-            : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} /> 
-            : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} /> 
-            : null}
-          
+          {pathname.split('/')[1] === 'device' ? <TourDevice cally={() => setAnchorEl(null)} />
+            : pathname.split('/')[1] === 'Scenes' ? <TourScenes cally={() => setAnchorEl(null)} />
+              : pathname.split('/')[1] === 'Settings' ? <TourSettings cally={() => setAnchorEl(null)} />
+                : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} />
+                  : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} />
+                    : null}
           <MenuItem onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { MenuItem, ListItemIcon } from '@material-ui/core';
+import { MenuItem, ListItemIcon, Badge } from '@material-ui/core';
 import Tour from 'reactour';
 import { InfoRounded } from '@material-ui/icons';
+import useStore from '../../utils/apiStore';
 
 const steps = [
   {
@@ -83,9 +84,9 @@ const steps = [
       <div>
         <h2>Pixelgraph</h2>
         When actively streaming with an active sound source selected you will find
-        the graph display here. 
+        the graph display here.
         <p>
-          Note: Graphs are disabled by default to keep low-end devices safe. 
+          Note: Graphs are disabled by default to keep low-end devices safe.
           For high-end clients they can be enabled using the top-right-menu
         </p>
       </div>
@@ -98,11 +99,19 @@ const steps = [
 
 const TourDevices = ({ cally }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const setTour = useStore((state) => state.setTour);
+  const invisible = useStore((state) => state.tours.devices);
   return (
     <>
-      <MenuItem onClick={(e) => { setIsTourOpen(true); cally(e); }}>
+      <MenuItem onClick={(e) => { 
+        setIsTourOpen(true); 
+        cally(e);
+        setTour("devices");
+        }}>
         <ListItemIcon>
-          <InfoRounded />
+          <Badge variant="dot" color="primary" invisible={invisible}>
+            <InfoRounded />
+          </Badge>
         </ListItemIcon>
         Tour
       </MenuItem>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { MenuItem, ListItemIcon } from '@material-ui/core';
+import { MenuItem, ListItemIcon, Badge } from '@material-ui/core';
 import Tour from 'reactour';
 import { InfoRounded } from '@material-ui/icons';
+import useStore from '../../utils/apiStore';
 
 const steps = [
   {
@@ -69,11 +70,20 @@ const steps = [
 
 const TourDevice = ({ cally }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const setTour = useStore((state) => state.setTour);
+  const invisible = useStore((state) => state.tours.device);
+
   return (
     <>
-      <MenuItem onClick={(e) => { setIsTourOpen(true); cally(e);}}>
+      <MenuItem onClick={(e) => { 
+        setIsTourOpen(true); 
+        cally(e);
+        setTour("device");
+        }}>
         <ListItemIcon>
-          <InfoRounded />
+          <Badge variant="dot" color="primary" invisible={invisible}>
+            <InfoRounded />
+          </Badge>
         </ListItemIcon>
         Tour
       </MenuItem>
