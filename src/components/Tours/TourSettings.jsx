@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MenuItem, ListItemIcon } from '@material-ui/core';
+import { MenuItem, ListItemIcon, Badge } from '@material-ui/core';
 import Tour from 'reactour';
 import { InfoRounded } from '@material-ui/icons';
 import useStore from '../../utils/apiStore';
