@@ -6,6 +6,7 @@ import {
   CardContent,
   CardActions,
   CircularProgress,
+  Badge,
 } from '@material-ui/core';
 import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
@@ -23,7 +24,7 @@ export default function Home() {
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const [scanning, setScanning] = useState(false)
-  
+  const invisible = useStore((state) => state.tours.home);
 
   const handleScan = () => {
     setScanning(true)
@@ -67,8 +68,10 @@ export default function Home() {
             <li>by Blade</li>
           </ul>
         </CardContent>
-        <CardActions>
+        <CardActions>        
+        <Badge variant="dot" color="primary" invisible={invisible}>
           <TourHome className={'step-one'} />
+        </Badge>
           {/* <Button disabled variant="outlined">
             Docs
           </Button> */}

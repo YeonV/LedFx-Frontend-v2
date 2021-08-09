@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@material-ui/core';
 import Tour from 'reactour';
+import useStore from '../../utils/apiStore';
 
 const steps = [
   {
@@ -80,11 +81,15 @@ const steps = [
   },
 ];
 
-const TourHome:React.FC = () => {
+const TourHome = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const setTour = useStore((state) => state.setTour);
   return (
     <>
-      <Button onClick={() => setIsTourOpen(true)} variant="outlined" className="step-zero">
+      <Button variant="outlined" className="step-zero" onClick={() => { 
+        setTour("home");
+        setIsTourOpen(true); 
+        }}>
         Start Tour
       </Button>
       <Tour

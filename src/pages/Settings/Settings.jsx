@@ -56,6 +56,8 @@ const Settings = () => {
   const config = useStore((state) => state.config);
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
+  // const [fps, setFps] = useState(config.visualisation_fps || 30)
+  // const [pixelLength, setPixelLength] = useState(config.visualisation_maxlen || 50)
 
   const configDownload = async () => {
     const newConfig = { ...config, ...{ ledfx_presets: undefined } }
@@ -138,17 +140,18 @@ const Settings = () => {
     },
   ];
 
-
-  useEffect(() => {
-    getSystemConfig().then(() => {
+  useEffect(() => {    
       if (typeof config.visualisation_fps === 'number') {
         setFps(config.visualisation_fps)
       }
       if (typeof config.visualisation_maxlen === 'number') {
         setPixelLength(config.visualisation_maxlen)
-      }
-    });
-  }, [getSystemConfig]);
+      }    
+  }, [config]);
+
+  useEffect(() => {
+    getSystemConfig()
+  }, []);
 
   return (
     <>

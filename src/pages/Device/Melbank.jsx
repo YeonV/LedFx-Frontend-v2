@@ -42,19 +42,19 @@ const MelbankCard = ({ virtual }) => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const config = useStore((state) => state.config);
 
-  const [value, setValue] = useState([logIt(virtual.config.frequency_min),logIt(virtual.config.frequency_max)]);
+  const [value, setValue] = useState([logIt(virtual.config.frequency_min), logIt(virtual.config.frequency_max)]);
 
   const freq_max = config.melbanks.max_frequencies.map(f => ({
     value: f,
-    label: `${f > 1000 ? f / 1000 : f}kHz`,
+    label: `${f > 1000 ? `${f / 1000}kHz` : `${f}Hz`}`,
   }));
 
   const freq_min = {
     value: config.melbanks.min_frequency,
-    label: `${config.melbanks.min_frequency}kHz`,
+    label: `${config.melbanks.min_frequency > 1000 ? `${config.melbanks.min_frequency / 1000}kHz` : `${config.melbanks.min_frequency}Hz`}`,
   }
   const marks = [freq_min, ...freq_max]
- 
+
   const convertedMarks = marks.map((m) => ({
     value: logIt(m.value),
     label: m.label,
@@ -88,7 +88,7 @@ const MelbankCard = ({ virtual }) => {
             valueLabelDisplay="auto"
             marks={convertedMarks}
             min={logIt(config.melbanks.min_frequency)}
-            max={logIt(config.melbanks.max_frequencies[config.melbanks.max_frequencies.length -1])}
+            max={logIt(config.melbanks.max_frequencies[config.melbanks.max_frequencies.length - 1])}
             onChange={handleChange}
             ValueLabelComponent={ValueLabelComponent}
             onChangeCommitted={(e, val) => {
@@ -100,7 +100,7 @@ const MelbankCard = ({ virtual }) => {
                   frequency_min: Math.round(hzIt(value[0])),
                   frequency_max: Math.round(hzIt(value[1]))
                 }
-              }).then(()=>getVirtuals())
+              }).then(() => getVirtuals())
             }}
           />
           <div
@@ -116,13 +116,13 @@ const MelbankCard = ({ virtual }) => {
                 label="Min"
                 type="number"
                 InputLabelProps={{
-                  shrink: true,                  
+                  shrink: true,
                 }}
                 InputProps={{
                   endAdornment: <InputAdornment position="end">Hz</InputAdornment>
                 }}
                 inputProps={{
-                  style: { textAlign: 'right',  }
+                  style: { textAlign: 'right', }
                 }}
                 value={Math.round(hzIt(value[0])) < 5 ? value[0] : Math.round(hzIt(value[0]))}
                 variant="outlined"
@@ -136,13 +136,13 @@ const MelbankCard = ({ virtual }) => {
                 id="max"
                 label="Max"
                 type="number"
-                
+
                 value={Math.round(hzIt(value[1])) > 20001 ? value[1] : Math.round(hzIt(value[1]))}
                 onChange={(e, n) => {
                   setValue([value[0], logIt(e.target.value)]);
                 }}
                 InputLabelProps={{
-                  shrink: true,                  
+                  shrink: true,
                 }}
                 InputProps={{
                   endAdornment: <InputAdornment position="end">Hz</InputAdornment>

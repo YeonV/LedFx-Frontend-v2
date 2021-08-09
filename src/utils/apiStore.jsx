@@ -15,7 +15,20 @@ const useStore = create(
       },
 
       // FRONTEND STUFF
-
+      tours: {
+        home: false,
+        devices: false,
+        device: false,
+        integrations: false,
+        scenes: false,
+        settings: false
+      },
+      setTour: (tour) => set((state) => ({
+        tours: {
+          ...state.tours,
+          [tour]: true
+        }
+      })),
       pixelGraphs: [],
       setPixelGraphs: (virtuals) => set((state) => ({
         pixelGraphs: [...virtuals]
