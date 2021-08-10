@@ -14,6 +14,7 @@ const BladeSlider = ({
   required = false,
   textfield = false,
   disabled = false,
+  hideDesc = false,
   style = {},
 }) => {
   const classes = useStyles();
@@ -30,6 +31,7 @@ const BladeSlider = ({
         onChange={onChange}
         textfield={textfield}
         marks={marks}
+        hideDesc={hideDesc}
       />
     </div>
   ) : (
@@ -42,12 +44,13 @@ const BladeSlider = ({
       textfield={textfield}
       style={{ order: required ? -1 : 3 }}
       marks={marks}
+      hideDesc={hideDesc}
     />
   );
 };
 
 const BladeSliderInner = ({
-  schema, model, model_id, step, onChange, textfield, style, disabled, marks
+  schema, model, model_id, step, onChange, textfield, style, disabled, marks,hideDesc
 }) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
@@ -72,7 +75,7 @@ const BladeSliderInner = ({
 
   return (schema.maximum && !textfield) ? (
     <>
-      <div>
+      <div style={{width: '100%'}}>
         <Slider
           aria-labelledby="input-slider"
           valueLabelDisplay="auto"
@@ -88,7 +91,7 @@ const BladeSliderInner = ({
         // defaultValue={model[model_id] || schema.default}
         // value={model && model[model_id]}
         />
-        {schema.description
+        {(!hideDesc && schema.description)
           ? <>
             <Typography variant={'body2'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
           </>
@@ -136,7 +139,7 @@ const BladeSliderInner = ({
       defaultValue={value}
       // onChange={()=>handleInputChange}
       onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
-      helperText={schema.description}
+      helperText={!hideDesc && schema.description}
       style={style}
     />
   );

@@ -160,6 +160,7 @@ const BladeSchemaForm = (props) => {
               <BladeSlider
                 variant={_sliderVariant}
                 key={i}
+                hideDesc={true}
                 model_id={s}
                 model={model}
                 schema={schema.properties[s]}
@@ -177,6 +178,7 @@ const BladeSchemaForm = (props) => {
                 variant={_sliderVariant}
                 step={1}
                 key={i}
+                hideDesc={true}
                 model_id={s}
                 model={model}
                 schema={schema.properties[s]}
