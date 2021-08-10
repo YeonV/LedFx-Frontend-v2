@@ -21,6 +21,7 @@ import { deleteFrontendConfig, download } from '../../utils/helpers';
 import WledCard from './WledCard';
 import Slider from '@material-ui/core/Slider';
 import useSliderStyles from '../../components/SchemaForm/BladeSlider.styles';
+import Webaudio from './Webaudio';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -302,6 +303,9 @@ const Settings = () => {
       </Card>
       {(parseInt(window.localStorage.getItem('BladeMod')) > 10) &&
         <WledCard className={`${classes.card} step-settings-five`} />
+      }
+      {(parseInt(window.localStorage.getItem('BladeMod')) > 10) &&
+        <Webaudio className={classes.card} />
       }
     </>
   );
