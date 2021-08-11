@@ -13,7 +13,7 @@ const AudioCard = ({ className }) => {
     }, []);
 
     return <div className={className}>
-        <BladeSchemaFormNew
+        {schema && <BladeSchemaFormNew
             schema={schema}
             model={model}
             onModelChange={(e) => {
@@ -23,7 +23,7 @@ const AudioCard = ({ className }) => {
                     }
                 }).then(() => getSystemConfig())
             }}
-        />
+        />}
     </div>
 };
 
