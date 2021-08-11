@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import Sockette from 'sockette';
+import ws, { WsContext, HandleWs } from "../../utils/Websocket";
 
 // async function streamMicrophoneAudioToSocket(ws) {
 //     let stream;
@@ -29,59 +31,91 @@ import { useState, useEffect } from 'react'
 //     recorder.start();
 //     return recorder;
 //   };
-
-
-
 const Webaudio = () => {
-    const audioContext = new AudioContext();
-    const [webAud, setWebAud] = useState(false)
-    const ws = new WebSocket(`${window.localStorage.getItem('ledfx-host') ? window.localStorage.getItem('ledfx-host').replace('https://', 'wss://').replace('http://', 'ws://') : 'ws://localhost:8888'}/api/websocket`);
-    // get mic stream
-    useEffect(() => {
-        var source
-        console.log("ey")
-        if (webAud) {
-            let thisLoop, lastLoop
-            window.navigator.getUserMedia({ audio: true }, (stream) => {
-                source = audioContext.createMediaStreamSource(stream);
-                const scriptNode = audioContext.createScriptProcessor(512, 1, 1);
-                source.connect(scriptNode);
-                scriptNode.connect(audioContext.destination);
-                // output to speaker
-                // source.connect(audioContext.destination);
+  const audioContext = new AudioContext();
+  const [webAud, setWebAud] = useState(false)
+  const [wsReady, setWsReady] = useState(false)
 
-                // on process event
-                scriptNode.onaudioprocess = (e) => {
-                    // get mica data
-                    // FPS TESTING
-                    thisLoop = performance.now();
-                    var fps = 1000 / (thisLoop - lastLoop);
-                    lastLoop = thisLoop;
-                    // console.log(fps, " fps:", e.inputBuffer.getChannelData(0))
-                    console.log("sending", webAud)
-                    ws.send(JSON.stringify(webAud));
+  // const ws = new WebSocket(`${window.localStorage.getItem('ledfx-host') ? window.localStorage.getItem('ledfx-host').replace('https://', 'wss://').replace('http://', 'ws://') : 'ws://localhost:8888'}/api/websocket`);
+  // get mic stream
+  useEffect(() => {
+    var source
+    // console.log("ey", webAud)
+    if (webAud) {
+      let thisLoop, lastLoop
+      window.navigator.getUserMedia({ audio: true }, (stream) => {
+        source = audioContext.createMediaStreamSource(stream);
+        const scriptNode = audioContext.createScriptProcessor(512, 1, 1);
+        source.connect(scriptNode);
+        scriptNode.connect(audioContext.destination);
+        // output to speaker
+        // source.connect(audioContext.destination);
+
+        // on process event
+        scriptNode.onaudioprocess = (e) => {
+          // get mica data
+          // FPS TESTING
+          thisLoop = performance.now();
+          var fps = 1000 / (thisLoop - lastLoop);
+          lastLoop = thisLoop;
+          // console.log(fps, " fps:", e.inputBuffer.getChannelData(0))
+          // console.log("sending", webAud)
+
+          if (wsReady) {
+            if (ws.ws.readyState === 1 && webAud) {
+              const getWs = async () => {
+                let i = 0
+                const request = {
+                  data: e.inputBuffer.getChannelData(0),
+                  event_type: "web_audio",
+                  id: i,
+                  type: "audio_data",
                 };
+                // console.log(webAud)
+                if (webAud === true) {
+                  ws.send(JSON.stringify(++request.id && request));
+                } else {
+                  source.disconnect()
+                }
+              };
+              getWs();
             }
-                , console.log);
-        } 
-        return {
-            if (source) {
-                source.disconnect()
-            }
-            
-        }
-    }, [webAud])
+          }
+        };
+      }
+        , console.log);
+    }
+    return {
+      if(source) {
+        source.disconnect()
+      }
+
+    }
+  }, [webAud])
 
 
-    
-    // const recorder = streamMicrophoneAudioToSocket(ws);      
 
+  // const recorder = streamMicrophoneAudioToSocket(ws);      
+  if (!wsReady) {
+    if (ws && ws.ws && ws.ws.readyState === 1) {
+      // console.log(ws.readyState)
+      setWsReady(true)
+    }
+  }
 
-    return (
-        <div onClick={() => setWebAud(!webAud)}>
-            WebAudio
-        </div>
-    )
+  return (
+    <div onClick={() => {
+      if (webAud === true) {
+        setWebAud(false)
+        setWsReady(false)
+      } else {
+        setWebAud(true)
+      }
+      
+      }}>
+      WebAudio
+    </div>
+  )
 }
 
 export default Webaudio
