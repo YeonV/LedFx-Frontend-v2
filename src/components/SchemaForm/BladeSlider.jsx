@@ -63,7 +63,15 @@ const BladeSliderInner = ({
   };
 
   const handleInputChange = (event) => {
-    setValue(event.target.value === '' ? '' : Number(event.target.value));
+    if (value !== event.target.value) {
+      setValue(event.target.value === '' ? '' : Number(event.target.value));
+      if (event.target.value < schema.minimum) {
+        setValue(schema.minimum);
+      } else if (event.target.value > schema.maximum) {
+        setValue(schema.maximum);
+      }
+      onChange(model_id, Number(event.target.value))
+    }
   };
   const handleBlur = () => {
     if (value < schema.minimum) {
@@ -137,8 +145,8 @@ const BladeSliderInner = ({
       // defaultValue={schema.default || 1}
       disabled={disabled}
       defaultValue={value}
-      // onChange={()=>handleInputChange}
-      onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
+      onChange={()=>handleInputChange}
+      // onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
       helperText={!hideDesc && schema.description}
       style={style}
     />

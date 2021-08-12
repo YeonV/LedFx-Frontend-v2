@@ -2,7 +2,7 @@ import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ListItem, ListItemIcon, ListItemText, Drawer, List, Icon, Divider, IconButton } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
@@ -11,14 +11,15 @@ import BladeIcon from '../BladeIcon';
 const LeftBar = () => {
   const classes = useStyles();
   const theme = useTheme();
+  const { pathname } = useLocation();
   const virtuals = useStore((state) => state.virtuals);
   const open = useStore((state) => state.ui.bars?.leftBar.open);
   const setOpen = useStore((state) => state.setLeftBarOpen);
   const smallScreen = useMediaQuery('(max-width:768px)');
-  
-  
-  const handleDrawerClose = () => {    
-      setOpen(false)
+
+
+  const handleDrawerClose = () => {
+    setOpen(false)
   };
 
   const logo = (
@@ -29,7 +30,7 @@ const LeftBar = () => {
         </div>
         LedFx
       </a>
-      <div className={classes.devbadge} onClick={()=>window.localStorage.setItem('BladeMod', 0)} onDoubleClick={()=>window.localStorage.setItem('BladeMod', 10)} />
+      <div className={classes.devbadge} onClick={() => window.localStorage.setItem('BladeMod', 0)} onDoubleClick={() => window.localStorage.setItem('BladeMod', 10)} />
     </div>
   );
 
@@ -60,14 +61,16 @@ const LeftBar = () => {
               smallScreen && handleDrawerClose();
             }}
           >
-            <ListItem button key={virtuals[d].config.name}>
+            <ListItem className={
+              (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device' && pathname.split('/')[2] === d) ? classes.activeView : classes.dummy
+            } button key={virtuals[d].config.name}>
               <ListItemIcon>
-                <BladeIcon 
-                  colorIndicator={d.effect && d.effect.active === true} 
+                <BladeIcon
+                  colorIndicator={!(pathname.split('/').length === 3 && pathname.split('/')[1] === 'device' && pathname.split('/')[2] === d) && Object.keys(virtuals[d].effect).length > 0}
                   name={virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name} />
               </ListItemIcon>
               <ListItemText
-                style={{ color: '#fff' }}
+                style={{ color: !(pathname.split('/').length === 3 && pathname.split('/')[1] === 'device' && pathname.split('/')[2] === d) && Object.keys(virtuals[d]?.effect).length > 0 ? theme.palette.primary.light : theme.palette.text.primary }}
                 primary={virtuals[d].config.name}
               />
             </ListItem>

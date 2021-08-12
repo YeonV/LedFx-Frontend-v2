@@ -85,5 +85,14 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
     backgroundPosition: '-40px 50%',
   },
+  activeView: {
+    backgroundColor: theme.palette.secondary.main,
+    boxShadow: theme.shadows[12],
+    '&:hover,&:focus,&:visited,&': {
+        backgroundColor: theme.palette.secondary.main,
+        boxShadow: theme.shadows[12],
+    },
+    color: '#fff',
+},
 }));
 export default useStyles;

@@ -24,7 +24,7 @@ import BladeIcon from '../../../components/BladeIcon';
 const DeviceCard = ({ virtual, index }) => {
   const classes = useDeviceCardStyles();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down(580));  
+  const isMobile = useMediaQuery(theme.breakpoints.down(580));
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
   const devices = useStore((state) => state.devices);
@@ -60,28 +60,25 @@ const DeviceCard = ({ virtual, index }) => {
         : 'unset'
     }}>
       <div className={classes.virtualCardContainer}>
-        
+
         <NavLink
           to={`/device/${virtuals[virtual]?.id}`}
-          className={classes.virtualLink}
-          color={virtuals[virtual]?.effect && virtuals[virtual]?.effect.active === true
-            ? 'primary'
-            : 'inherit'}
+          className={classes.virtualLink}          
         >
-          <BladeIcon 
-            colorIndicator={virtuals[virtual]?.effect && virtuals[virtual]?.effect.active === true}
+          <BladeIcon
+            colorIndicator={Object.keys(virtuals[virtual]?.effect).length > 0}
             name={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
             className={classes.virtualIcon} />
         </NavLink>
 
-        <div style={{ padding: '0 0.5rem' }}>          
+        <div style={{ padding: '0 0.5rem' }}>
           <NavLink
             to={`/device/${virtuals[virtual]?.id}`}
             className={classes.virtualLink}
-            color={virtuals[virtual]?.effect && virtuals[virtual]?.effect.active === true ? 'primary' : 'inherit'}
+            style={{ color: Object.keys(virtuals[virtual]?.effect).length > 0 ? theme.palette.primary.light : 'inherit'}}
           >
             {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
-          </NavLink>          
+          </NavLink>
           {virtuals[virtual]?.effect.name
             ? <Typography variant="body1" color="textSecondary">
               Effect: {virtuals[virtual]?.effect.name}
@@ -139,7 +136,7 @@ const DeviceCard = ({ virtual, index }) => {
               color={color}
               size="small"
               className={`${classes.editButton} step-devices-four-${index}`}
-              onClick={() => console.log(virtuals[virtual],virtuals[virtual]?.is_device) || handleEditDevice(virtuals[virtual]?.is_device)}
+              onClick={() => console.log(virtuals[virtual], virtuals[virtual]?.is_device) || handleEditDevice(virtuals[virtual]?.is_device)}
             >
               <BuildIcon />
             </Button>
