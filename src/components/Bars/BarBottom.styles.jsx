@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    background: '#151515',
+    background: theme.palette.background.light,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

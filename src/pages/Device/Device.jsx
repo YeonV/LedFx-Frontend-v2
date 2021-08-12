@@ -6,7 +6,6 @@ import EffectsCard from './Effects';
 import PresetsCard from './_Presets';
 import TransitionCard from './Transition';
 import MelbankCard from './Melbank';
-import InfoCard from './_Info';
 
 const useStyles = makeStyles((theme) => ({
   virtualWrapper: {
@@ -65,11 +64,6 @@ const Device = ({
             )}
             <MelbankCard virtual={virtual} />
           </Grid>
-          {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
-            <Grid item className={classes.girdItem}>
-              <InfoCard virtual={virtual} style={{ marginTop: '1rem' }} />
-            </Grid>
-          )}
         </>
       )}
     </Grid>
