@@ -4,11 +4,9 @@ import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ListItem, ListItemIcon, ListItemText, Drawer, List, Icon, Divider, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
-import { camelToSnake } from '../../utils/helpers';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
-import Wled from '../../assets/Wled';
-import YZ from '../../assets/YZ';
+import BladeIcon from '../BladeIcon';
 
 const LeftBar = () => {
   const classes = useStyles();
@@ -64,25 +62,9 @@ const LeftBar = () => {
           >
             <ListItem button key={virtuals[d].config.name}>
               <ListItemIcon>
-                <Icon
-                  color={d.effect && d.effect.active === true ? 'primary' : 'inherit'}
-                  style={{ position: 'relative' }}
-                >
-                  {virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name.startsWith('yz') ? (
-                    <YZ style={{ transform: 'scale(0.011)', marginTop: '3px'}} />
-                  ) : virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name
-                    && virtuals[d].config.icon_name.startsWith('wled') ? (
-                    <Wled />
-                  ) : (virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name.startsWith('mdi:')) ? (
-                    <span
-                      className={`mdi mdi-${virtuals[d].config.icon_name.split('mdi:')[1]}`}
-                    />
-                  ) : (
-                    camelToSnake(
-                      virtuals[d].config.icon_name || 'SettingsInputComponent',
-                    )
-                  )}
-                </Icon>
+                <BladeIcon 
+                  colorIndicator={d.effect && d.effect.active === true} 
+                  name={virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name} />
               </ListItemIcon>
               <ListItemText
                 style={{ color: '#fff' }}
