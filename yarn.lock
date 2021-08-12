@@ -11682,6 +11682,11 @@ use-callback-ref@^1.2.1:
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
   integrity sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==
 
+use-long-press@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/use-long-press/-/use-long-press-1.1.1.tgz#7a67b0bdf8d6f7a9183b6d662c5d57d164183574"
+  integrity sha512-tqf6zDZ06g/Rt8rw+/jaekrdBTmrFXxjHHd2QgMlOhvs1fwOb9VA9d+DmkTPeNtL/byaJ8YeHTOwmluwxhXRLA==
+
 use-sidecar@^1.0.1:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.0.5.tgz#ffff2a17c1df42e348624b699ba6e5c220527f2b"
