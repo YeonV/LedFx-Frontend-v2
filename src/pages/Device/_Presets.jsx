@@ -21,14 +21,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     width: '100%',
     padding: theme.spacing(2),
-    paddingBottom: 0,
   },
   presetButton: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0),
     textDecoration: 'none',
   },
   buttonGrid: {
     direction: 'row',
+    margin: '1rem 0',
   },
   actions: {
     display: 'flex',
@@ -74,6 +74,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
       <Grid item key={preset}>
         <Button
           className={classes.presetButton}
+          variant="outlined"
           onClick={handleActivatePreset(
             virtual.id,
             CATEGORY,
@@ -107,29 +108,36 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
     <Card variant="outlined" className={`${classes.deviceCard} step-device-three`} style={style}>
       <CardHeader title="Presets" subheader="Explore different effect configurations" />
       <CardContent className={classes.content}>
-        <Typography variant="subtitle2">LedFx Presets</Typography>
-        <Grid container className={classes.buttonGrid}>
+        <Typography variant="h6">LedFx Presets</Typography>
+        <Grid spacing={2} container className={classes.buttonGrid}>
           {renderPresetsButton(presets?.default_presets, DEFAULT_CAT)}
         </Grid>
-        <Typography variant="subtitle2">My Presets</Typography>
-        <Grid container className={classes.buttonGrid}>
+        <Typography variant="h6">My Presets</Typography>
+        <Typography variant="body2" color="textSecondary">
+          DoubleClick to delete
+        </Typography>
+        <Grid spacing={2} container className={classes.buttonGrid}>
           {renderPresetsButton(presets?.custom_presets, CUSTOM_CAT)}
         </Grid>
         <Typography variant="h6">Add Preset</Typography>
-        <Typography variant="body1" color="textSecondary">
+        <Typography variant="body2" color="textSecondary">
           Save this effect configuration as a preset
         </Typography>
+        
       </CardContent>
       <CardActions className={classes.actions}>
         <TextField
           error={!isNameValid}
+          size="small"
+          variant="outlined"
           id="presetNameInput"
           label="Preset Name"
           onChange={(e) => setName(e.target.value)}
         />
         <Button
           className={classes.presetButton}
-          color="primary"
+          size="large"
+          color="secondary"
           aria-label="Save Preset"
           disabled={name.length === 0 || !isNameValid}
           variant="contained"
