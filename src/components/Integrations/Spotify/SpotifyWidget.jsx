@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Fab, IconButton } from '@material-ui/core';
 import { QueueMusic, MusicNoteOutlined } from '@material-ui/icons';
 import ChangeSpotifyURLDialog from './ChangeSpotifyURLDialog';
+import BladeIcon from '../../BladeIcon';
 
 const SpotifyWidget = ({
   spotifyEnabled,
@@ -14,7 +15,7 @@ const SpotifyWidget = ({
   return (
     <>         
       <Fab size="small" color="secondary" onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 363 : 143: 65, right: 10, zIndex: 2 }} >
-        <MusicNoteOutlined />
+        <BladeIcon name="mdi:spotify" />
       </Fab>        
       {spotifyEnabled && <>
       <div style={{ position: 'fixed', display: 'flex', bottom: spotifyExpanded ? 258 : 38, right: 36, zIndex: 2 }}>
