@@ -3,13 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
 import Slider from '@material-ui/core/Slider';
 import useStore from '../../utils/apiStore';
+import BladeFrame from '../../components/SchemaForm/BladeFrame';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -58,9 +57,7 @@ const TransitionCard = ({ virtual, style }) => {
       <CardHeader title="Transitions" subheader="Seamlessly blend between effects" />
       <CardContent className={classes.content}>
         <FormControl className={classes.formControl}>
-          <Typography variant="subtitle2">
-            Transition Duration
-          </Typography>
+          <BladeFrame title="Duration">
           <Slider
             defaultValue={transition_time || schemas.transition_time.default}
             onChangeCommitted={onSliderChange}
@@ -71,10 +68,10 @@ const TransitionCard = ({ virtual, style }) => {
             marks={marks}
             valueLabelDisplay="auto"
           />
+          </BladeFrame>
         </FormControl>
-        <FormControl className={classes.formControl} style={{ flexGrow: 0, flexBasis: '140px' }}>
-          <InputLabel id="demo-simple-select-helper-label">Transition Effect</InputLabel>
-          <Select
+        <BladeFrame title="Mode" style={{ flexGrow: 0, flexBasis: '180px', minWidth: '180px', minHeight: '72px' }}>
+        <Select
             defaultValue={transition_mode || schemas.transition_mode.default}
             onChange={(e) => {
               handleSetTransition(virtual.id, { transition_mode: e.target.value });
@@ -82,7 +79,7 @@ const TransitionCard = ({ virtual, style }) => {
           >
             {schemas.transition_mode.enum.map((mode, i) => <MenuItem key={i} value={mode}>{mode}</MenuItem>)}
           </Select>
-        </FormControl>
+        </BladeFrame>
       </CardContent>
     </Card>
   );

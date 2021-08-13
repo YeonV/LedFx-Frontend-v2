@@ -5,8 +5,9 @@ import { Button, Card, CardContent } from '@material-ui/core/';
 import { Casino, Clear, Settings } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
-import BladeSchemaForm from '../../components/SchemaForm/BladeSchemaForm';
+import BladeEffectSchemaForm from '../../components/SchemaForm/BladeEffectSchemaForm';
 import PixelGraph from '../../components/PixelGraph';
+import TourEffect from '../../components/Tours/TourEffect';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -95,14 +96,16 @@ const EffectsCard = ({ virtId }) => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {effectType && (
               <>
+              <TourEffect schema={effects[effectType].schema} />
                 <Button
                   onClick={() => handleRandomize()}
                   variant="outlined"
                   style={{ marginRight: '.5rem' }}
+                  className={'step-device-six'}    
                 >
                   <Casino />
                 </Button>
-                <Button variant="outlined" onClick={() => handleClearEffect()}>
+                <Button variant="outlined" className={'step-device-five'} onClick={() => handleClearEffect()}>
                   <Clear />
                 </Button>
               </>
@@ -132,7 +135,7 @@ const EffectsCard = ({ virtId }) => {
           && effects
           && virtual.effect
           && virtual.effect.config && (
-            <BladeSchemaForm
+            <BladeEffectSchemaForm
               virtual={virtual}
               effects={effects}
               schema={effects[effectType].schema}

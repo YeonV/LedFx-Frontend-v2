@@ -39,6 +39,7 @@ const TopBar = () => {
   const classes = useStyles();
   const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
   const setLeftBarOpen = useStore((state) => state.setLeftBarOpen);
+  const virtuals = useStore((state) => state.virtuals);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const togglePause = useStore((state) => state.togglePause);
   const toggleGraphs = useStore((state) => state.toggleGraphs);
@@ -87,7 +88,9 @@ const TopBar = () => {
         </IconButton>
         {open && <div style={{ width: '48px', height: '48px' }} />}
         <Typography variant="h6" noWrap>
-          {pathname === '/' ? 'LedFx' : pathname.split('/').pop()}
+          {pathname === '/' ? 'LedFx' 
+            : (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ? virtuals[pathname.split('/')[2]]?.config.name
+            : pathname.split('/').pop()}
         </Typography>
 
         <IconButton

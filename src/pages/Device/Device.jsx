@@ -3,9 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core/';
 import useStore from '../../utils/apiStore';
 import EffectsCard from './Effects';
-import PresetsCard from './_Presets';
+import PresetsCard from './Presets';
 import TransitionCard from './Transition';
-import MelbankCard from './Melbank';
+import MelbankCard from './Frequencies';
 
 const useStyles = makeStyles((theme) => ({
   virtualWrapper: {

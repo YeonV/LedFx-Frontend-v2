@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useStore from '../../utils/apiStore';
-import BladeSchemaFormNew from "../../components/SchemaForm/BladeSchemaFormNew";
+import BladeSchemaForm from "../../components/SchemaForm/BladeSchemaForm";
 
 const AudioCard = ({ className }) => {
     const setSystemConfig = useStore((state) => state.setSystemConfig)
@@ -13,7 +13,7 @@ const AudioCard = ({ className }) => {
     }, []);
 
     return <div className={className}>
-        {schema && <BladeSchemaFormNew
+        {schema && <BladeSchemaForm
             schema={schema}
             model={model}
             onModelChange={(e) => {
