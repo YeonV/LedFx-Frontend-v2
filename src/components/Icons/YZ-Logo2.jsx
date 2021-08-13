@@ -11,7 +11,7 @@ export const YZLogo2Bottom = ({
   <svg style={{ transform: 'scale(0.025)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
     viewBox="0 0 59400 42000">
     <g id="_0" style={{ transformOrigin: 'center', transform: 'scale(1.3' }}>
-      <g id="_2391132320576">
+      <g id="YZLogo2Bottom">
         <Bottom currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
       </g>
     </g>
@@ -23,7 +23,7 @@ export const YZLogo2Top = ({
   <svg style={{ transform: 'scale(0.025)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
     viewBox="0 0 59400 42000">
     <g id="_0" style={{ transformOrigin: 'center', transform: 'scale(1.3' }}>
-      <g id="_2391132320576">
+      <g id="YZLogo2Top">
         <Top currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
       </g>
     </g>
@@ -32,10 +32,10 @@ export const YZLogo2Top = ({
 export const YZLogo2Y = ({
   stroke, strokeWidth, strokeLinejoin, strokeLinecap, currentColor = '#fff', style
 }) => (
-  <svg style={{ transform: 'scale(0.025)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
-    viewBox="0 0 59400 42000">
+  <svg style={{ transform: 'scale(0.03)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
+    viewBox="0 0 29700 42000">
     <g id="_0" style={{ transformOrigin: 'center', transform: 'scale(1.3' }}>
-      <g id="_2391132320576">
+      <g id="YZLogo2Y">
         <Y currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
       </g>
     </g>
@@ -44,10 +44,10 @@ export const YZLogo2Y = ({
 export const YZLogo2Z = ({
   stroke, strokeWidth, strokeLinejoin, strokeLinecap, currentColor = '#fff', style
 }) => (
-  <svg style={{ transform: 'scale(0.025)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
-    viewBox="0 0 59400 42000">
+  <svg style={{ transform: 'scale(0.035)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
+    viewBox="29700 0 59400 42000">
     <g id="_0" style={{ transformOrigin: 'center', transform: 'scale(1.3' }}>
-      <g id="_2391132320576">
+      <g id="YZLogo2Z">
         <Z currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
       </g>
     </g>
@@ -59,7 +59,7 @@ export const YZLogo2 = ({
   <svg style={{ transform: 'scale(0.025)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
     viewBox="0 0 59400 42000">
     <g id="_0" style={{ transformOrigin: 'center', transform: 'scale(1.3' }}>
-      <g id="_2391132320576">
+      <g id="YZLogo2">
         <Z currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
         <Y currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
         <Top currentColor={currentColor} stroke={stroke} strokeWidth={strokeWidth} />
