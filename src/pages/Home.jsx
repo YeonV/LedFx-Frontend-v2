@@ -11,13 +11,11 @@ import {
 import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
-import FX from "../assets/FX";
-// import { deleteFrontendConfig } from "../utils/helpers";
+import FX from "../components/Icons/FX";
 
 const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
-
 
 export default function Home() {
   const scanForDevices = useStore((state) => state.scanForDevices);
@@ -46,13 +44,11 @@ export default function Home() {
         <div style={{ position: 'relative' }} >
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
           <FX />
-        </div>
-        
+        </div>        
       </div>
       <Card
         variant="outlined"
         style={{
-          // background: '#303030',
           maxWidth: '400px',
           margin: '0.5rem auto 2rem auto',
         }}
@@ -72,14 +68,6 @@ export default function Home() {
         <Badge variant="dot" color="primary" invisible={invisible}>
           <TourHome className={'step-one'} />
         </Badge>
-          {/* <Button disabled variant="outlined">
-            Docs
-          </Button> */}
-          {/* {parseInt(window.localStorage.getItem('BladeMod')) > 10 && <Button disabled={!(parseInt(window.localStorage.getItem('BladeMod')) > 10)}  variant="outlined" onClick={()=>{
-            deleteFrontendConfig()
-            }}>
-            Clear Data
-          </Button>} */}
           <Button onClick={() => handleScan()} variant="outlined">
             {scanning ? <CircularProgress
               variant="determinate"

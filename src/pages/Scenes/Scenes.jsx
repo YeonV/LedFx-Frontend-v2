@@ -1,26 +1,11 @@
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardMedia from '@material-ui/core/CardMedia';
-import Icon from '@material-ui/core/Icon';
-import Typography from '@material-ui/core/Typography';
-
 import useStore from '../../utils/apiStore';
-import Wled from '../../assets/Wled';
-import { camelToSnake } from '../../utils/helpers';
-import Popover from '../../components/Popover';
-import { Button, Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Button, Divider, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Card, CardActionArea, CardActions, CardMedia, Icon, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Popover from '../../components/Popover';
 import NoYet from '../../components/NoYet';
+import BladeIcon from '../../components/Icons/BladeIcon';
 
 const useStyles = makeStyles({
   root: {
@@ -81,35 +66,13 @@ const Scenes = () => {
     setInfo(false);
   };
 
-  const sceneImage = (iconName) => (iconName
-    && iconName.startsWith('image:') ? (
-    <CardMedia
+  const sceneImage = (iconName) => iconName && iconName.startsWith('image:')
+    ? <CardMedia
       className={classes.media}
       image={iconName.split('image:')[1]}
       title="Contemplative Reptile"
     />
-  )
-
-    : (
-      <Icon
-        className={classes.iconMedia}
-        color={'inherit'}
-        style={{ position: 'relative' }}
-      >
-        {iconName.startsWith('wled') ? (
-          <Wled />
-        ) : iconName.startsWith('mdi:') ? (
-          <span
-            className={`mdi mdi-${iconName.split('mdi:')[1]
-              }`}
-          />
-        ) : (
-          camelToSnake(
-            iconName || 'SettingsInputComponent',
-          )
-        )}
-      </Icon>
-    ));
+    : <BladeIcon scene className={classes.iconMedia} name={iconName} />
 
   const SceneDialog = () => scene ? <Dialog
     open={info}
@@ -133,7 +96,6 @@ const Scenes = () => {
             <span>{scenes[scene].virtuals[dev].type}</span>
           </div>
         ))}
-
       </DialogContentText>
     </DialogContent>
     <DialogActions>
@@ -168,14 +130,10 @@ const Scenes = () => {
             </CardActions>
           </Card>
           <SceneDialog />
-
         </Grid>
       )) : (<NoYet type="Scene" />)}
     </Grid>
   );
 };
-
-
-
 
 export default Scenes;

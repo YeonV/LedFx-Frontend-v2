@@ -16,7 +16,6 @@ export default function ChangeSpotifyURLDialog({ style, spotifyURL, setSpotifyUR
     const handleClickOpen = () => {
         setOpen(true);
     };
-
     const handleClose = (e) => {
         setOpen(false);
     };

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import useStore from '../../../utils/apiStore';
 import { Fab, IconButton } from '@material-ui/core';
-import { QueueMusic, MusicNoteOutlined } from '@material-ui/icons';
+import { QueueMusic } from '@material-ui/icons';
 import ChangeSpotifyURLDialog from './ChangeSpotifyURLDialog';
-import BladeIcon from '../../BladeIcon';
+import BladeIcon from '../../Icons/BladeIcon';
 
 const SpotifyWidget = ({
   spotifyEnabled,
@@ -10,7 +10,9 @@ const SpotifyWidget = ({
   spotifyExpanded,
   setSpotifyExpanded
 }) => {
-  const [spotifyURL, setSpotifyURL] = useState("https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?")
+
+  const spotifyURL = useStore((state) => state.spotifyEmbedUrl);
+  const setSpotifyURL = useStore((state) => state.setSpotifyEmbedUrl);
 
   return (
     <>         

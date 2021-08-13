@@ -1,11 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import PopoverOriginal from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CloseIcon from '@material-ui/icons/Close';
-import CheckIcon from '@material-ui/icons/Check';
+import { Typography, Button, } from '@material-ui/core';
+import { Delete, Close, Check } from '@material-ui/icons';
 import { useLongPress } from 'use-long-press';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +15,6 @@ export default function Popover({
   onConfirm,
   onSingleClick,
   onDoubleClick,
-  onLongPress,
   openOnDoubleClick = false,
   openOnLongPress = false,
   variant = 'contained',
@@ -28,7 +24,7 @@ export default function Popover({
   direction = 'left',
   vertical = 'center',
   size = 'small',
-  icon = <DeleteIcon />,
+  icon = <Delete />,
   className,
   startIcon,
   noIcon = false,
@@ -48,7 +44,7 @@ export default function Popover({
       console.log('click')
       onSingleClick && onSingleClick()
     },
-    treshhold: 1000,  
+    treshhold: 1000,
     captureEvent: true,
   });
   const open = Boolean(anchorEl);
@@ -107,7 +103,6 @@ export default function Popover({
           horizontal: direction === 'center' ? 'center' : 'right',
         }}
       >
-        {' '}
         <div style={{ display: 'flex' }}>
           <Typography className={classes.typography}>{text}</Typography>
           <Button
@@ -119,7 +114,7 @@ export default function Popover({
               setAnchorEl(null);
             }}
           >
-            <CheckIcon />
+            <Check />
           </Button>
           <Button
             aria-describedby={id}
@@ -129,7 +124,7 @@ export default function Popover({
               setAnchorEl(null);
             }}
           >
-            <CloseIcon />
+            <Close />
           </Button>
         </div>
       </PopoverOriginal>

@@ -438,6 +438,10 @@ const useStore = create(
           };
         }
       },
+      spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
+      setSpotifyEmbedUrl: (url) => {
+        set((state) => ({ spotifyEmbedUrl: url }))        
+      },
     })),
   ),
 );
