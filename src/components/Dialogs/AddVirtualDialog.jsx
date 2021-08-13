@@ -7,7 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import useStore from "../../utils/apiStore";
-import BladeSchemaFormNew from "../SchemaForm/BladeSchemaFormNew";
+import BladeSchemaForm from "../SchemaForm/BladeSchemaForm";
 
 const AddVirtualDialog = () => {
   const addVirtual = useStore((state) => state.addVirtual);
@@ -119,7 +119,7 @@ const AddVirtualDialog = () => {
           segments over several devices into one Virtual-Device.
         </DialogContentText>
 
-        <BladeSchemaFormNew
+        <BladeSchemaForm
           schema={currentSchema}
           model={model}
           onModelChange={handleModelChange}

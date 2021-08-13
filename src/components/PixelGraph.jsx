@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme) => ({
     '@media (max-width: 580px)': {
       margin: '0',
     },
-    border: '1px solid',
-    borderColor: theme.palette.text.secondary,
+    border: '1px solid rgba(255, 255, 255, 0.3)',
   },
   Pixel: {
     height: '40px',

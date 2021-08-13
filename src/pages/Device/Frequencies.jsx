@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { InputAdornment, TextField } from '@material-ui/core';
+import BladeFrame from '../../components/SchemaForm/BladeFrame';
 
 const log13 = (x) => Math.log(x) / Math.log(13);
 const logIt = (x) => 3700.0 * log13(1 + x / 200.0);
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const MelbankCard = ({ virtual }) => {
+const FrequenciesCard = ({ virtual }) => {
   const classes = useStyles();
   const addVirtual = useStore((state) => state.addVirtual);
   const getVirtuals = useStore((state) => state.getVirtuals);
@@ -74,13 +75,14 @@ const MelbankCard = ({ virtual }) => {
   };
 
   return (
-    <Card variant="outlined" className={classes.card}>
+    <Card variant="outlined" className={`${classes.card} step-device-four`}>
       <CardHeader
-        title="Frequency Range"
+        title="Frequencies"
         subheader="Adjust the audio range used for this strip"
       />
       <CardContent className={classes.content}>
-        <div style={{ padding: '0 25px', width: '100%' }}>
+        <div style={{ width: '100%' }}>
+          <BladeFrame title="Range" style={{padding: '16px 2rem 6px 2rem', marginBottom: '1rem'}}>
           <Slider
             value={[value[0], value[1]]}
             aria-labelledby="discrete-slider-custom"
@@ -103,6 +105,7 @@ const MelbankCard = ({ virtual }) => {
               }).then(() => getVirtuals())
             }}
           />
+          </BladeFrame>
           <div
             style={{
               width: '100%',
@@ -172,4 +175,4 @@ function ValueLabelComponent(props) {
   );
 }
 
-export default MelbankCard;
+export default FrequenciesCard;

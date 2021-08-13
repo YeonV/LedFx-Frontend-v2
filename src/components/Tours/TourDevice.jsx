@@ -66,6 +66,42 @@ const steps = [
       backgroundColor: '#303030',
     },
   },
+  {
+    selector: '.step-device-five',
+    content: (
+      <div>
+        <h2>Clear Effect</h2>
+        Clear effect and release device
+      </div>
+    ),
+    style: {
+      backgroundColor: '#303030',
+    },
+  },
+  {
+    selector: '.step-device-six',
+    content: (
+      <div>
+        <h2>Randomizer</h2>
+        Randomly sets all effect properties
+      </div>
+    ),
+    style: {
+      backgroundColor: '#303030',
+    },
+  },
+  {
+    selector: '.step-device-seven',
+    content: (
+      <div>
+        <h2>Effect Tours</h2>
+        Every effect has an individual tour to explain the different properties
+      </div>
+    ),
+    style: {
+      backgroundColor: '#303030',
+    },
+  },
 ];
 
 const TourDevice = ({ cally }) => {

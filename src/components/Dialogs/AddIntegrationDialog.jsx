@@ -10,7 +10,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import useStore from "../../utils/apiStore";
-import BladeSchemaFormNew from "../SchemaForm/BladeSchemaFormNew";
+import BladeSchemaForm from "../SchemaForm/BladeSchemaForm";
 import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -173,7 +173,7 @@ const AddIntegrationDialog = () => {
         </div>
         <Divider style={{ marginBottom: "1rem" }} />
         {model && (
-          <BladeSchemaFormNew
+          <BladeSchemaForm
             schema={currentSchema}
             model={model}
             onModelChange={handleModelChange}
