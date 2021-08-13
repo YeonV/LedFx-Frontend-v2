@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #fff',
   },
   wrapper: {
-    border: '1px solid #999',
+    border: '1px solid rgba(255, 255, 255, 0.23)',
     borderRadius: '10px',
     position: 'relative',
     margin: '0.5rem',
     '& > label': {
-      top: '-0.7rem',
+      top: '-0.5rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',
@@ -70,7 +70,7 @@ const BladeColorNewPicker = ({ sendColor, col, clr, virtual }) => {
 
   return (
     <div className={classes.wrapper}>
-      <label>
+      <label className={'MuiFormLabel-root'}>
         {/* <Palette /> */}
         {clr.replaceAll('_', ' ')}
       </label>

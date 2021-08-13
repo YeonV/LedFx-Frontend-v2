@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   wrapper: {
-    border: '1px solid #999',
+    border: '1px solid rgba(255, 255, 255, 0.23)',
     borderRadius: '10px',
     position: 'relative',
     // margin: "0.5rem",
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '0.5rem 0',
     // },
     '& > label': {
-      top: '-0.7rem',
+      top: '-0.5rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',
@@ -88,7 +88,7 @@ const coloring = {
   violetred: 'rgb(208, 32, 144)',
 };
 
-const BladeColorPicker = ({ sendColor, col, clr }) => {
+const BladeColorPicker = ({ sendColor, col, clr, index }) => {
   const classes = useStyles();
   const popover = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -105,8 +105,8 @@ const BladeColorPicker = ({ sendColor, col, clr }) => {
   const id = open ? 'simple-popper' : undefined;
 
   return (
-    <div className={classes.wrapper}>
-      <label>
+    <div className={`${classes.wrapper} step-effect-${index}`}>
+      <label className={'MuiFormLabel-root'}>
         {/* <Palette /> */}
         {clr.replaceAll('_', ' ').replaceAll('background', 'bg')}
       </label>

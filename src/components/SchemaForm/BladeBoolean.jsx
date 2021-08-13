@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     // minWidth: "140px",
     padding: '10px 10px 2px 10px',
-    border: '1px solid #999',
+    border: '1px solid rgba(255, 255, 255, 0.23)',
     borderRadius: '10px',
     position: 'relative',
     // margin: "0.5rem",
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
       flexBasis: "37vw",
     },
     '& > label': {
-      top: '-0.7rem',
+      top: '-0.5rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',
@@ -51,15 +51,17 @@ const BladeBoolean = ({
   schema,
   model,
   required = false,
+  hideDesc = false,
   model_id,
   style = {},
+  index
 }) => {
   // console.log(schema);
   const classes = useStyles();
 
   const Frame = ({ children }) => (variant === 'outlined' ? (
-    <div className={classes.wrapper} style={{ ...style, ...{ order: required ? -1 : 5 } }}>
-      <label>{schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}{required ? '*' : ''}</label>
+    <div className={`${classes.wrapper} step-effect-${index}`} style={{ ...style, ...{ order: required ? -1 : 5 } }}>
+      <label className={'MuiFormLabel-root'}>{schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}{required ? '*' : ''}</label>
       {children}
     </div>
   ) : variant === 'text' ? (
@@ -79,7 +81,7 @@ const BladeBoolean = ({
             name={schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
             color="primary"
           />
-          {schema.description
+          {!hideDesc && schema.description
             ? <>
               <Typography variant={'body2'} className={'MuiFormHelperText-root'} >{schema.description} </Typography>
             </>
@@ -94,7 +96,7 @@ const BladeBoolean = ({
             defaultValue={schema.default}
             checked={model && model[model_id]}
             onChange={(e, b) => onClick(model_id, b)}
-            name="checkedB"
+            name={model_id}
             color="primary"
           />
         </Frame>

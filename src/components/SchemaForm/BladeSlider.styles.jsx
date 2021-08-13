@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '240px',
     width: '48%',
     padding: '16px 1.2rem 6px 1.2rem',
-    border: '1px solid #999',
+    border: '1px solid rgba(255, 255, 255, 0.23)',
     borderRadius: '10px',
     position: 'relative',
     display: 'flex',
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100% !important',
     },
     '& > label': {
-      top: '-0.7rem',
+      top: '-0.5rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',

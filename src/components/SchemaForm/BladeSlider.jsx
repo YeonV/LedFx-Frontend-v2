@@ -11,6 +11,7 @@ const BladeSlider = ({
   step,
   onChange,
   marks,
+  index,
   required = false,
   textfield = false,
   disabled = false,
@@ -20,8 +21,8 @@ const BladeSlider = ({
   const classes = useStyles();
   // console.log(schema)
   return variant === 'outlined' ? (
-    <div className={classes.wrapper} style={{ ...style, ...{ order: required ? -1 : 3 } }}>
-      <label>{schema.title}{required ? '*' : ''}</label>
+    <div className={`${classes.wrapper} step-effect-${index}`} style={{ ...style, ...{ order: required ? -1 : 3 } }}>
+      <label className={'MuiFormLabel-root'}>{schema.title}{required ? '*' : ''}</label>
       <BladeSliderInner
         schema={schema}
         model={model}

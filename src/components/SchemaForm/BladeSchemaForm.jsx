@@ -15,8 +15,6 @@ import {
   FormControl,
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
-import useStore from '../../utils/apiStore';
-import BladeColorDropDown from './BladeColorDropDown';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';
@@ -29,33 +27,18 @@ const useStyles = makeStyles({
   },
 });
 
-const BladeSchemaForm = (props) => {
+const BladeSchemaFormNew = (props) => {
   const {
-    effects,
-    virtual,
     schema,
     model,
-    virtual_id,
-    selectedType,
     colorMode = 'picker',
-    colorKeys = [],
     boolMode = 'switch',
     boolVariant = 'outlined',
     selectVariant = 'outlined',
     sliderVariant = 'outlined',
+    onModelChange = (e) => e,
   } = props;
-  const pickerKeys = [
-    'color',
-    'background_color',
-    'color_lows',
-    'color_mids',
-    'color_high',
-    'strobe_color',
-    'lows_colour',
-    'mids_colour',
-    'high_colour',
-    ...colorKeys,
-  ];
+
 
   const classes = useStyles();
 
@@ -65,8 +48,6 @@ const BladeSchemaForm = (props) => {
   const [_selectVariant, _setSelectVariant] = useState(selectVariant);
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
-  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
-  const getVirtuals = useStore((state) => state.getVirtuals);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -75,14 +56,6 @@ const BladeSchemaForm = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleEffectConfig = (virtual_id, config) => updateVirtualEffect(virtual_id, {
-    virtId: virtual_id,
-    type: selectedType,
-    config,
-  }).then(() => {
-    getVirtuals();
-  });
 
   return (
     <div className={classes.bladeSchemaForm}>
@@ -97,21 +70,13 @@ const BladeSchemaForm = (props) => {
           <SettingsIcon />
         </Fab>
       )}
-      {pickerKeys && pickerKeys.map(
-        (k) => model && Object.keys(model).indexOf(k) !== -1 && (
-          <BladeColorDropDown
-            virtual={virtual}
-            effects={effects}
-            selectedType={selectedType}
-            model={model}
-            key={k}
-            type={_colorMode === 'select' ? 'text' : 'color'}
-            clr={k}
-          />
-        ),
-      )}
 
-      {Object.keys(schema.properties).map((s, i) => {
+      {schema && schema.properties && Object.keys(schema.properties).map((s, i) => {
+        let permitted = true
+        if (schema.permitted_keys && schema.permitted_keys.indexOf(s) === -1) {
+          permitted = false
+        }
+        
         switch (schema.properties[s].type) {
           case 'boolean':
             return (
@@ -121,76 +86,105 @@ const BladeSchemaForm = (props) => {
                 key={i}
                 model={model}
                 model_id={s}
+                required={schema.required && schema.required.indexOf(s) !== -1}
+                style={{ margin: '0.5rem 0', flexBasis: '48%' }}
                 schema={schema.properties[s]}
                 onClick={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(virtual_id, c);
+                  return onModelChange(c);
                 }}
               />
             );
           case 'string':
-            return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ? (
-              <BladeSelect
-                model={model}
-                variant={_selectVariant}
-                schema={schema.properties[s]}
-                model_id={s}
-                key={i}
-                onChange={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return handleEffectConfig(virtual_id, c);
-                }}
-              />
-            ) : (
-              pickerKeys.indexOf(s) === -1 && (
-                <BladeColorDropDown
-                  selectedType={selectedType}
-                  model={model}
-                  type="colorNew"
-                  clr="blade_color"
-                  key={i}
-                />
-              )
-            );
+            return <BladeSelect
+              model={model}
+              disabled={!permitted}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              variant={_selectVariant}
+              schema={schema.properties[s]}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              model_id={s}
+              key={i}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            />
 
           case 'number':
             return (
               <BladeSlider
                 variant={_sliderVariant}
+                disabled={!permitted}
                 key={i}
-                hideDesc={true}
                 model_id={s}
                 model={model}
+                required={schema.required && schema.required.indexOf(s) !== -1}
                 schema={schema.properties[s]}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
-                  return handleEffectConfig(virtual_id, c);
+                  return onModelChange(c);
                 }}
               />
             );
 
           case 'integer':
-            return (
-              <BladeSlider
-                variant={_sliderVariant}
-                step={1}
-                key={i}
-                hideDesc={true}
-                model_id={s}
-                model={model}
-                schema={schema.properties[s]}
-                style={{ margin: '0.5rem 0', flexBasis: '47%'}}
-                onChange={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return handleEffectConfig(virtual_id, c);
-                }}
-              />
-            );
-
+            return <BladeSlider
+              variant={_sliderVariant}
+              disabled={!permitted}
+              step={1}
+              key={i}
+              model_id={s}
+              model={model}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              schema={schema.properties[s]}
+              textfield={true}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            />
+          case 'int':
+            return schema.properties[s]?.enum?.length > 10 ? <BladeSlider
+              variant={_sliderVariant}
+              disabled={!permitted}
+              marks={schema.properties[s]?.enum}
+              step={null}
+              key={i}
+              model_id={s}
+              model={model}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              schema={schema.properties[s]}
+              textfield={false}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            /> : <BladeSlider
+              variant={_sliderVariant}
+              disabled={!permitted}
+              marks={schema.properties[s]?.enum}
+              step={null}
+              key={i}
+              model_id={s}
+              model={model}
+              required={schema.required && schema.required.indexOf(s) !== -1}
+              schema={schema.properties[s]}
+              textfield={false}
+              style={{ margin: '0.5rem 0', width: '48%' }}
+              onChange={(model_id, value) => {
+                const c = {};
+                c[model_id] = value;
+                return onModelChange(c);
+              }}
+            />
           default:
             return (
               <>
@@ -286,17 +280,14 @@ const BladeSchemaForm = (props) => {
   );
 };
 
-BladeSchemaForm.propTypes = {
+BladeSchemaFormNew.propTypes = {
   colorMode: PropTypes.oneOf(['picker', 'select']),
   boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
   boolVariant: PropTypes.oneOf(['outlined', 'contained', 'text']),
   selectVariant: PropTypes.string, // outlined | any
   sliderVariant: PropTypes.string, // outlined | any
-  colorKeys: PropTypes.array,
   schema: PropTypes.object.isRequired,
   model: PropTypes.object.isRequired,
-  virtual_id: PropTypes.string.isRequired,
-  selectedType: PropTypes.string.isRequired,
 };
 
-export default BladeSchemaForm;
+export default BladeSchemaFormNew;
