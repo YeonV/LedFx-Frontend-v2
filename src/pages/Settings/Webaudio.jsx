@@ -1,7 +1,7 @@
 import { Button, Fab, TextField, Popover, FormControlLabel , Switch } from '@material-ui/core';
 import { Check, Close } from '@material-ui/icons';
 import { useState, useEffect } from 'react'
-import BladeIcon from '../../components/BladeIcon';
+import BladeIcon from '../../components/Icons/BladeIcon';
 import ws from "../../utils/Websocket";
 
 const getMedia = async () => {

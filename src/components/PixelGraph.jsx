@@ -23,13 +23,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PixelGraph = ({ virtId, dummy=false, className }) => {
-
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const virtuals = useStore((state) => state.virtuals);
   const graphs = useStore((state) => state.graphs);
-
 
   useEffect(() => {
     const handleWebsockets = (e) => {

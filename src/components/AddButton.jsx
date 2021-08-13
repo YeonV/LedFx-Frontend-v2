@@ -1,11 +1,8 @@
 import React from 'react';
 import useStore from '../utils/apiStore';
 import { withStyles } from '@material-ui/core/styles';
-
 import { Fab, Icon, Menu, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { Add, Send, Wallpaper, SettingsInputComponent, SettingsInputSvideo } from '@material-ui/icons';
-
-
 
 const MenuLine = React.forwardRef(({
     icon = <Send fontSize="small" />,
@@ -38,7 +35,6 @@ const StyledMenu = withStyles({
         {...props}
     />
 ));
-
 
 const AddButton = ({ className, style, setBackdrop }) => {
     const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene);

@@ -18,7 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import PixelGraph from '../../../components/PixelGraph';
 import { useDeviceCardStyles } from './DeviceCard.styles'
-import BladeIcon from '../../../components/BladeIcon';
+import BladeIcon from '../../../components/Icons/BladeIcon';
 
 
 const DeviceCard = ({ virtual, index }) => {

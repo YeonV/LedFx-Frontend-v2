@@ -1,26 +1,13 @@
 import { useEffect, useState } from 'react';
 import useStore from '../../utils/apiStore';
-import AudioCard from './AudioCard';
-
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import { Input } from '@material-ui/core/';
-
-import { Button, Divider } from '@material-ui/core';
-
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-
-import { Delete, Refresh } from '@material-ui/icons';
-
-import PopoverSure from '../../components/Popover';
 import { deleteFrontendConfig, download } from '../../utils/helpers';
-import WledCard from './WledCard';
-import Slider from '@material-ui/core/Slider';
+import { makeStyles } from '@material-ui/core/styles';
+import { Button, Divider, Input, Card, CardHeader, CardContent, Slider } from '@material-ui/core';
+import { CloudUpload, CloudDownload,PowerSettingsNew, Delete, Refresh } from '@material-ui/icons';
 import useSliderStyles from '../../components/SchemaForm/BladeSlider.styles';
+import PopoverSure from '../../components/Popover';
+import AudioCard from './AudioCard';
+import WledCard from './WledCard';
 import Webaudio from './Webaudio';
 
 const useStyles = makeStyles(theme => ({
@@ -57,9 +44,6 @@ const Settings = () => {
   const config = useStore((state) => state.config);
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
-  // const [fps, setFps] = useState(config.visualisation_fps || 30)
-  // const [pixelLength, setPixelLength] = useState(config.visualisation_maxlen || 50)
-
   const configDownload = async () => {
     const newConfig = { ...config, ...{ ledfx_presets: undefined } }
     download(
@@ -81,7 +65,6 @@ const Settings = () => {
       importSystemConfig(e.target.result).then(() => (window.location = window.location.href));
     };
   }
-
 
   const setSystemSetting = (setting, value) => {
     setSystemConfig({ config: { [setting]: value } }).then(() => getSystemConfig());
@@ -232,7 +215,7 @@ const Settings = () => {
           <div className={'step-settings-four'}>
             <Button
               size="small"
-              startIcon={<CloudUploadIcon />}
+              startIcon={<CloudUpload />}
               variant="outlined"
               className={classes.actionButton}
               style={{ marginTop: '1.5rem' }}
@@ -262,7 +245,7 @@ const Settings = () => {
               <Button
                 component="span"
                 size="small"
-                startIcon={<CloudDownloadIcon />}
+                startIcon={<CloudDownload />}
                 variant="outlined"
                 className={classes.actionButton}
               >
@@ -282,22 +265,13 @@ const Settings = () => {
 
             <Button
               size="small"
-              startIcon={<PowerSettingsNewIcon />}
+              startIcon={<PowerSettingsNew />}
               variant="outlined"
               className={classes.actionButton}
               onClick={shutdown}
             >
               Shutdown
             </Button>
-            {/* <Button
-              size="small"
-              startIcon={<Refresh />}
-              variant="outlined"
-              className={classes.actionButton}
-              href={"https://github.com/YeonV/LedFx-Frontend-v2/releases/latest/download/ledfx_frontend_v2.zip"}
-            >
-              Download Latest v2
-            </Button> */}
           </div>
         </CardContent>
       </Card>
