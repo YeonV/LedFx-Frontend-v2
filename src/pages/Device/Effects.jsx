@@ -94,7 +94,7 @@ const EffectsCard = ({ virtId }) => {
         >
           <h1>{virtual && virtual.config.name}</h1>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {effectType && (
+            {effects && effectType && (
               <>
               <TourEffect schema={effects[effectType].schema} />
                 <Button

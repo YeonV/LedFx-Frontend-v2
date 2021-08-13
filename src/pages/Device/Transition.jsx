@@ -43,12 +43,12 @@ const TransitionCard = ({ virtual, style }) => {
 
   const marks = [
     {
-      value: schemas.transition_time.minimum,
-      label: `${schemas.transition_time.minimum}s`,
+      value: schemas?.transition_time.minimum,
+      label: `${schemas?.transition_time.minimum}s`,
     },
     {
-      value: schemas.transition_time.maximum,
-      label: `${schemas.transition_time.maximum}s`,
+      value: schemas?.transition_time.maximum,
+      label: `${schemas?.transition_time.maximum}s`,
     },
   ];
 
@@ -59,12 +59,12 @@ const TransitionCard = ({ virtual, style }) => {
         <FormControl className={classes.formControl}>
           <BladeFrame title="Duration">
           <Slider
-            defaultValue={transition_time || schemas.transition_time.default}
+            defaultValue={transition_time || schemas?.transition_time.default}
             onChangeCommitted={onSliderChange}
             aria-labelledby="discrete-slider"
             step={0.1}
-            min={schemas.transition_time.minimum}
-            max={schemas.transition_time.maximum}
+            min={schemas?.transition_time.minimum}
+            max={schemas?.transition_time.maximum}
             marks={marks}
             valueLabelDisplay="auto"
           />
@@ -72,12 +72,12 @@ const TransitionCard = ({ virtual, style }) => {
         </FormControl>
         <BladeFrame title="Mode" style={{ flexGrow: 0, flexBasis: '180px', minWidth: '180px', minHeight: '72px' }}>
         <Select
-            defaultValue={transition_mode || schemas.transition_mode.default}
+            defaultValue={transition_mode || schemas?.transition_mode.default}
             onChange={(e) => {
               handleSetTransition(virtual.id, { transition_mode: e.target.value });
             }}
           >
-            {schemas.transition_mode.enum.map((mode, i) => <MenuItem key={i} value={mode}>{mode}</MenuItem>)}
+            {schemas?.transition_mode.enum.map((mode, i) => <MenuItem key={i} value={mode}>{mode}</MenuItem>)}
           </Select>
         </BladeFrame>
       </CardContent>
