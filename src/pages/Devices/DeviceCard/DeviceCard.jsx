@@ -68,7 +68,8 @@ const DeviceCard = ({ virtual, index }) => {
           <BladeIcon
             colorIndicator={Object.keys(virtuals[virtual]?.effect).length > 0}
             name={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
-            className={classes.virtualIcon} />
+            className={classes.virtualIcon}
+            card={true} />
         </NavLink>
 
         <div style={{ padding: '0 0.5rem' }}>
