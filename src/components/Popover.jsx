@@ -99,11 +99,11 @@ export default function Popover({
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical,
+          vertical: vertical,
           horizontal: direction,
         }}
         transformOrigin={{
-          vertical,
+          vertical: vertical,
           horizontal: direction === 'center' ? 'center' : 'right',
         }}
       >
