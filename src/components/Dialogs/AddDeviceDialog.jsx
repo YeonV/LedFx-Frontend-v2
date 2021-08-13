@@ -94,7 +94,7 @@ const AddDeviceDialog = () => {
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
       ) {
-        console.log("ADDING");
+        // console.log("ADDING");
         addDevice({
           type: deviceType,
           config: { ...defaultModel, ...cleanedModel },
@@ -107,7 +107,7 @@ const AddDeviceDialog = () => {
           }
         });
       } else {
-        console.log("EDITING");
+        // console.log("EDITING");
         updateDevice(deviceId, {
           type: deviceType,
           config: { ...model },

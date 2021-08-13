@@ -42,6 +42,7 @@ export default function App() {
     initFrontendConfig();
   }, []);
 
+  console.log()
   return (
     <MuiThemeProvider theme={BladeDarkTheme}>
       <WsContext.Provider value={ws}>

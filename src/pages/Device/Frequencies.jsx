@@ -45,18 +45,18 @@ const FrequenciesCard = ({ virtual }) => {
 
   const [value, setValue] = useState([logIt(virtual.config.frequency_min), logIt(virtual.config.frequency_max)]);
 
-  const freq_max = config.melbanks.max_frequencies.map(f => ({
+  const freq_max = config.melbanks?.max_frequencies.map(f => ({
     value: f,
     label: `${f > 1000 ? `${f / 1000}kHz` : `${f}Hz`}`,
   }));
 
   const freq_min = {
-    value: config.melbanks.min_frequency,
-    label: `${config.melbanks.min_frequency > 1000 ? `${config.melbanks.min_frequency / 1000}kHz` : `${config.melbanks.min_frequency}Hz`}`,
+    value: config.melbanks?.min_frequency,
+    label: `${config.melbanks?.min_frequency > 1000 ? `${config.melbanks?.min_frequency / 1000}kHz` : `${config.melbanks?.min_frequency}Hz`}`,
   }
-  const marks = [freq_min, ...freq_max]
+  const marks = freq_max && [freq_min, ...freq_max]
 
-  const convertedMarks = marks.map((m) => ({
+  const convertedMarks = marks?.map((m) => ({
     value: logIt(m.value),
     label: m.label,
   }));
@@ -89,8 +89,8 @@ const FrequenciesCard = ({ virtual }) => {
             step={0.001}
             valueLabelDisplay="auto"
             marks={convertedMarks}
-            min={logIt(config.melbanks.min_frequency)}
-            max={logIt(config.melbanks.max_frequencies[config.melbanks.max_frequencies.length - 1])}
+            min={logIt(config.melbanks?.min_frequency)}
+            max={logIt(config.melbanks?.max_frequencies[config.melbanks?.max_frequencies.length - 1])}
             onChange={handleChange}
             ValueLabelComponent={ValueLabelComponent}
             onChangeCommitted={(e, val) => {

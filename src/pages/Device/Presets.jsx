@@ -147,7 +147,13 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
               size="small"
               variant="outlined"
               id="presetNameInput"
-              label={presets["default_presets"] && (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0) ? "Default presets are readonly" : (Object.keys(presets["custom_presets"]).indexOf(name) > -1 || Object.values(presets["custom_presets"]).filter(p => p.name === name).length > 0) ? "Update Custom Preset" : "Add Custom Preset"}
+              label={
+                presets["default_presets"] && 
+                (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0) 
+                ? "Default presets are readonly" 
+                : presets["custom_presets"] && (Object.keys(presets["custom_presets"]).indexOf(name) > -1 || Object.values(presets["custom_presets"]).filter(p => p.name === name).length > 0) 
+                ? "Update Custom Preset" 
+                : "Add Custom Preset"}
               style={{ marginRight: '1rem', flex: 1 }}
               value={name}
               onChange={(e) => {
