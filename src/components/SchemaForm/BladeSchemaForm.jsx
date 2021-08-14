@@ -84,6 +84,7 @@ const BladeSchemaFormNew = (props) => {
                 type={_boolMode}
                 variant={_boolVariant}
                 key={i}
+                index={i}
                 model={model}
                 model_id={s}
                 required={schema.required && schema.required.indexOf(s) !== -1}
@@ -106,6 +107,7 @@ const BladeSchemaFormNew = (props) => {
               required={schema.required && schema.required.indexOf(s) !== -1}
               model_id={s}
               key={i}
+              index={i} 
               onChange={(model_id, value) => {
                 const c = {};
                 c[model_id] = value;
