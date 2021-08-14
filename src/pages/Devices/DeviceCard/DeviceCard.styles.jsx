@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export const useDeviceCardStyles = makeStyles((theme) => ({
-    virtualCardPortrait: {
+    virtualCardPortrait: {     
       padding: '1rem',
       margin: '0.5rem',
       display: 'flex',
@@ -9,8 +9,11 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       minWidth: '230px',
       maxWidth: '400px',
-        width: '100%',
-        height: '100%',
+      width: '100%',
+      height: '100%',
+      '&:hover': {
+      borderColor: theme.palette.text.disabled,
+    }
     },
     virtualLink: {
       flexGrow: 0,
@@ -18,9 +21,8 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       fontSize: 'large',
       color: 'inherit',
       alignSelf: 'flex-start',
-  
       '&:hover': {
-        color: theme.palette.primary.main,
+        color: `${theme.palette.primary.main} !important`,
       },
     },
     virtualIcon: {
