@@ -54,32 +54,38 @@ const DeviceCard = ({ virtual, index }) => {
   };
 
   return virtuals[virtual] ?
-    <Card className={classes.virtualCardPortrait} style={{
-      order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual]?.effect.name)
-        ? 100
-        : 'unset'
-    }}>
+  
+    <Card 
+      component={NavLink} 
+      to={`/device/${virtuals[virtual]?.id}`} 
+      className={classes.virtualCardPortrait} 
+      style={{
+        textDecoration: 'none',
+        order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual]?.effect.name)
+          ? 100
+          : 'unset'
+      }}>
       <div className={classes.virtualCardContainer}>
 
-        <NavLink
+        {/* <NavLink
           to={`/device/${virtuals[virtual]?.id}`}
           className={classes.virtualLink}          
-        >
+        > */}
           <BladeIcon
             colorIndicator={Object.keys(virtuals[virtual]?.effect).length > 0}
             name={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
             className={classes.virtualIcon}
             card={true} />
-        </NavLink>
+        {/* </NavLink> */}
 
         <div style={{ padding: '0 0.5rem' }}>
-          <NavLink
-            to={`/device/${virtuals[virtual]?.id}`}
-            className={classes.virtualLink}
+          <Typography variant="h6"
+            // to={`/device/${virtuals[virtual]?.id}`}
+            // className={classes.virtualLink}
             style={{ color: Object.keys(virtuals[virtual]?.effect).length > 0 ? theme.palette.primary.light : 'inherit'}}
           >
             {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
-          </NavLink>
+          </Typography>
           {virtuals[virtual]?.effect.name
             ? <Typography variant="body1" color="textSecondary">
               Effect: {virtuals[virtual]?.effect.name}
@@ -92,7 +98,7 @@ const DeviceCard = ({ virtual, index }) => {
                 {expanded && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals
                   .map((s, i) => <li key={i}>{s}</li>)}
               </Typography>
-              : <></>}
+              : <Typography variant="body1" style={{ color: theme.palette.text.disabled}}>{"off"}</Typography>}
         </div>
 
         <div>
@@ -112,7 +118,7 @@ const DeviceCard = ({ virtual, index }) => {
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}
-          onClick={handleExpandClick}
+          onClick={(e)=> {e.preventDefault(); handleExpandClick(e);}}
           aria-expanded={expanded}
           aria-label="show more"
         >
@@ -160,6 +166,7 @@ const DeviceCard = ({ virtual, index }) => {
         </div>
       </Collapse>}
     </Card>
+
     : <></>
 }
 
