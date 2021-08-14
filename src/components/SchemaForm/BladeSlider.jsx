@@ -145,6 +145,7 @@ const BladeSliderInner = ({
     <TextField
       // defaultValue={schema.default || 1}
       disabled={disabled}
+      type="number"
       defaultValue={value}
       onChange={()=>handleInputChange}
       // onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
