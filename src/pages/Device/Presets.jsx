@@ -4,6 +4,7 @@ import { useTheme, Card, CardContent, CardActions, CardHeader, Divider, Button, 
 import SaveIcon from '@material-ui/icons/Save';
 import useStore from '../../utils/apiStore';
 import Popover from '../../components/Popover';
+import { Add } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PresetsCard = ({ virtual, effectType, presets, style }) => {  
+const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [name, setName] = useState('');
@@ -119,28 +120,71 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
 
   return (
     <Card variant="outlined" className={`${classes.deviceCard} step-device-three`} style={style}>
-      <CardHeader style={{ margin: '0.5rem 0.5rem 0 0.5rem' }} title="Presets" subheader="Explore different effect configurations or create your own" />
+      <CardHeader style={{ margin: '0' }} title="Presets" subheader="Explore different effect configurations or create your own." />
       <CardContent className={classes.content}>
-        <Divider style={{ margin: '0 0 0.25rem 0' }} />
+        {/* <Divider style={{ margin: '0 0 0.25rem 0' }} />
         <Typography style={{ marginLeft: '1rem', fontVariant: 'all-small-caps', color: theme.palette.text.disabled }} variant="h6">
           Default Presets
         </Typography>
-        <Divider style={{ margin: '0.25rem 0 1rem 0' }} />
+        <Divider style={{ margin: '0.25rem 0 1rem 0' }} /> */}
         <Grid spacing={2} container className={classes.buttonGrid}>
           {renderPresetsButton(presets?.default_presets, 'default_presets')}
         </Grid>
-        <Divider style={{ margin: '1rem 0 0.25rem 0' }} />
+        <Divider style={{ margin: '1rem 0' }} />
+        {/* <Divider style={{ margin: '1rem 0 0.25rem 0' }} />
         <Typography style={{ marginLeft: '1rem', fontVariant: 'all-small-caps', color: theme.palette.text.disabled }} variant="h6">
           Custom Presets
         </Typography>
-        <Divider style={{ margin: '0.25rem 0 1rem 0' }} />
+        <Divider style={{ margin: '0.25rem 0 1rem 0' }} /> */}
         <Grid spacing={2} container className={classes.buttonGrid}>
           {renderPresetsButton(presets?.custom_presets, 'custom_presets')}
+          <Grid item>
+            <Popover
+              className={classes.presetButton}
+              popoverStyle={{ padding: '0.5rem' }}
+              color={"default"}
+              variant="outlined"
+              direction="center"
+              onSingleClick={() => { console.log("hi") }}
+              content={<TextField
+                onKeyDown={e => (e.key == 'Enter') && handleAddPreset(e)}
+                error={presets["default_presets"] && (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0)}
+                size="small"
+                variant="outlined"
+                id="presetNameInput"
+                label={
+                  presets["default_presets"] &&
+                    (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0)
+                    ? "Default presets are readonly"
+                    : presets["custom_presets"] && (Object.keys(presets["custom_presets"]).indexOf(name) > -1 || Object.values(presets["custom_presets"]).filter(p => p.name === name).length > 0)
+                      ? "Preset already exsisting"
+                      : "Add Custom Preset"}
+                style={{ marginRight: '1rem', flex: 1 }}
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  presets["custom_presets"] && (Object.keys(presets["custom_presets"]).indexOf(e.target.value) > -1 || Object.values(presets["custom_presets"]).filter(p => p.name === e.target.value).length > 0)
+                    ? setValid(false)
+                    : setValid(true)
+                }}
+              />}
+              footer={<div style={{ margin: '0 0 0.5rem 1rem' }}>
+                <Typography variant="body2" className={classes.hint}>
+                  Save the current effect configuration as a new preset.
+                </Typography>
+              </div>}
+              confirmDisabled={name.length === 0 || presets["default_presets"] && (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0) || !valid}
+              onConfirm={handleAddPreset}
+              startIcon={""}
+              size="medium"
+              icon={<Add />}
+            />
+          </Grid>
         </Grid>
       </CardContent>
       <CardActions >
         <div style={{ flexDirection: 'column', flex: 1 }}>
-          <div className={classes.actions}>
+          {/* <div className={classes.actions}>
             <TextField
               onKeyDown={e => (e.key == 'Enter') && handleAddPreset(e)}
               error={presets["default_presets"] && (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0)}
@@ -148,12 +192,12 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
               variant="outlined"
               id="presetNameInput"
               label={
-                presets["default_presets"] && 
-                (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0) 
-                ? "Default presets are readonly" 
-                : presets["custom_presets"] && (Object.keys(presets["custom_presets"]).indexOf(name) > -1 || Object.values(presets["custom_presets"]).filter(p => p.name === name).length > 0) 
-                ? "Update Custom Preset" 
-                : "Add Custom Preset"}
+                presets["default_presets"] &&
+                  (Object.keys(presets["default_presets"]).indexOf(name) > -1 || Object.values(presets["default_presets"]).filter(p => p.name === name).length > 0)
+                  ? "Default presets are readonly"
+                  : presets["custom_presets"] && (Object.keys(presets["custom_presets"]).indexOf(name) > -1 || Object.values(presets["custom_presets"]).filter(p => p.name === name).length > 0)
+                    ? "Update Custom Preset"
+                    : "Add Custom Preset"}
               style={{ marginRight: '1rem', flex: 1 }}
               value={name}
               onChange={(e) => {
@@ -174,10 +218,10 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
             >
               {valid ? "Save" : "Update"}
             </Button>
-          </div>
-          <div style={{ marginLeft: '1rem' }}>
+          </div> */}
+          <div style={{ marginLeft: '0.5rem' }}>
             <Typography variant="body2" className={classes.hint}>
-              Save current effect configuration as a preset. Long-Press to Delete.
+              Long-Press opens a menu to override or delete a preset.
             </Typography>
           </div>
         </div>
