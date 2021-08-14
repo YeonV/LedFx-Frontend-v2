@@ -4,8 +4,8 @@ import {
 } from '@material-ui/core/';
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    border: '1px solid',
+  paper: {    
+    border: '1px solid rgba(255, 255, 255, 0.23)',
     display: 'flex',
     flexWrap: 'wrap',
     maxWidth: '320px',

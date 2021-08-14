@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   FormListHeaders: {
-    background: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     color: '#fff',
   },
   FormListItem: {
