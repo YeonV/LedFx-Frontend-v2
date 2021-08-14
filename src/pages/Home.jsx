@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
   Button,
+  Box,
+  Typography,
   Card,
   CardHeader,
   CardContent,
@@ -44,7 +46,7 @@ export default function Home() {
         <div style={{ position: 'relative' }} >
           <img src={logoCircle} className="App-logo" alt="logo-circle" />
           <FX />
-        </div>        
+        </div>
       </div>
       <Card
         variant="outlined"
@@ -64,19 +66,34 @@ export default function Home() {
             <li>by Blade</li>
           </ul>
         </CardContent>
-        <CardActions>        
-        <Badge variant="dot" color="primary" invisible={invisible}>
-          <TourHome className={'step-one'} />
-        </Badge>
+        <CardActions>
+          <Badge variant="dot" color="primary" invisible={invisible}>
+            <TourHome className={'step-one'} />
+          </Badge>
           <Button onClick={() => handleScan()} variant="outlined">
-            {scanning ? <CircularProgress
+            {scanning ? <><CircularProgress
               variant="determinate"
               value={(scanning / 30) * 100}
               size={24}
-            /> : 'WLED-scan'}
+            />
+              <Box
+                top={0}
+                left={0}
+                bottom={0}
+                right={0}
+                position="absolute"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography variant="caption" style={{ fontSize: 10}} component="div" color="textSecondary">{`${Math.round(
+                  (scanning / 30) * 100,
+                )}%`}</Typography>
+              </Box>
+            </> : 'WLED-scan'}
           </Button>
         </CardActions>
-      </Card>      
+      </Card>
     </>
   );
 }
