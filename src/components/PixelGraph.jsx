@@ -57,7 +57,9 @@ const PixelGraph = ({ virtId, dummy=false, className }) => {
           ))}
         </div>
         )
-        : (<></>)
+        : (<div className={`${classes.PixelWrapper} ${className}`}>
+        <div key={1} className={classes.Pixel} style={{ backgroundColor: '#000' }} />
+      </div>)
   )
 }
 
