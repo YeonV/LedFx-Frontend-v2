@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Popover({
   onConfirm,
+  confirmDisabled,
+  confirmContent,
   onSingleClick,
   onDoubleClick,
   openOnDoubleClick = false,
@@ -25,11 +27,14 @@ export default function Popover({
   vertical = 'center',
   size = 'small',
   icon = <Delete />,
+  content,
+  footer,
   className,
   startIcon,
   noIcon = false,
   style = {},
   disabled = false,
+  popoverStyle,
 }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -103,9 +108,11 @@ export default function Popover({
           horizontal: direction === 'center' ? 'center' : 'right',
         }}
       >
-        <div style={{ display: 'flex' }}>
-          <Typography className={classes.typography}>{text}</Typography>
+        <div style={{ display: 'flex', ...popoverStyle }}>
+          {content ? content : <Typography className={classes.typography}>{text}</Typography>}
+          
           <Button
+            disabled={confirmDisabled}
             aria-describedby={id}
             variant="contained"
             color="primary"
@@ -114,11 +121,12 @@ export default function Popover({
               setAnchorEl(null);
             }}
           >
-            <Check />
+            {confirmContent ? confirmContent : <Check />}
+            
           </Button>
           <Button
             aria-describedby={id}
-            variant="contained"
+            variant="outlined"
             color="default"
             onClick={() => {
               setAnchorEl(null);
@@ -127,6 +135,7 @@ export default function Popover({
             <Close />
           </Button>
         </div>
+        {footer}
       </PopoverOriginal>
     </div>
   );
