@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useStore from '../../utils/apiStore';
-import { Link, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Typography } from '@material-ui/core';
+import { Link, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from '@material-ui/core';
 
 const AddSceneDialog = () => {  
   const [name, setName] = useState('');
@@ -30,8 +30,6 @@ const AddSceneDialog = () => {
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
     <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
     <DialogContent>
-      
-
         Image is optional and can be one of:
         <ul style={{ paddingLeft: '1rem' }}>
         <li>iconName <Link href="https://material-ui.com/components/material-icons/">Find MUI icons here</Link>        

@@ -77,7 +77,7 @@ export default function Popover({
           variant={variant}
           color={color}
           onClick={(e) => {
-            console.log("click")
+            e.preventDefault()
             !openOnDoubleClick && openPopover(e)
             onSingleClick && onSingleClick(e)
           }}
@@ -87,6 +87,7 @@ export default function Popover({
           startIcon={!noIcon && startIcon}
           disabled={disabled}
           onDoubleClick={(e) => {
+            e.preventDefault()
             openOnDoubleClick && openPopover(e)
             onDoubleClick && onDoubleClick(e)
           }}
@@ -116,7 +117,8 @@ export default function Popover({
             aria-describedby={id}
             variant="contained"
             color="primary"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault()
               onConfirm();
               setAnchorEl(null);
             }}
@@ -128,7 +130,8 @@ export default function Popover({
             aria-describedby={id}
             variant="outlined"
             color="default"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault()
               setAnchorEl(null);
             }}
           >
