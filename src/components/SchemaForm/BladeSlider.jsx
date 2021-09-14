@@ -80,6 +80,14 @@ const BladeSliderInner = ({
     } else if (value > schema.maximum) {
       setValue(schema.maximum);
     }
+  };  
+  const handleTextBlur = () => {
+    if (value < schema.minimum) {
+      setValue(schema.minimum);
+    } else if (value > schema.maximum) {
+      setValue(schema.maximum);
+    }
+    onChange(model_id, Number(event.target.value))
   };
 
   return (schema.maximum && !textfield) ? (
@@ -147,7 +155,8 @@ const BladeSliderInner = ({
       disabled={disabled}
       type="number"
       defaultValue={value}
-      onChange={()=>handleInputChange}
+      onChange={(e)=> handleInputChange(e)}
+      onBlur={handleTextBlur}
       // onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
       helperText={!hideDesc && schema.description}
       style={style}

@@ -143,7 +143,7 @@ const DeviceCard = ({ virtual, index }) => {
               color={color}
               size="small"
               className={`${classes.editButton} step-devices-four-${index}`}
-              onClick={() => console.log(virtuals[virtual], virtuals[virtual]?.is_device) || handleEditDevice(virtuals[virtual]?.is_device)}
+              onClick={(e) => {e.preventDefault(); handleEditDevice(virtuals[virtual]?.is_device)}}
             >
               <BuildIcon />
             </Button>
@@ -159,7 +159,7 @@ const DeviceCard = ({ virtual, index }) => {
             size="small"
             color={color}
             className={`${classes.editButton} step-devices-five-${index}`}
-            onClick={() => handleEditVirtual(virtual)}
+            onClick={(e) => {e.preventDefault(); handleEditVirtual(virtual)}}
           >
             <SettingsIcon />
           </Button>
