@@ -21,7 +21,7 @@ const Webaudio = () => {
   const webAud = useStore((state) => state.webAud)
   const setWebAud = useStore((state) => state.setWebAud)
   const [wsReady, setWsReady] = useState(false)
-  const [keep, setKeep] = useState(false)
+  // const [keep, setKeep] = useState(false)
   const webAudName = useStore((state) => state.webAudName)
   const setWebAudName = useStore((state) => state.setWebAudName)
 
@@ -49,8 +49,11 @@ const Webaudio = () => {
       if (!audioContext || audioContext.state === 'closed') {
         return
       }
+      console.log(audioContext)
       const source = audioContext.createMediaStreamSource(stream)
-      const scriptNode = audioContext.createScriptProcessor(512, 1, 1);
+      const scriptNode = audioContext.createScriptProcessor(1024, 1, 1);
+      // const scriptNode = audioContext.createScriptProcessor(0, 1, 1);
+      console.log("THIS", scriptNode);
       source.connect(scriptNode);
       scriptNode.connect(audioContext.destination);
       scriptNode.onaudioprocess = e => {
@@ -71,22 +74,22 @@ const Webaudio = () => {
         }
       };
     });
-    return () => {
-      if (audioContext && !keep) {
-        // const sendWs = async () => {
-        //   let i = 0
-        //   const request = {
-        //     client: webAudName,
-        //     id: i,
-        //     type: "audio_stream_stop",
-        //   };
-        //   ws.ws.send(JSON.stringify(++request.id && request));
-        // };
-        // sendWs();
-        // s?.getTracks().forEach(track => track.stop())
-        // audioContext.close()
-      }
-    }
+    // return () => {
+    //   if (audioContext && !keep) {
+    //     // const sendWs = async () => {
+    //     //   let i = 0
+    //     //   const request = {
+    //     //     client: webAudName,
+    //     //     id: i,
+    //     //     type: "audio_stream_stop",
+    //     //   };
+    //     //   ws.ws.send(JSON.stringify(++request.id && request));
+    //     // };
+    //     // sendWs();
+    //     // s?.getTracks().forEach(track => track.stop())
+    //     // audioContext.close()
+    //   }
+    // }
   }, [audioContext])
 
 
@@ -100,9 +103,9 @@ const Webaudio = () => {
   return (
     <>
       <Fab aria-describedby={id} size="large" color={webAud ? "inherit" : "secondary"} onClick={(e) => {
-        if (keep) {
-          setKeep(false)
-        }
+        // if (keep) {
+        //   setKeep(false)
+        // }
         if (webAud) {
           if (audioContext) {
             s.getTracks().forEach(track => track.stop())
@@ -149,12 +152,12 @@ const Webaudio = () => {
             onChange={(e) => setWebAudName(e.target.value)}
             variant="outlined"
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             value="top"
             control={<Switch checked={keep} onChange={(e) => setKeep(e.target.checked)} color="primary" />}
             label="Keep Open"
             labelPlacement="top"
-          />
+          /> */}
           <Button
             aria-describedby={id}
             variant="contained"
