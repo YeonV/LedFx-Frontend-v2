@@ -14,6 +14,8 @@ import useStore from '../../../utils/apiStore';
 import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog';
 import Segment from './Segment';
 import { useEditVirtualsStyles } from './EditVirtuals.styles'
+import { ListItemIcon, MenuItem } from '@material-ui/core';
+import { Settings } from '@material-ui/icons';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -21,21 +23,24 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function FullScreenDialog({
   virtual,
-  icon,
+  icon = <Settings />,
+  label = '',
+  type,
   className,
   color = 'default',
   variant = 'contained',
+  onClick = () => {},
 }) {
   const classes = useEditVirtualsStyles();
   const showSnackbar = useStore((state) => state.showSnackbar);
   const getDevices = useStore((state) => state.getDevices);
   const [open, setOpen] = React.useState(false);
-  
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {   
+  const handleClose = () => {
     const output = getOverlapping(virtual.segments);
     const overlap = Object.keys(output).find(k => output[k].overlap);
     if (overlap) {
@@ -55,15 +60,23 @@ export default function FullScreenDialog({
 
   return virtual && virtual.config ? (
     <>
-      <Button
-        variant={variant}
-        color={color}
-        onClick={handleClickOpen}
-        size="small"
-        className={className}
-      >
-        {icon || <AddCircleIcon />}
-      </Button>
+      {type === 'menuItem'
+        ? <MenuItem className={className} onClick={(e) => { e.preventDefault(); onClick(e); handleClickOpen(e)}}>
+          <ListItemIcon>
+            {icon}
+          </ListItemIcon>
+          {label}
+        </MenuItem>
+        : <Button
+          variant={variant}
+          color={color}
+          onClick={(e)=>{onClick(e); handleClickOpen(e);}}
+          size="small"
+          className={className}
+        >
+          {icon || <AddCircleIcon />}
+        </Button>
+      }
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
@@ -76,7 +89,7 @@ export default function FullScreenDialog({
               style={{ marginRight: '1rem' }}
             >
               back
-                        </Button>
+            </Button>
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>

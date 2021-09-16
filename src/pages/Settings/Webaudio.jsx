@@ -52,9 +52,8 @@ const Webaudio = () => {
               const request = {
                 data: e.inputBuffer.getChannelData(0),
                 client: clientName,
-                event_type: "web_audio",
                 id: i,
-                type: "audio_data",
+                type: "audio_stream_data",
               };
               ws.ws.send(JSON.stringify(++request.id && request));
             };
@@ -69,9 +68,8 @@ const Webaudio = () => {
           let i = 0
           const request = {
             client: clientName,
-            event_type: "web_audio",
             id: i,
-            type: "audio_data_end",
+            type: "audio_stream_stop",
           };
           ws.ws.send(JSON.stringify(++request.id && request));
         };
@@ -97,6 +95,7 @@ const Webaudio = () => {
       if (webAud) {
         setWebAud(false)        
       } else {
+
         handleClick(e)
       } 
        
@@ -137,6 +136,19 @@ const Webaudio = () => {
          color="primary"
          onClick={() => {           
            setWebAud(!webAud)
+           if (wsReady) {
+            if (webAud) {
+              const sendWs = async () => {
+                const request = {
+                  client: clientName,
+                  id: 1,
+                  type: "audio_stream_start",
+                };
+                ws.ws.send(JSON.stringify(++request.id && request));
+              };
+              sendWs();
+            }
+          }
            setAnchorEl(null);
          }}
        >
