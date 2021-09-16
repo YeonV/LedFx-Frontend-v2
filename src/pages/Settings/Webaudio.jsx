@@ -76,7 +76,7 @@ const Webaudio = () => {
           ws.ws.send(JSON.stringify(++request.id && request));
         };
         sendWs();
-        s.getTracks().forEach(track => track.stop())
+        s?.getTracks().forEach(track => track.stop())
         audioContext.close()
       }
     }
@@ -138,19 +138,22 @@ const Webaudio = () => {
          color="primary"
          onClick={() => {           
            setWebAud(!webAud)
+           console.log("YZ1")
            if (wsReady) {
-            if (webAud) {
-              const sendWs = async () => {
-                const request = {
-                  client: clientName,
-                  id: 1,
-                  type: "audio_stream_start",
-                };
-                ws.ws.send(JSON.stringify(++request.id && request));
+            console.log("YZ2")
+            console.log("YZ3")
+            const sendWs = async () => {
+              const request = {
+                client: clientName,
+                id: 1,
+                type: "audio_stream_start",
               };
-              sendWs();
-              getSystemConfig()
-            }
+              ws.ws.send(JSON.stringify(++request.id && request));
+            };
+            console.log("YZ4")
+            sendWs();
+            getSystemConfig()
+            
           }
            setAnchorEl(null);
          }}
