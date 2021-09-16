@@ -27,7 +27,9 @@ const Webaudio = () => {
 
   const audioContext = webAud && new (window.AudioContext || window.webkitAudioContext)();
   const [anchorEl, setAnchorEl] = useState(null);
-  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  
+
+  const getSchemas = useStore((state) => state.getSchemas)
 
 
   const handleClick = (event) => {
@@ -115,7 +117,7 @@ const Webaudio = () => {
             };
             ws.ws.send(JSON.stringify(++request.id && request));
           };
-          sendWs().then(() => getSystemConfig());
+          sendWs().then(() => getSchemas());
           setWebAud(false)
         } else {
 
@@ -173,7 +175,7 @@ const Webaudio = () => {
                   console.log("YZ4")
                   sendWs()
                   setTimeout(()=>{
-                    getSystemConfig().then(()=>alert(1))
+                    getSchemas()
                   },1000)
                   
                 }
