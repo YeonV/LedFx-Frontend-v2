@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import PopoverOriginal from '@material-ui/core/Popover';
-import { Typography, Button, } from '@material-ui/core';
+import { Typography, Button, MenuItem, ListItemIcon, } from '@material-ui/core';
 import { Delete, Close, Check } from '@material-ui/icons';
 import { useLongPress } from 'use-long-press';
 
@@ -15,7 +15,7 @@ export default function Popover({
   onConfirm,
   confirmDisabled,
   confirmContent,
-  onSingleClick,
+  onSingleClick = () => {},
   onDoubleClick,
   openOnDoubleClick = false,
   openOnLongPress = false,
@@ -35,6 +35,7 @@ export default function Popover({
   style = {},
   disabled = false,
   popoverStyle,
+  type,
 }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -57,7 +58,14 @@ export default function Popover({
 
   return (
     <div style={{ display: 'initial' }}>
-      {openOnLongPress
+      {type === 'menuItem'
+        ? <MenuItem className={className} onClick={(e) => { e.preventDefault(); onSingleClick(e); openPopover(e)}}>
+          <ListItemIcon>
+            {icon}
+          </ListItemIcon>
+          {label}
+        </MenuItem>
+        : openOnLongPress
         ? <Button
           aria-describedby={id}
           variant={variant}
