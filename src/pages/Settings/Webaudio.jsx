@@ -3,6 +3,7 @@ import { Check, Close } from '@material-ui/icons';
 import { useState, useEffect } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon';
 import ws from "../../utils/Websocket";
+import useStore from '../../utils/apiStore';
 
 const getMedia = async () => {
   try {
@@ -22,7 +23,8 @@ const Webaudio = () => {
   const [clientName, setClientName] = useState(new Date().getTime())
   const audioContext = webAud && new (window.AudioContext || window.webkitAudioContext)();
   const [anchorEl, setAnchorEl] = useState(null);
-  
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -147,6 +149,7 @@ const Webaudio = () => {
                 ws.ws.send(JSON.stringify(++request.id && request));
               };
               sendWs();
+              getSystemConfig()
             }
           }
            setAnchorEl(null);
