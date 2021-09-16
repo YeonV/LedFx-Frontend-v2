@@ -1,4 +1,4 @@
-import { Button, Fab, TextField, Popover, FormControlLabel , Switch } from '@material-ui/core';
+import { Button, Fab, TextField, Popover, FormControlLabel, Switch } from '@material-ui/core';
 import { Check, Close } from '@material-ui/icons';
 import { useState, useEffect } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon';
@@ -17,13 +17,18 @@ const getMedia = async () => {
 }
 
 const Webaudio = () => {
-  const [webAud, setWebAud] = useState(false)
+  // const [webAud, setWebAud] = useState(false)
+  const webAud = useStore((state) => state.webAud)
+  const setWebAud = useStore((state) => state.setWebAud)
   const [wsReady, setWsReady] = useState(false)
   const [keep, setKeep] = useState(false)
-  const [clientName, setClientName] = useState(new Date().getTime())
+  const webAudName = useStore((state) => state.webAudName)
+  const setWebAudName = useStore((state) => state.setWebAudName)
+
   const audioContext = webAud && new (window.AudioContext || window.webkitAudioContext)();
   const [anchorEl, setAnchorEl] = useState(null);
   const getSystemConfig = useStore((state) => state.getSystemConfig)
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,7 +58,7 @@ const Webaudio = () => {
               let i = 0
               const request = {
                 data: e.inputBuffer.getChannelData(0),
-                client: clientName,
+                client: webAudName,
                 id: i,
                 type: "audio_stream_data",
               };
@@ -64,23 +69,25 @@ const Webaudio = () => {
         }
       };
     });
-    return () => {   
+    return () => {
       if (audioContext && !keep) {
-        const sendWs = async () => {
-          let i = 0
-          const request = {
-            client: clientName,
-            id: i,
-            type: "audio_stream_stop",
-          };
-          ws.ws.send(JSON.stringify(++request.id && request));
-        };
-        sendWs();
-        s?.getTracks().forEach(track => track.stop())
-        audioContext.close()
+        // const sendWs = async () => {
+        //   let i = 0
+        //   const request = {
+        //     client: webAudName,
+        //     id: i,
+        //     type: "audio_stream_stop",
+        //   };
+        //   ws.ws.send(JSON.stringify(++request.id && request));
+        // };
+        // sendWs();
+        // s?.getTracks().forEach(track => track.stop())
+        // audioContext.close()
       }
     }
   }, [audioContext])
+
+
 
   if (!wsReady) {
     if (ws && ws.ws && ws.ws.readyState === 1) {
@@ -90,89 +97,107 @@ const Webaudio = () => {
 
   return (
     <>
-    <Fab aria-describedby={id} size="large" color={webAud ? "inherit" : "secondary"} onClick={(e)=>{
-      if (keep) {
-        setKeep(false)
-      }
-      if (webAud) {
-        setWebAud(false)        
-      } else {
-
-        handleClick(e)
-      } 
-       
-      }} data-webaud={webAud}>
-      <BladeIcon name={webAud ? "mdi:stop" : "mdi:music"} colorIndicator={webAud} />
-    </Fab>
-     <Popover
-     id={id}
-     open={open}
-     anchorEl={anchorEl}
-     onClose={handleClose}
-     anchorOrigin={{
-       vertical: "center",
-       horizontal: 'right',
-     }}
-     transformOrigin={{
-       vertical: "center",
-       horizontal: 'left',
-     }}
-   >
-     <div style={{ display: 'flex', margin: 20 }}>
-        <TextField
-          id="client-name"
-          label="Name"
-          value={clientName}
-          onChange={(e) => setClientName(e.target.value)}
-          variant="outlined"
-        />
-       <FormControlLabel
-          value="top"
-          control={<Switch checked={keep} onChange={(e) => setKeep(e.target.checked)} color="primary" />}
-          label="Keep Open"
-          labelPlacement="top"
-        />
-       <Button
-         aria-describedby={id}
-         variant="contained"
-         color="primary"
-         onClick={() => {           
-           setWebAud(!webAud)
-           console.log("YZ1")
-           if (wsReady) {
-            console.log("YZ2")
-            console.log("YZ3")
-            const sendWs = async () => {
-              const request = {
-                client: clientName,
-                id: 1,
-                type: "audio_stream_start",
-              };
-              ws.ws.send(JSON.stringify(++request.id && request));
-            };
-            console.log("YZ4")
-            sendWs();
-            getSystemConfig()
-            
+      <Fab aria-describedby={id} size="large" color={webAud ? "inherit" : "secondary"} onClick={(e) => {
+        if (keep) {
+          setKeep(false)
+        }
+        if (webAud) {
+          if (audioContext) {
+            s.getTracks().forEach(track => track.stop())
+            audioContext.close()
           }
-           setAnchorEl(null);
-         }}
-       >
-         <Check />
-       </Button>
-       <Button
-         aria-describedby={id}
-         variant="contained"
-         color="default"
-         onClick={() => {
-           setAnchorEl(null);
-         }}
-       >
-         <Close />
-       </Button>
-     </div>
-   </Popover>
-   </>
+          const sendWs = async () => {
+            let i = 0
+            const request = {
+              client: webAudName,
+              id: i,
+              type: "audio_stream_stop",
+            };
+            ws.ws.send(JSON.stringify(++request.id && request));
+          };
+          sendWs().then(() => getSystemConfig());
+          setWebAud(false)
+        } else {
+
+          handleClick(e)
+        }
+
+      }} data-webaud={webAud}>
+        <BladeIcon name={webAud ? "mdi:stop" : "mdi:music"} colorIndicator={webAud} />
+      </Fab>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: "center",
+          horizontal: 'left',
+        }}
+      >
+        <div style={{ display: 'flex', margin: 20 }}>
+          <TextField
+            id="client-name"
+            label="Name"
+            value={webAudName}
+            onChange={(e) => setWebAudName(e.target.value)}
+            variant="outlined"
+          />
+          <FormControlLabel
+            value="top"
+            control={<Switch checked={keep} onChange={(e) => setKeep(e.target.checked)} color="primary" />}
+            label="Keep Open"
+            labelPlacement="top"
+          />
+          <Button
+            aria-describedby={id}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              console.log(webAud, wsReady)
+
+              if (!webAud) {
+                if (wsReady) {
+                  const sendWs = async () => {
+                    const request = {
+                      client: webAudName,
+                      id: 1,
+                      type: "audio_stream_start",
+                    };
+                    ws.ws.send(JSON.stringify(++request.id && request));
+                  };
+                  console.log("YZ4")
+                  sendWs()
+                  setTimeout(()=>{
+                    getSystemConfig().then(()=>alert(1))
+                  },1000)
+                  
+                }
+              } 
+
+              setAnchorEl(null);
+              setWebAud(true)
+            }}
+          >
+            <Check />
+          </Button>
+          <Button
+            aria-describedby={id}
+            variant="contained"
+            color="default"
+            onClick={() => {
+              setAnchorEl(null);
+            }}
+          >
+            <Close />
+          </Button>
+        </div>
+      </Popover>
+    </>
   )
 }
 
