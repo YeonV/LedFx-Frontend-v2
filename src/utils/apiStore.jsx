@@ -438,6 +438,14 @@ const useStore = create(
           };
         }
       },
+      webAud: false,
+      setWebAud: (newState) => {
+        set((state) => ({ webAud: newState }))        
+      },
+      webAudName: 'Name of this machine',
+      setWebAudName: (newState) => {
+        set((state) => ({ webAudName: newState }))        
+      },
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
       setSpotifyEmbedUrl: (url) => {
         set((state) => ({ spotifyEmbedUrl: url }))        
