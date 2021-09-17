@@ -10,10 +10,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     overflow: 'hidden',
     margin: '1rem 0 0 0',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
+    // '&.active': {
+    //   border: '1px solid rgba(255, 0, 0, 0.3)',
+    // },
     '@media (max-width: 580px)': {
       margin: '0',
     },
-    border: '1px solid rgba(255, 255, 255, 0.3)',
   },
   Pixel: {
     height: '40px',
@@ -22,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const PixelGraph = ({ virtId, dummy=false, className }) => {
+const PixelGraph = ({ virtId, dummy=false, className, active }) => {
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
   const pixelGraphs = useStore((state) => state.pixelGraphs);
@@ -47,18 +50,18 @@ const PixelGraph = ({ virtId, dummy=false, className }) => {
 
   return (
     dummy
-      ? (<div className={`${classes.PixelWrapper} ${className}`}>
+      ? (<div className={`${classes.PixelWrapper} ${className} ${active ? 'active' : ''}`}>
         <div key={1} className={classes.Pixel} style={{ backgroundColor: '#000' }} />
       </div>)
       : pixels && pixels[0] && pixels[0].length
-        ? (<div className={`${classes.PixelWrapper} ${className}`}>
+        ? (<div className={`${classes.PixelWrapper} ${className}  ${active ? 'active' : ''}`}>
           {pixels[0].map((p, i) => (
             <div key={i} className={classes.Pixel} style={{ backgroundColor: `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})` }} />
           ))}
         </div>
         )
-        : (<div className={`${classes.PixelWrapper} ${className}`}>
-        <div key={1} className={classes.Pixel} style={{ backgroundColor: '#000' }} />
+        : (<div className={`${classes.PixelWrapper} ${className} ${active ? 'active' : ''}`}>
+        <div key={1} className={classes.Pixel} style={{ backgroundColor: '#0002' }} />
       </div>)
   )
 }
