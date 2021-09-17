@@ -56,7 +56,7 @@ export const YZLogo2Z = ({
 export const YZLogo2 = ({
   stroke, strokeWidth, strokeLinejoin, strokeLinecap, currentColor = '#fff', style
 }) => (
-  <svg style={{ transform: 'scale(0.025)', marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
+  <svg style={{ marginTop: '8px', transformOrigin: 'top left', ...style }} xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd"
     viewBox="0 0 59400 42000">
     <g id="_0" style={{ transformOrigin: 'center', transform: 'scale(1.3' }}>
       <g id="YZLogo2">
