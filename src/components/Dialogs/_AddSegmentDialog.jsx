@@ -1,25 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, DialogTitle, DialogContent, DialogActions, Dialog, RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
+import { Button, DialogTitle, DialogContent, DialogActions, Dialog, RadioGroup, Radio, FormControlLabel, MenuItem, Select } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import useStore from '../../utils/apiStore';
+import BladeFrame from '../SchemaForm/BladeFrame';
 
 function ConfirmationDialogRaw(props) {
     const { onClose, value: valueProp, open, ...other } = props;
     const [value, setValue] = React.useState(valueProp);
     const radioGroupRef = React.useRef(null);
 
-    React.useEffect(() => {
-        if (!open) {
-            setValue(valueProp);
-        }
-    }, [valueProp, open]);
+    // React.useEffect(() => {
+    //     if (!open) {
+    //         setValue(valueProp);
+    //     }
+    // }, [valueProp, open]);
 
     const handleEntering = () => {
-        if (radioGroupRef.current != null) {
-            radioGroupRef.current.focus();
-        }
+        // if (radioGroupRef.current != null) {
+        //     radioGroupRef.current.focus();
+        // }
     };
 
     const handleCancel = () => {
@@ -48,11 +49,27 @@ function ConfirmationDialogRaw(props) {
         >
             <DialogTitle id="confirmation-dialog-title">Select a device</DialogTitle>
             <DialogContent dividers>
-                <RadioGroup
+                <BladeFrame full={true}>
+                    <Select
+                        disableUnderline
+                        value={value}
+                        style={{ width: '100%' }}
+                        onChange={handleChange}>
+                        {Object.keys(props.deviceList).map(device => (
+                            <MenuItem
+                                value={props.deviceList[device].id}
+                                key={props.deviceList[device].id}
+                            >
+                                {props.deviceList[device].config.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </BladeFrame>
+                {/* <RadioGroup
                     ref={radioGroupRef}
                     aria-label="ringtone"
                     name="ringtone"
-                    value={value}
+                    value={""}
                     onChange={handleChange}
                 >
                     {Object.keys(props.deviceList).map(device => (
@@ -63,7 +80,7 @@ function ConfirmationDialogRaw(props) {
                             label={props.deviceList[device].config.name}
                         />
                     ))}
-                </RadioGroup>
+                </RadioGroup> */}
             </DialogContent>
             <DialogActions>
                 <Button autoFocus onClick={handleCancel} color="primary">
@@ -110,14 +127,14 @@ export default function ConfirmationDialog({ virtual, config }) {
         setOpen(false);
         if (newValue) {
             const device = { ...deviceList[Object.keys(deviceList).find(d => deviceList[d].id === newValue)] };
-            
+
             if (device && device.config) {
                 const temp = [
                     ...virtual.segments,
                     [device.id, 0, device.config.pixel_count - 1, false],
                 ];
                 const test = temp.filter(t => t.length === 4);
-                updateVirtualSegments({ virtId: virtual.id, segments: test }).then(()=>getVirtuals());
+                updateVirtualSegments({ virtId: virtual.id, segments: test }).then(() => getVirtuals());
             }
         }
     };
@@ -147,7 +164,7 @@ export default function ConfirmationDialog({ virtual, config }) {
                         keepMounted
                         open={open}
                         onClose={handleClose}
-                        value={"144"}
+                        value={""}
                         // value={deviceList[0].id}
                         deviceList={deviceList}
                     />
