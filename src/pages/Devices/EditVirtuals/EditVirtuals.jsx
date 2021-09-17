@@ -21,15 +21,21 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const MuiMenuItem = React.forwardRef((props, ref) => {
+  return <MenuItem  ref={ref} {...props} />;
+});
+
 export default function FullScreenDialog({
   virtual,
   icon = <Settings />,
+  startIcon,
   label = '',
   type,
   className,
   color = 'default',
   variant = 'contained',
   onClick = () => {},
+  innerKey,
 }) {
   const classes = useEditVirtualsStyles();
   const showSnackbar = useStore((state) => state.showSnackbar);
@@ -61,20 +67,22 @@ export default function FullScreenDialog({
   return virtual && virtual.config ? (
     <>
       {type === 'menuItem'
-        ? <MenuItem className={className} onClick={(e) => { e.preventDefault(); onClick(e); handleClickOpen(e)}}>
+        ? <MuiMenuItem key={innerKey} className={className} onClick={(e) => { e.preventDefault(); onClick(e); handleClickOpen(e)}}>
           <ListItemIcon>
             {icon}
           </ListItemIcon>
           {label}
-        </MenuItem>
+        </MuiMenuItem>
         : <Button
           variant={variant}
+          startIcon={startIcon}
           color={color}
           onClick={(e)=>{onClick(e); handleClickOpen(e);}}
           size="small"
           className={className}
         >
-          {icon || <AddCircleIcon />}
+          {label}
+          {!startIcon && icon}
         </Button>
       }
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>

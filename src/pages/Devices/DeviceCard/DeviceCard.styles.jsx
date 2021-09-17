@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { LinearScale } from '@material-ui/icons';
 
 export const useDeviceCardStyles = makeStyles((theme) => ({
     virtualCardPortrait: {     
@@ -11,6 +12,11 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       maxWidth: '400px',
       width: '100%',
       height: '100%',
+      position: 'relative',
+      background: theme.palette.background.paper,
+      // '&.active': {
+      //   background: theme.palette.background.paper,
+      // },
       '&:hover': {
       borderColor: theme.palette.text.disabled,
     }
@@ -25,12 +31,34 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
         color: `${theme.palette.primary.main} !important`,
       },
     },
+    virtualIconWrapper: {
+      width: '50px',
+      height: '50px',
+      marginRight: '0.5rem',
+    },
     virtualIcon: {
-      margingBottom: '4px',
+      marginBottom: '4px',
       marginRight: '0.5rem',
       position: 'relative',
       fontSize: '50px',
+      position: 'absolute',
+      transformOrigin: 'top left',
+      transition: 'transform 0.3s ease-in-out',
+      transitionDelay: '0s',      
+      '&.extended': {
+        transform: 'scale(2.05)',
+        transformOrigin: 'top left',        
+        transition: 'transform 0.3s ease-in-out',
+        transitionDelay: '0s',
+      },
+      '& svg': {          
+        transform: 'unset',
+        width: '100%',
+        marginTop: '3px',
+        height: '100%',
+    }
     },
+    
     virtualCardContainer: {
       display: 'flex',
       alignItems: 'center',
@@ -72,19 +100,18 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
     },
     buttonBarMobile: {
       width: '100%',
+      height: '100%',
       textAlign: 'right',
     },
     buttonBarMobileWrapper: {
+      height: 148,
       display: 'flex',
-      margin: '0 -0.5rem -1rem -0.5rem',
-      padding: '0.5rem 0.5rem 1.5rem 0.5rem',
-      background: 'rgba(0,0,0,0.4)',
+      margin: 0,
+      padding: '0.5rem 80px 0.5rem 0.5rem',
+      background: 'rgba(0,0,0,0.93)',      
       '& > div, & > button': {
         flexGrow: 1,
         flexBasis: '30%'
-      },
-      '& > div > button': {
-        width: '100%'
       }
     },
   }));

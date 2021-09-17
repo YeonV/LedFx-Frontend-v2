@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef, useRef } from 'react';
 import clsx from 'clsx';
 import { useTheme, withStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -22,12 +22,19 @@ import BladeIcon from '../../../components/Icons/BladeIcon';
 import { Delete, MoreVert } from '@material-ui/icons';
 import { ListItemIcon, Menu, MenuItem } from '@material-ui/core';
 
+const MuiMenu = forwardRef((props, ref) => {
+  return <Menu ref={ref} {...props} />;
+});
+const MuiMenuItem = forwardRef((props, ref) => {
+  return <MenuItem ref={ref} {...props} />;
+});
+
 const StyledMenu = withStyles({
   paper: {
     border: '1px solid #d3d4d5',
   },
 })((props) => (
-  <Menu
+  <MuiMenu
     elevation={0}
     getContentAnchorEl={null}
     onClick={(e) => e.preventDefault()}
@@ -57,6 +64,7 @@ const StyledMenu = withStyles({
 const DeviceCard = ({ virtual, index }) => {
   const classes = useDeviceCardStyles();
   const theme = useTheme();
+  const menuRef = useRef(null)
   const isMobile = useMediaQuery(theme.breakpoints.down(580));
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
@@ -64,6 +72,7 @@ const DeviceCard = ({ virtual, index }) => {
   const deleteVirtual = useStore((state) => state.deleteVirtual);
   const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
+  const graphs = useStore((state) => state.graphs);
 
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
@@ -97,31 +106,30 @@ const DeviceCard = ({ virtual, index }) => {
     <Card
       component={NavLink}
       to={`/device/${virtuals[virtual]?.id}`}
-      className={classes.virtualCardPortrait}
-      style={{
+      className={`${classes.virtualCardPortrait} ${Object.keys(virtuals[virtual]?.effect).length > 0 ? 'active' : '' }`}
+      style={{        
         textDecoration: 'none',
         order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual]?.effect.name)
           ? 100
-          : 'unset'
+          : !virtuals[virtual]?.effect.name 
+            ? 50
+            : 'unset'
       }}>
       <div className={classes.virtualCardContainer}>
-
-        {/* <NavLink
-          to={`/device/${virtuals[virtual]?.id}`}
-          className={classes.virtualLink}          
-        > */}
-        <BladeIcon
-          colorIndicator={Object.keys(virtuals[virtual]?.effect).length > 0}
-          name={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
-          className={classes.virtualIcon}
-          card={true} />
-        {/* </NavLink> */}
+         
+        <div className={`${classes.virtualIconWrapper}`}>
+          <BladeIcon
+            colorIndicator={!graphs && Object.keys(virtuals[virtual]?.effect).length > 0}
+            name={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
+            className={`${classes.virtualIcon} ${expanded ? 'extended' : ''}`}
+            style={{ zIndex: 3 }}
+            card={true} />
+        </div>
+      
 
         <div style={{ padding: '0 0.5rem' }}>
           <Typography variant="h6"
-            // to={`/device/${virtuals[virtual]?.id}`}
-            // className={classes.virtualLink}
-            style={{ color: Object.keys(virtuals[virtual]?.effect).length > 0 ? theme.palette.primary.light : 'inherit' }}
+            style={{ color: !graphs && Object.keys(virtuals[virtual]?.effect).length > 0 ? theme.palette.primary.light : 'inherit' }}
           >
             {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
           </Typography>
@@ -131,11 +139,8 @@ const DeviceCard = ({ virtual, index }) => {
             </Typography>
             : devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0
               ? <Typography variant="body1" color="textSecondary">
-                {expanded
-                  ? "Streaming from: "
-                  : "Streaming..."}
-                {expanded && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals
-                  .map((s, i) => <li key={i}>{s}</li>)}
+                Streaming...
+
               </Typography>
               : <Typography variant="body1" style={{ color: theme.palette.text.disabled }}>{"off"}</Typography>}
         </div>
@@ -153,17 +158,18 @@ const DeviceCard = ({ virtual, index }) => {
           )}
         </div>
 
-        {/* <IconButton
+        <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}
           onClick={(e) => { e.preventDefault(); handleExpandClick(e); }}
           aria-expanded={expanded}
           aria-label="show more"
+          style={{ zIndex: 2 }}
         >
           <ExpandMoreIcon className={`step-devices-two-${index}`} />
-        </IconButton> */}
-        <IconButton
+        </IconButton>
+        {/* <IconButton
           aria-label="display more actions"
           edge="end"
           color="inherit"
@@ -173,7 +179,8 @@ const DeviceCard = ({ virtual, index }) => {
         >
           <MoreVert />
         </IconButton>
-        <StyledMenu
+        <MuiMenu
+          ref={menuRef}
           id="simple-menu"
           anchorEl={anchorEl}
           keepMounted
@@ -183,22 +190,26 @@ const DeviceCard = ({ virtual, index }) => {
         >
           
           <Popover
+            key={`three-${index}`}
+            innerKey={`edit-device-${index}`}
             type="menuItem"
             label={`Delete ${virtuals[virtual]?.is_device ? 'Device' : 'Virtual'}`}
             variant={variant}
             color={color}
             onConfirm={() => {setAnchorEl(null);handleDeleteDevice(virtual)}}
             className={`step-devices-three-${index}`}
-          />
+          />         
+         
           {virtuals[virtual]?.is_device
             ?
-            <MenuItem onClick={(e) => { e.preventDefault(); handleEditDevice(virtuals[virtual]?.is_device) }} className={`step-devices-four-${index}`}>
+            <MuiMenuItem key={`edit-device-${index}`} onClick={(e) => { e.preventDefault(); handleEditDevice(virtuals[virtual]?.is_device) }} className={`step-devices-four-${index}`}>
               <ListItemIcon>
                 <BuildIcon />
               </ListItemIcon>
               Edit Device
-            </MenuItem>
+            </MuiMenuItem>
             : <EditVirtuals
+              innerKey={`edit-virtual-${index}`}
               type="menuItem"
               label="Edit Segments"
               variant={"text"}
@@ -207,54 +218,67 @@ const DeviceCard = ({ virtual, index }) => {
               className={`step-devices-six`}
               icon={<TuneIcon />}
             />}
-          <MenuItem className={`step-devices-five-${index}`} onClick={(e) => { e.preventDefault(); handleEditVirtual(virtual) }}>
+          <MuiMenuItem key={`five-${index}`} className={`step-devices-five-${index}`} onClick={(e) => { e.preventDefault(); handleEditVirtual(virtual) }}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
             Settings
-          </MenuItem>
-        </StyledMenu>
+          </MuiMenuItem>
+        </MuiMenu> */}
 
       </div>
-      <PixelGraph virtId={virtuals[virtual]?.id} className={`step-devices-seven`} />
+      <PixelGraph active={Object.keys(virtuals[virtual]?.effect).length > 0} virtId={virtuals[virtual]?.id} className={`step-devices-seven`} />
 
-      {<Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
-        <div className={classes.buttonBarMobileWrapper}>
-          <Popover
-            variant={variant}
-            color={color}
-            onConfirm={() => handleDeleteDevice(virtual)}
-            className={`step-devices-three-${index}`}
-          />
-
-          {virtuals[virtual]?.is_device
-            ? <Button
-              variant={variant}
+      {<div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, right: 0, zIndex: 1 }}><Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
+        <div className={classes.buttonBarMobileWrapper} onClick={(e) => e.preventDefault()}>
+          <div>
+            {/* {expanded && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals
+              .map((s, i) => <li key={i}>{s}</li>)} */}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+            <Popover
+              variant={"text"}
+              startIcon={<Delete />}
+              label="delete"
               color={color}
+              onConfirm={() => handleDeleteDevice(virtual)}
+              className={`step-devices-three-${index}`}
+              style={{ width: '100%' }}
+            />
+
+            {virtuals[virtual]?.is_device
+              ? <Button
+                variant={"text"}
+                color={color}
+                size="small"
+                startIcon={<BuildIcon />}
+                className={`step-devices-four-${index}`}
+                onClick={(e) => { e.preventDefault(); handleEditDevice(virtuals[virtual]?.is_device) }}
+              >
+                Edit Device
+              </Button>
+              : <EditVirtuals
+                label="Edit Segments"
+                variant={"text"}
+                color={color}
+                virtual={virtuals[virtual]}
+                className={`step-devices-six`}
+                startIcon={<TuneIcon />}
+              />}
+            <Button
+              variant={"text"}
               size="small"
-              className={`${classes.editButton} step-devices-four-${index}`}
-              onClick={(e) => { e.preventDefault(); handleEditDevice(virtuals[virtual]?.is_device) }}
-            >
-              <BuildIcon />
-            </Button>
-            : <EditVirtuals
-              variant={variant}
+              startIcon={<SettingsIcon />}
               color={color}
-              virtual={virtuals[virtual]}
-              className={`${classes.editButton} step-devices-six`}
-              icon={<TuneIcon />}
-            />}
-          <Button
-            variant={variant}
-            size="small"
-            color={color}
-            className={`${classes.editButton} step-devices-five-${index}`}
-            onClick={(e) => { e.preventDefault(); handleEditVirtual(virtual) }}
-          >
-            <SettingsIcon />
-          </Button>
+              className={`step-devices-five-${index}`}
+              onClick={(e) => { e.preventDefault(); handleEditVirtual(virtual) }}
+            >
+              Settings
+            </Button>
+          </div>
+
         </div>
-      </Collapse>}
+      </Collapse></div>}
     </Card>
 
     : <></>
