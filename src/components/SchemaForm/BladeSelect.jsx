@@ -14,7 +14,8 @@ const BladeSelect = ({
   wrapperStyle = {},
   selectStyle = {},
   textStyle = {},
-  menuItemStyle = {}
+  menuItemStyle = {},
+  children
 }) =>
   <BladeFrame
     title={schema.title}
@@ -35,8 +36,8 @@ const BladeSelect = ({
             value={model && model[model_id] || schema.enum[0]}
             onChange={(e) => onChange(model_id, e.target.value)}
           >
-            {schema.enum.map((item, i) => (
-              <MenuItem key={i} value={item}>
+            {children ? children : schema.enum.map((item, i) => (
+              <MenuItem key={`${i}-${i}`} value={item}>
                 {item}
               </MenuItem>
             ))}

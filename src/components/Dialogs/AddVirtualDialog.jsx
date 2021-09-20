@@ -105,7 +105,7 @@ const AddVirtualDialog = () => {
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
           ? "Add Virtual Device"
-          : "Edit Virtual Settings"}
+          : "Settings"}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>

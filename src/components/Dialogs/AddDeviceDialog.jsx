@@ -136,7 +136,7 @@ const AddDeviceDialog = () => {
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
           ? `Add ${deviceType.toUpperCase()} Device`
-          : `Edit ${deviceType.toUpperCase()} Settings`}
+          : `${deviceType.toUpperCase()} Config`}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>

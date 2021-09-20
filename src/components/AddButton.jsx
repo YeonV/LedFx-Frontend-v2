@@ -65,7 +65,7 @@ const AddButton = ({ className, style, setBackdrop }) => {
     }
 
     return (
-        <div className={className} style={style}>
+        <div className={className} style={{zIndex: 5, ...style}}>
             <Fab color="primary" aria-label="add" onClick={handleClick}>
                 <Add />
             </Fab>
