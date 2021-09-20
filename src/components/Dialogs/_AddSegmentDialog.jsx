@@ -8,20 +8,7 @@ import BladeFrame from '../SchemaForm/BladeFrame';
 
 function ConfirmationDialogRaw(props) {
     const { onClose, value: valueProp, open, ...other } = props;
-    const [value, setValue] = React.useState(valueProp);
-    const radioGroupRef = React.useRef(null);
-
-    // React.useEffect(() => {
-    //     if (!open) {
-    //         setValue(valueProp);
-    //     }
-    // }, [valueProp, open]);
-
-    const handleEntering = () => {
-        // if (radioGroupRef.current != null) {
-        //     radioGroupRef.current.focus();
-        // }
-    };
+    const [value, setValue] = React.useState(valueProp);  
 
     const handleCancel = () => {
         onClose();
@@ -36,13 +23,10 @@ function ConfirmationDialogRaw(props) {
     };
 
     delete other.deviceList;
-    // console.log(props.deviceList)
     return (
         <Dialog
-            disableBackdropClick
             disableEscapeKeyDown
             maxWidth="xs"
-            onEntering={handleEntering}
             aria-labelledby="confirmation-dialog-title"
             open={open}
             {...other}
@@ -65,22 +49,6 @@ function ConfirmationDialogRaw(props) {
                         ))}
                     </Select>
                 </BladeFrame>
-                {/* <RadioGroup
-                    ref={radioGroupRef}
-                    aria-label="ringtone"
-                    name="ringtone"
-                    value={""}
-                    onChange={handleChange}
-                >
-                    {Object.keys(props.deviceList).map(device => (
-                        <FormControlLabel
-                            value={props.deviceList[device].id}
-                            key={props.deviceList[device].id}
-                            control={<Radio />}
-                            label={props.deviceList[device].config.name}
-                        />
-                    ))}
-                </RadioGroup> */}
             </DialogContent>
             <DialogActions>
                 <Button autoFocus onClick={handleCancel} color="primary">

@@ -43,11 +43,20 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       fontSize: '50px',
       position: 'absolute',
       transformOrigin: 'top left',
+      '&.graphs': {
+        transformOrigin: 'center left',
+      },
       transition: 'transform 0.3s ease-in-out',
       transitionDelay: '0s',      
       '&.extended': {
         transform: 'scale(2.05)',
         transformOrigin: 'top left',        
+        transition: 'transform 0.3s ease-in-out',
+        transitionDelay: '0s',
+      },
+      '&.extended.graphs': {
+        transform: 'scale(1.25)',
+        transformOrigin: 'center left',        
         transition: 'transform 0.3s ease-in-out',
         transitionDelay: '0s',
       },
@@ -111,7 +120,11 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       background: 'rgba(0,0,0,0.93)',      
       '& > div, & > button': {
         flexGrow: 1,
-        flexBasis: '30%'
+        flexBasis: '30%',
+      },
+      '&.extended.graphs': {
+        height: 'auto',
+        paddingTop: 0,
       }
     },
   }));

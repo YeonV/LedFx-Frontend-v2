@@ -36,6 +36,7 @@ const Settings = () => {
   const classes = useStyles();
   const sliderClasses = useSliderStyles();
   const getSystemConfig = useStore((state) => state.getSystemConfig);
+  const getFullConfig = useStore((state) => state.getFullConfig);
   const setSystemConfig = useStore((state) => state.setSystemConfig);
   const deleteSystemConfig = useStore((state) => state.deleteSystemConfig);
   const importSystemConfig = useStore((state) => state.importSystemConfig);
@@ -45,12 +46,13 @@ const Settings = () => {
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
   const configDownload = async () => {
-    const newConfig = { ...config, ...{ ledfx_presets: undefined } }
-    download(
+    
+    getFullConfig().then((newConfig)=> download(
       newConfig,
       'config.json',
       'application/json',
-    );
+    ))
+   
   };
 
   const configDelete = async () => {

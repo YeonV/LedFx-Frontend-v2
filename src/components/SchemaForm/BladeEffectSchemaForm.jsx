@@ -89,7 +89,7 @@ const BladeEffectSchemaForm = (props) => {
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <Fab
           onClick={handleClickOpen}
-          variant="round"
+          variant="circular"
           color="primary"
           size="small"
           style={{ position: 'absolute', right: '1rem', top: '1rem' }}

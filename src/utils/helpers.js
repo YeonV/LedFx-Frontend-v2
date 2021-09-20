@@ -1,3 +1,7 @@
+export const drawerWidth = 240;
+export const frontendConfig = 2;
+
+
 export const camelToSnake = (str) => str[0].toLowerCase()
   + str
     .slice(1, str.length)
@@ -13,8 +17,6 @@ export const download = (content, fileName, contentType) => {
   a.click();
 };
 
-export const drawerWidth = 240;
-export const frontendConfig = 1;
 
 export const getOverlapping = (data) => {
   const tmp = {};

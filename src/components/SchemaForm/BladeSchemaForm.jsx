@@ -13,19 +13,25 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
+  ListSubheader,
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';
+import BladeFrame from './BladeFrame';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   bladeSchemaForm: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-});
+  FormListHeaders: {
+    background: theme.palette.secondary.main,
+    color: '#fff',
+  },
+}));
 
 const BladeSchemaFormNew = (props) => {
   const {
@@ -40,6 +46,8 @@ const BladeSchemaFormNew = (props) => {
   } = props;
 
 
+
+  // console.log(schema)
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -62,7 +70,7 @@ const BladeSchemaFormNew = (props) => {
       {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
         <Fab
           onClick={handleClickOpen}
-          variant="round"
+          variant="circular"
           color="primary"
           size="small"
           style={{ position: 'absolute', right: '1rem', top: '1rem' }}
@@ -76,7 +84,7 @@ const BladeSchemaFormNew = (props) => {
         if (schema.permitted_keys && schema.permitted_keys.indexOf(s) === -1) {
           permitted = false
         }
-        
+
         switch (schema.properties[s].type) {
           case 'boolean':
             return (
@@ -98,22 +106,90 @@ const BladeSchemaFormNew = (props) => {
               />
             );
           case 'string':
-            return <BladeSelect
-              model={model}
-              disabled={!permitted}
-              style={{ margin: '0.5rem 0', width: '48%' }}
-              variant={_selectVariant}
-              schema={schema.properties[s]}
-              required={schema.required && schema.required.indexOf(s) !== -1}
-              model_id={s}
-              key={i}
-              index={i} 
-              onChange={(model_id, value) => {
-                const c = {};
-                c[model_id] = value;
-                return onModelChange(c);
-              }}
-            />
+            const group = {}
+            let audio_groups = []
+            if (schema?.properties?.audio_device?.enum) {
+              for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
+                // console.log(`${key}: ${value.split(':')[0]}`);
+                if (!group[value.split(':')[0]]) {
+                  group[value.split(':')[0]] = {}
+                }
+                group[value.split(':')[0]][key] = value.split(':')[1]
+              }
+              function onlyUnique(value, index, self) {
+                return self.indexOf(value) === index;
+              }
+              audio_groups = (Object.values(schema.properties.audio_device?.enum).map(d => d.split(':')[0]).filter(onlyUnique))
+            }
+            // console.log(group, audio_groups)
+            return audio_groups?.length
+              ? <div key={i}>
+                <BladeFrame title={"Audio Device"} full={true}>
+                  <Select
+                    value={model && model["audio_device"] || 0}
+                    // onChange={(e) => console.log(e.target.value)}
+                    onChange={(e) => {
+                      const c = {};
+                      c["audio_device"] = parseInt(e.target.value);
+                      return onModelChange(c);
+                    }}
+                    id="grouped-select"
+                    className={classes.FormSelect}
+                  >
+                    {audio_groups?.map((c, ind) =>
+                      [
+                        <ListSubheader
+                          className={classes.FormListHeaders}
+                          color="primary"
+                          key={ind}
+                        >
+                          {c}
+                        </ListSubheader>
+                        ,
+
+
+                        Object.keys(group[c]).map((e) =>
+                          <MenuItem className={classes.FormListItem} value={e}>
+                            {group[c][e]}
+                          </MenuItem>
+                        ),
+                      ],
+                    )}
+                  </Select>
+                </BladeFrame>
+                <BladeSelect
+                  model={model}
+                  disabled={!permitted}
+                  style={{ margin: '0.5rem 0', width: '48%' }}
+                  variant={_selectVariant}
+                  schema={schema.properties[s]}
+                  required={schema.required && schema.required.indexOf(s) !== -1}
+                  model_id={s}
+                  key={i}
+                  index={i}
+                  onChange={(model_id, value) => {
+                    const c = {};
+                    c[model_id] = value;
+                    return onModelChange(c);
+                  }}
+                />
+              </div>
+              : <BladeSelect
+                model={model}
+                disabled={!permitted}
+                style={{ margin: '0.5rem 0', width: '48%' }}
+                variant={_selectVariant}
+                schema={schema.properties[s]}
+                required={schema.required && schema.required.indexOf(s) !== -1}
+                model_id={s}
+                key={i}
+                index={i}
+                onChange={(model_id, value) => {
+                  const c = {};
+                  c[model_id] = value;
+                  return onModelChange(c);
+                }}
+              />
 
           case 'number':
             return (

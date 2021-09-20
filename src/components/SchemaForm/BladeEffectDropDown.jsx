@@ -102,7 +102,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
           id="grouped-select"
           className={classes.FormSelect}
         >
-          <MenuItem value="">
+          <MenuItem value="" disabled>
             <em>None</em>
           </MenuItem>
           {effects

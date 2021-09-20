@@ -49,7 +49,7 @@ const Webaudio = () => {
       if (!audioContext || audioContext.state === 'closed') {
         return
       }
-      console.log(audioContext)
+      
       const source = audioContext.createMediaStreamSource(stream)
       const scriptNode = audioContext.createScriptProcessor(1024, 1, 1);
       // const scriptNode = audioContext.createScriptProcessor(0, 1, 1);
@@ -128,7 +128,7 @@ const Webaudio = () => {
         }
 
       }} data-webaud={webAud}>
-        <BladeIcon name={webAud ? "mdi:stop" : "mdi:music"} colorIndicator={webAud} />
+        <BladeIcon name={webAud ? "mdi:stop" : "mdi:music"} colorIndicator={webAud} style={{ position: 'relative'}} />
       </Fab>
       <Popover
         id={id}
@@ -163,19 +163,21 @@ const Webaudio = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              console.log(webAud, wsReady)
-
+              console.log("BOOM")
+              console.log(audioContext)
               if (!webAud) {
                 if (wsReady) {
                   const sendWs = async () => {
                     const request = {
+                      data: {
+
+                      },
                       client: webAudName,
                       id: 1,
                       type: "audio_stream_start",
                     };
                     ws.ws.send(JSON.stringify(++request.id && request));
                   };
-                  console.log("YZ4")
                   sendWs()
                   setTimeout(()=>{
                     getSchemas()

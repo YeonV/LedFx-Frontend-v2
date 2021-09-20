@@ -15,18 +15,22 @@ const SpotifyWidget = ({
   const setSpotifyURL = useStore((state) => state.setSpotifyEmbedUrl);
 
   return (
-    <>         
-      <Fab size="small" color="secondary" onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 363 : 143: 65, right: 10, zIndex: 2 }} >
-        <BladeIcon name="mdi:spotify" />
-      </Fab>        
+    <>
+      <Fab size="small" color="secondary" onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 363 : 143 : 65, right: 10, zIndex: 2 }} >
+        <BladeIcon name="mdi:spotify" style={{
+          marginLeft: '50%',
+          marginTop: '50%',
+          transform: 'translate(-43%, -43%)'
+        }} />
+      </Fab>
       {spotifyEnabled && <>
-      <div style={{ position: 'fixed', display: 'flex', bottom: spotifyExpanded ? 258 : 38, right: 36, zIndex: 2 }}>
-        <ChangeSpotifyURLDialog spotifyURL={spotifyURL} setSpotifyURL={setSpotifyURL} />
-        <IconButton onClick={() => setSpotifyExpanded(!spotifyExpanded)} >
-          <QueueMusic />
-        </IconButton>
-      </div>
-      <iframe src={`${spotifyURL.split('?')[0].replace('.com/embed/', '.com/').replace('.com/', '.com/embed/')}?theme=0`} width="100%" height={spotifyEnabled ? spotifyExpanded ? 300 : 80 : 0} style={{ position: 'fixed', bottom: 0, left: 0 }} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        <div style={{ position: 'fixed', display: 'flex', bottom: spotifyExpanded ? 258 : 38, right: 36, zIndex: 2 }}>
+          <ChangeSpotifyURLDialog spotifyURL={spotifyURL} setSpotifyURL={setSpotifyURL} />
+          <IconButton onClick={() => setSpotifyExpanded(!spotifyExpanded)} >
+            <QueueMusic />
+          </IconButton>
+        </div>
+        <iframe src={`${spotifyURL.split('?')[0].replace('.com/embed/', '.com/').replace('.com/', '.com/embed/')}?theme=0`} width="100%" height={spotifyEnabled ? spotifyExpanded ? 300 : 80 : 0} style={{ position: 'fixed', bottom: 0, left: 0 }} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
       </>}
     </>
   )

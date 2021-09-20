@@ -166,11 +166,9 @@ const useStore = create(
       virtuals: {},
       getVirtuals: async () => {
         const resp = await Ledfx('/api/virtuals', set);
-        if (resp && resp.virtuals && resp.paused) {
-          set({ virtuals: resp.virtuals });
+        if (resp) {          
           set({ paused: resp.paused });
-        } else {
-          if (resp && resp.virtuals) {
+          if (resp && resp.virtuals) {          
             set({ virtuals: resp.virtuals });
           }
         }
@@ -390,6 +388,14 @@ const useStore = create(
           set({ dialogs: { nohost: { open: true } } });
         }
       },
+      getFullConfig: async () => {
+        const resp = await Ledfx('/api/config', set);
+        if (resp && resp.host) {
+          return { ...resp, ...{ ledfx_presets: undefined } };
+        } else {
+          set({ dialogs: { nohost: { open: true } } });
+        }
+      },
       setSystemConfig: async ({config}) => await Ledfx('/api/config', set, 'PUT', config),
       deleteSystemConfig: async () => await Ledfx('/api/config', set, 'DELETE'),
       importSystemConfig: async (config) => await Ledfx('/api/config', set, 'POST', config),
@@ -406,7 +412,7 @@ const useStore = create(
       paused: false,
       togglePause: async () => {
         const resp = await Ledfx('/api/virtuals', set, 'PUT', {});
-        if (resp) {
+        if (resp && resp.paused) {
           set({ paused: resp.paused })
         }
       },

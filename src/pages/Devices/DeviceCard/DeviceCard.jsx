@@ -119,9 +119,9 @@ const DeviceCard = ({ virtual, index }) => {
          
         <div className={`${classes.virtualIconWrapper}`}>
           <BladeIcon
-            colorIndicator={!graphs && Object.keys(virtuals[virtual]?.effect).length > 0}
+            colorIndicator={false}
             name={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
-            className={`${classes.virtualIcon} ${expanded ? 'extended' : ''}`}
+            className={`${classes.virtualIcon} ${!graphs ? 'graphs' : ''} ${expanded ? 'extended' : ''}`}
             style={{ zIndex: 3 }}
             card={true} />
         </div>
@@ -129,7 +129,7 @@ const DeviceCard = ({ virtual, index }) => {
 
         <div style={{ padding: '0 0.5rem' }}>
           <Typography variant="h6"
-            style={{ color: !graphs && Object.keys(virtuals[virtual]?.effect).length > 0 ? theme.palette.primary.light : 'inherit' }}
+            style={{ color: (!graphs && Object.keys(virtuals[virtual]?.effect).length > 0) ? theme.palette.primary.light : 'inherit' }}
           >
             {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
           </Typography>
@@ -227,10 +227,10 @@ const DeviceCard = ({ virtual, index }) => {
         </MuiMenu> */}
 
       </div>
-      <PixelGraph active={Object.keys(virtuals[virtual]?.effect).length > 0} virtId={virtuals[virtual]?.id} className={`step-devices-seven`} />
+      <PixelGraph active={Object.keys(virtuals[virtual]?.effect).length > 0 || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0} virtId={virtuals[virtual]?.id} className={`step-devices-seven`} />
 
       {<div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, right: 0, zIndex: 1 }}><Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
-        <div className={classes.buttonBarMobileWrapper} onClick={(e) => e.preventDefault()}>
+        <div className={`${classes.buttonBarMobileWrapper} ${!graphs ? 'graphs' : ''} ${expanded ? 'extended' : ''}`} onClick={(e) => e.preventDefault()}>
           <div>
             {/* {expanded && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals
               .map((s, i) => <li key={i}>{s}</li>)} */}
@@ -258,7 +258,7 @@ const DeviceCard = ({ virtual, index }) => {
                 Edit Device
               </Button>
               : <EditVirtuals
-                label="Edit Segments"
+                label="Edit Virtual"
                 variant={"text"}
                 color={color}
                 virtual={virtuals[virtual]}
