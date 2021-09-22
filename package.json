@@ -1,11 +1,14 @@
 {
   "name": "ledfx",
-  "version": "2.0.0-beta27",
+  "version": "0.1.0",
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "@babel/runtime": "^7.14.0",
+    "@electron/remote": "^2.0.1",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
@@ -16,6 +19,9 @@
     "@types/reactour": "^1.18.1",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
+    "custom-electron-titlebar": "^3.2.7",
+    "electron-is-dev": "^2.0.0",
+    "electron-squirrel-startup": "^1.0.0",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
@@ -42,7 +48,13 @@
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "pack": "electron-builder --dir",
+    "dist": "react-scripts build && electron-builder",
+    "dist-multi": "react-scripts build && electron-builder -mwl",
+    "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron": "wait-on tcp:3000 && electron .",
+    "postinstall": "electron-builder install-app-deps"
   },
   "eslintConfig": {
     "extends": [
@@ -63,10 +75,19 @@
     ]
   },
   "devDependencies": {
+    "@electron-forge/maker-deb": "^6.0.0-beta.61",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.61",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+    "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "@types/react-router-dom": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
     "babel-eslint": "^10.1.0",
+    "concurrently": "^6.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^14.0.1",
+    "electron-builder": "^22.11.7",
+    "electron-devtools-installer": "^3.2.0",
     "eslint": "^7.27.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
@@ -83,6 +104,43 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "gh-pages": "^3.2.0",
     "prettier": "^2.3.0",
-    "react-is": "^17.0.2"
+    "react-is": "^17.0.2",
+    "wait-on": "^6.0.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "src/icons/mac/icon.icns",
+        "name": "LedFx Client by Blade",
+        "title": "LedFx Client by Blade"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "ledfx"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "build": {
+    "win": {
+      "icon": "build/icon.ico"
+    }
   }
 }
