@@ -51,17 +51,12 @@ function createWindow() {
     return win
 }
 
-
-
 const NOTIFICATION_TITLE = 'LedFx Client - by Blade'
 const NOTIFICATION_BODY = 'Testing Notification from the Main process'
 
 function showNotification() {
     new Notification({ title: NOTIFICATION_TITLE, body: NOTIFICATION_BODY }).show()
 }
-
-
-
 
 let tray = null
 
@@ -71,7 +66,6 @@ let tray = null
 
 app.whenReady().then(() => {
     const wind = createWindow();
-    
 
     if (isDev) {
         installExtension(REACT_DEVELOPER_TOOLS)
@@ -79,7 +73,7 @@ app.whenReady().then(() => {
             .catch(error => console.log(`An error occurred: , ${error}`));
     }
 
-    const icon = path.join(__dirname, 'icon.png')
+    const icon = path.join(__dirname, 'icon_16x16.png')
     tray = new Tray(icon)
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Show', click: () => wind.show() },
