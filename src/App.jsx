@@ -23,7 +23,6 @@ import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
 import { initFrontendConfig } from './utils/helpers';
 
-
 export default function App() {
   const classes = useStyles();
 
@@ -42,7 +41,25 @@ export default function App() {
     initFrontendConfig();
   }, []);
 
-  console.log()
+  useEffect(() => {
+    // const { Menu, MenuItem } = require('@electron/remote');
+    if (process.versions.hasOwnProperty('electron')) {
+      const customTitleBar = window.require('custom-electron-titlebar');
+      const titlebar = new customTitleBar.Titlebar({
+        backgroundColor: customTitleBar.Color.fromHex('#444'),
+        icon: '/images/logo.png',
+      });
+      const menu = Menu.getApplicationMenu()
+
+      titlebar.updateMenu(menu);
+    }
+    return () => {
+      if (typeof window !== undefined) {
+        titlebar.dispose();
+      }
+    };
+  }, []);
+
   return (
     <MuiThemeProvider theme={BladeDarkTheme}>
       <WsContext.Provider value={ws}>
