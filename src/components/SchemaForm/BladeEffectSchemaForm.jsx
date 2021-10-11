@@ -86,7 +86,7 @@ const BladeEffectSchemaForm = (props) => {
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+      {parseInt(window.localStorage.getItem('BladeMod')) > 20 && (
         <Fab
           onClick={handleClickOpen}
           variant="circular"

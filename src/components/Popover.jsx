@@ -35,6 +35,7 @@ export default function Popover({
   style = {},
   disabled = false,
   popoverStyle,
+  wrapperStyle,
   type,
 }) {
   const classes = useStyles();
@@ -57,7 +58,7 @@ export default function Popover({
   const id = open ? 'simple-popover' : undefined;
 
   return (
-    <div style={{ display: 'initial' }}>
+    <div style={{ display: 'initial', ...wrapperStyle }}>
       {type === 'menuItem'
         ? <MenuItem className={className} onClick={(e) => { e.preventDefault(); onSingleClick(e); openPopover(e)}}>
           <ListItemIcon>
