@@ -1,6 +1,7 @@
 const path = require('path');
 
-const { app, BrowserWindow, Menu, Tray, nativeImage, Notification, Remote, nativeTheme } = require('electron');
+const { app,  Menu, Tray, nativeImage, Notification, nativeTheme } = require('electron');
+const { BrowserWindow } = require('@electron/remote')
 const isDev = require('electron-is-dev');
 
 // Conditionally include the dev tools installer to load React Dev Tools
@@ -21,7 +22,7 @@ let win
 
 function createWindow() {
     require('@electron/remote/main').initialize()
-    // Create the browser window.
+    // Create the browser window.    
     win = new BrowserWindow({
         width: 480,
         height: 768,
@@ -65,6 +66,7 @@ let tray = null
 // Some APIs can only be used after this event occurs.
 
 app.whenReady().then(() => {
+    nativeTheme.themeSource = 'dark';
     const wind = createWindow();
 
     if (isDev) {
