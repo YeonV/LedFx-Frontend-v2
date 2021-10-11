@@ -61,7 +61,12 @@ export const BladeDarkTheme = createTheme({
     MuiCard: {
       variant: 'outlined',
     },
-  },
+  },  
+  typography: {
+    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
+    "fontSize": 14,
+    "fontWeightRegular": 400,
+   }
 });
 
 export const BladeLightTheme = createTheme({
