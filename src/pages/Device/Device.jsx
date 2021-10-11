@@ -30,6 +30,7 @@ const Device = ({
 
   const virtuals = useStore((state) => state.virtuals);
   const presets = useStore((state) => state.presets);
+  const viewMode = useStore((state) => state.viewMode);
 
   const virtual = virtuals[virtId];
   const effectType = virtual && virtual.effect.type;
@@ -51,8 +52,9 @@ const Device = ({
         <>
           <Grid item className={classes.girdItem}>
             <EffectsCard virtId={virtId} />
-            <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />
+
           </Grid>
+
           <Grid item className={classes.girdItem}>
             {effectType && presets && (
               <PresetsCard
@@ -62,7 +64,8 @@ const Device = ({
                 style={{ marginBottom: '1rem' }}
               />
             )}
-            <MelbankCard virtual={virtual} />
+            {viewMode === 'expert' && <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />}
+            {viewMode === 'expert' && <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />}
           </Grid>
         </>
       )}
