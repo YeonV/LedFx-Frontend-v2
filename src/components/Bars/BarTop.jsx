@@ -1,10 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
 import useStore from '../../utils/apiStore';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon } from '@material-ui/core';
-import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, InfoRounded } from '@material-ui/icons';
+import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
+import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, InfoRounded, ChevronLeft } from '@material-ui/icons';
 import { drawerWidth } from '../../utils/helpers';
 import TourDevice from '../Tours/TourDevice';
 import TourScenes from '../Tours/TourScenes';
@@ -33,6 +33,13 @@ const useStyles = makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
+  backButton: { 
+    position: 'absolute',
+    top: 14,
+    '@media (max-width: 599px)': {
+      top: 10
+    }
+  }
 }));
 
 const TopBar = () => {
@@ -47,6 +54,8 @@ const TopBar = () => {
   const graphs = useStore((state) => state.graphs);
   const config = useStore((state) => state.config);
   const { pathname } = useLocation();
+  const history = useHistory();
+
   // console.log(pathname.split('/'))
 
   const handleLeftBarOpen = () => {
@@ -77,20 +86,26 @@ const TopBar = () => {
       })}
     >
       <Toolbar style={{ justifyContent: 'space-between' }}>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleLeftBarOpen}
-          edge="start"
-          className={clsx(classes.menuButton, "step-three", open && classes.hide)}
-        >
-          <MenuIcon />
-        </IconButton>
+        <div>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleLeftBarOpen}
+            edge="start"
+            className={clsx(classes.menuButton, "step-three", open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          {((pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') || pathname === '/Settings') &&
+            <Button className={classes.backButton} startIcon={<ChevronLeft />} onClick={() => history.goBack()} >
+              Back
+            </Button>}
+        </div>
         {open && <div style={{ width: '48px', height: '48px' }} />}
         <Typography variant="h6" noWrap>
-          {pathname === '/' ? 'LedFx' 
+          {pathname === '/' ? 'LedFx'
             : (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ? virtuals[pathname.split('/')[2]]?.config.name
-            : pathname.split('/').pop()}
+              : pathname.split('/').pop()}
         </Typography>
 
         <IconButton
