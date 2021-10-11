@@ -3,9 +3,10 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: '1rem',
-    backgroundColor: '#88888888',
+    backgroundColor: 'rgb(57, 57, 61)',
     paddingLeft: '0.5rem',
-    borderRadius: '5px'
+    borderRadius: '5px',
+    paddingTop: '3px'
   },
   wrapper: {
     minWidth: '240px',
