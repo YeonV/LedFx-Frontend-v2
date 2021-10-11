@@ -1,22 +1,44 @@
 import { useEffect, useState } from 'react';
 import useStore from '../../utils/apiStore';
 import { deleteFrontendConfig, download } from '../../utils/helpers';
-import { makeStyles } from '@material-ui/core/styles';
-import { Button, Divider, Input, Card, CardHeader, CardContent, Slider } from '@material-ui/core';
-import { CloudUpload, CloudDownload,PowerSettingsNew, Delete, Refresh } from '@material-ui/icons';
+import { makeStyles, styled } from '@material-ui/core/styles';
+import { Button, Divider, Input, Card, CardHeader, CardContent, Slider, Accordion, AccordionSummary, Typography, AccordionDetails, Switch, TextField } from '@material-ui/core';
+import { CloudUpload, CloudDownload, PowerSettingsNew, Delete, Refresh, ExpandMore } from '@material-ui/icons';
 import useSliderStyles from '../../components/SchemaForm/BladeSlider.styles';
 import PopoverSure from '../../components/Popover';
 import AudioCard from './AudioCard';
 import WledCard from './WledCard';
 import Webaudio from './Webaudio';
+import ClientAudioCard from './ClientAudioCard';
+import { useLongPress } from 'use-long-press';
 
 const useStyles = makeStyles(theme => ({
   content: {
     display: 'flex',
-    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    '&>div': {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    }
+  },
+  settingsRow: {
+    order: 'unset',
+    width: "100%",
+    justifyContent: 'space-between',
+    display: 'flex',
+    alignItems: 'center',
+    height: 40,
+    '&>label': {
+      marginRight: '1rem',
+      width: 100
+    }
   },
   actionButton: {
     marginTop: '0.5rem',
+    flexBasis: '49%',
     width: '100%',
     borderColor: theme.palette.grey[400]
   },
@@ -30,7 +52,118 @@ const useStyles = makeStyles(theme => ({
       margin: '0 auto',
     },
   },
+  audioCard: {
+    '& > div > div:not(:last-child)': {
+      '@media (max-width: 580px)': {
+        width: '48% !important',
+        minWidth: 'unset'
+      },
+    },
+  }
 }));
+
+const IOSSlider = styled(Slider)(({ theme }) => ({
+  color: theme.palette.mode === 'dark' ? '#eeeeee' : '#eeeeee',
+  height: 2,
+  padding: '15px 0',
+  '& .MuiSlider-thumb': {
+    height: 20,
+    width: 20,
+    backgroundColor: '#fff',
+    marginTop: '-10px',
+    boxShadow: '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
+    '&:focus, &:hover, &.Mui-active': {
+      boxShadow:
+        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
+      // Reset on touch devices, it doesn't add specificity
+      '@media (hover: none)': {
+        boxShadow: '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
+      },
+    },
+  },
+  '& .MuiSlider-valueLabel': {
+    fontSize: 12,
+    fontWeight: 'normal',
+    top: -6,
+    backgroundColor: 'unset',
+    color: theme.palette.text.primary,
+    '&:before': {
+      display: 'none',
+    },
+    '& *': {
+      background: 'transparent',
+      color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+    },
+  },
+  '& .MuiSlider-track': {
+    border: 'none',
+  },
+  '& .MuiSlider-rail': {
+    opacity: 0.5,
+    backgroundColor: '#bfbfbf',
+  },
+  '& .MuiSlider-mark': {
+    backgroundColor: '#bfbfbf',
+    height: 8,
+    width: 1,
+    '&.MuiSlider-markActive': {
+      opacity: 1,
+      backgroundColor: 'currentColor',
+    },
+  },
+}));
+
+const IOSSwitch = styled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 50,
+  height: 26,
+  padding: 0,
+  '& .MuiSwitch-switchBase': {
+    padding: 0,
+    margin: 2,
+    transitionDuration: '300ms',
+    '&.Mui-checked': {
+      transform: 'translateX(24px)',
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: theme.palette.primary,
+        opacity: 1,
+        border: 0,
+      },
+      '&.Mui-disabled + .MuiSwitch-track': {
+        opacity: 0.5,
+      },
+    },
+    '&.Mui-focusVisible .MuiSwitch-thumb': {
+      color: '#33cf4d',
+      border: '6px solid #fff',
+    },
+    '&.Mui-disabled .MuiSwitch-thumb': {
+      color:
+        theme.palette.mode === 'light'
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxSizing: 'border-box',
+    width: 22,
+    height: 22,
+  },
+  '& .MuiSwitch-track': {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+    opacity: 1,
+    transition: theme.transitions.create(['background-color'], {
+      duration: 500,
+    }),
+  },
+}));
+
 
 const Settings = () => {
   const classes = useStyles();
@@ -40,19 +173,24 @@ const Settings = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig);
   const deleteSystemConfig = useStore((state) => state.deleteSystemConfig);
   const importSystemConfig = useStore((state) => state.importSystemConfig);
+  const viewMode = useStore((state) => state.viewMode);
+  const setViewMode = useStore((state) => state.setViewMode);
   const shutdown = useStore((state) => state.shutdown);
   const restart = useStore((state) => state.restart);
   const config = useStore((state) => state.config);
+  const graphs = useStore((state) => state.graphs);
+  const toggleGraphs = useStore((state) => state.toggleGraphs);
+
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
   const configDownload = async () => {
-    
-    getFullConfig().then((newConfig)=> download(
+
+    getFullConfig().then((newConfig) => download(
       newConfig,
       'config.json',
       'application/json',
     ))
-   
+
   };
 
   const configDelete = async () => {
@@ -126,13 +264,27 @@ const Settings = () => {
     },
   ];
 
-  useEffect(() => {    
-      if (typeof config.visualisation_fps === 'number') {
-        setFps(config.visualisation_fps)
-      }
-      if (typeof config.visualisation_maxlen === 'number') {
-        setPixelLength(config.visualisation_maxlen)
-      }    
+  const [expanded, setExpanded] = useState(false);
+  const [active, setActive] = useState(false);
+  const [dev, setDev] = useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+
+  const longPress = useLongPress((e) => viewMode === 'expert' && setDev(true), {
+    treshhold: 1000,
+    captureEvent: true,
+  });
+
+  useEffect(() => {
+    if (typeof config.visualisation_fps === 'number') {
+      setFps(config.visualisation_fps)
+    }
+    if (typeof config.visualisation_maxlen === 'number') {
+      setPixelLength(config.visualisation_maxlen)
+    }
   }, [config]);
 
   useEffect(() => {
@@ -141,148 +293,240 @@ const Settings = () => {
 
   return (
     <>
-      <Card className={classes.card} style={{ marginBottom: '2rem' }}>
-        <CardHeader title="General" subheader="Configure LedFx-Settings" />
-        <CardContent className={classes.content}>
-          <AudioCard className={'step-settings-one'} />
-
-          <Divider style={{ margin: '1rem 0' }} />
-          {config.visualisation_fps && (<>
-            <div className={`${sliderClasses.wrapper} step-settings-two`} style={{ order: 'unset', width: "100%" }}>
-              <label>Frontend FPS</label>
-              <Slider
-                value={fps}
-                marks={marks}
-                step={1}
-                valueLabelDisplay="auto"
-                min={1}
-                max={60}
-                onChangeCommitted={(e, val) => setSystemSetting("visualisation_fps", val)}
-                onChange={(e, val) => {
-                  setFps(val);
-                }}
-              />
-              <Input
-                disableUnderline
-                className={sliderClasses.input}
-                value={fps}
-                margin="dense"
-                onChange={(e, val) => {
-                  setFps(val);
-                }}
-                onBlur={(e, val) => setSystemSetting("visualisation_fps", val)}
-                inputProps={{
-                  min: 1,
-                  max: 60,
-                  type: 'number',
-                  'aria-labelledby': 'input-slider',
-                }}
-              />
-            </div>
-
-            <div className={`${sliderClasses.wrapper} step-settings-three`} style={{ order: 'unset', width: "100%" }}>
-              <label>Frontend max Pixel Length</label>
-              <Slider
-                value={pixelLength}
-                marks={marksPixelLength}
-                step={1}
-                valueLabelDisplay="auto"
-                min={1}
-                max={300}
-                onChangeCommitted={(e, val) => setSystemSetting("visualisation_maxlen", val)}
-                onChange={(e, val) => {
-                  setPixelLength(val);
-                }}
-              />
-              <Input
-                disableUnderline
-                className={sliderClasses.input}
-                value={pixelLength}
-                margin="dense"
-                onChange={(e, val) => {
-                  setPixelLength(val);
-                }}
-                onBlur={(e, val) => setSystemSetting("visualisation_maxlen", val)}
-                inputProps={{
-                  min: 1,
-                  max: 300,
-                  type: 'number',
-                  'aria-labelledby': 'input-slider',
-                }}
-              />
-            </div>
-
-          </>)}
-          <Divider style={{ margin: '1rem 0' }} />
-          <div className={'step-settings-four'}>
-            <Button
-              size="small"
-              startIcon={<CloudUpload />}
-              variant="outlined"
-              className={classes.actionButton}
-              style={{ marginTop: '1.5rem' }}
-              onClick={configDownload}
-            >
-              Export Config
-            </Button>
-            <PopoverSure
-              startIcon={<Delete />}
-              label="Reset Config"
-              size="small"
-              variant="outlined"
-              color="inherit"
-              className={classes.actionButton}
-              onConfirm={configDelete}
-              direction="center"
-              vertical="top"
-            />
-            <input
-              hidden
-              accept="application/json"
-              id="contained-button-file"
-              type="file"
-              onChange={(e) => fileChanged(e)}
-            />
-            <label htmlFor="contained-button-file">
+      <div className={classes.card}>
+      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel3a-content"
+            id="panel3a-header"
+          >
+            <Typography>General</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className={'step-settings-four'}>
               <Button
-                component="span"
                 size="small"
-                startIcon={<CloudDownload />}
+                startIcon={<CloudUpload />}
                 variant="outlined"
                 className={classes.actionButton}
+                onClick={configDownload}
               >
-                Import Config
+                Export Config
               </Button>
-            </label>
-            <Button
-              size="small"
-              startIcon={<Refresh />}
-              variant="outlined"
-              className={classes.actionButton}
-              onClick={restart}
+              <PopoverSure
+                startIcon={<Delete />}
+                label="Reset Config"
+                size="small"
+                variant="outlined"
+                color="inherit"
+                className={classes.actionButton}
+                onConfirm={configDelete}
+                direction="center"
+                vertical="top"
+                wrapperStyle={{
+                  marginTop: '0.5rem',
+                  flexBasis: '49%',
+                }}
+              />
+              <input
+                hidden
+                accept="application/json"
+                id="contained-button-file"
+                type="file"
+                onChange={(e) => fileChanged(e)}
+              />
+              <label htmlFor="contained-button-file" style={{ width: '100%', flexBasis: '49%' }}>
+                <Button
+                  component="span"
+                  size="small"
+                  startIcon={<CloudDownload />}
+                  variant="outlined"
+                  className={classes.actionButton}
+                >
+                  Import Config
+                </Button>
+              </label>
+              <Button
+                size="small"
+                startIcon={<Refresh />}
+                variant="outlined"
+                className={classes.actionButton}
+                onClick={restart}
 
-            >
-              Restart LedFx
-            </Button>
+              >
+                Restart LedFx
+              </Button>
 
-            <Button
-              size="small"
-              startIcon={<PowerSettingsNew />}
-              variant="outlined"
-              className={classes.actionButton}
-              onClick={shutdown}
+              <Button
+                size="small"
+                startIcon={<PowerSettingsNew />}
+                variant="outlined"
+                className={classes.actionButton}
+                onClick={shutdown}
+              >
+                Shutdown
+              </Button>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Audio Settings</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div>
+              {(parseInt(window.localStorage.getItem('BladeMod')) > 10) &&
+                <Webaudio style={{ position: 'absolute', right: '3.5rem', top: '0.3rem' }} />
+              }
+              <ClientAudioCard />
+              <AudioCard className={`${classes.audioCard} step-settings-one`} />
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography>UI Settings</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div style={{ width: '100%' }}>
+
+              <div className={`${classes.settingsRow} step-settings-three `}>
+                <label>Show Graphs</label>
+                <IOSSwitch checked={graphs} onChange={(e) => toggleGraphs()} />
+              </div>
+
+              <div className={`${classes.settingsRow} step-settings-x `}>
+                <label {...longPress}>Expert Mode</label>
+                <IOSSwitch checked={viewMode !== 'user'} onChange={(e) => viewMode === 'user' ? setViewMode("expert") : setViewMode("user")} />
+              </div>
+
+              {(dev || viewMode === 'dev') && <div className={`${classes.settingsRow} step-settings-x `}>
+                <label>Dev Mode</label>
+                <Input
+                  disableUnderline
+                  style={{
+                    marginLeft: '1rem',
+                    backgroundColor: 'rgb(57, 57, 61)',
+                    paddingLeft: '0.5rem',
+                    borderRadius: '5px',
+                    paddingTop: '3px',
+                    width: 50
+                  }}
+                  // value={value}
+                  margin="dense"
+                  // onChange={handleInputChange}
+                  onBlur={(e) => {
+                    setViewMode(e.target.value) 
+                    if (e.target.value === 'dev') { window.localStorage.setItem('BladeMod', 11) }
+                  }}
+                />
+              </div>}
+
+              {config.visualisation_fps && (<>
+                {/* <div className={`${sliderClasses.wrapper} step-settings-two`} style={{ order: 'unset', width: "100%" }}> */}
+                <div className={`${classes.settingsRow} step-settings-two`}>
+                  <label>Frontend FPS</label>
+                  <div style={{ flexGrow: 1 }}>
+                    <IOSSlider
+                      value={fps}
+                      // marks={marks}
+                      // marks
+                      // color=""
+                      step={1}
+                      // valueLabelDisplay="auto"
+                      min={1}
+                      max={60}
+                      size="medium"
+                      onChangeCommitted={(e, val) => setSystemSetting("visualisation_fps", val)}
+                      onChange={(e, val) => {
+                        setFps(val);
+                      }}
+                    />
+                  </div>
+                  <Input
+                    disableUnderline
+                    className={sliderClasses.input}
+                    style={{ width: 50 }}
+                    value={fps}
+                    margin="dense"
+                    onFocus={() => setActive(true)}
+                    onChange={(e, val) => {
+                      setFps(val);
+                    }}
+                    onBlur={(e, val) => { setSystemSetting("visualisation_fps", val) }}
+                    inputProps={{
+                      min: 1,
+                      max: 60,
+                      type: 'number',
+                      'aria-labelledby': 'input-slider',
+                    }}
+                  />
+                </div>
+
+                <div className={`${classes.settingsRow} step-settings-three `}>
+                  <label>Frontend Pixels</label>
+                  <div style={{ flexGrow: 1 }}>
+                    <IOSSlider
+                      value={pixelLength}
+                      // marks={marksPixelLength}
+                      step={1}
+                      valueLabelDisplay="auto"
+                      min={1}
+                      max={300}
+                      onChangeCommitted={(e, val) => setSystemSetting("visualisation_maxlen", val)}
+                      onChange={(e, val) => {
+                        setPixelLength(val);
+                      }}
+                    />
+                  </div>
+                  <Input
+                    disableUnderline
+                    className={sliderClasses.input}
+                    value={pixelLength}
+                    style={{ width: 50 }}
+                    margin="dense"
+                    onChange={(e, val) => {
+                      setPixelLength(val);
+                    }}
+                    onBlur={(e, val) => setSystemSetting("visualisation_maxlen", val)}
+                    inputProps={{
+                      min: 1,
+                      max: 300,
+                      type: 'number',
+                      'aria-labelledby': 'input-slider',
+                    }}
+                  />
+                </div>
+
+              </>)}
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        
+        {((parseInt(window.localStorage.getItem('BladeMod')) > 10) || viewMode === 'dev') &&
+          <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              aria-controls="panel4a-content"
+              id="panel4a-header"
             >
-              Shutdown
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-      {(parseInt(window.localStorage.getItem('BladeMod')) > 10) &&
-        <WledCard className={`${classes.card} step-settings-five`} />
-      }
-      {(parseInt(window.localStorage.getItem('BladeMod')) > 10) &&
-        <Webaudio className={classes.card} />
-      }
+              <Typography>WLED Settings</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <WledCard className={`${classes.card} step-settings-five`} />
+              </div>
+            </AccordionDetails>
+          </Accordion>}
+      </div>
     </>
   );
 };
