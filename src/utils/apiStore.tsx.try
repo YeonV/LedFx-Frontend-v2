@@ -2,6 +2,19 @@ import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { Ledfx } from './apiProxy';
 
+interface ClientState {
+  host: string
+  setHost: (host: string) => void
+  tours: {
+    home: boolean,
+    devices: boolean,
+    device: boolean,
+    integrations: boolean,
+    scenes: boolean,
+    settings: boolean
+  }
+}
+
 const useStore = create(
   persist(
     devtools((set, get) => ({
@@ -29,12 +42,6 @@ const useStore = create(
           [tour]: true
         }
       })),
-
-      viewMode: 'user',
-      setViewMode: (mode) => set(() => ({
-        viewMode: mode
-      })),
-
       pixelGraphs: [],
       setPixelGraphs: (virtuals) => set((state) => ({
         pixelGraphs: [...virtuals]
