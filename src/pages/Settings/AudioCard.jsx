@@ -14,6 +14,7 @@ const AudioCard = ({ className }) => {
 
     return <div className={className}>
         {schema && <BladeSchemaForm
+            disableUnderline
             schema={schema}
             model={model}
             onModelChange={(e) => {
