@@ -14,24 +14,24 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   picker: {
-    width: '135px',
+    // width: '135px',
     height: '30px',
     margin: '15px 10px 10px 10px',
     borderRadius: '10px',
     cursor: 'pointer',
     border: '1px solid #fff',
     "@media (max-width: 580px)": {
-      width: "31vw",
+      // width: "31vw",
     },
   },
   wrapper: {
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
     // margin: "0.5rem",
     order: '-2',
     // "@media (max-width: 580px)": {
-    flexBasis: '33%',
+    width: '100%',
     margin: '0.5rem 0',
     // },
     '& > label': {
@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
       padding: '0 0.3rem',
       position: 'absolute',
       fontVariant: 'all-small-caps',
+      fontSize: '0.9rem',
+      letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },

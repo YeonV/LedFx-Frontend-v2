@@ -185,6 +185,14 @@ const useStore = create(
         'POST',
         config,
       ),
+      updateVirtual: async (virtId, { active }) => await Ledfx(
+        `/api/virtuals/${virtId}`,
+        set,
+        'PUT',
+        {
+          active: active
+        },
+      ),
       deleteVirtual: async (virtId) => await Ledfx(
         `/api/virtuals/${virtId}`,
         set,

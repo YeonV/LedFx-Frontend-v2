@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import useStore from '../../utils/apiStore';
 import { deleteFrontendConfig, download } from '../../utils/helpers';
 import { makeStyles, styled } from '@material-ui/core/styles';
-import { Button, Divider, Input, Card, CardHeader, CardContent, Slider, Accordion, AccordionSummary, Typography, AccordionDetails, Switch, TextField } from '@material-ui/core';
-import { CloudUpload, CloudDownload, PowerSettingsNew, Delete, Refresh, ExpandMore } from '@material-ui/icons';
+import { Button,  Input,  Slider, Accordion, AccordionSummary, Typography, AccordionDetails, Switch, TextField } from '@material-ui/core';
+import { CloudUpload, CloudDownload, PowerSettingsNew, Delete, Refresh, ExpandMore, Info } from '@material-ui/icons';
 import useSliderStyles from '../../components/SchemaForm/BladeSlider.styles';
 import PopoverSure from '../../components/Popover';
 import AudioCard from './AudioCard';
@@ -11,6 +11,7 @@ import WledCard from './WledCard';
 import Webaudio from './Webaudio';
 import ClientAudioCard from './ClientAudioCard';
 import { useLongPress } from 'use-long-press';
+import AboutDialog from '../../components/Dialogs/AboutDialog';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: '0.5rem',
     flexBasis: '49%',
     width: '100%',
-    borderColor: theme.palette.grey[400]
+    borderColor: '#444'
   },
   card: {
     maxWidth: '540px',
@@ -294,7 +295,7 @@ const Settings = () => {
   return (
     <>
       <div className={classes.card}>
-      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+        <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel3a-content"
@@ -303,69 +304,76 @@ const Settings = () => {
             <Typography>General</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div className={'step-settings-four'}>
-              <Button
-                size="small"
-                startIcon={<CloudUpload />}
-                variant="outlined"
-                className={classes.actionButton}
-                onClick={configDownload}
-              >
-                Export Config
-              </Button>
-              <PopoverSure
-                startIcon={<Delete />}
-                label="Reset Config"
-                size="small"
-                variant="outlined"
-                color="inherit"
-                className={classes.actionButton}
-                onConfirm={configDelete}
-                direction="center"
-                vertical="top"
-                wrapperStyle={{
-                  marginTop: '0.5rem',
-                  flexBasis: '49%',
-                }}
-              />
-              <input
-                hidden
-                accept="application/json"
-                id="contained-button-file"
-                type="file"
-                onChange={(e) => fileChanged(e)}
-              />
-              <label htmlFor="contained-button-file" style={{ width: '100%', flexBasis: '49%' }}>
+            <div className={'step-settings-four'} style={{ display: 'flex', justifyContent: 'space-between'}}>
+              <div style={{ flex: '0 0 49%'}}>
                 <Button
-                  component="span"
                   size="small"
-                  startIcon={<CloudDownload />}
+                  startIcon={<CloudUpload />}
                   variant="outlined"
                   className={classes.actionButton}
+                  onClick={configDownload}
                 >
-                  Import Config
+                  Export Config
                 </Button>
-              </label>
-              <Button
-                size="small"
-                startIcon={<Refresh />}
-                variant="outlined"
-                className={classes.actionButton}
-                onClick={restart}
+                <PopoverSure
+                  startIcon={<Delete />}
+                  label="Reset Config"
+                  size="small"
+                  variant="outlined"
+                  color="inherit"
+                  className={classes.actionButton}
+                  onConfirm={configDelete}
+                  direction="center"
+                  vertical="top"
+                  wrapperStyle={{
+                    marginTop: '0.5rem',
+                    flexBasis: '49%',
+                  }}
+                />
+                <input
+                  hidden
+                  accept="application/json"
+                  id="contained-button-file"
+                  type="file"
+                  onChange={(e) => fileChanged(e)}
+                />
+                <label htmlFor="contained-button-file" style={{ width: '100%', flexBasis: '49%' }}>
+                  <Button
+                    component="span"
+                    size="small"
+                    startIcon={<CloudDownload />}
+                    variant="outlined"
+                    className={classes.actionButton}
+                  >
+                    Import Config
+                  </Button>
+                </label>
+              </div>
+              <div style={{ flex: '0 0 49%'}}>
+                {viewMode === 'dev' && <AboutDialog startIcon={<Info />} className={classes.actionButton}>
+                  About
+                </AboutDialog>}
+                <Button
+                  size="small"
+                  startIcon={<Refresh />}
+                  variant="outlined"
+                  className={classes.actionButton}
+                  onClick={restart}
 
-              >
-                Restart LedFx
-              </Button>
+                >
+                  Restart
+                </Button>
 
-              <Button
-                size="small"
-                startIcon={<PowerSettingsNew />}
-                variant="outlined"
-                className={classes.actionButton}
-                onClick={shutdown}
-              >
-                Shutdown
-              </Button>
+                <Button
+                  size="small"
+                  startIcon={<PowerSettingsNew />}
+                  variant="outlined"
+                  className={classes.actionButton}
+                  onClick={shutdown}
+                >
+                  Shutdown
+                </Button>
+              </div>
             </div>
           </AccordionDetails>
         </Accordion>
@@ -420,12 +428,11 @@ const Settings = () => {
                     paddingTop: '3px',
                     width: 50
                   }}
-                  // value={value}
                   margin="dense"
-                  // onChange={handleInputChange}
                   onBlur={(e) => {
-                    setViewMode(e.target.value) 
-                    if (e.target.value === 'dev') { window.localStorage.setItem('BladeMod', 11) }
+                    if (e.target.value === 'clear') { setViewMode('user'); window.localStorage.setItem('ledfx-theme', "Dark"); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
+                    if (e.target.value === 'dev') { setViewMode('dev'); window.localStorage.setItem('BladeMod', 11) }
+                    if (e.target.value.startsWith('theme:')) { window.localStorage.setItem('ledfx-theme', e.target.value.replace('theme:', '')); window.location.reload() }
                   }}
                 />
               </div>}
@@ -510,7 +517,7 @@ const Settings = () => {
             </div>
           </AccordionDetails>
         </Accordion>
-        
+
         {((parseInt(window.localStorage.getItem('BladeMod')) > 10) || viewMode === 'dev') &&
           <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
             <AccordionSummary

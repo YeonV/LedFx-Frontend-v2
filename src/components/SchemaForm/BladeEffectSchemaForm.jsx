@@ -138,7 +138,7 @@ const BladeEffectSchemaForm = (props) => {
                 model={model}
                 variant={_selectVariant}
                 schema={schema.properties[s]}
-                wrapperStyle={{width: '48%'}}
+                wrapperStyle={{width: '49%'}}
                 model_id={s}
                 key={i}
                 index={i}
@@ -190,7 +190,7 @@ const BladeEffectSchemaForm = (props) => {
                 model_id={s}
                 model={model}
                 schema={schema.properties[s]}
-                style={{ margin: '0.5rem 0', flexBasis: '47%'}}
+                style={{ margin: '0.5rem 0'}}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;

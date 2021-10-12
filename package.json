@@ -1,6 +1,6 @@
 {
     "name": "ledfx",
-    "version": "0.1.0",
+    "version": "2.0.0-beta28",
     "description": "LedFx - BladeMOD",
     "author": "YeonV aka Blade",
     "private": true,
@@ -85,7 +85,7 @@
         "babel-eslint": "^10.1.0",
         "concurrently": "^6.2.1",
         "cross-env": "^7.0.3",
-        "electron": "^15.0.0",
+        "electron": "^14.0.1",
         "electron-builder": "^22.11.7",
         "electron-devtools-installer": "^3.2.0",
         "eslint": "^7.27.0",

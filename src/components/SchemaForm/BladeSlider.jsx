@@ -23,7 +23,7 @@ const BladeSlider = ({
   // console.log(schema)
   return variant === 'outlined' ? (
     <div className={`${classes.wrapper} step-effect-${index}`} style={{ ...style, ...{ order: required ? -1 : 3 } }}>
-      <label style={{ top: '-0.7rem', color: disabled ? 'rgba(255, 255, 255, 0.5)' : 'inherit' }} className={'MuiFormLabel-root'}>{schema.title}{required ? '*' : ''}</label>
+      <label style={{ color: disabled ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.7)' }} className={'MuiFormLabel-root'}>{schema.title}{required ? '*' : ''}</label>
       <BladeSliderInner
         schema={schema}
         model={model}
@@ -95,19 +95,19 @@ const BladeSliderInner = ({
 
   return (schema.maximum && !textfield) ? (
     <>
-      <div style={{width: '100%'}}>
+      <div style={{width: '100%' }}>
         <Slider
           aria-labelledby="input-slider"
           valueLabelDisplay="auto"
-          disabled={disabled}
-          marks
+          disabled={disabled}          
+          // marks={true}
           step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
           min={schema.minimum || 0}
           max={schema.maximum}
           value={typeof value === 'number' ? value : 0}
           onChange={handleSliderChange}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
-          style={style}
+          style={{color: '#aaa', ...style}}
         // defaultValue={model[model_id] || schema.default}
         // value={model && model[model_id]}
         />

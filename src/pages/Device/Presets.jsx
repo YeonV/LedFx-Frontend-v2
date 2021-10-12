@@ -58,7 +58,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const renderPresetsButton = (list, CATEGORY) => {
     if (list && !Object.keys(list)?.length) {
       return (
-        <Button style={{ margin: '0.5rem 0 0 0.5rem' }} variant="outlined" className={classes.presetButton} disabled>
+        <Button style={{ margin: '0.5rem 0 0.5rem 0.5rem' }} variant="outlined" size="small" className={classes.presetButton} disabled>
           No {CATEGORY === 'default_presets' ? '' : 'Custom'} Presets
         </Button>
       );
