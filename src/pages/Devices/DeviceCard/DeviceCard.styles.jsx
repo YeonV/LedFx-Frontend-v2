@@ -3,7 +3,7 @@ import { LinearScale } from '@material-ui/icons';
 
 export const useDeviceCardStyles = makeStyles((theme) => ({
     virtualCardPortrait: {     
-      padding: '1rem',
+      padding: '1rem 0.7rem 0.7rem 0.7rem',
       margin: '0.5rem',
       display: 'flex',
       alignItems: 'flex-start',
@@ -13,7 +13,9 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       width: '100%',
       height: '100%',
       position: 'relative',
+      borderRadius: 10,
       background: theme.palette.background.paper,
+      borderColor: 'transparent',
       // '&.active': {
       //   background: theme.palette.background.paper,
       // },
@@ -33,7 +35,7 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
     },
     virtualIconWrapper: {
       width: '50px',
-      height: '50px',
+      height: '55px',
       marginRight: '0.5rem',
     },
     virtualIcon: {
@@ -49,7 +51,7 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       transition: 'transform 0.3s ease-in-out',
       transitionDelay: '0s',      
       '&.extended': {
-        transform: 'scale(2.05)',
+        transform: 'scale(1.7) translateY(-4px);',
         transformOrigin: 'top left',        
         transition: 'transform 0.3s ease-in-out',
         transitionDelay: '0s',
@@ -73,6 +75,7 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       alignItems: 'center',
       width: '100%',
       height: '100%',
+      padding: '0 0.3rem',
       justifyContent: 'space-between',
         flexDirection: 'row',
     },
@@ -113,7 +116,7 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
       textAlign: 'right',
     },
     buttonBarMobileWrapper: {
-      height: 148,
+      height: 110,
       display: 'flex',
       margin: 0,
       padding: '0.5rem 80px 0.5rem 0.5rem',
@@ -127,4 +130,14 @@ export const useDeviceCardStyles = makeStyles((theme) => ({
         paddingTop: 0,
       }
     },
+    pixelbar: {
+      opacity: 1,
+      transitionDuration: 0,
+      width: '100%',
+    },
+    pixelbarOut: {
+      opacity: 0.2,
+      transition: 'opacity',
+      transitionDuration: 1000
+    }
   }));

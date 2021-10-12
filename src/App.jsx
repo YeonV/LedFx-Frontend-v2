@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import useStore from './utils/apiStore';
 import ScrollToTop from './utils/scrollToTop';
 import ws, { WsContext, HandleWs } from "./utils/Websocket";
-import { BladeDarkTheme, BladeLightTheme } from './AppThemes'
+import { BladeDarkTheme, BladeDarkOrangeTheme, BladeLightTheme, BladeDarkGreenTheme, BladeDarkBlueTheme, BladeDarkGreyTheme } from './AppThemes'
 import useStyles from './App.styles';
 import './App.css';
 import './assets/materialdesignicons.css';
@@ -23,7 +23,6 @@ import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
 import { initFrontendConfig } from './utils/helpers';
 
-
 export default function App() {
   const classes = useStyles();
 
@@ -32,6 +31,16 @@ export default function App() {
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
 
+  const ledfxTheme = window.localStorage.getItem('ledfx-theme')|| 'Dark' ;
+  const ledfxThemes = {
+    "Dark": BladeDarkTheme,
+    "DarkOrange": BladeDarkOrangeTheme,
+    "Light": BladeLightTheme,
+    "DarkGreen": BladeDarkGreenTheme,
+    "DarkBlue": BladeDarkBlueTheme,
+    "DarkGrey": BladeDarkGreyTheme
+  }
+  
   useEffect(() => {
     getVirtuals();
     getSystemConfig();
@@ -40,11 +49,30 @@ export default function App() {
 
   useEffect(() => {
     initFrontendConfig();
+    console.log(ledfxTheme, ledfxThemes, ledfxThemes[ledfxTheme])
   }, []);
 
-  console.log()
+  useEffect(() => {
+    // const { Menu, MenuItem } = require('@electron/remote');
+    if (process.versions.hasOwnProperty('electron')) {
+      const customTitleBar = window.require('custom-electron-titlebar');
+      const titlebar = new customTitleBar.Titlebar({
+        backgroundColor: customTitleBar.Color.fromHex('#444'),
+        icon: '/images/logo.png',
+      });
+      const menu = Menu.getApplicationMenu()
+
+      titlebar.updateMenu(menu);
+    }
+    return () => {
+      if (process.versions.hasOwnProperty('electron')) {
+        titlebar.dispose();
+      }
+    };
+  }, []);
+
   return (
-    <MuiThemeProvider theme={BladeDarkTheme}>
+    <MuiThemeProvider theme={ledfxThemes[ledfxTheme|| 'Dark']}>
       <WsContext.Provider value={ws}>
         <div className={classes.root}>
           <CssBaseline />

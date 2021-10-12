@@ -1,0 +1,52 @@
+{
+    "publish": {
+        "provider": "generic",
+        "url": "https://myappserver.com/updates/"
+    },
+    "productName": "LedFx-Client",
+    "appId": "com.ledfx.app",
+    "directories": {
+        "buildResources": "buildResources",
+        "output": "release"
+    },
+    "files": [
+        "src/",
+        "node_modules/",
+        "package.json"
+    ],
+    "mac": {
+        "target": [
+            "dmg",
+            "zip"
+        ],
+        "artifactName": "${productName}-${version}-${os}.${ext}"
+    },
+    "win": {
+        "target": [
+            "nsis",
+            "zip"
+        ],
+        "artifactName": "${productName}-${version}-${os}.${ext}"
+    },
+    "linux": {
+        "target": [
+            "AppImage"
+        ],
+        "artifactName": "${productName}-${version}-${os}.${ext}"
+    },
+    "dmg": {
+        "title": "${productName}-${version}",
+        "contents": [
+            {
+                "x": 300,
+                "y": 360
+            },
+            {
+                "x": 490,
+                "y": 360,
+                "type": "link",
+                "path": "/Applications"
+            }
+        ]
+    }
+}
