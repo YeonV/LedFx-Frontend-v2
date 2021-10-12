@@ -1,0 +1,120 @@
+import axios from 'axios';
+import { SetState } from 'zustand';
+
+const baseURL = 'http://localhost:8888';
+const storedURL = window.localStorage.getItem('ledfx-host');
+
+const api = axios.create({
+  baseURL: storedURL || baseURL,
+});
+
+type UiState = {
+  ui: {
+    snackbar: {
+      isOpen: boolean
+      messageType: string
+      message:string
+    },
+  },
+}
+
+type LedFxState = {
+  path: ''
+  set: SetState<UiState>
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  body: Record<string, unknown>
+}
+
+export const Ledfx = async (state: LedFxState) => {
+  try {
+    let response: any = null;
+    switch (state.method) {
+      case 'PUT':
+        response = await api.put(state.path, state.body);
+        break;
+      case 'DELETE':
+        response = await api.delete(state.path, state.body);
+        break;
+      case 'POST':
+        response = await api.post(state.path, state.body);
+        break;
+
+      default:
+        response = await api.get(state.path);
+        break;
+    }
+
+    if (response.data && response.data.payload) {
+      state.set({
+        ui: {
+          snackbar: {
+            isOpen: true,
+            messageType: response.data.payload.type || 'error',
+            message:
+              response.data.payload.reason
+              || response.data.payload.message
+              || JSON.stringify(response.data.payload),
+          },
+        },
+      });
+      if (response.data.status) {
+        return response.data.status;
+      }
+    }
+    if (response.payload) {
+      state.set({
+        ui: {
+          snackbar: {
+            isOpen: true,
+            messageType: response.payload.type || 'error',
+            message:
+              response.payload.reason
+              || response.payload.message
+              || JSON.stringify(response.payload),
+          },
+        },
+      });
+      return false;
+    }
+    if (response.status === 200) {
+      return response.data || response;
+    }
+
+    state.set({
+      ui: {
+        snackbar: {
+          isOpen: true,
+          messageType: 'error',
+          message: response.error || JSON.stringify(response),
+        },
+      },
+    });
+    return false;
+  } catch (error:any) {
+    // console.log("YZ4", JSON.parse(JSON.stringify(error)))
+    if (error.message) {
+      return state.set({
+        ui: {
+          snackbar: {
+            isOpen: true,
+            messageType: 'error',
+            message: JSON.stringify(error.message),
+          },
+        },
+      });
+    }
+    state.set({
+      ui: {
+        snackbar: {
+          isOpen: true,
+          messageType: 'error',
+          message: JSON.stringify(error, null, 2),
+        },
+      },
+    });
+    return false;
+    // console.log(error);
+  }
+};
+
+export default Ledfx;

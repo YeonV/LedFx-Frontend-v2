@@ -5,6 +5,7 @@ import useStyles from './BladeSlider.styles';
 
 const BladeSlider = ({
   variant = 'outlined',
+  disableUnderline,
   schema,
   model,
   model_id,
@@ -22,7 +23,7 @@ const BladeSlider = ({
   // console.log(schema)
   return variant === 'outlined' ? (
     <div className={`${classes.wrapper} step-effect-${index}`} style={{ ...style, ...{ order: required ? -1 : 3 } }}>
-      <label className={'MuiFormLabel-root'}>{schema.title}{required ? '*' : ''}</label>
+      <label style={{ color: disabled ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.7)' }} className={'MuiFormLabel-root'}>{schema.title}{required ? '*' : ''}</label>
       <BladeSliderInner
         schema={schema}
         model={model}
@@ -33,6 +34,7 @@ const BladeSlider = ({
         textfield={textfield}
         marks={marks}
         hideDesc={hideDesc}
+        disableUnderline={disableUnderline}
       />
     </div>
   ) : (
@@ -46,12 +48,13 @@ const BladeSlider = ({
       style={{ order: required ? -1 : 3 }}
       marks={marks}
       hideDesc={hideDesc}
+      disableUnderline={disableUnderline}
     />
   );
 };
 
 const BladeSliderInner = ({
-  schema, model, model_id, step, onChange, textfield, style, disabled, marks,hideDesc
+  schema, model, model_id, step, onChange, textfield, style, disabled, marks,hideDesc, disableUnderline
 }) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
@@ -92,19 +95,19 @@ const BladeSliderInner = ({
 
   return (schema.maximum && !textfield) ? (
     <>
-      <div style={{width: '100%'}}>
+      <div style={{width: '100%' }}>
         <Slider
           aria-labelledby="input-slider"
           valueLabelDisplay="auto"
-          disabled={disabled}
-          marks
+          disabled={disabled}          
+          // marks={true}
           step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
           min={schema.minimum || 0}
           max={schema.maximum}
           value={typeof value === 'number' ? value : 0}
           onChange={handleSliderChange}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
-          style={style}
+          style={{color: '#aaa', ...style}}
         // defaultValue={model[model_id] || schema.default}
         // value={model && model[model_id]}
         />
@@ -153,6 +156,9 @@ const BladeSliderInner = ({
     <TextField
       // defaultValue={schema.default || 1}
       disabled={disabled}
+      InputProps={{
+        disableUnderline:disableUnderline
+      }}      
       type="number"
       defaultValue={value}
       onChange={(e)=> handleInputChange(e)}

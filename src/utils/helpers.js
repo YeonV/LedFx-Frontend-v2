@@ -1,5 +1,5 @@
 export const drawerWidth = 240;
-export const frontendConfig = 2;
+export const frontendConfig = 3;
 
 
 export const camelToSnake = (str) => str[0].toLowerCase()

@@ -29,6 +29,12 @@ const useStore = create(
           [tour]: true
         }
       })),
+
+      viewMode: 'user',
+      setViewMode: (mode) => set(() => ({
+        viewMode: mode
+      })),
+
       pixelGraphs: [],
       setPixelGraphs: (virtuals) => set((state) => ({
         pixelGraphs: [...virtuals]
@@ -178,6 +184,14 @@ const useStore = create(
         set,
         'POST',
         config,
+      ),
+      updateVirtual: async (virtId, { active }) => await Ledfx(
+        `/api/virtuals/${virtId}`,
+        set,
+        'PUT',
+        {
+          active: active
+        },
       ),
       deleteVirtual: async (virtId) => await Ledfx(
         `/api/virtuals/${virtId}`,
@@ -448,10 +462,18 @@ const useStore = create(
       setWebAud: (newState) => {
         set((state) => ({ webAud: newState }))        
       },
-      webAudName: 'Name of this machine',
+      webAudName: '',
       setWebAudName: (newState) => {
         set((state) => ({ webAudName: newState }))        
       },
+      clientDevice: null,
+      clientDevices: null,
+      setClientDevice: (newState) => {
+        set((state) => ({ clientDevice: newState }))        
+      },      
+      setClientDevices: (newState) => {
+        set((state) => ({ clientDevices: newState }))        
+      },      
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
       setSpotifyEmbedUrl: (url) => {
         set((state) => ({ spotifyEmbedUrl: url }))        
