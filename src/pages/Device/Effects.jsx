@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { Button, Card, CardContent, Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core/';
-import { Casino, Clear, ExpandMore } from '@material-ui/icons/';
+import { Casino, Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
 import BladeEffectSchemaForm from '../../components/SchemaForm/BladeEffectSchemaForm';
@@ -26,6 +26,9 @@ const useStyles = makeStyles(theme => ({
       maxWidth: '97vw',
       margin: '0 auto',
     },
+    '& > .MuiCardContent-root': {
+      paddingBottom: '0.5rem',
+    }
   },
   pixelbar: {
     opacity: 1,
@@ -49,6 +52,7 @@ const EffectsCard = ({ virtId }) => {
   const effects = useStore((state) => state.schemas.effects);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const viewMode = useStore((state) => state.viewMode);
+  const updateVirtual = useStore((state) => state.updateVirtual);
 
   const graphs = useStore((state) => state.graphs);
 
@@ -75,6 +79,11 @@ const EffectsCard = ({ virtId }) => {
     });
   };
 
+  const handlePlayPause = () => {
+    updateVirtual(virtual.id, { active: !virtual.active })
+      .then(() => getVirtuals());
+  };
+
   useEffect(() => {
     getVirtuals();
     getSchemas();
@@ -91,7 +100,6 @@ const EffectsCard = ({ virtId }) => {
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              margin: '0 .5rem',
             }}
           >
             <h1>{virtual && virtual.config.name}</h1>
@@ -107,6 +115,9 @@ const EffectsCard = ({ virtId }) => {
                   >
                     <Casino />
                   </Button>
+                  <Button variant="outlined" style={{ marginRight: '.5rem' }} className={'step-device-five'} onClick={() => handlePlayPause()}>
+                    {virtual.active ? <Pause /> : <PlayArrow />}
+                  </Button>
                   <Button variant="outlined" className={'step-device-five'} onClick={() => handleClearEffect()}>
                     <Clear />
                   </Button>
@@ -119,11 +130,19 @@ const EffectsCard = ({ virtId }) => {
             [classes.pixelbarOut]: fade,
           })} style={{ transitionDuration: virtual.config.transition_time * 1000 }}>
 
-            <PixelGraph virtId={virtId} dummy={!(virtuals
-              && virtual
-              && effects
-              && virtual.effect
-              && virtual.effect.config)} />
+            <PixelGraph
+              virtId={virtId}
+              active={virtuals
+                && virtual
+                && effects
+                && virtual.effect
+                && virtual.effect.config}
+              dummy={!(virtuals
+                && virtual
+                && effects
+                && virtual.effect
+                && virtual.effect.config)}
+            />
 
           </div>
           <div style={{ height: '1rem' }} />
@@ -139,30 +158,31 @@ const EffectsCard = ({ virtId }) => {
         && effects
         && virtual.effect
         && virtual.effect.config && (
-          <Card style={{ marginTop: '1rem'}}>
-            <CardContent style={{ padding: '0 16px'}}>
-             
-              <Accordion disableGutters style={{ paddin: 0}} defaultExpanded={viewMode !== 'user'}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMore />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography variant={"h5"}>Effect Configuration</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails style={{ padding: '0 0 8px 0' }}>
-                    <div>
-                      <BladeEffectSchemaForm
-                        virtual={virtual}
-                        effects={effects}
-                        schema={effects[effectType].schema}
-                        model={virtual.effect.config}
-                        virtual_id={virtId}
-                        selectedType={effectType}
-                      />
-                    </div>
-                  </AccordionDetails>
-                </Accordion>
+          <Card style={{ marginTop: '1rem' }}>
+            <CardContent style={{ padding: '0 16px' }}>
+
+              <Accordion style={{ paddin: 0 }} defaultExpanded={viewMode !== 'user'}>
+                <AccordionSummary
+                  expandIcon={<ExpandMore />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                  style={{ padding: 0 }}
+                >
+                  <Typography variant={"h5"}>Effect Configuration</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ padding: '0 0 8px 0' }}>
+                  <div>
+                    <BladeEffectSchemaForm
+                      virtual={virtual}
+                      effects={effects}
+                      schema={effects[effectType].schema}
+                      model={virtual.effect.config}
+                      virtual_id={virtId}
+                      selectedType={effectType}
+                    />
+                  </div>
+                </AccordionDetails>
+              </Accordion>
             </CardContent>
 
           </Card>

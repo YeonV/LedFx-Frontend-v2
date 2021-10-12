@@ -16,11 +16,12 @@ const SpotifyWidget = ({
 
   return (
     <>
-      <Fab size="small" color="secondary" onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 363 : 143 : 65, right: 10, zIndex: 2 }} >
+      <Fab size="small" color="secondary" onClick={() => setSpotifyEnabled(!spotifyEnabled)} style={{ position: 'fixed', bottom: spotifyEnabled ? spotifyExpanded ? 363 : 143 : 65, right: 10, zIndex: 4 }} >
         <BladeIcon name="mdi:spotify" style={{
           marginLeft: '50%',
           marginTop: '50%',
           transform: 'translate(-43%, -43%)'
+
         }} />
       </Fab>
       {spotifyEnabled && <>

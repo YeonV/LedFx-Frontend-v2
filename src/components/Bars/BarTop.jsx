@@ -97,7 +97,7 @@ const TopBar = () => {
             <MenuIcon />
           </IconButton>
           {((pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') || pathname === '/Settings') &&
-            <Button className={classes.backButton} startIcon={<ChevronLeft />} onClick={() => history.goBack()} >
+            <Button variant="text" color="inherit" className={classes.backButton} startIcon={<ChevronLeft />} onClick={() => history.goBack()} >
               Back
             </Button>}
         </div>

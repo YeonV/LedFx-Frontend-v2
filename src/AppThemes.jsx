@@ -5,7 +5,7 @@ export const BladeDarkGreenTheme = createTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#1db954',
+      main: '#2BDE6A',
     },
     secondary: {
       main: '#1db954',
@@ -51,6 +51,58 @@ export const BladeDarkTheme = createTheme({
     },
     secondary: {
       main: '#500000',
+    },
+    background: { 
+      default: '#030303', 
+      paper: '#151515' 
+    },
+  },
+  props: {
+    MuiCard: {
+      variant: 'outlined',
+    },
+  },  
+  typography: {
+    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
+    "fontSize": 14,
+    "fontWeightRegular": 400,
+   }
+});
+
+export const BladeDarkGreyTheme = createTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#333',
+    },
+    secondary: {
+      main: '#222',
+    },
+    background: { 
+      default: '#030303', 
+      paper: '#151515' 
+    },
+  },
+  props: {
+    MuiCard: {
+      variant: 'outlined',
+    },
+  },  
+  typography: {
+    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
+    "fontSize": 14,
+    "fontWeightRegular": 400,
+   }
+});
+
+export const BladeDarkOrangeTheme = createTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#FFBF47',
+    },
+    secondary: {
+      main: '#ffa500',
     },
     background: { 
       default: '#030303', 

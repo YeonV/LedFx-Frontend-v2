@@ -10,9 +10,6 @@ import MelbankCard from './Frequencies';
 const useStyles = makeStyles((theme) => ({
   virtualWrapper: {
     justifyContent: 'center',
-    '@media (max-width: 1400px)': {
-      justifyContent: 'flex-start',
-    },
   },
   girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px', width: '100%' },
 }));
