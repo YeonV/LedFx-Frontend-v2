@@ -74,6 +74,8 @@ const DeviceCard = ({ virtual, index }) => {
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
   const graphs = useStore((state) => state.graphs);
 
+  const [fade, setFade] = useState(false)
+  const [isActive, setIsActive] = useState((virtuals && virtual && virtuals[virtual] && virtuals[virtual].effect && Object.keys(virtuals[virtual].effect).length > 0) || devices && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0)
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
   const color = 'inherit';

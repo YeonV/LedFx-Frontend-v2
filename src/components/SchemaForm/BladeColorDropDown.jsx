@@ -8,6 +8,7 @@ import useStore from '../../utils/apiStore';
 import BladeColorPicker from './BladeColorPicker';
 import BladeColorNewPicker from './BladeColorNewPicker';
 import { useEffect } from 'react';
+import BladeGradientPicker from './BladeGradientPicker';
 
 const useStyles = makeStyles((theme) => ({
   FormRow: {
@@ -63,7 +64,7 @@ const BladeColorDropDown = ({
   
   
   const sendColor = (e, v) => { 
-    console.log(virtual,effectyz, v)
+    // console.log(virtual,effectyz, v)
     if (virtual && effectyz && effectyz.effect && effectyz.effect.type) {
       
       updateVirtualEffect(virtual.id, {
@@ -86,10 +87,10 @@ const BladeColorDropDown = ({
       getVirtuals();
     });
 
-   
+   console.log(virtual.effect.config)
   
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: (clr==='color' && Object.keys(virtual.effect.config).indexOf("solid_color") > -1 && virtual.effect.config.solid_color === false) ? 'none' : 'flex', alignItems: 'center', width: '49%' }}>
       {(type === 'text' || type === 'both') && (
         <FormControl className={classes.FormRow}>
           <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>
@@ -111,7 +112,7 @@ const BladeColorDropDown = ({
         </FormControl>
       )}
 
-      {(type === 'color' || type === 'both') && (
+      {(type === 'color' || type === 'both') && (<>
         <BladeColorPicker
           col={model[clr]}
           clr={clr}
@@ -119,7 +120,7 @@ const BladeColorDropDown = ({
           selectedType={selectedType}
           model={model}
         />
-      )}
+      </>)}
       {type === 'colorNew'
         && (
           <BladeColorNewPicker
