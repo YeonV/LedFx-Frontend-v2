@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   FormRow: {
     display: 'flex',
     flexDirection: 'row',
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     margin: '0 0 0.5rem',
     '@media (max-width: 580px)': {
@@ -64,6 +64,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
   const classes = useStyles();
   const setVirtualEffect = useStore((state) => state.setVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
+  const viewMode = useStore((state) => state.viewMode);
 
   const effectNames = effects
     && Object.keys(effects).map((eid) => ({
@@ -125,7 +126,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
               ],
             )}
         </Select>
-        <ToggleButtonGroup
+        {viewMode !== 'user' && <ToggleButtonGroup
           value={formats}
           onChange={handleFormat}
           aria-label="text formatting"
@@ -142,7 +143,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
                 {c}
               </ToggleButton>
             ))}
-        </ToggleButtonGroup>
+        </ToggleButtonGroup>}
       </FormControl>
     </>
   );

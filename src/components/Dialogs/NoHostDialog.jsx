@@ -33,7 +33,7 @@ export default function NoHostDialog() {
       setHost(hostvalue);
     }
     setDialogOpen(false);
-    window.location = window.location.href;
+    window.location.reload(true);
   };
 
   const handleDelete = (e, title) => {

@@ -5,7 +5,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   paper: {    
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     display: 'flex',
     flexWrap: 'wrap',
     maxWidth: '320px',
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     // minWidth: "140px",
     padding: '10px 10px 2px 10px',
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
     // margin: "0.5rem",
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     order: '-3',
     // "@media (max-width: 580px)": {
-    flexBasis: '31%',
+    flexBasis: '23.5%',
     minWidth: 'unset',
     margin: '0.5rem 0',
     // },
@@ -39,6 +39,8 @@ const useStyles = makeStyles((theme) => ({
       padding: '0 0.3rem',
       position: 'absolute',
       fontVariant: 'all-small-caps',
+      fontSize: '0.9rem',
+      letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },
@@ -79,7 +81,7 @@ const BladeBoolean = ({
             checked={model && model[model_id]}
             onChange={(e, b) => onClick(model_id, b)}
             name={schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
-            color="primary"
+            color="default"
           />
           {!hideDesc && schema.description
             ? <>

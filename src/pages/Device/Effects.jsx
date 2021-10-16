@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { Button, Card, CardContent } from '@material-ui/core/';
-import { Casino, Clear, Settings } from '@material-ui/icons/';
+import { Button, Card, CardContent, Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core/';
+import { Casino, Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
 import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
 import BladeEffectSchemaForm from '../../components/SchemaForm/BladeEffectSchemaForm';
@@ -22,10 +22,13 @@ const useStyles = makeStyles(theme => ({
   card: {
     width: '100%',
     maxWidth: '540px',
-    '@media (max-width: 580px)': {      
+    '@media (max-width: 580px)': {
       maxWidth: '97vw',
       margin: '0 auto',
     },
+    '& > .MuiCardContent-root': {
+      paddingBottom: '0.5rem',
+    }
   },
   pixelbar: {
     opacity: 1,
@@ -48,6 +51,8 @@ const EffectsCard = ({ virtId }) => {
   const virtuals = useStore((state) => state.virtuals);
   const effects = useStore((state) => state.schemas.effects);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const viewMode = useStore((state) => state.viewMode);
+  const updateVirtual = useStore((state) => state.updateVirtual);
 
   const graphs = useStore((state) => state.graphs);
 
@@ -56,14 +61,14 @@ const EffectsCard = ({ virtId }) => {
 
   const handleRandomize = () => {
     setVirtualEffect(
-     virtual.id,
+      virtual.id,
       {
         virtId: virtual.id,
         type: effectType,
         config: 'RANDOMIZE',
         active: true
       }
-    ).then(()=>getVirtuals());
+    ).then(() => getVirtuals());
   };
 
   const handleClearEffect = () => {
@@ -72,6 +77,11 @@ const EffectsCard = ({ virtId }) => {
       setTimeout(() => { getVirtuals() }, virtual.config.transition_time * 1000)
       setTimeout(() => { setFade(false) }, virtual.config.transition_time * 1000 + 300)
     });
+  };
+
+  const handlePlayPause = () => {
+    updateVirtual(virtual.id, { active: !virtual.active })
+      .then(() => getVirtuals());
   };
 
   useEffect(() => {
@@ -83,69 +93,101 @@ const EffectsCard = ({ virtId }) => {
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType]);
 
   return (
-    <Card className={classes.card}>
-      <CardContent>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            margin: '0 .5rem',
-          }}
-        >
-          <h1>{virtual && virtual.config.name}</h1>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {effects && effectType && (
-              <>
-              <TourEffect schema={effects[effectType].schema} />
-                <Button
-                  onClick={() => handleRandomize()}
-                  variant="outlined"
-                  style={{ marginRight: '.5rem' }}
-                  className={'step-device-six'}    
-                >
-                  <Casino />
-                </Button>
-                <Button variant="outlined" className={'step-device-five'} onClick={() => handleClearEffect()}>
-                  <Clear />
-                </Button>
-              </>
-            )}
+    <>
+      <Card className={classes.card}>
+        <CardContent>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <h1>{virtual && virtual.config.name}</h1>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {effects && effectType && (
+                <>
+                  <TourEffect schema={effects[effectType].schema} />
+                  <Button
+                    onClick={() => handleRandomize()}
+                    variant="outlined"
+                    style={{ marginRight: '.5rem' }}
+                    className={'step-device-six'}
+                  >
+                    <Casino />
+                  </Button>
+                  <Button variant="outlined" style={{ marginRight: '.5rem' }} className={'step-device-five'} onClick={() => handlePlayPause()}>
+                    {virtual.active ? <Pause /> : <PlayArrow />}
+                  </Button>
+                  <Button variant="outlined" className={'step-device-five'} onClick={() => handleClearEffect()}>
+                    <Clear />
+                  </Button>
+                </>
+              )}
+
+            </div>
+          </div>
+          <div className={clsx(classes.pixelbar, {
+            [classes.pixelbarOut]: fade,
+          })} style={{ transitionDuration: virtual.config.transition_time * 1000 }}>
+
+            <PixelGraph
+              virtId={virtId}
+              active={virtuals
+                && virtual
+                && effects
+                && virtual.effect
+                && virtual.effect.config}
+              dummy={!(virtuals
+                && virtual
+                && effects
+                && virtual.effect
+                && virtual.effect.config)}
+            />
 
           </div>
-        </div>
-        <div className={clsx(classes.pixelbar, {
-          [classes.pixelbarOut]: fade,
-        })} style={{ transitionDuration: virtual.config.transition_time * 1000 }}>
+          <div style={{ height: '1rem' }} />
+          <BladeEffectDropDown
+            virtId={virtId}
+            effects={effects}
+            virtual={virtual}
+          />
+        </CardContent>
+      </Card>
+      {virtuals
+        && virtual
+        && effects
+        && virtual.effect
+        && virtual.effect.config && (
+          <Card style={{ marginTop: '1rem' }}>
+            <CardContent style={{ padding: '0 16px' }}>
 
-          <PixelGraph virtId={virtId} dummy={!(virtuals
-            && virtual
-            && effects
-            && virtual.effect
-            && virtual.effect.config)} />
+              <Accordion style={{ paddin: 0 }} defaultExpanded={viewMode !== 'user'}>
+                <AccordionSummary
+                  expandIcon={<ExpandMore />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                  style={{ padding: 0 }}
+                >
+                  <Typography variant={"h5"}>Effect Configuration</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ padding: '0 0 8px 0' }}>
+                  <div>
+                    <BladeEffectSchemaForm
+                      virtual={virtual}
+                      effects={effects}
+                      schema={effects[effectType].schema}
+                      model={virtual.effect.config}
+                      virtual_id={virtId}
+                      selectedType={effectType}
+                    />
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+            </CardContent>
 
-        </div>
-        <div style={{ height: '1rem' }} />
-        <BladeEffectDropDown
-          virtId={virtId}
-          effects={effects}
-          virtual={virtual}
-        />
-        {virtuals
-          && virtual
-          && effects
-          && virtual.effect
-          && virtual.effect.config && (
-            <BladeEffectSchemaForm
-              virtual={virtual}
-              effects={effects}
-              schema={effects[effectType].schema}
-              model={virtual.effect.config}
-              virtual_id={virtId}
-              selectedType={effectType}
-            />
-          )}
-      </CardContent>
-    </Card>
+          </Card>
+        )}
+    </>
   );
 };
 

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #fff',
   },
   wrapper: {
-    border: '1px solid rgba(255, 255, 255, 0.23)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
     margin: '0.5rem',
@@ -35,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
       padding: '0 0.3rem',
       position: 'absolute',
       fontVariant: 'all-small-caps',
+      fontSize: '0.9rem',
+      letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },

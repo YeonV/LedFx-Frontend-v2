@@ -37,6 +37,7 @@ const BladeSchemaFormNew = (props) => {
   const {
     schema,
     model,
+    disableUnderline,
     colorMode = 'picker',
     boolMode = 'switch',
     boolVariant = 'outlined',
@@ -67,7 +68,7 @@ const BladeSchemaFormNew = (props) => {
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+      {parseInt(window.localStorage.getItem('BladeMod')) > 20 && (
         <Fab
           onClick={handleClickOpen}
           variant="circular"
@@ -123,10 +124,11 @@ const BladeSchemaFormNew = (props) => {
             }
             // console.log(group, audio_groups)
             return audio_groups?.length
-              ? <div key={i}>
-                <BladeFrame title={"Audio Device"} full={true}>
+              ? <BladeFrame key={i} style={{ order: -1 }} title={"Audio Device"} full={true}>
                   <Select
                     value={model && model["audio_device"] || 0}
+                    fullWidth
+                    disableUnderline
                     // onChange={(e) => console.log(e.target.value)}
                     onChange={(e) => {
                       const c = {};
@@ -157,23 +159,6 @@ const BladeSchemaFormNew = (props) => {
                     )}
                   </Select>
                 </BladeFrame>
-                <BladeSelect
-                  model={model}
-                  disabled={!permitted}
-                  style={{ margin: '0.5rem 0', width: '48%' }}
-                  variant={_selectVariant}
-                  schema={schema.properties[s]}
-                  required={schema.required && schema.required.indexOf(s) !== -1}
-                  model_id={s}
-                  key={i}
-                  index={i}
-                  onChange={(model_id, value) => {
-                    const c = {};
-                    c[model_id] = value;
-                    return onModelChange(c);
-                  }}
-                />
-              </div>
               : <BladeSelect
                 model={model}
                 disabled={!permitted}
@@ -196,6 +181,7 @@ const BladeSchemaFormNew = (props) => {
               <BladeSlider
                 variant={_sliderVariant}
                 disabled={!permitted}
+                disableUnderline={disableUnderline}
                 key={i}
                 model_id={s}
                 model={model}
@@ -213,6 +199,7 @@ const BladeSchemaFormNew = (props) => {
             return <BladeSlider
               variant={_sliderVariant}
               disabled={!permitted}
+              disableUnderline={disableUnderline}
               step={1}
               key={i}
               model_id={s}
@@ -231,6 +218,7 @@ const BladeSchemaFormNew = (props) => {
             return schema.properties[s]?.enum?.length > 10 ? <BladeSlider
               variant={_sliderVariant}
               disabled={!permitted}
+              disableUnderline={disableUnderline}
               marks={schema.properties[s]?.enum}
               step={null}
               key={i}
@@ -248,6 +236,7 @@ const BladeSchemaFormNew = (props) => {
             /> : <BladeSlider
               variant={_sliderVariant}
               disabled={!permitted}
+              disableUnderline={disableUnderline}
               marks={schema.properties[s]?.enum}
               step={null}
               key={i}

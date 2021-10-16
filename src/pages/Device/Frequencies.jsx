@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const FrequenciesCard = ({ virtual }) => {
+const FrequenciesCard = ({ virtual, style }) => {
   const classes = useStyles();
   const addVirtual = useStore((state) => state.addVirtual);
   const getVirtuals = useStore((state) => state.getVirtuals);
@@ -75,7 +75,7 @@ const FrequenciesCard = ({ virtual }) => {
   };
 
   return (
-    <Card variant="outlined" className={`${classes.card} step-device-four`}>
+    <Card variant="outlined" className={`${classes.card} step-device-four`} style={style}>
       <CardHeader
         title="Frequencies"
         subheader="Adjust the audio range used for this strip"
