@@ -20,6 +20,7 @@ import BladeColorDropDown from './BladeColorDropDown';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';
+import BladeGradientPicker from './BladeGradientPicker';
 
 const useStyles = makeStyles({
   bladeSchemaForm: {
@@ -111,7 +112,7 @@ const BladeEffectSchemaForm = (props) => {
           />
         ),
       )}
-
+      { }
       {Object.keys(schema.properties).map((s, i) => {
         switch (schema.properties[s].type) {
           case 'boolean':
@@ -133,33 +134,46 @@ const BladeEffectSchemaForm = (props) => {
               />
             );
           case 'string':
-            return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ? (
-              <BladeSelect
-                model={model}
-                variant={_selectVariant}
-                schema={schema.properties[s]}
-                wrapperStyle={{width: '48%'}}
-                model_id={s}
-                key={i}
-                index={i}
-                onChange={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return handleEffectConfig(virtual_id, c);
-                }}
-              />
-            ) : (
-              pickerKeys.indexOf(s) === -1 && (
-                <BladeColorDropDown
-                  selectedType={selectedType}                  
-                  index={i}
-                  model={model}
-                  type="colorNew"
-                  clr="blade_color"
-                  key={i}
-                />
-              )
-            );
+            return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ?
+              (s === 'gradient_name')
+                ? (
+                  <BladeGradientPicker
+                    col={model[s]}
+                    key={i}
+                    clr={s}
+                    selectedType={selectedType}
+                    model={model}
+                    virtual={virtual}
+                  />
+                )
+                : (
+                  <BladeSelect
+                    model={model}
+                    variant={_selectVariant}
+                    schema={schema.properties[s]}
+                    wrapperStyle={{ width: '49%' }
+                    }
+                    model_id={s}
+                    key={i}
+                    index={i}
+                    onChange={(model_id, value) => {
+                      const c = {};
+                      c[model_id] = value;
+                      return handleEffectConfig(virtual_id, c);
+                    }}
+                  />
+                ) : (
+                pickerKeys.indexOf(s) === -1 && (
+                  <BladeColorDropDown
+                    selectedType={selectedType}
+                    index={i}
+                    model={model}
+                    type="colorNew"
+                    clr="blade_color"
+                    key={i}
+                  />
+                )
+              );
 
           case 'number':
             return (
@@ -190,7 +204,7 @@ const BladeEffectSchemaForm = (props) => {
                 model_id={s}
                 model={model}
                 schema={schema.properties[s]}
-                style={{ margin: '0.5rem 0', flexBasis: '47%'}}
+                style={{ margin: '0.5rem 0' }}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
