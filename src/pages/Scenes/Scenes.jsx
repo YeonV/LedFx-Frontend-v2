@@ -109,7 +109,7 @@ const Scenes = () => {
     getScenes();
   }, [getScenes]);
   return (
-    <Grid container spacing={2} justify="center">
+    <Grid container spacing={2} justifyContent="center">
       {scenes && Object.keys(scenes).length ? Object.keys(scenes).map((s, i) => (
         <Grid item key={i}>
           <Card className={classes.root}>

@@ -14,6 +14,7 @@ import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
 import FX from "../components/Icons/FX";
+// import useAddToHomescreenPrompt from "../utils/useAddToHomeScreenPromt";
 
 const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -25,7 +26,8 @@ export default function Home() {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const [scanning, setScanning] = useState(false)
   const invisible = useStore((state) => state.tours.home);
-
+  // const [promptable, promptToInstall, isInstalled] = useAddToHomescreenPrompt();
+  // console.log(promptable, promptToInstall, isInstalled)
   const handleScan = () => {
     setScanning(true)
     scanForDevices().then(async () => {
@@ -86,7 +88,7 @@ export default function Home() {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Typography variant="caption" style={{ fontSize: 10}} component="div" color="textSecondary">{`${Math.round(
+                <Typography variant="caption" style={{ fontSize: 10 }} component="div" color="textSecondary">{`${Math.round(
                   (scanning / 30) * 100,
                 )}%`}</Typography>
               </Box>
@@ -94,6 +96,9 @@ export default function Home() {
           </Button>
         </CardActions>
       </Card>
+      {/* {promptable && !isInstalled ? (
+        <ButtonElement onClick={promptToInstall}>INSTALL APP</ButtonElement>
+      ) : null} */}
     </>
   );
 }

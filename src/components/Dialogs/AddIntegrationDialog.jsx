@@ -26,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
       padding: "0 0.3rem",
       position: "absolute",
       fontVariant: "all-small-caps",
+      fontSize: '0.9rem',
+      letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
       boxSizing: "border-box",
     },
