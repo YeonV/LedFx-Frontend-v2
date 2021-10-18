@@ -58,7 +58,7 @@ const BladeSliderInner = ({
 }) => {
   // console.log(model, schema, model_id);
   const classes = useStyles();
-  const [value, setValue] = useState(model[model_id] || schema.default || 1);
+  const [value, setValue] = useState(typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1);
 
   const handleSliderChange = (event, newValue) => {
     if (newValue !== value) {
