@@ -22,6 +22,7 @@ import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
 import { initFrontendConfig } from './utils/helpers';
+import LoginRedirect from './pages/LoginRedirect';
 
 export default function App() {
   const classes = useStyles();
@@ -89,6 +90,7 @@ export default function App() {
             >
               <div className={classes.drawerHeader} />
               <Switch>
+                <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
                 <Route exact path="/" component={Home} />
                 <Route path="/devices" component={Devices} />
                 <Route path="/device/:virtId" component={Device} />

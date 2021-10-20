@@ -1,6 +1,6 @@
 {
     "name": "ledfx",
-    "version": "2.0.0-beta29",
+    "version": "2.0.0-beta30",
     "description": "LedFx - BladeMOD",
     "author": "YeonV aka Blade",
     "private": true,
@@ -9,9 +9,15 @@
     "dependencies": {
         "@babel/runtime": "^7.14.0",
         "@electron/remote": "^2.0.1",
+        "@emotion/react": "^11.5.0",
+        "@emotion/styled": "^11.3.0",
         "@material-ui/core": "^4.11.4",
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.58",
+        "@mui/icons-material": "^5.0.4",
+        "@mui/lab": "^5.0.0-alpha.51",
+        "@mui/material": "^5.0.4",
+        "@mui/styles": "^5.0.1",
         "@testing-library/dom": "^8.6.0",
         "@testing-library/jest-dom": "^5.12.0",
         "@testing-library/react": "^12.1.0",

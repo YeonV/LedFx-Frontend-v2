@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useTheme, Card, CardContent, CardActions, CardHeader, Divider, Button, Grid, Typography, TextField } from '@material-ui/core';
+import { useTheme, Card, CardContent, CardActions, CardHeader, Divider, Button, Grid, Typography, TextField, Switch } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import useStore from '../../utils/apiStore';
 import Popover from '../../components/Popover';
-import { Add } from '@material-ui/icons';
+import { Add, Cloud, Share } from '@material-ui/icons';
+import axios from 'axios';
+import CloudScreen from './Cloud';
+import { useLongPress } from 'use-long-press';
+
+const cloud = axios.create({
+  baseURL: 'https://strapi.yeonv.com',
+});
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -43,18 +50,87 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const theme = useTheme();
   const [name, setName] = useState('');
   const [valid, setValid] = useState(true);
+  const [sharing, setSharing] = useState(false);
 
   const activatePreset = useStore((state) => state.activatePreset);
   const addPreset = useStore((state) => state.addPreset);
   const getPresets = useStore((state) => state.getPresets);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const deletePreset = useStore((state) => state.deletePreset);
+  const isLogged = useStore((state) => state.isLogged);
+
+
+  const sharePreset = async (list, preset) => {
+
+    const existing = await cloud.get(`presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`, {
+      headers: {
+        Authorization:
+          `Bearer ${localStorage.getItem('jwt')}`,
+      }
+    })
+    const exists = await existing.data
+    const eff = await cloud.get(`effects?ledfx_id=${effectType}`, {
+      headers: {
+        Authorization:
+          `Bearer ${localStorage.getItem('jwt')}`,
+      }
+    })
+    const effId = await eff.data[0].id
+    // console.log(exists, existing)
+    if (exists.length && exists.length > 0) {
+      cloud.put(`presets/${exists[0].id}`, {
+        Name: list[preset].name,
+        config: virtual.effect.config,
+        effect: effId,
+        user: localStorage.getItem('ledfx-cloud-userid')
+      }, {
+        headers: {
+          Authorization:
+            `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      })
+    } else {      
+      cloud.post('presets', {
+        Name: list[preset].name,
+        config: virtual.effect.config,
+        effect: effId,
+        user: localStorage.getItem('ledfx-cloud-userid')
+      }, {
+        headers: {
+          Authorization:
+            `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      })
+    }
+
+  }
+
+
+  const deleteCloudPreset = async (list, preset) => {
+    const existing = await cloud.get(`presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`, {
+      headers: {
+        Authorization:
+          `Bearer ${localStorage.getItem('jwt')}`,
+      }
+    })
+    const exists = await existing.data
+    if (exists.length && exists.length > 0) {
+      cloud.delete(`presets/${exists[0].id}`, {
+        headers: {
+          Authorization:
+            `Bearer ${localStorage.getItem('jwt')}`,
+        }
+      })
+    }
+  }
+
+
+
 
   const handleActivatePreset = (virtId, category, effectType, presetId) => () => {
     activatePreset(virtId, category, effectType, presetId).then(() => getVirtuals());
     setName('');
   };
-
   const renderPresetsButton = (list, CATEGORY) => {
     if (list && !Object.keys(list)?.length) {
       return (
@@ -63,43 +139,79 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
         </Button>
       );
     }
-    return list && Object.keys(list).map((preset) => (
-      <Grid item key={preset}>
 
-        {CATEGORY !== "default_presets"
-          ? <Popover
-            className={classes.presetButton}
-            color={"default"}
-            variant="outlined"
-            direction="center"
-            onSingleClick={handleActivatePreset(
-              virtual.id,
-              CATEGORY,
-              effectType,
-              preset,
-            )}
-            openOnLongPress={true}
-            onConfirm={handleRemovePreset(effectType, preset)}
-            startIcon={""}
-            size="medium"
-            noIcon={true}
-            label={list[preset].name}
-          />
-          : <Button
-            className={classes.presetButton}
-            variant="outlined"
-            onClick={handleActivatePreset(
-              virtual.id,
-              CATEGORY,
-              effectType,
-              preset,
-            )}
-          >
-            {list[preset].name}
-          </Button>}
 
-      </Grid>
-    ));
+    return list && Object.keys(list).map((preset) => {
+      const longPress = useLongPress((e) => deleteCloudPreset(list, preset), {
+        onCancel: e => {
+          sharePreset(list, preset)
+        },
+        treshhold: 1000,
+        captureEvent: true,
+      });
+      return (
+        <Grid item key={preset}>
+
+          {CATEGORY !== "default_presets"
+            ? <>
+              <Popover
+                className={classes.presetButton}
+                color={JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config) ? "primary" : "default"}
+                variant="outlined"
+                direction="center"
+                onSingleClick={handleActivatePreset(
+                  virtual.id,
+                  CATEGORY,
+                  effectType,
+                  preset,
+                )}
+                openOnLongPress={true}
+                onConfirm={handleRemovePreset(effectType, preset)}
+                startIcon={""}
+                size="medium"
+                noIcon={true}
+                label={list[preset].name}
+              />
+              {sharing && <Button color="primary" style={{ minWidth: 'unset', padding: '4px 4px', border: '1px solid #444' }}
+                // onClick={async () => {              
+                //   const eff = await cloud.get(`effects?ledfx_id=${effectType}`, {
+                //     headers: {
+                //       Authorization:
+                //         `Bearer ${localStorage.getItem('jwt')}`,
+                //     }
+                //   })
+                //   const effId = await eff.data[0].id
+                //   cloud.post('presets', {
+                //     Name: list[preset].name,
+                //     config: virtual.effect.config,
+                //     effect: effId,
+                //     user: localStorage.getItem('ledfx-cloud-userid')
+                //   }, {
+                //     headers: {
+                //       Authorization:
+                //         `Bearer ${localStorage.getItem('jwt')}`,
+                //     }
+                //   })
+                // }} 
+                {...longPress}><Share /></Button>}
+            </>
+            : <Button
+              className={classes.presetButton}
+              color={JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config) ? "primary" : "default"}
+              variant="outlined"
+              onClick={handleActivatePreset(
+                virtual.id,
+                CATEGORY,
+                effectType,
+                preset,
+              )}
+            >
+              {list[preset].name}
+            </Button>}
+
+        </Grid>
+      )
+    })
   };
 
   const handleAddPreset = () => {
@@ -221,8 +333,17 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
           </div> */}
           <div style={{ marginLeft: '0.5rem' }}>
             <Typography variant="body2" className={classes.hint}>
-              Long-Press opens a menu to override or delete a preset.
+              Long-Press to delete a preset.
             </Typography>
+            {!!localStorage.getItem('jwt') && isLogged && <>
+              <CloudScreen virtId={virtual.id} effectType={effectType} variant="outlined" label="Get more..." startIcon={<Cloud />} />
+              {localStorage.getItem('ledfx-cloud-role') === 'creator' && <>
+                <Switch checked={sharing} onChange={(e) => setSharing(e.target.checked)} />
+                Share
+              </>
+              }
+            </>
+            }
           </div>
         </div>
       </CardActions>

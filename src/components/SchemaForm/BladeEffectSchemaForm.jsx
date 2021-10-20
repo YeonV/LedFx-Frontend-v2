@@ -38,12 +38,7 @@ const BladeEffectSchemaForm = (props) => {
     model,
     virtual_id,
     selectedType,
-    colorMode = 'picker',
     colorKeys = [],
-    boolMode = 'switch',
-    boolVariant = 'outlined',
-    selectVariant = 'outlined',
-    sliderVariant = 'outlined',
   } = props;
   const pickerKeys = [
     'color',
@@ -61,11 +56,11 @@ const BladeEffectSchemaForm = (props) => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  const [_boolMode, _setBoolMode] = useState(boolMode);
-  const [_boolVariant, _setBoolVariant] = useState(boolVariant);
-  const [_selectVariant, _setSelectVariant] = useState(selectVariant);
-  const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
-  const [_colorMode, _setColorMode] = useState(colorMode);
+  const color_mode = useStore((state) => state.schemaForm.color_mode);
+  const bool_mode = useStore((state) => state.schemaForm.bool_mode);
+  const gradient_mode = useStore((state) => state.schemaForm.gradient_mode);
+  const setSchemaForm = useStore((state) => state.setSchemaForm);
+
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
 
@@ -93,7 +88,7 @@ const BladeEffectSchemaForm = (props) => {
           variant="circular"
           color="primary"
           size="small"
-          style={{ position: 'absolute', right: '1rem', top: '1rem' }}
+          style={{ position: 'absolute', right: '3rem', top: '1rem' }}
         >
           <SettingsIcon />
         </Fab>
@@ -107,7 +102,7 @@ const BladeEffectSchemaForm = (props) => {
             model={model}
             key={k}
             index={i}
-            type={_colorMode === 'select' ? 'text' : 'color'}
+            type={color_mode === 'select' ? 'text' : 'color'}
             clr={k}
           />
         ),
@@ -118,8 +113,7 @@ const BladeEffectSchemaForm = (props) => {
           case 'boolean':
             return (
               <BladeBoolean
-                type={_boolMode}
-                variant={_boolVariant}
+                type={bool_mode}
                 key={i}
                 index={i}
                 model={model}
@@ -135,7 +129,7 @@ const BladeEffectSchemaForm = (props) => {
             );
           case 'string':
             return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ?
-              (s === 'gradient_name')
+              (s === 'gradient_name' && gradient_mode !== 'select')
                 ? (
                   <BladeGradientPicker
                     col={model[s]}
@@ -144,12 +138,12 @@ const BladeEffectSchemaForm = (props) => {
                     selectedType={selectedType}
                     model={model}
                     virtual={virtual}
+                    variant={gradient_mode}
                   />
                 )
                 : (
                   <BladeSelect
                     model={model}
-                    variant={_selectVariant}
                     schema={schema.properties[s]}
                     wrapperStyle={{ width: '49%' }
                     }
@@ -178,7 +172,6 @@ const BladeEffectSchemaForm = (props) => {
           case 'number':
             return (
               <BladeSlider
-                variant={_sliderVariant}
                 key={i}
                 index={i}
                 hideDesc={true}
@@ -196,7 +189,6 @@ const BladeEffectSchemaForm = (props) => {
           case 'integer':
             return (
               <BladeSlider
-                variant={_sliderVariant}
                 step={1}
                 key={i}
                 index={i}
@@ -240,8 +232,8 @@ const BladeEffectSchemaForm = (props) => {
               <Select
                 labelId="ColorVariantLabel"
                 id="ColorVariant"
-                value={_colorMode}
-                onChange={(e) => _setColorMode(e.target.value)}
+                value={color_mode}
+                onChange={(e) => setSchemaForm('color_mode', e.target.value)}
               >
                 <MenuItem value="picker">Picker</MenuItem>
                 <MenuItem value="select">Select</MenuItem>
@@ -251,52 +243,28 @@ const BladeEffectSchemaForm = (props) => {
               <InputLabel id="BoolModeLabel">Bool Mode</InputLabel>
               <Select
                 labelId="BoolModeLabel"
-                id="BoolMode"
-                value={_boolMode}
-                onChange={(e) => _setBoolMode(e.target.value)}
+                id="bool_mode"
+                value={bool_mode}
+                onChange={(e) => setSchemaForm('bool_mode', e.target.value)}
               >
                 <MenuItem value="switch">Switch</MenuItem>
                 <MenuItem value="checkbox">Checkbox</MenuItem>
                 <MenuItem value="button">Button</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl>       
             <FormControl>
-              <InputLabel id="BoolVariantLabel">Bool Variant</InputLabel>
+              <InputLabel id="GradientModeLabel">Gradient Mode</InputLabel>
               <Select
-                labelId="BoolVariantLabel"
-                id="BoolVariant"
-                value={_boolVariant}
-                onChange={(e) => _setBoolVariant(e.target.value)}
+                labelId="GradientModeLabel"
+                id="gradient_mode"
+                value={gradient_mode}
+                onChange={(e) => setSchemaForm('gradient_mode', e.target.value)}
               >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="outlined">Outlined</MenuItem>
+                <MenuItem value="picker">Picker</MenuItem>
+                <MenuItem value="picker-var2">Picker Variant 2</MenuItem>
+                <MenuItem value="select">Select</MenuItem>
               </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="SelectVariantLabel">Select Variant</InputLabel>
-              <Select
-                labelId="SelectVariantLabel"
-                id="SelectVariant"
-                value={_selectVariant}
-                onChange={(e) => _setSelectVariant(e.target.value)}
-              >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="outlined">Outlined</MenuItem>
-                <MenuItem value="contained">Contained</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="SliderVariantLabel">Slider Variant</InputLabel>
-              <Select
-                labelId="SliderVariantLabel"
-                id="SliderVariant"
-                value={_sliderVariant}
-                onChange={(e) => _setSliderVariant(e.target.value)}
-              >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="outlined">Outlined</MenuItem>
-              </Select>
-            </FormControl>
+            </FormControl>       
           </div>
           <DialogActions>
             <Button onClick={handleClose} variant="contained" color="primary">
@@ -312,9 +280,6 @@ const BladeEffectSchemaForm = (props) => {
 BladeEffectSchemaForm.propTypes = {
   colorMode: PropTypes.oneOf(['picker', 'select']),
   boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
-  boolVariant: PropTypes.oneOf(['outlined', 'contained', 'text']),
-  selectVariant: PropTypes.string, // outlined | any
-  sliderVariant: PropTypes.string, // outlined | any
   colorKeys: PropTypes.array,
   schema: PropTypes.object.isRequired,
   model: PropTypes.object.isRequired,

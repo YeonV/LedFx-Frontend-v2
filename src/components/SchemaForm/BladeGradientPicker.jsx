@@ -1,18 +1,23 @@
 import { useState, useCallback, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Popper from '@material-ui/core/Popper';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import useClickOutside from '../../utils/useClickOutside';
 import useStore from '../../utils/apiStore';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     border: '1px solid',
+    borderRadius: 10,
     display: 'flex',
     flexWrap: 'wrap',
     maxWidth: '320px',
+    height: '50vh',
+    overflow: 'auto',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
+    '&.gradient-picker': {
+      // backgroundColor: 'blue'
+    }
   },
   picker: {
     // width: '135px',
@@ -23,6 +28,46 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #fff',
     "@media (max-width: 580px)": {
       // width: "31vw",
+    },
+  },
+  pickerItemWrapper: {
+    width: 300,
+    cursor: 'pointer',
+    padding: '2px 3px 2px 15px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 10,
+    border: '1px solid #999',
+    margin: 3,
+    transition: 'background-color 0.15s ease-in-out',
+    '&:hover': {
+      backgroundColor: 'rgba(255,255,255,0.1)',     
+    },
+    '.gradient-picker-var2 &': {
+      position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
+      padding: 0
+    }
+  },
+  pickerItemGradient: {
+    width: 200,
+    height: 20,
+    borderRadius: 7,
+    '.gradient-picker-var2 &': {
+      width: '100%',
+      height: 30,
+      borderRadius: 10
+    }
+  },
+  pickerItemLabel: {
+    '.gradient-picker-var2 &': {
+      position: 'absolute',
+      background: 'rgba(0,0,0,0.5)',
+      padding: '0px 15px',
+      borderRadius: 10,
+      fontSize: 12
     },
   },
   wrapper: {
@@ -48,7 +93,9 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },
+
   },
+
 }));
 
 const coloring = {
@@ -223,21 +270,18 @@ const gradients = {
 }
 
 
-const BladeGradientPicker = ({ col, clr, index, virtual }) => {
+const BladeGradientPicker = ({ col, clr, index, virtual, variant = 'picker' }) => {
   const classes = useStyles();
   const popover = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
-console.log(virtual.effect.config.solid_color)
+
   const virtuals = useStore((state) => state.virtuals);
   const effectyz = virtual && virtuals[Object.keys(virtuals).find((d) => d === virtual.id)];
 
-  const sendColor = (e, v) => { 
-    console.log(virtual,effectyz, v)
+  const sendColor = (e, v) => {
     if (virtual && effectyz && effectyz.effect && effectyz.effect.type) {
-      
       updateVirtualEffect(virtual.id, {
         virtId: virtual.id,
         type: effectyz.effect.type,
@@ -246,7 +290,7 @@ console.log(virtual.effect.config.solid_color)
         getVirtuals();
       });
     }
- 
+
   }
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -260,67 +304,44 @@ console.log(virtual.effect.config.solid_color)
   const id = open ? 'simple-popper' : undefined;
 
   return (
-    <div className={`${classes.wrapper} step-effect-${index}`} style={{ width: '49%', display: virtual.effect.config.solid_color ? 'none' : 'block' }}>
+    <div className={`${classes.wrapper} step-effect-${index} gradient-${variant}`} style={{ width: '49%', display: virtual.effect.config.solid_color ? 'none' : 'block' }}>
       <label className={'MuiFormLabel-root'}>
         {/* <Palette /> */}
         {clr.replaceAll('_', ' ').replaceAll('background', 'bg').replaceAll('name', '')}
       </label>
       <div
         className={classes.picker}
-        style={{ 
+        style={{
           background: coloring[col],
-          background:`linear-gradient(to right,${Object.keys(gradients).indexOf(col) > -1 ? (gradients[col].colors.map((c, i) => i === 0 ? `${c}, ` : `${c} ${i * 100 / (gradients[col].colors.length - 1)}%${i === gradients[col].colors.length - 1 ? '' : ', '}`).join('') ) : '#000, #fff 100%'})`
-         }}
+          background: `linear-gradient(to right,${Object.keys(gradients).indexOf(col) > -1 ? (gradients[col].colors.map((c, i) => i === 0 ? `${c}, ` : `${c} ${i * 100 / (gradients[col].colors.length - 1)}%${i === gradients[col].colors.length - 1 ? '' : ', '}`).join('')) : '#000, #fff 100%'})`
+        }}
         aria-describedby={id}
         onClick={handleClick}
       />
-      <ClickAwayListener
-        onClickAway={() => {
-          // console.log('anchorEl');
-          // setAnchorEl(null);
-        }}
-      >
-        <Popper
-          id={id}
-          open={open}
-          onClose={handleClose}
-          anchorEl={anchorEl}
-          ref={popover}
-        >
-          <div className={classes.paper}>
 
-            {Object.keys(gradients).map((cg) => (
-              <div
-                key={cg}
-                style={{
-                  width: 300,
-                  cursor: 'pointer',
-                  padding: '2px 0 2px 15px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',                  
-                  borderRadius: 10,
-                  border: '1px solid #999',
-                  margin: 3,
-                }}
-                onClick={() => sendColor(cg)}
-              >
-                <div>
-                  {cg}
-                </div>
-                <div
-                  style={{
-                    width: 200,
-                    height: 20,
-                    borderRadius: '0 10px 10px 0',
-                    background: `linear-gradient(to right,${gradients[cg].colors.map((c, i) => i === 0 ? `${c}, ` : `${c} ${i * 100 / (gradients[cg].colors.length - 1)}%${i === gradients[cg].colors.length - 1 ? '' : ', '}`).join('') })`,
-                  }}
-                />
+      <Popper
+        id={id}
+        open={open}
+        onClose={handleClose}
+        anchorEl={anchorEl}
+        ref={popover}
+      >
+        <div className={`${classes.paper} gradient-${variant}`}>
+
+          {Object.keys(gradients).map((cg) => (
+            <div
+              key={cg}
+              className={classes.pickerItemWrapper}
+              onClick={() => sendColor(cg)}
+            >
+              <div className={classes.pickerItemLabel}>
+                {cg}
               </div>
-            ))}
-          </div>
-        </Popper>
-      </ClickAwayListener>
+              <div className={classes.pickerItemGradient} style={{ background: `linear-gradient(to right,${gradients[cg].colors.map((c, i) => i === 0 ? `${c}, ` : `${c} ${i * 100 / (gradients[cg].colors.length - 1)}%${i === gradients[cg].colors.length - 1 ? '' : ', '}`).join('')})` }} />
+            </div>
+          ))}
+        </div>
+      </Popper>
     </div>
   );
 };

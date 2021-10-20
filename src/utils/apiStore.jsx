@@ -35,6 +35,17 @@ const useStore = create(
         viewMode: mode
       })),
 
+      schemaForm: {
+        color_mode: 'picker',
+        bool_mode: 'switch',
+        gradient_mode: 'picker-var2',
+      },
+      setSchemaForm: (attrib, value) => set((state) => ({
+        schemaForm: {
+          ...state.schemaForm,
+          [attrib]: value
+        }
+      })),
       pixelGraphs: [],
       setPixelGraphs: (virtuals) => set((state) => ({
         pixelGraphs: [...virtuals]
@@ -148,6 +159,12 @@ const useStore = create(
         }));
       },
 
+      // Cloud
+      // const [isLogged, setIsLogged] = useState(!!localStorage.getItem('jwt'));
+      isLogged: false,
+      setIsLogged: (logged) => set(() => ({
+        isLogged: logged
+      })),
       // API
       devices: {},
       getDevices: async () => {
