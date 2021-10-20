@@ -87,12 +87,12 @@ const BladeColorDropDown = ({
       getVirtuals();
     });
 
-   console.log(virtual.effect.config)
+  //  console.log(virtual.effect.config)
   
   return (
     <div style={{ display: (clr==='color' && Object.keys(virtual.effect.config).indexOf("solid_color") > -1 && virtual.effect.config.solid_color === false) ? 'none' : 'flex', alignItems: 'center', width: '49%' }}>
       {(type === 'text' || type === 'both') && (
-        <FormControl className={classes.FormRow}>
+        <FormControl className={classes.FormRow} style={{ width: '100%' }}>
           <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>
             {clr.replaceAll('_', ' ')}
           </InputLabel>

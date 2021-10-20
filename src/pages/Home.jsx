@@ -20,7 +20,7 @@ const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export default function Home() {
+export default function Home(props) {
   const scanForDevices = useStore((state) => state.scanForDevices);
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);

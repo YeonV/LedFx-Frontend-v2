@@ -81,7 +81,7 @@ const BladeBoolean = ({
             checked={model && model[model_id]}
             onChange={(e, b) => onClick(model_id, b)}
             name={schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
-            color="default"
+            color="primary"
           />
           {!hideDesc && schema.description
             ? <>

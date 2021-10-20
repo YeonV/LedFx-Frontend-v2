@@ -1,10 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
-import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, InfoRounded, ChevronLeft } from '@material-ui/icons';
+import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, AccountCircle, ChevronLeft } from '@material-ui/icons';
+import { Login, Logout } from '@mui/icons-material';
 import { drawerWidth } from '../../utils/helpers';
 import TourDevice from '../Tours/TourDevice';
 import TourScenes from '../Tours/TourScenes';
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
-  backButton: { 
+  backButton: {
     position: 'absolute',
     top: 14,
     '@media (max-width: 599px)': {
@@ -41,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
+
+
 
 const TopBar = () => {
   const classes = useStyles();
@@ -53,8 +56,11 @@ const TopBar = () => {
   const paused = useStore((state) => state.paused);
   const graphs = useStore((state) => state.graphs);
   const config = useStore((state) => state.config);
+  const isLogged = useStore((state) => state.isLogged);
+  const setIsLogged = useStore((state) => state.setIsLogged);
   const { pathname } = useLocation();
   const history = useHistory();
+  // const [isLogged, setIsLogged] = useState(!!localStorage.getItem('jwt'));
 
   // console.log(pathname.split('/'))
 
@@ -76,6 +82,19 @@ const TopBar = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const logout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('username');
+    localStorage.removeItem('ledfx-cloud-userid');
+    localStorage.removeItem('ledfx-cloud-role');
+    setIsLogged(false);
+  };
+
+useEffect(() => {
+  setIsLogged(!!localStorage.getItem('jwt'))
+}, [pathname])
 
   return (
     <AppBar
@@ -125,6 +144,12 @@ const TopBar = () => {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
+          {isLogged && <MenuItem disabled divider>
+            <ListItemIcon>
+              <AccountCircle />
+            </ListItemIcon>
+            {localStorage.getItem('username')}
+          </MenuItem>}
           <MenuItem onClick={changeHost}>
             <ListItemIcon>
               <Language />
@@ -155,6 +180,13 @@ const TopBar = () => {
             </ListItemIcon>
             Settings
           </MenuItem>
+          {parseInt(window.localStorage.getItem('BladeMod')) > 10 &&
+            <MenuItem onClick={(e) => isLogged ? logout(e) : window.location.href = "https://strapi.yeonv.com/connect/github"} >
+              <ListItemIcon>
+              {isLogged ? <Logout /> : <Login />}
+              </ListItemIcon>
+              {isLogged ? 'Logout' : 'Login'}
+            </MenuItem>}
         </Menu>
       </Toolbar>
     </AppBar>

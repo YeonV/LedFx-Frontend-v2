@@ -28,5 +28,11 @@ export const useEditVirtualsStyles = makeStyles(theme => ({
       alignItems: 'center',
       padding: '0.5rem 0',
       margin: '0 1rem',
+    },
+    cloudEffectCard: {
+      cursor: 'pointer',
+      '&:hover': {
+        borderColor: theme.palette.primary.main
+      }
     }
   }));
