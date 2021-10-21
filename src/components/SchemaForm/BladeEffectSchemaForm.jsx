@@ -87,7 +87,7 @@ const BladeEffectSchemaForm = (props) => {
         <Fab
           onClick={handleClickOpen}
           variant="circular"
-          color="primary"
+          color="default"
           size="small"
           style={{ position: 'absolute', right: '3rem', top: '1rem' }}
         >
