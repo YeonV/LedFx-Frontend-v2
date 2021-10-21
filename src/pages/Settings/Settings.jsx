@@ -350,9 +350,9 @@ const Settings = () => {
                 </label>
               </div>
               <div style={{ flex: '0 0 49%'}}>
-                {viewMode === 'dev' && <AboutDialog startIcon={<Info />} className={classes.actionButton}>
+                <AboutDialog startIcon={<Info />} className={classes.actionButton}>
                   About
-                </AboutDialog>}
+                </AboutDialog>
                 <Button
                   size="small"
                   startIcon={<Refresh />}
