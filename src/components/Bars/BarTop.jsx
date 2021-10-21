@@ -120,7 +120,7 @@ useEffect(() => {
               Back
             </Button>}
         </div>
-        {open && <div style={{ width: '48px', height: '48px' }} />}
+        {/* {open && <div style={{ width: '48px', height: '48px' }} />} */}
         <Typography variant="h6" noWrap>
           {pathname === '/' ? 'LedFx'
             : (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ? virtuals[pathname.split('/')[2]]?.config.name
