@@ -66,6 +66,7 @@ const TransitionCard = ({ virtual, style }) => {
             min={schemas?.transition_time.minimum}
             max={schemas?.transition_time.maximum}
             marks={marks}
+            style={{color: '#aaa'}}
             valueLabelDisplay="auto"
           />
           </BladeFrame>

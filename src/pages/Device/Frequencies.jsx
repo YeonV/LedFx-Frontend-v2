@@ -92,7 +92,8 @@ const FrequenciesCard = ({ virtual, style }) => {
             min={logIt(config.melbanks?.min_frequency)}
             max={logIt(config.melbanks?.max_frequencies[config.melbanks?.max_frequencies.length - 1])}
             onChange={handleChange}
-            ValueLabelComponent={ValueLabelComponent}
+            ValueLabelComponent={ValueLabelComponent}            
+            style={{color: '#aaa'}}
             onChangeCommitted={(e, val) => {
               // Backend cannot do partial updates yet, sending whole config
               addVirtual({
