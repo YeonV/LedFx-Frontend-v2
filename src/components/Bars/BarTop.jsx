@@ -181,7 +181,7 @@ useEffect(() => {
             Settings
           </MenuItem>
           {parseInt(window.localStorage.getItem('BladeMod')) > 10 &&
-            <MenuItem onClick={(e) => isLogged ? logout(e) : window.location.href = "https://strapi.yeonv.com/connect/github"} >
+            <MenuItem onClick={(e) => isLogged ? logout(e) : window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`} >
               <ListItemIcon>
               {isLogged ? <Logout /> : <Login />}
               </ListItemIcon>
