@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   pickerItemWrapper: {
     width: 300,
+    height: '35px',
     cursor: 'pointer',
     padding: '2px 3px 2px 15px',
     display: 'flex',
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 7,
     '.gradient-picker-var2 &': {
       width: '100%',
-      height: 30,
+      height: 35,
       borderRadius: 10
     }
   },

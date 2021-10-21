@@ -32,7 +32,7 @@ export default function App() {
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
 
-  const ledfxTheme = window.localStorage.getItem('ledfx-theme')|| 'Dark' ;
+  const ledfxTheme = window.localStorage.getItem('ledfx-theme')|| window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen' : 'Dark';
   const ledfxThemes = {
     "Dark": BladeDarkTheme,
     "DarkOrange": BladeDarkOrangeTheme,
