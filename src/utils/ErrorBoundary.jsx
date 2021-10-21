@@ -33,22 +33,20 @@ class ErrorBoundary extends React.Component {
                     Deleting the browser's frontend-data might help,<br />
                     if there is old config data left.
                 </p>
+                <p> Refresh page after cleaing data... </p>
                 <button style={{ height: 40, borderRadius: 10, border: '1px solid #999', color: '#fff', backgroundColor: '#600000', cursor: 'pointer'}} onClick={() => {
                     window.localStorage.removeItem('undefined')
                     window.localStorage.removeItem('ledfx-host')
                     window.localStorage.removeItem('ledfx-hosts')
-                    window.localStorage.removeItem('ledfx-ws')
+                    window.localStorage.removeItem('ledfx-frontend')
+                    window.localStorage.removeItem('ledfx-cloud-role')
+                    window.localStorage.removeItem('ledfx-cloud-userid')
+                    window.localStorage.removeItem('ledfx-theme')
+                    window.localStorage.removeItem('jwt')
+                    window.localStorage.removeItem('username')
+                    window.localStorage.removeItem('BladeMod')
                     window.location.reload()
-                }}>Refresh Page</button><br />
-                <button style={{ height: 40, borderRadius: 10, border: '1px solid #999', color: '#fff', backgroundColor: '#600000', cursor: 'pointer'}}  onClick={() => {
-                    window.location.reload()
-                }}>Clear Browser-Data</button><br />
-                {/* <button onClick={() => {
-                    if (window.confirm("Are you sure to delete your ledfx-config?")) {
-                        alert('NICE')
-                    }
-
-                }}>Clear LedFx-Config</button> */}
+                }}>Clear Browser-Data</button><br />            
             </div>;
         }
 
