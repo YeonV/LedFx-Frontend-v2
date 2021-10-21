@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { app,  Menu, Tray, nativeImage, Notification, nativeTheme, BrowserWindow } = require('electron');
+const { app, Menu, Tray, nativeImage, Notification, nativeTheme, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 
 // Conditionally include the dev tools installer to load React Dev Tools
@@ -21,7 +21,7 @@ let win
 
 function createWindow() {
     require('@electron/remote/main').initialize()
-    // Create the browser window.    
+    // Create the browser window.
     win = new BrowserWindow({
         width: 480,
         height: 768,
@@ -42,7 +42,7 @@ function createWindow() {
             : `file://${path.join(__dirname, '../build/index.html')}`
     );
 
-    // win.removeMenu() 
+    // win.removeMenu()
 
     // Open the DevTools.
     // if (isDev) {
