@@ -1,11 +1,17 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import useStore from '../../utils/apiStore';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Link, Typography } from '@material-ui/core';
+import { version as fversion } from '../../../package.json';
+import GitInfo from 'react-git-info/macro';
 
 export default function AboutDialog({ className, children, startIcon, title }) {
     const config = useStore((state) => state.config);
+    const getInfo = useStore((state) => state.getInfo);
+    const gitInfo = GitInfo();
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [bcommit, setBcommit] = useState('');
+    const [bversion, setBversion] = useState('');
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -14,6 +20,14 @@ export default function AboutDialog({ className, children, startIcon, title }) {
     const handleClose = () => {
         setOpen(false);
     };
+
+    useEffect(async () => {
+        const info = await getInfo()
+        if (info.git_build_commit) {
+            setBcommit(info.git_build_commit)
+            setBversion(info.version)
+        }
+    }, [])
 
     return (
         <div>
@@ -25,24 +39,35 @@ export default function AboutDialog({ className, children, startIcon, title }) {
                 onClose={handleClose}
                 aria-labelledby="about-dialog-title"
                 aria-describedby="about-dialog-description"
+                
+                PaperProps={{
+                    style: {  margin: '0 auto' }
+                }}
             >
                 <DialogTitle id="about-dialog-title">
-                    {"About (WIP)"}
+                    {"About LedFx"}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="about-dialog-description">
-                        backend:<br />
-                        configuration_version: {config.configuration_version} <br />
-                        host: {config.host} <br />
-                        port: {config.port} <br />
-                        port_s: {config.port_s} <br />
-                        dev_mode: {config.dev_mode ? 'yes' : 'no'} <br />
-                        commit: incoming<br />
-                        <br />
-                        frontend:<br />
-                        version: b28<br />
-                        commit: incoming<br />
-                    </DialogContentText>
+                    
+                        <div style={{ minWidth: 250 }}>
+                            <Card style={{ marginBottom: '1rem' }}>
+                                <CardHeader title="Backend" />
+                                <CardContent style={{ paddingTop: 0 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>version: <span>{bversion}</span> </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>commit: <Link href={`https://github.com/LedFx/LedFx/commit/${bcommit}`} target="_blank">{bcommit.substring(0, 6)}</Link></div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>config_version: <span>{config.configuration_version}</span> </div>    
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader title="Frontend" />
+                                <CardContent style={{ paddingTop: 0 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>version: <span>{fversion}</span></div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>commit: <Link href={`https://github.com/LedFx/LedFx/commit/${gitInfo.commit.hash}`} target="_blank">{gitInfo.commit.shortHash}</Link></div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>config_version: <span>{localStorage.getItem('ledfx-frontend')}</span></div>
+                                </CardContent>
+                            </Card>              
+                        </div>
+                    
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} autoFocus>

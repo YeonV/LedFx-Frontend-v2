@@ -461,6 +461,7 @@ const useStore = create(
         timeout: 0,
         action: 'restart',
       }),
+      getInfo: async () => await Ledfx('/api/info', set),
       getPing: async (virtId) => await Ledfx(`/api/ping/${virtId}`, set),
       getDevice: async (deviceId) => {
         const resp = await Ledfx(`/api/devices/${deviceId}`, set);
