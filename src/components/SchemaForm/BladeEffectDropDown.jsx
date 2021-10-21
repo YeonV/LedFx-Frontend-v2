@@ -89,7 +89,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
   const onEffectTypeChange = (e) => setVirtualEffect(virtual.id, {
     type: e.target.value,
   }).then(() => {
-    getVirtuals();
+    getVirtuals();     
   });
 
   return (
