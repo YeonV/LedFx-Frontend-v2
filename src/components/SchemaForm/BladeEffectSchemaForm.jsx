@@ -63,6 +63,7 @@ const BladeEffectSchemaForm = (props) => {
 
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
+  const viewMode = useStore((state) => state.viewMode);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,7 +83,7 @@ const BladeEffectSchemaForm = (props) => {
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {parseInt(window.localStorage.getItem('BladeMod')) > 20 && (
+      {viewMode === 'expert' && (
         <Fab
           onClick={handleClickOpen}
           variant="circular"
