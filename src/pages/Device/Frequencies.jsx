@@ -126,7 +126,9 @@ const FrequenciesCard = ({ virtual, style }) => {
                   endAdornment: <InputAdornment position="end">Hz</InputAdornment>
                 }}
                 inputProps={{
-                  style: { textAlign: 'right', }
+                  style: { textAlign: 'right', },
+                  min: 20,
+                  max: 20000
                 }}
                 value={Math.round(hzIt(value[0])) < 5 ? value[0] : Math.round(hzIt(value[0]))}
                 variant="outlined"
@@ -144,6 +146,10 @@ const FrequenciesCard = ({ virtual, style }) => {
                 value={Math.round(hzIt(value[1])) > 20001 ? value[1] : Math.round(hzIt(value[1]))}
                 onChange={(e, n) => {
                   setValue([value[0], logIt(e.target.value)]);
+                }}
+                inputProps={{
+                  min: 20,
+                  max: 20000
                 }}
                 InputLabelProps={{
                   shrink: true,

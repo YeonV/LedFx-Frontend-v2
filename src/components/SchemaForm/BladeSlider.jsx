@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Slider, Input, TextField, Typography } from '@material-ui/core/';
 import useStyles from './BladeSlider.styles';
 
@@ -56,10 +56,10 @@ const BladeSlider = ({
 const BladeSliderInner = ({
   schema, model, model_id, step, onChange, textfield, style, disabled, marks,hideDesc, disableUnderline
 }) => {
-  // console.log(model, schema, model_id);
+  
   const classes = useStyles();
   const [value, setValue] = useState(typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1);
-
+  // console.log(typeof model[model_id] === 'number', model_id, model[model_id], value);
   const handleSliderChange = (event, newValue) => {
     if (newValue !== value) {
       setValue(newValue);
@@ -92,6 +92,11 @@ const BladeSliderInner = ({
     }
     onChange(model_id, Number(event.target.value))
   };
+
+  useEffect(() => {
+    setValue(typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1)
+    
+  }, [model, model_id])
 
   return (schema.maximum && !textfield) ? (
     <>

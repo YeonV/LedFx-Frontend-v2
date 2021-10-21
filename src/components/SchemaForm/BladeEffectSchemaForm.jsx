@@ -54,7 +54,7 @@ const BladeEffectSchemaForm = (props) => {
   ];
 
   const classes = useStyles();
-
+// console.log(model)
   const [open, setOpen] = useState(false);
   const color_mode = useStore((state) => state.schemaForm.color_mode);
   const bool_mode = useStore((state) => state.schemaForm.bool_mode);
