@@ -7,6 +7,7 @@ import NoYet from '../../components/NoYet';
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
     padding: theme.spacing(1),
+    paddingTop: 0,
     display: 'flex', flexWrap: 'wrap', margin: '-0.5rem', justifyContent: 'center'
   },
   '@media (max-width: 580px)' : {
