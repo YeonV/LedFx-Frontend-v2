@@ -78,7 +78,7 @@ const DeviceCard = ({ virtual, index }) => {
   }, [virtuals, devices])
 
   
-  return virtuals[virtual] ?
+  return virtual && virtuals[virtual] ?
 
     <Card
       component={NavLink}

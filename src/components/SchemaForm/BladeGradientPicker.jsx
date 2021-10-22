@@ -15,20 +15,13 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
-    '&.gradient-picker': {
-      // backgroundColor: 'blue'
-    }
   },
   picker: {
-    // width: '135px',
     height: '30px',
     margin: '15px 10px 10px 10px',
     borderRadius: '10px',
     cursor: 'pointer',
     border: '1px solid #fff',
-    "@media (max-width: 580px)": {
-      // width: "31vw",
-    },
   },
   pickerItemWrapper: {
     width: 300,
@@ -75,12 +68,8 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
-    // margin: "0.5rem",
-    order: '-2',
-    // "@media (max-width: 580px)": {
     width: '100%',
     margin: '0.5rem 0',
-    // },
     '& > label': {
       top: '-0.5rem',
       display: 'flex',
@@ -307,7 +296,6 @@ const BladeGradientPicker = ({ col, clr, index, virtual, variant = 'picker' }) =
   return (
     <div className={`${classes.wrapper} step-effect-${index} gradient-${variant}`} style={{ width: '49%', display: virtual.effect.config.solid_color ? 'none' : 'block' }}>
       <label className={'MuiFormLabel-root'}>
-        {/* <Palette /> */}
         {clr.replaceAll('_', ' ').replaceAll('background', 'bg').replaceAll('name', '')}
       </label>
       <div

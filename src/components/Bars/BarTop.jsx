@@ -4,7 +4,7 @@ import useStore from '../../utils/apiStore';
 import { useLocation, Link, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
-import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, AccountCircle, ChevronLeft } from '@material-ui/icons';
+import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, GitHub, ChevronLeft } from '@material-ui/icons';
 import { Login, Logout } from '@mui/icons-material';
 import { drawerWidth } from '../../utils/helpers';
 import TourDevice from '../Tours/TourDevice';
@@ -40,7 +40,12 @@ const useStyles = makeStyles((theme) => ({
     '@media (max-width: 599px)': {
       top: 10
     }
-  }
+  },
+  bladeMenu: {
+    "& .MuiPaper-root": {
+      backgroundColor: theme.palette.grey[900]
+    }
+  },
 }));
 
 
@@ -92,9 +97,9 @@ const TopBar = () => {
     setIsLogged(false);
   };
 
-useEffect(() => {
-  setIsLogged(!!localStorage.getItem('jwt'))
-}, [pathname])
+  useEffect(() => {
+    setIsLogged(!!localStorage.getItem('jwt'))
+  }, [pathname])
 
   return (
     <AppBar
@@ -143,10 +148,11 @@ useEffect(() => {
           keepMounted
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
+          className={classes.bladeMenu}
         >
           {isLogged && <MenuItem disabled divider>
             <ListItemIcon>
-              <AccountCircle />
+              <GitHub />
             </ListItemIcon>
             {localStorage.getItem('username')}
           </MenuItem>}
@@ -183,9 +189,9 @@ useEffect(() => {
           {parseInt(window.localStorage.getItem('BladeMod')) > 10 &&
             <MenuItem onClick={(e) => isLogged ? logout(e) : window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`} >
               <ListItemIcon>
-              {isLogged ? <Logout /> : <Login />}
+                {isLogged ? <Logout /> : <Login />}
               </ListItemIcon>
-              {isLogged ? 'Logout' : 'Login'}
+              {isLogged ? 'Logout' : 'Login with Gihub'}
             </MenuItem>}
         </Menu>
       </Toolbar>

@@ -14,12 +14,16 @@ import {
   MenuItem,
   FormControl,
   ListSubheader,
+  Switch,
+  FormControlLabel,
+  Divider,
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';
 import BladeFrame from './BladeFrame';
+import { Info } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   bladeSchemaForm: {
@@ -33,11 +37,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BladeSchemaFormNew = (props) => {
+const BladeSchemaForm = (props) => {
   const {
     schema,
     model,
     disableUnderline,
+    hideToggle,
     colorMode = 'picker',
     boolMode = 'switch',
     boolVariant = 'outlined',
@@ -57,6 +62,7 @@ const BladeSchemaFormNew = (props) => {
   const [_selectVariant, _setSelectVariant] = useState(selectVariant);
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
+  const [hideDesc, setHideDesc] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -66,8 +72,19 @@ const BladeSchemaFormNew = (props) => {
     setOpen(false);
   };
 
+  const yzSchema = schema && schema.properties &&
+    Object.keys(schema.properties)
+      .map(sk => ({
+        ...schema.properties[sk],
+        id: sk,
+        required: schema.required && schema.required.indexOf(sk) !== -1,
+        permitted: schema.permitted_keys ? schema.permitted_keys.indexOf(sk) > -1 : true
+      }))
+      .sort((a, b) => a.required ? -1 : 1)
+      .sort((a, b) => a.id === 'name' ? -1 : 1)
+
   return (
-    <div className={classes.bladeSchemaForm}>
+    <div>
       {parseInt(window.localStorage.getItem('BladeMod')) > 20 && (
         <Fab
           onClick={handleClickOpen}
@@ -80,56 +97,53 @@ const BladeSchemaFormNew = (props) => {
         </Fab>
       )}
 
-      {schema && schema.properties && Object.keys(schema.properties).map((s, i) => {
-        let permitted = true
-        if (schema.permitted_keys && schema.permitted_keys.indexOf(s) === -1) {
-          permitted = false
-        }
+      <div className={classes.bladeSchemaForm}>
+        {yzSchema && yzSchema.map((s, i) => {
 
-        switch (schema.properties[s].type) {
-          case 'boolean':
-            return (
-              <BladeBoolean
-                type={_boolMode}
-                variant={_boolVariant}
-                key={i}
-                index={i}
-                model={model}
-                model_id={s}
-                required={schema.required && schema.required.indexOf(s) !== -1}
-                style={{ margin: '0.5rem 0', flexBasis: '48%' }}
-                schema={schema.properties[s]}
-                onClick={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return onModelChange(c);
-                }}
-              />
-            );
-          case 'string':
-            const group = {}
-            let audio_groups = []
-            if (schema?.properties?.audio_device?.enum) {
-              for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
-                // console.log(`${key}: ${value.split(':')[0]}`);
-                if (!group[value.split(':')[0]]) {
-                  group[value.split(':')[0]] = {}
+          switch (s.type) {
+            case 'boolean':
+              return (
+                <BladeBoolean
+                  hideDesc={hideDesc}
+                  type={_boolMode}
+                  variant={_boolVariant}
+                  key={i}
+                  index={i}
+                  model={model}
+                  model_id={s.id}
+                  required={s.required}
+                  style={{ margin: '0.5rem 0', flexBasis: '48%' }}
+                  schema={s}
+                  onClick={(model_id, value) => {
+                    const c = {};
+                    c[model_id] = value;
+                    return onModelChange(c);
+                  }}
+                />
+              );
+            case 'string':
+              const group = {}
+              let audio_groups = []
+              if (schema?.properties?.audio_device?.enum) {
+                for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
+                  // console.log(`${key}: ${value.split(':')[0]}`);
+                  if (!group[value.split(':')[0]]) {
+                    group[value.split(':')[0]] = {}
+                  }
+                  group[value.split(':')[0]][key] = value.split(':')[1]
                 }
-                group[value.split(':')[0]][key] = value.split(':')[1]
+                function onlyUnique(value, index, self) {
+                  return self.indexOf(value) === index;
+                }
+                audio_groups = (Object.values(schema.properties.audio_device?.enum).map(d => d.split(':')[0]).filter(onlyUnique))
               }
-              function onlyUnique(value, index, self) {
-                return self.indexOf(value) === index;
-              }
-              audio_groups = (Object.values(schema.properties.audio_device?.enum).map(d => d.split(':')[0]).filter(onlyUnique))
-            }
-            // console.log(group, audio_groups)
-            return audio_groups?.length
-              ? <BladeFrame key={i} style={{ order: -1 }} title={"Audio Device"} full={true}>
+
+              return audio_groups?.length
+                ? <BladeFrame key={i} style={{ order: -1 }} title={"Audio Device"} full={true}>
                   <Select
                     value={model && model["audio_device"] || 0}
                     fullWidth
                     disableUnderline
-                    // onChange={(e) => console.log(e.target.value)}
                     onChange={(e) => {
                       const c = {};
                       c["audio_device"] = parseInt(e.target.value);
@@ -148,8 +162,6 @@ const BladeSchemaFormNew = (props) => {
                           {c}
                         </ListSubheader>
                         ,
-
-
                         Object.keys(group[c]).map((e) =>
                           <MenuItem className={classes.FormListItem} value={e}>
                             {group[c][e]}
@@ -159,108 +171,124 @@ const BladeSchemaFormNew = (props) => {
                     )}
                   </Select>
                 </BladeFrame>
-              : <BladeSelect
-                model={model}
-                disabled={!permitted}
-                style={{ margin: '0.5rem 0', width: '48%' }}
-                variant={_selectVariant}
-                schema={schema.properties[s]}
-                required={schema.required && schema.required.indexOf(s) !== -1}
-                model_id={s}
-                key={i}
-                index={i}
-                onChange={(model_id, value) => {
-                  const c = {};
-                  c[model_id] = value;
-                  return onModelChange(c);
-                }}
-              />
+                : <BladeSelect
+                  hideDesc={hideDesc}
+                  model={model}
+                  disabled={!s.permitted}
+                  style={{ margin: '0.5rem 0', width: '48%' }}
+                  textStyle={{ width: '100%' }}
+                  variant={_selectVariant}
+                  schema={s}
+                  required={s.required}
+                  model_id={s.id}
+                  key={i}
+                  index={i}
+                  onChange={(model_id, value) => {
+                    const c = {};
+                    c[model_id] = value;
+                    return onModelChange(c);
+                  }}
+                />
 
-          case 'number':
-            return (
-              <BladeSlider
+            case 'number':
+              return (
+                <BladeSlider
+                  hideDesc={hideDesc}
+                  variant={_sliderVariant}
+                  disabled={!s.permitted}
+                  disableUnderline={disableUnderline}
+                  key={i}
+                  model_id={s.id}
+                  model={model}
+                  required={s.required}
+                  schema={s}
+                  onChange={(model_id, value) => {
+                    const c = {};
+                    c[model_id] = value;
+                    return onModelChange(c);
+                  }}
+                />
+              );
+
+            case 'integer':
+              return <BladeSlider
+                hideDesc={hideDesc}
                 variant={_sliderVariant}
-                disabled={!permitted}
+                disabled={!s.permitted}
                 disableUnderline={disableUnderline}
+                step={1}
                 key={i}
-                model_id={s}
+                model_id={s.id}
                 model={model}
-                required={schema.required && schema.required.indexOf(s) !== -1}
-                schema={schema.properties[s]}
+                required={s.required}
+                schema={s}
+                textfield={false}
+                style={{ margin: '0.5rem 0', width: '48%' }}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
                   return onModelChange(c);
                 }}
               />
-            );
-
-          case 'integer':
-            return <BladeSlider
-              variant={_sliderVariant}
-              disabled={!permitted}
-              disableUnderline={disableUnderline}
-              step={1}
-              key={i}
-              model_id={s}
-              model={model}
-              required={schema.required && schema.required.indexOf(s) !== -1}
-              schema={schema.properties[s]}
-              textfield={true}
-              style={{ margin: '0.5rem 0', width: '48%' }}
-              onChange={(model_id, value) => {
-                const c = {};
-                c[model_id] = value;
-                return onModelChange(c);
-              }}
-            />
-          case 'int':
-            return schema.properties[s]?.enum?.length > 10 ? <BladeSlider
-              variant={_sliderVariant}
-              disabled={!permitted}
-              disableUnderline={disableUnderline}
-              marks={schema.properties[s]?.enum}
-              step={null}
-              key={i}
-              model_id={s}
-              model={model}
-              required={schema.required && schema.required.indexOf(s) !== -1}
-              schema={schema.properties[s]}
-              textfield={false}
-              style={{ margin: '0.5rem 0', width: '48%' }}
-              onChange={(model_id, value) => {
-                const c = {};
-                c[model_id] = value;
-                return onModelChange(c);
-              }}
-            /> : <BladeSlider
-              variant={_sliderVariant}
-              disabled={!permitted}
-              disableUnderline={disableUnderline}
-              marks={schema.properties[s]?.enum}
-              step={null}
-              key={i}
-              model_id={s}
-              model={model}
-              required={schema.required && schema.required.indexOf(s) !== -1}
-              schema={schema.properties[s]}
-              textfield={false}
-              style={{ margin: '0.5rem 0', width: '48%' }}
-              onChange={(model_id, value) => {
-                const c = {};
-                c[model_id] = value;
-                return onModelChange(c);
-              }}
-            />
-          default:
-            return (
-              <>
-                Unsupported type:
-                {schema.properties[s].type}
-              </>
-            );
-        }
-      })}
+            case 'int':
+              return s?.enum?.length > 10 ? <BladeSlider
+                hideDesc={hideDesc}
+                variant={_sliderVariant}
+                disabled={!s.permitted}
+                disableUnderline={disableUnderline}
+                marks={s?.enum}
+                step={null}
+                key={i}
+                model_id={s.id}
+                model={model}
+                required={s.required}
+                schema={s}
+                textfield={false}
+                style={{ margin: '0.5rem 0', width: '48%' }}
+                onChange={(model_id, value) => {
+                  const c = {};
+                  c[model_id] = value;
+                  return onModelChange(c);
+                }}
+              /> : <BladeSlider
+                hideDesc={hideDesc}
+                variant={_sliderVariant}
+                disabled={!s.permitted}
+                disableUnderline={disableUnderline}
+                marks={s?.enum}
+                step={null}
+                key={i}
+                model_id={s.id}
+                model={model}
+                required={s.required}
+                schema={s}
+                textfield={false}
+                style={{ margin: '0.5rem 0', width: '48%' }}
+                onChange={(model_id, value) => {
+                  const c = {};
+                  c[model_id] = value;
+                  return onModelChange(c);
+                }}
+              />
+            default:
+              return (
+                <>
+                  Unsupported type:
+                  {s.type}
+                </>
+              );
+          }
+        })}
+      </div>
+      {!hideToggle && <>
+        <Divider style={{ margin: '1rem 0 0.5rem 0' }} />
+        <FormControlLabel
+          value="start"
+          control={<Switch checked={!hideDesc} onChange={(e) => setHideDesc(!hideDesc)} />}
+          label={<DialogContentText style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 0 }}>Field-Descriptions<Info style={{ marginLeft: '0.5rem' }} /></DialogContentText>}
+          labelPlacement="end"
+        />
+      </>}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -347,7 +375,7 @@ const BladeSchemaFormNew = (props) => {
   );
 };
 
-BladeSchemaFormNew.propTypes = {
+BladeSchemaForm.propTypes = {
   colorMode: PropTypes.oneOf(['picker', 'select']),
   boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
   boolVariant: PropTypes.oneOf(['outlined', 'contained', 'text']),
@@ -357,4 +385,4 @@ BladeSchemaFormNew.propTypes = {
   model: PropTypes.object.isRequired,
 };
 
-export default BladeSchemaFormNew;
+export default BladeSchemaForm;

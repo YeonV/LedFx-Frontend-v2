@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Slider, Input, TextField, Typography } from '@material-ui/core/';
 import useStyles from './BladeSlider.styles';
+import BladeFrame from './BladeFrame';
 
 const BladeSlider = ({
   variant = 'outlined',
@@ -22,7 +23,7 @@ const BladeSlider = ({
   const classes = useStyles();
   // console.log(schema)
   return variant === 'outlined' ? (
-    <div className={`${classes.wrapper} step-effect-${index}`} style={{ ...style, ...{ order: required ? -1 : 3 } }}>
+      <div className={`${classes.wrapper} step-effect-${index}`} style={style}>
       <label style={{ color: disabled ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.7)' }} className={'MuiFormLabel-root'}>{schema.title}{required ? '*' : ''}</label>
       <BladeSliderInner
         schema={schema}
@@ -45,7 +46,6 @@ const BladeSlider = ({
       onChange={onChange}
       disabled={disabled}
       textfield={textfield}
-      style={{ order: required ? -1 : 3 }}
       marks={marks}
       hideDesc={hideDesc}
       disableUnderline={disableUnderline}
@@ -59,7 +59,6 @@ const BladeSliderInner = ({
   
   const classes = useStyles();
   const [value, setValue] = useState(typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1);
-  // console.log(typeof model[model_id] === 'number', model_id, model[model_id], value);
   const handleSliderChange = (event, newValue) => {
     if (newValue !== value) {
       setValue(newValue);
@@ -84,7 +83,7 @@ const BladeSliderInner = ({
       setValue(schema.maximum);
     }
   };  
-  const handleTextBlur = () => {
+  const handleTextChange = (event) => {
     if (value < schema.minimum) {
       setValue(schema.minimum);
     } else if (value > schema.maximum) {
@@ -104,8 +103,7 @@ const BladeSliderInner = ({
         <Slider
           aria-labelledby="input-slider"
           valueLabelDisplay="auto"
-          disabled={disabled}          
-          // marks={true}
+          disabled={disabled}
           step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
           min={schema.minimum || 0}
           max={schema.maximum}
@@ -113,8 +111,6 @@ const BladeSliderInner = ({
           onChange={handleSliderChange}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
           style={{color: '#aaa', ...style}}
-        // defaultValue={model[model_id] || schema.default}
-        // value={model && model[model_id]}
         />
         {(!hideDesc && schema.description)
           ? <>
@@ -152,25 +148,20 @@ const BladeSliderInner = ({
           value={typeof value === 'number' ? value : 0}
           onChange={handleSliderChange}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
-          style={style}
-        // defaultValue={model[model_id] || schema.default}
-        // value={model && model[model_id]}
+          style={!hideDesc ? {...style, width: '100%'} : style}
         />
   ) : (
 
     <TextField
-      // defaultValue={schema.default || 1}
       disabled={disabled}
       InputProps={{
         disableUnderline:disableUnderline
       }}      
       type="number"
-      defaultValue={value}
-      onChange={(e)=> handleInputChange(e)}
-      onBlur={handleTextBlur}
-      // onBlur={(e, b) => onChange(model_id, parseInt(e.target.value))}
+      value={value}
+      onChange={handleTextChange}
       helperText={!hideDesc && schema.description}
-      style={style}
+      style={!hideDesc ? {...style, width: '100%'} : style}
     />
   );
 };

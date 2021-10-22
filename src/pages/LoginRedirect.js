@@ -13,7 +13,7 @@ const LoginRedirect = (props) => {
   const location = useLocation();
   const params = useParams();
   const history = useHistory();
-  console.log(params, props, location)
+  // console.log(params, props, location)
   useEffect(() => {
     // Successfully logged with the provider
     // Now logging with strapi by using the access_token (given by the provider) in props.location.search
@@ -28,7 +28,7 @@ const LoginRedirect = (props) => {
       .then(async res => {
         // Successfully logged with Strapi
         // Now saving the jwt to use it for future authenticated requests to Strapi
-        console.log(res)
+        // console.log(res)
         localStorage.setItem('jwt', res.jwt);
         localStorage.setItem('username', res.user.username);
         const me = await cloud.get('users/me', {
@@ -38,6 +38,7 @@ const LoginRedirect = (props) => {
           }
         })
         const user = await me.data
+        // console.log(user)
         localStorage.setItem('ledfx-cloud-userid', user.id);
         localStorage.setItem('ledfx-cloud-role', user.role.type);
         setText(`You have been successfully logged in as ${localStorage.getItem('username')}. You will be redirected in a few seconds...`);
