@@ -7,6 +7,7 @@ import { Add, Cloud } from '@material-ui/icons';
 import axios from 'axios';
 import CloudScreen from './Cloud';
 import SharePresetButton from './SharePresetButton';
+import PresetButton from './PresetButton';
 
 const cloud = axios.create({
   baseURL: 'https://strapi.yeonv.com',
@@ -58,7 +59,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const isLogged = useStore((state) => state.isLogged);
 
 
-  const sharePreset = async (list, preset) => {
+  const uploadPresetCloud = async (list, preset) => {
 
     const existing = await cloud.get(`presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`, {
       headers: {
@@ -103,7 +104,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
 
   }
 
-  const deleteCloudPreset = async (list, preset) => {
+  const deletePresetCloud = async (list, preset) => {
     const existing = await cloud.get(`presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`, {
       headers: {
         Authorization:
@@ -140,29 +141,20 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
         <Grid item key={preset}>
 
           {CATEGORY !== "default_presets"
-            ? <>
-              <Popover
-                className={classes.presetButton}
-                color={JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config) ? "primary" : "default"}
-                variant="outlined"
-                direction="center"
-                onSingleClick={handleActivatePreset(
-                  virtual.id,
-                  CATEGORY,
-                  effectType,
-                  preset,
-                )}
-                openOnLongPress={true}
-                onConfirm={handleRemovePreset(effectType, preset)}
-                startIcon={""}
-                size="medium"
-                noIcon={true}
-                label={list[preset].name}
-              />
-              {sharing && <SharePresetButton
-                onShortPress={() => sharePreset(list, preset)}
-                onLongPress={() => deleteCloudPreset(list, preset)} />}
-            </>
+            ? <PresetButton
+              buttonColor={JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config) ? "primary" : "default"}
+              label={list[preset].name}
+              delPreset={handleRemovePreset(effectType, preset)}
+              uploadPresetCloud={() => uploadPresetCloud(list, preset)}
+              deletePresetCloud={() => deletePresetCloud(list, preset)}
+              className={classes.presetButton}
+              onClick={handleActivatePreset(
+                virtual.id,
+                CATEGORY,
+                effectType,
+                preset,
+              )}
+            />
             : <Button
               className={classes.presetButton}
               color={JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config) ? "primary" : "default"}

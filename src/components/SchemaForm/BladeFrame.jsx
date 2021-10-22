@@ -34,15 +34,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const BladeFrame = ({ title, children, full = false, style = { width: 'unset' }, order, required = false, variant = 'outlined', className, disabled }) => {
+const BladeFrame = ({ title, children, full = false, style = { width: 'unset' }, required = false, variant = 'outlined', className, disabled }) => {
     const classes = useStyles();
     return (variant === 'outlined' ? (
         <div className={`${classes.wrapper} ${className}`} style={{
-            order: order || (title === 'Name' ? -2 : required ? -1 : 1),
             ...style,
             width: full ? '100%' : style.width
         }}>
-            <label className={`MuiFormLabel-root${disabled ? ' Mui-disabled' : ''}`} onClick={()=>alert(1)}>{title}{required ? '*' : ''}</label>
+            <label className={`MuiFormLabel-root${disabled ? ' Mui-disabled' : ''}`} >{title}{required ? '*' : ''}</label>
             {children}
         </div>
     ) : (

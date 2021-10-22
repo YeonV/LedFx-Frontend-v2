@@ -54,7 +54,6 @@ const BladeEffectSchemaForm = (props) => {
   ];
 
   const classes = useStyles();
-// console.log(model)
   const [open, setOpen] = useState(false);
   const color_mode = useStore((state) => state.schemaForm.color_mode);
   const bool_mode = useStore((state) => state.schemaForm.bool_mode);
@@ -81,6 +80,19 @@ const BladeEffectSchemaForm = (props) => {
     getVirtuals();
   });
 
+  const yzSchema = schema && schema.properties &&
+    Object.keys(schema.properties)
+      .map(sk => ({
+        ...schema.properties[sk],
+        id: sk,
+      }))
+      .sort((a) => (a.type === 'number') ? -1 : 1)
+      .sort((a) => (a.type === 'integer') ? -1 : 1)
+      .sort((a) => (a.type === 'string' && a.enum && a.enum.length) ? -1 : 1)
+      .sort((a) => pickerKeys.indexOf(a.id) > -1 ? -1 : 1)
+      .sort((a) => a.id === 'color' ? -1 : 1)
+      .sort((a) => a.id === 'gradient_name' ? -1 : 1)
+
   return (
     <div className={classes.bladeSchemaForm}>
       {viewMode === 'expert' && (
@@ -94,23 +106,9 @@ const BladeEffectSchemaForm = (props) => {
           <SettingsIcon />
         </Fab>
       )}
-      {pickerKeys && pickerKeys.map(
-        (k, i) => model && Object.keys(model).indexOf(k) !== -1 && (
-          <BladeColorDropDown
-            virtual={virtual}
-            effects={effects}
-            selectedType={selectedType}
-            model={model}
-            key={k}
-            index={i}
-            type={color_mode === 'select' ? 'text' : 'color'}
-            clr={k}
-          />
-        ),
-      )}
-      { }
-      {Object.keys(schema.properties).map((s, i) => {
-        switch (schema.properties[s].type) {
+
+      {yzSchema && yzSchema.map((s, i) => {
+        switch (s.type) {
           case 'boolean':
             return (
               <BladeBoolean
@@ -118,8 +116,8 @@ const BladeEffectSchemaForm = (props) => {
                 key={i}
                 index={i}
                 model={model}
-                model_id={s}
-                schema={schema.properties[s]}
+                model_id={s.id}
+                schema={s}
                 hideDesc={true}
                 onClick={(model_id, value) => {
                   const c = {};
@@ -129,46 +127,42 @@ const BladeEffectSchemaForm = (props) => {
               />
             );
           case 'string':
-            return schema.properties[s].enum && pickerKeys.indexOf(s) === -1 ?
-              (s === 'gradient_name' && gradient_mode !== 'select')
-                ? (
-                  <BladeGradientPicker
-                    col={model[s]}
-                    key={i}
-                    clr={s}
-                    selectedType={selectedType}
-                    model={model}
-                    virtual={virtual}
-                    variant={gradient_mode}
-                  />
-                )
-                : (
-                  <BladeSelect
-                    model={model}
-                    schema={schema.properties[s]}
-                    wrapperStyle={{ width: '49%' }
-                    }
-                    model_id={s}
-                    key={i}
-                    index={i}
-                    onChange={(model_id, value) => {
-                      const c = {};
-                      c[model_id] = value;
-                      return handleEffectConfig(virtual_id, c);
-                    }}
-                  />
-                ) : (
-                pickerKeys.indexOf(s) === -1 && (
-                  <BladeColorDropDown
-                    selectedType={selectedType}
-                    index={i}
-                    model={model}
-                    type="colorNew"
-                    clr="blade_color"
-                    key={i}
-                  />
-                )
-              );
+            return s.enum && pickerKeys.indexOf(s.id) === -1 ?
+              (s.id === 'gradient_name' && gradient_mode !== 'select')
+                ? <BladeGradientPicker
+                  col={model[s.id]}
+                  key={i}
+                  clr={s.id}
+                  selectedType={selectedType}
+                  model={model}
+                  virtual={virtual}
+                  variant={gradient_mode}
+                />
+                : <BladeSelect
+                  model={model}
+                  schema={s}
+                  wrapperStyle={{ width: '49%' }
+                  }
+                  model_id={s.id}
+                  key={i}
+                  index={i}
+                  onChange={(model_id, value) => {
+                    const c = {};
+                    c[model_id] = value;
+                    return handleEffectConfig(virtual_id, c);
+                  }}
+                />
+
+              : <BladeColorDropDown
+                  virtual={virtual}
+                  effects={effects}
+                  selectedType={selectedType}
+                  model={model}
+                  key={i}
+                  index={i}
+                  type={color_mode === 'select' ? 'text' : 'color'} // colorNew
+                  clr={s.id}
+                />
 
           case 'number':
             return (
@@ -176,9 +170,9 @@ const BladeEffectSchemaForm = (props) => {
                 key={i}
                 index={i}
                 hideDesc={true}
-                model_id={s}
+                model_id={s.id}
                 model={model}
-                schema={schema.properties[s]}
+                schema={s}
                 onChange={(model_id, value) => {
                   const c = {};
                   c[model_id] = value;
@@ -194,9 +188,9 @@ const BladeEffectSchemaForm = (props) => {
                 key={i}
                 index={i}
                 hideDesc={true}
-                model_id={s}
+                model_id={s.id}
                 model={model}
-                schema={schema.properties[s]}
+                schema={s}
                 style={{ margin: '0.5rem 0' }}
                 onChange={(model_id, value) => {
                   const c = {};
@@ -210,7 +204,7 @@ const BladeEffectSchemaForm = (props) => {
             return (
               <>
                 Unsupported type:
-                {schema.properties[s].type}
+                {s.type}
               </>
             );
         }
@@ -252,7 +246,7 @@ const BladeEffectSchemaForm = (props) => {
                 <MenuItem value="checkbox">Checkbox</MenuItem>
                 <MenuItem value="button">Button</MenuItem>
               </Select>
-            </FormControl>       
+            </FormControl>
             <FormControl>
               <InputLabel id="GradientModeLabel">Gradient Mode</InputLabel>
               <Select
@@ -265,7 +259,7 @@ const BladeEffectSchemaForm = (props) => {
                 <MenuItem value="picker-var2">Picker Variant 2</MenuItem>
                 <MenuItem value="select">Select</MenuItem>
               </Select>
-            </FormControl>       
+            </FormControl>
           </div>
           <DialogActions>
             <Button onClick={handleClose} variant="contained" color="primary">

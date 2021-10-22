@@ -13,20 +13,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   wrapper: {
-    // minWidth: "140px",
     padding: '10px 10px 2px 10px',
     border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
-    // margin: "0.5rem",
     display: 'flex',
     alignItems: 'center',
-    order: '-3',
-    // "@media (max-width: 580px)": {
     flexBasis: '23.5%',
     minWidth: 'unset',
     margin: '0.5rem 0',
-    // },
 
     "@media (max-width: 580px)": {
       flexBasis: "37vw",
@@ -62,7 +57,7 @@ const BladeBoolean = ({
   const classes = useStyles();
 
   const Frame = ({ children }) => (variant === 'outlined' ? (
-    <div className={`${classes.wrapper} step-effect-${index}`} style={{ ...style, ...{ order: required ? -1 : 5 } }}>
+    <div className={`${classes.wrapper} step-effect-${index}`} style={style}>
       <label className={'MuiFormLabel-root'}>{schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}{required ? '*' : ''}</label>
       {children}
     </div>

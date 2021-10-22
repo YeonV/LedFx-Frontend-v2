@@ -14,26 +14,18 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   picker: {
-    // width: '135px',
     height: '30px',
     margin: '15px 10px 10px 10px',
     borderRadius: '10px',
     cursor: 'pointer',
     border: '1px solid #fff',
-    "@media (max-width: 580px)": {
-      // width: "31vw",
-    },
   },
   wrapper: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
-    // margin: "0.5rem",
-    order: '-2',
-    // "@media (max-width: 580px)": {
     width: '100%',
     margin: '0.5rem 0',
-    // },
     '& > label': {
       top: '-0.5rem',
       display: 'flex',
@@ -109,7 +101,6 @@ const BladeColorPicker = ({ sendColor, col, clr, index }) => {
   return (
     <div className={`${classes.wrapper} step-effect-${index}`}>
       <label className={'MuiFormLabel-root'}>
-        {/* <Palette /> */}
         {clr.replaceAll('_', ' ').replaceAll('background', 'bg')}
       </label>
       <div
@@ -120,7 +111,6 @@ const BladeColorPicker = ({ sendColor, col, clr, index }) => {
       />
       <ClickAwayListener
         onClickAway={() => {
-          // console.log('anchorEl');
           // setAnchorEl(null);
         }}
       >

@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     position: 'relative',
     display: 'flex',
-    order: 3,
     margin: '0.5rem 0',
     "@media (max-width: 580px)": {
       width: '100% !important',

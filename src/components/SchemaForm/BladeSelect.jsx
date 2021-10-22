@@ -11,10 +11,11 @@ const BladeSelect = ({
   onChange,
   index,
   required = false,
-  wrapperStyle = {},
+  wrapperStyle = {flexBasis: '48%'},
   selectStyle = {},
   textStyle = {},
-  menuItemStyle = {},
+  menuItemStyle = {},  
+  hideDesc,
   children
 }) =>
   <BladeFrame
@@ -22,7 +23,7 @@ const BladeSelect = ({
     className={`step-effect-${index}`}
     full={!(schema.enum && schema.enum.length && Object.values(schema.enum).every(a => a.length < 20))}
     required={required}
-    style={wrapperStyle}>
+    style={{...wrapperStyle, flexBasis: schema.title === 'Name' ? '100%' : '48%'}}>
 
     {variant === 'contained' ? (
       schema.enum
@@ -44,7 +45,7 @@ const BladeSelect = ({
           </Select>)
         : (
           <TextField
-            helperText={schema.description}
+            helperText={!hideDesc && schema.description}
             defaultValue={model && model[model_id] || (schema.enum && schema.enum[0]) || schema.default || ''}
             onBlur={(e) => onChange(model_id, e.target.value)}
             style={textStyle}
@@ -87,7 +88,7 @@ const BladeSelect = ({
           : (
             <TextField
               type={schema.description?.includes('password') ? "password" : "unset"}
-              helperText={schema.description}
+              helperText={!hideDesc && schema.description}
               defaultValue={model && model[model_id] || (schema.enum && schema.enum[0]) || schema.default || ''}
               onBlur={(e) => onChange(model_id, e.target.value)}
               style={textStyle}

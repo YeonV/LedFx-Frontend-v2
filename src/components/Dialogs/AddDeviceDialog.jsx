@@ -135,8 +135,8 @@ const AddDeviceDialog = () => {
     >
       <DialogTitle id="form-dialog-title">
         {initial.config &&
-        Object.keys(initial.config).length === 0 &&
-        initial.config.constructor === Object
+          Object.keys(initial.config).length === 0 &&
+          initial.config.constructor === Object
           ? `Add ${deviceType.toUpperCase()} Device`
           : `${deviceType.toUpperCase()} Config`}
       </DialogTitle>
@@ -149,6 +149,9 @@ const AddDeviceDialog = () => {
           <label>Device Type</label>
           <Select
             label="Type"
+            disabled={!(initial.config &&
+              Object.keys(initial.config).length === 0 &&
+              initial.config.constructor === Object)}
             style={{ flexGrow: 1 }}
             disableUnderline
             value={deviceType}
@@ -168,6 +171,7 @@ const AddDeviceDialog = () => {
             schema={currentSchema}
             model={model}
             onModelChange={handleModelChange}
+            hideToggle={!deviceType}
           />
         )}
       </DialogContent>
@@ -177,8 +181,8 @@ const AddDeviceDialog = () => {
         </Button>
         <Button onClick={handleAddDevice} color="primary">
           {initial.config &&
-          Object.keys(initial.config).length === 0 &&
-          initial.config.constructor === Object
+            Object.keys(initial.config).length === 0 &&
+            initial.config.constructor === Object
             ? "Add"
             : "Save"}
         </Button>

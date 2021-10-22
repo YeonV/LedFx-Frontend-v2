@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import PopoverOriginal from '@material-ui/core/Popover';
 import { Typography, Button, MenuItem, ListItemIcon, } from '@material-ui/core';
@@ -25,6 +25,8 @@ export default function Popover({
   text = 'Are you sure?',
   direction = 'left',
   vertical = 'center',
+  anchorOrigin,
+  transformOrigin,
   size = 'small',
   icon = <Delete />,
   content,
@@ -109,11 +111,11 @@ export default function Popover({
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{
+        anchorOrigin={anchorOrigin || {
           vertical: vertical,
           horizontal: direction,
         }}
-        transformOrigin={{
+        transformOrigin={transformOrigin || {
           vertical: vertical,
           horizontal: direction === 'center' ? 'center' : 'right',
         }}

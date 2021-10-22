@@ -167,6 +167,7 @@ const AddIntegrationDialog = () => {
         <Divider style={{ marginBottom: "1rem" }} />
         {model && (
           <BladeSchemaForm
+            hideToggle={!integrationType}
             schema={currentSchema}
             model={model}
             onModelChange={handleModelChange}
