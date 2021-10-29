@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import useStore from '../../utils/apiStore';
+
 import {
   Fab,
   Dialog,
@@ -63,6 +65,7 @@ const BladeSchemaForm = (props) => {
   const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
   const [_colorMode, _setColorMode] = useState(colorMode);
   const [hideDesc, setHideDesc] = useState(true);
+  const features = useStore((state) => state.features);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,7 +88,7 @@ const BladeSchemaForm = (props) => {
 
   return (
     <div>
-      {parseInt(window.localStorage.getItem('BladeMod')) > 20 && (
+      {features['formsettings'] && (
         <Fab
           onClick={handleClickOpen}
           variant="circular"

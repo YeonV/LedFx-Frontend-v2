@@ -18,6 +18,13 @@ const _ws = new Sockette(`${window.localStorage.getItem('ledfx-host') ? window.l
   maxAttempts: 10,
   onopen: e => {
     // console.log('Connected!', e)
+    document.dispatchEvent(
+      new CustomEvent("disconnected", {
+        detail: {
+          isDisconnected: false
+        }
+      })
+    );
     _ws.ws = e.target;
   },
   onmessage: (event) => {
@@ -34,7 +41,16 @@ const _ws = new Sockette(`${window.localStorage.getItem('ledfx-host') ? window.l
   },
   onreconnect: e => console.log('Reconnecting...', e),
   onmaximum: e => console.log('Stop Attempting!', e),
-  onclose: e => console.log('Closed!', e),
+  onclose: e => {
+    // console.log('Closed!', e)
+    document.dispatchEvent(
+      new CustomEvent("disconnected", {
+        detail: {
+          isDisconnected: true
+        }
+      })
+    );
+  },
   onerror: e => console.log('Error:', e)
 });
 return _ws

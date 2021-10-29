@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { drawerWidth } from '../../utils/helpers';
 import blademod from '../../assets/blademod.svg';
+import isElectron from 'is-electron';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     overflowX: 'hidden',
+    paddingTop: isElectron() ? '30px' : 0,
   },
   drawerHeader: {
     display: 'flex',
@@ -39,11 +41,10 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     position: 'relative',
-    padding: '15px 15px',
+    padding: '0 15px',
     zIndex: '4',
   },
   logoLink: {
-    padding: '5px 0',
     display: 'block',
     fontSize: '18px',
     textAlign: 'left',
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
     '& img': {
       width: '35px',
-      top: '17px',
+      top: -2,
       position: 'absolute',
       verticalAlign: 'middle',
       border: '0',
@@ -72,18 +73,17 @@ const useStyles = makeStyles((theme) => ({
   },
   devbadge: {
     backgroundImage: `url(${blademod})`,
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: isElectron() ? 'transparent' : theme.palette.secondary.main,
     border: theme.palette.primary.main,
     color: '#fff',
-    borderRadius: '15px',
+    borderRadius: isElectron() ?  0 : '15px',
     width: '150px',
     padding: '5px 25px',
-    backgroundSize: '230px',
-    height: '25px',
-    marginBottom: '0.5rem',
+    backgroundSize: isElectron() ? '270px' : '230px',
+    height: '20px',
     backgroundRepeat: 'no-repeat',
     textAlign: 'right',
-    backgroundPosition: '-40px 50%',
+    backgroundPosition: isElectron() ? '-66px 50%' : '-40px 50%',
   },
   activeView: {
     backgroundColor: theme.palette.secondary.main,

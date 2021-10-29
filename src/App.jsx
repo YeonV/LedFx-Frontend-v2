@@ -23,16 +23,18 @@ import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
 import { initFrontendConfig } from './utils/helpers';
 import LoginRedirect from './pages/LoginRedirect';
+import isElectron from 'is-electron';
+
 
 export default function App() {
   const classes = useStyles();
-
   const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
+  const shutdown = useStore((state) => state.shutdown);
 
-  const ledfxTheme = window.localStorage.getItem('ledfx-theme')|| window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen' : 'Dark';
+  const ledfxTheme = window.localStorage.getItem('ledfx-theme') || (window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen' : 'Dark');
   const ledfxThemes = {
     "Dark": BladeDarkTheme,
     "DarkOrange": BladeDarkOrangeTheme,
@@ -41,7 +43,7 @@ export default function App() {
     "DarkBlue": BladeDarkBlueTheme,
     "DarkGrey": BladeDarkGreyTheme
   }
-  
+
   useEffect(() => {
     getVirtuals();
     getSystemConfig();
@@ -50,32 +52,18 @@ export default function App() {
 
   useEffect(() => {
     initFrontendConfig();
-    // console.log(ledfxTheme, ledfxThemes, ledfxThemes[ledfxTheme])
   }, []);
 
-  useEffect(() => {
-    // const { Menu, MenuItem } = require('@electron/remote');
-    if (process.versions.hasOwnProperty('electron')) {
-      const customTitleBar = window.require('custom-electron-titlebar');
-      const titlebar = new customTitleBar.Titlebar({
-        backgroundColor: customTitleBar.Color.fromHex('#444'),
-        icon: '/images/logo.png',
-      });
-      const menu = Menu.getApplicationMenu()
-
-      titlebar.updateMenu(menu);
+  window.api?.receive('fromMain', (parameters) => {
+    if (parameters === 'trigger-function') {
+      shutdown()
     }
-    return () => {
-      if (process.versions.hasOwnProperty('electron')) {
-        titlebar.dispose();
-      }
-    };
-  }, []);
+  });
 
   return (
-    <MuiThemeProvider theme={ledfxThemes[ledfxTheme|| 'Dark']}>
+    <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'Dark']}>
       <WsContext.Provider value={ws}>
-        <div className={classes.root}>
+        <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
           <CssBaseline />
           <Router basename={process.env.PUBLIC_URL}>
             <ScrollToTop />

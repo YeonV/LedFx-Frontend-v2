@@ -4,6 +4,7 @@ import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui
 import { useLongPress } from 'use-long-press';
 import { CloudOff, CloudUpload } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import useStore from '../../utils/apiStore';
 
 const useStyles = makeStyles((theme) => ({
     bladeMenu: {
@@ -18,6 +19,8 @@ export default function PresetButton({ delPreset, uploadPresetCloud, deletePrese
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const isLogged = useStore((state) => state.isLogged);
+    const features = useStore((state) => state.features);
 
     const longPress = useLongPress((e) => { e.preventDefault(); setAnchorEl(e.currentTarget || e.target) }, {
         onCancel: e => {
@@ -77,18 +80,20 @@ export default function PresetButton({ delPreset, uploadPresetCloud, deletePrese
                         }}
                     />
                 </div>
+                {(window.localStorage.getItem('ledfx-cloud-role') === 'creator') && features['cloud'] && isLogged &&
                 <MenuItem onClick={uploadPresetCloud}>
                     <ListItemIcon>
                         <CloudUpload fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Upload to Cloud</ListItemText>
-                </MenuItem>
+                </MenuItem>}
+                {(window.localStorage.getItem('ledfx-cloud-role') === 'creator') && features['cloud'] && isLogged &&
                 <MenuItem onClick={deletePresetCloud}>
                     <ListItemIcon>
                         <CloudOff fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Delete from Cloud</ListItemText>
-                </MenuItem>
+                </MenuItem>}
             </Menu>
         </div>
     );

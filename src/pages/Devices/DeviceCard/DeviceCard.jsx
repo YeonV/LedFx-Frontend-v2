@@ -1,6 +1,6 @@
-import { useState, forwardRef, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
-import { useTheme, withStyles } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
@@ -24,8 +24,6 @@ import { Clear, Delete, Pause, PlayArrow } from '@material-ui/icons';
 const DeviceCard = ({ virtual, index }) => {
   const classes = useDeviceCardStyles();
   const theme = useTheme();
-  const menuRef = useRef(null)
-  const isMobile = useMediaQuery(theme.breakpoints.down(580));
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getDevices = useStore((state) => state.getDevices);
   const virtuals = useStore((state) => state.virtuals);
@@ -63,7 +61,6 @@ const DeviceCard = ({ virtual, index }) => {
     clearVirtualEffect(virtual).then(() => {
       setFade(true)
       setTimeout(() => { getVirtuals();getDevices(); }, virtuals[virtual].config.transition_time * 1000)
-      // setTimeout(() => { getDevices() }, virtuals[virtual].config.transition_time * 1100)
       setTimeout(() => { setFade(false) }, virtuals[virtual].config.transition_time * 1000 + 300)
     });
   };
@@ -74,7 +71,7 @@ const DeviceCard = ({ virtual, index }) => {
   };
 
   useEffect(() => {        
-    setIsActive(Object.keys(virtuals[virtual]?.effect).length > 0 || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0)
+    setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect).length > 0) || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0)
   }, [virtuals, devices])
 
   

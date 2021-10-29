@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import useStore from '../../utils/apiStore';
 import { useLocation, Link, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
+import { AppBar, Box, Badge, Toolbar, CircularProgress, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
 import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, GitHub, ChevronLeft } from '@material-ui/icons';
+import { styled } from '@mui/material/styles';
 import { Login, Logout } from '@mui/icons-material';
 import { drawerWidth } from '../../utils/helpers';
 import TourDevice from '../Tours/TourDevice';
@@ -12,6 +13,8 @@ import TourScenes from '../Tours/TourScenes';
 import TourSettings from '../Tours/TourSettings';
 import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
+import BladeIcon from '../Icons/BladeIcon';
+import isElectron from 'is-electron';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -48,7 +51,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: '45%',
+    top: '115%',
+    border: `1px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+    fontSize: 'x-small',
+    height: '14px',
+  },
+}));
 
 const TopBar = () => {
   const classes = useStyles();
@@ -63,11 +75,15 @@ const TopBar = () => {
   const config = useStore((state) => state.config);
   const isLogged = useStore((state) => state.isLogged);
   const setIsLogged = useStore((state) => state.setIsLogged);
+  const disconnected = useStore((state) => state.disconnected);
+  const setDisconnected = useStore((state) => state.setDisconnected);
   const { pathname } = useLocation();
   const history = useHistory();
-  // const [isLogged, setIsLogged] = useState(!!localStorage.getItem('jwt'));
+  const clearSnackbar = useStore((state) => state.clearSnackbar);
+  const features = useStore((state) => state.features);
 
-  // console.log(pathname.split('/'))
+  const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
@@ -101,10 +117,27 @@ const TopBar = () => {
     setIsLogged(!!localStorage.getItem('jwt'))
   }, [pathname])
 
+  useEffect(() => {
+    const handleDisconnect = (e) => {
+      if (e.detail) {
+        setDisconnected(e.detail.isDisconnected)
+        if (e.detail.isDisconnected === false) {
+          setDialogOpen(false, true)
+          clearSnackbar()
+        }
+      }
+    }
+    document.addEventListener("disconnected", handleDisconnect);
+    return () => {
+      document.removeEventListener("disconnected", handleDisconnect)
+    }
+  }, []);
+
   return (
     <AppBar
       color={"secondary"}
       position="fixed"
+      style={{ marginTop: isElectron() ? '30px' : 0 }}
       className={clsx(classes.appBar, {
         [classes.appBarShift]: open,
       })}
@@ -125,23 +158,55 @@ const TopBar = () => {
               Back
             </Button>}
         </div>
-        {/* {open && <div style={{ width: '48px', height: '48px' }} />} */}
+
         <Typography variant="h6" noWrap>
           {pathname === '/' ? 'LedFx'
             : (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ? virtuals[pathname.split('/')[2]]?.config.name
               : pathname.split('/').pop()}
         </Typography>
+        <div style={{ display: 'flex' }}>
+          {disconnected &&
+            <Box>
+              <IconButton
+                aria-label="display more actions"
+                edge="end"
+                color="inherit"
+                onClick={changeHost}
+                className={'step-two'}
+                style={{ position: 'absolute', right: '4rem' }}
+              >
+                <BladeIcon
+                  style={{ position: 'relative' }}
+                  name={success ? "mdi:lan-connect" : "mdi:lan-disconnect"}
+                />
+                {loading && (
+                  <CircularProgress
+                    size={44}
+                    style={{
+                      color: 'rgba(0,0,0,0.6)',
+                      position: 'absolute',
+                      top: 3,
+                      left: 0,
+                      zIndex: 1,
+                    }}
+                  />
+                )}
+              </IconButton>
+            </Box>
+          }
+          <IconButton
+            aria-label="display more actions"
+            edge="end"
+            color="inherit"
+            onClick={handleClick}
+            className={'step-two'}
+            style={{ marginLeft: '1rem' }}
+          >
+            <MoreVert />
+          </IconButton>
+        </div>
 
-        <IconButton
-          aria-label="display more actions"
-          edge="end"
-          color="inherit"
-          onClick={handleClick}
-          className={'step-two'}
-          style={{ marginLeft: '1rem' }}
-        >
-          <MoreVert />
-        </IconButton>
+        
         <Menu
           id="simple-menu"
           anchorEl={anchorEl}
@@ -150,11 +215,15 @@ const TopBar = () => {
           onClose={() => setAnchorEl(null)}
           className={classes.bladeMenu}
         >
-          {isLogged && <MenuItem disabled divider>
-            <ListItemIcon>
-              <GitHub />
+          {features['cloud'] && isLogged && <MenuItem disabled divider>
+            <ListItemIcon style={{ marginTop: -13 }}>
+              <StyledBadge badgeContent={localStorage.getItem('ledfx-cloud-role')} color="secondary">
+                <GitHub />
+              </StyledBadge>
             </ListItemIcon>
-            {localStorage.getItem('username')}
+            <div>
+              <div>{localStorage.getItem('username')}</div>
+            </div>
           </MenuItem>}
           <MenuItem onClick={changeHost}>
             <ListItemIcon>
@@ -180,13 +249,13 @@ const TopBar = () => {
                 : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} />
                   : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} />
                     : null}
-          <MenuItem onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
+          <MenuItem  onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />
             </ListItemIcon>
             Settings
           </MenuItem>
-          {parseInt(window.localStorage.getItem('BladeMod')) > 10 &&
+          {features['cloud'] &&
             <MenuItem onClick={(e) => isLogged ? logout(e) : window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`} >
               <ListItemIcon>
                 {isLogged ? <Logout /> : <Login />}

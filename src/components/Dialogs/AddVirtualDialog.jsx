@@ -56,7 +56,7 @@ const AddVirtualDialog = () => {
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
       ) {
-        console.log("ADDING");
+        // console.log("ADDING");
         addVirtual({
           config: { ...defaultModel, ...cleanedModel },
         }).then((res) => {
@@ -69,12 +69,12 @@ const AddVirtualDialog = () => {
           }
         });
       } else {
-        console.log("EDITING");
+        // console.log("EDITING");
         addVirtual({
           id: virtId,
           config: { ...model },
         }).then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res !== "failed") {
             setDialogOpenAddVirtual(false);
             getDevices();

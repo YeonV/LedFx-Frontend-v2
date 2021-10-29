@@ -18,6 +18,7 @@ export default function LabelBottomNavigation() {
   const [value, setValue] = useState(pathname);
   const [backdrop, setBackdrop] = useState(false);
   const leftOpen = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
+  const features = useStore((state) => state.features);
 
   const [spotifyEnabled, setSpotifyEnabled] = useState(false)
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
@@ -57,7 +58,7 @@ export default function LabelBottomNavigation() {
         value="/Scenes"
         icon={<Wallpaper />}
       />
-      {parseInt(window.localStorage.getItem('BladeMod')) > 10
+      {features['integrations']
         ? (<BottomNavigationAction
           label="Integrations"
           value="/Integrations"
@@ -73,7 +74,7 @@ export default function LabelBottomNavigation() {
           to="/Settings"
         />)}
     </BottomNavigation>
-    {parseInt(window.localStorage.getItem('BladeMod')) > 10 && (
+    {features['spotify'] && (
       <SpotifyWidget
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}

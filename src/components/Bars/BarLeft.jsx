@@ -7,6 +7,7 @@ import useStore from '../../utils/apiStore';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
 import BladeIcon from '../Icons/BladeIcon';
+import isElectron from 'is-electron';
 
 const LeftBar = () => {
   const classes = useStyles();
@@ -17,20 +18,19 @@ const LeftBar = () => {
   const setOpen = useStore((state) => state.setLeftBarOpen);
   const smallScreen = useMediaQuery('(max-width:768px)');
 
-
   const handleDrawerClose = () => {
     setOpen(false)
   };
 
   const logo = (
     <div className={classes.logo}>
-      <a href="/#" className={classes.logoLink}>
+      {!isElectron() && <a href="/#" className={classes.logoLink}>
         <div className={classes.logoImage}>
           <img src={logoAsset} alt="logo" className={classes.img} />
         </div>
         LedFx
-      </a>
-      <div className={classes.devbadge} onClick={() => window.localStorage.setItem('BladeMod', 0)} onDoubleClick={() => window.localStorage.setItem('BladeMod', 10)} />
+      </a>}
+      <div className={classes.devbadge} onClick={() => window.localStorage.setItem('BladeMod', 0)} />
     </div>
   );
 

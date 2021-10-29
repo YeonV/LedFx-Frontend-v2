@@ -171,8 +171,6 @@ const Webaudio = ({style}) => {
             variant="contained"
             color="primary"
             onClick={() => {
-              console.log("BOOM")
-              console.log(audioContext)
               if (!webAud) {
                 if (wsReady) {
                   navigator.mediaDevices.enumerateDevices()
