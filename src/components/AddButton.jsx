@@ -41,6 +41,7 @@ const AddButton = ({ className, style, setBackdrop }) => {
     const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice);
     const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual);
     const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
+    const features = useStore((state) => state.features);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -60,7 +61,7 @@ const AddButton = ({ className, style, setBackdrop }) => {
         { icon: <Wallpaper />, name: 'Add Scene', action: () => { setDialogOpenAddScene(true); handleClose(); } },
     ];
 
-    if (parseInt(window.localStorage.getItem('BladeMod')) > 10) {
+    if (features['integrations']) {
         menuitems.push({ icon: <SettingsInputSvideo />, name: 'Add Integration', action: () => { setDialogOpenAddIntegration(true); handleClose(); } })
     }
 

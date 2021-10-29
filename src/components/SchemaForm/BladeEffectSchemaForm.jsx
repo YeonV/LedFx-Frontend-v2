@@ -62,7 +62,7 @@ const BladeEffectSchemaForm = (props) => {
 
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
-  const viewMode = useStore((state) => state.viewMode);
+  const features = useStore((state) => state.features);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -95,7 +95,7 @@ const BladeEffectSchemaForm = (props) => {
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {viewMode === 'expert' && (
+      {features['formsettings'] && (
         <Fab
           onClick={handleClickOpen}
           variant="circular"

@@ -31,7 +31,11 @@ export const useEditVirtualsStyles = makeStyles(theme => ({
     },
     cloudEffectCard: {
       cursor: 'pointer',
+      width: 280,
       '&:hover': {
+        borderColor: theme.palette.primary.main
+      },
+      '&.active': {
         borderColor: theme.palette.primary.main
       }
     }

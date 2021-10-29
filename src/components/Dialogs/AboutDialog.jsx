@@ -23,7 +23,7 @@ export default function AboutDialog({ className, children, startIcon, title }) {
 
     useEffect(async () => {
         const info = await getInfo()
-        if (info.git_build_commit) {
+        if (info && info.git_build_commit) {
             setBcommit(info.git_build_commit)
             setBversion(info.version)
         }

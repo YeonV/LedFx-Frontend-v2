@@ -5,7 +5,7 @@ import useStore from '../../utils/apiStore';
 import Popover from '../../components/Popover';
 import { Add, Cloud } from '@material-ui/icons';
 import axios from 'axios';
-import CloudScreen from './Cloud';
+import CloudScreen from './Cloud/Cloud';
 import SharePresetButton from './SharePresetButton';
 import PresetButton from './PresetButton';
 
@@ -49,7 +49,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const classes = useStyles();
   const [name, setName] = useState('');
   const [valid, setValid] = useState(true);
-  const [sharing, setSharing] = useState(false);
 
   const activatePreset = useStore((state) => state.activatePreset);
   const addPreset = useStore((state) => state.addPreset);
@@ -57,6 +56,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const deletePreset = useStore((state) => state.deletePreset);
   const isLogged = useStore((state) => state.isLogged);
+  const features = useStore((state) => state.features);
 
 
   const uploadPresetCloud = async (list, preset) => {
@@ -245,18 +245,12 @@ const PresetsCard = ({ virtual, effectType, presets, style }) => {
       </CardContent>
       <CardActions >
         <div style={{ flexDirection: 'column', flex: 1 }}>
-          <div style={{ marginLeft: '0.5rem' }}>
+          <div style={{ marginLeft: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <Typography variant="body2" className={classes.hint}>
-              Long-Press to delete a preset.
+              Long-Press or right-click to open context-menu
             </Typography>
-            {!!localStorage.getItem('jwt') && isLogged && <>
-              <CloudScreen virtId={virtual.id} effectType={effectType} variant="outlined" label="Get more..." startIcon={<Cloud />} />
-              {localStorage.getItem('ledfx-cloud-role') === 'creator' && <>
-                <Switch checked={sharing} onChange={(e) => setSharing(e.target.checked)} />
-                Share
-              </>
-              }
-            </>
+            {features['cloud'] && !!localStorage.getItem('jwt') && isLogged &&
+              <CloudScreen virtId={virtual.id} effectType={effectType} variant="outlined" label="get more online" startIcon={<Cloud />} />
             }
           </div>
         </div>

@@ -2,7 +2,7 @@ import './FX.css'
 
 const FX = ({
   stroke="#ffffff", strokeWidth, strokeLinejoin, strokeLinecap, currentColor = 'transparent', style
-}) => <svg id="svg"  onDoubleClick={()=>window.localStorage.getItem('BladeMod') === '10' ? window.localStorage.setItem('BladeMod', 11) : window.localStorage.setItem('BladeMod', 0)}  className={'fxSvg'} xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="-200, -200, 800,800">
+}) => <svg id="svg" className={'fxSvg'} xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="-200, -200, 800,800">
     <g id="svgg">
     <path 
       id="path0"

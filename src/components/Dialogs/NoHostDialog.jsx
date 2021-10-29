@@ -21,15 +21,15 @@ export default function NoHostDialog() {
   };
 
   const handleSave = () => {
-    
+
     if (typeof hostvalue !== 'string') {
       setHost(hostvalue.title);
-      if (!hosts.some(h=> h.title === hostvalue.title)) {        
+      if (!hosts.some(h => h.title === hostvalue.title)) {
         window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts, hostvalue]))
       } else {
         window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]))
       }
-    } else {      
+    } else {
       setHost(hostvalue);
     }
     setDialogOpen(false);
@@ -54,69 +54,69 @@ export default function NoHostDialog() {
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">
-        {edit ? 'LedFx-Core Host' : 'No LedFx-Core found'}
-      </DialogTitle>
-      <DialogContent>
-        {!edit && (
-          <DialogContentText>
-            You can change the host if you want:
-          </DialogContentText>
-        )}
-        <Autocomplete
-          value={hostvalue}
-          onChange={(event, newValue) => {
-            if (typeof newValue === 'string') {
-              setHostvalue({
-                title: newValue,
-              });
-            } else if (newValue && newValue.inputValue) {
-              setHostvalue({
-                title: newValue.inputValue,
-              });
-            } else {
-              setHostvalue(newValue);
-            }
-          }}
-          filterOptions={(options, params) => {
-            const filtered = filter(options, params);
-            if (params.inputValue !== '') {
-              filtered.push({
-                inputValue: params.inputValue,
-                title: `Add "${params.inputValue}"`,
-              });
-            }
+          {edit ? 'LedFx-Core Host' : window.process?.argv.indexOf("integratedCore") === -1 ? 'No LedFx-Core found' : 'LedFx-Core not ready'}
+        </DialogTitle>
+        <DialogContent>
+          {!edit && (
+            <DialogContentText>
+              You can change the host if you want:
+            </DialogContentText>
+          )}
+          <Autocomplete
+            value={hostvalue}
+            onChange={(event, newValue) => {
+              if (typeof newValue === 'string') {
+                setHostvalue({
+                  title: newValue,
+                });
+              } else if (newValue && newValue.inputValue) {
+                setHostvalue({
+                  title: newValue.inputValue,
+                });
+              } else {
+                setHostvalue(newValue);
+              }
+            }}
+            filterOptions={(options, params) => {
+              const filtered = filter(options, params);
+              if (params.inputValue !== '') {
+                filtered.push({
+                  inputValue: params.inputValue,
+                  title: `Add "${params.inputValue}"`,
+                });
+              }
 
-            return filtered;
-          }}
-          id="host"
-          options={hosts}
-          getOptionLabel={(option) => {
-            if (typeof option === 'string') {
-              return option;
-            }
-            if (option.inputValue) {
-              return option.inputValue;
-            }
-            return option.title;
-          }}
-          renderOption={(option) => <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>{option.title}<Delete onClick={(e) => handleDelete(e, option.title)} /></div>}
-          style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="IP:Port" variant="outlined" />}
-          selectOnFocus
-          clearOnBlur
-          handleHomeEndKeys
-          freeSolo
+              return filtered;
+            }}
+            id="host"
+            options={hosts}
+            getOptionLabel={(option) => {
+              if (typeof option === 'string') {
+                return option;
+              }
+              if (option.inputValue) {
+                return option.inputValue;
+              }
+              return option.title;
+            }}
+            renderOption={(option) => <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>{option.title}<Delete onClick={(e) => handleDelete(e, option.title)} /></div>}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="IP:Port" variant="outlined" />}
+            selectOnFocus
+            clearOnBlur
+            handleHomeEndKeys
+            freeSolo
 
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleSave} color="primary">
-          Set Host
-        </Button>
-      </DialogActions>
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} color="primary">
+            Set Host
+          </Button>
+        </DialogActions>
     </Dialog>
   );
 }

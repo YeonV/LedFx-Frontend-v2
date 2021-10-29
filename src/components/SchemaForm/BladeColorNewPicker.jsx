@@ -52,7 +52,6 @@ const BladeColorNewPicker = ({ sendColor, col, clr, virtual }) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
   const handleColorChange = (e) => {
-    console.log(virtual)
     setColorNew(e);
     sendColor(e, virtual);
   };

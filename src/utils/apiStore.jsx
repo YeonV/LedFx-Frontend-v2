@@ -15,6 +15,35 @@ const useStore = create(
       },
 
       // FRONTEND STUFF
+
+      features: {
+        cloud: false,
+        wled: false,
+        integrations: false,
+        spotify: false,
+        formsettings: false,
+        webaudio: false,
+      },
+      setFeatures: (feat, use) => set((state) => ({
+        features: {
+          ...state.features,
+          [feat]: use
+        }
+      })),
+      showFeatures: {
+        cloud: false,
+        wled: false,
+        integrations: false,
+        spotify: false,
+        formsettings: false,
+        webaudio: false,
+      },
+      setShowFeatures: (feat, show) => set((state) => ({
+        showFeatures: {
+          ...state.showFeatures,
+          [feat]: show
+        }
+      })),
       tours: {
         home: false,
         devices: false,
@@ -28,6 +57,11 @@ const useStore = create(
           ...state.tours,
           [tour]: true
         }
+      })),
+
+      disconnected: false,
+      setDisconnected: (dis) => set(() => ({
+        disconnected: dis
       })),
 
       viewMode: 'user',

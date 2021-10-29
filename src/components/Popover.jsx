@@ -50,7 +50,6 @@ export default function Popover({
   };
   const longPress = useLongPress((e) => openPopover(e), {
     onCancel: e => {
-      console.log('click')
       onSingleClick && onSingleClick()
     },
     treshhold: 1000,
