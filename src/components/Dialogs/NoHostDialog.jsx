@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button, Box, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import useStore from '../../utils/apiStore';
+import { deleteFrontendConfig } from '../../utils/helpers';
+import LinearProgressWithLabel from './Download';
+import isElectron from 'is-electron';
 
 const filter = createFilterOptions();
 
@@ -15,11 +18,20 @@ export default function NoHostDialog() {
   const storedURLs = JSON.parse(window.localStorage.getItem('ledfx-hosts')) || [{ title: 'http://localhost:8888' }];
   const [hosts, setHosts] = useState([{ title: 'http://localhost:8888' }]);
   const [hostvalue, setHostvalue] = useState({ title: 'http://localhost:8888' });
+  const [progress, setProgress] = useState(0);
 
   const handleClose = () => {
+    // if (window.process?.argv.indexOf("integratedCore") === -1) {
+    //   window.location.reload()
+    // }
     setDialogOpen(false);
-  };
 
+  };
+  window.api?.receive('fromMain', (parameters) => {
+    if (parameters[0] === 'download-progress') {
+      setProgress(parameters[1].percent * 100)
+    }
+  });
   const handleSave = () => {
 
     if (typeof hostvalue !== 'string') {
@@ -32,7 +44,7 @@ export default function NoHostDialog() {
     } else {
       setHost(hostvalue);
     }
-    setDialogOpen(false);
+    // setDialogOpen(false);
     window.location.reload(true);
   };
 
@@ -48,12 +60,13 @@ export default function NoHostDialog() {
   }, [storedURL, setHosts]);
 
   return (
-    <Dialog
-      open={dialogOpen}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">
+    <div key={"nohost-dialog"}>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
           {edit ? 'LedFx-Core Host' : window.process?.argv.indexOf("integratedCore") === -1 ? 'No LedFx-Core found' : 'LedFx-Core not ready'}
         </DialogTitle>
         <DialogContent>
@@ -108,6 +121,12 @@ export default function NoHostDialog() {
             freeSolo
 
           />
+          
+          {isElectron() && <p>No Core? Want to try integrated Core?  <Button variant={"outlined"} onClick={()=> { window.api.send('toMain', "download-core")}} color="primary">Download Core</Button></p>}
+          {progress > 0 && <Box sx={{ width: '100%' }}>
+            <LinearProgressWithLabel value={progress} />
+          </Box>}
+           {/* {isElectron() && window.localStorage.getItem("core-init") !== 'initialized' && <div onClick={()=> {deleteFrontendConfig();window.api.send('toMain', "restart-client")}}>Restart2</div>} */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -117,6 +136,7 @@ export default function NoHostDialog() {
             Set Host
           </Button>
         </DialogActions>
-    </Dialog>
+      </Dialog>
+    </div>
   );
 }

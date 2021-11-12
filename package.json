@@ -1,6 +1,6 @@
 {
     "name": "ledfx",
-    "version": "2.0.0-beta33",
+    "version": "2.0.0-beta34",
     "description": "LedFx - BladeMOD",
     "author": "YeonV aka Blade",
     "private": true,
@@ -28,6 +28,7 @@
         "axios": "^0.24.0",
         "clsx": "^1.1.1",
         "custom-electron-titlebar": "^3.2.7",
+        "electron-dl": "^3.2.1",
         "electron-is-dev": "^2.0.0",
         "electron-squirrel-startup": "^1.0.0",
         "is-electron": "^2.2.0",
@@ -60,6 +61,7 @@
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "pack": "electron-builder --dir",
         "dist": "react-scripts build && electron-builder",
+        "distyz": "react-scripts build && electron-builder -w zip -w portable -w",
         "dist-multi": "react-scripts build && electron-builder -mwl",
         "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
         "electron": "wait-on tcp:3000 && electron .",
@@ -111,37 +113,6 @@
         "react-git-info": "^2.0.0",
         "react-is": "^17.0.2",
         "wait-on": "^6.0.0"
-    },
-    "config": {
-        "forge": {
-            "packagerConfig": {
-                "icon": "src/icons/mac/icon.icns",
-                "name": "LedFx Client by Blade",
-                "title": "LedFx Client by Blade"
-            },
-            "makers": [
-                {
-                    "name": "@electron-forge/maker-squirrel",
-                    "config": {
-                        "name": "ledfx"
-                    }
-                },
-                {
-                    "name": "@electron-forge/maker-zip",
-                    "platforms": [
-                        "darwin"
-                    ]
-                },
-                {
-                    "name": "@electron-forge/maker-deb",
-                    "config": {}
-                },
-                {
-                    "name": "@electron-forge/maker-rpm",
-                    "config": {}
-                }
-            ]
-        }
     },
     "build": {
         "win": {

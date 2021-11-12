@@ -21,9 +21,11 @@ import Device from './pages/Device/Device';
 import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
-import { initFrontendConfig } from './utils/helpers';
+import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
 import LoginRedirect from './pages/LoginRedirect';
 import isElectron from 'is-electron';
+import WaveLines from './components/Icons/waves';
+import useWindowDimensions from './utils/useWindowDimension';
 
 
 export default function App() {
@@ -33,6 +35,9 @@ export default function App() {
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
   const shutdown = useStore((state) => state.shutdown);
+  const features = useStore((state) => state.features);
+
+  const { height, width } = useWindowDimensions();
 
   const ledfxTheme = window.localStorage.getItem('ledfx-theme') || (window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen' : 'Dark');
   const ledfxThemes = {
@@ -55,8 +60,11 @@ export default function App() {
   }, []);
 
   window.api?.receive('fromMain', (parameters) => {
-    if (parameters === 'trigger-function') {
+    if (parameters === 'shutdown') {
       shutdown()
+    }
+    if (parameters === 'clear-frontend') {
+      deleteFrontendConfig()
     }
   });
 
@@ -90,6 +98,12 @@ export default function App() {
             </main>
             <BottomBar />
           </Router>
+          {features['waves'] && <WaveLines
+            startColor={ledfxThemes[ledfxTheme || 'Dark'].palette.primary.main}
+            stopColor={ledfxThemes[ledfxTheme || 'Dark'].palette.accent.main || '#ffdc0f'}
+            width={width - 8}
+            height={height}
+          />}
         </div>
       </WsContext.Provider>
     </MuiThemeProvider>

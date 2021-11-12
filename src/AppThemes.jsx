@@ -10,6 +10,9 @@ export const BladeDarkGreenTheme = createTheme({
     secondary: {
       main: '#1db954',
     },
+    accent: {
+      main: '#20173c',
+    },
     background: { 
       default: '#030303', 
       paper: '#151515' 
@@ -31,6 +34,9 @@ export const BladeDarkBlueTheme = createTheme({
     secondary: {
       main: '#0dbedc',
     },
+    accent: {
+      main: '#20173c',
+    },
     background: { 
       default: '#030303', 
       paper: '#151515' 
@@ -51,6 +57,9 @@ export const BladeDarkTheme = createTheme({
     },
     secondary: {
       main: '#500000',
+    },
+    accent: {
+      main: '#20173c',
     },
     background: { 
       default: '#030303', 
@@ -102,7 +111,10 @@ export const BladeDarkOrangeTheme = createTheme({
       main: '#FFBF47',
     },
     secondary: {
-      main: '#ffa500',
+      main: '#edad2d',
+    },
+    accent: {
+      main: '#542581',
     },
     background: { 
       default: '#030303', 

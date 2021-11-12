@@ -23,6 +23,7 @@ const useStore = create(
         spotify: false,
         formsettings: false,
         webaudio: false,
+        waves: false,
       },
       setFeatures: (feat, use) => set((state) => ({
         features: {
@@ -37,6 +38,7 @@ const useStore = create(
         spotify: false,
         formsettings: false,
         webaudio: false,
+        waves: false,
       },
       setShowFeatures: (feat, show) => set((state) => ({
         showFeatures: {
@@ -110,8 +112,8 @@ const useStore = create(
         dialogs: {
           ...state.dialogs,
           nohost: {
-            open,
-            edit,
+            open: open,
+            edit: edit,
           },
         },
       })),
