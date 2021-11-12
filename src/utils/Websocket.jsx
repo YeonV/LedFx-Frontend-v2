@@ -43,6 +43,7 @@ const _ws = new Sockette(`${window.localStorage.getItem('ledfx-host') ? window.l
   onmaximum: e => console.log('Stop Attempting!', e),
   onclose: e => {
     // console.log('Closed!', e)
+    window.localStorage.removeItem("core-init")
     document.dispatchEvent(
       new CustomEvent("disconnected", {
         detail: {

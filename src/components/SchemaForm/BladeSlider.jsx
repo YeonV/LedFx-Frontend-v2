@@ -128,7 +128,7 @@ const BladeSliderInner = ({
         onChange={handleInputChange}
         onBlur={handleBlur}
         inputProps={{
-          step: schema.maximum > 1 ? 0.1 : 0.01,
+          step: step || (schema.maximum > 1 ? 0.1 : 0.01),
           min: schema.minimum || 0,
           max: schema.maximum,
           type: 'number',

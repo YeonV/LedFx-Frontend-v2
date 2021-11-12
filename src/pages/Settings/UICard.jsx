@@ -83,6 +83,10 @@ const UICard = () => {
                 <label>WebAudio</label>
                 <SettingsSwitch checked={features['webaudio']} onChange={(e) => setFeatures('webaudio', !features['webaudio'])} />
             </div>}
+            {showFeatures['waves'] && <div className={`${classes.settingsRow} step-settings-three `}>
+                <label>BG Waves</label>
+                <SettingsSwitch checked={features['waves']} onChange={(e) => setFeatures('waves', !features['waves'])} />
+            </div>}
             {dev && <div className={`${classes.settingsRow} step-settings-x `}>
                 <label>Dev Mode</label>
                 <Input
@@ -97,14 +101,15 @@ const UICard = () => {
                     }}
                     margin="dense"
                     onBlur={(e) => {
-                        if (e.target.value === 'clear') { setViewMode('user'); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('formsettings', false); setShowFeatures('webaudio', false); setFeatures('cloud', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('formsettings', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
-                        if (e.target.value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('cloud', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('formsettings', true); setShowFeatures('webaudio', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true); setFeatures('spotify', true); setFeatures('formsettings', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "Dark"); window.location.reload() }
+                        if (e.target.value === 'clear') { setViewMode('user'); setShowFeatures('waves', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('formsettings', false); setShowFeatures('webaudio', false); setFeatures('waves', false); setFeatures('cloud', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('formsettings', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
+                        if (e.target.value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('cloud', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('formsettings', true); setShowFeatures('webaudio', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true); setFeatures('spotify', true); setFeatures('formsettings', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "Dark"); window.location.reload() }
                         if (e.target.value === 'BladeCloud') { setShowFeatures('cloud', true) }
                         if (e.target.value === 'BladeWled') { setShowFeatures('wled', true) }
                         if (e.target.value === 'BladeIntegrations') { setShowFeatures('integrations', true) }
                         if (e.target.value === 'BladeSpotify') { setShowFeatures('spotify', true) }
                         if (e.target.value === 'BladeFormsettings') { setShowFeatures('formsettings', true) }
                         if (e.target.value === 'BladeWebaudio') { setShowFeatures('webaudio', true) }
+                        if (e.target.value === 'BladeWaves') { setShowFeatures('waves', true) }
                         if (e.target.value.startsWith('theme:')) { window.localStorage.setItem('ledfx-theme', e.target.value.replace('theme:', '')); window.location.reload() }
                     }}
                 />

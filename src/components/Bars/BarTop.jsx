@@ -122,14 +122,17 @@ const TopBar = () => {
       if (e.detail) {
         setDisconnected(e.detail.isDisconnected)
         if (e.detail.isDisconnected === false) {
-          setDialogOpen(false, true)
+          // setDialogOpen(false, true)
           clearSnackbar()
+          if (window.localStorage.getItem("core-init") !== 'initialized') {
+            window.localStorage.setItem("core-init", 'initialized')            
+          }
         }
       }
     }
     document.addEventListener("disconnected", handleDisconnect);
     return () => {
-      document.removeEventListener("disconnected", handleDisconnect)
+      // document.removeEventListener("disconnected", handleDisconnect)
     }
   }, []);
 
@@ -160,7 +163,7 @@ const TopBar = () => {
         </div>
 
         <Typography variant="h6" noWrap>
-          {pathname === '/' ? 'LedFx'
+          {pathname === '/' ? `LedFx ${window.localStorage.getItem("core-init")}`
             : (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ? virtuals[pathname.split('/')[2]]?.config.name
               : pathname.split('/').pop()}
         </Typography>
@@ -217,7 +220,7 @@ const TopBar = () => {
         >
           {features['cloud'] && isLogged && <MenuItem disabled divider>
             <ListItemIcon style={{ marginTop: -13 }}>
-              <StyledBadge badgeContent={localStorage.getItem('ledfx-cloud-role')} color="secondary">
+              <StyledBadge badgeContent={localStorage.getItem('ledfx-cloud-role') === 'authenticated' ? 'logged in' : localStorage.getItem('ledfx-cloud-role')} color="secondary">
                 <GitHub />
               </StyledBadge>
             </ListItemIcon>
