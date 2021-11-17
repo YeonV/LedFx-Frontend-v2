@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/LedFx-Frontend-v2/static/css/main.d84185ae.chunk.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.3bd01bd0.chunk.js",
-    "main.js.map": "/LedFx-Frontend-v2/static/js/main.3bd01bd0.chunk.js.map",
-    "runtime-main.js": "/LedFx-Frontend-v2/static/js/runtime-main.6fe7cbba.js",
-    "runtime-main.js.map": "/LedFx-Frontend-v2/static/js/runtime-main.6fe7cbba.js.map",
-    "static/js/2.b9a1851c.chunk.js": "/LedFx-Frontend-v2/static/js/2.b9a1851c.chunk.js",
-    "static/js/2.b9a1851c.chunk.js.map": "/LedFx-Frontend-v2/static/js/2.b9a1851c.chunk.js.map",
-    "static/js/3.043861f6.chunk.js": "/LedFx-Frontend-v2/static/js/3.043861f6.chunk.js",
-    "static/js/3.043861f6.chunk.js.map": "/LedFx-Frontend-v2/static/js/3.043861f6.chunk.js.map",
+    "main.css": "/LedFx-Frontend-v2/static/css/main.19fdc652.chunk.css",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.6f94aa70.chunk.js",
+    "main.js.map": "/LedFx-Frontend-v2/static/js/main.6f94aa70.chunk.js.map",
+    "runtime-main.js": "/LedFx-Frontend-v2/static/js/runtime-main.a3c34086.js",
+    "runtime-main.js.map": "/LedFx-Frontend-v2/static/js/runtime-main.a3c34086.js.map",
+    "static/js/2.7106c6b6.chunk.js": "/LedFx-Frontend-v2/static/js/2.7106c6b6.chunk.js",
+    "static/js/2.7106c6b6.chunk.js.map": "/LedFx-Frontend-v2/static/js/2.7106c6b6.chunk.js.map",
+    "static/js/3.ca66b9b8.chunk.js": "/LedFx-Frontend-v2/static/js/3.ca66b9b8.chunk.js",
+    "static/js/3.ca66b9b8.chunk.js.map": "/LedFx-Frontend-v2/static/js/3.ca66b9b8.chunk.js.map",
     "index.html": "/LedFx-Frontend-v2/index.html",
-    "static/css/main.d84185ae.chunk.css.map": "/LedFx-Frontend-v2/static/css/main.d84185ae.chunk.css.map",
-    "static/js/2.b9a1851c.chunk.js.LICENSE.txt": "/LedFx-Frontend-v2/static/js/2.b9a1851c.chunk.js.LICENSE.txt",
+    "static/css/main.19fdc652.chunk.css.map": "/LedFx-Frontend-v2/static/css/main.19fdc652.chunk.css.map",
+    "static/js/2.7106c6b6.chunk.js.LICENSE.txt": "/LedFx-Frontend-v2/static/js/2.7106c6b6.chunk.js.LICENSE.txt",
     "static/media/index.css": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.e9db4005.woff2",
     "static/media/blademod.04a8d38d.svg": "/LedFx-Frontend-v2/static/media/blademod.04a8d38d.svg",
     "static/media/ring.1faea45b.png": "/LedFx-Frontend-v2/static/media/ring.1faea45b.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.6fe7cbba.js",
-    "static/js/2.b9a1851c.chunk.js",
-    "static/css/main.d84185ae.chunk.css",
-    "static/js/main.3bd01bd0.chunk.js"
+    "static/js/runtime-main.a3c34086.js",
+    "static/js/2.7106c6b6.chunk.js",
+    "static/css/main.19fdc652.chunk.css",
+    "static/js/main.6f94aa70.chunk.js"
   ]
 }
