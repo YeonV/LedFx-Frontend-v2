@@ -168,6 +168,7 @@ const AddIntegrationDialog = () => {
         {model && (
           <BladeSchemaForm
             hideToggle={!integrationType}
+            type={integrationType}
             schema={currentSchema}
             model={model}
             onModelChange={handleModelChange}

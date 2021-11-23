@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { HslStringColorPicker } from 'react-colorful';
+import { HslStringColorPicker, RgbStringColorPicker, RgbColorPicker, HslColorPicker, HsvStringColorPicker, HsvColorPicker, HexColorPicker  } from 'react-colorful';
 import useClickOutside from '../../utils/useClickOutside';
 
 const useStyles = makeStyles((theme) => ({
@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   picker: {
-    width: '150px',
     height: '30px',
     margin: '15px 10px 10px 10px',
     borderRadius: '10px',
@@ -24,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapper: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
+    width: '100%',
     borderRadius: '10px',
     position: 'relative',
-    margin: '0.5rem',
     '& > label': {
       top: '-0.5rem',
       display: 'flex',
@@ -47,7 +46,7 @@ const BladeColorNewPicker = ({ sendColor, col, clr, virtual }) => {
   const classes = useStyles();
   const popover = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [colorNew, setColorNew] = useState('hsl(0, 100%, 25%)');
+  const [colorNew, setColorNew] = useState(col);
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -97,25 +96,44 @@ const BladeColorNewPicker = ({ sendColor, col, clr, virtual }) => {
           ref={popover}
         >
           <div className={classes.paper}>
-            <HslStringColorPicker
+          <HexColorPicker
               color={colorNew}
               onChange={(e)=>handleColorChange(e)}
             />
-            {/* {Object.keys(coloring).map(c => (
-                            <div
-                                key={c}
-                                style={{
-                                    width: c === col ? '22px' : '20px',
-                                    height: c === col ? '22px' : '20px',
-                                    margin: c === col ? '4px' : '5px',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer',
-                                    background: coloring[c],
-                                    border: c === col ? `2px solid #000` : `1px solid #fff`,
-                                }}
-                                onClick={() => sendColor(c)}
-                            ></div>
-                        ))} */}
+            {/* {colorNew.indexOf("hsl(") === 0 
+            ? <HslStringColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />
+            : colorNew.indexOf("hsv(") === 0 
+            ? <HsvStringColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />
+            : colorNew.indexOf("rgb(") === 0 
+            ?<RgbStringColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />
+            : (typeof colorNew === 'object' && !!colorNew.r && !!colorNew.g && !!colorNew.b)
+            ?<RgbColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />
+            : (typeof colorNew === 'object' && !!colorNew.h && !!colorNew.s && !!colorNew.l)
+            ?<HslColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />
+            : (typeof colorNew === 'object' && !!colorNew.h && !!colorNew.s && !!colorNew.v)
+            ?<HsvColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />
+            : <RgbStringColorPicker
+              color={colorNew}
+              onChange={(e)=>handleColorChange(e)}
+            />} */}
           </div>
         </Popper>
       </ClickAwayListener>
