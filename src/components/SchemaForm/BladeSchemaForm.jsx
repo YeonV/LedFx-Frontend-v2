@@ -51,6 +51,7 @@ const BladeSchemaForm = (props) => {
     selectVariant = 'outlined',
     sliderVariant = 'outlined',
     onModelChange = (e) => e,
+    type,
   } = props;
 
 
@@ -174,8 +175,10 @@ const BladeSchemaForm = (props) => {
                     )}
                   </Select>
                 </BladeFrame>
-                : <BladeSelect
+                : !((type === 'mqtt_hass' && s.id === 'name') || (type === 'mqtt_hass' && s.id === 'description')) &&
+                <BladeSelect
                   hideDesc={hideDesc}
+                  hide={"test"}
                   model={model}
                   disabled={!s.permitted}
                   style={{ margin: '0.5rem 0', width: '48%' }}

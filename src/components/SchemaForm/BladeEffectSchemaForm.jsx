@@ -153,14 +153,25 @@ const BladeEffectSchemaForm = (props) => {
                   }}
                 />
 
-              : <BladeColorDropDown
+              : (s.id === 'blade_color')
+                ? <BladeColorDropDown
                   virtual={virtual}
                   effects={effects}
                   selectedType={selectedType}
                   model={model}
                   key={i}
                   index={i}
-                  type={color_mode === 'select' ? 'text' : 'color'} // colorNew
+                  type={color_mode === 'select' ? 'text' : 'colorNew'}
+                  clr={s.id}
+                />
+                : <BladeColorDropDown
+                  virtual={virtual}
+                  effects={effects}
+                  selectedType={selectedType}
+                  model={model}
+                  key={i}
+                  index={i}
+                  type={color_mode === 'select' ? 'text' : 'colorNew'} // color
                   clr={s.id}
                 />
 
@@ -199,11 +210,21 @@ const BladeEffectSchemaForm = (props) => {
                 }}
               />
             );
-
+          case 'color':
+            return (<BladeColorDropDown
+              virtual={virtual}
+              effects={effects}
+              selectedType={selectedType}
+              model={model}
+              key={i}
+              index={i}
+              type={color_mode === 'select' ? 'text' : 'colorNew'}
+              clr={s.id}
+            />)
           default:
             return (
               <>
-                Unsupported type:
+                Unsupported type:--
                 {s.type}
               </>
             );
