@@ -1,5 +1,5 @@
 export const drawerWidth = 240;
-export const frontendConfig = 3;
+export const frontendConfig = 4;
 
 
 export const camelToSnake = (str) => str[0].toLowerCase()
@@ -54,12 +54,14 @@ export const deleteFrontendConfig = () => {
     window.localStorage.removeItem('ledfx-host')
     window.localStorage.removeItem('ledfx-hosts')
     window.localStorage.removeItem('ledfx-ws')
+    window.localStorage.removeItem('ledfx-theme')
+    window.localStorage.removeItem('ledfx-frontend')
 }
 
 export const initFrontendConfig = () => {
     if (window.localStorage.getItem('ledfx-frontend') >= frontendConfig) {
         return
     }
-    window.localStorage.removeItem('undefined')
+    deleteFrontendConfig()
     window.localStorage.setItem('ledfx-frontend', frontendConfig)
 }
