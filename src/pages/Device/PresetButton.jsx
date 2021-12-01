@@ -81,20 +81,20 @@ export default function PresetButton({ delPreset, uploadPresetCloud, deletePrese
                     />
                 </div>
                 {(window.localStorage.getItem('ledfx-cloud-role') === 'creator') && features['cloud'] && isLogged &&
-                <MenuItem onClick={uploadPresetCloud}>
-                    <ListItemIcon>
-                        <CloudUpload fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Upload to Cloud</ListItemText>
-                </MenuItem>}
+                    <MenuItem onClick={(e) => { uploadPresetCloud(e); setAnchorEl(null); }}>
+                        <ListItemIcon>
+                            <CloudUpload fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Upload to Cloud</ListItemText>
+                    </MenuItem>}
                 {(window.localStorage.getItem('ledfx-cloud-role') === 'creator') && features['cloud'] && isLogged &&
-                <MenuItem onClick={deletePresetCloud}>
-                    <ListItemIcon>
-                        <CloudOff fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Delete from Cloud</ListItemText>
-                </MenuItem>}
-            </Menu>
-        </div>
+                    <MenuItem onClick={(e) => { deletePresetCloud(e); setAnchorEl(null); }}>
+                        <ListItemIcon>
+                            <CloudOff fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Delete from Cloud</ListItemText>
+                    </MenuItem>}
+            </Menu >
+        </div >
     );
 }

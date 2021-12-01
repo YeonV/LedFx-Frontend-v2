@@ -75,10 +75,6 @@ const UICard = () => {
                 <label>Spotify Embed</label>
                 <SettingsSwitch checked={features['spotify']} onChange={(e) => setFeatures('spotify', !features['spotify'])} />
             </div>}
-            {showFeatures['formsettings'] && <div className={`${classes.settingsRow} step-settings-three `}>
-                <label>Form Settings</label>
-                <SettingsSwitch checked={features['formsettings']} onChange={(e) => setFeatures('formsettings', !features['formsettings'])} />
-            </div>}
             {showFeatures['webaudio'] && <div className={`${classes.settingsRow} step-settings-three `}>
                 <label>WebAudio</label>
                 <SettingsSwitch checked={features['webaudio']} onChange={(e) => setFeatures('webaudio', !features['webaudio'])} />
@@ -101,13 +97,12 @@ const UICard = () => {
                     }}
                     margin="dense"
                     onBlur={(e) => {
-                        if (e.target.value === 'clear') { setViewMode('user'); setShowFeatures('waves', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('formsettings', false); setShowFeatures('webaudio', false); setFeatures('waves', false); setFeatures('cloud', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('formsettings', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
-                        if (e.target.value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('cloud', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('formsettings', true); setShowFeatures('webaudio', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true); setFeatures('spotify', true); setFeatures('formsettings', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "Dark"); window.location.reload() }
+                        if (e.target.value === 'clear') { setViewMode('user'); setShowFeatures('waves', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('webaudio', false); setFeatures('waves', false); setFeatures('cloud', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
+                        if (e.target.value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('cloud', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('webaudio', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true); setFeatures('spotify', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "Dark"); window.location.reload() }
                         if (e.target.value === 'BladeCloud') { setShowFeatures('cloud', true) }
                         if (e.target.value === 'BladeWled') { setShowFeatures('wled', true) }
                         if (e.target.value === 'BladeIntegrations') { setShowFeatures('integrations', true) }
                         if (e.target.value === 'BladeSpotify') { setShowFeatures('spotify', true) }
-                        if (e.target.value === 'BladeFormsettings') { setShowFeatures('formsettings', true) }
                         if (e.target.value === 'BladeWebaudio') { setShowFeatures('webaudio', true) }
                         if (e.target.value === 'BladeWaves') { setShowFeatures('waves', true) }
                         if (e.target.value.startsWith('theme:')) { window.localStorage.setItem('ledfx-theme', e.target.value.replace('theme:', '')); window.location.reload() }

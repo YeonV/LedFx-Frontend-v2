@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:8888';
+const baseURL = window.location.href.split('/#')[0] || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host');
 
 const api = axios.create({
@@ -57,6 +57,7 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
     }
     if (response.status === 200) {
       // console.log("YZ3", response)
+      set({ disconnected: false });
       return response.data || response;
     }
 

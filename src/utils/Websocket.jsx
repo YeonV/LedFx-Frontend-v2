@@ -13,7 +13,7 @@ import Sockette from 'sockette';
 
 
 function createSocket() {  
-const _ws = new Sockette(`${window.localStorage.getItem('ledfx-host') ? window.localStorage.getItem('ledfx-host').replace('https://','wss://').replace('http://','ws://') : 'ws://localhost:8888'}/api/websocket`, {
+const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || window.location.href.split('/#')[0]).replace('https://','wss://').replace('http://','ws://')}/api/websocket`, {
   timeout: 5e3,
   maxAttempts: 10,
   onopen: e => {

@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 const BladeBoolean = ({
   onClick,
-  type = 'switch',
-  variant = 'outlined',
+  type = 'switch', // unused
+  variant = 'outlined', // unused
   schema,
   model,
   required = false,
