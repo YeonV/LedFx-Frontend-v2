@@ -38,6 +38,7 @@
         "react-colorful": "^5.5.0",
         "react-dev-utils": "^11.0.4",
         "react-dom": "^17.0.2",
+        "react-gcolor-picker": "^1.2.1",
         "react-moment": "^1.1.1",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",

@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Popper from '@material-ui/core/Popper';
 import useClickOutside from '../../utils/useClickOutside';
 import useStore from '../../utils/apiStore';
+import ReactGPicker from "react-gcolor-picker";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -11,10 +12,35 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     maxWidth: '320px',
-    height: '50vh',
     overflow: 'auto',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
+    '& .gradient-result': {
+      display: 'none'
+    },
+    '& .input_rgba': {
+      display: 'none'
+    },
+    '& .gradient-interaction': {
+      order: -1,
+      marginBottom: '1rem',
+    },
+    '& .colorpicker': {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    '& .color-picker-panel, & .popup_tabs-header, & .popup_tabs, & .colorpicker, & .colorpicker .color-picker-panel, & .popup_tabs-header .popup_tabs-header-label-active': { 
+      backgroundColor: 'transparent'
+    },
+    '& .popup_tabs-header-label-active': { 
+      color: theme.palette.text.primary
+    },
+    '& .popup_tabs-header-label': { 
+      color: theme.palette.text.disabled,
+      '&.popup_tabs-header-label-active': { 
+        color: theme.palette.text.primary
+      },
+    },
   },
   picker: {
     height: '30px',
@@ -22,47 +48,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     cursor: 'pointer',
     border: '1px solid #fff',
-  },
-  pickerItemWrapper: {
-    width: 300,
-    height: '35px',
-    cursor: 'pointer',
-    padding: '2px 3px 2px 15px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderRadius: 10,
-    border: '1px solid #999',
-    margin: 3,
-    transition: 'background-color 0.15s ease-in-out',
-    '&:hover': {
-      backgroundColor: 'rgba(255,255,255,0.1)',     
-    },
-    '.gradient-picker-var2 &': {
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: 0
-    }
-  },
-  pickerItemGradient: {
-    width: 200,
-    height: 20,
-    borderRadius: 7,
-    '.gradient-picker-var2 &': {
-      width: '100%',
-      height: 35,
-      borderRadius: 10
-    }
-  },
-  pickerItemLabel: {
-    '.gradient-picker-var2 &': {
-      position: 'absolute',
-      background: 'rgba(0,0,0,0.5)',
-      padding: '0px 15px',
-      borderRadius: 10,
-      fontSize: 12
-    },
+    
   },
   wrapper: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -83,9 +69,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },
-
   },
-
 }));
 
 const coloring = {
@@ -260,13 +244,18 @@ const gradients = {
 }
 
 
-const BladeGradientPicker = ({ col, clr, index, virtual, variant = 'picker' }) => {
+const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapperStyle }) => {
   const classes = useStyles();
   const popover = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
-
+  // console.log([
+  //   ...Object.keys(gradients) ])
+  // console.log([
+  //   ...Object.values(gradients).map(g=>`linear-gradient(0deg, ${g.colors.map((c, i)=>`${c} ${i * Math.round(100 / (g.colors.length - 1))}%`).join(', ')})`),
+  // 'linear-gradient(0deg, rgb(255, 177, 153) 0%, rgb(255, 8, 68) 100%)'])
+  // console.log(col, clr,color_type)
   const virtuals = useStore((state) => state.virtuals);
   const effectyz = virtual && virtuals[Object.keys(virtuals).find((d) => d === virtual.id)];
 
@@ -294,16 +283,13 @@ const BladeGradientPicker = ({ col, clr, index, virtual, variant = 'picker' }) =
   const id = open ? 'simple-popper' : undefined;
 
   return (
-    <div className={`${classes.wrapper} step-effect-${index} gradient-${variant}`} style={{ width: '49%', display: virtual.effect.config.solid_color ? 'none' : 'block' }}>
+    <div className={`${classes.wrapper} step-effect-${index} gradient-picker`} style={{ ...wrapperStyle }}>
       <label className={'MuiFormLabel-root'}>
         {clr.replaceAll('_', ' ').replaceAll('background', 'bg').replaceAll('name', '')}
       </label>
       <div
         className={classes.picker}
-        style={{
-          background: coloring[col],
-          background: `linear-gradient(to right,${Object.keys(gradients).indexOf(col) > -1 ? (gradients[col].colors.map((c, i) => i === 0 ? `${c}, ` : `${c} ${i * 100 / (gradients[col].colors.length - 1)}%${i === gradients[col].colors.length - 1 ? '' : ', '}`).join('')) : '#000, #fff 100%'})`
-        }}
+        style={{ background: col }}
         aria-describedby={id}
         onClick={handleClick}
       />
@@ -315,20 +301,25 @@ const BladeGradientPicker = ({ col, clr, index, virtual, variant = 'picker' }) =
         anchorEl={anchorEl}
         ref={popover}
       >
-        <div className={`${classes.paper} gradient-${variant}`}>
-
-          {Object.keys(gradients).map((cg) => (
-            <div
-              key={cg}
-              className={classes.pickerItemWrapper}
-              onClick={() => sendColor(cg)}
-            >
-              <div className={classes.pickerItemLabel}>
-                {cg}
-              </div>
-              <div className={classes.pickerItemGradient} style={{ background: `linear-gradient(to right,${gradients[cg].colors.map((c, i) => i === 0 ? `${c}, ` : `${c} ${i * 100 / (gradients[cg].colors.length - 1)}%${i === gradients[cg].colors.length - 1 ? '' : ', '}`).join('')})` }} />
-            </div>
-          ))}
+        <div className={`${classes.paper} gradient-picker`}>
+          <>
+            <ReactGPicker
+              colorBoardHeight={150}
+              debounce
+              debounceMS={300}
+              format="hex"             
+              gradient={gradient}
+              solid={true}              
+              onChange={(c) => sendColor(c)}
+              popupWidth={288}
+              showAlpha={false}
+              value={col}
+              defaultColors={[
+                ...Object.values(coloring),
+                ...Object.values(gradients).map(g=>`linear-gradient(90deg, ${g.colors.map((c, i)=>`${c} ${i * Math.round(100 / (g.colors.length - 1))}%`).join(',')})`)
+              ]}
+            />
+          </>
         </div>
       </Popper>
     </div>

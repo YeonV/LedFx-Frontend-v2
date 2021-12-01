@@ -5,7 +5,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import { getOverlapping } from "../../../utils/helpers";
