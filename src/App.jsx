@@ -39,7 +39,21 @@ export default function App() {
 
   const { height, width } = useWindowDimensions();
 
-  const ledfxTheme = window.localStorage.getItem('ledfx-theme') || (window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen' : 'Dark');
+  // console.log("THEME1: ", !!window.localStorage.getItem('ledfx-theme'))
+  // console.log("THEME2: ", window.localStorage.getItem('ledfx-theme'))
+  // console.log("THEME3: ", !!window.localStorage.getItem('hassTokens'))
+  // console.log("THEME4: ", window.location.origin === 'https://my.ledfx.app')
+  // console.log("THEME5: ", isElectron())
+
+  const ledfxTheme = !!window.localStorage.getItem('ledfx-theme') ?
+    window.localStorage.getItem('ledfx-theme')
+    : !!window.localStorage.getItem('hassTokens') ? 'DarkBlue'
+      : window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen'
+        : isElectron() ? 'DarkOrange'
+          : 'Dark';
+
+  // console.log("THEME6: ", ledfxTheme)
+
   const ledfxThemes = {
     "Dark": BladeDarkTheme,
     "DarkOrange": BladeDarkOrangeTheme,

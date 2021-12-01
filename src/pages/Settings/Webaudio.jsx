@@ -1,4 +1,4 @@
-import { Button, Fab, TextField, Popover, FormControlLabel, Switch } from '@material-ui/core';
+import { Button, Fab, TextField, Popover } from '@material-ui/core';
 import { Check, Close } from '@material-ui/icons';
 import { useState, useEffect, useRef } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon';
@@ -21,12 +21,9 @@ const getMedia = async (clientDevice) => {
 }
 
 const Webaudio = ({style}) => {
-  // const [webAud, setWebAud] = useState(false)
   const webAud = useStore((state) => state.webAud)
   const setWebAud = useStore((state) => state.setWebAud)
   const [wsReady, setWsReady] = useState(false)
-  const [audioData, setAudioData] = useState([])
-  // const [keep, setKeep] = useState(false)
   const webAudName = useStore((state) => state.webAudName)
   const setWebAudName = useStore((state) => state.setWebAudName)
 
