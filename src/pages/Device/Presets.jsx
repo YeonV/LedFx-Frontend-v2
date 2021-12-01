@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useTheme, Card, CardContent, CardActions, CardHeader, Divider, Button, Grid, Typography, TextField, Switch } from '@material-ui/core';
+import { Card, CardContent, CardActions, CardHeader, Divider, Button, Grid, Typography, TextField } from '@material-ui/core';
 import useStore from '../../utils/apiStore';
 import Popover from '../../components/Popover';
 import { Add, Cloud } from '@material-ui/icons';
 import axios from 'axios';
 import CloudScreen from './Cloud/Cloud';
-import SharePresetButton from './SharePresetButton';
 import PresetButton from './PresetButton';
 
 const cloud = axios.create({

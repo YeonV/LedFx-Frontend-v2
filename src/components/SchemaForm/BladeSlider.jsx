@@ -5,7 +5,7 @@ import useStyles from './BladeSlider.styles';
 import BladeFrame from './BladeFrame';
 
 const BladeSlider = ({
-  variant = 'outlined',
+  variant = 'outlined', // unused
   disableUnderline,
   schema,
   model,

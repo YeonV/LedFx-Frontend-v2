@@ -1,22 +1,6 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Fab,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  Select,
-  DialogActions,
-  Button,
-  InputLabel,
-  MenuItem,
-  FormControl,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
 import useStore from '../../utils/apiStore';
-import BladeColorDropDown from './BladeColorDropDown';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';
@@ -32,45 +16,16 @@ const useStyles = makeStyles({
 
 const BladeEffectSchemaForm = (props) => {
   const {
-    effects,
     virtual,
     schema,
     model,
     virtual_id,
     selectedType,
-    colorKeys = [],
   } = props;
-  const pickerKeys = [
-    'color',
-    'background_color',
-    'color_lows',
-    'color_mids',
-    'color_high',
-    'strobe_color',
-    'lows_colour',
-    'mids_colour',
-    'high_colour',
-    ...colorKeys,
-  ];
 
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const color_mode = useStore((state) => state.schemaForm.color_mode);
-  const bool_mode = useStore((state) => state.schemaForm.bool_mode);
-  const gradient_mode = useStore((state) => state.schemaForm.gradient_mode);
-  const setSchemaForm = useStore((state) => state.setSchemaForm);
-
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
-  const features = useStore((state) => state.features);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleEffectConfig = (virtual_id, config) => updateVirtualEffect(virtual_id, {
     virtId: virtual_id,
@@ -89,30 +44,17 @@ const BladeEffectSchemaForm = (props) => {
       .sort((a) => (a.type === 'number') ? -1 : 1)
       .sort((a) => (a.type === 'integer') ? -1 : 1)
       .sort((a) => (a.type === 'string' && a.enum && a.enum.length) ? -1 : 1)
-      .sort((a) => pickerKeys.indexOf(a.id) > -1 ? -1 : 1)
-      .sort((a) => a.id === 'color' ? -1 : 1)
       .sort((a) => a.id === 'gradient_name' ? -1 : 1)
+      .sort((a) => (a.type === 'color') ? -1 : 1)
+      .sort((a) => a.id === 'color' ? -1 : 1)
 
   return (
     <div className={classes.bladeSchemaForm}>
-      {features['formsettings'] && (
-        <Fab
-          onClick={handleClickOpen}
-          variant="circular"
-          color="default"
-          size="small"
-          style={{ position: 'absolute', right: '3rem', top: '1rem' }}
-        >
-          <SettingsIcon />
-        </Fab>
-      )}
-
       {yzSchema && yzSchema.map((s, i) => {
         switch (s.type) {
           case 'boolean':
             return (
               <BladeBoolean
-                type={bool_mode}
                 key={i}
                 index={i}
                 model={model}
@@ -127,18 +69,7 @@ const BladeEffectSchemaForm = (props) => {
               />
             );
           case 'string':
-            return s.enum && pickerKeys.indexOf(s.id) === -1 ?
-              (s.id === 'gradient_name' && gradient_mode !== 'select')
-                ? <BladeGradientPicker
-                  col={model[s.id]}
-                  key={i}
-                  clr={s.id}
-                  selectedType={selectedType}
-                  model={model}
-                  virtual={virtual}
-                  variant={gradient_mode}
-                />
-                : <BladeSelect
+                return <BladeSelect
                   model={model}
                   schema={s}
                   wrapperStyle={{ width: '49%' }
@@ -151,28 +82,6 @@ const BladeEffectSchemaForm = (props) => {
                     c[model_id] = value;
                     return handleEffectConfig(virtual_id, c);
                   }}
-                />
-
-              : (s.id === 'blade_color')
-                ? <BladeColorDropDown
-                  virtual={virtual}
-                  effects={effects}
-                  selectedType={selectedType}
-                  model={model}
-                  key={i}
-                  index={i}
-                  type={color_mode === 'select' ? 'text' : 'colorNew'}
-                  clr={s.id}
-                />
-                : <BladeColorDropDown
-                  virtual={virtual}
-                  effects={effects}
-                  selectedType={selectedType}
-                  model={model}
-                  key={i}
-                  index={i}
-                  type={color_mode === 'select' ? 'text' : 'colorNew'} // color
-                  clr={s.id}
                 />
 
           case 'number':
@@ -211,16 +120,19 @@ const BladeEffectSchemaForm = (props) => {
               />
             );
           case 'color':
-            return (<BladeColorDropDown
-              virtual={virtual}
-              effects={effects}
-              selectedType={selectedType}
-              model={model}
-              key={i}
-              index={i}
-              type={color_mode === 'select' ? 'text' : 'colorNew'}
-              clr={s.id}
-            />)
+            return (
+              <BladeGradientPicker
+                  col={model[s.id]}
+                  key={i}
+                  index={i}
+                  clr={s.id}
+                  selectedType={selectedType}
+                  model={model}
+                  virtual={virtual}
+                  wrapperStyle={{ width: '49%' }}
+                  gradient={s.gradient}
+                />
+            )
           default:
             return (
               <>
@@ -230,73 +142,11 @@ const BladeEffectSchemaForm = (props) => {
             );
         }
       })}
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">
-          Blade's SchemaForm Settings
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Customize the appearance of dynamically generated forms
-          </DialogContentText>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <FormControl>
-              <InputLabel id="ColorVariantLabel">Color Mode</InputLabel>
-              <Select
-                labelId="ColorVariantLabel"
-                id="ColorVariant"
-                value={color_mode}
-                onChange={(e) => setSchemaForm('color_mode', e.target.value)}
-              >
-                <MenuItem value="picker">Picker</MenuItem>
-                <MenuItem value="select">Select</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="BoolModeLabel">Bool Mode</InputLabel>
-              <Select
-                labelId="BoolModeLabel"
-                id="bool_mode"
-                value={bool_mode}
-                onChange={(e) => setSchemaForm('bool_mode', e.target.value)}
-              >
-                <MenuItem value="switch">Switch</MenuItem>
-                <MenuItem value="checkbox">Checkbox</MenuItem>
-                <MenuItem value="button">Button</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="GradientModeLabel">Gradient Mode</InputLabel>
-              <Select
-                labelId="GradientModeLabel"
-                id="gradient_mode"
-                value={gradient_mode}
-                onChange={(e) => setSchemaForm('gradient_mode', e.target.value)}
-              >
-                <MenuItem value="picker">Picker</MenuItem>
-                <MenuItem value="picker-var2">Picker Variant 2</MenuItem>
-                <MenuItem value="select">Select</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <DialogActions>
-            <Button onClick={handleClose} variant="contained" color="primary">
-              Ok
-            </Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
 BladeEffectSchemaForm.propTypes = {
-  colorMode: PropTypes.oneOf(['picker', 'select']),
-  boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
-  colorKeys: PropTypes.array,
   schema: PropTypes.object.isRequired,
   model: PropTypes.object.isRequired,
   virtual_id: PropTypes.string.isRequired,

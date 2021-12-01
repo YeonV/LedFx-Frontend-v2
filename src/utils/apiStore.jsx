@@ -6,7 +6,7 @@ const useStore = create(
   persist(
     devtools((set, get) => ({
 
-      host: 'http://localhost:8888',
+      host: window.location.href.split('#')[0],
       setHost: (host) => {
         window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
         return set((state) => ({
@@ -21,7 +21,6 @@ const useStore = create(
         wled: false,
         integrations: false,
         spotify: false,
-        formsettings: false,
         webaudio: false,
         waves: false,
       },
@@ -36,7 +35,6 @@ const useStore = create(
         wled: false,
         integrations: false,
         spotify: false,
-        formsettings: false,
         webaudio: false,
         waves: false,
       },
@@ -170,10 +168,11 @@ const useStore = create(
         ui: {
           ...state.ui,
           bars: {
-          leftBar: {
-            open,
-          },
-        }},
+            leftBar: {
+              open,
+            },
+          }
+        },
       })),
       showSnackbar: ({ messageType, message }) => {
         set((state) => ({
@@ -225,9 +224,9 @@ const useStore = create(
       virtuals: {},
       getVirtuals: async () => {
         const resp = await Ledfx('/api/virtuals', set);
-        if (resp) {          
+        if (resp) {
           set({ paused: resp.paused });
-          if (resp && resp.virtuals) {          
+          if (resp && resp.virtuals) {
             set({ virtuals: resp.virtuals });
           }
         }
@@ -463,14 +462,14 @@ const useStore = create(
           set({ dialogs: { nohost: { open: true } } });
         }
       },
-      setSystemConfig: async ({config}) => await Ledfx('/api/config', set, 'PUT', config),
+      setSystemConfig: async ({ config }) => await Ledfx('/api/config', set, 'PUT', config),
       deleteSystemConfig: async () => await Ledfx('/api/config', set, 'DELETE'),
       importSystemConfig: async (config) => await Ledfx('/api/config', set, 'POST', config),
 
       scanForDevices: async () => {
         const resp = await Ledfx('/api/find_devices', set, 'POST', {});
         if (resp && resp.status === 'success') {
-          
+
         } else {
           set({ dialogs: { nohost: { open: true } } });
         }
@@ -486,7 +485,7 @@ const useStore = create(
 
       graphs: false,
       toggleGraphs: () => {
-          set((state) => ({ graphs: !state.graphs }))
+        set((state) => ({ graphs: !state.graphs }))
       },
 
       shutdown: async () => await Ledfx('/api/power', set, 'POST', {
@@ -514,25 +513,32 @@ const useStore = create(
       },
       webAud: false,
       setWebAud: (newState) => {
-        set((state) => ({ webAud: newState }))        
+        set((state) => ({ webAud: newState }))
       },
       webAudName: '',
       setWebAudName: (newState) => {
-        set((state) => ({ webAudName: newState }))        
+        set((state) => ({ webAudName: newState }))
       },
       clientDevice: null,
       clientDevices: null,
       setClientDevice: (newState) => {
-        set((state) => ({ clientDevice: newState }))        
-      },      
+        set((state) => ({ clientDevice: newState }))
+      },
       setClientDevices: (newState) => {
-        set((state) => ({ clientDevices: newState }))        
-      },      
+        set((state) => ({ clientDevices: newState }))
+      },
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
       setSpotifyEmbedUrl: (url) => {
-        set((state) => ({ spotifyEmbedUrl: url }))        
+        set((state) => ({ spotifyEmbedUrl: url }))
       },
     })),
+    {
+      // ...
+      partialize: (state) =>
+        Object.fromEntries(
+          Object.entries(state).filter(([key]) => !["dialogs", "disconnected", "ui"].includes(key))
+        ),
+    }
   ),
 );
 

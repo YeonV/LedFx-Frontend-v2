@@ -1,26 +1,15 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import useStore from '../../utils/apiStore';
-
 import {
-  Fab,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   DialogContentText,
   Select,
-  DialogActions,
-  Button,
-  InputLabel,
   MenuItem,
-  FormControl,
   ListSubheader,
   Switch,
   FormControlLabel,
   Divider,
 } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
 import BladeBoolean from './BladeBoolean';
 import BladeSelect from './BladeSelect';
 import BladeSlider from './BladeSlider';
@@ -45,36 +34,13 @@ const BladeSchemaForm = (props) => {
     model,
     disableUnderline,
     hideToggle,
-    colorMode = 'picker',
-    boolMode = 'switch',
-    boolVariant = 'outlined',
-    selectVariant = 'outlined',
-    sliderVariant = 'outlined',
     onModelChange = (e) => e,
     type,
   } = props;
 
-
-
   // console.log(schema)
   const classes = useStyles();
-
-  const [open, setOpen] = useState(false);
-  const [_boolMode, _setBoolMode] = useState(boolMode);
-  const [_boolVariant, _setBoolVariant] = useState(boolVariant);
-  const [_selectVariant, _setSelectVariant] = useState(selectVariant);
-  const [_sliderVariant, _setSliderVariant] = useState(sliderVariant);
-  const [_colorMode, _setColorMode] = useState(colorMode);
   const [hideDesc, setHideDesc] = useState(true);
-  const features = useStore((state) => state.features);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const yzSchema = schema && schema.properties &&
     Object.keys(schema.properties)
@@ -89,17 +55,6 @@ const BladeSchemaForm = (props) => {
 
   return (
     <div>
-      {features['formsettings'] && (
-        <Fab
-          onClick={handleClickOpen}
-          variant="circular"
-          color="primary"
-          size="small"
-          style={{ position: 'absolute', right: '1rem', top: '1rem' }}
-        >
-          <SettingsIcon />
-        </Fab>
-      )}
 
       <div className={classes.bladeSchemaForm}>
         {yzSchema && yzSchema.map((s, i) => {
@@ -109,8 +64,6 @@ const BladeSchemaForm = (props) => {
               return (
                 <BladeBoolean
                   hideDesc={hideDesc}
-                  type={_boolMode}
-                  variant={_boolVariant}
                   key={i}
                   index={i}
                   model={model}
@@ -183,7 +136,6 @@ const BladeSchemaForm = (props) => {
                   disabled={!s.permitted}
                   style={{ margin: '0.5rem 0', width: '48%' }}
                   textStyle={{ width: '100%' }}
-                  variant={_selectVariant}
                   schema={s}
                   required={s.required}
                   model_id={s.id}
@@ -200,7 +152,6 @@ const BladeSchemaForm = (props) => {
               return (
                 <BladeSlider
                   hideDesc={hideDesc}
-                  variant={_sliderVariant}
                   disabled={!s.permitted}
                   disableUnderline={disableUnderline}
                   key={i}
@@ -219,7 +170,6 @@ const BladeSchemaForm = (props) => {
             case 'integer':
               return <BladeSlider
                 hideDesc={hideDesc}
-                variant={_sliderVariant}
                 disabled={!s.permitted}
                 disableUnderline={disableUnderline}
                 step={1}
@@ -239,7 +189,6 @@ const BladeSchemaForm = (props) => {
             case 'int':
               return s?.enum?.length > 10 ? <BladeSlider
                 hideDesc={hideDesc}
-                variant={_sliderVariant}
                 disabled={!s.permitted}
                 disableUnderline={disableUnderline}
                 marks={s?.enum}
@@ -258,7 +207,6 @@ const BladeSchemaForm = (props) => {
                 }}
               /> : <BladeSlider
                 hideDesc={hideDesc}
-                variant={_sliderVariant}
                 disabled={!s.permitted}
                 disableUnderline={disableUnderline}
                 marks={s?.enum}
@@ -295,98 +243,11 @@ const BladeSchemaForm = (props) => {
           labelPlacement="end"
         />
       </>}
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">
-          Blade's SchemaForm Settings
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Customize the appearance of dynamically generated forms
-          </DialogContentText>
-          <FormControl>
-            <InputLabel id="ColorVariantLabel">Color Mode</InputLabel>
-            <Select
-              labelId="ColorVariantLabel"
-              id="ColorVariant"
-              value={_colorMode}
-              onChange={(e) => _setColorMode(e.target.value)}
-            >
-              <MenuItem value="picker">Picker</MenuItem>
-              <MenuItem value="select">Select</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="BoolModeLabel">Bool Mode</InputLabel>
-            <Select
-              labelId="BoolModeLabel"
-              id="BoolMode"
-              value={_boolMode}
-              onChange={(e) => _setBoolMode(e.target.value)}
-            >
-              <MenuItem value="switch">Switch</MenuItem>
-              <MenuItem value="checkbox">Checkbox</MenuItem>
-              <MenuItem value="button">Button</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="BoolVariantLabel">Bool Variant</InputLabel>
-            <Select
-              labelId="BoolVariantLabel"
-              id="BoolVariant"
-              value={_boolVariant}
-              onChange={(e) => _setBoolVariant(e.target.value)}
-            >
-              <MenuItem value="text">Text</MenuItem>
-              <MenuItem value="outlined">Outlined</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="SelectVariantLabel">Select Variant</InputLabel>
-            <Select
-              labelId="SelectVariantLabel"
-              id="SelectVariant"
-              value={_selectVariant}
-              onChange={(e) => _setSelectVariant(e.target.value)}
-            >
-              <MenuItem value="text">Text</MenuItem>
-              <MenuItem value="outlined">Outlined</MenuItem>
-              <MenuItem value="contained">Contained</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <InputLabel id="SliderVariantLabel">Slider Variant</InputLabel>
-            <Select
-              labelId="SliderVariantLabel"
-              id="SliderVariant"
-              value={_sliderVariant}
-              onChange={(e) => _setSliderVariant(e.target.value)}
-            >
-              <MenuItem value="text">Text</MenuItem>
-              <MenuItem value="outlined">Outlined</MenuItem>
-            </Select>
-          </FormControl>
-
-          <DialogActions>
-            <Button onClick={handleClose} variant="contained" color="primary">
-              Ok
-            </Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
 BladeSchemaForm.propTypes = {
-  colorMode: PropTypes.oneOf(['picker', 'select']),
-  boolMode: PropTypes.oneOf(['switch', 'checkbox', 'button']),
-  boolVariant: PropTypes.oneOf(['outlined', 'contained', 'text']),
-  selectVariant: PropTypes.string, // outlined | any
-  sliderVariant: PropTypes.string, // outlined | any
   schema: PropTypes.object.isRequired,
   model: PropTypes.object.isRequired,
 };
