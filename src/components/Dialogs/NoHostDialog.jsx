@@ -13,6 +13,7 @@ export default function NoHostDialog() {
   const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false);
   const edit = useStore((state) => state.dialogs.nohost?.edit || false);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
+  const setDisconnected = useStore((state) => state.setDisconnected);
   const setHost = useStore((state) => state.setHost);
   const storedURL = window.localStorage.getItem('ledfx-host');
   const storedURLs = JSON.parse(window.localStorage.getItem('ledfx-hosts')) || [{ title: 'http://localhost:8888' }];
@@ -45,6 +46,7 @@ export default function NoHostDialog() {
       setHost(hostvalue);
     }
     setDialogOpen(false);
+    setDisconnected(false)
     // window.location.href = window.location.href;
   };
 
@@ -56,8 +58,16 @@ export default function NoHostDialog() {
 
   useEffect(() => {
     storedURL && setHostvalue(storedURL);
-    storedURLs && setHosts(storedURLs)
+    storedURLs && setHosts(storedURLs)    
   }, [storedURL, setHosts]);
+
+  useEffect(() => {
+    if (!storedURL){
+      setHost(window.location.href.split('/#')[0])
+      window.localStorage.setItem('ledfx-host', window.location.href.split('/#')[0]);
+      window.location.href = window.location.href
+    }
+  }, []);
 
   return (
     <div key={"nohost-dialog"}>

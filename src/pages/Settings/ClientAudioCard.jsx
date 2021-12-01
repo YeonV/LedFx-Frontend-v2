@@ -2,7 +2,6 @@ import { MenuItem, Select } from '@material-ui/core';
 import BladeFrame from '../../components/SchemaForm/BladeFrame';
 import useStore from '../../utils/apiStore';
 import { makeStyles } from '@material-ui/core/styles';
-import Webaudio from './Webaudio';
 
 const useStyles = makeStyles((theme) => ({
     select: {
@@ -17,9 +16,7 @@ const ClientAudioCard = ({ style }) => {
     const clientDevice = useStore((state) => state.clientDevice)
     const clientDevices = useStore((state) => state.clientDevices)
     const setClientDevice = useStore((state) => state.setClientDevice)
-    const setClientDevices = useStore((state) => state.setClientDevices)
     const webAudName = useStore((state) => state.webAudName)
-    
 
     return clientDevices && <BladeFrame style={{ order: 0, ...style }} full={true} title={`${webAudName}: Audio Device`} className={classes.select}>
         <Select
@@ -27,10 +24,7 @@ const ClientAudioCard = ({ style }) => {
             disableUnderline
             value={clientDevice || clientDevices[0].deviceId}
             style={{ width: '100%' }}
-            onChange={(e) => {
-                setClientDevice(e.target.value)
-                // WEBAUDIO CHANGE INPUT DEVICE
-            }}
+            onChange={(e) => { setClientDevice(e.target.value) }}
         >
             {clientDevices.filter(cd => cd.kind === 'audioinput').map((d, i) =>
                 <MenuItem key={i} value={d.deviceId}>
@@ -38,7 +32,7 @@ const ClientAudioCard = ({ style }) => {
                 </MenuItem>
             )}
 
-        </Select>      
+        </Select>
     </BladeFrame>
 };
 
