@@ -164,7 +164,7 @@ const TopBar = () => {
         </div>
 
         <Typography variant="h6" noWrap>
-          {pathname === '/' ? `LedFx`
+          {pathname === '/' ? `LedFx Dev-1`
             : (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ? virtuals[pathname.split('/')[2]]?.config.name
               : pathname.split('/').pop()}
         </Typography>

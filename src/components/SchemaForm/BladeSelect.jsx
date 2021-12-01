@@ -3,7 +3,7 @@ import { Select, MenuItem, TextField } from '@material-ui/core/';
 import BladeFrame from './BladeFrame';
 
 const BladeSelect = ({
-  variant = 'outlined',
+  variant = 'outlined', // unsused
   disabled = false,
   schema,
   model,

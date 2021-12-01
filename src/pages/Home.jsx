@@ -14,6 +14,7 @@ import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
 import FX from "../components/Icons/FX";
+import { deleteFrontendConfig } from "../utils/helpers";
 // import useAddToHomescreenPrompt from "../utils/useAddToHomeScreenPromt";
 
 const sleep = ms => {
@@ -93,6 +94,11 @@ export default function Home(props) {
                 )}%`}</Typography>
               </Box>
             </> : 'WLED-scan'}
+          </Button>
+          <Button variant="outlined" onClick={()=>{
+            deleteFrontendConfig()
+            }}>
+            Clear Data
           </Button>
         </CardActions>
       </Card>

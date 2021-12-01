@@ -174,7 +174,6 @@ const EffectsCard = ({ virtId }) => {
                   <div>
                     <BladeEffectSchemaForm
                       virtual={virtual}
-                      effects={effects}
                       schema={effects[effectType].schema}
                       model={virtual.effect.config}
                       virtual_id={virtId}

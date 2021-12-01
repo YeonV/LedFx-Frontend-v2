@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { MenuItem, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import Tour from 'reactour';
-import { Info, InfoRounded } from '@material-ui/icons';
+import { Info } from '@material-ui/icons';
 import useStore from '../../utils/apiStore';
 
 const step = ({ title = 'Title', text = 'Text', number = 0 }) => (
@@ -22,10 +22,27 @@ const step = ({ title = 'Title', text = 'Text', number = 0 }) => (
 const TourEffect = ({ schema }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const setTour = useStore((state) => state.setTour);
-  const steps = Object.keys(schema.properties).map((p, i) => step({ 
-    title: schema.properties[p].title, 
-    text: schema.properties[p].description, 
-    number: i }))
+
+  const yzSchema = schema && schema.properties &&
+    Object.keys(schema.properties)
+      .map(sk => ({
+        ...schema.properties[sk],
+        id: sk,
+      }))
+      .sort((a) => (a.type === 'number') ? -1 : 1)
+      .sort((a) => (a.type === 'integer') ? -1 : 1)
+      .sort((a) => (a.type === 'string' && a.enum && a.enum.length) ? -1 : 1)
+      .sort((a) => (a.type === 'color') ? -1 : 1)
+      .sort((a) => a.id === 'color' ? -1 : 1)
+      .sort((a) => a.id === 'gradient_name' ? -1 : 1)
+
+  // console.log(schema.properties)
+  const steps = yzSchema.map((p, i) => step({
+    title: p.title,
+    text: p.description,
+    number: i
+  }))
+  
   return (
     <>
       <Button
