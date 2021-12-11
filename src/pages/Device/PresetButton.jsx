@@ -5,6 +5,7 @@ import { useLongPress } from 'use-long-press';
 import { CloudOff, CloudUpload } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
+import { CopyAll } from '@mui/icons-material';
 
 const useStyles = makeStyles((theme) => ({
     bladeMenu: {
@@ -80,6 +81,12 @@ export default function PresetButton({ delPreset, uploadPresetCloud, deletePrese
                         }}
                     />
                 </div>
+                <MenuItem onClick={(e) => { uploadPresetCloud(e); setAnchorEl(null); }}>
+                        <ListItemIcon>
+                            <CopyAll fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Copy Preset</ListItemText>
+                    </MenuItem>
                 {(window.localStorage.getItem('ledfx-cloud-role') === 'creator') && features['cloud'] && isLogged &&
                     <MenuItem onClick={(e) => { uploadPresetCloud(e); setAnchorEl(null); }}>
                         <ListItemIcon>

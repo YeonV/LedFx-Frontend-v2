@@ -64,7 +64,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
   const classes = useStyles();
   const setVirtualEffect = useStore((state) => state.setVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
-  const viewMode = useStore((state) => state.viewMode);
+  const features = useStore((state) => state.features);
 
   const effectNames = effects
     && Object.keys(effects).map((eid) => ({
@@ -126,7 +126,7 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
               ],
             )}
         </Select>
-        {viewMode !== 'user' && <ToggleButtonGroup
+        {features["effectfilter"] && <ToggleButtonGroup
           value={formats}
           onChange={handleFormat}
           aria-label="text formatting"

@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useStore from './apiStore';
 import Sockette from 'sockette';
+import isElectron from 'is-electron';
 
 
 // const ws = new WebSocket(`${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
@@ -13,7 +14,7 @@ import Sockette from 'sockette';
 
 
 function createSocket() {  
-const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || window.location.href.split('/#')[0]).replace('https://','wss://').replace('http://','ws://')}/api/websocket`, {
+const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://','wss://').replace('http://','ws://')}/api/websocket`, {
   timeout: 5e3,
   maxAttempts: 10,
   onopen: e => {
@@ -39,8 +40,8 @@ const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || window
       );
     }
   },
-  onreconnect: e => console.log('Reconnecting...', e),
-  onmaximum: e => console.log('Stop Attempting!', e),
+  // onreconnect: e => console.log('Reconnecting...', e),
+  // onmaximum: e => console.log('Stop Attempting!', e),
   onclose: e => {
     // console.log('Closed!', e)
     window.localStorage.removeItem("core-init")
@@ -52,7 +53,7 @@ const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || window
       })
     );
   },
-  onerror: e => console.log('Error:', e)
+  // onerror: e => console.log('Error:', e)
 });
 return _ws
 }

@@ -1,3 +1,4 @@
+import isElectron from 'is-electron';
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { Ledfx } from './apiProxy';
@@ -6,7 +7,7 @@ const useStore = create(
   persist(
     devtools((set, get) => ({
 
-      host: window.location.href.split('#')[0],
+      host: isElectron() ? 'http://localhost:8888' : window.location.href.split('#')[0],
       setHost: (host) => {
         window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
         return set((state) => ({
@@ -17,12 +18,15 @@ const useStore = create(
       // FRONTEND STUFF
 
       features: {
+        dev: false,
         cloud: false,
         wled: false,
         integrations: false,
         spotify: false,
         webaudio: false,
         waves: false,
+        streamto: false,
+        effectfilter: false
       },
       setFeatures: (feat, use) => set((state) => ({
         features: {
@@ -31,12 +35,15 @@ const useStore = create(
         }
       })),
       showFeatures: {
+        dev: false,
         cloud: false,
         wled: false,
         integrations: false,
         spotify: false,
         webaudio: false,
         waves: false,
+        streamto: false,
+        effectfilter: false
       },
       setShowFeatures: (feat, show) => set((state) => ({
         showFeatures: {
@@ -69,17 +76,6 @@ const useStore = create(
         viewMode: mode
       })),
 
-      schemaForm: {
-        color_mode: 'picker',
-        bool_mode: 'switch',
-        gradient_mode: 'picker-var2',
-      },
-      setSchemaForm: (attrib, value) => set((state) => ({
-        schemaForm: {
-          ...state.schemaForm,
-          [attrib]: value
-        }
-      })),
       pixelGraphs: [],
       setPixelGraphs: (virtuals) => set((state) => ({
         pixelGraphs: [...virtuals]
@@ -374,7 +370,55 @@ const useStore = create(
           }
         },
       ),
+      colors: {},
+      getColors: async () => {
+        const resp = await Ledfx(`/api/colors`, set);
+        if (resp ) {
+          set({ colors: resp });
+        }
+      },
+      addColor: async (config) => await Ledfx(
+        `/api/colors`,
+        set,
+        'POST',
+        { ...config } // { 'name': 'string' }
+      ),
+      deleteColors: async (colorkey) => await Ledfx(
+        `/api/colors`,
+        set,
+        'DELETE',
+        {
+          data: colorkey
+        },
+      ),
+      gradients: {},
+      getGradients: async () => {
+        const resp = await Ledfx(`/api/gradients`, set);
+        if (resp ) {
+          set({ gradients: resp });
+        }
+      },
+      addGradient: async (config) => await Ledfx(
+        `/api/gradients`,
+        set,
+        'POST',
+        { ...config } // { 'name': 'string' }
+      ),
+      deleteGradient: async (colorkey) => await Ledfx(
+        `/api/gradients`,
+        set,
+        'DELETE',
+        {
+          data: {
+            color: colorkey
+          }
+        },
+      ),
 
+      streamingToDevices: [],
+      setStreamingToDevices: (devices) => set(() => ({
+        streamingToDevices: devices
+      })),
       scenes: {},
       getScenes: async () => {
         const resp = await Ledfx('/api/scenes', set);
@@ -483,7 +527,7 @@ const useStore = create(
         }
       },
 
-      graphs: false,
+      graphs: isElectron(),
       toggleGraphs: () => {
         set((state) => ({ graphs: !state.graphs }))
       },
