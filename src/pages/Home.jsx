@@ -15,6 +15,7 @@ import TourHome from '../components/Tours/TourHome';
 import useStore from '../utils/apiStore';
 import FX from "../components/Icons/FX";
 import { deleteFrontendConfig } from "../utils/helpers";
+import ButtonBar from "../components/ButtonBar";
 // import useAddToHomescreenPrompt from "../utils/useAddToHomeScreenPromt";
 
 const sleep = ms => {
@@ -102,6 +103,7 @@ export default function Home(props) {
           </Button>
         </CardActions>
       </Card>
+      <ButtonBar />
       {/* {promptable && !isInstalled ? (
         <ButtonElement onClick={promptToInstall}>INSTALL APP</ButtonElement>
       ) : null} */}

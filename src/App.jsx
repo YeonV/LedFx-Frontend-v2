@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/styles';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -7,6 +8,7 @@ import useStore from './utils/apiStore';
 import ScrollToTop from './utils/scrollToTop';
 import ws, { WsContext, HandleWs } from "./utils/Websocket";
 import { BladeDarkTheme, BladeDarkOrangeTheme, BladeLightTheme, BladeDarkGreenTheme, BladeDarkBlueTheme, BladeDarkGreyTheme } from './AppThemes'
+import { BladeDarkTheme5, BladeDarkOrangeTheme5, BladeLightTheme5, BladeDarkGreenTheme5, BladeDarkBlueTheme5, BladeDarkGreyTheme5 } from './AppThemes5'
 import useStyles from './App.styles';
 import './App.css';
 import './assets/materialdesignicons.css';
@@ -21,12 +23,13 @@ import Device from './pages/Device/Device';
 import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
-import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
+import { deleteFrontendConfig, initFrontendConfig, log } from './utils/helpers';
 import LoginRedirect from './pages/LoginRedirect';
 import isElectron from 'is-electron';
 import WaveLines from './components/Icons/waves';
 import useWindowDimensions from './utils/useWindowDimension';
-
+import { useHotkeys } from 'react-hotkeys-hook'
+import SmartBar from './components/Dialogs/SmartBar';
 
 export default function App() {
   const classes = useStyles();
@@ -36,26 +39,21 @@ export default function App() {
   const getSchemas = useStore((state) => state.getSchemas);
   const shutdown = useStore((state) => state.shutdown);
   const features = useStore((state) => state.features);
+  const [open, setOpen] = useState(false)
+  useHotkeys('ctrl+alt+y', () => setOpen(!open));
 
   const { height, width } = useWindowDimensions();
-
-  // console.log("THEME1: ", !!window.localStorage.getItem('ledfx-theme'))
-  // console.log("THEME2: ", window.localStorage.getItem('ledfx-theme'))
-  // console.log("THEME3: ", !!window.localStorage.getItem('hassTokens'))
-  // console.log("THEME4: ", window.location.origin === 'https://my.ledfx.app')
-  // console.log("THEME5: ", isElectron())
 
   const ledfxTheme = !!window.localStorage.getItem('ledfx-theme') ?
     window.localStorage.getItem('ledfx-theme')
     : !!window.localStorage.getItem('hassTokens') ? 'DarkBlue'
       : window.location.origin === 'https://my.ledfx.app' ? 'DarkGreen'
         : isElectron() ? 'DarkOrange'
-          : 'Dark';
-
-  // console.log("THEME6: ", ledfxTheme)
+          : 'DarkRed';
 
   const ledfxThemes = {
     "Dark": BladeDarkTheme,
+    "DarkRed": BladeDarkTheme,
     "DarkOrange": BladeDarkOrangeTheme,
     "Light": BladeLightTheme,
     "DarkGreen": BladeDarkGreenTheme,
@@ -71,6 +69,11 @@ export default function App() {
 
   useEffect(() => {
     initFrontendConfig();
+    console.info('%c Ledfx ' + '%c\n       © by Blade  ', 'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-image:url(https://my.ledfx.app/favicon/favicon-32x32.png); background-color: #800000; background-repeat: no-repeat; background-position: 10% 50%;', 'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;');
+    // log("Blade's Loggin Tools")
+    // log("successSUCCESS", { id: 'test' })
+    // log("warningWARNING", { id: 'test' })
+    // log("infoINFO", { id: 'test' })
   }, []);
 
   window.api?.receive('fromMain', (parameters) => {
@@ -83,43 +86,46 @@ export default function App() {
   });
 
   return (
-    <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'Dark']}>
-      <WsContext.Provider value={ws}>
-        <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
-          <CssBaseline />
-          <Router basename={process.env.PUBLIC_URL}>
-            <ScrollToTop />
-            <HandleWs />
-            <MessageBar />
-            <TopBar />
-            <LeftBar />
-            <main
-              className={clsx(classes.content, {
-                [classes.contentShift]: leftBarOpen,
-              })}
-            >
-              <div className={classes.drawerHeader} />
-              <Switch>
-                <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
-                <Route exact path="/" component={Home} />
-                <Route path="/devices" component={Devices} />
-                <Route path="/device/:virtId" component={Device} />
-                <Route path="/scenes" component={Scenes} />
-                <Route path="/integrations" component={Integrations} />
-                <Route path="/settings" component={Settings} />
-              </Switch>
-              <NoHostDialog />
-            </main>
-            <BottomBar />
-          </Router>
-          {features['waves'] && <WaveLines
-            startColor={ledfxThemes[ledfxTheme || 'Dark'].palette.primary.main}
-            stopColor={ledfxThemes[ledfxTheme || 'Dark'].palette.accent.main || '#ffdc0f'}
-            width={width - 8}
-            height={height}
-          />}
-        </div>
-      </WsContext.Provider>
-    </MuiThemeProvider>
+    <ThemeProvider theme={BladeDarkGreyTheme5}>
+      <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'DarkRed']}>
+        <WsContext.Provider value={ws}>
+          <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
+            <CssBaseline />
+            <Router basename={process.env.PUBLIC_URL}>
+              <ScrollToTop />
+              <HandleWs />
+              <MessageBar />
+              <TopBar />
+              <LeftBar />
+              <main
+                className={clsx(classes.content, {
+                  [classes.contentShift]: leftBarOpen,
+                })}
+              >
+                <div className={classes.drawerHeader} />
+                <Switch>
+                  <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
+                  <Route exact path="/" component={Home} />
+                  <Route path="/devices" component={Devices} />
+                  <Route path="/device/:virtId" component={Device} />
+                  <Route path="/scenes" component={Scenes} />
+                  <Route path="/integrations" component={Integrations} />
+                  <Route path="/settings" component={Settings} />
+                </Switch>
+                <NoHostDialog />
+                <SmartBar open={open} setOpen={setOpen} />
+              </main>
+              <BottomBar />
+            </Router>
+            {features['waves'] && <WaveLines
+              startColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main}
+              stopColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent.main || '#ffdc0f'}
+              width={width - 8}
+              height={height}
+            />}
+          </div>
+        </WsContext.Provider>
+      </MuiThemeProvider>
+    </ThemeProvider>
   );
 }

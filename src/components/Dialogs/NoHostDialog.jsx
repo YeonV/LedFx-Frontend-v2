@@ -3,8 +3,8 @@ import { Button, Box, TextField, Dialog, DialogActions, DialogContent, DialogCon
 import { Delete } from '@material-ui/icons';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import useStore from '../../utils/apiStore';
-import { deleteFrontendConfig } from '../../utils/helpers';
-import LinearProgressWithLabel from './Download';
+// import { deleteFrontendConfig } from '../../utils/helpers';
+// import LinearProgressWithLabel from './Download';
 import isElectron from 'is-electron';
 
 const filter = createFilterOptions();
@@ -63,8 +63,8 @@ export default function NoHostDialog() {
 
   useEffect(() => {
     if (!storedURL){
-      setHost(window.location.href.split('/#')[0])
-      window.localStorage.setItem('ledfx-host', window.location.href.split('/#')[0]);
+      setHost(isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])
+      window.localStorage.setItem('ledfx-host', isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0]);
       window.location.href = window.location.href
     }
   }, []);
@@ -132,10 +132,10 @@ export default function NoHostDialog() {
 
           />
           
-          {isElectron() && <p>No Core? Want to try integrated Core?  <Button variant={"outlined"} onClick={()=> { window.api.send('toMain', "download-core")}} color="primary">Download Core</Button></p>}
+          {/* {isElectron() && <p>No Core? Want to try integrated Core?  <Button variant={"outlined"} onClick={()=> { window.api.send('toMain', "download-core")}} color="primary">Download Core</Button></p>}
           {progress > 0 && <Box sx={{ width: '100%' }}>
             <LinearProgressWithLabel value={progress} />
-          </Box>}
+          </Box>} */}
            {/* {isElectron() && window.localStorage.getItem("core-init") !== 'initialized' && <div onClick={()=> {deleteFrontendConfig();window.api.send('toMain', "restart-client")}}>Restart2</div>} */}
         </DialogContent>
         <DialogActions>

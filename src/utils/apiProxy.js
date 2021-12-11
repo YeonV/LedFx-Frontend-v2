@@ -1,6 +1,7 @@
 import axios from 'axios';
+import isElectron from 'is-electron';
 
-const baseURL = window.location.href.split('/#')[0] || 'http://localhost:8888';
+const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0] || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host');
 
 const api = axios.create({

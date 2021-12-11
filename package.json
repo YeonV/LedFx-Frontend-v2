@@ -1,6 +1,6 @@
 {
     "name": "ledfx",
-    "version": "2.0.0-beta35",
+    "version": "2.0.0-beta35b",
     "description": "LedFx - BladeMOD",
     "author": "YeonV aka Blade",
     "private": true,
@@ -32,6 +32,7 @@
         "electron-is-dev": "^2.0.0",
         "electron-squirrel-startup": "^1.0.0",
         "is-electron": "^2.2.0",
+        "match-sorter": "^6.3.1",
         "moment": "^2.29.1",
         "prop-types": "^15.7.2",
         "react": "^17.0.2",
@@ -39,6 +40,7 @@
         "react-dev-utils": "^11.0.4",
         "react-dom": "^17.0.2",
         "react-gcolor-picker": "^1.2.1",
+        "react-hotkeys-hook": "^3.4.4",
         "react-moment": "^1.1.1",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",

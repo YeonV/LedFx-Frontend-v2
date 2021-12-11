@@ -6,6 +6,7 @@ import EffectsCard from './Effects';
 import PresetsCard from './Presets';
 import TransitionCard from './Transition';
 import MelbankCard from './Frequencies';
+import StreamToCard from './StreamTo';
 
 const useStyles = makeStyles((theme) => ({
   virtualWrapper: {
@@ -24,6 +25,7 @@ const Device = ({
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getPresets = useStore((state) => state.getPresets);
   const getSchemas = useStore((state) => state.getSchemas);
+  const features = useStore((state) => state.features);
 
   const virtuals = useStore((state) => state.virtuals);
   const presets = useStore((state) => state.presets);
@@ -53,6 +55,7 @@ const Device = ({
           </Grid>
 
           <Grid item className={classes.girdItem}>
+            
             {effectType && presets && (
               <PresetsCard
                 virtual={virtual}
@@ -61,6 +64,7 @@ const Device = ({
                 style={{ marginBottom: '1rem' }}
               />
             )}
+            {features['streamto'] && <StreamToCard virtuals={virtuals} virtual={virtual} />}
             {viewMode === 'expert' && <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />}
             {viewMode === 'expert' && <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />}
           </Grid>

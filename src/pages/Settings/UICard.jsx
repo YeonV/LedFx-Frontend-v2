@@ -24,9 +24,8 @@ const UICard = () => {
     const [fps, setFps] = useState(30)
     const [pixelLength, setPixelLength] = useState(50)
     const [active, setActive] = useState(false);
-    const [dev, setDev] = useState(false);
 
-    const longPress = useLongPress((e) => viewMode === 'expert' && setDev(true), {
+    const longPress = useLongPress((e) => viewMode === 'expert' &&  setFeatures('dev', true), {
         treshhold: 1000,
         captureEvent: true,
     });    
@@ -83,7 +82,15 @@ const UICard = () => {
                 <label>BG Waves</label>
                 <SettingsSwitch checked={features['waves']} onChange={(e) => setFeatures('waves', !features['waves'])} />
             </div>}
-            {dev && <div className={`${classes.settingsRow} step-settings-x `}>
+            {showFeatures['streamto'] && <div className={`${classes.settingsRow} step-settings-three `}>
+                <label>Stream To</label>
+                <SettingsSwitch checked={features['streamto']} onChange={(e) => setFeatures('streamto', !features['streamto'])} />
+            </div>}
+            {showFeatures['effectfilter'] && <div className={`${classes.settingsRow} step-settings-three `}>
+                <label>Effect Filter</label>
+                <SettingsSwitch checked={features['effectfilter']} onChange={(e) => setFeatures('effectfilter', !features['effectfilter'])} />
+            </div>}
+            {features['dev'] && <div className={`${classes.settingsRow} step-settings-x `}>
                 <label>Dev Mode</label>
                 <Input
                     disableUnderline
@@ -97,14 +104,16 @@ const UICard = () => {
                     }}
                     margin="dense"
                     onBlur={(e) => {
-                        if (e.target.value === 'clear') { setViewMode('user'); setShowFeatures('waves', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('webaudio', false); setFeatures('waves', false); setFeatures('cloud', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
-                        if (e.target.value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('cloud', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('webaudio', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true); setFeatures('spotify', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "Dark"); window.location.reload() }
+                        if (e.target.value === 'clear') { setViewMode('user'); setShowFeatures('streamto', false); setShowFeatures('waves', false);setShowFeatures('effectfilter', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('webaudio', false); setFeatures('streamto', false); setFeatures('waves', false); setFeatures('cloud', false);setFeatures('effectfilter', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
+                        if (e.target.value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('streamto', true); setShowFeatures('cloud', true);setShowFeatures('effectfilter', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('webaudio', true); setFeatures('streamto', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true);setFeatures('effectfilter', true); setFeatures('spotify', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "DarkRed"); window.location.reload() }
                         if (e.target.value === 'BladeCloud') { setShowFeatures('cloud', true) }
                         if (e.target.value === 'BladeWled') { setShowFeatures('wled', true) }
                         if (e.target.value === 'BladeIntegrations') { setShowFeatures('integrations', true) }
                         if (e.target.value === 'BladeSpotify') { setShowFeatures('spotify', true) }
                         if (e.target.value === 'BladeWebaudio') { setShowFeatures('webaudio', true) }
                         if (e.target.value === 'BladeWaves') { setShowFeatures('waves', true) }
+                        if (e.target.value === 'BladeStreamTo') { setShowFeatures('streamto', true) }
+                        if (e.target.value === 'BladeEffectFilter') { setShowFeatures('effectfilter', true) }
                         if (e.target.value.startsWith('theme:')) { window.localStorage.setItem('ledfx-theme', e.target.value.replace('theme:', '')); window.location.reload() }
                     }}
                 />
