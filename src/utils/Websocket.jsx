@@ -13,49 +13,54 @@ import isElectron from 'is-electron';
 // const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
 
 
-function createSocket() {  
-const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://','wss://').replace('http://','ws://')}/api/websocket`, {
-  timeout: 5e3,
-  maxAttempts: 10,
-  onopen: e => {
-    // console.log('Connected!', e)
-    document.dispatchEvent(
-      new CustomEvent("disconnected", {
-        detail: {
-          isDisconnected: false
+function createSocket() {
+  const newBase = !!window.localStorage.getItem('ledfx-newbase')
+
+  if (!newBase) {
+    const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://', 'wss://').replace('http://', 'ws://')}/api/websocket`, {
+      timeout: 5e3,
+      maxAttempts: 10,
+      onopen: e => {
+        // console.log('Connected!', e)
+        document.dispatchEvent(
+          new CustomEvent("disconnected", {
+            detail: {
+              isDisconnected: false
+            }
+          })
+        );
+        _ws.ws = e.target;
+      },
+      onmessage: (event) => {
+        if (JSON.parse(event.data).event_type === "visualisation_update") {
+          document.dispatchEvent(
+            new CustomEvent("YZ", {
+              detail: {
+                id: JSON.parse(event.data).vis_id,
+                pixels: JSON.parse(event.data).pixels,
+              }
+            })
+          );
         }
-      })
-    );
-    _ws.ws = e.target;
-  },
-  onmessage: (event) => {
-    if (JSON.parse(event.data).event_type === "visualisation_update") {
-      document.dispatchEvent(
-        new CustomEvent("YZ", {
-          detail: {
-            id: JSON.parse(event.data).vis_id,
-            pixels: JSON.parse(event.data).pixels,
-          }
-        })
-      );
-    }
-  },
-  // onreconnect: e => console.log('Reconnecting...', e),
-  // onmaximum: e => console.log('Stop Attempting!', e),
-  onclose: e => {
-    // console.log('Closed!', e)
-    window.localStorage.removeItem("core-init")
-    document.dispatchEvent(
-      new CustomEvent("disconnected", {
-        detail: {
-          isDisconnected: true
-        }
-      })
-    );
-  },
-  // onerror: e => console.log('Error:', e)
-});
-return _ws
+      },
+      // onreconnect: e => console.log('Reconnecting...', e),
+      // onmaximum: e => console.log('Stop Attempting!', e),
+      onclose: e => {
+        // console.log('Closed!', e)
+        window.localStorage.removeItem("core-init")
+        document.dispatchEvent(
+          new CustomEvent("disconnected", {
+            detail: {
+              isDisconnected: true
+            }
+          })
+        );
+      },
+      // onerror: e => console.log('Error:', e)
+    });
+    return _ws
+  }
+  return
 }
 const ws = createSocket();
 export default ws;
@@ -68,7 +73,7 @@ export const HandleWs = () => {
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
   const [wsReady, setWsReady] = useState(false)
-  
+
   useLayoutEffect(() => {
     if (!(pathname.startsWith("/Devices") || pathname.startsWith("/device"))) {
       setPixelGraphs([]);
@@ -121,7 +126,7 @@ export const HandleWs = () => {
     if (ws.ws) {
       setWsReady(true)
     }
-  }  
+  }
 
   return null;
 }

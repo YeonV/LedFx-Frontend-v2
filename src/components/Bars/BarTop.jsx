@@ -123,12 +123,15 @@ const TopBar = () => {
         setDisconnected(e.detail.isDisconnected)
         if (e.detail.isDisconnected === false) {
           window.localStorage.removeItem('undefined')
-          setDialogOpen(false, true)          
+          setDialogOpen(false, true)
           clearSnackbar()
           if (window.localStorage.getItem("core-init") !== 'initialized') {
-            window.localStorage.setItem("core-init", 'initialized')            
+            window.localStorage.setItem("core-init", 'initialized')
           }
         }
+      }
+      if (!!window.localStorage.getItem('ledfx-newbase')) {
+        setDialogOpen(false, true)
       }
     }
     document.addEventListener("disconnected", handleDisconnect);
@@ -210,7 +213,7 @@ const TopBar = () => {
           </IconButton>
         </div>
 
-        
+
         <Menu
           id="simple-menu"
           anchorEl={anchorEl}
@@ -253,7 +256,7 @@ const TopBar = () => {
                 : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} />
                   : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} />
                     : null}
-          <MenuItem  onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
+          <MenuItem onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />
             </ListItemIcon>

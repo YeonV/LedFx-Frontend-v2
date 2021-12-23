@@ -102,11 +102,11 @@ const GeneralCard = () => {
                 </div>
             </div>
             <Divider style={{ margin: "20px 0 10px"}} />
-            <div className={`${classes.settingsRow} step-settings-three `} style={{ flexBasis: '100%'}}>
+            <div className={`${classes.settingsRow} step-settings-six `} style={{ flexBasis: '100%'}}>
                 <label>Global Transitions</label>
                 <SettingsSwitch checked={settings.global_transitions} onChange={(e) => onSystemSettingsChange("global_transitions", !settings.global_transitions)} />
             </div>
-            <div className={`${classes.settingsRow} step-settings-three `} style={{ flexBasis: '100%'}}>
+            <div className={`${classes.settingsRow} step-settings-seven `} style={{ flexBasis: '100%'}}>
                 <label>Scan on startup</label>
                 <SettingsSwitch checked={settings.scan_on_startup} onChange={(e) => onSystemSettingsChange("scan_on_startup", !settings.scan_on_startup)} />
             </div>

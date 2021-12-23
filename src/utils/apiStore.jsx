@@ -26,7 +26,10 @@ const useStore = create(
         webaudio: false,
         waves: false,
         streamto: false,
-        effectfilter: false
+        effectfilter: false,
+        transitions: false,
+        frequencies: false,
+        go: false
       },
       setFeatures: (feat, use) => set((state) => ({
         features: {
@@ -43,7 +46,10 @@ const useStore = create(
         webaudio: false,
         waves: false,
         streamto: false,
-        effectfilter: false
+        effectfilter: false,
+        transitions: false,
+        frequencies: false,
+        go: false
       },
       setShowFeatures: (feat, show) => set((state) => ({
         showFeatures: {
@@ -66,6 +72,10 @@ const useStore = create(
         }
       })),
 
+      settingsExpanded: false,
+      setSettingsExpanded: (setting) => set(() => ({
+        settingsExpanded: setting
+      })),
       disconnected: false,
       setDisconnected: (dis) => set(() => ({
         disconnected: dis
@@ -389,29 +399,6 @@ const useStore = create(
         'DELETE',
         {
           data: colorkey
-        },
-      ),
-      gradients: {},
-      getGradients: async () => {
-        const resp = await Ledfx(`/api/gradients`, set);
-        if (resp ) {
-          set({ gradients: resp });
-        }
-      },
-      addGradient: async (config) => await Ledfx(
-        `/api/gradients`,
-        set,
-        'POST',
-        { ...config } // { 'name': 'string' }
-      ),
-      deleteGradient: async (colorkey) => await Ledfx(
-        `/api/gradients`,
-        set,
-        'DELETE',
-        {
-          data: {
-            color: colorkey
-          }
         },
       ),
 
