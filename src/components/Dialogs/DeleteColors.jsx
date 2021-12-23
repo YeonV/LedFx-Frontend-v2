@@ -68,7 +68,7 @@ const DeleteColorsDialog = ({dialogOpen, setDialogOpen}) => {
               renderValue={(selected) => selected.join(', ')}
               MenuProps={MenuProps}
             >
-              {[...Object.keys(colors.colors.user),...Object.keys(colors.gradients.user)].map((color) => (
+              {colors.colors && colors.gradients && [...Object.keys(colors.colors.user),...Object.keys(colors.gradients.user)].map((color) => (
                 <MenuItem key={color} value={color} sx={{ background: theme.palette.background.paper, color: theme.palette.text.primary }}>
                   <Checkbox color={"primary"} checked={colorsToDelete.indexOf(color) > -1} />
                   <ListItemText primary={color} />

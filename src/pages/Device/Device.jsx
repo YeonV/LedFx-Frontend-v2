@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core/';
+import { Grid, Typography } from '@material-ui/core/';
 import useStore from '../../utils/apiStore';
 import EffectsCard from './Effects';
 import PresetsCard from './Presets';
 import TransitionCard from './Transition';
 import MelbankCard from './Frequencies';
 import StreamToCard from './StreamTo';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   virtualWrapper: {
@@ -29,7 +30,6 @@ const Device = ({
 
   const virtuals = useStore((state) => state.virtuals);
   const presets = useStore((state) => state.presets);
-  const viewMode = useStore((state) => state.viewMode);
 
   const virtual = virtuals[virtId];
   const effectType = virtual && virtual.effect.type;
@@ -55,7 +55,7 @@ const Device = ({
           </Grid>
 
           <Grid item className={classes.girdItem}>
-            
+
             {effectType && presets && (
               <PresetsCard
                 virtual={virtual}
@@ -64,9 +64,12 @@ const Device = ({
                 style={{ marginBottom: '1rem' }}
               />
             )}
+            {!(features['streamto'] || features['transitions'] || features['frequencies']) &&
+              <Typography variant={"body2"} color={"textSecondary"} align={"right"}> activate more advanced features with <Link style={{ color: 'inherit' }} to={"/Settings?ui"}> Expert-Mode</Link></Typography>
+            }
             {features['streamto'] && <StreamToCard virtuals={virtuals} virtual={virtual} />}
-            {viewMode === 'expert' && <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />}
-            {viewMode === 'expert' && <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />}
+            {features['transitions'] && <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />}
+            {features['frequencies'] && <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />}
           </Grid>
         </>
       )}

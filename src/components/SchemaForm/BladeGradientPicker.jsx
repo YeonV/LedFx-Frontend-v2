@@ -9,6 +9,7 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { log } from '../../utils/helpers';
 import DeleteColorsDialog from '../Dialogs/DeleteColors';
+import { color } from '@mui/system';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -281,12 +282,14 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
   // const gradients = useStore((state) => state.gradients);
   // const getGradients = useStore((state) => state.getGradients);
   // const addGradient = useStore((state) => state.addGradient);
-
+  // console.log(colors)
   const test = {}
-  Object.entries(colors.gradients.builtin).forEach(([k, g]) => { test[k] = g })
-  Object.entries(colors.gradients.user).forEach(([k, g]) => { test[k] = g })
-  Object.entries(colors.colors.builtin).forEach(([k, g]) => { test[k] = g })
-  Object.entries(colors.colors.user).forEach(([k, g]) => { test[k] = g })
+  if (colors.gradients && colors.colors) {
+    Object.entries(colors.gradients.builtin).forEach(([k, g]) => { test[k] = g })
+    Object.entries(colors.gradients.user).forEach(([k, g]) => { test[k] = g })
+    Object.entries(colors.colors.builtin).forEach(([k, g]) => { test[k] = g })
+    Object.entries(colors.colors.user).forEach(([k, g]) => { test[k] = g })
+  }
 
   const virtuals = useStore((state) => state.virtuals);
   const effectyz = virtual && virtuals[Object.keys(virtuals).find((d) => d === virtual.id)];
@@ -319,8 +322,8 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
 
-  const handleAddGradient = (e, v) => {    
-    addColor( {[name]: col} ).then(() => {
+  const handleAddGradient = (e, v) => {
+    addColor({ [name]: col }).then(() => {
       getColors();
     });
   }
@@ -328,6 +331,7 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
   useEffect(() => {
     getColors();
   }, [])
+
   return (
     <div className={`${classes.wrapper} step-effect-${index} gradient-picker`} style={{ ...wrapperStyle }}>
       <label className={'MuiFormLabel-root'}>
@@ -364,8 +368,9 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
             />
             <div style={{ marginTop: 2.5, width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
 
-              
-              <Button style={{
+
+              <Button 
+              style={{
                 width: 69,
                 height: 30,
                 borderRadius: 4,
@@ -376,7 +381,11 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
                 fontSize: 24,
                 marginRight: 16,
                 cursor: 'pointer'
-              }} variant={"outlined"} onClick={() => handleDeleteDialog()} >
+              }} 
+              variant={"outlined"} 
+              onClick={() => handleDeleteDialog()}
+              disabled={colors.length && colors.colors.length && colors.gradients.length && !(Object.keys(colors.colors.user).length > 0) && !Object.keys(colors.gradients.user).length > 0}
+              >
                 -
               </Button>
               <Popover
@@ -406,7 +415,7 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
                 size="medium"
                 icon={<Add />}
               />
-              
+
 
             </div>
           </>

@@ -21,7 +21,9 @@ export const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     height: 40,
     '&>label': {
-      marginRight: '1rem',
+      marginRight: '1rem',      
+    },
+    '&.slider>label': {
       width: 150
     }
   },

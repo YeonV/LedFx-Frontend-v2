@@ -30,6 +30,7 @@ import WaveLines from './components/Icons/waves';
 import useWindowDimensions from './utils/useWindowDimension';
 import { useHotkeys } from 'react-hotkeys-hook'
 import SmartBar from './components/Dialogs/SmartBar';
+import wsNew, { HandleWsNew, WsContextNew } from './utils/WebsocketNew';
 
 export default function App() {
   const classes = useStyles();
@@ -39,10 +40,14 @@ export default function App() {
   const getSchemas = useStore((state) => state.getSchemas);
   const shutdown = useStore((state) => state.shutdown);
   const features = useStore((state) => state.features);
+  const showSnackbar = useStore((state) => state.showSnackbar);
+
   const [open, setOpen] = useState(false)
   useHotkeys('ctrl+alt+y', () => setOpen(!open));
 
   const { height, width } = useWindowDimensions();
+
+  let newBase = !!window.localStorage.getItem('ledfx-newbase')
 
   const ledfxTheme = !!window.localStorage.getItem('ledfx-theme') ?
     window.localStorage.getItem('ledfx-theme')
@@ -68,6 +73,16 @@ export default function App() {
   }, [getVirtuals, getSystemConfig, getSchemas]);
 
   useEffect(() => {
+    if (features['go']) {
+      window.localStorage.setItem('ledfx-newbase', 1)
+      newBase = true
+    } else {
+      window.localStorage.removeItem('ledfx-newbase')
+      newBase = false
+    }    
+  }, [features]);
+
+  useEffect(() => {
     initFrontendConfig();
     console.info('%c Ledfx ' + '%c\n       © by Blade  ', 'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-image:url(https://my.ledfx.app/favicon/favicon-32x32.png); background-color: #800000; background-repeat: no-repeat; background-position: 10% 50%;', 'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;');
     // log("Blade's Loggin Tools")
@@ -85,46 +100,63 @@ export default function App() {
     }
   });
 
+  useEffect(() => {
+    const handleWebsockets = (e) => {
+      showSnackbar({
+        message: e.detail.message,
+        messageType: e.detail.type,
+      });
+    }
+    document.addEventListener("YZNEW", handleWebsockets);
+    return () => {
+      document.removeEventListener("YZNEW", handleWebsockets)
+    }
+  }, []);
+
+
   return (
     <ThemeProvider theme={BladeDarkGreyTheme5}>
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'DarkRed']}>
-        <WsContext.Provider value={ws}>
-          <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
-            <CssBaseline />
-            <Router basename={process.env.PUBLIC_URL}>
-              <ScrollToTop />
-              <HandleWs />
-              <MessageBar />
-              <TopBar />
-              <LeftBar />
-              <main
-                className={clsx(classes.content, {
-                  [classes.contentShift]: leftBarOpen,
-                })}
-              >
-                <div className={classes.drawerHeader} />
-                <Switch>
-                  <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
-                  <Route exact path="/" component={Home} />
-                  <Route path="/devices" component={Devices} />
-                  <Route path="/device/:virtId" component={Device} />
-                  <Route path="/scenes" component={Scenes} />
-                  <Route path="/integrations" component={Integrations} />
-                  <Route path="/settings" component={Settings} />
-                </Switch>
-                <NoHostDialog />
-                <SmartBar open={open} setOpen={setOpen} />
-              </main>
-              <BottomBar />
-            </Router>
-            {features['waves'] && <WaveLines
-              startColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main}
-              stopColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent.main || '#ffdc0f'}
-              width={width - 8}
-              height={height}
-            />}
-          </div>
-        </WsContext.Provider>
+        <WsContextNew.Provider value={wsNew}>
+          <WsContext.Provider value={ws}>
+            <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
+              <CssBaseline />
+              <Router basename={process.env.PUBLIC_URL}>
+                <ScrollToTop />
+                {/* {!newBase && <HandleWs />} */}
+                {newBase && <HandleWsNew />}
+                <MessageBar />
+                <TopBar />
+                <LeftBar />
+                <main
+                  className={clsx(classes.content, {
+                    [classes.contentShift]: leftBarOpen,
+                  })}
+                >
+                  <div className={classes.drawerHeader} />
+                  <Switch>
+                    <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
+                    <Route exact path="/" component={Home} />
+                    <Route path="/devices" component={Devices} />
+                    <Route path="/device/:virtId" component={Device} />
+                    <Route path="/scenes" component={Scenes} />
+                    <Route path="/integrations" component={Integrations} />
+                    <Route path="/settings" component={Settings} />
+                  </Switch>
+                  <NoHostDialog />
+                  <SmartBar open={open} setOpen={setOpen} />
+                </main>
+                <BottomBar />
+              </Router>
+              {features['waves'] && <WaveLines
+                startColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main}
+                stopColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent.main || '#ffdc0f'}
+                width={width - 8}
+                height={height}
+              />}
+            </div>
+          </WsContext.Provider>
+        </WsContextNew.Provider>
       </MuiThemeProvider>
     </ThemeProvider>
   );

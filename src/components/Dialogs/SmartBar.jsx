@@ -13,6 +13,7 @@ const SmartBar = ({ open, setOpen }) => {
   const setFeatures = useStore((state) => state.setFeatures);
   const setShowFeatures = useStore((state) => state.setShowFeatures);
   const features = useStore((state) => state.features);
+  const setViewMode = useStore((state) => state.setViewMode);
 
   const filterOptions = createFilterOptions({
     stringify: (option) => Object.keys(option).indexOf('is_device') > -1 ? `device ${option.config.name}` : `scene ${option.name}`
@@ -53,11 +54,11 @@ const SmartBar = ({ open, setOpen }) => {
           }}
           onInputChange={(event, value) => {
             if (value === 'HackedByBlade!') {
-              alert("DevMode")
+              alert("DevMode activated!")
               setFeatures('dev', true)
             }
             if (features['dev']) {
-              if (value === 'clear') { setViewMode('user'); setShowFeatures('streamto', false); setShowFeatures('waves', false);setShowFeatures('effectfilter', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('webaudio', false); setFeatures('streamto', false); setFeatures('waves', false); setFeatures('cloud', false);setFeatures('effectfilter', false); setFeatures('wled', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
+              if (value === 'clear') { setViewMode('user'); setShowFeatures('dev', false); setShowFeatures('go', false); setShowFeatures('streamto', false); setShowFeatures('waves', false);setShowFeatures('effectfilter', false); setShowFeatures('cloud', false); setShowFeatures('wled', false); setShowFeatures('integrations', false); setShowFeatures('spotify', false); setShowFeatures('webaudio', false); setFeatures('streamto', false); setFeatures('go', false); setFeatures('waves', false); setFeatures('cloud', false);setFeatures('effectfilter', false); setFeatures('wled', false); setFeatures('dev', false); setFeatures('integrations', false); setFeatures('spotify', false); setFeatures('webaudio', false); window.localStorage.removeItem('ledfx-theme'); window.localStorage.setItem('BladeMod', 0); window.location.reload() }
               if (value === 'BladeCloud') { setShowFeatures('cloud', true) }
               if (value === 'BladeWled') { setShowFeatures('wled', true) }
               if (value === 'BladeIntegrations') { setShowFeatures('integrations', true) }
@@ -66,9 +67,10 @@ const SmartBar = ({ open, setOpen }) => {
               if (value === 'BladeWaves') { setShowFeatures('waves', true) }
               if (value === 'BladeStreamTo') { setShowFeatures('streamto', true) }
               if (value === 'BladeEffectFilter') { setShowFeatures('effectfilter', true) }
+              if (value === 'BladeGo') { setShowFeatures('go', true) }
               if (value.startsWith('theme:') && ["DarkRed", "DarkOrange", "Light", "DarkGreen", "DarkBlue", "DarkGrey"].indexOf(value.replace('theme:', '')) > -1) { window.localStorage.setItem('ledfx-theme', value.replace('theme:', '')); window.location.reload() }
             }
-            if (value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('streamto', true); setShowFeatures('cloud', true);setShowFeatures('effectfilter', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('webaudio', true); setFeatures('streamto', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true);setFeatures('effectfilter', true); setFeatures('spotify', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "DarkRed"); window.location.reload() }
+            if (value === 'BladeIsYeon') { setViewMode('expert'); setShowFeatures('dev', true); setShowFeatures('go', true); setShowFeatures('streamto', true); setShowFeatures('cloud', true);setShowFeatures('effectfilter', true); setShowFeatures('waves', true); setShowFeatures('wled', true); setShowFeatures('integrations', true); setShowFeatures('spotify', true); setShowFeatures('webaudio', true); setFeatures('streamto', true); setFeatures('go', true); setFeatures('waves', true); setFeatures('cloud', true); setFeatures('wled', true); setFeatures('integrations', true);setFeatures('effectfilter', true); setFeatures('spotify', true); setFeatures('webaudio', true); window.localStorage.setItem('ledfx-theme', "DarkRed"); window.location.reload() }
 
           }}
           renderOption={(props, option) => (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStore from '../../utils/apiStore';
 import { Accordion, AccordionSummary, Typography, AccordionDetails } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
@@ -9,21 +9,30 @@ import ClientAudioCard from './ClientAudioCard';
 import { useStyles } from './SettingsComponents'
 import UICard from './UICard';
 import GeneralCard from './GeneralCard';
+import { useLocation } from 'react-router-dom';
 
 const Settings = () => {
 
   const classes = useStyles();
   const features = useStore((state) => state.features);
-  const [expanded, setExpanded] = useState(false);
+  const settingsExpanded = useStore((state) => state.settingsExpanded);
+  const setSettingsExpanded = useStore((state) => state.setSettingsExpanded);
+  const loc = useLocation()
 
-  const handleExpanded = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleExpanded = (panel, event, isExpanded) => {
+    setSettingsExpanded(isExpanded ? panel : false);
   };
+
+  useEffect(()=>{
+    if (loc.search.indexOf("ui") > -1 ) {
+      setSettingsExpanded('panel2')
+    }
+  },[loc])
 
   return (
     <>
       <div className={classes.card}>
-        <Accordion expanded={expanded === 'panel3'} onChange={handleExpanded('panel3')}>
+        <Accordion expanded={settingsExpanded === 'all' || settingsExpanded === 'panel3'} onChange={(event, isExpanded)=>handleExpanded('panel3', event, isExpanded)}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel3a-content"
@@ -36,7 +45,7 @@ const Settings = () => {
           </AccordionDetails>
         </Accordion>
 
-        <Accordion expanded={expanded === 'panel1'} onChange={handleExpanded('panel1')}>
+        <Accordion expanded={settingsExpanded === 'all' || settingsExpanded === 'panel1'} onChange={(event, isExpanded)=>handleExpanded('panel1', event, isExpanded)}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1a-content"
@@ -55,7 +64,7 @@ const Settings = () => {
           </AccordionDetails>
         </Accordion>
 
-        <Accordion expanded={expanded === 'panel2'} onChange={handleExpanded('panel2')}>
+        <Accordion expanded={settingsExpanded === 'all' || settingsExpanded === 'panel2'} onChange={(event, isExpanded)=>handleExpanded('panel2', event, isExpanded)}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel2a-content"
@@ -69,7 +78,7 @@ const Settings = () => {
         </Accordion>
 
         {features['wled'] &&
-          <Accordion expanded={expanded === 'panel4'} onChange={handleExpanded('panel4')}>
+          <Accordion expanded={settingsExpanded === 'all' || settingsExpanded === 'panel4'} onChange={(event, isExpanded)=>handleExpanded('panel4', event, isExpanded)}>
             <AccordionSummary
               expandIcon={<ExpandMore />}
               aria-controls="panel4a-content"
