@@ -1,40 +1,29 @@
 import React, { useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import useStore from '../../utils/apiStore';
-import { useEditVirtualsStyles } from '../Devices/EditVirtuals/EditVirtuals.styles'
+import { Button, Dialog, AppBar, Toolbar, Typography, Slide } from '@material-ui/core';
 import { BugReport, NavigateBefore } from '@material-ui/icons';
+import { useEditVirtualsStyles } from '../Devices/EditVirtuals/EditVirtuals.styles'
+import useStore from '../../utils/apiStore';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function TroubleshootButton({
-  virtual,
-  className
-}) {
+export default function TroubleshootButton({ virtual }) {
   const classes = useEditVirtualsStyles();
   const devices = useStore((state) => state.devices);
+  const getPing = useStore((state) => state.getPing);
   const [open, setOpen] = React.useState(false);
   const [wledData, setWledData] = React.useState({});
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [pingData, setPingData] = React.useState({});
 
   useEffect(async () => {
     if (devices[virtual.id]) {
       const res = await fetch(`http://${devices[virtual.id]["config"]["ip_address"]}/json/info`)
       const resp = await res.json()
       setWledData(resp)
+      const ping = getPing(virtual.id)
+      const resPing = await ping
+      setPingData(resPing)
     }
   }, [devices])
 
@@ -43,13 +32,12 @@ export default function TroubleshootButton({
       <Button
         variant={'outlined'}
         color={'default'}
-        onClick={handleClickOpen}
+        onClick={() => setOpen(true)}
         style={{ marginRight: '.5rem' }}
-        className={className}
       >
         <BugReport />
       </Button>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog fullScreen open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Button
@@ -57,7 +45,7 @@ export default function TroubleshootButton({
               color="primary"
               variant="contained"
               startIcon={<NavigateBefore />}
-              onClick={handleClose}
+              onClick={() => setOpen(false)}
               style={{ marginRight: '1rem' }}
             >
               back
@@ -71,6 +59,7 @@ export default function TroubleshootButton({
           <Typography variant="caption">Troubleshoot</Typography>
         </div>
         {wledData && <div style={{ margin: '0 1rem' }}><pre>{JSON.stringify(wledData, null, 2)}</pre></div>}
+        {pingData && <div style={{ margin: '0 1rem' }}><pre>{JSON.stringify(pingData, null, 2)}</pre></div>}
       </Dialog>
     </>
   ) : (<></>);
