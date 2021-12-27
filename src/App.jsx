@@ -123,7 +123,7 @@ export default function App() {
               <CssBaseline />
               <Router basename={process.env.PUBLIC_URL}>
                 <ScrollToTop />
-                {/* {!newBase && <HandleWs />} */}
+                {!newBase && <HandleWs />}
                 {newBase && <HandleWsNew />}
                 <MessageBar />
                 <TopBar />
