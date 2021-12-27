@@ -8,6 +8,7 @@ import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown
 import BladeEffectSchemaForm from '../../components/SchemaForm/BladeEffectSchemaForm';
 import PixelGraph from '../../components/PixelGraph';
 import TourEffect from '../../components/Tours/TourEffect';
+import TroubleshootButton from './TroubleshootButton';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -99,13 +100,15 @@ const EffectsCard = ({ virtId }) => {
           <div
             style={{
               display: 'flex',
+              flexDirection: 'column-reverse',
               justifyContent: 'space-between',
             }}
           >
             <h1>{virtual && virtual.config.name}</h1>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
               {effects && effectType && (
                 <>
+                  {viewMode !== 'user' && <TroubleshootButton virtual={virtual} />}
                   <TourEffect schema={effects[effectType].schema} />
                   <Button
                     onClick={() => handleRandomize()}

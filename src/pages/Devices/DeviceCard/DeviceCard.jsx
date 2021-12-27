@@ -74,7 +74,7 @@ const DeviceCard = ({ virtual, index }) => {
     setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect).length > 0) || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0)
   }, [virtuals, devices])
 
-  
+  console.log("yoo", devices[Object.keys(devices).find(d => d === virtual)]?.config.ip_address)
   return virtual && virtuals[virtual] ?
 
     <Card
