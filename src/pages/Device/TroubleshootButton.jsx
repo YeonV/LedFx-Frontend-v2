@@ -17,7 +17,7 @@ export default function TroubleshootButton({ virtual }) {
   const [pingData, setPingData] = React.useState({});
 
   useEffect(async () => {
-    if (devices[virtual.id]) {
+    if (devices[virtual.id] && open) {
       const res = await fetch(`http://${devices[virtual.id]["config"]["ip_address"]}/json/info`)
       const resp = await res.json()
       setWledData(resp)
@@ -25,7 +25,7 @@ export default function TroubleshootButton({ virtual }) {
       const resPing = await ping
       setPingData(resPing)
     }
-  }, [devices])
+  }, [devices, open])
 
   return virtual && virtual.config && devices[virtual.id] && devices[virtual.id].type === 'wled' ? (
     <>

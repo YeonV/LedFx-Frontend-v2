@@ -50,7 +50,7 @@ const GeneralCard = () => {
         <div>
             <div className={'step-settings-four'} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div style={{ flex: '0 0 49%' }}>
-                    <SettingsButton startIcon={<CloudUpload />} onClick={configDownload}>
+                    <SettingsButton startIcon={<CloudUpload />} onClick={()=>configDownload()}>
                         Export Config
                     </SettingsButton>
                     <PopoverSure
@@ -59,7 +59,7 @@ const GeneralCard = () => {
                         variant="outlined"
                         color="inherit"
                         className={classes.actionButton}
-                        onConfirm={configDelete}
+                        onConfirm={()=>configDelete()}
                         direction="center"
                         vertical="top"
                         wrapperStyle={{
