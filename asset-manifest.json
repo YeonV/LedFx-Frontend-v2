@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.19fdc652.chunk.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.9cfd6f2b.chunk.js",
-    "main.js.map": "/LedFx-Frontend-v2/static/js/main.9cfd6f2b.chunk.js.map",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.b19ad0bb.chunk.js",
+    "main.js.map": "/LedFx-Frontend-v2/static/js/main.b19ad0bb.chunk.js.map",
     "runtime-main.js": "/LedFx-Frontend-v2/static/js/runtime-main.a28042fb.js",
     "runtime-main.js.map": "/LedFx-Frontend-v2/static/js/runtime-main.a28042fb.js.map",
     "static/js/2.baaf6439.chunk.js": "/LedFx-Frontend-v2/static/js/2.baaf6439.chunk.js",
@@ -21,6 +21,6 @@
     "static/js/runtime-main.a28042fb.js",
     "static/js/2.baaf6439.chunk.js",
     "static/css/main.19fdc652.chunk.css",
-    "static/js/main.9cfd6f2b.chunk.js"
+    "static/js/main.b19ad0bb.chunk.js"
   ]
 }
