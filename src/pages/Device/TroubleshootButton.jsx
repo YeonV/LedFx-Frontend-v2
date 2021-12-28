@@ -4,6 +4,8 @@ import { BugReport, NavigateBefore } from '@material-ui/icons';
 import { useEditVirtualsStyles } from '../Devices/EditVirtuals/EditVirtuals.styles'
 import useStore from '../../utils/apiStore';
 import Wled from '../../components/Icons/Wled';
+import Moment from 'react-moment';
+import moment from 'moment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -82,16 +84,16 @@ export default function TroubleshootButton({ virtual }) {
           <Divider style={{ margin: '1rem 0' }} />
           <div style={{display: 'flex',justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>WiFi Signal strength</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.wifi.signal} %</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.wifi?.signal} %</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>WiFi Channel</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.wifi.channel}</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.wifi?.channel}</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>MAC</Typography>
           <Typography style={{paddingRight: '0.1rem',}}>{wledData.mac}</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>Frames Per Second</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds.fps} fps</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds?.fps} fps</Typography></div>
         </Grid>
 
         <Grid item xs={12} lg={6}>
@@ -104,16 +106,16 @@ export default function TroubleshootButton({ virtual }) {
           <Typography style={{paddingRight: '0.1rem',}}>{wledData.arch}</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>LED Count</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds.count}</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds?.count}</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>RGBW</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds.rgbw}</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds?.rgbw}</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>Estimated Power</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds.pwr.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')} mA</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds?.pwr?.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')} mA</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>Max power</Typography>
-          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds.max_pwr.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')} mA</Typography></div>
+          <Typography style={{paddingRight: '0.1rem',}}>{wledData.leds?.max_pwr?.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')} mA</Typography></div>
           <div style={{display: 'flex', justifyContent: 'space-between', minWidth: '220px',}}>
           <Typography className={classes.title}>Live Mode</Typography>
           <Typography style={{paddingRight: '0.1rem',}}>{JSON.stringify(wledData.live)}</Typography></div>
