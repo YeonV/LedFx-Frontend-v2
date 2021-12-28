@@ -133,8 +133,10 @@ export default function TroubleshootButton({ virtual }) {
           <Moment interval={1000} format="hh:mm:ss" durationFromNow>{moment().add(wledData.uptime * -1, 's')}</Moment></div>
         </Grid>
       </Grid>
+      {/*
         {pingData && <div style={{ margin: '0 1rem' }}><pre>{JSON.stringify(pingData, null, 2)}</pre></div>}
         {wledData && <div style={{ margin: '0 1rem' }}><pre>{JSON.stringify(wledData, null, 2)}</pre></div>}
+        */}
       </Dialog>
     </>
   ) : (<></>);
