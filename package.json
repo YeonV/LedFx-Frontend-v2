@@ -64,7 +64,7 @@
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
         "pack": "electron-builder --dir",
         "dist": "react-scripts build && electron-builder",
-        "distyz": "react-scripts build && electron-builder -w zip -w portable -w",
+        "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
         "dist-multi": "react-scripts build && electron-builder -mwl",
         "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
         "electron": "wait-on tcp:3000 && electron .",
