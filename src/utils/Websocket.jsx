@@ -123,7 +123,7 @@ export const HandleWs = () => {
   }, [wsReady, pixelGraphs]);
 
   if (!wsReady) {
-    if (ws.ws) {
+    if (ws && ws.ws) {
       setWsReady(true)
     }
   }

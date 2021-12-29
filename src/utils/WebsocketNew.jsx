@@ -59,7 +59,7 @@ export const HandleWsNew = () => {
 
   useLayoutEffect(() => {
     if (!wsReady) {
-      if (wsNew.ws) {
+      if (wsNew && wsNew.ws) {
         setWsReady(true)
       }
     }
@@ -94,7 +94,7 @@ export const HandleWsNew = () => {
 
   useEffect(() => {
     if (!wsReady) {
-      if (wsNew.ws) {
+      if (wsNew && wsNew.ws) {
         setWsReady(true)
       }
     }

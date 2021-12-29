@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import clsx from 'clsx';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline } from '@material-ui/core';
 import useStore from './utils/apiStore';
 import ScrollToTop from './utils/scrollToTop';
 import ws, { WsContext, HandleWs } from "./utils/Websocket";
@@ -31,6 +31,11 @@ import useWindowDimensions from './utils/useWindowDimension';
 import { useHotkeys } from 'react-hotkeys-hook'
 import SmartBar from './components/Dialogs/SmartBar';
 import wsNew, { HandleWsNew, WsContextNew } from './utils/WebsocketNew';
+import { TrainRounded } from '@mui/icons-material';
+import { SnackbarProvider } from 'notistack';
+import { Close } from '@material-ui/icons';
+import { useSnackbar } from 'notistack';
+
 
 export default function App() {
   const classes = useStyles();
@@ -40,7 +45,11 @@ export default function App() {
   const getSchemas = useStore((state) => state.getSchemas);
   const shutdown = useStore((state) => state.shutdown);
   const features = useStore((state) => state.features);
+  const setFeatures = useStore((state) => state.setFeatures);
+  const setShowFeatures = useStore((state) => state.setShowFeatures);
+
   const showSnackbar = useStore((state) => state.showSnackbar);
+  const setHost = useStore((state) => state.setHost);
 
   const [open, setOpen] = useState(false)
   useHotkeys('ctrl+alt+y', () => setOpen(!open));
@@ -48,6 +57,12 @@ export default function App() {
   const { height, width } = useWindowDimensions();
 
   let newBase = !!window.localStorage.getItem('ledfx-newbase')
+
+  if (window.location.hash.indexOf("newCore=1") > -1) {
+    window.localStorage.setItem('ledfx-newbase', 1)
+    window.localStorage.setItem('ledfx-host', 'http://localhost:8080')
+    newBase = 1
+  }
 
   const ledfxTheme = !!window.localStorage.getItem('ledfx-theme') ?
     window.localStorage.getItem('ledfx-theme')
@@ -72,15 +87,24 @@ export default function App() {
     getSchemas();
   }, [getVirtuals, getSystemConfig, getSchemas]);
 
+
   useEffect(() => {
-    if (features['go']) {
+    if (features['go'] || window.location.hash.indexOf("newCore=1") > -1) {
       window.localStorage.setItem('ledfx-newbase', 1)
+      window.localStorage.removeItem('undefined')
+      window.localStorage.removeItem('ledfx-hosts')
+      setShowFeatures('go', true);
+      setFeatures('go', true);
+      if (window.localStorage.getItem('ledfx-host') !== 'http://localhost:8080') {
+        window.localStorage.setItem('ledfx-host', 'http://localhost:8080')
+      }
+      setHost('http://localhost:8080')
       newBase = true
     } else {
       window.localStorage.removeItem('ledfx-newbase')
       newBase = false
-    }    
-  }, [features]);
+    }
+  }, []);
 
   useEffect(() => {
     initFrontendConfig();
@@ -89,6 +113,9 @@ export default function App() {
     // log("successSUCCESS", { id: 'test' })
     // log("warningWARNING", { id: 'test' })
     // log("infoINFO", { id: 'test' })
+    if (features['go'] || window.location.hash.indexOf("newCore=1") > -1) {
+      window.localStorage.setItem('ledfx-host', 'http://localhost:8080')
+    }
   }, []);
 
   window.api?.receive('fromMain', (parameters) => {
@@ -117,46 +144,48 @@ export default function App() {
   return (
     <ThemeProvider theme={BladeDarkGreyTheme5}>
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'DarkRed']}>
-        <WsContextNew.Provider value={wsNew}>
-          <WsContext.Provider value={ws}>
-            <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
-              <CssBaseline />
-              <Router basename={process.env.PUBLIC_URL}>
-                <ScrollToTop />
-                {!newBase && <HandleWs />}
-                {newBase && <HandleWsNew />}
-                <MessageBar />
-                <TopBar />
-                <LeftBar />
-                <main
-                  className={clsx(classes.content, {
-                    [classes.contentShift]: leftBarOpen,
-                  })}
-                >
-                  <div className={classes.drawerHeader} />
-                  <Switch>
-                    <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
-                    <Route exact path="/" component={Home} />
-                    <Route path="/devices" component={Devices} />
-                    <Route path="/device/:virtId" component={Device} />
-                    <Route path="/scenes" component={Scenes} />
-                    <Route path="/integrations" component={Integrations} />
-                    <Route path="/settings" component={Settings} />
-                  </Switch>
-                  <NoHostDialog />
-                  <SmartBar open={open} setOpen={setOpen} />
-                </main>
-                <BottomBar />
-              </Router>
-              {features['waves'] && <WaveLines
-                startColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main}
-                stopColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent.main || '#ffdc0f'}
-                width={width - 8}
-                height={height}
-              />}
-            </div>
-          </WsContext.Provider>
-        </WsContextNew.Provider>
+        <SnackbarProvider maxSnack={5}>
+          <WsContextNew.Provider value={wsNew}>
+            <WsContext.Provider value={ws}>
+              <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
+                <CssBaseline />
+                <Router basename={process.env.PUBLIC_URL}>
+                  <ScrollToTop />
+                  {!newBase && <HandleWs />}
+                  {newBase && <HandleWsNew />}
+                  <MessageBar />
+                  <TopBar />
+                  <LeftBar />
+                  <main
+                    className={clsx(classes.content, {
+                      [classes.contentShift]: leftBarOpen,
+                    })}
+                  >
+                    <div className={classes.drawerHeader} />
+                    <Switch>
+                      <Route exact path="/connect/:providerName/redirect" component={LoginRedirect} />
+                      <Route exact path="/" component={Home} />
+                      <Route path="/devices" component={Devices} />
+                      <Route path="/device/:virtId" component={Device} />
+                      <Route path="/scenes" component={Scenes} />
+                      <Route path="/integrations" component={Integrations} />
+                      <Route path="/settings" component={Settings} />
+                    </Switch>
+                    <NoHostDialog />
+                    <SmartBar open={open} setOpen={setOpen} />
+                  </main>
+                  <BottomBar />
+                </Router>
+                {features['waves'] && <WaveLines
+                  startColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main}
+                  stopColor={ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent.main || '#ffdc0f'}
+                  width={width - 8}
+                  height={height}
+                />}
+              </div>
+            </WsContext.Provider>
+          </WsContextNew.Provider>
+        </SnackbarProvider>
       </MuiThemeProvider>
     </ThemeProvider>
   );

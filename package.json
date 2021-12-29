@@ -34,6 +34,7 @@
         "is-electron": "^2.2.0",
         "match-sorter": "^6.3.1",
         "moment": "^2.29.1",
+        "notistack": "^2.0.3",
         "prop-types": "^15.7.2",
         "react": "^17.0.2",
         "react-colorful": "^5.5.0",
