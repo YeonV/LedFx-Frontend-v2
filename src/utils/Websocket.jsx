@@ -14,7 +14,7 @@ import isElectron from 'is-electron';
 
 
 function createSocket() {
-  const newBase = !!window.localStorage.getItem('ledfx-newbase')
+  const newBase = window.localStorage.getItem('ledfx-newbase') === 1
 
   if (!newBase) {
     const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://', 'wss://').replace('http://', 'ws://')}/api/websocket`, {
@@ -48,13 +48,15 @@ function createSocket() {
       onclose: e => {
         // console.log('Closed!', e)
         window.localStorage.removeItem("core-init")
-        document.dispatchEvent(
-          new CustomEvent("disconnected", {
-            detail: {
-              isDisconnected: true
-            }
-          })
-        );
+        if (window.localStorage.getItem('ledfx-newbase') !== '1') {        
+          document.dispatchEvent(
+            new CustomEvent("disconnected", {
+              detail: {
+                isDisconnected: true
+              }
+            })
+          );
+        }
       },
       // onerror: e => console.log('Error:', e)
     });

@@ -120,7 +120,9 @@ const TopBar = () => {
   useEffect(() => {
     const handleDisconnect = (e) => {
       if (e.detail) {
-        setDisconnected(e.detail.isDisconnected)
+        if (window.localStorage.getItem('ledfx-newbase') !== '1') {
+          setDisconnected(e.detail.isDisconnected)
+        }
         if (e.detail.isDisconnected === false) {
           window.localStorage.removeItem('undefined')
           setDialogOpen(false, true)
@@ -130,7 +132,7 @@ const TopBar = () => {
           }
         }
       }
-      if (!!window.localStorage.getItem('ledfx-newbase')) {
+      if (window.localStorage.getItem('ledfx-newbase') === '1') {
         setDialogOpen(false, true)
       }
     }

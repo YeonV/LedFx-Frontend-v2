@@ -106,7 +106,7 @@ export default function FullScreenDialog({
         <div className={classes.segmentTitle}>
           <Typography variant="caption">Segments-Settings</Typography>
         </div>
-        {virtual.segments.length > 0 &&
+        {virtual.segments?.length > 0 &&
           virtual.segments.map((s, i) => (
             <Segment s={s} i={i} key={i} virtual={virtual} segments={virtual.segments} />
           ))}
