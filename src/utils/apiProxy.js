@@ -10,7 +10,7 @@ const api = axios.create({
 
 export const Ledfx = async (path, set, method = 'GET', body) => {
   const newBase = !!window.localStorage.getItem('ledfx-newbase')
-  if (!newBase) {
+  // if (!newBase) {
     try {
       let response = null;
       switch (method) {
@@ -98,5 +98,5 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
       });
       // console.log(error);
     }
-  }
+  // }
 };

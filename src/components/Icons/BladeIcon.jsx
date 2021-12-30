@@ -24,7 +24,7 @@ const BladeIcon = ({
         : name.startsWith('yz:logo2') ? <YZLogo2 style={{ transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)', marginTop: '3px' }} />
         : name.startsWith('wled') ? <Wled />
         : name.startsWith('mdi:') ? <span className={`mdi mdi-${name.split('mdi:')[1]}`} />
-        : camelToSnake(name)}
+        : name && camelToSnake(name)}
     </Icon>
   )
 }

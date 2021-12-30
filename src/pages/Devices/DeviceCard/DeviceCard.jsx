@@ -36,7 +36,7 @@ const DeviceCard = ({ virtual, index }) => {
   const updateVirtual = useStore((state) => state.updateVirtual);
 
   const [fade, setFade] = useState(false)
-  const [isActive, setIsActive] = useState((virtuals && virtual && virtuals[virtual] && virtuals[virtual].effect && Object.keys(virtuals[virtual].effect).length > 0) || devices && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0)
+  const [isActive, setIsActive] = useState((virtuals && virtual && virtuals[virtual] && virtuals[virtual].effect && Object.keys(virtuals[virtual].effect)?.length > 0) || devices && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0)
   const [expanded, setExpanded] = useState(false);
   const color = 'inherit';
 
@@ -71,7 +71,7 @@ const DeviceCard = ({ virtual, index }) => {
   };
 
   useEffect(() => {        
-    setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect).length > 0) || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0)
+    setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect)?.length > 0) || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0)
   }, [virtuals, devices])
 
   console.log("yoo", devices[Object.keys(devices).find(d => d === virtual)]?.config.ip_address)
@@ -80,10 +80,10 @@ const DeviceCard = ({ virtual, index }) => {
     <Card
       component={NavLink}
       to={`/device/${virtuals[virtual]?.id}`}
-      className={`${classes.virtualCardPortrait} ${Object.keys(virtuals[virtual]?.effect).length > 0 ? 'active' : ''}`}
+      className={`${classes.virtualCardPortrait} ${Object.keys(virtuals[virtual]?.effect)?.length > 0 ? 'active' : ''}`}
       style={{
         textDecoration: 'none',
-        order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0 || virtuals[virtual]?.effect.name)
+        order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name)
           ? 100
           : !virtuals[virtual]?.effect.name
             ? 50
@@ -103,7 +103,7 @@ const DeviceCard = ({ virtual, index }) => {
 
         <div style={{ padding: '0 0.5rem' }}>
           <Typography variant="h6"
-            style={{ lineHeight: 1, color: (!graphs && Object.keys(virtuals[virtual]?.effect).length > 0) ? theme.palette.primary.light : 'inherit' }}
+            style={{ lineHeight: 1, color: (!graphs && Object.keys(virtuals[virtual]?.effect)?.length > 0) ? theme.palette.primary.light : 'inherit' }}
           >
             {virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
           </Typography>
@@ -128,7 +128,7 @@ const DeviceCard = ({ virtual, index }) => {
               </Typography>
 
             </>
-            : devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals.length > 0
+            : devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0
               ? <Typography variant="body1" color="textSecondary" style={{ height: 25 }}>
                 Streaming...
 
