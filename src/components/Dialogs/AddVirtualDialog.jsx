@@ -13,7 +13,7 @@ const AddVirtualDialog = () => {
   const virtId = useStore(
     (state) => state.dialogs.addVirtual?.edit || false
   );
-  const initial = virtuals[virtId] || { type: "", config: {} };
+  const initial = virtuals.length && virtuals.find((v)=>v.id === virtId) || { type: "", config: {} };
 
   const setDialogOpenAddVirtual = useStore(
     (state) => state.setDialogOpenAddVirtual

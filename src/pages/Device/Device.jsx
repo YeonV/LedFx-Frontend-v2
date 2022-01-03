@@ -31,7 +31,7 @@ const Device = ({
   const virtuals = useStore((state) => state.virtuals);
   const presets = useStore((state) => state.presets);
 
-  const virtual = virtuals[virtId];
+  const virtual = virtuals.length && virtuals.find((v)=>v.id === virtId);
   const effectType = virtual && virtual.effect.type;
 
   useEffect(() => {

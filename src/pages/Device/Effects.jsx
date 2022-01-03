@@ -57,7 +57,7 @@ const EffectsCard = ({ virtId }) => {
 
   const graphs = useStore((state) => state.graphs);
 
-  const virtual = virtuals[virtId];
+  const virtual = virtuals.length && virtuals.find((v)=>v.id === virtId);
   const effectType = virtual && virtual.effect.type;
 
   const handleRandomize = () => {

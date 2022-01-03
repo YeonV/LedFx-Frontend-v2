@@ -72,13 +72,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     cursor: 'pointer',
     border: '1px solid #fff',
-
   },
   wrapper: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '10px',
     position: 'relative',
-    width: '100%',
+    width: '100%',    
+    minWidth: '230px',
     margin: '0.5rem 0',
     '& > label': {
       top: '-0.5rem',
@@ -292,8 +292,7 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
   }
 
   const virtuals = useStore((state) => state.virtuals);
-  const effectyz = virtual && virtuals[Object.keys(virtuals).find((d) => d === virtual.id)];
-
+  const effectyz = virtual && virtuals.length && virtuals.find((v)=>v.id === virtual.id);
   const sendColor = (e, v) => {
     if (virtual && effectyz && effectyz.effect && effectyz.effect.type) {
       updateVirtualEffect(virtual.id, {
