@@ -11,7 +11,7 @@ const BladeSelect = ({
   onChange,
   index,
   required = false,
-  wrapperStyle = {flexBasis: '48%'},
+  wrapperStyle = {margin: '0.5rem', flexBasis: '48%', width: 'unset'},
   selectStyle = {},
   textStyle = {},
   menuItemStyle = {},  

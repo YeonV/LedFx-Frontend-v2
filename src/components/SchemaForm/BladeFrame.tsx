@@ -1,7 +1,4 @@
-import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, IconButton } from '@material-ui/core';
-import { Info } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -34,7 +31,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const BladeFrame = ({ title, children, full = false, style = { width: 'unset' }, required = false, variant = 'outlined', className, disabled }) => {
+interface BladeFrameProps { 
+    title?: string
+    children?: any,
+    full?:boolean,
+    style?: any,
+    required?: boolean,
+    variant?:'outlined'|'contained'|'inherit',
+    className?: any,
+    disabled?: boolean
+}
+
+const BladeFrame = ({ title, children, full = false, style = { width: 'unset', order: 0 }, required = false, variant = 'outlined', className, disabled }: BladeFrameProps) => {
     const classes = useStyles();
     return (variant === 'outlined' ? (
         <div className={`${classes.wrapper} ${className}`} style={{

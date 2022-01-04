@@ -7,7 +7,7 @@ export default {
     * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
     * to learn how to generate automatic titles
     */
-  title: 'Design Systems/BladeIcon',
+  title: 'Design Systems/Icon',
   component: BladeIcon,
   parameters: {
     options: {

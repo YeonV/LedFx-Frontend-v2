@@ -28,15 +28,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BladeSchemaForm = (props) => {
-  const {
-    schema,
-    model,
-    disableUnderline,
-    hideToggle,
-    onModelChange = (e) => e,
-    type,
-  } = props;
+interface Schema {
+  properties?: any,
+  required?: any,
+  permitted_keys?: any
+}
+
+interface BladeSchemaFormProps {
+  /**
+ * color
+ */
+  schema: Schema,
+  /**
+ * color
+ */
+  model: Record<string, unknown>,
+  /**
+* color
+*/
+  disableUnderline?: boolean,
+  /**
+* color
+*/
+  hideToggle?: boolean,
+  /**
+* color
+*/
+  onModelChange?: (e: any) => typeof e,
+  /**
+* color
+*/
+  type?: string,
+}
+/**
+ * Schema Form
+ * Dynamically render Forms based on
+ * `schema` and `model`
+ */
+const BladeSchemaForm = ({
+  schema,
+  model,
+  disableUnderline,
+  hideToggle,
+  onModelChange,
+  type,
+}: BladeSchemaFormProps) => {
+
 
   // console.log(schema)
   const classes = useStyles();
@@ -53,11 +90,15 @@ const BladeSchemaForm = (props) => {
       .sort((a, b) => a.required ? -1 : 1)
       .sort((a, b) => a.id === 'name' ? -1 : 1)
 
+  function onlyUnique(value: string, index: number, self: any) {
+    return self.indexOf(value) === index;
+  }
+
   return (
     <div>
 
       <div className={classes.bladeSchemaForm}>
-        {yzSchema && yzSchema.map((s, i) => {
+        {yzSchema && yzSchema.map((s: any, i: number) => {
 
           switch (s.type) {
             case 'boolean':
@@ -71,28 +112,27 @@ const BladeSchemaForm = (props) => {
                   required={s.required}
                   style={{ margin: '0.5rem 0', flexBasis: '48%' }}
                   schema={s}
-                  onClick={(model_id, value) => {
-                    const c = {};
+                  onClick={(model_id: string, value: any) => {
+                    const c: any = {};
                     c[model_id] = value;
-                    return onModelChange(c);
+                    if (onModelChange) return onModelChange(c);
                   }}
                 />
               );
             case 'string':
-              const group = {}
-              let audio_groups = []
+              const group: any = {}
+              let audio_groups: any = []
               if (schema?.properties?.audio_device?.enum) {
-                for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
-                  // console.log(`${key}: ${value.split(':')[0]}`);
-                  if (!group[value.split(':')[0]]) {
-                    group[value.split(':')[0]] = {}
+                for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {                  
+                  if (typeof value === 'string') {
+                    if (!group[value?.split(':')[0]]) {
+                      group[value.split(':')[0]] = {}
+                    }
+                    group[value.split(':')[0]][key] = value.split(':')[1]
                   }
-                  group[value.split(':')[0]][key] = value.split(':')[1]
                 }
-                function onlyUnique(value, index, self) {
-                  return self.indexOf(value) === index;
-                }
-                audio_groups = (Object.values(schema.properties.audio_device?.enum).map(d => d.split(':')[0]).filter(onlyUnique))
+
+                audio_groups = (Object.values(schema.properties.audio_device?.enum).map((d:any) => d.split(':')[0]).filter(onlyUnique))
               }
 
               return audio_groups?.length
@@ -101,15 +141,14 @@ const BladeSchemaForm = (props) => {
                     value={model && model["audio_device"] || 0}
                     fullWidth
                     disableUnderline
-                    onChange={(e) => {
-                      const c = {};
+                    onChange={(e: any) => {
+                      const c: any = {};
                       c["audio_device"] = parseInt(e.target.value);
-                      return onModelChange(c);
+                      if (onModelChange) return onModelChange(c);
                     }}
                     id="grouped-select"
-                    className={classes.FormSelect}
                   >
-                    {audio_groups?.map((c, ind) =>
+                    {audio_groups?.map((c: string, ind: number) =>
                       [
                         <ListSubheader
                           className={classes.FormListHeaders}
@@ -120,7 +159,7 @@ const BladeSchemaForm = (props) => {
                         </ListSubheader>
                         ,
                         Object.keys(group[c]).map((e) =>
-                          <MenuItem className={classes.FormListItem} value={e}>
+                          <MenuItem value={e}>
                             {group[c][e]}
                           </MenuItem>
                         ),
@@ -131,26 +170,28 @@ const BladeSchemaForm = (props) => {
                 : !((type === 'mqtt_hass' && s.id === 'name') || (type === 'mqtt_hass' && s.id === 'description')) &&
                 <BladeSelect
                   hideDesc={hideDesc}
-                  hide={"test"}
+                  // hide={"test"}
                   model={model}
                   disabled={!s.permitted}
-                  style={{ margin: '0.5rem 0', width: '48%' }}
+                  wrapperStyle={{ margin: '0.5rem 0', width: '48%', flexBasis: 'unset' }}
                   textStyle={{ width: '100%' }}
                   schema={s}
                   required={s.required}
                   model_id={s.id}
                   key={i}
                   index={i}
-                  onChange={(model_id, value) => {
-                    const c = {};
+                  children={false}
+                  onChange={(model_id: string, value: any) => {
+                    const c: any = {};
                     c[model_id] = value;
-                    return onModelChange(c);
+                    if (onModelChange) return onModelChange(c);
                   }}
                 />
 
             case 'number':
               return (
                 <BladeSlider
+                  step={undefined}
                   hideDesc={hideDesc}
                   disabled={!s.permitted}
                   disableUnderline={disableUnderline}
@@ -159,10 +200,10 @@ const BladeSchemaForm = (props) => {
                   model={model}
                   required={s.required}
                   schema={s}
-                  onChange={(model_id, value) => {
-                    const c = {};
+                  onChange={(model_id: string, value: any) => {
+                    const c: any = {};
                     c[model_id] = value;
-                    return onModelChange(c);
+                    if (onModelChange) return onModelChange(c);
                   }}
                 />
               );
@@ -179,11 +220,13 @@ const BladeSchemaForm = (props) => {
                 required={s.required}
                 schema={s}
                 textfield={false}
+                marks={undefined}
+                index={undefined}
                 style={{ margin: '0.5rem 0', width: '48%' }}
-                onChange={(model_id, value) => {
-                  const c = {};
+                onChange={(model_id: string, value: any) => {
+                  const c: any = {};
                   c[model_id] = value;
-                  return onModelChange(c);
+                  if (onModelChange) return onModelChange(c);
                 }}
               />
             case 'int':
@@ -200,10 +243,10 @@ const BladeSchemaForm = (props) => {
                 schema={s}
                 textfield={false}
                 style={{ margin: '0.5rem 0', width: '48%' }}
-                onChange={(model_id, value) => {
-                  const c = {};
+                onChange={(model_id: string, value: any) => {
+                  const c: any = {};
                   c[model_id] = value;
-                  return onModelChange(c);
+                  if (onModelChange) return onModelChange(c);
                 }}
               /> : <BladeSlider
                 hideDesc={hideDesc}
@@ -218,10 +261,10 @@ const BladeSchemaForm = (props) => {
                 schema={s}
                 textfield={false}
                 style={{ margin: '0.5rem 0', width: '48%' }}
-                onChange={(model_id, value) => {
-                  const c = {};
+                onChange={(model_id: string, value: any) => {
+                  const c: any = {};
                   c[model_id] = value;
-                  return onModelChange(c);
+                  if (onModelChange) return onModelChange(c);
                 }}
               />
             default:
