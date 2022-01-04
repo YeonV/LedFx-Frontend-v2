@@ -40,7 +40,7 @@ const BladeIcon = ({
   style,
   scene = false,
   card = false,
-}: BladeIconProps) => {
+}: BladeIconProps): JSX.Element => {
   // eslint-disable-next-line
   console.log(scene, card, className);
   return (

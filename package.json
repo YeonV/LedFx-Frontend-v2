@@ -139,6 +139,9 @@
     "react-is": "^17.0.2",
     "wait-on": "^6.0.0"
   },
+  "resolutions": {
+    "babel-loader": "8.1.0"
+  },
   "build": {
     "win": {
       "icon": "build/icon.ico",

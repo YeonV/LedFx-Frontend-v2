@@ -26,7 +26,7 @@ jobs:
       run: yarn
     
     - name: Build project
-      run: SKIP_PREFLIGHT_CHECK=true yarn buildgh
+      run: yarn buildgh
 
     - name: Build storybook
       run: yarn deploy-storybookgh -o ./build/sb -- --ci
