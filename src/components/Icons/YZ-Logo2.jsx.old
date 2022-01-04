@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React from 'react';
 
 export const Bottom = ({ stroke, strokeWidth, style }) => <path style={style} fill="currentColor" stroke={stroke} strokeWidth={strokeWidth} strokeLinejoin="bevel" strokeMiterlimit="22.9256" d="M22751.73 30209.19l-4508.17 1605.87c6186.94,5970.28 15978.27,5978.16 22158.89,1.34l-4508.57 -1606.03c-3977.4,2650.87 -9163.74,2648.16 -13142.15,-1.18z" />
@@ -69,4 +71,8 @@ export const YZLogo2 = ({
   </svg>
 );
 
+YZLogo2
+
 export default YZLogo2;
+
+/* eslint-enable */

@@ -5,4 +5,6 @@ export default {
   title: 'API/Config',
   component: BladeIcon,
 };
-export const Primary = () => <BladeIcon />;
+export function Primary() {
+  return <BladeIcon />;
+}

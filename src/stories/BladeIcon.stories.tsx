@@ -9,13 +9,30 @@ export default {
     */
   title: 'Design Systems/BladeIcon',
   component: BladeIcon,
+  parameters: {
+    options: {
+      showPanel: false,
+    },
+  },
 } as ComponentMeta<typeof BladeIcon>;
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof BladeIcon> = (args) => <BladeIcon {...args} />;
 
-export const Primary = Template.bind({});
+export const WLED = Template.bind({});
 
-Primary.args = {
-  name: 'MusicNote',
+WLED.args = {
+  name: 'wled',
+};
+
+export const MUI = Template.bind({});
+
+MUI.args = {
+  name: 'Light',
+};
+
+export const MDI = Template.bind({});
+
+MDI.args = {
+  name: 'mdi:led-strip',
 };

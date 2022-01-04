@@ -1,6 +1,7 @@
 import React from 'react';
 import { BladeDarkTheme } from '../src/AppThemes'
 import { ThemeProvider } from '@mui/styles';
+import storyTheme from './storyTheme';
 
 export const decorators = [
   Story => (
@@ -17,5 +18,8 @@ export const parameters = {
       color: /(background|color)$/i,
       date: /Date$/,
     },
+  },
+  docs: {
+    theme: storyTheme,
   },
 }

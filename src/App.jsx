@@ -11,7 +11,7 @@ import { BladeDarkTheme, BladeDarkOrangeTheme, BladeLightTheme, BladeDarkGreenTh
 import { BladeDarkTheme5, BladeDarkOrangeTheme5, BladeLightTheme5, BladeDarkGreenTheme5, BladeDarkBlueTheme5, BladeDarkGreyTheme5 } from './AppThemes5'
 import useStyles from './App.styles';
 import './App.css';
-import './assets/materialdesignicons.css';
+
 import LeftBar from './components/Bars/BarLeft';
 import TopBar from './components/Bars/BarTop';
 import BottomBar from './components/Bars/BarBottom';

@@ -18,7 +18,10 @@ module.exports = {
       2,
       { devDependencies: ["**/test.tsx", "**/test.ts"] },
     ],
+    "no-nested-ternary": 0,
+    "import/extensions": 0,
     "@typescript-eslint/indent": [2, 2],
     "react/react-in-jsx-scope": "off",
+    "react/function-component-definition": [0],
   },
 };
