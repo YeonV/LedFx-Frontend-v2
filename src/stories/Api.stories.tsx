@@ -7,7 +7,7 @@ import configApiYaml from './configApiYaml';
 const IFrame = (args:any) => <iframe {...args} />
 
 export default {
-  title: 'API/OpenApi',
+  title: 'API/LedFx API',
   component: IFrame,
   parameters: {
     options: {
@@ -27,9 +27,9 @@ export default {
   },
 };
 
-export function Primary() {
+export function AllRoutes() {
   return <IFrame width="100%" height="1000px" frameborder="0" src="https://stoplight-elements-dev-portal-storybook.netlify.app/iframe.html?id=public-stoplightproject--playground&args=router:hash;projectId:cHJqOjEwNTYzMw;hideTryIt:true&globals=theme:dark&viewMode=story#/YXBpOjMzOTIxMTA4-led-fx-api" />;
 }
-Primary.parameters = {
+AllRoutes.parameters = {
   controls: { hideNoControlsWarning: true, disable: true, showPanel: false },
 };

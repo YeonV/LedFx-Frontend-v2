@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import useStore from '../../utils/apiStore';
 import { Button, Card, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Link, Typography } from '@material-ui/core';
-import { version as fversion } from '../../../package.json';
+import fversion from '../../../package.json';
 import GitInfo from 'react-git-info/macro';
 
 export default function AboutDialog({ className, children, startIcon, title }) {
@@ -61,7 +61,7 @@ export default function AboutDialog({ className, children, startIcon, title }) {
                             <Card>
                                 <CardHeader title="Frontend" />
                                 <CardContent style={{ paddingTop: 0 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>version: <span>{fversion}</span></div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>version: <span>{fversion.version}</span></div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between'}}>commit: <Link href={`https://github.com/YeonV/LedFx-Frontend-v2/commit/${gitInfo.commit.hash}`} target="_blank">{gitInfo.commit.shortHash}</Link></div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between'}}>config_version: <span>{localStorage.getItem('ledfx-frontend')}</span></div>
                                 </CardContent>
