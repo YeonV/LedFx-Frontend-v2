@@ -29,7 +29,7 @@ jobs:
       run: yarn buildgh
 
     - name: Build storybook
-      run: yarn deploy-storybookgh -o ./build/sb -- --ci
+      run: yarn build-storybookgh -o ./build/sb --ci
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #- name: Run tests
