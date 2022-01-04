@@ -29,7 +29,7 @@ jobs:
       run: yarn buildgh
 
     - name: Build storybook
-      run: yarn build-storybook -o ./build/sb
+      run: yarn build-storybookgh -o ./build/sb
     #- name: Run tests
     #  run: yarn test
 
