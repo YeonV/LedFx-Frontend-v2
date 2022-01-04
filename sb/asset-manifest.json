@@ -1,0 +1,33 @@
+{
+  "files": {
+    "0.cf19af80.iframe.bundle.js": "/LedFx-Frontend-v2/sb /0.cf19af80.iframe.bundle.js",
+    "0.cf19af80.iframe.bundle.js.map": "/LedFx-Frontend-v2/sb /0.cf19af80.iframe.bundle.js.map",
+    "1.ad91f69e.iframe.bundle.js": "/LedFx-Frontend-v2/sb /1.ad91f69e.iframe.bundle.js",
+    "2.a372bc98.iframe.bundle.js": "/LedFx-Frontend-v2/sb /2.a372bc98.iframe.bundle.js",
+    "main.js": "/LedFx-Frontend-v2/sb /main.ac4aff4a.iframe.bundle.js",
+    "runtime~main.js": "/LedFx-Frontend-v2/sb /runtime~main.fea9db5c.iframe.bundle.js",
+    "vendors~main.js": "/LedFx-Frontend-v2/sb /vendors~main.6eb5b685.iframe.bundle.js",
+    "vendors~main.js.map": "/LedFx-Frontend-v2/sb /vendors~main.6eb5b685.iframe.bundle.js.map",
+    "6.fc2289e3.iframe.bundle.js": "/LedFx-Frontend-v2/sb /6.fc2289e3.iframe.bundle.js",
+    "7.c7fd0269.iframe.bundle.js": "/LedFx-Frontend-v2/sb /7.c7fd0269.iframe.bundle.js",
+    "7.c7fd0269.iframe.bundle.js.map": "/LedFx-Frontend-v2/sb /7.c7fd0269.iframe.bundle.js.map",
+    "8.d23a36f0.iframe.bundle.js": "/LedFx-Frontend-v2/sb /8.d23a36f0.iframe.bundle.js",
+    "0.cf19af80.iframe.bundle.js.LICENSE.txt": "/LedFx-Frontend-v2/sb /0.cf19af80.iframe.bundle.js.LICENSE.txt",
+    "7.c7fd0269.iframe.bundle.js.LICENSE.txt": "/LedFx-Frontend-v2/sb /7.c7fd0269.iframe.bundle.js.LICENSE.txt",
+    "iframe.html": "/LedFx-Frontend-v2/sb /iframe.html",
+    "static/media/code-brackets.2e1112d7.svg": "/LedFx-Frontend-v2/sb /static/media/code-brackets.2e1112d7.svg",
+    "static/media/colors.a4bd0486.svg": "/LedFx-Frontend-v2/sb /static/media/colors.a4bd0486.svg",
+    "static/media/comments.a3859089.svg": "/LedFx-Frontend-v2/sb /static/media/comments.a3859089.svg",
+    "static/media/direction.b770f9af.svg": "/LedFx-Frontend-v2/sb /static/media/direction.b770f9af.svg",
+    "static/media/flow.edad2ac1.svg": "/LedFx-Frontend-v2/sb /static/media/flow.edad2ac1.svg",
+    "static/media/plugin.d494b228.svg": "/LedFx-Frontend-v2/sb /static/media/plugin.d494b228.svg",
+    "static/media/repo.6d496322.svg": "/LedFx-Frontend-v2/sb /static/media/repo.6d496322.svg",
+    "static/media/stackalt.dba9fbb3.svg": "/LedFx-Frontend-v2/sb /static/media/stackalt.dba9fbb3.svg",
+    "vendors~main.6eb5b685.iframe.bundle.js.LICENSE.txt": "/LedFx-Frontend-v2/sb /vendors~main.6eb5b685.iframe.bundle.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "runtime~main.fea9db5c.iframe.bundle.js",
+    "vendors~main.6eb5b685.iframe.bundle.js",
+    "main.ac4aff4a.iframe.bundle.js"
+  ]
+}
