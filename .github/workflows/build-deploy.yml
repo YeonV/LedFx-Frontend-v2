@@ -27,7 +27,9 @@ jobs:
     
     - name: Build project
       run: yarn buildgh
-    
+
+    - name: Build storybook
+      run: yarn build-storybook -o ./build/sb
     #- name: Run tests
     #  run: yarn test
 
@@ -36,6 +38,9 @@ jobs:
       with:
         name: production-files
         path: ./build
+        
+
+    
   
   deploy:
     name: Deploy
