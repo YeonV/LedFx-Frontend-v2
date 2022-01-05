@@ -23,5 +23,10 @@ module.exports = {
     "@typescript-eslint/indent": [2, 2],
     "react/react-in-jsx-scope": "off",
     "react/function-component-definition": [0],
+    "camelcase": 0,
+    "react/no-array-index-key": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
   },
 };

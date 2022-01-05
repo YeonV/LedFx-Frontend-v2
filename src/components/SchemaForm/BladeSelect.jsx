@@ -11,7 +11,7 @@ const BladeSelect = ({
   onChange,
   index,
   required = false,
-  wrapperStyle = {margin: '0.5rem', flexBasis: '48%', width: 'unset'},
+  wrapperStyle = {margin: '0.5rem', flexBasis: '42%', width: 'unset'},
   selectStyle = {},
   textStyle = {},
   menuItemStyle = {},  
@@ -23,7 +23,7 @@ const BladeSelect = ({
     className={`step-effect-${index}`}
     full={!(schema.enum && schema.enum.length && Object.values(schema.enum).every(a => a.length < 20))}
     required={required}
-    style={{...wrapperStyle, flexBasis: schema.title === 'Name' ? '100%' : '48%'}}>
+    style={{...wrapperStyle, flexBasis: schema.title === 'Name' ? '100%' : '42%'}}>
 
     {variant === 'contained' ? (
       schema.enum
