@@ -74,7 +74,7 @@
     "postinstall": "electron-builder install-app-deps",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/sb build-storybook -s public"
+    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/docs build-storybook -s public"
   },
   "eslintConfig": {
     "extends": [
