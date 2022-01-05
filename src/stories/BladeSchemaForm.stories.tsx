@@ -5,17 +5,20 @@ import BladeSchemaForm from "../components/SchemaForm/BladeSchemaForm";
 
 export default {
   /* 👇 The title prop is optional.
-    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
-    * to learn how to generate automatic titles
-    */
+   * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
+   * to learn how to generate automatic titles
+   */
   title: 'Design Systems/SchemaForm',
   component: BladeSchemaForm,
+  argTypes: {
+    type: {
+      control: false,
+    },
+  },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
-        <CardContent>
-          {Story()}
-        </CardContent>
+        <CardContent>{Story()}</CardContent>
       </Card>
     ),
   ],
@@ -64,23 +67,14 @@ AddDeviceAdaLight.args = {
       },
       refresh_rate: {
         type: 'int',
-        enum: [
-          10,
-          12,
-          16,
-          21,
-          32,
-          64,
-        ],
+        enum: [10, 12, 16, 21, 32, 64],
         title: 'Refresh Rate',
         description: 'Target rate that pixels are sent to the device',
         default: 64,
       },
       com_port: {
         type: 'string',
-        enum: [
-          'COM1',
-        ],
+        enum: ['COM1'],
         title: 'Com Port',
         description: 'COM port for Adalight compatible device',
       },
@@ -100,14 +94,7 @@ AddDeviceAdaLight.args = {
       },
       color_order: {
         type: 'string',
-        enum: [
-          'RGB',
-          'RBG',
-          'GRB',
-          'BRG',
-          'GBR',
-          'BGR',
-        ],
+        enum: ['RGB', 'RBG', 'GRB', 'BRG', 'GBR', 'BGR'],
         title: 'Color Order',
         description: 'Color order',
         default: 'RGB',
@@ -123,13 +110,7 @@ AddDeviceAdaLight.args = {
       'pixel_count',
       'color_order',
     ],
-    required: [
-      'name',
-      'com_port',
-      'baudrate',
-      'pixel_count',
-      'color_order',
-    ],
+    required: ['name', 'com_port', 'baudrate', 'pixel_count', 'color_order'],
   },
   model: {},
   // eslint-disable-next-line
@@ -160,14 +141,7 @@ AddDeviceWLED.args = {
       },
       refresh_rate: {
         type: 'int',
-        enum: [
-          10,
-          12,
-          16,
-          21,
-          32,
-          64,
-        ],
+        enum: [10, 12, 16, 21, 32, 64],
         title: 'Refresh Rate',
         description: 'Target rate that pixels are sent to the device',
         default: 64,
@@ -179,13 +153,10 @@ AddDeviceWLED.args = {
       },
       sync_mode: {
         type: 'string',
-        enum: [
-          'UDP',
-          'DDP',
-          'E131',
-        ],
+        enum: ['UDP', 'DDP', 'E131'],
         title: 'Sync Mode',
-        description: 'Streaming protocol to WLED device. Recommended: UDP<480px, DDP>480px',
+        description:
+          'Streaming protocol to WLED device. Recommended: UDP<480px, DDP>480px',
         default: 'UDP',
       },
       timeout: {
@@ -206,10 +177,7 @@ AddDeviceWLED.args = {
       'sync_mode',
       'timeout',
     ],
-    required: [
-      'name',
-      'ip_address',
-    ],
+    required: ['name', 'ip_address'],
   },
   model: {},
   // eslint-disable-next-line
@@ -240,14 +208,7 @@ AddDeviceUDP.args = {
       },
       refresh_rate: {
         type: 'int',
-        enum: [
-          10,
-          12,
-          16,
-          21,
-          32,
-          64,
-        ],
+        enum: [10, 12, 16, 21, 32, 64],
         title: 'Refresh Rate',
         description: 'Target rate that pixels are sent to the device',
         default: 64,
@@ -274,13 +235,7 @@ AddDeviceUDP.args = {
       },
       udp_packet_type: {
         type: 'string',
-        enum: [
-          'DRGB',
-          'WARLS',
-          'DRGBW',
-          'DNRGB',
-          'adaptive_smallest',
-        ],
+        enum: ['DRGB', 'WARLS', 'DRGBW', 'DNRGB', 'adaptive_smallest'],
         title: 'Udp Packet Type',
         description: 'RGB packet encoding',
         default: 'DRGB',
@@ -290,13 +245,15 @@ AddDeviceUDP.args = {
         minimum: 1,
         maximum: 255,
         title: 'Timeout',
-        description: 'Seconds to wait after the last received packet to yield device control',
+        description:
+          'Seconds to wait after the last received packet to yield device control',
         default: 1,
       },
       minimise_traffic: {
         type: 'boolean',
         title: 'Minimise Traffic',
-        description: 'Won\'t send updates if nothing has changed on the LED device',
+        description:
+          'Will not send updates if nothing has changed on the LED device',
         default: true,
       },
     },
@@ -312,13 +269,7 @@ AddDeviceUDP.args = {
       'timeout',
       'minimise_traffic',
     ],
-    required: [
-      'name',
-      'ip_address',
-      'pixel_count',
-      'port',
-      'udp_packet_type',
-    ],
+    required: ['name', 'ip_address', 'pixel_count', 'port', 'udp_packet_type'],
   },
   model: {},
   // eslint-disable-next-line
@@ -337,12 +288,10 @@ AddVirtual.args = {
       },
       mapping: {
         type: 'string',
-        enum: [
-          'span',
-          'copy',
-        ],
+        enum: ['span', 'copy'],
         title: 'Mapping',
-        description: 'Span: Effect spans all segments. Copy: Effect copied on each segment',
+        description:
+          'Span: Effect spans all segments. Copy: Effect copied on each segment',
         default: 'span',
       },
       icon_name: {
@@ -400,7 +349,7 @@ AddVirtual.args = {
         minimum: 20,
         maximum: 15000,
         title: 'Frequency Min',
-        description: 'Lowest frequency for this virtual\'s audio reactive effects',
+        description: 'Lowest frequency audio reactive effects of this virtual',
         default: 20,
       },
       frequency_max: {
@@ -408,7 +357,7 @@ AddVirtual.args = {
         minimum: 20,
         maximum: 15000,
         title: 'Frequency Max',
-        description: 'Highest frequency for this virtual\'s audio reactive effects',
+        description: 'Highest frequency audio reactive effects of this virtual',
         default: 15000,
       },
     },
@@ -424,10 +373,7 @@ AddVirtual.args = {
       'frequency_min',
       'frequency_max',
     ],
-    required: [
-      'name',
-      'mapping',
-    ],
+    required: ['name', 'mapping'],
   },
   model: {},
   // eslint-disable-next-line
@@ -487,10 +433,7 @@ AudioCard.args = {
         default: 1,
       },
     },
-    permitted_keys: [
-      'min_volume',
-      'audio_device',
-    ],
+    permitted_keys: ['min_volume', 'audio_device'],
     required: [],
   },
   model: {},

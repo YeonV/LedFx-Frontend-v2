@@ -15,27 +15,27 @@ interface BladeIconProps {
   /**
    * flag indicator
    */
-  colorIndicator?: boolean,
+  colorIndicator?: boolean;
   /**
    * Icon is rendered in SceneList
    */
-  scene?: boolean,
+  scene?: boolean;
   /**
    * Icon is rendered in SceneList
    */
-  card?: boolean,
+  card?: boolean;
   /**
    * examples: `wled`, `Light`, `mdi:led-strip`
    */
-  name?: string,
+  name?: string;
   /**
    * JSX className
    */
-  className?: string,
+  className?: string;
   /**
    * JSX style
    */
-  style?: Record<string, unknown>,
+  style?: Record<string, unknown>;
 }
 
 /**
@@ -56,22 +56,56 @@ function BladeIcon({
   card = false,
 }: BladeIconProps): JSX.Element {
   return (
-    <Icon className={className} color={colorIndicator ? 'primary' : 'inherit'} style={style}>
+    <Icon
+      className={className}
+      color={colorIndicator ? 'primary' : 'inherit'}
+      style={style}
+    >
       {name.startsWith('yz:logo2y') ? (
-        <YZLogo2Y style={{
-          transform: card ? 'unset' : scene
-            ? 'scale(1)' : 'scale(0.012)',
-          marginTop: '3px',
-        }}
+        <YZLogo2Y
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
         />
-      )
-        : name.startsWith('yz:logo2z') ? <YZLogo2Z style={{ transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)', marginTop: '3px' }} />
-          : name.startsWith('yz:logo2top') ? <YZLogo2Top style={{ transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)', marginTop: '3px' }} />
-            : name.startsWith('yz:logo2bot') ? <YZLogo2Bottom style={{ transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)', marginTop: '3px' }} />
-              : name.startsWith('yz:logo2') ? <YZLogo2 style={{ transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)', marginTop: '3px' }} />
-                : name.startsWith('wled') ? <Wled />
-                  : name.startsWith('mdi:') ? <span style={{ position: 'relative' }} className={`mdi mdi-${name.split('mdi:')[1]}`} />
-                    : name && camelToSnake(name)}
+      ) : name.startsWith('yz:logo2z') ? (
+        <YZLogo2Z
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2top') ? (
+        <YZLogo2Top
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2bot') ? (
+        <YZLogo2Bottom
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2') ? (
+        <YZLogo2
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('wled') ? (
+        <Wled />
+      ) : name.startsWith('mdi:') ? (
+        <span
+          style={{ position: 'relative' }}
+          className={`mdi mdi-${name.split('mdi:')[1]}`}
+        />
+      ) : (
+        name && camelToSnake(name)
+      )}
     </Icon>
   );
 }

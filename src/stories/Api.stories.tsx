@@ -31,7 +31,14 @@ export default {
 };
 
 export function AllRoutes() {
-  return <IFrame width="100%" height="1000px" frameborder="0" src="https://stoplight-elements-dev-portal-storybook.netlify.app/iframe.html?id=public-stoplightproject--playground&args=router:hash;projectId:cHJqOjEwNTYzMw;hideTryIt:true&globals=theme:dark&viewMode=story#/YXBpOjMzOTIxMTA4-led-fx-api" />;
+  return (
+    <IFrame
+      width="100%"
+      height="1000px"
+      frameborder="0"
+      src="https://stoplight-elements-dev-portal-storybook.netlify.app/iframe.html?id=public-stoplightproject--playground&args=router:hash;projectId:cHJqOjEwNTYzMw;hideTryIt:true&globals=theme:dark&viewMode=story#/YXBpOjMzOTIxMTA4-led-fx-api"
+    />
+  );
 }
 AllRoutes.parameters = {
   controls: { hideNoControlsWarning: true, disable: true, showPanel: false },

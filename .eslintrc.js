@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ["airbnb", "plugin:@typescript-eslint/recommended"],
+  extends: ["airbnb", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "prettier"],
   settings: {
@@ -13,6 +13,7 @@ module.exports = {
   ignorePatterns: ["**/build/*", "*.js", "*.jsx"],
   rules: {
     quotes: [2, "single"],
+    'prettier/prettier': ['error', { singleQuote: true }],
     "react/jsx-filename-extension": [2, { extensions: [".ts", ".tsx"] }],
     "import/no-extraneous-dependencies": [
       2,

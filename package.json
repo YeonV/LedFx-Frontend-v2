@@ -137,7 +137,7 @@
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.0.8",
     "gh-pages": "^3.2.0",
-    "prettier": "^2.3.0",
+    "prettier": "^2.5.1",
     "react-git-info": "^2.0.0",
     "react-is": "^17.0.2",
     "wait-on": "^6.0.0"

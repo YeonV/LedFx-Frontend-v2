@@ -33,21 +33,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface BladeFrameProps {
-  title?: string
-  children?: any,
-  full?: boolean,
-  style?: any,
-  required?: boolean,
-  variant?: 'outlined' | 'contained' | 'inherit',
-  className?: any,
-  disabled?: boolean
+  title?: string;
+  children?: any;
+  full?: boolean;
+  style?: any;
+  required?: boolean;
+  variant?: 'outlined' | 'contained' | 'inherit';
+  className?: any;
+  disabled?: boolean;
 }
 
 const BladeFrame = ({
-  title, children, full = false, style = { width: 'unset', order: 0 }, required = false, variant = 'outlined', className, disabled,
+  title,
+  children,
+  full = false,
+  style = { width: 'unset', order: 0 },
+  required = false,
+  variant = 'outlined',
+  className,
+  disabled,
 }: BladeFrameProps) => {
   const classes = useStyles();
-  return (variant === 'outlined' ? (
+  return variant === 'outlined' ? (
     <div
       className={`${classes.wrapper} ${className}`}
       style={{
@@ -64,7 +71,7 @@ const BladeFrame = ({
     </div>
   ) : (
     children
-  ));
+  );
 };
 
 BladeFrame.defaultProps = {

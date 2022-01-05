@@ -4,9 +4,9 @@ import Popover from './Popover';
 
 export default {
   /* 👇 The title prop is optional.
-    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
-    * to learn how to generate automatic titles
-    */
+   * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
+   * to learn how to generate automatic titles
+   */
   title: 'Design Systems/Popover',
   component: Popover,
   argTypes: {
@@ -28,7 +28,7 @@ const Template: ComponentStory<typeof Popover> = (args) => <Popover {...args} />
 export const Default = Template.bind({});
 Default.args = {};
 
-// export const WLED = Template.bind({});
-// WLED.args = {
-//   name: 'wled',
-// };
+export const Example = Template.bind({});
+Example.args = {
+  type: 'button',
+};

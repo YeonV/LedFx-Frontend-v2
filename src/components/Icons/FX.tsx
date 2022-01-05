@@ -4,18 +4,25 @@ interface FXProps {
   /**
    * color
    */
-  currentColor?: string,
+  currentColor?: string;
   /**
-  * stroke color
-  */
-  stroke?: string,
+   * stroke color
+   */
+  stroke?: string;
 }
 
 /**
  * FX SVG
  */
 const FX = ({ stroke = '#ffffff', currentColor = 'transparent' }: FXProps) => (
-  <svg id="svg" className="fxSvg" xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="-200, -200, 800,800">
+  <svg
+    id="svg"
+    className="fxSvg"
+    xmlns="http://www.w3.org/2000/svg"
+    width="400"
+    height="400"
+    viewBox="-200, -200, 800,800"
+  >
     <g id="svgg">
       <path
         id="path0"
