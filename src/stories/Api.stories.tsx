@@ -1,9 +1,4 @@
 // eslint-disable-next-line
-import BladeIcon from '../components/Icons/BladeIcon';
-// eslint-disable-next-line
-import configApiYaml from './configApiYaml';
-
-// eslint-disable-next-line
 const IFrame = (args:any) => <iframe {...args} />
 
 export default {
