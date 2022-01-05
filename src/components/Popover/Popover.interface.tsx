@@ -20,11 +20,11 @@ export interface PopoverProps {
    */
   size?: 'small' | 'medium' | 'large' | undefined,
   /**
-   * Should the popup open on doubleclick?
+   * Should the popup open on doubleclick? Ignored if openOnLongPress is `true`
    */
   openOnDoubleClick?: boolean,
   /**
-   * Should the popup open on longpress?
+   * Should the popup open on longpress? (openOnDoubleClick gets ignored if set)
    */
   openOnLongPress?: boolean,
   /**
