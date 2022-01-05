@@ -1,130 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import PopoverOriginal, { PopoverProps as PopoverOriginalProps } from '@material-ui/core/Popover';
 import {
-  Typography, Button, MenuItem, ListItemIcon,
+  Typography, Button, MenuItem, ListItemIcon, Popover as PopoverOriginal,
 } from '@material-ui/core';
 import { Delete, Close, Check } from '@material-ui/icons';
 import { useLongPress } from 'use-long-press';
-
-const useStyles = makeStyles((theme) => ({
-  typography: {
-    padding: theme.spacing(2),
-  },
-}));
-
-interface PopoverProps {
-  /**
-  * onChange function for the given model
-  */
-  onConfirm?: (e: any) => typeof e,
-  /**
-  * onChange function for the given model
-  */
-  onSingleClick?: (e: any) => typeof e,
-  /**
-  * onChange function for the given model
-  */
-  onDoubleClick?: (e: any) => typeof e,
-  /**
-   * flag indicator
-   */
-  openOnDoubleClick?: boolean,
-  /**
-   * flag indicator
-   */
-  openOnLongPress?: boolean,
-  /**
-   * flag indicator
-   */
-  noIcon?: boolean,
-  /**
-   * flag indicator
-   */
-  disabled?: boolean,
-  /**
-   * flag indicator
-   */
-  confirmDisabled?: boolean,
-  /**
-   * flag indicator
-   */
-  confirmContent?: boolean,
-
-  /**
-   * JSX className
-   */
-  variant?: 'text' | 'outlined' | 'contained' | undefined,
-  /**
-   * JSX className
-   */
-  color?: 'inherit' | 'secondary' | 'default' | 'primary' | undefined,
-  /**
-   * JSX className
-   */
-  vertical?: number | 'center' | 'bottom' | 'top',
-  /**
-   * JSX className
-   */
-  horizontal?: number | 'center' | 'left' | 'right',
-  /**
-   * JSX className
-   */
-  size?: 'small' | 'medium' | 'large' | undefined,
-  /**
-   * JSX className
-   */
-  anchorOrigin?: PopoverOriginalProps['anchorOrigin'],
-  /**
-   * JSX className
-   */
-  transformOrigin?: PopoverOriginalProps['transformOrigin'],
-  /**
-   * JSX className
-   */
-  text?: string,
-  /**
-   * JSX className
-   */
-  label?: string | undefined,
-  /**
-   * JSX className
-   */
-  startIcon?: React.ReactNode,
-  /**
-   * JSX className
-   */
-  icon?: React.ReactNode,
-  /**
-   * JSX className
-   */
-  content?: React.ReactNode,
-  /**
-   * JSX className
-   */
-  footer?: React.ReactNode,
-
-  /**
-   * JSX className
-   */
-  className?: string,
-  /**
-   * JSX style
-   */
-  style?: Record<string, unknown>,
-  /**
-   * JSX style
-   */
-  popoverStyle?: Record<string, unknown>,
-  /**
-   * JSX style
-   */
-  wrapperStyle?: Record<string, unknown>,
-  /**
-   * JSX style
-   */
-  type?: 'menuItem' | 'button',
-}
+import { PopoverProps, PopoverDefaults } from './Popover.interface';
+import useStyles from './Popover.styles';
 
 const Popover = ({
   onConfirm,
@@ -203,6 +84,7 @@ const Popover = ({
               style={style}
               startIcon={!noIcon && startIcon}
               disabled={disabled}
+              // eslint-disable-next-line
               {...longPress}
             >
               {label}
@@ -282,34 +164,6 @@ const Popover = ({
   );
 };
 
-Popover.defaultProps = {
-  onConfirm: undefined,
-  confirmDisabled: undefined,
-  confirmContent: undefined,
-  onSingleClick: undefined,
-  onDoubleClick: undefined,
-  openOnDoubleClick: false,
-  openOnLongPress: false,
-  noIcon: false,
-  disabled: false,
-  variant: 'contained',
-  color: 'secondary',
-  vertical: 'center',
-  horizontal: 'left',
-  size: 'small',
-  text: 'Are you sure?',
-  label: undefined,
-  anchorOrigin: undefined,
-  transformOrigin: undefined,
-  startIcon: undefined,
-  icon: <Delete />,
-  content: undefined,
-  footer: undefined,
-  className: undefined,
-  style: {},
-  popoverStyle: undefined,
-  wrapperStyle: undefined,
-  type: 'button',
-};
+Popover.defaultProps = PopoverDefaults;
 
 export default Popover;

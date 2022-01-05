@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Popover from '../../components/Popover';
+import Popover from '../../components/Popover/Popover';
 import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import { useLongPress } from 'use-long-press';
 import { CloudOff, CloudUpload } from '@material-ui/icons';

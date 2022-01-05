@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import useStore from '../../../utils/apiStore';
-import Popover from '../../../components/Popover';
+import Popover from '../../../components/Popover/Popover';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';

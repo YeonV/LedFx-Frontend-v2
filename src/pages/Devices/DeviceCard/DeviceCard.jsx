@@ -10,7 +10,7 @@ import TuneIcon from '@material-ui/icons/Tune';
 import BuildIcon from '@material-ui/icons/Build';
 import { NavLink } from 'react-router-dom';
 import useStore from '../../../utils/apiStore';
-import Popover from '../../../components/Popover';
+import Popover from '../../../components/Popover/Popover';
 import EditVirtuals from '../EditVirtuals/EditVirtuals';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';

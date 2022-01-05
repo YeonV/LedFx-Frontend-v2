@@ -23,7 +23,7 @@ module.exports = {
     "@typescript-eslint/indent": [2, 2],
     "react/react-in-jsx-scope": "off",
     "react/function-component-definition": [0],
-    "react/jsx-props-no-spreading": [0],
+    "react/jsx-props-no-spreading": 0,
     "camelcase": 0,
     "react/no-array-index-key": 0,
     "@typescript-eslint/no-explicit-any": 0,

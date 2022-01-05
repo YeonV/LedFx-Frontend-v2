@@ -4,7 +4,7 @@ import Popper from '@material-ui/core/Popper';
 import useClickOutside from '../../utils/useClickOutside';
 import useStore from '../../utils/apiStore';
 import ReactGPicker from "react-gcolor-picker";
-import Popover from '../Popover';
+import Popover from '../Popover/Popover';
 import { TextField, Typography, Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { log } from '../../utils/helpers';
