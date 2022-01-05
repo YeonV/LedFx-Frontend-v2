@@ -4,4 +4,7 @@ import storyTheme from './storyTheme';
 
 addons.setConfig({
   theme: storyTheme,
+  toolbar: {
+    zoom: { hidden: true },
+  },
 });

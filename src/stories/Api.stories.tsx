@@ -13,6 +13,14 @@ export default {
     options: {
       showPanel: false,
     },
+    previewTabs: {
+      eject: { hidden: true },
+      copy: { hidden: true },
+      fullscreen: { hidden: true },
+      'storybook/background': { hidden: true },
+      'storybook/viewport': { hidden: true },
+      'storybook/docs/panel': { hidden: true },
+    },
   },
   argTypes: {
     showPanel: false,

@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '3px'
   },
   wrapper: {
-    minWidth: '220px',
+    // minWidth: '220px',
     width: '42%',
     padding: '16px 1.2rem 6px 1.2rem',
     border: '1px solid rgba(255, 255, 255, 0.1)',
