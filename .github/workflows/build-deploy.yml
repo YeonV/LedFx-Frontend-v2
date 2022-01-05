@@ -29,9 +29,13 @@ jobs:
       run: yarn buildgh
 
     - name: Build storybook
-      run: yarn build-storybookgh -o ./build/sb
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        yarn build-storybookgh -o ./build/docs
+        mv ./build/docs/*.woff ./build/docs/static/css  
+        mv ./build/docs/*.woff2 ./build/docs/static/css
+        
     #- name: Run tests
     #  run: yarn test
 
