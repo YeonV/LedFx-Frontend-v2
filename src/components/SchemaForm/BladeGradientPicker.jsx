@@ -292,7 +292,16 @@ const BladeGradientPicker = ({ col, clr, index, virtual, gradient = false, wrapp
   }
 
   const virtuals = useStore((state) => state.virtuals);
-  const effectyz = virtual && virtuals.length && virtuals.find((v)=>v.id === virtual.id);
+  const getV = () => {
+    for (var prop in virtuals) {
+      if (virtuals[prop].id == virtual.id) {
+        return virtuals[prop];
+      }
+    }
+  };
+
+
+  const effectyz = virtual && Object.keys(virtuals).length && getV();
   const sendColor = (e, v) => {
     if (virtual && effectyz && effectyz.effect && effectyz.effect.type) {
       updateVirtualEffect(virtual.id, {

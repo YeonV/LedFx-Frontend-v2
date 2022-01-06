@@ -1,7 +1,14 @@
-import { useState, useEffect } from "react";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@material-ui/core";
-import useStore from "../../utils/apiStore";
-import BladeSchemaForm from "../SchemaForm/BladeSchemaForm";
+import { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from '@material-ui/core';
+import useStore from '../../utils/apiStore';
+import BladeSchemaForm from '../SchemaForm/BladeSchemaForm';
 
 const AddVirtualDialog = () => {
   const addVirtual = useStore((state) => state.addVirtual);
@@ -10,10 +17,18 @@ const AddVirtualDialog = () => {
   const virtuals = useStore((state) => state.virtuals);
 
   const open = useStore((state) => state.dialogs.addVirtual?.open || false);
-  const virtId = useStore(
-    (state) => state.dialogs.addVirtual?.edit || false
-  );
-  const initial = virtuals.length && virtuals.find((v)=>v.id === virtId) || { type: "", config: {} };
+  const virtId = useStore((state) => state.dialogs.addVirtual?.edit || false);
+  const getV = () => {
+    for (var prop in virtuals) {
+      if (virtuals[prop].id == virtId) {
+        return virtuals[prop];
+      }
+    }
+  };
+
+  const virtual = getV();
+
+  const initial = virtual || { type: '', config: {} };
 
   const setDialogOpenAddVirtual = useStore(
     (state) => state.setDialogOpenAddVirtual
@@ -31,7 +46,7 @@ const AddVirtualDialog = () => {
   };
   const handleAddVirtual = (e) => {
     const cleanedModel = Object.fromEntries(
-      Object.entries(model).filter(([_, v]) => v !== "")
+      Object.entries(model).filter(([_, v]) => v !== '')
     );
     const defaultModel = {};
 
@@ -47,8 +62,8 @@ const AddVirtualDialog = () => {
 
     if (!valid) {
       showSnackbar({
-        message: "Please fill in all required fields.",
-        messageType: "warning",
+        message: 'Please fill in all required fields.',
+        messageType: 'warning',
       });
     } else {
       if (
@@ -61,7 +76,7 @@ const AddVirtualDialog = () => {
           config: { ...defaultModel, ...cleanedModel },
         }).then((res) => {
           console.log(res);
-          if (res !== "failed") {
+          if (res !== 'failed') {
             setDialogOpenAddVirtual(false);
             getDevices();
             getVirtuals();
@@ -75,7 +90,7 @@ const AddVirtualDialog = () => {
           config: { ...model },
         }).then((res) => {
           // console.log(res);
-          if (res !== "failed") {
+          if (res !== 'failed') {
             setDialogOpenAddVirtual(false);
             getDevices();
             getVirtuals();
@@ -104,8 +119,8 @@ const AddVirtualDialog = () => {
         {initial.config &&
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
-          ? "Add Virtual Device"
-          : "Settings"}
+          ? 'Add Virtual Device'
+          : 'Settings'}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -127,8 +142,8 @@ const AddVirtualDialog = () => {
           {initial.config &&
           Object.keys(initial.config).length === 0 &&
           initial.config.constructor === Object
-            ? "Add"
-            : "Save"}
+            ? 'Add'
+            : 'Save'}
         </Button>
       </DialogActions>
     </Dialog>

@@ -31,15 +31,27 @@ const Device = ({
   const virtuals = useStore((state) => state.virtuals);
   const presets = useStore((state) => state.presets);
 
-  const virtual = virtuals.length && virtuals.find((v)=>v.id === virtId);
+  const getV = () => {
+    for (var prop in virtuals) {
+      if (virtuals[prop].id == virtId) {
+        return virtuals[prop];
+      }
+    }
+  };
+
+  const virtual = getV();
+  // Object.keys(virtuals).length && virtuals.find((v) => v.id === virtId);
+
   const effectType = virtual && virtual.effect.type;
 
   useEffect(() => {
     getVirtuals();
     getSchemas();
     effectType && getPresets(effectType);
+    console.log(virtual, effectType, presets, virtuals);
   }, [getVirtuals, getSchemas, getPresets, effectType]);
 
+  console.log(virtual, effectType, presets, virtId);
   return (
     <Grid
       container
@@ -51,11 +63,9 @@ const Device = ({
         <>
           <Grid item className={classes.girdItem}>
             <EffectsCard virtId={virtId} />
-
           </Grid>
 
           <Grid item className={classes.girdItem}>
-
             {effectType && presets && (
               <PresetsCard
                 virtual={virtual}
@@ -64,12 +74,33 @@ const Device = ({
                 style={{ marginBottom: '1rem' }}
               />
             )}
-            {!(features['streamto'] || features['transitions'] || features['frequencies']) &&
-              <Typography variant={"body2"} color={"textSecondary"} align={"right"}> activate more advanced features with <Link style={{ color: 'inherit' }} to={"/Settings?ui"}> Expert-Mode</Link></Typography>
-            }
-            {features['streamto'] && <StreamToCard virtuals={virtuals} virtual={virtual} />}
-            {features['transitions'] && <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />}
-            {features['frequencies'] && <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />}
+            {!(
+              features['streamto'] ||
+              features['transitions'] ||
+              features['frequencies']
+            ) && (
+              <Typography
+                variant={'body2'}
+                color={'textSecondary'}
+                align={'right'}
+              >
+                {' '}
+                activate more advanced features with{' '}
+                <Link style={{ color: 'inherit' }} to={'/Settings?ui'}>
+                  {' '}
+                  Expert-Mode
+                </Link>
+              </Typography>
+            )}
+            {features['streamto'] && (
+              <StreamToCard virtuals={virtuals} virtual={virtual} />
+            )}
+            {features['transitions'] && (
+              <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />
+            )}
+            {features['frequencies'] && (
+              <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />
+            )}
           </Grid>
         </>
       )}
