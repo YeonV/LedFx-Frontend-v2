@@ -25,7 +25,7 @@ import { DeviceCardDefaults, DeviceCardProps } from './DeviceCard.interface';
  *
  */
 const DeviceCard = ({
-  yzName,
+  deviceName,
   virtId,
   index,
   handleDeleteDevice,
@@ -33,24 +33,24 @@ const DeviceCard = ({
   handleEditDevice,
   handleClearEffect,
   handlePlayPause,
-  yzLinkTo,
-  yzStyle,
-  yzIconName,
-  yzGraphs,
-  yzColorIndicator,
-  yzEffectName,
+  linkTo,
+  additionalStyle,
+  iconName,
+  graphsActive,
+  colorIndicator,
+  effectName,
   isPlaying,
-  yzIsStreaming,
-  yzPreviewOnly,
-  yzIsEffectSet,
-  yzTransitionTime,
-  yzIsDevice,
+  isStreaming,
+  previewOnly,
+  isEffectSet,
+  transitionTime,
+  isDevice,
 }: DeviceCardProps) => {
   const classes = useStyle();
   const theme = useTheme();
   // eslint-disable-next-line
   const [fade, _setFade] = useState(false);
-  const [isActive, setIsActive] = useState(yzIsEffectSet || yzIsStreaming);
+  const [isActive, setIsActive] = useState(isEffectSet || isStreaming);
 
   const [expanded, setExpanded] = useState(false);
   const color = 'inherit';
@@ -60,24 +60,24 @@ const DeviceCard = ({
   };
 
   useEffect(() => {
-    setIsActive(yzIsEffectSet || yzIsStreaming);
-  }, [yzIsEffectSet, yzIsStreaming]);
+    setIsActive(isEffectSet || isStreaming);
+  }, [isEffectSet, isStreaming]);
 
   return (
     <NavLink
-      to={yzLinkTo}
+      to={linkTo}
       className={`${classes.virtualCardPortraitW} ${
-        yzIsEffectSet ? 'active' : ''
+        isEffectSet ? 'active' : ''
       }`}
-      style={{ ...yzStyle, width: '100%' }}
+      style={{ ...additionalStyle, width: '100%' }}
     >
       <Card className={classes.virtualCardPortrait}>
         <div className={classes.virtualCardContainer}>
           <div className={`${classes.virtualIconWrapper}`}>
             <BladeIcon
               colorIndicator={false}
-              name={yzIconName}
-              className={`${classes.virtualIcon} ${!yzGraphs ? 'graphs' : ''} ${
+              name={iconName}
+              className={`${classes.virtualIcon} ${!graphsActive ? 'graphs' : ''} ${
                 expanded ? 'extended' : ''
               }`}
               style={{ zIndex: 3 }}
@@ -90,20 +90,20 @@ const DeviceCard = ({
               variant="h6"
               style={{
                 lineHeight: 1,
-                color: yzColorIndicator
+                color: colorIndicator
                   ? theme.palette.primary.light
                   : 'inherit',
               }}
             >
-              {yzName}
+              {deviceName}
             </Typography>
-            {yzEffectName ? (
+            {effectName ? (
               <Typography
                 variant="body1"
                 color="textSecondary"
                 style={{ height: 25, display: 'flex', alignItems: 'center' }}
               >
-                Effect: {yzEffectName}
+                Effect: {effectName}
                 <Button
                   size="small"
                   onClick={(e) => {
@@ -133,7 +133,7 @@ const DeviceCard = ({
                   <Clear />
                 </Button>
               </Typography>
-            ) : yzIsStreaming ? (
+            ) : isStreaming ? (
               <Typography
                 variant="body1"
                 color="textSecondary"
@@ -152,7 +152,7 @@ const DeviceCard = ({
           </div>
 
           <div>
-            {yzPreviewOnly && (
+            {previewOnly && (
               <Button variant="text" disabled size="small">
                 <VisibilityIcon />
               </Button>
@@ -178,10 +178,10 @@ const DeviceCard = ({
           className={clsx(classes.pixelbar, {
             [classes.pixelbarOut]: fade,
           })}
-          style={{ transitionDuration: `${yzTransitionTime}s` }}
+          style={{ transitionDuration: `${transitionTime}s` }}
         >
           <PixelGraph
-            intGraphs={yzGraphs}
+            intGraphs={graphsActive}
             active={isActive}
             virtId={virtId}
             className="step-devices-seven"
@@ -204,7 +204,7 @@ const DeviceCard = ({
             className={classes.buttonBarMobile}
           >
             {/* eslint-disable-next-line */}
-          <div className={`${classes.buttonBarMobileWrapper} ${!yzGraphs ? 'graphs' : ''} ${expanded ? 'extended' : ''}`} onClick={(e) => e.preventDefault()}>
+          <div className={`${classes.buttonBarMobileWrapper} ${!graphsActive ? 'graphs' : ''} ${expanded ? 'extended' : ''}`} onClick={(e) => e.preventDefault()}>
               <div />
               <div
                 style={{
@@ -224,7 +224,7 @@ const DeviceCard = ({
                   style={{ width: '100%' }}
                 />
 
-                {yzIsDevice ? (
+                {isDevice ? (
                   <Button
                     variant="text"
                     color={color}
@@ -233,7 +233,7 @@ const DeviceCard = ({
                     className={`step-devices-four-${index}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleEditDevice(yzIsDevice);
+                      handleEditDevice(isDevice);
                     }}
                   >
                     Edit Device

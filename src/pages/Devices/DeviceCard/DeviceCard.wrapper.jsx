@@ -50,7 +50,7 @@ const DeviceCardWrapper = ({ virtual, index }) => {
   // console.log("yoo", devices[Object.keys(devices).find(d => d === virtual)]?.config.ip_address)
   return virtual && virtuals[virtual] ?
     <DeviceCardTry 
-      yzName={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
+      deviceName={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
       virtId={virtual}
       index={index}
       handleDeleteDevice={()=>handleDeleteDevice(virtual)}
@@ -58,18 +58,18 @@ const DeviceCardWrapper = ({ virtual, index }) => {
       handleEditDevice={()=> handleEditDevice(virtuals[virtual]?.is_device)}
       handleClearEffect={()=>handleClearEffect(virtual)}
       handlePlayPause={()=>handlePlayPause()}
-      yzLinkTo={`/device/${virtuals[virtual]?.id}`}      
-      yzIconName={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
-      yzEffectName={virtuals[virtual]?.effect.name}
-      yzGraphs={graphs}
-      yzIsDevice={virtuals[virtual]?.is_device}
-      yzColorIndicator={false}
+      linkTo={`/device/${virtuals[virtual]?.id}`}      
+      iconName={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
+      effectName={virtuals[virtual]?.effect.name}
+      graphsActive={graphs}
+      isDevice={virtuals[virtual]?.is_device}
+      colorIndicator={false}
       isPlaying={virtuals[virtual]?.active}
-      yzTransitionTime={virtuals[virtual].config.transition_time * 1000}
-      yzIsStreaming={devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0}
-      yzPreviewOnly={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.preview_only}
-      yzIsEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
-      yzStyle={{
+      transitionTime={virtuals[virtual].config.transition_time * 1000}
+      isStreaming={devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0}
+      previewOnly={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.preview_only}
+      isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
+      additionalStyle={{
         order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name)
           ? 100
           : !virtuals[virtual]?.effect.name

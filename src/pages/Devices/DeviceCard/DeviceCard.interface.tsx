@@ -2,19 +2,19 @@ export interface DeviceCardProps {
   /**
    * The Name of the device
    */
-  yzName?: string;
+  deviceName?: string;
   /**
    * IconName. Refer to `Icon`
    */
-  yzIconName?: string;
+  iconName?: string;
   /**
    * Name of the current Effect
    */
-  yzEffectName: string | undefined;
+  effectName: string | undefined;
   /**
    * Flag if Effect is set
    */
-  yzIsEffectSet?: boolean;
+  isEffectSet?: boolean;
   /**
    * Play/Pause
    */
@@ -22,27 +22,27 @@ export interface DeviceCardProps {
   /**
    * Is streaming from other sources
    */
-  yzIsStreaming?: boolean;
+  isStreaming?: boolean;
   /**
    * Do not send to leds
    */
-  yzPreviewOnly?: boolean;
+  previewOnly?: boolean;
   /**
    * TransitionTime of the Device
    */
-  yzTransitionTime?: number;
+  transitionTime?: number;
   /**
    * DeviceId if its a device, else undefined if its a virtual
    */
-  yzIsDevice?: string | undefined;
+  isDevice?: string | undefined;
   /**
    * Graphs active?
    */
-  yzGraphs?: boolean;
+  graphsActive?: boolean;
   /**
    * Colorize?
    */
-  yzColorIndicator?: boolean;
+  colorIndicator?: boolean;
   /**
    * VirtualId
    */
@@ -74,18 +74,18 @@ export interface DeviceCardProps {
   /**
    * Handle Function
    */
-  yzLinkTo?: any;
+  linkTo?: any;
   /**
    * onClick Link
    */
-  yzStyle?: any;
+  additionalStyle?: any;
   /**
    * JSX styles
    */
 }
 export const DeviceCardDefaults: DeviceCardProps = {
-  yzName: 'My Wled',
-  yzEffectName: undefined,
+  deviceName: 'My Wled',
+  effectName: undefined,
   virtId: 'yz-quad',
   index: 1,
   handleDeleteDevice: () => console.log('DELETING DEVICE'), // eslint-disable-line no-console
@@ -93,15 +93,15 @@ export const DeviceCardDefaults: DeviceCardProps = {
   handleEditDevice: () => console.log('EDITING DEVICE'), // eslint-disable-line no-console
   handleClearEffect: () => console.log('CLEARING EFFECT'), // eslint-disable-line no-console
   handlePlayPause: () => console.log('PLAY/PAUSE'), // eslint-disable-line no-console
-  yzLinkTo: '/',
-  yzStyle: {},
-  yzIconName: 'wled',
-  yzColorIndicator: true,
+  linkTo: '/',
+  additionalStyle: {},
+  iconName: 'wled',
+  colorIndicator: true,
   isPlaying: true,
-  yzIsStreaming: false,
-  yzPreviewOnly: true,
-  yzIsEffectSet: true,
-  yzTransitionTime: 5,
-  yzIsDevice: 'yz-quad',
-  yzGraphs: true,
+  isStreaming: false,
+  previewOnly: true,
+  isEffectSet: true,
+  transitionTime: 5,
+  isDevice: 'yz-quad',
+  graphsActive: true,
 };
