@@ -66,7 +66,7 @@ const LeftBar = () => {
             } button key={virtuals[d].config.name}>
               <ListItemIcon>
                 <BladeIcon
-                style={{ position: 'relative' }}
+                  style={{ position: 'relative' }}
                   colorIndicator={!(pathname.split('/').length === 3 && pathname.split('/')[1] === 'device' && pathname.split('/')[2] === d) && Object.keys(virtuals[d]?.effect).length > 0}
                   name={virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name} />
               </ListItemIcon>

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactElement, useState } from 'react';
 import {
   Typography,
   Button,
@@ -39,9 +39,9 @@ const Popover = ({
   popoverStyle,
   wrapperStyle,
   type = 'button',
-}: PopoverProps) => {
+}: PopoverProps): ReactElement<any, any> => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const openPopover = (event: any) => {
     // eslint-disable-next-line
     setAnchorEl(() => event.currentTarget || event.target)

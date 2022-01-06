@@ -113,7 +113,7 @@ function BladeIcon({
 BladeIcon.defaultProps = {
   colorIndicator: false,
   name: 'MusicNote',
-  className: {},
+  className: '',
   style: {},
   scene: false,
   card: false,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   DialogContentText,
@@ -74,7 +74,7 @@ const BladeSchemaForm = ({
   hideToggle,
   onModelChange,
   type,
-}: BladeSchemaFormProps) => {
+}: BladeSchemaFormProps): ReactElement<any, any> => {
   // console.log(schema)
   const classes = useStyles();
   const [hideDesc, setHideDesc] = useState(true);

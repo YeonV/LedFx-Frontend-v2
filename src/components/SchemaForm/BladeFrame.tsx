@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { ReactElement } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -52,7 +53,7 @@ const BladeFrame = ({
   variant = 'outlined',
   className,
   disabled,
-}: BladeFrameProps) => {
+}: BladeFrameProps): ReactElement<any, any> => {
   const classes = useStyles();
   return variant === 'outlined' ? (
     <div

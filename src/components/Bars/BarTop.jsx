@@ -15,6 +15,7 @@ import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
 import BladeIcon from '../Icons/BladeIcon';
 import isElectron from 'is-electron';
+// import Doc from '../Doc/Doc';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -258,6 +259,7 @@ const TopBar = () => {
                 : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} />
                   : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} />
                     : null}
+          {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
           <MenuItem onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />

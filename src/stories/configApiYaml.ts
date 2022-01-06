@@ -1,4 +1,4 @@
-const configApiYaml = `
+export const configApiYaml = `
 openapi: 3.1.0
 info:
   title: LedFx API
