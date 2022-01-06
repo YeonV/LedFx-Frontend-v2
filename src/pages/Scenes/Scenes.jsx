@@ -5,7 +5,7 @@ import { Button, Divider, Dialog, DialogActions, DialogContent, DialogContentTex
 import { Info } from '@material-ui/icons';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
-import BladeIcon from '../../components/Icons/BladeIcon';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 
 const useStyles = makeStyles({
   root: {

@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 // eslint-disable-next-line
-import BladeIcon from '../components/Icons/BladeIcon';
+import BladeIcon from './BladeIcon';
 
 export default {
   /* 👇 The title prop is optional.

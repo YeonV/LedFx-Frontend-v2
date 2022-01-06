@@ -16,7 +16,7 @@ import { Clear, Delete, Pause, PlayArrow } from '@material-ui/icons';
 import Popover from '../../../components/Popover/Popover';
 import EditVirtuals from '../EditVirtuals/EditVirtuals';
 import PixelGraph from '../../../components/PixelGraph';
-import BladeIcon from '../../../components/Icons/BladeIcon';
+import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon';
 import useStyle from './DeviceCard.styles';
 import { DeviceCardDefaults, DeviceCardProps } from './DeviceCard.interface';
 

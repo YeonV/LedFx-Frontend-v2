@@ -12,7 +12,7 @@ import { ListItemIcon, MenuItem } from '@material-ui/core';
 import { MenuBook } from '@material-ui/icons';
 import { API } from '@stoplight/elements';
 import '@stoplight/elements/styles.min.css';
-import configApiYaml from '../../stories/configApiYaml';
+import configApiYaml from './configApiYaml';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

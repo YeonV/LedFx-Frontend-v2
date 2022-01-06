@@ -16,7 +16,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import useStore from '../../utils/apiStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import BladeIcon from '../../components/Icons/BladeIcon';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import { Button, CardActions, Chip, OutlinedInput, Select } from '@material-ui/core';
 import { Box } from '@mui/system';
 

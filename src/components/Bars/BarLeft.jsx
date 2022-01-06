@@ -6,7 +6,7 @@ import { useLocation, Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
-import BladeIcon from '../Icons/BladeIcon';
+import BladeIcon from '../Icons/BladeIcon/BladeIcon';
 import isElectron from 'is-electron';
 
 const LeftBar = () => {

@@ -2,7 +2,7 @@ import useStore from '../../../utils/apiStore';
 import { Fab, IconButton } from '@material-ui/core';
 import { QueueMusic } from '@material-ui/icons';
 import ChangeSpotifyURLDialog from './ChangeSpotifyURLDialog';
-import BladeIcon from '../../Icons/BladeIcon';
+import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 
 const SpotifyWidget = ({
   spotifyEnabled,

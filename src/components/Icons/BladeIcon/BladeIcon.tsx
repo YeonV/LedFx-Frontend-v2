@@ -1,42 +1,16 @@
 import { Icon } from '@material-ui/core';
-import Wled from './Wled';
+import Wled from '../Wled';
 import {
   YZLogo2,
   YZLogo2Bottom,
   YZLogo2Top,
   YZLogo2Y,
   YZLogo2Z,
-} from './YZ-Logo2';
-import { camelToSnake } from '../../utils/helpers';
-import '../../assets/materialdesignicons.css';
-import '../../index.css';
-
-interface BladeIconProps {
-  /**
-   * flag indicator
-   */
-  colorIndicator?: boolean;
-  /**
-   * Icon is rendered in SceneList
-   */
-  scene?: boolean;
-  /**
-   * Icon is rendered in SceneList
-   */
-  card?: boolean;
-  /**
-   * examples: `wled`, `Light`, `mdi:led-strip`
-   */
-  name?: string;
-  /**
-   * JSX className
-   */
-  className?: string;
-  /**
-   * JSX style
-   */
-  style?: Record<string, unknown>;
-}
+} from '../YZ-Logo2';
+import { camelToSnake } from '../../../utils/helpers';
+import '../../../assets/materialdesignicons.css';
+import '../../../index.css';
+import { BladeIconDefaultProps, BladeIconProps } from './BladeIcon.interface';
 
 /**
  * Icon component supporting 2 libraries
@@ -110,13 +84,6 @@ function BladeIcon({
   );
 }
 
-BladeIcon.defaultProps = {
-  colorIndicator: false,
-  name: 'MusicNote',
-  className: '',
-  style: {},
-  scene: false,
-  card: false,
-};
+BladeIcon.defaultProps = BladeIconDefaultProps;
 
 export default BladeIcon;

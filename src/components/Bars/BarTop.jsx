@@ -13,7 +13,7 @@ import TourScenes from '../Tours/TourScenes';
 import TourSettings from '../Tours/TourSettings';
 import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
-import BladeIcon from '../Icons/BladeIcon';
+import BladeIcon from '../Icons/BladeIcon/BladeIcon';
 import isElectron from 'is-electron';
 // import Doc from '../Doc/Doc';
 
