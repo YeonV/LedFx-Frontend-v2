@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface BladeFrameProps {
   title?: string;
+  index?: number;
   children?: any;
   full?: boolean;
   style?: any;
@@ -45,6 +46,7 @@ interface BladeFrameProps {
 }
 
 const BladeFrame = ({
+  index,
   title,
   children,
   full = false,
@@ -64,7 +66,7 @@ const BladeFrame = ({
       }}
     >
       {/* eslint-disable-next-line */}
-      <label className={`MuiFormLabel-root${disabled ? ' Mui-disabled' : ''}`}>
+      <label className={`MuiFormLabel-root${disabled ? ' Mui-disabled' : ''}  step-effect-${index}`}>
         {title}
         {required ? '*' : ''}
       </label>
@@ -76,6 +78,7 @@ const BladeFrame = ({
 };
 
 BladeFrame.defaultProps = {
+  index: undefined,
   title: undefined,
   children: undefined,
   full: false,

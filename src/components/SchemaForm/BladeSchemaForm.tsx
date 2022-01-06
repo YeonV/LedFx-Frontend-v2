@@ -10,7 +10,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
-import BladeBoolean from './components/BladeBoolean';
+import BladeBoolean from './components/Boolean/BladeBoolean';
 import BladeSelect from './components/BladeSelect';
 import BladeSlider from './components/BladeSlider';
 import BladeFrame from './components/BladeFrame';

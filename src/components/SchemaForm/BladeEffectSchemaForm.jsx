@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
-import BladeBoolean from './components/BladeBoolean';
+import BladeBoolean from './components/Boolean/BladeBoolean';
 import BladeSelect from './components/BladeSelect';
 import BladeSlider from './components/BladeSlider';
 import BladeGradientPicker from './components/BladeGradientPicker';
