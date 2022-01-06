@@ -10,10 +10,14 @@ import {
   Divider,
 } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
-import BladeBoolean from './BladeBoolean';
-import BladeSelect from './BladeSelect';
-import BladeSlider from './BladeSlider';
-import BladeFrame from './BladeFrame';
+import BladeBoolean from './components/BladeBoolean';
+import BladeSelect from './components/BladeSelect';
+import BladeSlider from './components/BladeSlider';
+import BladeFrame from './components/BladeFrame';
+import {
+  BladeSchemaFormDefaultProps,
+  BladeSchemaFormProps,
+} from './BladeSchemaForm.interface';
 
 const useStyles = makeStyles((theme) => ({
   bladeSchemaForm: {
@@ -27,41 +31,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Schema {
-  properties?: any;
-  required?: any;
-  permitted_keys?: any;
-}
-
-interface BladeSchemaFormProps {
-  /**
-   * Schema to generate Form from. <br />
-   * in production this is provided by <br />
-   * an external api or a store-management. <br />
-   * See examples, for manual usage...
-   */
-  schema: Schema;
-  /**
-   * Model is the current value of the schema
-   */
-  model: Record<string, unknown>;
-  /**
-   * Hide underline on sub-elements
-   */
-  disableUnderline?: boolean;
-  /**
-   * Hide Field-Description Toggle
-   */
-  hideToggle?: boolean;
-  /**
-   * onChange function for the given model
-   */
-  onModelChange?: (e: any) => typeof e;
-  /**
-   * internal
-   */
-  type?: string;
-}
 /**
  * Dynamically render Forms based on a `schema` <br />
  * most schemas retrived from ledfx/api/schema are read-only <br />
@@ -356,11 +325,6 @@ const BladeSchemaForm = ({
   );
 };
 
-BladeSchemaForm.defaultProps = {
-  disableUnderline: false,
-  hideToggle: undefined,
-  onModelChange: undefined,
-  type: undefined,
-};
+BladeSchemaForm.defaultProps = BladeSchemaFormDefaultProps;
 
 export default BladeSchemaForm;

@@ -1,14 +1,14 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Popper from '@material-ui/core/Popper';
-import useClickOutside from '../../utils/useClickOutside';
-import useStore from '../../utils/apiStore';
+import useClickOutside from '../../../utils/useClickOutside';
+import useStore from '../../../utils/apiStore';
 import ReactGPicker from "react-gcolor-picker";
-import Popover from '../Popover/Popover';
+import Popover from '../../Popover/Popover';
 import { TextField, Typography, Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
-import { log } from '../../utils/helpers';
-import DeleteColorsDialog from '../Dialogs/DeleteColors';
+import { log } from '../../../utils/helpers';
+import DeleteColorsDialog from '../../Dialogs/DeleteColors';
 import { color } from '@mui/system';
 
 const useStyles = makeStyles((theme) => ({

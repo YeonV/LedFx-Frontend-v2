@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Button, Card, CardContent, Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core/';
 import { Casino, Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
-import BladeEffectDropDown from '../../components/SchemaForm/BladeEffectDropDown';
+import BladeEffectDropDown from '../../components/SchemaForm/components/BladeEffectDropDown';
 import BladeEffectSchemaForm from '../../components/SchemaForm/BladeEffectSchemaForm';
 import PixelGraph from '../../components/PixelGraph';
 import TourEffect from '../../components/Tours/TourEffect';

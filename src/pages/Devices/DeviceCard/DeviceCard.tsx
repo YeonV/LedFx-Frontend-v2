@@ -77,9 +77,9 @@ const DeviceCard = ({
             <BladeIcon
               colorIndicator={false}
               name={iconName}
-              className={`${classes.virtualIcon} ${!graphsActive ? 'graphs' : ''} ${
-                expanded ? 'extended' : ''
-              }`}
+              className={`${classes.virtualIcon} ${
+                !graphsActive ? 'graphs' : ''
+              } ${expanded ? 'extended' : ''}`}
               style={{ zIndex: 3 }}
               card
             />
@@ -90,9 +90,7 @@ const DeviceCard = ({
               variant="h6"
               style={{
                 lineHeight: 1,
-                color: colorIndicator
-                  ? theme.palette.primary.light
-                  : 'inherit',
+                color: colorIndicator ? theme.palette.primary.light : 'inherit',
               }}
             >
               {deviceName}

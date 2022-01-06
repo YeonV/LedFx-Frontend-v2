@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
-import BladeBoolean from './BladeBoolean';
-import BladeSelect from './BladeSelect';
-import BladeSlider from './BladeSlider';
-import BladeGradientPicker from './BladeGradientPicker';
+import BladeBoolean from './components/BladeBoolean';
+import BladeSelect from './components/BladeSelect';
+import BladeSlider from './components/BladeSlider';
+import BladeGradientPicker from './components/BladeGradientPicker';
 
 const useStyles = makeStyles({
   bladeSchemaForm: {

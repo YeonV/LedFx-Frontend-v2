@@ -7,7 +7,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Slider from '@material-ui/core/Slider';
 import useStore from '../../utils/apiStore';
-import BladeFrame from '../../components/SchemaForm/BladeFrame';
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 
 const useStyles = makeStyles((theme) => ({
   content: {

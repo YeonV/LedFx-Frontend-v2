@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@material-ui/core';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 // eslint-disable-next-line
-import BladeSchemaForm from "../components/SchemaForm/BladeSchemaForm";
+import BladeSchemaForm from "./BladeSchemaForm";
 
 export default {
   /* 👇 The title prop is optional.
