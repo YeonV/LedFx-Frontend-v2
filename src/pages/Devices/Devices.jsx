@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
-import DeviceCard from './DeviceCard/DeviceCard';
+import DeviceCard from './DeviceCard/DeviceCard.wrapper';
 import NoYet from '../../components/NoYet';
 
 const useStyles = makeStyles((theme) => ({
