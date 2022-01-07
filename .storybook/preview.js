@@ -4,6 +4,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { BladeDarkTheme } from '../src/AppThemes';
 import { BladeDarkTheme5 } from '../src/AppThemes5';
 import storyTheme from './storyTheme';
+import './globals.css'
 
 export const decorators = [
   (Story) => (
