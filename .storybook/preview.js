@@ -19,7 +19,7 @@ export const parameters = {
   options: {
     storySort: {
       method: 'alphabetical',
-      order: [ 'BladeBook', ['Introduction', 'Getting Started', 'Guides'], 'UI Components',['Default', 'Examples', 'Components',['*', 'Color'] ], 'Api'],
+      order: [ 'BladeBook', ['Introduction', 'Getting Started', 'App Structure', 'Guides'], 'UI Components',['Default', 'Examples', 'Components',['*', 'Color'] ], 'Api'],
     },
   },
   actions: { argTypesRegex: '^on[A-Z].*' },

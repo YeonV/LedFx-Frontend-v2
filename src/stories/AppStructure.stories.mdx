@@ -1,6 +1,11 @@
 import { Meta } from '@storybook/addon-docs';
+import appStructure from './assets/src.png';
+import component from './assets/component.png';
+import components from './assets/components.png';
+import pageComponents from './assets/pageComponents.png';
+import pages from './assets/pages.png';
 
-<Meta title="BladeBook/Getting Started" />
+<Meta title="BladeBook/App Structure" />
 
 <style>
   {`
@@ -13,32 +18,27 @@ import { Meta } from '@storybook/addon-docs';
 
 This is a growing place for supporting the frontend development of LedFx
 
-## Requirements
+### App Structure
 
-- Running LedFx Core
-- Node >= 14 
+<img src={appStructure} alt="appStructure" />
 
-## Getting started
+### Components
 
-`yarn` is recommended, but you can use `npm` aswell
-```bash
-git clone https://github.com/YeonV/LedFx-Frontend-v2
-cd LedFx-Frontend-v2
-yarn # npm install
-yarn start # npm run start
-```
+<img src={components} alt="components" />
 
-When working with VsCode, you can make use of tasks:
-```bash
-git clone https://github.com/YeonV/LedFx-Frontend-v2
-cd LedFx-Frontend-v2
-code .
-```
-`CTRL`+`SHIFT`+`P` -> Run Task<br />
--> Init Workspace (this does the yarn install)<br />
--> Start Frontend (yarn start)
+### TypeScript Component
 
-[App Structure](/story/bladebook-app-structure--page)
+<img src={component} alt="component" />
+
+### Pages
+
+<img src={pages} alt="pages" />
+
+### Page Components
+
+<img src={pageComponents} alt="pageComponents" />
+
+[GettingStarted](/story/bladebook-getting-started--page)
 
 ---
 
