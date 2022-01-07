@@ -9,6 +9,11 @@ export default {
   component: GradientPicker,
   argTypes: {
     sendColorToVirtuals: { action: 'clicked' },
+    pickerBgColor: {
+      table: {
+        disable: true,
+      },
+    },
   },
   decorators: [
     (Story) => (
