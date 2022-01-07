@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/addon-docs';
 
-<Meta title="BladeBook/Introduction" />
+<Meta title="BladeBook/Getting Started" />
 
 <style>
   {`
@@ -11,22 +11,33 @@ import { Meta } from '@storybook/addon-docs';
 ### Welcome to Blade's Storybook
 # Frontend Development for LedFx
 
-
 This is a growing place for supporting the frontend development of LedFx
 
-### Explain the 3 Points
+## Requirements
 
-| Name           | Explanation        |
-| :------------- | :----------------- |
-| BladeBook      | guides and tools   |
-| API            | OpenApi compatible |
-| Design Systems | Using mui as base  |
+- Running LedFx Core
+- Node >= 14 
 
-### Notes
+## Getting started
 
-Some nice notes
+`yarn` is recommended, but you can use `npm` aswell
+```bash
+git clone https://github.com/YeonV/LedFx-Frontend-v2
+cd LedFx-Frontend-v2
+yarn # npm install
+yarn start # npm run start
+```
 
-[GettingStarted](/story/bladebook-getting-started--page)
+When working with VsCode, you can make use of tasks:
+```bash
+git clone https://github.com/YeonV/LedFx-Frontend-v2
+cd LedFx-Frontend-v2
+code .
+```
+`CTRL`+`SHIFT`+`P` -> Run Task<br />
+-> Init Workspace (this does the yarn install)<br />
+-> Start Frontend (yarn start)
+
 
 ---
 
