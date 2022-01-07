@@ -66,74 +66,78 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const features = useStore((state) => state.features);
 
-  const effectNames = effects
-    && Object.keys(effects).map((eid) => ({
+  const effectNames =
+    effects &&
+    Object.keys(effects).map((eid) => ({
       name: effects[eid].name,
       id: effects[eid].id,
       category: effects[eid].category,
     }));
 
-  const group = effectNames
-    && effectNames.reduce((r, a) => {
+  const group =
+    effectNames &&
+    effectNames.reduce((r, a) => {
       r[a.category] = [...(r[a.category] || []), a];
       return r;
     }, {});
 
   const [formats, setFormats] = useState(
-    () => group && Object.keys(group).map((c) => c || []),
+    () => group && Object.keys(group).map((c) => c || [])
   );
 
-  const handleFormat = (event, newFormats) => {
+  const handleFormat = (_event, newFormats) => {
     setFormats(newFormats);
   };
-  const onEffectTypeChange = (e) => setVirtualEffect(virtual.id, {
-    type: e.target.value,
-  }).then(() => {
-    getVirtuals();     
-  });
+  const onEffectTypeChange = (e) =>
+    setVirtualEffect(virtual.id, {
+      type: e.target.value,
+    }).then(() => {
+      getVirtuals();
+    });
 
   return (
-    <>
-      <FormControl className={`${classes.FormRow} step-device-one`}>
-        <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>
-          Effect Type
-        </InputLabel>
-        <Select
-          value={virtual && virtual.effect && virtual.effect.type || ""}
-          onChange={(e) => onEffectTypeChange(e)}
-          id="grouped-select"
-          className={classes.FormSelect}
-        >
-          <MenuItem value="" disabled>
-            <em>None</em>
-          </MenuItem>
-          {effects
-            && group
-            && Object.keys(group).map(
-              (c) => formats
-                && formats.indexOf(c) !== -1 && [
-                  <ListSubheader
+    <FormControl className={`${classes.FormRow} step-device-one`}>
+      <InputLabel htmlFor="grouped-select" className={classes.FormLabel}>
+        Effect Type
+      </InputLabel>
+      <Select
+        value={(virtual && virtual.effect && virtual.effect.type) || ''}
+        onChange={(e) => onEffectTypeChange(e)}
+        id="grouped-select"
+        className={classes.FormSelect}
+      >
+        <MenuItem value="" disabled>
+          <em>None</em>
+        </MenuItem>
+        {effects &&
+          group &&
+          Object.keys(group).map(
+            (c) =>
+              formats &&
+              formats.indexOf(c) !== -1 && [
+                <ListSubheader
                   className={classes.FormListHeaders}
                   color="primary"
                 >
                   {c}
                 </ListSubheader>,
                 group[c].map((e) => (
-                    <MenuItem className={classes.FormListItem} value={e.id}>
+                  <MenuItem className={classes.FormListItem} value={e.id}>
                     {e.name}
                   </MenuItem>
                 )),
-              ],
-            )}
-        </Select>
-        {features["effectfilter"] && <ToggleButtonGroup
+              ]
+          )}
+      </Select>
+      {features.effectfilter && (
+        <ToggleButtonGroup
           value={formats}
           onChange={handleFormat}
           aria-label="text formatting"
           className={classes.FormToggleWrapper}
         >
-          {effects
-            && Object.keys(group).map((c, i) => (
+          {effects &&
+            Object.keys(group).map((c, i) => (
               <ToggleButton
                 className={classes.FormToggle}
                 key={i}
@@ -143,9 +147,9 @@ const BladeEffectDropDown = ({ effects, virtual }) => {
                 {c}
               </ToggleButton>
             ))}
-        </ToggleButtonGroup>}
-      </FormControl>
-    </>
+        </ToggleButtonGroup>
+      )}
+    </FormControl>
   );
 };
 
