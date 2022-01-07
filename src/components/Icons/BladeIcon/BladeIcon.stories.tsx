@@ -11,7 +11,7 @@ export default {
   component: BladeIcon,
   parameters: {
     options: {
-      showPanel: false,
+      showPanel: true,
     },
   },
 } as ComponentMeta<typeof BladeIcon>;

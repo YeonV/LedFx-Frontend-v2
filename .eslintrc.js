@@ -30,5 +30,6 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": 0,
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "jsx-a11y/label-has-associated-control": 0,
   },
 };

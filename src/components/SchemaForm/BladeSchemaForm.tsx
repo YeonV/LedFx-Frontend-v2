@@ -11,8 +11,8 @@ import {
 } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 import BladeBoolean from './components/Boolean/BladeBoolean';
-import BladeSelect from './components/BladeSelect';
-import BladeSlider from './components/BladeSlider';
+import BladeSelect from './components/String/BladeSelect';
+import BladeSlider from './components/Number/BladeSlider';
 import BladeFrame from './components/BladeFrame';
 import {
   BladeSchemaFormDefaultProps,
@@ -157,8 +157,10 @@ const BladeSchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
+                      // eslint-disable-next-line prettier/prettier
+                      variant='outlined'
                       // eslint-disable-next-line
-                    children={null}
+                      children={undefined}
                       hideDesc={hideDesc}
                       // hide={"test"}
                       model={model}
@@ -242,7 +244,7 @@ const BladeSchemaForm = ({
                     disabled={!s.permitted}
                     disableUnderline={disableUnderline}
                     marks={s?.enum}
-                    step={null}
+                    step={undefined}
                     key={i}
                     model_id={s.id}
                     model={model}
@@ -265,7 +267,7 @@ const BladeSchemaForm = ({
                     disabled={!s.permitted}
                     disableUnderline={disableUnderline}
                     marks={s?.enum}
-                    step={null}
+                    step={undefined}
                     key={i}
                     model_id={s.id}
                     model={model}

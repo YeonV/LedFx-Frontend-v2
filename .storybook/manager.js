@@ -7,4 +7,5 @@ addons.setConfig({
   toolbar: {
     zoom: { hidden: true },
   },
+  panelPosition: 'right',
 });

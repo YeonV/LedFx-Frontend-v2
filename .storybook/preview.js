@@ -1,12 +1,12 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { BladeDarkTheme } from '../src/AppThemes'
-import { BladeDarkTheme5 } from '../src/AppThemes5'
+import { BladeDarkTheme } from '../src/AppThemes';
+import { BladeDarkTheme5 } from '../src/AppThemes5';
 import storyTheme from './storyTheme';
 
 export const decorators = [
-  Story => (
+  (Story) => (
     <ThemeProvider theme={BladeDarkTheme5}>
       <MuiThemeProvider theme={BladeDarkTheme}>
         <Story />
@@ -18,10 +18,11 @@ export const decorators = [
 export const parameters = {
   options: {
     storySort: {
-      order: [['Default']],
+      method: 'alphabetical',
+      order: [ 'BladeBook', ['Introduction', 'Guides'], 'UI Components',['Default', 'Examples', 'Components',['*', 'Color'] ], 'Api'],
     },
   },
-  actions: { argTypesRegex: "^on[A-Z].*" },
+  actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {
       color: /(background|color|stroke|currentColor)$/i,
@@ -35,4 +36,4 @@ export const parameters = {
       excludeDecorators: true,
     },
   },
-}
+};

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import useStore from '../../utils/apiStore';
-import BladeBoolean from './components/Boolean/BladeBoolean';
-import BladeSelect from './components/BladeSelect';
-import BladeSlider from './components/BladeSlider';
-import BladeGradientPicker from './components/BladeGradientPicker';
+import useStore from '../../../../utils/apiStore';
+import BladeBoolean from '../Boolean/BladeBoolean';
+import BladeSelect from '../String/BladeSelect';
+import BladeSlider from '../Number/BladeSlider';
+import GradientPickerWrapper from './GradientPicker/GradientPicker.wrapper';
 
 const useStyles = makeStyles({
   bladeSchemaForm: {
@@ -121,16 +121,16 @@ const BladeEffectSchemaForm = (props) => {
             );
           case 'color':
             return (
-              <BladeGradientPicker
-                  col={model[s.id]}
+              <GradientPickerWrapper
+                  pickerBgColor={model[s.id]}
                   key={i}
                   index={i}
-                  clr={s.id}
+                  title={s.id}
                   selectedType={selectedType}
                   model={model}
                   virtual={virtual}
                   wrapperStyle={{ width: '49%' }}
-                  gradient={s.gradient}
+                  isGradient={s.gradient}
                 />
             )
           default:
