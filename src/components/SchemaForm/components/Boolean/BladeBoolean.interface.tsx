@@ -3,7 +3,7 @@ export interface BladeBooleanProps {
   required?: boolean;
   style?: any;
   onClick?: any;
-  type?: string;
+  type?: 'switch' | 'checkbox' | 'button';
   schema?: any;
   model?: Record<string, unknown>;
   hideDesc?: boolean;
@@ -15,8 +15,10 @@ export const BladeBooleanDefaultProps = {
   style: undefined,
   required: false,
   onClick: undefined,
-  type: undefined,
-  schema: undefined,
+  type: 'switch',
+  schema: {
+    title: 'Check me',
+  },
   model: undefined,
   hideDesc: undefined,
   model_id: undefined,

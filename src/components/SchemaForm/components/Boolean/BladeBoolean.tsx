@@ -5,12 +5,16 @@ import {
   BladeBooleanProps,
 } from './BladeBoolean.interface';
 
+/**
+ * ## Boolean
+ * ### render as `switch`,`checkbox` or `button`
+ */
 const BladeBoolean = ({
   onClick,
   index,
   required,
   style,
-  type = 'switch',
+  type,
   schema,
   model,
   hideDesc = false,
