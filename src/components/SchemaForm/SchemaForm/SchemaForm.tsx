@@ -10,14 +10,11 @@ import {
   Divider,
 } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
-import BladeBoolean from './components/Boolean/BladeBoolean';
-import BladeSelect from './components/String/BladeSelect';
-import BladeSlider from './components/Number/BladeSlider';
-import BladeFrame from './components/BladeFrame';
-import {
-  BladeSchemaFormDefaultProps,
-  BladeSchemaFormProps,
-} from './BladeSchemaForm.interface';
+import BladeBoolean from '../components/Boolean/BladeBoolean';
+import BladeSelect from '../components/String/BladeSelect';
+import BladeSlider from '../components/Number/BladeSlider';
+import BladeFrame from '../components/BladeFrame';
+import { SchemaFormDefaultProps, SchemaFormProps } from './SchemaForm.props';
 
 const useStyles = makeStyles((theme) => ({
   bladeSchemaForm: {
@@ -36,14 +33,14 @@ const useStyles = makeStyles((theme) => ({
  * most schemas retrived from ledfx/api/schema are read-only <br />
  * to enable write, please provide the key `permitted_keys`
  */
-const BladeSchemaForm = ({
+const SchemaForm = ({
   schema,
   model,
   disableUnderline,
   hideToggle,
   onModelChange,
   type,
-}: BladeSchemaFormProps): ReactElement<any, any> => {
+}: SchemaFormProps): ReactElement<any, any> => {
   // console.log(schema)
   const classes = useStyles();
   const [hideDesc, setHideDesc] = useState(true);
@@ -82,7 +79,7 @@ const BladeSchemaForm = ({
                     model={model}
                     model_id={s.id}
                     required={s.required}
-                    style={{ margin: '0.5rem 0', flexBasis: '42%' }}
+                    style={{ margin: '0.5rem 0', flexBasis: '49%' }}
                     schema={s}
                     onClick={(model_id: string, value: any) => {
                       const c: any = {};
@@ -167,7 +164,7 @@ const BladeSchemaForm = ({
                       disabled={!s.permitted}
                       wrapperStyle={{
                         margin: '0.5rem 0',
-                        width: '42%',
+                        width: '49%',
                         flexBasis: 'unset',
                       }}
                       textStyle={{ width: '100%' }}
@@ -226,7 +223,7 @@ const BladeSchemaForm = ({
                     textfield={false}
                     marks={undefined}
                     index={undefined}
-                    style={{ margin: '0.5rem 0', width: '42%' }}
+                    style={{ margin: '0.5rem 0', width: '49%' }}
                     onChange={(model_id: string, value: any) => {
                       const c: any = {};
                       c[model_id] = value;
@@ -251,7 +248,7 @@ const BladeSchemaForm = ({
                     required={s.required}
                     schema={s}
                     textfield={false}
-                    style={{ margin: '0.5rem 0', width: '42%' }}
+                    style={{ margin: '0.5rem 0', width: '49%' }}
                     onChange={(model_id: string, value: any) => {
                       const c: any = {};
                       c[model_id] = value;
@@ -274,7 +271,7 @@ const BladeSchemaForm = ({
                     required={s.required}
                     schema={s}
                     textfield={false}
-                    style={{ margin: '0.5rem 0', width: '42%' }}
+                    style={{ margin: '0.5rem 0', width: '49%' }}
                     onChange={(model_id: string, value: any) => {
                       const c: any = {};
                       c[model_id] = value;
@@ -327,6 +324,6 @@ const BladeSchemaForm = ({
   );
 };
 
-BladeSchemaForm.defaultProps = BladeSchemaFormDefaultProps;
+SchemaForm.defaultProps = SchemaFormDefaultProps;
 
-export default BladeSchemaForm;
+export default SchemaForm;

@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import { Button, Card, CardContent, Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core/';
 import { Casino, Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
 import useStore from '../../utils/apiStore';
-import BladeEffectDropDown from '../../components/SchemaForm/components/Effects/BladeEffectDropDown';
-import BladeEffectSchemaForm from '../../components/SchemaForm/components/Effects/BladeEffectSchemaForm';
+import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper';
+import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm';
 import PixelGraph from '../../components/PixelGraph';
 import TourEffect from '../../components/Tours/TourEffect';
 import TroubleshootButton from './TroubleshootButton';
@@ -49,11 +49,13 @@ const EffectsCard = ({ virtId }) => {
   const getSchemas = useStore((state) => state.getSchemas);
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
   const setVirtualEffect = useStore((state) => state.setVirtualEffect);
+  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const virtuals = useStore((state) => state.virtuals);
   const effects = useStore((state) => state.schemas.effects);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const viewMode = useStore((state) => state.viewMode);
   const updateVirtual = useStore((state) => state.updateVirtual);
+  const features = useStore((state) => state.features);
 
   const graphs = useStore((state) => state.graphs);
 
@@ -67,7 +69,7 @@ const EffectsCard = ({ virtId }) => {
   const virtual = getV();
   
   const effectType = virtual && virtual.effect.type;
-
+  
   const handleRandomize = () => {
     setVirtualEffect(
       virtual.id,
@@ -87,6 +89,17 @@ const EffectsCard = ({ virtId }) => {
       setTimeout(() => { setFade(false) }, virtual.config.transition_time * 1000 + 300)
     });
   };
+
+  const handleEffectConfig = (virtId, config) =>{
+    if (updateVirtualEffect && getVirtuals !== undefined) {
+      updateVirtualEffect(virtId, {
+        virtId: virtId,
+        type: effectType,
+        config,
+      }).then(() => {
+        getVirtuals();
+      });
+    }}
 
   const handlePlayPause = () => {
     updateVirtual(virtual.id, { active: !virtual.active })
@@ -157,10 +170,13 @@ const EffectsCard = ({ virtId }) => {
 
           </div>
           <div style={{ height: '1rem' }} />
-          <BladeEffectDropDown
-            virtId={virtId}
+          <EffectDropDown
             effects={effects}
             virtual={virtual}
+            features={features}
+            getVirtuals={getVirtuals}
+            setVirtualEffect={setVirtualEffect}
+            
           />
         </CardContent>
       </Card>
@@ -184,7 +200,8 @@ const EffectsCard = ({ virtId }) => {
                 <AccordionDetails style={{ padding: '0 0 8px 0' }}>
                   <div>
                     <BladeEffectSchemaForm
-                      virtual={virtual}
+                      handleEffectConfig={handleEffectConfig}
+                      virtId={virtual.id}
                       schema={effects[effectType].schema}
                       model={virtual.effect.config}
                       virtual_id={virtId}

@@ -1,9 +1,6 @@
 import { Select, MenuItem, TextField } from '@material-ui/core/';
 import BladeFrame from '../BladeFrame';
-import {
-  BladeSelectDefaultProps,
-  BladeSelectProps,
-} from './BladeSelect.interface';
+import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props';
 
 /**
  * ## String
@@ -19,7 +16,7 @@ const BladeSelect = ({
   onChange,
   index,
   required = false,
-  wrapperStyle = { margin: '0.5rem', flexBasis: '42%', width: 'unset' },
+  wrapperStyle = { margin: '0.5rem', flexBasis: '49%', width: 'unset' },
   selectStyle = {},
   textStyle = {},
   menuItemStyle = {},
@@ -39,7 +36,7 @@ const BladeSelect = ({
     required={required}
     style={{
       ...wrapperStyle,
-      flexBasis: schema.title === 'Name' ? '100%' : '42%',
+      flexBasis: schema.title === 'Name' ? '100%' : '49%',
     }}
   >
     {variant === 'contained' ? (

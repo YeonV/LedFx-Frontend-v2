@@ -4,7 +4,7 @@ export interface Schema {
   permitted_keys?: any;
 }
 
-export interface BladeSchemaFormProps {
+export interface EffectSchemaFormProps {
   /**
    * Schema to generate Form from. <br />
    * in production this is provided by <br />
@@ -17,26 +17,20 @@ export interface BladeSchemaFormProps {
    */
   model: Record<string, unknown>;
   /**
-   * Hide underline on sub-elements
+   * ID of the current active virtual
    */
-  disableUnderline?: boolean;
-  /**
-   * Hide Field-Description Toggle
-   */
-  hideToggle?: boolean;
+  virtId: string;
   /**
    * onChange function for the given model
    */
-  onModelChange?: (e: any) => typeof e;
+  handleEffectConfig?: (_virt: string, _config: any) => true;
   /**
-   * internal
+   * updateVirtualEffect function for the given model
    */
-  type?: string;
+  getVirtuals?: () => true;
 }
 
-export const BladeSchemaFormDefaultProps = {
-  disableUnderline: false,
-  hideToggle: undefined,
+export const EffectSchemaFormDefaultProps = {
   onModelChange: undefined,
-  type: undefined,
+  selectedType: undefined,
 };

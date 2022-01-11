@@ -1,21 +1,32 @@
 import { useState, useEffect } from 'react';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../utils/apiStore';
 import GradientPicker from './GradientPicker';
 
 const GradientPickerWrapper = ({
   pickerBgColor,
   title,
   index,
-  virtual,
+  virtId,
   isGradient = false,
   wrapperStyle,
 }) => {
   const [name, _setName] = useState('');
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
+  const virtuals = useStore((state) => state.virtuals);
   const colors = useStore((state) => state.colors);
   const getColors = useStore((state) => state.getColors);
   const addColor = useStore((state) => state.addColor);
+  
+  const getV = () => {
+    for (let prop in virtuals) {
+      if (virtuals[prop].id == virtId) {
+        return virtuals[prop];
+      }
+    }
+  };
+
+  const virtual = getV()
 
   const sendColorToVirtuals = (e) => {
     if (virtual && virtual.effect && virtual.effect.type) {

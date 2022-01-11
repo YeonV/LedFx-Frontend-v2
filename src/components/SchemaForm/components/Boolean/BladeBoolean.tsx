@@ -3,7 +3,7 @@ import BladeFrame from '../BladeFrame';
 import {
   BladeBooleanDefaultProps,
   BladeBooleanProps,
-} from './BladeBoolean.interface';
+} from './BladeBoolean.props';
 
 /**
  * ## Boolean

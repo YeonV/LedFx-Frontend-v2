@@ -8,7 +8,7 @@ import {
   Button,
 } from '@material-ui/core';
 import useStore from '../../utils/apiStore';
-import BladeSchemaForm from '../SchemaForm/BladeSchemaForm';
+import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
 const AddVirtualDialog = () => {
   const addVirtual = useStore((state) => state.addVirtual);

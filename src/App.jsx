@@ -108,8 +108,7 @@ export default function App() {
 
   useEffect(() => {
     initFrontendConfig();
-    console.info('%c Ledfx ' + '%c\n       © by Blade  ', 'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-image:url(https://my.ledfx.app/favicon/favicon-32x32.png); background-color: #800000; background-repeat: no-repeat; background-position: 10% 50%;', 'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;');
-    // log("Blade's Loggin Tools")
+    console.info('%c Ledfx ' + '%c\n ReactApp by Blade ', 'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-image:url(https://my.ledfx.app/favicon/favicon-32x32.png); background-color: #800000; background-repeat: no-repeat; background-position: 10% 50%;', 'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;');
     // log("successSUCCESS", { id: 'test' })
     // log("warningWARNING", { id: 'test' })
     // log("infoINFO", { id: 'test' })

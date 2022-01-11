@@ -3,14 +3,14 @@ import Popper from '@material-ui/core/Popper';
 import ReactGPicker from 'react-gcolor-picker';
 import { TextField, Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
-import useClickOutside from '../../../../../utils/useClickOutside';
-import Popover from '../../../../Popover/Popover';
-import DeleteColorsDialog from '../../../../Dialogs/DeleteColors';
+import useClickOutside from '../../../../utils/useClickOutside';
+import Popover from '../../../Popover/Popover';
+import DeleteColorsDialog from '../../../Dialogs/DeleteColors';
 import useStyles from './GradientPicker.styles';
 import {
   GradientPickerDefaultProps,
   GradientPickerProps,
-} from './GradientPicker.interface';
+} from './GradientPicker.props';
 
 const GradientPicker = ({
   pickerBgColor,
@@ -124,11 +124,12 @@ const GradientPicker = ({
               variant="outlined"
               onClick={() => handleDeleteDialog()}
               disabled={
+                colors &&
                 colors.length &&
-                colors.colors.length &&
-                colors.gradients.length &&
-                !(Object.keys(colors.colors.user).length > 0) &&
-                !(Object.keys(colors.gradients.user).length > 0)
+                colors.colors?.length &&
+                colors.gradients?.length &&
+                !(Object.keys(colors.colors.user)?.length > 0) &&
+                !(Object.keys(colors.gradients.user)?.length > 0)
               }
             >
               -
@@ -146,13 +147,13 @@ const GradientPicker = ({
                     e.key === 'Enter' && handleAddGradient()
                   }
                   error={
-                    colors.length &&
-                    colors.colors.length &&
-                    colors.gradients.length &&
+                    colors?.length &&
+                    colors.colors?.length &&
+                    colors.gradients?.length &&
                     (Object.keys(colors.colors).indexOf(name) > -1 ||
                       Object.values(colors.colors).filter(
                         (p) => p === pickerBgColorInt
-                      ).length > 0 ||
+                      )?.length > 0 ||
                       Object.keys(colors.gradients).indexOf(name) > -1 ||
                       Object.values(colors.gradients).filter(
                         (p) => p === pickerBgColorInt

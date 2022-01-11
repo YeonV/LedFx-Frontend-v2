@@ -6,7 +6,7 @@ import {
   BladeSliderInnerDefaultProps,
   BladeSliderInnerProps,
   BladeSliderProps,
-} from './BladeSlider.interface';
+} from './BladeSlider.props';
 
 const BladeSliderInner = ({
   schema,
