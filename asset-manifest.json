@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.57a295e2.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.3db41923.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.a5956187.js",
     "static/js/787.2c81ab53.chunk.js": "/LedFx-Frontend-v2/static/js/787.2c81ab53.chunk.js",
     "static/media/transitions.gif": "/LedFx-Frontend-v2/static/media/transitions.53b6d6f458b421f00872.gif",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.d8e8e0f7931afa097409.woff",
@@ -11,11 +11,11 @@
     "static/media/blademod.svg": "/LedFx-Frontend-v2/static/media/blademod.f939f478785a84b3edcc820eef654556.svg",
     "index.html": "/LedFx-Frontend-v2/index.html",
     "main.57a295e2.css.map": "/LedFx-Frontend-v2/static/css/main.57a295e2.css.map",
-    "main.3db41923.js.map": "/LedFx-Frontend-v2/static/js/main.3db41923.js.map",
+    "main.a5956187.js.map": "/LedFx-Frontend-v2/static/js/main.a5956187.js.map",
     "787.2c81ab53.chunk.js.map": "/LedFx-Frontend-v2/static/js/787.2c81ab53.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.57a295e2.css",
-    "static/js/main.3db41923.js"
+    "static/js/main.a5956187.js"
   ]
 }
