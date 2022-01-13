@@ -48,10 +48,8 @@ const Device = ({
     getVirtuals();
     getSchemas();
     effectType && getPresets(effectType);
-    console.log(virtual, effectType, presets, virtuals);
   }, [getVirtuals, getSchemas, getPresets, effectType]);
 
-  // console.log(virtual, effectType, presets, virtId);
   return (
     <Grid
       container

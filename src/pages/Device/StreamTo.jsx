@@ -93,7 +93,7 @@ const StreamToCard = ({ virtual, virtuals, style }) => {
             id="demo-multiple-chip"
             multiple
             value={streamingTo}
-            onChange={(e, b) => console.log(e, b.props.value) || handleToggle(b.props.value)}
+            onChange={(e, b) => handleToggle(b.props.value)}
             input={<OutlinedInput id="select-multiple-chip" label="Select device(s) to copy to" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>

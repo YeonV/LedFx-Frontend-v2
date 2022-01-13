@@ -75,7 +75,7 @@ const BladeSliderInner = ({
           value={typeof value === 'number' ? value : 0}
           onChange={handleSliderChange}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
-          style={{ color: '#aaa', ...style }}
+          style={{ color: '#aaa', ...style, width: '100%' }}
         />
         {!hideDesc && schema.description ? (
           <Typography variant="body2" className="MuiFormHelperText-root">
@@ -115,7 +115,7 @@ const BladeSliderInner = ({
       value={typeof value === 'number' ? value : 0}
       onChange={handleSliderChange}
       onChangeCommitted={(e, b) => onChange(model_id, b)}
-      style={!hideDesc ? { ...style, width: '100%' } : style}
+      style={{ ...style, width: '100%' }}
     />
   ) : (
     <TextField
@@ -127,7 +127,7 @@ const BladeSliderInner = ({
       value={value}
       onChange={handleTextChange}
       helperText={!hideDesc && schema.description}
-      style={!hideDesc ? { ...style, width: '100%' } : style}
+      style={{ ...style, width: '100%' }}
     />
   );
 };

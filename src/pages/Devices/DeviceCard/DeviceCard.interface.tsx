@@ -16,6 +16,10 @@ export interface DeviceCardProps {
    */
   isEffectSet?: boolean;
   /**
+   * Is device online
+   */
+  online?: boolean;
+  /**
    * Play/Pause
    */
   isPlaying?: boolean;
@@ -74,6 +78,10 @@ export interface DeviceCardProps {
   /**
    * Handle Function
    */
+  activateDevice?: any;
+  /**
+   * Handle Function
+   */
   linkTo?: any;
   /**
    * onClick Link
@@ -85,6 +93,7 @@ export interface DeviceCardProps {
 }
 export const DeviceCardDefaults: DeviceCardProps = {
   deviceName: 'My Wled',
+  online: true,
   effectName: undefined,
   virtId: 'yz-quad',
   index: 1,

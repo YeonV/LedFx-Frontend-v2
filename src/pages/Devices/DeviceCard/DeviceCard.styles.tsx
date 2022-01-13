@@ -137,6 +137,9 @@ const useStyle = makeStyles((theme) => ({
     '&.extended.graphs': {
       height: 'auto',
       paddingTop: 0,
+      '& button': {
+        fontSize: 'smaller',
+      },
     },
   },
   pixelbar: {

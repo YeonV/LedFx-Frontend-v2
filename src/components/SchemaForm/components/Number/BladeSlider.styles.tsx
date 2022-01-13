@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     '& .sortable-handler': {
       touchAction: 'none',
     },
+    '& .MuiSlider-valueLabel > span': {
+      backgroundColor: theme.palette.background.paper,
+    },
   },
 }));
 

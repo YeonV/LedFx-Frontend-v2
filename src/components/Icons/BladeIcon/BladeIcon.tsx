@@ -1,5 +1,7 @@
 import { Icon } from '@material-ui/core';
 import Wled from '../Wled';
+import RazerMouse from '../RazerMouse';
+import RazerLogo from '../RazerLogo';
 import {
   YZLogo2,
   YZLogo2Bottom,
@@ -72,9 +74,13 @@ function BladeIcon({
         />
       ) : name.startsWith('wled') ? (
         <Wled />
+      ) : name.startsWith('razer:mouse') ? (
+        <RazerMouse />
+      ) : name.startsWith('razer:logo') ? (
+        <RazerLogo />
       ) : name.startsWith('mdi:') ? (
         <span
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', display: 'flex' }}
           className={`mdi mdi-${name.split('mdi:')[1]}`}
         />
       ) : (

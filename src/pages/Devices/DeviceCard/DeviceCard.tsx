@@ -12,7 +12,13 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { Clear, Delete, Pause, PlayArrow } from '@material-ui/icons';
+import {
+  Clear,
+  Delete,
+  Pause,
+  PlayArrow,
+  SyncProblem,
+} from '@material-ui/icons';
 import Popover from '../../../components/Popover/Popover';
 import EditVirtuals from '../EditVirtuals/EditVirtuals';
 import PixelGraph from '../../../components/PixelGraph';
@@ -26,6 +32,7 @@ import { DeviceCardDefaults, DeviceCardProps } from './DeviceCard.interface';
  */
 const DeviceCard = ({
   deviceName,
+  online,
   virtId,
   index,
   handleDeleteDevice,
@@ -45,6 +52,7 @@ const DeviceCard = ({
   isEffectSet,
   transitionTime,
   isDevice,
+  activateDevice,
 }: DeviceCardProps) => {
   const classes = useStyle();
   const theme = useTheme();
@@ -68,7 +76,7 @@ const DeviceCard = ({
       to={linkTo}
       className={`${classes.virtualCardPortraitW} ${
         isEffectSet ? 'active' : ''
-      }`}
+      } ${online ? 'online' : 'offline'}`}
       style={{ ...additionalStyle, width: '100%' }}
     >
       <Card className={classes.virtualCardPortrait}>
@@ -80,7 +88,7 @@ const DeviceCard = ({
               className={`${classes.virtualIcon} ${
                 !graphsActive ? 'graphs' : ''
               } ${expanded ? 'extended' : ''}`}
-              style={{ zIndex: 3 }}
+              style={{ zIndex: 3, opacity: online ? 1 : 0.3 }}
               card
             />
           </div>
@@ -91,11 +99,52 @@ const DeviceCard = ({
               style={{
                 lineHeight: 1,
                 color: colorIndicator ? theme.palette.primary.light : 'inherit',
+                opacity: online ? 1 : 0.3,
               }}
             >
               {deviceName}
             </Typography>
-            {effectName ? (
+            {!online ? (
+              <Typography
+                variant="body1"
+                color="textSecondary"
+                style={{
+                  height: 25,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="textSecondary"
+                  style={{
+                    height: 25,
+                    opacity: online ? 1 : 0.3,
+                  }}
+                >
+                  offline
+                </Typography>
+                <Button
+                  size="small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isDevice) {
+                      activateDevice(isDevice);
+                    }
+                  }}
+                  style={{
+                    color: 'inherit',
+                    marginLeft: '1rem',
+                    marginTop: '0rem',
+                    minWidth: 'unset',
+                    zIndex: expanded ? 1 : 3,
+                  }}
+                >
+                  <SyncProblem />
+                </Button>
+              </Typography>
+            ) : effectName ? (
               <Typography
                 variant="body1"
                 color="textSecondary"
@@ -202,7 +251,12 @@ const DeviceCard = ({
             className={classes.buttonBarMobile}
           >
             {/* eslint-disable-next-line */}
-          <div className={`${classes.buttonBarMobileWrapper} ${!graphsActive ? 'graphs' : ''} ${expanded ? 'extended' : ''}`} onClick={(e) => e.preventDefault()}>
+            <div
+              className={`${classes.buttonBarMobileWrapper} ${
+                !graphsActive ? 'graphs' : ''
+              } ${expanded ? 'extended' : ''}`}
+              onClick={(e) => e.preventDefault()}
+            >
               <div />
               <div
                 style={{

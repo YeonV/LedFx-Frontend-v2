@@ -30,6 +30,13 @@ function createSocket() {
           })
         );
         _ws.ws = e.target;
+        const req = {
+          event_type: "devices_updated",
+          id: 1,
+          type: "subscribe_event",
+        };
+        // console.log("Send");
+        ws.send(JSON.stringify(++req.id && req));
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === "visualisation_update") {
@@ -39,6 +46,13 @@ function createSocket() {
                 id: JSON.parse(event.data).vis_id,
                 pixels: JSON.parse(event.data).pixels,
               }
+            })
+          );
+        }
+        if (JSON.parse(event.data).event_type === "devices_updated") {
+          document.dispatchEvent(
+            new CustomEvent("YZold", {
+              detail: "devices_updated"
             })
           );
         }
@@ -102,7 +116,7 @@ export const HandleWs = () => {
             type: "subscribe_event",
           };
           // console.log("Send");
-          ws.send(JSON.stringify(++request.id && request));
+          ws.send(JSON.stringify(++request.id && request));          
         };
         getWs();
       })

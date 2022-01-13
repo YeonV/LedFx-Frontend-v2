@@ -22,6 +22,8 @@ export default function LabelBottomNavigation() {
 
   const [spotifyEnabled, setSpotifyEnabled] = useState(false)
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
+  const spotifyURL = useStore((state) => state.spotifyEmbedUrl);
+  const setSpotifyURL = useStore((state) => state.setSpotifyEmbedUrl);
 
   useEffect(() => {
     setValue(pathname);
@@ -80,6 +82,8 @@ export default function LabelBottomNavigation() {
         setSpotifyEnabled={setSpotifyEnabled}
         spotifyExpanded={spotifyExpanded}
         setSpotifyExpanded={setSpotifyExpanded}
+        spotifyURL={spotifyURL}
+        setSpotifyURL={setSpotifyURL}
       />
     )}
     <AddSceneDialog />

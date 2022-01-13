@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import useStore from '../../../utils/apiStore';
-import DeviceCardTry from './DeviceCard'
+import DeviceCard from './DeviceCard'
 
 const DeviceCardWrapper = ({ virtual, index }) => {
   const getVirtuals = useStore((state) => state.getVirtuals);
@@ -13,6 +13,7 @@ const DeviceCardWrapper = ({ virtual, index }) => {
   const graphs = useStore((state) => state.graphs);
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
   const updateVirtual = useStore((state) => state.updateVirtual);
+  const activateDevice = useStore((state) => state.activateDevice);
 
   const [fade, setFade] = useState(false)
   const [isActive, setIsActive] = useState((virtuals && virtual && virtuals[virtual] && virtuals[virtual].effect && Object.keys(virtuals[virtual].effect)?.length > 0) || devices && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0)
@@ -43,14 +44,20 @@ const DeviceCardWrapper = ({ virtual, index }) => {
       .then(() => getVirtuals());
   };
 
+  const handleActivateDevice = (e) => {
+    activateDevice(e)
+      .then(() => getDevices());
+  };
+
   useEffect(() => {        
     setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect)?.length > 0) || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0)
   }, [virtuals, devices])
 
-  // console.log("yoo", devices[Object.keys(devices).find(d => d === virtual)]?.config.ip_address)
+
   return virtual && virtuals[virtual] ?
-    <DeviceCardTry 
+    <DeviceCard 
       deviceName={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
+      online={devices[Object.keys(devices).find(d => d === virtual)]?.online}
       virtId={virtual}
       index={index}
       handleDeleteDevice={()=>handleDeleteDevice(virtual)}
@@ -63,6 +70,7 @@ const DeviceCardWrapper = ({ virtual, index }) => {
       effectName={virtuals[virtual]?.effect.name}
       graphsActive={graphs}
       isDevice={virtuals[virtual]?.is_device}
+      activateDevice={handleActivateDevice}
       colorIndicator={false}
       isPlaying={virtuals[virtual]?.active}
       transitionTime={virtuals[virtual].config.transition_time * 1000}
