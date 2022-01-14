@@ -27,26 +27,6 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 [![docs](https://img.shields.io/badge/React-ESlint-blue.svg?logo=ESlint&logoColor=white&label=)](https://eslint.org/)
 
 <details>
-<summary>Features</summary>
-
-  - complete rewrite:
-  - Modern React
-    - no class-components
-    - new structure
-    - hooks
-  - Zustand as State-Management
-  - Mobile first
-  - Dev-Friendly
-- Connect to any LedFx-Instance (changeable host-ip)
-- More Navigation
-  - Left Drawer
-  - Bottom Bar
-  - Top Bar - Menu
-  
-</details>
-
-
-<details>
 <summary>App structure</summary>
 
 - assets _(fonts, images,...)_
