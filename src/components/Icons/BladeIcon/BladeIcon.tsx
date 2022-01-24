@@ -1,7 +1,7 @@
 import { Icon } from '@material-ui/core';
 import Wled from '../Wled';
-import RazerMouse from '../RazerMouse';
-import RazerLogo from '../RazerLogo';
+// import RazerMouse from '../RazerMouse';
+// import RazerLogo from '../RazerLogo';
 import {
   YZLogo2,
   YZLogo2Bottom,
@@ -74,6 +74,51 @@ function BladeIcon({
         />
       ) : name.startsWith('wled') ? (
         <Wled />
+      ) : name.startsWith('mdi:') ? (
+        <span
+          style={{ position: 'relative', display: 'flex' }}
+          className={`mdi mdi-${name.split('mdi:')[1]}`}
+        />
+      ) : (
+        name && camelToSnake(name)
+      )}
+      {/* {name.startsWith('yz:logo2y') ? (
+        <YZLogo2Y
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2z') ? (
+        <YZLogo2Z
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2top') ? (
+        <YZLogo2Top
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2bot') ? (
+        <YZLogo2Bottom
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('yz:logo2') ? (
+        <YZLogo2
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px',
+          }}
+        />
+      ) : name.startsWith('wled') ? (
+        <Wled />
       ) : name.startsWith('razer:mouse') ? (
         <RazerMouse />
       ) : name.startsWith('razer:logo') ? (
@@ -85,7 +130,7 @@ function BladeIcon({
         />
       ) : (
         name && camelToSnake(name)
-      )}
+      )} */}
     </Icon>
   );
 }

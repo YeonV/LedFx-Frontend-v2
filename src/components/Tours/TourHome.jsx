@@ -9,8 +9,8 @@ const steps = [
     content: (
       <div>
         <h2>LedFx Tour</h2>
-        Welcome to LedFx!
-        Feel free to follow this tour and we&apos;ll show you around 😊
+        Welcome to LedFx! Feel free to follow this tour and we&apos;ll show you
+        around 😊
       </div>
     ),
     style: {
@@ -68,11 +68,16 @@ const steps = [
         This is where it all begins!
         <ul style={{ paddingLeft: '1rem' }}>
           <li>Add Device: Add a networked LED strip</li>
-          <li>Add Virtual: Divide or merge your devices into one virtual strip</li>
+          <li>
+            Add Virtual: Divide or merge your devices into one virtual strip
+          </li>
           <li>Add Scene: Save the active effects of all devices</li>
-          <li>Add Integration: Connect LedFx to other software (upcoming...)</li>
+          <li>
+            Add Integration: Connect LedFx to other software (upcoming...)
+          </li>
         </ul>
-        I&apos;d recommend you now close this tour and add your first devices to LedFx 🎉
+        I&apos;d recommend you now close this tour and add your first devices to
+        LedFx 🎉
       </div>
     ),
     style: {
@@ -86,10 +91,14 @@ const TourHome = () => {
   const setTour = useStore((state) => state.setTour);
   return (
     <>
-      <Button variant="outlined" className="step-zero" onClick={() => { 
-        setTour("home");
-        setIsTourOpen(true); 
-        }}>
+      <Button
+        variant="outlined"
+        className="step-zero"
+        onClick={() => {
+          setTour('home');
+          setIsTourOpen(true);
+        }}
+      >
         Start Tour
       </Button>
       <Tour

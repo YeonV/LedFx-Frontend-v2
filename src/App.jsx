@@ -35,6 +35,8 @@ import { TrainRounded } from '@mui/icons-material';
 import { SnackbarProvider } from 'notistack';
 import { Close } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
+import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
+
 
 
 export default function App() {
@@ -147,6 +149,7 @@ export default function App() {
           <WsContextNew.Provider value={wsNew}>
             <WsContext.Provider value={ws}>
               <div className={classes.root} style={{ paddingTop: isElectron() ? '30px' : 0 }}>
+                <AddToHomeScreen activateLogging />
                 <CssBaseline />
                 <Router basename={process.env.PUBLIC_URL}>
                   <ScrollToTop />
