@@ -236,7 +236,7 @@ export default function App() {
               cancelMsg: 'X',
               installMsg: 'Add',
               guidanceCancelMsg: 'X',
-              src: '/favicon/apple-icon-76x76.png',
+              src: `${process.env.PUBLIC_URL}/favicon/apple-icon-76x76.png`,
             }}
             customPromptElements={{
               container: 'athContainer',
