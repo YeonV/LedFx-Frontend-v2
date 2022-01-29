@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { InputAdornment, TextField } from '@material-ui/core';
-import BladeFrame from '../../components/SchemaForm/BladeFrame';
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 
 const log13 = (x) => Math.log(x) / Math.log(13);
 const logIt = (x) => 3700.0 * log13(1 + x / 200.0);

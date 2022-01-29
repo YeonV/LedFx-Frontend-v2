@@ -6,7 +6,7 @@ import { useLocation, Link } from 'react-router-dom';
 import useStore from '../../utils/apiStore';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
-import BladeIcon from '../Icons/BladeIcon';
+import BladeIcon from '../Icons/BladeIcon/BladeIcon';
 import isElectron from 'is-electron';
 
 const LeftBar = () => {
@@ -66,7 +66,7 @@ const LeftBar = () => {
             } button key={virtuals[d].config.name}>
               <ListItemIcon>
                 <BladeIcon
-                style={{ position: 'relative' }}
+                  style={{ position: 'relative' }}
                   colorIndicator={!(pathname.split('/').length === 3 && pathname.split('/')[1] === 'device' && pathname.split('/')[2] === d) && Object.keys(virtuals[d]?.effect).length > 0}
                   name={virtuals && virtuals[d] && virtuals[d].config && virtuals[d].config.icon_name && virtuals[d].config.icon_name} />
               </ListItemIcon>

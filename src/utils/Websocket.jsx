@@ -14,7 +14,7 @@ import isElectron from 'is-electron';
 
 
 function createSocket() {
-  const newBase = !!window.localStorage.getItem('ledfx-newbase')
+  const newBase = window.localStorage.getItem('ledfx-newbase') === 1
 
   if (!newBase) {
     const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://', 'wss://').replace('http://', 'ws://')}/api/websocket`, {
@@ -30,6 +30,13 @@ function createSocket() {
           })
         );
         _ws.ws = e.target;
+        const req = {
+          event_type: "devices_updated",
+          id: 1,
+          type: "subscribe_event",
+        };
+        // console.log("Send");
+        ws.send(JSON.stringify(++req.id && req));
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === "visualisation_update") {
@@ -42,19 +49,28 @@ function createSocket() {
             })
           );
         }
+        if (JSON.parse(event.data).event_type === "devices_updated") {
+          document.dispatchEvent(
+            new CustomEvent("YZold", {
+              detail: "devices_updated"
+            })
+          );
+        }
       },
       // onreconnect: e => console.log('Reconnecting...', e),
       // onmaximum: e => console.log('Stop Attempting!', e),
       onclose: e => {
         // console.log('Closed!', e)
         window.localStorage.removeItem("core-init")
-        document.dispatchEvent(
-          new CustomEvent("disconnected", {
-            detail: {
-              isDisconnected: true
-            }
-          })
-        );
+        if (window.localStorage.getItem('ledfx-newbase') !== '1') {        
+          document.dispatchEvent(
+            new CustomEvent("disconnected", {
+              detail: {
+                isDisconnected: true
+              }
+            })
+          );
+        }
       },
       // onerror: e => console.log('Error:', e)
     });
@@ -100,7 +116,7 @@ export const HandleWs = () => {
             type: "subscribe_event",
           };
           // console.log("Send");
-          ws.send(JSON.stringify(++request.id && request));
+          ws.send(JSON.stringify(++request.id && request));          
         };
         getWs();
       })
@@ -123,7 +139,7 @@ export const HandleWs = () => {
   }, [wsReady, pixelGraphs]);
 
   if (!wsReady) {
-    if (ws.ws) {
+    if (ws && ws.ws) {
       setWsReady(true)
     }
   }

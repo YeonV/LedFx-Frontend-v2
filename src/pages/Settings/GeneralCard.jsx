@@ -1,7 +1,7 @@
 import useStore from '../../utils/apiStore';
 import { deleteFrontendConfig, download } from '../../utils/helpers';
 import { CloudUpload, CloudDownload, PowerSettingsNew, Delete, Refresh, Info } from '@material-ui/icons';
-import PopoverSure from '../../components/Popover';
+import PopoverSure from '../../components/Popover/Popover';
 
 import AboutDialog from '../../components/Dialogs/AboutDialog';
 import isElectron from 'is-electron';

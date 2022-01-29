@@ -3,10 +3,10 @@ import { Info } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 
 interface NoYetProps {
-  type?: string
+  type?: string;
 }
 
-const NoYet: React.FC<NoYetProps> = ({ type }) => (
+const NoYet: React.FC<NoYetProps> = ({ type }): JSX.Element => (
   <Card>
     <CardHeader
       avatar={<Info />}

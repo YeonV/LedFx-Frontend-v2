@@ -20,9 +20,9 @@
   <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="%PUBLIC_URL%/favicon/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon/favicon-16x16.png">
-  <meta name="msapplication-TileColor" content="#0dbedc">
+  <meta name="msapplication-TileColor" content="#333333">
   <meta name="msapplication-TileImage" content="%PUBLIC_URL%/favicon/ms-icon-144x144.png">
-  <meta name="theme-color" content="#0dbedc">
+  <meta name="theme-color" content="#333333">
   <meta name="background-color" content="#020202">
   <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -43,6 +43,19 @@
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
+  <script type="application/javascript">
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('serviceWorker.js', { scope: '.' }).then(function (registration) {
+          // Registration was successful
+          console.debug('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function (err) {
+          // registration failed :(
+          console.debug('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
   <div id="root"></div>
   <!--
       This HTML file is a template.

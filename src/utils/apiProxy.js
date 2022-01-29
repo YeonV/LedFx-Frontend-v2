@@ -1,7 +1,7 @@
 import axios from 'axios';
 import isElectron from 'is-electron';
 
-const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0] || 'http://localhost:8888';
+const baseURL = isElectron() ? 'http://localhost:8888' : !!window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0] || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host');
 
 const api = axios.create({
@@ -10,7 +10,7 @@ const api = axios.create({
 
 export const Ledfx = async (path, set, method = 'GET', body) => {
   const newBase = !!window.localStorage.getItem('ledfx-newbase')
-  if (!newBase) {
+  // if (!newBase) {
     try {
       let response = null;
       switch (method) {
@@ -98,5 +98,5 @@ export const Ledfx = async (path, set, method = 'GET', body) => {
       });
       // console.log(error);
     }
-  }
+  // }
 };

@@ -30,6 +30,15 @@ export default function CloudScreen({
     const getPresets = useStore((state) => state.getPresets);
     const getVirtuals = useStore((state) => state.getVirtuals);
     const virtuals = useStore((state) => state.virtuals);
+    const getV = () => {
+        for (var prop in virtuals) {
+          if (virtuals[prop].id == virtId) {
+            return virtuals[prop];
+          }
+        }
+      };
+    
+    const virtual = getV();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -76,7 +85,7 @@ export default function CloudScreen({
         refreshPresets()
     }, [])
 
-    // console.log(virtuals[virtId].effect.name, Object.keys(cloudEffects))
+    // console.log(virtual.effect.name, Object.keys(cloudEffects))
 
     return (
         <>
@@ -113,16 +122,16 @@ export default function CloudScreen({
                 </AppBar>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {Object.keys(cloudEffects).map((effect, i) =>
-                        <div key={i} style={{ order: virtuals[virtId].effect.name.toLowerCase() === effect.toLowerCase()  ? -1 : 1 }}>
+                        <div key={i} style={{ order: virtual.effect.name.toLowerCase() === effect.toLowerCase()  ? -1 : 1 }}>
                             <Typography className={classes.segmentTitle} variant="caption" style={{
-                                color: virtuals[virtId].effect.name.toLowerCase() === effect.toLowerCase()
+                                color: virtual.effect.name.toLowerCase() === effect.toLowerCase()
                                     ? theme.palette.primary.main
                                     : theme.palette.text.primary
                             }}
                             >{effect}</Typography>
                             <Grid style={{ padding: 20 }} container spacing={2}>
                                 {cloudEffects[effect].map((p, ind) => <Grid item key={ind}>
-                                    <Card className={`${classes.cloudEffectCard} ${ virtuals[virtId].effect.name.toLowerCase() === effect.toLowerCase() && activeCloudPreset === p.Name.toLowerCase() ? ' active' : '' }`} key={ind} onClick={() => handleCloudPresets(p)}>
+                                    <Card className={`${classes.cloudEffectCard} ${ virtual.effect.name.toLowerCase() === effect.toLowerCase() && activeCloudPreset === p.Name.toLowerCase() ? ' active' : '' }`} key={ind} onClick={() => handleCloudPresets(p)}>
                                         <CardHeader title={p.Name} subheader={<div style={{ color: '#999' }}>{`by ${p.user.username}`}</div>} action={
                                             <IconButton aria-label="Import" onClick={(e)=> { e.stopPropagation(); handleCloudPresets(p, true)}}>
                                                 <CloudDownload />

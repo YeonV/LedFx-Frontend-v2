@@ -1,21 +1,33 @@
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import IconButton from '@material-ui/core/IconButton';
-import { Icon } from '@material-ui/core';
+import { Icon, IconButton, Button } from '@material-ui/core';
 import useStore from '../../utils/apiStore';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
+import { Close } from '@material-ui/icons';
 
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
 const MessageBar = () => {
   const { isOpen, messageType, message } = useStore((state) => state.ui.snackbar);
   const clearSnackbar = useStore((state) => state.clearSnackbar);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   function handleClose() {
     clearSnackbar();
   }
 
-  return (
-    <Snackbar
+  useEffect(() => {
+    if (isOpen && message !== 'NO MESSAGE' && window.localStorage.getItem('ledfx-newbase') === '1') {
+      enqueueSnackbar(message, {
+        variant: messageType,
+        action: key => <Button onClick={() => { closeSnackbar(key) }}><Close /></Button>
+      });
+    }
+  }, [isOpen, message])
+
+  return window.localStorage.getItem('ledfx-newbase') !== '1'
+    ? <Snackbar
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'center',
@@ -32,12 +44,11 @@ const MessageBar = () => {
           onClick={handleClose}
         >
           <Icon>close</Icon>
-        </IconButton>,
-      ]}
-    >
+        </IconButton>
+      ]}>
       <Alert severity={messageType}>{message}</Alert>
     </Snackbar>
-  );
+    : <></>
 };
 
 export default MessageBar;

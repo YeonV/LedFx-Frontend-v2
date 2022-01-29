@@ -15,8 +15,8 @@ import Switch from '@material-ui/core/Switch';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import useStore from '../../utils/apiStore';
-import BladeFrame from '../../components/SchemaForm/BladeFrame';
-import BladeIcon from '../../components/Icons/BladeIcon';
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import { Button, CardActions, Chip, OutlinedInput, Select } from '@material-ui/core';
 import { Box } from '@mui/system';
 
@@ -93,7 +93,7 @@ const StreamToCard = ({ virtual, virtuals, style }) => {
             id="demo-multiple-chip"
             multiple
             value={streamingTo}
-            onChange={(e, b) => console.log(e, b.props.value) || handleToggle(b.props.value)}
+            onChange={(e, b) => handleToggle(b.props.value)}
             input={<OutlinedInput id="select-multiple-chip" label="Select device(s) to copy to" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>

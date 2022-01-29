@@ -3,9 +3,9 @@ import useStore from '../../utils/apiStore';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Divider, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Card, CardActionArea, CardActions, CardMedia, Icon, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
-import Popover from '../../components/Popover';
+import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
-import BladeIcon from '../../components/Icons/BladeIcon';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 
 const useStyles = makeStyles({
   root: {
