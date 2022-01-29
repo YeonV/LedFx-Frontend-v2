@@ -1,138 +1,168 @@
 {
-    "name": "ledfx",
-    "version": "2.0.0-beta37",
-    "description": "LedFx - BladeMOD",
-    "author": "YeonV aka Blade",
-    "private": true,
-    "main": "public/electron.js",
-    "homepage": "./",
-    "dependencies": {
-        "@babel/runtime": "^7.14.0",
-        "@electron/remote": "^2.0.1",
-        "@emotion/react": "^11.5.0",
-        "@emotion/styled": "^11.3.0",
-        "@material-ui/core": "^4.11.4",
-        "@material-ui/icons": "^4.11.2",
-        "@material-ui/lab": "^4.0.0-alpha.58",
-        "@mui/icons-material": "^5.0.5",
-        "@mui/lab": "^5.0.0-alpha.52",
-        "@mui/material": "^5.0.5",
-        "@mui/styles": "^5.0.2",
-        "@testing-library/dom": "^8.10.1",
-        "@testing-library/jest-dom": "^5.12.0",
-        "@testing-library/react": "^12.1.2",
-        "@testing-library/user-event": "^13.5.0",
-        "@treverix/custom-electron-titlebar": "^4.2.0",
-        "@treverix/remote": "^0.1.1",
-        "@types/reactour": "^1.18.1",
-        "axios": "^0.24.0",
-        "clsx": "^1.1.1",
-        "custom-electron-titlebar": "^3.2.7",
-        "electron-dl": "^3.2.1",
-        "electron-is-dev": "^2.0.0",
-        "electron-squirrel-startup": "^1.0.0",
-        "is-electron": "^2.2.0",
-        "match-sorter": "^6.3.1",
-        "moment": "^2.29.1",
-        "prop-types": "^15.7.2",
-        "react": "^17.0.2",
-        "react-colorful": "^5.5.0",
-        "react-dev-utils": "^11.0.4",
-        "react-dom": "^17.0.2",
-        "react-gcolor-picker": "^1.2.1",
-        "react-hotkeys-hook": "^3.4.4",
-        "react-moment": "^1.1.1",
-        "react-router-dom": "^5.2.0",
-        "react-scripts": "4.0.3",
-        "reactour": "^1.18.4",
-        "serve": "^12.0.1",
-        "sockette": "^2.0.6",
-        "styled-components": "^5.3.3",
-        "typescript": "^4.4.4",
-        "use-long-press": "^1.1.1",
-        "web-vitals": "^2.1.2",
-        "zustand": "^3.6.1"
-    },
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
-        "predeploy": "yarn buildgh",
-        "deploy": "gh-pages -d build",
-        "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-        "pack": "electron-builder --dir",
-        "dist": "react-scripts build && electron-builder",
-        "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
-        "dist-multi": "react-scripts build && electron-builder -mwl",
-        "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
-        "electron": "wait-on tcp:3000 && electron .",
-        "postinstall": "electron-builder install-app-deps"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
+  "name": "ledfx",
+  "version": "2.0.0-beta38",
+  "description": "LedFx - BladeMOD",
+  "author": "YeonV aka Blade",
+  "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
+  "dependencies": {
+    "@babel/runtime": "^7.14.0",
+    "@electron/remote": "^2.0.1",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@ideasio/add-to-homescreen-react": "^1.0.10",
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "@mui/icons-material": "^5.0.5",
+    "@mui/lab": "^5.0.0-alpha.52",
+    "@mui/material": "^5.0.5",
+    "@mui/styles": "^5.0.2",
+    "@storybook/react": "^6.4.9",
+    "@testing-library/dom": "^8.10.1",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@treverix/custom-electron-titlebar": "^4.2.0",
+    "@treverix/remote": "^0.1.1",
+    "@types/bonjour": "^3.5.10",
+    "@types/reactour": "^1.18.1",
+    "axios": "^0.24.0",
+    "clsx": "^1.1.1",
+    "custom-electron-titlebar": "^3.2.7",
+    "electron-dl": "^3.2.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "is-electron": "^2.2.0",
+    "match-sorter": "^6.3.1",
+    "moment": "^2.29.1",
+    "notistack": "^2.0.3",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-colorful": "^5.5.0",
+    "react-dev-utils": "^12.0.0",
+    "react-dom": "^17.0.2",
+    "react-gcolor-picker": "^1.2.1",
+    "react-hotkeys-hook": "^3.4.4",
+    "react-moment": "^1.1.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "5.0.0",
+    "reactour": "^1.18.4",
+    "serve": "^12.0.1",
+    "sockette": "^2.0.6",
+    "styled-components": "^5.3.3",
+    "typescript": "^4.4.4",
+    "use-long-press": "^1.1.1",
+    "web-vitals": "^2.1.2",
+    "zustand": "^3.6.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "yarn buildgh",
+    "deploy": "gh-pages -d build",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "pack": "electron-builder --dir",
+    "dist": "react-scripts build && electron-builder",
+    "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
+    "dist-multi": "react-scripts build && electron-builder -mwl",
+    "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron": "wait-on tcp:3000 && electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public",
+    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/docs build-storybook -s public",
+    "build-storybookwin": "set PUBLIC_URL=/LedFx-Frontend-v2/docs && build-storybook -s public"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
         ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@types/react-router-dom": "^5.3.2",
-        "@typescript-eslint/eslint-plugin": "^5.2.0",
-        "@typescript-eslint/parser": "^5.2.0",
-        "babel-eslint": "^10.1.0",
-        "concurrently": "^6.3.0",
-        "cross-env": "^7.0.3",
-        "electron": "^14.0.1",
-        "electron-builder": "^22.13.1",
-        "electron-devtools-installer": "git+https://github.com/MarshallOfSound/electron-devtools-installer.git",
-        "eslint-config-airbnb": "^18.2.1",
-        "eslint-config-airbnb-typescript": "^14.0.1",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-config-react-app": "^6.0.0",
-        "eslint-import-resolver-typescript": "^2.4.0",
-        "eslint-plugin-flowtype": "^8.0.2",
-        "eslint-plugin-import": "^2.25.2",
-        "eslint-plugin-jest": "^25.2.2",
-        "eslint-plugin-json": "^3.0.0",
-        "eslint-plugin-jsx-a11y": "^6.4.1",
-        "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-react": "^7.26.1",
-        "eslint-plugin-react-hooks": "^4.0.8",
-        "gh-pages": "^3.2.0",
-        "prettier": "^2.3.0",
-        "react-git-info": "^2.0.0",
-        "react-is": "^17.0.2",
-        "wait-on": "^6.0.0"
-    },
-    "build": {
-        "win": {
-            "icon": "build/icon.ico",
-            "artifactName": "LedFx_client-${channel}--${os}.${ext}"
-        },
-        "portable": {
-            "artifactName": "LedFx_client-${channel}--${os}-portable.${ext}"
-        },
-        "nsis": {
-            "artifactName": "LedFx_client-${channel}--${os}-setup.${ext}"
-        },
-        "linux": {
-            "icon": "build/icon.png"
-        },
-        "mac": {
-            "icon": "build/icon.png"
+        "rules": {
+          "import/no-anonymous-default-export": "off"
         }
+      }
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^6.4.9",
+    "@storybook/addon-essentials": "^6.4.9",
+    "@storybook/addon-links": "^6.4.9",
+    "@storybook/addons": "^6.4.9",
+    "@storybook/builder-webpack5": "^6.4.9",
+    "@storybook/manager-webpack5": "^6.4.9",
+    "@storybook/node-logger": "^6.4.9",
+    "@storybook/preset-create-react-app": "^4.0.0",
+    "@storybook/theming": "^6.4.9",
+    "@types/react-router-dom": "^5.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "babel-eslint": "^10.1.0",
+    "concurrently": "^6.3.0",
+    "cross-env": "^7.0.3",
+    "electron": "^14.0.1",
+    "electron-builder": "^22.13.1",
+    "electron-devtools-installer": "git+https://github.com/MarshallOfSound/electron-devtools-installer.git",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-react-app": "^7.0.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-flowtype": "^8.0.2",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jest": "^25.2.2",
+    "eslint-plugin-json": "^3.0.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "gh-pages": "^3.2.0",
+    "prettier": "^2.5.1",
+    "react-git-info": "^2.0.0",
+    "react-is": "^17.0.2",
+    "wait-on": "^6.0.0"
+  },
+  "resolutions": {
+    "babel-loader": "8.1.0"
+  },
+  "build": {
+    "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "LedFx_client-${channel}--${os}.${ext}"
+    },
+    "portable": {
+      "artifactName": "LedFx_client-${channel}--${os}-portable.${ext}"
+    },
+    "nsis": {
+      "artifactName": "LedFx_client-${channel}--${os}-setup.${ext}"
+    },
+    "linux": {
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "icon": "build/icon.png"
     }
+  }
 }

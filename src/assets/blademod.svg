@@ -1,13 +1,4 @@
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg132886" viewBox="0 0 1024 768" height="768px" width="1024px" version="1.1">
-  <metadata id="metadata132892">
-    <rdf:rdf>
-      <cc:work rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
-      </cc:work>
-    </rdf:rdf>
-  </metadata>
-  <defs id="defs132890"></defs>
+<svg xmlnsSvg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 768" height="768px" width="1024px" version="1.1">
   <g id="logo-group">
     <g id="title" style="font-style:normal;font-weight:300;font-size:72px;line-height:1;font-family:'Montserrat Light Alt1';font-variant-ligatures:none;text-align:center;text-anchor:middle">
       <path id="path132894" style="font-style: normal; font-weight: 300; font-size: 72px; line-height: 1; font-family: &quot;Montserrat Light Alt1&quot;; font-variant-ligatures: none; text-align: center; text-anchor: middle; fill: rgb(255, 255, 255);" d="m 327.89713,-21.744 c -1.87201,-2.16 -4.608,-3.528 -8.20801,-4.248 2.52001,-0.792 4.608,-2.232 6.12,-4.248 1.512,-1.944 2.30401,-4.32 2.30401,-7.272 0,-4.104 -1.584,-7.272 -4.608,-9.504 -3.024,-2.232 -7.27201,-3.384 -12.74401,-3.384 h -21.024 v 3.168 h 20.88 c 4.392,0 7.776,0.864 10.15201,2.592 2.37599,1.728 3.59999,4.176 3.59999,7.416 0,3.312 -1.224,5.832 -3.59999,7.56 -2.37601,1.728 -5.76001,2.52 -10.15201,2.52 h -20.88 v 3.168 h 22.464 c 4.824,0 8.56801,0.864 11.08801,2.52 2.51999,1.728 3.81599,4.32 3.81599,7.848 0,3.6 -1.296,6.192 -3.81599,7.92 -2.52,1.728 -6.19201,2.52 -11.08801,2.52 h -22.464 V 0 h 22.464 c 6.12,0 10.728,-1.152 13.896,-3.456 3.096,-2.304 4.68,-5.544 4.68,-9.864 0,-3.384 -1.00799,-6.192 -2.87999,-8.424 z" transform="translate(0 311.24) translate(250.70145555555553 44.76) scale(1.1111111111111112) translate(-289.73712 50.4)"></path>

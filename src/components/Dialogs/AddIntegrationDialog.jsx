@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, MenuItem, Select, DialogTitle, DialogContentText, DialogContent, DialogActions, Dialog, Divider } from "@material-ui/core";
 import useStore from "../../utils/apiStore";
-import BladeSchemaForm from "../SchemaForm/BladeSchemaForm";
+import BladeSchemaForm from "../SchemaForm/SchemaForm/SchemaForm";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

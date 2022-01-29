@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useStore from '../../utils/apiStore';
-import BladeSchemaForm from "../../components/SchemaForm/BladeSchemaForm";
+import BladeSchemaForm from "../../components/SchemaForm/SchemaForm/SchemaForm";
 
 const AudioCard = ({ className }) => {
     const setSystemConfig = useStore((state) => state.setSystemConfig)

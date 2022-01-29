@@ -25,7 +25,7 @@ const MuiMenuItem = React.forwardRef((props, ref) => {
 });
 
 export default function FullScreenDialog({
-  virtual,
+  virtId,
   icon = <Settings />,
   startIcon,
   label = '',
@@ -39,6 +39,8 @@ export default function FullScreenDialog({
   const classes = useEditVirtualsStyles();
   const showSnackbar = useStore((state) => state.showSnackbar);
   const getDevices = useStore((state) => state.getDevices);
+  const virtuals = useStore((state) => state.virtuals);
+  const virtual = virtuals[virtId]
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -106,7 +108,7 @@ export default function FullScreenDialog({
         <div className={classes.segmentTitle}>
           <Typography variant="caption">Segments-Settings</Typography>
         </div>
-        {virtual.segments.length > 0 &&
+        {virtual.segments?.length > 0 &&
           virtual.segments.map((s, i) => (
             <Segment s={s} i={i} key={i} virtual={virtual} segments={virtual.segments} />
           ))}

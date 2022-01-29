@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import PixelSlider from './PixelSlider';
-import PopoverSure from '../../../components/Popover';
+import PopoverSure from '../../../components/Popover/Popover';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';

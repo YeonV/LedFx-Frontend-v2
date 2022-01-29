@@ -1,7 +1,7 @@
 import { Button, Fab, TextField, Popover } from '@material-ui/core';
 import { Check, Close } from '@material-ui/icons';
 import { useState, useEffect, useRef } from 'react'
-import BladeIcon from '../../components/Icons/BladeIcon';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import ws from "../../utils/Websocket";
 import useStore from '../../utils/apiStore';
 

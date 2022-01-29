@@ -13,8 +13,9 @@ import TourScenes from '../Tours/TourScenes';
 import TourSettings from '../Tours/TourSettings';
 import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
-import BladeIcon from '../Icons/BladeIcon';
+import BladeIcon from '../Icons/BladeIcon/BladeIcon';
 import isElectron from 'is-electron';
+// import Doc from '../Doc/Doc';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -120,7 +121,9 @@ const TopBar = () => {
   useEffect(() => {
     const handleDisconnect = (e) => {
       if (e.detail) {
-        setDisconnected(e.detail.isDisconnected)
+        if (window.localStorage.getItem('ledfx-newbase') !== '1') {
+          setDisconnected(e.detail.isDisconnected)
+        }
         if (e.detail.isDisconnected === false) {
           window.localStorage.removeItem('undefined')
           setDialogOpen(false, true)
@@ -130,7 +133,7 @@ const TopBar = () => {
           }
         }
       }
-      if (!!window.localStorage.getItem('ledfx-newbase')) {
+      if (window.localStorage.getItem('ledfx-newbase') === '1') {
         setDialogOpen(false, true)
       }
     }
@@ -256,6 +259,7 @@ const TopBar = () => {
                 : pathname.split('/')[1] === 'Devices' ? <TourDevices cally={() => setAnchorEl(null)} />
                   : pathname.split('/')[1] === 'Integrations' ? <TourIntegrations cally={() => setAnchorEl(null)} />
                     : null}
+          {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
           <MenuItem onClick={() => setAnchorEl(null)} component={Link} to={"/Settings"} >
             <ListItemIcon>
               <Settings />

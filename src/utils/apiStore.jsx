@@ -200,12 +200,45 @@ const useStore = create(
         }));
       },
 
+      webAud: false,
+      setWebAud: (newState) => {
+        set((state) => ({ webAud: newState }))
+      },
+      webAudName: '',
+      setWebAudName: (newState) => {
+        set((state) => ({ webAudName: newState }))
+      },
+      clientDevice: null,
+      clientDevices: null,
+      setClientDevice: (newState) => {
+        set((state) => ({ clientDevice: newState }))
+      },
+      setClientDevices: (newState) => {
+        set((state) => ({ clientDevices: newState }))
+      },
+      spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
+      setSpotifyEmbedUrl: (url) => {
+        set((state) => ({ spotifyEmbedUrl: url }))
+      },
+
+      streamingToDevices: [],
+      setStreamingToDevices: (devices) => set(() => ({
+        streamingToDevices: devices
+      })),
+
+      graphs: isElectron(),
+      toggleGraphs: () => {
+        set((state) => ({ graphs: !state.graphs }))
+      },
+
       // Cloud
       // const [isLogged, setIsLogged] = useState(!!localStorage.getItem('jwt'));
       isLogged: false,
       setIsLogged: (logged) => set(() => ({
         isLogged: logged
       })),
+
+      
       // API
       devices: {},
       getDevices: async () => {
@@ -214,12 +247,39 @@ const useStore = create(
           set({ devices: resp.devices });
         }
       },
+      getDevice: async (deviceId) => {
+        const resp = await Ledfx(`/api/devices/${deviceId}`, set);
+        if (resp && resp.data) {
+          return {
+            key: deviceId,
+            id: deviceId,
+            name: resp.data.name,
+            config: resp.data,
+            virtuals: resp.data.virtuals,
+            active_virtuals: resp.data.active_virtuals,
+          };
+        }
+      },
       addDevice: async (config) => await Ledfx(
         `/api/devices`,
         set,
         'POST',
         config,
       ),
+      activateDevice: async (deviceId) => {
+        const resp = await Ledfx(
+          `/api/devices/${deviceId}`,
+          set,
+          'POST',
+          {},
+        )
+        if (resp) {
+          set({ paused: resp.paused });
+          if (resp && resp.virtuals) {
+            set({ virtuals: resp.virtuals });
+          }
+        }
+    },
       updateDevice: async (deviceId, config) => await Ledfx(
         `/api/devices/${deviceId}`,
         set,
@@ -387,6 +447,7 @@ const useStore = create(
           set({ colors: resp });
         }
       },
+      // HERE API DOC
       addColor: async (config) => await Ledfx(
         `/api/colors`,
         set,
@@ -401,11 +462,7 @@ const useStore = create(
           data: colorkey
         },
       ),
-
-      streamingToDevices: [],
-      setStreamingToDevices: (devices) => set(() => ({
-        streamingToDevices: devices
-      })),
+      
       scenes: {},
       getScenes: async () => {
         const resp = await Ledfx('/api/scenes', set);
@@ -512,12 +569,7 @@ const useStore = create(
         if (resp && resp.paused) {
           set({ paused: resp.paused })
         }
-      },
-
-      graphs: isElectron(),
-      toggleGraphs: () => {
-        set((state) => ({ graphs: !state.graphs }))
-      },
+      },     
 
       shutdown: async () => await Ledfx('/api/power', set, 'POST', {
         timeout: 0,
@@ -529,39 +581,8 @@ const useStore = create(
       }),
       getInfo: async () => await Ledfx('/api/info', set),
       getPing: async (virtId) => await Ledfx(`/api/ping/${virtId}`, set),
-      getDevice: async (deviceId) => {
-        const resp = await Ledfx(`/api/devices/${deviceId}`, set);
-        if (resp && resp.data) {
-          return {
-            key: deviceId,
-            id: deviceId,
-            name: resp.data.name,
-            config: resp.data,
-            virtuals: resp.data.virtuals,
-            active_virtuals: resp.data.active_virtuals,
-          };
-        }
-      },
-      webAud: false,
-      setWebAud: (newState) => {
-        set((state) => ({ webAud: newState }))
-      },
-      webAudName: '',
-      setWebAudName: (newState) => {
-        set((state) => ({ webAudName: newState }))
-      },
-      clientDevice: null,
-      clientDevices: null,
-      setClientDevice: (newState) => {
-        set((state) => ({ clientDevice: newState }))
-      },
-      setClientDevices: (newState) => {
-        set((state) => ({ clientDevices: newState }))
-      },
-      spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
-      setSpotifyEmbedUrl: (url) => {
-        set((state) => ({ spotifyEmbedUrl: url }))
-      },
+     
+    
     })),
     {
       // ...
