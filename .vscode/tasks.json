@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": [],
+			"label": "Start Frontend",
+			"detail": "on port 3000"
+		},
+		{
+			"type": "npm",
+			"script": "storybook",
+			"problemMatcher": [],
+			"label": "Start Storybook",
+			"detail": "on port 6006"
+		},
+		{
+			"type": "npm",
+			"script": "lint --fix",
+			"problemMatcher": [],
+			"label": "Lint & Fix",
+			"detail": "via eslint"
+		},
+		{
+			"type": "npm",
+			"script": "install",
+			"problemMatcher": [],
+			"label": "Init Workspace",
+			"detail": "install dependencies from package"
+		}
+	]
+}
