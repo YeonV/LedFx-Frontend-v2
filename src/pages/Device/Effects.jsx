@@ -56,9 +56,9 @@ const EffectsCard = ({ virtId }) => {
   const viewMode = useStore((state) => state.viewMode);
   const updateVirtual = useStore((state) => state.updateVirtual);
   const features = useStore((state) => state.features);
-
+  
   const graphs = useStore((state) => state.graphs);
-
+  
   const getV = () => {
     for (var prop in virtuals) {
       if (virtuals[prop].id == virtId) {
@@ -69,6 +69,7 @@ const EffectsCard = ({ virtId }) => {
   const virtual = getV();
   
   const effectType = virtual && virtual.effect.type;
+  const [theModel, setTheModel] = useState(virtual?.effect?.config)
   
   const handleRandomize = () => {
     setVirtualEffect(
@@ -114,6 +115,10 @@ const EffectsCard = ({ virtId }) => {
     }
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType]);
 
+  useEffect(() => {
+    virtuals && virtual?.effect?.config && setTheModel(virtual.effect.config)
+  }, [virtuals, virtual, virtual.effect, virtual.effect.config]);
+  
   return (
     <>
       <Card className={classes.card}>
@@ -124,7 +129,7 @@ const EffectsCard = ({ virtId }) => {
               flexDirection: 'column-reverse',
               justifyContent: 'space-between',
             }}
-          >
+            >
             <h1>{virtual && virtual.config.name}</h1>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
               {effects && effectType && (
@@ -136,7 +141,7 @@ const EffectsCard = ({ virtId }) => {
                     variant="outlined"
                     style={{ marginRight: '.5rem' }}
                     className={'step-device-six'}
-                  >
+                    >
                     <Casino />
                   </Button>
                   <Button variant="outlined" style={{ marginRight: '.5rem' }} className={'step-device-five'} onClick={() => handlePlayPause()}>
@@ -203,7 +208,7 @@ const EffectsCard = ({ virtId }) => {
                       handleEffectConfig={handleEffectConfig}
                       virtId={virtual.id}
                       schema={effects[effectType].schema}
-                      model={virtual.effect.config}
+                      model={theModel}
                       virtual_id={virtId}
                       selectedType={effectType}
                     />
