@@ -10,7 +10,6 @@ const GradientPickerWrapper = ({
   isGradient = false,
   wrapperStyle,
 }) => {
-  const [name, _setName] = useState('');
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
@@ -40,7 +39,7 @@ const GradientPickerWrapper = ({
     }
   };
 
-  const handleAddGradient = () => {
+  const handleAddGradient = (name) => {
     addColor({ [name]: pickerBgColor }).then(() => {
       getColors();
     });
