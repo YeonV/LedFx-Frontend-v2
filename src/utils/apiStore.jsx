@@ -23,6 +23,7 @@ const useStore = create(
         wled: false,
         integrations: false,
         spotify: false,
+        youtube: false,
         webaudio: false,
         waves: false,
         streamto: false,
@@ -43,6 +44,7 @@ const useStore = create(
         wled: false,
         integrations: false,
         spotify: false,
+        youtube: false,
         webaudio: false,
         waves: false,
         streamto: false,
@@ -219,6 +221,10 @@ const useStore = create(
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
       setSpotifyEmbedUrl: (url) => {
         set((state) => ({ spotifyEmbedUrl: url }))
+      },
+      youtubeURL: 'https://www.youtube.com/watch?v=s6Yyb3N9IuA',
+      setYoutubeURL: (url) => {
+        set((state) => ({ youtubeURL: url }))
       },
 
       streamingToDevices: [],

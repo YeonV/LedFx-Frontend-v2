@@ -45,6 +45,7 @@ const EffectSchemaForm = ({
   return (
     <div className={classes.bladeSchemaForm}>
       {yzSchema &&
+        model &&
         yzSchema.map((s: any, i: number) => {
           switch (s.type) {
             case 'boolean':
