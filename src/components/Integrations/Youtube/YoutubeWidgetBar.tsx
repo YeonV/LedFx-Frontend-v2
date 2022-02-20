@@ -202,7 +202,7 @@ const YoutubeWidgetBar = ({
               </Typography>
               <div>
                 <Typography variant="caption">
-                  {state.now_playing.title}
+                  {state.now_playing.artist}
                 </Typography>
                 {state.now_playing.url === '' && (
                   <Typography variant="caption" color="textSecondary">
