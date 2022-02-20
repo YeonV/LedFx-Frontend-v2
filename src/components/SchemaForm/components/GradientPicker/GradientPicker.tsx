@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Popper from '@material-ui/core/Popper';
 import ReactGPicker from 'react-gcolor-picker';
 import { TextField, Button } from '@material-ui/core';
@@ -61,6 +61,10 @@ const GradientPicker = ({
   };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
+
+  useEffect(() => {
+    setPickerBgColorInt(pickerBgColor);
+  }, [pickerBgColor, setPickerBgColorInt]);
 
   return (
     <div
@@ -144,7 +148,7 @@ const GradientPicker = ({
                   autoFocus
                   onClick={(e) => e.stopPropagation()}
                   onKeyDown={(e: any) =>
-                    e.key === 'Enter' && handleAddGradient()
+                    e.key === 'Enter' && handleAddGradient(name)
                   }
                   error={
                     colors?.length &&
@@ -171,7 +175,7 @@ const GradientPicker = ({
                 />
               }
               confirmDisabled={name.length === 0}
-              onConfirm={() => handleAddGradient()}
+              onConfirm={() => handleAddGradient(name)}
               startIcon=""
               size="medium"
               icon={<Add />}

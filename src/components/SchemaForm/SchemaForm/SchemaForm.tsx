@@ -10,6 +10,8 @@ import {
   Divider,
 } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
+import MicIcon from '@mui/icons-material/Mic';
+import SpeakerIcon from '@mui/icons-material/Speaker';
 import BladeBoolean from '../components/Boolean/BladeBoolean';
 import BladeSelect from '../components/String/BladeSelect';
 import BladeSlider from '../components/Number/BladeSlider';
@@ -25,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
   FormListHeaders: {
     background: theme.palette.secondary.main,
     color: '#fff',
+  },
+  bladeSelect: {
+    '& .MuiSelect-select': {
+      display: 'flex',
+      alignItems: 'center',
+    },
   },
 }));
 
@@ -132,6 +140,7 @@ const SchemaForm = ({
                         }
                         return null;
                       }}
+                      className={classes.bladeSelect}
                       id="grouped-select"
                     >
                       {audio_groups?.map((c: string, ind: number) => [
@@ -143,7 +152,14 @@ const SchemaForm = ({
                           {c}
                         </ListSubheader>,
                         Object.keys(group[c]).map((e) => (
-                          <MenuItem value={e}>{group[c][e]}</MenuItem>
+                          <MenuItem value={e}>
+                            {group[c][e].indexOf('[Loopback]') > -1 ? (
+                              <SpeakerIcon style={{ marginRight: '10px' }} />
+                            ) : (
+                              <MicIcon style={{ marginRight: '10px' }} />
+                            )}
+                            {group[c][e].replace('[Loopback]', '')}
+                          </MenuItem>
                         )),
                       ])}
                     </Select>

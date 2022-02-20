@@ -11,6 +11,7 @@ import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog';
 import SpotifyWidget from '../Integrations/Spotify/SpotifyWidget';
 import AddButton from '../AddButton';
 import useStyles from './BarBottom.styles';
+import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 
 export default function LabelBottomNavigation() {
   const classes = useStyles();
@@ -25,6 +26,30 @@ export default function LabelBottomNavigation() {
   const spotifyURL = useStore((state) => state.spotifyEmbedUrl);
   const setSpotifyURL = useStore((state) => state.setSpotifyEmbedUrl);
 
+  const [youtubeEnabled, setYoutubeEnabled] = useState(false)
+  const [youtubeExpanded, setYoutubeExpanded] = useState(false)
+  const youtubeURL = useStore((state) => state.youtubeURL);
+  const setYoutubeURL = useStore((state) => state.setYoutubeURL);
+
+  const [botHeight, setBotHeight] = useState(0)
+
+  useEffect(() => {
+    let height = 0
+    if (spotifyEnabled) {
+      height += 80
+    }
+    if (spotifyExpanded) {
+      height += 220
+    }
+    if (youtubeEnabled) {
+      height += 80
+    }
+    if (youtubeExpanded) {
+      height += 220
+    }
+    setBotHeight(height)
+  }, [spotifyEnabled, spotifyExpanded, youtubeEnabled, youtubeExpanded]);
+
   useEffect(() => {
     setValue(pathname);
   }, [pathname]);
@@ -36,7 +61,7 @@ export default function LabelBottomNavigation() {
         [classes.rootShift]: leftOpen,
       })}
       showLabels={true}
-      style={{ bottom: spotifyEnabled ? spotifyExpanded ? 300 : 80 : 0 }}
+      style={{ bottom: botHeight }}
     >
       <BottomNavigationAction
         component={Link}
@@ -84,6 +109,22 @@ export default function LabelBottomNavigation() {
         setSpotifyExpanded={setSpotifyExpanded}
         spotifyURL={spotifyURL}
         setSpotifyURL={setSpotifyURL}
+        botHeight={botHeight}
+        setYoutubeEnabled={setYoutubeEnabled}
+        setYoutubeExpanded={setYoutubeExpanded}
+      />
+    )}
+    {features['youtube'] && (
+      <YoutubeWidget
+        youtubeEnabled={youtubeEnabled}
+        setYoutubeEnabled={setYoutubeEnabled}
+        youtubeExpanded={youtubeExpanded}
+        setYoutubeExpanded={setYoutubeExpanded}
+        youtubeURL={youtubeURL}
+        setYoutubeURL={setYoutubeURL}
+        botHeight={botHeight}
+        setSpotifyEnabled={setSpotifyEnabled}
+        setSpotifyExpanded={setSpotifyExpanded}
       />
     )}
     <AddSceneDialog />
@@ -95,7 +136,7 @@ export default function LabelBottomNavigation() {
       className={`${clsx(classes.addButton, {
         [classes.addButtonShift]: leftOpen,
       })} step-four`}
-      style={{ bottom: spotifyEnabled ? spotifyExpanded ? 330 : 110 : 30 }}
+      style={{ bottom: botHeight + 30 }}
     />
     <Backdrop style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} open={backdrop} />
   </>

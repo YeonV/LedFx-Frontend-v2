@@ -23,7 +23,7 @@ const Segment = ({ s, i, virtual, segments }) => {
         const newSegments = segments.map((seg, index) => index === i ? [seg[0], seg[1], seg[2], !seg[3]] : seg);
         updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
-    const reorder = direction => {
+    const reorder = direction => {        
         const newSegments = direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1);
         updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
@@ -32,7 +32,7 @@ const Segment = ({ s, i, virtual, segments }) => {
         updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
     const handleRangeSegment = (start, end) => {
-        const newSegments = segments.map((seg, index) => index === i ? [seg[0], start, end, !seg[3]] : seg);
+        const newSegments = segments.map((seg, index) => index === i ? [seg[0], start, end, seg[3]] : seg);
         updateVirtualSegments({ virtId: virtual.id, segments: newSegments }).then(() => getVirtuals());
     };
 
