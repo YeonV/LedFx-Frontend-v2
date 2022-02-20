@@ -168,7 +168,7 @@ export default function App() {
     <ThemeProvider theme={BladeDarkGreyTheme5}>
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'DarkRed']}>
         <SnackbarProvider maxSnack={5}>
-          <WsContextNew.Provider value={wsNew}>
+          {!newBase && 
             <WsContext.Provider value={ws}>
               <div
                 className={classes.root}
@@ -177,8 +177,7 @@ export default function App() {
                 <CssBaseline />
                 <Router basename={process.env.PUBLIC_URL}>
                   <ScrollToTop />
-                  {!newBase && <HandleWs />}
-                  {newBase && <HandleWsNew />}
+                  <HandleWs />
                   <MessageBar />
                   <TopBar />
                   <LeftBar />
@@ -220,8 +219,58 @@ export default function App() {
                   />
                 )}
               </div>
-            </WsContext.Provider>
-          </WsContextNew.Provider>
+            </WsContext.Provider>}
+          {newBase && <WsContextNew.Provider value={wsNew}>
+              <div
+                className={classes.root}
+                style={{ paddingTop: isElectron() ? '30px' : 0 }}
+              >
+                <CssBaseline />
+                <Router basename={process.env.PUBLIC_URL}>
+                  <ScrollToTop />
+                 <HandleWsNew />
+                  <MessageBar />
+                  <TopBar />
+                  <LeftBar />
+                  <main
+                    className={clsx(classes.content, {
+                      [classes.contentShift]: leftBarOpen,
+                    })}
+                  >
+                    <div className={classes.drawerHeader} />
+                    <Switch>
+                      <Route
+                        exact
+                        path="/connect/:providerName/redirect"
+                        component={LoginRedirect}
+                      />
+                      <Route exact path="/" component={Home} />
+                      <Route path="/devices" component={Devices} />
+                      <Route path="/device/:virtId" component={Device} />
+                      <Route path="/scenes" component={Scenes} />
+                      <Route path="/integrations" component={Integrations} />
+                      <Route path="/settings" component={Settings} />
+                    </Switch>
+                    <NoHostDialog />
+                    <SmartBar open={open} setOpen={setOpen} />
+                  </main>
+                  <BottomBar />
+                </Router>
+                {features['waves'] && (
+                  <WaveLines
+                    startColor={
+                      ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main
+                    }
+                    stopColor={
+                      ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent
+                        .main || '#ffdc0f'
+                    }
+                    width={width - 8}
+                    height={height}
+                  />
+                )}
+              </div>
+          </WsContextNew.Provider>}
           <AddToHomeScreen
             // debug={true}
             // activateLogging={true}

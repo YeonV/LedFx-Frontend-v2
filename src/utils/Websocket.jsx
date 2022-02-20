@@ -12,11 +12,10 @@ import isElectron from 'is-electron';
 // const ws = new WebSocket(`${window.localStorage.getItem('ledfx-ws') ? window.localStorage.getItem('ledfx-ws') : 'ws://localhost:8888'}/api/websocket`, (window.localStorage.getItem('ledfx-ws') && window.localStorage.getItem('ledfx-ws').startsWith('wss')) ? 'https' : 'http');
 // const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
 
-
 function createSocket() {
-  const newBase = window.localStorage.getItem('ledfx-newbase') === 1
 
-  if (!newBase) {
+  if (!window.localStorage.getItem('ledfx-newbase') === 1) {
+    console.log("RY")
     const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://', 'wss://').replace('http://', 'ws://')}/api/websocket`, {
       timeout: 5e3,
       maxAttempts: 10,
@@ -78,7 +77,7 @@ function createSocket() {
   }
   return
 }
-const ws = createSocket();
+const ws = !window.localStorage.getItem('ledfx-newbase') === 1 && createSocket();
 export default ws;
 export const WsContext = React.createContext(ws);
 
