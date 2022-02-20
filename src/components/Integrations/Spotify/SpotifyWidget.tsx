@@ -10,16 +10,26 @@ const SpotifyWidget = ({
   setSpotifyExpanded,
   spotifyURL,
   setSpotifyURL,
+  setYoutubeExpanded,
+  setYoutubeEnabled,
+  botHeight,
 }: any) => {
   return (
     <>
       <Fab
         size="small"
         color="secondary"
-        onClick={() => setSpotifyEnabled(!spotifyEnabled)}
+        onClick={() => {
+          setYoutubeEnabled(false);
+          setYoutubeExpanded(false);
+          if (spotifyEnabled && spotifyExpanded) {
+            setSpotifyExpanded(false);
+          }
+          setSpotifyEnabled(!spotifyEnabled);
+        }}
         style={{
           position: 'fixed',
-          bottom: spotifyEnabled ? (spotifyExpanded ? 363 : 143) : 65,
+          bottom: botHeight + 65,
           right: 10,
           zIndex: 4,
         }}

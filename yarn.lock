@@ -16001,6 +16001,11 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
+use-api-polling@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/use-api-polling/-/use-api-polling-0.1.4.tgz#0610647e47533d0b66557ee319a71d8e95e5d203"
+  integrity sha512-ErIjmDOhNTX5A9KOlCARrhiuE/41JowBfCP71c1AFnrClwSrqUpA9w8YUetgn7cAiDAE5ZDFtlv7vekmgBnzmw==
+
 use-callback-ref@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
