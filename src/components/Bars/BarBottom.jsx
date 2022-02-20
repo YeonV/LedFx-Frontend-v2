@@ -109,6 +109,9 @@ export default function LabelBottomNavigation() {
         setSpotifyExpanded={setSpotifyExpanded}
         spotifyURL={spotifyURL}
         setSpotifyURL={setSpotifyURL}
+        botHeight={botHeight}
+        setYoutubeEnabled={setYoutubeEnabled}
+        setYoutubeExpanded={setYoutubeExpanded}
       />
     )}
     {features['youtube'] && (
@@ -119,6 +122,9 @@ export default function LabelBottomNavigation() {
         setYoutubeExpanded={setYoutubeExpanded}
         youtubeURL={youtubeURL}
         setYoutubeURL={setYoutubeURL}
+        botHeight={botHeight}
+        setSpotifyEnabled={setSpotifyEnabled}
+        setSpotifyExpanded={setSpotifyExpanded}
       />
     )}
     <AddSceneDialog />
@@ -130,7 +136,7 @@ export default function LabelBottomNavigation() {
       className={`${clsx(classes.addButton, {
         [classes.addButtonShift]: leftOpen,
       })} step-four`}
-      style={{ bottom: spotifyEnabled ? spotifyExpanded ? 330 : 110 : 30 }}
+      style={{ bottom: botHeight + 30 }}
     />
     <Backdrop style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} open={backdrop} />
   </>
