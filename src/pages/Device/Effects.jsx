@@ -71,17 +71,17 @@ const EffectsCard = ({ virtId }) => {
   const effectType = virtual && virtual.effect.type;
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
   
-  const handleRandomize = () => {
-    setVirtualEffect(
-      virtual.id,
-      {
-        virtId: virtual.id,
-        type: effectType,
-        config: 'RANDOMIZE',
-        active: true
-      }
-    ).then(() => getVirtuals());
-  };
+  // const handleRandomize = () => {
+  //   setVirtualEffect(
+  //     virtual.id,
+  //     {
+  //       virtId: virtual.id,
+  //       type: effectType,
+  //       config: 'RANDOMIZE',
+  //       active: true
+  //     }
+  //   ).then(() => getVirtuals());
+  // };
 
   const handleClearEffect = () => {
     clearVirtualEffect(virtId).then(() => {
@@ -136,14 +136,14 @@ const EffectsCard = ({ virtId }) => {
                 <>
                   {viewMode !== 'user' && <TroubleshootButton virtual={virtual} />}
                   <TourEffect schema={effects[effectType].schema} />
-                  <Button
+                  {/* <Button
                     onClick={() => handleRandomize()}
                     variant="outlined"
                     style={{ marginRight: '.5rem' }}
                     className={'step-device-six'}
                     >
                     <Casino />
-                  </Button>
+                  </Button> */}
                   <Button variant="outlined" style={{ marginRight: '.5rem' }} className={'step-device-five'} onClick={() => handlePlayPause()}>
                     {virtual.active ? <Pause /> : <PlayArrow />}
                   </Button>
