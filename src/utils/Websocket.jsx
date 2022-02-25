@@ -14,8 +14,7 @@ import isElectron from 'is-electron';
 
 function createSocket() {
 
-  if (!window.localStorage.getItem('ledfx-newbase') === 1) {
-    console.log("RY")
+  if (!window.localStorage.getItem('ledfx-newbase')) {
     const _ws = new Sockette(`${(window.localStorage.getItem('ledfx-host') || (isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0])).replace('https://', 'wss://').replace('http://', 'ws://')}/api/websocket`, {
       timeout: 5e3,
       maxAttempts: 10,
@@ -77,7 +76,7 @@ function createSocket() {
   }
   return
 }
-const ws = !window.localStorage.getItem('ledfx-newbase') === 1 && createSocket();
+const ws = !window.localStorage.getItem('ledfx-newbase') && createSocket();
 export default ws;
 export const WsContext = React.createContext(ws);
 
