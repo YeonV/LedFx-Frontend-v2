@@ -9,17 +9,24 @@ import Popover from '../../../components/Popover/Popover';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
-import { CardActions, CardHeader, Switch } from '@material-ui/core';
-import { useIntegrationCardStyles } from './IntegrationCard.styles'
+import {
+  CardActions,
+  CardHeader,
+  Typography,
+  Switch,
+  Link,
+} from '@material-ui/core';
+import { useIntegrationCardStyles } from './IntegrationCard.styles';
 
 const IntegrationCard = ({ integration }) => {
-
   const classes = useIntegrationCardStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
+  const setDialogOpenAddIntegration = useStore(
+    (state) => state.setDialogOpenAddIntegration
+  );
 
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
@@ -36,90 +43,137 @@ const IntegrationCard = ({ integration }) => {
   };
 
   const handleEditIntegration = (integration) => {
-    setDialogOpenAddIntegration(true, integration)
+    setDialogOpenAddIntegration(true, integration);
   };
   const handleActivateIntegration = (integration) => {
     toggleIntegration({
-      id: integration.id
-    }).then(() => getIntegrations())
+      id: integration.id,
+    }).then(() => getIntegrations());
   };
 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
-      <CardHeader 
-        title={integrations[integration].config.name} 
-        subheader={integrations[integration].config.description} 
+      <CardHeader
+        title={integrations[integration].config.name}
+        subheader={
+          integrations[integration].status === 3
+            ? 'Connecting...'
+            : integrations[integration].status === 2
+            ? 'Disconnecting'
+            : integrations[integration].status === 1
+            ? 'Connected'
+            : integrations[integration].status === 0
+            ? 'Disconnected'
+            : 'Unknown'
+        }
         action={
-          <Switch aria-label="status" checked={integrations[integration].active} onClick={() => handleActivateIntegration(integrations[integration])} />
+          <Switch
+            aria-label="status"
+            checked={integrations[integration].active}
+            onClick={() => handleActivateIntegration(integrations[integration])}
+          />
         }
       />
-      <CardActions style={{alignSelf: 'flex-end'}}>
-      <div className={classes.integrationCardContainer}>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
+      <Typography>{integrations[integration].config.description}</Typography>
+      <Typography>
+        <Link target="_blank" href="http://127.0.0.1:9999">
+          {integrations[integration].type === 'qlc'
+            ? `QLC+ API: http://${integrations[integration].config.ip_address}:${integrations[integration].config.port}`
+            : ''}
+        </Link>
+        <CardActions>
+          {(integrations[integration].status === 1) &
+          (integrations[integration].type === 'qlc') ? (
+            <DialogAddEventListener integration={int} />
+          ) : (integrations[integration].status !== 1) &
+            (integrations[integration].type === 'qlc') ? (
+            <Link
+              target="_blank"
+              href="https://www.qlcplus.org/docs/html_en_EN/webinterface.html"
+            >
+              Click here for setup guide.
+            </Link>
+          ) : (
+            ''
+          )}
+
+          {integrations[integration].type === 'spotify' &&
+          integrations[integration].active
+            ? '<SpotifyView>'
+            : ''}
+        </CardActions>
+      </Typography>
+      <CardActions style={{ alignSelf: 'flex-end' }}>
+        <div className={classes.integrationCardContainer}>
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded,
+            })}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+          <div className={classes.buttonBar}>
+            <Popover
+              variant={variant}
+              color={color}
+              onConfirm={() => handleDeleteDevice(integration)}
+              className={classes.editButton}
+            />
+
+            <Button
+              variant={variant}
+              size="small"
+              color={color}
+              className={classes.editButton}
+              onClick={() => handleEditIntegration(integration)}
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              variant={variant}
+              size="small"
+              color={color}
+              className={classes.editButton}
+              onClick={() => console.log('coming soon...')}
+              disabled={integrations[integration].status !== 1}
+            >
+              <AddIcon />
+            </Button>
+          </div>
+        </div>
+
+        <Collapse
+          in={expanded}
+          timeout="auto"
+          unmountOnExit
+          className={classes.buttonBarMobile}
         >
-          <ExpandMoreIcon />
-        </IconButton>
-        <div className={classes.buttonBar}>
-          <Popover
-            variant={variant}
-            color={color}
-            onConfirm={() => handleDeleteDevice(integration)}
-            className={classes.editButton}
-          />
-
-          <Button
-            variant={variant}
-            size="small"
-            color={color}
-            className={classes.editButton}
-            onClick={() => handleEditIntegration(integration)}
-          >
-            <EditIcon />
-          </Button>
-          <Button
-            variant={variant}
-            size="small"
-            color={color}
-            className={classes.editButton}
-            onClick={() => console.log("coming soon...")}
-            disabled
-          >
-            <AddIcon />
-          </Button>
-        </div>
-      </div>
-
-      <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
-        <div className={classes.buttonBarMobileWrapper}>
-          <Popover
-            variant={variant}
-            color={color}
-            onConfirm={() => handleDeleteDevice(integration)}
-            className={classes.editButton}
-          />         
-          <Button
-            variant={variant}
-            size="small"
-            color={color}
-            className={classes.editButtonMobile}
-            onClick={() => handleEditIntegration(integration)}
-          >
-            <EditIcon />
-          </Button>
-        </div>
-      </Collapse>
+          <div className={classes.buttonBarMobileWrapper}>
+            <Popover
+              variant={variant}
+              color={color}
+              onConfirm={() => handleDeleteDevice(integration)}
+              className={classes.editButton}
+            />
+            <Button
+              variant={variant}
+              size="small"
+              color={color}
+              className={classes.editButtonMobile}
+              onClick={() => handleEditIntegration(integration)}
+            >
+              <EditIcon />
+            </Button>
+          </div>
+        </Collapse>
       </CardActions>
-     
     </Card>
-  ) :(
+  ) : (
     <></>
-  )
-}
+  );
+};
 
-export default IntegrationCard
+export default IntegrationCard;
