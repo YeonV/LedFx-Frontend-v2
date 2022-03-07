@@ -27,7 +27,15 @@ jobs:
     
     - name: Build project
       run: yarn buildgh
-    
+
+    - name: Build storybook
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        yarn build-storybookgh -o ./build/docs
+        cp ./build/docs/*.woff ./build/docs/static/css
+        cp ./build/docs/*.woff2 ./build/docs/static/css
+
     #- name: Run tests
     #  run: yarn test
 
@@ -36,6 +44,9 @@ jobs:
       with:
         name: production-files
         path: ./build
+        
+
+    
   
   deploy:
     name: Deploy
