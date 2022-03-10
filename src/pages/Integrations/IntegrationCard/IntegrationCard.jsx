@@ -17,7 +17,7 @@ import {
   Link,
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
-//import SpotifyView from '../Spotify/SpotifyAuth';
+import SpotifyView from '../Spotify/SpotifyAuth';
 
 const IntegrationCard = ({ integration }) => {
   const classes = useIntegrationCardStyles();
@@ -100,7 +100,7 @@ const IntegrationCard = ({ integration }) => {
 
           {integrations[integration].type === 'spotify' &&
           integrations[integration].active
-            ? '<SpotifyView />'
+            ? <SpotifyView />
             : ''}
         </CardActions>
       </Typography>
