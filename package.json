@@ -28,7 +28,7 @@
     "@treverix/remote": "^0.1.1",
     "@types/bonjour": "^3.5.10",
     "@types/reactour": "^1.18.1",
-    "axios": "^0.24.0",
+    "axios": "^0.26.1",
     "clsx": "^1.1.1",
     "crypto-browserify": "^3.12.0",
     "custom-electron-titlebar": "^3.2.7",
