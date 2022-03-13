@@ -31,7 +31,7 @@ import { Grid, Typography } from '@material-ui/core';
      ],
    };
 
-//const beginAuth = useStore((state) => state.spotifyAuth);
+//const spotifyAuth = useStore((state) => state.spotifyAuth);
 //const setAuthSpotify = useStore((state) => state.setAuthSpotify);
 
 const beginAuth = () => `https://accounts.spotify.com/authorize?client_id=${
@@ -51,9 +51,9 @@ const setIsAuthenticated= false;
 const SpotifyView = () => {
     const spotifyAuth = useStore((state) => state.spotifyAuth);
   return (
-  <Grid container justify="center" alignContent="center" style={{ height: '10%' }}>
+  <Grid container justifyContent="center" alignContent="center" style={{ height: '10%' }}>
             {!setIsAuthenticated ? (
-                <Button variant="contained" color="primary" onClick={() => setAuthSpotify()}>
+                <Button variant="contained" color="primary" onClick={() => spotifyAuth()}>
                     <Typography>Connect to Spotify</Typography>
                 </Button>
             ) : setIsAuthenticated ? (
