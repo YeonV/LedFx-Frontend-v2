@@ -3,6 +3,33 @@ import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { Ledfx } from './apiProxy';
 
+ const productionUrl = 'https//:my.ledfx.app/#/./Integrations';
+ const localUrl = 'http://localhost:3000/#/./Integrations';
+ const spotifyApiCredentials = {
+   CLIENT_ID: "7658827aea6f47f98c8de593f1491da5",
+   REDIRECT_URL: `${
+     process.env.NODE_ENV === "production" ? productionUrl : localUrl
+   }`,
+   SCOPES: [
+     //Users (Review later if needed)
+     "user-top-read",
+     "user-read-email",
+     "user-read-private",
+     //Playback
+     "streaming",
+     "user-read-playback-position",
+     //Spotify Connect
+     "user-read-playback-state",
+     "user-modify-playback-state",
+     "user-read-currently-playing",
+     //Listening History (resume playback)
+     "user-read-recently-played",
+     //Library
+     "user-library-read",
+     "user-library-modify",
+   ],
+ };
+
 const useStore = create(
   persist(
     devtools((set, get) => ({
@@ -201,7 +228,6 @@ const useStore = create(
           },
         }));
       },
-
       webAud: false,
       setWebAud: (newState) => {
         set((state) => ({ webAud: newState }))
@@ -222,22 +248,21 @@ const useStore = create(
       setSpotifyEmbedUrl: (url) => {
         set((state) => ({ spotifyEmbedUrl: url }))
       },
+      isAuthenticated: false,
       spotifyAuth: `https://accounts.spotify.com/authorize?client_id=${
-        apiCredentials.CLIENT_ID
+        spotifyApiCredentials.CLIENT_ID
       }&redirect_uri=${encodeURIComponent(
-        apiCredentials.REDIRECT_URL
+        spotifyApiCredentials.REDIRECT_URL
       )}&scope=${encodeURIComponent(
-        apiCredentials.SCOPES.join(" ")
+        spotifyApiCredentials.SCOPES.join(" ")
       )}&response_type=token`,
       setAuthSpotify: (url) => {
         set((state) => ({ spotifyAuth: url }))
       },
-      // const useAuthStore = create((set) => ({
-      //   isAuthenticated: false,
-      //   setIsAuthenticated: (state) => set({ isAuthenticated: state }),
-      //   token: null,
-      //   setToken: (token) => set({ token }),
-      // }));
+         isAuthenticated: false,
+         setIsAuthenticated: (state) => set({ isAuthenticated: state }),
+         token: null,
+         setToken: (token) => set({ token }),
 
       // import create from "zustand";
       // import { persist } from "zustand/middleware";
