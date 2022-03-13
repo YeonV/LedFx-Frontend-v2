@@ -32,14 +32,15 @@ import { Grid, Typography } from '@material-ui/core';
    };
 
 //const beginAuth = useStore((state) => state.spotifyAuth);
+//const setAuthSpotify = useStore((state) => state.setAuthSpotify);
 
-    const beginAuth = `https://accounts.spotify.com/authorize?client_id=${
-      apiCredentials.CLIENT_ID
-    }&redirect_uri=${encodeURIComponent(
-        apiCredentials.REDIRECT_URL
-    )}&scope=${encodeURIComponent(
-        apiCredentials.SCOPES.join(" ")
-    )}&response_type=token`;
+const beginAuth = () => `https://accounts.spotify.com/authorize?client_id=${
+       apiCredentials.CLIENT_ID
+     }&redirect_uri=${encodeURIComponent(
+         apiCredentials.REDIRECT_URL
+     )}&scope=${encodeURIComponent(
+         apiCredentials.SCOPES.join(" ")
+     )}&response_type=token`;
 
 const setToken = (set) => ({
     isAuthenticated: false,
@@ -52,7 +53,7 @@ const SpotifyView = () => {
   return (
   <Grid container justify="center" alignContent="center" style={{ height: '10%' }}>
             {!setIsAuthenticated ? (
-                <Button variant="contained" color="primary" onClick={() => beginAuth()}>
+                <Button variant="contained" color="primary" onClick={() => setAuthSpotify()}>
                     <Typography>Connect to Spotify</Typography>
                 </Button>
             ) : setIsAuthenticated ? (
