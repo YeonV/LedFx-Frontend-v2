@@ -25,6 +25,7 @@ export default function LabelBottomNavigation() {
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
   const spotifyURL = useStore((state) => state.spotifyEmbedUrl);
   const setSpotifyURL = useStore((state) => state.setSpotifyEmbedUrl);
+  const setSpotifyAuthURL = useStore((state) => state.setSpotifyAuthUrl);
 
   const [youtubeEnabled, setYoutubeEnabled] = useState(false)
   const [youtubeExpanded, setYoutubeExpanded] = useState(false)
@@ -109,6 +110,7 @@ export default function LabelBottomNavigation() {
         setSpotifyExpanded={setSpotifyExpanded}
         spotifyURL={spotifyURL}
         setSpotifyURL={setSpotifyURL}
+        setSpotifyAuthURL={setSpotifyAuthURL}
         botHeight={botHeight}
         setYoutubeEnabled={setYoutubeEnabled}
         setYoutubeExpanded={setYoutubeExpanded}
