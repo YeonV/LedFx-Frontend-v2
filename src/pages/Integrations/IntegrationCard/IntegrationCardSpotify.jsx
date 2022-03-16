@@ -20,7 +20,7 @@ import {
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
 //import SpotifyView from '../Spotify/SpotifyAuth';
 
-const IntegrationCard = ({ integration }) => {
+const IntegrationCardSpotify = ({ integration }) => {
   const classes = useIntegrationCardStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
@@ -57,7 +57,16 @@ const IntegrationCard = ({ integration }) => {
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={integrations[integration].config.description}
+        subheader={integrations[integration].status === 3
+            ? 'Connecting...'
+            : integrations[integration].status === 2
+            ? 'Disconnecting'
+            : integrations[integration].status === 1
+            ? 'Connected'
+            : integrations[integration].status === 0
+            ? 'Disconnected'
+            : 'Unknown'
+        }
         action={
           <Switch
             aria-label="status"
@@ -66,6 +75,14 @@ const IntegrationCard = ({ integration }) => {
           />
         }
       />
+     
+      <Typography>{integrations[integration].config.description}</Typography>
+     
+      {/* <CardContent>
+        {integrations[integration].active
+          ? '<SpotifyView />'
+          : ''}
+      </CardContent> */}
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton
@@ -94,6 +111,16 @@ const IntegrationCard = ({ integration }) => {
               onClick={() => handleEditIntegration(integration)}
             >
               <EditIcon />
+            </Button>
+            <Button
+              variant={variant}
+              size="small"
+              color={color}
+              className={classes.editButton}
+              onClick={() => console.log('coming soon...')}
+              disabled={integrations[integration].status !== 1}
+            >
+              <AddIcon />
             </Button>
           </div>
         </div>
@@ -129,4 +156,4 @@ const IntegrationCard = ({ integration }) => {
   );
 };
 
-export default IntegrationCard;
+export default IntegrationCardSpotify;
