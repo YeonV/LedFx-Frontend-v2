@@ -228,7 +228,6 @@ const SchemaForm = ({
                 );
 
               case 'integer':
-                console.log(s.id);
                 return (
                   <BladeSlider
                     full={s.id === 'delay_ms'}
