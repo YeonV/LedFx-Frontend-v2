@@ -154,7 +154,7 @@ const SchemaForm = ({
                         Object.keys(group[c]).map((e) => (
                           <MenuItem
                             value={e}
-                            disabled={group[c][e].indexOf('[Loopback]') > -1}
+                            // disabled={group[c][e].indexOf('[Loopback]') > -1}
                           >
                             {group[c][e].indexOf('[Loopback]') > -1 ? (
                               <SpeakerIcon style={{ marginRight: '10px' }} />
@@ -230,6 +230,7 @@ const SchemaForm = ({
               case 'integer':
                 return (
                   <BladeSlider
+                    full={s.id === 'delay_ms'}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
                     disableUnderline={disableUnderline}
