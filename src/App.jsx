@@ -1,7 +1,7 @@
 import { useEffect, useState, createRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, HashRouter as Router, Switch, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import useStore from './utils/apiStore';
@@ -51,6 +51,7 @@ import { Close } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
 import './AddToHomescreen.css';
+import { SpotifyLoginRedirect } from './pages/Integrations/Spotify/SpotifyAuth'
 
 export default function App() {
   const classes = useStyles();
@@ -175,6 +176,12 @@ export default function App() {
                 style={{ paddingTop: isElectron() ? '30px' : 0 }}
               >
                 <CssBaseline />
+                <BrowserRouter>
+                        <Route
+                          exact
+                          path="/callback"
+                          component={SpotifyLoginRedirect}
+                        />
                 <Router basename={process.env.PUBLIC_URL}>
                   <ScrollToTop />
                   <HandleWs />
@@ -188,11 +195,7 @@ export default function App() {
                   >
                     <div className={classes.drawerHeader} />
                     <Switch>
-                      <Route
-                        exact
-                        path="/connect/:providerName/redirect"
-                        component={LoginRedirect}
-                      />
+                      
                       <Route exact path="/" component={Home} />
                       <Route path="/devices" component={Devices} />
                       <Route path="/device/:virtId" component={Device} />
@@ -205,6 +208,8 @@ export default function App() {
                   </main>
                   <BottomBar />
                 </Router>
+                
+                </BrowserRouter>
                 {features['waves'] && (
                   <WaveLines
                     startColor={

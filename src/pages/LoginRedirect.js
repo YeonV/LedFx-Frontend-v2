@@ -13,7 +13,7 @@ const LoginRedirect = (props) => {
   const location = useLocation();
   const params = useParams();
   const history = useHistory();
-  // console.log(params, props, location)
+  //console.log("OMG", params, props, location)
   useEffect(() => {
     // Successfully logged with the provider
     // Now logging with strapi by using the access_token (given by the provider) in props.location.search
