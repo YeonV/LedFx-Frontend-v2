@@ -1,7 +1,7 @@
 import { useEffect, useState, createRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
-import { BrowserRouter, HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, HashRouter as Router, Routes, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import useStore from './utils/apiStore';
@@ -194,7 +194,7 @@ export default function App() {
                     })}
                   >
                     <div className={classes.drawerHeader} />
-                    <Switch>
+                    <Routes>
                       
                       <Route exact path="/" component={Home} />
                       <Route path="/devices" component={Devices} />
@@ -202,7 +202,7 @@ export default function App() {
                       <Route path="/scenes" component={Scenes} />
                       <Route path="/integrations" component={Integrations} />
                       <Route path="/settings" component={Settings} />
-                    </Switch>
+                    </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
                   </main>
@@ -243,7 +243,7 @@ export default function App() {
                     })}
                   >
                     <div className={classes.drawerHeader} />
-                    <Switch>
+                    <Routes>
                       <Route
                         exact
                         path="/connect/:providerName/redirect"
@@ -255,7 +255,7 @@ export default function App() {
                       <Route path="/scenes" component={Scenes} />
                       <Route path="/integrations" component={Integrations} />
                       <Route path="/settings" component={Settings} />
-                    </Switch>
+                    </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
                   </main>
