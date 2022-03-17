@@ -1,7 +1,7 @@
 import { useEffect, useState, createRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import useStore from './utils/apiStore';
@@ -187,19 +187,19 @@ export default function App() {
                     })}
                   >
                     <div className={classes.drawerHeader} />
-                    <Switch>
+                    <Routes>
                       <Route
                         exact
                         path="/connect/:providerName/redirect"
-                        component={LoginRedirect}
+                        element={<LoginRedirect />}
                       />
-                      <Route exact path="/" component={Home} />
-                      <Route path="/devices" component={Devices} />
-                      <Route path="/device/:virtId" component={Device} />
-                      <Route path="/scenes" component={Scenes} />
-                      <Route path="/integrations" component={Integrations} />
-                      <Route path="/settings" component={Settings} />
-                    </Switch>
+                      <Route exact path="/" element={<Home />} />
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/device/:virtId" element={<Device />} />
+                      <Route path="/scenes" element={<Scenes />} />
+                      <Route path="/integrations" element={<Integrations />} />
+                      <Route path="/settings" element={<Settings />} />
+                    </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
                   </main>
@@ -238,19 +238,19 @@ export default function App() {
                     })}
                   >
                     <div className={classes.drawerHeader} />
-                    <Switch>
+                    <Routes>
                       <Route
                         exact
                         path="/connect/:providerName/redirect"
-                        component={LoginRedirect}
+                        element={<LoginRedirect />}
                       />
-                      <Route exact path="/" component={Home} />
-                      <Route path="/devices" component={Devices} />
-                      <Route path="/device/:virtId" component={Device} />
-                      <Route path="/scenes" component={Scenes} />
-                      <Route path="/integrations" component={Integrations} />
-                      <Route path="/settings" component={Settings} />
-                    </Switch>
+                      <Route exact path="/" element={<Home />} />
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/device/:virtId" element={<Device />} />
+                      <Route path="/scenes" element={<Scenes />} />
+                      <Route path="/integrations" element={<Integrations />} />
+                      <Route path="/settings" element={<Settings />} />
+                    </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
                   </main>

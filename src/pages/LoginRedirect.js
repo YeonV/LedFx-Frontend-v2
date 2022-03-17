@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import axios from 'axios';
 
 const cloud = axios.create({
@@ -12,7 +12,7 @@ const LoginRedirect = (props) => {
   const [text, setText] = useState('Loading...');
   const location = useLocation();
   const params = useParams();
-  const history = useHistory();
+  const history = useNavigate();
   // console.log(params, props, location)
   useEffect(() => {
     // Successfully logged with the provider
@@ -42,7 +42,7 @@ const LoginRedirect = (props) => {
         localStorage.setItem('ledfx-cloud-userid', user.id);
         localStorage.setItem('ledfx-cloud-role', user.role.type);
         setText(`You have been successfully logged in as ${localStorage.getItem('username')}. You will be redirected in a few seconds...`);
-        setTimeout(() => history.push('/devices'), 2000); // Redirect to homepage after 3 sec
+        setTimeout(() => history('/devices'), 2000); // Redirect to homepage after 3 sec
       })
       .catch(err => {
         console.log(err);
