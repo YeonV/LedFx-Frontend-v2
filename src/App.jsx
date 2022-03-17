@@ -195,13 +195,17 @@ export default function App() {
                   >
                     <div className={classes.drawerHeader} />
                     <Routes>
-                      
-                      <Route exact path="/" element={Home} />
-                      <Route path="/devices" element={Devices} />
-                      <Route path="/device/:virtId" element={Device} />
-                      <Route path="/scenes" element={Scenes} />
-                      <Route path="/integrations" element={Integrations} />
-                      <Route path="/settings" element={Settings} />
+                      <Route
+                        exact
+                        path="/connect/:providerName/redirect"
+                        element={<LoginRedirect />}
+                      />
+                      <Route exact path="/" element={<Home />} />
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/device/:virtId" element={<Device />} />
+                      <Route path="/scenes" element={<Scenes />} />
+                      <Route path="/integrations" element={<Integrations />} />
+                      <Route path="/settings" element={<Settings />} />
                     </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
@@ -247,14 +251,14 @@ export default function App() {
                       <Route
                         exact
                         path="/connect/:providerName/redirect"
-                        element={LoginRedirect}
+                        element={<LoginRedirect />}
                       />
-                      <Route exact path="/" element={Home} />
-                      <Route path="/devices" element={Devices} />
-                      <Route path="/device/:virtId" element={Device} />
-                      <Route path="/scenes" element={Scenes} />
-                      <Route path="/integrations" element={Integrations} />
-                      <Route path="/settings" element={Settings} />
+                      <Route exact path="/" element={<Home />} />
+                      <Route path="/devices" element={<Devices />} />
+                      <Route path="/device/:virtId" element={<Device />} />
+                      <Route path="/scenes" element={<Scenes />} />
+                      <Route path="/integrations" element={<Integrations />} />
+                      <Route path="/settings" element={<Settings />} />
                     </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
