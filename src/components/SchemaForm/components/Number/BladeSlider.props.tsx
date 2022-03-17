@@ -10,6 +10,7 @@ export interface BladeSliderInnerProps {
   marks?: any;
   hideDesc?: boolean;
   disableUnderline?: boolean;
+  full?: boolean;
 }
 
 export const BladeSliderInnerDefaultProps = {
@@ -24,6 +25,7 @@ export const BladeSliderInnerDefaultProps = {
   marks: undefined,
   hideDesc: undefined,
   disableUnderline: undefined,
+  full: undefined,
 };
 
 export interface BladeSliderProps {
@@ -63,6 +65,7 @@ export interface BladeSliderProps {
   disabled?: boolean;
   hideDesc?: boolean;
   style?: any;
+  full?: boolean;
 }
 
 export const BladeSliderDefaultProps = {
@@ -82,4 +85,5 @@ export const BladeSliderDefaultProps = {
   disabled: false,
   hideDesc: false,
   style: {},
+  full: false,
 };

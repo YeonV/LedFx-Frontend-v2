@@ -70,6 +70,11 @@ const BladeSliderInner = ({
           valueLabelDisplay="auto"
           disabled={disabled}
           step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
+          valueLabelFormat={
+            model_id === 'delay_ms'
+              ? `${typeof value === 'number' ? value : 0}\xa0ms`
+              : `${typeof value === 'number' ? value : 0}`
+          }
           min={schema.minimum || 0}
           max={schema.maximum}
           value={typeof value === 'number' ? value : 0}
@@ -87,10 +92,16 @@ const BladeSliderInner = ({
         disableUnderline
         disabled={disabled}
         className={classes.input}
+        style={
+          model_id === 'delay_ms'
+            ? { minWidth: 90, textAlign: 'right', paddingTop: 0 }
+            : {}
+        }
         value={value}
         margin="dense"
         onChange={handleInputChange}
         onBlur={handleBlur}
+        endAdornment={model_id === 'delay_ms' ? 'ms\xa0' : null}
         inputProps={{
           step: step || (schema.maximum > 1 ? 0.1 : 0.01),
           min: schema.minimum || 0,
@@ -122,6 +133,7 @@ const BladeSliderInner = ({
       disabled={disabled}
       InputProps={{
         disableUnderline,
+        endAdornment: model_id === 'delay_ms' ? 'ms' : null,
       }}
       type="number"
       value={value}
@@ -156,11 +168,18 @@ const BladeSlider = ({
   textfield = false,
   disabled = false,
   hideDesc = false,
+  full = false,
   style = {},
 }: BladeSliderProps) => {
   const classes = useStyles();
   return variant === 'outlined' ? (
-    <div className={`${classes.wrapper} step-effect-${index}`} style={style}>
+    <div
+      className={`${classes.wrapper} step-effect-${index}`}
+      style={{
+        ...style,
+        width: full ? '100%' : style.width,
+      }}
+    >
       <label
         style={{
           color: disabled

@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../utils/apiStore';
 import IntegrationCard from './IntegrationCard/IntegrationCard';
 import NoYet from '../../components/NoYet';
+import IntegrationCardSpotify from './IntegrationCard/IntegrationCardSpotify';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
@@ -25,9 +26,11 @@ const Integrations = () => {
   }, [getIntegrations]);
   return (
     <div className={classes.cardWrapper}>
-    {integrations && Object.keys(integrations).length ? Object.keys(integrations).map((integration, i) => (
-      <IntegrationCard integration={integration} key={i} />
-    )) : (<NoYet type="Integration" />)}
+    {integrations && Object.keys(integrations).length ? Object.keys(integrations).map((integration, i) => 
+      integrations[integration].type === 'spotify' 
+        ? <IntegrationCardSpotify integration={integration} key={i} />
+        : <IntegrationCard integration={integration} key={i} />
+    ) : <NoYet type="Integration" />}
   </div>
   );
 };
