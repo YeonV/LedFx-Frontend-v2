@@ -180,7 +180,7 @@ export default function App() {
                         <Route
                           exact
                           path="/callback"
-                          component={SpotifyLoginRedirect}
+                          element={SpotifyLoginRedirect}
                         />
                 <Router basename={process.env.PUBLIC_URL}>
                   <ScrollToTop />
@@ -196,12 +196,12 @@ export default function App() {
                     <div className={classes.drawerHeader} />
                     <Routes>
                       
-                      <Route exact path="/" component={Home} />
-                      <Route path="/devices" component={Devices} />
-                      <Route path="/device/:virtId" component={Device} />
-                      <Route path="/scenes" component={Scenes} />
-                      <Route path="/integrations" component={Integrations} />
-                      <Route path="/settings" component={Settings} />
+                      <Route exact path="/" element={Home} />
+                      <Route path="/devices" element={Devices} />
+                      <Route path="/device/:virtId" element={Device} />
+                      <Route path="/scenes" element={Scenes} />
+                      <Route path="/integrations" element={Integrations} />
+                      <Route path="/settings" element={Settings} />
                     </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
@@ -247,14 +247,14 @@ export default function App() {
                       <Route
                         exact
                         path="/connect/:providerName/redirect"
-                        component={LoginRedirect}
+                        element={LoginRedirect}
                       />
-                      <Route exact path="/" component={Home} />
-                      <Route path="/devices" component={Devices} />
-                      <Route path="/device/:virtId" component={Device} />
-                      <Route path="/scenes" component={Scenes} />
-                      <Route path="/integrations" component={Integrations} />
-                      <Route path="/settings" component={Settings} />
+                      <Route exact path="/" element={Home} />
+                      <Route path="/devices" element={Devices} />
+                      <Route path="/device/:virtId" element={Device} />
+                      <Route path="/scenes" element={Scenes} />
+                      <Route path="/integrations" element={Integrations} />
+                      <Route path="/settings" element={Settings} />
                     </Routes>
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
