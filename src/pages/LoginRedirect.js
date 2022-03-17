@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import axios from 'axios';
 
 const cloud = axios.create({
@@ -12,7 +12,7 @@ const LoginRedirect = (props) => {
   const [text, setText] = useState('Loading...');
   const location = useLocation();
   const params = useParams();
-  const history = useHistory();
+  const history = useNavigate();
   //console.log("OMG", params, props, location)
   useEffect(() => {
     // Successfully logged with the provider
