@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useState, useEffect } from 'react';
 import useStore from '../../utils/apiStore';
-import { useLocation, Link, useHistory } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { AppBar, Box, Badge, Toolbar, CircularProgress, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
 import { Menu as MenuIcon, MoreVert, PlayCircleOutline, Language, BarChart, Pause, Settings, GitHub, ChevronLeft } from '@material-ui/icons';
@@ -79,7 +79,7 @@ const TopBar = () => {
   const disconnected = useStore((state) => state.disconnected);
   const setDisconnected = useStore((state) => state.setDisconnected);
   const { pathname } = useLocation();
-  const history = useHistory();
+  const history = useNavigate();
   const clearSnackbar = useStore((state) => state.clearSnackbar);
   const features = useStore((state) => state.features);
 
