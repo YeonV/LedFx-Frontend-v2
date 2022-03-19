@@ -63,16 +63,24 @@ export function logoutClick(props) {
   isAuthenticated = false;
 };
 
-const SpotifyView = (props) => {
+//Need to figure out how to put in Spoitfy token exiry time.
+const SpotifyAuthdValid = (props) => {
   if (localStorage.getItem('Spotify-Token')) {
-    const isAuthenticated = true;
-  }
+    return setIsAuthenticated = true;
+  } else {
+    return setIsAuthenticated = false;
+  };
+};
+
+const SpotifyView = (props) => {
+  SpotifyAuthdValid();
+  console.log("Is Spotify Auth'd?", setIsAuthenticated)
   return (
     <Grid
       container
       justifyContent="center"
       alignContent="center"
-      style={{ height: '10%' }}
+      //style={{ height: '10%' }}
     >
       {!setIsAuthenticated ? (
         <Button
