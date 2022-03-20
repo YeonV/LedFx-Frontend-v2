@@ -177,11 +177,14 @@ export default function App() {
               >
                 <CssBaseline />
                 <BrowserRouter>
+                <Routes>
                         <Route
                           exact
                           path="/callback"
-                          element={SpotifyLoginRedirect}
+                          element={<SpotifyLoginRedirect />}
                         />
+                </Routes>
+                </BrowserRouter>
                 <Router basename={process.env.PUBLIC_URL}>
                   <ScrollToTop />
                   <HandleWs />
@@ -213,7 +216,6 @@ export default function App() {
                   <BottomBar />
                 </Router>
                 
-                </BrowserRouter>
                 {features['waves'] && (
                   <WaveLines
                     startColor={
