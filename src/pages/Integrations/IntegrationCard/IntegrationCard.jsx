@@ -15,9 +15,10 @@ import {
   Typography,
   Switch,
   Link,
+  CardContent,
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
-import SpotifyView from '../Spotify/SpotifyAuth';
+//import SpotifyView from '../Spotify/SpotifyAuth';
 
 const IntegrationCard = ({ integration }) => {
   const classes = useIntegrationCardStyles();
@@ -56,17 +57,7 @@ const IntegrationCard = ({ integration }) => {
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={
-          integrations[integration].status === 3
-            ? 'Connecting...'
-            : integrations[integration].status === 2
-            ? 'Disconnecting'
-            : integrations[integration].status === 1
-            ? 'Connected'
-            : integrations[integration].status === 0
-            ? 'Disconnected'
-            : 'Unknown'
-        }
+        subheader={integrations[integration].config.description}
         action={
           <Switch
             aria-label="status"
@@ -75,35 +66,6 @@ const IntegrationCard = ({ integration }) => {
           />
         }
       />
-      <Typography>{integrations[integration].config.description}</Typography>
-      <Typography>
-        <Link target="_blank" href="http://127.0.0.1:9999">
-          {integrations[integration].type === 'qlc'
-            ? `QLC+ API: http://${integrations[integration].config.ip_address}:${integrations[integration].config.port}`
-            : ''}
-        </Link>
-        <CardActions>
-          {(integrations[integration].status === 1) &
-          (integrations[integration].type === 'qlc') ? (
-            <DialogAddEventListener integration={int} />
-          ) : (integrations[integration].status !== 1) &
-            (integrations[integration].type === 'qlc') ? (
-            <Link
-              target="_blank"
-              href="https://www.qlcplus.org/docs/html_en_EN/webinterface.html"
-            >
-              Click here for setup guide.
-            </Link>
-          ) : (
-            ''
-          )}
-
-          {integrations[integration].type === 'spotify' &&
-          integrations[integration].active
-            ? <SpotifyView />
-            : ''}
-        </CardActions>
-      </Typography>
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton
@@ -132,16 +94,6 @@ const IntegrationCard = ({ integration }) => {
               onClick={() => handleEditIntegration(integration)}
             >
               <EditIcon />
-            </Button>
-            <Button
-              variant={variant}
-              size="small"
-              color={color}
-              className={classes.editButton}
-              onClick={() => console.log('coming soon...')}
-              disabled={integrations[integration].status !== 1}
-            >
-              <AddIcon />
             </Button>
           </div>
         </div>
