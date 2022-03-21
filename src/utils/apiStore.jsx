@@ -3,33 +3,6 @@ import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { Ledfx } from './apiProxy';
 
- const productionUrl = 'https//:my.ledfx.app/#/./Integrations';
- const localUrl = 'http://localhost:3000/#/./Integrations';
- const spotifyApiCredentials = {
-   CLIENT_ID: "7658827aea6f47f98c8de593f1491da5",
-   REDIRECT_URL: `${
-     process.env.NODE_ENV === "production" ? productionUrl : localUrl
-   }`,
-   SCOPES: [
-     //Users (Review later if needed)
-     "user-top-read",
-     "user-read-email",
-     "user-read-private",
-     //Playback
-     "streaming",
-     "user-read-playback-position",
-     //Spotify Connect
-     "user-read-playback-state",
-     "user-modify-playback-state",
-     "user-read-currently-playing",
-     //Listening History (resume playback)
-     "user-read-recently-played",
-     //Library
-     "user-library-read",
-     "user-library-modify",
-   ],
- };
-
 const useStore = create(
   persist(
     devtools((set, get) => ({
@@ -228,6 +201,7 @@ const useStore = create(
           },
         }));
       },
+
       webAud: false,
       setWebAud: (newState) => {
         set((state) => ({ webAud: newState }))
@@ -248,46 +222,6 @@ const useStore = create(
       setSpotifyEmbedUrl: (url) => {
         set((state) => ({ spotifyEmbedUrl: url }))
       },
-      isAuthenticated: false,
-      spotifyAuth: `https://accounts.spotify.com/authorize?client_id=${
-        spotifyApiCredentials.CLIENT_ID
-      }&redirect_uri=${encodeURIComponent(
-        spotifyApiCredentials.REDIRECT_URL
-      )}&scope=${encodeURIComponent(
-        spotifyApiCredentials.SCOPES.join(" ")
-      )}&response_type=token`,
-      setAuthSpotify: (url) => {
-        set((state) => ({ spotifyAuth: url }))
-      },
-         isAuthenticated: false,
-         setIsAuthenticated: (state) => set({ isAuthenticated: state }),
-         token: null,
-         setToken: (token) => set({ token }),
-
-      // import create from "zustand";
-      // import { persist } from "zustand/middleware";
-      // import { localStorageKeys } from "../constants";
-      // useAudioStore = create(
-      //   persist(
-      //     (set) => ({
-      //       isPlaying: false,
-      //       togglePlayback: (bool) => set({ isPlaying: bool }),
-      //       timeElapsed: 0,
-      //       setTimeElapsed: (time) => set({ timeElapsed: time }),
-      //       duration: 0,
-      //       setDuration: (duration) => set({ duration }),
-      //       volume: 0.5,
-      //       setVolume: (volume) => set({ volume }),
-      //       audioInfo: null,
-      //       setAudioInfo: (audioInfo) => set({ audioInfo }),
-      //     }),
-      //     {
-      //       name: localStorageKeys.LAST_SAVED_VOLUME,
-      //       whitelist: ["volume"],
-      //     }
-      //   )
-      // );
-
       youtubeURL: 'https://www.youtube.com/watch?v=s6Yyb3N9IuA&list=PLD579BDF7F8D8BFE0',
       setYoutubeURL: (url) => {
         set((state) => ({ youtubeURL: url }))
