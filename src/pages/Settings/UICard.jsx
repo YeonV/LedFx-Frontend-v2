@@ -173,6 +173,10 @@ const UICard = () => {
                 <label>Spotify Embedded Player</label>
                 <SettingsSwitch checked={features['spotify']} onChange={(e) => setFeatures('spotify', !features['spotify'])} />
             </div>}
+            {viewMode !== 'user' && <div className={`${classes.settingsRow} step-settings-x `}>
+                <label>Spotify Pro</label>
+                <SettingsSwitch checked={features['spotifypro']} onChange={(e) => setFeatures('spotifypro', !features['spotifypro'])} />
+            </div>}
             {viewMode !== 'user' && window.localStorage.getItem('ledfx-newbase') === '1' && <div className={`${classes.settingsRow} step-settings-x `}>
                 <label>Youtube Embedded Player</label>
                 <SettingsSwitch checked={features['youtube']} onChange={(e) => setFeatures('youtube', !features['youtube'])} />

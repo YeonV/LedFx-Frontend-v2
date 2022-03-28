@@ -12,6 +12,7 @@ import SpotifyWidget from '../Integrations/Spotify/SpotifyWidget';
 import AddButton from '../AddButton';
 import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
+import SpotifyProWidget from '../Integrations/Spotify/SpotifyProWidget';
 
 export default function LabelBottomNavigation() {
   const classes = useStyles();
@@ -104,6 +105,20 @@ export default function LabelBottomNavigation() {
     </BottomNavigation>
     {features['spotify'] && (
       <SpotifyWidget
+        spotifyEnabled={spotifyEnabled}
+        setSpotifyEnabled={setSpotifyEnabled}
+        spotifyExpanded={spotifyExpanded}
+        setSpotifyExpanded={setSpotifyExpanded}
+        spotifyURL={spotifyURL}
+        setSpotifyURL={setSpotifyURL}
+        setSpotifyAuthURL={setSpotifyAuthURL}
+        botHeight={botHeight}
+        setYoutubeEnabled={setYoutubeEnabled}
+        setYoutubeExpanded={setYoutubeExpanded}
+      />
+    )}
+    {features['spotifypro'] && (
+      <SpotifyProWidget
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}
         spotifyExpanded={spotifyExpanded}
