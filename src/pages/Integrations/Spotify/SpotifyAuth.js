@@ -4,9 +4,10 @@ import { Grid, Typography } from '@material-ui/core';
 import { useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'universal-cookie/es6';
+import Cookies from 'universal-cookie/es6'
 import { finishAuth,refreshAuth,logoutAuth } from './proxies';
 import getPkce from 'oauth-pkce';
+import useStore from '../../../utils/apiStore';
 
 
 
@@ -59,6 +60,7 @@ const SpotifyView = (props) => {
   //SpotifyAuthdValid();
 
   const [isAuthenticated,setIsAuthenticated]=React.useState(false);
+  const setSpotifyAuthToken = useStore((state) => state.setSpotifyAuthToken);
   const [ codes, setCodes]  = React.useState({})
   const cookies = new Cookies();
 
@@ -123,6 +125,7 @@ useEffect(() => {
 useEffect(()=>{
 if(cookies.get('access_token')){
   setIsAuthenticated(true);
+  setSpotifyAuthToken(cookies.get('access_token'));
 }else{
   setIsAuthenticated(false);
 
