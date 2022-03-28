@@ -13,7 +13,12 @@ module.exports = {
   ignorePatterns: ["**/build/*", "*.js", "*.jsx"],
   rules: {
     quotes: [2, "single"],
-    'prettier/prettier': ['error', { singleQuote: true }],
+    'prettier/prettier': [
+      'error',
+      {
+        'endOfLine': 'auto',
+      }
+    ],
     "react/jsx-filename-extension": [2, { extensions: [".ts", ".tsx"] }],
     "import/no-extraneous-dependencies": [
       2,
