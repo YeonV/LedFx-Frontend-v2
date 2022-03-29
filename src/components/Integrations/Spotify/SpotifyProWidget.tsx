@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-console */
 import { Fab, IconButton, Link } from '@material-ui/core';
 import { QueueMusic } from '@material-ui/icons';
 import React, { useEffect } from 'react';
@@ -6,76 +8,107 @@ import InfoIcon from '@material-ui/icons/Info';
 import ChangeSpotifyURLDialog from './ChangeSpotifyURLDialog';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import useStore from '../../../utils/apiStore';
+import { spotifyPlay } from '../../../pages/Integrations/Spotify/proxies';
 
 const SpotifyProWidget = ({
   spotifyEnabled,
-  setSpotifyEnabled,
   spotifyExpanded,
   setSpotifyExpanded,
   spotifyURL,
   setSpotifyURL,
-  setYoutubeExpanded,
-  setYoutubeEnabled,
+  thePlayer,
+  // setSpotifyEnabled,
+  // setYoutubeExpanded,
+  // setYoutubeEnabled,
   botHeight,
 }: any) => {
   const { spotifyAuthToken }: any = useStore((state) => state);
   const { setSpotifyData }: any = useStore((state) => state);
-  let player;
+  const { setSpotifyDevice }: any = useStore((state) => state);
+
   useEffect(() => {
     const createWebPlayer = async (token: string) => {
-      console.log(token);
+      // console.log(token);
       (window as any).onSpotifyWebPlaybackSDKReady = async () => {
-        player = new (window as any).Spotify.Player({
+        thePlayer.current = new (window as any).Spotify.Player({
           name: 'LedFX',
           getOAuthToken: (cb: any) => {
             cb(token);
           },
         });
-
-        player.addListener('initialization_error', ({ message }: any) => {
-          console.error(message);
-        });
-        player.addListener('authentication_error', ({ message }: any) => {
-          console.error(message);
-        });
-        player.addListener('account_error', ({ message }: any) => {
-          console.error(message);
-        });
-        player.addListener('playback_error', ({ message }: any) => {
-          console.error(message);
-        });
-        player.addListener('player_state_changed', (state: any) => {
-          console.log(state);
-          if (state !== null) {
-            if (state.position < 5 || state.position > 500) {
-              // this.props.updatePlayerState(state);
-              setSpotifyData('playerState', state);
+        if (thePlayer.current) {
+          (thePlayer.current as any).addListener(
+            'initialization_error',
+            ({ message }: any) => {
+              console.error(message);
             }
-          } else {
-            // this.props.updatePlayerState({});
-            setSpotifyData('playerState', {});
-          }
-        });
-        player.addListener('ready', ({ device_id }: any) => {
-          console.log('Ready with Device ID', device_id);
-          // console.log(player);
-        });
-        player.addListener('not_ready', ({ device_id }: any) => {
-          console.log('Device ID has gone offline', device_id);
-        });
-        // this.setState({ player });
-        await player.connect();
+          );
+          (thePlayer.current as any).addListener(
+            'authentication_error',
+            ({ message }: any) => {
+              console.error(message);
+            }
+          );
+          (thePlayer.current as any).addListener(
+            'account_error',
+            ({ message }: any) => {
+              console.error(message);
+            }
+          );
+          (thePlayer.current as any).addListener(
+            'playback_error',
+            ({ message }: any) => {
+              console.error(message);
+            }
+          );
+          (thePlayer.current as any).addListener(
+            'player_state_changed',
+            (state: any) => {
+              // console.log(state);
+              if (state !== null) {
+                if (state.position < 5 || state.position > 500) {
+                  // this.props.updatePlayerState(state);
+                  setSpotifyData('playerState', state);
+                }
+              } else {
+                // this.props.updatePlayerState({});
+                setSpotifyData('playerState', {});
+              }
+            }
+          );
+          (thePlayer.current as any).addListener(
+            'ready',
+            ({ device_id }: any) => {
+              setSpotifyDevice(device_id);
+              spotifyPlay(device_id);
+              // console.log('Ready with Device ID', device_id);
+              // console.log(player);
+            }
+          );
+          (thePlayer.current as any).addListener(
+            'not_ready',
+            ({ _device_id }: any) => {
+              // console.log('Device ID has gone offline', device_id);
+            }
+          );
+          // this.setState({ player });
+          await (thePlayer.current as any).connect();
+        }
+
         // console.log(res);
       };
       const script = window.document.createElement('script');
       script.setAttribute('src', 'https://sdk.scdn.co/spotify-player.js');
+      script.setAttribute('type', 'application/javascript');
       window.document.head.appendChild(script);
     };
 
-    if (spotifyAuthToken) {
+    if (spotifyAuthToken && !thePlayer.current && !(window as any).Spotify) {
       createWebPlayer(spotifyAuthToken);
     }
-    console.log(spotifyAuthToken);
+    if (!spotifyAuthToken && thePlayer.current) {
+      delete thePlayer.current;
+    }
   }, [spotifyAuthToken]);
   return (
     <>
@@ -91,14 +124,14 @@ const SpotifyProWidget = ({
         <Fab
           size="small"
           color="inherit"
-          onClick={() => {
-            setYoutubeEnabled(false);
-            setYoutubeExpanded(false);
-            if (spotifyEnabled && spotifyExpanded) {
-              setSpotifyExpanded(false);
-            }
-            setSpotifyEnabled(!spotifyEnabled);
-          }}
+          // onClick={() => {
+          //   setYoutubeEnabled(false);
+          //   setYoutubeExpanded(false);
+          //   if (spotifyEnabled && spotifyExpanded) {
+          //     setSpotifyExpanded(false);
+          //   }
+          //   setSpotifyEnabled(!spotifyEnabled);
+          // }}
           style={{
             position: 'fixed',
             bottom: botHeight + 115,
