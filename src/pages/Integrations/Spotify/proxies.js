@@ -1,19 +1,22 @@
 import Cookies from 'universal-cookie/es6';
 import axios from 'axios';
+import isElectron from 'is-electron';
 import qs from 'qs';
 
+const baseURL = isElectron() ? 'http://localhost:8888' : !!window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0] || 'http://localhost:8888';
+const storedURL = window.localStorage.getItem('ledfx-host');
+const redirectUrl = `${process.env.NODE_ENV === 'production' 
+    ? (storedURL || baseURL) 
+    : 'http://localhost:3000'}/callback/#/Integrations?`
 
-const productionUrl = 'https://my.ledfx.app/callback/#/Integrations';
-const localUrl = 'http://localhost:3000/callback/#/Integrations?';
-const SpotifyRedirectURL = axios.create({
-  baseURL: `${process.env.NODE_ENV === 'production' ? productionUrl : localUrl}`,
+const spotify = axios.create({
+    baseURL: redirectUrl,
 });
+
 const apiCredentials = {
   CLIENT_ID: '7658827aea6f47f98c8de593f1491da5',
   //CLIENT_SECRET: '',
-  REDIRECT_URL: `${
-    process.env.NODE_ENV === 'production' ? productionUrl : localUrl
-  }`,
+  REDIRECT_URL: redirectUrl,
   SCOPES: [
     //Users (Review later if needed)
     'user-top-read',
@@ -35,8 +38,8 @@ const apiCredentials = {
 };
 
 export const finishAuth=async()=> {
-    console.log('finishing');
-    const search = window.location.search.substring(1);
+    // console.log('finishing');
+    // const search = window.location.search.substring(1);
     const params = localStorage.getItem('Spotify-Token');
     const cookies = new Cookies();
     const postData = {
@@ -47,15 +50,14 @@ export const finishAuth=async()=> {
         code_verifier: cookies.get('verifier'),
     };
     const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } };
-    return axios
-        .post('https://accounts.spotify.com/api/token', qs.stringify(postData), config)
+    return axios.post('https://accounts.spotify.com/api/token', qs.stringify(postData), config)
         .then(res => {
             let tokens = {};
             let expDate = new Date();
             expDate.setHours(expDate.getHours() + 1);
             cookies.remove('access_token');
-            cookies.remove('logout', { path: '/' });
-            cookies.remove('logout', { path: '/integrations' });
+            cookies.remove('logout', { path: '/#' });
+            cookies.remove('logout', { path: '/#/integrations' });
 
             cookies.set('access_token', res.data.access_token, { expires: expDate });
             cookies.set('logout', false);
@@ -68,7 +70,7 @@ export const finishAuth=async()=> {
             tokens.refreshToken = res.data.refresh_token;
             cookies.remove('verifier');
             localStorage.removeItem('Spotify-Token')
-            window.history.replaceState({}, document.title, `/integrations`);
+            window.history.replaceState({}, document.title, `/#/integrations`);
             return tokens;
         })
         .catch(e => console.log(e));
@@ -84,8 +86,7 @@ export function refreshAuth() {
         refresh_token: rT,
     };
     const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } };
-    return axios
-        .post('https://accounts.spotify.com/api/token', qs.stringify(postData), config)
+    return axios.post('https://accounts.spotify.com/api/token', qs.stringify(postData), config)
         .then(res => {
             let freshTokens = {};
             let expDate = new Date();
@@ -121,8 +122,49 @@ export function logoutAuth() {
     return true;
 }
 
+export async function spotifyPause() {
+    const cookies = new Cookies();
+    const res = await axios.put('https://api.spotify.com/v1/me/player/pause', {},{
+        headers: {
+            Authorization: `Bearer ${cookies.get('access_token')}`
+        },
+    });
+    if (res.status === 200) {
+        return 'Success';
+    } else {
+        return 'Error';
+    }
+}
+
+export async function spotifyPlay(deviceId) {
+    const cookies = new Cookies();
+    const res = await axios.put(`https://api.spotify.com/v1/me/player`, {device_ids: [deviceId], play: true},{
+        headers: {
+            Authorization: `Bearer ${cookies.get('access_token')}`
+        },
+    });
+    if (res.status === 200) {
+        return 'Success';
+    } else {
+        return 'Error';
+    }
+}
+// export async function spotifyPlay(deviceId) {
+//     const cookies = new Cookies();
+//     const res = await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {},{
+//         headers: {
+//             Authorization: `Bearer ${cookies.get('access_token')}`
+//         },
+//     });
+//     if (res.status === 200) {
+//         return 'Success';
+//     } else {
+//         return 'Error';
+//     }
+// }
+
 export async function addTrigger(trigger) {
-    const res = await axios.post('http://localhost:8888/api/integrations/spotify/spotify', trigger);
+    const res = await axios.post(`${storedURL || baseURL}/api/integrations/spotify/spotify`, trigger);
     if (res.status === 200) {
         return 'Success';
     } else {

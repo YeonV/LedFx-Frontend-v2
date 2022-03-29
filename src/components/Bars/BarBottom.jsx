@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BottomNavigation, BottomNavigationAction, Backdrop } from '@material-ui/core';
 import { Settings, Home, Wallpaper, SettingsInputSvideo, SettingsInputComponent } from '@material-ui/icons';
 import { useLocation, Link } from 'react-router-dom';
@@ -14,13 +14,14 @@ import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 import SpotifyProWidget from '../Integrations/Spotify/SpotifyProWidget';
 
-export default function LabelBottomNavigation() {
+export default function LabelBottomNavigation({thePlayer}) {
   const classes = useStyles();
   const { pathname } = useLocation();
   const [value, setValue] = useState(pathname);
   const [backdrop, setBackdrop] = useState(false);
   const leftOpen = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
   const features = useStore((state) => state.features);
+  const integrations = useStore((state) => state.integrations);
 
   const [spotifyEnabled, setSpotifyEnabled] = useState(false)
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
@@ -34,7 +35,8 @@ export default function LabelBottomNavigation() {
   const setYoutubeURL = useStore((state) => state.setYoutubeURL);
 
   const [botHeight, setBotHeight] = useState(0)
-
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  
   useEffect(() => {
     let height = 0
     if (spotifyEnabled) {
@@ -117,7 +119,7 @@ export default function LabelBottomNavigation() {
         setYoutubeExpanded={setYoutubeExpanded}
       />
     )}
-    {features['spotifypro'] && (
+    {integrations["spotify"].active && isAuthenticated && (
       <SpotifyProWidget
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}
@@ -129,6 +131,7 @@ export default function LabelBottomNavigation() {
         botHeight={botHeight}
         setYoutubeEnabled={setYoutubeEnabled}
         setYoutubeExpanded={setYoutubeExpanded}
+        thePlayer={thePlayer}
       />
     )}
     {features['youtube'] && (
