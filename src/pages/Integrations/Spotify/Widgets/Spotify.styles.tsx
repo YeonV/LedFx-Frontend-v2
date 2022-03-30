@@ -37,9 +37,12 @@ export const TinyText = styled(Typography)({
 export const PosSliderStyles = {
   color: '#fff',
   height: 4,
+  '& .MuiSlider-track': {
+    border: 'none',
+  },
   '& .MuiSlider-thumb': {
-    width: 8,
-    height: 8,
+    width: 12,
+    height: 12,
     transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
     '&:before': {
       boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
@@ -63,8 +66,8 @@ export const VolSliderStyles = {
     border: 'none',
   },
   '& .MuiSlider-thumb': {
-    width: 24,
-    height: 24,
+    width: 16,
+    height: 16,
     backgroundColor: '#fff',
     '&:before': {
       boxShadow: '0 4px 8px rgba(0,0,0,0.4)',

@@ -11,7 +11,9 @@ import useStore from '../../../utils/apiStore';
 import { ListItemIcon, MenuItem } from '@material-ui/core';
 import { Settings } from '@material-ui/icons';
 import { useEditVirtualsStyles } from '../../Devices/EditVirtuals/EditVirtuals.styles';
-import SpotifyPlayer from './SpotifyPlayer';
+import SpotifyWidgetDev from './Widgets/SpotifyWidgetDev';
+import SpotifyWidgetSmall from './Widgets/SpotifyWidgetSmall';
+import SpotifyWidgetLarge from './Widgets/SpotifyWidgetLarge';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -86,7 +88,12 @@ export default function Spotify({
             </Typography>
           </Toolbar>
         </AppBar>
-        <SpotifyPlayer thePlayer={thePlayer} />
+
+        <SpotifyWidgetLarge thePlayer={thePlayer} />
+            <div style={{marginTop: '2rem'}} />
+        <SpotifyWidgetSmall thePlayer={thePlayer} />
+            <div style={{marginTop: '2rem'}} />
+        <SpotifyWidgetDev thePlayer={thePlayer} />        
       </Dialog>
     </>
   ) ;
