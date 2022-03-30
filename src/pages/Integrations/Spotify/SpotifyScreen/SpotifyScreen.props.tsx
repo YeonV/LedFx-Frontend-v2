@@ -1,5 +1,7 @@
-import { Settings } from '@mui/icons-material';
 import React from 'react';
+import { Settings } from '@mui/icons-material';
+import { TransitionProps } from '@material-ui/core/transitions';
+import { MenuItem, Slide } from '@material-ui/core';
 
 export interface SpotifyScreenProps {
   icon: React.ReactElement;
@@ -28,3 +30,20 @@ export const SpotifyScreenDefaultProps = {
   size: 'small',
   thePlayer: undefined,
 };
+
+export const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+Transition.defaultProps = {
+  children: <div>loading</div>,
+};
+
+export const MuiMenuItem = React.forwardRef(
+  (props: any, ref: React.Ref<unknown>) => {
+    return <MenuItem ref={ref} {...props} />;
+  }
+);

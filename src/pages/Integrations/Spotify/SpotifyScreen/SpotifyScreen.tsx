@@ -1,38 +1,24 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-
-import { ListItemIcon, MenuItem } from '@material-ui/core';
-import { Settings } from '@material-ui/icons';
-import { TransitionProps } from '@material-ui/core/transitions';
+import {
+  ListItemIcon,
+  Typography,
+  Toolbar,
+  AppBar,
+  Dialog,
+  Button,
+} from '@material-ui/core';
+import { Settings, NavigateBefore } from '@material-ui/icons';
+import {
+  MuiMenuItem,
+  SpotifyScreenDefaultProps,
+  SpotifyScreenProps,
+  Transition,
+} from './SpotifyScreen.props';
 import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
+
 import SpotifyWidgetDev from '../Widgets/SpotifyWidgetDev';
 import SpotifyWidgetSmall from '../Widgets/SpotifyWidgetSmall';
 import SpotifyWidgetLarge from '../Widgets/SpotifyWidgetLarge';
-import {
-  SpotifyScreenDefaultProps,
-  SpotifyScreenProps,
-} from './SpotifyScreen.props';
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-Transition.defaultProps = {
-  children: <div>loading</div>,
-};
-
-const MuiMenuItem = React.forwardRef((props: any, ref: React.Ref<unknown>) => {
-  return <MenuItem ref={ref} {...props} />;
-});
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -100,7 +86,7 @@ export default function SpotifyScreen({
               autoFocus
               color="primary"
               variant="contained"
-              startIcon={<NavigateBeforeIcon />}
+              startIcon={<NavigateBefore />}
               onClick={handleClose}
               style={{ marginRight: '1rem' }}
             >
