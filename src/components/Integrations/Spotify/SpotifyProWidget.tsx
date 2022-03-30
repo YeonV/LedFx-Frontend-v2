@@ -25,6 +25,7 @@ const SpotifyProWidget = ({
   const { spotifyAuthToken }: any = useStore((state) => state);
   const { setSpotifyData }: any = useStore((state) => state);
   const { setSpotifyDevice }: any = useStore((state) => state);
+  const { spotifyVol, setSpotifyVol }: any = useStore((state) => state);
 
   useEffect(() => {
     const createWebPlayer = async (token: string) => {
@@ -64,12 +65,15 @@ const SpotifyProWidget = ({
           (thePlayer.current as any).addListener(
             'player_state_changed',
             (state: any) => {
-              // console.log(state);
+              console.log(state);
               if (state !== null) {
-                if (state.position < 5 || state.position > 500) {
-                  // this.props.updatePlayerState(state);
-                  setSpotifyData('playerState', state);
-                }
+                // if (state.position < 5 || state.position > 500) {
+                // this.props.updatePlayerState(state);
+                setSpotifyData('playerState', state);
+                thePlayer.current
+                  .getVolume()
+                  .then((v: any) => v !== spotifyVol && setSpotifyVol(v));
+                // }
               } else {
                 // this.props.updatePlayerState({});
                 setSpotifyData('playerState', {});
