@@ -58,3 +58,12 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+.showTablet {
+  display: none;
+}
+@media screen and (max-width: 960px) {
+  .showTablet {
+    display: block;
+  }
+}

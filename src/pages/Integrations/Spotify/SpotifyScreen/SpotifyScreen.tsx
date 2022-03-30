@@ -16,9 +16,9 @@ import {
 } from './SpotifyScreen.props';
 import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
 
-import SpotifyWidgetDev from '../Widgets/SpotifyWidgetDev';
-import SpotifyWidgetSmall from '../Widgets/SpotifyWidgetSmall';
-import SpotifyWidgetLarge from '../Widgets/SpotifyWidgetLarge';
+// import SpotifyWidgetDev from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetDev';
+// import SpotifyWidgetSmall from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetSmall';
+import SpotifyWidgetLarge from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetLarge';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -100,9 +100,9 @@ export default function SpotifyScreen({
 
         <SpotifyWidgetLarge thePlayer={thePlayer} />
         <div style={{ marginTop: '2rem' }} />
-        <SpotifyWidgetSmall thePlayer={thePlayer} />
+        {/* <SpotifyWidgetSmall thePlayer={thePlayer} />
         <div style={{ marginTop: '2rem' }} />
-        <SpotifyWidgetDev thePlayer={thePlayer} />
+        <SpotifyWidgetDev thePlayer={thePlayer} /> */}
       </Dialog>
     </>
   );

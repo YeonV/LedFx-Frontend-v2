@@ -1,17 +1,75 @@
 /* eslint-disable no-unused-vars */
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 
-export const Widget = styled('div')(() => ({
-  padding: 16,
-  borderRadius: 16,
-  width: 343,
-  maxWidth: '100%',
-  margin: 'auto',
-  position: 'relative',
-  zIndex: 1,
-  backgroundColor: 'rgba(0,0,0,0.6)',
-  backdropFilter: 'blur(40px)',
+const useStyles = makeStyles(() => ({
+  spotifyWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    '@media (max-width: 720px)': {
+      '&&': {
+        flexDirection: 'column',
+      },
+    },
+  },
+  spotifyDesktopVolStyles: {
+    '@media (max-width: 960px)': {
+      '&&': {
+        display: 'none',
+      },
+    },
+  },
+  spotifyControlStyles: {
+    '@media (max-width: 960px)': {
+      '&&': {
+        width: '50%',
+      },
+    },
+    '@media (max-width: 720px)': {
+      '&&': {
+        width: '100%',
+      },
+    },
+  },
+  spotifyTrackStyles: {
+    '@media (max-width: 960px)': {
+      '&&': {
+        width: '50%',
+      },
+    },
+    '@media (max-width: 720px)': {
+      '&&': {
+        width: '100%',
+      },
+    },
+  },
+  Widget: {
+    padding: 16,
+    borderRadius: 16,
+    width: '100%',
+    maxWidth: '100%',
+    margin: 'auto',
+    position: 'relative',
+    zIndex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    backdropFilter: 'blur(40px)',
+    '@media (max-width: 720px)': {
+      '&&': {
+        width: 400,
+      },
+    },
+  },
+  albumImg: {
+    '@media (max-width: 720px)': {
+      '&&': {
+        height: 80,
+        width: 80,
+        margin: 10,
+      },
+    },
+  },
 }));
 
 export const CoverImage = styled('div')({
@@ -77,3 +135,5 @@ export const VolSliderStyles = {
     },
   },
 };
+
+export default useStyles;

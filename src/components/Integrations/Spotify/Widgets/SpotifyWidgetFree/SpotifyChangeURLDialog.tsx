@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import { Language } from '@material-ui/icons';
 
-export default function ChangeSpotifyURLDialog({
+export default function SpotifyChangeURLDialog({
   style,
   spotifyURL,
   setSpotifyURL,

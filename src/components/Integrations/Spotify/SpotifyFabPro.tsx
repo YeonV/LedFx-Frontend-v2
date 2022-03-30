@@ -4,9 +4,9 @@ import { Fab } from '@material-ui/core';
 import { useEffect } from 'react';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import useStore from '../../../utils/apiStore';
-import { spotifyPlay } from '../../../pages/Integrations/Spotify/proxies';
+import { spotifyPlay } from '../../../utils/spotifyProxies';
 
-const SpotifyProWidget = ({ thePlayer, botHeight }: any) => {
+const SpotifyFabPro = ({ thePlayer, botHeight }: any) => {
   const { spotifyAuthToken }: any = useStore((state: any) => state);
   const { setSpotifyData }: any = useStore((state: any) => state);
   const { setSpotifyDevice }: any = useStore((state: any) => state);
@@ -131,4 +131,4 @@ const SpotifyProWidget = ({ thePlayer, botHeight }: any) => {
   );
 };
 
-export default SpotifyProWidget;
+export default SpotifyFabPro;

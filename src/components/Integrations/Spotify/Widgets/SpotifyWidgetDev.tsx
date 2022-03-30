@@ -17,7 +17,10 @@ import {
 } from '@material-ui/icons';
 import Slider from '@mui/material/Slider';
 import useStore from '../../../../utils/apiStore';
-import { spotifyRepeat, spotifyShuffle } from '../proxies';
+import {
+  spotifyRepeat,
+  spotifyShuffle,
+} from '../../../../utils/spotifyProxies';
 
 const SpotifyWidgetDev = ({ thePlayer }: any) => {
   const spotifyDevice = useStore((state) => (state as any).spotifyDevice);
