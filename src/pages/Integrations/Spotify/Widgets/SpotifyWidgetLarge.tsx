@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -65,6 +64,15 @@ export default function SpotifyWidgetLarge({ thePlayer }: any) {
     setVolu(spotifyVol);
   }, [spotifyVol]);
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setPos(pos + 1000);
+  //   }, 1000);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
+
   return (
     <Box sx={{}}>
       <Widget sx={{ width: '100%' }}>
@@ -84,7 +92,7 @@ export default function SpotifyWidgetLarge({ thePlayer }: any) {
             }}
           >
             <CoverImage>
-              <img alt="can't win - Chilling Sunday" src={image} />
+              <img alt="album_image" src={image} />
             </CoverImage>
             <Box sx={{ ml: 1.5, minWidth: 0 }}>
               {album}
@@ -160,7 +168,7 @@ export default function SpotifyWidgetLarge({ thePlayer }: any) {
                 justifyContent: 'space-between',
               }}
             >
-              <TinyText>{formatTime(position)}</TinyText>
+              <TinyText>{formatTime(pos)}</TinyText>
               <Slider
                 aria-label="time-indicator"
                 size="small"

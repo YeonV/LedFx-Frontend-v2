@@ -1,0 +1,30 @@
+import { Settings } from '@mui/icons-material';
+import React from 'react';
+
+export interface SpotifyScreenProps {
+  icon: React.ReactElement;
+  startIcon: React.ReactElement;
+  label: string;
+  type: string;
+  className: string;
+  color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  variant: 'outlined' | 'text' | 'contained' | undefined;
+  innerKey: string;
+  disabled: boolean;
+  size: 'small' | 'medium' | 'large' | undefined;
+  thePlayer: any;
+}
+
+export const SpotifyScreenDefaultProps = {
+  icon: <Settings />,
+  startIcon: undefined,
+  label: '',
+  type: 'button',
+  className: undefined,
+  color: 'default',
+  variant: 'contained',
+  innerKey: undefined,
+  disabled: false,
+  size: 'small',
+  thePlayer: undefined,
+};

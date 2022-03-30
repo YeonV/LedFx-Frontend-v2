@@ -14,7 +14,7 @@ import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 import SpotifyProWidget from '../Integrations/Spotify/SpotifyProWidget';
 
-export default function LabelBottomNavigation({thePlayer}) {
+export default function BarBottom({thePlayer}) {
   const classes = useStyles();
   const { pathname } = useLocation();
   const [value, setValue] = useState(pathname);
