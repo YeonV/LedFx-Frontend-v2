@@ -228,6 +228,10 @@ const useStore = create(
       setSpotifyAuthToken: (token) => {
         set((state) => ({ spotifyAuthToken: token }))
       },
+      spotifyVol:'',
+      setSpotifyVol: (vol) => {
+        set((state) => ({ spotifyVol: vol }))
+      },
       isAuthenticated:false,
       setIsAuthenticated: (val) => {
         set((state) => ({ isAuthenticated: val }))

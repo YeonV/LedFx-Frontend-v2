@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
 import SpotifyView from '../Spotify/SpotifyAuth';
+import Spotify from '../Spotify/Spotify';
 
 const IntegrationCardSpotify = ({ integration, thePlayer }) => {
   const classes = useIntegrationCardStyles();
@@ -114,16 +115,24 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
             >
               <EditIcon />
             </Button>
-            <Button
+            {/* <Button
               variant={variant}
               size="small"
               color={color}
               className={classes.editButton}
-              onClick={() => console.log('coming soon...')}
               disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              onClick={() => console.log('coming soon...')}
             >
               <AddIcon />
-            </Button>
+            </Button> */}
+            <Spotify 
+              icon={<AddIcon />} 
+              variant={variant}
+              color={color}
+              className={classes.editButton}
+              disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              thePlayer={thePlayer}
+            />
           </div>
         </div>
 

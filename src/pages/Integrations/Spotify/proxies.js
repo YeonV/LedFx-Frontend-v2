@@ -149,19 +149,46 @@ export async function spotifyPlay(deviceId) {
         return 'Error';
     }
 }
-// export async function spotifyPlay(deviceId) {
-//     const cookies = new Cookies();
-//     const res = await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {},{
-//         headers: {
-//             Authorization: `Bearer ${cookies.get('access_token')}`
-//         },
-//     });
-//     if (res.status === 200) {
-//         return 'Success';
-//     } else {
-//         return 'Error';
-//     }
-// }
+
+export async function spotifyPlayOnly(deviceId) {
+    const cookies = new Cookies();
+    const res = await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {},{
+        headers: {
+            Authorization: `Bearer ${cookies.get('access_token')}`
+        },
+    });
+    if (res.status === 200) {
+        return 'Success';
+    } else {
+        return 'Error';
+    }
+}
+export async function spotifyRepeat(deviceId, mode) {
+    const cookies = new Cookies();
+    const res = await axios.put(`https://api.spotify.com/v1/me/player/repeat?state=${mode === 0 ? 'context' : mode === 1 ? 'track' : 'off'}&device_id=${deviceId}`, {},{
+        headers: {
+            Authorization: `Bearer ${cookies.get('access_token')}`
+        },
+    });
+    if (res.status === 200) {
+        return 'Success';
+    } else {
+        return 'Error';
+    }
+}
+export async function spotifyShuffle(deviceId, state) {
+    const cookies = new Cookies();
+    const res = await axios.put(`https://api.spotify.com/v1/me/player/shuffle?state=${JSON.stringify(state)}&device_id=${deviceId}`, {},{
+        headers: {
+            Authorization: `Bearer ${cookies.get('access_token')}`
+        },
+    });
+    if (res.status === 200) {
+        return 'Success';
+    } else {
+        return 'Error';
+    }
+}
 
 export async function addTrigger(trigger) {
     const res = await axios.post(`${storedURL || baseURL}/api/integrations/spotify/spotify`, trigger);
