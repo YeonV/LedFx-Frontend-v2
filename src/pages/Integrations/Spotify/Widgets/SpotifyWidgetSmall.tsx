@@ -21,7 +21,7 @@ import {
 } from './Spotify.styles';
 import { formatTime } from '../../../../utils/utils';
 
-export default function SpotifyMusic({ thePlayer }: any) {
+export default function SpotifyWidgetSmall({ thePlayer }: any) {
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
