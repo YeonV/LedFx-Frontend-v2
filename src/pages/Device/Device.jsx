@@ -7,7 +7,7 @@ import PresetsCard from './Presets';
 import TransitionCard from './Transition';
 import MelbankCard from './Frequencies';
 import StreamToCard from './StreamTo';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   virtualWrapper: {
@@ -16,13 +16,9 @@ const useStyles = makeStyles((theme) => ({
   girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px', width: '100%' },
 }));
 
-const Device = ({
-  match: {
-    params: { virtId },
-  },
-}) => {
+const Device = () => {
   const classes = useStyles();
-
+  const { virtId } = useParams()
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getPresets = useStore((state) => state.getPresets);
   const getSchemas = useStore((state) => state.getSchemas);

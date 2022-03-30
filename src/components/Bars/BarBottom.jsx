@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BottomNavigation, BottomNavigationAction, Backdrop } from '@material-ui/core';
 import { Settings, Home, Wallpaper, SettingsInputSvideo, SettingsInputComponent } from '@material-ui/icons';
 import { useLocation, Link } from 'react-router-dom';
@@ -12,19 +12,22 @@ import SpotifyWidget from '../Integrations/Spotify/SpotifyWidget';
 import AddButton from '../AddButton';
 import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
+import SpotifyProWidget from '../Integrations/Spotify/SpotifyProWidget';
 
-export default function LabelBottomNavigation() {
+export default function LabelBottomNavigation({thePlayer}) {
   const classes = useStyles();
   const { pathname } = useLocation();
   const [value, setValue] = useState(pathname);
   const [backdrop, setBackdrop] = useState(false);
   const leftOpen = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open);
   const features = useStore((state) => state.features);
+  const integrations = useStore((state) => state.integrations);
 
   const [spotifyEnabled, setSpotifyEnabled] = useState(false)
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
   const spotifyURL = useStore((state) => state.spotifyEmbedUrl);
   const setSpotifyURL = useStore((state) => state.setSpotifyEmbedUrl);
+  const setSpotifyAuthURL = useStore((state) => state.setSpotifyAuthUrl);
 
   const [youtubeEnabled, setYoutubeEnabled] = useState(false)
   const [youtubeExpanded, setYoutubeExpanded] = useState(false)
@@ -32,7 +35,8 @@ export default function LabelBottomNavigation() {
   const setYoutubeURL = useStore((state) => state.setYoutubeURL);
 
   const [botHeight, setBotHeight] = useState(0)
-
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  
   useEffect(() => {
     let height = 0
     if (spotifyEnabled) {
@@ -109,9 +113,25 @@ export default function LabelBottomNavigation() {
         setSpotifyExpanded={setSpotifyExpanded}
         spotifyURL={spotifyURL}
         setSpotifyURL={setSpotifyURL}
+        setSpotifyAuthURL={setSpotifyAuthURL}
         botHeight={botHeight}
         setYoutubeEnabled={setYoutubeEnabled}
         setYoutubeExpanded={setYoutubeExpanded}
+      />
+    )}
+    {integrations["spotify"].active && isAuthenticated && (
+      <SpotifyProWidget
+        spotifyEnabled={spotifyEnabled}
+        setSpotifyEnabled={setSpotifyEnabled}
+        spotifyExpanded={spotifyExpanded}
+        setSpotifyExpanded={setSpotifyExpanded}
+        spotifyURL={spotifyURL}
+        setSpotifyURL={setSpotifyURL}
+        setSpotifyAuthURL={setSpotifyAuthURL}
+        botHeight={botHeight}
+        setYoutubeEnabled={setYoutubeEnabled}
+        setYoutubeExpanded={setYoutubeExpanded}
+        thePlayer={thePlayer}
       />
     )}
     {features['youtube'] && (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
@@ -12,23 +12,20 @@ import IconButton from '@material-ui/core/IconButton';
 import {
   CardActions,
   CardHeader,
-  Typography,
   Switch,
-  Link,
-  CardContent,
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
-//import SpotifyView from '../Spotify/SpotifyAuth';
+import SpotifyView from '../Spotify/SpotifyAuth';
+import Spotify from '../Spotify/Spotify';
 
-const IntegrationCardSpotify = ({ integration }) => {
+const IntegrationCardSpotify = ({ integration, thePlayer }) => {
   const classes = useIntegrationCardStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const setDialogOpenAddIntegration = useStore(
-    (state) => state.setDialogOpenAddIntegration
-  );
+  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
 
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
@@ -52,39 +49,44 @@ const IntegrationCardSpotify = ({ integration }) => {
       id: integration.id,
     }).then(() => getIntegrations());
   };
-
+ 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={integrations[integration].status === 3
-            ? 'Connecting...'
-            : integrations[integration].status === 2
-            ? 'Disconnecting'
-            : integrations[integration].status === 1
-            ? 'Connected'
-            : integrations[integration].status === 0
-            ? 'Disconnected'
-            : 'Unknown'
-        }
+        subheader={integrations[integration].config.description}
+        // subheader={integrations[integration].status === 3
+        //     ? 'Connecting...'
+        //     : integrations[integration].status === 2
+        //     ? 'Disconnecting'
+        //     : integrations[integration].status === 1
+        //     ? 'Connected'
+        //     : integrations[integration].status === 0
+        //     ? 'Disconnected'
+        //     : 'Unknown'
+        // }
         action={
           <Switch
             aria-label="status"
             checked={integrations[integration].active}
-            onClick={() => handleActivateIntegration(integrations[integration])}
+            onClick={async() => {
+              if (window.Spotify && thePlayer.current && isAuthenticated) {
+                if (!integrations[integration].active) {
+                  await thePlayer.current.connect()
+                } else {
+                  await thePlayer.current.disconnect()
+                }
+              }              
+              return handleActivateIntegration(integrations[integration])
+            }}
           />
         }
       />
      
-      <Typography>{integrations[integration].config.description}</Typography>
-     
-      {/* <CardContent>
-        {integrations[integration].active
-          ? '<SpotifyView />'
-          : ''}
-      </CardContent> */}
+      {/* <Typography>{integrations[integration].config.description}</Typography> */}
+
       <CardActions style={{ alignSelf: 'flex-end' }}>
-        <div className={classes.integrationCardContainer}>
+        <div className={classes.integrationCardContainer}>        
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
@@ -96,6 +98,7 @@ const IntegrationCardSpotify = ({ integration }) => {
             <ExpandMoreIcon />
           </IconButton>
           <div className={classes.buttonBar}>
+            <SpotifyView thePlayer={thePlayer} disabled={!integrations[integration].active} />
             <Popover
               variant={variant}
               color={color}
@@ -112,16 +115,24 @@ const IntegrationCardSpotify = ({ integration }) => {
             >
               <EditIcon />
             </Button>
-            <Button
+            {/* <Button
               variant={variant}
               size="small"
               color={color}
               className={classes.editButton}
+              disabled={integrations[integration].status !== 1 || !isAuthenticated}
               onClick={() => console.log('coming soon...')}
-              disabled={integrations[integration].status !== 1}
             >
               <AddIcon />
-            </Button>
+            </Button> */}
+            <Spotify 
+              icon={<AddIcon />} 
+              variant={variant}
+              color={color}
+              className={classes.editButton}
+              disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              thePlayer={thePlayer}
+            />
           </div>
         </div>
 
@@ -132,6 +143,7 @@ const IntegrationCardSpotify = ({ integration }) => {
           className={classes.buttonBarMobile}
         >
           <div className={classes.buttonBarMobileWrapper}>
+          {integrations[integration].active && <SpotifyView thePlayer={thePlayer} />}
             <Popover
               variant={variant}
               color={color}
