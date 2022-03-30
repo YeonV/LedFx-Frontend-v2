@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,24 +6,35 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import useStore from '../../../utils/apiStore';
 
 import { ListItemIcon, MenuItem } from '@material-ui/core';
 import { Settings } from '@material-ui/icons';
-import { useEditVirtualsStyles } from '../../Devices/EditVirtuals/EditVirtuals.styles';
-import SpotifyWidgetDev from './Widgets/SpotifyWidgetDev';
-import SpotifyWidgetSmall from './Widgets/SpotifyWidgetSmall';
-import SpotifyWidgetLarge from './Widgets/SpotifyWidgetLarge';
+import { TransitionProps } from '@material-ui/core/transitions';
+import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
+import SpotifyWidgetDev from '../Widgets/SpotifyWidgetDev';
+import SpotifyWidgetSmall from '../Widgets/SpotifyWidgetSmall';
+import SpotifyWidgetLarge from '../Widgets/SpotifyWidgetLarge';
+import {
+  SpotifyScreenDefaultProps,
+  SpotifyScreenProps,
+} from './SpotifyScreen.props';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>
+) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const MuiMenuItem = React.forwardRef((props, ref) => {
-  return <MenuItem  ref={ref} {...props} />;
+Transition.defaultProps = {
+  children: <div>loading</div>,
+};
+
+const MuiMenuItem = React.forwardRef((props: any, ref: React.Ref<unknown>) => {
+  return <MenuItem ref={ref} {...props} />;
 });
 
-export default function Spotify({
+export default function SpotifyScreen({
   icon = <Settings />,
   startIcon,
   label = '',
@@ -31,13 +42,12 @@ export default function Spotify({
   className,
   color = 'default',
   variant = 'contained',
-  onClick = () => {},
   innerKey,
   disabled = false,
-  size = "small",
-  thePlayer
-}) {
-  const classes = useEditVirtualsStyles();  
+  size = 'small',
+  thePlayer,
+}: SpotifyScreenProps) {
+  const classes = useEditVirtualsStyles();
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -50,18 +60,26 @@ export default function Spotify({
 
   return (
     <>
-      {type === 'menuItem'
-        ? <MuiMenuItem key={innerKey} className={className} onClick={(e) => { e.preventDefault(); onClick(e); handleClickOpen(e)}}>
-          <ListItemIcon>
-            {icon}
-          </ListItemIcon>
+      {type === 'menuItem' ? (
+        <MuiMenuItem
+          key={innerKey}
+          className={className}
+          onClick={(e: any) => {
+            e.preventDefault();
+            handleClickOpen();
+          }}
+        >
+          <ListItemIcon>{icon}</ListItemIcon>
           {label}
         </MuiMenuItem>
-        : <Button
+      ) : (
+        <Button
           variant={variant}
           startIcon={startIcon}
           color={color}
-          onClick={(e)=>{onClick(e); handleClickOpen(e);}}
+          onClick={() => {
+            handleClickOpen();
+          }}
           size={size}
           disabled={disabled}
           className={className}
@@ -69,8 +87,13 @@ export default function Spotify({
           {label}
           {!startIcon && icon}
         </Button>
-      }
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      )}
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Button
@@ -90,11 +113,13 @@ export default function Spotify({
         </AppBar>
 
         <SpotifyWidgetLarge thePlayer={thePlayer} />
-            <div style={{marginTop: '2rem'}} />
+        <div style={{ marginTop: '2rem' }} />
         <SpotifyWidgetSmall thePlayer={thePlayer} />
-            <div style={{marginTop: '2rem'}} />
-        <SpotifyWidgetDev thePlayer={thePlayer} />        
+        <div style={{ marginTop: '2rem' }} />
+        <SpotifyWidgetDev thePlayer={thePlayer} />
       </Dialog>
     </>
-  ) ;
+  );
 }
+
+SpotifyScreen.defaultProps = SpotifyScreenDefaultProps;

@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
 import SpotifyView from '../Spotify/SpotifyAuth';
-import Spotify from '../Spotify/Spotify';
+import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen';
 
 const IntegrationCardSpotify = ({ integration, thePlayer }) => {
   const classes = useIntegrationCardStyles();
@@ -125,7 +125,7 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
             >
               <AddIcon />
             </Button> */}
-            <Spotify 
+            <SpotifyScreen 
               icon={<AddIcon />} 
               variant={variant}
               color={color}
