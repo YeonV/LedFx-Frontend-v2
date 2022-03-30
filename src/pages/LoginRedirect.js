@@ -13,7 +13,7 @@ const LoginRedirect = (props) => {
   const location = useLocation();
   const params = useParams();
   const history = useNavigate();
-  // console.log(params, props, location)
+  //console.log("OMG", params, props, location)
   useEffect(() => {
     // Successfully logged with the provider
     // Now logging with strapi by using the access_token (given by the provider) in props.location.search
@@ -42,7 +42,7 @@ const LoginRedirect = (props) => {
         localStorage.setItem('ledfx-cloud-userid', user.id);
         localStorage.setItem('ledfx-cloud-role', user.role.type);
         setText(`You have been successfully logged in as ${localStorage.getItem('username')}. You will be redirected in a few seconds...`);
-        setTimeout(() => history('/devices'), 2000); // Redirect to homepage after 3 sec
+        setTimeout(() => history.push('/devices'), 2000); // Redirect to homepage after 3 sec
       })
       .catch(err => {
         console.log(err);

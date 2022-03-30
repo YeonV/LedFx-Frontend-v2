@@ -271,7 +271,7 @@ const TopBar = () => {
               <ListItemIcon>
                 {isLogged ? <Logout /> : <Login />}
               </ListItemIcon>
-              {isLogged ? 'Logout' : 'Login with Gihub'}
+              {isLogged ? 'Logout' : 'Login with Github'}
             </MenuItem>}
         </Menu>
       </Toolbar>

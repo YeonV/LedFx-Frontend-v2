@@ -23,6 +23,7 @@ const useStore = create(
         wled: false,
         integrations: false,
         spotify: false,
+        spotifypro: false,
         youtube: false,
         webaudio: false,
         waves: false,
@@ -44,6 +45,7 @@ const useStore = create(
         wled: false,
         integrations: false,
         spotify: false,
+        spotifypro: false,
         youtube: false,
         webaudio: false,
         waves: false,
@@ -221,6 +223,26 @@ const useStore = create(
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
       setSpotifyEmbedUrl: (url) => {
         set((state) => ({ spotifyEmbedUrl: url }))
+      },
+      spotifyAuthToken:'',
+      setSpotifyAuthToken: (token) => {
+        set((state) => ({ spotifyAuthToken: token }))
+      },
+      spotifyVol:'',
+      setSpotifyVol: (vol) => {
+        set((state) => ({ spotifyVol: vol }))
+      },
+      isAuthenticated:false,
+      setIsAuthenticated: (val) => {
+        set((state) => ({ isAuthenticated: val }))
+      },      
+      spotifyData:{},
+      setSpotifyData: (type,data) => {
+        set((state) => ({spotifyData:{...state.spotifyData,[type]:data}}))
+      },
+      spotifyDevice:{},
+      setSpotifyDevice: (id) => {
+        set((state) => ({spotifyDevice:id}))
       },
       youtubeURL: 'https://www.youtube.com/watch?v=s6Yyb3N9IuA&list=PLD579BDF7F8D8BFE0',
       setYoutubeURL: (url) => {

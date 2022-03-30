@@ -1,7 +1,8 @@
-import { useEffect, useState, createRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { Switch } from 'react-router';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
 import useStore from './utils/apiStore';
@@ -51,6 +52,7 @@ import { Close } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
 import './AddToHomescreen.css';
+import { SpotifyLoginRedirect } from './pages/Integrations/Spotify/SpotifyAuth'
 
 export default function App() {
   const classes = useStyles();
@@ -72,6 +74,8 @@ export default function App() {
   useHotkeys('ctrl+alt+y', () => setOpen(!open));
 
   const { height, width } = useWindowDimensions();
+
+  const thePlayer = useRef();
 
   let newBase = !!window.localStorage.getItem('ledfx-newbase');
 
@@ -164,6 +168,37 @@ export default function App() {
     };
   }, []);
 
+  const HashRouter = () => <Router basename={process.env.PUBLIC_URL}>
+  <ScrollToTop />
+  <HandleWs />
+  <MessageBar />
+  <TopBar />
+  <LeftBar />
+  <main
+    className={clsx(classes.content, {
+      [classes.contentShift]: leftBarOpen,
+    })}
+  >
+    <div className={classes.drawerHeader} />
+    <Routes>
+      <Route
+        exact
+        path="/connect/:providerName/redirect"
+        element={<LoginRedirect />}
+      />
+      <Route exact path="/" element={<Home />} />
+      <Route path="/devices" element={<Devices />} />
+      <Route path="/device/:virtId" element={<Device />} />
+      <Route path="/scenes" element={<Scenes />} />
+      <Route path="/integrations" element={<Integrations thePlayer={thePlayer} />} />
+      <Route path="/settings" element={<Settings />} />
+    </Routes>
+    <NoHostDialog />
+    <SmartBar open={open} setOpen={setOpen} />
+  </main>
+  <BottomBar thePlayer={thePlayer} />
+</Router>
+
   return (
     <ThemeProvider theme={BladeDarkGreyTheme5}>
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'DarkRed']}>
@@ -175,36 +210,27 @@ export default function App() {
                 style={{ paddingTop: isElectron() ? '30px' : 0 }}
               >
                 <CssBaseline />
-                <Router basename={process.env.PUBLIC_URL}>
-                  <ScrollToTop />
-                  <HandleWs />
-                  <MessageBar />
-                  <TopBar />
-                  <LeftBar />
-                  <main
-                    className={clsx(classes.content, {
-                      [classes.contentShift]: leftBarOpen,
-                    })}
-                  >
-                    <div className={classes.drawerHeader} />
-                    <Routes>
-                      <Route
-                        exact
-                        path="/connect/:providerName/redirect"
-                        element={<LoginRedirect />}
-                      />
-                      <Route exact path="/" element={<Home />} />
-                      <Route path="/devices" element={<Devices />} />
-                      <Route path="/device/:virtId" element={<Device />} />
-                      <Route path="/scenes" element={<Scenes />} />
-                      <Route path="/integrations" element={<Integrations />} />
-                      <Route path="/settings" element={<Settings />} />
-                    </Routes>
-                    <NoHostDialog />
-                    <SmartBar open={open} setOpen={setOpen} />
-                  </main>
-                  <BottomBar />
-                </Router>
+                <HashRouter />
+                <BrowserRouter>
+                <Routes>
+                  <Route
+                    exact
+                    path="/callback"
+                    element={<SpotifyLoginRedirect />}
+                  />
+                  <Route
+                    exact
+                    from="/"
+                    to="/#"
+                  />
+                  <Route
+                    path="*"
+                    element={<></>}
+                  />
+                </Routes>
+                </BrowserRouter>
+                
+                
                 {features['waves'] && (
                   <WaveLines
                     startColor={
@@ -254,7 +280,7 @@ export default function App() {
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
                   </main>
-                  <BottomBar />
+                  <BottomBar thePlayer={thePlayer} />
                 </Router>
                 {features['waves'] && (
                   <WaveLines
