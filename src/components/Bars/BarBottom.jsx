@@ -8,11 +8,11 @@ import AddSceneDialog from '../Dialogs/AddSceneDialog';
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog';
 import AddVirtualDialog from '../Dialogs/AddVirtualDialog';
 import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog';
-import SpotifyWidget from '../Integrations/Spotify/SpotifyWidget';
+import SpotifyFabFree from '../Integrations/Spotify/SpotifyFabFree';
 import AddButton from '../AddButton';
 import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
-import SpotifyProWidget from '../Integrations/Spotify/SpotifyProWidget';
+import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
 
 export default function BarBottom({thePlayer}) {
   const classes = useStyles();
@@ -106,7 +106,7 @@ export default function BarBottom({thePlayer}) {
         />)}
     </BottomNavigation>
     {features['spotify'] && (
-      <SpotifyWidget
+      <SpotifyFabFree
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}
         spotifyExpanded={spotifyExpanded}
@@ -120,7 +120,7 @@ export default function BarBottom({thePlayer}) {
       />
     )}
     {integrations["spotify"].active && isAuthenticated && (
-      <SpotifyProWidget
+      <SpotifyFabPro
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}
         spotifyExpanded={spotifyExpanded}

@@ -52,7 +52,8 @@ import { Close } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
 import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
 import './AddToHomescreen.css';
-import { SpotifyLoginRedirect } from './pages/Integrations/Spotify/SpotifyAuth'
+import SpotifyLoginRedirect from './pages/Integrations/Spotify/SpotifyLoginRedirect';
+
 
 export default function App() {
   const classes = useStyles();

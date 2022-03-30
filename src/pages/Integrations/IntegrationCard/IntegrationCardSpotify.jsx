@@ -15,7 +15,7 @@ import {
   Switch,
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
-import SpotifyView from '../Spotify/SpotifyAuth';
+import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyAuthButton';
 import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen';
 
 const IntegrationCardSpotify = ({ integration, thePlayer }) => {
@@ -98,7 +98,7 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
             <ExpandMoreIcon />
           </IconButton>
           <div className={classes.buttonBar}>
-            <SpotifyView thePlayer={thePlayer} disabled={!integrations[integration].active} />
+            <SpotifyAuthButton thePlayer={thePlayer} disabled={!integrations[integration].active} />
             <Popover
               variant={variant}
               color={color}
@@ -143,7 +143,7 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
           className={classes.buttonBarMobile}
         >
           <div className={classes.buttonBarMobileWrapper}>
-          {integrations[integration].active && <SpotifyView thePlayer={thePlayer} />}
+          {integrations[integration].active && <SpotifyAuthButton thePlayer={thePlayer} />}
             <Popover
               variant={variant}
               color={color}
@@ -159,6 +159,14 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
             >
               <EditIcon />
             </Button>
+            <SpotifyScreen 
+              icon={<AddIcon />} 
+              variant={variant}
+              color={color}
+              className={classes.editButton}
+              disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              thePlayer={thePlayer}
+            />
           </div>
         </Collapse>
       </CardActions>

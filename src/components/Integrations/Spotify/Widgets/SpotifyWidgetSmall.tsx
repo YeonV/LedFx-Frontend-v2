@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
@@ -13,7 +13,6 @@ import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
 import useStore from '../../../../utils/apiStore';
 import {
-  Widget,
   CoverImage,
   TinyText,
   VolSliderStyles,
@@ -26,13 +25,18 @@ export default function SpotifyWidgetSmall({ thePlayer }: any) {
     (state) => (state as any).spotifyData.playerState
   );
   const { position, duration, paused } = spotifyData;
-  const title = spotifyData.track_window.current_track.name;
-  const image = spotifyData.track_window.current_track.album.images[0].url;
-  const artist = spotifyData.track_window.current_track.artists;
-  const album = spotifyData.track_window.current_track.album.name;
+  const title = spotifyData.track_window?.current_track?.name || 'Not playing';
+  const image =
+    spotifyData.track_window?.current_track?.album.images[0].url ||
+    'https://github.com/LedFx/LedFx/raw/master/icons/discord.png';
+  const artist = spotifyData.track_window?.current_track?.artists || [
+    { name: 'on LedFx' },
+  ];
+  const album = spotifyData.track_window?.current_track?.album.name || '';
   const spotifyVol = useStore((state) => (state as any).spotifyVol);
   const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
   const [pos, setPos] = useState(position || 0);
+  const posi = useRef();
   const [volu, setVolu] = useState(spotifyVol || 0);
   const setVol = (vol: number) =>
     thePlayer.current
@@ -43,6 +47,7 @@ export default function SpotifyWidgetSmall({ thePlayer }: any) {
 
   useEffect(() => {
     setPos(position);
+    posi.current = position;
   }, [position]);
 
   useEffect(() => {
@@ -51,7 +56,8 @@ export default function SpotifyWidgetSmall({ thePlayer }: any) {
 
   return (
     <Box sx={{}}>
-      <Widget>
+      {/* <div className={classes.Widget}> */}
+      <div>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <CoverImage>
             <img alt="can't win - Chilling Sunday" src={image} />
@@ -145,7 +151,7 @@ export default function SpotifyWidgetSmall({ thePlayer }: any) {
             onClick={() => setVol(1)}
           />
         </Stack>
-      </Widget>
+      </div>
     </Box>
   );
 }

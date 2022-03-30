@@ -15,6 +15,39 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
+  "prettier.eslintIntegration": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "npm.packageManager": "yarn",
+  "eslint.packageManager": "yarn",
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleQuote": true,
+  
+  "material-icon-theme.folders.color": "#90a4ae",
+  "material-icon-theme.hidesExplorerArrows": false,
+  "material-icon-theme.folders.theme": "specific",
+  "material-icon-theme.activeIconPack": "react",
+  "workbench.iconTheme": "material-icon-theme",
+  "material-icon-theme.folders.associations": {
+      "Boolean":  "Typescript",
+      "BladeIcon":  "Typescript",
+      "DeviceCard":  "Typescript",
+      "Popover":  "Typescript",
+      "Number":  "Typescript",
+      "String":  "Typescript",
+      "GradientPicker":  "Typescript",
+      "DropDown":  "Typescript",
+      "EffectsSchemaForm":  "Typescript",
+      "SchemaForm":  "Typescript",
+      "SpotifyScreen":  "Typescript",
+      "SpotifyWidgetFree":  "Typescript",
+      "Unsorted":  "Error",
+  },
+  "material-icon-theme.files.associations": {
+      "*.tsx":  "Typescript",
+      "*.interface.tsx":  "Typescript-def",
+  },
   "eslint.validate": [
     "javascript",
     "javascriptreact",
@@ -27,12 +60,4 @@
       "language": "typescriptreact"
     }
   ],
-  "prettier.eslintIntegration": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "npm.packageManager": "yarn",
-  "eslint.packageManager": "yarn",
-  "prettier.jsxSingleQuote": true,
-  "prettier.singleQuote": true
 }
