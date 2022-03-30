@@ -6,6 +6,7 @@ import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import {
+  AddPhotoAlternate,
   Devices,
   QueueMusic,
   Repeat,
@@ -18,6 +19,7 @@ import {
   VolumeUp,
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
+import { MenuItem, Select, TextField, Checkbox } from '@material-ui/core';
 import useStore from '../../../../utils/apiStore';
 import {
   Widget,
@@ -28,21 +30,26 @@ import {
 } from './Spotify.styles';
 import { formatTime } from '../../../../utils/utils';
 import { spotifyRepeat, spotifyShuffle } from '../proxies';
+import Popover from '../../../../components/Popover/Popover';
 
 export default function SpotifyWidgetLarge({ thePlayer }: any) {
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
   const { position, duration, paused, repeat_mode, shuffle } = spotifyData;
-  const title = spotifyData.track_window.current_track.name;
-  const image = spotifyData.track_window?.current_track.album.images[0].url;
-  const artist = spotifyData.track_window?.current_track.artists;
-  const album = spotifyData.track_window?.current_track.album.name;
+  const title = spotifyData.track_window?.current_track?.name || 'loading';
+  const image =
+    spotifyData.track_window?.current_track?.album.images[0].url || 'loading';
+  const artist = spotifyData.track_window?.current_track?.artists || 'loading';
+  const album =
+    spotifyData.track_window?.current_track?.album.name || 'loading';
   const spotifyDevice = useStore((state) => (state as any).spotifyDevice);
+  const scenes = useStore((state) => (state as any).scenes);
   const spotifyVol = useStore((state) => (state as any).spotifyVol);
   const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
   const [pos, setPos] = useState(position || 0);
   const [volu, setVolu] = useState(spotifyVol || 0);
+  const [spotifyScene, setSpotifyScene] = useState(0);
   const setVol = (vol: number) =>
     thePlayer.current
       .setVolume(vol)
@@ -179,21 +186,68 @@ export default function SpotifyWidgetLarge({ thePlayer }: any) {
               direction="row"
               sx={{ width: '80%' }}
               alignItems="center"
+              justifyContent="space-between"
             >
-              <IconButton
-                aria-label="next song"
-                sx={{ marginLeft: '0 !important' }}
-                onClick={() => setVol(0)}
+              <Stack
+                spacing={2}
+                direction="row"
+                sx={{ width: '80%' }}
+                alignItems="center"
               >
-                <QueueMusic htmlColor="rgba(255,255,255,0.4)" />
-              </IconButton>
-              <IconButton
-                aria-label="next song"
-                sx={{ marginLeft: '0 !important' }}
-                onClick={() => setVol(0)}
-              >
-                <Devices htmlColor="rgba(255,255,255,0.4)" />
-              </IconButton>
+                <IconButton
+                  aria-label="next song"
+                  sx={{ marginLeft: '0 !important' }}
+                  onClick={() => setVol(0)}
+                >
+                  <QueueMusic htmlColor="rgba(255,255,255,0.4)" />
+                </IconButton>
+                <IconButton
+                  aria-label="next song"
+                  sx={{ marginLeft: '0 !important' }}
+                  onClick={() => setVol(0)}
+                >
+                  <Devices htmlColor="rgba(255,255,255,0.4)" />
+                </IconButton>
+              </Stack>
+              <Popover
+                style={{ '&&': { marginLeft: 0 } }}
+                content={
+                  <div>
+                    <Box sx={{ minWidth: 220, margin: 0 }}>
+                      <Select
+                        labelId="scenelabel"
+                        id="scene"
+                        value={spotifyScene}
+                        label="Scene"
+                        variant="outlined"
+                        onChange={(_, v: any) => setSpotifyScene(v.props.value)}
+                      >
+                        <MenuItem value={0}>select a scene</MenuItem>
+                        {scenes &&
+                          Object.keys(scenes).length &&
+                          Object.keys(scenes).map((s: any, i: number) => (
+                            <MenuItem key={i} value={scenes[s].name || s}>
+                              {scenes[s].name || s}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                      <Checkbox />
+                      <TextField
+                        style={{ width: 120 }}
+                        variant="outlined"
+                        type="number"
+                      />
+                      <TextField
+                        style={{ width: 120 }}
+                        variant="outlined"
+                        type="number"
+                      />
+                    </Box>
+                  </div>
+                }
+                variant="text"
+                icon={<AddPhotoAlternate htmlColor="rgba(255,255,255,0.4)" />}
+              />
             </Stack>
             <Stack
               spacing={2}
