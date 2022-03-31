@@ -14,10 +14,10 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   const { spotifyVol, setSpotifyVol }: any = useStore((state: any) => state);
   const thePlayer = useStore((state) => (state as any).thePlayer);
   const [floatingWidget, setFloatingWidget] = useState(false);
-
   const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
 
-  const { position, paused } = spotifyData.playerState;
+  const position = spotifyData?.playerState?.position || 0;
+  const paused = spotifyData?.playerState?.paused || false;
   const posi = useRef(position || 0);
 
   useEffect(() => {
