@@ -553,6 +553,36 @@ const useStore = create(
         { data: { id: config } }
       ),
 
+      spotify: {},
+      getSpotify: async () => {
+        const resp = await Ledfx(`/api/integrations/spotify/${SpotifyId}`, set);
+        if (resp && resp.scenes) {
+          set({ scenes: resp.scenes });
+        }
+      },
+      CreateSongTrigger: async (scene_id, song_id, song_name, song_position) => await Ledfx(
+        `/api/integrations/spotify/${SpotifyId}`,
+        set,
+        'POST',
+        {
+          scene_id: scene_id,
+          song_id: song_id,
+          song_name: song_name,
+          song_position: song_position,
+        },
+      ),
+      toggleSpotifyTrigger: async (config) => await Ledfx(
+        `/api/integrations/spotify/${SpotifyId}`,
+        set,
+        'PUT',
+        config,
+      ),
+      deleteSpotifyTrigger: async (config) => await Ledfx(
+        `/api/integrations/spotify/${SpotifyId}`,
+        set,
+        'DELETE',
+      ),
+
       schemas: {},
       getSchemas: async () => {
         const resp = await Ledfx('/api/schema', set);

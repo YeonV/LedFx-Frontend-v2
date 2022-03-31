@@ -60,6 +60,12 @@ export default function SpotifyWidgetLarge({ thePlayer }: any) {
   const scenes = useStore((state) => (state as any).scenes);
   const spotifyVol = useStore((state) => (state as any).spotifyVol);
   const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
+  // const setSpotifyTrigger = useStore(
+  //   (state) => (state as any).CreateSongTrigger
+  // );
+  // const setSpotifyTrigger = useStore((state) => state.CreateSongTrigger);
+  const space = ' - ';
+  const ArtistSong = title + space + artist[0].name;
   const [pos, setPos] = useState(position || 0);
   const posi = useRef(position || 0);
   const [volu, setVolu] = useState(spotifyVol || 0);
@@ -229,7 +235,13 @@ export default function SpotifyWidgetLarge({ thePlayer }: any) {
                         }
                         onConfirm={() =>
                           // eslint-disable-next-line no-console
-                          console.log(spotifyScene, includeTime, posi.current)
+                          // CreateSongTrigger
+                          console.log({
+                            scene_id: spotifyScene,
+                            song_id: spotifyData.track_window?.current_track.id,
+                            song_name: ArtistSong,
+                            song_position: posi.current,
+                          })
                         }
                         content={
                           <div>
