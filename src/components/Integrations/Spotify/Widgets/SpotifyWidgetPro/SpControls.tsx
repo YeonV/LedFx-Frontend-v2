@@ -30,8 +30,11 @@ export default function SpControls({ className }: any) {
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
-  const { duration, paused, repeat_mode, shuffle } = spotifyData;
-  const hijack = spotifyData.track_window?.current_track?.album.name || '';
+  const duration = spotifyData?.duration || 0;
+  const paused = spotifyData?.paused || false;
+  const repeat_mode = spotifyData?.repeat_mode || 0;
+  const shuffle = spotifyData?.shuffle || false;
+  const hijack = spotifyData?.track_window?.current_track?.album.name || '';
 
   const spotifyDevice = useStore((state) => (state as any).spotifyDevice);
   const spotifyVol = useStore((state) => (state as any).spotifyVol);

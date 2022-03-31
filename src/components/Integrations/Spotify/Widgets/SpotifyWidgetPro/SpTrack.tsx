@@ -8,14 +8,14 @@ export default function SpTrack({ className }: any) {
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
-  const title = spotifyData.track_window?.current_track?.name || 'Not playing';
+  const title = spotifyData?.track_window?.current_track?.name || 'Not playing';
   const image =
-    spotifyData.track_window?.current_track?.album.images[0].url ||
+    spotifyData?.track_window?.current_track?.album.images[0].url ||
     'https://github.com/LedFx/LedFx/raw/master/icons/discord.png';
-  const artist = spotifyData.track_window?.current_track?.artists || [
+  const artist = spotifyData?.track_window?.current_track?.artists || [
     { name: 'on LedFx' },
   ];
-  const album = spotifyData.track_window?.current_track?.album.name || '';
+  const album = spotifyData?.track_window?.current_track?.album.name || '';
 
   return (
     <Box className={className}>
