@@ -119,7 +119,7 @@ export default function BarBottom({thePlayer}) {
         setYoutubeExpanded={setYoutubeExpanded}
       />
     )}
-    {integrations["spotify"].active && isAuthenticated && (
+    {integrations["spotify"] && integrations["spotify"].active && isAuthenticated && (
       <SpotifyFabPro
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}
