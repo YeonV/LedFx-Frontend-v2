@@ -232,6 +232,10 @@ const useStore = create(
       setSpotifyVol: (vol) => {
         set((state) => ({ spotifyVol: vol }))
       },
+      spotifyPos: 0,
+      setSpotifyPos: (pos) => {
+        set((state) => ({ spotifyPos: pos }))
+      },
       isAuthenticated:false,
       setIsAuthenticated: (val) => {
         set((state) => ({ isAuthenticated: val }))
