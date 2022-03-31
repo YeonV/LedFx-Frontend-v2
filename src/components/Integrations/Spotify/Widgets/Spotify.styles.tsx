@@ -15,6 +15,12 @@ const useStyles = makeStyles(() => ({
     },
   },
   spotifyDesktopVolStyles: {
+    marginBottom: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    width: '26%',
+    '&&': { marginBottom: 0, alignSelf: 'stretch' },
     '@media (max-width: 960px)': {
       '&&': {
         display: 'none',
@@ -22,6 +28,11 @@ const useStyles = makeStyles(() => ({
     },
   },
   spotifyControlStyles: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'stretch',
+    justifyContent: 'space-between',
+    padding: '7px 0 4px 0',
     '@media (max-width: 960px)': {
       '&&': {
         width: '50%',

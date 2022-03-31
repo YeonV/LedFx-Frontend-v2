@@ -78,6 +78,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "buildwin": "set PUBLIC_URL=/ react-scripts build",
     "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
