@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
-  spotifyWrapper: {
+  spWrapper: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -13,8 +12,13 @@ const useStyles = makeStyles(() => ({
         flexDirection: 'column',
       },
     },
+    '&.small': {
+      '&&': {
+        flexDirection: 'column',
+      },
+    },
   },
-  spotifyDesktopVolStyles: {
+  spDeskVol: {
     marginBottom: 1,
     flexDirection: 'column',
     alignItems: 'flex-end',
@@ -26,8 +30,19 @@ const useStyles = makeStyles(() => ({
         display: 'none',
       },
     },
+    '&.medium': {
+      '&&': {
+        display: 'none',
+      },
+    },
+    '&&.small': {
+      width: '100%',
+      maxWidth: 400,
+      margin: '0 auto',
+      alignItems: 'center',
+    },
   },
-  spotifyControlStyles: {
+  SpControlstyles: {
     display: 'flex',
     flexDirection: 'column',
     alignSelf: 'stretch',
@@ -38,14 +53,7 @@ const useStyles = makeStyles(() => ({
         width: '50%',
       },
     },
-    '@media (max-width: 720px)': {
-      '&&': {
-        width: '100%',
-      },
-    },
-  },
-  spotifyTrackStyles: {
-    '@media (max-width: 960px)': {
+    '&.medium': {
       '&&': {
         width: '50%',
       },
@@ -54,6 +62,35 @@ const useStyles = makeStyles(() => ({
       '&&': {
         width: '100%',
       },
+    },
+    '&&.small': {
+      width: '100%',
+      maxWidth: 400,
+      margin: '0 auto',
+    },
+  },
+  spTrack: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '26%',
+    '@media (max-width: 960px)': {
+      '&&': {
+        width: '50%',
+      },
+    },
+    '&.medium': {
+      '&&': {
+        width: '50%',
+      },
+    },
+    '@media (max-width: 720px)': {
+      '&&': {
+        width: '100%',
+      },
+    },
+    '&&.small': {
+      width: '100%',
     },
   },
   Widget: {
@@ -64,9 +101,14 @@ const useStyles = makeStyles(() => ({
     margin: 'auto',
     position: 'relative',
     zIndex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: '#2229',
     backdropFilter: 'blur(40px)',
     '@media (max-width: 720px)': {
+      '&&': {
+        width: 400,
+      },
+    },
+    '&.small': {
       '&&': {
         width: 400,
       },
@@ -74,6 +116,13 @@ const useStyles = makeStyles(() => ({
   },
   albumImg: {
     '@media (max-width: 720px)': {
+      '&&': {
+        height: 80,
+        width: 80,
+        margin: 10,
+      },
+    },
+    '&.small': {
       '&&': {
         height: 80,
         width: 80,

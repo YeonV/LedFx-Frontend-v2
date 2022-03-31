@@ -1,5 +1,3 @@
-/* -- eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { AddPhotoAlternate } from '@material-ui/icons';
@@ -10,7 +8,7 @@ import useStore from '../../../../../utils/apiStore';
 import { formatTime } from '../../../../../utils/utils';
 import Popover from '../../../../Popover/Popover';
 
-export default function SpotifySceneTrigger() {
+export default function SpSceneTrigger() {
   const scenes = useStore((state) => (state as any).scenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
   const [includeTime, setIncludeTime] = useState(false);

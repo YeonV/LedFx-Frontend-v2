@@ -76,7 +76,8 @@ export default function App() {
 
   const { height, width } = useWindowDimensions();
 
-  const thePlayer = useRef();
+  const spotifyPlayer = useRef();
+  const setThePlayer = useStore((state) => state.setThePlayer);
 
   let newBase = !!window.localStorage.getItem('ledfx-newbase');
 
@@ -169,6 +170,10 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    setThePlayer(spotifyPlayer)
+  }, []);
+
   const HashRouter = () => <Router basename={process.env.PUBLIC_URL}>
   <ScrollToTop />
   <HandleWs />
@@ -191,13 +196,13 @@ export default function App() {
       <Route path="/devices" element={<Devices />} />
       <Route path="/device/:virtId" element={<Device />} />
       <Route path="/scenes" element={<Scenes />} />
-      <Route path="/integrations" element={<Integrations thePlayer={thePlayer} />} />
+      <Route path="/integrations" element={<Integrations />} />
       <Route path="/settings" element={<Settings />} />
     </Routes>
     <NoHostDialog />
     <SmartBar open={open} setOpen={setOpen} />
   </main>
-  <BottomBar thePlayer={thePlayer} />
+  <BottomBar />
 </Router>
 
   return (
@@ -281,7 +286,7 @@ export default function App() {
                     <NoHostDialog />
                     <SmartBar open={open} setOpen={setOpen} />
                   </main>
-                  <BottomBar thePlayer={thePlayer} />
+                  <BottomBar />
                 </Router>
                 {features['waves'] && (
                   <WaveLines

@@ -15,10 +15,7 @@ import {
   Transition,
 } from './SpotifyScreen.props';
 import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
-
-// import SpotifyWidgetDev from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetDev';
-// import SpotifyWidgetSmall from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetSmall';
-import SpotifyWidgetLarge from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpotifyWidgetPro';
+import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -31,7 +28,6 @@ export default function SpotifyScreen({
   innerKey,
   disabled = false,
   size = 'small',
-  thePlayer,
 }: SpotifyScreenProps) {
   const classes = useEditVirtualsStyles();
   const [open, setOpen] = React.useState(false);
@@ -97,12 +93,11 @@ export default function SpotifyScreen({
             </Typography>
           </Toolbar>
         </AppBar>
-
-        <SpotifyWidgetLarge thePlayer={thePlayer} />
+        <SpotifyWidgetPro />
         <div style={{ marginTop: '2rem' }} />
-        {/* <SpotifyWidgetSmall thePlayer={thePlayer} />
+        {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />
-        <SpotifyWidgetDev thePlayer={thePlayer} /> */}
+        <SpotifyWidgetDev  /> */}
       </Dialog>
     </>
   );
