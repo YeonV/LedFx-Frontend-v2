@@ -24,9 +24,9 @@ const redirectUrl = `${
     : 'http://localhost:3000'
 }/callback/#/Integrations?`;
 
-const spotify = axios.create({
-  baseURL: redirectUrl,
-});
+// const spotify = axios.create({
+//   baseURL: redirectUrl,
+// });
 
 const apiCredentials = {
   CLIENT_ID: '7658827aea6f47f98c8de593f1491da5',
@@ -52,8 +52,9 @@ const apiCredentials = {
   ],
 };
 
-const SpotifyAuthButton = ({ thePlayer, disabled = false }: any) => {
+const SpotifyAuthButton = ({ disabled = false }: any) => {
   const isAuthenticated = useStore((state) => (state as any).isAuthenticated);
+  const thePlayer = useStore((state) => (state as any).thePlayer);
   const setIsAuthenticated = useStore(
     (state) => (state as any).setIsAuthenticated
   );

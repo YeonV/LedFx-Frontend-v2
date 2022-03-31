@@ -1,14 +1,13 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { VolumeDown, VolumeMute, VolumeUp } from '@material-ui/icons';
 import useStore from '../../../../../utils/apiStore';
-import { VolSliderStyles } from '../Spotify.styles';
+import { VolSliderStyles } from './SpWidgetPro.styles';
 
-export default function SpotifyVolume({ thePlayer }: any) {
+export default function SpVolume() {
+  const thePlayer = useStore((state) => (state as any).thePlayer);
   const spotifyVol = useStore((state) => (state as any).spotifyVol);
   const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
   const [volu, setVolu] = useState(spotifyVol || 0);

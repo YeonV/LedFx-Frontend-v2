@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
@@ -15,7 +14,7 @@ import {
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
 import useStore from '../../../../../utils/apiStore';
-import useStyle, { TinyText, PosSliderStyles } from '../Spotify.styles';
+import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
 
 import { formatTime } from '../../../../../utils/utils';
 import {
@@ -23,15 +22,15 @@ import {
   spotifyShuffle,
   spotifyPlay,
 } from '../../../../../utils/spotifyProxies';
-import SpotifySceneTrigger from './SpotifySceneTrigger';
+import SpSceneTrigger from './SpSceneTrigger';
 
-export default function SpotifyControls({ thePlayer }: any) {
+export default function SpControls({ className }: any) {
   const classes = useStyle();
 
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
-  const { position, duration, paused, repeat_mode, shuffle } = spotifyData;
+  const { duration, paused, repeat_mode, shuffle } = spotifyData;
   const hijack = spotifyData.track_window?.current_track?.album.name || '';
 
   const spotifyDevice = useStore((state) => (state as any).spotifyDevice);
@@ -39,7 +38,7 @@ export default function SpotifyControls({ thePlayer }: any) {
   const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
   const spotifyPos = useStore((state) => (state as any).spotifyPos);
   const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
-  const posi = useRef(position || 0);
+  const thePlayer = useStore((state) => (state as any).thePlayer);
 
   const setVol = (vol: number) =>
     thePlayer.current
@@ -48,23 +47,11 @@ export default function SpotifyControls({ thePlayer }: any) {
         thePlayer.current.getVolume().then((v: any) => setSpotifyVol(v))
       );
 
-  useEffect(() => {
-    setSpotifyPos(position);
-    posi.current = position;
-  }, [position]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (posi.current && !paused) {
-        posi.current += 1000;
-        setSpotifyPos(posi.current);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [position, paused]);
-
   return (
-    <Box className={classes.spotifyControlStyles} sx={{ width: '45%' }}>
+    <Box
+      className={`${classes.SpControlstyles} ${className}`}
+      sx={{ width: '45%', margin: '0 auto' }}
+    >
       {hijack === '' ? (
         <div>
           <Button onClick={() => spotifyPlay(spotifyDevice)}>HiJack</Button>
@@ -148,7 +135,7 @@ export default function SpotifyControls({ thePlayer }: any) {
               )}
             </IconButton>
             <div className="showTablet">
-              <SpotifySceneTrigger />
+              <SpSceneTrigger />
             </div>
           </Box>
 
@@ -163,7 +150,7 @@ export default function SpotifyControls({ thePlayer }: any) {
             <Slider
               aria-label="time-indicator"
               size="small"
-              value={spotifyPos}
+              value={spotifyPos || 0}
               min={0}
               step={1}
               max={duration}

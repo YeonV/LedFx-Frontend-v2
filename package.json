@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.0-beta41",
+  "version": "2.0.0-beta42",
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -50,6 +50,7 @@
     "react-gcolor-picker": "^1.2.4",
     "react-hotkeys-hook": "^3.4.4",
     "react-moment": "^1.1.1",
+    "react-rnd": "^10.3.5",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "reactour": "^1.18.7",

@@ -1,11 +1,9 @@
-/* --eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useStore from '../../../../../utils/apiStore';
-import useStyle, { CoverImage } from '../Spotify.styles';
+import useStyle, { CoverImage } from './SpWidgetPro.styles';
 
-export default function SpotifyTrackInfo() {
+export default function SpTrack({ className }: any) {
   const classes = useStyle();
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
@@ -20,15 +18,7 @@ export default function SpotifyTrackInfo() {
   const album = spotifyData.track_window?.current_track?.album.name || '';
 
   return (
-    <Box
-      className={classes.spotifyTrackStyles}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        width: '26%',
-      }}
-    >
+    <Box className={className}>
       <CoverImage className={classes.albumImg}>
         <img alt="album_image" src={image} />
       </CoverImage>

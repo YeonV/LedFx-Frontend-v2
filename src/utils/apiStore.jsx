@@ -228,6 +228,26 @@ const useStore = create(
       setSpotifyAuthToken: (token) => {
         set((state) => ({ spotifyAuthToken: token }))
       },
+      thePlayer:'',
+      setThePlayer: (ref) => {
+        set((state) => ({ thePlayer: ref }))
+      },
+      swSize:'small',
+      setSwSize: (x) => {
+        set((state) => ({ swSize: x || 'small'}))
+      },
+      swX: 50,
+      setSwX: (x) => {
+        set((state) => ({ swX: x || 50}))
+      },
+      swY: 200,
+      setSwY: (y) => {
+        set((state) => ({ swY: y || 200 }))
+      },
+      swWidth:300,
+      setSwWidth: (width) => {
+        set((state) => ({ swWidth: width }))
+      },
       spotifyVol:'',
       setSpotifyVol: (vol) => {
         set((state) => ({ spotifyVol: vol }))

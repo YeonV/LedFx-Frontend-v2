@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Integrations = ({thePlayer}) => {
+const Integrations = () => {
   const classes = useStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
@@ -28,7 +28,7 @@ const Integrations = ({thePlayer}) => {
     <div className={classes.cardWrapper}>
     {integrations && Object.keys(integrations).length ? Object.keys(integrations).map((integration, i) => 
       integrations[integration].type === 'spotify' 
-        ? <IntegrationCardSpotify integration={integration} key={i} thePlayer={thePlayer} />
+        ? <IntegrationCardSpotify integration={integration} key={i} />
         : <IntegrationCard integration={integration} key={i} />
     ) : <NoYet type="Integration" />}
   </div>
