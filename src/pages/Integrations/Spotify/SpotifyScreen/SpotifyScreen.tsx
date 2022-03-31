@@ -18,7 +18,7 @@ import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtual
 
 // import SpotifyWidgetDev from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetDev';
 // import SpotifyWidgetSmall from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetSmall';
-import SpotifyWidgetLarge from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetLarge';
+import SpotifyWidgetLarge from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpotifyWidgetPro';
 
 export default function SpotifyScreen({
   icon = <Settings />,
