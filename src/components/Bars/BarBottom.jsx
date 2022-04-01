@@ -14,7 +14,7 @@ import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
 
-export default function BarBottom({thePlayer}) {
+export default function BarBottom() {
   const classes = useStyles();
   const { pathname } = useLocation();
   const [value, setValue] = useState(pathname);
@@ -119,7 +119,7 @@ export default function BarBottom({thePlayer}) {
         setYoutubeExpanded={setYoutubeExpanded}
       />
     )}
-    {integrations["spotify"].active && isAuthenticated && (
+    {integrations["spotify"] && integrations["spotify"].active && isAuthenticated && (
       <SpotifyFabPro
         spotifyEnabled={spotifyEnabled}
         setSpotifyEnabled={setSpotifyEnabled}
@@ -131,7 +131,6 @@ export default function BarBottom({thePlayer}) {
         botHeight={botHeight}
         setYoutubeEnabled={setYoutubeEnabled}
         setYoutubeExpanded={setYoutubeExpanded}
-        thePlayer={thePlayer}
       />
     )}
     {features['youtube'] && (

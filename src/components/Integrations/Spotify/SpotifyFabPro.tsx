@@ -1,16 +1,39 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 import { Fab } from '@material-ui/core';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import useStore from '../../../utils/apiStore';
 import { spotifyPlay } from '../../../utils/spotifyProxies';
+import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
 
-const SpotifyFabPro = ({ thePlayer, botHeight }: any) => {
+const SpotifyFabPro = ({ botHeight }: any) => {
   const { spotifyAuthToken }: any = useStore((state: any) => state);
+  const { spotifyData }: any = useStore((state: any) => state);
   const { setSpotifyData }: any = useStore((state: any) => state);
   const { setSpotifyDevice }: any = useStore((state: any) => state);
   const { spotifyVol, setSpotifyVol }: any = useStore((state: any) => state);
+  const thePlayer = useStore((state) => (state as any).thePlayer);
+  const [floatingWidget, setFloatingWidget] = useState(false);
+  const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
+
+  const position = spotifyData?.playerState?.position || 0;
+  const paused = spotifyData?.playerState?.paused || false;
+  const posi = useRef(position || 0);
+
+  useEffect(() => {
+    setSpotifyPos(position);
+    posi.current = position;
+  }, [position]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (posi.current && !paused) {
+        posi.current += 1000;
+        setSpotifyPos(posi.current);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [position, paused]);
 
   useEffect(() => {
     const createWebPlayer = async (token: string) => {
@@ -97,37 +120,42 @@ const SpotifyFabPro = ({ thePlayer, botHeight }: any) => {
     }
   }, [spotifyAuthToken]);
   return (
-    <div
-      style={{
-        backgroundColor: '#0dbedc',
-        position: 'fixed',
-        bottom: botHeight + 105,
-        right: 10,
-        zIndex: 4,
-      }}
-    >
-      <Fab
-        size="small"
-        color="inherit"
+    <>
+      <div
+        className="spotifyFab"
         style={{
+          backgroundColor: '#0dbedc',
           position: 'fixed',
-          bottom: botHeight + 115,
+          bottom: botHeight + 105,
           right: 10,
           zIndex: 4,
-          backgroundColor: '#1db954',
         }}
       >
-        <BladeIcon
-          name="mdi:spotify"
+        <Fab
+          size="small"
+          color="inherit"
+          onClick={() => setFloatingWidget(!floatingWidget)}
           style={{
-            marginLeft: '50%',
-            marginTop: '50%',
-            transform: 'translate(-43%, -43%)',
-            display: 'flex',
+            position: 'fixed',
+            bottom: botHeight + 115,
+            right: 10,
+            zIndex: 4,
+            backgroundColor: '#1db954',
           }}
-        />
-      </Fab>
-    </div>
+        >
+          <BladeIcon
+            name="mdi:spotify"
+            style={{
+              marginLeft: '50%',
+              marginTop: '50%',
+              transform: 'translate(-43%, -43%)',
+              display: 'flex',
+            }}
+          />
+        </Fab>
+      </div>
+      {floatingWidget && <SpotifyWidgetPro drag />}
+    </>
   );
 };
 

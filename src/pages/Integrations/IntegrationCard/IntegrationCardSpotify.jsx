@@ -18,7 +18,7 @@ import { useIntegrationCardStyles } from './IntegrationCard.styles';
 import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyAuthButton';
 import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen';
 
-const IntegrationCardSpotify = ({ integration, thePlayer }) => {
+const IntegrationCardSpotify = ({ integration }) => {
   const classes = useIntegrationCardStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
@@ -26,6 +26,7 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
   const toggleIntegration = useStore((state) => state.toggleIntegration);
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
+  const thePlayer = useStore((state) => state.thePlayer);
 
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
@@ -98,7 +99,7 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
             <ExpandMoreIcon />
           </IconButton>
           <div className={classes.buttonBar}>
-            <SpotifyAuthButton thePlayer={thePlayer} disabled={!integrations[integration].active} />
+            <SpotifyAuthButton disabled={!integrations[integration].active} />
             <Popover
               variant={variant}
               color={color}
@@ -131,7 +132,6 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
               color={color}
               className={classes.editButton}
               disabled={integrations[integration].status !== 1 || !isAuthenticated}
-              thePlayer={thePlayer}
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
           className={classes.buttonBarMobile}
         >
           <div className={classes.buttonBarMobileWrapper}>
-          {integrations[integration].active && <SpotifyAuthButton thePlayer={thePlayer} />}
+          {integrations[integration].active && <SpotifyAuthButton />}
             <Popover
               variant={variant}
               color={color}
@@ -165,7 +165,6 @@ const IntegrationCardSpotify = ({ integration, thePlayer }) => {
               color={color}
               className={classes.editButton}
               disabled={integrations[integration].status !== 1 || !isAuthenticated}
-              thePlayer={thePlayer}
             />
           </div>
         </Collapse>
