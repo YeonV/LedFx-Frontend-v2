@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { AddPhotoAlternate } from '@material-ui/icons';
-import { MenuItem, Select, Checkbox, InputAdornment } from '@material-ui/core';
+import { MenuItem, Select, InputAdornment } from '@material-ui/core';
 import { OutlinedInput } from '@mui/material';
 import useStore from '../../../../../utils/apiStore';
 
@@ -11,8 +11,19 @@ import Popover from '../../../../Popover/Popover';
 export default function SpSceneTrigger() {
   const scenes = useStore((state) => (state as any).scenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
-  const [includeTime, setIncludeTime] = useState(false);
   const spotifyPos = useStore((state) => (state as any).spotifyPos);
+  const spotifyData = useStore(
+    (state) => (state as any).spotifyData.playerState
+  );
+  const addSpotifyTrigger = useStore((state) => state.addSpotifySongTrigger);
+  const songID = spotifyData?.track_window?.current_track?.id || '';
+  const songTitleAndArtist = `${spotifyData?.track_window?.current_track?.name} - ${spotifyData?.track_window?.current_track?.artists[0]?.name}`;
+  const spotifyTriggerData: any = {
+    scene_id: spotifyScene,
+    song_id: songID,
+    song_name: songTitleAndArtist,
+    song_position: spotifyPos,
+  };
 
   return (
     <Popover
@@ -26,7 +37,8 @@ export default function SpSceneTrigger() {
       }
       onConfirm={() =>
         // eslint-disable-next-line no-console
-        console.log(spotifyScene, includeTime, spotifyPos)
+        // console.log(spotifyScene, songID, songTitleAndArtist, spotifyPos)
+        addSpotifyTrigger(spotifyTriggerData)
       }
       content={
         <div>
@@ -48,42 +60,26 @@ export default function SpSceneTrigger() {
                   </MenuItem>
                 ))}
             </Select>
-            <Checkbox
-              checked={includeTime}
-              onChange={(_, v) => setIncludeTime(v)}
+            <OutlinedInput
+              style={{
+                width: 115,
+                color: '#fff',
+                border: 0,
+              }}
+              endAdornment={<InputAdornment position="end">min</InputAdornment>}
+              type="number"
+              value={formatTime(spotifyPos).split(':')[0]}
             />
-            {includeTime ? (
-              <>
-                <OutlinedInput
-                  style={{
-                    width: 115,
-                    color: '#fff',
-                    border: 0,
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">min</InputAdornment>
-                  }
-                  type="number"
-                  value={formatTime(spotifyPos).split(':')[0]}
-                />
-                <OutlinedInput
-                  style={{
-                    width: 95,
-                    color: '#fff',
-                    borderColor: '#fff',
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">s</InputAdornment>
-                  }
-                  value={formatTime(spotifyPos).split(':')[1]}
-                  type="number"
-                />
-              </>
-            ) : (
-              <div style={{ width: 210, display: 'inline-block' }}>
-                include current time?
-              </div>
-            )}
+            <OutlinedInput
+              style={{
+                width: 95,
+                color: '#fff',
+                borderColor: '#fff',
+              }}
+              endAdornment={<InputAdornment position="end">s</InputAdornment>}
+              value={formatTime(spotifyPos).split(':')[1]}
+              type="number"
+            />
           </Box>
         </div>
       }
