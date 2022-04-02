@@ -10,15 +10,17 @@ import Popover from '../../../../Popover/Popover';
 
 export default function SpSceneTrigger() {
   const scenes = useStore((state) => (state as any).scenes);
-  const [spotifyScene, setSpotifyScene] = useState(0);
+  const [spotifyScene, setSpotifyScene] = useState('');
   const spotifyPos = useStore((state) => (state as any).spotifyPos);
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
-  const addSpotifyTrigger = useStore((state) => state.addSpotifySongTrigger);
+  const addSpotifyTrigger = useStore(
+    (state) => (state as any).spotifyTriggerData
+  );
   const songID = spotifyData?.track_window?.current_track?.id || '';
   const songTitleAndArtist = `${spotifyData?.track_window?.current_track?.name} - ${spotifyData?.track_window?.current_track?.artists[0]?.name}`;
-  const spotifyTriggerData: any = {
+  const spotifyTriggerData = {
     scene_id: spotifyScene,
     song_id: songID,
     song_name: songTitleAndArtist,
@@ -37,7 +39,7 @@ export default function SpSceneTrigger() {
       }
       onConfirm={() =>
         // eslint-disable-next-line no-console
-        // console.log(spotifyScene, songID, songTitleAndArtist, spotifyPos)
+        // console.log(spotifyTriggerData)
         addSpotifyTrigger(spotifyTriggerData)
       }
       content={
