@@ -5,6 +5,7 @@ import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import useStore from '../../../utils/apiStore';
 import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
+import SpotifyTriggerTable from './Widgets/SpotifyWidgetPro/SpotifyTriggerTable';
 
 const SpotifyFabPro = ({ botHeight }: any) => {
   const { spotifyAuthToken }: any = useStore((state: any) => state);
@@ -15,6 +16,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   const thePlayer = useStore((state) => (state as any).thePlayer);
   const [floatingWidget, setFloatingWidget] = useState(false);
   const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
+  // const { getSpotify } = useStore((state) => state as any);
 
   const position = spotifyData?.playerState?.position || 0;
   const paused = spotifyData?.playerState?.paused || false;
@@ -155,6 +157,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
         </Fab>
       </div>
       {floatingWidget && <SpotifyWidgetPro drag />}
+      <SpotifyTriggerTable />
     </>
   );
 };

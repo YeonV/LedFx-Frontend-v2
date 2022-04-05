@@ -16,7 +16,7 @@ export default function SpSceneTrigger() {
     (state) => (state as any).spotifyData.playerState
   );
   const addSpotifyTrigger = useStore(
-    (state) => (state as any).spotifyTriggerData
+    (state) => (state as any).addSpotifySongTrigger
   );
   const songID = spotifyData?.track_window?.current_track?.id || '';
   const songTitleAndArtist = `${spotifyData?.track_window?.current_track?.name} - ${spotifyData?.track_window?.current_track?.artists[0]?.name}`;
