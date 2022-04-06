@@ -141,7 +141,7 @@ const UICard = () => {
                 <label>WLED Integration</label>
                 <SettingsSwitch checked={features['wled']} onChange={(e) => setFeatures('wled', !features['wled'])} />
             </div>}
-            {showFeatures['integrations'] && <div className={`${classes.settingsRow} step-settings-x `}>
+            {viewMode !== 'user' && <div className={`${classes.settingsRow} step-settings-x `}>
                 <label>Integrations</label>
                 <SettingsSwitch checked={features['integrations']} onChange={(e) => setFeatures('integrations', !features['integrations'])} />
             </div>}            

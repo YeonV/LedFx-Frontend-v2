@@ -5,7 +5,7 @@ import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import useStore from '../../../utils/apiStore';
 import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
-import SpotifyTriggerTable from './Widgets/SpotifyWidgetPro/SpotifyTriggerTable';
+// import SpotifyTriggerTable from './Widgets/SpotifyWidgetPro/SpotifyTriggerTable';
 
 const SpotifyFabPro = ({ botHeight }: any) => {
   const { spotifyAuthToken }: any = useStore((state: any) => state);
@@ -157,7 +157,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
         </Fab>
       </div>
       {floatingWidget && <SpotifyWidgetPro drag />}
-      <SpotifyTriggerTable />
+      {/* <SpotifyTriggerTable /> */}
     </>
   );
 };
