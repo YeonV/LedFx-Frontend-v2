@@ -51,13 +51,15 @@ export default function SpSceneTrigger() {
               value={spotifyScene}
               label="Scene"
               variant="outlined"
-              onChange={(_, v: any) => setSpotifyScene(v.props.value)}
+              onChange={(_, v: any) => {
+                setSpotifyScene(v.props.value);
+              }}
             >
               <MenuItem value={0}>select a scene</MenuItem>
               {scenes &&
                 Object.keys(scenes).length &&
                 Object.keys(scenes).map((s: any, i: number) => (
-                  <MenuItem key={i} value={scenes[s].name || s}>
+                  <MenuItem key={i} value={scenes[s].id || s}>
                     {scenes[s].name || s}
                   </MenuItem>
                 ))}

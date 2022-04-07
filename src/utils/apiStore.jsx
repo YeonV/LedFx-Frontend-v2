@@ -584,7 +584,7 @@ const useStore = create(
           set({ spotify: resp.spotify });
         }
       },
-      addSpotifySongTrigger: async (scene_id, song_id, song_name, song_position) => await Ledfx(
+      addSpotifySongTrigger: async ({scene_id, song_id, song_name, song_position}) => await Ledfx(
         `/api/integrations/spotify/spotify`,
         set,
         'POST',
