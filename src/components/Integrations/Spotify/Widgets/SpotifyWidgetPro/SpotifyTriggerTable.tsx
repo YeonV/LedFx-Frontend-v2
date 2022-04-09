@@ -12,13 +12,14 @@ export default function SpotifyTriggerTable() {
   // const theme = useTheme();
 
   useEffect(() => {
-    getSpotifyTriggers('spotify');
-    console.log(spotifytriggers);
+    getSpotifyTriggers('spotify').then(
+      console.log('Spotify trigger', spotifytriggers)
+    );
   }, []);
 
-  const deleteSpotifyTrigger = useStore(
-    (state) => (state as any).deleteSpotifyTrigger
-  );
+  // const deleteSpotifyTrigger = useStore(
+  //   (state) => (state as any).deleteSpotifyTrigger
+  // );
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -65,11 +66,10 @@ export default function SpotifyTriggerTable() {
       />
       <DeleteForever
         onClick={() => {
-          deleteSpotifyTrigger('spotify', {
-            data: {
-              // trigger_id: trigger.trigger_id,
-            },
-          });
+          // deleteSpotifyTrigger('spotify', {
+          // data: {
+          // trigger_id: trigger.trigger_id,
+          // },
           console.log('delete');
         }}
       />
