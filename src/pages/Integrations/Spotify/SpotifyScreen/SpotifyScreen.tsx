@@ -16,6 +16,7 @@ import {
 } from './SpotifyScreen.props';
 import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
+import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpotifyTriggerTable';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -95,6 +96,7 @@ export default function SpotifyScreen({
         </AppBar>
         <SpotifyWidgetPro />
         <div style={{ marginTop: '2rem' }} />
+        <SpotifyTriggerTable />
         {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />
         <SpotifyWidgetDev  /> */}
