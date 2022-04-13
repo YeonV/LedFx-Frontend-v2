@@ -13,43 +13,31 @@ import {
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
-import useStore from '../../../../../utils/apiStore';
-import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
-
-import { formatTime } from '../../../../../utils/utils';
+import useStyle, { TinyText, PosSliderStyles } from '../SpWidgetPro.styles';
+import { formatTime } from '../../../../../../utils/utils';
 import {
   spotifyRepeat,
   spotifyShuffle,
   spotifyPlay,
-} from '../../../../../utils/spotifyProxies';
-import SpSceneTrigger from './SpSceneTrigger';
+} from '../../../../../../utils/spotifyProxies';
+import SpSceneTrigger from '../SpSceneTrigger';
 
-export default function SpControls({ className }: any) {
+const SpControls = ({
+  className,
+  duration,
+  paused,
+  repeat_mode,
+  shuffle,
+  hijack,
+  spotifyDevice,
+  spotifyVol,
+  spotifyPos,
+  setSpotifyPos,
+  thePlayer,
+  setVol,
+}: any) => {
+  console.log('thePlayer', thePlayer);
   const classes = useStyle();
-
-  const spotifyData = useStore(
-    (state) => (state as any).spotifyData.playerState
-  );
-  const duration = spotifyData?.duration || 0;
-  const paused = spotifyData?.paused || false;
-  const repeat_mode = spotifyData?.repeat_mode || 0;
-  const shuffle = spotifyData?.shuffle || false;
-  const hijack = spotifyData?.track_window?.current_track?.album.name || '';
-
-  const spotifyDevice = useStore((state) => (state as any).spotifyDevice);
-  const spotifyVol = useStore((state) => (state as any).spotifyVol);
-  const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
-  const spotifyPos = useStore((state) => (state as any).spotifyPos);
-  const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
-  const thePlayer = useStore((state) => (state as any).thePlayer);
-
-  const setVol = (vol: number) =>
-    thePlayer.current
-      .setVolume(vol)
-      .then(() =>
-        thePlayer.current.getVolume().then((v: any) => setSpotifyVol(v))
-      );
-
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}
@@ -169,4 +157,6 @@ export default function SpControls({ className }: any) {
       )}
     </Box>
   );
-}
+};
+
+export default SpControls;
