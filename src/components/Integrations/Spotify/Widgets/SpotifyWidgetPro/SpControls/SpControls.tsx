@@ -36,7 +36,6 @@ const SpControls = ({
   thePlayer,
   setVol,
 }: any) => {
-  console.log('thePlayer', thePlayer);
   const classes = useStyle();
   return (
     <Box

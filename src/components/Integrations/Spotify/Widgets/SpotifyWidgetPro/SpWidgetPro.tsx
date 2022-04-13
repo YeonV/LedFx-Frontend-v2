@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useStyle from './SpWidgetPro.styles';
-import SpControls from './SpControls/SpControls';
+import SpControlsWrapper from './SpControls/SpControls.wrapper';
 import SpTrackWrapper from './SpTrack/SpTrack.wrapper';
 import SpVolume from './SpVolume';
 import SpSceneTrigger from './SpSceneTrigger';
@@ -20,7 +20,7 @@ const SpotifyWidgetPro = ({ drag }: any) => {
           <SpTrackWrapper
             className={`${classes.spTrack} ${drag ? swSize : ''}`}
           />
-          <SpControls className={`${drag ? swSize : ''}`} />
+          <SpControlsWrapper className={`${drag ? swSize : ''}`} />
           <Stack className={`${classes.spDeskVol} ${drag ? swSize : ''}`}>
             <Stack direction="row">
               {drag && <SpLayoutButtons />}
