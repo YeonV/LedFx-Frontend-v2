@@ -1,11 +1,11 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useStyle from './SpWidgetPro.styles';
+import useStore from '../../../../../utils/apiStore';
 import SpControlsWrapper from './SpControls/SpControls.wrapper';
 import SpTrackWrapper from './SpTrack/SpTrack.wrapper';
-import SpVolume from './SpVolume';
-import SpSceneTrigger from './SpSceneTrigger';
-import useStore from '../../../../../utils/apiStore';
+import SpVolume from './SpVolume/SpVolume';
+import SpSceneTrigger from './SpSceneTrigger/SpSceneTrigger';
 import SpLayoutButtons from './SpLayoutButtons';
 import SpFloating from './SpFloating';
 

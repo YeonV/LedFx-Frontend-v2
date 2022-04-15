@@ -3,10 +3,10 @@ import Box from '@mui/material/Box';
 import { AddPhotoAlternate } from '@material-ui/icons';
 import { MenuItem, Select, InputAdornment } from '@material-ui/core';
 import { OutlinedInput } from '@mui/material';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../../utils/apiStore';
 
-import { formatTime } from '../../../../../utils/utils';
-import Popover from '../../../../Popover/Popover';
+import { formatTime } from '../../../../../../utils/utils';
+import Popover from '../../../../../Popover/Popover';
 
 export default function SpSceneTrigger() {
   const scenes = useStore((state) => (state as any).scenes);

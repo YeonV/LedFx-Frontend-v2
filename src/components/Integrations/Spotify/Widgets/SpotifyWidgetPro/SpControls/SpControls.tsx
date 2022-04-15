@@ -20,7 +20,7 @@ import {
   spotifyShuffle,
   spotifyPlay,
 } from '../../../../../../utils/spotifyProxies';
-import SpSceneTrigger from '../SpSceneTrigger';
+import SpSceneTrigger from '../SpSceneTrigger/SpSceneTrigger';
 
 const SpControls = ({
   className,
