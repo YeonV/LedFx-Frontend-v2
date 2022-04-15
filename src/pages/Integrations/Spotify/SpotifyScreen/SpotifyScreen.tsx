@@ -16,8 +16,9 @@ import {
 } from './SpotifyScreen.props';
 import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
-import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTable';
+// import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTable';
 import SpotifyTriggerTableOld from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTableOld';
+import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -96,10 +97,11 @@ export default function SpotifyScreen({
           </Toolbar>
         </AppBar>
         <SpotifyWidgetPro />
-        <div style={{ marginTop: '2rem' }} />
-        <SpotifyTriggerTable />
-        <div style={{ marginTop: '2rem' }} />
+        {/* <div style={{ marginTop: '2rem' }} />
+        <SpotifyTriggerTable /> 
+        <div style={{ marginTop: '2rem' }} /> */}
         <SpotifyTriggerTableOld />
+        <SpAudioFeatures />
         {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />
         <SpotifyWidgetDev  /> */}

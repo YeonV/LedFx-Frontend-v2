@@ -1,4 +1,4 @@
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 // import withStyles from '@material-ui/core/styles/withStyles';
 import {
   Divider,
@@ -9,23 +9,29 @@ import {
   Grid,
 } from '@material-ui/core';
 import { DeleteForever } from '@material-ui/icons';
-// import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../../utils/apiStore';
 
 export default function SpotifyTriggerTableOld() {
-  // const getSpotifyTriggers = useStore(
-  //   (state) => (state as any).getSpotifyTriggers
+  const getSpotifyTriggers = useStore(
+    (state) => (state as any).getSpotifyTriggers
+  );
+  const spotifytriggers = useStore((state) => (state as any).spotifytriggers);
+  // const theme = useTheme();
+
+  useEffect(() => {
+    getSpotifyTriggers('spotify').then(
+      console.log('Spotify trigger', spotifytriggers)
+    );
+  }, []);
+
+  // const deleteSpotifyTrigger = useStore(
+  //   (state) => (state as any).deleteSpotifyTrigger
   // );
-  // const spotifytriggers = useStore((state) => (state as any).spotifytriggers);
-  // const reportWebVitals = (onPerfEntry: any) => {
-  //   useEffect(() => {
-  //     getSpotifyTriggers('spotify').then(
-  //       console.log('Spotify trigger', spotifytriggers)
-  //     );
-  //   }, []);
 
   return (
     <div>
       <List>
+        <Divider />
         <ListItem>
           <Grid container>
             <Grid item xs={3}>
@@ -39,6 +45,9 @@ export default function SpotifyTriggerTableOld() {
             </Grid>
             <Grid item xs={3}>
               <ListItemText primary="Scene" secondary="Scene to Activate" />
+            </Grid>
+            <Grid item xs={1}>
+              <ListItemText primary="Delete" />
             </Grid>
             <ListItem>
               <Grid container>
