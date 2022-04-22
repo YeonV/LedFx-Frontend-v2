@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import useStore from '../../../../../../utils/apiStore';
 import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
+import RadarChart from '../SpSceneTrigger/SpAudioFeaturesRadarChart';
 
 export default function SpAudioFeatures() {
   getTrackFeatures('spotify', 'spotify:track:5Z9ZyQXyX5QZxYX5Z9ZyQX').then(
@@ -63,6 +64,13 @@ export default function SpAudioFeatures() {
               </TableRow>
             </TableBody>
           </Table>
+        </TableContainer>
+      </Grid>
+      <Grid xs={6} item>
+        <TableContainer component={Paper}>
+          <div>
+            <RadarChart />
+          </div>
         </TableContainer>
       </Grid>
     </Grid>

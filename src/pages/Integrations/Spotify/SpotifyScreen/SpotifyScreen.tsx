@@ -19,6 +19,7 @@ import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widget
 // import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTable';
 import SpotifyTriggerTableOld from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTableOld';
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
+import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTable';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -97,11 +98,12 @@ export default function SpotifyScreen({
           </Toolbar>
         </AppBar>
         <SpotifyWidgetPro />
-        {/* <div style={{ marginTop: '2rem' }} />
-        <SpotifyTriggerTable /> 
-        <div style={{ marginTop: '2rem' }} /> */}
-        <SpotifyTriggerTableOld />
         <SpAudioFeatures />
+        <div style={{ marginTop: '2rem' }} />
+        <SpotifyTriggerTableOld />
+        <div style={{ marginTop: '2rem' }} />
+        <SpotifyTriggerTable />
+
         {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />
         <SpotifyWidgetDev  /> */}
