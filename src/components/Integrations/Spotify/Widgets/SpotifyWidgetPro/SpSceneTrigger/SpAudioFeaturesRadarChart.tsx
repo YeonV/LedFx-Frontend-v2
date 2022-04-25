@@ -34,6 +34,27 @@ export default function RadarChart() {
     Tooltip,
     Legend
   );
+  const TrackFeatures = {
+    danceability: 0.76,
+    energy: 0.964,
+    key: 2,
+    loudness: -5.844,
+    mode: 1,
+    speechiness: 0.0576,
+    acousticness: 0.00182,
+    instrumentalness: 0.7,
+    liveness: 0.0974,
+    valence: 0.641,
+    tempo: 125,
+    type: 'audio_features',
+    id: '62WEkOD8TUO7wzkolOQW9v',
+    uri: 'spotify:track:62WEkOD8TUO7wzkolOQW9v',
+    track_href: 'https://api.spotify.com/v1/tracks/62WEkOD8TUO7wzkolOQW9v',
+    analysis_url:
+      'https://api.spotify.com/v1/audio-analysis/62WEkOD8TUO7wzkolOQW9v',
+    duration_ms: 248036,
+    time_signature: 4,
+  };
 
   const data = {
     labels: [
@@ -45,13 +66,20 @@ export default function RadarChart() {
     ],
     datasets: [
       {
-        data: [0.964, 0.76, 0.641, 0.7, 0.5],
+        label: 'Track Features',
         backgroundColor: 'rgba(50, 246, 152, 0.5)',
         borderColor: 'rgb(0, 226, 123)',
         borderWidth: 3,
         pointBackgroundColor: 'rgb(50, 246, 152)',
         pointBorderWidth: 2,
-        fontColor: '#fff',
+        fontColor: 'rgba(255, 255, 255, 0.5)',
+        data: [
+          TrackFeatures.energy,
+          TrackFeatures.danceability,
+          TrackFeatures.valence,
+          TrackFeatures.instrumentalness,
+          (TrackFeatures.loudness * -1) / 13,
+        ],
       },
     ],
   };
@@ -72,21 +100,21 @@ export default function RadarChart() {
     },
     scale: {
       ticks: {
-        callback() {
-          return '';
-        },
-        backdropColor: 'rgba(0, 0, 0, 0)',
-        min: -0.5,
+        beginAtZero: true,
+        min: 0,
         max: 1,
+        stepSize: 0,
+        showLabelBackdrop: false,
+        backdropColor: 'rgba(0, 0, 0, 0)',
       },
       pointLabels: {
-        fontColor: 'black',
+        fontColor: 'white',
       },
       gridLines: {
-        color: '#009688',
+        color: 'white',
       },
       angleLines: {
-        color: '#009688',
+        color: 'white',
       },
     },
     tooltips: {
@@ -97,7 +125,6 @@ export default function RadarChart() {
       },
     },
   };
-
   return (
     <RadarChartContainer>
       <Radar data={data} options={chartOptions} />

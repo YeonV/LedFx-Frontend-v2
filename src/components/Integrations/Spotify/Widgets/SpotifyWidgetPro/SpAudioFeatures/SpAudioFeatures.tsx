@@ -1,4 +1,5 @@
-// import { useEffect } from 'react';
+/* eslint-disable @typescript-eslint/indent */
+import { useEffect } from 'react';
 import {
   Typography,
   Table,
@@ -15,14 +16,37 @@ import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
 import RadarChart from '../SpSceneTrigger/SpAudioFeaturesRadarChart';
 
 export default function SpAudioFeatures() {
-  getTrackFeatures('spotify', 'spotify:track:5Z9ZyQXyX5QZxYX5Z9ZyQX').then(
-    console.log
+  const spotifyData = useStore(
+    (state) => (state as any).spotifyData.playerState
   );
+  const songID = spotifyData?.track_window?.current_track?.id || '';
+  const spotifyToken = useStore((state) => (state as any).spotifyAuthToken);
+  useEffect(() => {
+    getTrackFeatures(songID, spotifyToken);
+  }, []);
 
-  const getSpotifyTriggers = useStore(
-    (state) => (state as any).getSpotifyTriggers
-  );
-  console.log('getSpotifyTriggers', getSpotifyTriggers);
+  const audioFeatures = {
+    danceability: 0.76,
+    energy: 0.964,
+    key: 2,
+    loudness: -5.844,
+    mode: 1,
+    speechiness: 0.0576,
+    acousticness: 0.00182,
+    instrumentalness: 0.7,
+    liveness: 0.0974,
+    valence: 0.641,
+    tempo: 125,
+    type: 'audio_features',
+    id: '62WEkOD8TUO7wzkolOQW9v',
+    uri: 'spotify:track:62WEkOD8TUO7wzkolOQW9v',
+    track_href: 'https://api.spotify.com/v1/tracks/62WEkOD8TUO7wzkolOQW9v',
+    analysis_url:
+      'https://api.spotify.com/v1/audio-analysis/62WEkOD8TUO7wzkolOQW9v',
+    duration_ms: 248036,
+    time_signature: 4,
+  };
+
   return (
     <Grid md={12} container item style={{ margin: '0px 20px' }}>
       <Grid xs={6} item>
@@ -42,25 +66,57 @@ export default function SpAudioFeatures() {
                 <TableCell component="th" scope="row">
                   BPM (Tempo)
                 </TableCell>
-                <TableCell align="right">112</TableCell>
+                <TableCell align="right">{audioFeatures.tempo}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Pitch class (Key)
                 </TableCell>
-                <TableCell align="right">C#</TableCell>
+                <TableCell align="right">
+                  {audioFeatures.key
+                    ? audioFeatures.key === 0
+                      ? 'C'
+                      : audioFeatures.key === 1
+                      ? 'C#'
+                      : audioFeatures.key === 2
+                      ? 'D'
+                      : audioFeatures.key === 3
+                      ? 'D#'
+                      : audioFeatures.key === 4
+                      ? 'E'
+                      : audioFeatures.key === 5
+                      ? 'F'
+                      : audioFeatures.key === 6
+                      ? 'F#'
+                      : audioFeatures.key === 7
+                      ? 'G'
+                      : audioFeatures.key === 8
+                      ? 'G#'
+                      : audioFeatures.key === 9
+                      ? 'A'
+                      : audioFeatures.key === 10
+                      ? 'A#'
+                      : audioFeatures.key === 11
+                      ? 'B'
+                      : 'N/A'
+                    : 'N/A'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Modality/Mode (Major/Minor)
                 </TableCell>
-                <TableCell align="right">Minor</TableCell>
+                <TableCell align="right">
+                  {audioFeatures.mode === 0 ? 'Minor' : 'Major'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Time Signature (How many beats in each bar)
                 </TableCell>
-                <TableCell align="right">4</TableCell>
+                <TableCell align="right">
+                  {audioFeatures.time_signature}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
