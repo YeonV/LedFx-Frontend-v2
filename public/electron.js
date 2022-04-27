@@ -5,6 +5,9 @@ const isDev = require('electron-is-dev');
 const { download } = require("electron-dl");
 const fs = require('fs')
 
+// Electron's Auto Updater 
+require('update-electron-app')()
+
 // Conditionally include the dev tools installer to load React Dev Tools
 let installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS; // NEW!
 if (isDev) {

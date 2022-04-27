@@ -25,7 +25,9 @@ const RadarChartContainer = styled.div`
     }
 `;
 
-export default function RadarChart() {
+export default function RadarChart(props: any) {
+  const TrackFeatures = props;
+  console.log(props);
   ChartJS.register(
     RadialLinearScale,
     PointElement,
@@ -34,27 +36,27 @@ export default function RadarChart() {
     Tooltip,
     Legend
   );
-  const TrackFeatures = {
-    danceability: 0.76,
-    energy: 0.964,
-    key: 2,
-    loudness: -5.844,
-    mode: 1,
-    speechiness: 0.0576,
-    acousticness: 0.00182,
-    instrumentalness: 0.7,
-    liveness: 0.0974,
-    valence: 0.641,
-    tempo: 125,
-    type: 'audio_features',
-    id: '62WEkOD8TUO7wzkolOQW9v',
-    uri: 'spotify:track:62WEkOD8TUO7wzkolOQW9v',
-    track_href: 'https://api.spotify.com/v1/tracks/62WEkOD8TUO7wzkolOQW9v',
-    analysis_url:
-      'https://api.spotify.com/v1/audio-analysis/62WEkOD8TUO7wzkolOQW9v',
-    duration_ms: 248036,
-    time_signature: 4,
-  };
+  // const TrackFeatures = {
+  //   danceability: 0.76,
+  //   energy: 0.964,
+  //   key: 2,
+  //   loudness: -5.844,
+  //   mode: 1,
+  //   speechiness: 0.0576,
+  //   acousticness: 0.00182,
+  //   instrumentalness: 0.7,
+  //   liveness: 0.0974,
+  //   valence: 0.641,
+  //   tempo: 125,
+  //   type: 'audio_features',
+  //   id: '62WEkOD8TUO7wzkolOQW9v',
+  //   uri: 'spotify:track:62WEkOD8TUO7wzkolOQW9v',
+  //   track_href: 'https://api.spotify.com/v1/tracks/62WEkOD8TUO7wzkolOQW9v',
+  //   analysis_url:
+  //     'https://api.spotify.com/v1/audio-analysis/62WEkOD8TUO7wzkolOQW9v',
+  //   duration_ms: 248036,
+  //   time_signature: 4,
+  // };
 
   const data = {
     labels: [
@@ -74,11 +76,11 @@ export default function RadarChart() {
         pointBorderWidth: 2,
         fontColor: 'rgba(255, 255, 255, 0.5)',
         data: [
-          TrackFeatures.energy,
-          TrackFeatures.danceability,
-          TrackFeatures.valence,
-          TrackFeatures.instrumentalness,
-          (TrackFeatures.loudness * -1) / 13,
+          TrackFeatures?.energy,
+          TrackFeatures?.danceability,
+          TrackFeatures?.valence,
+          TrackFeatures?.instrumentalness,
+          ((TrackFeatures?.loudness || 0) * -1) / 13,
         ],
       },
     ],

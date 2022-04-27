@@ -20,32 +20,40 @@ export default function SpAudioFeatures() {
     (state) => (state as any).spotifyData.playerState
   );
   const songID = spotifyData?.track_window?.current_track?.id || '';
+  // const getTrackFeaturesData = useStore((state) =>
+  //   (state as any).getTrackFeaturesData
+  // );
   const spotifyToken = useStore((state) => (state as any).spotifyAuthToken);
+  const { setSpotifyData }: any = useStore((state: any) => state);
+  const { audioFeatures } = useStore((state) => (state as any).spotifyData);
   useEffect(() => {
-    getTrackFeatures(songID, spotifyToken);
+    getTrackFeatures(songID, spotifyToken).then((res) => {
+      console.log(res);
+      setSpotifyData('audioFeatures', res);
+    });
   }, []);
 
-  const audioFeatures = {
-    danceability: 0.76,
-    energy: 0.964,
-    key: 2,
-    loudness: -5.844,
-    mode: 1,
-    speechiness: 0.0576,
-    acousticness: 0.00182,
-    instrumentalness: 0.7,
-    liveness: 0.0974,
-    valence: 0.641,
-    tempo: 125,
-    type: 'audio_features',
-    id: '62WEkOD8TUO7wzkolOQW9v',
-    uri: 'spotify:track:62WEkOD8TUO7wzkolOQW9v',
-    track_href: 'https://api.spotify.com/v1/tracks/62WEkOD8TUO7wzkolOQW9v',
-    analysis_url:
-      'https://api.spotify.com/v1/audio-analysis/62WEkOD8TUO7wzkolOQW9v',
-    duration_ms: 248036,
-    time_signature: 4,
-  };
+  // const audioFeatures = {
+  //   danceability: 0.76,
+  //   energy: 0.964,
+  //   key: 2,
+  //   loudness: -5.844,
+  //   mode: 1,
+  //   speechiness: 0.0576,
+  //   acousticness: 0.00182,
+  //   instrumentalness: 0.7,
+  //   liveness: 0.0974,
+  //   valence: 0.641,
+  //   tempo: 125,
+  //   type: 'audio_features',
+  //   id: '62WEkOD8TUO7wzkolOQW9v',
+  //   uri: 'spotify:track:62WEkOD8TUO7wzkolOQW9v',
+  //   track_href: 'https://api.spotify.com/v1/tracks/62WEkOD8TUO7wzkolOQW9v',
+  //   analysis_url:
+  //     'https://api.spotify.com/v1/audio-analysis/62WEkOD8TUO7wzkolOQW9v',
+  //   duration_ms: 248036,
+  //   time_signature: 4,
+  // };
 
   return (
     <Grid md={12} container item style={{ margin: '0px 20px' }}>
@@ -66,14 +74,14 @@ export default function SpAudioFeatures() {
                 <TableCell component="th" scope="row">
                   BPM (Tempo)
                 </TableCell>
-                <TableCell align="right">{audioFeatures.tempo}</TableCell>
+                <TableCell align="right">{audioFeatures?.tempo}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Pitch class (Key)
                 </TableCell>
                 <TableCell align="right">
-                  {audioFeatures.key
+                  {audioFeatures?.key
                     ? audioFeatures.key === 0
                       ? 'C'
                       : audioFeatures.key === 1
@@ -107,7 +115,7 @@ export default function SpAudioFeatures() {
                   Modality/Mode (Major/Minor)
                 </TableCell>
                 <TableCell align="right">
-                  {audioFeatures.mode === 0 ? 'Minor' : 'Major'}
+                  {audioFeatures?.mode === 0 ? 'Minor' : 'Major'}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -115,7 +123,7 @@ export default function SpAudioFeatures() {
                   Time Signature (How many beats in each bar)
                 </TableCell>
                 <TableCell align="right">
-                  {audioFeatures.time_signature}
+                  {audioFeatures?.time_signature}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -125,7 +133,7 @@ export default function SpAudioFeatures() {
       <Grid xs={6} item>
         <TableContainer component={Paper}>
           <div>
-            <RadarChart />
+            <RadarChart {...audioFeatures} />
           </div>
         </TableContainer>
       </Grid>

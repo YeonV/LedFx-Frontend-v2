@@ -1,21 +1,21 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 // import { useTheme } from '@mui/material/styles';
 import { DeleteForever } from '@material-ui/icons';
-import useStore from '../../../../../../utils/apiStore';
+// import useStore from '../../../../../../utils/apiStore';
 
 export default function SpotifyTriggerTable() {
-  const getSpotifyTriggers = useStore(
-    (state) => (state as any).getSpotifyTriggers
-  );
-  const spotifytriggers = useStore((state) => (state as any).spotifytriggers);
-  // const theme = useTheme();
+  // const getSpotifyTriggers = useStore(
+  //   (state) => (state as any).getSpotifyTriggers
+  // );
+  // const spotifytriggers = useStore((state) => (state as any).spotifytriggers);
+  // // const theme = useTheme();
 
-  useEffect(() => {
-    getSpotifyTriggers('spotify').then(
-      console.log('Spotify trigger', spotifytriggers)
-    );
-  }, []);
+  // useEffect(() => {
+  //   getSpotifyTriggers('spotify').then(
+  //     console.log('Spotify trigger', spotifytriggers)
+  //   );
+  // }, []);
 
   // const deleteSpotifyTrigger = useStore(
   //   (state) => (state as any).deleteSpotifyTrigger
