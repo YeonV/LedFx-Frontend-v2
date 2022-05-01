@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import useStore from '../../../../../../utils/apiStore';
 import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
-import RadarChart from '../SpSceneTrigger/SpAudioFeaturesRadarChart';
+import RadarChart from './SpAudioFeaturesRadarChart';
 
 export default function SpAudioFeatures() {
   const spotifyData = useStore(

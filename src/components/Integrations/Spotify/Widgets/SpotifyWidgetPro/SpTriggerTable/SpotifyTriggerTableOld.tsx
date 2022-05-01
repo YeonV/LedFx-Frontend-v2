@@ -12,16 +12,14 @@ import { DeleteForever } from '@material-ui/icons';
 import useStore from '../../../../../../utils/apiStore';
 
 export default function SpotifyTriggerTableOld() {
-  const getSpotifyTriggers = useStore(
-    (state) => (state as any).getSpotifyTriggers
-  );
-  const spotifytriggers = useStore((state) => (state as any).spotifytriggers);
-  // const theme = useTheme();
-
+  const SpotifyId = 'spotify';
+  const { setSpotifyData }: any = useStore((state: any) => state);
+  const { getSpotifyTriggers }: any = useStore((state: any) => state);
+  // const { spotifytriggers }: any = useStore((state: any) => state);
   useEffect(() => {
-    getSpotifyTriggers('spotify').then(
-      console.log('Spotify trigger', spotifytriggers)
-    );
+    getSpotifyTriggers.call(null, SpotifyId).then((res: any) => {
+      setSpotifyData(res);
+    });
   }, []);
 
   // const deleteSpotifyTrigger = useStore(
