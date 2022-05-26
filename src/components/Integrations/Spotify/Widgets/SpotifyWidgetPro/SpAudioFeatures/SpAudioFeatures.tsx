@@ -25,13 +25,19 @@ export default function SpAudioFeatures() {
   // );
   const spotifyToken = useStore((state) => (state as any).spotifyAuthToken);
   const { setSpotifyData }: any = useStore((state: any) => state);
-  const { audioFeatures } = useStore((state) => (state as any).spotifyData);
+  const { audioFeatures, playerState } = useStore(
+    (state) => (state as any).spotifyData
+  );
+
+  const meta = playerState?.context?.metadata?.current_item?.name;
+
   useEffect(() => {
-    getTrackFeatures(songID, spotifyToken).then((res) => {
-      console.log(res);
-      setSpotifyData('audioFeatures', res);
-    });
-  }, []);
+    if (songID)
+      getTrackFeatures(songID, spotifyToken).then((res) => {
+        console.log(res);
+        setSpotifyData('audioFeatures', res);
+      });
+  }, [meta]);
 
   // const audioFeatures = {
   //   danceability: 0.76,
@@ -132,7 +138,7 @@ export default function SpAudioFeatures() {
       </Grid>
       <Grid xs={6} item>
         <TableContainer component={Paper}>
-          <div>
+          <div style={{ padding: '20px 0px' }}>
             <RadarChart {...audioFeatures} />
           </div>
         </TableContainer>
