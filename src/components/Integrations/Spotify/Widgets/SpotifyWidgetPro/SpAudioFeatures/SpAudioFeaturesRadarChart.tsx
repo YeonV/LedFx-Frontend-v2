@@ -1,15 +1,6 @@
 // import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Radar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 
 const RadarChartContainer = styled.div`
     width: 550px;
@@ -27,14 +18,14 @@ const RadarChartContainer = styled.div`
 
 export default function RadarChart(props: any) {
   const TrackFeatures = props;
-  ChartJS.register(
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend
-  );
+  // ChartJS.register(
+  //   RadialLinearScale,
+  //   PointElement,
+  //   LineElement,
+  //   Filler,
+  //   Tooltip,
+  //   Legend
+  // );
 
   const data = {
     labels: [
