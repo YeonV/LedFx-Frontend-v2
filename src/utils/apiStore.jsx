@@ -579,14 +579,26 @@ const useStore = create(
 
       spotifytriggers: {},
       getSpotifyTriggers: async (SpotifyId) => {
-        const resp = await Ledfx(`/api/integrations/spotify/${SpotifyId}`, set);
-        const res = await resp.json()
-        if (res) {
-          set({ spotify: res });
+        const resp = await Ledfx(`/api/integrations`, set, 'GET');
+        console.log(resp)
+        // const res = await resp.json()
+        if (resp) {
+          set({ spotify: resp });
         }
       },
-      addSpotifySongTrigger: async ({scene_id, song_id, song_name, song_position}) => await Ledfx(
-        `/api/integrations/spotify/${SpotifyId}`,
+      spotifyTriggersList: [],
+      addToTriggerList: async (newTrigger,type) => {
+        switch(type){
+          case 'create':
+            set(state=>({spotifyTriggersList: [...newTrigger]}))
+          break;
+          case 'update':
+            set(state=>({spotifyTriggersList: [...state.spotifyTriggersList, newTrigger]}))
+          break;
+      }
+      },
+      addSpotifySongTrigger: async ({scene_id, song_id, song_name, song_position}) =>{ await Ledfx(
+        `/api/integrations/spotify/spotify`,
         set,
         'POST',
         {
@@ -595,18 +607,24 @@ const useStore = create(
           song_name: song_name,
           song_position: song_position,
         },
-      ),
+      )
+      set(state=>state.getIntegrations())
+    },
       toggleSpotifyTrigger: async (config) => await Ledfx(
         `/api/integrations/spotify/${SpotifyId}`,
         set,
         'PUT',
         config,
       ),
-      deleteSpotifyTrigger: async (config) => await Ledfx(
-        `/api/integrations/spotify/${SpotifyId}`,
+      deleteSpotifyTrigger: async (config) => {await Ledfx(
+        `/api/integrations/spotify/spotify`,
         set,
         'DELETE',
-      ),
+        config
+      )
+      set(state=>state.getIntegrations())
+    
+    },
 
       schemas: {},
       getSchemas: async () => {

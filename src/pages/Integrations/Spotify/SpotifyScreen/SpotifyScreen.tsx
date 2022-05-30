@@ -17,7 +17,7 @@ import {
 import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
 // import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTable';
-import SpotifyTriggerTableOld from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTableOld';
+// import SpotifyTriggerTableOld from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTableOld';
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
 import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable/SpotifyTriggerTable';
 
@@ -80,33 +80,35 @@ export default function SpotifyScreen({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <Button
-              autoFocus
-              color="primary"
-              variant="contained"
-              startIcon={<NavigateBefore />}
-              onClick={handleClose}
-              style={{ marginRight: '1rem' }}
-            >
-              back
-            </Button>
-            <Typography variant="h6" className={classes.title}>
-              Spotify
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <SpotifyWidgetPro />
-        <SpAudioFeatures />
-        <div style={{ marginTop: '2rem' }} />
-        <SpotifyTriggerTableOld />
-        <div style={{ marginTop: '2rem' }} />
-        <SpotifyTriggerTable />
+        <div>
+          <AppBar className={classes.appBar}>
+            <Toolbar>
+              <Button
+                autoFocus
+                color="primary"
+                variant="contained"
+                startIcon={<NavigateBefore />}
+                onClick={handleClose}
+                style={{ marginRight: '1rem' }}
+              >
+                back
+              </Button>
+              <Typography variant="h6" className={classes.title}>
+                Spotify
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <SpotifyWidgetPro />
+          <SpAudioFeatures />
+          {/* <div style={{ marginTop: '2rem' }} />
+          <SpotifyTriggerTableOld /> */}
+          <div style={{ marginTop: '2rem' }} />
+          <SpotifyTriggerTable />
 
-        {/* <SpotifyWidgetSmall  />
+          {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />
         <SpotifyWidgetDev  /> */}
+        </div>
       </Dialog>
     </>
   );

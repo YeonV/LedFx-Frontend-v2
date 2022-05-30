@@ -171,7 +171,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    setThePlayer(spotifyPlayer)
+    // setThePlayer(spotifyPlayer)
   }, []);
 
   const HashRouter = () => <Router basename={process.env.PUBLIC_URL}>

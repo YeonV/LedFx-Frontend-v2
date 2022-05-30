@@ -15,7 +15,7 @@ export default function SpSceneTrigger() {
   const spotifyData = useStore(
     (state) => (state as any).spotifyData.playerState
   );
-  const { addSpotifyTrigger } = useStore((state: any) => state);
+  const { addSpotifySongTrigger } = useStore((state: any) => state);
   const songID = spotifyData?.track_window?.current_track?.id || '';
   const songTitleAndArtist = `${spotifyData?.track_window?.current_track?.name} - ${spotifyData?.track_window?.current_track?.artists[0]?.name}`;
   const spotifyTriggerData = {
@@ -23,6 +23,10 @@ export default function SpSceneTrigger() {
     song_id: songID,
     song_name: songTitleAndArtist,
     song_position: spotifyPos,
+  };
+
+  const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
+    addSpotifySongTrigger(spotifyTriggerDataTemp);
   };
 
   return (
@@ -38,7 +42,7 @@ export default function SpSceneTrigger() {
       onConfirm={() =>
         // eslint-disable-next-line no-console
         // console.log(spotifyTriggerData)
-        addSpotifyTrigger(spotifyTriggerData)
+        onConfirmHandler(spotifyTriggerData)
       }
       content={
         <div>
