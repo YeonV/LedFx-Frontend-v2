@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie/es6';
 import getPkce from 'oauth-pkce';
 import isElectron from 'is-electron';
 import { Login, Logout } from '@mui/icons-material';
-import useStore from '../../../utils/apiStore';
+import useStore from '../../../store/useStore';
 import {
   finishAuth,
   refreshAuth,

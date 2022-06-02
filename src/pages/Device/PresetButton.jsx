@@ -4,7 +4,7 @@ import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@material-ui
 import { useLongPress } from 'use-long-press';
 import { CloudOff, CloudUpload } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { CopyAll } from '@mui/icons-material';
 
 const useStyles = makeStyles((theme) => ({

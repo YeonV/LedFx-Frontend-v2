@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { AddPhotoAlternate } from '@material-ui/icons';
 import { MenuItem, Select, Checkbox, InputAdornment } from '@material-ui/core';
 import { OutlinedInput } from '@mui/material';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 
 import { formatTime } from '../../../../../utils/helpers';
 import Popover from '../../../../Popover/Popover';

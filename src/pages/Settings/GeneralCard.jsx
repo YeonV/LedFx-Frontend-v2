@@ -1,4 +1,4 @@
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { deleteFrontendConfig, download } from '../../utils/helpers';
 import { CloudUpload, CloudDownload, PowerSettingsNew, Delete, Refresh, Info } from '@material-ui/icons';
 import PopoverSure from '../../components/Popover/Popover';

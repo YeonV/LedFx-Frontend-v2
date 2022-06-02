@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { Accordion, AccordionSummary, Typography, AccordionDetails } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import AudioCard from './AudioCard';
@@ -15,8 +15,8 @@ const Settings = () => {
 
   const classes = useStyles();
   const features = useStore((state) => state.features);
-  const settingsExpanded = useStore((state) => state.settingsExpanded);
-  const setSettingsExpanded = useStore((state) => state.setSettingsExpanded);
+  const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
+  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
   const loc = useLocation()
 
   const handleExpanded = (panel, event, isExpanded) => {

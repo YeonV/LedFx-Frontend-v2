@@ -6,7 +6,7 @@ import PopoverSure from '../../../components/Popover/Popover';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
-import useStore from '../../../utils/apiStore';
+import useStore from '../../../store/useStore';
 import { swap } from '../../../utils/helpers';
 import { useSegmentStyles } from './Segment.styles'
 

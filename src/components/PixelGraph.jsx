@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import useStore from '../utils/apiStore';
+import useStore from '../store/useStore';
 
 const useStyles = makeStyles((theme) => ({
   PixelWrapper: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 const PixelGraph = ({ virtId, dummy=false, className, active = false, intGraphs }) => {
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
-  const pixelGraphs = useStore((state) => state.pixelGraphs);
+  const pixelGraphs = useStore((state) => state.ui.pixelGraphs);
   const virtuals = useStore((state) => state.virtuals);
   const graphs = useStore((state) => state.graphs);
 

@@ -1,5 +1,5 @@
 import { Rnd } from 'react-rnd';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 
 const SpFloating = ({ children }: any) => {
   const swWidth = useStore((state) => (state as any).swWidth);

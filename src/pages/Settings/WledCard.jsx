@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, CardContent, InputLabel, MenuItem, FormControl, Checkbox, Icon, TextField, Select,  Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Wled from '../../components/Icons/Wled';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 
 const useStyles = makeStyles({
     content: {

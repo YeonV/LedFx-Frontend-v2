@@ -14,7 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import { Button, CardActions, Chip, OutlinedInput, Select } from '@material-ui/core';

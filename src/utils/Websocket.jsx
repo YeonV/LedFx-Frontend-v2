@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import useStore from './apiStore';
+import useStore from '../store/useStore';
 import Sockette from 'sockette';
 import isElectron from 'is-electron';
 
@@ -83,8 +83,8 @@ export const WsContext = React.createContext(ws);
 export const HandleWs = () => {
   const { pathname } = useLocation();
   const virtuals = useStore((state) => state.virtuals);
-  const pixelGraphs = useStore((state) => state.pixelGraphs);
-  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const pixelGraphs = useStore((state) => state.ui.pixelGraphs);
+  const setPixelGraphs = useStore((state) => state.ui.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
   const [wsReady, setWsReady] = useState(false)
 

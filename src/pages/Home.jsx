@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import logoCircle from '../assets/ring.png';
 import TourHome from '../components/Tours/TourHome';
-import useStore from '../utils/apiStore';
+import useStore from '../store/useStore';
 import FX from "../components/Icons/FX";
 import { deleteFrontendConfig } from "../utils/helpers";
 import ButtonBar from "../components/ButtonBar";

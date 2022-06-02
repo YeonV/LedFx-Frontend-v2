@@ -3,7 +3,7 @@ import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { VolumeDown, VolumeMute, VolumeUp } from '@material-ui/icons';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 import { VolSliderStyles } from './SpWidgetPro.styles';
 
 export default function SpVolume() {

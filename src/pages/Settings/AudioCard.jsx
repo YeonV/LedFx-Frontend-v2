@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import BladeSchemaForm from "../../components/SchemaForm/SchemaForm/SchemaForm";
 
 const AudioCard = ({ className }) => {

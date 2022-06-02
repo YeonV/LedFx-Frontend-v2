@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 import useStyle, { CoverImage } from './SpWidgetPro.styles';
 
 export default function SpTrack({ className }: any) {

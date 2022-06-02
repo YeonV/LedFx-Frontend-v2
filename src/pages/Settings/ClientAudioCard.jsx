@@ -1,6 +1,6 @@
 import { MenuItem, Select } from '@material-ui/core';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({

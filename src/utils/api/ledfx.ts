@@ -4,7 +4,7 @@ import produce from 'immer';
 import isElectron from 'is-electron';
 // import { useStore } from '@/store/useStore';
 // eslint-disable-next-line import/no-cycle
-import useStore from './apiStore';
+import useStore from '../../store/useStore';
 
 // eslint-disable-next-line prettier/prettier
 const baseURL = isElectron() ? 'http://localhost:8888' : window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0] || 'http://localhost:8888';
@@ -19,7 +19,7 @@ export const Ledfx = async (
   path: string,
   method?: 'GET' | 'PUT' | 'POST' | 'DELETE',
   body?: any
-) => {
+): Promise<any> => {
   const { setState } = useStore;
   try {
     let response = null as any;

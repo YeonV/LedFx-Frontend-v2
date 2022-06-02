@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { Link, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from '@material-ui/core';
 
 const AddSceneDialog = () => {  
