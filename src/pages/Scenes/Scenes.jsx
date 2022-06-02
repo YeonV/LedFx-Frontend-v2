@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Divider, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Card, CardActionArea, CardActions, CardMedia, Icon, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';

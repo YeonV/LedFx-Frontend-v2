@@ -2,7 +2,7 @@
 import { Fab } from '@material-ui/core';
 import { useEffect, useState, useRef } from 'react';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
-import useStore from '../../../utils/apiStore';
+import useStore from '../../../store/useStore';
 import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useStore from '../../../utils/apiStore';
+import useStore from '../../../store/useStore';
 import DeviceCard from './DeviceCard'
 
 const DeviceCardWrapper = ({ virtual, index }) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useStore from '../../../utils/apiStore';
+import useStore from '../../../store/useStore';
 import { useTheme } from '@material-ui/core/styles';
 import { useEditVirtualsStyles } from '../../Devices/EditVirtuals/EditVirtuals.styles'
 import { AppBar, Button, Card, CardHeader, Dialog, Grid, IconButton, ListItemIcon, Toolbar, Typography } from '@material-ui/core';

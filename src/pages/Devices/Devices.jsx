@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import DeviceCard from './DeviceCard/DeviceCard.wrapper';
 import NoYet from '../../components/NoYet';
 import ws from "../../utils/Websocket";
@@ -26,7 +26,7 @@ const Devices = () => {
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
-  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const setPixelGraphs = useStore((state) => state.ui.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
 
   useEffect(() => {

@@ -8,7 +8,7 @@ import Slide from '@material-ui/core/Slide';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import { getOverlapping } from "../../../utils/helpers";
-import useStore from '../../../utils/apiStore';
+import useStore from '../../../store/useStore';
 
 import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog';
 import Segment from './Segment';

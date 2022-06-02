@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { BottomNavigation, BottomNavigationAction, Backdrop } from '@material-ui/core';
 import { Settings, Home, Wallpaper, SettingsInputSvideo, SettingsInputComponent } from '@material-ui/icons';
 import { useLocation, Link } from 'react-router-dom';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import clsx from 'clsx';
 import AddSceneDialog from '../Dialogs/AddSceneDialog';
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog';

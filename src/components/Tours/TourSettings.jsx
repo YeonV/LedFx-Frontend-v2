@@ -2,7 +2,7 @@ import { useLayoutEffect, useState } from 'react';
 import { MenuItem, ListItemIcon, Badge } from '@material-ui/core';
 import Tour from 'reactour';
 import { InfoRounded } from '@material-ui/icons';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { useLocation } from 'react-router-dom';
 import gif from '../../assets/transitions.gif';
 
@@ -135,8 +135,8 @@ const TourSettings = ({ cally }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const setTour = useStore((state) => state.setTour);
   const invisible = useStore((state) => state.tours.settings);
-  const settingsExpanded = useStore((state) => state.settingsExpanded);
-  const setSettingsExpanded = useStore((state) => state.setSettingsExpanded);
+  const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
+  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
   const features = useStore((state) => state.features);
 
   useLayoutEffect(()=>{

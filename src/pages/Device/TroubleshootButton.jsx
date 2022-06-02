@@ -2,7 +2,7 @@ import { useState, forwardRef } from 'react';
 import { Button, Dialog, AppBar, Toolbar, Typography, Slide, Divider, Icon, Grid, CircularProgress } from '@material-ui/core';
 import { BugReport, NavigateBefore } from '@material-ui/icons';
 import { useTroubleshootStyles } from './Troubleshoot.styles';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import Wled from '../../components/Icons/Wled';
 import Moment from 'react-moment';
 import moment from 'moment';

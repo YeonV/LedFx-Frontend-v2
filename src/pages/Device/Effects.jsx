@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { Button, Card, CardContent, Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core/';
 import { Casino, Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper';
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm';
 import PixelGraph from '../../components/PixelGraph';
@@ -52,7 +52,7 @@ const EffectsCard = ({ virtId }) => {
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const virtuals = useStore((state) => state.virtuals);
   const effects = useStore((state) => state.schemas.effects);
-  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const setPixelGraphs = useStore((state) => state.ui.setPixelGraphs);
   const viewMode = useStore((state) => state.viewMode);
   const updateVirtual = useStore((state) => state.updateVirtual);
   const features = useStore((state) => state.features);

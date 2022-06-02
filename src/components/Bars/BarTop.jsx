@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useState, useEffect } from 'react';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { AppBar, Box, Badge, Toolbar, CircularProgress, Typography, IconButton, Menu, MenuItem, ListItemIcon, Button } from '@material-ui/core';
@@ -80,7 +80,7 @@ const TopBar = () => {
   const setDisconnected = useStore((state) => state.setDisconnected);
   const { pathname } = useLocation();
   const history = useNavigate();
-  const clearSnackbar = useStore((state) => state.clearSnackbar);
+  const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
   const features = useStore((state) => state.features);
 
   const [loading, setLoading] = useState(true);

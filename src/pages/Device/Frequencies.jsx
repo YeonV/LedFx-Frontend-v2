@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
-import useStore from "../../utils/apiStore";
+import useStore from "../../store/useStore";
 import Slider from '@material-ui/core/Slider';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';

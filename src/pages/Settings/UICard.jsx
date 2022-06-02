@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Input } from '@material-ui/core';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { useLongPress } from 'use-long-press';
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles';
 import { useStyles, SettingsSlider, SettingsSwitch } from './SettingsComponents'

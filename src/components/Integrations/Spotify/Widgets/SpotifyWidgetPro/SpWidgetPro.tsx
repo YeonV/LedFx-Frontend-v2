@@ -5,7 +5,7 @@ import SpControls from './SpControls';
 import SpTrack from './SpTrack';
 import SpVolume from './SpVolume';
 import SpSceneTrigger from './SpSceneTrigger';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 import SpLayoutButtons from './SpLayoutButtons';
 import SpFloating from './SpFloating';
 

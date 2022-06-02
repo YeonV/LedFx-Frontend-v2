@@ -13,7 +13,7 @@ import {
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
 
 import { formatTime } from '../../../../../utils/helpers';

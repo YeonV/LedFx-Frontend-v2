@@ -3,7 +3,7 @@ import { Check, Close } from '@material-ui/icons';
 import { useState, useEffect, useRef } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import ws from "../../utils/Websocket";
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 
 const getMedia = async (clientDevice) => {
 

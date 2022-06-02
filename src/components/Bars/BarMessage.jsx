@@ -1,7 +1,7 @@
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Icon, IconButton, Button } from '@material-ui/core';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { Close } from '@material-ui/icons';
@@ -10,7 +10,7 @@ const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
 const MessageBar = () => {
   const { isOpen, messageType, message } = useStore((state) => state.ui.snackbar);
-  const clearSnackbar = useStore((state) => state.clearSnackbar);
+  const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   function handleClose() {

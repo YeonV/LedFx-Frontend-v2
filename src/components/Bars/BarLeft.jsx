@@ -3,7 +3,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ListItem, ListItemIcon, ListItemText, Drawer, List, Icon, Divider, IconButton } from '@material-ui/core';
 import { useLocation, Link } from 'react-router-dom';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon';

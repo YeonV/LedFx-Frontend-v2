@@ -5,7 +5,7 @@ import { BrowserRouter, HashRouter as Router, Routes, Route } from 'react-router
 import { Switch } from 'react-router';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
-import useStore from './utils/apiStore';
+import useStore from './store/useStore';
 import ScrollToTop from './utils/scrollToTop';
 import ws, { WsContext, HandleWs } from './utils/Websocket';
 import {

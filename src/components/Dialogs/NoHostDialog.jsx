@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, Box, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 // import { deleteFrontendConfig } from '../../utils/helpers';
 // import LinearProgressWithLabel from './Download';
 import isElectron from 'is-electron';

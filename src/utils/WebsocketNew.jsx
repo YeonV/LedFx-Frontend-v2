@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import useStore from './apiStore';
+import useStore from '../store/useStore';
 import Sockette from 'sockette';
 import isElectron from 'is-electron';
 

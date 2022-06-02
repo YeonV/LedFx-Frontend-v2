@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useStore from '../../utils/apiStore';
+import useStore from '../../store/useStore';
 import { Button, Card, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Link, Typography } from '@material-ui/core';
 import fversion from '../../../package.json';
 import GitInfo from 'react-git-info/macro';
