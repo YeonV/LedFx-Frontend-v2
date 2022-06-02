@@ -24,7 +24,7 @@ const IntegrationCardSpotify = ({ integration }) => {
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
+  const spotifyAuthenticated = useStore((state) => state.spotifyAuthenticated);
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
   const thePlayer = useStore((state) => state.thePlayer);
 
@@ -71,7 +71,7 @@ const IntegrationCardSpotify = ({ integration }) => {
             aria-label="status"
             checked={integrations[integration].active}
             onClick={async() => {
-              if (window.Spotify && thePlayer.current && isAuthenticated) {
+              if (window.Spotify && thePlayer.current && spotifyAuthenticated) {
                 if (!integrations[integration].active) {
                   await thePlayer.current.connect()
                 } else {
@@ -121,7 +121,7 @@ const IntegrationCardSpotify = ({ integration }) => {
               size="small"
               color={color}
               className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              disabled={integrations[integration].status !== 1 || !spotifyAuthenticated}
               onClick={() => console.log('coming soon...')}
             >
               <AddIcon />
@@ -131,7 +131,7 @@ const IntegrationCardSpotify = ({ integration }) => {
               variant={variant}
               color={color}
               className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              disabled={integrations[integration].status !== 1 || !spotifyAuthenticated}
             />
           </div>
         </div>
@@ -164,7 +164,7 @@ const IntegrationCardSpotify = ({ integration }) => {
               variant={variant}
               color={color}
               className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !isAuthenticated}
+              disabled={integrations[integration].status !== 1 || !spotifyAuthenticated}
             />
           </div>
         </Collapse>
