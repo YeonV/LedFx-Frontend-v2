@@ -22,12 +22,16 @@ export default function AboutDialog({ className, children, startIcon, title }) {
     };
 
     useEffect(async () => {
-        if (open) {
+        async function fetchData() {
             const info = await getInfo()
             if (info && info.git_build_commit) {
                 setBcommit(info.git_build_commit)
                 setBversion(info.version)
             }
+          }
+        
+        if (open) {
+            fetchData()
         }
     }, [open])
 

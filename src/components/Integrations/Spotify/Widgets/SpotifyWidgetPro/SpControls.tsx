@@ -16,7 +16,7 @@ import { Button } from '@material-ui/core';
 import useStore from '../../../../../utils/apiStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
 
-import { formatTime } from '../../../../../utils/utils';
+import { formatTime } from '../../../../../utils/helpers';
 import {
   spotifyRepeat,
   spotifyShuffle,

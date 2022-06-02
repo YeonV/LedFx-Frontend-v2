@@ -5,7 +5,7 @@ import { MenuItem, Select, Checkbox, InputAdornment } from '@material-ui/core';
 import { OutlinedInput } from '@mui/material';
 import useStore from '../../../../../utils/apiStore';
 
-import { formatTime } from '../../../../../utils/utils';
+import { formatTime } from '../../../../../utils/helpers';
 import Popover from '../../../../Popover/Popover';
 
 export default function SpSceneTrigger() {
