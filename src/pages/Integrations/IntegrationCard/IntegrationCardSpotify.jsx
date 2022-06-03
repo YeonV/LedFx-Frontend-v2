@@ -8,6 +8,7 @@ import useStore from '../../../utils/apiStore';
 import Popover from '../../../components/Popover/Popover';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import {
   CardActions,
@@ -55,17 +56,17 @@ const IntegrationCardSpotify = ({ integration }) => {
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={integrations[integration].config.description}
-        // subheader={integrations[integration].status === 3
-        //     ? 'Connecting...'
-        //     : integrations[integration].status === 2
-        //     ? 'Disconnecting'
-        //     : integrations[integration].status === 1
-        //     ? 'Connected'
-        //     : integrations[integration].status === 0
-        //     ? 'Disconnected'
-        //     : 'Unknown'
-        // }
+        // subheader={integrations[integration].config.description}
+         subheader={integrations[integration].status === 3
+             ? 'Connecting...'
+             : integrations[integration].status === 2
+             ? 'Disconnecting'
+             : integrations[integration].status === 1
+             ? 'Connected'
+             : integrations[integration].status === 0
+             ? 'Disconnected'
+             : 'Unknown'
+         }
         action={
           <Switch
             aria-label="status"
@@ -84,7 +85,7 @@ const IntegrationCardSpotify = ({ integration }) => {
         }
       />
      
-      {/* <Typography>{integrations[integration].config.description}</Typography> */}
+      <Typography>{integrations[integration].config.description}</Typography>
 
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>        

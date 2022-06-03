@@ -4,6 +4,7 @@ import useStore from '../../utils/apiStore';
 import IntegrationCard from './IntegrationCard/IntegrationCard';
 import NoYet from '../../components/NoYet';
 import IntegrationCardSpotify from './IntegrationCard/IntegrationCardSpotify';
+import IntegrationCardQLC from './IntegrationCard/IntegrationCardQLC';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
@@ -29,6 +30,8 @@ const Integrations = () => {
     {integrations && Object.keys(integrations).length ? Object.keys(integrations).map((integration, i) => 
       integrations[integration].type === 'spotify' 
         ? <IntegrationCardSpotify integration={integration} key={i} />
+        : integrations[integration].type === 'qlc'
+          ? <IntegrationCardQLC integration={integration} key={i} />
         : <IntegrationCard integration={integration} key={i} />
     ) : <NoYet type="Integration" />}
   </div>
