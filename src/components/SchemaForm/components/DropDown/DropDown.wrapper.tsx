@@ -32,9 +32,7 @@ const EffectDropDown = ({
     }, {});
 
   const onEffectTypeChange = (e: any) =>
-    setVirtualEffect(virtual.id, {
-      type: e.target.value,
-    }).then(() => {
+    setVirtualEffect(virtual.id, e.target.value).then(() => {
       getVirtuals();
     });
 

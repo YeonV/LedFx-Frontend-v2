@@ -1,13 +1,21 @@
-/* eslint-disable import/no-cycle */
 /* eslint-disable no-return-await */
-import { Ledfx } from '../../utils/api/ledfx';
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-cycle */
+import produce from 'immer';
+import { Ledfx } from '../../api/ledfx';
 
-const storeApiDevices = (set: any) => ({
+const storeDevices = (set: any) => ({
   devices: {},
   getDevices: async () => {
     const resp = await Ledfx('/api/devices');
     if (resp && resp.devices) {
-      set({ devices: resp.devices }, false, 'api/gotDevices');
+      set(
+        produce((state: any) => {
+          state.devices = resp.devices;
+        }),
+        false,
+        'api/gotDevices'
+      );
     }
   },
   getDevice: async (deviceId: string) => {
@@ -28,9 +36,22 @@ const storeApiDevices = (set: any) => ({
   activateDevice: async (deviceId: string) => {
     const resp = await Ledfx(`/api/devices/${deviceId}`, 'POST', {});
     if (resp) {
-      set({ paused: resp.paused }, false, 'api/gotPausedState');
+      set(
+        produce((state: any) => {
+          state.paused = resp.paused;
+        }),
+        false,
+        'api/gotPausedState'
+      );
+
       if (resp && resp.virtuals) {
-        set({ virtuals: resp.virtuals }, false, 'api/gotVirtuals');
+        set(
+          produce((state: any) => {
+            state.virtuals = resp.virtuals;
+          }),
+          false,
+          'api/gotVirtuals'
+        );
       }
     }
   },
@@ -38,4 +59,4 @@ const storeApiDevices = (set: any) => ({
     await Ledfx(`/api/devices/${deviceId}`, 'PUT', config),
 });
 
-export default storeApiDevices;
+export default storeDevices;

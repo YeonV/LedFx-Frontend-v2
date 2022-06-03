@@ -52,8 +52,8 @@ const EffectsCard = ({ virtId }) => {
   const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
   const virtuals = useStore((state) => state.virtuals);
   const effects = useStore((state) => state.schemas.effects);
-  const setPixelGraphs = useStore((state) => state.ui.setPixelGraphs);
-  const viewMode = useStore((state) => state.viewMode);
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
+  const viewMode = useStore((state) => state.ui.viewMode);
   const updateVirtual = useStore((state) => state.updateVirtual);
   const features = useStore((state) => state.features);
   
@@ -93,11 +93,11 @@ const EffectsCard = ({ virtId }) => {
 
   const handleEffectConfig = (virtId, config) =>{
     if (updateVirtualEffect && getVirtuals !== undefined) {
-      updateVirtualEffect(virtId, {
-        virtId: virtId,
-        type: effectType,
+      updateVirtualEffect(
+        virtId,
+        effectType,
         config,
-      }).then(() => {
+      ).then(() => {
         getVirtuals();
       });
     }}

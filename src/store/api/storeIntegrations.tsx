@@ -1,12 +1,21 @@
 /* eslint-disable no-return-await */
-import { Ledfx } from '../../utils/api/ledfx';
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-cycle */
+import produce from 'immer';
+import { Ledfx } from '../../api/ledfx';
 
-const storeIntegrations = (get: any, set: any) => ({
+const storeIntegrations = (set: any) => ({
   integrations: {},
   getIntegrations: async () => {
     const resp = await Ledfx('/api/integrations');
     if (resp && resp.integrations) {
-      set({ integrations: resp.integrations });
+      set(
+        produce((s: any) => {
+          s.integrations = resp.integrations;
+        }),
+        false,
+        'gotIntegrations'
+      );
     }
   },
   addIntegration: async (config: any) =>

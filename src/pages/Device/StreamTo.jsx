@@ -54,12 +54,9 @@ const StreamToCard = ({ virtual, virtuals, style }) => {
 
   const handleEffectConfig = (virtual_id, config, selectedType) =>   setVirtualEffect(
     virtual_id,
-    {
-      virtId: virtual_id,
-      type: selectedType,
-      config: config,
-      active: true
-    }
+    selectedType,
+    config,
+    true
   ).then(() => getVirtuals());
 
 

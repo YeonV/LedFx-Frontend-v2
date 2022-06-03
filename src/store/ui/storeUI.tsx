@@ -57,26 +57,6 @@ const storeUI = (set: any) => ({
       false,
       'ui/settingsExpanded'
     ),
-
-  viewMode: 'user',
-  setViewMode: (mode: string): void =>
-    set(
-      produce((state: any) => {
-        state.ui.viewMode = mode;
-      }),
-      false,
-      'ui/setViewMode'
-    ),
-
-  pixelGraphs: [],
-  setPixelGraphs: (virtuals: any): void =>
-    set(
-      produce((state: any) => {
-        state.ui.pixelGraphs = [...virtuals];
-      }),
-      false,
-      'ui/setPixelGraphs'
-    ),
 });
 
 export default storeUI;

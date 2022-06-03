@@ -30,7 +30,7 @@ const GradientPicker = ({
   const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor);
 
   const defaultColors: any = {};
-  if (colors.gradients && colors.colors) {
+  if (colors && colors.gradients && colors.colors) {
     Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
       defaultColors[k] = g;
     });

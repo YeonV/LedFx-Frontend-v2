@@ -26,7 +26,7 @@ const Devices = () => {
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
-  const setPixelGraphs = useStore((state) => state.ui.setPixelGraphs);
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
 
   useEffect(() => {

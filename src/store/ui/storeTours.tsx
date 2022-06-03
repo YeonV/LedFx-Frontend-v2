@@ -8,10 +8,10 @@ const storeTours = (set: any) => ({
   integrations: false,
   scenes: false,
   settings: false,
-  setTour: (tour: string, open: boolean): void =>
+  setTour: (tour: string): void =>
     set(
       produce((state: any) => {
-        state.tours[tour] = open;
+        state.tours[tour] = true;
       }),
       false,
       'ui/setTour'

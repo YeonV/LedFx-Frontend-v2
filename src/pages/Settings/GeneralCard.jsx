@@ -43,7 +43,7 @@ const GeneralCard = () => {
     }
 
     const onSystemSettingsChange = (setting, value) => {
-        setSystemConfig({ config: { [setting]: value } }).then(() => getSystemConfig());
+        setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
     }
 
     return (
