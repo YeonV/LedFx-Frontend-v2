@@ -12,7 +12,7 @@ const UICard = () => {
     const config = useStore((state) => state.config);
     const getSystemConfig = useStore((state) => state.getSystemConfig);
     const setSystemConfig = useStore((state) => state.setSystemConfig);
-    const viewMode = useStore((state) => state.viewMode);
+    const viewMode = useStore((state) => state.ui.viewMode);
     const setViewMode = useStore((state) => state.setViewMode);
     const graphs = useStore((state) => state.graphs);
     const toggleGraphs = useStore((state) => state.toggleGraphs);
@@ -31,7 +31,7 @@ const UICard = () => {
     });    
 
     const setSystemSetting = (setting, value) => {
-        setSystemConfig({ config: { [setting]: value } }).then(() => getSystemConfig());
+        setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
     }
 
     useEffect(() => {

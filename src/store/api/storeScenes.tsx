@@ -1,12 +1,21 @@
 /* eslint-disable no-return-await */
-import { Ledfx } from '../../utils/api/ledfx';
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-cycle */
+import produce from 'immer';
+import { Ledfx } from '../../api/ledfx';
 
-const storeScenes = (get: any, set: any) => ({
+const storeScenes = (set: any) => ({
   scenes: {},
   getScenes: async () => {
     const resp = await Ledfx('/api/scenes');
     if (resp && resp.scenes) {
-      set({ scenes: resp.scenes });
+      set(
+        produce((s: any) => {
+          s.scenes = resp.scenes;
+        }),
+        false,
+        'gotScenes'
+      );
     }
   },
   addScene: async (name: string, scene_image: string) =>

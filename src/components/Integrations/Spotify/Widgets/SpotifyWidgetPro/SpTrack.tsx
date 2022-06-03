@@ -6,7 +6,7 @@ import useStyle, { CoverImage } from './SpWidgetPro.styles';
 export default function SpTrack({ className }: any) {
   const classes = useStyle();
   const spotifyData = useStore(
-    (state) => (state as any).spotifyData.playerState
+    (state: any) => state.spotify.spotifyData.playerState
   );
   const title = spotifyData?.track_window?.current_track?.name || 'Not playing';
   const image =

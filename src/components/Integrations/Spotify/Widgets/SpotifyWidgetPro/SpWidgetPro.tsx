@@ -11,7 +11,7 @@ import SpFloating from './SpFloating';
 
 const SpotifyWidgetPro = ({ drag }: any) => {
   const classes = useStyle();
-  const swSize = useStore((state) => (state as any).swSize);
+  const swSize = useStore((state: any) => state.spotify.swSize);
 
   return (
     <Box component={drag ? SpFloating : undefined}>

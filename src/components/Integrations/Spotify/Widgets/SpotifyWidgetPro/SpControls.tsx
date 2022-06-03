@@ -28,7 +28,7 @@ export default function SpControls({ className }: any) {
   const classes = useStyle();
 
   const spotifyData = useStore(
-    (state) => (state as any).spotifyData.playerState
+    (state: any) => state.spotify.spotifyData.playerState
   );
   const duration = spotifyData?.duration || 0;
   const paused = spotifyData?.paused || false;
@@ -36,12 +36,12 @@ export default function SpControls({ className }: any) {
   const shuffle = spotifyData?.shuffle || false;
   const hijack = spotifyData?.track_window?.current_track?.album.name || '';
 
-  const spotifyDevice = useStore((state) => (state as any).spotifyDevice);
-  const spotifyVol = useStore((state) => (state as any).spotifyVol);
-  const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
-  const spotifyPos = useStore((state) => (state as any).spotifyPos);
-  const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
-  const thePlayer = useStore((state) => (state as any).thePlayer);
+  const spotifyDevice = useStore((state: any) => state.spotify.spotifyDevice);
+  const spotifyVol = useStore((state: any) => state.spotify.spotifyVol);
+  const setSpotifyVol = useStore((state: any) => state.spotify.setSpotifyVol);
+  const spotifyPos = useStore((state: any) => state.spotify.spotifyPos);
+  const setSpotifyPos = useStore((state: any) => state.spotify.setSpotifyPos);
+  const thePlayer = useStore((state: any) => state.spotify.thePlayer);
 
   const setVol = (vol: number) =>
     thePlayer.current

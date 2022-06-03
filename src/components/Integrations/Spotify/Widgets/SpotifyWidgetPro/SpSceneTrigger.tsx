@@ -9,10 +9,10 @@ import { formatTime } from '../../../../../utils/helpers';
 import Popover from '../../../../Popover/Popover';
 
 export default function SpSceneTrigger() {
-  const scenes = useStore((state) => (state as any).scenes);
+  const scenes = useStore((state: any) => state.scenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
   const [includeTime, setIncludeTime] = useState(false);
-  const spotifyPos = useStore((state) => (state as any).spotifyPos);
+  const spotifyPos = useStore((state: any) => state.spotify.spotifyPos);
 
   return (
     <Popover

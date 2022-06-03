@@ -1,14 +1,13 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
+/* eslint-disable import/no-cycle */
 import produce from 'immer';
-import { Ledfx } from '../../utils/api/ledfx';
+import { Ledfx } from '../../api/ledfx';
 
-const storeVirtuals = (get: any, set: any) => ({
+const storeActions = (set: any) => ({
   scanForDevices: async () => {
     const resp = await Ledfx('/api/find_devices', 'POST', {});
-    // eslint-disable-next-line no-empty
-    if (resp && resp.status === 'success') {
-    } else {
+    if (!(resp && resp.status === 'success')) {
       set(
         produce((state: any) => {
           state.dialogs.nohost.open = true;
@@ -23,7 +22,13 @@ const storeVirtuals = (get: any, set: any) => ({
   togglePause: async () => {
     const resp = await Ledfx('/api/virtuals', 'PUT', {});
     if (resp && resp.paused) {
-      set({ paused: resp.paused });
+      set(
+        produce((s: any) => {
+          s.paused = resp.paused;
+        }),
+        false,
+        'gotPaused'
+      );
     }
   },
 
@@ -39,27 +44,6 @@ const storeVirtuals = (get: any, set: any) => ({
     }),
   getInfo: async () => await Ledfx('/api/info'),
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),
-
-  updateVirtualSegments: async (virtId: string, segments: any) => {
-    const resp = await Ledfx(`/api/virtuals/${virtId}`, 'POST', {
-      segments: [...segments],
-    });
-    if (resp && resp.status && resp.status === 'success') {
-      if (resp && resp.effect) {
-        set(
-          produce((state: any) => {
-            state.virtuals[virtId].effect = {
-              type: resp.effect.type,
-              name: resp.effect.name,
-              config: resp.effect.config,
-            };
-          }),
-          false,
-          'api/updateVirtualsSegments'
-        );
-      }
-    }
-  },
 });
 
-export default storeVirtuals;
+export default storeActions;

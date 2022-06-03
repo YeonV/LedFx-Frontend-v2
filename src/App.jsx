@@ -77,7 +77,7 @@ export default function App() {
   const { height, width } = useWindowDimensions();
 
   const spotifyPlayer = useRef();
-  const setThePlayer = useStore((state) => state.setThePlayer);
+  const setThePlayer = useStore((state) => state.spotify.setThePlayer);
 
   let newBase = !!window.localStorage.getItem('ledfx-newbase');
 
@@ -171,7 +171,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    setThePlayer(spotifyPlayer)
+    spotifyPlayer && typeof setThePlayer === 'function' && setThePlayer(spotifyPlayer)
   }, []);
 
   const HashRouter = () => <Router basename={process.env.PUBLIC_URL}>

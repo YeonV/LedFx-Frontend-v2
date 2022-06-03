@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 const PixelGraph = ({ virtId, dummy=false, className, active = false, intGraphs }) => {
   const classes = useStyles();
   const [pixels, setPixels] = useState([])
-  const pixelGraphs = useStore((state) => state.ui.pixelGraphs);
+  const pixelGraphs = useStore((state) => state.pixelGraphs);
   const virtuals = useStore((state) => state.virtuals);
   const graphs = useStore((state) => state.graphs);
 

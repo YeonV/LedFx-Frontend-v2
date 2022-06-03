@@ -7,14 +7,20 @@ import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
 
 const SpotifyFabPro = ({ botHeight }: any) => {
-  const { spotifyAuthToken }: any = useStore((state: any) => state);
-  const { spotifyData }: any = useStore((state: any) => state);
-  const { setSpotifyData }: any = useStore((state: any) => state);
-  const { setSpotifyDevice }: any = useStore((state: any) => state);
-  const { spotifyVol, setSpotifyVol }: any = useStore((state: any) => state);
-  const thePlayer = useStore((state) => (state as any).thePlayer);
+  const spotifyAuthToken = useStore(
+    (state: any) => state.spotify.spotifyAuthToken
+  );
+  const spotifyData = useStore((state: any) => state.spotify.spotifyData);
+  const setSpotifyData = useStore((state: any) => state.spotify.setSpotifyData);
+  const setSpotifyDevice = useStore(
+    (state: any) => state.spotify.setSpotifyDevice
+  );
+  const spotifyVol = useStore((state: any) => state.spotify.spotifyVol);
+  const setSpotifyVol = useStore((state: any) => state.spotify.setSpotifyVol);
+  const thePlayer = useStore((state: any) => state.spotify.thePlayer);
+  const setSpotifyPos = useStore((state: any) => state.spotify.setSpotifyPos);
+
   const [floatingWidget, setFloatingWidget] = useState(false);
-  const setSpotifyPos = useStore((state) => (state as any).setSpotifyPos);
 
   const position = spotifyData?.playerState?.position || 0;
   const paused = spotifyData?.playerState?.paused || false;

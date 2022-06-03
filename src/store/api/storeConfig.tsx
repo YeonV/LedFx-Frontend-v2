@@ -1,15 +1,21 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-/* eslint-disable no-return-await */
 import produce from 'immer';
-import { Ledfx } from '../../utils/api/ledfx';
+import { Ledfx } from '../../api/ledfx';
 
-const storeConfig = (get: any, set: any) => ({
+const storeConfig = (set: any) => ({
   schemas: {},
   getSchemas: async () => {
     const resp = await Ledfx('/api/schema');
     if (resp) {
-      set({ schemas: resp });
+      set(
+        produce((s: any) => {
+          s.schemas = resp;
+        }),
+        false,
+        'gotSchemas'
+      );
     }
   },
 
@@ -17,20 +23,30 @@ const storeConfig = (get: any, set: any) => ({
   getSystemConfig: async () => {
     const resp = await Ledfx('/api/config');
     if (resp && resp.host) {
-      set({
-        config: {
-          ...resp,
-          ...{
-            ledfx_presets: undefined,
-            devices: undefined,
-            virtuals: undefined,
-            integrations: undefined,
-            scenes: undefined,
-          },
-        },
-      });
+      set(
+        produce((state: any) => {
+          state.config = {
+            ...resp,
+            ...{
+              ledfx_presets: undefined,
+              devices: undefined,
+              virtuals: undefined,
+              integrations: undefined,
+              scenes: undefined,
+            },
+          };
+        }),
+        false,
+        'api/gotSystemConfig'
+      );
     } else {
-      set({ dialogs: { nohost: { open: true } } });
+      set(
+        produce((state: any) => {
+          state.dialogs.nohost.open = true;
+        }),
+        false,
+        'api/failedSystemConfig'
+      );
     }
   },
   getFullConfig: async () => {
@@ -43,7 +59,7 @@ const storeConfig = (get: any, set: any) => ({
         state.dialogs.nohost.open = true;
       }),
       false,
-      'api/getFullConfig'
+      'api/failedFullConfig'
     );
   },
   setSystemConfig: async (config: any) =>

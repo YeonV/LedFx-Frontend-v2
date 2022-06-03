@@ -10,7 +10,7 @@ const storeGeneral = (set: any) => ({
     window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
     return set(
       produce((state: any) => {
-        state.general.host = host;
+        state.host = host;
       }),
       false,
       'general/host'
@@ -20,7 +20,7 @@ const storeGeneral = (set: any) => ({
   setDisconnected: (dis: boolean) =>
     set(
       produce((state: any) => {
-        state.general.disconnected = dis;
+        state.disconnected = dis;
       }),
       false,
       'general/setStreamingToDevices'
@@ -30,30 +30,48 @@ const storeGeneral = (set: any) => ({
   setStreamingToDevices: (devices: any) => {
     set(
       produce((state: any) => {
-        state.general.streamingToDevices = devices;
+        state.streamingToDevices = devices;
       }),
       false,
       'general/setStreamingToDevices'
     );
   },
 
-  graphs: isElectron(),
+  graphs: !!isElectron(),
   toggleGraphs: () => {
     set(
       produce((state: any) => {
-        state.general.graphs = !state.general.graphs;
+        state.graphs = !state.graphs;
       }),
       false,
       'general/toggleGraphs'
     );
   },
 
+  pixelGraphs: [],
+  setPixelGraphs: (virtuals: any): void =>
+    set(
+      produce((state: any) => {
+        state.pixelGraphs = [...virtuals];
+      }),
+      false,
+      'ui/setPixelGraphs'
+    ),
+  viewMode: 'user',
+  setViewMode: (mode: string): void =>
+    set(
+      produce((state: any) => {
+        state.ui.viewMode = mode;
+      }),
+      false,
+      'ui/setViewMode'
+    ),
   // Cloud
   isLogged: false,
   setIsLogged: (logged: boolean) =>
     set(
       produce((state: any) => {
-        state.general.isLogged = logged;
+        state.isLogged = logged;
       }),
       false,
       'general/setIsLogged'
@@ -63,13 +81,11 @@ const storeGeneral = (set: any) => ({
   animals: {
     bears: 1,
   },
-  increase: (by: number): void =>
+  increase: (by: number) =>
     set(
       produce((state: any) => {
-        state.general.animals.bears += by;
-      }),
-      false,
-      'bears/increase'
+        state.animals.bears += by;
+      })
     ),
 });
 

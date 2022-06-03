@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import create from 'zustand';
-import { devtools, combine } from 'zustand/middleware';
+import { devtools, combine, persist } from 'zustand/middleware';
 
 import storeGeneral from './ui/storeGeneral';
 import storeFeatures from './ui/storeFeatures';
@@ -10,37 +10,51 @@ import storeDialogs from './ui/storeDialogs';
 import storeSpotify from './ui/storeSpotify';
 import storeWebAudio from './ui/storeWebAudio';
 import storeYoutube from './ui/storeYoutube';
-
+import storeDevices from './api/storeDevices';
 import storeVirtuals from './api/storeVirtuals';
 import storeScenes from './api/storeScenes';
-import storePresets from './api/storePresets';
 import storeIntegrations from './api/storeIntegrations';
-import storeApiDevices from './api/storeDevices';
+import storePresets from './api/storePresets';
 import storeConfig from './api/storeConfig';
+import storeActions from './api/storeActions';
+import storeColors from './api/storeColors';
 
 const useStore = create(
   devtools(
-    combine(
+    persist(
+      combine(
+        {
+          hackedBy: 'Blade',
+        },
+        (set: any) => ({
+          ui: storeUI(set),
+          spotify: storeSpotify(set),
+          tours: storeTours(set),
+          ...storeGeneral(set),
+          ...storeDialogs(set),
+          ...storeFeatures(set),
+          ...storeWebAudio(set),
+          ...storeYoutube(set),
+
+          ...storeColors(set),
+          ...storeDevices(set),
+          ...storeVirtuals(set),
+          ...storeScenes(set),
+          ...storeIntegrations(set),
+          ...storePresets(set),
+          ...storeConfig(set),
+          ...storeActions(set),
+        })
+      ),
       {
-        hackedBy: 'Blade',
-      },
-      (get: any, set: any) => ({
-        ui: storeUI(set),
-        v: storeVirtuals(get, set),
-        tours: storeTours(set),
-        ...storeGeneral(set),
-        ...storeDialogs(get, set),
-        ...storeFeatures(set),
-        ...storeWebAudio(set),
-        ...storeSpotify(set),
-        ...storeYoutube(set),
-        ...storeApiDevices(set),
-        ...storeConfig(get, set),
-        ...storeIntegrations(get, set),
-        ...storePresets(get, set),
-        ...storeScenes(get, set),
-        ...storeVirtuals(get, set),
-      })
+        name: 'ledfx-storage',
+        partialize: (state) =>
+          Object.fromEntries(
+            Object.entries(state).filter(
+              ([key]) => !['dialogs', 'disconnected', 'ui'].includes(key)
+            )
+          ),
+      }
     )
   )
 );

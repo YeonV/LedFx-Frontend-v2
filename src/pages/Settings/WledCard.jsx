@@ -47,13 +47,13 @@ const WledCard = ({ className }) => {
     const settings = useStore(state => state.config);
 
     const toggleSetting = (setting, value) => {
-        setSystemConfig({ config: { wled_preferences: { [setting]: { user_enabled: value } } } }).then(() => getSystemConfig());
+        setSystemConfig({ wled_preferences: { [setting]: { user_enabled: value } } }).then(() => getSystemConfig());
     }
     const onChangeSetting = (setting, value) => {
-        setSystemConfig({ config: { wled_preferences: { [setting]: { setting: value } } } }).then(() => getSystemConfig());
+        setSystemConfig({ wled_preferences: { [setting]: { setting: value } } }).then(() => getSystemConfig());
     }
     const onScanOnStart = (setting, value) => {
-        setSystemConfig({ config: { [setting]: value } }).then(() => getSystemConfig());
+        setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
     }
 
     useEffect(() => {

@@ -83,8 +83,8 @@ export const WsContext = React.createContext(ws);
 export const HandleWs = () => {
   const { pathname } = useLocation();
   const virtuals = useStore((state) => state.virtuals);
-  const pixelGraphs = useStore((state) => state.ui.pixelGraphs);
-  const setPixelGraphs = useStore((state) => state.ui.setPixelGraphs);
+  const pixelGraphs = useStore((state) => state.pixelGraphs);
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
   const [wsReady, setWsReady] = useState(false)
 

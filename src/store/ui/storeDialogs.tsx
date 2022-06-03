@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
 
-const storeDialogs = (get: any, set: any) => ({
+const storeDialogs = (set: any) => ({
   dialogs: {
     nohost: {
       open: false,

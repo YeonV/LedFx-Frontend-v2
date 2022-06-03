@@ -70,10 +70,10 @@ export default function CloudScreen({
     const handleCloudPresets = async (p, save) => {
         setActiveCloudPreset(p.Name.toLowerCase())        
         if (p.effect.ledfx_id !== effectType) {
-            await setVirtualEffect(virtId, { type: p.effect.ledfx_id })
+            await setVirtualEffect(virtId, p.effect.ledfx_id )
             await getVirtuals();
         }
-        await setVirtualEffect(virtId, { virtId: virtId, type: p.effect.ledfx_id, config: p.config, active: true })
+        await setVirtualEffect(virtId, p.effect.ledfx_id, p.config, true )
         if (save) {
             await addPreset(virtId, p.Name)
             await getPresets(p.effect.ledfx_id)

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useState } from 'react';
-import { MenuItem, ListItemIcon, Badge } from '@material-ui/core';
+import { MenuItem, ListItemIcon } from '@material-ui/core';
+import { Badge } from '@mui/material'
 import Tour from 'reactour';
 import { InfoRounded } from '@material-ui/icons';
 import useStore from '../../store/useStore';
@@ -133,7 +134,7 @@ const steps = [
 
 const TourSettings = ({ cally }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.setTour);
+  const setTour = useStore((state) => state.tours.setTour);
   const invisible = useStore((state) => state.tours.settings);
   const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
   const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);

@@ -4,7 +4,7 @@ import produce from 'immer';
 import isElectron from 'is-electron';
 // import { useStore } from '@/store/useStore';
 // eslint-disable-next-line import/no-cycle
-import useStore from '../../store/useStore';
+import useStore from '../store/useStore';
 
 // eslint-disable-next-line prettier/prettier
 const baseURL = isElectron() ? 'http://localhost:8888' : window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0] || 'http://localhost:8888';
@@ -38,7 +38,7 @@ export const Ledfx = async (
         response = await api.get(path);
         break;
     }
-    console.log('1:', response);
+    // console.log('1:', response);
     if (response.data && response.data.payload) {
       setState(
         produce((state: any) => {
@@ -52,12 +52,12 @@ export const Ledfx = async (
           };
         })
       );
-      console.log('2:', response);
+      // console.log('2:', response);
       if (response.data.status) {
         return response.data.status;
       }
     }
-    console.log('3:', response);
+    // console.log('3:', response);
     if (response.payload) {
       setState(
         produce((state: any) => {
@@ -72,9 +72,9 @@ export const Ledfx = async (
         })
       );
     }
-    console.log('4:', response);
+    // console.log('4:', response);
     if (response.status === 200) {
-      console.log('4eyyy:', response);
+      // console.log('4eyyy:', response);
       setState(
         produce((state: any) => {
           state.disconnected = false;
@@ -82,7 +82,7 @@ export const Ledfx = async (
       );
       return response.data || response;
     }
-    console.log('5:', response);
+    // console.log('5:', response);
     return setState(
       produce((state: any) => {
         state.ui.snackbar = {

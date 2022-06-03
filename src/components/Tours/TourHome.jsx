@@ -88,7 +88,7 @@ const steps = [
 
 const TourHome = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.setTour);
+  const setTour = useStore((state) => state.tours.setTour);
   return (
     <>
       <Button
