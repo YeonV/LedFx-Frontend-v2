@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import React from 'react';
 
 const storeSpotify = (set: any) => ({
   spotifyEmbedUrl:
@@ -23,7 +24,7 @@ const storeSpotify = (set: any) => ({
       'spotify/setSpotifyAuthToken'
     );
   },
-  thePlayer: '',
+  thePlayer: null as unknown as React.MutableRefObject<any>,
   setThePlayer: (ref: any) => {
     set(
       produce((state: any) => {
@@ -73,7 +74,7 @@ const storeSpotify = (set: any) => ({
       'spotify/setSwWidth'
     );
   },
-  spotifyVol: '',
+  spotifyVol: 0,
   setSpotifyVol: (vol: number) => {
     set(
       produce((state: any) => {
@@ -94,7 +95,7 @@ const storeSpotify = (set: any) => ({
     );
   },
   spotifyAuthenticated: false,
-  setSpotifyAuthenticated: (val: any) => {
+  setSpotifyAuthenticated: (val: boolean): void => {
     set(
       produce((state: any) => {
         state.spotify.spotifyAuthenticated = val;

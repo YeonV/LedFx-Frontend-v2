@@ -23,7 +23,7 @@ const storeWebAudio = (set: any) => ({
     );
   },
   clientDevice: null,
-  clientDevices: null,
+  clientDevices: null as any,
   setClientDevice: (newState: any) => {
     set(
       produce((state: any) => {

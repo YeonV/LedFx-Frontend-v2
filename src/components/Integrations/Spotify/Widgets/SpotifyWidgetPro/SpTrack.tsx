@@ -5,17 +5,17 @@ import useStyle, { CoverImage } from './SpWidgetPro.styles';
 
 export default function SpTrack({ className }: any) {
   const classes = useStyle();
-  const spotifyData = useStore(
+  const playerState = useStore(
     (state: any) => state.spotify.spotifyData.playerState
   );
-  const title = spotifyData?.track_window?.current_track?.name || 'Not playing';
+  const title = playerState?.track_window?.current_track?.name || 'Not playing';
   const image =
-    spotifyData?.track_window?.current_track?.album.images[0].url ||
+    playerState?.track_window?.current_track?.album.images[0].url ||
     'https://github.com/LedFx/LedFx/raw/master/icons/discord.png';
-  const artist = spotifyData?.track_window?.current_track?.artists || [
+  const artist = playerState?.track_window?.current_track?.artists || [
     { name: 'on LedFx' },
   ];
-  const album = spotifyData?.track_window?.current_track?.album.name || '';
+  const album = playerState?.track_window?.current_track?.album.name || '';
 
   return (
     <Box className={className}>

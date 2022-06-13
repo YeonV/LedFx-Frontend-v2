@@ -1,35 +1,45 @@
-import { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button, MenuItem, Select, DialogTitle, DialogContentText, DialogContent, DialogActions, Dialog, Divider } from "@material-ui/core";
-import useStore from "../../store/useStore";
-import BladeSchemaForm from "../SchemaForm/SchemaForm/SchemaForm";
+import { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  MenuItem,
+  Select,
+  DialogTitle,
+  DialogContentText,
+  DialogContent,
+  DialogActions,
+  Dialog,
+  Divider,
+} from '@material-ui/core';
+import useStore from '../../store/useStore';
+import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    minWidth: "200px",
-    padding: "16px 1.2rem 6px 1.2rem",
-    border: "1px solid #999",
-    borderRadius: "10px",
-    position: "relative",
-    margin: "1rem 0",
-    display: "flex",
-    alignItems: "center",
-    "@media (max-width: 580px)": {
-      width: "100%",
-      margin: "0.5rem 0",
+    minWidth: '200px',
+    padding: '16px 1.2rem 6px 1.2rem',
+    border: '1px solid #999',
+    borderRadius: '10px',
+    position: 'relative',
+    margin: '1rem 0',
+    display: 'flex',
+    alignItems: 'center',
+    '@media (max-width: 580px)': {
+      width: '100%',
+      margin: '0.5rem 0',
     },
-    "& > label": {
-      top: "-0.7rem",
-      display: "flex",
-      alignItems: "center",
-      left: "1rem",
-      padding: "0 0.3rem",
-      position: "absolute",
-      fontVariant: "all-small-caps",
+    '& > label': {
+      top: '-0.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      left: '1rem',
+      padding: '0 0.3rem',
+      position: 'absolute',
+      fontVariant: 'all-small-caps',
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: "border-box",
+      boxSizing: 'border-box',
     },
   },
 }));
@@ -42,11 +52,13 @@ const AddIntegrationDialog = () => {
   const addIntegration = useStore((state) => state.addIntegration);
   const updateIntegration = useStore((state) => state.updateIntegration);
   const integrations = useStore((state) => state.integrations);
-  
+
   const open = useStore((state) => state.dialogs.addIntegration?.open || false);
-  
-  const integrationId = useStore((state) => state.dialogs.addIntegration?.edit || false);
-  const initial = integrations[integrationId] || { type: "", config: {} };
+
+  const integrationId = useStore(
+    (state) => state.dialogs.addIntegration?.edit || false
+  );
+  const initial = integrations[integrationId] || { type: '', config: {} };
 
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
@@ -54,17 +66,19 @@ const AddIntegrationDialog = () => {
 
   const integrationsTypes = useStore((state) => state.schemas?.integrations);
   const showSnackbar = useStore((state) => state.showSnackbar);
-  const [integrationType, setIntegrationType] = useState("");
+  const [integrationType, setIntegrationType] = useState('');
   const [model, setModel] = useState({});
 
-  const currentSchema = integrationType ? integrationsTypes[integrationType].schema : {};
+  const currentSchema = integrationType
+    ? integrationsTypes[integrationType].schema
+    : {};
 
   const handleClose = () => {
     setDialogOpenAddIntegration(false);
   };
   const handleAddDevice = (e) => {
     const cleanedModel = Object.fromEntries(
-      Object.entries(model).filter(([_, v]) => v !== "")
+      Object.entries(model).filter(([_, v]) => v !== '')
     );
     const defaultModel = {};
 
@@ -80,40 +94,37 @@ const AddIntegrationDialog = () => {
 
     if (!valid) {
       showSnackbar({
-        message: "Please fill in all required fields.",
-        messageType: "warning",
+        message: 'Please fill in all required fields.',
+        messageType: 'warning',
+      });
+    } else if (
+      initial.config &&
+      Object.keys(initial.config).length === 0 &&
+      initial.config.constructor === Object
+    ) {
+      // console.log("ADDING");
+      addIntegration({
+        type: integrationType,
+        config: { ...defaultModel, ...cleanedModel },
+      }).then((res) => {
+        if (res !== 'failed') {
+          setDialogOpenAddIntegration(false);
+          getIntegrations();
+        }
       });
     } else {
-      if (
-        initial.config &&
-        Object.keys(initial.config).length === 0 &&
-        initial.config.constructor === Object
-      ) {
-        // console.log("ADDING");
-        addIntegration({
-          type: integrationType,
-          config: { ...defaultModel, ...cleanedModel },
-        }).then((res) => {
-          if (res !== "failed") {
-            setDialogOpenAddIntegration(false);
-            getIntegrations();
-          } else {
-          }
-        });
-      } else {
-        // console.log("EDITING");
-        updateIntegration({
-          id: integrationId,
-          type: integrationType,
-          config: { ...model },
-        }).then((res) => {
-          if (res !== "failed") {
-            setDialogOpenAddIntegration(false);
-            getIntegrations();
-          } else {
-          }
-        });
-      }
+      // console.log("EDITING");
+      updateIntegration({
+        id: integrationId,
+        type: integrationType,
+        config: { ...model },
+      }).then((res) => {
+        if (res !== 'failed') {
+          setDialogOpenAddIntegration(false);
+          getIntegrations();
+        } else {
+        }
+      });
     }
   };
   const handleTypeChange = (value, initial = {}) => {
@@ -138,14 +149,14 @@ const AddIntegrationDialog = () => {
         {initial.config &&
         Object.keys(initial.config).length === 0 &&
         initial.config.constructor === Object
-          ? "Add"
-          : "Edit"}{" "}
+          ? 'Add'
+          : 'Edit'}{' '}
         {integrationType.toUpperCase()} Integration
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          To add an interation to LedFx, please first select the type of integration you
-          wish to add then provide the necessary configuration.
+          To add an interation to LedFx, please first select the type of
+          integration you wish to add then provide the necessary configuration.
         </DialogContentText>
         <div className={classes.wrapper}>
           <label>Integration Type</label>
@@ -158,13 +169,17 @@ const AddIntegrationDialog = () => {
           >
             {integrationsTypes &&
               Object.keys(integrationsTypes).map((item, i) => (
-                <MenuItem key={i} value={item} disabled={["mqtt_hass", "spotify"].indexOf(item) === -1}>
+                <MenuItem
+                  key={i}
+                  value={item}
+                  disabled={['mqtt_hass', 'spotify'].indexOf(item) === -1}
+                >
                   {item}
                 </MenuItem>
               ))}
           </Select>
         </div>
-        <Divider style={{ marginBottom: "1rem" }} />
+        <Divider style={{ marginBottom: '1rem' }} />
         {model && (
           <BladeSchemaForm
             hideToggle={!integrationType}
@@ -183,8 +198,8 @@ const AddIntegrationDialog = () => {
           {initial.config &&
           Object.keys(initial.config).length === 0 &&
           initial.config.constructor === Object
-            ? "Add"
-            : "Save"}
+            ? 'Add'
+            : 'Save'}
         </Button>
       </DialogActions>
     </Dialog>

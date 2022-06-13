@@ -5,7 +5,7 @@ import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
 
 const storeScenes = (set: any) => ({
-  scenes: {},
+  scenes: {} as any,
   getScenes: async () => {
     const resp = await Ledfx('/api/scenes');
     if (resp && resp.scenes) {

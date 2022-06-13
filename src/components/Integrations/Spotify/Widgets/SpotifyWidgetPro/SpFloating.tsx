@@ -2,12 +2,12 @@ import { Rnd } from 'react-rnd';
 import useStore from '../../../../../store/useStore';
 
 const SpFloating = ({ children }: any) => {
-  const swWidth = useStore((state: any) => state.spotify.swWidth);
-  const setSwWidth = useStore((state: any) => state.spotify.setSwWidth);
-  const swX = useStore((state: any) => state.spotify.swX);
-  const setSwX = useStore((state: any) => state.spotify.setSwX);
-  const swY = useStore((state: any) => state.spotify.swY);
-  const setSwY = useStore((state: any) => state.spotify.setSwY);
+  const swWidth = useStore((state) => state.spotify.swWidth);
+  const setSwWidth = useStore((state) => state.spotify.setSwWidth);
+  const swX = useStore((state) => state.spotify.swX);
+  const setSwX = useStore((state) => state.spotify.setSwX);
+  const swY = useStore((state) => state.spotify.swY);
+  const setSwY = useStore((state) => state.spotify.setSwY);
 
   return (
     <Rnd
@@ -18,7 +18,7 @@ const SpFloating = ({ children }: any) => {
         setSwY(d.y);
       }}
       onResizeStop={(_e, _direction, ref, _delta, position) => {
-        setSwWidth(ref.style.width);
+        setSwWidth(parseInt(ref.style.width, 10));
         setSwX(position.x);
         setSwY(position.y);
       }}

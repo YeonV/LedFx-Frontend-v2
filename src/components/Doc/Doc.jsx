@@ -6,11 +6,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-
-import { useStyles } from './Doc.styles';
 import { ListItemIcon, MenuItem } from '@material-ui/core';
 import { MenuBook } from '@material-ui/icons';
-import { API } from '@stoplight/elements';
+// import { API } from '@stoplight/elements';
+import useStyles from './Doc.styles';
 import '@stoplight/elements/styles.min.css';
 import configApiYaml from './configApiYaml';
 
@@ -24,9 +23,9 @@ const MuiMenuItem = React.forwardRef((props, ref) => {
 
 function FrameWrapper() {
   const ref = React.useRef();
-  const [height, setHeight] = React.useState("0px");
+  const [height, setHeight] = React.useState('0px');
   const onLoad = () => {
-    setHeight(ref.current.contentWindow.document.body.scrollHeight + "px");
+    setHeight(`${ref.current.contentWindow.document.body.scrollHeight}px`);
   };
   return (
     <iframe
@@ -40,10 +39,10 @@ function FrameWrapper() {
       frameBorder="0"
       style={{
         maxWidth: 640,
-        width: "100%",
-        overflow: "auto",
+        width: '100%',
+        overflow: 'auto',
       }}
-    ></iframe>
+    />
   );
 }
 
