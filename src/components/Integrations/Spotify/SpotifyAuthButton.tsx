@@ -54,14 +54,14 @@ const apiCredentials = {
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {
   const spotifyAuthenticated = useStore(
-    (state: any) => state.spotify.spotifyAuthenticated
+    (state) => state.spotify.spotifyAuthenticated
   );
-  const thePlayer = useStore((state: any) => state.spotify.thePlayer);
+  const thePlayer = useStore((state) => state.spotify.thePlayer);
   const setSpotifyAuthenticated = useStore(
-    (state: any) => state.spotify.setSpotifyAuthenticated
+    (state) => state.spotify.setSpotifyAuthenticated
   );
   const setSpotifyAuthToken = useStore(
-    (state: any) => state.spotify.setSpotifyAuthToken
+    (state) => state.spotify.setSpotifyAuthToken
   );
   const [codes, setCodes] = useState({});
   const cookies = new Cookies();
@@ -142,7 +142,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       className={classes.editButton}
       onClick={() => {
         logoutAuth();
-        thePlayer.current.disconnect();
+        thePlayer?.current?.disconnect();
         setSpotifyAuthenticated(false);
         setSpotifyAuthToken(false);
       }}

@@ -5,7 +5,14 @@ import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
 
 const storeColors = (set: any) => ({
-  colors: {},
+  colors: {
+    colors: {
+      user: {} as any,
+    },
+    gradients: {
+      user: {} as any,
+    },
+  },
   getColors: async () => {
     const resp = await Ledfx('/api/colors', set);
     if (resp) {
@@ -25,7 +32,7 @@ const storeColors = (set: any) => ({
       'POST',
       { ...config } // { 'name': 'string' }
     ),
-  deleteColors: async (colorkey: string) =>
+  deleteColors: async (colorkey: any) =>
     await Ledfx('/api/colors', 'DELETE', {
       data: colorkey,
     }),

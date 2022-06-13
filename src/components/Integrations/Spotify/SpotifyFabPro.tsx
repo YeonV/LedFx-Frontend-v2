@@ -7,18 +7,14 @@ import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
 
 const SpotifyFabPro = ({ botHeight }: any) => {
-  const spotifyAuthToken = useStore(
-    (state: any) => state.spotify.spotifyAuthToken
-  );
-  const spotifyData = useStore((state: any) => state.spotify.spotifyData);
-  const setSpotifyData = useStore((state: any) => state.spotify.setSpotifyData);
-  const setSpotifyDevice = useStore(
-    (state: any) => state.spotify.setSpotifyDevice
-  );
-  const spotifyVol = useStore((state: any) => state.spotify.spotifyVol);
-  const setSpotifyVol = useStore((state: any) => state.spotify.setSpotifyVol);
-  const thePlayer = useStore((state: any) => state.spotify.thePlayer);
-  const setSpotifyPos = useStore((state: any) => state.spotify.setSpotifyPos);
+  const spotifyAuthToken = useStore((state) => state.spotify.spotifyAuthToken);
+  const spotifyData: any = useStore((state) => state.spotify.spotifyData);
+  const setSpotifyData = useStore((state) => state.spotify.setSpotifyData);
+  const setSpotifyDevice = useStore((state) => state.spotify.setSpotifyDevice);
+  const spotifyVol = useStore((state) => state.spotify.spotifyVol);
+  const setSpotifyVol = useStore((state) => state.spotify.setSpotifyVol);
+  const thePlayer = useStore((state) => state.spotify.thePlayer);
+  const setSpotifyPos = useStore((state) => state.spotify.setSpotifyPos);
 
   const [floatingWidget, setFloatingWidget] = useState(false);
 
@@ -52,31 +48,28 @@ const SpotifyFabPro = ({ botHeight }: any) => {
           },
         });
         if (thePlayer.current) {
-          (thePlayer.current as any).addListener(
+          thePlayer.current.addListener(
             'initialization_error',
             ({ message }: any) => {
               console.error(message);
             }
           );
-          (thePlayer.current as any).addListener(
+          thePlayer.current.addListener(
             'authentication_error',
             ({ message }: any) => {
               console.error(message);
             }
           );
-          (thePlayer.current as any).addListener(
-            'account_error',
-            ({ message }: any) => {
-              console.error(message);
-            }
-          );
-          (thePlayer.current as any).addListener(
+          thePlayer.current.addListener('account_error', ({ message }: any) => {
+            console.error(message);
+          });
+          thePlayer.current.addListener(
             'playback_error',
             ({ message }: any) => {
               console.error(message);
             }
           );
-          (thePlayer.current as any).addListener(
+          thePlayer.current.addListener(
             'player_state_changed',
             (state: any) => {
               // console.log(state);
@@ -94,22 +87,16 @@ const SpotifyFabPro = ({ botHeight }: any) => {
               }
             }
           );
-          (thePlayer.current as any).addListener(
-            'ready',
-            ({ device_id }: any) => {
-              setSpotifyDevice(device_id);
-              spotifyPlay(device_id);
-              // console.log('Ready with Device ID', device_id);
-              // console.log(player);
-            }
-          );
-          (thePlayer.current as any).addListener(
-            'not_ready',
-            ({ _device_id }: any) => {
-              // console.log('Device ID has gone offline', device_id);
-            }
-          );
-          await (thePlayer.current as any).connect();
+          thePlayer.current.addListener('ready', ({ device_id }: any) => {
+            setSpotifyDevice(device_id);
+            spotifyPlay(device_id);
+            // console.log('Ready with Device ID', device_id);
+            // console.log(player);
+          });
+          thePlayer.current.addListener('not_ready', ({ _device_id }: any) => {
+            // console.log('Device ID has gone offline', device_id);
+          });
+          await thePlayer.current.connect();
         }
       };
       const script = window.document.createElement('script');

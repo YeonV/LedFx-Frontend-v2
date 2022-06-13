@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import { VariantType } from 'notistack';
 
 const storeUI = (set: any) => ({
   darkMode: false,
@@ -14,7 +15,7 @@ const storeUI = (set: any) => ({
 
   snackbar: {
     isOpen: false,
-    messageType: 'error',
+    messageType: 'error' as VariantType,
     message: 'NO MESSAGE',
   },
   showSnackbar: (messageType: string, message: string): void =>
@@ -48,7 +49,7 @@ const storeUI = (set: any) => ({
       'ui/setLeftBarOpen'
     ),
 
-  settingsExpanded: false,
+  settingsExpanded: 'false',
   setSettingsExpanded: (setting: any): void =>
     set(
       produce((state: any) => {

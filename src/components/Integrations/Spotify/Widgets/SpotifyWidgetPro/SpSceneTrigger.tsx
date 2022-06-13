@@ -12,7 +12,7 @@ export default function SpSceneTrigger() {
   const scenes = useStore((state: any) => state.scenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
   const [includeTime, setIncludeTime] = useState(false);
-  const spotifyPos = useStore((state: any) => state.spotify.spotifyPos);
+  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
 
   return (
     <Popover

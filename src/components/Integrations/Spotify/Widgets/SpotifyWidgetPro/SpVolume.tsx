@@ -7,15 +7,15 @@ import useStore from '../../../../../store/useStore';
 import { VolSliderStyles } from './SpWidgetPro.styles';
 
 export default function SpVolume() {
-  const thePlayer = useStore((state: any) => state.spotify.thePlayer);
-  const spotifyVol = useStore((state: any) => state.spotify.spotifyVol);
-  const setSpotifyVol = useStore((state: any) => state.spotify.setSpotifyVol);
+  const thePlayer = useStore((state) => state.spotify.thePlayer);
+  const spotifyVol = useStore((state) => state.spotify.spotifyVol);
+  const setSpotifyVol = useStore((state) => state.spotify.setSpotifyVol);
   const [volu, setVolu] = useState(spotifyVol || 0);
   const setVol = (vol: number) =>
     thePlayer.current
       .setVolume(vol)
       .then(() =>
-        thePlayer.current.getVolume().then((v: any) => setSpotifyVol(v))
+        thePlayer.current.getVolume().then((v: number) => setSpotifyVol(v))
       );
 
   useEffect(() => {

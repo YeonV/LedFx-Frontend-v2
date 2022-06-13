@@ -5,7 +5,7 @@ import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
 
 const storeVirtuals = (set: any) => ({
-  virtuals: {},
+  virtuals: {} as any,
   getVirtuals: async () => {
     const resp = await Ledfx('/api/virtuals');
     if (resp) {

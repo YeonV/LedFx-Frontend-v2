@@ -19,7 +19,7 @@ const AddVirtualDialog = () => {
   const open = useStore((state) => state.dialogs.addVirtual?.open || false);
   const virtId = useStore((state) => state.dialogs.addVirtual?.edit || false);
   const getV = () => {
-    for (var prop in virtuals) {
+    for (const prop in virtuals) {
       if (virtuals[prop].id == virtId) {
         return virtuals[prop];
       }
@@ -65,39 +65,39 @@ const AddVirtualDialog = () => {
         message: 'Please fill in all required fields.',
         messageType: 'warning',
       });
+    } else if (
+      initial.config &&
+      Object.keys(initial.config).length === 0 &&
+      initial.config.constructor === Object
+    ) {
+      // console.log("ADDING");
+      addVirtual({
+        config: { ...defaultModel, ...cleanedModel },
+      }).then((res) => {
+        // console.log(res);
+        if (res !== 'failed') {
+          setDialogOpenAddVirtual(false);
+          getDevices();
+          getVirtuals();
+        }
+        // else {
+        // }
+      });
     } else {
-      if (
-        initial.config &&
-        Object.keys(initial.config).length === 0 &&
-        initial.config.constructor === Object
-      ) {
-        // console.log("ADDING");
-        addVirtual({
-          config: { ...defaultModel, ...cleanedModel },
-        }).then((res) => {
-          console.log(res);
-          if (res !== 'failed') {
-            setDialogOpenAddVirtual(false);
-            getDevices();
-            getVirtuals();
-          } else {
-          }
-        });
-      } else {
-        // console.log("EDITING");
-        addVirtual({
-          id: virtId,
-          config: { ...model },
-        }).then((res) => {
-          // console.log(res);
-          if (res !== 'failed') {
-            setDialogOpenAddVirtual(false);
-            getDevices();
-            getVirtuals();
-          } else {
-          }
-        });
-      }
+      // console.log("EDITING");
+      addVirtual({
+        id: virtId,
+        config: { ...model },
+      }).then((res) => {
+        // console.log(res);
+        if (res !== 'failed') {
+          setDialogOpenAddVirtual(false);
+          getDevices();
+          getVirtuals();
+        }
+        // else {
+        // }
+      });
     }
   };
 

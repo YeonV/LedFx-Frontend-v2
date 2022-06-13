@@ -5,7 +5,7 @@ import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
 
 const storeConfig = (set: any) => ({
-  schemas: {},
+  schemas: {} as any,
   getSchemas: async () => {
     const resp = await Ledfx('/api/schema');
     if (resp) {
@@ -19,7 +19,7 @@ const storeConfig = (set: any) => ({
     }
   },
 
-  config: {},
+  config: {} as any,
   getSystemConfig: async () => {
     const resp = await Ledfx('/api/config');
     if (resp && resp.host) {
