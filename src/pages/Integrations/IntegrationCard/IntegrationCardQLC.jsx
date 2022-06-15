@@ -18,6 +18,7 @@ import {
   CardContent,
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
+import { DialogAddEventListener } from './DialogAddEventListener';
 //import SpotifyView from '../Spotify/SpotifyAuth';
 
 const IntegrationCardQLC = ({ integration }) => {
