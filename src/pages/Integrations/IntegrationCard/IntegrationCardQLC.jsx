@@ -18,7 +18,7 @@ import {
   CardContent,
 } from '@material-ui/core';
 import { useIntegrationCardStyles } from './IntegrationCard.styles';
-import { DialogAddEventListener } from './DialogAddEventListener';
+//import { DialogAddEventListener } from '../../DialogAddEventListener';
 //import SpotifyView from '../Spotify/SpotifyAuth';
 
 const IntegrationCardQLC = ({ integration }) => {
@@ -83,7 +83,8 @@ const IntegrationCardQLC = ({ integration }) => {
       </Link>
       <CardContent>
         {integrations[integration].status === 1 ? (
-          <DialogAddEventListener integration={int} />
+          //<DialogAddEventListener integration={int} />
+          "Connected state"
         ) : (
           <Link
             target="_blank"
