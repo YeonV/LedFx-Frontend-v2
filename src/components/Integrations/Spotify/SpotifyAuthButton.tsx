@@ -53,10 +53,12 @@ const apiCredentials = {
 };
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {
-  const isAuthenticated = useStore((state) => (state as any).isAuthenticated);
+  const spotifyAuthenticated = useStore(
+    (state) => (state as any).spotifyAuthenticated
+  );
   const thePlayer = useStore((state) => (state as any).thePlayer);
-  const setIsAuthenticated = useStore(
-    (state) => (state as any).setIsAuthenticated
+  const setSpotifyAuthenticated = useStore(
+    (state) => (state as any).setSpotifyAuthenticated
   );
   const setSpotifyAuthToken = useStore(
     (state) => (state as any).setSpotifyAuthToken
@@ -69,7 +71,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       setCodes({ verifier, challenge });
     });
     if (cookies.get('access_token')) {
-      setIsAuthenticated(true);
+      setSpotifyAuthenticated(true);
     }
   }, []);
   const beginAuth = () => {
@@ -95,10 +97,10 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     if ((accessTest === 'false' || !accessTest) && !accessTest1) {
       refreshAuth();
       cookies.set('logout', false);
-      setIsAuthenticated(true);
+      setSpotifyAuthenticated(true);
     }
     if (localStorage.getItem('Spotify-Token')) {
-      setIsAuthenticated(true);
+      setSpotifyAuthenticated(true);
 
       try {
         finishAuth();
@@ -111,14 +113,14 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
 
   useEffect(() => {
     if (cookies.get('access_token')) {
-      setIsAuthenticated(true);
+      setSpotifyAuthenticated(true);
       setSpotifyAuthToken(cookies.get('access_token'));
     } else {
-      setIsAuthenticated(false);
+      setSpotifyAuthenticated(false);
     }
   }, [cookies]);
 
-  return !isAuthenticated ? (
+  return !spotifyAuthenticated ? (
     <Button
       disabled={disabled}
       variant="outlined"
@@ -141,7 +143,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       onClick={() => {
         logoutAuth();
         thePlayer.current.disconnect();
-        setIsAuthenticated(false);
+        setSpotifyAuthenticated(false);
         setSpotifyAuthToken(false);
       }}
     >
