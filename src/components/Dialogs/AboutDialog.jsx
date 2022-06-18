@@ -21,14 +21,17 @@ export default function AboutDialog({ className, children, startIcon, title }) {
         setOpen(false);
     };
 
-    useEffect(async () => {
-        if (open) {
-            const info = await getInfo()
-            if (info && info.git_build_commit) {
-                setBcommit(info.git_build_commit)
-                setBversion(info.version)
+    useEffect(() => {
+        async function fetchData() {
+            if (open) {
+                const info = await getInfo()
+                if (info && info.git_build_commit) {
+                    setBcommit(info.git_build_commit)
+                    setBversion(info.version)
+                }
             }
         }
+        fetchData();
     }, [open])
 
     return (
