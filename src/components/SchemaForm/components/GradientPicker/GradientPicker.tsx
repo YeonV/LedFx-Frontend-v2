@@ -129,9 +129,9 @@ const GradientPicker = ({
               onClick={() => handleDeleteDialog()}
               disabled={
                 colors &&
-                colors.length &&
-                colors.colors?.length &&
-                colors.gradients?.length &&
+                // colors.length &&
+                // colors.colors?.length &&
+                // colors.gradients?.length &&
                 !(Object.keys(colors.colors.user)?.length > 0) &&
                 !(Object.keys(colors.gradients.user)?.length > 0)
               }
@@ -151,17 +151,27 @@ const GradientPicker = ({
                     e.key === 'Enter' && handleAddGradient(name)
                   }
                   error={
-                    colors?.length &&
-                    colors.colors?.length &&
-                    colors.gradients?.length &&
-                    (Object.keys(colors.colors).indexOf(name) > -1 ||
-                      Object.values(colors.colors).filter(
-                        (p) => p === pickerBgColorInt
-                      )?.length > 0 ||
-                      Object.keys(colors.gradients).indexOf(name) > -1 ||
-                      Object.values(colors.gradients).filter(
-                        (p) => p === pickerBgColorInt
-                      ).length > 0)
+                    colors &&
+                    // colors?.length &&
+                    // colors.colors?.length &&
+                    // colors.gradients?.length &&
+                    (Object.keys(colors.colors.user).indexOf(name) > -1 ||
+                      Object.keys(colors.colors.builtin).indexOf(name) > -1 ||
+                      // Object.values(colors.colors.user).filter(
+                      //   (p) => p === pickerBgColorInt
+                      // )?.length > 0 ||
+                      // Object.values(colors.colors.builtin).filter(
+                      //   (p) => p === pickerBgColorInt
+                      // )?.length > 0 ||
+                      Object.keys(colors.gradients.user).indexOf(name) > -1 ||
+                      Object.keys(colors.gradients.builtin).indexOf(name) > -1)
+                    // Object.values(colors.gradients.user).filter(
+                    //   (p) => p === pickerBgColorInt
+                    // ).length > 0 ||
+                    // Object.values(colors.gradients.builtin).filter(
+                    //   (p) => p === pickerBgColorInt
+                    // ).length > 0
+                    // )
                   }
                   size="small"
                   variant="outlined"
