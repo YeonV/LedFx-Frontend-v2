@@ -7,10 +7,12 @@ import { Ledfx } from '../../api/ledfx';
 const storeColors = (set: any) => ({
   colors: {
     colors: {
-      user: {} as any,
+      builtin: {} as { [key: string]: string },
+      user: {} as { [key: string]: string },
     },
     gradients: {
-      user: {} as any,
+      user: {} as { [key: string]: string },
+      builtin: {} as { [key: string]: string },
     },
   },
   getColors: async () => {
