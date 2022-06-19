@@ -16,7 +16,6 @@ export interface GradientPickerProps {
       builtin: { [key: string]: string };
     };
   };
-  // colors?: any;
   handleAddGradient?: any;
   sendColorToVirtuals?: any;
 }
