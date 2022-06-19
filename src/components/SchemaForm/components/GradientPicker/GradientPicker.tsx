@@ -28,7 +28,6 @@ const GradientPicker = ({
   const [name, setName] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor);
-  const [colorExists, setColorExists] = useState(false);
 
   const defaultColors: any = {};
   if (colors && colors.gradients && colors.colors) {
@@ -52,19 +51,6 @@ const GradientPicker = ({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const checkForConsistingColor = (newName: string) => {
-    return !!(
-      colors?.colors?.user &&
-      colors.colors.builtin &&
-      colors.gradients?.user &&
-      colors.gradients.builtin &&
-      (Object.keys(colors.colors.user).indexOf(newName) > -1 ||
-        Object.keys(colors.colors.builtin).indexOf(newName) > -1 ||
-        Object.keys(colors.gradients.user).indexOf(newName) > -1 ||
-        Object.keys(colors.gradients.builtin).indexOf(newName) > -1)
-    );
   };
 
   useClickOutside(popover, handleClose);
@@ -143,8 +129,9 @@ const GradientPicker = ({
               onClick={() => handleDeleteDialog()}
               disabled={
                 colors &&
-                colors.colors?.user &&
-                colors.gradients?.user &&
+                colors.length &&
+                colors.colors?.length &&
+                colors.gradients?.length &&
                 !(Object.keys(colors.colors.user)?.length > 0) &&
                 !(Object.keys(colors.gradients.user)?.length > 0)
               }
@@ -163,7 +150,19 @@ const GradientPicker = ({
                   onKeyDown={(e: any) =>
                     e.key === 'Enter' && handleAddGradient(name)
                   }
-                  error={colorExists}
+                  error={
+                    colors?.length &&
+                    colors.colors?.length &&
+                    colors.gradients?.length &&
+                    (Object.keys(colors.colors).indexOf(name) > -1 ||
+                      Object.values(colors.colors).filter(
+                        (p) => p === pickerBgColorInt
+                      )?.length > 0 ||
+                      Object.keys(colors.gradients).indexOf(name) > -1 ||
+                      Object.values(colors.gradients).filter(
+                        (p) => p === pickerBgColorInt
+                      ).length > 0)
+                  }
                   size="small"
                   variant="outlined"
                   id="gradientNameInput"
@@ -172,11 +171,10 @@ const GradientPicker = ({
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
-                    setColorExists(checkForConsistingColor(e.target.value));
                   }}
                 />
               }
-              confirmDisabled={colorExists || name.length === 0}
+              confirmDisabled={name.length === 0}
               onConfirm={() => handleAddGradient(name)}
               startIcon=""
               size="medium"

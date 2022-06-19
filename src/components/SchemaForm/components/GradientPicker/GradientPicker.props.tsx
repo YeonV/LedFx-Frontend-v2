@@ -6,16 +6,7 @@ export interface GradientPickerProps {
   index?: number;
   isGradient?: boolean;
   wrapperStyle?: CSSProperties;
-  colors?: {
-    colors: {
-      builtin: { [key: string]: string };
-      user: { [key: string]: string };
-    };
-    gradients: {
-      user: { [key: string]: string };
-      builtin: { [key: string]: string };
-    };
-  };
+  colors?: any;
   handleAddGradient?: any;
   sendColorToVirtuals?: any;
 }
