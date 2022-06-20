@@ -30,20 +30,18 @@ const GradientPicker = ({
   const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor);
 
   const defaultColors: any = {};
-  if (colors && colors.gradients && colors.colors) {
-    Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
-      defaultColors[k] = g;
-    });
-    Object.entries(colors.gradients.user).forEach(([k, g]) => {
-      defaultColors[k] = g;
-    });
-    Object.entries(colors.colors.builtin).forEach(([k, g]) => {
-      defaultColors[k] = g;
-    });
-    Object.entries(colors.colors.user).forEach(([k, g]) => {
-      defaultColors[k] = g;
-    });
-  }
+  Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
+    defaultColors[k] = g;
+  });
+  Object.entries(colors.gradients.user).forEach(([k, g]) => {
+    defaultColors[k] = g;
+  });
+  Object.entries(colors.colors.builtin).forEach(([k, g]) => {
+    defaultColors[k] = g;
+  });
+  Object.entries(colors.colors.user).forEach(([k, g]) => {
+    defaultColors[k] = g;
+  });
 
   const handleClick = (event: any) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -61,6 +59,10 @@ const GradientPicker = ({
   };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
+
+  useEffect(() => {
+    setPickerBgColorInt(pickerBgColor);
+  }, [pickerBgColor, setPickerBgColorInt]);
 
   useEffect(() => {
     setPickerBgColorInt(pickerBgColor);
