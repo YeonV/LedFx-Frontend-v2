@@ -21,7 +21,7 @@ const storeActions = (set: any) => ({
   paused: false,
   togglePause: async () => {
     const resp = await Ledfx('/api/virtuals', 'PUT', {});
-    if (resp && resp.paused) {
+    if (resp && resp.paused !== undefined) {
       set(
         produce((s: any) => {
           s.paused = resp.paused;
