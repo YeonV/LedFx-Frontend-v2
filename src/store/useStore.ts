@@ -18,6 +18,7 @@ import storePresets from './api/storePresets';
 import storeConfig from './api/storeConfig';
 import storeActions from './api/storeActions';
 import storeColors from './api/storeColors';
+import storeSpotifyActions from './ui/storeSpotifyActions';
 
 const useStore = create(
   devtools(
@@ -28,8 +29,9 @@ const useStore = create(
         },
         (set: any) => ({
           ui: storeUI(set),
-          spotify: storeSpotify(set),
+          spotify: storeSpotify(),
           tours: storeTours(set),
+          ...storeSpotifyActions(set),
           ...storeGeneral(set),
           ...storeDialogs(set),
           ...storeFeatures(set),
@@ -51,7 +53,8 @@ const useStore = create(
         partialize: (state) =>
           Object.fromEntries(
             Object.entries(state).filter(
-              ([key]) => !['dialogs', 'disconnected', 'ui'].includes(key)
+              ([key]) =>
+                !['dialogs', 'disconnected', 'ui', 'spotify'].includes(key)
             )
           ),
       }

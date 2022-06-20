@@ -9,12 +9,13 @@ import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
 const SpotifyFabPro = ({ botHeight }: any) => {
   const spotifyAuthToken = useStore((state) => state.spotify.spotifyAuthToken);
   const spotifyData: any = useStore((state) => state.spotify.spotifyData);
-  const setSpotifyData = useStore((state) => state.spotify.setSpotifyData);
-  const setSpotifyDevice = useStore((state) => state.spotify.setSpotifyDevice);
+  const setSpotifyData = useStore((state) => state.setSpData);
+  const setSpotifyDevice = useStore((state) => state.setSpDevice);
   const spotifyVol = useStore((state) => state.spotify.spotifyVol);
-  const setSpotifyVol = useStore((state) => state.spotify.setSpotifyVol);
-  const thePlayer = useStore((state) => state.spotify.thePlayer);
-  const setSpotifyPos = useStore((state) => state.spotify.setSpotifyPos);
+  const setSpotifyVol = useStore((state) => state.setSpVol);
+  const spotifyPlayer = useStore((state) => state.spotify.thePlayer);
+  const thePlayer = useRef(spotifyPlayer);
+  const setSpotifyPos = useStore((state) => state.setSpPos);
 
   const [floatingWidget, setFloatingWidget] = useState(false);
 
@@ -72,7 +73,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
           thePlayer.current.addListener(
             'player_state_changed',
             (state: any) => {
-              // console.log(state);
+              console.log(state);
               if (state !== null) {
                 // if (state.position < 5 || state.position > 500) {
                 // this.props.updatePlayerState(state);
@@ -90,7 +91,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
           thePlayer.current.addListener('ready', ({ device_id }: any) => {
             setSpotifyDevice(device_id);
             spotifyPlay(device_id);
-            // console.log('Ready with Device ID', device_id);
+            console.log('Ready with Device ID', device_id);
             // console.log(player);
           });
           thePlayer.current.addListener('not_ready', ({ _device_id }: any) => {
@@ -105,11 +106,11 @@ const SpotifyFabPro = ({ botHeight }: any) => {
       window.document.head.appendChild(script);
     };
 
-    if (spotifyAuthToken && !thePlayer.current && !(window as any).Spotify) {
+    if (spotifyAuthToken && !thePlayer?.current && !(window as any).Spotify) {
       createWebPlayer(spotifyAuthToken);
     }
     if (!spotifyAuthToken && thePlayer.current) {
-      delete thePlayer.current;
+      thePlayer.current = null;
     }
   }, [spotifyAuthToken]);
   return (

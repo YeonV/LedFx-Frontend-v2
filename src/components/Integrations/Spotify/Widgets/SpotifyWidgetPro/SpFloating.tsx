@@ -3,11 +3,11 @@ import useStore from '../../../../../store/useStore';
 
 const SpFloating = ({ children }: any) => {
   const swWidth = useStore((state) => state.spotify.swWidth);
-  const setSwWidth = useStore((state) => state.spotify.setSwWidth);
+  const setSwWidth = useStore((state) => state.setSwWidth);
   const swX = useStore((state) => state.spotify.swX);
-  const setSwX = useStore((state) => state.spotify.setSwX);
+  const setSwX = useStore((state) => state.setSwX);
   const swY = useStore((state) => state.spotify.swY);
-  const setSwY = useStore((state) => state.spotify.setSwY);
+  const setSwY = useStore((state) => state.setSwY);
 
   return (
     <Rnd

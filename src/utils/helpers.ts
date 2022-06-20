@@ -69,6 +69,7 @@ export const swap = (array: any[], i: number, j: number) => {
 
 export const deleteFrontendConfig = () => {
   window.localStorage.removeItem('undefined');
+  window.localStorage.removeItem('ledfx-storage');
   window.localStorage.removeItem('ledfx-host');
   window.localStorage.removeItem('ledfx-hosts');
   window.localStorage.removeItem('ledfx-ws');

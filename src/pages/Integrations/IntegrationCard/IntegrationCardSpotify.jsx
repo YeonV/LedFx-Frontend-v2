@@ -24,9 +24,9 @@ const IntegrationCardSpotify = ({ integration }) => {
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const spotifyAuthenticated = useStore((state) => state.spotifyAuthenticated);
+  const spotifyAuthenticated = useStore((state) => state.spotify.spotifyAuthenticated);
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
-  const thePlayer = useStore((state) => state.thePlayer);
+  const thePlayer = useStore((state) => state.spotify.thePlayer);
 
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';

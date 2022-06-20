@@ -57,12 +57,8 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     (state) => state.spotify.spotifyAuthenticated
   );
   const thePlayer = useStore((state) => state.spotify.thePlayer);
-  const setSpotifyAuthenticated = useStore(
-    (state) => state.spotify.setSpotifyAuthenticated
-  );
-  const setSpotifyAuthToken = useStore(
-    (state) => state.spotify.setSpotifyAuthToken
-  );
+  const setSpotifyAuthenticated = useStore((state) => state.setSpAuthenticated);
+  const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken);
   const [codes, setCodes] = useState({});
   const cookies = new Cookies();
   const classes = useIntegrationCardStyles();

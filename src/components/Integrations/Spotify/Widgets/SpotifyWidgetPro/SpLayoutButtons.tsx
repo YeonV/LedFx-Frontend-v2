@@ -30,13 +30,13 @@ const ButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 
 export default function SpLayoutButtons() {
   const swSize = useStore((state) => state.spotify.swSize);
-  const setSwSize = useStore((state) => state.spotify.setSwSize);
+  const setSwSize = useStore((state) => state.setSwSize);
 
-  const setSwWidth = useStore((state) => state.spotify.setSwWidth);
+  const setSwWidth = useStore((state) => state.setSwWidth);
   const swX = useStore((state) => state.spotify.swX);
-  const setSwX = useStore((state) => state.spotify.setSwX);
+  const setSwX = useStore((state) => state.setSwX);
   const swY = useStore((state) => state.spotify.swY);
-  const setSwY = useStore((state) => state.spotify.setSwY);
+  const setSwY = useStore((state) => state.setSwY);
 
   const settingSize = (newSize: string) => {
     if (newSize === 'large') {
