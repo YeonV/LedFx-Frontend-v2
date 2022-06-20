@@ -8,9 +8,11 @@ const storeColors = (set: any) => ({
   colors: {
     colors: {
       user: {} as any,
+      builtin: {} as any,
     },
     gradients: {
       user: {} as any,
+      builtin: {} as any,
     },
   },
   getColors: async () => {
