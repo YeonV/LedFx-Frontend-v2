@@ -38,9 +38,9 @@ export default function BarBottom() {
   const [spotifyEnabled, setSpotifyEnabled] = useState(false);
   const [spotifyExpanded, setSpotifyExpanded] = useState(false);
   const spotifyURL = useStore((state) => state.spotify.spotifyEmbedUrl);
-  const setSpotifyURL = useStore((state) => state.spotify.setSpotifyEmbedUrl);
+  const setSpotifyURL = useStore((state) => state.setSpEmbedUrl);
   // const setSpotifyAuthURL = useStore(
-  //   (state) => state.spotify.setSpotifyAuthUrl
+  //   (state) => state.setSpotifyAuthUrl
   // );
 
   const [youtubeEnabled, setYoutubeEnabled] = useState(false);
