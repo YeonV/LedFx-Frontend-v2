@@ -173,7 +173,7 @@ const UICard = () => {
                 <label>Spotify Embedded Player</label>
                 <SettingsSwitch checked={features['spotify']} onChange={(e) => setFeatures('spotify', !features['spotify'])} />
             </div>}
-            {viewMode !== 'user' && <div className={`${classes.settingsRow} step-settings-x `}>
+            {viewMode !== 'user' && features['integrations'] && <div className={`${classes.settingsRow} step-settings-x `}>
                 <label>Spotify Pro</label>
                 <SettingsSwitch checked={features['spotifypro']} onChange={(e) => setFeatures('spotifypro', !features['spotifypro'])} />
             </div>}
