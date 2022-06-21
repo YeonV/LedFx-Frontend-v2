@@ -25,8 +25,8 @@ const IntegrationCardSpotify = ({ integration }) => {
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
   const spotifyAuthenticated = useStore((state) => state.spotify.spotifyAuthenticated);
-  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);
-  const thePlayer = useStore((state) => state.spotify.thePlayer);
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration);  
+  const player = useStore((state) => state.spotify.player);
 
   const [expanded, setExpanded] = useState(false);
   const variant = 'outlined';
@@ -71,11 +71,11 @@ const IntegrationCardSpotify = ({ integration }) => {
             aria-label="status"
             checked={integrations[integration].active}
             onClick={async() => {
-              if (window.Spotify && thePlayer.current && spotifyAuthenticated) {
+              if (window.Spotify && player && spotifyAuthenticated) {
                 if (!integrations[integration].active) {
-                  await thePlayer.current.connect()
+                  await player.connect()
                 } else {
-                  await thePlayer.current.disconnect()
+                  await player.disconnect()
                 }
               }              
               return handleActivateIntegration(integrations[integration])

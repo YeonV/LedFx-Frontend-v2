@@ -35,14 +35,6 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setPlayer'
     ),
-  setThePlayer: (ref: any) =>
-    set(
-      produce((state: any) => {
-        state.spotify.thePlayer = ref;
-      }),
-      false,
-      'spotify/setThePlayer'
-    ),
   setSwSize: (x: any) =>
     set(
       produce((state: any) => {

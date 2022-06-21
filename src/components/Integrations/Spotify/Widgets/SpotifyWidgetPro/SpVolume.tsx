@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -8,17 +7,16 @@ import useStore from '../../../../../store/useStore';
 import { VolSliderStyles } from './SpWidgetPro.styles';
 
 export default function SpVolume() {
-  const thePlayer = useRef(useStore((state) => state.spotify.thePlayer));
-  console.log(thePlayer);
+  const player = useStore((state) => state.spotify.player);
   const spotifyVol = useStore((state) => state.spotify.spotifyVol);
   const setSpotifyVol = useStore((state) => state.setSpVol);
   const [volu, setVolu] = useState(spotifyVol || 0);
-  const getVolume = useStore((state) => state.getVolume);
-  const setVol = (vol: number) =>
-    thePlayer.current
-      .setVolume(vol)
-      .then(() => getVolume().then((v: number) => setSpotifyVol(v)));
-
+  const setVol = (vol: number) => {
+    if (player)
+      player
+        .setVolume(vol)
+        .then(() => player.getVolume().then((v: number) => setSpotifyVol(v)));
+  };
   useEffect(() => {
     setVolu(spotifyVol);
   }, [spotifyVol]);

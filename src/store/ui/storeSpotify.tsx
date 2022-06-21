@@ -2,7 +2,6 @@ const storeSpotify = () => ({
   spotifyEmbedUrl:
     'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
   spotifyAuthToken: '',
-  thePlayer: null as any,
   player: null as any,
   swSize: 'small',
   swX: 50,

@@ -56,7 +56,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   const spotifyAuthenticated = useStore(
     (state) => state.spotify.spotifyAuthenticated
   );
-  const thePlayer = useStore((state) => state.spotify.thePlayer);
+  const player = useStore((state) => state.spotify.player);
   const setSpotifyAuthenticated = useStore((state) => state.setSpAuthenticated);
   const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken);
   const [codes, setCodes] = useState({});
@@ -138,7 +138,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       className={classes.editButton}
       onClick={() => {
         logoutAuth();
-        thePlayer?.current?.disconnect();
+        if (player) player.disconnect();
         setSpotifyAuthenticated(false);
         setSpotifyAuthToken(false);
       }}
