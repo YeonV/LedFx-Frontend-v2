@@ -1,10 +1,20 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
-import { BrowserRouter, HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { Switch } from 'react-router';
+import {
+  BrowserRouter,
+  HashRouter as Router,
+  Routes,
+  Route,
+} from 'react-router-dom';
+// import { Switch } from 'react-router';
 import clsx from 'clsx';
 import { CssBaseline } from '@material-ui/core';
+import isElectron from 'is-electron';
+import { useHotkeys } from 'react-hotkeys-hook';
+// import { TrainRounded } from '@mui/icons-material';
+import { SnackbarProvider } from 'notistack';
+import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
 import useStore from './store/useStore';
 import ScrollToTop from './utils/scrollToTop';
 import ws, { WsContext, HandleWs } from './utils/Websocket';
@@ -17,11 +27,11 @@ import {
   BladeDarkGreyTheme,
 } from './AppThemes';
 import {
-  BladeDarkTheme5,
-  BladeDarkOrangeTheme5,
-  BladeLightTheme5,
-  BladeDarkGreenTheme5,
-  BladeDarkBlueTheme5,
+  // BladeDarkTheme5,
+  // BladeDarkOrangeTheme5,
+  // BladeLightTheme5,
+  // BladeDarkGreenTheme5,
+  // BladeDarkBlueTheme5,
   BladeDarkGreyTheme5,
 } from './AppThemes5';
 import useStyles from './App.styles';
@@ -38,22 +48,18 @@ import Device from './pages/Device/Device';
 import Scenes from './pages/Scenes/Scenes';
 import Settings from './pages/Settings/Settings';
 import Integrations from './pages/Integrations/Integrations';
-import { deleteFrontendConfig, initFrontendConfig, log } from './utils/helpers';
+import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
+// import { deleteFrontendConfig, initFrontendConfig, log } from './utils/helpers';
 import LoginRedirect from './pages/LoginRedirect';
-import isElectron from 'is-electron';
 import WaveLines from './components/Icons/waves';
 import useWindowDimensions from './utils/useWindowDimension';
-import { useHotkeys } from 'react-hotkeys-hook';
 import SmartBar from './components/Dialogs/SmartBar';
 import wsNew, { HandleWsNew, WsContextNew } from './utils/WebsocketNew';
-import { TrainRounded } from '@mui/icons-material';
-import { SnackbarProvider } from 'notistack';
-import { Close } from '@material-ui/icons';
-import { useSnackbar } from 'notistack';
-import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
+// import { SnackbarProvider, useSnackbar } from 'notistack';
+// import { Close } from '@material-ui/icons';
+
 import './AddToHomescreen.css';
 import SpotifyLoginRedirect from './pages/Integrations/Spotify/SpotifyLoginRedirect';
-
 
 export default function App() {
   const classes = useStyles();
@@ -68,19 +74,13 @@ export default function App() {
   const setFeatures = useStore((state) => state.setFeatures);
   const setShowFeatures = useStore((state) => state.setShowFeatures);
 
-  const showSnackbar = useStore((state) => state.showSnackbar);
+  const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const setHost = useStore((state) => state.setHost);
 
   const [open, setOpen] = useState(false);
   useHotkeys('ctrl+alt+y', () => setOpen(!open));
 
   const { height, width } = useWindowDimensions();
-
-  const thePlayer = useStore((state) => state.spotify.thePlayer);
-  const spotifyPlayer = useRef(thePlayer);
-
-  // const player = useStore((state) => state.spotify.player);
-  const setThePlayer = useStore((state) => state.setThePlayer);
 
   let newBase = !!window.localStorage.getItem('ledfx-newbase');
 
@@ -90,15 +90,15 @@ export default function App() {
     newBase = 1;
   }
 
-  const ledfxTheme = !!window.localStorage.getItem('ledfx-theme')
+  const ledfxTheme = window.localStorage.getItem('ledfx-theme')
     ? window.localStorage.getItem('ledfx-theme')
-    : !!window.localStorage.getItem('hassTokens')
-    ? 'DarkBlue'
-    : window.location.origin === 'https://my.ledfx.app'
-    ? 'DarkGreen'
-    : isElectron()
-    ? 'DarkOrange'
-    : 'DarkRed';
+    : window.localStorage.getItem('hassTokens')
+      ? 'DarkBlue'
+      : window.location.origin === 'https://my.ledfx.app'
+        ? 'DarkGreen'
+        : isElectron()
+          ? 'DarkOrange'
+          : 'DarkRed';
 
   const ledfxThemes = {
     Dark: BladeDarkTheme,
@@ -117,7 +117,7 @@ export default function App() {
   }, [getVirtuals, getSystemConfig, getSchemas]);
 
   useEffect(() => {
-    if (features['go'] || window.location.hash.indexOf('newCore=1') > -1) {
+    if (features.go || window.location.hash.indexOf('newCore=1') > -1) {
       window.localStorage.setItem('ledfx-newbase', 1);
       window.localStorage.removeItem('undefined');
       window.localStorage.removeItem('ledfx-hosts');
@@ -146,7 +146,7 @@ export default function App() {
     // log("successSUCCESS", { id: 'test' })
     // log("warningWARNING", { id: 'test' })
     // log("infoINFO", { id: 'test' })
-    if (features['go'] || window.location.hash.indexOf('newCore=1') > -1) {
+    if (features.go || window.location.hash.indexOf('newCore=1') > -1) {
       window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
     }
   }, []);
@@ -173,46 +173,44 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    setThePlayer(spotifyPlayer.current)
-  }, []);
-
-  const HashRouter = () => <Router basename={process.env.PUBLIC_URL}>
-  <ScrollToTop />
-  <HandleWs />
-  <MessageBar />
-  <TopBar />
-  <LeftBar />
-  <main
-    className={clsx(classes.content, {
-      [classes.contentShift]: leftBarOpen,
-    })}
-  >
-    <div className={classes.drawerHeader} />
-    <Routes>
-      <Route
-        exact
-        path="/connect/:providerName/redirect"
-        element={<LoginRedirect />}
-      />
-      <Route exact path="/" element={<Home />} />
-      <Route path="/devices" element={<Devices />} />
-      <Route path="/device/:virtId" element={<Device />} />
-      <Route path="/scenes" element={<Scenes />} />
-      <Route path="/integrations" element={<Integrations />} />
-      <Route path="/settings" element={<Settings />} />
-    </Routes>
-    <NoHostDialog />
-    <SmartBar open={open} setOpen={setOpen} />
-  </main>
-  <BottomBar />
-</Router>
+  const HashRouter = () => (
+    <Router basename={process.env.PUBLIC_URL}>
+      <ScrollToTop />
+      <HandleWs />
+      <MessageBar />
+      <TopBar />
+      <LeftBar />
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: leftBarOpen,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Routes>
+          <Route
+            exact
+            path="/connect/:providerName/redirect"
+            element={<LoginRedirect />}
+          />
+          <Route exact path="/" element={<Home />} />
+          <Route path="/devices" element={<Devices />} />
+          <Route path="/device/:virtId" element={<Device />} />
+          <Route path="/scenes" element={<Scenes />} />
+          <Route path="/integrations" element={<Integrations />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+        <NoHostDialog />
+        <SmartBar open={open} setOpen={setOpen} />
+      </main>
+      <BottomBar />
+    </Router>
+  );
 
   return (
     <ThemeProvider theme={BladeDarkGreyTheme5}>
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme || 'DarkRed']}>
         <SnackbarProvider maxSnack={5}>
-          {!newBase && 
+          {!newBase && (
             <WsContext.Provider value={ws}>
               <div
                 className={classes.root}
@@ -221,26 +219,18 @@ export default function App() {
                 <CssBaseline />
                 <HashRouter />
                 <BrowserRouter>
-                <Routes>
-                  <Route
-                    exact
-                    path="/callback"
-                    element={<SpotifyLoginRedirect />}
-                  />
-                  <Route
-                    exact
-                    from="/"
-                    to="/#"
-                  />
-                  <Route
-                    path="*"
-                    element={<></>}
-                  />
-                </Routes>
+                  <Routes>
+                    <Route
+                      exact
+                      path="/callback"
+                      element={<SpotifyLoginRedirect />}
+                    />
+                    <Route exact from="/" to="/#" />
+                    <Route path="*" element={<></>} />
+                  </Routes>
                 </BrowserRouter>
-                
-                
-                {features['waves'] && (
+
+                {features.waves && (
                   <WaveLines
                     startColor={
                       ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main
@@ -254,8 +244,10 @@ export default function App() {
                   />
                 )}
               </div>
-            </WsContext.Provider>}
-          {newBase && <WsContextNew.Provider value={wsNew}>
+            </WsContext.Provider>
+          )}
+          {newBase && (
+            <WsContextNew.Provider value={wsNew}>
               <div
                 className={classes.root}
                 style={{ paddingTop: isElectron() ? '30px' : 0 }}
@@ -263,7 +255,7 @@ export default function App() {
                 <CssBaseline />
                 <Router basename={process.env.PUBLIC_URL}>
                   <ScrollToTop />
-                 <HandleWsNew />
+                  <HandleWsNew />
                   <MessageBar />
                   <TopBar />
                   <LeftBar />
@@ -291,7 +283,7 @@ export default function App() {
                   </main>
                   <BottomBar />
                 </Router>
-                {features['waves'] && (
+                {features.waves && (
                   <WaveLines
                     startColor={
                       ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main
@@ -305,7 +297,8 @@ export default function App() {
                   />
                 )}
               </div>
-          </WsContextNew.Provider>}
+            </WsContextNew.Provider>
+          )}
           <AddToHomeScreen
             // debug={true}
             // activateLogging={true}
@@ -342,7 +335,7 @@ export default function App() {
               guidance: 'athGuidance',
               guidanceImageCell: 'athGuidanceImageCell',
               guidanceImageCellAddOns: '',
-              guidanceCancelButton: 'athGuidanceCancelButton'
+              guidanceCancelButton: 'athGuidanceCancelButton',
             }}
           />
         </SnackbarProvider>

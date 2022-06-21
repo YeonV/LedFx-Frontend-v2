@@ -13,10 +13,8 @@ import {
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
-// import { useRef } from 'react';
 import useStore from '../../../../../store/useStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
-
 import { formatTime } from '../../../../../utils/helpers';
 import {
   spotifyRepeat,
@@ -27,7 +25,7 @@ import SpSceneTrigger from './SpSceneTrigger';
 
 export default function SpControls({ className }: any) {
   const classes = useStyle();
-
+  const player = useStore((state) => state.spotify.player);
   const spotifyData = useStore(
     (state: any) => state.spotify.spotifyData.playerState
   );
@@ -36,18 +34,16 @@ export default function SpControls({ className }: any) {
   const repeat_mode = spotifyData?.repeat_mode || 0;
   const shuffle = spotifyData?.shuffle || false;
   const hijack = spotifyData?.track_window?.current_track?.album.name || '';
-
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const spotifyVol = useStore((state) => state.spotify.spotifyVol);
   const setSpotifyVol = useStore((state) => state.setSpVol);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const setSpotifyPos = useStore((state) => state.setSpPos);
-  const thePlayer = useStore((state) => state.spotify.thePlayer);
 
   const getVolume = useStore((state) => state.getVolume);
 
   const setVol = (vol: number) =>
-    thePlayer
+    player
       .setVolume(vol)
       .then(() => getVolume().then((v: number) => setSpotifyVol(v)));
 
@@ -106,13 +102,13 @@ export default function SpControls({ className }: any) {
             </IconButton>
             <IconButton
               aria-label="previous song"
-              onClick={() => thePlayer.previousTrack()}
+              onClick={() => player.previousTrack()}
             >
               <SkipPrevious fontSize="large" htmlColor="#bbb" />
             </IconButton>
             <IconButton
               aria-label={paused ? 'play' : 'pause'}
-              onClick={() => thePlayer.togglePlay()}
+              onClick={() => player.togglePlay()}
             >
               {paused ? (
                 <PlayCircle sx={{ fontSize: '3rem' }} htmlColor="#fff" />
@@ -122,12 +118,12 @@ export default function SpControls({ className }: any) {
             </IconButton>
             <IconButton
               aria-label="next song"
-              onClick={() => thePlayer.nextTrack()}
+              onClick={() => player.nextTrack()}
             >
               <SkipNext fontSize="large" htmlColor="#bbb" />
             </IconButton>
             <IconButton
-              aria-label="next song"
+              aria-label="repeat"
               onClick={() => spotifyRepeat(spotifyDevice, repeat_mode)}
             >
               {repeat_mode === 0 ? (
@@ -159,7 +155,7 @@ export default function SpControls({ className }: any) {
               step={1}
               max={duration}
               onChange={(_, value) => setSpotifyPos(value as number)}
-              onChangeCommitted={(_, value) => thePlayer.seek(value as number)}
+              onChangeCommitted={(_, value) => player.seek(value as number)}
               sx={{ ...PosSliderStyles, margin: '0 10px' }}
             />
             <TinyText>{formatTime(duration)}</TinyText>
