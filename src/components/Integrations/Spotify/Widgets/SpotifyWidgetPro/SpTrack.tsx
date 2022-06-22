@@ -8,6 +8,7 @@ export default function SpTrack({ className }: any) {
   const playerState = useStore(
     (state: any) => state.spotify.spotifyData.playerState
   );
+
   const title = playerState?.track_window?.current_track?.name || 'Not playing';
   const image =
     playerState?.track_window?.current_track?.album.images[0].url ||

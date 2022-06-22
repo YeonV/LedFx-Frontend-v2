@@ -67,21 +67,14 @@ export default function SpotifyTriggerTable() {
     }
   }, [integrations]);
 
-  // const getSpTriggers = useStore(
-  //   (state) => (state as any).getSpTriggers
-  // );
-  // const spotifytriggers = useStore((state) => (state as any).spotifytriggers);
-  // // const theme = useTheme();
+  const spotifytriggers = useStore((state) => state.spotify.spotifytriggers);
+  // const theme = useTheme();
 
-  // useEffect(() => {
-  //   getSpTriggers('spotify').then(
-  //     console.log('Spotify trigger', spotifytriggers)
-  //   );
-  // }, []);
-
-  // const deleteSpTrigger = useStore(
-  //   (state) => (state as any).deleteSpTrigger
-  // );
+  useEffect(() => {
+    // getSpTriggers('spotify').then(
+    console.log('Spotify trigger', spotifytriggers);
+    // );
+  }, []);
 
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteSpTrigger({

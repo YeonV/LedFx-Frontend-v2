@@ -31,7 +31,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (posi.current && !paused) {
+      if (!paused) {
         posi.current += 1000;
         setSpotifyPos(posi.current);
       }
