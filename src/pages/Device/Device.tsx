@@ -58,7 +58,7 @@ const Device = () => {
       {virtual && (
         <>
           <Grid item className={classes.girdItem}>
-            <EffectsCard virtId={virtId} />
+            <EffectsCard virtId={virtId || ''} />
           </Grid>
 
           <Grid item className={classes.girdItem}>
