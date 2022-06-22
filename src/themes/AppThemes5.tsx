@@ -1,8 +1,17 @@
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
-export const BladeDarkGreenTheme = createTheme({
+declare module '@mui/material/styles' {
+  interface Palette {
+    accent: Palette['primary'];
+  }
+  interface PaletteOptions {
+    accent: PaletteOptions['primary'];
+  }
+}
+
+export const BladeDarkGreenTheme5 = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#2BDE6A',
     },
@@ -17,16 +26,18 @@ export const BladeDarkGreenTheme = createTheme({
       paper: '#151515',
     },
   },
-  props: {
+  components: {
     MuiCard: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
   },
 });
 
-export const BladeDarkBlueTheme = createTheme({
+export const BladeDarkBlueTheme5 = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#0dbedc',
     },
@@ -41,16 +52,18 @@ export const BladeDarkBlueTheme = createTheme({
       paper: '#151515',
     },
   },
-  props: {
+  components: {
     MuiCard: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
   },
 });
 
-export const BladeDarkTheme = createTheme({
+export const BladeDarkTheme5 = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#b00000',
     },
@@ -65,9 +78,11 @@ export const BladeDarkTheme = createTheme({
       paper: '#151515',
     },
   },
-  props: {
+  components: {
     MuiCard: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
   },
   typography: {
@@ -77,23 +92,28 @@ export const BladeDarkTheme = createTheme({
   },
 });
 
-export const BladeDarkGreyTheme = createTheme({
+export const BladeDarkGreyTheme5 = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#333',
     },
     secondary: {
       main: '#222',
     },
+    accent: {
+      main: '#444',
+    },
     background: {
       default: '#030303',
       paper: '#151515',
     },
   },
-  props: {
+  components: {
     MuiCard: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
   },
   typography: {
@@ -103,9 +123,9 @@ export const BladeDarkGreyTheme = createTheme({
   },
 });
 
-export const BladeDarkOrangeTheme = createTheme({
+export const BladeDarkOrangeTheme5 = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#FFBF47',
     },
@@ -120,9 +140,11 @@ export const BladeDarkOrangeTheme = createTheme({
       paper: '#151515',
     },
   },
-  props: {
+  components: {
     MuiCard: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
   },
   typography: {
@@ -132,20 +154,25 @@ export const BladeDarkOrangeTheme = createTheme({
   },
 });
 
-export const BladeLightTheme = createTheme({
+export const BladeLightTheme5 = createTheme({
   palette: {
-    type: 'light',
+    mode: 'light',
     primary: {
       main: '#800000',
     },
     secondary: {
       main: '#800000',
     },
+    accent: {
+      main: '#a00000',
+    },
     // background: { default: '#030303', paper: '#151515' },
   },
-  props: {
+  components: {
     MuiCard: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
   },
 });

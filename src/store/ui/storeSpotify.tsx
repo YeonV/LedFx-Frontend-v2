@@ -12,6 +12,8 @@ const storeSpotify = () => ({
   spotifyAuthenticated: false,
   spotifyData: {} as any,
   spotifyDevice: {} as any,
+  spotifytriggers: {},
+  spTriggersList: [] as any,
 });
 
 export default storeSpotify;

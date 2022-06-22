@@ -10,9 +10,11 @@ import {
   TableRow,
   Paper,
   Grid,
+  Card,
 } from '@material-ui/core';
 import { BarChart, MusicNote, Speed } from '@material-ui//icons';
 import { Piano } from '@mui/icons-material';
+import { Stack } from '@mui/material';
 import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
 import RadarChart from './SpRadarChart';
 import useStore from '../../../../../../store/useStore';
@@ -64,86 +66,91 @@ export default function SpAudioFeatures() {
   // };
 
   return (
-    <Grid xl={12} container item style={{ margin: '0px 20px' }} spacing={2}>
-      <Grid xl={3} md={4} xs={6} item>
-        <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            {/* <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell align="right">Value</TableCell>
-              </TableRow>
-            </TableHead> */}
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Speed />
-                  BPMs
-                </TableCell>
-                <TableCell align="right">{audioFeatures?.tempo}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell scope="row">
-                  <Piano />
-                  Pitch class
-                </TableCell>
-                <TableCell align="right">
-                  {audioFeatures?.key
-                    ? audioFeatures.key === 0
-                      ? 'C'
-                      : audioFeatures.key === 1
-                      ? 'C#'
-                      : audioFeatures.key === 2
-                      ? 'D'
-                      : audioFeatures.key === 3
-                      ? 'D#'
-                      : audioFeatures.key === 4
-                      ? 'E'
-                      : audioFeatures.key === 5
-                      ? 'F'
-                      : audioFeatures.key === 6
-                      ? 'F#'
-                      : audioFeatures.key === 7
-                      ? 'G'
-                      : audioFeatures.key === 8
-                      ? 'G#'
-                      : audioFeatures.key === 9
-                      ? 'A'
-                      : audioFeatures.key === 10
-                      ? 'A#'
-                      : audioFeatures.key === 11
-                      ? 'B'
-                      : 'N/A'
-                    : 'N/A'}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  <MusicNote /> Modality
-                </TableCell>
-                <TableCell align="right">
-                  {audioFeatures?.mode === 0 ? 'Minor' : 'Major'}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  <BarChart />
-                  Beats per bar
-                </TableCell>
-                <TableCell align="right">
-                  {audioFeatures?.time_signature}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+    <Grid xl={12} container item alignItems="center">
+      <Grid xl={2} md={2} xs={6} item>
+        <Card>
+          <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Stack direction="row" alignItems="flex-end">
+                      <Speed style={{ marginRight: '0.5rem' }} />
+                      Tempo
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="right">
+                    {parseInt(audioFeatures?.tempo, 10)} BPM
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell scope="row">
+                    <Stack direction="row" alignItems="flex-end">
+                      <Piano style={{ marginRight: '0.5rem' }} />
+                      Pitch class
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="right">
+                    {audioFeatures?.key
+                      ? audioFeatures.key === 0
+                        ? 'C'
+                        : audioFeatures.key === 1
+                        ? 'C#'
+                        : audioFeatures.key === 2
+                        ? 'D'
+                        : audioFeatures.key === 3
+                        ? 'D#'
+                        : audioFeatures.key === 4
+                        ? 'E'
+                        : audioFeatures.key === 5
+                        ? 'F'
+                        : audioFeatures.key === 6
+                        ? 'F#'
+                        : audioFeatures.key === 7
+                        ? 'G'
+                        : audioFeatures.key === 8
+                        ? 'G#'
+                        : audioFeatures.key === 9
+                        ? 'A'
+                        : audioFeatures.key === 10
+                        ? 'A#'
+                        : audioFeatures.key === 11
+                        ? 'B'
+                        : 'N/A'
+                      : 'N/A'}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <Stack direction="row" alignItems="flex-end">
+                      <MusicNote style={{ marginRight: '0.5rem' }} />
+                      Modality
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="right">
+                    {audioFeatures?.mode === 0 ? 'Minor' : 'Major'}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <Stack direction="row" alignItems="flex-end">
+                      <BarChart style={{ marginRight: '0.5rem' }} />
+                      Beats per bar
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="right">
+                    {audioFeatures?.time_signature}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
       </Grid>
-      <Grid xl={2} xs={6} item>
-        <Paper>
-          <div style={{ padding: '20px 0px' }}>
-            <RadarChart {...audioFeatures} />
-          </div>
-        </Paper>
+      <Grid xl={3} md={4} xs={6} item>
+        <div style={{ width: '400px', height: '250px' }}>
+          <RadarChart {...audioFeatures} />
+        </div>
       </Grid>
     </Grid>
   );

@@ -61,7 +61,7 @@ const storeGeneral = (set: any) => ({
   setViewMode: (mode: string): void =>
     set(
       produce((state: any) => {
-        state.ui.viewMode = mode;
+        state.viewMode = mode;
       }),
       false,
       'ui/setViewMode'

@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable react/require-default-props */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable import/no-unresolved */
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,26 +13,37 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import { ListItemIcon, MenuItem } from '@material-ui/core';
 import { MenuBook } from '@material-ui/icons';
 // import { API } from '@stoplight/elements';
+import { TransitionProps } from '@material-ui/core/transitions';
 import useStyles from './Doc.styles';
 import '@stoplight/elements/styles.min.css';
-import configApiYaml from './configApiYaml';
+// import configApiYaml from './configApiYaml';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef<unknown, TransitionProps>(
+  function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  }
+);
 
-const MuiMenuItem = React.forwardRef((props, ref) => {
-  return <MenuItem ref={ref} {...props} />;
+type Props = { _?: never; className?: any; onClick?: any; children?: any };
+
+const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
+  const { children } = props;
+  return (
+    <MenuItem ref={ref} {...props}>
+      {children}
+    </MenuItem>
+  );
 });
 
 function FrameWrapper() {
-  const ref = React.useRef();
+  const ref = React.useRef<any>();
   const [height, setHeight] = React.useState('0px');
   const onLoad = () => {
     setHeight(`${ref.current.contentWindow.document.body.scrollHeight}px`);
   };
   return (
     <iframe
+      title="docs"
       ref={ref}
       onLoad={onLoad}
       id="myFrame"
@@ -56,7 +71,7 @@ export default function Doc({
   variant = 'contained',
   onClick = () => {},
   innerKey,
-}) {
+}: any) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -74,10 +89,10 @@ export default function Doc({
         <MuiMenuItem
           key={innerKey}
           className={className}
-          onClick={(e) => {
+          onClick={(e: any) => {
             e.preventDefault();
             onClick(e);
-            handleClickOpen(e);
+            handleClickOpen();
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
@@ -88,9 +103,9 @@ export default function Doc({
           variant={variant}
           startIcon={startIcon}
           color={color}
-          onClick={(e) => {
+          onClick={(e: any) => {
             onClick(e);
-            handleClickOpen(e);
+            handleClickOpen();
           }}
           size="small"
           className={className}

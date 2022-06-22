@@ -1,6 +1,15 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from '@material-ui/core/styles';
 
-export const BladeDarkGreenTheme5 = createTheme({
+declare module '@material-ui/core/styles/createPalette' {
+  interface Palette {
+    accent: Palette['primary'];
+  }
+  interface PaletteOptions {
+    accent: PaletteOptions['primary'];
+  }
+}
+
+export const BladeDarkGreenTheme = createTheme({
   palette: {
     type: 'dark',
     primary: {
@@ -12,9 +21,9 @@ export const BladeDarkGreenTheme5 = createTheme({
     accent: {
       main: '#20173c',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
@@ -24,7 +33,7 @@ export const BladeDarkGreenTheme5 = createTheme({
   },
 });
 
-export const BladeDarkBlueTheme5 = createTheme({
+export const BladeDarkBlueTheme = createTheme({
   palette: {
     type: 'dark',
     primary: {
@@ -36,9 +45,9 @@ export const BladeDarkBlueTheme5 = createTheme({
     accent: {
       main: '#20173c',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
@@ -48,7 +57,7 @@ export const BladeDarkBlueTheme5 = createTheme({
   },
 });
 
-export const BladeDarkTheme5 = createTheme({
+export const BladeDarkTheme = createTheme({
   palette: {
     type: 'dark',
     primary: {
@@ -60,26 +69,25 @@ export const BladeDarkTheme5 = createTheme({
     accent: {
       main: '#20173c',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
     MuiCard: {
       variant: 'outlined',
     },
-  },  
+  },
   typography: {
-    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
-    "fontSize": 14,
-    "fontWeightRegular": 400,
-   }
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
 });
 
-export const BladeDarkGreyTheme5 = createTheme({
+export const BladeDarkGreyTheme = createTheme({
   palette: {
-    mode: 'dark',
     type: 'dark',
     primary: {
       main: '#333',
@@ -87,24 +95,27 @@ export const BladeDarkGreyTheme5 = createTheme({
     secondary: {
       main: '#222',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    accent: {
+      main: '#444',
+    },
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
     MuiCard: {
       variant: 'outlined',
     },
-  },  
+  },
   typography: {
-    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
-    "fontSize": 14,
-    "fontWeightRegular": 400,
-   }
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
 });
 
-export const BladeDarkOrangeTheme5 = createTheme({
+export const BladeDarkOrangeTheme = createTheme({
   palette: {
     type: 'dark',
     primary: {
@@ -116,24 +127,24 @@ export const BladeDarkOrangeTheme5 = createTheme({
     accent: {
       main: '#542581',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
     MuiCard: {
       variant: 'outlined',
     },
-  },  
+  },
   typography: {
-    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
-    "fontSize": 14,
-    "fontWeightRegular": 400,
-   }
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
 });
 
-export const BladeLightTheme5 = createTheme({
+export const BladeLightTheme = createTheme({
   palette: {
     type: 'light',
     primary: {
@@ -141,6 +152,9 @@ export const BladeLightTheme5 = createTheme({
     },
     secondary: {
       main: '#800000',
+    },
+    accent: {
+      main: '#a00000',
     },
     // background: { default: '#030303', paper: '#151515' },
   },
