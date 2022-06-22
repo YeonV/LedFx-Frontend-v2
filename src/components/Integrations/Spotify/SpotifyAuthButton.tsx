@@ -13,7 +13,7 @@ import {
   refreshAuth,
   logoutAuth,
 } from '../../../utils/spotifyProxies';
-import { useIntegrationCardStyles } from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles';
+import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles';
 
 // eslint-disable-next-line prettier/prettier
 const baseURL = isElectron() ? 'http://localhost:8888' : window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0] || 'http://localhost:8888';
@@ -63,7 +63,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   const cookies = new Cookies();
   const classes = useIntegrationCardStyles();
   useEffect(() => {
-    getPkce(50, (error, { verifier, challenge }) => {
+    getPkce(50, (_error: any, { verifier, challenge }: any) => {
       setCodes({ verifier, challenge });
     });
     if (cookies.get('access_token')) {

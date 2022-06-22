@@ -14,7 +14,7 @@ import {
   SpotifyScreenProps,
   Transition,
 } from './SpotifyScreen.props';
-import { useEditVirtualsStyles } from '../../../Devices/EditVirtuals/EditVirtuals.styles';
+import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles';
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
 // import RadarChart from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpRadarChart';
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
