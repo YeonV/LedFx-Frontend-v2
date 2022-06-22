@@ -1,9 +1,10 @@
+/* eslint-disable no-plusplus */
 import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../../store/useStore';
 import DeviceCard from './DeviceCard/DeviceCard.wrapper';
 import NoYet from '../../components/NoYet';
-import ws from "../../utils/Websocket";
+import ws from '../../utils/Websocket';
 
 const useStyles = makeStyles((theme) => ({
   cardWrapper: {
@@ -35,7 +36,7 @@ const Devices = () => {
   }, [getDevices, getVirtuals]);
 
   useEffect(() => {
-    const handleWebsockets = (e) => {
+    const handleWebsockets = (e: any) => {
       if (e.detail === 'devices_updated') {
         getDevices();
       }
@@ -47,20 +48,19 @@ const Devices = () => {
   }, [getDevices]);
 
   useEffect(() => {
-    const handleWebsockets = (e) => {
+    const handleWebsockets = () => {
       const req = {
         event_type: 'devices_updated',
         id: 1,
         type: 'subscribe_event',
       };
       // console.log("Send");
-      ws.send(JSON.stringify(++req.id && req));
+      (ws as any).send(JSON.stringify(++req.id && req));
     };
     document.addEventListener('YZold', handleWebsockets);
     return () => {
       document.removeEventListener('YZold', handleWebsockets);
     };
-    
   }, []);
 
   useEffect(() => {

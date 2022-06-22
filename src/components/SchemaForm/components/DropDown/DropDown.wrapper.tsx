@@ -4,8 +4,8 @@ export interface EffectDropDownProps {
   effects: any;
   virtual: any;
   features: any;
-  setVirtualEffect: (_virtId: string, _: any) => any;
-  getVirtuals: () => Record<string, unknown>;
+  setVirtualEffect: any;
+  getVirtuals: any;
 }
 
 const EffectDropDown = ({

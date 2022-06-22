@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import Slider from "@material-ui/core/Slider";
-import useStore from "../../../store/useStore";
+import { useEffect, useState } from 'react';
+import Slider from '@material-ui/core/Slider';
+import useStore from '../../../store/useStore';
 
-const PixelSlider = ({ s, handleRangeSegment }) => {
+const PixelSlider = ({ s, handleRangeSegment }: any) => {
   const getDevices = useStore((state) => state.getDevices);
   const devices = useStore((state) => state.devices);
 
@@ -13,16 +13,16 @@ const PixelSlider = ({ s, handleRangeSegment }) => {
   }, [getDevices]);
 
   useEffect(() => {
-    setRange([s[1], s[2]])
+    setRange([s[1], s[2]]);
   }, [s]);
 
   if (!devices[s[0]]) {
-    return <></>;
+    return null;
   }
 
   const pixelRange = [s[1], s[2]];
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_event: any, newValue: any) => {
     if (newValue !== pixelRange) {
       handleRangeSegment(newValue[0], newValue[1]);
     }
@@ -42,7 +42,7 @@ const PixelSlider = ({ s, handleRangeSegment }) => {
       marks={marks}
       min={0}
       max={devices[s[0]].config.pixel_count - 1}
-      onChange={(e, n) => setRange(n)}
+      onChange={(_event: any, n: any) => setRange(n)}
       onChangeCommitted={handleChange}
       aria-labelledby="range-slider"
       valueLabelDisplay="auto"

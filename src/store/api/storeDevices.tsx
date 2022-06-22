@@ -5,7 +5,7 @@ import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
 
 const storeDevices = (set: any) => ({
-  devices: {},
+  devices: {} as any,
   getDevices: async () => {
     const resp = await Ledfx('/api/devices');
     if (resp && resp.devices) {
