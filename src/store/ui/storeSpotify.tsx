@@ -10,7 +10,7 @@ const storeSpotify = () => ({
   spotifyVol: 0,
   spotifyPos: 0 as any,
   spotifyAuthenticated: false,
-  spotifyData: {},
+  spotifyData: {} as any,
   spotifyDevice: {},
 });
 

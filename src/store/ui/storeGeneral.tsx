@@ -26,7 +26,7 @@ const storeGeneral = (set: any) => ({
       'general/setStreamingToDevices'
     ),
 
-  streamingToDevices: [],
+  streamingToDevices: [] as string[],
   setStreamingToDevices: (devices: any) => {
     set(
       produce((state: any) => {

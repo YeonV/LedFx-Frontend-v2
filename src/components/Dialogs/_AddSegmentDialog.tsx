@@ -1,3 +1,6 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,7 +17,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import useStore from '../../store/useStore';
 import BladeFrame from '../SchemaForm/components/BladeFrame';
 
-function ConfirmationDialogRaw(props) {
+function ConfirmationDialogRaw(props: any) {
   const { onClose, value: valueProp, open, ...other } = props;
   const [value, setValue] = React.useState(valueProp);
 
@@ -26,7 +29,7 @@ function ConfirmationDialogRaw(props) {
     onClose(value);
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     setValue(event.target.value);
   };
 
@@ -76,6 +79,10 @@ ConfirmationDialogRaw.propTypes = {
   open: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
   config: PropTypes.any,
+  classes: PropTypes.any,
+  id: PropTypes.string,
+  keepMounted: PropTypes.bool,
+  deviceList: PropTypes.any,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -89,7 +96,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ConfirmationDialog({ virtual, config }) {
+export default function ConfirmationDialog({
+  virtual,
+  config = {},
+}: {
+  virtual: any;
+  config?: any;
+}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const deviceList = useStore((state) => state.devices) || {};
@@ -102,12 +115,13 @@ export default function ConfirmationDialog({ virtual, config }) {
     setOpen(true);
   };
 
-  const handleClose = (newValue) => {
+  const handleClose = (newValue: string) => {
     setOpen(false);
     if (newValue) {
       const device = {
         ...deviceList[
-          Object.keys(deviceList).find((d) => deviceList[d].id === newValue)
+          Object.keys(deviceList).find((d) => deviceList[d].id === newValue) ||
+            0
         ],
       };
       if (device && device.config) {
@@ -116,9 +130,7 @@ export default function ConfirmationDialog({ virtual, config }) {
           [device.id, 0, device.config.pixel_count - 1, false],
         ];
         const test = temp.filter((t) => t.length === 4);
-        updateVirtualSegments({ virtId: virtual.id, segments: test }).then(() =>
-          getVirtuals()
-        );
+        updateVirtualSegments(virtual.id, test).then(() => getVirtuals());
       }
     }
   };
@@ -131,7 +143,6 @@ export default function ConfirmationDialog({ virtual, config }) {
             variant="contained"
             color="primary"
             aria-label="Add"
-            className={classes.button}
             endIcon={<AddCircleIcon />}
             onClick={handleClickListItem}
             role="listitem"
@@ -153,9 +164,7 @@ export default function ConfirmationDialog({ virtual, config }) {
             deviceList={deviceList}
           />
         </>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   );
 }

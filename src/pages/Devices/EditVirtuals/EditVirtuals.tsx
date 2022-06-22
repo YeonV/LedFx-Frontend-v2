@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,21 +10,31 @@ import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
-import { getOverlapping } from "../../../utils/helpers";
+import { ListItemIcon, MenuItem } from '@material-ui/core';
+import { Settings } from '@material-ui/icons';
+import { TransitionProps } from '@material-ui/core/transitions';
+import { getOverlapping } from '../../../utils/helpers';
 import useStore from '../../../store/useStore';
 
 import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog';
 import Segment from './Segment';
-import { useEditVirtualsStyles } from './EditVirtuals.styles'
-import { ListItemIcon, MenuItem } from '@material-ui/core';
-import { Settings } from '@material-ui/icons';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import useEditVirtualsStyles from './EditVirtuals.styles';
 
-const MuiMenuItem = React.forwardRef((props, ref) => {
-  return <MenuItem  ref={ref} {...props} />;
+const Transition = React.forwardRef<unknown, TransitionProps>(
+  function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  }
+);
+type Props = { _?: never; children?: any; className?: any; onClick?: any };
+
+const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
+  const { children } = props;
+  return (
+    <MenuItem ref={ref} {...props}>
+      {children}
+    </MenuItem>
+  );
 });
 
 export default function FullScreenDialog({
@@ -35,12 +48,12 @@ export default function FullScreenDialog({
   variant = 'contained',
   onClick = () => {},
   innerKey,
-}) {
+}: any) {
   const classes = useEditVirtualsStyles();
-  const showSnackbar = useStore((state) => state.showSnackbar);
+  const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const getDevices = useStore((state) => state.getDevices);
   const virtuals = useStore((state) => state.virtuals);
-  const virtual = virtuals[virtId]
+  const virtual = virtuals[virtId];
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -49,44 +62,58 @@ export default function FullScreenDialog({
 
   const handleClose = () => {
     const output = getOverlapping(virtual.segments);
-    const overlap = Object.keys(output).find(k => output[k].overlap);
+    const overlap = Object.keys(output).find((k) => output[k].overlap);
     if (overlap) {
-      showSnackbar({
-        message: `Overlapping in ${overlap} detected! Please Check your config`,
-        messageType: 'warning'
-      })
+      showSnackbar(
+        'warning',
+        `Overlapping in ${overlap} detected! Please Check your config`
+      );
     } else {
       setOpen(false);
     }
   };
 
-
   useEffect(() => {
-    getDevices()
-  }, [getDevices])
+    getDevices();
+  }, [getDevices]);
 
   return virtual && virtual.config ? (
     <>
-      {type === 'menuItem'
-        ? <MuiMenuItem key={innerKey} className={className} onClick={(e) => { e.preventDefault(); onClick(e); handleClickOpen(e)}}>
-          <ListItemIcon>
-            {icon}
-          </ListItemIcon>
+      {type === 'menuItem' ? (
+        <MuiMenuItem
+          key={innerKey}
+          className={className}
+          onClick={(e: any) => {
+            e.preventDefault();
+            onClick(e);
+            handleClickOpen();
+          }}
+        >
+          <ListItemIcon>{icon}</ListItemIcon>
           {label}
         </MuiMenuItem>
-        : <Button
+      ) : (
+        <Button
           variant={variant}
           startIcon={startIcon}
           color={color}
-          onClick={(e)=>{onClick(e); handleClickOpen(e);}}
+          onClick={(e) => {
+            onClick(e);
+            handleClickOpen();
+          }}
           size="small"
           className={className}
         >
           {label}
           {!startIcon && icon}
         </Button>
-      }
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      )}
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Button
@@ -109,13 +136,19 @@ export default function FullScreenDialog({
           <Typography variant="caption">Segments-Settings</Typography>
         </div>
         {virtual.segments?.length > 0 &&
-          virtual.segments.map((s, i) => (
-            <Segment s={s} i={i} key={i} virtual={virtual} segments={virtual.segments} />
+          virtual.segments.map((s: any, i: number) => (
+            <Segment
+              s={s}
+              i={i}
+              key={i}
+              virtual={virtual}
+              segments={virtual.segments}
+            />
           ))}
         <div className={classes.segmentButtonWrapper}>
           <AddSegmentDialog virtual={virtual} />
         </div>
       </Dialog>
     </>
-  ) : (<></>);
+  ) : null;
 }

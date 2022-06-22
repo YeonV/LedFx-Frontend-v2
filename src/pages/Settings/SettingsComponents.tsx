@@ -53,7 +53,7 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-export const SettingsSlider = styled(Slider)(({ theme }: any) => ({
+export const SettingsSlider = styled(Slider)(({ theme }: { theme: any }) => ({
   color: theme.palette.mode === 'dark' ? '#eeeeee' : '#eeeeee',
   height: 2,
   padding: '15px 0',
