@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 /* eslint-disable no-console */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-unused-vars */
@@ -127,26 +128,29 @@ const storeSpotifyActions = (set: any) => ({
     }
   },
   addToSpTriggerList: async (newTrigger: any, type: string) => {
-    // switch(type){
-    //   case 'create':
-    //     set(
-    //       produce((state: any) => {
-    //         state.spotify.spotifyTriggersList = [...newTrigger];
-    //       }),
-    //       false,
-    //       'spotify/addToTriggerList'
-    //     );
-    //     break;
-    //   case 'update':
-    //     set(
-    //       produce((state: any) => {
-    //         state.spotify.spotifyTriggersList = [...state.spotifyTriggersList, newTrigger];
-    //       }),
-    //       false,
-    //       'spotify/addToTriggerList'
-    //     );
-    //     break;
-    // }
+    switch (type) {
+      case 'create':
+        set(
+          produce((state: any) => {
+            state.spotify.spTriggersList = [...newTrigger];
+          }),
+          false,
+          'spotify/addToTriggerList'
+        );
+        break;
+      case 'update':
+        set(
+          produce((state: any) => {
+            state.spotify.spTriggersList = [
+              ...state.spTriggersList,
+              newTrigger,
+            ];
+          }),
+          false,
+          'spotify/addToTriggerList'
+        );
+        break;
+    }
   },
   addSpSongTrigger: async ({
     scene_id,
