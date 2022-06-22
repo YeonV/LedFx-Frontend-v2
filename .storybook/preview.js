@@ -1,8 +1,8 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { BladeDarkTheme } from '../src/AppThemes';
-import { BladeDarkTheme5 } from '../src/AppThemes5';
+import { BladeDarkTheme } from '../src/themes/AppThemes';
+import { BladeDarkTheme5 } from '../src/themes/AppThemes5';
 import storyTheme from './storyTheme';
 import './globals.css'
 
