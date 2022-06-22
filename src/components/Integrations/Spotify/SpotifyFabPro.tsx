@@ -6,6 +6,7 @@ import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import useStore from '../../../store/useStore';
 import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
+import { log } from '../../../utils/helpers';
 
 const SpotifyFabPro = ({ botHeight }: any) => {
   const scenes = useStore((state) => state.scenes);
@@ -31,7 +32,9 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   let activeFilters = spTriggersList.filter(
     (l: any) =>
       l.songId ===
-      spotifyData?.playerState?.context.metadata.current_item.uri.split(':')[2]
+      spotifyData?.playerState?.context?.metadata?.current_item?.uri.split(
+        ':'
+      )[2]
   );
 
   useEffect(() => {
@@ -41,8 +44,12 @@ const SpotifyFabPro = ({ botHeight }: any) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!paused) {
-        console.log(activeFilters);
+      if (
+        !paused &&
+        !!spotifyData?.playerState?.context?.metadata?.current_item?.uri.split(
+          ':'
+        )[2]
+      ) {
         activeFilters.map((t: any) => {
           if (posi.current >= t.position_ms) {
             const scene = Object.keys(scenes).find(
@@ -98,10 +105,10 @@ const SpotifyFabPro = ({ botHeight }: any) => {
           new_player.addListener('ready', ({ device_id }: any) => {
             setSpotifyDevice(device_id);
             spotifyPlay(device_id);
-            console.log('Ready with Device ID', device_id);
-            // console.log(player);
+            log('successSpotify connected');
           });
           new_player.addListener('not_ready', ({ _device_id }: any) => {
+            log('errorSpotify disconnected');
             // console.log('Device ID has gone offline', device_id);
           });
           await new_player.connect();
