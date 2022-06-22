@@ -148,7 +148,7 @@ export default function SpAudioFeatures() {
         </Card>
       </Grid>
       <Grid xl={3} md={4} xs={6} item>
-        <div style={{ width: '400px', height: '250px' }}>
+        <div style={{ width: '400px', height: '250px', overflow: 'hidden' }}>
           <RadarChart {...audioFeatures} />
         </div>
       </Grid>

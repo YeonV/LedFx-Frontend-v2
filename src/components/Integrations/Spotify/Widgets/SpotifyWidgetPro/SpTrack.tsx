@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useStore from '../../../../../store/useStore';
@@ -6,9 +7,11 @@ import useStyle, { CoverImage } from './SpWidgetPro.styles';
 export default function SpTrack({ className }: any) {
   const classes = useStyle();
   const playerState = useStore(
-    (state: any) => state.spotify.spotifyData.playerState
+    (state) => state.spotify.spotifyData.playerState
   );
+  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
 
+  // const songId = playerState?.track_window?.current_track?.songId;
   const title = playerState?.track_window?.current_track?.name || 'Not playing';
   const image =
     playerState?.track_window?.current_track?.album.images[0].url ||
@@ -17,7 +20,15 @@ export default function SpTrack({ className }: any) {
     { name: 'on LedFx' },
   ];
   const album = playerState?.track_window?.current_track?.album.name || '';
-
+  if (
+    spTriggersList.filter(
+      (l: any) =>
+        l.songId ===
+        playerState?.context.metadata.current_item.uri.split(':')[2]
+    ).length > 0
+  ) {
+    console.log('ACTIVE TRIGGERS');
+  }
   return (
     <Box className={className}>
       <CoverImage className={classes.albumImg}>

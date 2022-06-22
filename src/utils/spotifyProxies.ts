@@ -201,6 +201,27 @@ export async function spotifyPlayOnly(deviceId: string) {
   }
   return 'Error';
 }
+
+export async function spotifyPlaySong(
+  deviceId: string,
+  id: string,
+  position_ms?: number
+) {
+  const cookies = new Cookies();
+  const res = await axios.put(
+    `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+    { uris: [`spotify:track:${id}`], position_ms: position_ms || 0 },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.get('access_token')}`,
+      },
+    }
+  );
+  if (res.status === 200) {
+    return 'Success';
+  }
+  return 'Error';
+}
 export async function spotifyRepeat(deviceId: string, mode: number) {
   const cookies = new Cookies();
   const res = await axios.put(

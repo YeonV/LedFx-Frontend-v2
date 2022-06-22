@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-console */
 import { Fab } from '@material-ui/core';
 import { useEffect, useState, useRef } from 'react';
@@ -7,6 +8,8 @@ import { spotifyPlay } from '../../../utils/spotifyProxies';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
 
 const SpotifyFabPro = ({ botHeight }: any) => {
+  const scenes = useStore((state) => state.scenes);
+  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
   const spotifyAuthToken = useStore((state) => state.spotify.spotifyAuthToken);
   const spotifyData: any = useStore((state) => state.spotify.spotifyData);
   const setSpotifyData = useStore((state) => state.setSpData);
@@ -14,6 +17,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   const spotifyVol = useStore((state) => state.spotify.spotifyVol);
   const setSpotifyVol = useStore((state) => state.setSpVol);
   const setSpotifyPos = useStore((state) => state.setSpPos);
+  const activateScene = useStore((state) => state.activateScene);
 
   const [floatingWidget, setFloatingWidget] = useState(false);
 
@@ -24,6 +28,12 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   const paused = spotifyData?.playerState?.paused || false;
   const posi = useRef(position || 0);
 
+  let activeFilters = spTriggersList.filter(
+    (l: any) =>
+      l.songId ===
+      spotifyData?.playerState?.context.metadata.current_item.uri.split(':')[2]
+  );
+
   useEffect(() => {
     setSpotifyPos(position);
     posi.current = position;
@@ -32,6 +42,17 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!paused) {
+        console.log(activeFilters);
+        activeFilters.map((t: any) => {
+          if (posi.current >= t.position_ms) {
+            const scene = Object.keys(scenes).find(
+              (s: any) => scenes[s].name === t.sceneId
+            );
+            if (scene) activateScene(scene);
+            activeFilters = activeFilters.filter((f: any) => f.id !== t.id);
+          }
+        });
+
         posi.current += 1000;
         setSpotifyPos(posi.current);
       }
@@ -64,7 +85,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
             console.error(message);
           });
           new_player.addListener('player_state_changed', (state: any) => {
-            // console.log(state);
+            // console.log('YZ', state);
             if (state !== null) {
               setSpotifyData('playerState', state);
               new_player

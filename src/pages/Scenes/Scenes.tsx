@@ -65,7 +65,7 @@ const Scenes = () => {
     (state) => state.setDialogOpenAddScene
   );
 
-  const handleActivateScene = (e: any) => {
+  const handleActivateScene = (e: string) => {
     activateScene(e);
     setDialogOpenAddScene(false);
   };
@@ -159,7 +159,7 @@ const Scenes = () => {
             <Card className={classes.root}>
               <CardActionArea
                 style={{ background: '#090909' }}
-                onClick={() => handleActivateScene({ id: s })}
+                onClick={() => handleActivateScene(s)}
               >
                 {sceneImage(scenes[s].scene_image || 'Wallpaper')}
               </CardActionArea>
