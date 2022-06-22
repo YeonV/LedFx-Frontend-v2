@@ -25,7 +25,7 @@ import {
   BladeDarkGreenTheme,
   BladeDarkBlueTheme,
   BladeDarkGreyTheme,
-} from './AppThemes';
+} from './themes/AppThemes';
 import {
   // BladeDarkTheme5,
   // BladeDarkOrangeTheme5,
@@ -33,7 +33,7 @@ import {
   // BladeDarkGreenTheme5,
   // BladeDarkBlueTheme5,
   BladeDarkGreyTheme5,
-} from './AppThemes5';
+} from './themes/AppThemes5';
 import useStyles from './App.styles';
 import './App.css';
 
@@ -85,7 +85,7 @@ export default function App() {
   let newBase = !!window.localStorage.getItem('ledfx-newbase');
 
   if (window.location.hash.indexOf('newCore=1') > -1) {
-    window.localStorage.setItem('ledfx-newbase', 1);
+    window.localStorage.setItem('ledfx-newbase', '1');
     window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
     newBase = 1;
   }

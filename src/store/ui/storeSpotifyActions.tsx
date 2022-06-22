@@ -1,5 +1,9 @@
+/* eslint-disable import/no-cycle */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import { Ledfx } from '../../api/ledfx';
 
 const storeSpotifyActions = (set: any) => ({
   setSpEmbedUrl: (url: string) =>
@@ -107,6 +111,66 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpotifyDevice'
     ),
+  getSpTriggers: async (id: string) => {
+    const resp = await Ledfx('/api/integrations', set, 'GET');
+    // const res = await resp.json()
+    if (resp) {
+      set(
+        produce((state: any) => {
+          state.spotify.spotify = resp;
+        }),
+        false,
+        'spotify/getTriggers'
+      );
+    }
+  },
+  addToSpTriggerList: async (newTrigger: any, type: string) => {
+    // switch(type){
+    //   case 'create':
+    //     set(
+    //       produce((state: any) => {
+    //         state.spotify.spotifyTriggersList = [...newTrigger];
+    //       }),
+    //       false,
+    //       'spotify/addToTriggerList'
+    //     );
+    //     break;
+    //   case 'update':
+    //     set(
+    //       produce((state: any) => {
+    //         state.spotify.spotifyTriggersList = [...state.spotifyTriggersList, newTrigger];
+    //       }),
+    //       false,
+    //       'spotify/addToTriggerList'
+    //     );
+    //     break;
+    // }
+  },
+  addSpSongTrigger: async ({
+    scene_id,
+    song_id,
+    song_name,
+    song_position,
+  }: any) => {
+    // await Ledfx(
+    //     `/api/integrations/spotify/spotify`,
+    //     set,
+    //     'POST',
+    //     {
+    //       scene_id: scene_id,
+    //       song_id: song_id,
+    //       song_name: song_name,
+    //       song_position: song_position,
+    //     },
+    //   )
+    //   set(state=>state.getIntegrations())
+  },
+  toggleSpTrigger: (SpotifyId: string, config: any) =>
+    Ledfx(`/api/integrations/spotify/${SpotifyId}`, 'PUT', config),
+  deleteSpTrigger: async (config: any) => {
+    await Ledfx('/api/integrations/spotify/spotify', 'DELETE', config);
+    // set(state=>state.getIntegrations())
+  },
 });
 
 export default storeSpotifyActions;

@@ -18,6 +18,7 @@ import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.st
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
 // import RadarChart from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpRadarChart';
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
+import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -95,9 +96,13 @@ export default function SpotifyScreen({
             </Typography>
           </Toolbar>
         </AppBar>
-        <SpotifyWidgetPro />
-        <SpAudioFeatures />
-        <div style={{ marginTop: '2rem' }} />
+        <div style={{ margin: '1rem' }}>
+          <SpotifyWidgetPro />
+          <div style={{ marginTop: '1rem' }} />
+          <SpAudioFeatures />
+          <div style={{ marginTop: '1rem' }} />
+          <SpotifyTriggerTable />
+        </div>
         {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />
         <SpotifyWidgetDev  /> */}

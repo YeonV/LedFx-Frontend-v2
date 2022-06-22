@@ -13,16 +13,16 @@ import styled from 'styled-components';
 import { Radar } from 'react-chartjs-2';
 
 const RadarChartContainer = styled.div`
-    width: 550px;
-    height:'550px;
-    h2 {
-        margin-bottom: 40px;
-        font-family: Inter;
-        font-style: normal;
-        font-weight: 900;
-        font-size: 18px;
-        color: white;
-    }
+  width: 500px;
+  height: 250px;
+  h2 {
+    margin-bottom: 40px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 22px;
+    color: white;
+  }
 `;
 
 const RadarChart = (props: any) => {
@@ -70,10 +70,10 @@ const RadarChart = (props: any) => {
 
     layout: {
       padding: {
-        left: 20,
+        left: 0,
         right: 0,
-        top: 0,
-        bottom: 0,
+        top: 20,
+        bottom: 20,
       },
     },
     scale: {
