@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
-    '@media (max-width: 580px)': {      
+    '@media (max-width: 580px)': {
       padding: '8px',
     },
   },
