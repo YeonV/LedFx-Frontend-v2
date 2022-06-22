@@ -1,3 +1,7 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-unused-expressions */
 import { useState, useEffect } from 'react';
 import {
   Dialog,
@@ -20,7 +24,7 @@ const AddVirtualDialog = () => {
   const virtId = useStore((state) => state.dialogs.addVirtual?.edit || false);
   const getV = () => {
     for (const prop in virtuals) {
-      if (virtuals[prop].id == virtId) {
+      if (virtuals[prop].id === virtId) {
         return virtuals[prop];
       }
     }
@@ -35,7 +39,7 @@ const AddVirtualDialog = () => {
   );
 
   const virtualsSchemas = useStore((state) => state.schemas?.virtuals);
-  const showSnackbar = useStore((state) => state.showSnackbar);
+  const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const [model, setModel] = useState({});
 
   const currentSchema = (virtualsSchemas && virtualsSchemas.schema) || {};
@@ -44,11 +48,11 @@ const AddVirtualDialog = () => {
     setDialogOpenAddVirtual(false);
     setModel({});
   };
-  const handleAddVirtual = (e) => {
+  const handleAddVirtual = () => {
     const cleanedModel = Object.fromEntries(
       Object.entries(model).filter(([_, v]) => v !== '')
     );
-    const defaultModel = {};
+    const defaultModel = {} as any;
 
     for (const key in currentSchema.properties) {
       currentSchema.properties[key].default !== undefined
@@ -56,15 +60,12 @@ const AddVirtualDialog = () => {
         : undefined;
     }
 
-    const valid = currentSchema.required.every((val) =>
+    const valid = currentSchema.required.every((val: string) =>
       Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
     );
 
     if (!valid) {
-      showSnackbar({
-        message: 'Please fill in all required fields.',
-        messageType: 'warning',
-      });
+      showSnackbar('warning', 'Please fill in all required fields.');
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
@@ -101,7 +102,7 @@ const AddVirtualDialog = () => {
     }
   };
 
-  const handleModelChange = (config) => {
+  const handleModelChange = (config: any) => {
     setModel({ ...model, ...config });
   };
 

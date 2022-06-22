@@ -86,14 +86,14 @@ const steps = [
   },
 ];
 
-const TourHome = () => {
+const TourHome = ({ className }: { className: string }) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const setTour = useStore((state) => state.tours.setTour);
   return (
     <>
       <Button
         variant="outlined"
-        className="step-zero"
+        className={`step-zero ${className}`}
         onClick={() => {
           setTour('home');
           setIsTourOpen(true);

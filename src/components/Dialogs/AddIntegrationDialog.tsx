@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -58,14 +61,17 @@ const AddIntegrationDialog = () => {
   const integrationId = useStore(
     (state) => state.dialogs.addIntegration?.edit || false
   );
-  const initial = integrations[integrationId] || { type: '', config: {} };
+  const initial =
+    typeof integrationId === 'string'
+      ? integrations[integrationId]
+      : { type: '', config: {} };
 
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
   );
 
   const integrationsTypes = useStore((state) => state.schemas?.integrations);
-  const showSnackbar = useStore((state) => state.showSnackbar);
+  const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const [integrationType, setIntegrationType] = useState('');
   const [model, setModel] = useState({});
 
@@ -76,11 +82,11 @@ const AddIntegrationDialog = () => {
   const handleClose = () => {
     setDialogOpenAddIntegration(false);
   };
-  const handleAddDevice = (e) => {
+  const handleAddDevice = () => {
     const cleanedModel = Object.fromEntries(
       Object.entries(model).filter(([_, v]) => v !== '')
     );
-    const defaultModel = {};
+    const defaultModel = {} as any;
 
     for (const key in currentSchema.properties) {
       currentSchema.properties[key].default !== undefined
@@ -88,15 +94,12 @@ const AddIntegrationDialog = () => {
         : undefined;
     }
 
-    const valid = currentSchema.required.every((val) =>
+    const valid = currentSchema.required.every((val: string) =>
       Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
     );
 
     if (!valid) {
-      showSnackbar({
-        message: 'Please fill in all required fields.',
-        messageType: 'warning',
-      });
+      showSnackbar('warning', 'Please fill in all required fields.');
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
@@ -122,16 +125,15 @@ const AddIntegrationDialog = () => {
         if (res !== 'failed') {
           setDialogOpenAddIntegration(false);
           getIntegrations();
-        } else {
         }
       });
     }
   };
-  const handleTypeChange = (value, initial = {}) => {
+  const handleTypeChange = (value: string, init = {}) => {
     setIntegrationType(value);
-    setModel(initial);
+    setModel(init);
   };
-  const handleModelChange = (config) => {
+  const handleModelChange = (config: any) => {
     setModel({ ...model, ...config });
   };
 
@@ -165,7 +167,7 @@ const AddIntegrationDialog = () => {
             style={{ flexGrow: 1 }}
             disableUnderline
             value={integrationType}
-            onChange={(e) => handleTypeChange(e.target.value)}
+            onChange={(e: any) => handleTypeChange(e.target.value)}
           >
             {integrationsTypes &&
               Object.keys(integrationsTypes).map((item, i) => (

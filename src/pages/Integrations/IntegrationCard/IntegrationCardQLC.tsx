@@ -1,26 +1,28 @@
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/indent */
 import { useState } from 'react';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import useStore from '../../../store/useStore';
-import Popover from '../../../components/Popover/Popover';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import {
   CardActions,
   CardHeader,
-  Typography,
   Switch,
   Link,
   CardContent,
 } from '@material-ui/core';
-import { useIntegrationCardStyles } from './IntegrationCard.styles';
-//import SpotifyView from '../Spotify/SpotifyAuth';
+import Popover from '../../../components/Popover/Popover';
+import useStore from '../../../store/useStore';
+import useIntegrationCardStyles from './IntegrationCard.styles';
+// import SpotifyView from '../Spotify/SpotifyAuth';
 
-const IntegrationCard = ({ integration }) => {
+const IntegrationCardQLC = ({ integration }: any) => {
   const classes = useIntegrationCardStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
@@ -38,18 +40,18 @@ const IntegrationCard = ({ integration }) => {
     setExpanded(!expanded);
   };
 
-  const handleDeleteDevice = (integration) => {
-    deleteIntegration(integrations[integration].id).then(() => {
+  const handleDeleteDevice = (integ: string) => {
+    deleteIntegration(integrations[integ].id).then(() => {
       getIntegrations();
     });
   };
 
-  const handleEditIntegration = (integration) => {
-    setDialogOpenAddIntegration(true, integration);
+  const handleEditIntegration = (integ: any) => {
+    setDialogOpenAddIntegration(true, integ);
   };
-  const handleActivateIntegration = (integration) => {
+  const handleActivateIntegration = (integ: any) => {
     toggleIntegration({
-      id: integration.id,
+      id: integ.id,
     }).then(() => getIntegrations());
   };
 
@@ -57,7 +59,17 @@ const IntegrationCard = ({ integration }) => {
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={integrations[integration].config.description}
+        subheader={
+          integrations[integration].status === 3
+            ? 'Connecting...'
+            : integrations[integration].status === 2
+            ? 'Disconnecting'
+            : integrations[integration].status === 1
+            ? 'Connected'
+            : integrations[integration].status === 0
+            ? 'Disconnected'
+            : 'Unknown'
+        }
         action={
           <Switch
             aria-label="status"
@@ -66,6 +78,23 @@ const IntegrationCard = ({ integration }) => {
           />
         }
       />
+
+      <Link target="_blank" href="http://127.0.0.1:9999">
+        {`QLC+ API: http://${integrations[integration].config.ip_address}:${integrations[integration].config.port}`}
+      </Link>
+      <CardContent>
+        {integrations[integration].status === 1 ? (
+          // <DialogAddEventListener integration={integration} />
+          <div>...</div>
+        ) : (
+          <Link
+            target="_blank"
+            href="https://www.qlcplus.org/docs/html_en_EN/webinterface.html"
+          >
+            Click here for setup guide.
+          </Link>
+        )}
+      </CardContent>
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton
@@ -94,6 +123,16 @@ const IntegrationCard = ({ integration }) => {
               onClick={() => handleEditIntegration(integration)}
             >
               <EditIcon />
+            </Button>
+            <Button
+              variant={variant}
+              size="small"
+              color={color}
+              className={classes.editButton}
+              onClick={() => console.log('coming soon...')}
+              disabled={integrations[integration].status !== 1}
+            >
+              <AddIcon />
             </Button>
           </div>
         </div>
@@ -124,9 +163,7 @@ const IntegrationCard = ({ integration }) => {
         </Collapse>
       </CardActions>
     </Card>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
-export default IntegrationCard;
+export default IntegrationCardQLC;
