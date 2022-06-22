@@ -12,15 +12,15 @@ const storeDialogs = (set: any) => ({
     },
     addDevice: {
       open: false,
-      edit: {},
+      edit: {} as any,
     },
     addVirtual: {
       open: false,
-      edit: {},
+      edit: {} as any,
     },
     addIntegration: {
       open: false,
-      edit: {},
+      edit: {} as any,
     },
   },
   setDialogOpen: (open: boolean, edit?: boolean) =>

@@ -1,6 +1,5 @@
 import { createTheme } from '@material-ui/core/styles';
 
-
 export const BladeDarkGreenTheme = createTheme({
   palette: {
     type: 'dark',
@@ -13,9 +12,9 @@ export const BladeDarkGreenTheme = createTheme({
     accent: {
       main: '#20173c',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
@@ -37,9 +36,9 @@ export const BladeDarkBlueTheme = createTheme({
     accent: {
       main: '#20173c',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
@@ -61,21 +60,21 @@ export const BladeDarkTheme = createTheme({
     accent: {
       main: '#20173c',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
     MuiCard: {
       variant: 'outlined',
     },
-  },  
+  },
   typography: {
-    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
-    "fontSize": 14,
-    "fontWeightRegular": 400,
-   }
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
 });
 
 export const BladeDarkGreyTheme = createTheme({
@@ -87,21 +86,21 @@ export const BladeDarkGreyTheme = createTheme({
     secondary: {
       main: '#222',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
     MuiCard: {
       variant: 'outlined',
     },
-  },  
+  },
   typography: {
-    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
-    "fontSize": 14,
-    "fontWeightRegular": 400,
-   }
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
 });
 
 export const BladeDarkOrangeTheme = createTheme({
@@ -116,21 +115,21 @@ export const BladeDarkOrangeTheme = createTheme({
     accent: {
       main: '#542581',
     },
-    background: { 
-      default: '#030303', 
-      paper: '#151515' 
+    background: {
+      default: '#030303',
+      paper: '#151515',
     },
   },
   props: {
     MuiCard: {
       variant: 'outlined',
     },
-  },  
+  },
   typography: {
-    "fontFamily": `"Nunito", "Roboto", "Helvetica", "Arial", sans-serif`,
-    "fontSize": 14,
-    "fontWeightRegular": 400,
-   }
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
 });
 
 export const BladeLightTheme = createTheme({

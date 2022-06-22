@@ -1,35 +1,48 @@
-import { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Select, MenuItem, Button, Divider } from "@material-ui/core";
-import useStore from "../../store/useStore";
-import BladeSchemaForm from "../SchemaForm/SchemaForm/SchemaForm";
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-unused-expressions */
+import { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Select,
+  MenuItem,
+  Button,
+  Divider,
+} from '@material-ui/core';
+import useStore from '../../store/useStore';
+import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
-    minWidth: "200px",
-    padding: "16px 1.2rem 6px 1.2rem",
-    border: "1px solid #999",
-    borderRadius: "10px",
-    position: "relative",
-    margin: "1rem 0",
-    display: "flex",
-    alignItems: "center",
-    "@media (max-width: 580px)": {
-      width: "100%",
-      margin: "0.5rem 0",
+    minWidth: '200px',
+    padding: '16px 1.2rem 6px 1.2rem',
+    border: '1px solid #999',
+    borderRadius: '10px',
+    position: 'relative',
+    margin: '1rem 0',
+    display: 'flex',
+    alignItems: 'center',
+    '@media (max-width: 580px)': {
+      width: '100%',
+      margin: '0.5rem 0',
     },
-    "& > label": {
-      top: "-0.7rem",
-      display: "flex",
-      alignItems: "center",
-      left: "1rem",
-      padding: "0 0.3rem",
-      position: "absolute",
-      fontVariant: "all-small-caps",
+    '& > label': {
+      top: '-0.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      left: '1rem',
+      padding: '0 0.3rem',
+      position: 'absolute',
+      fontVariant: 'all-small-caps',
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: "border-box",
+      boxSizing: 'border-box',
     },
   },
 }));
@@ -44,15 +57,15 @@ const AddDeviceDialog = () => {
   const devices = useStore((state) => state.devices);
   const open = useStore((state) => state.dialogs.addDevice?.open || false);
   const deviceId = useStore((state) => state.dialogs.addDevice?.edit || false);
-  const initial = devices[deviceId] || { type: "", config: {} };
+  const initial = devices[deviceId] || { type: '', config: {} };
 
   const setDialogOpenAddDevice = useStore(
     (state) => state.setDialogOpenAddDevice
   );
 
   const deviceTypes = useStore((state) => state.schemas?.devices);
-  const showSnackbar = useStore((state) => state.showSnackbar);
-  const [deviceType, setDeviceType] = useState("");
+  const showSnackbar = useStore((state) => state.ui.showSnackbar);
+  const [deviceType, setDeviceType] = useState('');
   const [model, setModel] = useState({});
 
   const currentSchema = deviceType ? deviceTypes[deviceType].schema : {};
@@ -60,11 +73,11 @@ const AddDeviceDialog = () => {
   const handleClose = () => {
     setDialogOpenAddDevice(false);
   };
-  const handleAddDevice = (e) => {
+  const handleAddDevice = () => {
     const cleanedModel = Object.fromEntries(
-      Object.entries(model).filter(([_, v]) => v !== "")
+      Object.entries(model).filter(([_, v]) => v !== '')
     );
-    const defaultModel = {};
+    const defaultModel = {} as any;
 
     for (const key in currentSchema.properties) {
       currentSchema.properties[key].default !== undefined
@@ -72,54 +85,44 @@ const AddDeviceDialog = () => {
         : undefined;
     }
 
-    const valid = currentSchema.required.every((val) =>
+    const valid = currentSchema.required.every((val: string) =>
       Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
     );
 
     if (!valid) {
-      showSnackbar({
-        message: "Please fill in all required fields.",
-        messageType: "warning",
+      showSnackbar('warning', 'Please fill in all required fields.');
+    } else if (
+      initial.config &&
+      Object.keys(initial.config).length === 0 &&
+      initial.config.constructor === Object
+    ) {
+      // console.log("ADDING");
+      addDevice({
+        type: deviceType,
+        config: { ...defaultModel, ...cleanedModel },
+      }).then((res) => {
+        if (res !== 'failed') {
+          setDialogOpenAddDevice(false);
+          getDevices();
+          getVirtuals();
+        }
       });
     } else {
-      if (
-        initial.config &&
-        Object.keys(initial.config).length === 0 &&
-        initial.config.constructor === Object
-      ) {
-        // console.log("ADDING");
-        addDevice({
-          type: deviceType,
-          config: { ...defaultModel, ...cleanedModel },
-        }).then((res) => {
-          if (res !== "failed") {
-            setDialogOpenAddDevice(false);
-            getDevices();
-            getVirtuals();
-          } else {
-          }
-        });
-      } else {
-        // console.log("EDITING");
-        updateDevice(deviceId, {
-          type: deviceType,
-          config: { ...model },
-        }).then((res) => {
-          if (res !== "failed") {
-            setDialogOpenAddDevice(false);
-            getDevices();
-            getVirtuals();
-          } else {
-          }
-        });
-      }
+      // console.log("EDITING");
+      updateDevice(deviceId, { ...model }).then((res) => {
+        if (res !== 'failed') {
+          setDialogOpenAddDevice(false);
+          getDevices();
+          getVirtuals();
+        }
+      });
     }
   };
-  const handleTypeChange = (value, initial = {}) => {
+  const handleTypeChange = (value: string, init = {}) => {
     setDeviceType(value);
-    setModel(initial);
+    setModel(init);
   };
-  const handleModelChange = (config) => {
+  const handleModelChange = (config: any) => {
     setModel({ ...model, ...config });
   };
 
@@ -135,8 +138,8 @@ const AddDeviceDialog = () => {
     >
       <DialogTitle id="form-dialog-title">
         {initial.config &&
-          Object.keys(initial.config).length === 0 &&
-          initial.config.constructor === Object
+        Object.keys(initial.config).length === 0 &&
+        initial.config.constructor === Object
           ? `Add ${deviceType.toUpperCase()} Device`
           : `${deviceType.toUpperCase()} Config`}
       </DialogTitle>
@@ -149,13 +152,17 @@ const AddDeviceDialog = () => {
           <label>Device Type</label>
           <Select
             label="Type"
-            disabled={!(initial.config &&
-              Object.keys(initial.config).length === 0 &&
-              initial.config.constructor === Object)}
+            disabled={
+              !(
+                initial.config &&
+                Object.keys(initial.config).length === 0 &&
+                initial.config.constructor === Object
+              )
+            }
             style={{ flexGrow: 1 }}
             disableUnderline
             value={deviceType}
-            onChange={(e) => handleTypeChange(e.target.value)}
+            onChange={(e: any) => handleTypeChange(e.target.value)}
           >
             {deviceTypes &&
               Object.keys(deviceTypes).map((item, i) => (
@@ -165,7 +172,7 @@ const AddDeviceDialog = () => {
               ))}
           </Select>
         </div>
-        <Divider style={{ marginBottom: "1rem" }} />
+        <Divider style={{ marginBottom: '1rem' }} />
         {model && (
           <BladeSchemaForm
             schema={currentSchema}
@@ -181,10 +188,10 @@ const AddDeviceDialog = () => {
         </Button>
         <Button onClick={handleAddDevice} color="primary">
           {initial.config &&
-            Object.keys(initial.config).length === 0 &&
-            initial.config.constructor === Object
-            ? "Add"
-            : "Save"}
+          Object.keys(initial.config).length === 0 &&
+          initial.config.constructor === Object
+            ? 'Add'
+            : 'Save'}
         </Button>
       </DialogActions>
     </Dialog>

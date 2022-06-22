@@ -14,7 +14,7 @@ import GitInfo from 'react-git-info/macro';
 import useStore from '../../store/useStore';
 import fversion from '../../../package.json';
 
-export default function AboutDialog({ className, children, startIcon }) {
+export default function AboutDialog({ className, children, startIcon }: any) {
   const config = useStore((state) => state.config);
   const getInfo = useStore((state) => state.getInfo);
   const gitInfo = GitInfo();

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import useStore from '../../../store/useStore';
 import DeviceCard from './DeviceCard'
 
-const DeviceCardWrapper = ({ virtual, index }) => {
+const DeviceCardWrapper = ({ virtual, index }: { virtual: any, index: number }) => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getDevices = useStore((state) => state.getDevices);
   const virtuals = useStore((state) => state.virtuals);
@@ -15,19 +15,19 @@ const DeviceCardWrapper = ({ virtual, index }) => {
   const updateVirtual = useStore((state) => state.updateVirtual);
   const activateDevice = useStore((state) => state.activateDevice);
 
-  const [fade, setFade] = useState(false)
-  const [isActive, setIsActive] = useState((virtuals && virtual && virtuals[virtual] && virtuals[virtual].effect && Object.keys(virtuals[virtual].effect)?.length > 0) || devices && devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0)
+  const [_fade, setFade] = useState(false)
+  const [_isActive, setIsActive] = useState((virtuals && virtual && virtuals[virtual] && virtuals[virtual].effect && Object.keys(virtuals[virtual].effect)?.length > 0) || devices && devices[Object.keys(devices).find(d => d === virtual) || ""]?.active_virtuals?.length > 0)
 
-  const handleDeleteDevice = (virtual) => {
+  const handleDeleteDevice = (virtual: any) => {
     deleteVirtual(virtuals[virtual]?.id).then(() => {
       getVirtuals();
     });
   };
 
-  const handleEditVirtual = (virtual) => {
+  const handleEditVirtual = (virtual: any) => {
     setDialogOpenAddVirtual(true, virtual)
   };
-  const handleEditDevice = (device) => {
+  const handleEditDevice = (device: any) => {
     setDialogOpenAddDevice(true, device)
   };
 
@@ -40,30 +40,30 @@ const DeviceCardWrapper = ({ virtual, index }) => {
   };
 
   const handlePlayPause = () => {
-    updateVirtual(virtuals[virtual].id, { active: !virtuals[virtual].active })
+    updateVirtual(virtuals[virtual].id, !virtuals[virtual].active )
       .then(() => getVirtuals());
   };
 
-  const handleActivateDevice = (e) => {
+  const handleActivateDevice = (e:any) => {
     activateDevice(e)
       .then(() => getDevices());
   };
 
   useEffect(() => {        
-    setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect)?.length > 0) || devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0)
+    setIsActive((virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect)?.length > 0) || devices[Object.keys(devices).find(d => d === virtual) || ""]?.active_virtuals?.length > 0)
   }, [virtuals, devices])
 
 
   return virtual && virtuals[virtual] ?
     <DeviceCard 
       deviceName={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
-      online={devices[Object.keys(devices).find(d => d === virtual)]?.online}
+      online={devices[Object.keys(devices).find(d => d === virtual) || ""]?.online}
       virtId={virtual}
       index={index}
       handleDeleteDevice={()=>handleDeleteDevice(virtual)}
       handleEditVirtual={()=>handleEditVirtual(virtual)}
       handleEditDevice={()=> handleEditDevice(virtuals[virtual]?.is_device)}
-      handleClearEffect={()=>handleClearEffect(virtual)}
+      handleClearEffect={()=>handleClearEffect()}
       handlePlayPause={()=>handlePlayPause()}
       linkTo={`/device/${virtuals[virtual]?.id}`}      
       iconName={virtuals[virtual]?.config && virtuals[virtual]?.config.icon_name && virtuals[virtual]?.config.icon_name}
@@ -74,11 +74,11 @@ const DeviceCardWrapper = ({ virtual, index }) => {
       colorIndicator={false}
       isPlaying={virtuals[virtual]?.active}
       transitionTime={virtuals[virtual].config.transition_time * 1000}
-      isStreaming={devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0}
+      isStreaming={devices[Object.keys(devices).find(d => d === virtual) || ""]?.active_virtuals?.length > 0}
       previewOnly={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.preview_only}
       isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
       additionalStyle={{
-        order: !(devices[Object.keys(devices).find(d => d === virtual)]?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name)
+        order: !(devices[Object.keys(devices).find(d => d === virtual) || ""]?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name)
           ? 100
           : !virtuals[virtual]?.effect.name
             ? 50

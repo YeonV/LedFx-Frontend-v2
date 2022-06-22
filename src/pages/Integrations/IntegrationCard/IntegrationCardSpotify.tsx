@@ -14,11 +14,11 @@ import {
   CardHeader,
   Switch,
 } from '@material-ui/core';
-import { useIntegrationCardStyles } from './IntegrationCard.styles';
+import useIntegrationCardStyles from './IntegrationCard.styles';
 import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyAuthButton';
 import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen';
 
-const IntegrationCardSpotify = ({ integration }) => {
+const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const classes = useIntegrationCardStyles();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
@@ -36,16 +36,16 @@ const IntegrationCardSpotify = ({ integration }) => {
     setExpanded(!expanded);
   };
 
-  const handleDeleteDevice = (integration) => {
+  const handleDeleteDevice = (integration:string) => {
     deleteIntegration(integrations[integration].id).then(() => {
       getIntegrations();
     });
   };
 
-  const handleEditIntegration = (integration) => {
+  const handleEditIntegration = (integration:any) => {
     setDialogOpenAddIntegration(true, integration);
   };
-  const handleActivateIntegration = (integration) => {
+  const handleActivateIntegration = (integration:any) => {
     toggleIntegration({
       id: integration.id,
     }).then(() => getIntegrations());
@@ -71,7 +71,7 @@ const IntegrationCardSpotify = ({ integration }) => {
             aria-label="status"
             checked={integrations[integration].active}
             onClick={async() => {
-              if (window.Spotify && player && spotifyAuthenticated) {
+              if ((window as any).Spotify && player && spotifyAuthenticated) {
                 if (!integrations[integration].active) {
                   await player.connect()
                 } else {
@@ -170,9 +170,7 @@ const IntegrationCardSpotify = ({ integration }) => {
         </Collapse>
       </CardActions>
     </Card>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
 export default IntegrationCardSpotify;
