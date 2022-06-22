@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -115,9 +116,10 @@ const storeSpotifyActions = (set: any) => ({
     const resp = await Ledfx('/api/integrations', set, 'GET');
     // const res = await resp.json()
     if (resp) {
+      console.log(resp);
       set(
         produce((state: any) => {
-          state.spotify.spotify = resp;
+          state.spotify.spotify = resp.spotify;
         }),
         false,
         'spotify/getTriggers'
@@ -152,18 +154,12 @@ const storeSpotifyActions = (set: any) => ({
     song_name,
     song_position,
   }: any) => {
-    // await Ledfx(
-    //     `/api/integrations/spotify/spotify`,
-    //     set,
-    //     'POST',
-    //     {
-    //       scene_id: scene_id,
-    //       song_id: song_id,
-    //       song_name: song_name,
-    //       song_position: song_position,
-    //     },
-    //   )
-    //   set(state=>state.getIntegrations())
+    await Ledfx('/api/integrations/spotify/spotify', 'POST', {
+      scene_id,
+      song_id,
+      song_name,
+      song_position,
+    });
   },
   toggleSpTrigger: (SpotifyId: string, config: any) =>
     Ledfx(`/api/integrations/spotify/${SpotifyId}`, 'PUT', config),

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
@@ -9,6 +10,7 @@ const storeIntegrations = (set: any) => ({
   getIntegrations: async () => {
     const resp = await Ledfx('/api/integrations');
     if (resp && resp.integrations) {
+      console.log(resp.integrations);
       set(
         produce((s: any) => {
           s.integrations = resp.integrations;

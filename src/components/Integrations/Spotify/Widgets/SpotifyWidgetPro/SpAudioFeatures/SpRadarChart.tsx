@@ -11,6 +11,7 @@
 // } from 'chart.js';
 import styled from 'styled-components';
 import { Radar } from 'react-chartjs-2';
+import { useTheme } from '@material-ui/core';
 
 const RadarChartContainer = styled.div`
   width: 500px;
@@ -26,6 +27,7 @@ const RadarChartContainer = styled.div`
 `;
 
 const RadarChart = (props: any) => {
+  const theme = useTheme();
   const TrackFeatures = props;
   // ChartJS.register(
   //   RadialLinearScale,
@@ -45,12 +47,12 @@ const RadarChart = (props: any) => {
     datasets: [
       {
         label: 'Track Features',
-        backgroundColor: 'rgba(128, 0, 0, 0.5)',
-        borderColor: 'rgba(255, 0, 0, .5)',
+        backgroundColor: `${theme.palette.primary.main}a0`,
+        borderColor: `${theme.palette.primary.main}cc`,
         borderWidth: 1,
-        pointBackgroundColor: 'rgb(200, 0, 0)',
+        pointBackgroundColor: `${theme.palette.primary.main}`,
         pointBorderWidth: 2,
-        fontColor: 'rgba(255, 255, 255, 1)',
+        fontColor: theme.palette.text.primary,
         data: [
           TrackFeatures?.energy,
           TrackFeatures?.danceability,

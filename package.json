@@ -1,11 +1,11 @@
 {
   "name": "ledfx",
-  "version": "2.0.0-beta43",
+  "version": "2.0.0-beta44",
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
   "main": "public/electron.js",
-  "homepage": ".",
+  "homepage": "./",
   "dependencies": {
     "@babel/runtime": "^7.18.3",
     "@electron/remote": "^2.0.8",
@@ -84,7 +84,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "set PUBLIC_URL=/ react-scripts build",
     "buildwin": "set PUBLIC_URL=/ react-scripts build",
     "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
     "test": "react-scripts test",
@@ -94,7 +94,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "pack": "electron-builder --dir",
     "dist": "react-scripts build && electron-builder",
-    "distyz": "set PUBLIC_URL= && react-scripts build && electron-builder -w zip -w portable -w nsis",
+    "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
     "dist-multi": "react-scripts build && electron-builder -mwl",
     "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron": "wait-on tcp:3000 && electron .",
