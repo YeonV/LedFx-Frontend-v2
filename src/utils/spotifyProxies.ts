@@ -7,6 +7,7 @@ import Cookies from 'universal-cookie/es6';
 import axios from 'axios';
 import isElectron from 'is-electron';
 import qs from 'qs';
+import { log } from './helpers';
 
 const baseURL = isElectron()
   ? 'http://localhost:8888'
@@ -170,19 +171,23 @@ export async function spotifyPause() {
 
 export async function spotifyPlay(deviceId: string) {
   const cookies = new Cookies();
-  const res = await axios.put(
-    'https://api.spotify.com/v1/me/player',
-    { device_ids: [deviceId], play: true },
-    {
-      headers: {
-        Authorization: `Bearer ${cookies.get('access_token')}`,
-      },
+  try {
+    const res = await axios.put(
+      'https://api.spotify.com/v1/me/player',
+      { device_ids: [deviceId], play: true },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.get('access_token')}`,
+        },
+      }
+    );
+    if (res.status === 200) {
+      return 'Success';
     }
-  );
-  if (res.status === 200) {
-    return 'Success';
+    return 'Error';
+  } catch (error) {
+    return log('errorSpotify', error);
   }
-  return 'Error';
 }
 
 export async function spotifyPlayOnly(deviceId: string) {

@@ -117,7 +117,6 @@ const storeSpotifyActions = (set: any) => ({
     const resp = await Ledfx('/api/integrations', set, 'GET');
     // const res = await resp.json()
     if (resp) {
-      console.log(resp);
       set(
         produce((state: any) => {
           state.spotify.spotify = resp.spotify;

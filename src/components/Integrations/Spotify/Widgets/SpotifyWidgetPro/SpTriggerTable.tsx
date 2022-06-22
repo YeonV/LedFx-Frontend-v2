@@ -13,6 +13,16 @@ import Popover from '../../../../Popover/Popover';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
+    '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
+      {
+        color: theme.palette.text.secondary,
+      },
+    '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
+      color: theme.palette.text.secondary,
+    },
+    '&.MuiDataGrid-root .MuiDataGrid-cell': {
+      borderColor: '#333',
+    },
     '&.MuiDataGrid-root .MuiDataGrid-cell:focus, &.MuiDataGrid-root .MuiDataGrid-cell:focus-within':
       {
         outline: 'none',
@@ -94,7 +104,6 @@ export default function SpotifyTriggerTable() {
         });
         return true;
       });
-      console.log(triggersNew);
       addToSpTriggerList(triggersNew, 'create');
     }
   }, [integrations]);
@@ -193,17 +202,19 @@ export default function SpotifyTriggerTable() {
         // checkboxSelection
         disableSelectionOnClick
         onRowDoubleClick={(params) => {
-          console.log(params);
           spotifyPlaySong(spotifyDevice, params.row.songId);
         }}
-        style={{
+        sx={{
+          boxShadow: 2,
           color: '#fff',
+          border: 1,
+          borderColor: '#666',
         }}
         columns={columns}
         rows={rows}
         getRowClassName={(params: GridRowParams<any>) => {
           return params.row.songId ===
-            playerState.context.metadata.current_item.uri.split(':')[2]
+            playerState?.context.metadata.current_item.uri.split(':')[2]
             ? 'currently_playing'
             : '';
         }}
