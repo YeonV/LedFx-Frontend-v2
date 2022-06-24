@@ -60,6 +60,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "reactour": "^1.18.7",
+    "recharts": "^2.1.10",
     "serve": "^13.0.2",
     "sockette": "^2.0.6",
     "styled-components": "^5.3.3",
