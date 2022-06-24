@@ -1,4 +1,5 @@
 const path = require('path');
+require('update-electron-app')()
 
 const { app, Menu, Tray, nativeImage, Notification, nativeTheme, BrowserWindow, ipcMain, shell } = require('electron');
 const isDev = require('electron-is-dev');
