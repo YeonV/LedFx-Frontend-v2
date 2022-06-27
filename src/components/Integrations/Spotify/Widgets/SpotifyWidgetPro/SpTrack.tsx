@@ -1,22 +1,23 @@
+/* eslint-disable no-console */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 import useStyle, { CoverImage } from './SpWidgetPro.styles';
 
 export default function SpTrack({ className }: any) {
   const classes = useStyle();
-  const spotifyData = useStore(
-    (state) => (state as any).spotifyData.playerState
+  const playerState = useStore(
+    (state) => state.spotify.spotifyData.playerState
   );
-  const title = spotifyData?.track_window?.current_track?.name || 'Not playing';
+  // const songId = playerState?.track_window?.current_track?.songId;
+  const title = playerState?.track_window?.current_track?.name || 'Not playing';
   const image =
-    spotifyData?.track_window?.current_track?.album.images[0].url ||
+    playerState?.track_window?.current_track?.album.images[0].url ||
     'https://github.com/LedFx/LedFx/raw/master/icons/discord.png';
-  const artist = spotifyData?.track_window?.current_track?.artists || [
+  const artist = playerState?.track_window?.current_track?.artists || [
     { name: 'on LedFx' },
   ];
-  const album = spotifyData?.track_window?.current_track?.album.name || '';
-
+  const album = playerState?.track_window?.current_track?.album.name || '';
   return (
     <Box className={className}>
       <CoverImage className={classes.albumImg}>

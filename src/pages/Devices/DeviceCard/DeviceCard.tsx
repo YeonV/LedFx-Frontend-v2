@@ -230,7 +230,7 @@ const DeviceCard = ({
           <PixelGraph
             intGraphs={graphsActive}
             active={isActive}
-            virtId={virtId}
+            virtId={virtId || ''}
             className="step-devices-seven"
           />
         </div>

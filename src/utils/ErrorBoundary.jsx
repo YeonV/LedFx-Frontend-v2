@@ -36,6 +36,7 @@ class ErrorBoundary extends React.Component {
                 <p> Refresh page after clearing data... </p>
                 <button style={{ height: 40, borderRadius: 10, border: '1px solid #999', color: '#fff', backgroundColor: '#600000', cursor: 'pointer'}} onClick={() => {
                     window.localStorage.removeItem('undefined')
+                    window.localStorage.removeItem('ledfx-storage')
                     window.localStorage.removeItem('ledfx-host')
                     window.localStorage.removeItem('ledfx-hosts')
                     window.localStorage.removeItem('ledfx-frontend')

@@ -6,7 +6,7 @@ import {
   PanoramaVerticalSelect,
   // PanoramaWideAngleSelect,
 } from '@mui/icons-material';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 
 const ButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   '& .MuiToggleButtonGroup-grouped': {
@@ -29,14 +29,14 @@ const ButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }));
 
 export default function SpLayoutButtons() {
-  const swSize = useStore((state) => (state as any).swSize);
-  const setSwSize = useStore((state) => (state as any).setSwSize);
+  const swSize = useStore((state) => state.spotify.swSize);
+  const setSwSize = useStore((state) => state.setSwSize);
 
-  const setSwWidth = useStore((state) => (state as any).setSwWidth);
-  const swX = useStore((state) => (state as any).swX);
-  const setSwX = useStore((state) => (state as any).setSwX);
-  const swY = useStore((state) => (state as any).swY);
-  const setSwY = useStore((state) => (state as any).setSwY);
+  const setSwWidth = useStore((state) => state.setSwWidth);
+  const swX = useStore((state) => state.spotify.swX);
+  const setSwX = useStore((state) => state.setSwX);
+  const swY = useStore((state) => state.spotify.swY);
+  const setSwY = useStore((state) => state.setSwY);
 
   const settingSize = (newSize: string) => {
     if (newSize === 'large') {

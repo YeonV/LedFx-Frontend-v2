@@ -176,6 +176,26 @@ export const PosSliderStyles = {
   '& .MuiSlider-rail': {
     opacity: 0.28,
   },
+  '& .MuiSlider-mark': {
+    backgroundColor: '#bfbfbf',
+    height: 8,
+    width: 2,
+    '&.MuiSlider-markActive': {
+      opacity: 1,
+      backgroundColor: 'currentColor',
+    },
+  },
+  '& .MuiSlider-markLabel': {
+    opacity: 0,
+    color: '#aaa',
+  },
+  '& .MuiSlider-mark:hover + .MuiSlider-markLabel, & .MuiSlider-markLabel:hover':
+    {
+      opacity: 1,
+    },
+  '& .MuiSlider-markActive + .MuiSlider-markLabel': {
+    opacity: 1,
+  },
 };
 
 export const VolSliderStyles = {
