@@ -23,7 +23,7 @@ export interface EffectSchemaFormProps {
   /**
    * onChange function for the given model
    */
-  handleEffectConfig?: (_virt: string, _config: any) => true;
+  handleEffectConfig?: any;
   /**
    * updateVirtualEffect function for the given model
    */

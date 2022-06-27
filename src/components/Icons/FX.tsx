@@ -1,4 +1,3 @@
-import { SVGProps } from 'react';
 import './FX.css';
 
 interface FXProps {
@@ -15,10 +14,7 @@ interface FXProps {
 /**
  * FX SVG
  */
-const FX = ({
-  stroke = '#ffffff',
-  currentColor = 'transparent',
-}: FXProps): SVGProps<SVGSVGElement> => (
+const FX = ({ stroke = '#ffffff', currentColor = 'transparent' }: FXProps) => (
   <svg
     id="svg"
     className="fxSvg"

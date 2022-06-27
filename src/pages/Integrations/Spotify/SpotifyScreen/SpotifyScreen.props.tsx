@@ -14,7 +14,6 @@ export interface SpotifyScreenProps {
   innerKey: string;
   disabled: boolean;
   size: 'small' | 'medium' | 'large' | undefined;
-  thePlayer: any;
 }
 
 export const SpotifyScreenDefaultProps = {
@@ -28,7 +27,6 @@ export const SpotifyScreenDefaultProps = {
   innerKey: undefined,
   disabled: false,
   size: 'small',
-  thePlayer: undefined,
 };
 
 export const Transition = React.forwardRef(function Transition(

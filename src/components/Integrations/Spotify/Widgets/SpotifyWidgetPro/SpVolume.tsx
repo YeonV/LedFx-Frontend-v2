@@ -3,21 +3,20 @@ import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { VolumeDown, VolumeMute, VolumeUp } from '@material-ui/icons';
-import useStore from '../../../../../utils/apiStore';
+import useStore from '../../../../../store/useStore';
 import { VolSliderStyles } from './SpWidgetPro.styles';
 
 export default function SpVolume() {
-  const thePlayer = useStore((state) => (state as any).thePlayer);
-  const spotifyVol = useStore((state) => (state as any).spotifyVol);
-  const setSpotifyVol = useStore((state) => (state as any).setSpotifyVol);
+  const player = useStore((state) => state.spotify.player);
+  const spotifyVol = useStore((state) => state.spotify.spotifyVol);
+  const setSpotifyVol = useStore((state) => state.setSpVol);
   const [volu, setVolu] = useState(spotifyVol || 0);
-  const setVol = (vol: number) =>
-    thePlayer.current
-      .setVolume(vol)
-      .then(() =>
-        thePlayer.current.getVolume().then((v: any) => setSpotifyVol(v))
-      );
-
+  const setVol = (vol: number) => {
+    if (player)
+      player
+        .setVolume(vol)
+        .then(() => player.getVolume().then((v: number) => setSpotifyVol(v)));
+  };
   useEffect(() => {
     setVolu(spotifyVol);
   }, [spotifyVol]);
