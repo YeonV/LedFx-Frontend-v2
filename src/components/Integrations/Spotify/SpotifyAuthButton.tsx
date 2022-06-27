@@ -16,7 +16,7 @@ import {
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles';
 
 // eslint-disable-next-line prettier/prettier
-const baseURL = isElectron() ? 'http://localhost:8888' : window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0] || 'http://localhost:8888';
+const baseURL = isElectron() ? 'http://localhost:8888' : window.localStorage.getItem('ledfx-newbase') ? 'http://localhost:8080' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host');
 const redirectUrl = `${
   process.env.NODE_ENV === 'production'
@@ -53,11 +53,11 @@ const apiCredentials = {
 };
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {
-  const spotifyAuthenticated = useStore(
-    (state) => state.spotify.spotifyAuthenticated
+  const spAuthenticated = useStore(
+    (state) => state.spotify.spAuthenticated
   );
   const player = useStore((state) => state.spotify.player);
-  const setSpotifyAuthenticated = useStore((state) => state.setSpAuthenticated);
+  const setspAuthenticated = useStore((state) => state.setSpAuthenticated);
   const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken);
   const [codes, setCodes] = useState({});
   const cookies = new Cookies();
@@ -67,7 +67,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       setCodes({ verifier, challenge });
     });
     if (cookies.get('access_token')) {
-      setSpotifyAuthenticated(true);
+      setspAuthenticated(true);
     }
   }, []);
   const beginAuth = () => {
@@ -93,10 +93,10 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     if ((accessTest === 'false' || !accessTest) && !accessTest1) {
       refreshAuth();
       cookies.set('logout', false);
-      setSpotifyAuthenticated(true);
+      setspAuthenticated(true);
     }
     if (localStorage.getItem('Spotify-Token')) {
-      setSpotifyAuthenticated(true);
+      setspAuthenticated(true);
 
       try {
         finishAuth();
@@ -109,14 +109,14 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
 
   useEffect(() => {
     if (cookies.get('access_token')) {
-      setSpotifyAuthenticated(true);
+      setspAuthenticated(true);
       setSpotifyAuthToken(cookies.get('access_token'));
     } else {
-      setSpotifyAuthenticated(false);
+      setspAuthenticated(false);
     }
   }, [cookies]);
 
-  return !spotifyAuthenticated ? (
+  return !spAuthenticated ? (
     <Button
       disabled={disabled}
       variant="outlined"
@@ -139,7 +139,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       onClick={() => {
         logoutAuth();
         if (player) player.disconnect();
-        setSpotifyAuthenticated(false);
+        setspAuthenticated(false);
         setSpotifyAuthToken(false);
       }}
     >

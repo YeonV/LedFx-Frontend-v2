@@ -14,7 +14,7 @@ import isElectron from 'is-electron';
 import { useHotkeys } from 'react-hotkeys-hook';
 // import { TrainRounded } from '@mui/icons-material';
 import { SnackbarProvider } from 'notistack';
-import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
+// import AddToHomeScreen from '@ideasio/add-to-homescreen-react';
 import useStore from './store/useStore';
 import ScrollToTop from './utils/scrollToTop';
 import ws, { WsContext, HandleWs } from './utils/Websocket';
@@ -60,6 +60,7 @@ import wsNew, { HandleWsNew, WsContextNew } from './utils/WebsocketNew';
 
 import './AddToHomescreen.css';
 import SpotifyLoginRedirect from './pages/Integrations/Spotify/SpotifyLoginRedirect';
+import { Link } from 'react-router-dom';
 
 export default function App() {
   const classes = useStyles();
@@ -198,6 +199,7 @@ export default function App() {
           <Route path="/scenes" element={<Scenes />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Home replace to="/./#" />} />
         </Routes>
         <NoHostDialog />
         <SmartBar open={open} setOpen={setOpen} />
@@ -226,7 +228,13 @@ export default function App() {
                       element={<SpotifyLoginRedirect />}
                     />
                     <Route exact from="/" to="/#" />
-                    <Route path="*" element={<></>} />
+                    <Route path="*" element={
+                      <Link
+                        style={{ textDecoration: 'none' }}
+                        to={`/#/.`}
+                      >
+                        Home
+                      </Link>} />
                   </Routes>
                 </BrowserRouter>
 
@@ -299,7 +307,7 @@ export default function App() {
               </div>
             </WsContextNew.Provider>
           )}
-          <AddToHomeScreen
+          {/* <AddToHomeScreen
             // debug={true}
             // activateLogging={true}
             startAutomatically={false}
@@ -337,7 +345,7 @@ export default function App() {
               guidanceImageCellAddOns: '',
               guidanceCancelButton: 'athGuidanceCancelButton',
             }}
-          />
+          /> */}
         </SnackbarProvider>
       </MuiThemeProvider>
     </ThemeProvider>

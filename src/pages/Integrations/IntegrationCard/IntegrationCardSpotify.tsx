@@ -20,8 +20,8 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const spotifyAuthenticated = useStore(
-    (state) => state.spotify.spotifyAuthenticated
+  const spAuthenticated = useStore(
+    (state) => state.spotify.spAuthenticated
   );
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
@@ -71,7 +71,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
             aria-label="status"
             checked={integrations[integration].active}
             onClick={async () => {
-              if ((window as any).Spotify && player && spotifyAuthenticated) {
+              if ((window as any).Spotify && player && spAuthenticated) {
                 if (!integrations[integration].active) {
                   await player.connect();
                 } else {
@@ -121,7 +121,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               size="small"
               color={color}
               className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !spotifyAuthenticated}
+              disabled={integrations[integration].status !== 1 || !spAuthenticated}
               onClick={() => console.log('coming soon...')}
             >
               <AddIcon />
@@ -132,7 +132,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               color={color}
               className={classes.editButton}
               disabled={
-                integrations[integration].status !== 1 || !spotifyAuthenticated
+                integrations[integration].status !== 1 || !spAuthenticated
               }
             />
           </div>
@@ -167,7 +167,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               color={color}
               className={classes.editButton}
               disabled={
-                integrations[integration].status !== 1 || !spotifyAuthenticated
+                integrations[integration].status !== 1 || !spAuthenticated
               }
             />
           </div>

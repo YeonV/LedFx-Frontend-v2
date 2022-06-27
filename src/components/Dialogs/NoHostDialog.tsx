@@ -95,7 +95,7 @@ export default function NoHostDialog() {
           ? 'http://localhost:8888'
           : window.localStorage.getItem('ledfx-newbase') === '1'
             ? 'http://localhost:8080'
-            : window.location.href.split('/#')[0]
+            : window.location.href.split('/#')[0].replace(/\/+$/, '')
       );
       window.localStorage.setItem(
         'ledfx-host',
@@ -103,7 +103,7 @@ export default function NoHostDialog() {
           ? 'http://localhost:8888'
           : window.localStorage.getItem('ledfx-newbase') === '1'
             ? 'http://localhost:8080'
-            : window.location.href.split('/#')[0]
+            : window.location.href.split('/#')[0].replace(/\/+$/, '')
       );
       // eslint-disable-next-line no-self-assign
       window.location.href = window.location.href;

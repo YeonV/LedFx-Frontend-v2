@@ -19,6 +19,10 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   const setSpotifyVol = useStore((state) => state.setSpVol);
   const setSpotifyPos = useStore((state) => state.setSpPos);
   const activateScene = useStore((state) => state.activateScene);
+  const activateSceneIn = useStore((state) => state.activateSceneIn);
+  const spActTriggers = useStore((state) => state.spotify.spActTriggers);
+  const setSpActTriggers = useStore((state) => state.setSpActTriggers);
+  const spNetworkTime = useStore((state) => state.spotify.spNetworkTime);
 
   const [floatingWidget, setFloatingWidget] = useState(false);
 
@@ -38,6 +42,22 @@ const SpotifyFabPro = ({ botHeight }: any) => {
   );
 
   useEffect(() => {
+    setSpActTriggers(
+      spTriggersList.filter(
+        (l: any) =>
+          l.songId ===
+          spotifyData?.playerState?.context?.metadata?.current_item?.uri.split(
+            ':'
+          )[2]
+      )
+    );
+  }, [
+    spotifyData?.playerState?.context?.metadata?.current_item?.uri.split(
+      ':'
+    )[2],
+  ]);
+
+  useEffect(() => {
     setSpotifyPos(position);
     posi.current = position;
   }, [position]);
@@ -51,12 +71,43 @@ const SpotifyFabPro = ({ botHeight }: any) => {
         )[2]
       ) {
         activeFilters.map((t: any) => {
-          if (posi.current >= t.position_ms) {
+          if (posi.current + spNetworkTime >= t.position_ms) {
             const scene = Object.keys(scenes).find(
               (s: any) => scenes[s].name === t.sceneId
             );
-            if (scene) activateScene(scene);
-            activeFilters = activeFilters.filter((f: any) => f.id !== t.id);
+            if (scene) {
+              player.getCurrentState().then((state: any) => {
+                if (!state) {
+                  console.error(
+                    'User is not playing music through the Web Playback SDK'
+                  );
+                  return;
+                }
+                console.log(
+                  'Currently Playing',
+                  state.position,
+                  t.position_ms,
+                  state.duration,
+                  state.position - t.position_ms
+                );
+                if (t.position_ms - state.position > 0) {
+                  activateSceneIn(
+                    scene,
+                    (t.position_ms - state.position) / 1000
+                  );
+                } else {
+                  activateScene(scene);
+                }
+
+                activeFilters = activeFilters.filter((f: any) => f.id !== t.id);
+                if (
+                  JSON.stringify(activeFilters) !==
+                  JSON.stringify(spActTriggers)
+                ) {
+                  setSpActTriggers(activeFilters);
+                }
+              });
+            }
           }
         });
 

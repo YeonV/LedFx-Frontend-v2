@@ -30,13 +30,14 @@ const useStyles = makeStyles((theme: any) => ({
 
     '& .currently_playing, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
       {
-        backgroundColor: `${theme.palette.primary.main}30`,
+        backgroundColor: `${theme.palette.primary.main}20`,
         color: theme.palette.text.primary,
       },
-    '& .not_playing': {
-      backgroundColor: '#ff943975',
-      color: '#1a3e72',
-    },
+    '& .activated, .activated.MuiDataGrid-row:hover, .activated.MuiDataGrid-row.Mui-hovered':
+      {
+        backgroundColor: `${theme.palette.primary.main}50`,
+        color: theme.palette.text.primary,
+      },
   },
 }));
 
@@ -44,6 +45,7 @@ export default function SpotifyTriggerTable() {
   const classes = useStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
+  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const playerState = useStore(
     (state) => state.spotify.spotifyData.playerState
@@ -212,12 +214,14 @@ export default function SpotifyTriggerTable() {
         }}
         columns={columns}
         rows={rows}
-        getRowClassName={(params: GridRowParams<any>) => {
-          return params.row.songId ===
-            playerState?.context.metadata.current_item.uri.split(':')[2]
-            ? 'currently_playing'
-            : '';
-        }}
+        getRowClassName={(params: GridRowParams<any>) =>
+          params.row.songId ===
+          playerState?.context.metadata?.current_item.uri.split(':')[2]
+            ? spotifyPos > params.row.position_ms
+              ? 'activated'
+              : 'currently_playing'
+            : ''
+        }
       />
     </div>
   );

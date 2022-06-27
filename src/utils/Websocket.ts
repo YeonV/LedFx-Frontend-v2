@@ -23,7 +23,7 @@ function createSocket() {
         window.localStorage.getItem('ledfx-host') ||
         (isElectron()
           ? 'http://localhost:8888'
-          : window.location.href.split('/#')[0])
+          : window.location.href.split('/#')[0].replace(/\/+$/, ''))
       )
         .replace('https://', 'wss://')
         .replace('http://', 'ws://')}/api/websocket`,
