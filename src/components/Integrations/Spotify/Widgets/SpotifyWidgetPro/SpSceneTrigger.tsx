@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { AddPhotoAlternate } from '@material-ui/icons';
@@ -6,13 +5,16 @@ import { MenuItem, Select, InputAdornment } from '@material-ui/core';
 import { OutlinedInput } from '@mui/material';
 import useStore from '../../../../../store/useStore';
 
-import { formatTime } from '../../../../../utils/helpers';
+// import { formatTime } from '../../../../../utils/helpers';
 import Popover from '../../../../Popover/Popover';
 
 export default function SpSceneTrigger() {
   const scenes = useStore((state) => state.scenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
+  const player = useStore((state) => state.spotify.player);
+  const spNetworkTime = useStore((state) => state.spotify.spNetworkTime);
+  const setSpNetworkTime = useStore((state) => state.setSpNetworkTime);
 
   const playerState = useStore(
     (state) => state.spotify.spotifyData.playerState
@@ -29,8 +31,19 @@ export default function SpSceneTrigger() {
   };
 
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
-    console.log(spotifyTriggerDataTemp);
-    addSpotifySongTrigger(spotifyTriggerDataTemp).then(() => getIntegrations());
+    // console.log(spotifyTriggerDataTemp);
+    player.getCurrentState().then((state: any) => {
+      if (!state) {
+        // eslint-disable-next-line no-console
+        console.error('User is not playing music through the Web Playback SDK');
+        return;
+      }
+      const data = {
+        ...spotifyTriggerDataTemp,
+        ...{ song_position: state.position },
+      };
+      addSpotifySongTrigger(data).then(() => getIntegrations());
+    });
   };
 
   return (
@@ -73,11 +86,24 @@ export default function SpSceneTrigger() {
                 color: '#fff',
                 border: 0,
               }}
+              endAdornment={<InputAdornment position="end">ms</InputAdornment>}
+              type="number"
+              value={spNetworkTime}
+              onChange={(e: any) => setSpNetworkTime(e.target.value)}
+            />
+            {/* <OutlinedInput
+              disabled
+              style={{
+                width: 115,
+                color: '#fff',
+                border: 0,
+              }}
               endAdornment={<InputAdornment position="end">min</InputAdornment>}
               type="number"
               value={formatTime(spotifyPos).split(':')[0]}
             />
             <OutlinedInput
+              disabled
               style={{
                 width: 95,
                 color: '#fff',
@@ -86,7 +112,7 @@ export default function SpSceneTrigger() {
               endAdornment={<InputAdornment position="end">s</InputAdornment>}
               value={formatTime(spotifyPos).split(':')[1]}
               type="number"
-            />
+            /> */}
           </Box>
         </div>
       }

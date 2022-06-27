@@ -9,11 +9,13 @@ const storeSpotify = () => ({
   swWidth: 300,
   spotifyVol: 0,
   spotifyPos: 0 as any,
-  spotifyAuthenticated: false,
+  spNetworkTime: 1000,
+  spAuthenticated: false,
   spotifyData: {} as any,
   spotifyDevice: {} as any,
   spotifytriggers: {},
   spTriggersList: [] as any,
+  spActTriggers: [] as string[],
 });
 
 export default storeSpotify;

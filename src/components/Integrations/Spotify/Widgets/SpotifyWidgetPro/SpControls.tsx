@@ -35,11 +35,11 @@ export default function SpControls({ className }: any) {
   const shuffle = spotifyData?.shuffle || false;
   const hijack = spotifyData?.track_window?.current_track?.album.name || '';
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
+  const spActTriggers = useStore((state) => state.spotify.spActTriggers);
   const spotifyVol = useStore((state) => state.spotify.spotifyVol);
   const setSpotifyVol = useStore((state) => state.setSpVol);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const setSpotifyPos = useStore((state) => state.setSpPos);
-
   const getVolume = useStore((state) => state.getVolume);
 
   const setVol = (vol: number) =>
@@ -47,6 +47,12 @@ export default function SpControls({ className }: any) {
       .setVolume(vol)
       .then(() => getVolume().then((v: number) => setSpotifyVol(v)));
 
+  const marks = spActTriggers.map((m: any) => ({
+    value: m.position_ms,
+    label: m.sceneName,
+  }));
+
+  const help = [...marks];
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}
@@ -150,6 +156,7 @@ export default function SpControls({ className }: any) {
             <Slider
               aria-label="time-indicator"
               size="small"
+              marks={help}
               value={spotifyPos || 0}
               min={0}
               step={1}

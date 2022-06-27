@@ -49,8 +49,8 @@ export default function BarBottom() {
   const setYoutubeURL = useStore((state) => state.setYoutubeURL);
 
   const [botHeight, setBotHeight] = useState(0);
-  const spotifyAuthenticated = useStore(
-    (state) => state.spotify.spotifyAuthenticated
+  const spAuthenticated = useStore(
+    (state) => state.spotify.spAuthenticated
   );
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function BarBottom() {
           setYoutubeExpanded={setYoutubeExpanded}
         />
       )}
-      {integrations.spotify?.active && spotifyAuthenticated && (
+      {integrations.spotify?.active && spAuthenticated && (
         <SpotifyFabPro
           spotifyEnabled={spotifyEnabled}
           setSpotifyEnabled={setSpotifyEnabled}

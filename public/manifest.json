@@ -49,10 +49,6 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "serviceworker": {
-    "src": "serviceWorker.js",
-    "scope": "./"
-  },
   "theme_color": "#800000",
   "background_color": "#030303"
 }

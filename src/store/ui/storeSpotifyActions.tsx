@@ -92,7 +92,7 @@ const storeSpotifyActions = (set: any) => ({
   setSpAuthenticated: (val: boolean) =>
     set(
       produce((state: any) => {
-        state.spotify.spotifyAuthenticated = val;
+        state.spotify.spAuthenticated = val;
       }),
       false,
       'spotify/setSpAuthenticated'
@@ -125,6 +125,35 @@ const storeSpotifyActions = (set: any) => ({
         'spotify/getTriggers'
       );
     }
+  },
+  setSpNetworkTime: async (delay: number) => {
+    set(
+      produce((state: any) => {
+        state.spotify.spNetworkTime = delay;
+      }),
+      false,
+      'spotify/setDelay'
+    );
+  },
+  setSpActTriggers: async (ids: string[]) => {
+    set(
+      produce((state: any) => {
+        state.spotify.spActTriggers = ids;
+      }),
+      false,
+      'spotify/setTriggers'
+    );
+  },
+  removeSpActTriggers: async (id: string) => {
+    set(
+      produce((state: any) => {
+        state.spotify.spActTriggers = state.spotify.spActTriggers.filter(
+          (f: any) => f.id !== id
+        );
+      }),
+      false,
+      'spotify/delTriggers'
+    );
   },
   addToSpTriggerList: async (newTrigger: any, type: string) => {
     switch (type) {

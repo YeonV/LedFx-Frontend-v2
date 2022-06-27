@@ -25,6 +25,12 @@ const storeScenes = (set: any) => ({
       id,
       action: 'activate',
     }),
+  activateSceneIn: async (id: string, ms: number) =>
+    await Ledfx('/api/scenes', 'PUT', {
+      id,
+      action: 'activate_in',
+      ms,
+    }),
   deleteScene: async (name: string) =>
     await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
 });
