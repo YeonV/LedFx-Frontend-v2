@@ -49,9 +49,7 @@ export default function BarBottom() {
   const setYoutubeURL = useStore((state) => state.setYoutubeURL);
 
   const [botHeight, setBotHeight] = useState(0);
-  const spAuthenticated = useStore(
-    (state) => state.spotify.spAuthenticated
-  );
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated);
 
   useEffect(() => {
     let height = 0;
