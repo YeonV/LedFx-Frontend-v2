@@ -20,9 +20,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
   const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const spAuthenticated = useStore(
-    (state) => state.spotify.spAuthenticated
-  );
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated);
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
   );

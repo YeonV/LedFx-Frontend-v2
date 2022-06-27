@@ -53,9 +53,7 @@ const apiCredentials = {
 };
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {
-  const spAuthenticated = useStore(
-    (state) => state.spotify.spAuthenticated
-  );
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated);
   const player = useStore((state) => state.spotify.player);
   const setspAuthenticated = useStore((state) => state.setSpAuthenticated);
   const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken);
