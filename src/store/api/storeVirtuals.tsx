@@ -30,7 +30,7 @@ const storeVirtuals = (set: any) => ({
   addVirtual: async (config: any) =>
     await Ledfx('/api/virtuals', 'POST', config),
   updateVirtual: async (virtId: string, active: boolean) =>
-    await Ledfx(`/api/virtuals/${virtId}`, 'PUT', active),
+    await Ledfx(`/api/virtuals/${virtId}`, 'PUT', { active }),
   deleteVirtual: async (virtId: string) =>
     await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
   clearVirtualEffect: async (virtId: string) =>

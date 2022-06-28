@@ -60,7 +60,7 @@ const EffectSchemaForm = ({
                   onClick={(model_id: string, value: any) => {
                     const c: any = {};
                     c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(virtId, c);
+                    return handleEffectConfig && handleEffectConfig(c);
                   }}
                 />
               );
@@ -77,7 +77,7 @@ const EffectSchemaForm = ({
                   onChange={(model_id: string, value: any) => {
                     const c: any = {};
                     c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(virtId, c);
+                    return handleEffectConfig && handleEffectConfig(c);
                   }}
                 />
               );
@@ -94,7 +94,7 @@ const EffectSchemaForm = ({
                   onChange={(model_id: string, value: any) => {
                     const c: any = {};
                     c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(virtId, c);
+                    return handleEffectConfig && handleEffectConfig(c);
                   }}
                 />
               );
@@ -113,7 +113,7 @@ const EffectSchemaForm = ({
                   onChange={(model_id: string, value: any) => {
                     const c: any = {};
                     c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(virtId, c);
+                    return handleEffectConfig && handleEffectConfig(c);
                   }}
                 />
               );
