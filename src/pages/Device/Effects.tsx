@@ -229,7 +229,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             <CardContent style={{ padding: '0 16px' }}>
               <Accordion
                 style={{ padding: 0 }}
-                defaultExpanded={viewMode !== 'user'}
+                defaultExpanded
+                // defaultExpanded={viewMode !== 'user'}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMore />}
