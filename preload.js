@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const customTitlebar = require('@treverix/custom-electron-titlebar');
+// const customTitlebar = require('@treverix/custom-electron-titlebar');
+const customTitlebar = require('custom-electron-titlebar');
 
 contextBridge.exposeInMainWorld('api', {
     send: (channel, data) => {
