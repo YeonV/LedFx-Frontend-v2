@@ -37,7 +37,8 @@ const storeGeneral = (set: any) => ({
     );
   },
 
-  graphs: !!isElectron(),
+  // graphs: !!isElectron(),
+  graphs: true,
   toggleGraphs: () => {
     set(
       produce((state: any) => {

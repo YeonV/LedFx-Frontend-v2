@@ -75,6 +75,7 @@ export const deleteFrontendConfig = () => {
   window.localStorage.removeItem('ledfx-ws');
   window.localStorage.removeItem('ledfx-theme');
   window.localStorage.removeItem('ledfx-frontend');
+  window.location.reload();
 };
 
 export const initFrontendConfig = () => {
