@@ -71,7 +71,7 @@ export default function NoHostDialog() {
     }
     setDialogOpen(false);
     setDisconnected(false);
-    // window.location.href = window.location.href;
+    window.location.reload();
   };
 
   const handleDelete = (e: any, title: string) => {

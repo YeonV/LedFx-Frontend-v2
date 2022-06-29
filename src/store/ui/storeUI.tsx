@@ -3,7 +3,7 @@ import produce from 'immer';
 import { VariantType } from 'notistack';
 
 const storeUI = (set: any) => ({
-  darkMode: false,
+  darkMode: true,
   setDarkMode: (dark: boolean): void =>
     set(
       produce((state: any) => {
