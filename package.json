@@ -4,7 +4,7 @@
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
-  "main": "public/electron.js",
+  "main": "public/electron.ts",
   "homepage": ".",
   "dependencies": {
     "@electron/remote": "^2.0.8",
@@ -164,7 +164,7 @@
     "eslint-plugin-jest": "^26.4.6",
     "eslint-plugin-json": "^3.0.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.5.0",
     "gh-pages": "^4.0.0",
