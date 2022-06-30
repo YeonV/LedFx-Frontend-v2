@@ -1,22 +1,25 @@
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 /* eslint-disable func-names */
-/* eslint-disable no-unused-expressions */
 import { Button, Fab, TextField, Popover } from '@material-ui/core';
 import { Check, Close } from '@material-ui/icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, CSSProperties } from 'react';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import ws from '../../utils/Websocket';
 import useStore from '../../store/useStore';
 
-const getMedia = async (clientDevice) => {
-  try {
-    return await navigator.mediaDevices.getUserMedia({
-      audio: navigator.mediaDevices.enumerateDevices().then(function (devices) {
-        clientDevice === null || devices.indexOf(clientDevice === -1)
+const getMedia = async (clientDevice: MediaDeviceInfo) => {
+  const audioSetting: boolean | MediaTrackConstraints | undefined =
+    await navigator.mediaDevices
+      .enumerateDevices()
+      .then(function (devices): any {
+        return clientDevice === null || devices.indexOf(clientDevice) === -1
           ? true
           : { deviceId: { exact: clientDevice } };
-      }),
+      });
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      audio: audioSetting,
       video: false,
     });
   } catch (err) {
@@ -24,7 +27,7 @@ const getMedia = async (clientDevice) => {
   }
 };
 
-const Webaudio = ({ style }) => {
+const Webaudio = ({ style }: { style: CSSProperties }) => {
   const webAud = useStore((state) => state.webAud);
   const setWebAud = useStore((state) => state.setWebAud);
   const [wsReady, setWsReady] = useState(false);
@@ -32,14 +35,14 @@ const Webaudio = ({ style }) => {
   const setWebAudName = useStore((state) => state.setWebAudName);
 
   const audioContext =
-    webAud && new (window.AudioContext || window.webkitAudioContext)();
+    webAud && new (window.AudioContext || (window as any).webkitAudioContext)();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const getSchemas = useStore((state) => state.getSchemas);
   const clientDevice = useStore((state) => state.clientDevice);
   const setClientDevices = useStore((state) => state.setClientDevices);
 
-  const handleClick = (event) => {
+  const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -48,64 +51,66 @@ const Webaudio = ({ style }) => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  let s;
+  let s: MediaStream;
   useEffect(() => {
-    webAud &&
-      navigator.mediaDevices.getUserMedia &&
+    if (webAud) {
       getMedia(clientDevice).then((stream) => {
-        s = stream;
-        if (!audioContext || audioContext.state === 'closed') {
-          return;
-        }
-
-        const source = audioContext.createMediaStreamSource(stream);
-        const scriptNode = audioContext.createScriptProcessor(1024, 1, 1);
-        // const analyser = audioContext.createAnalyser()
-        // // const scriptNode = audioContext.createScriptProcessor(0, 1, 1);
-        // console.log("THIS", analyser);
-        source.connect(scriptNode);
-        // analyser.connect(scriptNode);
-        scriptNode.connect(audioContext.destination);
-        if (wsReady) {
-          if (webAud) {
-            const sendWs = async () => {
-              const i = 0;
-              const request = {
-                data: {
-                  sampleRate: scriptNode?.context?.sampleRate,
-                  bufferSize: scriptNode?.bufferSize,
-                },
-                client: webAudName,
-                id: i,
-                type: 'audio_stream_config',
-              };
-              ws.ws.send(JSON.stringify(++request.id && request));
-            };
-            sendWs();
+        if (stream) {
+          s = stream;
+          if (!audioContext || audioContext.state === 'closed') {
+            return;
           }
-        }
-        scriptNode.onaudioprocess = (e) => {
+
+          const source = stream && audioContext.createMediaStreamSource(stream);
+          const scriptNode = audioContext.createScriptProcessor(1024, 1, 1);
+          // const analyser = audioContext.createAnalyser()
+          // // const scriptNode = audioContext.createScriptProcessor(0, 1, 1);
+          // console.log("THIS", analyser);
+          source.connect(scriptNode);
+          // analyser.connect(scriptNode);
+          scriptNode.connect(audioContext.destination);
           if (wsReady) {
             if (webAud) {
               const sendWs = async () => {
                 const i = 0;
                 const request = {
-                  data: e.inputBuffer.getChannelData(0),
+                  data: {
+                    sampleRate: scriptNode?.context?.sampleRate,
+                    bufferSize: scriptNode?.bufferSize,
+                  },
                   client: webAudName,
                   id: i,
-                  type: 'audio_stream_data',
+                  type: 'audio_stream_config',
                 };
-                ws.ws.send(JSON.stringify(++request.id && request));
+                (ws as any).ws.send(JSON.stringify(++request.id && request));
               };
               sendWs();
             }
           }
-        };
+          scriptNode.onaudioprocess = (e) => {
+            if (wsReady) {
+              if (webAud) {
+                const sendWs = async () => {
+                  const i = 0;
+                  const request = {
+                    data: e.inputBuffer.getChannelData(0),
+                    client: webAudName,
+                    id: i,
+                    type: 'audio_stream_data',
+                  };
+                  (ws as any).ws.send(JSON.stringify(++request.id && request));
+                };
+                sendWs();
+              }
+            }
+          };
+        }
       });
+    }
   }, [audioContext]);
 
   if (!wsReady) {
-    if (ws && ws.ws && ws.ws.readyState === 1) {
+    if (ws && (ws as any).ws && (ws as any).ws.readyState === 1) {
       setWsReady(true);
     }
   }
@@ -116,7 +121,7 @@ const Webaudio = ({ style }) => {
         aria-describedby={id}
         size="large"
         color={webAud ? 'inherit' : 'secondary'}
-        onClick={(e) => {
+        onClick={(e: any) => {
           if (webAud) {
             if (audioContext) {
               s.getTracks().forEach((track) => track.stop());
@@ -129,7 +134,7 @@ const Webaudio = ({ style }) => {
                 id: i,
                 type: 'audio_stream_stop',
               };
-              ws.ws.send(JSON.stringify(++request.id && request));
+              (ws as any).ws.send(JSON.stringify(++request.id && request));
             };
             sendWs().then(() => getSchemas());
             setWebAud(false);
@@ -213,7 +218,9 @@ const Webaudio = ({ style }) => {
                       id: 1,
                       type: 'audio_stream_start',
                     };
-                    ws.ws.send(JSON.stringify(++request.id && request));
+                    (ws as any).ws.send(
+                      JSON.stringify(++request.id && request)
+                    );
                   };
                   sendWs();
                   setTimeout(() => {
