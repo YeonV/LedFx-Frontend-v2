@@ -13,12 +13,12 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { Badge } from '@mui/material';
-import logoCircle from '../assets/ring.png';
-import TourHome from '../components/Tours/TourHome';
-import useStore from '../store/useStore';
-import FX from '../components/Icons/FX';
-import { deleteFrontendConfig } from '../utils/helpers';
-import ButtonBar from '../components/ButtonBar';
+import logoCircle from '../../assets/ring.png';
+import TourHome from '../../components/Tours/TourHome';
+import useStore from '../../store/useStore';
+import FX from '../../components/Icons/FX';
+import { deleteFrontendConfig } from '../../utils/helpers';
+import ButtonBar from '../../components/ButtonBar';
 // import useAddToHomescreenPrompt from "../utils/useAddToHomeScreenPromt";
 
 const sleep = (ms: number) => {
