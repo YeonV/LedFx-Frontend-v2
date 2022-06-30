@@ -40,7 +40,7 @@ function createWindow(args) {
             backgroundThrottling: false,
             nodeIntegration: true,
             contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'preload.ts'),
             ...args
         }
     });
