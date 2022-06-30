@@ -6,7 +6,7 @@ const storeWebAudio = (set: any) => ({
   setWebAud: (newState: any) => {
     set(
       produce((state: any) => {
-        state.webaudio.webAud = newState;
+        state.webAud = newState;
       }),
       false,
       'webaudio/setWebAud'
@@ -16,18 +16,18 @@ const storeWebAudio = (set: any) => ({
   setWebAudName: (newState: any) => {
     set(
       produce((state: any) => {
-        state.webaudio.webAudName = newState;
+        state.webAudName = newState;
       }),
       false,
       'webaudio/setWebAudName'
     );
   },
-  clientDevice: null,
+  clientDevice: null as any,
   clientDevices: null as any,
   setClientDevice: (newState: any) => {
     set(
       produce((state: any) => {
-        state.webaudio.clientDevice = newState;
+        state.clientDevice = newState;
       }),
       false,
       'webaudio/setClientDevice'
@@ -36,7 +36,7 @@ const storeWebAudio = (set: any) => ({
   setClientDevices: (newState: any) => {
     set(
       produce((state: any) => {
-        state.webaudio.clientDevices = newState;
+        state.clientDevices = newState;
       }),
       false,
       'webaudio/setClientDevices'
