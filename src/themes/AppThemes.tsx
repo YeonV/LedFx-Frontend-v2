@@ -1,4 +1,5 @@
 import { createTheme } from '@material-ui/core/styles';
+import isElectron from 'is-electron';
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -164,3 +165,25 @@ export const BladeLightTheme = createTheme({
     },
   },
 });
+
+export const ledfxThemes = {
+  Dark: BladeDarkTheme,
+  DarkRed: BladeDarkTheme,
+  DarkOrange: BladeDarkOrangeTheme,
+  Light: BladeLightTheme,
+  DarkGreen: BladeDarkGreenTheme,
+  DarkBlue: BladeDarkBlueTheme,
+  DarkGrey: BladeDarkGreyTheme,
+} as any;
+
+/* eslint-disable @typescript-eslint/indent */
+export const ledfxTheme = window.localStorage.getItem('ledfx-theme')
+  ? window.localStorage.getItem('ledfx-theme') || 'DarkRed'
+  : window.localStorage.getItem('hassTokens')
+  ? 'DarkBlue'
+  : window.location.origin === 'https://my.ledfx.app'
+  ? 'DarkGreen'
+  : isElectron()
+  ? 'DarkOrange'
+  : 'DarkRed';
+/* eslint-enable @typescript-eslint/indent */
