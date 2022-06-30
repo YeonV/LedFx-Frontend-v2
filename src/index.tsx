@@ -5,13 +5,13 @@ import reportWebVitals from './reportWebVitals';
 import ErrorBoundary from './utils/ErrorBoundary';
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
 root.render(
-  // <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  // </React.StrictMode>
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
 );
 
 // serviceWorkerRegistration.register();
