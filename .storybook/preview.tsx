@@ -7,13 +7,13 @@ import storyTheme from './storyTheme';
 import './globals.css'
 
 export const decorators = [
-  (Story) => (
+  (Story: any) => (
     <ThemeProvider theme={BladeDarkTheme5}>
       <MuiThemeProvider theme={BladeDarkTheme}>
         <Story />
       </MuiThemeProvider>
     </ThemeProvider>
-  ),
+  )
 ];
 
 export const parameters = {
