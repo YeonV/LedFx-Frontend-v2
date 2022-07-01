@@ -167,7 +167,7 @@ const TopBar = () => {
 
   return (
     <>
-      {isElectron() && process.platform !== 'darwin' && (
+      {isElectron() && (
         <div className="titlebar">
           <div className="titlebarLogo" />
           LedFx
@@ -177,8 +177,7 @@ const TopBar = () => {
         color="secondary"
         position="fixed"
         style={{
-          paddingTop:
-            isElectron() && process.platform !== 'darwin' ? '32px' : 0,
+          paddingTop: isElectron() ? '32px' : 0,
           zIndex: 10,
         }}
         className={clsx(classes.appBar, {
