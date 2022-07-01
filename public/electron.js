@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-console */
@@ -58,7 +59,7 @@ function createWindow(args = {}) {
       backgroundThrottling: false,
       nodeIntegration: true,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.ts'),
+      preload: path.join(__dirname, 'preload.js'),
       ...args,
     },
   });
@@ -93,6 +94,7 @@ let tray = null;
 let subpy = null;
 let contextMenu = null;
 let wind;
+let willQuitApp = false
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -101,6 +103,7 @@ let wind;
 app.whenReady().then(async () => {
   nativeTheme.themeSource = 'dark';
   const thePath = process.env.PORTABLE_EXECUTABLE_DIR || path.resolve('.');
+
   const ledfxCores = fs
     .readdirSync(thePath)
     .filter(
@@ -113,16 +116,27 @@ app.whenReady().then(async () => {
     ledfxCores.length &&
     ledfxCores.length > 0 &&
     ledfxCores[ledfxCores.length - 1];
-  const integratedCore = ledfxCore && fs.existsSync(`${thePath}/${ledfxCore}`);
+  const integratedCore = (process.platform === 'darwin') 
+    ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))
+    : ledfxCore && fs.existsSync(`${thePath}/${ledfxCore}`);
+
+  const currentDir = fs.readdirSync(thePath)
+  console.log(currentDir)
 
   if (integratedCore) {
-    subpy = require('child_process').spawn(`./${ledfxCore}`, ['-p', '8888']);
-  }
+    if (process.platform === 'darwin') {
+      subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, []);  
+    } else {
+      subpy = require('child_process').spawn(`./${ledfxCore}`, ['-p', '8888']);
+    }
+  } 
+
   wind = integratedCore
     ? createWindow({ additionalArguments: ['integratedCore'] })
-    : createWindow();
+    : createWindow();  
 
   require('@electron/remote/main').enable(wind.webContents);
+  
   if (isDev) {
     await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], {
       loadExtensionOptions: { allowFileAccess: true },
@@ -137,17 +151,24 @@ app.whenReady().then(async () => {
 
   if (integratedCore) {
     contextMenu = Menu.buildFromTemplate([
-      { label: 'Show', click: () => wind.show() },
+      { label: 'Show', click: () => {
+        if (process.platform === 'darwin') app.dock.show()
+        wind.show() 
+      }},
       { label: 'Minimize', click: () => wind.minimize() },
-      { label: 'Minimize to tray', click: () => wind.hide() },
+      { label: 'Minimize to tray', click: () => {
+        if (process.platform === 'darwin') app.dock.hide()
+        wind.hide() 
+      }},
       //   { label: 'Test Notifiation', click: () => showNotification() },
       { label: 'seperator', type: 'separator' },
       { label: 'Dev', click: () => wind.webContents.openDevTools() },
       { label: 'seperator', type: 'separator' },
       {
         label: 'Start core',
-        click: () =>
-          (subpy = require('child_process').spawn(`./${ledfxCore}`, [])),
+        click: () => (process.platform === 'darwin') 
+          ? subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, [])
+          : subpy = require('child_process').spawn(`./${ledfxCore}`, ['-p', '8888'])
       },
       {
         label: 'Stop core',
@@ -167,9 +188,15 @@ app.whenReady().then(async () => {
     ]);
   } else {
     contextMenu = Menu.buildFromTemplate([
-      { label: 'Show', click: () => wind.show() },
+      { label: 'Show', click: () => {
+        if (process.platform === 'darwin') app.dock.show()
+        wind.show() 
+      }},
       { label: 'Minimize', click: () => wind.minimize() },
-      { label: 'Minimize to tray', click: () => wind.hide() },
+      { label: 'Minimize to tray', click: () => {
+        if (process.platform === 'darwin') app.dock.hide()
+        wind.hide() 
+      }},
       //   { label: 'Test Notifiation', click: () => showNotification() },
       { label: 'seperator', type: 'separator' },
       { label: 'Dev', click: () => wind.webContents.openDevTools() },
@@ -194,19 +221,29 @@ app.whenReady().then(async () => {
   tray.setToolTip(`LedFx Client${isDev ? ' DEV' : ''}`);
   tray.setContextMenu(contextMenu);
   tray.setIgnoreDoubleClickEvents(true);
-  tray.on('click', () => wind.show());
+  tray.on('click', () => wind.show());  
 
   ipcMain.on('toMain', (event, parameters) => {
     console.log(parameters);
+    if (parameters === 'get-platform') {
+      wind.webContents.send('fromMain', ['platform', process.platform]);
+      return;
+    }
     if (parameters === 'start-core') {
       console.log('Starting Core', ledfxCore);
+      wind.webContents.send('fromMain', ['currentdir', integratedCore, fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))]);
       if (integratedCore) {
-        subpy = require('child_process').spawn(`./${ledfxCore}`, []);
+        if (process.platform === 'darwin') {
+          subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, []);  
+        } else {
+          subpy = require('child_process').spawn(`./${ledfxCore}`, []);
+        }
       }
       return;
     }
     if (parameters === 'open-config') {
       console.log('Open Config');
+      wind.webContents.send('fromMain', ['currentdir', path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources')]);
       shell.showItemInFolder(
         path.join(app.getPath('appData'), '/.ledfx/config.json')
       );
@@ -236,24 +273,16 @@ app.whenReady().then(async () => {
         app.exit();
       });
     }
-  });
-
-  if (integratedCore) {
-    wind.on('close', () => {
-      wind.webContents.send('fromMain', 'shutdown');
-    });
-  }
+  });  
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    if (subpy !== null) {
-      subpy.kill('SIGINT');
-    }
     app.quit();
+});
+
+app.on('before-quit', () => {
+  if (subpy !== null) {
+    subpy.kill('SIGINT');
   }
 });
 

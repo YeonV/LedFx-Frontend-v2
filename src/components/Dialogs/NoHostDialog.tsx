@@ -39,7 +39,7 @@ export default function NoHostDialog() {
   const [hostvalue, setHostvalue] = useState({
     title: 'http://localhost:8888',
   });
-  const [progress, setProgress] = useState(0);
+  // const [progress, setProgress] = useState(0);
 
   const handleClose = () => {
     // if (window.process?.argv.indexOf("integratedCore") === -1) {
@@ -48,13 +48,13 @@ export default function NoHostDialog() {
     setDialogOpen(false);
   };
  
-  (window as any).api?.receive('fromMain', (parameters: any) => {
-    // eslint-disable-next-line no-console
-    console.log(progress)
-    if (parameters[0] === 'download-progress') {
-      setProgress(parameters[1].percent * 100);      
-    }
-  });
+  // (window as any).api?.receive('fromMain', (parameters: any) => {
+  //   // eslint-disable-next-line no-console
+  //   console.log(progress)
+  //   if (parameters[0] === 'download-progress') {
+  //     setProgress(parameters[1].percent * 100);      
+  //   }
+  // });
   const handleSave = () => {
     if (typeof hostvalue !== 'string') {
       setHost(hostvalue.title);

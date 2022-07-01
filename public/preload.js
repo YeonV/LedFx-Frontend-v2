@@ -20,7 +20,13 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
+  yz: true,
 });
+
+// contextBridge.exposeInMainWorld('electron', {
+//   // ...other APIs to expose to renderer process
+//   platform: () => ipcRenderer.send(process.platform)
+// });
 
 // window.addEventListener('DOMContentLoaded', () => {
 //   new customTitlebar.Titlebar({
