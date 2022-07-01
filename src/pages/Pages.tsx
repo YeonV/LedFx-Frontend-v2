@@ -4,7 +4,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Link,
+  // Link,
 } from 'react-router-dom';
 
 import clsx from 'clsx';
@@ -91,14 +91,14 @@ const Pages = ({ handleWs }: any) => {
       <BrowserRouter>
         <Routes>
           <Route path="/callback" element={<SpotifyLoginRedirect />} />
-          <Route
+          {/* <Route
             path="*"
             element={
               <Link style={{ textDecoration: 'none' }} to="/#/.">
                 Home
               </Link>
             }
-          />
+          /> */}
         </Routes>
       </BrowserRouter>
     </>

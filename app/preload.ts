@@ -3,7 +3,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { contextBridge, ipcRenderer } = require('electron');
 // const customTitlebar = require('@treverix/custom-electron-titlebar');
-const customTitlebar = require('custom-electron-titlebar');
+// const customTitlebar = require('custom-electron-titlebar');
 
 contextBridge.exposeInMainWorld('api', {
   send: (channel, data) => {
@@ -22,11 +22,11 @@ contextBridge.exposeInMainWorld('api', {
   },
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-  new customTitlebar.Titlebar({
-    backgroundColor: customTitlebar.Color.fromHex('#202020'),
-    icon: './icon.png',
-    menu: false,
-    titleHorizontalAlignment: 'left',
-  });
-});
+// window.addEventListener('DOMContentLoaded', () => {
+//   new customTitlebar.Titlebar({
+//     backgroundColor: customTitlebar.Color.fromHex('#202020'),
+//     icon: './icon.png',
+//     menu: false,
+//     titleHorizontalAlignment: 'left',
+//   });
+// });
