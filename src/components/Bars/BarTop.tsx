@@ -108,6 +108,7 @@ const TopBar = () => {
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
   const features = useStore((state) => state.features);
   const [anchorEl, setAnchorEl] = useState(null);
+  const platform = useStore((state) => state.platform);
 
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
@@ -161,13 +162,13 @@ const TopBar = () => {
     };
     document.addEventListener('disconnected', handleDisconnect);
     return () => {
-      // document.removeEventListener("disconnected", handleDisconnect)
+      document.removeEventListener('disconnected', handleDisconnect);
     };
   }, []);
 
   return (
     <>
-      {isElectron() && (
+      {isElectron() && platform !== 'darwin' && (
         <div className="titlebar">
           <div className="titlebarLogo" />
           LedFx
@@ -177,7 +178,7 @@ const TopBar = () => {
         color="secondary"
         position="fixed"
         style={{
-          paddingTop: isElectron() ? '32px' : 0,
+          paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
           zIndex: 10,
         }}
         className={clsx(classes.appBar, {

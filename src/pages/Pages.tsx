@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import {
   HashRouter as Router,
@@ -91,14 +92,7 @@ const Pages = ({ handleWs }: any) => {
       <BrowserRouter>
         <Routes>
           <Route path="/callback" element={<SpotifyLoginRedirect />} />
-          {/* <Route
-            path="*"
-            element={
-              <Link style={{ textDecoration: 'none' }} to="/#/.">
-                Home
-              </Link>
-            }
-          /> */}
+          <Route path="*" element={<></>} />
         </Routes>
       </BrowserRouter>
     </>

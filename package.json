@@ -4,7 +4,7 @@
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
-  "main": "./build/electron.js",
+  "main": "public/electron.js",
   "homepage": ".",
   "dependencies": {
     "@electron/remote": "^2.0.8",
@@ -93,11 +93,11 @@
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "packs": "yarn compile-electron && echo 'yo' && electron-builder --dir",
-    "dist": "react-scripts build && yarn compile-electron && electron-builder",
-    "distyz": "react-scripts build && yarn compile-electron && electron-builder -w zip -w portable -w nsis",
+    "packs": "echo 'yo' && electron-builder --dir",
+    "dist": "react-scripts build && electron-builder",
+    "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
     "dist-multi": "react-scripts build && electron-builder -mwl",
-    "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && yarn compile-electron && electron .\"",
+    "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "compile-electron": "run-script-os",
     "compile-electron:win32": "copy app\\*.ts build\\*.js",
     "compile-electron:default": "cp ./app/electron.ts ./build/electron.js && cp ./app/preload.ts ./build/preload.js && cp ./app/renderer.ts ./build/renderer.js && cp ./app/serviceWorker.ts ./build/serviceWorker.js",
@@ -179,6 +179,16 @@
     "webpack": "^5.73.0"
   },
   "build": {
+    "asar": false,
+    "extraResources": [
+      {
+        "from": "./extraResources/",
+        "to": "extraResources",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "win": {
       "icon": "build/icon.ico",
       "artifactName": "LedFx_client-${channel}--${os}.${ext}"
@@ -193,7 +203,8 @@
       "icon": "build/icon.png"
     },
     "mac": {
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "LedFx_client-${channel}--${os}-${arch}.${ext}"
     }
   }
 }
