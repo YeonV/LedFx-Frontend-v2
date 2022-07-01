@@ -24,6 +24,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.0",
+    "@treverix/custom-electron-titlebar": "^4.2.0",
     "@treverix/remote": "^0.1.1",
     "@types/bonjour": "^3.5.10",
     "@types/reactour": "^1.18.1",

@@ -39,20 +39,22 @@ let win;
 
 function createWindow(args = {}) {
   require('@electron/remote/main').initialize();
-
-  // require('@treverix/remote/main').initialize()
   // Create the browser window.
   win = new BrowserWindow({
     width: 480,
     height: 768,
     autoHideMenuBar: true,
-    titleBarStyle: 'hidden',
-    // frame: false,
+    titleBarStyle: process.platform === 'darwin' ? 'default' : 'hidden',
+    titleBarOverlay:
+      process.platform === 'darwin'
+        ? false
+        : { color: '#333', symbolColor: '#ffffff' },
+    frame: process.platform === 'darwin',
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true,
       plugins: true,
-      //   enableRemoteModule: true,
+      // enableRemoteModule: true,
       backgroundThrottling: false,
       nodeIntegration: true,
       contextIsolation: true,
@@ -119,7 +121,7 @@ app.whenReady().then(async () => {
   wind = integratedCore
     ? createWindow({ additionalArguments: ['integratedCore'] })
     : createWindow();
-  // require('@treverix/remote/main').initialize()
+
   require('@electron/remote/main').enable(wind.webContents);
   if (isDev) {
     await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], {

@@ -166,176 +166,185 @@ const TopBar = () => {
   }, []);
 
   return (
-    <AppBar
-      color="secondary"
-      position="fixed"
-      style={{ marginTop: isElectron() ? '30px' : 0 }}
-      className={clsx(classes.appBar, {
-        [classes.appBarShift]: open,
-      })}
-    >
-      <Toolbar style={{ justifyContent: 'space-between' }}>
-        <div>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleLeftBarOpen}
-            edge="start"
-            className={clsx(
-              classes.menuButton,
-              'step-three',
-              open && classes.hide
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
-          {((pathname.split('/').length === 3 &&
-            pathname.split('/')[1] === 'device') ||
-            pathname === '/Settings') && (
-            <Button
-              variant="text"
+    <>
+      {isElectron() && (
+        <div className="titlebar">
+          <div className="titlebarLogo" />
+          LedFx
+        </div>
+      )}
+      <AppBar
+        color="secondary"
+        position="fixed"
+        style={{ paddingTop: isElectron() ? '32px' : 0, zIndex: 10 }}
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar style={{ justifyContent: 'space-between' }}>
+          <div>
+            <IconButton
               color="inherit"
-              className={classes.backButton}
-              startIcon={<ChevronLeft />}
-              onClick={() => history(-1)}
+              aria-label="open drawer"
+              onClick={handleLeftBarOpen}
+              edge="start"
+              className={clsx(
+                classes.menuButton,
+                'step-three',
+                open && classes.hide
+              )}
             >
-              Back
-            </Button>
-          )}
-        </div>
-
-        <Typography variant="h6" noWrap>
-          {pathname === '/'
-            ? 'LedFx'
-            : pathname.split('/').length === 3 &&
-              pathname.split('/')[1] === 'device'
-            ? virtuals[pathname.split('/')[2]]?.config.name
-            : pathname.split('/').pop()}
-        </Typography>
-        <div style={{ display: 'flex' }}>
-          {disconnected && (
-            <Box>
-              <IconButton
-                aria-label="display more actions"
-                edge="end"
+              <MenuIcon />
+            </IconButton>
+            {((pathname.split('/').length === 3 &&
+              pathname.split('/')[1] === 'device') ||
+              pathname === '/Settings') && (
+              <Button
+                variant="text"
                 color="inherit"
-                onClick={changeHost}
-                className="step-two"
-                style={{ position: 'absolute', right: '4rem' }}
+                className={classes.backButton}
+                startIcon={<ChevronLeft />}
+                onClick={() => history(-1)}
               >
-                <BladeIcon
-                  style={{ position: 'relative' }}
-                  name="mdi:lan-disconnect"
-                />
-                <CircularProgress
-                  size={44}
-                  style={{
-                    color: 'rgba(0,0,0,0.6)',
-                    position: 'absolute',
-                    top: 3,
-                    left: 0,
-                    zIndex: 1,
-                  }}
-                />
-              </IconButton>
-            </Box>
-          )}
-          <IconButton
-            aria-label="display more actions"
-            edge="end"
-            color="inherit"
-            onClick={handleClick}
-            className="step-two"
-            style={{ marginLeft: '1rem' }}
-          >
-            <MoreVert />
-          </IconButton>
-        </div>
+                Back
+              </Button>
+            )}
+          </div>
 
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)}
-          className={classes.bladeMenu}
-        >
-          {features.cloud && isLogged && (
-            <MenuItem disabled divider>
-              <ListItemIcon style={{ marginTop: -13 }}>
-                <StyledBadge
-                  badgeContent={
-                    localStorage.getItem('ledfx-cloud-role') === 'authenticated'
-                      ? 'logged in'
-                      : localStorage.getItem('ledfx-cloud-role')
-                  }
-                  color="secondary"
+          <Typography variant="h6" noWrap>
+            {pathname === '/'
+              ? 'LedFx'
+              : pathname.split('/').length === 3 &&
+                pathname.split('/')[1] === 'device'
+              ? virtuals[pathname.split('/')[2]]?.config.name
+              : pathname.split('/').pop()}
+          </Typography>
+          <div style={{ display: 'flex' }}>
+            {disconnected && (
+              <Box>
+                <IconButton
+                  aria-label="display more actions"
+                  edge="end"
+                  color="inherit"
+                  onClick={changeHost}
+                  className="step-two"
+                  style={{ position: 'absolute', right: '4rem' }}
                 >
-                  <GitHub />
-                </StyledBadge>
-              </ListItemIcon>
-              <div>
-                <div>{localStorage.getItem('username')}</div>
-              </div>
-            </MenuItem>
-          )}
-          <MenuItem onClick={changeHost}>
-            <ListItemIcon>
-              <Language />
-            </ListItemIcon>
-            Change Host
-          </MenuItem>
-          <MenuItem onClick={changePause}>
-            <ListItemIcon>
-              {paused ? <PlayCircleOutline /> : <Pause />}
-            </ListItemIcon>
-            {paused ? 'Play' : 'Pause'}
-          </MenuItem>
-          <MenuItem onClick={changeGraphs}>
-            <ListItemIcon>
-              <BarChart color={graphs ? 'inherit' : 'secondary'} />
-            </ListItemIcon>
-            {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
-          </MenuItem>
-          {pathname.split('/')[1] === 'device' ? (
-            <TourDevice cally={() => setAnchorEl(null)} />
-          ) : pathname.split('/')[1] === 'Scenes' ? (
-            <TourScenes cally={() => setAnchorEl(null)} />
-          ) : pathname.split('/')[1] === 'Settings' ? (
-            <TourSettings cally={() => setAnchorEl(null)} />
-          ) : pathname.split('/')[1] === 'Devices' ? (
-            <TourDevices cally={() => setAnchorEl(null)} />
-          ) : pathname.split('/')[1] === 'Integrations' ? (
-            <TourIntegrations cally={() => setAnchorEl(null)} />
-          ) : null}
-          {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
-          <MenuItem
-            onClick={() => setAnchorEl(null)}
-            component={Link}
-            to="/Settings"
-          >
-            <ListItemIcon>
-              <Settings />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
-          {features.cloud && (
-            <MenuItem
-              onClick={(e) => {
-                if (isLogged) {
-                  logout(e);
-                } else {
-                  window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`;
-                }
-              }}
+                  <BladeIcon
+                    style={{ position: 'relative' }}
+                    name="mdi:lan-disconnect"
+                  />
+                  <CircularProgress
+                    size={44}
+                    style={{
+                      color: 'rgba(0,0,0,0.6)',
+                      position: 'absolute',
+                      top: 3,
+                      left: 0,
+                      zIndex: 1,
+                    }}
+                  />
+                </IconButton>
+              </Box>
+            )}
+            <IconButton
+              aria-label="display more actions"
+              edge="end"
+              color="inherit"
+              onClick={handleClick}
+              className="step-two"
+              style={{ marginLeft: '1rem' }}
             >
-              <ListItemIcon>{isLogged ? <Logout /> : <Login />}</ListItemIcon>
-              {isLogged ? 'Logout' : 'Login with Github'}
+              <MoreVert />
+            </IconButton>
+          </div>
+
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+            className={classes.bladeMenu}
+          >
+            {features.cloud && isLogged && (
+              <MenuItem disabled divider>
+                <ListItemIcon style={{ marginTop: -13 }}>
+                  <StyledBadge
+                    badgeContent={
+                      localStorage.getItem('ledfx-cloud-role') ===
+                      'authenticated'
+                        ? 'logged in'
+                        : localStorage.getItem('ledfx-cloud-role')
+                    }
+                    color="secondary"
+                  >
+                    <GitHub />
+                  </StyledBadge>
+                </ListItemIcon>
+                <div>
+                  <div>{localStorage.getItem('username')}</div>
+                </div>
+              </MenuItem>
+            )}
+            <MenuItem onClick={changeHost}>
+              <ListItemIcon>
+                <Language />
+              </ListItemIcon>
+              Change Host
             </MenuItem>
-          )}
-        </Menu>
-      </Toolbar>
-    </AppBar>
+            <MenuItem onClick={changePause}>
+              <ListItemIcon>
+                {paused ? <PlayCircleOutline /> : <Pause />}
+              </ListItemIcon>
+              {paused ? 'Play' : 'Pause'}
+            </MenuItem>
+            <MenuItem onClick={changeGraphs}>
+              <ListItemIcon>
+                <BarChart color={graphs ? 'inherit' : 'secondary'} />
+              </ListItemIcon>
+              {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
+            </MenuItem>
+            {pathname.split('/')[1] === 'device' ? (
+              <TourDevice cally={() => setAnchorEl(null)} />
+            ) : pathname.split('/')[1] === 'Scenes' ? (
+              <TourScenes cally={() => setAnchorEl(null)} />
+            ) : pathname.split('/')[1] === 'Settings' ? (
+              <TourSettings cally={() => setAnchorEl(null)} />
+            ) : pathname.split('/')[1] === 'Devices' ? (
+              <TourDevices cally={() => setAnchorEl(null)} />
+            ) : pathname.split('/')[1] === 'Integrations' ? (
+              <TourIntegrations cally={() => setAnchorEl(null)} />
+            ) : null}
+            {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
+            <MenuItem
+              onClick={() => setAnchorEl(null)}
+              component={Link}
+              to="/Settings"
+            >
+              <ListItemIcon>
+                <Settings />
+              </ListItemIcon>
+              Settings
+            </MenuItem>
+            {features.cloud && (
+              <MenuItem
+                onClick={(e) => {
+                  if (isLogged) {
+                    logout(e);
+                  } else {
+                    window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`;
+                  }
+                }}
+              >
+                <ListItemIcon>{isLogged ? <Logout /> : <Login />}</ListItemIcon>
+                {isLogged ? 'Logout' : 'Login with Github'}
+              </MenuItem>
+            )}
+          </Menu>
+        </Toolbar>
+      </AppBar>
+    </>
   );
 };
 
