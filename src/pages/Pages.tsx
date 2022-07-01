@@ -9,6 +9,7 @@ import {
 
 import clsx from 'clsx';
 import { useHotkeys } from 'react-hotkeys-hook';
+import isElectron from 'is-electron';
 import ScrollToTop from '../utils/scrollToTop';
 
 import useStyles from '../App.styles';
@@ -31,7 +32,7 @@ import useStore from '../store/useStore';
 
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect';
 
-const Pages = ({ handleWs }: any) => {
+const Routings = ({ handleWs }: any) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const leftBarOpen = useStore(
@@ -39,38 +40,53 @@ const Pages = ({ handleWs }: any) => {
   );
 
   useHotkeys('ctrl+alt+y', () => setOpen(!open));
+
   return (
     <>
-      <Router basename={process.env.PUBLIC_URL}>
-        <ScrollToTop />
-        {handleWs}
-        <MessageBar />
-        <TopBar />
-        <LeftBar />
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: leftBarOpen,
-          })}
-        >
-          <div className={classes.drawerHeader} />
-          <Routes>
-            <Route
-              path="/connect/:providerName/redirect"
-              element={<LoginRedirect />}
-            />
-            <Route path="/" element={<Home />} />
-            <Route path="/devices" element={<Devices />} />
-            <Route path="/device/:virtId" element={<Device />} />
-            <Route path="/scenes" element={<Scenes />} />
-            <Route path="/integrations" element={<Integrations />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-          <NoHostDialog />
-          <SmartBar open={open} setOpen={setOpen} />
-        </main>
-        <BottomBar />
-      </Router>
+      <ScrollToTop />
+      {handleWs}
+      <MessageBar />
+      <TopBar />
+      <LeftBar />
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: leftBarOpen,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Routes>
+          <Route
+            path="/connect/:providerName/redirect"
+            element={<LoginRedirect />}
+          />
+          <Route path="/" element={<Home />} />
+          <Route path="/devices" element={<Devices />} />
+          <Route path="/device/:virtId" element={<Device />} />
+          <Route path="/scenes" element={<Scenes />} />
+          <Route path="/integrations" element={<Integrations />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+        <NoHostDialog />
+        <SmartBar open={open} setOpen={setOpen} />
+      </main>
+      <BottomBar />
+    </>
+  );
+};
+
+const Pages = ({ handleWs }: any) => {
+  return (
+    <>
+      {isElectron() ? (
+        <Router>
+          <Routings handleWs={handleWs} />
+        </Router>
+      ) : (
+        <Router basename={process.env.PUBLIC_URL}>
+          <Routings handleWs={handleWs} />
+        </Router>
+      )}
 
       <BrowserRouter>
         <Routes>
