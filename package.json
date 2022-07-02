@@ -94,8 +94,12 @@
     "deploy": "gh-pages -d build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "packs": "echo 'yo' && electron-builder --dir",
-    "dist": "react-scripts build && electron-builder",
-    "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
+    "dist": "run-script-os",
+    "dist:win32": "react-scripts build && electron-builder --config electron-builder.json -w zip -w portable -w nsis",
+    "dist:default": "react-scripts build && electron-builder --config electron-builder.json",
+    "distcc": "run-script-os",
+    "distcc:win32": "react-scripts build && electron-builder",
+    "distcc:default": "react-scripts build && electron-builder",
     "dist-multi": "react-scripts build && electron-builder -mwl",
     "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "compile-electron": "run-script-os",
@@ -179,7 +183,6 @@
     "webpack": "^5.73.0"
   },
   "build": {
-    "asar": false,
     "extraResources": [
       {
         "from": "./extraResources/",
@@ -191,20 +194,20 @@
     ],
     "win": {
       "icon": "build/icon.ico",
-      "artifactName": "LedFx_client-${channel}--${os}.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}.${ext}"
     },
     "portable": {
-      "artifactName": "LedFx_client-${channel}--${os}-portable.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}-portable.${ext}"
     },
     "nsis": {
-      "artifactName": "LedFx_client-${channel}--${os}-setup.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}-setup.${ext}"
     },
     "linux": {
       "icon": "build/icon.png"
     },
     "mac": {
       "icon": "build/icon.png",
-      "artifactName": "LedFx_client-${channel}--${os}-${arch}.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}-${arch}.${ext}"
     }
   }
 }
