@@ -20,6 +20,7 @@ import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm
 import PixelGraph from '../../components/PixelGraph';
 import TourEffect from '../../components/Tours/TourEffect';
 import TroubleshootButton from './TroubleshootButton';
+import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props';
 
 const useStyles = makeStyles((theme: any) => ({
   content: {
@@ -53,6 +54,24 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+const configOrder = ['color', 'number', 'integer', 'string', 'boolean'];
+
+const orderEffectProperties = (schema: Schema) => {
+  const properties: any[] =
+    schema &&
+    schema.properties &&
+    Object.keys(schema.properties).map((sk) => ({
+      ...schema.properties[sk],
+      id: sk,
+    }));
+  const ordered = [] as any[];
+  configOrder.forEach((type) => {
+    ordered.push(...properties.filter((x) => x.type === type));
+  });
+  ordered.push(...properties.filter((x) => !configOrder.includes(x.type)));
+  return ordered;
+};
+
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const classes = useStyles();
   const [fade, setFade] = useState(false);
@@ -69,7 +88,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const features = useStore((state) => state.features);
 
   const graphs = useStore((state) => state.graphs);
-
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
@@ -81,6 +99,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   const effectType = virtual && virtual.effect.type;
   const [theModel, setTheModel] = useState(virtual?.effect?.config);
+  const orderedProperties = orderEffectProperties(effects[effectType].schema);
 
   // const handleRandomize = () => {
   //   setVirtualEffect(
@@ -154,7 +173,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   {viewMode !== 'user' && (
                     <TroubleshootButton virtual={virtual} />
                   )}
-                  <TourEffect schema={effects[effectType].schema} />
+                  <TourEffect schemaProperties={orderedProperties} />
                   {/* <Button
                     onClick={() => handleRandomize()}
                     variant="outlined"
@@ -245,7 +264,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                     <BladeEffectSchemaForm
                       handleEffectConfig={handleEffectConfig}
                       virtId={virtual.id}
-                      schema={effects[effectType].schema}
+                      schemaProperties={orderedProperties}
                       model={theModel}
                       selectedType={effectType}
                     />
