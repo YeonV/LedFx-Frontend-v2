@@ -4,7 +4,7 @@
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
-  "main": "public/electron.ts",
+  "main": "public/electron.js",
   "homepage": ".",
   "dependencies": {
     "@electron/remote": "^2.0.8",
@@ -24,6 +24,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.0",
+    "@treverix/custom-electron-titlebar": "^4.2.0",
     "@treverix/remote": "^0.1.1",
     "@types/bonjour": "^3.5.10",
     "@types/reactour": "^1.18.1",
@@ -92,11 +93,18 @@
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "pack": "electron-builder --dir",
-    "dist": "react-scripts build && electron-builder",
-    "distyz": "react-scripts build && electron-builder -w zip -w portable -w nsis",
+    "packs": "echo 'yo' && electron-builder --dir",
+    "dist": "run-script-os",
+    "dist:win32": "react-scripts build && electron-builder --config electron-builder.json -w zip -w portable -w nsis",
+    "dist:default": "react-scripts build && electron-builder --config electron-builder.json",
+    "distcc": "run-script-os",
+    "distcc:win32": "react-scripts build && electron-builder",
+    "distcc:default": "react-scripts build && electron-builder",
     "dist-multi": "react-scripts build && electron-builder -mwl",
     "dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "compile-electron": "run-script-os",
+    "compile-electron:win32": "copy app\\*.ts build\\*.js",
+    "compile-electron:default": "cp ./app/electron.ts ./build/electron.js && cp ./app/preload.ts ./build/preload.js && cp ./app/renderer.ts ./build/renderer.js && cp ./app/serviceWorker.ts ./build/serviceWorker.js",
     "electron": "wait-on tcp:3000 && electron .",
     "postinstall": "electron-builder install-app-deps",
     "storybook": "start-storybook -p 6006 -s public",
@@ -175,21 +183,31 @@
     "webpack": "^5.73.0"
   },
   "build": {
+    "extraResources": [
+      {
+        "from": "./extraResources/",
+        "to": "extraResources",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "win": {
       "icon": "build/icon.ico",
-      "artifactName": "LedFx_client-${channel}--${os}.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}.${ext}"
     },
     "portable": {
-      "artifactName": "LedFx_client-${channel}--${os}-portable.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}-portable.${ext}"
     },
     "nsis": {
-      "artifactName": "LedFx_client-${channel}--${os}-setup.${ext}"
+      "artifactName": "LedFx_CC-${channel}--${os}-setup.${ext}"
     },
     "linux": {
       "icon": "build/icon.png"
     },
     "mac": {
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "LedFx_CC-${channel}--${os}-${arch}.${ext}"
     }
   }
 }

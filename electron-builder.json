@@ -7,7 +7,7 @@
     "appId": "com.ledfx.app",
     "directories": {
         "buildResources": "buildResources",
-        "output": "release"
+        "output": "dist"
     },
     "files": [
         "src/",
@@ -19,34 +19,26 @@
             "dmg",
             "zip"
         ],
-        "artifactName": "${productName}-${version}-${os}.${ext}"
+        "icon": "build/icon.png",    
+        "artifactName": "LedFx_client-${channel}--${os}-${arch}.${ext}"
     },
     "win": {
         "target": [
             "nsis",
             "zip"
         ],
-        "artifactName": "${productName}-${version}-${os}.${ext}"
+        "artifactName": "LedFx_client-${channel}--${os}.${ext}"
+    },
+    "portable": {
+      "artifactName": "LedFx_client-${channel}--${os}-portable.${ext}"
+    },
+    "nsis": {
+      "artifactName": "LedFx_client-${channel}--${os}-setup.${ext}"
     },
     "linux": {
         "target": [
             "AppImage"
         ],
         "artifactName": "${productName}-${version}-${os}.${ext}"
-    },
-    "dmg": {
-        "title": "${productName}-${version}",
-        "contents": [
-            {
-                "x": 300,
-                "y": 360
-            },
-            {
-                "x": 490,
-                "y": 360,
-                "type": "link",
-                "path": "/Applications"
-            }
-        ]
     }
 }
