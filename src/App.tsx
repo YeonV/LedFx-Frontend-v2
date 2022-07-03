@@ -20,6 +20,7 @@ export default function App() {
   const { height, width } = useWindowDimensions();
   const classes = useStyles();
   const features = useStore((state) => state.features);
+  const setPlatform = useStore((state) => state.setPlatform);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
@@ -61,6 +62,9 @@ export default function App() {
       window.localStorage.removeItem('ledfx-newbase');
       newBase = false;
     }
+    // if (isElectron() && (window as any).api) {
+    //   (window as any).api.send('toMain', 'get-os');
+    // }
   }, []);
 
   useEffect(() => {
@@ -75,11 +79,19 @@ export default function App() {
     if (features.go || window.location.hash.indexOf('newCore=1') > -1) {
       window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
     }
+    (window as any).api.send('toMain', 'get-platform');
   }, []);
 
   (window as any).api?.receive('fromMain', (parameters: string) => {
     if (parameters === 'shutdown') {
       shutdown();
+    }
+    if (parameters[0] === 'platform') {
+      setPlatform(parameters[1]);
+    }
+    if (parameters[0] === 'currentdir') {
+      // eslint-disable-next-line no-console
+      console.log(parameters[1]);
     }
     if (parameters === 'clear-frontend') {
       deleteFrontendConfig();

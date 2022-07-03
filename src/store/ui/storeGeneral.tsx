@@ -16,6 +16,15 @@ const storeGeneral = (set: any) => ({
       'general/host'
     );
   },
+  platform: 'yz',
+  setPlatform: (platform: string) =>
+    set(
+      produce((state: any) => {
+        state.platform = platform;
+      }),
+      false,
+      'general/setPlatform'
+    ),
   disconnected: false,
   setDisconnected: (dis: boolean) =>
     set(
@@ -25,7 +34,6 @@ const storeGeneral = (set: any) => ({
       false,
       'general/setStreamingToDevices'
     ),
-
   streamingToDevices: [] as string[],
   setStreamingToDevices: (devices: any) => {
     set(
