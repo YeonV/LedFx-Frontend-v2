@@ -69,7 +69,14 @@ const orderEffectProperties = (schema: Schema) => {
     ordered.push(...properties.filter((x) => x.type === type));
   });
   ordered.push(...properties.filter((x) => !configOrder.includes(x.type)));
-  return ordered.sort((a) => (a.id === 'gradient' ? -1 : 1));
+  return ordered
+    .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
+    .sort((a) => (a.type === 'number' ? -1 : 1))
+    .sort((a) => (a.type === 'integer' ? -1 : 1))
+    .sort((a) => (a.id === 'bg_color' ? -1 : 1))
+    .sort((a) => (a.type === 'color' ? -1 : 1))
+    .sort((a) => (a.id === 'color' ? -1 : 1))
+    .sort((a) => (a.id === 'gradient' ? -1 : 1));
 };
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
