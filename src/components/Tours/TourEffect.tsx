@@ -17,27 +17,11 @@ const step = ({ title = 'Title', text = 'Text', number = 0 }) => ({
   },
 });
 
-const TourEffect = ({ schema }: any) => {
+const TourEffect = ({ schemaProperties }: any) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const setTour = useStore((state) => state.tours.setTour);
 
-  const yzSchema =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk,
-      }))
-      .sort((a) => (a.type === 'number' ? -1 : 1))
-      .sort((a) => (a.type === 'integer' ? -1 : 1))
-      .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
-      .sort((a) => (a.type === 'color' ? -1 : 1))
-      .sort((a) => (a.id === 'color' ? -1 : 1))
-      .sort((a) => (a.id === 'gradient_name' ? -1 : 1));
-
-  // console.log(schema.properties)
-  const steps = yzSchema.map((p: any, i: number) =>
+  const steps = schemaProperties.map((p: any, i: number) =>
     step({
       title: p.title,
       text: p.description,

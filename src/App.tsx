@@ -79,6 +79,9 @@ export default function App() {
     if (features.go || window.location.hash.indexOf('newCore=1') > -1) {
       window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
     }
+    // if (isElectron() && (window as any).api) {
+    //   (window as any).api.send('toMain', 'get-platform');
+    // }
     (window as any).api?.send('toMain', 'get-platform');
   }, []);
 
