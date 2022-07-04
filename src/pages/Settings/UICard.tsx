@@ -192,15 +192,6 @@ const UICard = () => {
           />
         </div>
       )}
-      {showFeatures.go && (
-        <div className={`${classes.settingsRow} step-settings-x `}>
-          <label>New Base (Go)</label>
-          <SettingsSwitch
-            checked={features.go}
-            onChange={() => setFeatures('go', !features.go)}
-          />
-        </div>
-      )}
       {viewMode !== 'user' && (
         <div className={`${classes.settingsRow} step-settings-x `}>
           <label>Copy To</label>
@@ -283,7 +274,6 @@ const UICard = () => {
                 setViewMode('user');
                 setShowFeatures('streamto', false);
                 setShowFeatures('dev', false);
-                setShowFeatures('go', false);
                 setShowFeatures('waves', false);
                 setShowFeatures('effectfilter', false);
                 setShowFeatures('cloud', false);
@@ -294,7 +284,6 @@ const UICard = () => {
                 setShowFeatures('webaudio', false);
                 setFeatures('streamto', false);
                 setFeatures('waves', false);
-                setFeatures('go', false);
                 setFeatures('cloud', false);
                 setFeatures('effectfilter', false);
                 setFeatures('wled', false);
@@ -310,7 +299,6 @@ const UICard = () => {
               if (e.target.value === 'BladeIsYeon') {
                 setViewMode('expert');
                 setShowFeatures('dev', true);
-                setShowFeatures('go', true);
                 setShowFeatures('streamto', true);
                 setShowFeatures('cloud', true);
                 setShowFeatures('effectfilter', true);
@@ -321,7 +309,6 @@ const UICard = () => {
                 setShowFeatures('youtube', true);
                 setShowFeatures('webaudio', true);
                 setFeatures('streamto', true);
-                setFeatures('go', true);
                 setFeatures('waves', true);
                 setFeatures('cloud', true);
                 setFeatures('wled', true);
@@ -359,9 +346,6 @@ const UICard = () => {
               }
               if (e.target.value === 'BladeEffectFilter') {
                 setShowFeatures('effectfilter', true);
-              }
-              if (e.target.value === 'BladeGo') {
-                setShowFeatures('go', true);
               }
               if (e.target.value.startsWith('theme:')) {
                 window.localStorage.setItem(
