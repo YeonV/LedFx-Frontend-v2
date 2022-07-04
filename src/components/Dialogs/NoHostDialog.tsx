@@ -22,10 +22,7 @@ const filter = createFilterOptions();
 
 export default function NoHostDialog() {
   // TODO CHANGE HERE LATER
-  const dialogOpen =
-    window.localStorage.getItem('ledfx-newbase') === '1'
-      ? false
-      : useStore((state) => state.dialogs.nohost?.open || false);
+  const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false);
   const edit = useStore((state) => state.dialogs.nohost?.edit || false);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const setDisconnected = useStore((state) => state.setDisconnected);
@@ -93,17 +90,13 @@ export default function NoHostDialog() {
       setHost(
         isElectron()
           ? 'http://localhost:8888'
-          : window.localStorage.getItem('ledfx-newbase') === '1'
-            ? 'http://localhost:8080'
-            : window.location.href.split('/#')[0].replace(/\/+$/, '')
+          : window.location.href.split('/#')[0].replace(/\/+$/, '')
       );
       window.localStorage.setItem(
         'ledfx-host',
         isElectron()
           ? 'http://localhost:8888'
-          : window.localStorage.getItem('ledfx-newbase') === '1'
-            ? 'http://localhost:8080'
-            : window.location.href.split('/#')[0].replace(/\/+$/, '')
+          : window.location.href.split('/#')[0].replace(/\/+$/, '')
       );
       // eslint-disable-next-line no-self-assign
       window.location.href = window.location.href;

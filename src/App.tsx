@@ -5,7 +5,6 @@ import { CssBaseline } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import isElectron from 'is-electron';
 import ws, { WsContext, HandleWs } from './utils/Websocket';
-import wsNew, { HandleWsNew, WsContextNew } from './utils/WebsocketNew';
 import useStore from './store/useStore';
 import useWindowDimensions from './utils/useWindowDimension';
 import useStyles from './App.styles';
@@ -25,47 +24,13 @@ export default function App() {
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const getSchemas = useStore((state) => state.getSchemas);
   const shutdown = useStore((state) => state.shutdown);
-  const setFeatures = useStore((state) => state.setFeatures);
-  const setShowFeatures = useStore((state) => state.setShowFeatures);
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
-  const setHost = useStore((state) => state.setHost);
-
-  let newBase = !!window.localStorage.getItem('ledfx-newbase');
-
-  if (window.location.hash.indexOf('newCore=1') > -1) {
-    window.localStorage.setItem('ledfx-newbase', '1');
-    window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
-    newBase = true;
-  }
 
   useEffect(() => {
     getVirtuals();
     getSystemConfig();
     getSchemas();
   }, [getVirtuals, getSystemConfig, getSchemas]);
-
-  useEffect(() => {
-    if (features.go || window.location.hash.indexOf('newCore=1') > -1) {
-      window.localStorage.setItem('ledfx-newbase', '1');
-      window.localStorage.removeItem('undefined');
-      window.localStorage.removeItem('ledfx-hosts');
-      setShowFeatures('go', true);
-      setFeatures('go', true);
-      if (
-        window.localStorage.getItem('ledfx-host') !== 'http://localhost:8080'
-      ) {
-        window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
-      }
-      setHost('http://localhost:8080');
-      newBase = true;
-    } else {
-      window.localStorage.removeItem('ledfx-newbase');
-      newBase = false;
-    }
-    // if (isElectron() && (window as any).api) {
-    //   (window as any).api.send('toMain', 'get-os');
-    // }
-  }, []);
 
   useEffect(() => {
     initFrontendConfig();
@@ -76,12 +41,6 @@ export default function App() {
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
     );
-    if (features.go || window.location.hash.indexOf('newCore=1') > -1) {
-      window.localStorage.setItem('ledfx-host', 'http://localhost:8080');
-    }
-    // if (isElectron() && (window as any).api) {
-    //   (window as any).api.send('toMain', 'get-platform');
-    // }
     (window as any).api?.send('toMain', 'get-platform');
   }, []);
 
@@ -115,28 +74,15 @@ export default function App() {
     <ThemeProvider theme={BladeDarkGreyTheme5}>
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme]}>
         <SnackbarProvider maxSnack={5}>
-          {!newBase && (
-            <WsContext.Provider value={ws}>
-              <div
-                className={classes.root}
-                style={{ paddingTop: isElectron() ? '30px' : 0 }}
-              >
-                <CssBaseline />
-                <Pages handleWs={<HandleWs />} />
-              </div>
-            </WsContext.Provider>
-          )}
-          {newBase && (
-            <WsContextNew.Provider value={wsNew}>
-              <div
-                className={classes.root}
-                style={{ paddingTop: isElectron() ? '30px' : 0 }}
-              >
-                <CssBaseline />
-                <Pages handleWs={<HandleWsNew />} />
-              </div>
-            </WsContextNew.Provider>
-          )}
+          <WsContext.Provider value={ws}>
+            <div
+              className={classes.root}
+              style={{ paddingTop: isElectron() ? '30px' : 0 }}
+            >
+              <CssBaseline />
+              <Pages handleWs={<HandleWs />} />
+            </div>
+          </WsContext.Provider>
           {features.waves && (
             <WaveLines
               startColor={
