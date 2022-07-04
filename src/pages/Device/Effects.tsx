@@ -69,7 +69,7 @@ const orderEffectProperties = (schema: Schema) => {
     ordered.push(...properties.filter((x) => x.type === type));
   });
   ordered.push(...properties.filter((x) => !configOrder.includes(x.type)));
-  return ordered;
+  return ordered.sort((a) => (a.id === 'gradient' ? -1 : 1));
 };
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
