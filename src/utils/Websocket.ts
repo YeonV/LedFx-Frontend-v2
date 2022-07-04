@@ -17,78 +17,74 @@ import useStore from '../store/useStore';
 // const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
 
 function createSocket() {
-  if (!window.localStorage.getItem('ledfx-newbase')) {
-    const _ws = new Sockette(
-      `${(
-        window.localStorage.getItem('ledfx-host') ||
-        (isElectron()
-          ? 'http://localhost:8888'
-          : window.location.href.split('/#')[0].replace(/\/+$/, ''))
-      )
-        .replace('https://', 'wss://')
-        .replace('http://', 'ws://')}/api/websocket`,
-      {
-        timeout: 5e3,
-        maxAttempts: 10,
-        onopen: (e) => {
-          // console.log('Connected!', e)
+  const _ws = new Sockette(
+    `${(
+      window.localStorage.getItem('ledfx-host') ||
+      (isElectron()
+        ? 'http://localhost:8888'
+        : window.location.href.split('/#')[0].replace(/\/+$/, ''))
+    )
+      .replace('https://', 'wss://')
+      .replace('http://', 'ws://')}/api/websocket`,
+    {
+      timeout: 5e3,
+      maxAttempts: 10,
+      onopen: (e) => {
+        // console.log('Connected!', e)
+        document.dispatchEvent(
+          new CustomEvent('disconnected', {
+            detail: {
+              isDisconnected: false,
+            },
+          })
+        );
+        (_ws as any).ws = e.target;
+        const req = {
+          event_type: 'devices_updated',
+          id: 1,
+          type: 'subscribe_event',
+        };
+        // console.log("Send");
+        (ws as any).send(JSON.stringify(++req.id && req));
+      },
+      onmessage: (event) => {
+        if (JSON.parse(event.data).event_type === 'visualisation_update') {
           document.dispatchEvent(
-            new CustomEvent('disconnected', {
+            new CustomEvent('YZ', {
               detail: {
-                isDisconnected: false,
+                id: JSON.parse(event.data).vis_id,
+                pixels: JSON.parse(event.data).pixels,
               },
             })
           );
-          (_ws as any).ws = e.target;
-          const req = {
-            event_type: 'devices_updated',
-            id: 1,
-            type: 'subscribe_event',
-          };
-          // console.log("Send");
-          (ws as any).send(JSON.stringify(++req.id && req));
-        },
-        onmessage: (event) => {
-          if (JSON.parse(event.data).event_type === 'visualisation_update') {
-            document.dispatchEvent(
-              new CustomEvent('YZ', {
-                detail: {
-                  id: JSON.parse(event.data).vis_id,
-                  pixels: JSON.parse(event.data).pixels,
-                },
-              })
-            );
-          }
-          if (JSON.parse(event.data).event_type === 'devices_updated') {
-            document.dispatchEvent(
-              new CustomEvent('YZold', {
-                detail: 'devices_updated',
-              })
-            );
-          }
-        },
-        // onreconnect: e => console.log('Reconnecting...', e),
-        // onmaximum: e => console.log('Stop Attempting!', e),
-        onclose: () => {
-          // console.log('Closed!', e)
-          window.localStorage.removeItem('core-init');
-          if (window.localStorage.getItem('ledfx-newbase') !== '1') {
-            document.dispatchEvent(
-              new CustomEvent('disconnected', {
-                detail: {
-                  isDisconnected: true,
-                },
-              })
-            );
-          }
-        },
-        // onerror: e => console.log('Error:', e)
-      }
-    );
-    return _ws;
-  }
+        }
+        if (JSON.parse(event.data).event_type === 'devices_updated') {
+          document.dispatchEvent(
+            new CustomEvent('YZold', {
+              detail: 'devices_updated',
+            })
+          );
+        }
+      },
+      // onreconnect: e => console.log('Reconnecting...', e),
+      // onmaximum: e => console.log('Stop Attempting!', e),
+      onclose: () => {
+        // console.log('Closed!', e)
+        window.localStorage.removeItem('core-init');
+        document.dispatchEvent(
+          new CustomEvent('disconnected', {
+            detail: {
+              isDisconnected: true,
+            },
+          })
+        );
+      },
+      // onerror: e => console.log('Error:', e)
+    }
+  );
+  return _ws;
 }
-const ws = !window.localStorage.getItem('ledfx-newbase') && createSocket();
+const ws = createSocket();
 export default ws;
 export const WsContext = React.createContext(ws);
 

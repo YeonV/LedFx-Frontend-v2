@@ -255,16 +255,6 @@ const UICard = () => {
           />
         </div>
       )}
-      {viewMode !== 'user' &&
-        window.localStorage.getItem('ledfx-newbase') === '1' && (
-        <div className={`${classes.settingsRow} step-settings-x `}>
-          <label>Youtube Embedded Player</label>
-          <SettingsSwitch
-            checked={features.youtube}
-            onChange={() => setFeatures('youtube', !features.youtube)}
-          />
-        </div>
-      )}
       {viewMode !== 'user' && (
         <div className={`${classes.settingsRow} step-settings-x `}>
           <label>BG Waves (eats performance)</label>

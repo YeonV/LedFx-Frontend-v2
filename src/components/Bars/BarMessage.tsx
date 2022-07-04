@@ -1,10 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { Icon, IconButton, Button } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
-import { useEffect } from 'react';
-import { Close } from '@material-ui/icons';
+import { Icon, IconButton } from '@material-ui/core';
 import useStore from '../../store/useStore';
 
 const Alert = (props: any) => (
@@ -16,34 +13,12 @@ const MessageBar = () => {
     (state) => state.ui.snackbar
   );
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   function handleClose() {
     clearSnackbar();
   }
 
-  useEffect(() => {
-    if (
-      isOpen &&
-      message !== 'NO MESSAGE' &&
-      window.localStorage.getItem('ledfx-newbase') === '1'
-    ) {
-      enqueueSnackbar(message, {
-        variant: messageType,
-        action: (key) => (
-          <Button
-            onClick={() => {
-              closeSnackbar(key);
-            }}
-          >
-            <Close />
-          </Button>
-        ),
-      });
-    }
-  }, [isOpen, message]);
-
-  return window.localStorage.getItem('ledfx-newbase') !== '1' ? (
+  return (
     <Snackbar
       anchorOrigin={{
         vertical: 'bottom',
@@ -66,7 +41,7 @@ const MessageBar = () => {
     >
       <Alert severity={messageType}>{message}</Alert>
     </Snackbar>
-  ) : null;
+  );
 };
 
 export default MessageBar;
