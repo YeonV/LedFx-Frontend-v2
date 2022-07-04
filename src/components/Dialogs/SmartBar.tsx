@@ -84,7 +84,6 @@ const SmartBar = ({
               if (value === 'clear') {
                 setViewMode('user');
                 setShowFeatures('dev', false);
-                setShowFeatures('go', false);
                 setShowFeatures('streamto', false);
                 setShowFeatures('waves', false);
                 setShowFeatures('effectfilter', false);
@@ -95,7 +94,6 @@ const SmartBar = ({
                 setShowFeatures('youtube', false);
                 setShowFeatures('webaudio', false);
                 setFeatures('streamto', false);
-                setFeatures('go', false);
                 setFeatures('waves', false);
                 setFeatures('cloud', false);
                 setFeatures('effectfilter', false);
@@ -135,9 +133,6 @@ const SmartBar = ({
               if (value === 'BladeEffectFilter') {
                 setShowFeatures('effectfilter', true);
               }
-              if (value === 'BladeGo') {
-                setShowFeatures('go', true);
-              }
               if (
                 value.startsWith('theme:') &&
                 [
@@ -159,7 +154,6 @@ const SmartBar = ({
             if (value === 'BladeIsYeon') {
               setViewMode('expert');
               setShowFeatures('dev', true);
-              setShowFeatures('go', true);
               setShowFeatures('streamto', true);
               setShowFeatures('cloud', true);
               setShowFeatures('effectfilter', true);
@@ -170,7 +164,6 @@ const SmartBar = ({
               setShowFeatures('youtube', true);
               setShowFeatures('webaudio', true);
               setFeatures('streamto', true);
-              setFeatures('go', true);
               setFeatures('waves', true);
               setFeatures('cloud', true);
               setFeatures('wled', true);
