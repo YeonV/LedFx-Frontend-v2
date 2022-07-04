@@ -5,13 +5,7 @@ export interface Schema {
 }
 
 export interface EffectSchemaFormProps {
-  /**
-   * Schema to generate Form from. <br />
-   * in production this is provided by <br />
-   * an external api or a store-management. <br />
-   * See examples, for manual usage...
-   */
-  schema: Schema;
+  schemaProperties: any[];
   /**
    * Model is the current value of the schema
    */

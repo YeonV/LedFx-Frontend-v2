@@ -20,33 +20,18 @@ const useStyles = makeStyles({
 });
 
 const EffectSchemaForm = ({
-  schema,
+  schemaProperties,
   model,
   virtId,
   handleEffectConfig,
 }: EffectSchemaFormProps) => {
   const classes = useStyles();
 
-  const yzSchema =
-    schema &&
-    schema.properties &&
-    Object.keys(schema.properties)
-      .map((sk) => ({
-        ...schema.properties[sk],
-        id: sk,
-      }))
-      .sort((a) => (a.type === 'number' ? -1 : 1))
-      .sort((a) => (a.type === 'integer' ? -1 : 1))
-      .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
-      .sort((a) => (a.id === 'gradient_name' ? -1 : 1))
-      .sort((a) => (a.type === 'color' ? -1 : 1))
-      .sort((a) => (a.id === 'color' ? -1 : 1));
-
   return (
     <div className={classes.bladeSchemaForm}>
-      {yzSchema &&
+      {schemaProperties &&
         model &&
-        yzSchema.map((s: any, i: number) => {
+        schemaProperties.map((s: any, i: number) => {
           switch (s.type) {
             case 'boolean':
               return (
