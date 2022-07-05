@@ -16,7 +16,7 @@ export default function SpTrack({ className }: any) {
   const title = playerState?.track_window?.current_track?.name || 'Not playing';
   const image =
     playerState?.track_window?.current_track?.album.images[0].url ||
-    'https://github.com/LedFx/LedFx/raw/master/icons/discord.png';
+    'https://github.com/LedFx/LedFx/raw/main/icons/discord.png';
   const artist = playerState?.track_window?.current_track?.artists || [
     { name: 'on LedFx' },
   ];
