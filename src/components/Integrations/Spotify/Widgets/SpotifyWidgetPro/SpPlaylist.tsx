@@ -23,6 +23,7 @@ export default function SpPlaylist() {
   const playerState = useStore(
     (state) => state.spotify.spotifyData.playerState
   );
+  const playlistUri = playerState?.context?.metadata?.uri;
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const columns: GridColDef[] = [
@@ -41,7 +42,12 @@ export default function SpPlaylist() {
             aria-label="playstart"
             color="inherit"
             onClick={() => {
-              spotifyPlaySong(spotifyDevice, params.row.track.id);
+              spotifyPlaySong(
+                spotifyDevice,
+                params.row.track.id,
+                undefined,
+                playlistUri
+              );
             }}
           >
             <PlayCircleFilled fontSize="inherit" />
@@ -78,7 +84,12 @@ export default function SpPlaylist() {
           hideFooter
           showColumnRightBorder={false}
           onRowDoubleClick={(params: any) => {
-            spotifyPlaySong(spotifyDevice, params.row.track.id);
+            spotifyPlaySong(
+              spotifyDevice,
+              params.row.track.id,
+              undefined,
+              playlistUri
+            );
           }}
           sx={{
             boxShadow: 2,

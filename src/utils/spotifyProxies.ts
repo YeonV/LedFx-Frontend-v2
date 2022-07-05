@@ -209,12 +209,18 @@ export async function spotifyPlayOnly(deviceId: string) {
 export async function spotifyPlaySong(
   deviceId: string,
   id: string,
-  position_ms?: number
+  position_ms?: number,
+  context?: string
 ) {
   const cookies = new Cookies();
   const res = await axios.put(
     `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-    { uris: [`spotify:track:${id}`], position_ms: position_ms || 0 },
+    {
+      uris: context ? undefined : [`spotify:track:${id}`],
+      position_ms: position_ms || 0,
+      context_uri: context && context !== '' ? context : undefined,
+      offset: context ? { uri: `spotify:track:${id}` } : undefined,
+    },
     {
       headers: {
         Authorization: `Bearer ${cookies.get('access_token')}`,
