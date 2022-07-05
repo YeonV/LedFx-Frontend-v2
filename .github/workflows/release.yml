@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
     steps:
-      #- name: Trigger external test
-      #  run: |
-      #    curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build.yaml/dispatches --data '{"ref": "ref"}'
+      - name: Dispatch Build
+        run: |
+          curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build.yaml/dispatches --data '{"ref": "ref"}'
 
       - name: Checkout code
         uses: actions/checkout@v2
