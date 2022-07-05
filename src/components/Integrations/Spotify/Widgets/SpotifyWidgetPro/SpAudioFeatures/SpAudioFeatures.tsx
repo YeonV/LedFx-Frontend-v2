@@ -12,7 +12,7 @@ import {
   Grid,
   Card,
 } from '@material-ui/core';
-import { BarChart, MusicNote, Speed } from '@material-ui//icons';
+import { BarChart, MusicNote, Speed, Wallpaper } from '@material-ui//icons';
 import { Piano } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
@@ -66,31 +66,31 @@ export default function SpAudioFeatures() {
   // };
 
   return (
-    <Grid xl={12} container item alignItems="center">
+    <>
       <Grid xl={2} md={2} xs={6} item>
-        <Card>
+        <Card style={{ border: '1px solid rgb(102,102,102)', height: 250 }}>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableBody>
                 <TableRow>
-                  <TableCell>
+                  <TableCell style={{ padding: '13px 16px' }}>
                     <Stack direction="row" alignItems="flex-end">
                       <Speed style={{ marginRight: '0.5rem' }} />
                       Tempo
                     </Stack>
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" style={{ padding: '13px 16px' }}>
                     {parseInt(audioFeatures?.tempo, 10)} BPM
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell scope="row">
+                  <TableCell scope="row" style={{ padding: '13px 16px' }}>
                     <Stack direction="row" alignItems="flex-end">
                       <Piano style={{ marginRight: '0.5rem' }} />
                       Pitch class
                     </Stack>
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" style={{ padding: '13px 16px' }}>
                     {audioFeatures?.key
                       ? audioFeatures.key === 0
                         ? 'C'
@@ -121,25 +121,48 @@ export default function SpAudioFeatures() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row">
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    style={{ padding: '13px 16px' }}
+                  >
                     <Stack direction="row" alignItems="flex-end">
                       <MusicNote style={{ marginRight: '0.5rem' }} />
                       Modality
                     </Stack>
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" style={{ padding: '13px 16px' }}>
                     {audioFeatures?.mode === 0 ? 'Minor' : 'Major'}
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell component="th" scope="row">
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    style={{ padding: '13px 16px' }}
+                  >
                     <Stack direction="row" alignItems="flex-end">
                       <BarChart style={{ marginRight: '0.5rem' }} />
                       Beats per bar
                     </Stack>
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" style={{ padding: '13px 16px' }}>
                     {audioFeatures?.time_signature}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    style={{ padding: '13px 16px' }}
+                  >
+                    <Stack direction="row" alignItems="flex-end">
+                      <Wallpaper style={{ marginRight: '0.5rem' }} />
+                      Triggers
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="right" style={{ padding: '13px 16px' }}>
+                    0
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -148,10 +171,17 @@ export default function SpAudioFeatures() {
         </Card>
       </Grid>
       <Grid xl={3} md={4} xs={6} item>
-        <div style={{ width: '400px', height: '250px', overflow: 'hidden' }}>
+        <div
+          style={{
+            height: '250px',
+            overflow: 'hidden',
+            border: '1px solid rgb(102, 102, 102)',
+            borderRadius: 4,
+          }}
+        >
           <RadarChart {...audioFeatures} />
         </div>
       </Grid>
-    </Grid>
+    </>
   );
 }

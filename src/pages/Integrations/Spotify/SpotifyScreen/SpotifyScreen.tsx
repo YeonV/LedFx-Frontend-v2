@@ -6,6 +6,7 @@ import {
   AppBar,
   Dialog,
   Button,
+  Grid,
 } from '@material-ui/core';
 import { Settings, NavigateBefore } from '@material-ui/icons';
 import {
@@ -19,6 +20,7 @@ import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widget
 // import RadarChart from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpRadarChart';
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
 import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable';
+import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -99,7 +101,10 @@ export default function SpotifyScreen({
         <div style={{ margin: '1rem' }}>
           <SpotifyWidgetPro />
           <div style={{ marginTop: '1rem' }} />
-          <SpAudioFeatures />
+          <Grid xl={12} container item alignItems="center" spacing={1}>
+            <SpAudioFeatures />
+            <SpPlaylist />
+          </Grid>
           <div style={{ marginTop: '1rem' }} />
           <SpotifyTriggerTable />
         </div>
