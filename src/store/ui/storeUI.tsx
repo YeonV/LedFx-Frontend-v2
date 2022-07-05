@@ -34,9 +34,11 @@ const storeUI = (set: any) => ({
       false,
       'ui/clearSnackbar'
     ),
-
   bars: {
     leftBar: {
+      open: false,
+    },
+    smartBar: {
       open: false,
     },
   },
@@ -44,6 +46,14 @@ const storeUI = (set: any) => ({
     set(
       produce((state: any) => {
         state.ui.bars.leftBar.open = open;
+      }),
+      false,
+      'ui/setLeftBarOpen'
+    ),
+  setSmartBarOpen: (open: boolean): void =>
+    set(
+      produce((state: any) => {
+        state.ui.bars.smartBar.open = open;
       }),
       false,
       'ui/setLeftBarOpen'

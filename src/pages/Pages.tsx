@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import { useState } from 'react';
 import {
   HashRouter as Router,
   BrowserRouter,
@@ -35,12 +34,18 @@ import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect';
 
 const Routings = ({ handleWs }: any) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+
+  const smartBarOpen = useStore(
+    (state) => state.ui.bars && state.ui.bars.smartBar.open
+  );
+  const setSmartBarOpen = useStore(
+    (state) => state.ui.bars && state.ui.setSmartBarOpen
+  );
   const leftBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.leftBar.open
   );
 
-  useHotkeys('ctrl+alt+y', () => setOpen(!open));
+  useHotkeys('ctrl+alt+y', () => setSmartBarOpen(!smartBarOpen));
 
   return (
     <>
@@ -69,7 +74,7 @@ const Routings = ({ handleWs }: any) => {
           <Route path="*" element={<Home />} />
         </Routes>
         <NoHostDialog />
-        <SmartBar open={open} setOpen={setOpen} />
+        <SmartBar open={smartBarOpen} setOpen={(e) => setSmartBarOpen(!!e)} />
       </main>
       <BottomBar />
     </>

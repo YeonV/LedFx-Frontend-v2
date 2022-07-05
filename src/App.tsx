@@ -86,10 +86,10 @@ export default function App() {
           {features.waves && (
             <WaveLines
               startColor={
-                ledfxThemes[ledfxTheme || 'DarkRed'].palette.primary.main
+                ledfxThemes[ledfxTheme || 'DarkBlue'].palette.primary.main
               }
               stopColor={
-                ledfxThemes[ledfxTheme || 'DarkRed'].palette.accent.main ||
+                ledfxThemes[ledfxTheme || 'DarkBlue'].palette.accent.main ||
                 '#ffdc0f'
               }
               width={width - 8}

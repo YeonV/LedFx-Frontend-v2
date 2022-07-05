@@ -19,6 +19,7 @@ import useStore from '../../store/useStore';
 import FX from '../../components/Icons/FX';
 import { deleteFrontendConfig } from '../../utils/helpers';
 import ButtonBar from '../../components/ButtonBar';
+import Dashboard from './Dashboard';
 // import useAddToHomescreenPrompt from "../utils/useAddToHomeScreenPromt";
 
 const sleep = (ms: number) => {
@@ -27,10 +28,13 @@ const sleep = (ms: number) => {
 
 export default function Home() {
   const scanForDevices = useStore((state) => state.scanForDevices);
+  const devices = useStore((state) => state.devices);
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const [scanning, setScanning] = useState(-1);
   const invisible = useStore((state) => state.tours.home);
+  const viewMode = useStore((state) => state.viewMode);
+
   // const [promptable, promptToInstall, isInstalled] = useAddToHomescreenPrompt();
   // console.log(promptable, promptToInstall, isInstalled)
   const handleScan = () => {
@@ -49,7 +53,9 @@ export default function Home() {
         setScanning(-1);
       });
   };
-  return (
+  return Object.keys(devices).length > 0 && viewMode !== 'user' ? (
+    <Dashboard />
+  ) : (
     <>
       <div className="Content">
         <div style={{ position: 'relative' }}>
@@ -122,9 +128,6 @@ export default function Home() {
         </CardActions>
       </Card>
       <ButtonBar />
-      {/* {promptable && !isInstalled ? (
-        <ButtonElement onClick={promptToInstall}>INSTALL APP</ButtonElement>
-      ) : null} */}
     </>
   );
 }
