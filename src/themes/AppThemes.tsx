@@ -178,12 +178,12 @@ export const ledfxThemes = {
 
 /* eslint-disable @typescript-eslint/indent */
 export const ledfxTheme = window.localStorage.getItem('ledfx-theme')
-  ? window.localStorage.getItem('ledfx-theme') || 'DarkRed'
+  ? window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
   : window.localStorage.getItem('hassTokens')
   ? 'DarkBlue'
   : window.location.origin === 'https://my.ledfx.app'
   ? 'DarkGreen'
   : isElectron()
   ? 'DarkOrange'
-  : 'DarkRed';
+  : 'DarkBlue';
 /* eslint-enable @typescript-eslint/indent */

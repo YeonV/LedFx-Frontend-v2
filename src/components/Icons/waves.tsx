@@ -18,6 +18,7 @@ const WaveLines = ({
         display: 'block',
         zIndex: -1,
         position: 'absolute',
+        top: 0,
         opacity: 0.7,
       }}
       width={width}
