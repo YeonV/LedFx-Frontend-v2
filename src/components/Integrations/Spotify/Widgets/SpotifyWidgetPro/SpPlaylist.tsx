@@ -17,6 +17,18 @@ import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import { useDataGridStyles } from './SpTriggerTable';
 
+function isScrolledIntoView(el: any) {
+  const rect = el.getBoundingClientRect();
+  const elemTop = rect.top;
+  const elemBottom = rect.bottom;
+
+  // Only completely visible elements return true:
+  const isVisible = elemTop >= 0 && elemBottom <= window.innerHeight;
+  // Partially visible elements return true:
+  // isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+  return isVisible;
+}
+
 export default function SpPlaylist() {
   const classes = useDataGridStyles();
   const playlist = useStore((state) => state.spotify.playlist);
@@ -24,7 +36,6 @@ export default function SpPlaylist() {
     (state) => state.spotify.spotifyData.playerState
   );
   const playlistUri = playerState?.context?.metadata?.uri;
-  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const columns: GridColDef[] = [
     {
@@ -72,16 +83,28 @@ export default function SpPlaylist() {
     ...item,
     id: index,
   })) || [{ id: 1 }];
+
+  React.useEffect(() => {
+    const playing = document.querySelector(
+      '.MuiDataGrid-root.playlist .MuiDataGrid-row.currently_playing'
+    );
+
+    if (playing && !isScrolledIntoView(playing)) {
+      playing.scrollIntoView();
+    }
+  }, [playerState?.track_window?.current_track?.name]);
+
   return (
     <Grid xl={7} lg={5} md={12} xs={12} item>
       <Box sx={{ height: 250 }}>
         <DataGrid
-          className={classes.root}
+          className={`${classes.root} playlist`}
           rows={rows}
           columns={columns}
           disableSelectionOnClick
           headerHeight={0}
           hideFooter
+          disableVirtualization
           showColumnRightBorder={false}
           onRowDoubleClick={(params: any) => {
             spotifyPlaySong(
