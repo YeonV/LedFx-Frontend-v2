@@ -67,7 +67,7 @@ export default function SpPlaylist() {
     id: index,
   })) || [{ id: 1 }];
   return (
-    <Grid xl={6} md={6} xs={12} item>
+    <Grid xl={7} lg={5} md={12} xs={12} item>
       <Box sx={{ height: 250 }}>
         <DataGrid
           className={classes.root}
