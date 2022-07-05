@@ -20,7 +20,6 @@ import FX from '../../components/Icons/FX';
 import { deleteFrontendConfig } from '../../utils/helpers';
 import ButtonBar from '../../components/ButtonBar';
 import Dashboard from './Dashboard';
-// import useAddToHomescreenPrompt from "../utils/useAddToHomeScreenPromt";
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -35,8 +34,6 @@ export default function Home() {
   const invisible = useStore((state) => state.tours.home);
   const viewMode = useStore((state) => state.viewMode);
 
-  // const [promptable, promptToInstall, isInstalled] = useAddToHomescreenPrompt();
-  // console.log(promptable, promptToInstall, isInstalled)
   const handleScan = () => {
     setScanning(0);
     scanForDevices()
