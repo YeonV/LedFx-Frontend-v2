@@ -142,7 +142,7 @@ export default function Doc({
         {/* <API
           apiDescriptionDocument={configApiYaml}
           basePath="LedFx-Frontend-v2/docs"
-          logo="https://github.com/LedFx/LedFx/raw/master/icons/discord.png"
+          logo="https://github.com/LedFx/LedFx/raw/main/icons/discord.png"
           router='memory'
         /> */}
       </Dialog>
