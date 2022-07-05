@@ -2,6 +2,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useStore from '../../../../../store/useStore';
+import { getPlaylist } from '../../../../../utils/spotifyProxies';
 import useStyle, { CoverImage } from './SpWidgetPro.styles';
 
 export default function SpTrack({ className }: any) {
@@ -9,6 +10,8 @@ export default function SpTrack({ className }: any) {
   const playerState = useStore(
     (state) => state.spotify.spotifyData.playerState
   );
+  const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken);
+  const setPlaylist = useStore((state) => state.setPlaylist);
   // const songId = playerState?.track_window?.current_track?.songId;
   const title = playerState?.track_window?.current_track?.name || 'Not playing';
   const image =
@@ -17,6 +20,12 @@ export default function SpTrack({ className }: any) {
   const artist = playerState?.track_window?.current_track?.artists || [
     { name: 'on LedFx' },
   ];
+  const playlistUri = playerState?.context?.metadata?.uri;
+  if (playlistUri?.split(':')[1] === 'playlist') {
+    getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) =>
+      setPlaylist(r.items)
+    );
+  }
   const album = playerState?.track_window?.current_track?.album.name || '';
   return (
     <Box className={className}>

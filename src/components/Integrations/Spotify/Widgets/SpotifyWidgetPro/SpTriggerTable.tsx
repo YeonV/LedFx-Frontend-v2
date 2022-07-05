@@ -11,7 +11,7 @@ import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
 
-const useStyles = makeStyles((theme: any) => ({
+export const useDataGridStyles = makeStyles((theme: any) => ({
   root: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 export default function SpotifyTriggerTable() {
-  const classes = useStyles();
+  const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);

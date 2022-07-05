@@ -16,6 +16,7 @@ const storeSpotify = () => ({
   spotifytriggers: {},
   spTriggersList: [] as any,
   spActTriggers: [] as string[],
+  playlist: [] as any,
 });
 
 export default storeSpotify;

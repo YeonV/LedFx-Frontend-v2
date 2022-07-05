@@ -199,6 +199,14 @@ const storeSpotifyActions = (set: any) => ({
     await Ledfx('/api/integrations/spotify/spotify', 'DELETE', config);
     // set(state=>state.getIntegrations())
   },
+  setPlaylist: (playerlist: any) =>
+    set(
+      produce((state: any) => {
+        state.spotify.playlist = playerlist;
+      }),
+      false,
+      'spotify/setPlayer'
+    ),
 });
 
 export default storeSpotifyActions;

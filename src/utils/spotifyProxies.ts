@@ -330,3 +330,18 @@ export function fixAnalysis(audioAnalysis: any) {
 
   return new_analysis;
 }
+
+export async function getPlaylist(id: string, token: string) {
+  const res = await axios.get(
+    `https://api.spotify.com/v1/playlists/${id}/tracks`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (res.status === 200) {
+    return res.data;
+  }
+  return 'Error';
+}
