@@ -22,9 +22,13 @@ export default function SpTrack({ className }: any) {
   ];
   const playlistUri = playerState?.context?.metadata?.uri;
   if (playlistUri?.split(':')[1] === 'playlist') {
-    getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) =>
-      setPlaylist(r.items)
-    );
+    getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) => {
+      // console.log(r);
+      setPlaylist(r.items);
+    });
+    // getPlaylistB(playlistUri.split(':')[2], spotifyToken).then((r) =>
+    //   console.log(r)
+    // );
   }
   const album = playerState?.track_window?.current_track?.album.name || '';
   return (

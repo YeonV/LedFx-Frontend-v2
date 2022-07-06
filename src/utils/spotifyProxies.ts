@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unused-vars */
@@ -8,6 +9,7 @@ import axios from 'axios';
 import isElectron from 'is-electron';
 import qs from 'qs';
 import { log } from './helpers';
+import useStore from '../store/useStore';
 
 const baseURL = isElectron()
   ? 'http://localhost:8888'
@@ -185,7 +187,7 @@ export async function spotifyPlay(deviceId: string) {
     }
     return 'Error';
   } catch (error) {
-    return log('errorSpotify', error);
+    return log('Spotify', error);
   }
 }
 
@@ -213,24 +215,30 @@ export async function spotifyPlaySong(
   context?: string
 ) {
   const cookies = new Cookies();
-  const res = await axios.put(
-    `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-    {
-      uris: context ? undefined : [`spotify:track:${id}`],
-      position_ms: position_ms || 0,
-      context_uri: context && context !== '' ? context : undefined,
-      offset: context ? { uri: `spotify:track:${id}` } : undefined,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${cookies.get('access_token')}`,
+  try {
+    const res = await axios.put(
+      `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+      {
+        uris: context ? undefined : [`spotify:track:${id}`],
+        position_ms: position_ms || 0,
+        context_uri: context && context !== '' ? context : undefined,
+        offset: context ? { uri: `spotify:track:${id}` } : undefined,
       },
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.get('access_token')}`,
+        },
+      }
+    );
+    if (res.status === 200) {
+      return 'Success';
     }
-  );
-  if (res.status === 200) {
-    return 'Success';
+    return 'Error';
+  } catch (_error) {
+    const showSnackbar = useStore.getState().ui.showSnackbar;
+    showSnackbar('error', 'Song is not available');
+    return 'Error';
   }
-  return 'Error';
 }
 export async function spotifyRepeat(deviceId: string, mode: number) {
   const cookies = new Cookies();
@@ -346,6 +354,18 @@ export async function getPlaylist(id: string, token: string) {
       },
     }
   );
+  if (res.status === 200) {
+    return res.data;
+  }
+  return 'Error';
+}
+
+export async function getPlaylistB(id: string, token: string) {
+  const res = await axios.get(`https://api.spotify.com/v1/playlists/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (res.status === 200) {
     return res.data;
   }
