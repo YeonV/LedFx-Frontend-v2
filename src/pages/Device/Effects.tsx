@@ -66,17 +66,19 @@ const orderEffectProperties = (schema: Schema) => {
     }));
   const ordered = [] as any[];
   configOrder.forEach((type) => {
-    ordered.push(...properties.filter((x) => x.type === type));
+    ordered.push(
+      ...properties
+        .filter((x) => x.type === type)
+        .sort((a, b) => {
+          if (type !== 'color') return 0;
+          if (a.id === 'gradient') return -1;
+          if (b.id === 'gradient') return 1;
+          return 0;
+        })
+    );
   });
   ordered.push(...properties.filter((x) => !configOrder.includes(x.type)));
-  return ordered
-    .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
-    .sort((a) => (a.type === 'number' ? -1 : 1))
-    .sort((a) => (a.type === 'integer' ? -1 : 1))
-    .sort((a) => (a.id === 'bg_color' ? -1 : 1))
-    .sort((a) => (a.type === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'gradient' ? -1 : 1));
+  return ordered;
 };
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
@@ -106,7 +108,11 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   const effectType = virtual && virtual.effect.type;
   const [theModel, setTheModel] = useState(virtual?.effect?.config);
-  const orderedProperties = orderEffectProperties(effects[effectType].schema);
+  const orderedProperties =
+    (effects &&
+      effectType &&
+      orderEffectProperties(effects[effectType].schema)) ??
+    [];
 
   // const handleRandomize = () => {
   //   setVirtualEffect(
