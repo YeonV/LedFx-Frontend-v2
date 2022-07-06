@@ -38,6 +38,14 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
         backgroundColor: `${theme.palette.primary.main}50`,
         color: theme.palette.text.primary,
       },
+    '& .disabled.MuiDataGrid-row': {
+      pointerEvents: 'none',
+      color: '#666',
+    },
+    '& .disabled.MuiDataGrid-row .MuiIconButton-root': {
+      pointerEvents: 'none',
+      color: '#666',
+    },
   },
 }));
 

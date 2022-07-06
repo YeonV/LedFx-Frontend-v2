@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -129,7 +131,9 @@ export default function SpPlaylist() {
             params.row.track.uri ===
             playerState?.context.metadata?.current_item.uri
               ? 'currently_playing'
-              : ''
+              : true // params.row.track.available_markets.indexOf(navigator.language.split('-')[1]) > -1
+                ? ''
+                : 'disabled'
           }
         />
       </Box>
