@@ -131,9 +131,7 @@ export default function SpPlaylist() {
             params.row.track.uri ===
             playerState?.context.metadata?.current_item.uri
               ? 'currently_playing'
-              : true // params.row.track.available_markets.indexOf(navigator.language.split('-')[1]) > -1
-                ? ''
-                : 'disabled'
+              : ''
           }
         />
       </Box>
