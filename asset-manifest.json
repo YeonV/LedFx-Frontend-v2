@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/LedFx-Frontend-v2/static/css/main.e6134a8c.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.afd2d952.js",
+    "main.css": "/LedFx-Frontend-v2/static/css/main.cef88b07.css",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.b0b5884e.js",
     "static/js/787.15424a8e.chunk.js": "/LedFx-Frontend-v2/static/js/787.15424a8e.chunk.js",
+    "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
     "static/media/transitions.gif": "/LedFx-Frontend-v2/static/media/transitions.53b6d6f458b421f00872.gif",
-    "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.d8e8e0f7931afa097409.woff",
-    "static/media/materialdesignicons-webfont.woff2": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.e9db4005489e24809b62.woff2",
+    "static/media/materialdesignicons-webfont.woff2": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.d5cba82059f88bfa469e.woff2",
     "static/media/MaterialIcons-Regular.woff2": "/LedFx-Frontend-v2/static/media/MaterialIcons-Regular.f71673ad689fb42ddae1.woff2",
     "service-worker.js": "/LedFx-Frontend-v2/service-worker.js",
     "static/media/ring.png": "/LedFx-Frontend-v2/static/media/ring.1faea45b576b5380bde1.png",
     "static/media/blademod.svg": "/LedFx-Frontend-v2/static/media/blademod.f939f478785a84b3edcc820eef654556.svg",
     "index.html": "/LedFx-Frontend-v2/index.html",
-    "main.e6134a8c.css.map": "/LedFx-Frontend-v2/static/css/main.e6134a8c.css.map",
-    "main.afd2d952.js.map": "/LedFx-Frontend-v2/static/js/main.afd2d952.js.map",
+    "main.cef88b07.css.map": "/LedFx-Frontend-v2/static/css/main.cef88b07.css.map",
+    "main.b0b5884e.js.map": "/LedFx-Frontend-v2/static/js/main.b0b5884e.js.map",
     "787.15424a8e.chunk.js.map": "/LedFx-Frontend-v2/static/js/787.15424a8e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6134a8c.css",
-    "static/js/main.afd2d952.js"
+    "static/css/main.cef88b07.css",
+    "static/js/main.b0b5884e.js"
   ]
 }
