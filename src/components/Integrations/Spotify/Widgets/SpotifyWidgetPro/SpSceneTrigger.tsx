@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
-import { AddPhotoAlternate } from '@material-ui/icons';
 import { MenuItem, Select, InputAdornment } from '@material-ui/core';
 import { OutlinedInput } from '@mui/material';
 import useStore from '../../../../../store/useStore';
 
 // import { formatTime } from '../../../../../utils/helpers';
 import Popover from '../../../../Popover/Popover';
+import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon';
 
 export default function SpSceneTrigger() {
   const scenes = useStore((state) => state.scenes);
@@ -51,12 +51,7 @@ export default function SpSceneTrigger() {
       variant="text"
       size="large"
       confirmDisabled={spotifyScene === 0}
-      icon={
-        <AddPhotoAlternate
-          style={{ fontSize: '2rem' }}
-          htmlColor="rgba(255,255,255,0.7)"
-        />
-      }
+      icon={<BladeIcon name="mdi:timer-music-outline" />}
       onConfirm={() => onConfirmHandler(spotifyTriggerData)}
       content={
         <div>
