@@ -90,7 +90,7 @@ export default function QLCScreen({
               back
             </Button>
             <Typography variant="h6" className={classes.title}>
-              QLC
+              QLC+ Triggers
             </Typography>
           </Toolbar>
         </AppBar>

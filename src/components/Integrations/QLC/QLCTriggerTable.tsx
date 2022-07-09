@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+// GridRowParams
 // import { useTheme } from '@mui/material/styles';
 import { DeleteForever, PlayCircleFilled } from '@material-ui/icons';
 import { useEffect } from 'react';
@@ -8,7 +9,7 @@ import { Stack } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 import { NotStarted } from '@mui/icons-material';
 import useStore from '../../../store/useStore';
-import { spotifyPlaySong } from '../../../utils/spotifyProxies';
+// import { spotifyPlaySong } from '../../../utils/spotifyProxies';
 import Popover from '../../Popover/Popover';
 
 export const useDataGridStyles = makeStyles((theme: any) => ({
@@ -49,15 +50,10 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
   },
 }));
 
-export default function SpotifyTriggerTable() {
+export default function QLCTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
-  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const playerState = useStore(
-    (state) => state.spotify.spotifyData.playerState
-  );
   const spTriggersList = useStore((state) => state.spotify.spTriggersList);
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const getSpTriggers = useStore((state) => state.getSpTriggers);
@@ -134,22 +130,22 @@ export default function SpotifyTriggerTable() {
       headerAlign: 'center',
     },
     {
-      field: 'songName',
-      headerName: 'Song',
-      width: 400,
+      field: 'eventType',
+      headerName: 'Event Type',
+      width: 100,
     },
     {
-      field: 'position',
-      headerName: 'Position',
-      width: 90,
+      field: 'trigger',
+      headerName: 'Event Trigger (If This)',
+      width: 300,
       headerAlign: 'center',
       align: 'center',
     },
 
     {
-      field: 'sceneId',
-      headerName: 'Scene',
-      width: 120,
+      field: 'payload',
+      headerName: 'Payload (Do This)',
+      width: 300,
       headerAlign: 'center',
       align: 'center',
     },
@@ -173,22 +169,14 @@ export default function SpotifyTriggerTable() {
           <IconButton
             aria-label="play"
             color="inherit"
-            onClick={() => {
-              spotifyPlaySong(
-                spotifyDevice,
-                params.row.songId,
-                params.row.position_ms
-              );
-            }}
+            onClick={() => console.log('coming soon...')}
           >
             <PlayCircleFilled fontSize="inherit" />
           </IconButton>
           <IconButton
             aria-label="playstart"
             color="inherit"
-            onClick={() => {
-              spotifyPlaySong(spotifyDevice, params.row.songId);
-            }}
+            onClick={() => console.log('coming soon...')}
           >
             <NotStarted fontSize="inherit" />
           </IconButton>
@@ -211,9 +199,6 @@ export default function SpotifyTriggerTable() {
         autoHeight
         // checkboxSelection
         disableSelectionOnClick
-        onRowDoubleClick={(params: any) => {
-          spotifyPlaySong(spotifyDevice, params.row.songId);
-        }}
         sx={{
           boxShadow: 2,
           color: '#fff',
@@ -222,14 +207,6 @@ export default function SpotifyTriggerTable() {
         }}
         columns={columns}
         rows={rows}
-        getRowClassName={(params: GridRowParams<any>) =>
-          params.row.songId ===
-          playerState?.context.metadata?.current_item.uri.split(':')[2]
-            ? spotifyPos > params.row.position_ms
-              ? 'activated'
-              : 'currently_playing'
-            : ''
-        }
       />
     </div>
   );
