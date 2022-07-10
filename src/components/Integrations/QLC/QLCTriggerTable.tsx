@@ -7,7 +7,9 @@ import { useEffect } from 'react';
 import { IconButton } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
-import { NotStarted } from '@mui/icons-material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+
 import useStore from '../../../store/useStore';
 // import { spotifyPlaySong } from '../../../utils/spotifyProxies';
 import Popover from '../../Popover/Popover';
@@ -173,12 +175,22 @@ export default function QLCTriggerTable() {
           >
             <PlayCircleFilled fontSize="inherit" />
           </IconButton>
+          {/* TO DO!
+           If trigger=true enabled then tick button 
+           else disabled=false = X button */}
           <IconButton
             aria-label="playstart"
             color="inherit"
-            onClick={() => console.log('coming soon...')}
+            onClick={() => console.log('coming soon... Enable trigger')}
           >
-            <NotStarted fontSize="inherit" />
+            <CheckCircleIcon fontSize="inherit" />
+          </IconButton>
+          <IconButton
+            aria-label="playstart"
+            color="inherit"
+            onClick={() => console.log('coming soon... Disable trigger')}
+          >
+            <CancelIcon fontSize="inherit" />
           </IconButton>
         </Stack>
       ),
