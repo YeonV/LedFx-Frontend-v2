@@ -56,39 +56,17 @@ export default function QLCTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
+  const QLCTriggersList = useStore((state) => state.qlc.QLCTriggersList);
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
-  const getSpTriggers = useStore((state) => state.getSpTriggers);
-  const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
-
-  useEffect(() => {
-    getSpTriggers('spotify');
-  }, []);
-
-  const padTo2Digits = (num: any) => {
-    return num.toString().padStart(2, '0');
-  };
-
-  const getTime = (milliseconds: any) => {
-    let seconds = Math.floor(milliseconds / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
-
-    seconds %= 60;
-    minutes %= 60;
-    hours %= 24;
-
-    return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}:${padTo2Digits(
-      seconds
-    )}`;
-  };
+  const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
 
   // Here we get the current triggers from list and set to global state
+
   useEffect(() => {
     const triggersNew: any = [];
     let id = 1;
-    if (integrations?.spotify?.data) {
-      const temp = integrations?.spotify?.data;
+    if (integrations?.qlc?.data) {
+      const temp = integrations?.qlc?.data;
       Object.keys(temp).map((key) => {
         const temp1 = temp[key];
         const sceneName = temp1.name;
@@ -98,9 +76,9 @@ export default function QLCTriggerTable() {
             triggersNew.push({
               id,
               trigger_id: `${temp1[key1][0]}-${temp1[key1][2]}`,
-              songId: temp1[key1][0],
+              eventType: temp1[key1][0],
               songName: temp1[key1][1],
-              position: getTime(temp1[key1][2]),
+              // position: getTime(temp1[key1][2]),
               position_ms: temp1[key1][2],
               sceneId,
               sceneName,
@@ -112,7 +90,8 @@ export default function QLCTriggerTable() {
         });
         return true;
       });
-      addToSpTriggerList(triggersNew, 'create');
+      console.log('triggersNew', triggersNew);
+      addToQLCTriggerList(triggersNew, 'create');
     }
   }, [integrations]);
 
@@ -197,7 +176,7 @@ export default function QLCTriggerTable() {
     },
   ];
 
-  const rows = spTriggersList || [{ id: 1 }];
+  const rows = QLCTriggersList || [{ id: 1 }];
 
   return (
     <div
