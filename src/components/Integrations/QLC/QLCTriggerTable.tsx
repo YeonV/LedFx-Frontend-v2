@@ -77,7 +77,6 @@ export default function QLCTriggerTable() {
             trigger: `scene_activated: ${sceneName}`,
             qlc_string:
               'ID: 34, Type: Button, Name: Medium colour cycle (138 bpm)',
-            qlc_action: 255,
             eventId: temp1[1],
             sceneId,
             sceneName,
@@ -85,7 +84,7 @@ export default function QLCTriggerTable() {
             qlc_id: temp1[3],
             qlc_widgetType: temp1[3],
             qlc_name: temp1[3],
-            qlc_value: temp1[3],
+            qlc_value: 255,
           });
           id += 1;
         }
@@ -114,7 +113,7 @@ export default function QLCTriggerTable() {
     {
       field: 'trigger',
       headerName: 'Trigger Event Type & Name (If This)',
-      width: 300,
+      width: 350,
       headerAlign: 'center',
       align: 'center',
     },
@@ -127,9 +126,9 @@ export default function QLCTriggerTable() {
       align: 'center',
     },
     {
-      field: 'qlc_action',
-      headerName: 'QLC+ Action',
-      width: 100,
+      field: 'qlc_value',
+      headerName: 'QLC+ Value',
+      width: 150,
       headerAlign: 'center',
       align: 'center',
     },
