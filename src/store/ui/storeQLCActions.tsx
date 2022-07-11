@@ -48,7 +48,7 @@ const storeQLCActions = (set: any) => ({
   setQLCActTriggers: async (ids: string[]) => {
     set(
       produce((state: any) => {
-        state.qlc.spActTriggers = ids;
+        state.qlc.qlcActTriggers = ids;
       }),
       false,
       'qlc/setTriggers'
@@ -57,7 +57,7 @@ const storeQLCActions = (set: any) => ({
   removeQLCActTriggers: async (id: string) => {
     set(
       produce((state: any) => {
-        state.qlc.spActTriggers = state.qlc.spActTriggers.filter(
+        state.qlc.qlcActTriggers = state.qlc.qlcActTriggers.filter(
           (f: any) => f.id !== id
         );
       }),
@@ -70,7 +70,7 @@ const storeQLCActions = (set: any) => ({
       case 'create':
         set(
           produce((state: any) => {
-            state.qlc.spTriggersList = [...newTrigger];
+            state.qlc.qlcTriggersList = [...newTrigger];
           }),
           false,
           'qlc/addToTriggerList'
@@ -79,7 +79,7 @@ const storeQLCActions = (set: any) => ({
       case 'update':
         set(
           produce((state: any) => {
-            state.qlc.spTriggersList = [...state.spTriggersList, newTrigger];
+            state.qlc.qlcTriggersList = [...state.qlcTriggersList, newTrigger];
           }),
           false,
           'qlc/addToTriggerList'

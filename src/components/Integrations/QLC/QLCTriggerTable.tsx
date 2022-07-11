@@ -2,14 +2,13 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 // GridRowParams
 // import { useTheme } from '@mui/material/styles';
-import { DeleteForever, PlayCircleFilled } from '@material-ui/icons';
+import { DeleteForever } from '@material-ui/icons';
 import { useEffect } from 'react';
 import { IconButton } from '@material-ui/core';
-import { Stack } from '@mui/material';
+import { Stack, Switch } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
 
+import { Edit } from '@mui/icons-material';
 import useStore from '../../../store/useStore';
 // import { spotifyPlaySong } from '../../../utils/spotifyProxies';
 import Popover from '../../Popover/Popover';
@@ -56,7 +55,7 @@ export default function QLCTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const QLCTriggersList = useStore((state) => state.qlc.QLCTriggersList);
+  const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
 
@@ -69,28 +68,30 @@ export default function QLCTriggerTable() {
       const temp = integrations?.qlc?.data;
       Object.keys(temp).map((key) => {
         const temp1 = temp[key];
-        const sceneName = temp1.name;
-        const sceneId = temp1.name;
-        Object.keys(temp1).map((key1) => {
-          if (temp1[key1].constructor === Array) {
-            triggersNew.push({
-              id,
-              trigger_id: `${temp1[key1][0]}-${temp1[key1][2]}`,
-              eventType: temp1[key1][0],
-              songName: temp1[key1][1],
-              // position: getTime(temp1[key1][2]),
-              position_ms: temp1[key1][2],
-              sceneId,
-              sceneName,
-            });
-            id += 1;
-          }
-
-          return true;
-        });
-        return true;
+        const sceneName = temp1[1].scene_name;
+        const sceneId = temp1[1].scene_name;
+        console.log('test', sceneId);
+        if (temp1.constructor === Array) {
+          triggersNew.push({
+            id,
+            trigger: `scene_activated: ${sceneName}`,
+            qlc_string:
+              'ID: 34, Type: Button, Name: Medium colour cycle (138 bpm)',
+            qlc_action: 255,
+            eventId: temp1[1],
+            sceneId,
+            sceneName,
+            eventName: temp1[1].scene_name,
+            qlc_id: temp1[3],
+            qlc_widgetType: temp1[3],
+            qlc_name: temp1[3],
+            qlc_value: temp1[3],
+          });
+          id += 1;
+        }
+        return triggersNew;
       });
-      console.log('triggersNew', triggersNew);
+      console.log('QLC triggersNew', triggersNew);
       addToQLCTriggerList(triggersNew, 'create');
     }
   }, [integrations]);
@@ -111,22 +112,24 @@ export default function QLCTriggerTable() {
       headerAlign: 'center',
     },
     {
-      field: 'eventType',
-      headerName: 'Event Type',
-      width: 100,
-    },
-    {
       field: 'trigger',
-      headerName: 'Event Trigger (If This)',
+      headerName: 'Trigger Event Type & Name (If This)',
       width: 300,
       headerAlign: 'center',
       align: 'center',
     },
 
     {
-      field: 'payload',
-      headerName: 'Payload (Do This)',
-      width: 300,
+      field: 'qlc_string',
+      headerName: 'QLC+ Widget (Do This)',
+      width: 500,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'qlc_action',
+      headerName: 'QLC+ Action',
+      width: 100,
       headerAlign: 'center',
       align: 'center',
     },
@@ -138,6 +141,21 @@ export default function QLCTriggerTable() {
       align: 'center',
       renderCell: (params: any) => (
         <Stack direction="row" alignItems="center" spacing={0}>
+          <Switch
+            checked={params.row.activated}
+            color="primary"
+            aria-label="Enable/Disable Trigger"
+            onChange={() => {
+              console.log(console.log('Enable/Disable trigger coming soon...'));
+            }}
+          />
+          <IconButton
+            aria-label="Edit"
+            color="inherit"
+            onClick={() => console.log('coming soon...')}
+          >
+            <Edit fontSize="inherit" />
+          </IconButton>
           <Popover
             variant="text"
             color="inherit"
@@ -147,30 +165,6 @@ export default function QLCTriggerTable() {
               deleteTriggerHandler(params);
             }}
           />
-          <IconButton
-            aria-label="play"
-            color="inherit"
-            onClick={() => console.log('coming soon...')}
-          >
-            <PlayCircleFilled fontSize="inherit" />
-          </IconButton>
-          {/* TO DO!
-           If trigger=true enabled then tick button 
-           else disabled=false = X button */}
-          <IconButton
-            aria-label="playstart"
-            color="inherit"
-            onClick={() => console.log('coming soon... Enable trigger')}
-          >
-            <CheckCircleIcon fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            aria-label="playstart"
-            color="inherit"
-            onClick={() => console.log('coming soon... Disable trigger')}
-          >
-            <CancelIcon fontSize="inherit" />
-          </IconButton>
         </Stack>
       ),
     },

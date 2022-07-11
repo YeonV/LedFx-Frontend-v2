@@ -135,6 +135,7 @@ export function refreshAuth() {
       return freshTokens;
     })
     .catch((e) => console.log(e));
+  finishAuth();
 }
 
 export function logoutAuth() {

@@ -2,7 +2,7 @@ const storeQLC = () => ({
   QLCEmbedUrl: 'http://localhost:9999/',
   QLCData: {} as any,
   QLCtriggers: {},
-  QLCTriggersList: [] as any,
+  qlcTriggersList: [] as any,
   QLCActTriggers: [] as string[],
 });
 
