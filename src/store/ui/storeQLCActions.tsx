@@ -87,6 +87,19 @@ const storeQLCActions = (set: any) => ({
         break;
     }
   },
+  getQLCWidgets: async (id: string) => {
+    const resp = await Ledfx('api/integrations/qlc/qlc', set, 'GET');
+    // const res = await resp.json()
+    if (resp) {
+      set(
+        produce((state: any) => {
+          state.qlc.qlcWidgets = resp.qlc;
+        }),
+        false,
+        'qlc/getWidgets'
+      );
+    }
+  },
   addQLCSongTrigger: async ({
     scene_id,
     song_id,

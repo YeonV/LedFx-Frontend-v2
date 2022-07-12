@@ -55,7 +55,10 @@ export default function QLCTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
+  const getQLCWidgets = useStore((state) => state.qlc.qlcWidgets);
+  const QLCTriggersList = useStore(
+    (state) => state.qlc.payload.qlcTriggersList
+  );
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
 
@@ -91,6 +94,7 @@ export default function QLCTriggerTable() {
         return triggersNew;
       });
       console.log('QLC triggersNew', triggersNew);
+      console.log('QLC getQLCWidgets', getQLCWidgets);
       addToQLCTriggerList(triggersNew, 'create');
     }
   }, [integrations]);
