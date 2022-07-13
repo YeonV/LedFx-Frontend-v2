@@ -104,21 +104,9 @@ app.whenReady().then(async () => {
   nativeTheme.themeSource = 'dark';
   const thePath = process.env.PORTABLE_EXECUTABLE_DIR || path.resolve('.');
 
-  const ledfxCores = fs
-    .readdirSync(thePath)
-    .filter(
-      (o) =>
-        o.length - o.indexOf('--win-portable.exe') === 18 &&
-        o.indexOf('LedFx_core') === 0
-    );
-  const ledfxCore =
-    ledfxCores &&
-    ledfxCores.length &&
-    ledfxCores.length > 0 &&
-    ledfxCores[ledfxCores.length - 1];
   const integratedCore = (process.platform === 'darwin') 
     ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))
-    : ledfxCore && fs.existsSync(`${thePath}/${ledfxCore}`);
+    : fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx-notray.exe'))
 
   const currentDir = fs.readdirSync(thePath)
   console.log(currentDir)
@@ -127,7 +115,7 @@ app.whenReady().then(async () => {
     if (process.platform === 'darwin') {
       subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, []);  
     } else {
-      subpy = require('child_process').spawn(`./${ledfxCore}`, ['-p', '8888']);
+      subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx-notray.exe')}`, ['-p', '8888']);
     }
   } 
 
@@ -168,7 +156,7 @@ app.whenReady().then(async () => {
         label: 'Start core',
         click: () => (process.platform === 'darwin') 
           ? subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, [])
-          : subpy = require('child_process').spawn(`./${ledfxCore}`, ['-p', '8888'])
+          : subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx-notray.exe')}`, ['-p', '8888'])
       },
       {
         label: 'Stop core',
@@ -229,14 +217,14 @@ app.whenReady().then(async () => {
       wind.webContents.send('fromMain', ['platform', process.platform]);
       return;
     }
-    if (parameters === 'start-core') {
-      console.log('Starting Core', ledfxCore);
-      wind.webContents.send('fromMain', ['currentdir', integratedCore, fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))]);
+    if (parameters === 'start-core') {      
       if (integratedCore) {
         if (process.platform === 'darwin') {
+          wind.webContents.send('fromMain', ['currentdir', integratedCore, fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))]);
           subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, []);  
         } else {
-          subpy = require('child_process').spawn(`./${ledfxCore}`, []);
+          wind.webContents.send('fromMain', ['currentdir', integratedCore, fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx-notray.exe'))]);
+          subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx-notray.exe')}`, []);
         }
       }
       return;
@@ -274,6 +262,12 @@ app.whenReady().then(async () => {
       });
     }
   });  
+
+  wind.on('close', function(e){
+    if (subpy !== null) {
+      subpy.kill('SIGINT');
+    }
+  })
 });
 
 app.on('window-all-closed', () => {
