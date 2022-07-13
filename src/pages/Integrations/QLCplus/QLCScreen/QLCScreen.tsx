@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ListItemIcon,
   Typography,
   Toolbar,
   AppBar,
@@ -8,7 +7,7 @@ import {
   Button,
   Grid,
 } from '@material-ui/core';
-import { Settings, NavigateBefore } from '@material-ui/icons';
+import { Settings, NavigateBefore, Add } from '@material-ui/icons';
 import {
   MuiMenuItem,
   QLCScreenDefaultProps,
@@ -52,7 +51,7 @@ export default function QLCScreen({
             handleClickOpen();
           }}
         >
-          <ListItemIcon>{icon}</ListItemIcon>
+          <Add />
           {label}
         </MuiMenuItem>
       ) : (
@@ -100,8 +99,9 @@ export default function QLCScreen({
             autoFocus
             color="primary"
             variant="contained"
-            startIcon={<NavigateBefore />}
-            onClick={handleClose}
+            startIcon={<Add />}
+            // onClick={handleClose}
+            onClick={() => console.log(' Dialog popup coming soon...')}
             style={{ marginRight: '1rem' }}
           >
             ADD EVENT LISTENER

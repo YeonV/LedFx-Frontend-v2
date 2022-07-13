@@ -4,7 +4,7 @@ const storeQLC = () => ({
   QLCtriggers: {},
   qlcTriggersList: [] as any,
   QLCActTriggers: [] as string[],
-  qlcWidgets: [] as any,
+  qlcWidgets: {} as any,
 });
 
 export default storeQLC;

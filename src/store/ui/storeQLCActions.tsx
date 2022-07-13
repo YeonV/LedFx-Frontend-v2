@@ -87,13 +87,13 @@ const storeQLCActions = (set: any) => ({
         break;
     }
   },
-  getQLCWidgets: async (id: string) => {
-    const resp = await Ledfx('api/integrations/qlc/qlc', set, 'GET');
+  getQLCWidgets: async () => {
+    const resp = await Ledfx('/api/integrations/qlc/qlc');
     // const res = await resp.json()
     if (resp) {
       set(
         produce((state: any) => {
-          state.qlc.qlcWidgets = resp.qlc;
+          state.qlc.qlcWidgets = resp;
         }),
         false,
         'qlc/getWidgets'

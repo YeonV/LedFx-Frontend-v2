@@ -1,16 +1,11 @@
-/* eslint-disable no-console */
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-// GridRowParams
-// import { useTheme } from '@mui/material/styles';
 import { DeleteForever } from '@material-ui/icons';
 import { useEffect } from 'react';
 import { IconButton } from '@material-ui/core';
 import { Stack, Switch } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { Edit } from '@mui/icons-material';
 import useStore from '../../../store/useStore';
-// import { spotifyPlaySong } from '../../../utils/spotifyProxies';
 import Popover from '../../Popover/Popover';
 
 export const useDataGridStyles = makeStyles((theme: any) => ({
@@ -55,15 +50,17 @@ export default function QLCTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const getQLCWidgets = useStore((state) => state.qlc.qlcWidgets);
-  const QLCTriggersList = useStore(
-    (state) => state.qlc.payload.qlcTriggersList
-  );
+  const getQLCWidgets = useStore((state) => state.getQLCWidgets);
+  const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
+  const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
 
+  useEffect(() => {
+    getQLCWidgets();
+  }, []);
+  console.log('getQLCWidgets', qlcInfo);
   // Here we get the current triggers from list and set to global state
-
   useEffect(() => {
     const triggersNew: any = [];
     let id = 1;
@@ -80,6 +77,7 @@ export default function QLCTriggerTable() {
             trigger: `scene_activated: ${sceneName}`,
             qlc_string:
               'ID: 34, Type: Button, Name: Medium colour cycle (138 bpm)',
+            enabled: true,
             eventId: temp1[1],
             sceneId,
             sceneName,
@@ -93,11 +91,37 @@ export default function QLCTriggerTable() {
         }
         return triggersNew;
       });
-      console.log('QLC triggersNew', triggersNew);
-      console.log('QLC getQLCWidgets', getQLCWidgets);
       addToQLCTriggerList(triggersNew, 'create');
+      console.log('QLC triggersNew', triggersNew);
     }
   }, [integrations]);
+
+  // const SceneSet =
+  //   qlcInfo &&
+  //   qlcInfo.event_types &&
+  //   qlcInfo.event_types.scene_activated.event_filters.scene_name;
+  // const QLCWidgets =
+  //   qlcInfo &&
+  //   qlcInfo.qlc_widgets &&
+  //   qlcInfo.qlc_widgets.sort(
+  //     (a: string[], b: string[]) => parseInt(a[0]) - parseInt(b[0])
+  //   );
+  // const qlcStuff: never[] = [];
+  // const qlcID = {};
+  // qlcInfo &&
+  //   qlcInfo.qlc_widgets &&
+  //   qlcInfo.qlc_widgets.map((a) => {
+  //     qlcStuff[a[0]] = { id: a[0], Type: a[1], Name: a[2] };
+  //     qlcID[a[0]] = a[1];
+  //     // qlcType[a[0]] = (a[1]);
+  //     return true;
+  //   });
+  // console.log('SceneSet', SceneSet);
+  // console.log('QLCWidgets', QLCWidgets);
+  // console.log('qlcStuff', qlcStuff);
+  // console.log('qlcID', qlcID);
+
+  // triggersNew.find((item: any) => item.id === params.row.id)?.activated}
 
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteSpTrigger({
@@ -145,7 +169,7 @@ export default function QLCTriggerTable() {
       renderCell: (params: any) => (
         <Stack direction="row" alignItems="center" spacing={0}>
           <Switch
-            checked={params.row.activated}
+            checked={QLCTriggersList.enabled}
             color="primary"
             aria-label="Enable/Disable Trigger"
             onChange={() => {
