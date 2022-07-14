@@ -106,7 +106,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   const effectType = virtual && virtual.effect.type;
   const [theModel, setTheModel] = useState(virtual?.effect?.config);
-  const orderedProperties = orderEffectProperties(effects[effectType].schema);
+  const orderedProperties =
+    effects && effectType && orderEffectProperties(effects[effectType].schema);
 
   // const handleRandomize = () => {
   //   setVirtualEffect(

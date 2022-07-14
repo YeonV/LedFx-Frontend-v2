@@ -27,6 +27,7 @@
             "nsis",
             "zip"
         ],
+        "icon": "build/icon.ico",
         "artifactName": "LedFx_client-${channel}--${os}.${ext}"
     },
     "portable": {
