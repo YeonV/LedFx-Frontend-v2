@@ -101,8 +101,8 @@ export default function QLCScreen({
             color="primary"
             variant="contained"
             startIcon={<Add />}
-            // onClick={handleClose}
-            onClick={() => console.log(' Dialog popup coming soon...')}
+            onClick={handleClose}
+            // onClick={() => console.log(' Dialog popup coming soon...')}
             style={{ marginRight: '1rem' }}
           >
             ADD EVENT LISTENER

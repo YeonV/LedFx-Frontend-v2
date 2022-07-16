@@ -53,31 +53,23 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number
-) {
+function createData(name: string, countWidgets: number, actions: number) {
   return {
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
+    countWidgets,
+    actions,
+    qlcTrigger: [
       {
-        date: '2020-01-05',
-        customerId: '11091700',
-        amount: 3,
+        qlcid: 34,
+        qlctype: 'Slider',
+        qlcname: 'Medium colour cycle (138 bpm)',
+        qlcvalue: 16,
       },
       {
-        date: '2020-01-02',
-        customerId: 'Anonymous',
-        amount: 1,
+        qlcid: 12,
+        qlctype: 'Button',
+        qlcname: 'Sound control Auto',
+        qlcvalue: 'Off',
       },
     ],
   };
@@ -85,7 +77,7 @@ function createData(
 
 function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   return (
     <>
@@ -102,10 +94,8 @@ function Row(props: { row: ReturnType<typeof createData> }) {
         <TableCell component="th" scope="row">
           {row.name}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell align="right">{row.countWidgets}</TableCell>
+        <TableCell align="right">{row.actions}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -117,22 +107,24 @@ function Row(props: { row: ReturnType<typeof createData> }) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell>QLC+ ID</TableCell>
+                    <TableCell>Type</TableCell>
+                    <TableCell align="right">Name</TableCell>
+                    <TableCell align="right">QLC Value</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
+                  {row.qlcTrigger.map((qlcTriggerRow) => (
+                    <TableRow key={qlcTriggerRow.qlcid}>
                       <TableCell component="th" scope="row">
-                        {historyRow.date}
+                        {qlcTriggerRow.qlcid}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell>{qlcTriggerRow.qlctype}</TableCell>
                       <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                        {qlcTriggerRow.qlcname}
+                      </TableCell>
+                      <TableCell align="right">
+                        {qlcTriggerRow.qlcvalue}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -147,11 +139,8 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 const rows = [
-  createData('scene_activated: blue', 2, 6.0, 24, 4.0, 3.99),
-  createData('scene_activated: Red', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+  createData('scene_activated: blue', 2, 6),
+  createData('scene_activated: Red', 237, 9),
 ];
 
 export default function QLCDropdownTable() {

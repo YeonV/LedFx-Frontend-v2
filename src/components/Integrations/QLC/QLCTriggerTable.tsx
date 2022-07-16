@@ -55,11 +55,13 @@ export default function QLCTriggerTable() {
   const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
+  const toggleQLCTrigger = useStore((state) => state.toggleQLCTrigger);
 
   useEffect(() => {
     getQLCWidgets();
   }, []);
   console.log('getQLCWidgets', qlcInfo);
+
   // Here we get the current triggers from list and set to global state
   useEffect(() => {
     const triggersNew: any = [];
@@ -70,22 +72,41 @@ export default function QLCTriggerTable() {
         const temp1 = temp[key];
         const sceneName = temp1[1].scene_name;
         const sceneId = temp1[1].scene_name;
-        console.log('test', sceneId);
+        const triggerType = 'scene_activated';
+        const enabled = true;
+        const qlc_id = temp1[3];
+        const triggerName = temp1[1].scene_name;
+        const qlc_widgetType = temp1[3];
+        const qlc_name = temp1[3];
+        const qlc_value = temp1[3];
+        console.log('test', temp1);
         if (temp1.constructor === Array) {
           triggersNew.push({
             id,
-            trigger: `scene_activated: ${sceneName}`,
-            qlc_string:
-              'ID: 34, Type: Button, Name: Medium colour cycle (138 bpm)',
-            enabled: true,
-            eventId: temp1[1],
+            triggerType,
+            triggerName,
             sceneId,
             sceneName,
-            eventName: temp1[1].scene_name,
-            qlc_id: temp1[3],
-            qlc_widgetType: temp1[3],
-            qlc_name: temp1[3],
-            qlc_value: 255,
+            enabled,
+            trigger: `${triggerType}: ${sceneName}`,
+            qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
+            qlc_value,
+            qlc_widgets: [
+              {
+                qlc_id: 34,
+                qlc_widgetType: 'Button',
+                qlc_name: 'Medium colour cycle (138 bpm)',
+                qlc_value,
+                qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
+              },
+              {
+                qlc_id: 32,
+                qlc_widgetType: 'Button',
+                qlc_name: 'Turn off back light',
+                qlc_value,
+                qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
+              },
+            ],
           });
           id += 1;
         }
@@ -169,11 +190,14 @@ export default function QLCTriggerTable() {
       renderCell: (params: any) => (
         <Stack direction="row" alignItems="center" spacing={0}>
           <Switch
-            checked={QLCTriggersList.enabled}
+            checked={params.row.enabled}
             color="primary"
             aria-label="Enable/Disable Trigger"
             onChange={() => {
-              console.log(console.log('Enable/Disable trigger coming soon...'));
+              console.log('params.row.enabled', params);
+              toggleQLCTrigger('qlc', {
+                enabled: !params.row.enabled,
+              });
             }}
           />
           <IconButton
