@@ -21,7 +21,13 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ThisDropDown from './DialogAddEventListnerDropDown';
 import useStore from '../../../store/useStore';
 
-function ConfirmationDialogRaw(props) {
+function ConfirmationDialogRaw(props: {
+  [x: string]: any;
+  integration?: any;
+  onClose?: any;
+  value?: any;
+  open?: any;
+}) {
   const { onClose, value: valueProp, open, ...other } = props;
   const [value, setValue] = React.useState(valueProp);
   const [checkButtonType, setButtonType] = React.useState(false);
@@ -38,7 +44,7 @@ function ConfirmationDialogRaw(props) {
   const [qlcData, setqlcData] = React.useState([]);
   const radioGroupRef = React.useRef(null);
   const [model] = React.useState({});
-  const createQlcListener = useStore((state) => state.createQlcListener);
+  const createQlcListener = useStore((state) => state.qlc.createQlcListener);
 
   const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
   // console.log("qlcInfo - Response: ", qlcInfo);
@@ -51,7 +57,9 @@ function ConfirmationDialogRaw(props) {
   const QLCWidgets =
     qlcInfo &&
     qlcInfo.qlc_widgets &&
-    qlcInfo.qlc_widgets.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+    qlcInfo.qlc_widgets.sort(
+      (a: string[], b: string[]) => parseInt(a[0]) - parseInt(b[0])
+    );
   // const EVENT_TYPES= qlcInfo && qlcInfo.event_types && qlcInfo.event_types
   // console.log("test3",EVENT_TYPES);
   const qlcStuff = [];
@@ -59,7 +67,7 @@ function ConfirmationDialogRaw(props) {
   // const qlcType = {}
   qlcInfo &&
     qlcInfo.qlc_widgets &&
-    qlcInfo.qlc_widgets.map((a) => {
+    qlcInfo.qlc_widgets.map((a: any[]) => {
       qlcStuff[a[0]] = { id: a[0], Type: a[1], Name: a[2] };
       qlcID[a[0]] = a[1];
       // qlcType[a[0]] = (a[1]);
@@ -93,12 +101,15 @@ function ConfirmationDialogRaw(props) {
     // window.location = window.location.href;
   };
 
-  const onModelChange = (key, val) => {
+  const onModelChange = (key: any, val: any) => {
     utils.selectOrSet(key, model, val);
   };
 
   // const [f, setAge] = React.useState('');
-  const handleEventChange = (event, val) => {
+  const handleEventChange = (
+    event: { target: { type?: any; checked?: any; name?: any; value: any } },
+    val: React.SetStateAction<number> | undefined
+  ) => {
     console.log('typetest', event.target);
     let { value } = event.target;
     if (event.target.type === 'checkbox') {
@@ -164,7 +175,9 @@ function ConfirmationDialogRaw(props) {
     // setformData(inputs => ({...inputs, [event.target.name]: event.target.value}));
   };
 
-  const handleTypeChange = (event) => {
+  const handleTypeChange = (event: {
+    target: { value: string | string[] | React.SetStateAction<null>[] };
+  }) => {
     event.target.value.includes('Button')
       ? setButtonType(true)
       : setButtonType(false);
@@ -177,7 +190,12 @@ function ConfirmationDialogRaw(props) {
   };
 
   // work here next time to eliminate reference cloning probably make different handleswitchchange
-  const handleDropTypeChange = (event, index, val, name) => {
+  const handleDropTypeChange = (
+    event: { target: { name?: any; value: any; type?: any; checked?: any } },
+    index: number,
+    val: any,
+    name: string | number
+  ) => {
     // console.log("testing1",event.target.value);
     // console.log("testing",dropDownRenderList)
     const newArr = dropDownRenderList.slice();
@@ -258,7 +276,7 @@ function ConfirmationDialogRaw(props) {
     return setdropDownRenderList(newArr);
   };
 
-  const handleTypeAddDropDown = (event) => {
+  const handleTypeAddDropDown = (event: any) => {
     const newItem = {
       id: Date.now(),
       value: '',
@@ -272,7 +290,7 @@ function ConfirmationDialogRaw(props) {
     return setdropDownRenderList(newArr);
   };
 
-  const handleTypeRemoveDropDown = (idx) => {
+  const handleTypeRemoveDropDown = (idx: number) => {
     const newArr = dropDownRenderList.slice();
     newArr.splice(idx, 1);
     const newQlcData = qlcData.slice();
@@ -331,18 +349,34 @@ function ConfirmationDialogRaw(props) {
             <ListSubheader color="primary">Scene Set</ListSubheader>
             {SceneSet &&
               SceneSet.length > 0 &&
-              SceneSet.map((val, idx) => (
-                <MenuItem
-                  key={idx}
-                  value={JSON.stringify({
-                    event_type: 'scene_set',
-                    event_name: val,
-                  })}
-                  name={val}
-                >
-                  <option>{val}</option>
-                </MenuItem>
-              ))}
+              SceneSet.map(
+                (
+                  val:
+                  | string
+                  | number
+                  | boolean
+                  | React.ReactElement<
+                        any,
+                        string | React.JSXElementConstructor<any>
+                  >
+                  | React.ReactFragment
+                  | React.ReactPortal
+                  | null
+                  | undefined,
+                  idx: React.Key | null | undefined
+                ) => (
+                  <MenuItem
+                    key={idx}
+                    value={JSON.stringify({
+                      event_type: 'scene_set',
+                      event_name: val,
+                    })}
+                    name={val}
+                  >
+                    <option>{val}</option>
+                  </MenuItem>
+                )
+              )}
             {/* We may want this at a later time.
                         <ListSubheader color="primary">
                             Effect Set
@@ -382,16 +416,33 @@ function ConfirmationDialogRaw(props) {
             <MenuItem value="" />
             {QLCWidgets &&
               QLCWidgets.length > 0 &&
-              QLCWidgets.map((e, f) => (
-                <MenuItem key={f} value={e} name={e[0]}>
-                  <option>
-                    ID: {e[0]}, Type: {e[1]}, Name: {e[2]}
-                  </option>
-                  {/* {Object.entries(qlcStuff)}
+              QLCWidgets.map(
+                (
+                  e: (
+                    | string
+                    | number
+                    | boolean
+                    | React.ReactElement<
+                        any,
+                    string | React.JSXElementConstructor<any>
+                    >
+                    | React.ReactFragment
+                    | React.ReactPortal
+                    | null
+                    | undefined
+                  )[],
+                  f: React.Key | null | undefined
+                ) => (
+                  <MenuItem key={f} value={e} name={e[0]}>
+                    <option>
+                      ID: {e[0]}, Type: {e[1]}, Name: {e[2]}
+                    </option>
+                    {/* {Object.entries(qlcStuff)}
                             {QLCWidgets && QLCWidgets.length > 0 && QLCWidgets.map((e,f)=><MenuItem key={f} value="">
                             <option>{e}</option> */}
-                </MenuItem>
-              ))}
+                  </MenuItem>
+                )
+              )}
           </Select>
 
           {/*
@@ -537,7 +588,7 @@ export default function ConfirmationDialog({
     setOpen(true);
   };
 
-  const handleClose = (newValue) => {
+  const handleClose = () => {
     setOpen(false);
   };
 
