@@ -53,7 +53,7 @@ export default function QLCTriggerTable() {
   const getQLCWidgets = useStore((state) => state.getQLCWidgets);
   const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
   const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
-  const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
+  const deleteQLCTrigger = useStore((state) => state.deleteQLCTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
   const toggleQLCTrigger = useStore((state) => state.toggleQLCTrigger);
 
@@ -145,7 +145,7 @@ export default function QLCTriggerTable() {
   // triggersNew.find((item: any) => item.id === params.row.id)?.activated}
 
   const deleteTriggerHandler = (paramsTemp: any) => {
-    deleteSpTrigger({
+    deleteQLCTrigger({
       data: {
         trigger_id: paramsTemp?.row?.trigger_id,
       },
