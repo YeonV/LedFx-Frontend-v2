@@ -38,7 +38,7 @@ function ConfirmationDialogRaw(props: {
   const [sliderValue, setSliderValue] = React.useState(0);
   const [formData, setformData] = React.useState({
     event_type: null,
-    event_filter: { scene_name: null },
+    event_filter: { scene_activated: null },
     qlc_payload: null,
   });
   const [qlcData, setqlcData] = React.useState([]);
@@ -53,12 +53,12 @@ function ConfirmationDialogRaw(props: {
   const SceneSet =
     qlcInfo &&
     qlcInfo.event_types &&
-    qlcInfo.event_types.scene_activated.event_filters.scene_name;
+    qlcInfo.event_types.scene_activated.event_filters.scene_activated;
   const QLCWidgets =
     qlcInfo &&
     qlcInfo.qlc_widgets &&
     qlcInfo.qlc_widgets.sort(
-      (a: string[], b: string[]) => parseInt(a[0]) - parseInt(b[0])
+      (a: string[], b: string[]) => parseInt(a[0], 10) - parseInt(b[0], 10)
     );
   // const EVENT_TYPES= qlcInfo && qlcInfo.event_types && qlcInfo.event_types
   // console.log("test3",EVENT_TYPES);
@@ -95,7 +95,18 @@ function ConfirmationDialogRaw(props: {
     console.log('QLCFormEventTest1', formData);
     const data = JSON.stringify(formData);
     console.log('QLCFormEventTest1', data);
-    dispatch(createQlcListener(props.integration.id, formData));
+
+    useEffect(() => {
+      createQlcListener({
+        type: 'createQlcListener',
+        payload: {
+          event_type: formData.event_type,
+          event_filter: formData.event_filter,
+          qlc_payload: formData.qlc_payload,
+        },
+      });
+    }, [formData]);
+
     // props.createQlcListener(props.integration.id,formData);
 
     // window.location = window.location.href;
@@ -145,7 +156,7 @@ function ConfirmationDialogRaw(props: {
       };
       console.log('test', newSwitchState);
       setformData(newSwitchState);
-    } else if (event.target.name === 'scene_name') {
+    } else if (event.target.name === 'scene_activated') {
       value = JSON.parse(value);
       const newFormState = {
         ...formData,
@@ -176,7 +187,7 @@ function ConfirmationDialogRaw(props: {
   };
 
   const handleTypeChange = (event: {
-    target: { value: string | string[] | React.SetStateAction<null>[] };
+    target: { value: string | string[] | undefined };
   }) => {
     event.target.value.includes('Button')
       ? setButtonType(true)
@@ -339,8 +350,8 @@ function ConfirmationDialogRaw(props: {
           </InputLabel>
           <Select
             id="grouped-select"
-            defaultValue={formData.event_filter.scene_name}
-            name="scene_name"
+            defaultValue={formData.event_filter.scene_activated}
+            name="scene_activated"
             onChange={handleEventChange}
           >
             <MenuItem value="">
@@ -352,17 +363,17 @@ function ConfirmationDialogRaw(props: {
               SceneSet.map(
                 (
                   val:
-                  | string
-                  | number
-                  | boolean
-                  | React.ReactElement<
-                        any,
+                    | string
+                    | number
+                    | boolean
+                    | React.ReactElement<
+                  any,
                         string | React.JSXElementConstructor<any>
-                  >
-                  | React.ReactFragment
-                  | React.ReactPortal
-                  | null
-                  | undefined,
+                      >
+                    | React.ReactFragment
+                    | React.ReactPortal
+                    | null
+                    | undefined,
                   idx: React.Key | null | undefined
                 ) => (
                   <MenuItem
