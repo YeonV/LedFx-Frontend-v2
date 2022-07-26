@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.0-beta47",
+  "version": "2.0.0-beta48",
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -84,23 +84,25 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "prebuild": "run-script-os",
-    "prebuild:win32": "set PUBLIC_URL=/",
-    "prebuild:default": "PUBLIC_URL=/",
+    "prebuild": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
+    "prebuildgh": "node -e \"let pkg=require('./package.json'); pkg.homepage='/LedFx-Frontend-v2/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "packs": "echo 'yo' && electron-builder --dir",
+    "packs": "electron-builder --dir",
     "dist": "run-script-os",
+    "predist": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "dist:win32": "react-scripts build && electron-builder --config electron-builder.json -w zip -w portable -w nsis",
     "dist:default": "react-scripts build && electron-builder --config electron-builder.json",
     "distcc": "run-script-os",
+    "predistcc": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "distcc:win32": "react-scripts build && electron-builder",
     "distcc:default": "react-scripts build && electron-builder",
     "distall": "run-script-os",
+    "predistall": "set PUBLIC_URL=. && node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "distall:win32": "react-scripts build && electron-builder && electron-builder --config electron-builder.json -w zip -w portable -w nsis",
     "distall:default": "react-scripts build && electron-builder && electron-builder --config electron-builder.json",
     "dist-multi": "react-scripts build && electron-builder -mwl",
@@ -115,7 +117,8 @@
     "prebuild-storybook": "run-script-os",
     "prebuild-storybook:win32": "set PUBLIC_URL=/LedFx-Frontend-v2/docs",
     "prebuild-storybook:default": "PUBLIC_URL=/LedFx-Frontend-v2/docs",
-    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/docs build-storybook -s public"
+    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/docs build-storybook -s public",
+    "prebuild-storybookgh": "node -e \"let pkg=require('./package.json'); pkg.homepage='/LedFx-Frontend-v2/docs'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\""
   },
   "eslintConfig": {
     "extends": [
