@@ -11,7 +11,7 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 
 |  | Link |
 |---|---|
-| Demo | [![preview](https://img.shields.io/badge/Nightly-Live-blue.svg?logo=react&logoColor=white)](https://yeonv.github.io/LedFx-Frontend-v2) [![preview](https://img.shields.io/badge/Beta-Live-blue.svg?logo=react&logoColor=white)](https://my.ledfx.app)|
+| Demo | [![preview](https://img.shields.io/badge/Nightly-Live-blue.svg?logo=react&logoColor=white)](https://yeonv.github.io/LedFx-Frontend-v2/#/LedFx-Frontend-v2) [![preview](https://img.shields.io/badge/Beta-Live-blue.svg?logo=react&logoColor=white)](https://my.ledfx.app)|
 | Developer Docs | [![docs](https://img.shields.io/badge/Storybook-Live-blue.svg?logo=storybook&logoColor=white)](https://yeonv.github.io/LedFx-Frontend-v2/docs) |
 | Downloads | [![docs](https://img.shields.io/github/downloads/YeonV/LedFx-Frontend-v2/total?label=Downloads&color=blue&logo=data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMTEuMiAwYS44LjggMCAwIDAtLjguOHYxMS40TDcuMjYgOS40NGEuODAzLjgwMyAwIDAgMC0xLjEzLjA3NGwtMS4wNSAxLjJhLjguOCAwIDAgMCAuMDczIDEuMTNsNi4zMyA1LjU0YS43OTUuNzk1IDAgMCAwIDEuMDUgMGw2LjMyLTUuNTRhLjguOCAwIDAgMCAuMDc0LTEuMTNsLTEuMDUtMS4yYS44MDQuODA0IDAgMCAwLTEuMTMtLjA3NGwtMy4xNCAyLjc2Vi44YS44LjggMCAwIDAtLjgtLjh6bS04IDIwLjhhLjguOCAwIDAgMC0uOC44djEuNmEuOC44IDAgMCAwIC44LjhoMTcuNmEuOC44IDAgMCAwIC44LS44di0xLjZhLjguOCAwIDAgMC0uOC0uOHoiPjwvcGF0aD48L3N2Zz4=)](https://my.ledfx.app/downloads) |
 
