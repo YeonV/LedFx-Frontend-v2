@@ -55,7 +55,7 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
 export default function SpotifyTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
-  const scenes = useStore((state) => state.scenes);
+  // const scenes = useStore((state) => state.scenes);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
@@ -166,11 +166,12 @@ export default function SpotifyTriggerTable() {
               console.log(e);
             }}
           >
-            {scenes?.map((scene: any) => (
+            <MenuItem value="sceneId" />
+            {/* {scenes?.map((scene: any) => (
               <MenuItem key={scene.id} value={scene.id}>
                 {scene.name}
               </MenuItem>
-            ))}
+            ))} */}
           </Select>
         </FormControl>
       ),
