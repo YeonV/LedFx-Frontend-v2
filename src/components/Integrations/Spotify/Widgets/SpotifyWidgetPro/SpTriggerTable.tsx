@@ -7,6 +7,9 @@ import { IconButton } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 import { NotStarted } from '@mui/icons-material';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
@@ -52,6 +55,7 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
 export default function SpotifyTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
+  const scenes = useStore((state) => state.scenes);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
@@ -152,6 +156,24 @@ export default function SpotifyTriggerTable() {
       width: 120,
       headerAlign: 'center',
       align: 'center',
+      renderCell: () => (
+        <FormControl fullWidth disabled>
+          <Select
+            labelId="scene-select-label"
+            value="{sceneId}"
+            label="Scene"
+            onChange={(e: SelectChangeEvent) => {
+              console.log(e);
+            }}
+          >
+            {scenes?.map((scene: any) => (
+              <MenuItem key={scene.id} value={scene.id}>
+                {scene.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ),
     },
     {
       field: 'actions',
