@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Dispatch Build
         run: |
-          curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build.yaml/dispatches --data '{"ref": "ref"}'
+          curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build-ledfx.yml/dispatches --data '{"ref": "ref"}'
 
       - name: Checkout code
         uses: actions/checkout@v2
