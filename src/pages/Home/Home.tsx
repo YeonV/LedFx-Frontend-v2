@@ -50,6 +50,7 @@ export default function Home() {
         setScanning(-1);
       });
   };
+
   return Object.keys(devices).length > 0 && viewMode !== 'user' ? (
     <Dashboard />
   ) : (
