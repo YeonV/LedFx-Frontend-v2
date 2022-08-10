@@ -41,6 +41,7 @@ const storeUI = (set: any) => ({
     smartBar: {
       open: false,
     },
+    bottomBar: [] as any,
   },
   setLeftBarOpen: (open: boolean): void =>
     set(
@@ -49,6 +50,20 @@ const storeUI = (set: any) => ({
       }),
       false,
       'ui/setLeftBarOpen'
+    ),
+  setBottomBarOpen: (page: string): void =>
+    set(
+      produce((state: any) => {
+        if (state.ui.bars.bottomBar.indexOf(page) === -1) {
+          state.ui.bars.bottomBar = [...state.ui.bars.bottomBar, page];
+        } else {
+          state.ui.bars.bottomBar = state.ui.bars.bottomBar.filter(
+            (p: any) => p !== page
+          );
+        }
+      }),
+      false,
+      'ui/setBottomBarOpen'
     ),
   setSmartBarOpen: (open: boolean): void =>
     set(
