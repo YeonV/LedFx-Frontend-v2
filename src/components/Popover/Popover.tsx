@@ -5,7 +5,9 @@ import {
   MenuItem,
   ListItemIcon,
   Popover as PopoverOriginal,
+  useTheme,
 } from '@material-ui/core';
+import { Fab } from '@mui/material';
 import { Delete, Close, Check } from '@material-ui/icons';
 import { useLongPress } from 'use-long-press';
 import { PopoverProps, PopoverDefaults } from './Popover.interface';
@@ -41,6 +43,7 @@ const Popover = ({
   type = 'button',
 }: PopoverProps): ReactElement<any, any> => {
   const classes = useStyles();
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const openPopover = (event: any) => {
     // eslint-disable-next-line
@@ -60,7 +63,7 @@ const Popover = ({
   const id = open ? 'simple-popover' : undefined;
 
   return (
-    <div style={{ display: 'initial', ...wrapperStyle }}>
+    <div style={{ display: 'initial', margin: 0, ...wrapperStyle }}>
       {type === 'menuItem' ? (
         <MenuItem
           className={className}
@@ -74,22 +77,42 @@ const Popover = ({
           {label}
         </MenuItem>
       ) : openOnLongPress ? (
-        <Button
-          aria-describedby={id}
-          variant={variant}
-          color={color}
-          size={size}
-          className={className}
-          style={style}
-          startIcon={!noIcon && startIcon}
-          disabled={disabled}
-          // eslint-disable-next-line
-              {...longPress}
-        >
-          {label}
-          {!startIcon && !noIcon && icon}
-        </Button>
-      ) : (
+        type === 'button' ? (
+          <Button
+            aria-describedby={id}
+            variant={variant}
+            color={color}
+            size={size}
+            className={className}
+            style={style}
+            startIcon={!noIcon && startIcon}
+            disabled={disabled}
+            // eslint-disable-next-line
+                {...longPress}
+          >
+            {label}
+            {!startIcon && !noIcon && icon}
+          </Button>
+        ) : (
+          <Fab
+            aria-label="clear-data"
+            {...longPress}
+            disabled={disabled}
+            style={{
+              margin: '8px',
+              ...style,
+            }}
+            sx={{
+              bgcolor: theme.palette.primary.main,
+              '&:hover': {
+                bgcolor: theme.palette.primary.light,
+              },
+            }}
+          >
+            {!startIcon && !noIcon && icon}
+          </Fab>
+        )
+      ) : type === 'button' ? (
         <Button
           aria-describedby={id}
           variant={variant}
@@ -113,6 +136,32 @@ const Popover = ({
           {label}
           {!startIcon && !noIcon && icon}
         </Button>
+      ) : (
+        <Fab
+          aria-label="clear-data"
+          onClick={(e) => {
+            e.preventDefault();
+            if (!openOnDoubleClick) openPopover(e);
+            if (onSingleClick) onSingleClick(e);
+          }}
+          onDoubleClick={(e) => {
+            e.preventDefault();
+            if (openOnDoubleClick) openPopover(e);
+            if (onDoubleClick) onDoubleClick(e);
+          }}
+          disabled={disabled}
+          style={{
+            margin: '8px',
+          }}
+          sx={{
+            bgcolor: theme.palette.primary.main,
+            '&:hover': {
+              bgcolor: theme.palette.primary.light,
+            },
+          }}
+        >
+          {!startIcon && !noIcon && icon}
+        </Fab>
       )}
       <PopoverOriginal
         id={id}
