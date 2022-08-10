@@ -1,0 +1,93 @@
+on:
+  push:
+    branches: [main]
+name: Create LedFx-Frontend Releases
+
+jobs:
+  build:
+    name: Build & Release
+    if: "startsWith(github.event.head_commit.message, 'R:')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get commit-messages
+        id: get_messages
+        run: |
+          git log --pretty=format:"+ %s" $(git describe --tags --abbrev=0 @^)..@ >> /tmp/messages.txt
+          cp /tmp/messages.txt .messages.md
+          cat /tmp/messages.txt
+          echo 'MESSAGES<<EOF' >> $GITHUB_ENV
+          printf '%b\n' "$(cat /tmp/messages.txt)" >> $GITHUB_ENV
+          echo EOF >> $GITHUB_ENV
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+      # - name: Dispatch Build
+      # run: |
+      #   curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build-ledfx.yml/dispatches --data '{"fversion": "${{ steps.package-version.outputs.current-version}}"}'
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Node Modules
+        run: yarn
+
+      - name: Build project
+        env:
+          release_version: ${{ steps.package-version.outputs.current-version}}
+          REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
+        run: yarn build
+      - name: Preparing Archive
+        run: |
+          mv build ledfx_frontend_v2
+          printf "${{ env.MESSAGES }}" >> ledfx_frontend_v2/messages.md
+      - name: Create Archive
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'ledfx_frontend_v2.zip'
+          path: 'ledfx_frontend_v2'
+          exclusions: '*.git* /*node_modules/* .editorconfig'
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # tag_name: ${{ github.ref }}
+          # release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.package-version.outputs.current-version}}
+          release_name: Release ${{ steps.package-version.outputs.current-version}}
+          body: |
+            ${{ env.MESSAGES }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./ledfx_frontend_v2.zip
+          asset_name: ledfx_frontend_v2.zip
+          asset_content_type: application/zip
+      - name: Prepare Trigger
+        id: get-id
+        run: |
+          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d- -f2)
+          echo "::set-output name=id::$id"
+      - name: Trigger Build
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Build LedFx Releases
+          repo: YeonV/LedFx-Builds
+          token: ${{ secrets.FRONTEND_TOKEN }}
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release_url": "${{ steps.create_release.outputs.upload_url }}" }'
