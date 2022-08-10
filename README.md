@@ -49,6 +49,12 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 <details>
 <summary>Screens</summary>
 
+![image](https://cdn.discordapp.com/attachments/785654321055531078/934146508444536862/transitions.gif)
+
+![image](https://user-images.githubusercontent.com/28861537/181129592-f9abc006-053d-4f67-ab93-deae8281eaa5.png)
+![image](https://user-images.githubusercontent.com/28861537/181129566-1937eb13-f4ff-462f-8798-52dc1b7c50af.png)
+
+
 ![image](https://user-images.githubusercontent.com/28861537/121426192-96998e80-c973-11eb-8d0e-b5c615ce018b.png)
 ![image](https://user-images.githubusercontent.com/28861537/121426226-a0bb8d00-c973-11eb-80b5-2e5aead112c0.png)
 
