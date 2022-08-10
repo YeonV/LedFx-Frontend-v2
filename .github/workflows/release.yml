@@ -79,10 +79,14 @@ jobs:
           asset_path: ./ledfx_frontend_v2.zip
           asset_name: ledfx_frontend_v2.zip
           asset_content_type: application/zip
+      - id: get-id
+        run: |
+          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d- -f2)
+          echo "::set-output name=id::$id"
       - name: Trigger Build
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Build LedFx
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.package-version.outputs.current-version}}" }'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
