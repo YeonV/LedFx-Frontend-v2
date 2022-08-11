@@ -90,4 +90,4 @@ jobs:
           workflow: Build LedFx Releases
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release_url": "${{ steps.create_release.outputs.upload_url }}" }'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "upload_url": "${{ steps.create_release.outputs.upload_url }}" }'
