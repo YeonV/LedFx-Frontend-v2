@@ -32,6 +32,7 @@ jobs:
       # - name: Dispatch Build
       # run: |
       #   curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build-ledfx.yml/dispatches --data '{"fversion": "${{ steps.package-version.outputs.current-version}}"}'
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
