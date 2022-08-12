@@ -64,7 +64,7 @@ jobs:
           # tag_name: ${{ github.ref }}
           # release_name: Release ${{ github.ref }}
           tag_name: ${{ steps.package-version.outputs.current-version}}
-          release_name: Release ${{ steps.package-version.outputs.current-version}}
+          release_name: Release ${{ steps.package-version.outputs.current-version}}Z
           body: |
             ${{ env.MESSAGES }}
           draft: false
