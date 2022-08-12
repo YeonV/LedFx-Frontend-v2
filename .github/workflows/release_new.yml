@@ -28,6 +28,7 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
+
       # - name: Dispatch Build
       # run: |
       #   curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build-ledfx.yml/dispatches --data '{"fversion": "${{ steps.package-version.outputs.current-version}}"}'
