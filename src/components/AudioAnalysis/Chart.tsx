@@ -1,6 +1,5 @@
 import React from 'react';
-import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
+
 import {
   ComposedChart,
   ResponsiveContainer,
@@ -11,12 +10,13 @@ import {
   Area,
 } from 'recharts';
 
-// const moment = require('moment');
-// const momentDurationFormatSetup = require('moment-duration-format');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const momentDurationFormatSetup = require('moment-duration-format');
 
 momentDurationFormatSetup(moment);
-type MyProps = { segments: any; width: any; height: any; pitches: any };
-type MyState = { value: string };
 
 const renderLegend = (props: any) => {
   const payload = props;
@@ -37,134 +37,134 @@ const renderLegend = (props: any) => {
   );
 };
 
-export default class Chart extends React.Component<MyProps, MyState> {
-  render() {
-    const pitchClasses = [
-      'C',
-      'C#',
-      'D',
-      'D#',
-      'E',
-      'F',
-      'F#',
-      'G',
-      'G#',
-      'A',
-      'A#',
-      'B',
-    ];
-    const pitchColors = [
-      '#ff3333',
-      '#ff9933',
-      '#ffff33',
-      '#99ff33',
-      '#33ff33',
-      '#33ff99',
-      '#33ffff',
-      '#3399ff',
-      '#3333ff',
-      '#9933ff',
-      '#ff33ff',
-      '#ff3399',
-    ];
+const Chart = (props: any) => {
+  const pitchClasses = [
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
+    'A',
+    'A#',
+    'B',
+  ];
+  const pitchColors = [
+    '#ff3333',
+    '#ff9933',
+    '#ffff33',
+    '#99ff33',
+    '#33ff33',
+    '#33ff99',
+    '#33ffff',
+    '#3399ff',
+    '#3333ff',
+    '#9933ff',
+    '#ff33ff',
+    '#ff3399',
+  ];
 
-    const { segments, width, height, pitches } = this.props;
-    return (
-      <ResponsiveContainer width={width} height={height} debounce={5}>
-        <ComposedChart
-          barGap={1}
-          data={segments}
-          margin={{
-            top: 15,
-            right: 20,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <XAxis
-            dataKey="start"
-            tickFormatter={(time) => {
-              const timeStr = time.toString().split('');
-              if (timeStr.includes('.')) {
-                const sec = timeStr
-                  .slice(
-                    0,
-                    timeStr.findIndex((el: any) => el === '.')
-                  )
-                  .join('');
-                let milsec = timeStr
-                  .slice(timeStr.findIndex((el: any) => el === '.') + 1)
-                  .join('');
-                if (milsec.length === 2) {
-                  milsec = milsec.concat('0');
-                } else {
-                  milsec = milsec.concat('00');
-                }
-                const t = moment.duration.format(
-                  [
-                    moment.duration({
-                      seconds: sec,
-                      milliseconds: milsec,
-                    }),
-                  ],
-                  'm:ss.S'
-                )[0];
-                return t.substring(0, t.length - 1);
+  const { segments, width, height, pitches } = props;
+  return (
+    <ResponsiveContainer width={width} height={height} debounce={5}>
+      <ComposedChart
+        barGap={1}
+        data={segments}
+        margin={{
+          top: 15,
+          right: 20,
+          left: 0,
+          bottom: 0,
+        }}
+      >
+        <XAxis
+          dataKey="start"
+          tickFormatter={(time) => {
+            const timeStr = time.toString().split('');
+            if (timeStr.includes('.')) {
+              const sec = timeStr
+                .slice(
+                  0,
+                  timeStr.findIndex((el: any) => el === '.')
+                )
+                .join('');
+              let milsec = timeStr
+                .slice(timeStr.findIndex((el: any) => el === '.') + 1)
+                .join('');
+              if (milsec.length === 2) {
+                milsec = milsec.concat('0');
+              } else {
+                milsec = milsec.concat('00');
               }
-              return moment.duration.format(
+              const t = moment.duration.format(
                 [
                   moment.duration({
-                    seconds: time,
+                    seconds: sec,
+                    milliseconds: milsec,
                   }),
                 ],
                 'm:ss.S'
-              );
-            }}
-          />
-          <YAxis
-            tickFormatter={(value) => `${value.toFixed(0)}%`}
-            domain={[0, 100]}
-            allowDataOverflow
-          />
-          <Tooltip
-            formatter={(value: any, name: any) =>
-              value > 6 ? [`${value.toFixed(0)}%`, name] : [null, null]
+              )[0];
+              return t.substring(0, t.length - 1);
             }
-            contentStyle={{ backgroundColor: '#0f0f0f', border: 'none' }}
-            labelStyle={{ color: '#f1f1f1' }}
-            itemSorter={(item: any) => -item.value}
-          />
-          <Legend
-            align="left"
-            height={250}
-            layout="vertical"
-            content={renderLegend}
-          />
-          {pitchClasses.map((p, i) => {
-            if (pitches[p] === true) {
-              return (
-                <Area
-                  fillOpacity="1"
-                  strokeOpacity="1"
-                  name={p}
-                  stackId="1"
-                  stroke={pitchColors[i]}
-                  fill={pitchColors[i]}
-                  dataKey={(s) => s.pitches[i]}
-                />
-              );
-            }
-            return true;
-          })}
+            return moment.duration.format(
+              [
+                moment.duration({
+                  seconds: time,
+                }),
+              ],
+              'm:ss.S'
+            );
+          }}
+        />
+        <YAxis
+          tickFormatter={(value) => `${value.toFixed(0)}%`}
+          domain={[0, 100]}
+          allowDataOverflow
+        />
+        <Tooltip
+          formatter={(value: any, name: any) =>
+            value > 6 ? [`${value.toFixed(0)}%`, name] : [null, null]
+          }
+          contentStyle={{ backgroundColor: '#0f0f0f', border: 'none' }}
+          labelStyle={{ color: '#f1f1f1' }}
+          itemSorter={(item: any) => -item.value}
+        />
+        <Legend
+          align="left"
+          height={250}
+          layout="vertical"
+          content={renderLegend}
+        />
+        {pitchClasses.map((p, i) => {
+          if (pitches[p] === true) {
+            return (
+              <Area
+                fillOpacity="1"
+                strokeOpacity="1"
+                name={p}
+                stackId="1"
+                stroke={pitchColors[i]}
+                fill={pitchColors[i]}
+                dataKey={(s) => s.pitches[i]}
+              />
+            );
+          }
+          return true;
+        })}
 
-          {/* Dynamically Painted Bar Chart */}
-          {/* <Bar dataKey={segments}>
+        {/* Dynamically Painted Bar Chart */}
+        {/* <Bar dataKey={segments}>
                         {data.map((entry, index) => (
                             <Cell fill/>
                         ))}
                     </Bar> */}
-        </ComposedChart>
-      </ResponsiveContainer>
-    );
-  }
-}
+      </ComposedChart>
+    </ResponsiveContainer>
+  );
+};
+
+export default Chart;

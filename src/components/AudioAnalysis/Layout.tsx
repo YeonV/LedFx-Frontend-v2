@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Card,
   Grid,
@@ -106,6 +106,9 @@ export class Layout extends React.Component<MyProps, MyState> {
   };
 
   render() {
+    const { analysis, albumURL, name, artist, sections, segments } = this.props;
+    const { width, height, pitches } = this.state;
+
     return (
       <div className="wrapper" style={{ width: '100%' }}>
         <Grid
@@ -129,13 +132,13 @@ export class Layout extends React.Component<MyProps, MyState> {
               }}
             >
               <CardContent>
-                {Object.keys(this.props.analysis).length < 1 ? (
+                {Object.keys(analysis).length < 1 ? (
                   <Grid
                     container
                     direction="column"
                     justify="center"
                     alignItems="center"
-                    style={{ height: this.state.height, width: '95vw' }}
+                    style={{ height, width: '95vw' }}
                   >
                     <div style={{ height: 5, marginBottom: 40, width: '100%' }}>
                       <LinearProgress style={{ height: 5, width: '100%' }} />
@@ -164,7 +167,7 @@ export class Layout extends React.Component<MyProps, MyState> {
                         <Avatar
                           style={{ border: '1px solid white' }}
                           alt="album-image"
-                          src={this.props.albumURL}
+                          src={albumURL}
                           variant="rounded"
                         >
                           A
@@ -172,12 +175,12 @@ export class Layout extends React.Component<MyProps, MyState> {
                       </Grid>
                       <Grid item>
                         <Typography variant="h5" style={{ color: '#f1f1f1' }}>
-                          {this.props.name}
+                          {name}
                         </Typography>
                       </Grid>
                       <Grid item>
                         <Typography variant="h6" style={{ color: '#666' }}>
-                          {this.props.artist}
+                          {artist}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -189,16 +192,16 @@ export class Layout extends React.Component<MyProps, MyState> {
                       }}
                     >
                       <SectionChart
-                        sections={this.props.sections}
-                        segments={this.props.segments}
-                        width={this.state.width}
-                        height={this.state.height}
+                        sections={sections}
+                        segments={segments}
+                        width={width}
+                        height={height}
                       />
                       <Chart
-                        segments={this.props.segments}
-                        width={this.state.width}
-                        height={this.state.height}
-                        pitches={this.state.pitches}
+                        segments={segments}
+                        width={width}
+                        height={height}
+                        pitches={pitches}
                       />
                     </div>
                   </div>
@@ -212,7 +215,7 @@ export class Layout extends React.Component<MyProps, MyState> {
                 <CardContent>
                   <ChartSize
                     handleSizeSliderChange={this.handleSizeSliderChange}
-                    value={this.state.width}
+                    value={width}
                   />
                 </CardContent>
               </Card>
@@ -229,7 +232,7 @@ export class Layout extends React.Component<MyProps, MyState> {
                     justify="center"
                   >
                     <PitchSelect
-                      pitches={this.state.pitches}
+                      pitches={pitches}
                       handleCheck={this.handleCheck}
                     />
                   </Grid>
