@@ -1,12 +1,12 @@
 on:
   push:
     branches: [main]
-name: Create LedFx-Frontend Release
+name: Create LedFx-Frontend Releases
 
 jobs:
   build:
     name: Build & Release
-    if: "startsWith(github.event.head_commit.message, 'Release')"
+    if: "startsWith(github.event.head_commit.message, 'R:')"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -64,7 +64,7 @@ jobs:
           # tag_name: ${{ github.ref }}
           # release_name: Release ${{ github.ref }}
           tag_name: ${{ steps.package-version.outputs.current-version}}
-          release_name: Release ${{ steps.package-version.outputs.current-version}}
+          release_name: Release ${{ steps.package-version.outputs.current-version}}Z
           body: |
             ${{ env.MESSAGES }}
           draft: false
@@ -87,7 +87,7 @@ jobs:
       - name: Trigger Build
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: Build LedFx
+          workflow: Build LedFx Releases
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "upload_url": "${{ steps.create_release.outputs.upload_url }}" }'

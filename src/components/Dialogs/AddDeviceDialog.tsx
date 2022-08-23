@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-unused-expressions */
@@ -66,7 +68,7 @@ const AddDeviceDialog = () => {
   const deviceTypes = useStore((state) => state.schemas?.devices);
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const [deviceType, setDeviceType] = useState('');
-  const [model, setModel] = useState({});
+  const [model, setModel] = useState<any>({});
 
   const currentSchema = deviceType ? deviceTypes[deviceType].schema : {};
 
@@ -129,7 +131,7 @@ const AddDeviceDialog = () => {
   useEffect(() => {
     handleTypeChange(initial.type, initial.config);
   }, [initial.type]);
-
+  
   return (
     <Dialog
       open={open}
@@ -175,8 +177,18 @@ const AddDeviceDialog = () => {
         <Divider style={{ marginBottom: '1rem' }} />
         {model && (
           <BladeSchemaForm
-            schema={currentSchema}
-            model={model}
+            schema={initial.config &&
+              Object.keys(initial.config).length === 0 &&
+              initial.config.constructor === Object
+                ? currentSchema
+                : { ...currentSchema, properties: currentSchema.properties && Object.keys(currentSchema.properties).filter(p => p !== 'icon_name')
+                  .reduce((cur, key) => Object.assign(cur, { [key]: currentSchema.properties[key] }), {})
+                }}
+            model={initial.config &&
+              Object.keys(initial.config).length === 0 &&
+              initial.config.constructor === Object
+                ? model
+                : { ...Object.keys(model).filter(p => p !== 'icon_name').map(pr=> model[pr]) }}
             onModelChange={handleModelChange}
             hideToggle={!deviceType}
           />

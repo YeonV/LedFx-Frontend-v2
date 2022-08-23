@@ -49,7 +49,6 @@ const SchemaForm = ({
   onModelChange,
   type,
 }: SchemaFormProps): ReactElement<any, any> => {
-  // console.log(schema)
   const classes = useStyles();
   const [hideDesc, setHideDesc] = useState(true);
 

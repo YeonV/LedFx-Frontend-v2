@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.0-beta48",
+  "version": "2.0.0-beta50",
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -88,6 +88,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "prebuild": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
+    "postbuild": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "buildgh": "PUBLIC_URL=/LedFx-Frontend-v2/ react-scripts build",
     "prebuildgh": "node -e \"let pkg=require('./package.json'); pkg.homepage='/LedFx-Frontend-v2/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "test": "react-scripts test",
