@@ -15,7 +15,10 @@ import {
 import { BarChart, MusicNote, Speed, Wallpaper } from '@material-ui//icons';
 import { Piano } from '@mui/icons-material';
 import { Stack } from '@mui/material';
-import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
+import {
+  getTrackFeatures,
+  getTrackAnalysis,
+} from '../../../../../../utils/spotifyProxies';
 import RadarChart from './SpRadarChart';
 import useStore from '../../../../../../store/useStore';
 
@@ -36,11 +39,15 @@ export default function SpAudioFeatures() {
   const meta = playerState?.context?.metadata?.current_item?.name;
 
   useEffect(() => {
-    if (songID)
+    if (songID) {
       getTrackFeatures(songID, spotifyToken).then((res) => {
         // console.log(res);
         setSpotifyData('audioFeatures', res);
       });
+      getTrackAnalysis(songID, spotifyToken).then((data) => {
+        setSpotifyData('trackAnalysis', data);
+      });
+    }
   }, [meta]);
 
   // const audioFeatures = {
