@@ -118,6 +118,7 @@ export default function SpotifyTriggerTable() {
         });
         return true;
       });
+      console.log('Spotify triggersNew', triggersNew);
       addToSpTriggerList(triggersNew, 'create');
     }
   }, [integrations]);

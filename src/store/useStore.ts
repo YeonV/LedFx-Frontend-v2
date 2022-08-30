@@ -8,6 +8,7 @@ import storeTours from './ui/storeTours';
 import storeUI from './ui/storeUI';
 import storeDialogs from './ui/storeDialogs';
 import storeSpotify from './ui/storeSpotify';
+import storeQLC from './ui/storeQLC';
 import storeWebAudio from './ui/storeWebAudio';
 import storeYoutube from './ui/storeYoutube';
 import storeDevices from './api/storeDevices';
@@ -19,6 +20,7 @@ import storeConfig from './api/storeConfig';
 import storeActions from './api/storeActions';
 import storeColors from './api/storeColors';
 import storeSpotifyActions from './ui/storeSpotifyActions';
+import storeQLCActions from './ui/storeQLCActions';
 
 const useStore = create(
   devtools(
@@ -30,8 +32,10 @@ const useStore = create(
         (set: any) => ({
           ui: storeUI(set),
           spotify: storeSpotify(),
+          qlc: storeQLC(),
           tours: storeTours(set),
           ...storeSpotifyActions(set),
+          ...storeQLCActions(set),
           ...storeGeneral(set),
           ...storeDialogs(set),
           ...storeFeatures(set),

@@ -3,6 +3,7 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "dsznajder.es7-react-js-snippets",
-        "PKief.material-icon-theme"
+        "pkief.material-icon-theme",
+        "ms-vsliveshare.vsliveshare"
     ]
 }

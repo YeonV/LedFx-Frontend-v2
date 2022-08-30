@@ -20,6 +20,7 @@ import {
 import Popover from '../../../components/Popover/Popover';
 import useStore from '../../../store/useStore';
 import useIntegrationCardStyles from './IntegrationCard.styles';
+import QLCScreen from '../QLCplus/QLCScreen/QLCScreen';
 // import SpotifyView from '../Spotify/SpotifyAuth';
 
 const IntegrationCardQLC = ({ integration }: any) => {
@@ -124,16 +125,13 @@ const IntegrationCardQLC = ({ integration }: any) => {
             >
               <EditIcon />
             </Button>
-            <Button
+            <QLCScreen
+              icon={<AddIcon />}
               variant={variant}
-              size="small"
               color={color}
               className={classes.editButton}
-              onClick={() => console.log('coming soon...')}
               disabled={integrations[integration].status !== 1}
-            >
-              <AddIcon />
-            </Button>
+            />
           </div>
         </div>
 

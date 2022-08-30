@@ -10,6 +10,7 @@ import isElectron from 'is-electron';
 import qs from 'qs';
 import { log } from './helpers';
 import useStore from '../store/useStore';
+import getIntegrations from '../store/api/storeIntegrations';
 
 const baseURL = isElectron()
   ? 'http://localhost:8888'
@@ -132,9 +133,10 @@ export function refreshAuth() {
       });
       freshTokens.refreshToken = res.data.refreshToken;
 
-      return freshTokens;
+      return freshTokens && getIntegrations('spotify');
     })
     .catch((e) => console.log(e));
+  finishAuth();
 }
 
 export function logoutAuth() {
