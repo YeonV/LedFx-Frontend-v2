@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import React from 'react';
 import {
   ComposedChart,
@@ -68,8 +69,8 @@ const Chart = (props: any) => {
         <Bar dataKey="start" minPointSize={10}>
           {sections
             ? sections.map((entry: any, index: any) => (
-              <Cell key={`cell-${index}`} fill={pitchColors[entry.key]} />
-            ))
+                <Cell key={`cell-${index}`} fill={pitchColors[entry.key]} />
+              ))
             : null}
         </Bar>
       </ComposedChart>
