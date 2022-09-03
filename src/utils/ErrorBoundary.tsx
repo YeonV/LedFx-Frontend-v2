@@ -75,6 +75,22 @@ class ErrorBoundary extends Component<Props, State> {
             Clear Browser-Data
           </button>
           <br />
+          <button
+            type="button"
+            style={{
+              height: 40,
+              borderRadius: 10,
+              border: '1px solid #999',
+              color: '#fff',
+              backgroundColor: '#600000',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            Just refresh
+          </button>
         </div>
       );
     }
