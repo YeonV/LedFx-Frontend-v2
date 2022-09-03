@@ -64,7 +64,7 @@ export default function PresetButton({
         variant="outlined"
         color={buttonColor}
         className={className}
-        {...longPress}
+        {...longPress()}
         onContextMenu={(e) => {
           e.preventDefault();
           setAnchorEl(e.currentTarget || e.target);
