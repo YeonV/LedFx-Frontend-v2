@@ -271,7 +271,10 @@ const DeviceCard = ({
                   startIcon={<Delete />}
                   label="delete"
                   color={color}
-                  onConfirm={() => handleDeleteDevice(virtId)}
+                  onConfirm={() => {
+                    handleDeleteDevice(virtId);
+                    handleExpandClick();
+                  }}
                   className={`step-devices-three-${index}`}
                   style={{ width: '100%' }}
                 />
@@ -286,6 +289,7 @@ const DeviceCard = ({
                     onClick={(e) => {
                       e.preventDefault();
                       handleEditDevice(isDevice);
+                      handleExpandClick();
                     }}
                   >
                     Edit Device
@@ -301,6 +305,7 @@ const DeviceCard = ({
                     startIcon={<TuneIcon />}
                     type={undefined}
                     innerKey={undefined}
+                    onClick={() => handleExpandClick()}
                   />
                 )}
                 <Button
@@ -312,6 +317,7 @@ const DeviceCard = ({
                   onClick={(e) => {
                     e.preventDefault();
                     handleEditVirtual(virtId);
+                    handleExpandClick();
                   }}
                 >
                   Settings

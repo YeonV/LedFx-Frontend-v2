@@ -85,8 +85,8 @@ export default function FullScreenDialog({
           className={className}
           onClick={(e: any) => {
             e.preventDefault();
-            onClick(e);
             handleClickOpen();
+            onClick(e);
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
