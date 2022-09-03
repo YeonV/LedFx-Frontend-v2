@@ -255,6 +255,15 @@ const UICard = () => {
           />
         </div>
       )}
+      {viewMode !== 'user' && (
+        <div className={`${classes.settingsRow} step-settings-x `}>
+          <label>Dashboard (wip)</label>
+          <SettingsSwitch
+            checked={showFeatures.dashboard}
+            onChange={() => setShowFeatures('dashboard', !showFeatures.dashboard)}
+          />
+        </div>
+      )}
       {showFeatures.dev && (
         <div className={`${classes.settingsRow} step-settings-x `}>
           <label>Dev Mode</label>

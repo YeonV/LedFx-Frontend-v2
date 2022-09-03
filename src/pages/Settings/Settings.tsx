@@ -15,10 +15,12 @@ import ClientAudioCard from './ClientAudioCard';
 import { useStyles } from './SettingsComponents';
 import UICard from './UICard';
 import GeneralCard from './GeneralCard';
+import DashboardCard from './DashboardCard';
 
 const Settings = () => {
   const classes = useStyles();
   const features = useStore((state) => state.features);
+  const showFeatures = useStore((state) => state.showFeatures);
   const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
   const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
   const loc = useLocation();
@@ -96,6 +98,28 @@ const Settings = () => {
           <UICard />
         </AccordionDetails>
       </Accordion>
+
+      {showFeatures.dashboard && (
+        <Accordion
+          expanded={
+            settingsExpanded === 'all' || settingsExpanded === 'paneldb'
+          }
+          onChange={(event, isExpanded) =>
+            handleExpanded('paneldb', event, isExpanded)
+          }
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="paneldb-content"
+            id="paneldb-header"
+          >
+            <Typography>Dashboard Settings</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DashboardCard />
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       {features.wled && (
         <Accordion
