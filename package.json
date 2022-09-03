@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.0-beta50",
+  "version": "2.0.50",
   "description": "LedFx - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -201,20 +201,20 @@
     ],
     "win": {
       "icon": "build/icon.ico",
-      "artifactName": "LedFx_CC-${channel}--${os}.${ext}"
+      "artifactName": "LedFx_CC-${version}--${os}.${ext}"
     },
     "portable": {
-      "artifactName": "LedFx_CC-${channel}--${os}-portable.${ext}"
+      "artifactName": "LedFx_CC-${version}--${os}-portable.${ext}"
     },
     "nsis": {
-      "artifactName": "LedFx_CC-${channel}--${os}-setup.${ext}"
+      "artifactName": "LedFx_CC-${version}--${os}-setup.${ext}"
     },
     "linux": {
       "icon": "build/icon.png"
     },
     "mac": {
       "icon": "build/icon.png",
-      "artifactName": "LedFx_CC-${channel}--${os}-${arch}.${ext}"
+      "artifactName": "LedFx_CC-${version}--${os}-${arch}.${ext}"
     }
   }
 }
