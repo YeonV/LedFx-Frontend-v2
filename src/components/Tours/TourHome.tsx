@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, useTheme } from '@material-ui/core';
 import Tour from 'reactour';
+import { Fab } from '@mui/material';
+import { LiveHelp } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 
 const steps = [
@@ -86,21 +88,51 @@ const steps = [
   },
 ];
 
-const TourHome = ({ className }: { className: string }) => {
+const TourHome = ({
+  className,
+  variant = 'button',
+}: {
+  className?: string;
+  variant?: string;
+}) => {
+  const theme = useTheme();
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.tours.setTour);
+  const setTour = useStore((state) => state.setTour);
+
   return (
     <>
-      <Button
-        variant="outlined"
-        className={`step-zero ${className}`}
-        onClick={() => {
-          setTour('home');
-          setIsTourOpen(true);
-        }}
-      >
-        Start Tour
-      </Button>
+      {variant === 'fab' ? (
+        <Fab
+          aria-label="guided-tour"
+          className="step-zero"
+          onClick={() => {
+            setTour('home');
+            setIsTourOpen(true);
+          }}
+          style={{
+            margin: '8px',
+          }}
+          sx={{
+            bgcolor: theme.palette.primary.main,
+            '&:hover': {
+              bgcolor: theme.palette.primary.light,
+            },
+          }}
+        >
+          <LiveHelp />
+        </Fab>
+      ) : (
+        <Button
+          variant="outlined"
+          className={`step-zero ${className}`}
+          onClick={() => {
+            setTour('home');
+            setIsTourOpen(true);
+          }}
+        >
+          Start Tour
+        </Button>
+      )}
       <Tour
         steps={steps}
         accentColor="#800000"
@@ -109,6 +141,11 @@ const TourHome = ({ className }: { className: string }) => {
       />
     </>
   );
+};
+
+TourHome.defaultProps = {
+  className: '',
+  variant: 'button',
 };
 
 export default TourHome;
