@@ -40,7 +40,7 @@ export default function BarBottom() {
     (state) => state.ui.bars && state.ui.bars?.bottomBar
   );
 
-  const setBottomBarOpen = useStore((state) => state.ui.setBottomBarOpen);
+  // const setBottomBarOpen = useStore((state) => state.ui.setBottomBarOpen);
   const features = useStore((state) => state.features);
   const integrations = useStore((state) => state.integrations);
 
@@ -81,7 +81,7 @@ export default function BarBottom() {
     setValue(pathname);
   }, [pathname]);
 
-  console.log(bottomBarOpen);
+  // console.log(bottomBarOpen);
 
   return (
     <>
@@ -112,10 +112,10 @@ export default function BarBottom() {
               ? { color: theme.palette.primary.main }
               : {}
           }
-          onContextMenu={(e: any) => {
-            e.preventDefault();
-            setBottomBarOpen('Devices');
-          }}
+          // onContextMenu={(e: any) => {
+          //   e.preventDefault();
+          //   setBottomBarOpen('Devices');
+          // }}
         />
         <BottomNavigationAction
           component={Link}
@@ -128,10 +128,10 @@ export default function BarBottom() {
               ? { color: theme.palette.primary.main }
               : {}
           }
-          onContextMenu={(e: any) => {
-            e.preventDefault();
-            setBottomBarOpen('Scenes');
-          }}
+          // onContextMenu={(e: any) => {
+          //   e.preventDefault();
+          //   setBottomBarOpen('Scenes');
+          // }}
         />
         {features.integrations ? (
           <BottomNavigationAction
@@ -145,10 +145,10 @@ export default function BarBottom() {
                 ? { color: theme.palette.primary.main }
                 : {}
             }
-            onContextMenu={(e: any) => {
-              e.preventDefault();
-              setBottomBarOpen('Integrations');
-            }}
+            // onContextMenu={(e: any) => {
+            //   e.preventDefault();
+            //   setBottomBarOpen('Integrations');
+            // }}
           />
         ) : (
           <BottomNavigationAction
@@ -162,10 +162,10 @@ export default function BarBottom() {
                 ? { color: theme.palette.primary.main }
                 : {}
             }
-            onContextMenu={(e: any) => {
-              e.preventDefault();
-              setBottomBarOpen('Settings');
-            }}
+            // onContextMenu={(e: any) => {
+            //   e.preventDefault();
+            //   setBottomBarOpen('Settings');
+            // }}
           />
         )}
       </BottomNavigation>
