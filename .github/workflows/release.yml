@@ -109,7 +109,7 @@ jobs:
       - name: Prepare Trigger
         id: get-id
         run: |
-          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d- -f2)
+          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
           echo "::set-output name=id::$id"
       - name: Trigger Build
         uses: benc-uk/workflow-dispatch@v1
