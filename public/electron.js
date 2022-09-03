@@ -278,6 +278,7 @@ const ready = () => (
     wind.on('close', function(e){
       if (subpy !== null) {
         subpy.kill('SIGINT');
+        wind.webContents.send('fromMain', 'shutdown');
       }
     })
   })
@@ -315,7 +316,10 @@ if (process.platform === 'win32') {
 
 
 app.on('window-all-closed', () => {
-    app.quit();
+  if (subpy !== null) {
+    subpy.kill('SIGINT');
+  }
+  app.quit();
 });
 
 app.on('before-quit', () => {
