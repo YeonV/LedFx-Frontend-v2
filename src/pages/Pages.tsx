@@ -46,6 +46,7 @@ const Routings = ({ handleWs }: any) => {
   );
 
   useHotkeys('ctrl+alt+y', () => setSmartBarOpen(!smartBarOpen));
+  useHotkeys('ctrl+alt+z', () => setSmartBarOpen(!smartBarOpen));
 
   return (
     <>
