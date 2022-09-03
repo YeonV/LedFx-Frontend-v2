@@ -17,6 +17,7 @@ const storeFeatures = (set: any) => ({
     transitions: false,
     frequencies: false,
     go: false,
+    dashboard: false,
   },
   showFeatures: {
     dev: false,
@@ -33,6 +34,7 @@ const storeFeatures = (set: any) => ({
     transitions: false,
     frequencies: false,
     go: false,
+    dashboard: false,
   },
   setFeatures: (feat: string, use: boolean): void =>
     set(

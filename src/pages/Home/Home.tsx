@@ -27,12 +27,11 @@ const sleep = (ms: number) => {
 
 export default function Home() {
   const scanForDevices = useStore((state) => state.scanForDevices);
-  const devices = useStore((state) => state.devices);
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const [scanning, setScanning] = useState(-1);
   const invisible = useStore((state) => state.tours.home);
-  const viewMode = useStore((state) => state.viewMode);
+  const features = useStore((state) => state.features);
 
   const handleScan = () => {
     setScanning(0);
@@ -50,7 +49,7 @@ export default function Home() {
         setScanning(-1);
       });
   };
-  return Object.keys(devices).length > 0 && viewMode !== 'user' ? (
+  return features.dashboard ? (
     <Dashboard />
   ) : (
     <>
@@ -80,7 +79,7 @@ export default function Home() {
         </CardContent>
         <CardActions>
           <Badge variant="dot" color="primary" invisible={invisible}>
-            <TourHome className="step-one" />
+            <TourHome />
           </Badge>
           <Button onClick={() => handleScan()} variant="outlined">
             {scanning > -1 ? (
