@@ -48,7 +48,10 @@ const AddSceneDialog = () => {
         <ul style={{ paddingLeft: '1rem' }}>
           <li>
             iconName{' '}
-            <Link href="https://material-ui.com/components/material-icons/">
+            <Link
+              href="https://material-ui.com/components/material-icons/"
+              target="_blank"
+            >
               Find MUI icons here
             </Link>
             <Typography color="textSecondary" variant="subtitle1">
@@ -57,7 +60,7 @@ const AddSceneDialog = () => {
           </li>
           <li>
             mdi:icon-name{' '}
-            <Link href="https://materialdesignicons.com">
+            <Link href="https://materialdesignicons.com" target="_blank">
               Find Material Design icons here
             </Link>
             <Typography color="textSecondary" variant="subtitle1">
