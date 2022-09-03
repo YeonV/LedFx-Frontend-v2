@@ -19,6 +19,8 @@ export default function App() {
   const { height, width } = useWindowDimensions();
   const classes = useStyles();
   const features = useStore((state) => state.features);
+  const protoCall = useStore((state) => state.protoCall);
+  const setProtoCall = useStore((state) => state.setProtoCall);
   const setPlatform = useStore((state) => state.setPlatform);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
@@ -55,6 +57,9 @@ export default function App() {
       // eslint-disable-next-line no-console
       console.log(parameters[1]);
     }
+    if (parameters[0] === 'protocol') {
+      setProtoCall(JSON.parse(parameters[1]).commandLine.pop());
+    }
     if (parameters === 'clear-frontend') {
       deleteFrontendConfig();
     }
@@ -69,6 +74,20 @@ export default function App() {
       document.removeEventListener('YZNEW', handleWebsockets);
     };
   }, []);
+
+  useEffect(() => {
+    if (protoCall !== '') {
+      showSnackbar('info', `External call: ${protoCall}`);
+      const proto = protoCall.split('/').filter((n) => n);
+      // eslint-disable-next-line no-console
+      console.table({
+        Domain: proto[1],
+        Action: proto[2],
+        Payload: proto[3],
+      });
+      setProtoCall('');
+    }
+  }, [protoCall, showSnackbar]);
 
   return (
     <ThemeProvider theme={BladeDarkGreyTheme5}>

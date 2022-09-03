@@ -25,6 +25,15 @@ const storeGeneral = (set: any) => ({
       false,
       'general/setPlatform'
     ),
+  protoCall: '',
+  setProtoCall: (msg: string) =>
+    set(
+      produce((state: any) => {
+        state.protoCall = msg;
+      }),
+      false,
+      'general/setPlatform'
+    ),
   disconnected: false,
   setDisconnected: (dis: boolean) =>
     set(
