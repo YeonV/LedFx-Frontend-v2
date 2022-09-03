@@ -61,13 +61,6 @@ const useStyles = makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
-  backButton: {
-    position: 'absolute',
-    top: 14,
-    '@media (max-width: 599px)': {
-      top: 10,
-    },
-  },
   bladeMenu: {
     '& .MuiPaper-root': {
       backgroundColor: theme.palette.grey[900],
@@ -181,7 +174,7 @@ const TopBar = () => {
         })}
       >
         <Toolbar style={{ justifyContent: 'space-between' }}>
-          <div>
+          <div style={{ position: 'absolute', top: 8, left: 10 }}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -201,7 +194,6 @@ const TopBar = () => {
               <Button
                 variant="text"
                 color="inherit"
-                className={classes.backButton}
                 startIcon={<ChevronLeft />}
                 onClick={() => history(-1)}
               >
@@ -210,7 +202,7 @@ const TopBar = () => {
             )}
           </div>
 
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
             {pathname === '/'
               ? 'LedFx'
               : pathname.split('/').length === 3 &&
@@ -218,7 +210,9 @@ const TopBar = () => {
               ? virtuals[pathname.split('/')[2]]?.config.name
               : pathname.split('/').pop()}
           </Typography>
-          <div style={{ display: 'flex' }}>
+          <div
+            style={{ display: 'flex', position: 'absolute', top: 8, right: 10 }}
+          >
             {disconnected && (
               <Box>
                 <IconButton
