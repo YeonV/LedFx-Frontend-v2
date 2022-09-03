@@ -130,7 +130,7 @@ const steps = [
 
 const TourSettings = ({ cally }: any) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.tours.setTour);
+  const setTour = useStore((state) => state.setTour);
   const invisible = useStore((state) => state.tours.settings);
   const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
   const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);

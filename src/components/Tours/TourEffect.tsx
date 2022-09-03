@@ -19,7 +19,7 @@ const step = ({ title = 'Title', text = 'Text', number = 0 }) => ({
 
 const TourEffect = ({ schemaProperties }: any) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.tours.setTour);
+  const setTour = useStore((state) => state.setTour);
 
   const steps = schemaProperties.map((p: any, i: number) =>
     step({

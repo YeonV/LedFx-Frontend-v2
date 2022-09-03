@@ -30,7 +30,7 @@ const useStore = create(
         (set: any) => ({
           ui: storeUI(set),
           spotify: storeSpotify(),
-          tours: storeTours(set),
+          ...storeTours(set),
           ...storeSpotifyActions(set),
           ...storeGeneral(set),
           ...storeDialogs(set),
