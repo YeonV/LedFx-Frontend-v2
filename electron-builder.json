@@ -14,13 +14,41 @@
         "node_modules/",
         "package.json"
     ],
+    "protocols": [
+        {
+            "name": "LedFx",
+            "schemes": [
+                "ledfx"
+            ]
+        }
+    ],
     "mac": {
         "target": [
             "dmg",
             "zip"
         ],
-        "icon": "build/icon.png",    
-        "artifactName": "LedFx_client-${channel}--${os}-${arch}.${ext}"
+        "icon": "build/icon.png",
+        "artifactName": "LedFx_client-v${version}--${os}-${arch}.${ext}"
+    },
+    "dmg": {
+        "background": "src/assets/DMG_BG.png",
+        "contents": [
+            {
+                "x": 135,
+                "y": 165
+            },
+            {
+                "x": 407,
+                "y": 165,
+                "type": "link",
+                "path": "/Applications"
+            }
+        ],
+        "iconSize": 120,
+        "iconTextSize": 14,
+        "window": {
+            "height": 380
+        }
     },
     "win": {
         "target": [
@@ -28,18 +56,18 @@
             "zip"
         ],
         "icon": "build/icon.ico",
-        "artifactName": "LedFx_client-${channel}--${os}.${ext}"
+        "artifactName": "LedFx_client-v${version}--${os}.${ext}"
     },
     "portable": {
-      "artifactName": "LedFx_client-${channel}--${os}-portable.${ext}"
+        "artifactName": "LedFx_client-v${version}--${os}-portable.${ext}"
     },
     "nsis": {
-      "artifactName": "LedFx_client-${channel}--${os}-setup.${ext}"
+        "artifactName": "LedFx_client-v${version}--${os}-setup.${ext}"
     },
     "linux": {
         "target": [
             "AppImage"
         ],
-        "artifactName": "${productName}-${version}-${os}.${ext}"
+        "artifactName": "${productName}-v${version}-${os}.${ext}"
     }
 }

@@ -35,7 +35,7 @@ export const useStyles = makeStyles(() => ({
   },
   card: {
     maxWidth: '540px',
-    margin: '0 auto', // mobile
+    margin: '1rem auto 0', // mobile
   },
   '@media (max-width: 580px)': {
     card: {

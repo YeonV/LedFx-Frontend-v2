@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 0,
     display: 'flex',
     flexWrap: 'wrap',
-    margin: '-0.5rem',
+    marginTop: '0.5rem',
     justifyContent: 'center',
   },
   '@media (max-width: 580px)': {
