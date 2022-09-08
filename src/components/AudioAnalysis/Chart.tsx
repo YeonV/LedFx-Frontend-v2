@@ -9,10 +9,10 @@ import {
   Legend,
   Area,
 } from 'recharts';
+import { AudioAnalysisProps } from './AudioAnalysisProps';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment');
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const momentDurationFormatSetup = require('moment-duration-format');
 
@@ -37,7 +37,7 @@ const renderLegend = (props: any) => {
   );
 };
 
-const Chart = (props: any) => {
+const Chart: React.FC<AudioAnalysisProps> = (props) => {
   const pitchClasses = [
     'C',
     'C#',
@@ -68,6 +68,7 @@ const Chart = (props: any) => {
   ];
 
   const { segments, width, height, pitches } = props;
+
   return (
     <ResponsiveContainer width={width} height={height} debounce={5}>
       <ComposedChart
@@ -143,6 +144,7 @@ const Chart = (props: any) => {
           if (pitches[p] === true) {
             return (
               <Area
+                key={i}
                 fillOpacity="1"
                 strokeOpacity="1"
                 name={p}
