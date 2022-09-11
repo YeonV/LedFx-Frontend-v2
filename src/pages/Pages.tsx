@@ -46,6 +46,7 @@ const Routings = ({ handleWs }: any) => {
   );
 
   useHotkeys('ctrl+alt+y', () => setSmartBarOpen(!smartBarOpen));
+  useHotkeys('ctrl+alt+z', () => setSmartBarOpen(!smartBarOpen));
 
   return (
     <>
@@ -74,7 +75,11 @@ const Routings = ({ handleWs }: any) => {
           <Route path="*" element={<Home />} />
         </Routes>
         <NoHostDialog />
-        <SmartBar open={smartBarOpen} setOpen={(e) => setSmartBarOpen(!!e)} />
+        <SmartBar
+          open={smartBarOpen}
+          setOpen={(e) => setSmartBarOpen(!!e)}
+          direct={false}
+        />
       </main>
       <BottomBar />
     </>

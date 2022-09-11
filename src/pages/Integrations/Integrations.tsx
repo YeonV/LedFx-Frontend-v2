@@ -10,7 +10,7 @@ const useStyles = makeStyles(() => ({
   cardWrapper: {
     display: 'flex',
     flexWrap: 'wrap',
-    margin: '-0.5rem',
+    marginTop: '0.5rem',
     justifyContent: 'center',
   },
   '@media (max-width: 580px)': {

@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
 import {
   BottomNavigation,
   BottomNavigationAction,
   Backdrop,
+  useTheme,
 } from '@material-ui/core';
 import {
   Settings,
@@ -13,6 +15,7 @@ import {
 } from '@material-ui/icons';
 import { useLocation, Link } from 'react-router-dom';
 import clsx from 'clsx';
+import { Dashboard } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import AddSceneDialog from '../Dialogs/AddSceneDialog';
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog';
@@ -26,12 +29,18 @@ import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
 
 export default function BarBottom() {
   const classes = useStyles();
+  const theme = useTheme();
   const { pathname } = useLocation();
   const [value, setValue] = useState(pathname);
   const [backdrop, setBackdrop] = useState(false);
   const leftOpen = useStore(
     (state) => state.ui.bars && state.ui.bars?.leftBar.open
   );
+  const bottomBarOpen = useStore(
+    (state) => state.ui.bars && state.ui.bars?.bottomBar
+  );
+
+  // const setBottomBarOpen = useStore((state) => state.ui.setBottomBarOpen);
   const features = useStore((state) => state.features);
   const integrations = useStore((state) => state.integrations);
 
@@ -72,6 +81,8 @@ export default function BarBottom() {
     setValue(pathname);
   }, [pathname]);
 
+  // console.log(bottomBarOpen);
+
   return (
     <>
       <BottomNavigation
@@ -85,10 +96,10 @@ export default function BarBottom() {
         <BottomNavigationAction
           component={Link}
           className="step-one"
-          label="Home"
+          label={features.dashboard ? 'Dashboard' : 'Home'}
           value="/"
           to="/"
-          icon={<Home />}
+          icon={features.dashboard ? <Dashboard /> : <Home />}
         />
         <BottomNavigationAction
           label="Devices"
@@ -96,6 +107,15 @@ export default function BarBottom() {
           component={Link}
           to="/Devices"
           icon={<SettingsInputComponent />}
+          style={
+            bottomBarOpen.indexOf('Devices') > -1
+              ? { color: theme.palette.primary.main }
+              : {}
+          }
+          // onContextMenu={(e: any) => {
+          //   e.preventDefault();
+          //   setBottomBarOpen('Devices');
+          // }}
         />
         <BottomNavigationAction
           component={Link}
@@ -103,6 +123,15 @@ export default function BarBottom() {
           label="Scenes"
           value="/Scenes"
           icon={<Wallpaper />}
+          style={
+            bottomBarOpen.indexOf('Scenes') > -1
+              ? { color: theme.palette.primary.main }
+              : {}
+          }
+          // onContextMenu={(e: any) => {
+          //   e.preventDefault();
+          //   setBottomBarOpen('Scenes');
+          // }}
         />
         {features.integrations ? (
           <BottomNavigationAction
@@ -111,6 +140,15 @@ export default function BarBottom() {
             component={Link}
             to="/Integrations"
             icon={<SettingsInputSvideo />}
+            style={
+              bottomBarOpen.indexOf('Integrations') > -1
+                ? { color: theme.palette.primary.main }
+                : {}
+            }
+            // onContextMenu={(e: any) => {
+            //   e.preventDefault();
+            //   setBottomBarOpen('Integrations');
+            // }}
           />
         ) : (
           <BottomNavigationAction
@@ -119,6 +157,15 @@ export default function BarBottom() {
             icon={<Settings />}
             component={Link}
             to="/Settings"
+            style={
+              bottomBarOpen.indexOf('Settings') > -1
+                ? { color: theme.palette.primary.main }
+                : {}
+            }
+            // onContextMenu={(e: any) => {
+            //   e.preventDefault();
+            //   setBottomBarOpen('Settings');
+            // }}
           />
         )}
       </BottomNavigation>

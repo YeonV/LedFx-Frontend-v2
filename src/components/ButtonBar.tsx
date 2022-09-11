@@ -30,7 +30,7 @@ const ButtonBar = () => {
       <IconButton
         aria-label="Discord"
         color="inherit"
-        href="https://discord.gg/tFSKgTzRcj"
+        href="https://discord.gg/EZf8pAZ4"
         target="_blank"
         title="Discord"
       >

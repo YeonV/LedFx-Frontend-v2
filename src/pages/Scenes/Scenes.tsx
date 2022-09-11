@@ -24,7 +24,7 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 
 const useStyles = makeStyles({
   root: {
-    width: 'min(95vw, 345px)',
+    width: 'min(92vw, 345px)',
   },
   sceneTitle: {
     fontSize: '1.5rem',
@@ -152,7 +152,12 @@ const Scenes = () => {
     getScenes();
   }, [getScenes]);
   return (
-    <Grid container spacing={2} justifyContent="center">
+    <Grid
+      container
+      spacing={2}
+      justifyContent="center"
+      style={{ maxWidth: '100%', marginTop: '0.5rem' }}
+    >
       {scenes && Object.keys(scenes).length ? (
         Object.keys(scenes).map((s, i) => (
           <Grid item key={i}>
