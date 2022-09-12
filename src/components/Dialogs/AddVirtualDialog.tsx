@@ -40,7 +40,7 @@ const AddVirtualDialog = () => {
 
   const virtualsSchemas = useStore((state) => state.schemas?.virtuals);
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
-  const [model, setModel] = useState({});
+  const [model, setModel] = useState<any>({});
 
   const currentSchema = (virtualsSchemas && virtualsSchemas.schema) || {};
 
@@ -131,7 +131,13 @@ const AddVirtualDialog = () => {
 
         <BladeSchemaForm
           schema={currentSchema}
-          model={model}
+          model={
+            initial.config &&
+            Object.keys(initial.config).length === 0 &&
+            initial.config.constructor === Object
+              ? model
+              : { ...model, ...initial.config }
+          }
           onModelChange={handleModelChange}
         />
       </DialogContent>

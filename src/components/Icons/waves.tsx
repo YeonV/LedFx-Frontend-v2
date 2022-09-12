@@ -17,7 +17,7 @@ const WaveLines = ({
         background: backgroundColor,
         display: 'block',
         zIndex: -1,
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         opacity: 0.7,
       }}
@@ -28,7 +28,7 @@ const WaveLines = ({
     >
       <g
         transform={`translate(${width / 2},${
-          height / 2
+          height / (width <= 480 ? 1 : 2)
         }) scale(1,-1) translate(-${width / 2},-${height / 2})`}
       >
         <linearGradient id="wavelines" x1="0" x2="1" y1="0" y2="0">
