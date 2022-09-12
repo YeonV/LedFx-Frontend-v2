@@ -196,7 +196,7 @@ export default function QLCTriggerTable() {
             onChange={() => {
               console.log('params.row.enabled', params);
               toggleQLCTrigger('qlc', {
-                enabled: !params.row.enabled,
+                enabled: params.row.enabled,
               });
             }}
           />
