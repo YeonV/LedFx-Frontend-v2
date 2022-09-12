@@ -1,5 +1,5 @@
 export interface AudioAnalysisProps {
-  segments: any;
+  analysis: any,
   width: number;
   height: number;
   pitches: any;

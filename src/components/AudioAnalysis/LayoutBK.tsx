@@ -198,7 +198,7 @@ export class Layout extends React.Component<MyProps, MyState> {
                         height={height}
                       />
                       <Chart
-                        segments={segments}
+                        analysis={segments}
                         width={width}
                         height={height}
                         pitches={pitches}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   Grid,
@@ -14,6 +14,7 @@ import ChartSize from './ChartSize';
 import ChordButtons from './ChordButtons';
 import PitchSelect from './PitchSelect';
 import useStore from '../../store/useStore';
+import { fixAnalysis } from '../../utils/spotifyProxies';
 
 export default function Layout() {
   const analysis = useStore(
@@ -46,6 +47,12 @@ export default function Layout() {
     'A#': true,
     B: true,
   });
+  const [newAnalysis, setNewAnalysis] = useState({});
+
+  useEffect(() => {
+    const newData = fixAnalysis(analysis);
+    setNewAnalysis(newData);
+  }, [analysis]);
 
   const handleSizeSliderChange = (event: any, newValue: any) => {
     setWidth(newValue);
@@ -91,6 +98,7 @@ export default function Layout() {
   };
 
   const { segments, sections } = analysis;
+  console.log({ analysis });
 
   return (
     <div className="wrapper" style={{ width: '100%' }}>
@@ -183,7 +191,7 @@ export default function Layout() {
                       height={height}
                     />
                     <Chart
-                      segments={segments}
+                      analysis={newAnalysis}
                       width={width}
                       height={height}
                       pitches={pitches}

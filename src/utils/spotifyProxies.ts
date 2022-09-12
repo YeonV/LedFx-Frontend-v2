@@ -330,9 +330,9 @@ export function fixAnalysis(audioAnalysis: any) {
       new_segment.start = parseFloat(segment.start.toFixed(2));
       new_segment.pitches = [];
       let pitchTotal = 0;
-      console.log(segment.pitches);
+      // console.log(segment.pitches);
       segment.pitches.forEach((pitch: number) => {
-        console.log(pitch);
+        // console.log(pitch);
         pitchTotal += pitch;
       });
       segment.pitches.forEach((pitch: number) => {

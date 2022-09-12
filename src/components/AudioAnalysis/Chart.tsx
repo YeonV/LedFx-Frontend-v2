@@ -67,13 +67,13 @@ const Chart: React.FC<AudioAnalysisProps> = (props) => {
     '#ff3399',
   ];
 
-  const { segments, width, height, pitches } = props;
+  const { analysis, width, height, pitches } = props;
 
   return (
     <ResponsiveContainer width={width} height={height} debounce={5}>
       <ComposedChart
         barGap={1}
-        data={segments}
+        data={analysis?.segments}
         margin={{
           top: 15,
           right: 20,
