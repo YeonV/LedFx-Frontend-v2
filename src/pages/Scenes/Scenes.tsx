@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid,
   Card,
   CardActionArea,
   CardActions,
@@ -17,6 +16,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
+import { Grid } from '@mui/material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
@@ -154,13 +154,14 @@ const Scenes = () => {
   return (
     <Grid
       container
-      spacing={2}
+      spacing={[0, 0, 2, 2, 2]}
       justifyContent="center"
-      style={{ maxWidth: '100%', marginTop: '0.5rem' }}
+      m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
+      sx={{ maxWidth: '100%' }}
     >
       {scenes && Object.keys(scenes).length ? (
         Object.keys(scenes).map((s, i) => (
-          <Grid item key={i}>
+          <Grid item key={i} mt={['0.5rem', '0.5rem', 0, 0, 0]}>
             <Card className={classes.root}>
               <CardActionArea
                 style={{ background: '#090909' }}

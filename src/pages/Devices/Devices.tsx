@@ -20,6 +20,11 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'center',
     },
   },
+  '@media (max-width: 410px)': {
+    cardWrapper: {
+      padding: 0,
+    },
+  },
 }));
 
 const Devices = () => {

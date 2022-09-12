@@ -70,6 +70,7 @@ export default function FullScreenDialog({
       );
     } else {
       setOpen(false);
+      onClick();
     }
   };
 
@@ -86,7 +87,6 @@ export default function FullScreenDialog({
           onClick={(e: any) => {
             e.preventDefault();
             handleClickOpen();
-            onClick(e);
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
@@ -97,8 +97,8 @@ export default function FullScreenDialog({
           variant={variant}
           startIcon={startIcon}
           color={color}
-          onClick={(e) => {
-            onClick(e);
+          onClick={() => {
+            // onClick(e);
             handleClickOpen();
           }}
           size="small"
