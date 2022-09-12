@@ -51,7 +51,7 @@ export default function QLCTriggerTable() {
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const getQLCWidgets = useStore((state) => state.getQLCWidgets);
-  const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
+  // const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
   const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
   const deleteQLCTrigger = useStore((state) => state.deleteQLCTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
@@ -60,7 +60,7 @@ export default function QLCTriggerTable() {
   useEffect(() => {
     getQLCWidgets();
   }, []);
-  console.log('getQLCWidgets', qlcInfo);
+  // console.log('getQLCWidgets', qlcInfo);
 
   // Here we get the current triggers from list and set to global state
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function QLCTriggerTable() {
         const qlc_widgetType = temp1[3];
         const qlc_name = temp1[3];
         const qlc_value = temp1[3];
-        console.log('test', temp1);
+        // console.log('test', temp1);
         if (temp1.constructor === Array) {
           triggersNew.push({
             id,
@@ -113,7 +113,7 @@ export default function QLCTriggerTable() {
         return triggersNew;
       });
       addToQLCTriggerList(triggersNew, 'create');
-      console.log('QLC triggersNew', triggersNew);
+      // console.log('QLC triggersNew', triggersNew);
     }
   }, [integrations]);
 
@@ -194,16 +194,17 @@ export default function QLCTriggerTable() {
             color="primary"
             aria-label="Enable/Disable Trigger"
             onChange={() => {
-              console.log('params.row.enabled', params);
+              // console.log('params.row.enabled', params);
               toggleQLCTrigger('qlc', {
-                enabled: params.row.enabled,
+                enabled: !params.row.enabled,
               });
             }}
           />
           <IconButton
             aria-label="Edit"
             color="inherit"
-            onClick={() => console.log('coming soon...')}
+            // eslint-disable-next-line no-console
+            onClick={() => console.error('coming soon...')}
           >
             <Edit fontSize="inherit" />
           </IconButton>

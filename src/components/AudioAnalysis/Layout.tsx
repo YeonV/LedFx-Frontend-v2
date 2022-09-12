@@ -98,7 +98,7 @@ export default function Layout() {
   };
 
   const { segments, sections } = analysis;
-  console.log({ analysis });
+  // console.log({ analysis });
 
   return (
     <div className="wrapper" style={{ width: '100%' }}>
