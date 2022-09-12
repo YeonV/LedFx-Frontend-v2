@@ -33,7 +33,7 @@ const useStore = create(
           ui: storeUI(set),
           spotify: storeSpotify(),
           qlc: storeQLC(),
-          tours: storeTours(set),
+          ...storeTours(set),
           ...storeSpotifyActions(set),
           ...storeQLCActions(set),
           ...storeGeneral(set),
