@@ -15,6 +15,9 @@ const useStyle = makeStyles((theme) => ({
     background: theme.palette.background.paper,
     borderColor: 'transparent',
     textDecoration: 'none',
+    '@media (max-width: 410px)': {
+      margin: '0.25rem 0',
+    },
   },
   virtualCardPortrait: {
     padding: '1rem 0.7rem 0.7rem 0.7rem',
@@ -88,6 +91,11 @@ const useStyle = makeStyles((theme) => ({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+
+  virtualSubline: {
+    padding: '0 0.5rem',
+  },
+
   iconMedia: {
     height: 140,
     display: 'flex',

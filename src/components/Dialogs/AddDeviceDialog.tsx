@@ -128,6 +128,10 @@ const AddDeviceDialog = () => {
     setModel({ ...model, ...config });
   };
 
+  function filterObject(obj: any, callback: any) {
+    return Object.fromEntries(Object.entries(obj).
+      filter(([key, val]) => callback(key, val)));
+  }
   useEffect(() => {
     handleTypeChange(initial.type, initial.config);
   }, [initial.type]);
@@ -181,14 +185,14 @@ const AddDeviceDialog = () => {
               Object.keys(initial.config).length === 0 &&
               initial.config.constructor === Object
                 ? currentSchema
-                : { ...currentSchema, properties: currentSchema.properties && Object.keys(currentSchema.properties).filter(p => p !== 'icon_name')
+                : { ...currentSchema, properties: currentSchema.properties && Object.keys(currentSchema.properties).filter(p => p !== 'icon_name' && p !== 'name')
                   .reduce((cur, key) => Object.assign(cur, { [key]: currentSchema.properties[key] }), {})
                 }}
             model={initial.config &&
               Object.keys(initial.config).length === 0 &&
               initial.config.constructor === Object
                 ? model
-                : { ...Object.keys(model).filter(p => p !== 'icon_name').map(pr=> model[pr]) }}
+                : filterObject(model, (p:string,_v: any) => p !== 'icon_name' && p !== 'name')}
             onModelChange={handleModelChange}
             hideToggle={!deviceType}
           />

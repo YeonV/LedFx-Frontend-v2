@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -105,8 +106,8 @@ const Dashboard = () => {
 
   return (
     <div className="Content">
-      <Stack spacing={2} alignItems="center">
-        <Stack spacing={2} direction="row">
+      <Stack spacing={[0, 0, 2, 2, 2]} alignItems="center">
+        <Stack spacing={2} direction="row" className="hideTablet">
           <Gauge
             value={pixelTotal > 0 ? 100 : 0}
             unit="Pixels"
@@ -129,15 +130,23 @@ const Dashboard = () => {
           />
           <Gauge
             unit="User Presets"
-            total={Object.values(config.user_presets)
-              .map((e: any) => Object.keys(e).length)
-              .reduce((a: number, b: number) => a + b)}
-            current={Object.values(config.user_presets)
-              .map((e: any) => Object.keys(e).length)
-              .reduce((a: number, b: number) => a + b)}
+            total={
+              Object.values(config.user_presets).length
+                ? Object.values(config.user_presets)
+                    .map((e: any) => Object.keys(e).length)
+                    .reduce((a: number, b: number) => a + b)
+                : 0
+            }
+            current={
+              Object.values(config.user_presets).length
+                ? Object.values(config.user_presets)
+                    .map((e: any) => Object.keys(e).length)
+                    .reduce((a: number, b: number) => a + b)
+                : 0
+            }
           />
         </Stack>
-        <Stack spacing={2} direction="row">
+        <Stack spacing={2} direction="row" className="hideTablet">
           <Gauge
             unit="Pixels online"
             total={pixelTotal}
