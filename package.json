@@ -204,20 +204,20 @@
     ],
     "win": {
       "icon": "build/icon.ico",
-      "artifactName": "LedFx_CC-${version}--${os}.${ext}"
+      "artifactName": "LedFx_CC-v${version}--${os}.${ext}"
     },
     "portable": {
-      "artifactName": "LedFx_CC-${version}--${os}-portable.${ext}"
+      "artifactName": "LedFx_CC-v${version}--${os}-portable.${ext}"
     },
     "nsis": {
-      "artifactName": "LedFx_CC-${version}--${os}-setup.${ext}"
+      "artifactName": "LedFx_CC-v${version}--${os}-setup.${ext}"
     },
     "linux": {
       "icon": "build/icon.png"
     },
     "mac": {
       "icon": "build/icon.png",
-      "artifactName": "LedFx_CC-${version}--${os}-${arch}.${ext}"
+      "artifactName": "LedFx_CC-v${version}--${os}-${arch}.${ext}"
     }
   }
 }

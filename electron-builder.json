@@ -31,7 +31,7 @@
         "artifactName": "LedFx_client-v${version}--${os}-${arch}.${ext}"
     },
     "dmg": {
-        "background": "src/assets/DMG_BG.png",
+        "background": "src/assets/DMG_BG.jpg",
         "contents": [
             {
                 "x": 135,
