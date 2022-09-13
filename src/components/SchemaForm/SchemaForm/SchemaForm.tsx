@@ -172,8 +172,7 @@ const SchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
-                      // eslint-disable-next-line prettier/prettier
-                      variant='outlined'
+                      variant="outlined"
                       // eslint-disable-next-line
                       children={undefined}
                       hideDesc={hideDesc}
