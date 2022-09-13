@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/indent */
 import { Select, MenuItem, TextField } from '@material-ui/core/';
+import { InputAdornment } from '@mui/material';
+import { useState } from 'react';
+import BladeIcon from '../../../Icons/BladeIcon/BladeIcon';
 import BladeFrame from '../BladeFrame';
 import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props';
 
@@ -22,30 +26,69 @@ const BladeSelect = ({
   menuItemStyle = {},
   hideDesc,
   children,
-}: BladeSelectProps) => (
-  <BladeFrame
-    title={schema.title}
-    className={`step-effect-${index}`}
-    full={
-      !(
-        schema.enum &&
-        schema.enum.length &&
-        Object.values(schema.enum).every((a: any) => a?.length < 20)
-      )
-    }
-    required={required}
-    style={{
-      ...wrapperStyle,
-      flexBasis: schema.title === 'Name' ? '100%' : '49%',
-    }}
-  >
-    {variant === 'contained' ? (
-      schema.enum ? (
+}: BladeSelectProps) => {
+  const [icon, setIcon] = useState(
+    schema.id === 'icon_name'
+      ? (model && model_id && model[model_id]) ||
+          (schema.enum && schema.enum[0])
+      : ''
+  );
+  return (
+    <BladeFrame
+      title={schema.title}
+      className={`step-effect-${index}`}
+      full={
+        !(
+          schema.enum &&
+          schema.enum.length &&
+          Object.values(schema.enum).every((a: any) => a?.length < 20)
+        )
+      }
+      required={required}
+      style={{
+        ...wrapperStyle,
+        flexBasis: schema.title === 'Name' ? '100%' : '49%',
+      }}
+    >
+      {variant === 'contained' ? (
+        schema.enum ? (
+          <Select
+            variant="filled"
+            disabled={disabled}
+            style={{
+              flexGrow: 'unset',
+              ...selectStyle,
+            }}
+            disableUnderline
+            defaultValue={schema.default}
+            value={(model && model_id && model[model_id]) || schema.enum[0]}
+            onChange={(e) => onChange(model_id, e.target.value)}
+          >
+            {children ||
+              schema.enum.map((item: any, i: number) => (
+                <MenuItem key={`${i}-${i}`} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+          </Select>
+        ) : (
+          <TextField
+            helperText={!hideDesc && schema.description}
+            defaultValue={
+              (model && model_id && model[model_id]) ||
+              (schema.enum && schema.enum[0]) ||
+              schema.default ||
+              ''
+            }
+            onBlur={(e) => onChange(model_id, e.target.value)}
+            style={textStyle}
+          />
+        )
+      ) : schema.enum && Array.isArray(schema.enum) ? (
         <Select
-          variant="filled"
           disabled={disabled}
           style={{
-            flexGrow: 'unset',
+            flexGrow: variant === 'outlined' ? 1 : 'unset',
             ...selectStyle,
           }}
           disableUnderline
@@ -53,16 +96,58 @@ const BladeSelect = ({
           value={(model && model_id && model[model_id]) || schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
         >
-          {children ||
-            schema.enum.map((item: any, i: number) => (
-              <MenuItem key={`${i}-${i}`} value={item}>
-                {item}
-              </MenuItem>
-            ))}
+          {schema.enum.map((item: any, i: number) => (
+            <MenuItem key={i} value={item} style={menuItemStyle}>
+              {item}
+            </MenuItem>
+          ))}
+        </Select>
+      ) : schema.enum && !Array.isArray(schema.enum) ? (
+        <Select
+          disabled={disabled}
+          style={{
+            flexGrow: variant === 'outlined' ? 1 : 'unset',
+            ...selectStyle,
+          }}
+          disableUnderline
+          defaultValue={schema.default}
+          value={
+            (model && model_id && schema.enum[model[model_id]]) ||
+            schema.enum[0]
+          }
+          onChange={(e) =>
+            onChange(
+              model_id,
+              parseInt(
+                Object.keys(schema.enum).find(
+                  (en) => schema.enum[en] === e.target.value
+                ) || '0',
+                10
+              )
+            )
+          }
+        >
+          {Object.keys(schema.enum).map((item, i) => (
+            <MenuItem key={i} value={schema.enum[item]}>
+              {schema.enum[item]}
+            </MenuItem>
+          ))}
         </Select>
       ) : (
         <TextField
+          type={schema.description?.includes('password') ? 'password' : 'unset'}
           helperText={!hideDesc && schema.description}
+          InputProps={
+            schema.id === 'icon_name'
+              ? {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BladeIcon name={icon} style={{ color: '#eee' }} />
+                    </InputAdornment>
+                  ),
+                }
+              : {}
+          }
           defaultValue={
             (model && model_id && model[model_id]) ||
             (schema.enum && schema.enum[0]) ||
@@ -70,73 +155,15 @@ const BladeSelect = ({
             ''
           }
           onBlur={(e) => onChange(model_id, e.target.value)}
+          onChange={(e) => {
+            if (schema.id === 'icon_name') setIcon(e.target.value);
+          }}
           style={textStyle}
         />
-      )
-    ) : schema.enum && Array.isArray(schema.enum) ? (
-      <Select
-        disabled={disabled}
-        style={{
-          flexGrow: variant === 'outlined' ? 1 : 'unset',
-          ...selectStyle,
-        }}
-        disableUnderline
-        defaultValue={schema.default}
-        value={(model && model_id && model[model_id]) || schema.enum[0]}
-        onChange={(e) => onChange(model_id, e.target.value)}
-      >
-        {schema.enum.map((item: any, i: number) => (
-          <MenuItem key={i} value={item} style={menuItemStyle}>
-            {item}
-          </MenuItem>
-        ))}
-      </Select>
-    ) : schema.enum && !Array.isArray(schema.enum) ? (
-      <Select
-        disabled={disabled}
-        style={{
-          flexGrow: variant === 'outlined' ? 1 : 'unset',
-          ...selectStyle,
-        }}
-        disableUnderline
-        defaultValue={schema.default}
-        value={
-          (model && model_id && schema.enum[model[model_id]]) || schema.enum[0]
-        }
-        onChange={(e) =>
-          onChange(
-            model_id,
-            parseInt(
-              Object.keys(schema.enum).find(
-                (en) => schema.enum[en] === e.target.value
-              ) || '0',
-              10
-            )
-          )
-        }
-      >
-        {Object.keys(schema.enum).map((item, i) => (
-          <MenuItem key={i} value={schema.enum[item]}>
-            {schema.enum[item]}
-          </MenuItem>
-        ))}
-      </Select>
-    ) : (
-      <TextField
-        type={schema.description?.includes('password') ? 'password' : 'unset'}
-        helperText={!hideDesc && schema.description}
-        defaultValue={
-          (model && model_id && model[model_id]) ||
-          (schema.enum && schema.enum[0]) ||
-          schema.default ||
-          ''
-        }
-        onBlur={(e) => onChange(model_id, e.target.value)}
-        style={textStyle}
-      />
-    )}
-  </BladeFrame>
-);
+      )}
+    </BladeFrame>
+  );
+};
 
 BladeSelect.defaultProps = BladeSelectDefaultProps;
 
