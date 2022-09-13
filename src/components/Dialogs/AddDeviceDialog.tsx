@@ -111,7 +111,7 @@ const AddDeviceDialog = () => {
       });
     } else {
       // console.log("EDITING");
-      updateDevice(deviceId, { ...model }).then((res) => {
+      updateDevice(deviceId, { config: model }).then((res) => {
         if (res !== 'failed') {
           setDialogOpenAddDevice(false);
           getDevices();
