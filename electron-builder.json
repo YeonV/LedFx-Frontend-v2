@@ -68,6 +68,6 @@
         "target": [
             "AppImage"
         ],
-        "artifactName": "${productName}-v${version}-${os}.${ext}"
+        "artifactName": "LedFx_client-v${version}--${os}.${ext}"
     }
 }
