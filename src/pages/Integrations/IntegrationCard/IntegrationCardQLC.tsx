@@ -22,6 +22,7 @@ import useStore from '../../../store/useStore';
 import useIntegrationCardStyles from './IntegrationCard.styles';
 import QLCScreen from '../QLCplus/QLCScreen/QLCScreen';
 // import SpotifyView from '../Spotify/SpotifyAuth';
+// import DialogAddEventListener from '../../../components/Integrations/QLC/DialogAddEventListener';
 
 const IntegrationCardQLC = ({ integration }: any) => {
   const classes = useIntegrationCardStyles();
@@ -85,7 +86,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
       </Link>
       <CardContent>
         {integrations[integration].status === 1 ? (
-          // <DialogAddEventListener integration={integration} />
+          // <DialogAddEventListener integration={integrations[integration]} />
           <div>...</div>
         ) : (
           <Link

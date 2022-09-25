@@ -100,17 +100,11 @@ const storeQLCActions = (set: any) => ({
       );
     }
   },
-  addQLCSongTrigger: async ({
-    scene_id,
-    song_id,
-    song_name,
-    song_position,
-  }: any) => {
+  addQLCSongTrigger: async ({ event_type, event_filter, qlc_payload }: any) => {
     await Ledfx('/api/integrations/qlc/qlc', 'POST', {
-      scene_id,
-      song_id,
-      song_name,
-      song_position,
+      event_type,
+      event_filter,
+      qlc_payload,
     });
   },
   toggleQLCTrigger: (QLCId: string, config: any) =>

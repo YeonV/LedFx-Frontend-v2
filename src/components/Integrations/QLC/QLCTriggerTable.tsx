@@ -51,7 +51,7 @@ export default function QLCTriggerTable() {
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const getQLCWidgets = useStore((state) => state.getQLCWidgets);
-  // const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
+  const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
   const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
   const deleteQLCTrigger = useStore((state) => state.deleteQLCTrigger);
   const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
@@ -60,7 +60,6 @@ export default function QLCTriggerTable() {
   useEffect(() => {
     getQLCWidgets();
   }, []);
-  // console.log('getQLCWidgets', qlcInfo);
 
   // Here we get the current triggers from list and set to global state
   useEffect(() => {
@@ -79,7 +78,23 @@ export default function QLCTriggerTable() {
         const qlc_widgetType = temp1[3];
         const qlc_name = temp1[3];
         const qlc_value = temp1[3];
-        // console.log('test', temp1);
+
+        const current_data = temp1[3];
+        const arr_widgets: any = [];
+        const arr_values: any = [];
+        Object.entries(current_data)?.forEach(([k, v]) => {
+          const other_data =
+            qlcInfo && qlcInfo?.qlc_widgets?.find((widg: any) => widg[0] === k);
+          const obj = { ID: '', Type: '', Name: '' };
+          obj.ID = k;
+          obj.Type = other_data && other_data[1];
+          obj.Name = other_data && other_data[2];
+          arr_widgets.push(obj);
+          arr_values.push(v);
+        });
+        const csv_widgets = JSON.stringify(arr_widgets);
+        const csv_values = JSON.stringify(arr_values);
+
         if (temp1.constructor === Array) {
           triggersNew.push({
             id,
@@ -89,8 +104,9 @@ export default function QLCTriggerTable() {
             sceneName,
             enabled,
             trigger: `${triggerType}: ${sceneName}`,
-            qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
-            qlc_value,
+            // qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
+            qlc_string: csv_widgets,
+            qlc_value: csv_values,
             qlc_widgets: [
               {
                 qlc_id: 34,

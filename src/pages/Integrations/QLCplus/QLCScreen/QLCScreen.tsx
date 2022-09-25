@@ -17,6 +17,8 @@ import {
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles';
 import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable';
 import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable';
+import DialogAddEventListener from '../../../../components/Integrations/QLC/DialogAddEventListener';
+import useStore from '../../../../store/useStore';
 
 export default function QLCScreen({
   icon = <Settings />,
@@ -32,6 +34,7 @@ export default function QLCScreen({
 }: QLCScreenProps) {
   const classes = useEditVirtualsStyles();
   const [open, setOpen] = React.useState(false);
+  const integrations = useStore((state) => state.integrations);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,7 +43,6 @@ export default function QLCScreen({
   const handleClose = () => {
     setOpen(false);
   };
-
   return (
     <>
       {type === 'menuItem' ? (
@@ -94,19 +96,20 @@ export default function QLCScreen({
             </Typography>
           </Toolbar>
         </AppBar>
+        <DialogAddEventListener integration={integrations?.qlc} />
         <div style={{ margin: '1rem' }}>
           <div style={{ marginTop: '1rem' }} />
-          <Button
+          {/* <Button
             autoFocus
             color="primary"
             variant="contained"
             startIcon={<Add />}
-            onClick={handleClose}
+            // onClick={handleClose}
             // onClick={() => console.log(' Dialog popup coming soon...')}
             style={{ marginRight: '1rem' }}
           >
             ADD EVENT LISTENER
-          </Button>
+          </Button> */}
           <Grid xl={12} container item alignItems="center" spacing={1} />
           <div style={{ marginTop: '1rem' }} />
           <QLCTriggerTable />
