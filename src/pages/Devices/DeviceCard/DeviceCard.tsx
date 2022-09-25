@@ -93,7 +93,7 @@ const DeviceCard = ({
             />
           </div>
 
-          <div style={{ padding: '0 0.5rem' }}>
+          <div className={classes.virtualSubline}>
             <Typography
               variant="h6"
               style={{
@@ -150,7 +150,8 @@ const DeviceCard = ({
                 color="textSecondary"
                 style={{ height: 25, display: 'flex', alignItems: 'center' }}
               >
-                Effect: {effectName}
+                <span className="hideMobile">Effect:&nbsp;</span>
+                {effectName}
                 <Button
                   size="small"
                   onClick={(e) => {

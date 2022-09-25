@@ -23,7 +23,8 @@ const Bar = ({ handleClose, direct }: any) => {
   return (
     <div
       style={{
-        width: 500,
+        width: '100%',
+        maxWidth: 500,
         height: 80,
         padding: 10,
         overflow: 'hidden',
@@ -36,7 +37,7 @@ const Bar = ({ handleClose, direct }: any) => {
         // open={true}
         disableCloseOnSelect={direct}
         id="smartbar-autocomplete"
-        sx={{ width: 480, height: 50 }}
+        sx={{ width: '100%', maxWidth: 480, height: 50 }}
         options={[...Object.values(virtuals), ...Object.values(scenes)]}
         popupIcon={null}
         filterOptions={filterOptions}
@@ -201,7 +202,8 @@ const Bar = ({ handleClose, direct }: any) => {
         PaperComponent={({ children }) => (
           <Paper
             style={{
-              width: 500,
+              width: '100%',
+              maxWidth: 500,
               marginLeft: -10,
               background: theme.palette.background.paper,
             }}

@@ -15,6 +15,7 @@ body {
   min-height: 100vh;
   width: 100%;
   padding-bottom: 56px;
+  overflow-x: hidden;
 }
 /* fallback */
 @font-face {
@@ -65,5 +66,18 @@ body {
 @media screen and (max-width: 960px) {
   .showTablet {
     display: block;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  .hideMobile {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .hideTablet {
+    display: none !important;
   }
 }

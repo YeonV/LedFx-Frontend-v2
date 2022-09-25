@@ -10,6 +10,7 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  Link,
 } from '@material-ui/core';
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
@@ -40,7 +41,7 @@ const AddVirtualDialog = () => {
 
   const virtualsSchemas = useStore((state) => state.schemas?.virtuals);
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
-  const [model, setModel] = useState({});
+  const [model, setModel] = useState<any>({});
 
   const currentSchema = (virtualsSchemas && virtualsSchemas.schema) || {};
 
@@ -127,11 +128,32 @@ const AddVirtualDialog = () => {
         <DialogContentText>
           With Virtuals, you can split devices into segments and merge several
           segments over several devices into one Virtual-Device.
+          <div style={{ marginTop: '1rem', color: '#666' }}>
+            {' '}
+            Icons:{' '}
+            <Link
+              href="https://material-ui.com/components/material-icons/"
+              target="_blank"
+            >
+              MUI
+            </Link>
+            (ie: iconName) |{' '}
+            <Link href="https://materialdesignicons.com" target="_blank">
+              MDI
+            </Link>
+            (ie: mdi:icon-name)
+          </div>
         </DialogContentText>
 
         <BladeSchemaForm
           schema={currentSchema}
-          model={model}
+          model={
+            initial.config &&
+            Object.keys(initial.config).length === 0 &&
+            initial.config.constructor === Object
+              ? model
+              : { ...model, ...initial.config }
+          }
           onModelChange={handleModelChange}
         />
       </DialogContent>
