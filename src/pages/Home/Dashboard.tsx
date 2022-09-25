@@ -66,7 +66,7 @@ const Dashboard = () => {
   );
   const pixelTotal = Object.keys(devices)
     .map((d) => devices[d].config.pixel_count)
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   const devicesOnline = Object.keys(devices).filter((d) => devices[d].online);
   const virtualsReal = Object.keys(virtuals).filter(
@@ -75,7 +75,7 @@ const Dashboard = () => {
 
   const pixelTotalOnline = Object.keys(devices)
     .map((d) => devices[d].online && devices[d].config.pixel_count)
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   const handleScan = () => {
     setScanning(0);
@@ -134,14 +134,14 @@ const Dashboard = () => {
               Object.values(config.user_presets).length
                 ? Object.values(config.user_presets)
                     .map((e: any) => Object.keys(e).length)
-                    .reduce((a: number, b: number) => a + b)
+                    .reduce((a: number, b: number) => a + b, 0)
                 : 0
             }
             current={
               Object.values(config.user_presets).length
                 ? Object.values(config.user_presets)
                     .map((e: any) => Object.keys(e).length)
-                    .reduce((a: number, b: number) => a + b)
+                    .reduce((a: number, b: number) => a + b, 0)
                 : 0
             }
           />
