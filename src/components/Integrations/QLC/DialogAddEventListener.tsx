@@ -387,7 +387,7 @@ function ConfirmationDialogRaw(props: any) {
                 <MenuItem
                   key={idx}
                   value={JSON.stringify({
-                    event_type: 'scene_set',
+                    event_type: 'scene_activated',
                     event_name: val,
                   })}
                   //   name={val}

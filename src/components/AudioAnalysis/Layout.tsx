@@ -4,7 +4,6 @@ import {
   Grid,
   Typography,
   CardContent,
-  Avatar,
   LinearProgress,
 } from '@material-ui/core';
 
@@ -20,16 +19,6 @@ export default function Layout() {
   const analysis = useStore(
     (state) => state?.spotify?.spotifyData?.trackAnalysis
   );
-  const playerState = useStore(
-    (state) => state?.spotify?.spotifyData?.playerState
-  );
-  const title = playerState?.track_window?.current_track?.name || 'Not playing';
-  const image =
-    playerState?.track_window?.current_track?.album.images[0].url ||
-    'https://github.com/LedFx/LedFx/raw/main/icons/discord.png';
-  const artist = playerState?.track_window?.current_track?.artists || [
-    { name: 'on LedFx' },
-  ];
 
   const [width, setWidth] = useState(2000);
   const [height] = useState(255);
@@ -146,57 +135,25 @@ export default function Layout() {
                   </div>
                 </Grid>
               ) : (
-                <div>
-                  <Grid
-                    container
-                    spacing={3}
-                    alignItems="center"
-                    justify="center"
-                    style={{ maxWidth: '95vw' }}
-                  >
-                    <Grid item>
-                      <Avatar
-                        style={{ border: '1px solid white' }}
-                        alt="album-image"
-                        src={image}
-                        variant="rounded"
-                      >
-                        A
-                      </Avatar>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h5" style={{ color: '#f1f1f1' }}>
-                        {title}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h6" style={{ color: '#666' }}>
-                        {artist.length > 1
-                          ? artist.map((art: any) => art.name).join(',')
-                          : artist[0].name}{' '}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <div
-                    style={{
-                      maxWidth: '98%',
-                      overflowX: 'auto',
-                      overflowY: 'hidden',
-                    }}
-                  >
-                    <SectionChart
-                      sections={sections}
-                      segments={segments}
-                      width={width}
-                      height={height}
-                    />
-                    <Chart
-                      analysis={newAnalysis}
-                      width={width}
-                      height={height}
-                      pitches={pitches}
-                    />
-                  </div>
+                <div
+                  style={{
+                    maxWidth: '98%',
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                  }}
+                >
+                  <SectionChart
+                    sections={sections}
+                    segments={segments}
+                    width={width}
+                    height={height}
+                  />
+                  <Chart
+                    analysis={newAnalysis}
+                    width={width}
+                    height={height}
+                    pitches={pitches}
+                  />
                 </div>
               )}
             </CardContent>

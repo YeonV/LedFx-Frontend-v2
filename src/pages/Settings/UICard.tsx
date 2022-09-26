@@ -174,7 +174,7 @@ const UICard = () => {
           />
         </div>
       )}
-      {showFeatures.integrations && (
+      {viewMode !== 'user' && (
         <div className={`${classes.settingsRow} step-settings-x `}>
           <label>Integrations</label>
           <SettingsSwitch

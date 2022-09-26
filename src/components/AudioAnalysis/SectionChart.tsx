@@ -16,7 +16,7 @@ const renderLegend = () => {
       style={{
         height: 20,
         display: 'table',
-        paddingLeft: 10,
+        paddingLeft: 50,
         marginTop: 0,
         listStyleType: 'none',
       }}
