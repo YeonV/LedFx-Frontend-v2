@@ -66,7 +66,7 @@ const steps = [
     selector: '.step-four',
     content: (
       <div>
-        <h2>The Big Red Button</h2>
+        <h2>The Big Plus Button</h2>
         This is where it all begins!
         <ul style={{ paddingLeft: '1rem' }}>
           <li>Add Device: Add a networked LED strip</li>
@@ -130,12 +130,13 @@ const TourHome = ({
             setIsTourOpen(true);
           }}
         >
+          <LiveHelp sx={{ mr: '8px' }} />
           Start Tour
         </Button>
       )}
       <Tour
         steps={steps}
-        accentColor="#800000"
+        accentColor={theme.palette.accent.main}
         isOpen={isTourOpen}
         onRequestClose={() => setIsTourOpen(false)}
       />
