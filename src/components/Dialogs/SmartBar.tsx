@@ -202,9 +202,10 @@ const Bar = ({ handleClose, direct }: any) => {
         PaperComponent={({ children }) => (
           <Paper
             style={{
-              width: '100%',
-              maxWidth: 500,
-              marginLeft: -10,
+              width: 'calc(100% + 20px)',
+              maxWidth: direct ? 480 : 500,
+              marginLeft: direct ? 0 : -10,
+              marginRight: direct ? 0 : -10,
               background: theme.palette.background.paper,
             }}
           >
@@ -251,6 +252,8 @@ const SmartBar = ({
         style: {
           alignSelf: 'flex-start',
           marginTop: '75px',
+          width: '100%',
+          maxWidth: 500,
         },
       }}
       open={open}
