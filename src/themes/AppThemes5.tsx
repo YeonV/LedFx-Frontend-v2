@@ -154,6 +154,37 @@ export const BladeDarkOrangeTheme5 = createTheme({
   },
 });
 
+export const BladeDarkPinkTheme5 = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#bf026b',
+    },
+    secondary: {
+      main: '#bf026b',
+    },
+    accent: {
+      main: '#400729',
+    },
+    background: {
+      default: '#030303',
+      paper: '#151515',
+    },
+  },
+  components: {
+    MuiCard: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+    },
+  },
+  typography: {
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
+});
+
 export const BladeLightTheme5 = createTheme({
   palette: {
     mode: 'light',

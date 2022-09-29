@@ -128,6 +128,7 @@ const Bar = ({ handleClose, direct }: any) => {
                 'DarkGreen',
                 'DarkBlue',
                 'DarkGrey',
+                'DarkPink',
               ].indexOf(value.replace('theme:', '')) > -1
             ) {
               window.localStorage.setItem(
