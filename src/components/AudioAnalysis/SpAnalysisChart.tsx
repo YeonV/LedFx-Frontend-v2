@@ -9,7 +9,7 @@ import {
   Legend,
   Area,
 } from 'recharts';
-import { AudioAnalysisProps } from './AudioAnalysisProps';
+import { AudioAnalysisProps } from './SpAnalysisAudioAnalysisProps';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment');
@@ -131,7 +131,7 @@ const Chart: React.FC<AudioAnalysisProps> = (props) => {
             value > 6 ? [`${value.toFixed(0)}%`, name] : [null, null]
           }
           contentStyle={{ backgroundColor: '#0f0f0f', border: 'none' }}
-          labelStyle={{ color: '#f1f1f1' }}
+          labelStyle={{ color: '#ffffff' }}
           itemSorter={(item: any) => -item.value}
         />
         <Legend

@@ -21,7 +21,7 @@ import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widget
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
 import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable';
 import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist';
-import Layout from '../../../../components/AudioAnalysis/Layout';
+import SpAnalysisLayout from '../../../../components/AudioAnalysis/SpAnalysisLayout';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -107,8 +107,9 @@ export default function SpotifyScreen({
             <SpPlaylist />
           </Grid>
           <div style={{ marginTop: '1rem' }} />
+          <SpAnalysisLayout />
+          <div style={{ marginTop: '1rem' }} />
           <SpotifyTriggerTable />
-          <Layout />
         </div>
         {/* <SpotifyWidgetSmall  />
         <div style={{ marginTop: '2rem' }} />

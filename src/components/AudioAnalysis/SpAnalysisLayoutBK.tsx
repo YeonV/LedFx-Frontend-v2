@@ -7,11 +7,11 @@ import {
   Avatar,
   LinearProgress,
 } from '@material-ui/core';
-import Chart from './Chart';
-import SectionChart from './SectionChart';
-import ChartSize from './ChartSize';
-import ChordButtons from './ChordButtons';
-import PitchSelect from './PitchSelect';
+import Chart from './SpAnalysisChart';
+import SectionChart from './SpAnalysisSectionChart';
+import ChartSize from './SpAnalysisChartSize';
+import ChordButtons from './SpAnalysisChordButtons';
+import PitchSelect from './SpAnalysisPitchSelect';
 // import { connect } from 'react-redux';
 // import { updatePlayerState } from 'modules/spotify';
 // import { getAsyncIntegrations } from 'modules/integrations';

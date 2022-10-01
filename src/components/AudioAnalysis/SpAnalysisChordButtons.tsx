@@ -11,17 +11,17 @@ import {
 
 const useStyles = makeStyles(() => ({
   select: {
-    color: '#1ED760',
+    color: '#ffffff',
     width: '90%',
     '&:before': {
-      borderColor: '#1ED760',
+      borderColor: '#ffffff',
     },
     '&:after': {
-      borderColor: '#1ED760',
+      borderColor: '#ffffff',
     },
   },
   icon: {
-    fill: '#1ED760',
+    fill: '#ffffff',
   },
 }));
 
