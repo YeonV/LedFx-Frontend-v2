@@ -27,6 +27,7 @@ const useStyles = makeStyles(() => ({
 
 const chords: { [key: string]: any } = {
   'Major Chords': {
+    All: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     'C Major': [0, 4, 7],
     'C Sharp Major': [1, 5, 8],
     'D Major': [2, 6, 9],
@@ -41,6 +42,7 @@ const chords: { [key: string]: any } = {
     'B Major': [11, 3, 6],
   },
   'Minor Chords': {
+    All: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     'C Minor': [0, 3, 7],
     'C Sharp Minor': [1, 4, 8],
     'D Minor': [2, 5, 9],
@@ -55,6 +57,7 @@ const chords: { [key: string]: any } = {
     'B Minor': [11, 2, 6],
   },
   'Diminished Chords': {
+    All: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     'C Diminished': [0, 3, 6],
     'C Sharp Diminished': [1, 4, 7],
     'D Diminished': [2, 5, 8],
@@ -69,6 +72,7 @@ const chords: { [key: string]: any } = {
     'B Diminished': [11, 2, 5],
   },
   'Augmented Chords': {
+    All: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     'C Augmented': [0, 4, 8],
     'C Sharp Augmented': [1, 5, 9],
     'D Augmented': [2, 6, 10],
