@@ -115,9 +115,10 @@ function ConfirmationDialogRaw(props: any) {
 
   const handleOk = () => {
     onClose(valueState);
-    console.log('QLCFormEventTest1', formData);
+    // console.log('QLCFormEventTest1', formData);
     const data = JSON.stringify(formData);
-    console.log('QLCFormEventTest1', data);
+    // eslint-disable-next-line no-console
+    console.error('QLCFormEventTest1', data);
     // dispatch(createQlcListener(props.integration.id, formData));
     createQlcListener(formData).then(() => {
       getIntegrations();
@@ -135,7 +136,7 @@ function ConfirmationDialogRaw(props: any) {
 
   // const [f, setAge] = React.useState('');
   const handleEventChange = (event: any) => {
-    console.log('typetest', event.target);
+    // console.log('typetest', event.target);
     let { value } = event.target;
     if (event.target.type === 'checkbox') {
       value = event.target.checked ? 255 : 0;
@@ -150,7 +151,7 @@ function ConfirmationDialogRaw(props: any) {
       };
       setSwitchValue(event.target.checked);
       setqlcData(qlcDatanewArr);
-      console.log('test', newSwitchState);
+      // console.log('test', newSwitchState);
       setformData(newSwitchState);
     } else if (event.target.name === 'qlc_payload') {
       const qlcDatanewArr: any = qlcData.slice();
@@ -168,7 +169,7 @@ function ConfirmationDialogRaw(props: any) {
           ...newqlcPayload,
         },
       };
-      console.log('test', newSwitchState);
+      // console.log('test', newSwitchState);
       setformData(newSwitchState);
     } else if (event.target.name === 'scene_name') {
       value = JSON.parse(value);
@@ -266,12 +267,12 @@ function ConfirmationDialogRaw(props: any) {
       // newArr[index].value = event.target.value[0];
       const [target] = event.target.value;
       newArr[index].value = target;
-      console.log('test13', newArr);
+      // console.log('test13', newArr);
       const qlcDatanewArr: any = qlcData.slice();
       const qlcDataObj = {
         [event.target.value[0]]: 0,
       };
-      console.log('test0', qlcDataObj);
+      // console.log('test0', qlcDataObj);
       if (qlcDatanewArr[index + 1] === undefined) {
         qlcDatanewArr.push(qlcDataObj);
       } else {
@@ -289,7 +290,7 @@ function ConfirmationDialogRaw(props: any) {
           ...newqlcPayload,
         },
       };
-      console.log('test', newSwitchState);
+      // console.log('test', newSwitchState);
       setformData(newSwitchState);
     } else {
       const qlcDatanewArr: any = qlcData.slice();
@@ -336,7 +337,7 @@ function ConfirmationDialogRaw(props: any) {
         ...newqlcPayload,
       },
     };
-    console.log('test', newSwitchState);
+    // console.log('test', newSwitchState);
     setformData(newSwitchState);
     return setdropDownRenderList(newArr);
   };

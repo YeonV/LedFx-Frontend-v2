@@ -169,10 +169,13 @@ const storeSpotifyActions = (set: any) => ({
       case 'update':
         set(
           produce((state: any) => {
-            state.spotify.spTriggersList = [
-              ...state.spTriggersList,
-              newTrigger,
-            ];
+            // state.spotify.spTriggersList = [
+            //   ...state.spotify.spTriggersList,
+            //   newTrigger,
+            // ];
+            state.spotify.spTriggersList = state.spotify.spTriggersList.map(
+              (each: any) => (each.id === newTrigger.id ? newTrigger : each)
+            );
           }),
           false,
           'spotify/addToTriggerList'
@@ -187,6 +190,19 @@ const storeSpotifyActions = (set: any) => ({
     song_position,
   }: any) => {
     await Ledfx('/api/integrations/spotify/spotify', 'POST', {
+      scene_id,
+      song_id,
+      song_name,
+      song_position,
+    });
+  },
+  editSpSongTrigger: async ({
+    scene_id,
+    song_id,
+    song_name,
+    song_position,
+  }: any) => {
+    await Ledfx('/api/integrations/spotify/spotify', 'PUT', {
       scene_id,
       song_id,
       song_name,

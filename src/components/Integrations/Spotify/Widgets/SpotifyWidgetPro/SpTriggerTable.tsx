@@ -2,7 +2,7 @@
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
 // import { useTheme } from '@mui/material/styles';
 import { DeleteForever, PlayCircleFilled } from '@material-ui/icons';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { IconButton } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,9 @@ import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
 
 export const useDataGridStyles = makeStyles((theme: any) => ({
+  select: {
+    color: '#fff !important',
+  },
   root: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
@@ -23,6 +26,11 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
     '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
       color: theme.palette.text.secondary,
     },
+    '&.MuiDataGrid-root .MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input':
+      {
+        color: theme.palette.text.secondary,
+      },
+
     '&.MuiDataGrid-root .MuiDataGrid-cell': {
       borderColor: '#333',
     },
@@ -55,7 +63,7 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
 export default function SpotifyTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
-  // const scenes = useStore((state) => state.scenes);
+  const scenes = useStore((state) => state.scenes);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
@@ -66,6 +74,7 @@ export default function SpotifyTriggerTable() {
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const getSpTriggers = useStore((state) => state.getSpTriggers);
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
+  const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger);
 
   useEffect(() => {
     getSpTriggers('spotify');
@@ -118,11 +127,29 @@ export default function SpotifyTriggerTable() {
         });
         return true;
       });
-      console.log('Spotify triggersNew', triggersNew);
       addToSpTriggerList(triggersNew, 'create');
     }
   }, [integrations]);
 
+  const updateSpTrigger = (rowData: any, val: any) => {
+    let sceneKey;
+    if (scenes) {
+      Object.keys(scenes)?.map((key: any) => {
+        if (scenes[key].name === val) {
+          sceneKey = key;
+        }
+        return null;
+      });
+    }
+    addToSpTriggerList({ ...rowData, sceneId: val }, 'update');
+    const data = {
+      scene_id: sceneKey,
+      song_id: rowData?.songId,
+      song_name: rowData?.songName,
+      song_position: rowData?.position_ms,
+    };
+    editSpotifySongTrigger(data).then(() => getIntegrations());
+  };
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteSpTrigger({
       data: {
@@ -130,96 +157,107 @@ export default function SpotifyTriggerTable() {
       },
     }).then(() => getIntegrations());
   };
-  const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: 'ID',
-      width: 60,
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'songName',
-      headerName: 'Song',
-      width: 400,
-    },
-    {
-      field: 'position',
-      headerName: 'Position',
-      width: 90,
-      headerAlign: 'center',
-      align: 'center',
-    },
 
-    {
-      field: 'sceneId',
-      headerName: 'Scene',
-      width: 120,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: () => (
-        <FormControl fullWidth disabled>
-          <Select
-            labelId="scene-select-label"
-            value="{sceneId}"
-            label="Scene"
-            onChange={(e: SelectChangeEvent) => {
-              console.log(e);
-            }}
-          >
-            <MenuItem value="sceneId" />
-            {/* {scenes?.map((scene: any) => (
-              <MenuItem key={scene.id} value={scene.id}>
-                {scene.name}
-              </MenuItem>
-            ))} */}
-          </Select>
-        </FormControl>
-      ),
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 180,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params: any) => (
-        <Stack direction="row" alignItems="center" spacing={0}>
-          <Popover
-            variant="text"
-            color="inherit"
-            icon={<DeleteForever />}
-            style={{ minWidth: 40 }}
-            onConfirm={() => {
-              deleteTriggerHandler(params);
-            }}
-          />
-          <IconButton
-            aria-label="play"
-            color="inherit"
-            onClick={() => {
-              spotifyPlaySong(
-                spotifyDevice,
-                params.row.songId,
-                params.row.position_ms
-              );
-            }}
-          >
-            <PlayCircleFilled fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            aria-label="playstart"
-            color="inherit"
-            onClick={() => {
-              spotifyPlaySong(spotifyDevice, params.row.songId);
-            }}
-          >
-            <NotStarted fontSize="inherit" />
-          </IconButton>
-        </Stack>
-      ),
-    },
-  ];
+  const columns: GridColDef[] = useMemo(() => {
+    return [
+      {
+        field: 'id',
+        headerName: 'ID',
+        width: 60,
+        align: 'center',
+        headerAlign: 'center',
+      },
+      {
+        field: 'songName',
+        headerName: 'Song',
+        width: 400,
+      },
+      {
+        field: 'position',
+        headerName: 'position',
+        width: 90,
+        headerAlign: 'center',
+        align: 'center',
+      },
+
+      {
+        field: 'sceneId',
+        headerName: 'Scene',
+        width: 120,
+        headerAlign: 'center',
+        align: 'center',
+        renderCell: (params: any) => {
+          return (
+            <FormControl fullWidth>
+              <Select
+                style={{
+                  color: 'white',
+                }}
+                classes={{
+                  icon: classes.select,
+                }}
+                labelId="scene-select-label"
+                value={params?.row?.sceneId}
+                label="Scene"
+                onChange={(e: SelectChangeEvent) => {
+                  updateSpTrigger(params?.row, e.target.value);
+                }}
+              >
+                {/* <MenuItem value="sceneId" /> */}
+                {Object.keys(scenes).map((s: any, i: number) => (
+                  <MenuItem key={i} value={scenes[s].name || s}>
+                    {scenes[s].name || s}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          );
+        },
+      },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 180,
+        headerAlign: 'center',
+        align: 'center',
+        renderCell: (params: any) => (
+          <Stack direction="row" alignItems="center" spacing={0}>
+            <Popover
+              variant="text"
+              color="inherit"
+              icon={<DeleteForever />}
+              style={{ minWidth: 40 }}
+              onConfirm={() => {
+                deleteTriggerHandler(params);
+              }}
+            />
+            <IconButton
+              aria-label="play"
+              color="inherit"
+              onClick={() => {
+                spotifyPlaySong(
+                  spotifyDevice,
+                  params.row.songId,
+                  params.row.position_ms
+                );
+              }}
+            >
+              <PlayCircleFilled fontSize="inherit" />
+            </IconButton>
+            <IconButton
+              aria-label="playstart"
+              color="inherit"
+              onClick={() => {
+                spotifyPlaySong(spotifyDevice, params.row.songId);
+              }}
+            >
+              <NotStarted fontSize="inherit" />
+            </IconButton>
+          </Stack>
+        ),
+      },
+    ];
+  }, []);
 
   const rows = spTriggersList || [{ id: 1 }];
 
@@ -240,15 +278,15 @@ export default function SpotifyTriggerTable() {
         }}
         sx={{
           boxShadow: 2,
-          color: '#fff',
+          color: '#fff !important',
           border: 1,
           borderColor: '#666',
         }}
         columns={columns}
         rows={rows}
         getRowClassName={(params: GridRowParams<any>) =>
-          params.row.songId ===
-          playerState?.context.metadata?.current_item.uri.split(':')[2]
+          params?.row?.songId ===
+          playerState?.context?.metadata?.current_item?.uri?.split(':')[2]
             ? spotifyPos > params.row.position_ms
               ? 'activated'
               : 'currently_playing'
