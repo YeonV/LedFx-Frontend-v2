@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -52,6 +51,82 @@ const useStyles = makeStyles({
   },
 });
 
+const SceneDialog = ({ info, setInfo, scene }: any) => {
+  const addScene = useStore((state) => state.addScene);
+  const getScenes = useStore((state) => state.getScenes);
+  const scenes = useStore((state) => state.scenes);
+  const setDialogOpenAddScene = useStore(
+    (state) => state.setDialogOpenAddScene
+  );
+  const handleInfoClose = () => {
+    setInfo(false);
+  };
+
+  const handleUpdateScene = (s: any) => {
+    addScene(s.name, s.scene_image).then(() => {
+      getScenes();
+    });
+    setDialogOpenAddScene(false);
+  };
+
+  return scene ? (
+    <Dialog
+      open={info}
+      onClose={handleInfoClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      fullWidth
+      maxWidth="xs"
+    >
+      <DialogTitle id="alert-dialog-title">
+        Scene: {scenes[scene].name || scene}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText component="div" id="alert-dialog-description">
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontVariant: 'all-small-caps',
+            }}
+          >
+            <span>Device</span>
+            <span>Effect</span>
+          </div>
+          <Divider />
+          {Object.keys(scenes[scene].virtuals)
+            .filter((d) => !!scenes[scene].virtuals[d].type)
+            .map((dev, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontVariant: 'all-small-caps',
+                }}
+              >
+                <span>{dev}</span>
+                <span>{scenes[scene].virtuals[dev].type}</span>
+              </div>
+            ))}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Popover
+          onConfirm={() => handleUpdateScene(scenes[scene])}
+          color="secondary"
+          label="Update"
+          variant="text"
+          noIcon
+        />
+        <Button onClick={handleInfoClose} color="primary" autoFocus>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  ) : null;
+};
+
 const Scenes = () => {
   const classes = useStyles();
   const getScenes = useStore((state) => state.getScenes);
@@ -61,29 +136,19 @@ const Scenes = () => {
   const [info, setInfo] = useState(false);
   const [scene, setScene] = useState();
 
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
-
   const handleActivateScene = (e: string) => {
     activateScene(e);
-    setDialogOpenAddScene(false);
   };
 
   const handleDeleteScene = (e: any) => {
     deleteScene(e).then(() => {
       getScenes();
     });
-    setDialogOpenAddScene(false);
   };
 
   const handleInfoOpen = (s: any) => {
     setScene(s);
     setInfo(true);
-  };
-
-  const handleInfoClose = () => {
-    setInfo(false);
   };
 
   const sceneImage = (iconName: string) =>
@@ -96,57 +161,6 @@ const Scenes = () => {
     ) : (
       <BladeIcon scene className={classes.iconMedia} name={iconName} />
     );
-
-  const SceneDialog = () =>
-    scene ? (
-      <Dialog
-        open={info}
-        onClose={handleInfoClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        fullWidth
-        maxWidth="xs"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Scene: {scenes[scene].name || scene}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontVariant: 'all-small-caps',
-              }}
-            >
-              <span>Device</span>
-              <span>Effect</span>
-            </div>
-            <Divider />
-            {Object.keys(scenes[scene].virtuals)
-              .filter((d) => !!scenes[scene].virtuals[d].type)
-              .map((dev, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontVariant: 'all-small-caps',
-                  }}
-                >
-                  <span>{dev}</span>
-                  <span>{scenes[scene].virtuals[dev].type}</span>
-                </div>
-              ))}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleInfoClose} color="primary" autoFocus>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    ) : null;
 
   useEffect(() => {
     getScenes();
@@ -202,7 +216,12 @@ const Scenes = () => {
                 </div>
               </CardActions>
             </Card>
-            <SceneDialog />
+            <SceneDialog
+              info={info}
+              setInfo={setInfo}
+              scene={scene}
+              setScene={setScene}
+            />
           </Grid>
         ))
       ) : (

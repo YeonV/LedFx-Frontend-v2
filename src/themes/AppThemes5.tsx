@@ -45,7 +45,7 @@ export const BladeDarkBlueTheme5 = createTheme({
       main: '#0dbedc',
     },
     accent: {
-      main: '#20173c',
+      main: '#00185c',
     },
     background: {
       default: '#030303',
@@ -134,6 +134,37 @@ export const BladeDarkOrangeTheme5 = createTheme({
     },
     accent: {
       main: '#542581',
+    },
+    background: {
+      default: '#030303',
+      paper: '#151515',
+    },
+  },
+  components: {
+    MuiCard: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+    },
+  },
+  typography: {
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
+});
+
+export const BladeDarkPinkTheme5 = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#bf026b',
+    },
+    secondary: {
+      main: '#bf026b',
+    },
+    accent: {
+      main: '#400729',
     },
     background: {
       default: '#030303',

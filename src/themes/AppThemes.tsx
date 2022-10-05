@@ -44,7 +44,7 @@ export const BladeDarkBlueTheme = createTheme({
       main: '#0dbedc',
     },
     accent: {
-      main: '#20173c',
+      main: '#00185c',
     },
     background: {
       default: '#030303',
@@ -145,6 +145,35 @@ export const BladeDarkOrangeTheme = createTheme({
   },
 });
 
+export const BladeDarkPinkTheme = createTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#bf026b',
+    },
+    secondary: {
+      main: '#bf026b',
+    },
+    accent: {
+      main: '#400729',
+    },
+    background: {
+      default: '#030303',
+      paper: '#151515',
+    },
+  },
+  props: {
+    MuiCard: {
+      variant: 'outlined',
+    },
+  },
+  typography: {
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
+});
+
 export const BladeLightTheme = createTheme({
   palette: {
     type: 'light',
@@ -174,6 +203,7 @@ export const ledfxThemes = {
   DarkGreen: BladeDarkGreenTheme,
   DarkBlue: BladeDarkBlueTheme,
   DarkGrey: BladeDarkGreyTheme,
+  DarkPink: BladeDarkPinkTheme,
 } as any;
 
 /* eslint-disable @typescript-eslint/indent */

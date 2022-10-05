@@ -17,9 +17,10 @@ import logoCircle from '../../assets/ring.png';
 import TourHome from '../../components/Tours/TourHome';
 import useStore from '../../store/useStore';
 import FX from '../../components/Icons/FX';
-import { deleteFrontendConfig } from '../../utils/helpers';
+// import { deleteFrontendConfig } from '../../utils/helpers';
 import ButtonBar from '../../components/ButtonBar';
 import Dashboard from './Dashboard';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -64,26 +65,27 @@ export default function Home() {
         style={{
           maxWidth: '400px',
           margin: '0.5rem auto 2rem auto',
+          textAlign: 'center',
         }}
       >
-        <CardHeader title="Welcome to LedFx" />
+        <CardHeader title="Welcome to LedFx v2" />
         <CardContent>
-          Complete Frontend Rewrite... from scratch
-          <ul>
-            <li>Modern React</li>
-            <li>Zustand as State-Management</li>
-            <li>Typescript supported</li>
-            <li>Mobile First</li>
-            <li>by Blade</li>
-          </ul>
+          Use the Start-Tour-Button to get an introduction. Advanced users might
+          explore Expert-Mode in settings.
         </CardContent>
-        <CardActions>
-          <Badge variant="dot" color="primary" invisible={invisible}>
+        <CardActions style={{ justifyContent: 'center' }}>
+          <Badge
+            variant="dot"
+            color="primary"
+            invisible={invisible}
+            sx={{ mr: 1 }}
+          >
             <TourHome />
           </Badge>
           <Button onClick={() => handleScan()} variant="outlined">
+            <BladeIcon name="wled" style={{ marginTop: -3, marginRight: 10 }} />
             {scanning > -1 ? (
-              <>
+              <div style={{ position: 'relative', marginLeft: 20, height: 24 }}>
                 <CircularProgress
                   variant="determinate"
                   value={(scanning / 30) * 100}
@@ -108,19 +110,19 @@ export default function Home() {
                     {`${Math.round((scanning / 30) * 100)}%`}
                   </Typography>
                 </Box>
-              </>
+              </div>
             ) : (
-              'WLED-scan'
+              <>WLED-scan</>
             )}
           </Button>
-          <Button
+          {/* <Button
             variant="outlined"
             onClick={() => {
               deleteFrontendConfig();
             }}
           >
             Clear Data
-          </Button>
+          </Button> */}
         </CardActions>
       </Card>
       <ButtonBar />
