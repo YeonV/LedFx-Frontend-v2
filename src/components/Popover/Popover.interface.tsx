@@ -70,7 +70,7 @@ export interface PopoverProps {
   /**
    * flag indicator
    */
-  confirmContent?: boolean;
+  confirmContent?: any;
   /**
    * Text to show in the popup
    */

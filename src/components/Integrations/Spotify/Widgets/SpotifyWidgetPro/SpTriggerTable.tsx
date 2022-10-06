@@ -62,9 +62,11 @@ export default function SpotifyTriggerTable() {
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const getSpTriggers = useStore((state) => state.getSpTriggers);
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
+  const getScenes = useStore((state) => state.getScenes);
 
   useEffect(() => {
     getSpTriggers('spotify');
+    getScenes();
   }, []);
 
   const padTo2Digits = (num: any) => {
