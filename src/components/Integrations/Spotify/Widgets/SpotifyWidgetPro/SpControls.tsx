@@ -67,13 +67,13 @@ export default function SpControls({ className }: any) {
         label: m.sceneName,
       }));
     // eslint-disable-next-line no-console
-    console.log(hlp);
+    // console.log(hlp);
     setMarks(hlp);
   }, [spotifyPos]);
 
   // const help = [...marks];
   // eslint-disable-next-line no-console
-  console.log('yoo', spotifyData?.context?.metadata?.current_item?.uri);
+  // console.log('yoo', spotifyData?.context?.metadata?.current_item?.uri);
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}

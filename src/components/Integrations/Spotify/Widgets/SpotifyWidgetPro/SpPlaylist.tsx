@@ -19,17 +19,17 @@ import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import { useDataGridStyles } from './SpTriggerTable';
 
-function isScrolledIntoView(el: any) {
-  const rect = el.getBoundingClientRect();
-  const elemTop = rect.top;
-  const elemBottom = rect.bottom;
+// function isScrolledIntoView(el: any) {
+//   const rect = el.getBoundingClientRect();
+//   const elemTop = rect.top;
+//   const elemBottom = rect.bottom;
 
-  // Only completely visible elements return true:
-  const isVisible = elemTop >= 0 && elemBottom <= window.innerHeight;
-  // Partially visible elements return true:
-  // isVisible = elemTop < window.innerHeight && elemBottom >= 0;
-  return isVisible;
-}
+//   // Only completely visible elements return true:
+//   const isVisible = elemTop >= 0 && elemBottom <= rect.innerHeight;
+//   // Partially visible elements return true:
+//   // isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+//   return isVisible;
+// }
 
 export default function SpPlaylist() {
   const classes = useDataGridStyles();
@@ -90,12 +90,11 @@ export default function SpPlaylist() {
     const playing = document.querySelector(
       '.MuiDataGrid-root.playlist .MuiDataGrid-row.currently_playing'
     );
-
-    if (playing && !isScrolledIntoView(playing)) {
+    if (playing) {
       playing.scrollIntoView();
     }
   }, [playerState?.track_window?.current_track?.name]);
-
+  // console.log(playerState?.context.metadata?.current_item, rows.map((r: any)=>r.track))
   return (
     <Grid xl={7} lg={5} md={12} xs={12} item>
       <Box sx={{ height: 250 }}>
@@ -128,8 +127,11 @@ export default function SpPlaylist() {
           pageSize={rows.length}
           rowsPerPageOptions={[rows.length]}
           getRowClassName={(params: GridRowParams<any>) =>
-            params.row.track.uri ===
-            playerState?.context.metadata?.current_item.uri
+            (params.row.track.name ===
+            playerState?.context.metadata?.current_item.name) && (
+              params.row.track.artists?.[0].uri === 
+              playerState?.context.metadata?.current_item.artists?.[0].uri
+            )
               ? 'currently_playing'
               : ''
           }
