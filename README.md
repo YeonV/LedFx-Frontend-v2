@@ -33,8 +33,6 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 - pages
   - file _(page)_
   - folder: _(page + components)_
-- utils
-  - apiStore _(AppStore + Communication with LedFx-Core)_ [one big file atm]
 
 ## Rules
 
