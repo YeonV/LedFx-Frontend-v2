@@ -207,6 +207,14 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setPlayer'
     ),
+  setMe: (me: any) =>
+    set(
+      produce((state: any) => {
+        state.spotify.me = me;
+      }),
+      false,
+      'spotify/setMe'
+    ),
 });
 
 export default storeSpotifyActions;
