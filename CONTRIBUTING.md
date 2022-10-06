@@ -7,7 +7,7 @@
 - No class-components. Only functional components + hooks
 
 ### Infos: 
-- [General](https://github.com/YeonV/LedFx-Frontend-v2), 
+- [General](https://github.com/YeonV/LedFx-Frontend-v2)
 - [dev](https://yeonv.github.io/LedFx-Frontend-v2/docs/?path=/story/bladebook-getting-started--page)
 - Some folders got a README.md with some infos
 
