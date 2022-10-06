@@ -4,7 +4,7 @@
 
 ### Rules: 
 - [Hacktoberfest](https://hacktoberfest.com/participation/)
-- No class-components. Only functional components + hooks
+- [repository](https://github.com/YeonV/LedFx-Frontend-v2/blob/main/README.md#rules)
 
 ### Infos: 
 - [General](https://github.com/YeonV/LedFx-Frontend-v2)
