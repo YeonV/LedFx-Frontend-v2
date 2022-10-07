@@ -1,7 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import { MenuItem, Select, InputAdornment } from '@material-ui/core';
-import { OutlinedInput } from '@mui/material';
+import {
+  InputAdornment,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@material-ui/core';
+// import { FormControl, InputLabel, Select } from '@mui/material';
 import useStore from '../../../../../store/useStore';
 
 // import { formatTime } from '../../../../../utils/helpers';
@@ -10,6 +17,7 @@ import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon';
 
 export default function SpSceneTrigger() {
   const scenes = useStore((state) => state.scenes);
+  const getScenes = useStore((state) => state.getScenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const player = useStore((state) => state.spotify.player);
@@ -46,42 +54,62 @@ export default function SpSceneTrigger() {
     });
   };
 
+  useEffect(() => {
+    getScenes();
+  }, []);
+
   return (
     <Popover
       variant="text"
       size="large"
       confirmDisabled={spotifyScene === 0}
+      confirmContent="Set Now"
       icon={<BladeIcon name="mdi:timer-music-outline" />}
       onConfirm={() => onConfirmHandler(spotifyTriggerData)}
       content={
         <div>
-          <Box sx={{ minWidth: 220, margin: 0 }}>
-            <Select
-              labelId="scenelabel"
-              id="scene"
-              value={spotifyScene}
-              label="Scene"
+          <Box sx={{ minWidth: 220, margin: 0, padding: '6px 5px 1px 5px' }}>
+            <FormControl style={{ minWidth: 220 }}>
+              <InputLabel
+                id="scenelabel"
+                style={{ marginLeft: 14, marginTop: -7 }}
+              >
+                Scene
+              </InputLabel>
+              <Select
+                labelId="scenelabel"
+                id="scene"
+                value={spotifyScene}
+                label="Scene"
+                variant="outlined"
+                onChange={(_, v: any) => {
+                  setSpotifyScene(v.props.value);
+                }}
+              >
+                <MenuItem value={0}>select a scene</MenuItem>
+                {scenes &&
+                  Object.keys(scenes).length &&
+                  Object.keys(scenes).map((s: any, i: number) => (
+                    <MenuItem key={i} value={scenes[s].id || s}>
+                      {scenes[s].name || s}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Network Delay"
               variant="outlined"
-              onChange={(_, v: any) => {
-                setSpotifyScene(v.props.value);
-              }}
-            >
-              <MenuItem value={0}>select a scene</MenuItem>
-              {scenes &&
-                Object.keys(scenes).length &&
-                Object.keys(scenes).map((s: any, i: number) => (
-                  <MenuItem key={i} value={scenes[s].id || s}>
-                    {scenes[s].name || s}
-                  </MenuItem>
-                ))}
-            </Select>
-            <OutlinedInput
               style={{
-                width: 115,
+                width: 150,
                 color: '#fff',
                 border: 0,
+                marginLeft: 10,
               }}
-              endAdornment={<InputAdornment position="end">ms</InputAdornment>}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">ms</InputAdornment>
+                ),
+              }}
               type="number"
               value={spNetworkTime}
               onChange={(e: any) => setSpNetworkTime(e.target.value)}

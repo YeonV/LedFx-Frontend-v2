@@ -13,6 +13,7 @@ import {
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 import useStore from '../../../../../store/useStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
 import { formatTime } from '../../../../../utils/helpers';
@@ -25,6 +26,7 @@ import SpSceneTrigger from './SpSceneTrigger';
 
 export default function SpControls({ className }: any) {
   const classes = useStyle();
+  const [marks, setMarks] = useState<any>([]);
   const player = useStore((state) => state.spotify.player);
   const spotifyData = useStore(
     (state: any) => state.spotify.spotifyData.playerState
@@ -35,7 +37,8 @@ export default function SpControls({ className }: any) {
   const shuffle = spotifyData?.shuffle || false;
   const hijack = spotifyData?.track_window?.current_track?.album.name || '';
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const spActTriggers = useStore((state) => state.spotify.spActTriggers);
+  // const spActTriggers = useStore((state) => state.spotify.spActTriggers);
+  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
   const spotifyVol = useStore((state) => state.spotify.spotifyVol);
   const setSpotifyVol = useStore((state) => state.setSpVol);
   const spotifyPos = useStore((state) => state.spotify.spotifyPos);
@@ -47,12 +50,30 @@ export default function SpControls({ className }: any) {
       .setVolume(vol)
       .then(() => getVolume().then((v: number) => setSpotifyVol(v)));
 
-  const marks = spActTriggers.map((m: any) => ({
-    value: m.position_ms,
-    label: m.sceneName,
-  }));
+  // const marks = spActTriggers.map((m: any) => ({
+  //   value: m.position_ms,
+  //   label: m.sceneName,
+  // }));
 
-  const help = [...marks];
+  useEffect(() => {
+    const hlp = spTriggersList
+      .filter(
+        (l: any) =>
+          l.songId ===
+          spotifyData?.context?.metadata?.current_item?.uri.split(':')[2]
+      )
+      .map((m: any) => ({
+        value: m.position_ms,
+        label: m.sceneName,
+      }));
+    // eslint-disable-next-line no-console
+    // console.log(hlp);
+    setMarks(hlp);
+  }, [spotifyPos]);
+
+  // const help = [...marks];
+  // eslint-disable-next-line no-console
+  // console.log('yoo', spotifyData?.context?.metadata?.current_item?.uri);
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}
@@ -156,7 +177,7 @@ export default function SpControls({ className }: any) {
             <Slider
               aria-label="time-indicator"
               size="small"
-              marks={help}
+              marks={marks}
               value={spotifyPos || 0}
               min={0}
               step={1}
