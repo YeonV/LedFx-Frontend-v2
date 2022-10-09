@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
-import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridCellParams,
+  GridColDef,
+  GridRowParams,
+} from '@mui/x-data-grid';
 // import { useTheme } from '@mui/material/styles';
 import { DeleteForever, PlayCircleFilled } from '@material-ui/icons';
 import { useEffect, useMemo } from 'react';
@@ -75,11 +80,9 @@ export default function SpotifyTriggerTable() {
   const getSpTriggers = useStore((state) => state.getSpTriggers);
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
   const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger);
-  const getScenes = useStore((state) => state.getScenes);
 
   useEffect(() => {
     getSpTriggers('spotify');
-    getScenes();
   }, []);
 
   const padTo2Digits = (num: any) => {
@@ -176,7 +179,7 @@ export default function SpotifyTriggerTable() {
       },
       {
         field: 'position',
-        headerName: 'position',
+        headerName: 'Position',
         width: 90,
         headerAlign: 'center',
         align: 'center',
@@ -283,17 +286,28 @@ export default function SpotifyTriggerTable() {
           color: '#fff !important',
           border: 1,
           borderColor: '#666',
+          '& .sceneStyle': {
+            border: '1px solid',
+            borderColor: '#fff !important',
+            padding: '0px',
+          },
         }}
         columns={columns}
         rows={rows}
         getRowClassName={(params: GridRowParams<any>) =>
           params?.row?.songId ===
           playerState?.context?.metadata?.current_item?.uri?.split(':')[2]
-            ? spotifyPos > params.row.position_ms
+            ? spotifyPos > params.row.posistion_ms
               ? 'activated'
               : 'currently_playing'
             : ''
         }
+        getCellClassName={(params: GridCellParams<any>) => {
+          if (params?.field === 'sceneId') {
+            return 'sceneStyle';
+          }
+          return '';
+        }}
       />
     </div>
   );
