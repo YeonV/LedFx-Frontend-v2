@@ -14,6 +14,7 @@ import { BladeDarkGreyTheme5 } from './themes/AppThemes5';
 import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
 import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
+import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
 
 export default function App() {
   const { height, width } = useWindowDimensions();
@@ -94,13 +95,15 @@ export default function App() {
       <MuiThemeProvider theme={ledfxThemes[ledfxTheme]}>
         <SnackbarProvider maxSnack={5}>
           <WsContext.Provider value={ws}>
-            <div
-              className={classes.root}
-              style={{ paddingTop: isElectron() ? '30px' : 0 }}
-            >
-              <CssBaseline />
-              <Pages handleWs={<HandleWs />} />
-            </div>
+            <SpotifyProvider>
+              <div
+                className={classes.root}
+                style={{ paddingTop: isElectron() ? '30px' : 0 }}
+              >
+                <CssBaseline />
+                <Pages handleWs={<HandleWs />} />
+              </div>
+            </SpotifyProvider>
           </WsContext.Provider>
           {features.waves && (
             <WaveLines
