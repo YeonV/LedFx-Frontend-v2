@@ -6,8 +6,17 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
+import { SpotifyState } from './SpotifyState';
 
 const storeSpotifyActions = (set: any) => ({
+  setSpotifyState: (spState: SpotifyState) =>
+    set(
+      produce((state: any) => {
+        state.spotify.spotifyState = spState;
+      }),
+      false,
+      'spotify/setSpotifyState'
+    ),
   setSpEmbedUrl: (url: string) =>
     set(
       produce((state: any) => {
@@ -81,14 +90,15 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpotifyVol'
     ),
-  setSpPos: (pos: any) =>
+  setSpPos: (pos: any) => {
     set(
       produce((state: any) => {
         state.spotify.spotifyPos = pos;
       }),
       false,
       'spotify/setSpotifyPos'
-    ),
+    );
+  },
   setSpAuthenticated: (val: boolean) =>
     set(
       produce((state: any) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -70,7 +71,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
     getMe();
   }, [integrations[integration].status, spAuthenticated]);
   // eslint-disable-next-line no-console
-  console.log('me', me);
+  // console.log('me', me);
 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
@@ -110,16 +111,19 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         }
       />
 
-      {me?.images && integrations[integration].status === 1 && spAuthenticated && (
-        <CardContent>
-          <Chip
-            avatar={<Avatar src={me.images[0].url} />}
-            label={me.display_name}
-            variant="outlined"
-          />
-        </CardContent>
-      )}
-
+      {me?.display_name &&
+        integrations[integration].status === 1 &&
+        spAuthenticated && (
+          <CardContent>
+            <Chip
+              avatar={
+                <Avatar src={me.images[0]?.url}>{me.display_name[0]}</Avatar>
+              }
+              label={me.display_name}
+              variant="outlined"
+            />
+          </CardContent>
+        )}
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton

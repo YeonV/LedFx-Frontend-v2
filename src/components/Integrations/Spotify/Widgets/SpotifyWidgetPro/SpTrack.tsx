@@ -1,36 +1,40 @@
 /* eslint-disable no-console */
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useContext, useEffect } from 'react';
 import useStore from '../../../../../store/useStore';
 import { getPlaylist } from '../../../../../utils/spotifyProxies';
+import { SpotifyStateContext } from '../../SpotifyProvider';
 import useStyle, { CoverImage } from './SpWidgetPro.styles';
 
 export default function SpTrack({ className }: any) {
   const classes = useStyle();
-  const playerState = useStore(
-    (state) => state.spotify.spotifyData.playerState
-  );
+
+  const spotifyCtx = useContext(SpotifyStateContext);
   const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken);
   const setPlaylist = useStore((state) => state.setPlaylist);
-  // const songId = playerState?.track_window?.current_track?.songId;
-  const title = playerState?.track_window?.current_track?.name || 'Not playing';
+  const title = spotifyCtx?.track_window?.current_track?.name || 'Not playing';
   const image =
-    playerState?.track_window?.current_track?.album.images[0].url ||
+    spotifyCtx?.track_window?.current_track?.album.images[0].url ||
     'https://github.com/LedFx/LedFx/raw/main/icons/discord.png';
-  const artist = playerState?.track_window?.current_track?.artists || [
+  const artist = spotifyCtx?.track_window?.current_track?.artists || [
     { name: 'on LedFx' },
   ];
-  const playlistUri = playerState?.context?.metadata?.uri;
-  if (playlistUri?.split(':')[1] === 'playlist') {
-    getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) => {
-      // console.log(r);
-      setPlaylist(r.items);
-    });
-    // getPlaylistB(playlistUri.split(':')[2], spotifyToken).then((r) =>
-    //   console.log(r)
-    // );
-  }
-  const album = playerState?.track_window?.current_track?.album.name || '';
+
+  useEffect(() => {
+    const playlistUri = spotifyCtx?.context?.metadata?.uri;
+    if (playlistUri?.split(':')[1] === 'playlist') {
+      getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) => {
+        // console.log(r);
+        setPlaylist(r.items);
+      });
+      // getPlaylistB(playlistUri.split(':')[2], spotifyToken).then((r) =>
+      //   console.log(r)
+      // );
+    }
+  }, [spotifyCtx?.context?.metadata?.uri]);
+
+  const album = spotifyCtx?.track_window?.current_track?.album.name || '';
   return (
     <Box className={className}>
       <CoverImage className={classes.albumImg}>
