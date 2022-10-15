@@ -5,14 +5,14 @@ import Stack from '@mui/material/Stack';
 import { VolumeDown, VolumeMute, VolumeUp } from '@material-ui/icons';
 import { VolSliderStyles } from './SpWidgetPro.styles';
 import {
-  ControlSpotifyContext,
+  SpotifyControlContext,
   SpotifyVolumeContext,
 } from '../../SpotifyProvider';
 
 export default function SpVolume() {
   const [volu, setVolu] = useState(-1);
   const spotifyVolume = useContext(SpotifyVolumeContext);
-  const ctrlSpotify = useContext(ControlSpotifyContext);
+  const ctrlSpotify = useContext(SpotifyControlContext);
   return (
     <Stack
       spacing={2}

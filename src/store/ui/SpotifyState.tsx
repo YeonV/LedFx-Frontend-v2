@@ -15,6 +15,7 @@ export type SpotifyState = {
     skipping_next: boolean; // example, `skipping_next`, `skipping_prev` and
     skipping_prev: boolean; // `seeking` will be set to `true` when playing an
   };
+  loading: boolean;
   duration: number;
   paused: boolean; // Whether the current track is paused.
   position: number; // The position_ms of the current track.
