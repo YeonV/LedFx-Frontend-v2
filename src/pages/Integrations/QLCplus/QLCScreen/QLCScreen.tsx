@@ -15,10 +15,10 @@ import {
   Transition,
 } from './QLCScreen.props';
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles';
-import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable';
-import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable';
-import DialogAddEventListener from '../../../../components/Integrations/QLC/DialogAddEventListener';
-import useStore from '../../../../store/useStore';
+// import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable';
+// import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable';
+// import DialogAddEventListener from '../../../../components/Integrations/QLC/DialogAddEventListener';
+// import useStore from '../../../../store/useStore';
 
 export default function QLCScreen({
   icon = <Settings />,
@@ -34,7 +34,7 @@ export default function QLCScreen({
 }: QLCScreenProps) {
   const classes = useEditVirtualsStyles();
   const [open, setOpen] = React.useState(false);
-  const integrations = useStore((state) => state.integrations);
+  // const integrations = useStore((state) => state.integrations);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -96,7 +96,7 @@ export default function QLCScreen({
             </Typography>
           </Toolbar>
         </AppBar>
-        <DialogAddEventListener integration={integrations?.qlc} />
+        {/* <DialogAddEventListener integration={integrations?.qlc} /> */}
         <div style={{ margin: '1rem' }}>
           <div style={{ marginTop: '1rem' }} />
           {/* <Button
@@ -112,8 +112,8 @@ export default function QLCScreen({
           </Button> */}
           <Grid xl={12} container item alignItems="center" spacing={1} />
           <div style={{ marginTop: '1rem' }} />
-          <QLCTriggerTable />
-          <QLCDropdownTable />
+          {/* <QLCTriggerTable />
+          <QLCDropdownTable /> */}
         </div>
       </Dialog>
     </>
