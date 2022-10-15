@@ -15,7 +15,7 @@ import {
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
 
 import useStore from '../../../../../store/useStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
@@ -27,32 +27,18 @@ import {
 } from '../../../../../utils/spotifyProxies';
 import SpSceneTrigger from './SpSceneTrigger';
 import {
-  ControlSpotifyContext,
+  SpotifyControlContext,
   SpotifyStateContext,
+  SpotifyTriggersContext,
   SpotifyVolumeContext,
 } from '../../SpotifyProvider';
 
 export default function SpControls({ className }: any) {
   const classes = useStyle();
-  const [marks, setMarks] = useState<any>([]);
-  // const player = useStore((state) => state.spotify.player);
-
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  // const spActTriggers = useStore((state) => state.spotify.spActTriggers);
-  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
-  // const spotifyVol = useStore((state) => state.spotify.spotifyVol);
-  // const setSpotifyVol = useStore((state) => state.setSpVol);
-  // const setSpotifyPos = useStore((state) => state.setSpPos);
-  // const getVolume = useStore((state) => state.getVolume);
-  // const spotifyState = useStore((state) => state.spotify.spotifyState);
-
-  // const marks = spActTriggers.map((m: any) => ({
-  //   value: m.position_ms,
-  //   label: m.sceneName,
-  // }));
-
-  const ctrlSpotify = useContext(ControlSpotifyContext);
+  const ctrlSpotify = useContext(SpotifyControlContext);
   const spotifyVolume = useContext(SpotifyVolumeContext);
+  const triggers = useContext(SpotifyTriggersContext);
   const spotifyCtx = useContext(SpotifyStateContext);
   const hijack = spotifyCtx?.track_window?.current_track?.album.name || '';
   const [position, setPosition] = useState(-1);
@@ -62,21 +48,11 @@ export default function SpControls({ className }: any) {
   const repeat_mode = spotifyCtx?.repeat_mode || 0;
   const shuffle = spotifyCtx?.shuffle || false;
 
-  useEffect(() => {
-    const hlp = spTriggersList
-      .filter(
-        (l: any) =>
-          l.songId ===
-          spotifyCtx?.context?.metadata?.current_item?.uri.split(':')[2]
-      )
-      .map((m: any) => ({
-        value: m.position_ms,
-        label: m.sceneName,
-      }));
-    // eslint-disable-next-line no-console
-    // console.log(hlp);
-    setMarks(hlp);
-  }, [spotifyCtx?.context?.uri]);
+  const marks = triggers.map((x) => ({
+    value: x.position_ms,
+    label: x.sceneName,
+  }));
+
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}
