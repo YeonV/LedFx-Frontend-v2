@@ -18,6 +18,7 @@ import { PlayCircleFilled } from '@material-ui/icons';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import { useDataGridStyles } from './SpTriggerTable';
+import { SpotifyStateContext } from '../../SpotifyProvider';
 
 // function isScrolledIntoView(el: any) {
 //   const rect = el.getBoundingClientRect();
@@ -34,9 +35,7 @@ import { useDataGridStyles } from './SpTriggerTable';
 export default function SpPlaylist() {
   const classes = useDataGridStyles();
   const playlist = useStore((state) => state.spotify.playlist);
-  const playerState = useStore(
-    (state) => state.spotify.spotifyData.playerState
-  );
+  const playerState = React.useContext(SpotifyStateContext);
   const playlistUri = playerState?.context?.metadata?.uri;
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const columns: GridColDef[] = [
@@ -129,7 +128,7 @@ export default function SpPlaylist() {
           getRowClassName={(params: GridRowParams<any>) =>
             (params.row.track.name ===
             playerState?.context.metadata?.current_item.name) && (
-              params.row.track.artists?.[0].uri === 
+              params.row.track.artists?.[0].uri ===
               playerState?.context.metadata?.current_item.artists?.[0].uri
             )
               ? 'currently_playing'

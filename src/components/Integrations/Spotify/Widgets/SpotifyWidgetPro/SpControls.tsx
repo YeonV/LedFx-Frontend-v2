@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
@@ -13,7 +15,8 @@ import {
 } from '@material-ui/icons';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import { Button } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
+
 import useStore from '../../../../../store/useStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
 import { formatTime } from '../../../../../utils/helpers';
@@ -23,57 +26,33 @@ import {
   spotifyPlay,
 } from '../../../../../utils/spotifyProxies';
 import SpSceneTrigger from './SpSceneTrigger';
+import {
+  SpotifyControlContext,
+  SpotifyStateContext,
+  SpotifyTriggersContext,
+  SpotifyVolumeContext,
+} from '../../SpotifyProvider';
 
 export default function SpControls({ className }: any) {
   const classes = useStyle();
-  const [marks, setMarks] = useState<any>([]);
-  const player = useStore((state) => state.spotify.player);
-  const spotifyData = useStore(
-    (state: any) => state.spotify.spotifyData.playerState
-  );
-  const duration = spotifyData?.duration || 0;
-  const paused = spotifyData?.paused || false;
-  const repeat_mode = spotifyData?.repeat_mode || 0;
-  const shuffle = spotifyData?.shuffle || false;
-  const hijack = spotifyData?.track_window?.current_track?.album.name || '';
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  // const spActTriggers = useStore((state) => state.spotify.spActTriggers);
-  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
-  const spotifyVol = useStore((state) => state.spotify.spotifyVol);
-  const setSpotifyVol = useStore((state) => state.setSpVol);
-  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
-  const setSpotifyPos = useStore((state) => state.setSpPos);
-  const getVolume = useStore((state) => state.getVolume);
+  const ctrlSpotify = useContext(SpotifyControlContext);
+  const spotifyVolume = useContext(SpotifyVolumeContext);
+  const triggers = useContext(SpotifyTriggersContext);
+  const spotifyCtx = useContext(SpotifyStateContext);
+  const hijack = spotifyCtx?.track_window?.current_track?.album.name || '';
+  const [position, setPosition] = useState(-1);
 
-  const setVol = (vol: number) =>
-    player
-      .setVolume(vol)
-      .then(() => getVolume().then((v: number) => setSpotifyVol(v)));
+  const duration = spotifyCtx?.duration || 0;
+  const paused = spotifyCtx?.paused || false;
+  const repeat_mode = spotifyCtx?.repeat_mode || 0;
+  const shuffle = spotifyCtx?.shuffle || false;
 
-  // const marks = spActTriggers.map((m: any) => ({
-  //   value: m.position_ms,
-  //   label: m.sceneName,
-  // }));
+  const marks = triggers.map((x) => ({
+    value: x.position_ms,
+    label: x.sceneName,
+  }));
 
-  useEffect(() => {
-    const hlp = spTriggersList
-      .filter(
-        (l: any) =>
-          l.songId ===
-          spotifyData?.context?.metadata?.current_item?.uri.split(':')[2]
-      )
-      .map((m: any) => ({
-        value: m.position_ms,
-        label: m.sceneName,
-      }));
-    // eslint-disable-next-line no-console
-    // console.log(hlp);
-    setMarks(hlp);
-  }, [spotifyPos]);
-
-  // const help = [...marks];
-  // eslint-disable-next-line no-console
-  // console.log('yoo', spotifyData?.context?.metadata?.current_item?.uri);
   return (
     <Box
       className={`${classes.SpControlstyles} ${className}`}
@@ -97,14 +76,14 @@ export default function SpControls({ className }: any) {
               <IconButton
                 aria-label="next song"
                 sx={{ marginLeft: '0 !important' }}
-                onClick={() => setVol(spotifyVol === 0 ? 1 : 0)}
+                onClick={() => ctrlSpotify.setVol(spotifyVolume === 0 ? 1 : 0)}
               >
-                {spotifyVol === 0 ? (
+                {spotifyVolume === 0 ? (
                   <VolumeMute
                     style={{ fontSize: '1.5rem' }}
                     htmlColor="rgba(255,255,255,0.7)"
                   />
-                ) : spotifyVol < 0.5 ? (
+                ) : spotifyVolume < 0.5 ? (
                   <VolumeDown
                     style={{ fontSize: '1.5rem' }}
                     htmlColor="rgba(255,255,255,0.7)"
@@ -129,13 +108,13 @@ export default function SpControls({ className }: any) {
             </IconButton>
             <IconButton
               aria-label="previous song"
-              onClick={() => player.previousTrack()}
+              onClick={() => ctrlSpotify.prev()}
             >
               <SkipPrevious fontSize="large" htmlColor="#bbb" />
             </IconButton>
             <IconButton
               aria-label={paused ? 'play' : 'pause'}
-              onClick={() => player.togglePlay()}
+              onClick={() => ctrlSpotify.togglePlay()}
             >
               {paused ? (
                 <PlayCircle sx={{ fontSize: '3rem' }} htmlColor="#fff" />
@@ -145,7 +124,7 @@ export default function SpControls({ className }: any) {
             </IconButton>
             <IconButton
               aria-label="next song"
-              onClick={() => player.nextTrack()}
+              onClick={() => ctrlSpotify.next()}
             >
               <SkipNext fontSize="large" htmlColor="#bbb" />
             </IconButton>
@@ -173,17 +152,22 @@ export default function SpControls({ className }: any) {
               justifyContent: 'space-between',
             }}
           >
-            <TinyText>{formatTime(spotifyPos)}</TinyText>
+            <TinyText>{formatTime(spotifyCtx?.position ?? 0)}</TinyText>
             <Slider
               aria-label="time-indicator"
               size="small"
               marks={marks}
-              value={spotifyPos || 0}
+              value={position >= 0 ? position : spotifyCtx?.position ?? 0}
               min={0}
               step={1}
-              max={duration}
-              onChange={(_, value) => setSpotifyPos(value as number)}
-              onChangeCommitted={(_, value) => player.seek(value as number)}
+              max={spotifyCtx?.duration}
+              onChange={(_, value) => {
+                setPosition(value as number);
+              }}
+              onChangeCommitted={(_, value) => {
+                setTimeout(() => setPosition(-1), 1000);
+                ctrlSpotify.setPos(value as number);
+              }}
               sx={{ ...PosSliderStyles, margin: '0 10px' }}
             />
             <TinyText>{formatTime(duration)}</TinyText>
