@@ -1,26 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { VolumeDown, VolumeMute, VolumeUp } from '@material-ui/icons';
-import useStore from '../../../../../store/useStore';
 import { VolSliderStyles } from './SpWidgetPro.styles';
+import {
+  SpotifyControlContext,
+  SpotifyVolumeContext,
+} from '../../SpotifyProvider';
 
 export default function SpVolume() {
-  const player = useStore((state) => state.spotify.player);
-  const spotifyVol = useStore((state) => state.spotify.spotifyVol);
-  const setSpotifyVol = useStore((state) => state.setSpVol);
-  const [volu, setVolu] = useState(spotifyVol || 0);
-  const setVol = (vol: number) => {
-    if (player)
-      player
-        .setVolume(vol)
-        .then(() => player.getVolume().then((v: number) => setSpotifyVol(v)));
-  };
-  useEffect(() => {
-    setVolu(spotifyVol);
-  }, [spotifyVol]);
-
+  const [volu, setVolu] = useState(-1);
+  const spotifyVolume = useContext(SpotifyVolumeContext);
+  const ctrlSpotify = useContext(SpotifyControlContext);
   return (
     <Stack
       spacing={2}
@@ -31,11 +23,11 @@ export default function SpVolume() {
       <IconButton
         aria-label="next song"
         sx={{ marginLeft: '0 !important' }}
-        onClick={() => setVol(spotifyVol === 0 ? 1 : 0)}
+        onClick={() => ctrlSpotify.setVol(spotifyVolume === 0 ? 1 : 0)}
       >
-        {spotifyVol === 0 ? (
+        {spotifyVolume === 0 ? (
           <VolumeMute htmlColor="rgba(255,255,255,0.4)" />
-        ) : spotifyVol < 0.5 ? (
+        ) : spotifyVolume < 0.5 ? (
           <VolumeDown htmlColor="rgba(255,255,255,0.4)" />
         ) : (
           <VolumeUp htmlColor="rgba(255,255,255,0.4)" />
@@ -45,9 +37,12 @@ export default function SpVolume() {
         aria-label="Volume"
         min={0}
         max={100}
-        value={volu * 100}
+        value={volu > 0 ? volu : spotifyVolume * 100}
         onChange={(_, v) => setVolu((v as number) / 100)}
-        onChangeCommitted={(e, v: any) => setVol(v / 100)}
+        onChangeCommitted={(e, v: any) => {
+          ctrlSpotify.setVol(v / 100);
+          setVolu(-1);
+        }}
         sx={{ ...VolSliderStyles, '&&&': { marginLeft: 0, marginRight: 3 } }}
       />
     </Stack>
