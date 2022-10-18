@@ -26,6 +26,7 @@ import AddButton from '../AddButton';
 import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
+import EditSceneDialog from '../Dialogs/EditSceneDialog';
 
 export default function BarBottom() {
   const classes = useStyles();
@@ -214,6 +215,7 @@ export default function BarBottom() {
       <AddDeviceDialog />
       <AddVirtualDialog />
       <AddIntegrationDialog />
+      <EditSceneDialog />
       <AddButton
         setBackdrop={setBackdrop}
         className={`${clsx(classes.addButton, {
