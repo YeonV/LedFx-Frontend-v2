@@ -10,6 +10,7 @@ import isElectron from 'is-electron';
 import qs from 'qs';
 import { log } from './helpers';
 import useStore from '../store/useStore';
+import getIntegrations from '../store/api/storeIntegrations';
 
 const baseURL = isElectron()
   ? 'http://localhost:8888'
@@ -132,9 +133,10 @@ export function refreshAuth() {
       });
       freshTokens.refreshToken = res.data.refreshToken;
 
-      return freshTokens;
+      return freshTokens && getIntegrations('spotify');
     })
     .catch((e) => console.log(e));
+  finishAuth();
 }
 
 export function logoutAuth() {
@@ -341,9 +343,9 @@ export function fixAnalysis(audioAnalysis: any) {
       new_segment.start = parseFloat(segment.start.toFixed(2));
       new_segment.pitches = [];
       let pitchTotal = 0;
-      console.log(segment.pitches);
+      // console.log(segment.pitches);
       segment.pitches.forEach((pitch: number) => {
-        console.log(pitch);
+        // console.log(pitch);
         pitchTotal += pitch;
       });
       segment.pitches.forEach((pitch: number) => {
