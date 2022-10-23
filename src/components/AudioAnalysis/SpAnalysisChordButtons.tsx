@@ -100,6 +100,7 @@ export default function PitchSelect({ handleChordClick }: any) {
               <Typography color="primary">{group}</Typography>
             </InputLabel>
             <Select
+              defaultValue="0,1,2,3,4,5,6,7,8,9,10,11"
               onChange={handleChordClick}
               labelId={group}
               color="primary"
