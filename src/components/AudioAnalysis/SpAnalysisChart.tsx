@@ -70,7 +70,7 @@ const Chart: React.FC<AudioAnalysisProps> = (props) => {
   const { analysis, width, height, pitches } = props;
 
   return (
-    <ResponsiveContainer width={width} height={height} debounce={5}>
+    <ResponsiveContainer width={width} height={height} debounce={0}>
       <ComposedChart
         barGap={1}
         data={analysis?.segments}
@@ -145,7 +145,7 @@ const Chart: React.FC<AudioAnalysisProps> = (props) => {
             return (
               <Area
                 key={i}
-                fillOpacity="1"
+                fillOpacity="0.5"
                 strokeOpacity="1"
                 name={p}
                 stackId="1"

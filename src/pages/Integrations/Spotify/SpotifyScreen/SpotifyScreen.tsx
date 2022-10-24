@@ -22,6 +22,7 @@ import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets
 import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable';
 import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist';
 import SpAnalysisLayout from '../../../../components/AudioAnalysis/SpAnalysisLayout';
+import useStore from '../../../../store/useStore';
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -37,7 +38,9 @@ export default function SpotifyScreen({
 }: SpotifyScreenProps) {
   const classes = useEditVirtualsStyles();
   const [open, setOpen] = React.useState(false);
-
+  const showAdvancedSpotify = useStore(
+    (state) => state.spotify.showAdvancedSpotify
+  );
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -107,7 +110,7 @@ export default function SpotifyScreen({
             <SpPlaylist />
           </Grid>
           <div style={{ marginTop: '1rem' }} />
-          <SpAnalysisLayout />
+          {showAdvancedSpotify && <SpAnalysisLayout />}
           <div style={{ marginTop: '1rem' }} />
           <SpotifyTriggerTable />
         </div>

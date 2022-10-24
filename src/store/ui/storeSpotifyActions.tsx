@@ -107,6 +107,14 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpAuthenticated'
     ),
+  setShowAdvancedSpotify: (val: boolean) =>
+    set(
+      produce((state: any) => {
+        state.spotify.showAdvancedSpotify = val;
+      }),
+      false,
+      'spotify/setShowAdvancedSpotify'
+    ),
   setSpData: (type: string, data: any) =>
     set(
       produce((state: any) => {

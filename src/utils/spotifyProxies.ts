@@ -135,8 +135,8 @@ export function refreshAuth() {
 
       return freshTokens && getIntegrations('spotify');
     })
-    .catch((e) => console.log(e));
-  finishAuth();
+    .catch((e) => console.log(e))
+    .finally(() => finishAuth());
 }
 
 export function logoutAuth() {

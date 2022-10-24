@@ -97,13 +97,12 @@ export default function PitchSelect({ handleChordClick }: any) {
         <Grid item xs={6} sm={3}>
           <FormControl style={{ width: '100%' }}>
             <InputLabel id={group}>
-              <Typography color="primary">{group}</Typography>
+              <Typography>{group}</Typography>
             </InputLabel>
             <Select
               defaultValue="0,1,2,3,4,5,6,7,8,9,10,11"
               onChange={handleChordClick}
               labelId={group}
-              color="primary"
               className={classes.select}
               inputProps={{ classes: { icon: classes.icon } }}
             >

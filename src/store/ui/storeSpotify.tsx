@@ -166,6 +166,7 @@ const storeSpotify = () => ({
   spotifyPos: 0 as any,
   spNetworkTime: 1000,
   spAuthenticated: false,
+  showAdvancedSpotify: false,
   spotifyData: {
     trackAnalysis: {
       segments: [] as Segment[],

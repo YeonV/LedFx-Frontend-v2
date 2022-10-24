@@ -96,7 +96,7 @@ export default function SpPlaylist() {
   // console.log(playerState?.context.metadata?.current_item, rows.map((r: any)=>r.track))
   return (
     <Grid xl={7} lg={5} md={12} xs={12} item>
-      <Box sx={{ height: 250 }}>
+      <Box sx={{ height: 300 }}>
         <DataGrid
           className={`${classes.root} playlist`}
           rows={rows}

@@ -15,7 +15,7 @@ import { useTheme } from '@material-ui/core';
 
 const RadarChartContainer = styled.div`
   width: 500px;
-  height: 250px;
+  height: 300px;
   margin: 0 auto;
   h2 {
     margin-bottom: 40px;

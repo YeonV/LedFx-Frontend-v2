@@ -1,22 +1,22 @@
 export interface AudioAnalysisProps {
-  analysis: any,
+  analysis: any;
   width: number;
   height: number;
   pitches: any;
-//   pitches: typeof defaultPitches;
+  //   pitches: typeof defaultPitches;
 }
 
-export const defaultPitches ={
-     C: true,
-        'C#': true,
-        D: true,
-        'D#': true,
-        E: true,
-        F: true,
-        'F#': true,
-        G: true,
-        'G#': true,
-        A: true,
-        'A#': true,
-        B: true,
-}
+export const defaultPitches = {
+  C: true,
+  'C#': true,
+  D: true,
+  'D#': true,
+  E: true,
+  F: true,
+  'F#': true,
+  G: true,
+  'G#': true,
+  A: true,
+  'A#': true,
+  B: true,
+};

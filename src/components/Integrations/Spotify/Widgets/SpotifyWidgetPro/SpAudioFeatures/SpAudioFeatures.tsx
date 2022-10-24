@@ -11,9 +11,10 @@ import {
   Paper,
   Grid,
   Card,
+  Switch,
 } from '@material-ui/core';
 import { BarChart, MusicNote, Speed, Wallpaper } from '@material-ui//icons';
-import { Piano } from '@mui/icons-material';
+import { Insights, Piano } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 import {
   getTrackFeatures,
@@ -29,9 +30,15 @@ export default function SpAudioFeatures() {
     (state) => state.spotify.spotifyData.audioFeatures
   );
   const songID = spotifyState?.track_window?.current_track?.id || '';
-  // const getTrackFeaturesData = useStore((state) =>
-  //   (state as any).getTrackFeaturesData
+  // const getTrackFeaturesData = useStore(
+  //   (state) => (state as any).getTrackFeaturesData
   // );
+  const showAdvancedSpotify = useStore(
+    (state) => state.spotify.showAdvancedSpotify
+  );
+  const setShowAdvancedSpotify = useStore(
+    (state) => state.setShowAdvancedSpotify
+  );
   const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken);
   const setSpotifyData = useStore((state) => state.setSpData);
 
@@ -42,11 +49,13 @@ export default function SpAudioFeatures() {
       getTrackFeatures(songID, spotifyToken).then((res) => {
         setSpotifyData('audioFeatures', res);
       });
-      getTrackAnalysis(songID, spotifyToken).then((data) => {
-        setSpotifyData('trackAnalysis', data);
-      });
+      if (showAdvancedSpotify) {
+        getTrackAnalysis(songID, spotifyToken).then((data) => {
+          setSpotifyData('trackAnalysis', data);
+        });
+      }
     }
-  }, [meta]);
+  }, [meta, showAdvancedSpotify]);
 
   // const audioFeatures = {
   //   danceability: 0.76,
@@ -73,7 +82,7 @@ export default function SpAudioFeatures() {
   return (
     <>
       <Grid xl={2} lg={3} md={6} sm={12} xs={12} item>
-        <Card style={{ border: '1px solid rgb(102,102,102)', height: 250 }}>
+        <Card style={{ border: '1px solid rgb(102,102,102)', height: 300 }}>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableBody>
@@ -170,6 +179,22 @@ export default function SpAudioFeatures() {
                     0
                   </TableCell>
                 </TableRow>
+                <TableRow>
+                  <TableCell style={{ padding: '2px 16px' }}>
+                    <Stack direction="row" alignItems="flex-end">
+                      <Insights style={{ marginRight: '0.5rem' }} />
+                      Advanced
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="right" style={{ padding: '2px 0' }}>
+                    <Switch
+                      checked={showAdvancedSpotify}
+                      onChange={() =>
+                        setShowAdvancedSpotify(!showAdvancedSpotify)
+                      }
+                    />
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
@@ -178,7 +203,7 @@ export default function SpAudioFeatures() {
       <Grid xl={3} lg={4} md={6} sm={12} xs={12} item>
         <div
           style={{
-            height: '250px',
+            height: '300px',
             overflow: 'hidden',
             border: '1px solid rgb(102, 102, 102)',
             borderRadius: 4,
