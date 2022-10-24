@@ -2,7 +2,7 @@
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
 // import { useTheme } from '@mui/material/styles';
 import { DeleteForever, PlayCircleFilled } from '@material-ui/icons';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { IconButton } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,6 +10,7 @@ import { NotStarted } from '@mui/icons-material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
+import { SpotifyStateContext } from '../../SpotifyProvider';
 
 export const useDataGridStyles = makeStyles((theme: any) => ({
   root: {
@@ -53,18 +54,17 @@ export default function SpotifyTriggerTable() {
   const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const playerState = useStore(
-    (state) => state.spotify.spotifyData.playerState
-  );
+  const playerState = useContext(SpotifyStateContext);
   const spTriggersList = useStore((state) => state.spotify.spTriggersList);
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
   const getSpTriggers = useStore((state) => state.getSpTriggers);
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
+  const getScenes = useStore((state) => state.getScenes);
 
   useEffect(() => {
     getSpTriggers('spotify');
+    getScenes();
   }, []);
 
   const padTo2Digits = (num: any) => {
@@ -225,7 +225,7 @@ export default function SpotifyTriggerTable() {
         getRowClassName={(params: GridRowParams<any>) =>
           params.row.songId ===
           playerState?.context.metadata?.current_item.uri.split(':')[2]
-            ? spotifyPos > params.row.position_ms
+            ? (playerState?.position ?? 0) > params.row.position_ms
               ? 'activated'
               : 'currently_playing'
             : ''

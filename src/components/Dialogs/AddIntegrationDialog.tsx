@@ -174,7 +174,9 @@ const AddIntegrationDialog = () => {
                 <MenuItem
                   key={i}
                   value={item}
-                  disabled={['mqtt_hass', 'spotify'].indexOf(item) === -1}
+                  disabled={
+                    ['mqtt_hass', 'spotify', 'qlc'].indexOf(item) === -1
+                  }
                 >
                   {item}
                 </MenuItem>

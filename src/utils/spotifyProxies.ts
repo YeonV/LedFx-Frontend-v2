@@ -153,6 +153,19 @@ export function logoutAuth() {
   return true;
 }
 
+export async function spotifyMe() {
+  const cookies = new Cookies();
+  const res = await axios.get('https://api.spotify.com/v1/me', {
+    headers: {
+      Authorization: `Bearer ${cookies.get('access_token')}`,
+    },
+  });
+  if (res.status === 200) {
+    return res.data;
+  }
+  return 'Error';
+}
+
 export async function spotifyPause() {
   const cookies = new Cookies();
   const res = await axios.put(
