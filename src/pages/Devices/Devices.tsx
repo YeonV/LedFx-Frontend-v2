@@ -33,7 +33,8 @@ const Devices = () => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
-  const graphs = useStore((state) => state.graphs);
+  const graphs = useStore((state) => state.graphsMulti);
+  const graphsMulti = useStore((state) => state.graphsMulti);
 
   useEffect(() => {
     getDevices();
@@ -69,10 +70,10 @@ const Devices = () => {
   }, []);
 
   useEffect(() => {
-    if (graphs) {
+    if (graphs && graphsMulti) {
       setPixelGraphs(Object.keys(virtuals));
     }
-  }, [graphs, setPixelGraphs]);
+  }, [graphs, graphsMulti, setPixelGraphs]);
 
   return (
     <div className={classes.cardWrapper}>
