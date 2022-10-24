@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+
 import useStyle from './SpWidgetPro.styles';
 import SpControls from './SpControls';
 import SpTrack from './SpTrack';
@@ -9,9 +10,10 @@ import useStore from '../../../../../store/useStore';
 import SpLayoutButtons from './SpLayoutButtons';
 import SpFloating from './SpFloating';
 
-const SpotifyWidgetPro = ({ drag }: any) => {
+const SpotifyWidgetPro = ({ drag }: { drag?: boolean }) => {
   const classes = useStyle();
   const swSize = useStore((state) => state.spotify.swSize);
+
   return (
     <Box component={drag ? SpFloating : undefined}>
       <div className={classes.Widget}>
@@ -31,4 +33,7 @@ const SpotifyWidgetPro = ({ drag }: any) => {
   );
 };
 
+SpotifyWidgetPro.defaultProps = {
+  drag: false,
+};
 export default SpotifyWidgetPro;

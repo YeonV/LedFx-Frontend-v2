@@ -1,37 +1,41 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import { MenuItem, Select, InputAdornment } from '@material-ui/core';
-import { OutlinedInput } from '@mui/material';
+import {
+  InputAdornment,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@material-ui/core';
 import useStore from '../../../../../store/useStore';
 
-// import { formatTime } from '../../../../../utils/helpers';
 import Popover from '../../../../Popover/Popover';
 import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon';
+import { SpotifyStateContext } from '../../SpotifyProvider';
 
 export default function SpSceneTrigger() {
+  const spotifyState = useContext(SpotifyStateContext);
+
   const scenes = useStore((state) => state.scenes);
+  const getScenes = useStore((state) => state.getScenes);
   const [spotifyScene, setSpotifyScene] = useState(0);
-  const spotifyPos = useStore((state) => state.spotify.spotifyPos);
   const player = useStore((state) => state.spotify.player);
   const spNetworkTime = useStore((state) => state.spotify.spNetworkTime);
   const setSpNetworkTime = useStore((state) => state.setSpNetworkTime);
 
-  const playerState = useStore(
-    (state) => state.spotify.spotifyData.playerState
-  );
   const addSpotifySongTrigger = useStore((state) => state.addSpSongTrigger);
   const getIntegrations = useStore((state) => state.getIntegrations);
-  const songID = playerState?.track_window?.current_track?.id || '';
-  const songTitleAndArtist = `${playerState?.track_window?.current_track?.name} - ${playerState?.track_window?.current_track?.artists[0]?.name}`;
+  const songID = spotifyState?.track_window?.current_track?.id || '';
+  const songTitleAndArtist = `${spotifyState?.track_window?.current_track?.name} - ${spotifyState?.track_window?.current_track?.artists[0]?.name}`;
   const spotifyTriggerData = {
     scene_id: spotifyScene, // Incorrectly sending scene_name instead of scene_id
     song_id: songID,
     song_name: songTitleAndArtist,
-    song_position: spotifyPos,
+    song_position: spotifyState?.position,
   };
 
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
-    // console.log(spotifyTriggerDataTemp);
     player.getCurrentState().then((state: any) => {
       if (!state) {
         // eslint-disable-next-line no-console
@@ -46,68 +50,66 @@ export default function SpSceneTrigger() {
     });
   };
 
+  useEffect(() => {
+    getScenes();
+  }, []);
+
   return (
     <Popover
       variant="text"
       size="large"
       confirmDisabled={spotifyScene === 0}
+      confirmContent="Set Now"
       icon={<BladeIcon name="mdi:timer-music-outline" />}
       onConfirm={() => onConfirmHandler(spotifyTriggerData)}
       content={
         <div>
-          <Box sx={{ minWidth: 220, margin: 0 }}>
-            <Select
-              labelId="scenelabel"
-              id="scene"
-              value={spotifyScene}
-              label="Scene"
+          <Box sx={{ minWidth: 220, margin: 0, padding: '6px 5px 1px 5px' }}>
+            <FormControl style={{ minWidth: 220 }}>
+              <InputLabel
+                id="scenelabel"
+                style={{ marginLeft: 14, marginTop: -7 }}
+              >
+                Scene
+              </InputLabel>
+              <Select
+                labelId="scenelabel"
+                id="scene"
+                value={spotifyScene}
+                label="Scene"
+                variant="outlined"
+                onChange={(_, v: any) => {
+                  setSpotifyScene(v.props.value);
+                }}
+              >
+                <MenuItem value={0}>select a scene</MenuItem>
+                {scenes &&
+                  Object.keys(scenes).length &&
+                  Object.keys(scenes).map((s: any, i: number) => (
+                    <MenuItem key={i} value={scenes[s].id || s}>
+                      {scenes[s].name || s}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Network Delay"
               variant="outlined"
-              onChange={(_, v: any) => {
-                setSpotifyScene(v.props.value);
-              }}
-            >
-              <MenuItem value={0}>select a scene</MenuItem>
-              {scenes &&
-                Object.keys(scenes).length &&
-                Object.keys(scenes).map((s: any, i: number) => (
-                  <MenuItem key={i} value={scenes[s].id || s}>
-                    {scenes[s].name || s}
-                  </MenuItem>
-                ))}
-            </Select>
-            <OutlinedInput
               style={{
-                width: 115,
+                width: 150,
                 color: '#fff',
                 border: 0,
+                marginLeft: 10,
               }}
-              endAdornment={<InputAdornment position="end">ms</InputAdornment>}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">ms</InputAdornment>
+                ),
+              }}
               type="number"
               value={spNetworkTime}
               onChange={(e: any) => setSpNetworkTime(e.target.value)}
             />
-            {/* <OutlinedInput
-              disabled
-              style={{
-                width: 115,
-                color: '#fff',
-                border: 0,
-              }}
-              endAdornment={<InputAdornment position="end">min</InputAdornment>}
-              type="number"
-              value={formatTime(spotifyPos).split(':')[0]}
-            />
-            <OutlinedInput
-              disabled
-              style={{
-                width: 95,
-                color: '#fff',
-                borderColor: '#fff',
-              }}
-              endAdornment={<InputAdornment position="end">s</InputAdornment>}
-              value={formatTime(spotifyPos).split(':')[1]}
-              type="number"
-            /> */}
           </Box>
         </div>
       }
