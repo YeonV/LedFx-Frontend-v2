@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import { useTheme } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import SettingsIcon from '@material-ui/icons/Settings';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import TuneIcon from '@material-ui/icons/Tune';
-import BuildIcon from '@material-ui/icons/Build';
+import { useTheme } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import TuneIcon from '@mui/icons-material/Tune';
+import BuildIcon from '@mui/icons-material/Build';
 import { NavLink } from 'react-router-dom';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import Collapse from '@mui/material/Collapse';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import {
   Clear,
   Delete,
   Pause,
   PlayArrow,
   SyncProblem,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import Popover from '../../../components/Popover/Popover';
 import EditVirtuals from '../EditVirtuals/EditVirtuals';
 import PixelGraph from '../../../components/PixelGraph';

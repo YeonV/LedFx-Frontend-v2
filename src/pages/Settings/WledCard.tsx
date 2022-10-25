@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   Card,
   CardHeader,
@@ -15,8 +15,8 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wled from '../../components/Icons/Wled';
 import useStore from '../../store/useStore';
 

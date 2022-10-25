@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { MenuItem, ListItemIcon } from '@material-ui/core';
-import { Badge } from '@mui/material';
+import { MenuItem, ListItemIcon, Badge } from '@mui/material';
 import Tour from 'reactour';
-import { InfoRounded } from '@material-ui/icons';
+import { InfoRounded } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 
 const steps = [

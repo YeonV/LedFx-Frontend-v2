@@ -11,10 +11,15 @@ import {
   Paper,
   Grid,
   Card,
-} from '@material-ui/core';
-import { BarChart, MusicNote, Speed, Wallpaper } from '@material-ui//icons';
-import { Piano } from '@mui/icons-material';
-import { Stack } from '@mui/material';
+  Stack,
+} from '@mui/material';
+import {
+  BarChart,
+  MusicNote,
+  Speed,
+  Wallpaper,
+  Piano,
+} from '@mui/icons-material';
 import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
 import RadarChart from './SpRadarChart';
 import useStore from '../../../../../../store/useStore';

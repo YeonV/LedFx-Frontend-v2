@@ -4,7 +4,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-unused-expressions */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   Dialog,
   DialogActions,
@@ -15,7 +15,7 @@ import {
   MenuItem,
   Button,
   Divider,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 

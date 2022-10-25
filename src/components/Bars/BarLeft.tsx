@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
   ListItem,
   ListItemIcon,
@@ -11,7 +11,7 @@ import {
   List,
   Divider,
   IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useLocation, Link } from 'react-router-dom';
 import isElectron from 'is-electron';
 import useStore from '../../store/useStore';

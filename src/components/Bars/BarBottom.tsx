@@ -5,17 +5,17 @@ import {
   BottomNavigationAction,
   Backdrop,
   useTheme,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Settings,
   Home,
   Wallpaper,
   SettingsInputSvideo,
   SettingsInputComponent,
-} from '@material-ui/icons';
+  Dashboard,
+} from '@mui/icons-material';
 import { useLocation, Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { Dashboard } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import AddSceneDialog from '../Dialogs/AddSceneDialog';
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog';

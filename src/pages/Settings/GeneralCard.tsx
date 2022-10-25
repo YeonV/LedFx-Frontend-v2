@@ -7,9 +7,9 @@ import {
   Delete,
   Refresh,
   Info,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import isElectron from 'is-electron';
-import { Divider } from '@material-ui/core';
+import { Divider } from '@mui/material';
 import useStore from '../../store/useStore';
 import { deleteFrontendConfig, download } from '../../utils/helpers';
 import PopoverSure from '../../components/Popover/Popover';

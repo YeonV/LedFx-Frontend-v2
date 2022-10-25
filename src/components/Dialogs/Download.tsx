@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Box, LinearProgress, Typography } from '@material-ui/core';
+import { Box, LinearProgress, Typography } from '@mui/material';
 
 export default function LinearProgressWithLabel(props: any) {
   return (

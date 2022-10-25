@@ -1,4 +1,4 @@
-import { Switch, Checkbox, Button, Typography } from '@material-ui/core/';
+import { Switch, Checkbox, Button, Typography } from '@mui/material';
 import BladeFrame from '../BladeFrame';
 import {
   BladeBooleanDefaultProps,

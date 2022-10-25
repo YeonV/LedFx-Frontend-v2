@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Slider from '@material-ui/core/Slider';
+import Slider from '@mui/material/Slider';
 import useStore from '../../../store/useStore';
 
 const PixelSlider = ({ s, handleRangeSegment }: any) => {

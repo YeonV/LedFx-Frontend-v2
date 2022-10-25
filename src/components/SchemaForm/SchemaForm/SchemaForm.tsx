@@ -1,5 +1,5 @@
 import { ReactElement, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   DialogContentText,
   Select,
@@ -8,8 +8,8 @@ import {
   Switch,
   FormControlLabel,
   Divider,
-} from '@material-ui/core';
-import { Info } from '@material-ui/icons';
+} from '@mui/material';
+import { Info } from '@mui/icons-material';
 import MicIcon from '@mui/icons-material/Mic';
 import SpeakerIcon from '@mui/icons-material/Speaker';
 import BladeBoolean from '../components/Boolean/BladeBoolean';

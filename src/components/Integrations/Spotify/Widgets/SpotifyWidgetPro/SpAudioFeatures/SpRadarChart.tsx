@@ -11,7 +11,7 @@
 // } from 'chart.js';
 import styled from 'styled-components';
 import { Radar } from 'react-chartjs-2';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material/styles';
 
 const RadarChartContainer = styled.div`
   width: 500px;

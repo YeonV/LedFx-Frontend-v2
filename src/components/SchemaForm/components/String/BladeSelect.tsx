@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Select, MenuItem, TextField } from '@material-ui/core/';
-import { InputAdornment } from '@mui/material';
+import { Select, MenuItem, TextField, InputAdornment } from '@mui/material';
 import { useState } from 'react';
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon';
 import BladeFrame from '../BladeFrame';

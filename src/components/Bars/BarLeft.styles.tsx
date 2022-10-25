@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import isElectron from 'is-electron';
 import { drawerWidth } from '../../utils/helpers';
 import blademod from '../../assets/blademod.svg';

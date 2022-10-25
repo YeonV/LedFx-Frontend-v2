@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   Card,
   CardContent,
@@ -11,8 +11,8 @@ import {
   Grid,
   Typography,
   TextField,
-} from '@material-ui/core';
-import { Add, Cloud } from '@material-ui/icons';
+} from '@mui/material';
+import { Add, Cloud } from '@mui/icons-material';
 import axios from 'axios';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
@@ -202,7 +202,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                   JSON.stringify(virtual.effect.config) ===
                   JSON.stringify(list[preset].config)
                     ? 'primary'
-                    : 'default'
+                    : 'inherit'
                 }
                 variant="outlined"
                 onClick={handleActivatePreset(virtual.id, CATEGORY, preset)}
@@ -243,7 +243,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
             <Popover
               className={classes.presetButton}
               popoverStyle={{ padding: '0.5rem' }}
-              color="default"
+              color="primary"
               variant="outlined"
               onSingleClick={() => {
                 // eslint-disable-next-line no-console

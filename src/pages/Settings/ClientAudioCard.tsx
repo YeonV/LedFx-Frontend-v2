@@ -1,5 +1,5 @@
-import { MenuItem, Select } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { MenuItem, Select } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 import useStore from '../../store/useStore';
 

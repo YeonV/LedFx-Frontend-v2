@@ -7,8 +7,8 @@ import {
   Dialog,
   Button,
   Grid,
-} from '@material-ui/core';
-import { Settings, NavigateBefore } from '@material-ui/icons';
+} from '@mui/material';
+import { Settings, NavigateBefore } from '@mui/icons-material';
 import {
   MuiMenuItem,
   SpotifyScreenDefaultProps,
@@ -28,7 +28,7 @@ export default function SpotifyScreen({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'primary',
   variant = 'contained',
   innerKey,
   disabled = false,
@@ -81,7 +81,7 @@ export default function SpotifyScreen({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
               autoFocus

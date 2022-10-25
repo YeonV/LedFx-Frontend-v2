@@ -1,8 +1,5 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import {
@@ -12,9 +9,8 @@ import {
   GridRowParams,
 } from '@mui/x-data-grid';
 
-import { Grid, IconButton } from '@material-ui/core';
-import { Stack } from '@mui/material';
-import { PlayCircleFilled } from '@material-ui/icons';
+import { Grid, IconButton , Stack } from '@mui/material';
+import { PlayCircleFilled } from '@mui/icons-material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import { useDataGridStyles } from './SpTriggerTable';

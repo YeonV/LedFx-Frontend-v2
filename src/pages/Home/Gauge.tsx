@@ -1,5 +1,5 @@
-import { CircularProgress, Typography, useTheme } from '@material-ui/core';
-import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 export default function Gauge(props: any) {
   const theme = useTheme();

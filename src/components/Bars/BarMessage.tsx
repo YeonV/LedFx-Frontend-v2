@@ -1,7 +1,4 @@
-/* eslint-disable react/no-unstable-nested-components */
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import { Icon, IconButton } from '@material-ui/core';
+import { Icon, IconButton, Snackbar, Alert as MuiAlert } from '@mui/material';
 import useStore from '../../store/useStore';
 
 const Alert = (props: any) => (

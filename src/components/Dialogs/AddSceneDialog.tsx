@@ -8,7 +8,7 @@ import {
   DialogTitle,
   Button,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../store/useStore';
 
 const AddSceneDialog = () => {

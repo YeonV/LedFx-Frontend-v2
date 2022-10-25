@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Slider, Input, TextField, Typography } from '@material-ui/core/';
+import { Slider, Input, TextField, Typography } from '@mui/material';
 import useStyles from './BladeSlider.styles';
 import {
   BladeSliderDefaultProps,

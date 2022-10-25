@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import useStore from '../store/useStore';
 
 const useStyles = makeStyles(() => ({

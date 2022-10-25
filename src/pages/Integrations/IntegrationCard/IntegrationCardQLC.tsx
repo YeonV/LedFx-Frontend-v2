@@ -3,20 +3,20 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState } from 'react';
 import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
+import Collapse from '@mui/material/Collapse';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
 import {
   CardActions,
   CardHeader,
   Switch,
   Link,
   CardContent,
-} from '@material-ui/core';
+} from '@mui/material';
 import Popover from '../../../components/Popover/Popover';
 import useStore from '../../../store/useStore';
 import useIntegrationCardStyles from './IntegrationCard.styles';

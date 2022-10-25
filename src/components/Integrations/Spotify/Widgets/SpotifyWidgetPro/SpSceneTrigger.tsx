@@ -7,7 +7,7 @@ import {
   FormControl,
   InputLabel,
   Select,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../../../../store/useStore';
 
 import Popover from '../../../../Popover/Popover';

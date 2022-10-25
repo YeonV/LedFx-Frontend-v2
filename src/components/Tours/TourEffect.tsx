@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import Tour from 'reactour';
-import { Info } from '@material-ui/icons';
+import { Info } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 
 const step = ({ title = 'Title', text = 'Text', number = 0 }) => ({

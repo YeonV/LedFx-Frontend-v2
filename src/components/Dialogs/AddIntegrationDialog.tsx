@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   Button,
   MenuItem,
@@ -13,7 +13,7 @@ import {
   DialogActions,
   Dialog,
   Divider,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 

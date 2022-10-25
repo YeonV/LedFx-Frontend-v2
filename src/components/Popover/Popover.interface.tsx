@@ -1,5 +1,5 @@
-import { PopoverProps as PopoverOriginalProps } from '@material-ui/core/Popover';
-import { Delete } from '@material-ui/icons';
+import { PopoverProps as PopoverOriginalProps } from '@mui/material/Popover';
+import { Delete } from '@mui/icons-material';
 
 export interface PopoverProps {
   /**
@@ -14,7 +14,8 @@ export interface PopoverProps {
   /**
    * Set the [color](https://mui.com/components/buttons/#color)
    */
-  color?: 'inherit' | 'secondary' | 'default' | 'primary' | undefined;
+  // eslint-disable-next-line prettier/prettier
+  color?: 'inherit' | 'secondary' | 'primary' | 'success' | 'error' | 'info' | 'warning' | undefined;
   /**
    * Set the [size](https://mui.com/components/buttons/#sizes)
    */

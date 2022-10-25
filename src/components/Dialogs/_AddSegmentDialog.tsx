@@ -3,7 +3,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   Button,
   DialogTitle,
@@ -12,8 +12,8 @@ import {
   Dialog,
   MenuItem,
   Select,
-} from '@material-ui/core';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+} from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import useStore from '../../store/useStore';
 import BladeFrame from '../SchemaForm/components/BladeFrame';
 
