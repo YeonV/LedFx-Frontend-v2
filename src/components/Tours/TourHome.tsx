@@ -12,7 +12,7 @@ const steps = [
       <div>
         <h2>LedFx Tour</h2>
         Welcome to LedFx! Feel free to follow this tour and we&apos;ll show you
-        around 😊
+        how to get Started 😊
       </div>
     ),
     style: {
@@ -23,8 +23,8 @@ const steps = [
     selector: '.step-one',
     content: (
       <div>
-        <h2>Navigation</h2>
-        Go to different pages from here
+        <h2>Add a Device</h2>
+        To add a WLED device automaticly press "WLED-SCAN", otherwise press the plus 
       </div>
     ),
     style: {
@@ -35,15 +35,8 @@ const steps = [
     selector: '.step-two',
     content: (
       <div>
-        <h2>Menu</h2>
-        LedFx actions and settings can be found up here
-        <ul style={{ paddingLeft: '1rem' }}>
-          <li>👨‍🏫 You can access a tour for other pages in this menu</li>
-          <li>
-            👀 &apos;Enable Graphs&apos; to see a preview of the device LEDs.
-            Leave it off if your browser struggles with too many pixels!
-          </li>
-        </ul>
+        <h2>Select effects</h2>
+        Now go to your WLED device, by Simply clicking the Devices button in your Navigation Bar
       </div>
     ),
     style: {
@@ -54,8 +47,8 @@ const steps = [
     selector: '.step-three',
     content: (
       <div>
-        <h2>Devices Quick-Access</h2>
-        Directly jump to a device
+        <h2>Select effects</h2>
+        Now click on Effect Type and choose one of the effects.
       </div>
     ),
     style: {
@@ -66,26 +59,26 @@ const steps = [
     selector: '.step-four',
     content: (
       <div>
-        <h2>The Big Plus Button</h2>
-        This is where it all begins!
-        <ul style={{ paddingLeft: '1rem' }}>
-          <li>Add Device: Add a networked LED strip</li>
-          <li>
-            Add Virtual: Divide or merge your devices into one virtual strip
-          </li>
-          <li>Add Scene: Save the active effects of all devices</li>
-          <li>
-            Add Integration: Connect LedFx to other software (upcoming...)
-          </li>
-        </ul>
-        I&apos;d recommend you now close this tour and add your first devices to
-        LedFx 🎉
+        <h2>Setting up your audio device</h2>
+        Go to settings on your Navigation Bar and then press "Audio Settings"
+        Here you can add a audio Device
+        When its your first time It's recommended to select an Audio output like youre headphones
       </div>
     ),
     style: {
       backgroundColor: '#303030',
     },
   },
+  {
+    selector: '.setp-five',
+    content: (
+      <div>
+        <h2>Now youre done!</h2>
+        When you now play some Stuff from youre PC, your WLED lights should sync to the sound
+        Feel now free, to play around and try out some stuff 
+      </div>
+    )
+  }
 ];
 
 const TourHome = ({

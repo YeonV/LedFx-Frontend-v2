@@ -95,7 +95,6 @@ export default function BarBottom() {
       >
         <BottomNavigationAction
           component={Link}
-          className="step-one"
           label={features.dashboard ? 'Dashboard' : 'Home'}
           value="/"
           to="/"
@@ -104,6 +103,7 @@ export default function BarBottom() {
         <BottomNavigationAction
           label="Devices"
           value="/Devices"
+          className="step-two"
           component={Link}
           to="/Devices"
           icon={<SettingsInputComponent />}
