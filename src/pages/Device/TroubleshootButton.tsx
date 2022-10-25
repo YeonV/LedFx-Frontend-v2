@@ -11,11 +11,11 @@ import {
   Icon,
   Grid,
   CircularProgress,
-} from '@material-ui/core';
-import { BugReport, NavigateBefore } from '@material-ui/icons';
+} from '@mui/material';
+import { BugReport, NavigateBefore } from '@mui/icons-material';
 import Moment from 'react-moment';
 import moment from 'moment';
-import { TransitionProps } from '@material-ui/core/transitions';
+import { TransitionProps } from '@mui/material/transitions';
 import useTroubleshootStyles from './Troubleshoot.styles';
 import useStore from '../../store/useStore';
 import Wled from '../../components/Icons/Wled';
@@ -24,7 +24,7 @@ const Transition = forwardRef<unknown, TransitionProps>(function Transition(
   props,
   ref
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...(props as any)} />;
 });
 
 const Row = ({ name, value }: { name: string; value: any }) => {
@@ -71,7 +71,7 @@ export default function TroubleshootButton({
     <>
       <Button
         variant="outlined"
-        color="default"
+        color="primary"
         onClick={() => setOpen(true)}
         style={{ marginRight: '.5rem' }}
       >
@@ -83,7 +83,7 @@ export default function TroubleshootButton({
         onClose={() => setOpen(false)}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
               color="primary"

@@ -1,5 +1,5 @@
-import { IconButton } from '@material-ui/core';
-import { QueueMusic } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { QueueMusic } from '@mui/icons-material';
 import SpotifyChangeURLDialog from './SpotifyChangeURLDialog';
 
 const SpotifyWidgetFree = ({

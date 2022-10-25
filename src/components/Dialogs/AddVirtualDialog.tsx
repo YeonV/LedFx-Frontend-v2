@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Button,
   Link,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 

@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import {
   Button,
@@ -12,8 +12,8 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-} from '@material-ui/core/';
-import { Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
+} from '@mui/material';
+import { Clear, ExpandMore, Pause, PlayArrow } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper';
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm';

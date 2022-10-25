@@ -8,11 +8,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
+} from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import Autocomplete, {
   createFilterOptions,
-} from '@material-ui/lab/Autocomplete';
+} from '@mui/material/Autocomplete';
 import isElectron from 'is-electron';
 import useStore from '../../store/useStore';
 // import { deleteFrontendConfig } from '../../utils/helpers';
@@ -169,7 +169,7 @@ export default function NoHostDialog() {
                 }}
               >
                 {option.title}
-                <Delete onClick={(e) => handleDelete(e, option.title)} />
+                <Delete onClick={(e) => option.title && handleDelete(e, option.title)} />
               </div>
             )}
             style={{ width: 300 }}

@@ -1,5 +1,5 @@
-import { Button, IconButton, Slider, Typography } from '@material-ui/core';
-import { QueueMusic } from '@material-ui/icons';
+import { Button, IconButton, Slider, Typography } from '@mui/material';
+import { QueueMusic } from '@mui/icons-material';
 import useAPIPolling, { APIPollingOptions } from 'use-api-polling';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import ChangeYoutubeURLDialog from './ChangeYoutubeURLDialog';
@@ -276,7 +276,7 @@ const YoutubeWidgetBar = ({
                         onClick={() => {
                           window.open(t.url, '_blank')?.focus();
                         }}
-                        color="default"
+                        color="primary"
                       >
                         <BladeIcon name="mdi:youtube" />
                       </Button>

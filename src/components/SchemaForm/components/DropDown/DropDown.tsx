@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import ListSubheader from '@mui/material/ListSubheader';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import useStyles from './DropDown.styles';
 import {
   EffectDropDownDefaultProps,

@@ -6,8 +6,8 @@ import {
   Dialog,
   Button,
   Grid,
-} from '@material-ui/core';
-import { Settings, NavigateBefore, Add } from '@material-ui/icons';
+} from '@mui/material';
+import { Settings, NavigateBefore, Add } from '@mui/icons-material';
 import {
   MuiMenuItem,
   QLCScreenDefaultProps,
@@ -26,7 +26,7 @@ export default function QLCScreen({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'primary',
   variant = 'contained',
   innerKey,
   disabled = false,
@@ -79,7 +79,7 @@ export default function QLCScreen({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
               autoFocus

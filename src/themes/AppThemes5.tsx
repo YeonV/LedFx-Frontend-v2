@@ -1,5 +1,8 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, Theme } from '@mui/material/styles';
 
+declare module '@mui/styles' {
+  type DefaultTheme = Theme;
+}
 declare module '@mui/material/styles' {
   interface Palette {
     accent: Palette['primary'];
@@ -9,7 +12,7 @@ declare module '@mui/material/styles' {
   }
 }
 
-export const BladeDarkGreenTheme5 = createTheme({
+export const BladeDarkGreenTheme5: Theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -39,7 +42,7 @@ export const BladeDarkBlueTheme5 = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#0dbedc',
+      main: '#ff0000',
     },
     secondary: {
       main: '#0dbedc',
@@ -92,7 +95,7 @@ export const BladeDarkTheme5 = createTheme({
   },
 });
 
-export const BladeDarkGreyTheme5 = createTheme({
+export const BladeDarkGreyTheme5: Theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -207,3 +210,14 @@ export const BladeLightTheme5 = createTheme({
     },
   },
 });
+
+export const ledfxThemes5 = {
+  Dark: BladeDarkTheme5,
+  DarkRed: BladeDarkTheme5,
+  DarkOrange: BladeDarkOrangeTheme5,
+  Light: BladeLightTheme5,
+  DarkGreen: BladeDarkGreenTheme5,
+  DarkBlue: BladeDarkBlueTheme5,
+  DarkGrey: BladeDarkGreyTheme5,
+  DarkPink: BladeDarkPinkTheme5,
+} as any;

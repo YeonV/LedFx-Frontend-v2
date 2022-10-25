@@ -2,9 +2,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
-import { Input } from '@material-ui/core';
+import { Input , Divider } from '@mui/material';
 import { useLongPress } from 'use-long-press';
-import { Divider } from '@mui/material';
 import useStore from '../../store/useStore';
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles';
 import {

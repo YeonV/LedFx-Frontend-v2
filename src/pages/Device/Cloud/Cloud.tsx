@@ -3,7 +3,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { useEffect, useState } from 'react';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 import {
   AppBar,
   Button,
@@ -15,8 +15,8 @@ import {
   ListItemIcon,
   Toolbar,
   Typography,
-} from '@material-ui/core';
-import { Settings, NavigateBefore, CloudDownload } from '@material-ui/icons';
+} from '@mui/material';
+import { Settings, NavigateBefore, CloudDownload } from '@mui/icons-material';
 import useEditVirtualsStyles from '../../Devices/EditVirtuals/EditVirtuals.styles';
 import useStore from '../../../store/useStore';
 
@@ -141,7 +141,7 @@ export default function CloudScreen({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
               color="primary"

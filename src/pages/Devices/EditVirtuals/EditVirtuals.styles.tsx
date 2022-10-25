@@ -1,11 +1,11 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useEditVirtualsStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
     marginBottom: '1rem',
-    background: theme.palette.background.default,
-    color: theme.palette.text.primary,
+    // background: theme.palette.background.default,
+    // color: theme.palette.text.primary,
   },
   title: {
     marginLeft: theme.spacing(2),

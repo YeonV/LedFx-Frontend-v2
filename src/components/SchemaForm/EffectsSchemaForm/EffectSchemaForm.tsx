@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import BladeBoolean from '../components/Boolean/BladeBoolean';
 import BladeSelect from '../components/String/BladeSelect';
 import BladeSlider from '../components/Number/BladeSlider';

@@ -6,9 +6,9 @@ import {
   ListItemIcon,
   Popover as PopoverOriginal,
   useTheme,
-} from '@material-ui/core';
-import { Fab } from '@mui/material';
-import { Delete, Close, Check } from '@material-ui/icons';
+  Fab,
+} from '@mui/material';
+import { Delete, Close, Check } from '@mui/icons-material';
 import { useLongPress } from 'use-long-press';
 import { PopoverProps, PopoverDefaults } from './Popover.interface';
 import useStyles from './Popover.styles';
@@ -201,7 +201,7 @@ const Popover = ({
           <Button
             aria-describedby={id}
             variant="outlined"
-            color="default"
+            color="primary"
             onClick={(e) => {
               e.preventDefault();
               setAnchorEl(null);

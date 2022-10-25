@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core/';
+import { makeStyles } from '@mui/styles';
+import { Grid, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import useStore from '../../store/useStore';
 import EffectsCard from './Effects';

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import Popper from '@material-ui/core/Popper';
+import Popper from '@mui/material/Popper';
 import ReactGPicker from 'react-gcolor-picker';
-import { TextField, Button } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { TextField, Button } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import useClickOutside from '../../../../utils/useClickOutside';
 import Popover from '../../../Popover/Popover';
 import DeleteColorsDialog from '../../../Dialogs/DeleteColors';
@@ -143,7 +143,7 @@ const GradientPicker = ({
             <Popover
               className={classes.addButton}
               popoverStyle={{ padding: '0.5rem' }}
-              color="default"
+              color="primary"
               variant="outlined"
               content={
                 <TextField

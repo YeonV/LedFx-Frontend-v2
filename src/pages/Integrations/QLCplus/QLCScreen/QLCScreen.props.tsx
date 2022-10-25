@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import { Settings } from '@mui/icons-material';
-import { TransitionProps } from '@material-ui/core/transitions';
-import { MenuItem, Slide } from '@material-ui/core';
+import { TransitionProps } from '@mui/material/transitions';
+import { MenuItem, Slide } from '@mui/material';
 
 export interface QLCScreenProps {
   icon: React.ReactElement;
@@ -9,7 +10,7 @@ export interface QLCScreenProps {
   label: string;
   type: string;
   className: string;
-  color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  color: 'inherit' | 'primary' | 'secondary' | 'error' | 'success' | 'warning' | 'info' | undefined
   variant: 'outlined' | 'text' | 'contained' | undefined;
   innerKey: string;
   disabled: boolean;
@@ -33,7 +34,7 @@ export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...(props as any)} />;
 });
 
 Transition.defaultProps = {

@@ -1,10 +1,8 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { DeleteForever } from '@material-ui/icons';
+import { DeleteForever, Edit } from '@mui/icons-material';
 import { useEffect } from 'react';
-import { IconButton } from '@material-ui/core';
-import { Stack, Switch } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
-import { Edit } from '@mui/icons-material';
+import { IconButton, Stack, Switch } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import useStore from '../../../store/useStore';
 import Popover from '../../Popover/Popover';
 

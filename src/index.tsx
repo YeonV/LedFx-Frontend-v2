@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { StyledEngineProvider } from '@mui/material';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ErrorBoundary from './utils/ErrorBoundary';
@@ -10,7 +11,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <ErrorBoundary>
-    <App />
+    <StyledEngineProvider injectFirst>
+      <App />
+    </StyledEngineProvider>
   </ErrorBoundary>
 );
 

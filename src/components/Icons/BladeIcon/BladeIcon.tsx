@@ -1,4 +1,4 @@
-import { Icon } from '@material-ui/core';
+import { Icon } from '@mui/material';
 import Wled from '../Wled';
 import RazerMouse from '../RzrMouse';
 import RazerLogo from '../RzrLogo';

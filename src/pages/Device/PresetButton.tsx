@@ -6,11 +6,10 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useLongPress } from 'use-long-press';
-import { CloudOff, CloudUpload } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
-import { CopyAll } from '@mui/icons-material';
+import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 
@@ -77,7 +76,6 @@ export default function PresetButton({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
-        getContentAnchorEl={null}
         className={classes.bladeMenu}
         MenuListProps={{
           'aria-labelledby': 'basic-button',

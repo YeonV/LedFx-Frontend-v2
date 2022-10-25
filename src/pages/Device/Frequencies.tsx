@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable no-unsafe-optional-chaining */
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
-import Slider from '@material-ui/core/Slider';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Tooltip from '@material-ui/core/Tooltip';
-import { InputAdornment, TextField } from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Tooltip from '@mui/material/Tooltip';
+import Slider from '@mui/material/Slider';
+import { InputAdornment, TextField } from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 
@@ -126,8 +126,8 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 ]
               )}
               onChange={(e: any, v: any) => handleChange(e, v)}
-              ValueLabelComponent={ValueLabelComponent}
-              style={{ color: '#aaa' }}
+              components={{ ValueLabel: ValueLabelComponent }}
+              sx={{ color: '#aaa' }}
               onChangeCommitted={() => {
                 // Backend cannot do partial updates yet, sending whole config
                 addVirtual({

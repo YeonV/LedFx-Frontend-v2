@@ -1,14 +1,14 @@
 /* eslint-disable react/require-default-props */
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import { Button, Chip, OutlinedInput, Select, Box } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import { Button, Chip, OutlinedInput, Select, Box } from '@mui/material';
 import useStore from '../../store/useStore';
 
 const ITEM_HEIGHT = 48;

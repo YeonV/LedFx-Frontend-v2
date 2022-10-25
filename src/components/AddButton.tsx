@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import {
   Fab,
   Icon,
@@ -7,14 +7,14 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Add,
   Send,
   Wallpaper,
   SettingsInputComponent,
   SettingsInputSvideo,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import useStore from '../store/useStore';
 
 const MenuLine = React.forwardRef((props: any, ref: any) => {
@@ -35,7 +35,7 @@ const StyledMenu = withStyles({
 })((props: any) => (
   <Menu
     elevation={0}
-    getContentAnchorEl={null}
+    // getContentAnchorEl={null}
     anchorOrigin={{
       vertical: 'top',
       horizontal: 'center',
@@ -122,7 +122,12 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
   }
   return (
     <div className={className} style={{ zIndex: 5, ...style }}>
-      <Fab color="primary" aria-label="add" onClick={handleClick}>
+      <Fab
+        color="primary"
+        variant="circular"
+        aria-label="add"
+        onClick={handleClick}
+      >
         <Add />
       </Fab>
       <StyledMenu

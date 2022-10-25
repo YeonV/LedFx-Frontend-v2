@@ -2,17 +2,17 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Slide from '@mui/material/Slide';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
-import { ListItemIcon, MenuItem } from '@material-ui/core';
-import { Settings } from '@material-ui/icons';
-import { TransitionProps } from '@material-ui/core/transitions';
+import { ListItemIcon, MenuItem } from '@mui/material';
+import { Settings } from '@mui/icons-material';
+import { TransitionProps } from '@mui/material/transitions';
 import { getOverlapping } from '../../../utils/helpers';
 import useStore from '../../../store/useStore';
 
@@ -23,7 +23,7 @@ import useEditVirtualsStyles from './EditVirtuals.styles';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide direction="up" ref={ref} {...(props as any)} />;
   }
 );
 type Props = { _?: never; children?: any; className?: any; onClick?: any };
@@ -114,7 +114,7 @@ export default function FullScreenDialog({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
               autoFocus

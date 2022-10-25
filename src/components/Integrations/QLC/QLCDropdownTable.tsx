@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 // import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 export const useDataGridStyles = makeStyles((theme: any) => ({
   root: {
@@ -101,7 +101,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
+              <Typography variant="h6" component="div">
                 QLC+ Widget (Do This)
               </Typography>
               <Table size="small" aria-label="purchases">
