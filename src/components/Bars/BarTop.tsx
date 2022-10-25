@@ -182,7 +182,6 @@ const TopBar = () => {
               edge="start"
               className={clsx(
                 classes.menuButton,
-                'step-three',
                 open && classes.hide
               )}
             >
@@ -220,7 +219,6 @@ const TopBar = () => {
                   edge="end"
                   color="inherit"
                   onClick={changeHost}
-                  className="step-two"
                   style={{ position: 'absolute', right: '4rem' }}
                 >
                   <BladeIcon
@@ -245,7 +243,6 @@ const TopBar = () => {
               edge="end"
               color="inherit"
               onClick={handleClick}
-              className="step-two"
               style={{ marginLeft: '1rem' }}
             >
               <MoreVert />

@@ -82,7 +82,7 @@ export default function Home() {
           >
             <TourHome />
           </Badge>
-          <Button onClick={() => handleScan()} variant="outlined">
+          <Button onClick={() => handleScan()} variant="outlined" className="step-one">
             <BladeIcon name="wled" style={{ marginTop: -3, marginRight: 10 }} />
             {scanning > -1 ? (
               <div style={{ position: 'relative', marginLeft: 20, height: 24 }}>
