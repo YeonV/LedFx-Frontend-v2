@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import {
   Fab,
   Icon,
@@ -17,6 +17,19 @@ import {
 } from '@mui/icons-material';
 import useStore from '../store/useStore';
 
+const PREFIX = 'AddButton';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+};
+
+const Root = styled('div')({
+  [`& .${classes.paper}`]: {
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    transform: 'translateY(-1rem) !important',
+  },
+});
+
 const MenuLine = React.forwardRef((props: any, ref: any) => {
   const { icon = <Send fontSize="small" />, name = 'MenuItem', action } = props;
   return (
@@ -27,12 +40,7 @@ const MenuLine = React.forwardRef((props: any, ref: any) => {
   );
 });
 
-const StyledMenu = withStyles({
-  paper: {
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    transform: 'translateY(-1rem) !important',
-  },
-})((props: any) => (
+const StyledMenu = ({ open, ...props }: any) => (
   <Menu
     elevation={0}
     // getContentAnchorEl={null}
@@ -44,10 +52,10 @@ const StyledMenu = withStyles({
       vertical: 'bottom',
       horizontal: 'center',
     }}
-    open={props.open}
+    open={open}
     {...props}
   />
-));
+);
 
 const AddButton = ({ className, style, setBackdrop }: any) => {
   const setDialogOpenAddScene = useStore(
@@ -121,7 +129,7 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
     });
   }
   return (
-    <div className={className} style={{ zIndex: 5, ...style }}>
+    <Root className={className} style={{ zIndex: 5, ...style }}>
       <Fab
         color="primary"
         variant="circular"
@@ -136,6 +144,9 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        classes={{
+          paper: classes.paper,
+        }}
       >
         {menuitems.map((menuitem) => (
           <MenuLine
@@ -146,7 +157,7 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
           />
         ))}
       </StyledMenu>
-    </div>
+    </Root>
   );
 };
 

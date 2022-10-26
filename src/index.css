@@ -8,6 +8,22 @@ body {
   width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --webkit-scrollbar: {
+    background-color: #ffffff30;
+    width: 8px;
+    border-radius: 8px;
+  }
+  --webkit-scrollbar-track: {
+    background-color: #00000060;
+    border-radius: 8px;
+  }
+  --webkit-scrollbar-thumb: {
+    background-color: #555555;
+    border-radius: 8px;
+  }
+  --webkit-scrollbar-button: {
+    display: none;
+  }
 }
 
 #root {

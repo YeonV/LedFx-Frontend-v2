@@ -13,7 +13,7 @@ import { Grid, IconButton , Stack } from '@mui/material';
 import { PlayCircleFilled } from '@mui/icons-material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
-import { useDataGridStyles } from './SpTriggerTable';
+import { classes } from './SpTriggerTable';
 import { SpotifyStateContext } from '../../SpotifyProvider';
 
 // function isScrolledIntoView(el: any) {
@@ -29,7 +29,6 @@ import { SpotifyStateContext } from '../../SpotifyProvider';
 // }
 
 export default function SpPlaylist() {
-  const classes = useDataGridStyles();
   const playlist = useStore((state) => state.spotify.playlist);
   const playerState = React.useContext(SpotifyStateContext);
   const playlistUri = playerState?.context?.metadata?.uri;

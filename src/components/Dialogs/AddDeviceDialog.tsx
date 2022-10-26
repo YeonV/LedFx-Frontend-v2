@@ -4,7 +4,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-unused-expressions */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import {
   Dialog,
   DialogActions,
@@ -19,8 +19,18 @@ import {
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
-const useStyles = makeStyles((theme) => ({
-  wrapper: {
+const PREFIX = 'AddDeviceDialog';
+
+const classes = {
+  wrapper: `${PREFIX}-wrapper`
+};
+
+const StyledDialog = styled(Dialog)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.wrapper}`]: {
     minWidth: '200px',
     padding: '16px 1.2rem 6px 1.2rem',
     border: '1px solid #999',
@@ -46,11 +56,11 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },
-  },
+  }
 }));
 
 const AddDeviceDialog = () => {
-  const classes = useStyles();
+
 
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
@@ -137,7 +147,7 @@ const AddDeviceDialog = () => {
   }, [initial.type]);
   
   return (
-    <Dialog
+    <StyledDialog
       open={open}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
@@ -210,7 +220,7 @@ const AddDeviceDialog = () => {
             : 'Save'}
         </Button>
       </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
 

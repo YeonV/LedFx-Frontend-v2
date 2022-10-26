@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-/* eslint-disable no-unsafe-optional-chaining */
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -11,12 +10,16 @@ import { InputAdornment, TextField } from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 
-const log13 = (x: number) => Math.log(x) / Math.log(13);
-const logIt = (x: number) => 3700.0 * log13(1 + x / 200.0);
-const hzIt = (x: number) => 200.0 * 13 ** (x / 3700.0) - 200.0;
+const PREFIX = 'FrequenciesCard';
 
-const useStyles = makeStyles((theme) => ({
-  content: {
+const classes = {
+  content: `${PREFIX}-content`,
+  formControl: `${PREFIX}-formControl`,
+  card: `${PREFIX}-card`,
+};
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  [`& .${classes.content}`]: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -25,10 +28,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     paddingBottom: 0,
   },
-  formControl: {
+
+  [`& .${classes.formControl}`]: {
     marginRight: theme.spacing(3),
   },
-  card: {
+
+  [`& .${classes.card}`]: {
     width: '100%',
     maxWidth: '540px',
     '@media (max-width: 580px)': {
@@ -37,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+const log13 = (x: number) => Math.log(x) / Math.log(13);
+const logIt = (x: number) => 3700.0 * log13(1 + x / 200.0);
+const hzIt = (x: number) => 200.0 * 13 ** (x / 3700.0) - 200.0;
 
 function ValueLabelComponent(props: any) {
   const { children, open, value } = props;
@@ -54,7 +63,6 @@ function ValueLabelComponent(props: any) {
 }
 
 const FrequenciesCard = ({ virtual, style }: any) => {
-  const classes = useStyles();
   const addVirtual = useStore((state) => state.addVirtual);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const config = useStore((state) => state.config);
@@ -73,7 +81,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
     value: config.melbanks?.min_frequency,
     label: `${
       config.melbanks?.min_frequency > 1000
-        ? `${config.melbanks?.min_frequency / 1000}kHz`
+        ? `${(config.melbanks?.min_frequency || 0) / 1000}kHz`
         : `${config.melbanks?.min_frequency}Hz`
     }`,
   };
@@ -98,7 +106,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
   };
 
   return (
-    <Card
+    <StyledCard
       variant="outlined"
       className={`${classes.card} step-device-four`}
       style={style}
@@ -122,7 +130,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
               min={logIt(config.melbanks?.min_frequency)}
               max={logIt(
                 config.melbanks?.max_frequencies[
-                  config.melbanks?.max_frequencies.length - 1
+                  (config.melbanks?.max_frequencies.length || 1) - 1
                 ]
               )}
               onChange={(e: any, v: any) => handleChange(e, v)}
@@ -208,7 +216,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
           </div>
         </div>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 };
 

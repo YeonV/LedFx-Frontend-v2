@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import {
   Card,
   CardHeader,
@@ -20,20 +20,31 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wled from '../../components/Icons/Wled';
 import useStore from '../../store/useStore';
 
-const useStyles = makeStyles({
-  content: {
+const PREFIX = 'WledCard';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  rowContainer: `${PREFIX}-rowContainer`,
+  rowB: `${PREFIX}-rowB`,
+  row: `${PREFIX}-row`,
+  formControl: `${PREFIX}-formControl`,
+  check: `${PREFIX}-check`,
+};
+
+const StyledCard = styled(Card)({
+  [`& .${classes.content}`]: {
     display: 'flex',
     flexDirection: 'column',
   },
-  rowContainer: {
+  [`& .${classes.rowContainer}`]: {
     border: '1px solid',
     borderRadius: '4px',
   },
-  rowB: {
+  [`& .${classes.rowB}`]: {
     display: 'flex',
     flexDirection: 'row',
   },
-  row: {
+  [`& .${classes.row}`]: {
     display: 'flex',
     flexDirection: 'row',
     padding: '10px 5px',
@@ -41,11 +52,11 @@ const useStyles = makeStyles({
       borderBottom: '1px solid',
     },
   },
-  formControl: {
+  [`& .${classes.formControl}`]: {
     width: '100%',
     marginRight: '1rem',
   },
-  check: {
+  [`& .${classes.check}`]: {
     '& .MuiSvgIcon-root': {
       width: '2rem',
       height: '2rem',
@@ -54,7 +65,6 @@ const useStyles = makeStyles({
 });
 
 const WledCard = ({ className }: any) => {
-  const classes = useStyles();
   const setSystemConfig = useStore((state) => state.setSystemConfig);
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const settings = useStore((state) => state.config);
@@ -78,7 +88,7 @@ const WledCard = ({ className }: any) => {
   }, [getSystemConfig]);
 
   return settings.wled_preferences ? (
-    <Card style={{ marginBottom: '2rem' }} className={className}>
+    <StyledCard style={{ marginBottom: '2rem' }} className={className}>
       <CardHeader
         title="WLED Integration"
         subheader="Configure WLED-Settings"
@@ -374,7 +384,7 @@ const WledCard = ({ className }: any) => {
           </AccordionDetails>
         </Accordion>
       </CardContent>
-    </Card>
+    </StyledCard>
   ) : null;
 };
 

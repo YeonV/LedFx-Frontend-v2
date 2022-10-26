@@ -2,8 +2,8 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@mui/styles';
 import {
   Button,
   DialogTitle,
@@ -16,6 +16,25 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import useStore from '../../store/useStore';
 import BladeFrame from '../SchemaForm/components/BladeFrame';
+
+const PREFIX = '_AddSegmentDialog';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  paper: `${PREFIX}-paper`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`&.${classes.root}`]: {
+    margin: '1rem auto',
+    backgroundColor: theme.palette.background.paper,
+  },
+
+  [`& .${classes.paper}`]: {
+    width: '80%',
+    maxHeight: 435,
+  },
+}));
 
 function ConfirmationDialogRaw(props: any) {
   const { onClose, value: valueProp, open, ...other } = props;
@@ -85,17 +104,6 @@ ConfirmationDialogRaw.propTypes = {
   deviceList: PropTypes.any,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: '1rem auto',
-    backgroundColor: theme.palette.background.paper,
-  },
-  paper: {
-    width: '80%',
-    maxHeight: 435,
-  },
-}));
-
 export default function ConfirmationDialog({
   virtual,
   config = {},
@@ -103,7 +111,6 @@ export default function ConfirmationDialog({
   virtual: any;
   config?: any;
 }) {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const deviceList = useStore((state) => state.devices) || {};
   const updateVirtualSegments = useStore(
@@ -136,7 +143,7 @@ export default function ConfirmationDialog({
   };
 
   return (
-    <div className={classes.root}>
+    <Root className={classes.root}>
       {deviceList && Object.keys(deviceList).length > 0 ? (
         <>
           <Button
@@ -165,6 +172,6 @@ export default function ConfirmationDialog({
           />
         </>
       ) : null}
-    </div>
+    </Root>
   );
 }

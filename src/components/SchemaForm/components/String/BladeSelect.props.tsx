@@ -1,4 +1,4 @@
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
+import { CSSProperties } from '@mui/styles';
 import { JsxElement } from 'typescript';
 
 export interface BladeSelectProps {

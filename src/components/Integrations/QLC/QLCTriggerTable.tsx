@@ -1,13 +1,19 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { styled } from '@mui/material/styles';
 import { DeleteForever, Edit } from '@mui/icons-material';
 import { useEffect } from 'react';
 import { IconButton, Stack, Switch } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import useStore from '../../../store/useStore';
 import Popover from '../../Popover/Popover';
 
-export const useDataGridStyles = makeStyles((theme: any) => ({
-  root: {
+const PREFIX = 'QLCTriggerTable';
+
+const classes = {
+  root: `${PREFIX}-root`,
+};
+
+const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.root}`]: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
         color: theme.palette.text.secondary,
@@ -45,7 +51,6 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
 }));
 
 export default function QLCTriggerTable() {
-  const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const getQLCWidgets = useStore((state) => state.getQLCWidgets);
@@ -239,7 +244,7 @@ export default function QLCTriggerTable() {
   const rows = QLCTriggersList || [{ id: 1 }];
 
   return (
-    <div
+    <Root
       style={{
         display: 'flex',
         width: '100%',
@@ -259,6 +264,6 @@ export default function QLCTriggerTable() {
         columns={columns}
         rows={rows}
       />
-    </div>
+    </Root>
   );
 }

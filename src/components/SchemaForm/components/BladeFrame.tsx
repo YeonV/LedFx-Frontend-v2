@@ -1,8 +1,14 @@
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { ReactElement } from 'react';
 
-const useStyles = makeStyles((theme) => ({
-  wrapper: {
+const PREFIX = 'BladeFrame';
+
+const classes = {
+  wrapper: `${PREFIX}-wrapper`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.wrapper}`]: {
     minWidth: '23.5%',
     padding: '16px 1.2rem 6px 1.2rem',
     border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -56,9 +62,8 @@ const BladeFrame = ({
   className,
   disabled,
 }: BladeFrameProps): ReactElement<any, any> => {
-  const classes = useStyles();
   return variant === 'outlined' ? (
-    <div
+    <Root
       className={`${classes.wrapper} ${className}`}
       style={{
         ...style,
@@ -71,7 +76,7 @@ const BladeFrame = ({
         {required ? '*' : ''}
       </label>
       {children}
-    </div>
+    </Root>
   ) : (
     children
   );

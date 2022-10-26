@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 import * as React from 'react';
 
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
@@ -10,6 +10,30 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { Button, Chip, OutlinedInput, Select, Box } from '@mui/material';
 import useStore from '../../store/useStore';
+
+const PREFIX = 'StreamToCard';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  card: `${PREFIX}-card`,
+};
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  [`& .${classes.content}`]: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    padding: theme.spacing(2),
+    paddingBottom: 0,
+  },
+
+  [`& .${classes.card}`]: {
+    width: '100%',
+    maxWidth: '540px',
+    marginBottom: '1rem',
+  },
+}));
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,18 +46,6 @@ const MenuProps = {
   },
 };
 
-const useStyles = makeStyles((theme) => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    padding: theme.spacing(2),
-    paddingBottom: 0,
-  },
-  card: { width: '100%', maxWidth: '540px', marginBottom: '1rem' },
-}));
-
 const StreamToCard = ({
   virtual,
   virtuals,
@@ -45,7 +57,6 @@ const StreamToCard = ({
   virtuals: any;
   style?: any;
 }) => {
-  const classes = useStyles();
   const streamingToDevices = useStore((state) => state.streamingToDevices);
   const setStreamingToDevices = useStore(
     (state) => state.setStreamingToDevices
@@ -93,7 +104,7 @@ const StreamToCard = ({
   };
 
   return (
-    <Card
+    <StyledCard
       variant="outlined"
       className={`${classes.card} step-device-two`}
       style={style}
@@ -181,7 +192,7 @@ const StreamToCard = ({
           Copy
         </Button>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 };
 
