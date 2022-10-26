@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
@@ -9,8 +9,16 @@ import Slider from '@mui/material/Slider';
 import useStore from '../../store/useStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 
-const useStyles = makeStyles((theme) => ({
-  content: {
+const PREFIX = 'TransitionCard';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  formControl: `${PREFIX}-formControl`,
+  card: `${PREFIX}-card`,
+};
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  [`& .${classes.content}`]: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -18,15 +26,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     paddingBottom: 0,
   },
-  formControl: {
+
+  [`& .${classes.formControl}`]: {
     marginRight: theme.spacing(3),
     flex: 1,
   },
-  card: { width: '100%', maxWidth: '540px' },
+
+  [`& .${classes.card}`]: { width: '100%', maxWidth: '540px' },
 }));
 
 const TransitionCard = ({ virtual, style }: any) => {
-  const classes = useStyles();
   const schemas = useStore(
     (state) =>
       state.schemas.virtuals && state.schemas.virtuals.schema.properties
@@ -60,7 +69,7 @@ const TransitionCard = ({ virtual, style }: any) => {
   ];
 
   return (
-    <Card
+    <StyledCard
       variant="outlined"
       className={`${classes.card} step-device-two`}
       style={style}
@@ -110,7 +119,7 @@ const TransitionCard = ({ virtual, style }: any) => {
           </Select>
         </BladeFrame>
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 };
 

@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import {
   Button,
@@ -22,17 +22,30 @@ import TourEffect from '../../components/Tours/TourEffect';
 import TroubleshootButton from './TroubleshootButton';
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props';
 
-const useStyles = makeStyles((theme: any) => ({
-  content: {
+const PREFIX = 'EffectsCard';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  actionButton: `${PREFIX}-actionButton`,
+  card: `${PREFIX}-card`,
+  pixelbar: `${PREFIX}-pixelbar`,
+  pixelbarOut: `${PREFIX}-pixelbarOut`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.content}`]: {
     display: 'flex',
     flexDirection: 'column',
   },
-  actionButton: {
+
+  [`& .${classes.actionButton}`]: {
     marginTop: '0.5rem',
     width: '100%',
     borderColor: theme.palette.grey[400],
   },
-  card: {
+
+  [`& .${classes.card}`]: {
     width: '100%',
     maxWidth: '540px',
     '@media (max-width: 580px)': {
@@ -43,11 +56,13 @@ const useStyles = makeStyles((theme: any) => ({
       paddingBottom: '0.5rem',
     },
   },
-  pixelbar: {
+
+  [`& .${classes.pixelbar}`]: {
     opacity: 1,
     transitionDuration: '0',
   },
-  pixelbarOut: {
+
+  [`& .${classes.pixelbarOut}`]: {
     opacity: 0.2,
     transition: 'opacity',
     transitionDuration: '1000',
@@ -80,7 +95,6 @@ const orderEffectProperties = (schema: Schema) => {
 };
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
-  const classes = useStyles();
   const [fade, setFade] = useState(false);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSchemas = useStore((state) => state.getSchemas);
@@ -158,7 +172,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }, [virtuals, virtual, virtual.effect, virtual.effect.config]);
 
   return (
-    <>
+    <Root>
       <Card className={classes.card}>
         <CardContent>
           <div
@@ -282,7 +296,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             </CardContent>
           </Card>
         )}
-    </>
+    </Root>
   );
 };
 

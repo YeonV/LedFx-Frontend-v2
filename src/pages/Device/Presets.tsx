@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import {
   Card,
   CardContent,
@@ -19,33 +19,45 @@ import Popover from '../../components/Popover/Popover';
 import CloudScreen from './Cloud/Cloud';
 import PresetButton from './PresetButton';
 
-const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com',
-});
+const PREFIX = 'PresetsCard';
 
-const useStyles = makeStyles((theme: any) => ({
-  content: {
+const classes = {
+  content: `${PREFIX}-content`,
+  presetButton: `${PREFIX}-presetButton`,
+  buttonGrid: `${PREFIX}-buttonGrid`,
+  hint: `${PREFIX}-hint`,
+  actions: `${PREFIX}-actions`,
+  deviceCard: `${PREFIX}-deviceCard`,
+};
+
+const StyledCard = styled(Card)(({ theme }: any) => ({
+  [`& .${classes.content}`]: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
     padding: theme.spacing(2),
   },
-  presetButton: {
+
+  [`& .${classes.presetButton}`]: {
     margin: theme.spacing(0),
     textDecoration: 'none',
   },
-  buttonGrid: {
+
+  [`& .${classes.buttonGrid}`]: {
     // direction: 'row',
   },
-  hint: {
+
+  [`& .${classes.hint}`]: {
     color: theme.palette.text.disabled,
   },
-  actions: {
+
+  [`& .${classes.actions}`]: {
     display: 'flex',
     flexDirection: 'row',
     margin: theme.spacing(1),
   },
-  deviceCard: {
+
+  [`& .${classes.deviceCard}`]: {
     width: '100%',
     maxWidth: '540px',
     '@media (max-width: 580px)': {
@@ -55,8 +67,11 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+const cloud = axios.create({
+  baseURL: 'https://strapi.yeonv.com',
+});
+
 const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
-  const classes = useStyles();
   const [name, setName] = useState('');
   const [valid, setValid] = useState(true);
 
@@ -222,7 +237,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   }, [getVirtuals, effectType]);
 
   return (
-    <Card
+    <StyledCard
       variant="outlined"
       className={`${classes.deviceCard} step-device-three`}
       style={style}
@@ -347,7 +362,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
           </div>
         </div>
       </CardActions>
-    </Card>
+    </StyledCard>
   );
 };
 

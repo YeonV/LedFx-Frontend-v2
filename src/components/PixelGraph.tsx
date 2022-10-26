@@ -1,10 +1,17 @@
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import useStore from '../store/useStore';
 
-const useStyles = makeStyles(() => ({
-  PixelWrapper: {
+const PREFIX = 'PixelGraph';
+
+const classes = {
+  PixelWrapper: `${PREFIX}-PixelWrapper`,
+  Pixel: `${PREFIX}-Pixel`,
+};
+
+const Root = styled('div')(() => ({
+  [`& .${classes.PixelWrapper}`]: {
     maxWidth: '520px',
     display: 'flex',
     width: '100%',
@@ -19,7 +26,8 @@ const useStyles = makeStyles(() => ({
       margin: '0',
     },
   },
-  Pixel: {
+
+  [`& .${classes.Pixel}`]: {
     height: '20px',
     borderRadius: '0',
     flex: 1,
@@ -39,7 +47,6 @@ const PixelGraph = ({
   active?: boolean;
   intGraphs?: boolean;
 }) => {
-  const classes = useStyles();
   const [pixels, setPixels] = useState<any>([]);
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const virtuals = useStore((state) => state.virtuals);
@@ -62,7 +69,7 @@ const PixelGraph = ({
   }
 
   return dummy ? (
-    <div
+    <Root
       className={`${classes.PixelWrapper} ${className} ${
         active ? 'active' : ''
       }`}
@@ -72,7 +79,7 @@ const PixelGraph = ({
         className={classes.Pixel}
         style={{ backgroundColor: '#0002' }}
       />
-    </div>
+    </Root>
   ) : pixels && pixels[0] && pixels[0].length ? (
     <div
       className={`${classes.PixelWrapper} ${className}  ${

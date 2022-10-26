@@ -1,10 +1,16 @@
 import { MenuItem, Select } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 import useStore from '../../store/useStore';
 
-const useStyles = makeStyles(() => ({
-  select: {
+const PREFIX = 'ClientAudioCard';
+
+const classes = {
+  select: `${PREFIX}-select`,
+};
+
+const StyledBladeFrame = styled(BladeFrame)(() => ({
+  [`&.${classes.select}`]: {
     '& div.MuiSelect-select': {
       padding: '6px 0',
     },
@@ -12,7 +18,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ClientAudioCard = ({ style }: any) => {
-  const classes = useStyles();
   const clientDevice = useStore((state) => state.clientDevice);
   const clientDevices = useStore((state) => state.clientDevices);
   const setClientDevice = useStore((state) => state.setClientDevice);
@@ -20,7 +25,7 @@ const ClientAudioCard = ({ style }: any) => {
 
   return (
     clientDevices && (
-      <BladeFrame
+      <StyledBladeFrame
         style={{ order: 0, ...style }}
         full
         title={`${webAudName}: Audio Device`}
@@ -43,7 +48,7 @@ const ClientAudioCard = ({ style }: any) => {
               </MenuItem>
             ))}
         </Select>
-      </BladeFrame>
+      </StyledBladeFrame>
     )
   );
 };

@@ -1,5 +1,5 @@
 import { ReactElement, useState } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import {
   DialogContentText,
   Select,
@@ -18,17 +18,27 @@ import BladeSlider from '../components/Number/BladeSlider';
 import BladeFrame from '../components/BladeFrame';
 import { SchemaFormDefaultProps, SchemaFormProps } from './SchemaForm.props';
 
-const useStyles = makeStyles((theme) => ({
-  bladeSchemaForm: {
+const PREFIX = 'SchemaForm';
+
+const classes = {
+  bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
+  FormListHeaders: `${PREFIX}-FormListHeaders`,
+  bladeSelect: `${PREFIX}-bladeSelect`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.bladeSchemaForm}`]: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  FormListHeaders: {
+
+  [`& .${classes.FormListHeaders}`]: {
     background: theme.palette.secondary.main,
     color: '#fff',
   },
-  bladeSelect: {
+
+  [`& .${classes.bladeSelect}`]: {
     '& .MuiSelect-select': {
       display: 'flex',
       alignItems: 'center',
@@ -49,7 +59,6 @@ const SchemaForm = ({
   onModelChange,
   type,
 }: SchemaFormProps): ReactElement<any, any> => {
-  const classes = useStyles();
   const [hideDesc, setHideDesc] = useState(true);
 
   const yzSchema =
@@ -72,7 +81,7 @@ const SchemaForm = ({
   }
 
   return (
-    <div>
+    <Root>
       <div className={classes.bladeSchemaForm}>
         {yzSchema &&
           yzSchema.map((s: any, i: number) => {
@@ -338,7 +347,7 @@ const SchemaForm = ({
           />
         </>
       )}
-    </div>
+    </Root>
   );
 };
 

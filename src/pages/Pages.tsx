@@ -10,9 +10,10 @@ import {
 import clsx from 'clsx';
 import { useHotkeys } from 'react-hotkeys-hook';
 import isElectron from 'is-electron';
+import { styled } from '@mui/material/styles';
 import ScrollToTop from '../utils/scrollToTop';
 
-import useStyles from '../App.styles';
+// import useStyles from '../App.styles';
 import '../App.css';
 
 import LeftBar from '../components/Bars/BarLeft';
@@ -29,12 +30,49 @@ import Integrations from './Integrations/Integrations';
 import LoginRedirect from './Login/LoginRedirect';
 import SmartBar from '../components/Dialogs/SmartBar';
 import useStore from '../store/useStore';
-
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect';
+import { drawerWidth } from '../utils/helpers';
+
+const PREFIX = 'Pages';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  drawerHeader: `${PREFIX}-drawerHeader`,
+  contentShift: `${PREFIX}-card`,
+};
+const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.content}`]: {
+    flexGrow: 1,
+    background: 'transparent',
+    padding: theme.spacing(0),
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
+    '@media (max-width: 580px)': {
+      padding: '8px',
+    },
+  },
+
+  [`& .${classes.drawerHeader}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+
+  [`& .${classes.contentShift}`]: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  },
+}));
 
 const Routings = ({ handleWs }: any) => {
-  const classes = useStyles();
-
   const smartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.smartBar.open
   );
@@ -55,7 +93,7 @@ const Routings = ({ handleWs }: any) => {
       <MessageBar />
       <TopBar />
       <LeftBar />
-      <main
+      <Root
         className={clsx(classes.content, {
           [classes.contentShift]: leftBarOpen,
         })}
@@ -80,7 +118,7 @@ const Routings = ({ handleWs }: any) => {
           setOpen={(e) => setSmartBarOpen(!!e)}
           direct={false}
         />
-      </main>
+      </Root>
       <BottomBar />
     </>
   );

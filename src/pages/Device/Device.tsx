@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import { useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { Grid, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import useStore from '../../store/useStore';
@@ -10,15 +10,27 @@ import TransitionCard from './Transition';
 import MelbankCard from './Frequencies';
 import StreamToCard from './StreamTo';
 
-const useStyles = makeStyles(() => ({
-  virtualWrapper: {
+const PREFIX = 'Device';
+
+const classes = {
+  virtualWrapper: `${PREFIX}-virtualWrapper`,
+  girdItem: `${PREFIX}-girdItem`,
+};
+
+const StyledGrid = styled(Grid)(() => ({
+  [`&.${classes.virtualWrapper}`]: {
     justifyContent: 'center',
   },
-  girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px', width: '100%' },
+
+  [`& .${classes.girdItem}`]: {
+    flexShrink: 0,
+    flexGrow: 1,
+    maxWidth: '540px',
+    width: '100%',
+  },
 }));
 
 const Device = () => {
-  const classes = useStyles();
   const { virtId } = useParams();
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getPresets = useStore((state) => state.getPresets);
@@ -49,7 +61,7 @@ const Device = () => {
   }, [getVirtuals, getSchemas, getPresets, effectType]);
 
   return (
-    <Grid
+    <StyledGrid
       container
       direction="row"
       spacing={2}
@@ -96,7 +108,7 @@ const Device = () => {
           </Grid>
         </>
       )}
-    </Grid>
+    </StyledGrid>
   );
 };
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState } from 'react';
+import { styled } from '@mui/material/styles';
 import {
   Button,
   ListItemIcon,
@@ -9,12 +10,17 @@ import {
 } from '@mui/material';
 import { useLongPress } from 'use-long-press';
 import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 
-const useStyles = makeStyles((theme) => ({
-  bladeMenu: {
+const PREFIX = 'PresetButton';
+
+const classes = {
+  bladeMenu: `${PREFIX}-bladeMenu`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.bladeMenu}`]: {
     '& .MuiPaper-root': {
       backgroundColor: theme.palette.grey[900],
     },
@@ -30,7 +36,6 @@ export default function PresetButton({
   className,
   onClick,
 }: any) {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const open = Boolean(anchorEl);
   const isLogged = useStore((state) => state.isLogged);
@@ -57,7 +62,7 @@ export default function PresetButton({
   );
 
   return (
-    <div>
+    <Root>
       <Button
         aria-expanded={open ? 'true' : undefined}
         variant="outlined"
@@ -147,6 +152,6 @@ export default function PresetButton({
             </MenuItem>
           )}
       </Menu>
-    </div>
+    </Root>
   );
 }

@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { styled } from '@mui/material/styles';
 // import { useTheme } from '@mui/material/styles';
 import {
   DeleteForever,
@@ -8,14 +9,19 @@ import {
 } from '@mui/icons-material';
 import { useContext, useEffect } from 'react';
 import { IconButton, Stack } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
 import { SpotifyStateContext } from '../../SpotifyProvider';
 
-export const useDataGridStyles = makeStyles((theme: any) => ({
-  root: {
+const PREFIX = 'SpTriggerTable';
+
+export const classes = {
+  root: `${PREFIX}-root`,
+};
+
+const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.root}`]: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
         color: theme.palette.text.secondary,
@@ -53,7 +59,6 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
 }));
 
 export default function SpotifyTriggerTable() {
-  const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
@@ -202,7 +207,7 @@ export default function SpotifyTriggerTable() {
   const rows = spTriggersList || [{ id: 1 }];
 
   return (
-    <div
+    <Root
       style={{
         display: 'flex',
         width: '100%',
@@ -233,6 +238,6 @@ export default function SpotifyTriggerTable() {
             : ''
         }
       />
-    </div>
+    </Root>
   );
 }

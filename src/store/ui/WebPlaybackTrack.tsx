@@ -1,4 +1,3 @@
-
 export type WebPlaybackTrack = {
   uri: string; // Spotify URI
   id: string | null; // Spotify ID from URI (can be null)
@@ -9,7 +8,7 @@ export type WebPlaybackTrack = {
   album: {
     uri: string; // Spotify Album URI
     name: string;
-    images: { url: string; }[];
+    images: { url: string }[];
   };
-  artists: { uri: string; name: string; }[];
+  artists: { uri: string; name: string }[];
 };

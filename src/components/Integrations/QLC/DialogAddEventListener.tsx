@@ -1,7 +1,7 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 // import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@mui/styles';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -20,25 +20,27 @@ import FormHelperText from '@mui/material/FormHelperText';
 import ThisDropDown from './DialogAddEventListnerDropDown';
 // import { createQlcListener } from 'modules/qlc';
 import useStore from '../../../store/useStore';
-// import * as integrationsProxies from 'proxies/integrations';
-// import BladeSchemaForm from '../../SchemaForm/SchemaForm/SchemaForm';
 
-// To Do:
-// useEffect(() => {
-// getScenes();
-// }, []);
+const PREFIX = 'DialogAddEventListener';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const classes = {
+  root: `${PREFIX}-root`,
+  paper: `${PREFIX}-paper`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.root}`]: {
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     width: '80%',
     maxHeight: 535,
   },
 }));
+
 function ConfirmationDialogRaw(props: any) {
   const {
     onClose,
@@ -62,7 +64,6 @@ function ConfirmationDialogRaw(props: any) {
   const [qlcData, setqlcData] = React.useState([]);
   const radioGroupRef = React.useRef(null);
   // const [model, setModel] = React.useState({});
-  const classes = useStyles();
 
   const qlcInfo = useStore((state: any) => state.qlc?.qlcWidgets);
   const createQlcListener = useStore((state) => state.addQLCSongTrigger);
@@ -467,7 +468,7 @@ function ConfirmationDialogRaw(props: any) {
                     */}
 
         {/* <div style={{ minWidth: '150px' }}></div> */}
-        <div>
+        <Root>
           {checkButtonType && (
             <label>QLC+ widget selected above (On/Off) </label>
           )}
@@ -480,7 +481,7 @@ function ConfirmationDialogRaw(props: any) {
               onChange={handleEventChange}
             />
           )}
-        </div>
+        </Root>
 
         <div style={{ minWidth: '150px' }}>
           {checkSliderType && <label>QLC Slider Widget Value</label>}
@@ -577,7 +578,6 @@ ConfirmationDialogRaw.propTypes = {
 };
 
 export default function ConfirmationDialog({ integration }: any) {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   // const dispatch = useDispatch();
   // console.log("YZ03:", event_types)
