@@ -78,9 +78,21 @@ const DeviceCard = ({
       className={`${classes.virtualCardPortraitW} ${
         isEffectSet ? 'active' : ''
       } ${online ? 'online' : 'offline'}`}
-      style={{ ...additionalStyle, width: '100%' }}
+      style={{
+        ...additionalStyle,
+        width: '100%',
+        background: theme.palette.background.paper,
+      }}
     >
-      <Card className={classes.virtualCardPortrait}>
+      <Card
+        className={classes.virtualCardPortrait}
+        sx={{
+          background: theme.palette.background.paper,
+          '&:hover': {
+            borderColor: theme.palette.text.disabled,
+          },
+        }}
+      >
         <div className={classes.virtualCardContainer}>
           <div className={`${classes.virtualIconWrapper}`}>
             <BladeIcon

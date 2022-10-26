@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { useEffect } from 'react';
 
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
@@ -10,7 +11,7 @@ import useWindowDimensions from './utils/useWindowDimension';
 import './App.css';
 // import { ledfxTheme, ledfxThemes } from './themes/AppThemes';
 // import { BladeDarkGreyTheme5 } from './themes/AppThemes5';
-// import { BladeDarkGreyTheme5, ledfxThemes5 } from './themes/AppThemes5';
+// import { BladeDarkGreyTheme5, ledfxThemes } from './themes/AppThemes5';
 import {
   deleteFrontendConfig,
   initFrontendConfig,
@@ -19,6 +20,7 @@ import {
 import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
+import { common, ledfxThemes, ledfxTheme } from './themes/AppThemes5';
 
 const PREFIX = 'App';
 
@@ -77,34 +79,52 @@ export default function App() {
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const darkMode = useStore((state) => state.ui.darkMode);
 
+  // {
+  //   components: {
+  //     MuiButton: {
+  //       defaultProps: {
+  //         variant: 'contained',
+  //         size: 'small',
+  //       },
+  //     },
+  //     MuiChip: {
+  //       defaultProps: {
+  //         variant: 'outlined',
+  //         sx: {
+  //           m: 0.3,
+  //         },
+  //       },
+  //     },
+  //   },
+  //   palette: {
+  //     primary: {
+  //       main: '#ff0000',
+  //     },
+  //     secondary: {
+  //       main: '#00ff00',
+  //     },
+  //     mode: darkMode ? 'dark' : 'light',
+  //     accent: {
+  //       main: '#0000ff',
+  //     },
+  //   },
+  // }
+
   const theme = createTheme({
-    components: {
-      MuiButton: {
-        defaultProps: {
-          variant: 'contained',
-          size: 'small',
-        },
-      },
-      MuiChip: {
-        defaultProps: {
-          variant: 'outlined',
-          sx: {
-            m: 0.3,
-          },
-        },
-      },
-    },
+    ...ledfxThemes[ledfxTheme],
+    ...common,
     palette: {
-      primary: {
-        main: '#ff0000',
-      },
-      secondary: {
-        main: '#00ff00',
-      },
+      ...ledfxThemes[ledfxTheme].palette,
       mode: darkMode ? 'dark' : 'light',
-      accent: {
-        main: '#0000ff',
-      },
+      background: darkMode
+        ? {
+            default: '#030303',
+            paper: '#151515',
+          }
+        : {
+            default: '#bbb',
+            paper: '#fefefe',
+          },
     },
   });
 

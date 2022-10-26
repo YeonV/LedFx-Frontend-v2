@@ -11,7 +11,6 @@ import {
 import { Delete, Close, Check } from '@mui/icons-material';
 import { useLongPress } from 'use-long-press';
 import { PopoverProps, PopoverDefaults } from './Popover.interface';
-import useStyles from './Popover.styles';
 
 const Popover = ({
   onConfirm,
@@ -42,7 +41,6 @@ const Popover = ({
   wrapperStyle,
   type = 'button',
 }: PopoverProps): ReactElement<any, any> => {
-  const classes = useStyles();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const openPopover = (event: any) => {
@@ -183,7 +181,7 @@ const Popover = ({
       >
         <div style={{ display: 'flex', ...popoverStyle }}>
           {content || (
-            <Typography className={classes.typography}>{text}</Typography>
+            <Typography sx={{ padding: theme.spacing(2) }}>{text}</Typography>
           )}
           <Button
             disabled={confirmDisabled}

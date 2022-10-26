@@ -3,7 +3,7 @@ import isElectron from 'is-electron';
 import { drawerWidth } from '../../utils/helpers';
 import blademod from '../../assets/blademod.svg';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   '@global': {
     '*::-webkit-scrollbar': {
       backgroundColor: '#ffffff30',
@@ -36,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
   },
   logo: {
     position: 'relative',
@@ -73,10 +71,6 @@ const useStyles = makeStyles((theme) => ({
   },
   devbadge: {
     backgroundImage: `url(${blademod})`,
-    backgroundColor: isElectron()
-      ? 'transparent'
-      : theme.palette.secondary.main,
-    border: theme.palette.primary.main,
     color: '#fff',
     borderRadius: isElectron() ? 0 : '15px',
     width: '150px',
@@ -86,15 +80,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundRepeat: 'no-repeat',
     textAlign: 'right',
     backgroundPosition: isElectron() ? '-66px 50%' : '-40px 50%',
-  },
-  activeView: {
-    backgroundColor: theme.palette.secondary.main,
-    boxShadow: theme.shadows[12],
-    '&:hover,&:focus,&:visited,&': {
-      backgroundColor: theme.palette.secondary.main,
-      boxShadow: theme.shadows[12],
-    },
-    color: '#fff',
   },
 }));
 export default useStyles;
