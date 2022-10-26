@@ -57,7 +57,7 @@ const StyledMenu = ({ open, ...props }: any) => (
   />
 );
 
-const AddButton = ({ className, style, setBackdrop }: any) => {
+const AddButton = ({ className, style, setBackdrop, sx }: any) => {
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -129,7 +129,7 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
     });
   }
   return (
-    <Root className={className} style={{ zIndex: 5, ...style }}>
+    <Root className={className} style={{ zIndex: 5, ...style }} sx={sx}>
       <Fab
         color="primary"
         variant="circular"

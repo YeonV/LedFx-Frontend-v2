@@ -198,14 +198,12 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   <TourEffect schemaProperties={orderedProperties} />
                   {/* <Button
                     onClick={() => handleRandomize()}
-                    variant="outlined"
                     style={{ marginRight: '.5rem' }}
                     className={'step-device-six'}
                     >
                     <Casino />
                   </Button> */}
                   <Button
-                    variant="outlined"
                     style={{ marginRight: '.5rem' }}
                     className="step-device-five"
                     onClick={() => handlePlayPause()}
@@ -213,7 +211,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                     {virtual.active ? <Pause /> : <PlayArrow />}
                   </Button>
                   <Button
-                    variant="outlined"
                     className="step-device-five"
                     onClick={() => handleClearEffect()}
                   >

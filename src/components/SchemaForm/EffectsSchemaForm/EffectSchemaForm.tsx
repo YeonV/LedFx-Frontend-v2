@@ -56,7 +56,6 @@ const EffectSchemaForm = ({
             case 'string':
               return (
                 <BladeSelect
-                  variant="outlined"
                   model={model}
                   schema={s}
                   wrapperStyle={{ width: '49%' }}

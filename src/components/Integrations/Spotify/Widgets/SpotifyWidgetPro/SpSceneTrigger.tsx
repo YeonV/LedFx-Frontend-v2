@@ -77,7 +77,6 @@ export default function SpSceneTrigger() {
                 id="scene"
                 value={spotifyScene}
                 label="Scene"
-                variant="outlined"
                 onChange={(_, v: any) => {
                   setSpotifyScene(v.props.value);
                 }}
@@ -94,7 +93,6 @@ export default function SpSceneTrigger() {
             </FormControl>
             <TextField
               label="Network Delay"
-              variant="outlined"
               style={{
                 width: 150,
                 color: '#fff',

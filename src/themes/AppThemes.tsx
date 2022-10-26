@@ -23,8 +23,15 @@ export const common = {
   components: {
     MuiButton: {
       defaultProps: {
-        variant: 'contained' as 'contained' | 'outlined' | 'text' | undefined,
+        // eslint-disable-next-line prettier/prettier
+        color: 'inherit' as 'error' | 'success' | 'warning' | 'info' | 'inherit' | 'primary' | 'secondary' | undefined,
+        variant: 'outlined' as 'contained' | 'outlined' | 'text' | undefined,
         size: 'small' as 'small' | 'medium' | 'large',
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined' as 'filled' | 'outlined' | 'standard' | undefined,
       },
     },
     MuiChip: {

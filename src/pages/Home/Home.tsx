@@ -116,7 +116,6 @@ export default function Home() {
             )}
           </Button>
           {/* <Button
-            variant="outlined"
             onClick={() => {
               deleteFrontendConfig();
             }}

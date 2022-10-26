@@ -162,6 +162,7 @@ export default function NoHostDialog() {
             }}
             renderOption={(option) => (
               <div
+                key={option.title}
                 style={{
                   display: 'flex',
                   width: '100%',

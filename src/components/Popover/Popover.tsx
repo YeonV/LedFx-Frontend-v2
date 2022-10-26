@@ -198,7 +198,6 @@ const Popover = ({
           </Button>
           <Button
             aria-describedby={id}
-            variant="outlined"
             color="primary"
             onClick={(e) => {
               e.preventDefault();

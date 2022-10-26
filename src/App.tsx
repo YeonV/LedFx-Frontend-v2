@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useEffect } from 'react';
-
+import { useEffect, useMemo } from 'react';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import isElectron from 'is-electron';
@@ -9,9 +8,6 @@ import ws, { WsContext, HandleWs } from './utils/Websocket';
 import useStore from './store/useStore';
 import useWindowDimensions from './utils/useWindowDimension';
 import './App.css';
-// import { ledfxTheme, ledfxThemes } from './themes/AppThemes';
-// import { BladeDarkGreyTheme5 } from './themes/AppThemes5';
-// import { BladeDarkGreyTheme5, ledfxThemes } from './themes/AppThemes5';
 import {
   deleteFrontendConfig,
   initFrontendConfig,
@@ -20,7 +16,7 @@ import {
 import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
-import { common, ledfxThemes, ledfxTheme } from './themes/AppThemes5';
+import { common, ledfxThemes, ledfxTheme } from './themes/AppThemes';
 
 const PREFIX = 'App';
 
@@ -79,54 +75,27 @@ export default function App() {
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const darkMode = useStore((state) => state.ui.darkMode);
 
-  // {
-  //   components: {
-  //     MuiButton: {
-  //       defaultProps: {
-  //         variant: 'contained',
-  //         size: 'small',
-  //       },
-  //     },
-  //     MuiChip: {
-  //       defaultProps: {
-  //         variant: 'outlined',
-  //         sx: {
-  //           m: 0.3,
-  //         },
-  //       },
-  //     },
-  //   },
-  //   palette: {
-  //     primary: {
-  //       main: '#ff0000',
-  //     },
-  //     secondary: {
-  //       main: '#00ff00',
-  //     },
-  //     mode: darkMode ? 'dark' : 'light',
-  //     accent: {
-  //       main: '#0000ff',
-  //     },
-  //   },
-  // }
-
-  const theme = createTheme({
-    ...ledfxThemes[ledfxTheme],
-    ...common,
-    palette: {
-      ...ledfxThemes[ledfxTheme].palette,
-      mode: darkMode ? 'dark' : 'light',
-      background: darkMode
-        ? {
-            default: '#030303',
-            paper: '#151515',
-          }
-        : {
-            default: '#bbb',
-            paper: '#fefefe',
-          },
-    },
-  });
+  const theme = useMemo(
+    () =>
+      createTheme({
+        ...ledfxThemes[ledfxTheme],
+        ...common,
+        palette: {
+          ...ledfxThemes[ledfxTheme].palette,
+          mode: darkMode ? 'dark' : 'light',
+          background: darkMode
+            ? {
+                default: '#030303',
+                paper: '#151515',
+              }
+            : {
+                default: '#bbb',
+                paper: '#fefefe',
+              },
+        },
+      }),
+    [darkMode]
+  );
 
   useEffect(() => {
     getVirtuals();

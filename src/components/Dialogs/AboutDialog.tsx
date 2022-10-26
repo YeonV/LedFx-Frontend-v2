@@ -50,7 +50,6 @@ export default function AboutDialog({ className, children, startIcon }: any) {
       <Button
         size="small"
         startIcon={startIcon}
-        variant="outlined"
         className={className}
         onClick={handleClickOpen}
       >

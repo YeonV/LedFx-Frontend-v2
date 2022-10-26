@@ -139,7 +139,7 @@ const SchemaForm = ({
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
-                      disableUnderline
+                      // disableUnderline
                       onChange={(e: any) => {
                         const c: any = {};
                         c.audio_device = parseInt(e.target.value, 10);
@@ -181,7 +181,6 @@ const SchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
-                      variant="outlined"
                       // eslint-disable-next-line
                       children={undefined}
                       hideDesc={hideDesc}

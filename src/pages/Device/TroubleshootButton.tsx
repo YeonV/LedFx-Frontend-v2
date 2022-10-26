@@ -70,8 +70,7 @@ export default function TroubleshootButton({
     devices[virtual.id].type === 'wled' ? (
     <>
       <Button
-        variant="outlined"
-        color="primary"
+        color="inherit"
         onClick={() => setOpen(true)}
         style={{ marginRight: '.5rem' }}
       >
@@ -86,7 +85,7 @@ export default function TroubleshootButton({
         <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
-              color="primary"
+              color="inherit"
               variant="contained"
               startIcon={<NavigateBefore />}
               onClick={() => setOpen(false)}
@@ -214,7 +213,7 @@ export default function TroubleshootButton({
             </Grid>
           ) : (
             <div style={{ textAlign: 'center', margin: 10 }}>
-              <Button variant="outlined" disabled={loading} onClick={ping}>
+              <Button disabled={loading} onClick={ping}>
                 Scan{' '}
               </Button>
             </div>

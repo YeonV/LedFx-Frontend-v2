@@ -117,7 +117,6 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   return !spAuthenticated ? (
     <Button
       disabled={disabled}
-      variant="outlined"
       size="small"
       color="inherit"
       className={classes.editButton}
@@ -130,7 +129,6 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   ) : (
     <Button
       disabled={disabled}
-      variant="outlined"
       size="small"
       color="inherit"
       className={classes.editButton}
