@@ -176,7 +176,7 @@ const AddDeviceDialog = () => {
               )
             }
             style={{ flexGrow: 1 }}
-            disableUnderline
+            // disableUnderline
             value={deviceType}
             onChange={(e: any) => handleTypeChange(e.target.value)}
           >

@@ -58,7 +58,7 @@ const BladeSelect = ({
               flexGrow: 'unset',
               ...(selectStyle as any),
             }}
-            disableUnderline
+            // disableUnderline
             defaultValue={schema.default}
             value={(model && model_id && model[model_id]) || schema.enum[0]}
             onChange={(e) => onChange(model_id, e.target.value)}
@@ -90,7 +90,7 @@ const BladeSelect = ({
             flexGrow: variant === 'outlined' ? 1 : 'unset',
             ...(selectStyle as any),
           }}
-          disableUnderline
+          // disableUnderline
           defaultValue={schema.default}
           value={(model && model_id && model[model_id]) || schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
@@ -108,7 +108,7 @@ const BladeSelect = ({
             flexGrow: variant === 'outlined' ? 1 : 'unset',
             ...(selectStyle as any),
           }}
-          disableUnderline
+          // disableUnderline
           defaultValue={schema.default}
           value={
             (model && model_id && schema.enum[model[model_id]]) ||

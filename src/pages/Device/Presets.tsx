@@ -180,7 +180,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       return (
         <Button
           style={{ margin: '0.5rem 0 0.5rem 0.5rem' }}
-          variant="outlined"
           size="small"
           className={classes.presetButton}
           disabled
@@ -201,7 +200,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                   JSON.stringify(virtual.effect.config) ===
                   JSON.stringify(list[preset].config)
                     ? 'primary'
-                    : 'default'
+                    : 'inherit'
                 }
                 label={list[preset].name}
                 delPreset={handleRemovePreset(preset)}
@@ -219,7 +218,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                     ? 'primary'
                     : 'inherit'
                 }
-                variant="outlined"
                 onClick={handleActivatePreset(virtual.id, CATEGORY, preset)}
               >
                 {list[preset].name}
@@ -275,7 +273,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                       ).length > 0)
                   }
                   size="small"
-                  variant="outlined"
                   id="presetNameInput"
                   label={
                     presets.default_presets &&

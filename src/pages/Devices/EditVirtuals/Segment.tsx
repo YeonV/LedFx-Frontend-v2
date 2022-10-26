@@ -60,7 +60,6 @@ const Segment = ({ s, i, virtual, segments }: any) => {
             <div>
               <Button
                 disabled={i === 0}
-                variant="outlined"
                 color="inherit"
                 onClick={() => reorder('UP')}
                 size="small"
@@ -72,7 +71,6 @@ const Segment = ({ s, i, virtual, segments }: any) => {
             <div>
               <Button
                 disabled={i === virtual.segments.length - 1}
-                variant="outlined"
                 color="inherit"
                 onClick={() => reorder('DOWN')}
                 size="small"

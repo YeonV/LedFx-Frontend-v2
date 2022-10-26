@@ -205,7 +205,6 @@ const Scenes = () => {
                   />
                   <Button
                     onClick={() => handleInfoOpen(s)}
-                    variant="outlined"
                     color="inherit"
                     size="small"
                     style={{ marginLeft: '0.5rem' }}

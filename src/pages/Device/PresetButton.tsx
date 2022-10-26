@@ -19,7 +19,7 @@ const classes = {
   bladeMenu: `${PREFIX}-bladeMenu`,
 };
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.bladeMenu}`]: {
     '& .MuiPaper-root': {
       backgroundColor: theme.palette.grey[900],
@@ -65,7 +65,6 @@ export default function PresetButton({
     <Root>
       <Button
         aria-expanded={open ? 'true' : undefined}
-        variant="outlined"
         color={buttonColor}
         className={className}
         {...longPress()}
@@ -97,7 +96,6 @@ export default function PresetButton({
         <div>
           <Popover
             type="menuItem"
-            variant="outlined"
             onConfirm={delPreset}
             label="Delete Preset"
             anchorOrigin={{

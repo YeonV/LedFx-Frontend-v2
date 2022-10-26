@@ -122,7 +122,6 @@ const TourHome = ({
         </Fab>
       ) : (
         <Button
-          variant="outlined"
           className={`step-zero ${className}`}
           onClick={() => {
             setTour('home');

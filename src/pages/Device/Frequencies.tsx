@@ -179,7 +179,6 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     ? value[0]
                     : Math.round(hzIt(value[0]))
                 }
-                variant="outlined"
                 onChange={(e: any) => {
                   setValue([logIt(e.target.value), value[1]]);
                 }}
@@ -210,7 +209,6 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     <InputAdornment position="end">Hz</InputAdornment>
                   ),
                 }}
-                variant="outlined"
               />
             </div>
           </div>

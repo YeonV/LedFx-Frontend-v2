@@ -217,7 +217,6 @@ const Bar = ({ handleClose, direct }: any) => {
           <TextField
             {...params}
             autoFocus={!direct}
-            variant="outlined"
             color="primary"
             style={{ borderRadius: '50%' }}
             label="Jump to device / Activate scene"

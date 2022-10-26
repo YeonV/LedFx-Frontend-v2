@@ -36,7 +36,6 @@ const TourEffect = ({ schemaProperties }: any) => {
           setIsTourOpen(true);
           setTour('effect');
         }}
-        variant="outlined"
         style={{ marginRight: '.5rem' }}
         className="step-device-seven"
       >

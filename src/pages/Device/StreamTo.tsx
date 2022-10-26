@@ -182,7 +182,6 @@ const StreamToCard = ({
 
         </List> */}
         <Button
-          variant="outlined"
           onClick={() => handleCopy()}
           style={{
             alignSelf: 'flex-start',

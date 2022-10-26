@@ -149,7 +149,6 @@ const GradientPicker = ({
                 marginRight: 16,
                 cursor: 'pointer',
               }}
-              variant="outlined"
               onClick={() => handleDeleteDialog()}
               disabled={
                 colors &&
@@ -166,7 +165,6 @@ const GradientPicker = ({
               className={classes.addButton}
               popoverStyle={{ padding: '0.5rem' }}
               color="primary"
-              variant="outlined"
               content={
                 <TextField
                   autoFocus
@@ -188,7 +186,6 @@ const GradientPicker = ({
                       ).length > 0)
                   }
                   size="small"
-                  variant="outlined"
                   id="gradientNameInput"
                   label="Enter name to save as..."
                   style={{ marginRight: '1rem', flex: 1 }}

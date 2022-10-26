@@ -89,7 +89,7 @@ const BladeSliderInner = ({
         ) : null}
       </div>
       <Input
-        disableUnderline
+        disableUnderline={disableUnderline}
         disabled={disabled}
         className={classes.input}
         style={
@@ -132,7 +132,6 @@ const BladeSliderInner = ({
     <TextField
       disabled={disabled}
       InputProps={{
-        disableUnderline,
         endAdornment: model_id === 'delay_ms' ? 'ms' : null,
       }}
       type="number"
@@ -182,7 +181,7 @@ const BladeSlider = ({
         '& > label': {
           backgroundColor: theme.palette.background.paper,
         },
-        '& .MuiSlider-valueLabel > span': {
+        '& .MuiSliderValueLabel > span': {
           backgroundColor: theme.palette.background.paper,
         },
       }}
