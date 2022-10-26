@@ -6,9 +6,9 @@ import DeviceCard from './DeviceCard/DeviceCard.wrapper';
 import NoYet from '../../components/NoYet';
 import ws from '../../utils/Websocket';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   cardWrapper: {
-    padding: theme.spacing(1),
+    // padding: theme.spacing(1),
     paddingTop: 0,
     display: 'flex',
     flexWrap: 'wrap',

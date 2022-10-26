@@ -10,11 +10,10 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Slide from '@mui/material/Slide';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { ListItemIcon, MenuItem } from '@mui/material';
+import { ListItemIcon, MenuItem, useTheme } from '@mui/material';
 import { MenuBook } from '@mui/icons-material';
 // import { API } from '@stoplight/elements';
 import { TransitionProps } from '@mui/material/transitions';
-import useStyles from './Doc.styles';
 import '@stoplight/elements/styles.min.css';
 // import configApiYaml from './configApiYaml';
 
@@ -72,9 +71,8 @@ export default function Doc({
   onClick = () => {},
   innerKey,
 }: any) {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
+  const theme = useTheme();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -120,7 +118,15 @@ export default function Doc({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar enableColorOnDark className={classes.appBar}>
+        <AppBar
+          enableColorOnDark
+          sx={{
+            position: 'relative',
+            marginBottom: '1rem',
+            background: theme.palette.background.default,
+            color: theme.palette.text.primary,
+          }}
+        >
           <Toolbar>
             <Button
               autoFocus
@@ -132,7 +138,13 @@ export default function Doc({
             >
               back
             </Button>
-            <Typography variant="h6" className={classes.title}>
+            <Typography
+              variant="h6"
+              sx={{
+                marginLeft: theme.spacing(2),
+                flex: 1,
+              }}
+            >
               Documentation
             </Typography>
           </Toolbar>

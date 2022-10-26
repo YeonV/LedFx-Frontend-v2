@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useTheme } from '@mui/material/styles';
@@ -11,6 +12,7 @@ import {
   List,
   Divider,
   IconButton,
+  Box,
 } from '@mui/material';
 import { useLocation, Link } from 'react-router-dom';
 import isElectron from 'is-electron';
@@ -42,9 +44,15 @@ const LeftBar = () => {
           LedFx
         </a>
       )}
-      <div
+      <Box
         className={classes.devbadge}
         onClick={() => window.localStorage.setItem('BladeMod', '0')}
+        sx={{
+          border: theme.palette.primary.main,
+          backgroundColor: isElectron()
+            ? 'transparent'
+            : theme.palette.secondary.main,
+        }}
       />
     </div>
   );
@@ -59,12 +67,18 @@ const LeftBar = () => {
         paper: classes.drawerPaper,
       }}
     >
-      <div className={classes.drawerHeader}>
+      <Box
+        className={classes.drawerHeader}
+        sx={{
+          padding: theme.spacing(0, 1),
+          ...theme.mixins.toolbar,
+        }}
+      >
         {logo}
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
         </IconButton>
-      </div>
+      </Box>
       <Divider />
       <List>
         {Object.keys(virtuals).map((d, i) => (
@@ -77,12 +91,20 @@ const LeftBar = () => {
             }}
           >
             <ListItem
-              className={
+              sx={
                 pathname.split('/').length === 3 &&
                 pathname.split('/')[1] === 'device' &&
                 pathname.split('/')[2] === d
-                  ? classes.activeView
-                  : ''
+                  ? {
+                      backgroundColor: theme.palette.secondary.main,
+                      boxShadow: theme.shadows[12],
+                      '&:hover,&:focus,&:visited,&': {
+                        backgroundColor: theme.palette.secondary.main,
+                        boxShadow: theme.shadows[12],
+                      },
+                      color: '#fff',
+                    }
+                  : {}
               }
               button
               key={virtuals[d].config.name}

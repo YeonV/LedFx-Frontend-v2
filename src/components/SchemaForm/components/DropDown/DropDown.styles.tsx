@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   FormRow: {
     display: 'flex',
     flexDirection: 'row',
@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
   },
   FormListHeaders: {
     pointerEvents: 'none',
-    background: theme.palette.secondary.main,
     color: '#fff',
   },
   FormListItem: {

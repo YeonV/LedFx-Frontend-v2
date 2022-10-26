@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   paper: {
     border: '1px solid',
     borderRadius: 10,
@@ -8,8 +8,6 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     maxWidth: '308px',
     overflow: 'auto',
-    padding: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
     '& .gradient-result': {
       display: 'none',
     },
@@ -28,15 +26,6 @@ const useStyles = makeStyles((theme) => ({
       {
         backgroundColor: 'transparent',
       },
-    '& .popup_tabs-header-label-active': {
-      color: theme.palette.text.primary,
-    },
-    '& .popup_tabs-header-label': {
-      color: theme.palette.text.disabled,
-      '&.popup_tabs-header-label-active': {
-        color: theme.palette.text.primary,
-      },
-    },
     '& .popup_tabs-body': {
       paddingBottom: 4,
     },
@@ -80,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
       fontVariant: 'all-small-caps',
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
-      backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },
   },

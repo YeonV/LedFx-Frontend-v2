@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Slider, Input, TextField, Typography } from '@mui/material';
+import { Slider, Input, TextField, Typography, useTheme } from '@mui/material';
 import useStyles from './BladeSlider.styles';
 import {
   BladeSliderDefaultProps,
@@ -172,12 +172,19 @@ const BladeSlider = ({
   style = {},
 }: BladeSliderProps) => {
   const classes = useStyles();
+  const theme = useTheme();
   return variant === 'outlined' ? (
     <div
       className={`${classes.wrapper} step-effect-${index}`}
       style={{
         ...style,
         width: full ? '100%' : style.width,
+        '& > label': {
+          backgroundColor: theme.palette.background.paper,
+        },
+        '& .MuiSlider-valueLabel > span': {
+          backgroundColor: theme.palette.background.paper,
+        },
       }}
     >
       <label

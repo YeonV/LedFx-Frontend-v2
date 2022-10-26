@@ -56,7 +56,7 @@ const BladeSelect = ({
             disabled={disabled}
             style={{
               flexGrow: 'unset',
-              ...selectStyle,
+              ...(selectStyle as any),
             }}
             disableUnderline
             defaultValue={schema.default}
@@ -80,7 +80,7 @@ const BladeSelect = ({
               ''
             }
             onBlur={(e) => onChange(model_id, e.target.value)}
-            style={textStyle}
+            style={textStyle as any}
           />
         )
       ) : schema.enum && Array.isArray(schema.enum) ? (
@@ -88,7 +88,7 @@ const BladeSelect = ({
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...selectStyle,
+            ...(selectStyle as any),
           }}
           disableUnderline
           defaultValue={schema.default}
@@ -96,7 +96,7 @@ const BladeSelect = ({
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
-            <MenuItem key={i} value={item} style={menuItemStyle}>
+            <MenuItem key={i} value={item} style={menuItemStyle as any}>
               {item}
             </MenuItem>
           ))}
@@ -106,7 +106,7 @@ const BladeSelect = ({
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...selectStyle,
+            ...(selectStyle as any),
           }}
           disableUnderline
           defaultValue={schema.default}
@@ -157,7 +157,7 @@ const BladeSelect = ({
           onChange={(e) => {
             if (schema.id === 'icon_name') setIcon(e.target.value);
           }}
-          style={textStyle}
+          style={textStyle as any}
         />
       )}
     </BladeFrame>
