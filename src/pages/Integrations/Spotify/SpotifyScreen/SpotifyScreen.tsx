@@ -7,6 +7,7 @@ import {
   Dialog,
   Button,
   Grid,
+  useTheme,
 } from '@mui/material';
 import { Settings, NavigateBefore } from '@mui/icons-material';
 import {
@@ -35,6 +36,7 @@ export default function SpotifyScreen({
   size = 'small',
 }: SpotifyScreenProps) {
   const classes = useEditVirtualsStyles();
+  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -80,6 +82,11 @@ export default function SpotifyScreen({
         open={open}
         onClose={handleClose}
         TransitionComponent={Transition}
+        PaperProps={{
+          style: {
+            backgroundColor: theme.palette.background.default,
+          },
+        }}
       >
         <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>

@@ -1,21 +1,18 @@
-// import React, { useState, useEffect } from 'react';
-// import { Box } from '@mui/material';
-// import {
-//   Chart as ChartJS,
-//   RadialLinearScale,
-//   PointElement,
-//   LineElement,
-//   Filler,
-//   // Tooltip,
-//   Legend,
-// } from 'chart.js';
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  // Tooltip,
+  Legend,
+} from 'chart.js';
 import styled from 'styled-components';
 import { Radar } from 'react-chartjs-2';
 import { useTheme } from '@mui/material/styles';
 
 const RadarChartContainer = styled.div`
-  width: 500px;
-  height: 250px;
+  width: 450px;
   margin: 0 auto;
   h2 {
     margin-bottom: 40px;
@@ -30,13 +27,13 @@ const RadarChartContainer = styled.div`
 const RadarChart = (props: any) => {
   const theme = useTheme();
   const TrackFeatures = props;
-  // ChartJS.register(
-  //   RadialLinearScale,
-  //   PointElement,
-  //   LineElement,
-  //   Filler,
-  //   Legend
-  // );
+  ChartJS.register(
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Legend
+  );
   const data = {
     labels: [
       'Energy',
@@ -48,12 +45,11 @@ const RadarChart = (props: any) => {
     datasets: [
       {
         label: 'Track Features',
-        backgroundColor: `${theme.palette.primary.main}a0`,
-        borderColor: `${theme.palette.primary.main}cc`,
+        backgroundColor: `${theme.palette.primary.main}30`,
+        borderColor: `${theme.palette.primary.main}dd`,
         borderWidth: 1,
         pointBackgroundColor: `${theme.palette.primary.main}`,
         pointBorderWidth: 2,
-        fontColor: theme.palette.text.primary,
         data: [
           TrackFeatures?.energy,
           TrackFeatures?.danceability,
@@ -66,36 +62,31 @@ const RadarChart = (props: any) => {
   };
 
   const chartOptions = {
+    aspectRatio: 1.8,
     responsive: true,
-    legend: {
-      display: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
     },
-
     layout: {
-      padding: {
-        left: 0,
-        right: 0,
-        top: 20,
-        bottom: 20,
-      },
+      autoPadding: false,
     },
-    scale: {
-      ticks: {
-        beginAtZero: true,
-        min: 0,
-        max: 1,
-        stepSize: 0,
-        showLabelBackdrop: false,
-        backdropColor: 'rgba(0, 0, 0, 1)',
-      },
-      pointLabels: {
-        fontColor: 'white',
-      },
-      gridLines: {
-        color: 'white',
-      },
-      angleLines: {
-        color: 'white',
+    scales: {
+      radial: {
+        title: {
+          color: '#f00',
+        },
+        ticks: {
+          display: false,
+        },
+        grid: {
+          color: '#333',
+        },
+        angleLines: {
+          display: true,
+          color: '#333',
+        },
       },
     },
     tooltips: {

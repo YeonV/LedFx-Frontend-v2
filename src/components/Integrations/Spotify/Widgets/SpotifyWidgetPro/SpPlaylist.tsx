@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import {
   DataGrid,
   GridColDef,
@@ -9,7 +8,7 @@ import {
   GridRowParams,
 } from '@mui/x-data-grid';
 
-import { Grid, IconButton , Stack } from '@mui/material';
+import { Card, Grid, IconButton , Stack } from '@mui/material';
 import { PlayCircleFilled } from '@mui/icons-material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
@@ -91,7 +90,7 @@ export default function SpPlaylist() {
   // console.log(playerState?.context.metadata?.current_item, rows.map((r: any)=>r.track))
   return (
     <Grid xl={7} lg={5} md={12} xs={12} item>
-      <Box sx={{ height: 250 }}>
+      <Card sx={{ height: 250 }}>
         <DataGrid
           className={`${classes.root} playlist`}
           rows={rows}
@@ -130,7 +129,7 @@ export default function SpPlaylist() {
               : ''
           }
         />
-      </Box>
+      </Card>
     </Grid>
   );
 }

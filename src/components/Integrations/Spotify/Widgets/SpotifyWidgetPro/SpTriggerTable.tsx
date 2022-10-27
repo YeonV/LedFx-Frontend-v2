@@ -8,7 +8,7 @@ import {
   PlayCircleFilled,
 } from '@mui/icons-material';
 import { useContext, useEffect } from 'react';
-import { IconButton, Stack } from '@mui/material';
+import { Card, IconButton, Stack } from '@mui/material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
@@ -213,31 +213,33 @@ export default function SpotifyTriggerTable() {
         width: '100%',
       }}
     >
-      <DataGrid
-        className={classes.root}
-        autoHeight
-        // checkboxSelection
-        disableSelectionOnClick
-        onRowDoubleClick={(params: any) => {
-          spotifyPlaySong(spotifyDevice, params.row.songId);
-        }}
-        sx={{
-          boxShadow: 2,
-          color: '#fff',
-          border: 1,
-          borderColor: '#666',
-        }}
-        columns={columns}
-        rows={rows}
-        getRowClassName={(params: GridRowParams<any>) =>
-          params.row.songId ===
-          playerState?.context.metadata?.current_item.uri.split(':')[2]
-            ? (playerState?.position ?? 0) > params.row.position_ms
-              ? 'activated'
-              : 'currently_playing'
-            : ''
-        }
-      />
+      <Card sx={{ display: 'flex', width: '100%' }}>
+        <DataGrid
+          className={classes.root}
+          autoHeight
+          // checkboxSelection
+          disableSelectionOnClick
+          onRowDoubleClick={(params: any) => {
+            spotifyPlaySong(spotifyDevice, params.row.songId);
+          }}
+          sx={{
+            boxShadow: 2,
+            color: '#fff',
+            border: 1,
+            borderColor: '#666',
+          }}
+          columns={columns}
+          rows={rows}
+          getRowClassName={(params: GridRowParams<any>) =>
+            params.row.songId ===
+            playerState?.context.metadata?.current_item.uri.split(':')[2]
+              ? (playerState?.position ?? 0) > params.row.position_ms
+                ? 'activated'
+                : 'currently_playing'
+              : ''
+          }
+        />
+      </Card>
     </Root>
   );
 }
