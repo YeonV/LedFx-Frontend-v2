@@ -1,18 +1,15 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import {
   HashRouter as Router,
   BrowserRouter,
   Routes,
   Route,
-  // Link,
 } from 'react-router-dom';
-
 import clsx from 'clsx';
 import { useHotkeys } from 'react-hotkeys-hook';
 import isElectron from 'is-electron';
 import { styled } from '@mui/material/styles';
 import ScrollToTop from '../utils/scrollToTop';
-
-// import useStyles from '../App.styles';
 import '../App.css';
 
 import LeftBar from '../components/Bars/BarLeft';
