@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, forwardRef } from 'react';
+import { useState, forwardRef, useEffect } from 'react';
 import {
   Button,
   Dialog,
@@ -13,8 +13,6 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { BugReport, NavigateBefore } from '@mui/icons-material';
-import Moment from 'react-moment';
-import moment from 'moment';
 import { TransitionProps } from '@mui/material/transitions';
 import useTroubleshootStyles from './Troubleshoot.styles';
 import useStore from '../../store/useStore';
@@ -47,6 +45,7 @@ export default function TroubleshootButton({
   const [wledData, setWledData] = useState<any>({});
   const [pingData, setPingData] = useState<any>({});
   const [loading, setLoading] = useState(false);
+  const [uptime, setUptime] = useState(0);
 
   const ping = async () => {
     if (devices[virtual.id]) {
@@ -63,6 +62,22 @@ export default function TroubleshootButton({
       setPingData(resPing);
     }
   };
+
+  useEffect(() => {
+    const TimerInt =
+      virtual &&
+      virtual.config &&
+      devices[virtual.id] &&
+      devices[virtual.id].type === 'wled' &&
+      setInterval(() => {
+        setUptime((time) => time + 1);
+      }, 1000);
+    return () => {
+      if (TimerInt !== false) {
+        clearInterval(TimerInt);
+      }
+    };
+  }, [virtual, devices]);
 
   return virtual &&
     virtual.config &&
@@ -203,11 +218,9 @@ export default function TroubleshootButton({
                 <Row name="UDP Port" value={wledData.udpport} />
                 <Row
                   name="Uptime"
-                  value={
-                    <Moment interval={1000} format="hh:mm:ss" durationFromNow>
-                      {moment().add(wledData.uptime * -1, 's')}
-                    </Moment>
-                  }
+                  value={new Date((wledData.uptime + uptime) * 1000)
+                    .toISOString()
+                    .slice(11, 19)}
                 />
               </Grid>
             </Grid>
