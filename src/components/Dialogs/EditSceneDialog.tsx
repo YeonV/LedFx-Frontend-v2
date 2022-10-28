@@ -24,13 +24,14 @@ const EditSceneDialog = () => {
   const open = useStore((state) => state.dialogs.addScene?.edit || false);
   // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
   const data = useStore((state: any) => state.dialogs.addScene?.editData || '');
+  const viewMode = useStore((state) => state.viewMode);
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
 
   function isValidURL(string: string) {
     const res = string.match(
-      /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+      /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g
     );
     return res !== null;
   }
@@ -39,8 +40,8 @@ const EditSceneDialog = () => {
     if (data) {
       setName(data?.name);
       setImage(data?.scene_image);
-      setUrl(data?.url);
-      setPayload(data?.payload);
+      setUrl(data?.scene_puturl);
+      setPayload(data?.scene_payload);
     }
   }, [data]);
   const handleClose = () => {
@@ -129,29 +130,33 @@ const EditSceneDialog = () => {
           onChange={(e) => setImage(e.target.value)}
           fullWidth
         />
-        <TextField
-          margin="dense"
-          id="url"
-          label="Url"
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          fullWidth
-          error={invalid}
-          helperText={invalid && 'Enter valid URL!'}
-          onBlur={(e) => {
-            setInvalid(!isValidURL(e.target.value));
-          }}
-        />
-        <TextField
-          margin="dense"
-          id="payload"
-          label="Payload"
-          type="text"
-          value={payload}
-          onChange={(e) => setPayload(e.target.value)}
-          fullWidth
-        />
+        {viewMode !== 'user' && (
+          <>
+            <TextField
+              margin="dense"
+              id="url"
+              label="Url"
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              fullWidth
+              error={invalid}
+              helperText={invalid && 'Enter valid URL!'}
+              onBlur={(e) => {
+                setInvalid(!isValidURL(e.target.value));
+              }}
+            />
+            <TextField
+              margin="dense"
+              id="payload"
+              label="Payload"
+              type="text"
+              value={payload}
+              onChange={(e) => setPayload(e.target.value)}
+              fullWidth
+            />
+          </>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>

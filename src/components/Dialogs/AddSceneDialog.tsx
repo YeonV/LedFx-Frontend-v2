@@ -23,6 +23,7 @@ const AddSceneDialog = () => {
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const open = useStore((state) => state.dialogs.addScene?.open || false);
+  const viewMode = useStore((state) => state.viewMode);
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -122,29 +123,33 @@ const AddSceneDialog = () => {
           onChange={(e) => setImage(e.target.value)}
           fullWidth
         />
-        <TextField
-          margin="dense"
-          id="scene_url"
-          label="Url"
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          fullWidth
-          error={invalid}
-          helperText={invalid && 'Enter valid URL!'}
-          onBlur={(e) => {
-            setInvalid(!isValidURL(e.target.value));
-          }}
-        />
-        <TextField
-          margin="dense"
-          id="scene_payload"
-          label="Payload"
-          type="text"
-          value={payload}
-          onChange={(e) => setPayload(e.target.value)}
-          fullWidth
-        />
+        {viewMode !== 'user' && (
+          <>
+            <TextField
+              margin="dense"
+              id="scene_url"
+              label="Url"
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              fullWidth
+              error={invalid}
+              helperText={invalid && 'Enter valid URL!'}
+              onBlur={(e) => {
+                setInvalid(!isValidURL(e.target.value));
+              }}
+            />
+            <TextField
+              margin="dense"
+              id="scene_payload"
+              label="Payload"
+              type="text"
+              value={payload}
+              onChange={(e) => setPayload(e.target.value)}
+              fullWidth
+            />
+          </>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
