@@ -169,7 +169,6 @@ const AddIntegrationDialog = () => {
           <Select
             label="Type"
             style={{ flexGrow: 1 }}
-            // disableUnderline
             value={integrationType}
             onChange={(e: any) => handleTypeChange(e.target.value)}
           >

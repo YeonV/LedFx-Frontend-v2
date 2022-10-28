@@ -30,7 +30,7 @@ export default function CloudScreen({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'inherit',
   variant = 'contained',
   onClick = () => {},
   innerKey,
@@ -128,7 +128,7 @@ export default function CloudScreen({
             handleClickOpen();
           }}
           size="small"
-          style={{ padding: '2px 15px' }}
+          style={{ padding: '2px 15px', marginRight: '0.4rem' }}
           className={className}
         >
           {label}

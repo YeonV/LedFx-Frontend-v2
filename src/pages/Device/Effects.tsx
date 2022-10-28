@@ -2,8 +2,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
-import { styled } from '@mui/material/styles';
-import clsx from 'clsx';
 import {
   Button,
   Card,
@@ -12,6 +10,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
+  Box,
 } from '@mui/material';
 import { Clear, ExpandMore, Pause, PlayArrow } from '@mui/icons-material';
 import useStore from '../../store/useStore';
@@ -21,53 +20,6 @@ import PixelGraph from '../../components/PixelGraph';
 import TourEffect from '../../components/Tours/TourEffect';
 import TroubleshootButton from './TroubleshootButton';
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props';
-
-const PREFIX = 'EffectsCard';
-
-const classes = {
-  content: `${PREFIX}-content`,
-  actionButton: `${PREFIX}-actionButton`,
-  card: `${PREFIX}-card`,
-  pixelbar: `${PREFIX}-pixelbar`,
-  pixelbarOut: `${PREFIX}-pixelbarOut`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }: any) => ({
-  [`& .${classes.content}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  [`& .${classes.actionButton}`]: {
-    marginTop: '0.5rem',
-    width: '100%',
-    borderColor: theme.palette.grey[400],
-  },
-
-  [`& .${classes.card}`]: {
-    width: '100%',
-    maxWidth: '540px',
-    '@media (max-width: 580px)': {
-      maxWidth: '97vw',
-      margin: '0 auto',
-    },
-    '& > .MuiCardContent-root': {
-      paddingBottom: '0.5rem',
-    },
-  },
-
-  [`& .${classes.pixelbar}`]: {
-    opacity: 1,
-    transitionDuration: '0',
-  },
-
-  [`& .${classes.pixelbarOut}`]: {
-    opacity: 0.2,
-    transition: 'opacity',
-    transitionDuration: '1000',
-  },
-}));
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean'];
 
@@ -123,18 +75,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const orderedProperties =
     effects && effectType && orderEffectProperties(effects[effectType].schema);
 
-  // const handleRandomize = () => {
-  //   setVirtualEffect(
-  //     virtual.id,
-  //     {
-  //       virtId: virtual.id,
-  //       type: effectType,
-  //       config: 'RANDOMIZE',
-  //       active: true
-  //     }
-  //   ).then(() => getVirtuals());
-  // };
-
   const handleClearEffect = () => {
     clearVirtualEffect(virtId).then(() => {
       setFade(true);
@@ -172,8 +112,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }, [virtuals, virtual, virtual.effect, virtual.effect.config]);
 
   return (
-    <Root>
-      <Card className={classes.card}>
+    <>
+      <Card
+        variant="outlined"
+        sx={{
+          '& > .MuiCardContent-root': {
+            pb: '0.25rem',
+          },
+        }}
+      >
         <CardContent>
           <div
             style={{
@@ -220,10 +167,19 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
               )}
             </div>
           </div>
-          <div
-            className={clsx(classes.pixelbar, {
-              [classes.pixelbarOut]: fade,
-            })}
+          <Box
+            sx={
+              fade
+                ? {
+                    opacity: 0.2,
+                    transition: 'opacity',
+                    transitionDuration: '1000',
+                  }
+                : {
+                    opacity: 1,
+                    transitionDuration: '0',
+                  }
+            }
             style={{
               transitionDuration: `${virtual.config.transition_time * 1000}`,
             }}
@@ -247,7 +203,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 )
               }
             />
-          </div>
+          </Box>
           <div style={{ height: '1rem' }} />
           <EffectDropDown
             effects={effects}
@@ -263,7 +219,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
         effects &&
         virtual.effect &&
         virtual.effect.config && (
-          <Card style={{ marginTop: '1rem' }}>
+          <Card variant="outlined" style={{ marginTop: '1rem' }}>
             <CardContent style={{ padding: '0 16px' }}>
               <Accordion
                 style={{ padding: 0 }}
@@ -293,7 +249,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             </CardContent>
           </Card>
         )}
-    </Root>
+    </>
   );
 };
 

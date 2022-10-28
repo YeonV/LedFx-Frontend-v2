@@ -66,7 +66,7 @@ export default function Doc({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'inherit',
   variant = 'contained',
   onClick = () => {},
   innerKey,

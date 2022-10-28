@@ -44,7 +44,7 @@ export default function FullScreenDialog({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'inherit',
   variant = 'contained',
   onClick = () => {},
   innerKey,

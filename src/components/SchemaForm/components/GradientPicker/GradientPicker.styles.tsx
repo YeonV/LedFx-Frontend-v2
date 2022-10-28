@@ -60,7 +60,7 @@ const useStyles = makeStyles(() => ({
     minWidth: '230px',
     margin: '0.5rem 0',
     '& > label': {
-      top: '-0.5rem',
+      top: '-0.75rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',

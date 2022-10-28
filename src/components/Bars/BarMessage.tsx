@@ -1,12 +1,10 @@
-import { Icon, IconButton, Snackbar } from '@mui/material';
+import { Icon, IconButton, Snackbar, Alert, AlertColor } from '@mui/material';
 import useStore from '../../store/useStore';
 
-// const Alert = (props: any) => (
-//   <MuiAlert elevation={6} variant="filled" {...props} />
-// );
-
 const MessageBar = () => {
-  const { isOpen, message } = useStore((state) => state.ui.snackbar);
+  const { message, messageType, isOpen } = useStore(
+    (state) => state.ui.snackbar
+  );
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
 
   function handleClose() {
@@ -34,8 +32,13 @@ const MessageBar = () => {
         </IconButton>,
       ]}
     >
-      <div>hi</div>
-      {/* <Alert severity={messageType}>{message}</Alert> */}
+      <Alert
+        elevation={6}
+        variant="filled"
+        severity={messageType as AlertColor}
+      >
+        {message}
+      </Alert>
     </Snackbar>
   );
 };

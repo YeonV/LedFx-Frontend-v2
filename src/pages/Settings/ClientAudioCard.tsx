@@ -32,8 +32,6 @@ const ClientAudioCard = ({ style }: any) => {
         className={classes.select}
       >
         <Select
-          variant="standard"
-          // disableUnderline
           value={clientDevice || clientDevices[0].deviceId}
           style={{ width: '100%' }}
           onChange={(e) => {

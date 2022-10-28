@@ -139,6 +139,7 @@ const DeviceCard = ({
                   offline
                 </Typography>
                 <Button
+                  variant="text"
                   size="small"
                   onClick={(e) => {
                     e.preventDefault();
@@ -166,6 +167,7 @@ const DeviceCard = ({
                 <span className="hideMobile">Effect:&nbsp;</span>
                 {effectName}
                 <Button
+                  variant="text"
                   size="small"
                   onClick={(e) => {
                     e.preventDefault();
@@ -181,6 +183,7 @@ const DeviceCard = ({
                 </Button>
                 <Button
                   size="small"
+                  variant="text"
                   onClick={(e) => {
                     e.preventDefault();
                     handleClearEffect(virtId);

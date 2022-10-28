@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,39 +8,6 @@ import Slider from '@mui/material/Slider';
 import { InputAdornment, TextField } from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-
-const PREFIX = 'FrequenciesCard';
-
-const classes = {
-  content: `${PREFIX}-content`,
-  formControl: `${PREFIX}-formControl`,
-  card: `${PREFIX}-card`,
-};
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  [`& .${classes.content}`]: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    padding: theme.spacing(2),
-    paddingBottom: 0,
-  },
-
-  [`& .${classes.formControl}`]: {
-    marginRight: theme.spacing(3),
-  },
-
-  [`& .${classes.card}`]: {
-    width: '100%',
-    maxWidth: '540px',
-    '@media (max-width: 580px)': {
-      maxWidth: '97vw',
-      margin: '0 auto',
-    },
-  },
-}));
 
 const log13 = (x: number) => Math.log(x) / Math.log(13);
 const logIt = (x: number) => 3700.0 * log13(1 + x / 200.0);
@@ -106,16 +72,19 @@ const FrequenciesCard = ({ virtual, style }: any) => {
   };
 
   return (
-    <StyledCard
-      variant="outlined"
-      className={`${classes.card} step-device-four`}
-      style={style}
-    >
+    <Card variant="outlined" className="step-device-four" style={style}>
       <CardHeader
         title="Frequencies"
         subheader="Adjust the audio range used for this strip"
       />
-      <CardContent className={classes.content}>
+      <CardContent
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          padding: '0 1rem 0.75rem 0.9rem !important',
+        }}
+      >
         <div style={{ width: '100%' }}>
           <BladeFrame
             title="Range"
@@ -214,7 +183,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
           </div>
         </div>
       </CardContent>
-    </StyledCard>
+    </Card>
   );
 };
 

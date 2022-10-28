@@ -89,7 +89,7 @@ const BladeSliderInner = ({
         ) : null}
       </div>
       <Input
-        disableUnderline={disableUnderline}
+        disableUnderline
         disabled={disabled}
         className={classes.input}
         style={
@@ -132,6 +132,7 @@ const BladeSliderInner = ({
     <TextField
       disabled={disabled}
       InputProps={{
+        disableUnderline,
         endAdornment: model_id === 'delay_ms' ? 'ms' : null,
       }}
       type="number"
@@ -155,7 +156,6 @@ BladeSliderInner.defaultProps = BladeSliderInnerDefaultProps;
  */
 const BladeSlider = ({
   variant = 'outlined',
-  disableUnderline,
   schema,
   model,
   model_id,
@@ -208,7 +208,6 @@ const BladeSlider = ({
         textfield={textfield}
         marks={marks}
         hideDesc={hideDesc}
-        disableUnderline={disableUnderline}
       />
     </div>
   ) : (
@@ -223,7 +222,6 @@ const BladeSlider = ({
       textfield={textfield}
       marks={marks}
       hideDesc={hideDesc}
-      disableUnderline={disableUnderline}
     />
   );
 };

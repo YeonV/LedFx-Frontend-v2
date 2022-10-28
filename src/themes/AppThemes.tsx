@@ -28,10 +28,28 @@ export const common = {
         variant: 'outlined' as 'contained' | 'outlined' | 'text' | undefined,
         size: 'small' as 'small' | 'medium' | 'large',
       },
+      styleOverrides: {
+        root: {
+          borderColor: 'rgba(255,255,255,0.23)',
+        },
+      },
     },
     MuiTextField: {
       defaultProps: {
         variant: 'outlined' as 'filled' | 'outlined' | 'standard' | undefined,
+      },
+    },
+    MuiSelect: {
+      defaultProps: {
+        variant: 'standard' as 'filled' | 'outlined' | 'standard' | undefined,
+        disableUnderline: true,
+      },
+    },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+        },
       },
     },
     MuiChip: {

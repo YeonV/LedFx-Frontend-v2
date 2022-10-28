@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
       width: '100% !important',
     },
     '& > label': {
-      top: '-0.5rem',
+      top: '-0.75rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',

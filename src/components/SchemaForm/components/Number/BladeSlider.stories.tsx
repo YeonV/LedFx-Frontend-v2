@@ -37,7 +37,6 @@ Number.args = {
   required: false,
   textfield: false,
   disabled: false,
-  disableUnderline: undefined,
   schema: {
     title: 'Slide me',
     minimum: 5,
