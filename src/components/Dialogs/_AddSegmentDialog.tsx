@@ -65,7 +65,6 @@ function ConfirmationDialogRaw(props: any) {
       <DialogContent dividers>
         <BladeFrame full>
           <Select
-            // disableUnderline
             value={value}
             style={{ width: '100%' }}
             onChange={handleChange}

@@ -53,7 +53,7 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-export const SettingsSlider = styled(Slider)(() => ({
+export const SettingsSlider = styled(Slider)(({ theme }: any) => ({
   color: '#eeeeee',
   height: 2,
   padding: '15px 0',
@@ -61,7 +61,6 @@ export const SettingsSlider = styled(Slider)(() => ({
     height: 20,
     width: 20,
     backgroundColor: '#fff',
-    marginTop: '-10px',
     boxShadow:
       '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
     '&:focus, &:hover, &.Mui-active': {
@@ -79,13 +78,13 @@ export const SettingsSlider = styled(Slider)(() => ({
     fontWeight: 'normal',
     top: -6,
     backgroundColor: 'unset',
-    // color: theme.palette.text.primary,
+    color: theme.palette.text.primary,
     '&:before': {
       display: 'none',
     },
     '& *': {
       background: 'transparent',
-      // color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+      color: theme.palette.mode === 'dark' ? '#fff' : '#000',
     },
   },
   '& .MuiSlider-track': {
@@ -106,9 +105,7 @@ export const SettingsSlider = styled(Slider)(() => ({
   },
 }));
 
-export const SettingsSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(() => ({
+export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
   width: 50,
   height: 26,
   padding: 0,
@@ -120,7 +117,7 @@ export const SettingsSwitch = styled((props) => (
       transform: 'translateX(24px)',
       color: '#fff',
       '& + .MuiSwitch-track': {
-        // backgroundColor: theme.palette.primary,
+        backgroundColor: theme.palette.primary,
         opacity: 1,
         border: 0,
       },
@@ -132,15 +129,15 @@ export const SettingsSwitch = styled((props) => (
       color: '#33cf4d',
       border: '6px solid #fff',
     },
-    // '&.Mui-disabled .MuiSwitch-thumb': {
-    //   color:
-    //     theme.palette.mode === 'light'
-    //       ? theme.palette.grey[100]
-    //       : theme.palette.grey[600],
-    // },
-    // '&.Mui-disabled + .MuiSwitch-track': {
-    //   opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-    // },
+    '&.Mui-disabled .MuiSwitch-thumb': {
+      color:
+        theme.palette.mode === 'light'
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+    },
   },
   '& .MuiSwitch-thumb': {
     boxSizing: 'border-box',
@@ -149,11 +146,11 @@ export const SettingsSwitch = styled((props) => (
   },
   '& .MuiSwitch-track': {
     borderRadius: 26 / 2,
-    // backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
     opacity: 1,
-    // transition: theme.transitions.create(['background-color'], {
-    //   duration: 500,
-    // }),
+    transition: theme.transitions.create(['background-color'], {
+      duration: 500,
+    }),
   },
 }));
 

@@ -33,7 +33,7 @@ const EffectDropDown = ({
 
   return (
     <FormControl className={`${classes.FormRow} step-device-one`}>
-      <InputLabel htmlFor="groupsed-select" className={classes.FormLabel}>
+      <InputLabel htmlFor="groupsed-select" sx={{ p: '0 !important' }}>
         {title}
       </InputLabel>
       <Select
@@ -41,6 +41,7 @@ const EffectDropDown = ({
         onChange={onChange}
         id="groupsed-select"
         className={classes.FormSelect}
+        sx={{ pb: '5px', pt: '0 !important' }}
       >
         <MenuItem value="" disabled>
           <em>None</em>

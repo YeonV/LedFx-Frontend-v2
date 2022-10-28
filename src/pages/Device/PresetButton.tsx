@@ -64,6 +64,7 @@ export default function PresetButton({
   return (
     <Root>
       <Button
+        size="medium"
         aria-expanded={open ? 'true' : undefined}
         color={buttonColor}
         className={className}

@@ -42,6 +42,7 @@ const EffectDropDown = ({
       onChange={(e: any) => onEffectTypeChange(e)}
       groups={groups}
       showFilter={features.effectfilter}
+      title="Effect Type"
     />
   );
 };

@@ -54,7 +54,6 @@ const Root = styled('div')(({ theme }) => ({
 const SchemaForm = ({
   schema,
   model,
-  disableUnderline,
   hideToggle,
   onModelChange,
   type,
@@ -139,7 +138,6 @@ const SchemaForm = ({
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
-                      // disableUnderline
                       onChange={(e: any) => {
                         const c: any = {};
                         c.audio_device = parseInt(e.target.value, 10);
@@ -216,7 +214,6 @@ const SchemaForm = ({
                     step={undefined}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     key={i}
                     model_id={s.id}
                     model={model}
@@ -239,7 +236,6 @@ const SchemaForm = ({
                     full={s.id === 'delay_ms'}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     step={1}
                     key={i}
                     model_id={s.id}
@@ -265,7 +261,6 @@ const SchemaForm = ({
                   <BladeSlider
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     marks={s?.enum}
                     step={undefined}
                     key={i}
@@ -288,7 +283,6 @@ const SchemaForm = ({
                   <BladeSlider
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     marks={s?.enum}
                     step={undefined}
                     key={i}

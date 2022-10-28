@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-syntax */
 import { useEffect } from 'react';
-import { styled } from '@mui/material/styles';
 import { Grid, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import useStore from '../../store/useStore';
@@ -9,26 +8,6 @@ import PresetsCard from './Presets';
 import TransitionCard from './Transition';
 import MelbankCard from './Frequencies';
 import StreamToCard from './StreamTo';
-
-const PREFIX = 'Device';
-
-const classes = {
-  virtualWrapper: `${PREFIX}-virtualWrapper`,
-  girdItem: `${PREFIX}-girdItem`,
-};
-
-const StyledGrid = styled(Grid)(() => ({
-  [`&.${classes.virtualWrapper}`]: {
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.girdItem}`]: {
-    flexShrink: 0,
-    flexGrow: 1,
-    maxWidth: '540px',
-    width: '100%',
-  },
-}));
 
 const Device = () => {
   const { virtId } = useParams();
@@ -61,19 +40,35 @@ const Device = () => {
   }, [getVirtuals, getSchemas, getPresets, effectType]);
 
   return (
-    <StyledGrid
+    <Grid
       container
       direction="row"
       spacing={2}
-      className={classes.virtualWrapper}
+      sx={{ justifyContent: 'center', paddingTop: '1rem' }}
     >
       {virtual && (
         <>
-          <Grid item className={classes.girdItem}>
+          <Grid
+            item
+            sx={{
+              flexShrink: 0,
+              flexGrow: 1,
+              maxWidth: '540px',
+              width: '100%',
+            }}
+          >
             <EffectsCard virtId={virtId || ''} />
           </Grid>
 
-          <Grid item className={classes.girdItem}>
+          <Grid
+            item
+            sx={{
+              flexShrink: 0,
+              flexGrow: 1,
+              maxWidth: '540px',
+              width: '100%',
+            }}
+          >
             {effectType && presets && (
               <PresetsCard
                 virtual={virtual}
@@ -108,7 +103,7 @@ const Device = () => {
           </Grid>
         </>
       )}
-    </StyledGrid>
+    </Grid>
   );
 };
 

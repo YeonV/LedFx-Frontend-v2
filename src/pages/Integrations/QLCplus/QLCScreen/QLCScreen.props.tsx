@@ -23,7 +23,7 @@ export const QLCScreenDefaultProps = {
   label: '',
   type: 'button',
   className: undefined,
-  color: 'default',
+  color: 'inherit',
   variant: 'contained',
   innerKey: undefined,
   disabled: false,
