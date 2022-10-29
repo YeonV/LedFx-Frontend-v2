@@ -140,10 +140,15 @@ const Scenes = () => {
     (state) => state.setDialogOpenAddScene
   );
   const handleActivateScene = (e: string) => {
+    const headers = { 'Content-Type': 'application/json' };
     // console.log('captivate', e, scenes[e]);
     activateScene(e);
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
-      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
+      captivateScene(
+        scenes[e]?.scene_puturl,
+        scenes[e]?.scene_payload,
+        headers
+      );
   };
 
   const handleDeleteScene = (e: any) => {
