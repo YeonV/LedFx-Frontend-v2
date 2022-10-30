@@ -65,6 +65,16 @@ const storeGeneral = (set: any) => ({
       'general/toggleGraphs'
     );
   },
+  graphsMulti: false,
+  toggleGraphsMulti: () => {
+    set(
+      produce((state: any) => {
+        state.graphsMulti = !state.graphsMulti;
+      }),
+      false,
+      'general/toggleGraphsMulti'
+    );
+  },
 
   pixelGraphs: [],
   setPixelGraphs: (virtuals: any): void =>
