@@ -13,8 +13,9 @@ import {
   CardActions,
   CardMedia,
   Typography,
+  Grid,
+} from '@mui/material';
 import { Info, Edit } from '@mui/icons-material';
-import { Grid } from '@mui/material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
