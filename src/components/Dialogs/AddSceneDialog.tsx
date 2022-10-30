@@ -32,7 +32,7 @@ const AddSceneDialog = () => {
   }, []);
   function isValidURL(string: string) {
     const res = string.match(
-      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
+      /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
     );
     return res !== null;
   }
