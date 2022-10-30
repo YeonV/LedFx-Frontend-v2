@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 import produce from 'immer';
+// import { string } from 'prop-types';
 import { Ledfx } from '../../api/ledfx';
 
 const storeScenes = (set: any) => ({
@@ -18,8 +19,18 @@ const storeScenes = (set: any) => ({
       );
     }
   },
-  addScene: async (name: string, scene_image: string) =>
-    await Ledfx('/api/scenes', 'POST', { name, scene_image }),
+  addScene: async (
+    name: string,
+    scene_image: string,
+    scene_puturl: string,
+    scene_payload: string
+  ) =>
+    await Ledfx('/api/scenes', 'POST', {
+      name,
+      scene_image,
+      scene_puturl,
+      scene_payload,
+    }),
   activateScene: async (id: string) =>
     await Ledfx('/api/scenes', 'PUT', {
       id,
@@ -33,6 +44,9 @@ const storeScenes = (set: any) => ({
     }),
   deleteScene: async (name: string) =>
     await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
+
+  captivateScene: async (scene_puturl: string, scene_payload: string) =>
+    await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload)),
 });
 
 export default storeScenes;

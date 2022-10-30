@@ -11,45 +11,52 @@ import {
 } from '@material-ui/core';
 import useStore from '../../store/useStore';
 
-const AddSceneDialog = () => {
+const EditSceneDialog = () => {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [url, setUrl] = useState('');
   const [payload, setPayload] = useState('');
   const [overwrite, setOverwrite] = useState(false);
   const [invalid, setInvalid] = useState(false);
-
   const addScene = useStore((state) => state.addScene);
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
-  const open = useStore((state) => state.dialogs.addScene?.open || false);
+  const open = useStore((state) => state.dialogs.addScene?.edit || false);
+  // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
+  const data = useStore((state: any) => state.dialogs.addScene?.editData || '');
   const viewMode = useStore((state) => state.viewMode);
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
-  useEffect(() => {
-    setInvalid(false);
-  }, []);
+
   function isValidURL(string: string) {
     const res = string.match(
-      /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
+      /(?![\s\S])|\d(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g
     );
     return res !== null;
   }
-  const handleClose = () => {
-    setDialogOpenAddScene(false);
-  };
-  const handleAddScene = () => {
-    if (!invalid) {
-      addScene(name, image, url, payload).then(() => {
-        getScenes();
-      });
-      setName('');
-      setImage('');
-      setUrl('');
-      setPayload('');
-      setDialogOpenAddScene(false);
+
+  useEffect(() => {
+    if (data) {
+      setName(data?.name);
+      setImage(data?.scene_image);
+      setUrl(data?.scene_puturl);
+      setPayload(data?.scene_payload);
     }
+  }, [data]);
+  const handleClose = () => {
+    setDialogOpenAddScene(false, false);
+  };
+
+  const handleAddScene = () => {
+    addScene(name, image, url, payload).then(() => {
+      getScenes();
+    });
+    setName('');
+    setImage('');
+    setUrl('');
+    setPayload('');
+    setDialogOpenAddScene(false, false);
   };
 
   return (
@@ -58,7 +65,7 @@ const AddSceneDialog = () => {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
+      <DialogTitle id="form-dialog-title">Edit Scene</DialogTitle>
       <DialogContent>
         Image is optional and can be one of:
         <ul style={{ paddingLeft: '1rem' }}>
@@ -127,7 +134,7 @@ const AddSceneDialog = () => {
           <>
             <TextField
               margin="dense"
-              id="scene_url"
+              id="url"
               label="Url"
               type="url"
               value={url}
@@ -141,7 +148,7 @@ const AddSceneDialog = () => {
             />
             <TextField
               margin="dense"
-              id="scene_payload"
+              id="payload"
               label="Payload"
               type="text"
               value={payload}
@@ -154,11 +161,11 @@ const AddSceneDialog = () => {
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={handleAddScene}>
-          {overwrite ? 'Overwrite' : 'Add'}
+          {overwrite ? 'Overwrite' : 'Save'}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default AddSceneDialog;
+export default EditSceneDialog;
