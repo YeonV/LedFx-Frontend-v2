@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import { useTheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
@@ -224,9 +223,15 @@ const DeviceCard = ({
           </div>
 
           <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
+            sx={{
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              alignSelf: 'flex-start',
+              marginLeft: 'auto',
+              transition: theme.transitions.create('transform', {
+                duration: theme.transitions.duration.shortest,
+              }),
+              display: 'block',
+            }}
             onClick={(e) => {
               e.preventDefault();
               handleExpandClick();
@@ -240,10 +245,14 @@ const DeviceCard = ({
         </div>
         {graphsMulti && (
           <div
-            className={clsx(classes.pixelbar, {
-              [classes.pixelbarOut]: fade,
-            })}
-            style={{ transitionDuration: `${transitionTime}s` }}
+            style={{
+              opacity: fade ? 0.2 : 1,
+              transitionDuration: fade
+                ? `${transitionTime || 1}s`
+                : `${transitionTime || 0}s`,
+              width: '100%',
+              transition: 'opacity',
+            }}
           >
             <PixelGraph
               intGraphs={graphsActive}
