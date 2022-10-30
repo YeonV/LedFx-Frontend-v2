@@ -45,6 +45,13 @@ export const common = {
         disableUnderline: true,
       },
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: 'none',
+        },
+      },
+    },
     MuiAccordion: {
       styleOverrides: {
         root: {

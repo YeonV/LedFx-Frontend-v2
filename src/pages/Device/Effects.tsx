@@ -152,7 +152,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   </Button> */}
                   <Button
                     style={{ marginRight: '.5rem' }}
-                    className="step-device-five"
+                    className="step-device-six"
                     onClick={() => handlePlayPause()}
                   >
                     {virtual.active ? <Pause /> : <PlayArrow />}

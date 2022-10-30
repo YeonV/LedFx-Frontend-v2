@@ -87,7 +87,7 @@ export default function BarBottom() {
         value={value}
         sx={{
           width: leftOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
-          marginLeft: leftOpen ? drawerWidth : 0,
+          marginLeft: leftOpen ? `${drawerWidth}px` : 0,
           position: 'fixed',
           bottom: 0,
           zIndex: 4,
@@ -233,7 +233,7 @@ export default function BarBottom() {
         sx={{
           bottom: botHeight + 65,
           position: 'fixed',
-          marginLeft: leftOpen ? drawerWidth / 2 : 0,
+          marginLeft: leftOpen ? `${drawerWidth / 2}px` : 0,
           left: '50%',
           transform: 'translateX(-50%)',
           transition: leftOpen

@@ -1,66 +1,18 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useEffect, useMemo } from 'react';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import isElectron from 'is-electron';
-import { CssBaseline } from '@mui/material';
+import { Box, CssBaseline } from '@mui/material';
 import ws, { WsContext, HandleWs } from './utils/Websocket';
 import useStore from './store/useStore';
 import useWindowDimensions from './utils/useWindowDimension';
 import './App.css';
-import {
-  deleteFrontendConfig,
-  initFrontendConfig,
-  drawerWidth,
-} from './utils/helpers';
+import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
 import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
 import { common, ledfxThemes, ledfxTheme } from './themes/AppThemes';
-
-const PREFIX = 'App';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  content: `${PREFIX}-content`,
-  drawerHeader: `${PREFIX}-drawerHeader`,
-  contentShift: `${PREFIX}-card`,
-};
-const Root = styled('div')(({ theme }: any) => ({
-  [`& .${classes.root}`]: {
-    display: 'flex',
-  },
-
-  [`& .${classes.content}`]: {
-    flexGrow: 1,
-    background: 'transparent',
-    padding: theme.spacing(0),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-    '@media (max-width: 580px)': {
-      padding: '8px',
-    },
-  },
-
-  [`& .${classes.drawerHeader}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-  },
-
-  [`& .${classes.contentShift}`]: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-}));
 
 export default function App() {
   const { height, width } = useWindowDimensions();
@@ -160,18 +112,16 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* <MuiThemeProvider theme={ledfxThemes[ledfxTheme]}> */}
-      {/* <StyledEngineProvider injectFirst> */}
       <SnackbarProvider maxSnack={5}>
         <WsContext.Provider value={ws}>
           <SpotifyProvider>
-            <Root
-              className={classes.root}
+            <Box
+              sx={{ display: 'flex' }}
               style={{ paddingTop: isElectron() ? '30px' : 0 }}
             >
               <CssBaseline />
               <Pages handleWs={<HandleWs />} />
-            </Root>
+            </Box>
           </SpotifyProvider>
         </WsContext.Provider>
         {features.waves && (
@@ -183,8 +133,6 @@ export default function App() {
           />
         )}
       </SnackbarProvider>
-      {/* </StyledEngineProvider> */}
-      {/* </MuiThemeProvider> */}
     </ThemeProvider>
   );
 }

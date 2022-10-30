@@ -5,10 +5,9 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import clsx from 'clsx';
 import { useHotkeys } from 'react-hotkeys-hook';
 import isElectron from 'is-electron';
-import { styled } from '@mui/material/styles';
+import { Box, useTheme } from '@mui/material';
 import ScrollToTop from '../utils/scrollToTop';
 import '../App.css';
 
@@ -29,46 +28,8 @@ import useStore from '../store/useStore';
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect';
 import { drawerWidth } from '../utils/helpers';
 
-const PREFIX = 'Pages';
-
-const classes = {
-  content: `${PREFIX}-content`,
-  drawerHeader: `${PREFIX}-drawerHeader`,
-  contentShift: `${PREFIX}-card`,
-};
-const Root = styled('div')(({ theme }: any) => ({
-  [`& .${classes.content}`]: {
-    flexGrow: 1,
-    background: 'transparent',
-    padding: theme.spacing(0),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-    '@media (max-width: 580px)': {
-      padding: '8px',
-    },
-  },
-
-  [`& .${classes.drawerHeader}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-  },
-
-  [`& .${classes.contentShift}`]: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-}));
-
 const Routings = ({ handleWs }: any) => {
+  const theme = useTheme();
   const smartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.smartBar.open
   );
@@ -89,12 +50,34 @@ const Routings = ({ handleWs }: any) => {
       <MessageBar />
       <TopBar />
       <LeftBar />
-      <Root
-        className={clsx(classes.content, {
-          [classes.contentShift]: leftBarOpen,
-        })}
+      <Box
+        sx={{
+          flexGrow: 1,
+          background: 'transparent',
+          padding: theme.spacing(0),
+          transition: theme.transitions.create('margin', {
+            easing: leftBarOpen
+              ? theme.transitions.easing.easeOut
+              : theme.transitions.easing.sharp,
+            duration: leftBarOpen
+              ? theme.transitions.duration.enteringScreen
+              : theme.transitions.duration.leavingScreen,
+          }),
+          marginLeft: leftBarOpen ? 0 : `-${drawerWidth}px`,
+          '@media (max-width: 580px)': {
+            padding: '8px',
+          },
+        }}
       >
-        <div className={classes.drawerHeader} />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: theme.spacing(0, 1),
+            ...theme.mixins.toolbar,
+          }}
+        />
         <Routes>
           <Route
             path="/connect/:providerName/redirect"
@@ -114,7 +97,7 @@ const Routings = ({ handleWs }: any) => {
           setOpen={(e) => setSmartBarOpen(!!e)}
           direct={false}
         />
-      </Root>
+      </Box>
       <BottomBar />
     </>
   );
