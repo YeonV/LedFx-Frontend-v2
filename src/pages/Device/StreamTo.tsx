@@ -79,7 +79,7 @@ const StreamToCard = ({
   };
 
   return (
-    <Card variant="outlined" className="step-device-two" style={style}>
+    <Card variant="outlined" className="step-device-twob" style={style}>
       <CardHeader
         title="Copy To"
         subheader="Copy current effect configurations other Devices"

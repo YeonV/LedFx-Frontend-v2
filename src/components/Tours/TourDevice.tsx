@@ -84,8 +84,8 @@ const steps = [
     selector: '.step-device-six',
     content: (
       <div>
-        <h2>Randomizer</h2>
-        Randomly sets all effect properties
+        <h2>Pause streaming</h2>
+        Pause streaming to leds
       </div>
     ),
     style: {

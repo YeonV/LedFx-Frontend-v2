@@ -162,7 +162,7 @@ const TopBar = () => {
         }}
       >
         <Toolbar style={{ justifyContent: 'space-between' }}>
-          <div style={{ position: 'absolute', top: 8, left: 10 }}>
+          <div style={{ position: 'absolute', top: 10, left: 16 }}>
             {!open && (
               <IconButton
                 color="inherit"
@@ -179,6 +179,7 @@ const TopBar = () => {
               pathname.split('/')[1] === 'device') ||
               pathname === '/Settings') && (
               <Button
+                size="large"
                 variant="text"
                 color="inherit"
                 startIcon={<ChevronLeft />}
@@ -198,7 +199,12 @@ const TopBar = () => {
               : pathname.split('/').pop()}
           </Typography>
           <div
-            style={{ display: 'flex', position: 'absolute', top: 8, right: 10 }}
+            style={{
+              display: 'flex',
+              position: 'absolute',
+              top: 10,
+              right: 16,
+            }}
           >
             {disconnected && (
               <Box>
