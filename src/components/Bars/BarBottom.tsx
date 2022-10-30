@@ -134,41 +134,40 @@ export default function BarBottom() {
           //   setBottomBarOpen('Scenes');
           // }}
         />
-        {features.integrations ? (
-          <BottomNavigationAction
-            label="Integrations"
-            value="/Integrations"
-            component={Link}
-            to="/Integrations"
-            icon={<SettingsInputSvideo />}
-            style={
-              bottomBarOpen.indexOf('Integrations') > -1
-                ? { color: theme.palette.primary.main }
-                : {}
-            }
-            // onContextMenu={(e: any) => {
-            //   e.preventDefault();
-            //   setBottomBarOpen('Integrations');
-            // }}
-          />
-        ) : (
-          <BottomNavigationAction
-            label="Settings"
-            value="/Settings"
-            icon={<Settings />}
-            component={Link}
-            to="/Settings"
-            style={
-              bottomBarOpen.indexOf('Settings') > -1
-                ? { color: theme.palette.primary.main }
-                : {}
-            }
-            // onContextMenu={(e: any) => {
-            //   e.preventDefault();
-            //   setBottomBarOpen('Settings');
-            // }}
-          />
-        )}
+
+        <BottomNavigationAction
+          label="Integrations"
+          value="/Integrations"
+          component={Link}
+          to="/Integrations"
+          icon={<SettingsInputSvideo />}
+          style={
+            bottomBarOpen.indexOf('Integrations') > -1
+              ? { color: theme.palette.primary.main }
+              : {}
+          }
+          // onContextMenu={(e: any) => {
+          //   e.preventDefault();
+          //   setBottomBarOpen('Integrations');
+          // }}
+        />
+
+        <BottomNavigationAction
+          label="Settings"
+          value="/Settings"
+          icon={<Settings />}
+          component={Link}
+          to="/Settings"
+          style={
+            bottomBarOpen.indexOf('Settings') > -1
+              ? { color: theme.palette.primary.main }
+              : {}
+          }
+          // onContextMenu={(e: any) => {
+          //   e.preventDefault();
+          //   setBottomBarOpen('Settings');
+          // }}
+        />
       </BottomNavigation>
       {features.spotify && (
         <SpotifyFabFree
@@ -221,7 +220,7 @@ export default function BarBottom() {
         className={`${clsx(classes.addButton, {
           [classes.addButtonShift]: leftOpen,
         })} step-four`}
-        style={{ bottom: botHeight + 30 }}
+        style={{ bottom: botHeight + 65 }}
       />
       <Backdrop
         style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }}
