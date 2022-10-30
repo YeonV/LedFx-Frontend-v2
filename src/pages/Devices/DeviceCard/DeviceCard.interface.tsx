@@ -44,6 +44,10 @@ export interface DeviceCardProps {
    */
   graphsActive?: boolean;
   /**
+   * Do not send to leds
+   */
+  graphsMulti?: boolean;
+  /**
    * Colorize?
    */
   colorIndicator?: boolean;

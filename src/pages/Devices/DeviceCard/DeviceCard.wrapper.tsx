@@ -24,6 +24,7 @@ const DeviceCardWrapper = ({
     (state) => state.setDialogOpenAddVirtual
   );
   const graphs = useStore((state) => state.graphs);
+  const graphsMulti = useStore((state) => state.graphsMulti);
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
   const updateVirtual = useStore((state) => state.updateVirtual);
   const activateDevice = useStore((state) => state.activateDevice);
@@ -108,7 +109,8 @@ const DeviceCardWrapper = ({
         virtuals[virtual]?.config.icon_name
       }
       effectName={virtuals[virtual]?.effect.name}
-      graphsActive={graphs}
+      graphsActive={graphs && graphsMulti}
+      graphsMulti={graphsMulti}
       isDevice={virtuals[virtual]?.is_device}
       activateDevice={handleActivateDevice}
       colorIndicator={false}

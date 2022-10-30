@@ -52,6 +52,7 @@ const DeviceCard = ({
   isEffectSet,
   transitionTime,
   isDevice,
+  graphsMulti,
   activateDevice,
 }: DeviceCardProps) => {
   const classes = useStyle();
@@ -222,19 +223,21 @@ const DeviceCard = ({
             <ExpandMoreIcon className={`step-devices-two-${index}`} />
           </IconButton>
         </div>
-        <div
-          className={clsx(classes.pixelbar, {
-            [classes.pixelbarOut]: fade,
-          })}
-          style={{ transitionDuration: `${transitionTime}s` }}
-        >
-          <PixelGraph
-            intGraphs={graphsActive}
-            active={isActive}
-            virtId={virtId || ''}
-            className="step-devices-seven"
-          />
-        </div>
+        {graphsMulti && (
+          <div
+            className={clsx(classes.pixelbar, {
+              [classes.pixelbarOut]: fade,
+            })}
+            style={{ transitionDuration: `${transitionTime}s` }}
+          >
+            <PixelGraph
+              intGraphs={graphsActive}
+              active={isActive}
+              virtId={virtId || ''}
+              className="step-devices-seven"
+            />
+          </div>
+        )}
         <div
           style={{
             position: 'absolute',

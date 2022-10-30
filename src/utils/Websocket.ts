@@ -94,6 +94,7 @@ export const HandleWs = () => {
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
   const graphs = useStore((state) => state.graphs);
+  const graphsMulti = useStore((state) => state.graphsMulti);
   const [wsReady, setWsReady] = useState(false);
 
   useLayoutEffect(() => {
@@ -103,10 +104,10 @@ export const HandleWs = () => {
   }, [pathname]);
 
   useLayoutEffect(() => {
-    if (!graphs) {
+    if (!graphs || !graphsMulti) {
       setPixelGraphs([]);
     }
-  }, [graphs]);
+  }, [graphs, graphsMulti]);
 
   useEffect(() => {
     if (pixelGraphs.length > 0 && wsReady) {
