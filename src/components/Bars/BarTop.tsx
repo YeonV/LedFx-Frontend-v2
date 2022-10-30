@@ -38,7 +38,6 @@ import TourSettings from '../Tours/TourSettings';
 import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon';
-// import { BladeDarkGreyTheme5 } from '../../themes/AppThemes5';
 
 const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
