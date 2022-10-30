@@ -1,14 +1,13 @@
 /* eslint-disable react/require-default-props */
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import { Button, Chip, OutlinedInput, Select, Box } from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import { Button, Chip, OutlinedInput, Select, Box } from '@mui/material';
 import useStore from '../../store/useStore';
 
 const ITEM_HEIGHT = 48;
@@ -22,18 +21,6 @@ const MenuProps = {
   },
 };
 
-const useStyles = makeStyles((theme) => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    padding: theme.spacing(2),
-    paddingBottom: 0,
-  },
-  card: { width: '100%', maxWidth: '540px', marginBottom: '1rem' },
-}));
-
 const StreamToCard = ({
   virtual,
   virtuals,
@@ -45,7 +32,6 @@ const StreamToCard = ({
   virtuals: any;
   style?: any;
 }) => {
-  const classes = useStyles();
   const streamingToDevices = useStore((state) => state.streamingToDevices);
   const setStreamingToDevices = useStore(
     (state) => state.setStreamingToDevices
@@ -93,27 +79,28 @@ const StreamToCard = ({
   };
 
   return (
-    <Card
-      variant="outlined"
-      className={`${classes.card} step-device-two`}
-      style={style}
-    >
+    <Card variant="outlined" className="step-device-twob" style={style}>
       <CardHeader
         title="Copy To"
         subheader="Copy current effect configurations other Devices"
         style={{ paddingBottom: 11 }}
       />
-      <CardContent className={classes.content}>
+      <CardContent
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
+          p: '0.25rem 1rem 0.4rem 0.4rem !important',
+        }}
+      >
         <FormControl style={{ margin: 10, width: '100%' }}>
-          <InputLabel
-            id="demo-multiple-chip-label"
-            style={{ margin: '-7px 0 0 14px' }}
-          >
+          <InputLabel id="streamto-label">
             Select device(s) to copy to
           </InputLabel>
           <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
+            labelId="streamto-label"
+            id="streamto"
             multiple
             value={streamingTo}
             onChange={(e, b: any) => handleToggle(b.props.value)}
@@ -133,50 +120,16 @@ const StreamToCard = ({
             MenuProps={MenuProps}
           >
             {Object.keys(virtuals).map((name) => (
-              <MenuItem
-                key={name}
-                value={name}
-                // style={getStyles(name, personName, theme)}
-              >
+              <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-
-        {/* <List
-          sx={{ width: '100%' }}
-        >
-          {Object.keys(virtuals).map(v =>
-            <ListItem style={{ color: 'fff' }}>
-              <ListItemIcon >
-                <BladeIcon
-                  style={{ position: 'relative' }}
-                  colorIndicator={true}
-                  name={virtuals && virtuals[v] && virtuals[v].config && virtuals[v].config.icon_name && virtuals[v].config.icon_name} 
-                />
-              </ListItemIcon>
-              <ListItemText id="switch-list-label-wifi" primary={v} />
-              <Switch
-                color={"primary"}
-                edge="end"
-                onChange={handleToggle(v)}
-                streamingTo={streamingTo.indexOf(v) !== -1}
-                inputProps={{
-                  'aria-labelledby': `switch-list-label-${v}`,
-                }}
-              />
-            </ListItem>
-          )}
-
-        </List> */}
         <Button
-          variant="outlined"
+          size="medium"
           onClick={() => handleCopy()}
-          style={{
-            alignSelf: 'flex-start',
-            margin: '10px 0',
-          }}
+          style={{ alignSelf: 'flex-start', margin: '10px 0' }}
         >
           Copy
         </Button>

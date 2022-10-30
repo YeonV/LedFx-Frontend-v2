@@ -16,8 +16,6 @@ import {
   CardActions,
   CircularProgress,
   useTheme,
-} from '@material-ui/core';
-import {
   Stack,
   CircularProgress as CircularProgress5,
   Fab,
@@ -31,9 +29,9 @@ import {
   GitHub,
   PauseOutlined,
   PlayArrow,
-} from '@material-ui/icons';
-import green from '@material-ui/core/colors/green';
-import { Dvr } from '@mui/icons-material';
+  Dvr,
+} from '@mui/icons-material';
+import green from '@mui/material/colors/green';
 import useStore from '../../store/useStore';
 import { deleteFrontendConfig } from '../../utils/helpers';
 import Gauge from './Gauge';
@@ -294,7 +292,7 @@ const Dashboard = () => {
                 margin: '8px',
               }}
               sx={{
-                bgcolor: theme.palette.text.hint,
+                bgcolor: theme.palette.text.disabled,
                 '&:hover': {
                   bgcolor: theme.palette.primary.main,
                 },
@@ -317,7 +315,7 @@ const Dashboard = () => {
                 margin: '8px',
               }}
               sx={{
-                bgcolor: theme.palette.text.hint,
+                bgcolor: theme.palette.text.disabled,
                 '&:hover': {
                   bgcolor: theme.palette.primary.main,
                 },
@@ -340,7 +338,7 @@ const Dashboard = () => {
                 margin: '8px',
               }}
               sx={{
-                bgcolor: theme.palette.text.hint,
+                bgcolor: theme.palette.text.disabled,
                 '&:hover': {
                   bgcolor: theme.palette.primary.main,
                 },

@@ -1,30 +1,6 @@
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import useStore from '../store/useStore';
-
-const useStyles = makeStyles(() => ({
-  PixelWrapper: {
-    maxWidth: '520px',
-    display: 'flex',
-    width: '100%',
-    borderRadius: '10px',
-    overflow: 'hidden',
-    margin: '0.5rem 0 0 0',
-    // border: '1px solid rgba(255, 255, 255, 0.3)',
-    // '&.active': {
-    //   border: '1px solid rgba(255, 0, 0, 0.3)',
-    // },
-    '@media (max-width: 580px)': {
-      margin: '0',
-    },
-  },
-  Pixel: {
-    height: '20px',
-    borderRadius: '0',
-    flex: 1,
-  },
-}));
 
 const PixelGraph = ({
   virtId,
@@ -39,7 +15,6 @@ const PixelGraph = ({
   active?: boolean;
   intGraphs?: boolean;
 }) => {
-  const classes = useStyles();
   const [pixels, setPixels] = useState<any>([]);
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const virtuals = useStore((state) => state.virtuals);
@@ -63,27 +38,45 @@ const PixelGraph = ({
 
   return dummy ? (
     <div
-      className={`${classes.PixelWrapper} ${className} ${
-        active ? 'active' : ''
-      }`}
+      style={{
+        maxWidth: '520px',
+        display: 'flex',
+        width: '100%',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        margin: '0.5rem 0 0 0',
+      }}
+      className={`${className} ${active ? 'active' : ''}`}
     >
       <div
         key={1}
-        className={classes.Pixel}
-        style={{ backgroundColor: '#0002' }}
+        style={{
+          backgroundColor: '#0002',
+          height: '20px',
+          flex: 1,
+          borderRadius: '0',
+        }}
       />
     </div>
   ) : pixels && pixels[0] && pixels[0].length ? (
     <div
-      className={`${classes.PixelWrapper} ${className}  ${
-        active ? 'active' : ''
-      }`}
+      style={{
+        maxWidth: '520px',
+        display: 'flex',
+        width: '100%',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        margin: '0.5rem 0 0 0',
+      }}
+      className={`${className}  ${active ? 'active' : ''}`}
     >
       {pixels[0].map((_p: any, i: number) => (
         <div
           key={i}
-          className={classes.Pixel}
           style={{
+            height: '20px',
+            flex: 1,
+            borderRadius: '0',
             backgroundColor: active
               ? `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})`
               : '#0002',
@@ -93,14 +86,24 @@ const PixelGraph = ({
     </div>
   ) : (
     <div
-      className={`${classes.PixelWrapper} ${className} ${
-        active ? 'active' : ''
-      }`}
+      style={{
+        maxWidth: '520px',
+        display: 'flex',
+        width: '100%',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        margin: '0.5rem 0 0 0',
+      }}
+      className={`${className} ${active ? 'active' : ''}`}
     >
       <div
         key={1}
-        className={classes.Pixel}
-        style={{ backgroundColor: '#0002' }}
+        style={{
+          height: '20px',
+          borderRadius: '0',
+          flex: 1,
+          backgroundColor: '#0002',
+        }}
       />
     </div>
   );

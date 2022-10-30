@@ -1,7 +1,7 @@
-import { TextField, Dialog, Typography, Paper } from '@material-ui/core';
+import { TextField, Dialog, Typography, Paper } from '@mui/material';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 import useStore from '../../store/useStore';
 
 const Bar = ({ handleClose, direct }: any) => {
@@ -217,7 +217,6 @@ const Bar = ({ handleClose, direct }: any) => {
           <TextField
             {...params}
             autoFocus={!direct}
-            variant="outlined"
             color="primary"
             style={{ borderRadius: '50%' }}
             label="Jump to device / Activate scene"

@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@material-ui/core';
+import { Card, CardContent } from '@mui/material';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 // eslint-disable-next-line
 import BladeSlider from "./BladeSlider";
@@ -37,7 +37,6 @@ Number.args = {
   required: false,
   textfield: false,
   disabled: false,
-  disableUnderline: undefined,
   schema: {
     title: 'Slide me',
     minimum: 5,

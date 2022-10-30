@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Select, MenuItem, TextField } from '@material-ui/core/';
-import { InputAdornment } from '@mui/material';
+import { Select, MenuItem, TextField, InputAdornment } from '@mui/material';
 import { useState } from 'react';
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon';
 import BladeFrame from '../BladeFrame';
@@ -57,9 +56,8 @@ const BladeSelect = ({
             disabled={disabled}
             style={{
               flexGrow: 'unset',
-              ...selectStyle,
+              ...(selectStyle as any),
             }}
-            disableUnderline
             defaultValue={schema.default}
             value={(model && model_id && model[model_id]) || schema.enum[0]}
             onChange={(e) => onChange(model_id, e.target.value)}
@@ -81,7 +79,7 @@ const BladeSelect = ({
               ''
             }
             onBlur={(e) => onChange(model_id, e.target.value)}
-            style={textStyle}
+            style={textStyle as any}
           />
         )
       ) : schema.enum && Array.isArray(schema.enum) ? (
@@ -89,15 +87,14 @@ const BladeSelect = ({
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...selectStyle,
+            ...(selectStyle as any),
           }}
-          disableUnderline
           defaultValue={schema.default}
           value={(model && model_id && model[model_id]) || schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
-            <MenuItem key={i} value={item} style={menuItemStyle}>
+            <MenuItem key={i} value={item} style={menuItemStyle as any}>
               {item}
             </MenuItem>
           ))}
@@ -107,9 +104,8 @@ const BladeSelect = ({
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...selectStyle,
+            ...(selectStyle as any),
           }}
-          disableUnderline
           defaultValue={schema.default}
           value={
             (model && model_id && schema.enum[model[model_id]]) ||
@@ -158,7 +154,7 @@ const BladeSelect = ({
           onChange={(e) => {
             if (schema.id === 'icon_name') setIcon(e.target.value);
           }}
-          style={textStyle}
+          style={textStyle as any}
         />
       )}
     </BladeFrame>

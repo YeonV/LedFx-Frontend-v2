@@ -1,24 +1,23 @@
 import { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import { useTheme } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import SettingsIcon from '@material-ui/icons/Settings';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import TuneIcon from '@material-ui/icons/Tune';
-import BuildIcon from '@material-ui/icons/Build';
+import { useTheme } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import TuneIcon from '@mui/icons-material/Tune';
+import BuildIcon from '@mui/icons-material/Build';
 import { NavLink } from 'react-router-dom';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import Collapse from '@mui/material/Collapse';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import {
   Clear,
   Delete,
   Pause,
   PlayArrow,
   SyncProblem,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import Popover from '../../../components/Popover/Popover';
 import EditVirtuals from '../EditVirtuals/EditVirtuals';
 import PixelGraph from '../../../components/PixelGraph';
@@ -78,9 +77,21 @@ const DeviceCard = ({
       className={`${classes.virtualCardPortraitW} ${
         isEffectSet ? 'active' : ''
       } ${online ? 'online' : 'offline'}`}
-      style={{ ...additionalStyle, width: '100%' }}
+      style={{
+        ...additionalStyle,
+        width: '100%',
+        background: theme.palette.background.paper,
+      }}
     >
-      <Card className={classes.virtualCardPortrait}>
+      <Card
+        className={classes.virtualCardPortrait}
+        sx={{
+          background: theme.palette.background.paper,
+          '&:hover': {
+            borderColor: theme.palette.text.disabled,
+          },
+        }}
+      >
         <div className={classes.virtualCardContainer}>
           <div className={`${classes.virtualIconWrapper}`}>
             <BladeIcon
@@ -127,6 +138,7 @@ const DeviceCard = ({
                   offline
                 </Typography>
                 <Button
+                  variant="text"
                   size="small"
                   onClick={(e) => {
                     e.preventDefault();
@@ -154,6 +166,7 @@ const DeviceCard = ({
                 <span className="hideMobile">Effect:&nbsp;</span>
                 {effectName}
                 <Button
+                  variant="text"
                   size="small"
                   onClick={(e) => {
                     e.preventDefault();
@@ -169,6 +182,7 @@ const DeviceCard = ({
                 </Button>
                 <Button
                   size="small"
+                  variant="text"
                   onClick={(e) => {
                     e.preventDefault();
                     handleClearEffect(virtId);
@@ -209,9 +223,15 @@ const DeviceCard = ({
           </div>
 
           <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
+            sx={{
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              alignSelf: 'flex-start',
+              marginLeft: 'auto',
+              transition: theme.transitions.create('transform', {
+                duration: theme.transitions.duration.shortest,
+              }),
+              display: 'block',
+            }}
             onClick={(e) => {
               e.preventDefault();
               handleExpandClick();
@@ -225,10 +245,14 @@ const DeviceCard = ({
         </div>
         {graphsMulti && (
           <div
-            className={clsx(classes.pixelbar, {
-              [classes.pixelbarOut]: fade,
-            })}
-            style={{ transitionDuration: `${transitionTime}s` }}
+            style={{
+              opacity: fade ? 0.2 : 1,
+              transitionDuration: fade
+                ? `${transitionTime || 1}s`
+                : `${transitionTime || 0}s`,
+              width: '100%',
+              transition: 'opacity',
+            }}
           >
             <PixelGraph
               intGraphs={graphsActive}

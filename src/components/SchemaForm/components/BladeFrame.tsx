@@ -1,35 +1,33 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import { ReactElement } from 'react';
 
-const useStyles = makeStyles((theme) => ({
-  wrapper: {
-    minWidth: '23.5%',
-    padding: '16px 1.2rem 6px 1.2rem',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '10px',
-    position: 'relative',
+const Root = styled('div')(({ theme }) => ({
+  minWidth: '23.5%',
+  padding: '16px 1.2rem 6px 1.2rem',
+  border: '1px solid rgba(255, 255, 255, 0.1)',
+  borderRadius: '10px',
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  height: 'auto',
+  margin: '0.5rem 0',
+  '@media (max-width: 580px)': {
+    width: '100% !important',
+    margin: '0.5rem 0',
+  },
+  '& > label': {
+    top: '-0.75rem',
     display: 'flex',
     alignItems: 'center',
-    height: 'auto',
-    margin: '0.5rem 0',
-    '@media (max-width: 580px)': {
-      width: '100% !important',
-      margin: '0.5rem 0',
-    },
-    '& > label': {
-      top: '-0.5rem',
-      display: 'flex',
-      alignItems: 'center',
-      left: '1rem',
-      padding: '0 0.3rem',
-      position: 'absolute',
-      fontVariant: 'all-small-caps',
-      fontSize: '0.9rem',
-      letterSpacing: '0.1rem',
-      color: theme.palette.text.secondary,
-      backgroundColor: theme.palette.background.paper,
-      boxSizing: 'border-box',
-    },
+    left: '1rem',
+    padding: '0 0.3rem',
+    position: 'absolute',
+    fontVariant: 'all-small-caps',
+    fontSize: '0.9rem',
+    letterSpacing: '0.1rem',
+    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.paper,
+    boxSizing: 'border-box',
   },
 }));
 
@@ -56,22 +54,24 @@ const BladeFrame = ({
   className,
   disabled,
 }: BladeFrameProps): ReactElement<any, any> => {
-  const classes = useStyles();
   return variant === 'outlined' ? (
-    <div
-      className={`${classes.wrapper} ${className}`}
+    <Root
+      className={className || ''}
       style={{
         ...style,
         width: full ? '100%' : style.width,
       }}
     >
-      {/* eslint-disable-next-line */}
-      <label className={`MuiFormLabel-root${disabled ? ' Mui-disabled' : ''}  step-effect-${index}`}>
+      <label
+        className={`MuiFormLabel-root${
+          disabled ? ' Mui-disabled' : ''
+        }  step-effect-${index}`}
+      >
         {title}
         {required ? '*' : ''}
       </label>
       {children}
-    </div>
+    </Root>
   ) : (
     children
   );

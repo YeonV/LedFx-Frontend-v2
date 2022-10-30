@@ -1,4 +1,4 @@
-import { Fab } from '@material-ui/core';
+import { Fab } from '@mui/material';
 import { useState } from 'react';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';

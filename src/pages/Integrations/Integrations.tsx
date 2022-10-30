@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import useStore from '../../store/useStore';
 import IntegrationCard from './IntegrationCard/IntegrationCard';
 import NoYet from '../../components/NoYet';

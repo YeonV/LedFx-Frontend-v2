@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import {
   Button,
   MenuItem,
@@ -13,12 +13,18 @@ import {
   DialogActions,
   Dialog,
   Divider,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
-const useStyles = makeStyles((theme) => ({
-  wrapper: {
+const PREFIX = 'AddIntegrationDialog';
+
+const classes = {
+  wrapper: `${PREFIX}-wrapper`,
+};
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  [`& .${classes.wrapper}`]: {
     minWidth: '200px',
     padding: '16px 1.2rem 6px 1.2rem',
     border: '1px solid #999',
@@ -48,8 +54,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddIntegrationDialog = () => {
-  const classes = useStyles();
-
   const getIntegrations = useStore((state) => state.getIntegrations);
 
   const addIntegration = useStore((state) => state.addIntegration);
@@ -142,7 +146,7 @@ const AddIntegrationDialog = () => {
   }, [initial.type]);
 
   return (
-    <Dialog
+    <StyledDialog
       open={open}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
@@ -165,7 +169,6 @@ const AddIntegrationDialog = () => {
           <Select
             label="Type"
             style={{ flexGrow: 1 }}
-            disableUnderline
             value={integrationType}
             onChange={(e: any) => handleTypeChange(e.target.value)}
           >
@@ -206,7 +209,7 @@ const AddIntegrationDialog = () => {
             : 'Save'}
         </Button>
       </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
 

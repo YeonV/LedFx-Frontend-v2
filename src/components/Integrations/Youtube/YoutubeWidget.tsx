@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { useState } from 'react';
-import { Fab } from '@material-ui/core';
+import { Fab } from '@mui/material';
 
 // import ChangeYoutubeURLDialog from './ChangeYoutubeURLDialog';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';

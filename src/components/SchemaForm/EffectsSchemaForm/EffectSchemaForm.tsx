@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import BladeBoolean from '../components/Boolean/BladeBoolean';
 import BladeSelect from '../components/String/BladeSelect';
 import BladeSlider from '../components/Number/BladeSlider';
@@ -8,8 +8,14 @@ import {
   EffectSchemaFormProps,
 } from './EffectSchemaForm.props';
 
-const useStyles = makeStyles({
-  bladeSchemaForm: {
+const PREFIX = 'EffectSchemaForm';
+
+const classes = {
+  bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
+};
+
+const Root = styled('div')({
+  [`&.${classes.bladeSchemaForm}`]: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
@@ -25,10 +31,8 @@ const EffectSchemaForm = ({
   virtId,
   handleEffectConfig,
 }: EffectSchemaFormProps) => {
-  const classes = useStyles();
-
   return (
-    <div className={classes.bladeSchemaForm}>
+    <Root className={classes.bladeSchemaForm}>
       {schemaProperties &&
         model &&
         schemaProperties.map((s: any, i: number) => {
@@ -52,7 +56,6 @@ const EffectSchemaForm = ({
             case 'string':
               return (
                 <BladeSelect
-                  variant="outlined"
                   model={model}
                   schema={s}
                   wrapperStyle={{ width: '49%' }}
@@ -125,7 +128,7 @@ const EffectSchemaForm = ({
               );
           }
         })}
-    </div>
+    </Root>
   );
 };
 

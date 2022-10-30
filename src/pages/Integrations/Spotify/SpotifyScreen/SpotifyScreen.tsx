@@ -7,8 +7,9 @@ import {
   Dialog,
   Button,
   Grid,
-} from '@material-ui/core';
-import { Settings, NavigateBefore } from '@material-ui/icons';
+  useTheme,
+} from '@mui/material';
+import { Settings, NavigateBefore } from '@mui/icons-material';
 import {
   MuiMenuItem,
   SpotifyScreenDefaultProps,
@@ -28,13 +29,14 @@ export default function SpotifyScreen({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'primary',
   variant = 'contained',
   innerKey,
   disabled = false,
   size = 'small',
 }: SpotifyScreenProps) {
   const classes = useEditVirtualsStyles();
+  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -80,8 +82,13 @@ export default function SpotifyScreen({
         open={open}
         onClose={handleClose}
         TransitionComponent={Transition}
+        PaperProps={{
+          style: {
+            backgroundColor: theme.palette.background.default,
+          },
+        }}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
               autoFocus

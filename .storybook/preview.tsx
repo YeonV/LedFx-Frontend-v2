@@ -1,17 +1,13 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/styles';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import { BladeDarkTheme } from '../src/themes/AppThemes';
-import { BladeDarkTheme5 } from '../src/themes/AppThemes5';
 import storyTheme from './storyTheme';
 import './globals.css'
 
 export const decorators = [
   (Story: any) => (
-    <ThemeProvider theme={BladeDarkTheme5}>
-      <MuiThemeProvider theme={BladeDarkTheme}>
+    <ThemeProvider theme={BladeDarkTheme}>
         <Story />
-      </MuiThemeProvider>
     </ThemeProvider>
   )
 ];

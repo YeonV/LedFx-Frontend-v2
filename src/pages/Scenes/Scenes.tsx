@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   Button,
   Divider,
@@ -13,8 +13,7 @@ import {
   CardActions,
   CardMedia,
   Typography,
-} from '@material-ui/core';
-import { Info, Edit } from '@material-ui/icons';
+import { Info, Edit } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
@@ -197,7 +196,6 @@ const Scenes = () => {
                 }}
               >
                 <Typography
-                  gutterBottom
                   className={classes.sceneTitle}
                   variant="h5"
                   component="h2"
@@ -223,7 +221,6 @@ const Scenes = () => {
                   />
                   <Button
                     onClick={() => handleInfoOpen(s)}
-                    variant="outlined"
                     color="inherit"
                     size="small"
                     style={{ marginLeft: '0.5rem' }}

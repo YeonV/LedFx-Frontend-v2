@@ -2,8 +2,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
 import { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import {
   Button,
   Card,
@@ -12,8 +10,9 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-} from '@material-ui/core/';
-import { Clear, ExpandMore, Pause, PlayArrow } from '@material-ui/icons/';
+  Box,
+} from '@mui/material';
+import { Clear, ExpandMore, Pause, PlayArrow } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper';
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm';
@@ -21,38 +20,6 @@ import PixelGraph from '../../components/PixelGraph';
 import TourEffect from '../../components/Tours/TourEffect';
 import TroubleshootButton from './TroubleshootButton';
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props';
-
-const useStyles = makeStyles((theme: any) => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  actionButton: {
-    marginTop: '0.5rem',
-    width: '100%',
-    borderColor: theme.palette.grey[400],
-  },
-  card: {
-    width: '100%',
-    maxWidth: '540px',
-    '@media (max-width: 580px)': {
-      maxWidth: '97vw',
-      margin: '0 auto',
-    },
-    '& > .MuiCardContent-root': {
-      paddingBottom: '0.5rem',
-    },
-  },
-  pixelbar: {
-    opacity: 1,
-    transitionDuration: '0',
-  },
-  pixelbarOut: {
-    opacity: 0.2,
-    transition: 'opacity',
-    transitionDuration: '1000',
-  },
-}));
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean'];
 
@@ -80,7 +47,6 @@ const orderEffectProperties = (schema: Schema) => {
 };
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
-  const classes = useStyles();
   const [fade, setFade] = useState(false);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSchemas = useStore((state) => state.getSchemas);
@@ -108,18 +74,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [theModel, setTheModel] = useState(virtual?.effect?.config);
   const orderedProperties =
     effects && effectType && orderEffectProperties(effects[effectType].schema);
-
-  // const handleRandomize = () => {
-  //   setVirtualEffect(
-  //     virtual.id,
-  //     {
-  //       virtId: virtual.id,
-  //       type: effectType,
-  //       config: 'RANDOMIZE',
-  //       active: true
-  //     }
-  //   ).then(() => getVirtuals());
-  // };
 
   const handleClearEffect = () => {
     clearVirtualEffect(virtId).then(() => {
@@ -159,7 +113,14 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   return (
     <>
-      <Card className={classes.card}>
+      <Card
+        variant="outlined"
+        sx={{
+          '& > .MuiCardContent-root': {
+            pb: '0.25rem',
+          },
+        }}
+      >
         <CardContent>
           <div
             style={{
@@ -184,22 +145,19 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   <TourEffect schemaProperties={orderedProperties} />
                   {/* <Button
                     onClick={() => handleRandomize()}
-                    variant="outlined"
                     style={{ marginRight: '.5rem' }}
                     className={'step-device-six'}
                     >
                     <Casino />
                   </Button> */}
                   <Button
-                    variant="outlined"
                     style={{ marginRight: '.5rem' }}
-                    className="step-device-five"
+                    className="step-device-six"
                     onClick={() => handlePlayPause()}
                   >
                     {virtual.active ? <Pause /> : <PlayArrow />}
                   </Button>
                   <Button
-                    variant="outlined"
                     className="step-device-five"
                     onClick={() => handleClearEffect()}
                   >
@@ -209,10 +167,19 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
               )}
             </div>
           </div>
-          <div
-            className={clsx(classes.pixelbar, {
-              [classes.pixelbarOut]: fade,
-            })}
+          <Box
+            sx={
+              fade
+                ? {
+                    opacity: 0.2,
+                    transition: 'opacity',
+                    transitionDuration: '1000',
+                  }
+                : {
+                    opacity: 1,
+                    transitionDuration: '0',
+                  }
+            }
             style={{
               transitionDuration: `${virtual.config.transition_time * 1000}`,
             }}
@@ -236,7 +203,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 )
               }
             />
-          </div>
+          </Box>
           <div style={{ height: '1rem' }} />
           <EffectDropDown
             effects={effects}
@@ -252,7 +219,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
         effects &&
         virtual.effect &&
         virtual.effect.config && (
-          <Card style={{ marginTop: '1rem' }}>
+          <Card variant="outlined" style={{ marginTop: '1rem' }}>
             <CardContent style={{ padding: '0 16px' }}>
               <Accordion
                 style={{ padding: 0 }}
