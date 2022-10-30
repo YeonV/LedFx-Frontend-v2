@@ -45,8 +45,8 @@ const storeScenes = (set: any) => ({
   deleteScene: async (name: string) =>
     await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
 
-  captivateScene: async (scene_puturl: string, scene_payload: JSON) =>
-    await Ledfx(scene_puturl, 'PUT', scene_payload),
+  captivateScene: async (scene_puturl: string, scene_payload: string) =>
+    await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload)),
 });
 
 export default storeScenes;
