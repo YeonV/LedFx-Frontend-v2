@@ -25,6 +25,8 @@ import AddButton from '../AddButton';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
 import { drawerWidth } from '../../utils/helpers';
+import EditSceneDialog from '../Dialogs/EditSceneDialog';
+
 
 export default function BarBottom() {
   const theme = useTheme();
@@ -228,6 +230,7 @@ export default function BarBottom() {
       <AddDeviceDialog />
       <AddVirtualDialog />
       <AddIntegrationDialog />
+      <EditSceneDialog />
       <AddButton
         setBackdrop={setBackdrop}
         sx={{

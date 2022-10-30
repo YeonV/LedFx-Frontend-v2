@@ -9,6 +9,9 @@ const storeDialogs = (set: any) => ({
     },
     addScene: {
       open: false,
+      edit: false,
+      sceneKey: '',
+      editData: '',
     },
     addDevice: {
       open: false,
@@ -34,12 +37,19 @@ const storeDialogs = (set: any) => ({
       false,
       'api/dialog/nohost'
     ),
-  setDialogOpenAddScene: (open: boolean, edit?: boolean) =>
+  setDialogOpenAddScene: (
+    open: boolean,
+    edit?: boolean,
+    sceneKey?: string,
+    editData?: object
+  ) =>
     set(
       produce((state: any) => {
         state.dialogs.addScene = {
           open,
           edit,
+          sceneKey,
+          editData,
         };
       }),
       false,

@@ -13,9 +13,8 @@ import {
   CardActions,
   CardMedia,
   Typography,
-  Grid,
-} from '@mui/material';
-import { Info } from '@mui/icons-material';
+import { Info, Edit } from '@mui/icons-material';
+import { Grid } from '@mui/material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
@@ -63,7 +62,7 @@ const SceneDialog = ({ info, setInfo, scene }: any) => {
   };
 
   const handleUpdateScene = (s: any) => {
-    addScene(s.name, s.scene_image).then(() => {
+    addScene(s.name, s.scene_image, s.url, s.payload).then(() => {
       getScenes();
     });
     setDialogOpenAddScene(false);
@@ -132,12 +131,18 @@ const Scenes = () => {
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const activateScene = useStore((state) => state.activateScene);
+  const captivateScene = useStore((state) => state.captivateScene);
   const deleteScene = useStore((state) => state.deleteScene);
   const [info, setInfo] = useState(false);
   const [scene, setScene] = useState();
-
+  const setDialogOpenAddScene = useStore(
+    (state) => state.setDialogOpenAddScene
+  );
   const handleActivateScene = (e: string) => {
+    // console.log('captivate', e, scenes[e]);
     activateScene(e);
+    if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
+      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
   };
 
   const handleDeleteScene = (e: any) => {
@@ -198,10 +203,21 @@ const Scenes = () => {
                   {scenes[s].name || s}
                 </Typography>
                 <div>
+                  <Button
+                    onClick={() =>
+                      setDialogOpenAddScene(false, true, s, scenes[s])
+                    }
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                  >
+                    <Edit />
+                  </Button>
                   <Popover
                     onConfirm={() => handleDeleteScene(s)}
                     variant="outlined"
                     color="inherit"
+                    style={{ marginLeft: '0.5rem' }}
                   />
                   <Button
                     onClick={() => handleInfoOpen(s)}
