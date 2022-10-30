@@ -23,7 +23,7 @@ const storeFeatures = (set: any) => ({
     dev: false,
     cloud: false,
     wled: false,
-    integrations: false,
+    integrations: true,
     spotify: false,
     spotifypro: false,
     youtube: false,

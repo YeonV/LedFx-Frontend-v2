@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Slider, Input, TextField, Typography } from '@material-ui/core/';
+import { Slider, Input, TextField, Typography, useTheme } from '@mui/material';
 import useStyles from './BladeSlider.styles';
 import {
   BladeSliderDefaultProps,
@@ -156,7 +156,6 @@ BladeSliderInner.defaultProps = BladeSliderInnerDefaultProps;
  */
 const BladeSlider = ({
   variant = 'outlined',
-  disableUnderline,
   schema,
   model,
   model_id,
@@ -172,12 +171,19 @@ const BladeSlider = ({
   style = {},
 }: BladeSliderProps) => {
   const classes = useStyles();
+  const theme = useTheme();
   return variant === 'outlined' ? (
     <div
       className={`${classes.wrapper} step-effect-${index}`}
       style={{
         ...style,
         width: full ? '100%' : style.width,
+        '& > label': {
+          backgroundColor: theme.palette.background.paper,
+        },
+        '& .MuiSliderValueLabel > span': {
+          backgroundColor: theme.palette.background.paper,
+        },
       }}
     >
       <label
@@ -202,7 +208,6 @@ const BladeSlider = ({
         textfield={textfield}
         marks={marks}
         hideDesc={hideDesc}
-        disableUnderline={disableUnderline}
       />
     </div>
   ) : (
@@ -217,7 +222,6 @@ const BladeSlider = ({
       textfield={textfield}
       marks={marks}
       hideDesc={hideDesc}
-      disableUnderline={disableUnderline}
     />
   );
 };

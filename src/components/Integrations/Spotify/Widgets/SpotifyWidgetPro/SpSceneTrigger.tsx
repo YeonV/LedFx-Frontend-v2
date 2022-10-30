@@ -7,7 +7,7 @@ import {
   FormControl,
   InputLabel,
   Select,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../../../../store/useStore';
 
 import Popover from '../../../../Popover/Popover';
@@ -77,7 +77,6 @@ export default function SpSceneTrigger() {
                 id="scene"
                 value={spotifyScene}
                 label="Scene"
-                variant="outlined"
                 onChange={(_, v: any) => {
                   setSpotifyScene(v.props.value);
                 }}
@@ -94,7 +93,6 @@ export default function SpSceneTrigger() {
             </FormControl>
             <TextField
               label="Network Delay"
-              variant="outlined"
               style={{
                 width: 150,
                 color: '#fff',

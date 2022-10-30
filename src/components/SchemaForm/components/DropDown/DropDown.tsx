@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import ListSubheader from '@mui/material/ListSubheader';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { useTheme } from '@mui/material';
 import useStyles from './DropDown.styles';
 import {
   EffectDropDownDefaultProps,
@@ -21,7 +22,7 @@ const EffectDropDown = ({
   title,
 }: EffectDropDownProps) => {
   const classes = useStyles();
-
+  const theme = useTheme();
   const [formats, setFormats] = useState(
     () => groups && Object.keys(groups).map((c) => c || [])
   );
@@ -32,7 +33,7 @@ const EffectDropDown = ({
 
   return (
     <FormControl className={`${classes.FormRow} step-device-one`}>
-      <InputLabel htmlFor="groupsed-select" className={classes.FormLabel}>
+      <InputLabel htmlFor="groupsed-select" sx={{ p: '0 !important' }}>
         {title}
       </InputLabel>
       <Select
@@ -40,6 +41,7 @@ const EffectDropDown = ({
         onChange={onChange}
         id="groupsed-select"
         className={classes.FormSelect}
+        sx={{ pb: '5px', pt: '0 !important' }}
       >
         <MenuItem value="" disabled>
           <em>None</em>
@@ -52,6 +54,7 @@ const EffectDropDown = ({
                 <ListSubheader
                   className={classes.FormListHeaders}
                   color="primary"
+                  sx={{ background: theme.palette.secondary.main }}
                 >
                   {c}
                 </ListSubheader>,

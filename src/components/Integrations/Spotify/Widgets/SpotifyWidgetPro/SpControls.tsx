@@ -1,8 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
-import IconButton from '@mui/material/IconButton';
 import {
   Repeat,
   RepeatOne,
@@ -12,11 +7,11 @@ import {
   VolumeDown,
   VolumeMute,
   VolumeUp,
-} from '@material-ui/icons';
-import { PauseCircle, PlayCircle } from '@mui/icons-material';
-import { Button } from '@material-ui/core';
-import { useEffect, useState, useContext, useMemo } from 'react';
-
+  PauseCircle,
+  PlayCircle,
+} from '@mui/icons-material';
+import { Button, Box, IconButton, Slider } from '@mui/material';
+import { useState, useContext } from 'react';
 import useStore from '../../../../../store/useStore';
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
 import { formatTime } from '../../../../../utils/helpers';

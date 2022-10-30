@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   input: {
     marginLeft: '1rem',
     backgroundColor: 'rgb(57, 57, 61)',
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100% !important',
     },
     '& > label': {
-      top: '-0.5rem',
+      top: '-0.75rem',
       display: 'flex',
       alignItems: 'center',
       left: '1rem',
@@ -30,14 +30,10 @@ const useStyles = makeStyles((theme) => ({
       fontVariant: 'all-small-caps',
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
-      backgroundColor: theme.palette.background.paper,
       boxSizing: 'border-box',
     },
     '& .sortable-handler': {
       touchAction: 'none',
-    },
-    '& .MuiSlider-valueLabel > span': {
-      backgroundColor: theme.palette.background.paper,
     },
   },
 }));

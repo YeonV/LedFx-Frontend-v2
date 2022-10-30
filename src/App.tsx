@@ -1,24 +1,21 @@
-import { useEffect } from 'react';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from '@mui/styles';
-import { CssBaseline } from '@material-ui/core';
+/* eslint-disable @typescript-eslint/indent */
+import { useEffect, useMemo } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import isElectron from 'is-electron';
+import { Box, CssBaseline } from '@mui/material';
 import ws, { WsContext, HandleWs } from './utils/Websocket';
 import useStore from './store/useStore';
 import useWindowDimensions from './utils/useWindowDimension';
-import useStyles from './App.styles';
 import './App.css';
-import { ledfxTheme, ledfxThemes } from './themes/AppThemes';
-import { BladeDarkGreyTheme5 } from './themes/AppThemes5';
 import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
 import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
+import { common, ledfxThemes, ledfxTheme } from './themes/AppThemes';
 
 export default function App() {
   const { height, width } = useWindowDimensions();
-  const classes = useStyles();
   const features = useStore((state) => state.features);
   const protoCall = useStore((state) => state.protoCall);
   const setProtoCall = useStore((state) => state.setProtoCall);
@@ -28,6 +25,29 @@ export default function App() {
   const getSchemas = useStore((state) => state.getSchemas);
   const shutdown = useStore((state) => state.shutdown);
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
+  const darkMode = useStore((state) => state.ui.darkMode);
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        ...ledfxThemes[ledfxTheme],
+        ...common,
+        palette: {
+          ...ledfxThemes[ledfxTheme].palette,
+          mode: darkMode ? 'dark' : 'light',
+          background: darkMode
+            ? {
+                default: '#030303',
+                paper: '#151515',
+              }
+            : {
+                default: '#bbb',
+                paper: '#fefefe',
+              },
+        },
+      }),
+    [darkMode]
+  );
 
   useEffect(() => {
     getVirtuals();
@@ -91,35 +111,28 @@ export default function App() {
   }, [protoCall, showSnackbar]);
 
   return (
-    <ThemeProvider theme={BladeDarkGreyTheme5}>
-      <MuiThemeProvider theme={ledfxThemes[ledfxTheme]}>
-        <SnackbarProvider maxSnack={5}>
-          <WsContext.Provider value={ws}>
-            <SpotifyProvider>
-              <div
-                className={classes.root}
-                style={{ paddingTop: isElectron() ? '30px' : 0 }}
-              >
-                <CssBaseline />
-                <Pages handleWs={<HandleWs />} />
-              </div>
-            </SpotifyProvider>
-          </WsContext.Provider>
-          {features.waves && (
-            <WaveLines
-              startColor={
-                ledfxThemes[ledfxTheme || 'DarkBlue'].palette.primary.main
-              }
-              stopColor={
-                ledfxThemes[ledfxTheme || 'DarkBlue'].palette.accent.main ||
-                '#ffdc0f'
-              }
-              width={width - 8}
-              height={height}
-            />
-          )}
-        </SnackbarProvider>
-      </MuiThemeProvider>
+    <ThemeProvider theme={theme}>
+      <SnackbarProvider maxSnack={5}>
+        <WsContext.Provider value={ws}>
+          <SpotifyProvider>
+            <Box
+              sx={{ display: 'flex' }}
+              style={{ paddingTop: isElectron() ? '30px' : 0 }}
+            >
+              <CssBaseline />
+              <Pages handleWs={<HandleWs />} />
+            </Box>
+          </SpotifyProvider>
+        </WsContext.Provider>
+        {features.waves && (
+          <WaveLines
+            startColor={theme.palette.primary.main}
+            stopColor={theme.palette.accent.main || '#ffdc0f'}
+            width={width - 8}
+            height={height}
+          />
+        )}
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

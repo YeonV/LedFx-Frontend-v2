@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import PopoverSure from '../../../components/Popover/Popover';
 import PixelSlider from './PixelSlider';
 import useStore from '../../../store/useStore';
@@ -60,7 +60,6 @@ const Segment = ({ s, i, virtual, segments }: any) => {
             <div>
               <Button
                 disabled={i === 0}
-                variant="outlined"
                 color="inherit"
                 onClick={() => reorder('UP')}
                 size="small"
@@ -72,7 +71,6 @@ const Segment = ({ s, i, virtual, segments }: any) => {
             <div>
               <Button
                 disabled={i === virtual.segments.length - 1}
-                variant="outlined"
                 color="inherit"
                 onClick={() => reorder('DOWN')}
                 size="small"
@@ -93,7 +91,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
           <div>
             <Button
               variant={s[3] ? 'contained' : 'outlined'}
-              color={s[3] ? 'primary' : 'default'}
+              color={s[3] ? 'primary' : 'inherit'}
               endIcon={<SwapHorizIcon />}
               onClick={handleInvert}
               style={{ margin: '0 1rem 0 1.5rem' }}
@@ -103,7 +101,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
           </div>
           <PopoverSure
             variant="outlined"
-            color="default"
+            color="primary"
             onConfirm={handleDeleteSegment}
             style={{ padding: '5px' }}
           />

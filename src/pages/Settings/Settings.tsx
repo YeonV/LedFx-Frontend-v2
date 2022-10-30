@@ -4,8 +4,8 @@ import {
   AccordionSummary,
   Typography,
   AccordionDetails,
-} from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import useStore from '../../store/useStore';
 import AudioCard from './AudioCard';

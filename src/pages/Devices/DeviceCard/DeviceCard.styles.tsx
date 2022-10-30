@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(() => ({
   virtualCardPortraitW: {
     margin: '0.5rem',
     display: 'flex',
@@ -12,7 +12,6 @@ const useStyle = makeStyles((theme) => ({
     height: '100%',
     position: 'relative',
     borderRadius: 10,
-    background: theme.palette.background.paper,
     borderColor: 'transparent',
     textDecoration: 'none',
     '@media (max-width: 410px)': {
@@ -30,21 +29,7 @@ const useStyle = makeStyles((theme) => ({
     height: '100%',
     position: 'relative',
     borderRadius: 10,
-    background: theme.palette.background.paper,
     borderColor: 'transparent',
-    '&:hover': {
-      borderColor: theme.palette.text.disabled,
-    },
-  },
-  virtualLink: {
-    flexGrow: 0,
-    textDecoration: 'none',
-    fontSize: 'large',
-    color: 'inherit',
-    alignSelf: 'flex-start',
-    '&:hover': {
-      color: `${theme.palette.primary.main} !important`,
-    },
   },
   virtualIconWrapper: {
     width: '50px',
@@ -107,25 +92,13 @@ const useStyle = makeStyles((theme) => ({
     },
   },
   editButton: {
-    marginLeft: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
     minWidth: 'unset',
   },
   editButtonMobile: {
-    marginLeft: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
     minWidth: 'unset',
     flexGrow: 1,
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    alignSelf: 'flex-start',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-    display: 'block',
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
   },
   buttonBarMobile: {
     width: '100%',

@@ -1,21 +1,20 @@
-/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/indent */
 import { useState, useEffect } from 'react';
 import {
   BottomNavigation,
   BottomNavigationAction,
   Backdrop,
   useTheme,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Settings,
   Home,
   Wallpaper,
   SettingsInputSvideo,
   SettingsInputComponent,
-} from '@material-ui/icons';
+  Dashboard,
+} from '@mui/icons-material';
 import { useLocation, Link } from 'react-router-dom';
-import clsx from 'clsx';
-import { Dashboard } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import AddSceneDialog from '../Dialogs/AddSceneDialog';
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog';
@@ -23,13 +22,13 @@ import AddVirtualDialog from '../Dialogs/AddVirtualDialog';
 import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog';
 import SpotifyFabFree from '../Integrations/Spotify/SpotifyFabFree';
 import AddButton from '../AddButton';
-import useStyles from './BarBottom.styles';
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
+import { drawerWidth } from '../../utils/helpers';
 import EditSceneDialog from '../Dialogs/EditSceneDialog';
 
+
 export default function BarBottom() {
-  const classes = useStyles();
   const theme = useTheme();
   const { pathname } = useLocation();
   const [value, setValue] = useState(pathname);
@@ -88,9 +87,24 @@ export default function BarBottom() {
     <>
       <BottomNavigation
         value={value}
-        className={clsx(classes.root, {
-          [classes.rootShift]: leftOpen,
-        })}
+        sx={{
+          width: leftOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
+          marginLeft: leftOpen ? `${drawerWidth}px` : 0,
+          position: 'fixed',
+          bottom: 0,
+          zIndex: 4,
+          boxShadow: '0px -10px 30px 25px #030303',
+          background: theme.palette.background.default,
+          transition: leftOpen
+            ? theme.transitions.create(['margin', 'width'], {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen,
+              })
+            : theme.transitions.create(['margin', 'width'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
+        }}
         showLabels
         style={{ bottom: botHeight }}
       >
@@ -135,22 +149,24 @@ export default function BarBottom() {
           // }}
         />
 
-        <BottomNavigationAction
-          label="Integrations"
-          value="/Integrations"
-          component={Link}
-          to="/Integrations"
-          icon={<SettingsInputSvideo />}
-          style={
-            bottomBarOpen.indexOf('Integrations') > -1
-              ? { color: theme.palette.primary.main }
-              : {}
-          }
-          // onContextMenu={(e: any) => {
-          //   e.preventDefault();
-          //   setBottomBarOpen('Integrations');
-          // }}
-        />
+        {features.integrations && (
+          <BottomNavigationAction
+            label="Integrations"
+            value="/Integrations"
+            component={Link}
+            to="/Integrations"
+            icon={<SettingsInputSvideo />}
+            style={
+              bottomBarOpen.indexOf('Integrations') > -1
+                ? { color: theme.palette.primary.main }
+                : {}
+            }
+            // onContextMenu={(e: any) => {
+            //   e.preventDefault();
+            //   setBottomBarOpen('Integrations');
+            // }}
+          />
+        )}
 
         <BottomNavigationAction
           label="Settings"
@@ -217,10 +233,33 @@ export default function BarBottom() {
       <EditSceneDialog />
       <AddButton
         setBackdrop={setBackdrop}
-        className={`${clsx(classes.addButton, {
-          [classes.addButtonShift]: leftOpen,
-        })} step-four`}
-        style={{ bottom: botHeight + 65 }}
+        sx={{
+          bottom: botHeight + 65,
+          position: 'fixed',
+          marginLeft: leftOpen ? `${drawerWidth / 2}px` : 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          transition: leftOpen
+            ? theme.transitions.create(['margin'], {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen,
+              })
+            : theme.transitions.create(['margin'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
+          '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+            bottom: theme.spacing(2) + 25,
+          },
+          '& > button.MuiFab-primary': {
+            backgroundColor: theme.palette.secondary.main,
+          },
+          '& .MuiSpeedDialAction-staticTooltipLabel': {
+            backgroundColor: 'transparent',
+            marginLeft: '-1rem',
+          },
+        }}
+        className="step-four"
       />
       <Backdrop
         style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }}

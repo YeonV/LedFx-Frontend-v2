@@ -1,21 +1,26 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState } from 'react';
+import { styled } from '@mui/material/styles';
 import {
   Button,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useLongPress } from 'use-long-press';
-import { CloudOff, CloudUpload } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
-import { CopyAll } from '@mui/icons-material';
+import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 
-const useStyles = makeStyles((theme) => ({
-  bladeMenu: {
+const PREFIX = 'PresetButton';
+
+const classes = {
+  bladeMenu: `${PREFIX}-bladeMenu`,
+};
+
+const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.bladeMenu}`]: {
     '& .MuiPaper-root': {
       backgroundColor: theme.palette.grey[900],
     },
@@ -31,7 +36,6 @@ export default function PresetButton({
   className,
   onClick,
 }: any) {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<any>(null);
   const open = Boolean(anchorEl);
   const isLogged = useStore((state) => state.isLogged);
@@ -58,10 +62,10 @@ export default function PresetButton({
   );
 
   return (
-    <div>
+    <Root>
       <Button
+        size="medium"
         aria-expanded={open ? 'true' : undefined}
-        variant="outlined"
         color={buttonColor}
         className={className}
         {...longPress()}
@@ -77,7 +81,6 @@ export default function PresetButton({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
-        getContentAnchorEl={null}
         className={classes.bladeMenu}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
@@ -94,7 +97,6 @@ export default function PresetButton({
         <div>
           <Popover
             type="menuItem"
-            variant="outlined"
             onConfirm={delPreset}
             label="Delete Preset"
             anchorOrigin={{
@@ -149,6 +151,6 @@ export default function PresetButton({
             </MenuItem>
           )}
       </Menu>
-    </div>
+    </Root>
   );
 }

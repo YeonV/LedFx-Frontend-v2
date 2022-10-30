@@ -2,8 +2,8 @@
 import React from 'react';
 
 import axios from 'axios';
-import { Slide, MenuItem } from '@material-ui/core';
-import { TransitionProps } from '@material-ui/core/transitions';
+import { Slide, MenuItem } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
 
 export const cloud = axios.create({
   baseURL: 'https://strapi.yeonv.com',
@@ -11,7 +11,7 @@ export const cloud = axios.create({
 
 export const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide direction="up" ref={ref} {...(props as any)} />;
   }
 );
 

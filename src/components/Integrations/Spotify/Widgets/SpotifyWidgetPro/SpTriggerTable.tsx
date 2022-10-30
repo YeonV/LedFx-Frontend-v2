@@ -1,19 +1,27 @@
 /* eslint-disable no-console */
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { styled } from '@mui/material/styles';
 // import { useTheme } from '@mui/material/styles';
-import { DeleteForever, PlayCircleFilled } from '@material-ui/icons';
+import {
+  DeleteForever,
+  NotStarted,
+  PlayCircleFilled,
+} from '@mui/icons-material';
 import { useContext, useEffect } from 'react';
-import { IconButton } from '@material-ui/core';
-import { Stack } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
-import { NotStarted } from '@mui/icons-material';
+import { Card, IconButton, Stack } from '@mui/material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
 import { SpotifyStateContext } from '../../SpotifyProvider';
 
-export const useDataGridStyles = makeStyles((theme: any) => ({
-  root: {
+const PREFIX = 'SpTriggerTable';
+
+export const classes = {
+  root: `${PREFIX}-root`,
+};
+
+const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.root}`]: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
         color: theme.palette.text.secondary,
@@ -51,7 +59,6 @@ export const useDataGridStyles = makeStyles((theme: any) => ({
 }));
 
 export default function SpotifyTriggerTable() {
-  const classes = useDataGridStyles();
   const integrations = useStore((state) => state.integrations);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
@@ -200,37 +207,39 @@ export default function SpotifyTriggerTable() {
   const rows = spTriggersList || [{ id: 1 }];
 
   return (
-    <div
+    <Root
       style={{
         display: 'flex',
         width: '100%',
       }}
     >
-      <DataGrid
-        className={classes.root}
-        autoHeight
-        // checkboxSelection
-        disableSelectionOnClick
-        onRowDoubleClick={(params: any) => {
-          spotifyPlaySong(spotifyDevice, params.row.songId);
-        }}
-        sx={{
-          boxShadow: 2,
-          color: '#fff',
-          border: 1,
-          borderColor: '#666',
-        }}
-        columns={columns}
-        rows={rows}
-        getRowClassName={(params: GridRowParams<any>) =>
-          params.row.songId ===
-          playerState?.context.metadata?.current_item.uri.split(':')[2]
-            ? (playerState?.position ?? 0) > params.row.position_ms
-              ? 'activated'
-              : 'currently_playing'
-            : ''
-        }
-      />
-    </div>
+      <Card sx={{ display: 'flex', width: '100%' }}>
+        <DataGrid
+          className={classes.root}
+          autoHeight
+          // checkboxSelection
+          disableSelectionOnClick
+          onRowDoubleClick={(params: any) => {
+            spotifyPlaySong(spotifyDevice, params.row.songId);
+          }}
+          sx={{
+            boxShadow: 2,
+            color: '#fff',
+            border: 1,
+            borderColor: '#666',
+          }}
+          columns={columns}
+          rows={rows}
+          getRowClassName={(params: GridRowParams<any>) =>
+            params.row.songId ===
+            playerState?.context.metadata?.current_item.uri.split(':')[2]
+              ? (playerState?.position ?? 0) > params.row.position_ms
+                ? 'activated'
+                : 'currently_playing'
+              : ''
+          }
+        />
+      </Card>
+    </Root>
   );
 }

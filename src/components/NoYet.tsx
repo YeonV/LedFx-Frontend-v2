@@ -1,5 +1,5 @@
-import { Card, CardHeader } from '@material-ui/core';
-import { Info } from '@material-ui/icons';
+import { Card, CardHeader } from '@mui/material';
+import { Info } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 
 interface NoYetProps {

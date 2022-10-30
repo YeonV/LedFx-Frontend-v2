@@ -1,8 +1,20 @@
 /* eslint-disable @typescript-eslint/indent */
-import { makeStyles } from '@material-ui/core/styles';
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import clsx from 'clsx';
+import {
+  Menu as MenuIcon,
+  MoreVert,
+  PlayCircleOutline,
+  Language,
+  BarChart,
+  Pause,
+  Settings,
+  GitHub,
+  ChevronLeft,
+  Login,
+  Logout,
+} from '@mui/icons-material';
+import isElectron from 'is-electron';
 import {
   AppBar,
   Box,
@@ -15,21 +27,9 @@ import {
   MenuItem,
   ListItemIcon,
   Button,
-} from '@material-ui/core';
-import {
-  Menu as MenuIcon,
-  MoreVert,
-  PlayCircleOutline,
-  Language,
-  BarChart,
-  Pause,
-  Settings,
-  GitHub,
-  ChevronLeft,
-} from '@material-ui/icons';
-import { styled } from '@mui/material/styles';
-import { Login, Logout } from '@mui/icons-material';
-import isElectron from 'is-electron';
+} from '@mui/material';
+import { styled } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import useStore from '../../store/useStore';
 import { drawerWidth } from '../../utils/helpers';
 import TourDevice from '../Tours/TourDevice';
@@ -38,41 +38,12 @@ import TourSettings from '../Tours/TourSettings';
 import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon';
-// import Doc from '../Doc/Doc';
 
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
-  },
-  bladeMenu: {
-    '& .MuiPaper-root': {
-      backgroundColor: theme.palette.grey[900],
-    },
-  },
-}));
-
-const StyledBadge = styled(Badge)(({ theme }) => ({
+const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
     right: '45%',
     top: '115%',
-    border: `1px solid ${theme.palette.background.paper}`,
+    // border: `1px solid ${theme.palette.background.paper}`,
     padding: '0 4px',
     fontSize: 'x-small',
     height: '14px',
@@ -80,11 +51,14 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const TopBar = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
+  const theme = useTheme();
   const open = useStore(
     (state) => state.ui.bars && state.ui.bars?.leftBar.open
   );
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen);
+  const darkMode = useStore((state) => state.ui.darkMode);
+  const setDarkMode = useStore((state) => state.ui.setDarkMode);
   const virtuals = useStore((state) => state.virtuals);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const togglePause = useStore((state) => state.togglePause);
@@ -109,6 +83,9 @@ const TopBar = () => {
   const changeHost = () => {
     setDialogOpen(true, true);
     setAnchorEl(null);
+  };
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
   };
   const changePause = () => {
     togglePause();
@@ -163,35 +140,45 @@ const TopBar = () => {
         </div>
       )}
       <AppBar
+        enableColorOnDark
         color="secondary"
         position="fixed"
-        style={{
+        sx={{
           paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
           zIndex: 10,
+          transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+          ...(open && {
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: `${drawerWidth}px`,
+            transition: theme.transitions.create(['margin', 'width'], {
+              easing: theme.transitions.easing.easeOut,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+          }),
         }}
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
       >
         <Toolbar style={{ justifyContent: 'space-between' }}>
-          <div style={{ position: 'absolute', top: 8, left: 10 }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleLeftBarOpen}
-              edge="start"
-              className={clsx(
-                classes.menuButton,
-                'step-three',
-                open && classes.hide
-              )}
-            >
-              <MenuIcon />
-            </IconButton>
+          <div style={{ position: 'absolute', top: 10, left: 16 }}>
+            {!open && (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleLeftBarOpen}
+                edge="start"
+                sx={{ marginRight: theme.spacing(2) }}
+                className="step-three"
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
             {((pathname.split('/').length === 3 &&
               pathname.split('/')[1] === 'device') ||
               pathname === '/Settings') && (
               <Button
+                size="large"
                 variant="text"
                 color="inherit"
                 startIcon={<ChevronLeft />}
@@ -211,7 +198,12 @@ const TopBar = () => {
               : pathname.split('/').pop()}
           </Typography>
           <div
-            style={{ display: 'flex', position: 'absolute', top: 8, right: 10 }}
+            style={{
+              display: 'flex',
+              position: 'absolute',
+              top: 10,
+              right: 16,
+            }}
           >
             {disconnected && (
               <Box>
@@ -258,7 +250,7 @@ const TopBar = () => {
             keepMounted
             open={Boolean(anchorEl)}
             onClose={() => setAnchorEl(null)}
-            className={classes.bladeMenu}
+            // className={classes.bladeMenu}
           >
             {features.cloud && isLogged && (
               <MenuItem disabled divider>
@@ -285,6 +277,12 @@ const TopBar = () => {
                 <Language />
               </ListItemIcon>
               Change Host
+            </MenuItem>
+            <MenuItem onClick={toggleDarkMode}>
+              <ListItemIcon>
+                <Language />
+              </ListItemIcon>
+              Darkmode
             </MenuItem>
             <MenuItem onClick={changePause}>
               <ListItemIcon>

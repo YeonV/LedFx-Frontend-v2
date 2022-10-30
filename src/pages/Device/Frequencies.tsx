@@ -1,42 +1,17 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-/* eslint-disable no-unsafe-optional-chaining */
-import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
-import Slider from '@material-ui/core/Slider';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Tooltip from '@material-ui/core/Tooltip';
-import { InputAdornment, TextField } from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Tooltip from '@mui/material/Tooltip';
+import Slider from '@mui/material/Slider';
+import { InputAdornment, TextField } from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 
 const log13 = (x: number) => Math.log(x) / Math.log(13);
 const logIt = (x: number) => 3700.0 * log13(1 + x / 200.0);
 const hzIt = (x: number) => 200.0 * 13 ** (x / 3700.0) - 200.0;
-
-const useStyles = makeStyles((theme) => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    padding: theme.spacing(2),
-    paddingBottom: 0,
-  },
-  formControl: {
-    marginRight: theme.spacing(3),
-  },
-  card: {
-    width: '100%',
-    maxWidth: '540px',
-    '@media (max-width: 580px)': {
-      maxWidth: '97vw',
-      margin: '0 auto',
-    },
-  },
-}));
 
 function ValueLabelComponent(props: any) {
   const { children, open, value } = props;
@@ -54,7 +29,6 @@ function ValueLabelComponent(props: any) {
 }
 
 const FrequenciesCard = ({ virtual, style }: any) => {
-  const classes = useStyles();
   const addVirtual = useStore((state) => state.addVirtual);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const config = useStore((state) => state.config);
@@ -73,7 +47,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
     value: config.melbanks?.min_frequency,
     label: `${
       config.melbanks?.min_frequency > 1000
-        ? `${config.melbanks?.min_frequency / 1000}kHz`
+        ? `${(config.melbanks?.min_frequency || 0) / 1000}kHz`
         : `${config.melbanks?.min_frequency}Hz`
     }`,
   };
@@ -98,16 +72,19 @@ const FrequenciesCard = ({ virtual, style }: any) => {
   };
 
   return (
-    <Card
-      variant="outlined"
-      className={`${classes.card} step-device-four`}
-      style={style}
-    >
+    <Card variant="outlined" className="step-device-four" style={style}>
       <CardHeader
         title="Frequencies"
         subheader="Adjust the audio range used for this strip"
       />
-      <CardContent className={classes.content}>
+      <CardContent
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          padding: '0 1rem 0.75rem 0.9rem !important',
+        }}
+      >
         <div style={{ width: '100%' }}>
           <BladeFrame
             title="Range"
@@ -122,12 +99,12 @@ const FrequenciesCard = ({ virtual, style }: any) => {
               min={logIt(config.melbanks?.min_frequency)}
               max={logIt(
                 config.melbanks?.max_frequencies[
-                  config.melbanks?.max_frequencies.length - 1
+                  (config.melbanks?.max_frequencies.length || 1) - 1
                 ]
               )}
               onChange={(e: any, v: any) => handleChange(e, v)}
-              ValueLabelComponent={ValueLabelComponent}
-              style={{ color: '#aaa' }}
+              components={{ ValueLabel: ValueLabelComponent }}
+              sx={{ color: '#aaa' }}
               onChangeCommitted={() => {
                 // Backend cannot do partial updates yet, sending whole config
                 addVirtual({
@@ -171,7 +148,6 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     ? value[0]
                     : Math.round(hzIt(value[0]))
                 }
-                variant="outlined"
                 onChange={(e: any) => {
                   setValue([logIt(e.target.value), value[1]]);
                 }}
@@ -202,7 +178,6 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     <InputAdornment position="end">Hz</InputAdornment>
                   ),
                 }}
-                variant="outlined"
               />
             </div>
           </div>

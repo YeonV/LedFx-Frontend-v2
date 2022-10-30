@@ -16,7 +16,6 @@ const AudioCard = ({ className }: any) => {
     <div className={className}>
       {schema && (
         <BladeSchemaForm
-          disableUnderline
           hideToggle
           schema={schema}
           model={model}

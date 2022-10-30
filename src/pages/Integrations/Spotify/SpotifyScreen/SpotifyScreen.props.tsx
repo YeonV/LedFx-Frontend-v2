@@ -1,7 +1,7 @@
 import React from 'react';
 import { Settings } from '@mui/icons-material';
-import { TransitionProps } from '@material-ui/core/transitions';
-import { MenuItem, Slide } from '@material-ui/core';
+import { TransitionProps } from '@mui/material/transitions';
+import { MenuItem, Slide } from '@mui/material';
 
 export interface SpotifyScreenProps {
   icon: React.ReactElement;
@@ -9,7 +9,8 @@ export interface SpotifyScreenProps {
   label: string;
   type: string;
   className: string;
-  color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  // eslint-disable-next-line prettier/prettier
+  color: 'primary' | 'inherit' | 'error' | 'success' | 'warning' | 'info' | 'secondary' | undefined;
   variant: 'outlined' | 'text' | 'contained' | undefined;
   innerKey: string;
   disabled: boolean;
@@ -22,7 +23,7 @@ export const SpotifyScreenDefaultProps = {
   label: '',
   type: 'button',
   className: undefined,
-  color: 'default',
+  color: 'primary',
   variant: 'contained',
   innerKey: undefined,
   disabled: false,
@@ -33,7 +34,7 @@ export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...(props as any)} />;
 });
 
 Transition.defaultProps = {

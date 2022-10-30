@@ -1,7 +1,11 @@
-import { createTheme } from '@material-ui/core/styles';
+import { PaletteMode } from '@mui/material';
+import { createTheme, Theme } from '@mui/material/styles';
 import isElectron from 'is-electron';
 
-declare module '@material-ui/core/styles/createPalette' {
+declare module '@mui/styles' {
+  type DefaultTheme = Theme;
+}
+declare module '@mui/material/styles' {
   interface Palette {
     accent: Palette['primary'];
   }
@@ -10,33 +14,80 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 }
 
-export const BladeDarkGreenTheme = createTheme({
+export const common = {
+  typography: {
+    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: 14,
+    fontWeightRegular: 400,
+  },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        // eslint-disable-next-line prettier/prettier
+        color: 'inherit' as 'error' | 'success' | 'warning' | 'info' | 'inherit' | 'primary' | 'secondary' | undefined,
+        variant: 'outlined' as 'contained' | 'outlined' | 'text' | undefined,
+        size: 'small' as 'small' | 'medium' | 'large',
+      },
+      styleOverrides: {
+        root: {
+          borderColor: 'rgba(255,255,255,0.23)',
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined' as 'filled' | 'outlined' | 'standard' | undefined,
+      },
+    },
+    MuiSelect: {
+      defaultProps: {
+        variant: 'standard' as 'filled' | 'outlined' | 'standard' | undefined,
+        disableUnderline: true,
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: 'none',
+        },
+      },
+    },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+        },
+      },
+    },
+    MuiChip: {
+      defaultProps: {
+        variant: 'outlined' as 'outlined' | 'filled' | undefined,
+        sx: {
+          m: 0.3,
+        },
+      },
+    },
+  },
+};
+
+export const BladeDarkGreenTheme = {
   palette: {
-    type: 'dark',
+    mode: 'dark' as PaletteMode | undefined,
     primary: {
       main: '#2BDE6A',
     },
     secondary: {
-      main: '#1db954',
+      main: '#1db94',
     },
     accent: {
       main: '#20173c',
     },
-    background: {
-      default: '#030303',
-      paper: '#151515',
-    },
   },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
-    },
-  },
-});
+};
 
 export const BladeDarkBlueTheme = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#0dbedc',
     },
@@ -44,52 +95,37 @@ export const BladeDarkBlueTheme = createTheme({
       main: '#0dbedc',
     },
     accent: {
-      main: '#00185c',
+      main: '#0018c',
     },
     background: {
       default: '#030303',
-      paper: '#151515',
-    },
-  },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
+      paper: '#111',
     },
   },
 });
 
 export const BladeDarkTheme = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#b00000',
     },
     secondary: {
-      main: '#500000',
+      main: '#00000',
     },
     accent: {
       main: '#20173c',
     },
     background: {
       default: '#030303',
-      paper: '#151515',
+      paper: '#111',
     },
-  },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
-    },
-  },
-  typography: {
-    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
-    fontSize: 14,
-    fontWeightRegular: 400,
   },
 });
 
-export const BladeDarkGreyTheme = createTheme({
+export const BladeDarkGreyTheme: Theme = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#333',
     },
@@ -101,24 +137,14 @@ export const BladeDarkGreyTheme = createTheme({
     },
     background: {
       default: '#030303',
-      paper: '#151515',
+      paper: '#111',
     },
-  },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
-    },
-  },
-  typography: {
-    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
-    fontSize: 14,
-    fontWeightRegular: 400,
   },
 });
 
 export const BladeDarkOrangeTheme = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#FFBF47',
     },
@@ -126,28 +152,18 @@ export const BladeDarkOrangeTheme = createTheme({
       main: '#edad2d',
     },
     accent: {
-      main: '#542581',
+      main: '#4281',
     },
     background: {
       default: '#030303',
-      paper: '#151515',
+      paper: '#111',
     },
-  },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
-    },
-  },
-  typography: {
-    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
-    fontSize: 14,
-    fontWeightRegular: 400,
   },
 });
 
 export const BladeDarkPinkTheme = createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#bf026b',
     },
@@ -159,24 +175,14 @@ export const BladeDarkPinkTheme = createTheme({
     },
     background: {
       default: '#030303',
-      paper: '#151515',
+      paper: '#111',
     },
-  },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
-    },
-  },
-  typography: {
-    fontFamily: '"Nunito", "Roboto", "Helvetica", "Arial", sans-serif',
-    fontSize: 14,
-    fontWeightRegular: 400,
   },
 });
 
 export const BladeLightTheme = createTheme({
   palette: {
-    type: 'light',
+    mode: 'light',
     primary: {
       main: '#800000',
     },
@@ -185,12 +191,6 @@ export const BladeLightTheme = createTheme({
     },
     accent: {
       main: '#a00000',
-    },
-    // background: { default: '#030303', paper: '#151515' },
-  },
-  props: {
-    MuiCard: {
-      variant: 'outlined',
     },
   },
 });
@@ -207,13 +207,14 @@ export const ledfxThemes = {
 } as any;
 
 /* eslint-disable @typescript-eslint/indent */
-export const ledfxTheme = window.localStorage.getItem('ledfx-theme')
-  ? window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
-  : window.localStorage.getItem('hassTokens')
-  ? 'DarkBlue'
-  : window.location.origin === 'https://my.ledfx.app'
-  ? 'DarkGreen'
-  : isElectron()
-  ? 'DarkOrange'
-  : 'DarkBlue';
+export const ledfxTheme =
+  (window.localStorage.getItem('ledfx-theme')
+    ? window.localStorage.getItem('ledfx-theme')
+    : window.localStorage.getItem('hassTokens')
+    ? 'DarkBlue'
+    : window.location.origin === 'https://my.ledfx.app'
+    ? 'DarkGreen'
+    : isElectron()
+    ? 'DarkOrange'
+    : 'DarkBlue') || 'DarkBlue';
 /* eslint-enable @typescript-eslint/indent */

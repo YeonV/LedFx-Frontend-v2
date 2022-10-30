@@ -3,24 +3,23 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable import/no-unresolved */
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import { ListItemIcon, MenuItem } from '@material-ui/core';
-import { MenuBook } from '@material-ui/icons';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Slide from '@mui/material/Slide';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import { ListItemIcon, MenuItem, useTheme } from '@mui/material';
+import { MenuBook } from '@mui/icons-material';
 // import { API } from '@stoplight/elements';
-import { TransitionProps } from '@material-ui/core/transitions';
-import useStyles from './Doc.styles';
+import { TransitionProps } from '@mui/material/transitions';
 import '@stoplight/elements/styles.min.css';
 // import configApiYaml from './configApiYaml';
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide direction="up" ref={ref} {...(props as any)} />;
   }
 );
 
@@ -67,14 +66,13 @@ export default function Doc({
   label = '',
   type,
   className,
-  color = 'default',
+  color = 'inherit',
   variant = 'contained',
   onClick = () => {},
   innerKey,
 }: any) {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-
+  const theme = useTheme();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -120,7 +118,15 @@ export default function Doc({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar
+          enableColorOnDark
+          sx={{
+            position: 'relative',
+            marginBottom: '1rem',
+            background: theme.palette.background.default,
+            color: theme.palette.text.primary,
+          }}
+        >
           <Toolbar>
             <Button
               autoFocus
@@ -132,7 +138,13 @@ export default function Doc({
             >
               back
             </Button>
-            <Typography variant="h6" className={classes.title}>
+            <Typography
+              variant="h6"
+              sx={{
+                marginLeft: theme.spacing(2),
+                flex: 1,
+              }}
+            >
               Documentation
             </Typography>
           </Toolbar>

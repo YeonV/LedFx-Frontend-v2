@@ -1,15 +1,8 @@
-/* eslint-disable react/no-unstable-nested-components */
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import { Icon, IconButton } from '@material-ui/core';
+import { Icon, IconButton, Snackbar, Alert, AlertColor } from '@mui/material';
 import useStore from '../../store/useStore';
 
-const Alert = (props: any) => (
-  <MuiAlert elevation={6} variant="filled" {...props} />
-);
-
 const MessageBar = () => {
-  const { isOpen, messageType, message } = useStore(
+  const { message, messageType, isOpen } = useStore(
     (state) => state.ui.snackbar
   );
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
@@ -39,7 +32,13 @@ const MessageBar = () => {
         </IconButton>,
       ]}
     >
-      <Alert severity={messageType}>{message}</Alert>
+      <Alert
+        elevation={6}
+        variant="filled"
+        severity={messageType as AlertColor}
+      >
+        {message}
+      </Alert>
     </Snackbar>
   );
 };

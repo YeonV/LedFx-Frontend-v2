@@ -1,5 +1,5 @@
-import { IconButton } from '@material-ui/core';
-import { QueueMusic } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { QueueMusic } from '@mui/icons-material';
 import SpotifyChangeURLDialog from './SpotifyChangeURLDialog';
 
 const SpotifyWidgetFree = ({
@@ -38,6 +38,7 @@ const SpotifyWidgetFree = ({
         height={spotifyEnabled ? (spotifyExpanded ? 300 : 80) : 0}
         style={{ position: 'fixed', bottom: 0, left: 0 }}
         frameBorder="0"
+        /* eslint-disable-next-line react/no-unknown-property */
         allowTransparency
         allow="encrypted-media"
       />
