@@ -27,7 +27,6 @@ import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
 import { drawerWidth } from '../../utils/helpers';
 import EditSceneDialog from '../Dialogs/EditSceneDialog';
 
-
 export default function BarBottom() {
   const theme = useTheme();
   const { pathname } = useLocation();
