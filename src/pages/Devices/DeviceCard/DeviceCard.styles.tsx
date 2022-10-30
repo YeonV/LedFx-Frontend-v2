@@ -100,18 +100,6 @@ const useStyle = makeStyles(() => ({
     minWidth: 'unset',
     flexGrow: 1,
   },
-  expand: {
-    transform: 'rotate(0deg)',
-    alignSelf: 'flex-start',
-    marginLeft: 'auto',
-    // transition: theme.transitions.create('transform', {
-    //   duration: theme.transitions.duration.shortest,
-    // }),
-    display: 'block',
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
   buttonBarMobile: {
     width: '100%',
     height: '100%',

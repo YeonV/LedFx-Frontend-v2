@@ -68,20 +68,6 @@ const useIntegrationCardStyles = makeStyles(() => ({
       flexGrow: 1,
     },
   },
-  expand: {
-    display: 'none',
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    // transition: theme.transitions.create('transform', {
-    //   duration: theme.transitions.duration.shortest,
-    // }),
-    '@media (max-width: 580px)': {
-      display: 'block',
-    },
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
   buttonBar: {
     '@media (max-width: 580px)': {
       display: 'none',

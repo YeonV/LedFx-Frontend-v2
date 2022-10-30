@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,6 +14,7 @@ import {
   CardHeader,
   Switch,
   Avatar,
+  useTheme,
 } from '@mui/material';
 import Popover from '../../../components/Popover/Popover';
 import useStore from '../../../store/useStore';
@@ -26,6 +26,7 @@ import { spotifyMe } from '../../../utils/spotifyProxies';
 
 const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const classes = useIntegrationCardStyles();
+  const theme = useTheme();
   const getIntegrations = useStore((state) => state.getIntegrations);
   const integrations = useStore((state) => state.integrations);
   const deleteIntegration = useStore((state) => state.deleteIntegration);
@@ -127,9 +128,17 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
+            sx={{
+              display: 'none',
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              marginLeft: 'auto',
+              transition: theme.transitions.create('transform', {
+                duration: theme.transitions.duration.shortest,
+              }),
+              '@media (max-width: 580px)': {
+                display: 'block',
+              },
+            }}
             onClick={handleExpandClick}
             aria-expanded={expanded}
             aria-label="show more"
