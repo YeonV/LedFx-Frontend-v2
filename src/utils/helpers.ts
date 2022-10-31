@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 export const drawerWidth = 240;
-export const frontendConfig = 5;
+export const frontendConfig = 6;
 
 export const formatTime = (dura: number) => {
   let seconds: string | number;
