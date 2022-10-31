@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
@@ -160,10 +161,13 @@ const AddIntegrationDialog = () => {
         {integrationType.toUpperCase()} Integration
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To add an interation to LedFx, please first select the type of
-          integration you wish to add then provide the necessary configuration.
-        </DialogContentText>
+        {!integrationType && (
+          <DialogContentText>
+            To add an interation to LedFx, please first select the type of
+            integration you wish to add then provide the necessary
+            configuration.
+          </DialogContentText>
+        )}
         <div className={classes.wrapper}>
           <label>Integration Type</label>
           <Select
@@ -181,7 +185,17 @@ const AddIntegrationDialog = () => {
                     ['mqtt_hass', 'spotify', 'qlc'].indexOf(item) === -1
                   }
                 >
-                  {item}
+                  {item === 'spotify'
+                    ? 'Spotify'
+                    : item === 'qlc'
+                    ? 'QLC'
+                    : item === 'mqtt_hass'
+                    ? 'HomeAssistant (MQTT)'
+                    : item === 'mqtt'
+                    ? 'MQTT'
+                    : item === 'midi'
+                    ? 'MIDI'
+                    : item}
                 </MenuItem>
               ))}
           </Select>
