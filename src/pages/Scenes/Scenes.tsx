@@ -1,13 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
   Button,
-  Divider,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Card,
   CardActionArea,
   CardActions,
@@ -15,7 +9,7 @@ import {
   Typography,
   Grid,
 } from '@mui/material';
-import { Info, Edit } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
@@ -51,82 +45,6 @@ const useStyles = makeStyles({
   },
 });
 
-const SceneDialog = ({ info, setInfo, scene }: any) => {
-  const addScene = useStore((state) => state.addScene);
-  const getScenes = useStore((state) => state.getScenes);
-  const scenes = useStore((state) => state.scenes);
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
-  const handleInfoClose = () => {
-    setInfo(false);
-  };
-
-  const handleUpdateScene = (s: any) => {
-    addScene(s.name, s.scene_image, s.url, s.payload).then(() => {
-      getScenes();
-    });
-    setDialogOpenAddScene(false);
-  };
-
-  return scene ? (
-    <Dialog
-      open={info}
-      onClose={handleInfoClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      fullWidth
-      maxWidth="xs"
-    >
-      <DialogTitle id="alert-dialog-title">
-        Scene: {scenes[scene].name || scene}
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText component="div" id="alert-dialog-description">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontVariant: 'all-small-caps',
-            }}
-          >
-            <span>Device</span>
-            <span>Effect</span>
-          </div>
-          <Divider />
-          {Object.keys(scenes[scene].virtuals)
-            .filter((d) => !!scenes[scene].virtuals[d].type)
-            .map((dev, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontVariant: 'all-small-caps',
-                }}
-              >
-                <span>{dev}</span>
-                <span>{scenes[scene].virtuals[dev].type}</span>
-              </div>
-            ))}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Popover
-          onConfirm={() => handleUpdateScene(scenes[scene])}
-          color="secondary"
-          label="Update"
-          variant="text"
-          noIcon
-        />
-        <Button onClick={handleInfoClose} color="primary" autoFocus>
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
-  ) : null;
-};
-
 const Scenes = () => {
   const classes = useStyles();
   const getScenes = useStore((state) => state.getScenes);
@@ -134,8 +52,6 @@ const Scenes = () => {
   const activateScene = useStore((state) => state.activateScene);
   const captivateScene = useStore((state) => state.captivateScene);
   const deleteScene = useStore((state) => state.deleteScene);
-  const [info, setInfo] = useState(false);
-  const [scene, setScene] = useState();
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -150,11 +66,6 @@ const Scenes = () => {
     deleteScene(e).then(() => {
       getScenes();
     });
-  };
-
-  const handleInfoOpen = (s: any) => {
-    setScene(s);
-    setInfo(true);
   };
 
   const sceneImage = (iconName: string) =>
@@ -220,23 +131,9 @@ const Scenes = () => {
                     color="inherit"
                     style={{ marginLeft: '0.5rem' }}
                   />
-                  <Button
-                    onClick={() => handleInfoOpen(s)}
-                    color="inherit"
-                    size="small"
-                    style={{ marginLeft: '0.5rem' }}
-                  >
-                    <Info />
-                  </Button>
                 </div>
               </CardActions>
             </Card>
-            <SceneDialog
-              info={info}
-              setInfo={setInfo}
-              scene={scene}
-              setScene={setScene}
-            />
           </Grid>
         ))
       ) : (

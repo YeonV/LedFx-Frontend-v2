@@ -8,6 +8,7 @@ import {
   DialogTitle,
   Button,
   Typography,
+  Divider,
 } from '@mui/material';
 import useStore from '../../store/useStore';
 
@@ -16,14 +17,13 @@ const EditSceneDialog = () => {
   const [image, setImage] = useState('');
   const [url, setUrl] = useState('');
   const [payload, setPayload] = useState('');
-  const [overwrite, setOverwrite] = useState(false);
   const [invalid, setInvalid] = useState(false);
   const addScene = useStore((state) => state.addScene);
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const open = useStore((state) => state.dialogs.addScene?.edit || false);
   // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
-  const data = useStore((state: any) => state.dialogs.addScene?.editData || '');
+  const data = useStore((state: any) => state.dialogs.addScene?.editData);
   const viewMode = useStore((state) => state.viewMode);
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
@@ -67,42 +67,47 @@ const EditSceneDialog = () => {
     >
       <DialogTitle id="form-dialog-title">Edit Scene</DialogTitle>
       <DialogContent>
-        Image is optional and can be one of:
-        <ul style={{ paddingLeft: '1rem' }}>
-          <li>
-            iconName{' '}
-            <Link
-              href="https://material-ui.com/components/material-icons/"
-              target="_blank"
-            >
-              Find MUI icons here
-            </Link>
-            <Typography color="textSecondary" variant="subtitle1">
-              <em>eg. flare, AccessAlarms</em>
-            </Typography>
-          </li>
-          <li>
-            mdi:icon-name{' '}
-            <Link href="https://materialdesignicons.com" target="_blank">
-              Find Material Design icons here
-            </Link>
-            <Typography color="textSecondary" variant="subtitle1">
-              <em>eg. mdi:balloon, mdi:led-strip-variant</em>
-            </Typography>
-          </li>
-          <li>
-            image:custom-url
-            <Typography
-              color="textSecondary"
-              variant="subtitle1"
-              style={{ wordBreak: 'break-all' }}
-            >
-              <em>
-                eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
-              </em>
-            </Typography>
-          </li>
-        </ul>
+        {!data && (
+          <>
+            Image is optional and can be one of:
+            <ul style={{ paddingLeft: '1rem' }}>
+              <li>
+                iconName{' '}
+                <Link
+                  href="https://material-ui.com/components/material-icons/"
+                  target="_blank"
+                >
+                  Find MUI icons here
+                </Link>
+                <Typography color="textSecondary" variant="subtitle1">
+                  <em>eg. flare, AccessAlarms</em>
+                </Typography>
+              </li>
+              <li>
+                mdi:icon-name{' '}
+                <Link href="https://materialdesignicons.com" target="_blank">
+                  Find Material Design icons here
+                </Link>
+                <Typography color="textSecondary" variant="subtitle1">
+                  <em>eg. mdi:balloon, mdi:led-strip-variant</em>
+                </Typography>
+              </li>
+              <li>
+                image:custom-url
+                <Typography
+                  color="textSecondary"
+                  variant="subtitle1"
+                  style={{ wordBreak: 'break-all' }}
+                >
+                  <em>
+                    eg.
+                    image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
+                  </em>
+                </Typography>
+              </li>
+            </ul>
+          </>
+        )}
         <TextField
           autoFocus
           margin="dense"
@@ -111,13 +116,7 @@ const EditSceneDialog = () => {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          onBlur={(e) => {
-            setOverwrite(
-              Object.keys(scenes).indexOf(e.target.value.toLowerCase()) > -1
-            );
-          }}
-          error={overwrite}
-          helperText={overwrite && 'Scene already existing!'}
+          disabled
           required
           fullWidth
         />
@@ -157,12 +156,40 @@ const EditSceneDialog = () => {
             />
           </>
         )}
+        <Divider sx={{ mt: '1rem' }} />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontVariant: 'all-small-caps',
+          }}
+        >
+          <span>Device</span>
+          <span>Effect</span>
+        </div>
+        <Divider />
+        {data &&
+          Object.keys(scenes[data.name.toLowerCase()].virtuals)
+            .filter((d) => !!scenes[data.name.toLowerCase()].virtuals[d].type)
+            .map((dev, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontVariant: 'all-small-caps',
+                }}
+              >
+                <span>{dev}</span>
+                <span>
+                  {scenes[data.name.toLowerCase()].virtuals[dev].type}
+                </span>
+              </div>
+            ))}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleAddScene}>
-          {overwrite ? 'Overwrite' : 'Save'}
-        </Button>
+        <Button onClick={handleAddScene}>Update</Button>
       </DialogActions>
     </Dialog>
   );
