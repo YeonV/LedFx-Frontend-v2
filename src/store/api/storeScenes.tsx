@@ -22,12 +22,14 @@ const storeScenes = (set: any) => ({
   addScene: async (
     name: string,
     scene_image: string,
+    scene_tags: string,
     scene_puturl: string,
     scene_payload: string
   ) =>
     await Ledfx('/api/scenes', 'POST', {
       name,
       scene_image,
+      scene_tags,
       scene_puturl,
       scene_payload,
     }),
