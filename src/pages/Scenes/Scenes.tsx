@@ -16,7 +16,7 @@ import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-import SmartBar from '../../components/Dialogs/SmartBar';
+// import SmartBar from '../../components/Dialogs/SmartBar';
 
 const useStyles = makeStyles({
   root: {
@@ -99,7 +99,7 @@ const Scenes = () => {
           flexDirection: 'column',
         }}
       >
-        <SmartBar direct />
+        {/* <SmartBar direct /> */}
         <div>
           {Object.keys(scenes)
             .flatMap((s) => scenes[s].scene_tags?.split(','))
@@ -107,6 +107,7 @@ const Scenes = () => {
             .map((t: string) => (
               <Chip
                 variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}
+                sx={{ ml: 1, mt: 1, mr: 1 }}
                 key={t}
                 label={t}
                 onClick={() => toggletSceneActiveTag(t)}
