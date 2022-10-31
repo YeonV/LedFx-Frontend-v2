@@ -57,8 +57,8 @@ const TopBar = () => {
     (state) => state.ui.bars && state.ui.bars?.leftBar.open
   );
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen);
-  const darkMode = useStore((state) => state.ui.darkMode);
-  const setDarkMode = useStore((state) => state.ui.setDarkMode);
+  // const darkMode = useStore((state) => state.ui.darkMode);
+  // const setDarkMode = useStore((state) => state.ui.setDarkMode);
   const virtuals = useStore((state) => state.virtuals);
   const setDialogOpen = useStore((state) => state.setDialogOpen);
   const togglePause = useStore((state) => state.togglePause);
@@ -84,9 +84,9 @@ const TopBar = () => {
     setDialogOpen(true, true);
     setAnchorEl(null);
   };
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  // const toggleDarkMode = () => {
+  //   setDarkMode(!darkMode);
+  // };
   const changePause = () => {
     togglePause();
   };
@@ -278,12 +278,12 @@ const TopBar = () => {
               </ListItemIcon>
               Change Host
             </MenuItem>
-            <MenuItem onClick={toggleDarkMode}>
+            {/* <MenuItem onClick={toggleDarkMode}>
               <ListItemIcon>
                 <Language />
               </ListItemIcon>
               Darkmode
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={changePause}>
               <ListItemIcon>
                 {paused ? <PlayCircleOutline /> : <Pause />}
