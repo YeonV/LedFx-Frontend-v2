@@ -83,6 +83,17 @@ const storeUI = (set: any) => ({
       false,
       'ui/settingsExpanded'
     ),
+  sceneActiveTags: [] as string[],
+  toggletSceneActiveTag: (tag: string): void =>
+    set(
+      produce((state: any) => {
+        state.ui.sceneActiveTags = state.ui.sceneActiveTags.includes(tag)
+          ? state.ui.sceneActiveTags.filter((t: string) => t !== tag)
+          : [...state.ui.sceneActiveTags, tag];
+      }),
+      false,
+      'ui/settingsExpanded'
+    ),
 });
 
 export default storeUI;

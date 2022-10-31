@@ -14,6 +14,7 @@ import useStore from '../../store/useStore';
 const AddSceneDialog = () => {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
+  const [tags, setTags] = useState('');
   const [url, setUrl] = useState('');
   const [payload, setPayload] = useState('');
   const [overwrite, setOverwrite] = useState(false);
@@ -41,11 +42,12 @@ const AddSceneDialog = () => {
   };
   const handleAddScene = () => {
     if (!invalid) {
-      addScene(name, image, url, payload).then(() => {
+      addScene(name, image, tags, url, payload).then(() => {
         getScenes();
       });
       setName('');
       setImage('');
+      setTags('');
       setUrl('');
       setPayload('');
       setDialogOpenAddScene(false);
@@ -121,6 +123,15 @@ const AddSceneDialog = () => {
           type="text"
           value={image}
           onChange={(e) => setImage(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          margin="dense"
+          id="scene_tags"
+          label="Tags"
+          type="tags"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
           fullWidth
         />
         {viewMode !== 'user' && (
