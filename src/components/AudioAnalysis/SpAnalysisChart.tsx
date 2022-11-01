@@ -9,6 +9,7 @@ import {
   Legend,
   Area,
 } from 'recharts';
+import pitchClasses from './constants';
 import { AudioAnalysisProps } from './SpAnalysisAudioAnalysisProps';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -38,20 +39,6 @@ const renderLegend = (props: any) => {
 };
 
 const Chart: React.FC<AudioAnalysisProps> = (props) => {
-  const pitchClasses = [
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
-    'A',
-    'A#',
-    'B',
-  ];
   const pitchColors = [
     '#ff3333',
     '#ff9933',

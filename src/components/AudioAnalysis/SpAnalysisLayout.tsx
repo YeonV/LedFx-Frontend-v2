@@ -14,6 +14,7 @@ import ChordButtons from './SpAnalysisChordButtons';
 import PitchSelect from './SpAnalysisPitchSelect';
 import useStore from '../../store/useStore';
 import { fixAnalysis } from '../../utils/spotifyProxies';
+import pitchClasses from './constants
 
 export default function SpAnalysisLayout() {
   const analysis = useStore(
@@ -55,20 +56,6 @@ export default function SpAnalysisLayout() {
   };
 
   const handleChordClick = (e: any) => {
-    const pitchClasses = [
-      'C',
-      'C#',
-      'D',
-      'D#',
-      'E',
-      'F',
-      'F#',
-      'G',
-      'G#',
-      'A',
-      'A#',
-      'B',
-    ];
     const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
     numbers.map((item) => {
       setPitches((prev) => ({

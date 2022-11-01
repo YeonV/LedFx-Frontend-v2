@@ -1,21 +1,8 @@
 import Checkbox from '@material-ui/core/Checkbox';
 import { FormGroup, FormControlLabel } from '@material-ui/core';
+import pitchClasses from './constants';
 
 export default function PitchSelect(props: any) {
-  const pitchClasses = [
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
-    'A',
-    'A#',
-    'B',
-  ];
   const { pitches, handleCheck } = props;
   return (
     <FormGroup row>
