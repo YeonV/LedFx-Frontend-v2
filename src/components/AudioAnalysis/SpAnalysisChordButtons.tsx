@@ -1,13 +1,13 @@
 import React from 'react';
 import {
-  makeStyles,
   Typography,
   Grid,
   Select,
   MenuItem,
   InputLabel,
   FormControl,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(() => ({
   select: {
@@ -89,8 +89,6 @@ const chords: { [key: string]: any } = {
 };
 
 export default function PitchSelect({ handleChordClick }: any) {
-  const classes = useStyles();
-
   return (
     <Grid container spacing={1}>
       {Object.keys(chords).map((group) => (
@@ -103,8 +101,8 @@ export default function PitchSelect({ handleChordClick }: any) {
               defaultValue="0,1,2,3,4,5,6,7,8,9,10,11"
               onChange={handleChordClick}
               labelId={group}
-              className={classes.select}
-              inputProps={{ classes: { icon: classes.icon } }}
+              className={useStyles}
+              // inputProps={{ classes: { icon: useStyles.icon } }}
             >
               {Object.keys(chords[group]).map((chord) => {
                 return (

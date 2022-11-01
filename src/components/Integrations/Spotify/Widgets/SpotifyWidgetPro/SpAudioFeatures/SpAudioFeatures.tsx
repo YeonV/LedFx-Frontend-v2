@@ -12,6 +12,7 @@ import {
   Grid,
   Card,
   Stack,
+  Switch,
   // useTheme,
 } from '@mui/material';
 import {
@@ -20,8 +21,12 @@ import {
   Speed,
   Wallpaper,
   Piano,
+  Insights,
 } from '@mui/icons-material';
-import { getTrackFeatures, getTrackAnalysis } from '../../../../../../utils/spotifyProxies';
+import {
+  getTrackFeatures,
+  getTrackAnalysis,
+} from '../../../../../../utils/spotifyProxies';
 import RadarChart from './SpRadarChart';
 import useStore from '../../../../../../store/useStore';
 import { SpotifyStateContext } from '../../../SpotifyProvider';

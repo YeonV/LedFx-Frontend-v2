@@ -5,7 +5,7 @@ import {
   Typography,
   CardContent,
   LinearProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import Chart from './SpAnalysisChart';
 import SectionChart from './SpAnalysisSectionChart';
@@ -14,7 +14,7 @@ import ChordButtons from './SpAnalysisChordButtons';
 import PitchSelect from './SpAnalysisPitchSelect';
 import useStore from '../../store/useStore';
 import { fixAnalysis } from '../../utils/spotifyProxies';
-import pitchClasses from './constants
+import pitchClasses from './constants/constants';
 
 export default function SpAnalysisLayout() {
   const analysis = useStore(
@@ -82,7 +82,7 @@ export default function SpAnalysisLayout() {
         <Grid
           container
           direction="column"
-          justify="center"
+          // justify="center"
           alignItems="center"
           spacing={2}
           style={{ width: '100%' }}
@@ -90,7 +90,7 @@ export default function SpAnalysisLayout() {
           <Grid item xs={12} sm={12}>
             {/* <Header /> */}
           </Grid>
-          <Grid container item xs={12} sm={12} justify="center">
+          <Grid container item xs={12} sm={12}>
             <Card
               style={{
                 maxWidth: '99%',
@@ -104,7 +104,7 @@ export default function SpAnalysisLayout() {
                   <Grid
                     container
                     direction="column"
-                    justify="center"
+                    // justify="center"
                     alignItems="center"
                     style={{ height, width: '95vw' }}
                   >
@@ -167,7 +167,7 @@ export default function SpAnalysisLayout() {
                     style={{ height: '100%' }}
                     container
                     alignItems="center"
-                    justify="center"
+                    // justify="center"
                   >
                     <PitchSelect pitches={pitches} handleCheck={handleCheck} />
                   </Grid>

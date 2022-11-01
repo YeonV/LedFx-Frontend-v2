@@ -9,7 +9,8 @@ import {
   Legend,
   Area,
 } from 'recharts';
-import pitchClasses from './constants';
+// import moment from 'moment';
+import pitchClasses from './constants/constants';
 import { AudioAnalysisProps } from './SpAnalysisAudioAnalysisProps';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -114,9 +115,9 @@ const Chart: React.FC<AudioAnalysisProps> = (props) => {
           allowDataOverflow
         />
         <Tooltip
-          formatter={(value: any, name: any) =>
-            value > 6 ? [`${value.toFixed(0)}%`, name] : [null, null]
-          }
+          // formatter={(value: any, name: any) =>
+          //   value > 6 ? [`${value.toFixed(0)}%`, name] : [null, null]
+          // }
           contentStyle={{ backgroundColor: '#0f0f0f', border: 'none' }}
           labelStyle={{ color: '#ffffff' }}
           itemSorter={(item: any) => -item.value}
