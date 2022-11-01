@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useIntegrationCardStyles = makeStyles((theme: any) => ({
+const useIntegrationCardStyles = makeStyles(() => ({
   integrationCardPortrait: {
     padding: '1rem',
     margin: '0.5rem',
@@ -22,9 +22,9 @@ const useIntegrationCardStyles = makeStyles((theme: any) => ({
     fontSize: 'large',
     color: 'inherit',
 
-    '&:hover': {
-      color: theme.palette.primary.main,
-    },
+    // '&:hover': {
+    //   color: theme.palette.primary.main,
+    // },
   },
   integrationIcon: {
     margingBottom: '4px',
@@ -55,32 +55,18 @@ const useIntegrationCardStyles = makeStyles((theme: any) => ({
   },
   editButton: {
     minWidth: 32,
-    marginLeft: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
     '@media (max-width: 580px)': {
       minWidth: 'unset',
     },
   },
   editButtonMobile: {
     minWidth: 32,
-    marginLeft: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
     '@media (max-width: 580px)': {
       minWidth: 'unset',
       flexGrow: 1,
     },
-  },
-  expand: {
-    display: 'none',
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-    '@media (max-width: 580px)': {
-      display: 'block',
-    },
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
   },
   buttonBar: {
     '@media (max-width: 580px)': {

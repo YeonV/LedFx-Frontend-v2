@@ -11,8 +11,8 @@ import {
   CardContent,
   CardActions,
   CircularProgress,
-} from '@material-ui/core';
-import { Badge } from '@mui/material';
+  Badge,
+} from '@mui/material';
 import logoCircle from '../../assets/ring.png';
 import TourHome from '../../components/Tours/TourHome';
 import useStore from '../../store/useStore';
@@ -116,7 +116,6 @@ export default function Home() {
             )}
           </Button>
           {/* <Button
-            variant="outlined"
             onClick={() => {
               deleteFrontendConfig();
             }}

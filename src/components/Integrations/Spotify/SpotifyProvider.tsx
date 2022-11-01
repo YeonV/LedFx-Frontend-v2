@@ -183,7 +183,6 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
             console.error(message);
           });
           new_player.addListener('player_state_changed', (state: any) => {
-            console.log('YZ', state);
             if (state !== null) {
               setSpotifyState(state);
               new_player

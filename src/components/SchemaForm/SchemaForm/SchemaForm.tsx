@@ -1,5 +1,5 @@
 import { ReactElement, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import {
   DialogContentText,
   Select,
@@ -8,8 +8,8 @@ import {
   Switch,
   FormControlLabel,
   Divider,
-} from '@material-ui/core';
-import { Info } from '@material-ui/icons';
+} from '@mui/material';
+import { Info } from '@mui/icons-material';
 import MicIcon from '@mui/icons-material/Mic';
 import SpeakerIcon from '@mui/icons-material/Speaker';
 import BladeBoolean from '../components/Boolean/BladeBoolean';
@@ -18,17 +18,27 @@ import BladeSlider from '../components/Number/BladeSlider';
 import BladeFrame from '../components/BladeFrame';
 import { SchemaFormDefaultProps, SchemaFormProps } from './SchemaForm.props';
 
-const useStyles = makeStyles((theme) => ({
-  bladeSchemaForm: {
+const PREFIX = 'SchemaForm';
+
+const classes = {
+  bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
+  FormListHeaders: `${PREFIX}-FormListHeaders`,
+  bladeSelect: `${PREFIX}-bladeSelect`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.bladeSchemaForm}`]: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  FormListHeaders: {
+
+  [`& .${classes.FormListHeaders}`]: {
     background: theme.palette.secondary.main,
     color: '#fff',
   },
-  bladeSelect: {
+
+  [`& .${classes.bladeSelect}`]: {
     '& .MuiSelect-select': {
       display: 'flex',
       alignItems: 'center',
@@ -44,12 +54,10 @@ const useStyles = makeStyles((theme) => ({
 const SchemaForm = ({
   schema,
   model,
-  disableUnderline,
   hideToggle,
   onModelChange,
   type,
 }: SchemaFormProps): ReactElement<any, any> => {
-  const classes = useStyles();
   const [hideDesc, setHideDesc] = useState(true);
 
   const yzSchema =
@@ -72,7 +80,7 @@ const SchemaForm = ({
   }
 
   return (
-    <div>
+    <Root>
       <div className={classes.bladeSchemaForm}>
         {yzSchema &&
           yzSchema.map((s: any, i: number) => {
@@ -130,7 +138,6 @@ const SchemaForm = ({
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
-                      disableUnderline
                       onChange={(e: any) => {
                         const c: any = {};
                         c.audio_device = parseInt(e.target.value, 10);
@@ -172,7 +179,6 @@ const SchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
-                      variant="outlined"
                       // eslint-disable-next-line
                       children={undefined}
                       hideDesc={hideDesc}
@@ -208,7 +214,6 @@ const SchemaForm = ({
                     step={undefined}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     key={i}
                     model_id={s.id}
                     model={model}
@@ -231,7 +236,6 @@ const SchemaForm = ({
                     full={s.id === 'delay_ms'}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     step={1}
                     key={i}
                     model_id={s.id}
@@ -257,7 +261,6 @@ const SchemaForm = ({
                   <BladeSlider
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     marks={s?.enum}
                     step={undefined}
                     key={i}
@@ -280,7 +283,6 @@ const SchemaForm = ({
                   <BladeSlider
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    disableUnderline={disableUnderline}
                     marks={s?.enum}
                     step={undefined}
                     key={i}
@@ -338,7 +340,7 @@ const SchemaForm = ({
           />
         </>
       )}
-    </div>
+    </Root>
   );
 };
 

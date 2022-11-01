@@ -1,5 +1,5 @@
-import { makeStyles, styled } from '@material-ui/core/styles';
-import { Button, Slider, Switch } from '@material-ui/core';
+import { makeStyles, styled } from '@mui/styles';
+import { Button, Slider, Switch } from '@mui/material';
 
 export const useStyles = makeStyles(() => ({
   content: {
@@ -53,15 +53,14 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-export const SettingsSlider = styled(Slider)(({ theme }: { theme: any }) => ({
-  color: theme.palette.mode === 'dark' ? '#eeeeee' : '#eeeeee',
+export const SettingsSlider = styled(Slider)(({ theme }: any) => ({
+  color: '#eeeeee',
   height: 2,
   padding: '15px 0',
   '& .MuiSlider-thumb': {
     height: 20,
     width: 20,
     backgroundColor: '#fff',
-    marginTop: '-10px',
     boxShadow:
       '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
     '&:focus, &:hover, &.Mui-active': {
@@ -74,7 +73,7 @@ export const SettingsSlider = styled(Slider)(({ theme }: { theme: any }) => ({
       },
     },
   },
-  '& .MuiSlider-valueLabel': {
+  '& .MuiSliderValueLabel ': {
     fontSize: 12,
     fontWeight: 'normal',
     top: -6,
@@ -106,9 +105,7 @@ export const SettingsSlider = styled(Slider)(({ theme }: { theme: any }) => ({
   },
 }));
 
-export const SettingsSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }: any) => ({
+export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
   width: 50,
   height: 26,
   padding: 0,
@@ -159,12 +156,5 @@ export const SettingsSwitch = styled((props) => (
 
 export const SettingsButton = (props: any) => {
   const classes = useStyles();
-  return (
-    <Button
-      size="small"
-      variant="outlined"
-      className={classes.actionButton}
-      {...props}
-    />
-  );
+  return <Button size="small" className={classes.actionButton} {...props} />;
 };

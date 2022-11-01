@@ -1,44 +1,46 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 // import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Button from '@mui/material/Button';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Dialog from '@mui/material/Dialog';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 // import {SchemaForm, utils}  from 'react-schema-form';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { Slider, Switch } from '@material-ui/core';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import DialogContentText from '@mui/material/DialogContentText';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import ListSubheader from '@mui/material/ListSubheader';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { Slider, Switch } from '@mui/material';
+import FormHelperText from '@mui/material/FormHelperText';
 import ThisDropDown from './DialogAddEventListnerDropDown';
 // import { createQlcListener } from 'modules/qlc';
 import useStore from '../../../store/useStore';
-// import * as integrationsProxies from 'proxies/integrations';
-// import BladeSchemaForm from '../../SchemaForm/SchemaForm/SchemaForm';
 
-// To Do:
-// useEffect(() => {
-// getScenes();
-// }, []);
+const PREFIX = 'DialogAddEventListener';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const classes = {
+  root: `${PREFIX}-root`,
+  paper: `${PREFIX}-paper`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.root}`]: {
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     width: '80%',
     maxHeight: 535,
   },
 }));
+
 function ConfirmationDialogRaw(props: any) {
   const {
     onClose,
@@ -62,7 +64,6 @@ function ConfirmationDialogRaw(props: any) {
   const [qlcData, setqlcData] = React.useState([]);
   const radioGroupRef = React.useRef(null);
   // const [model, setModel] = React.useState({});
-  const classes = useStyles();
 
   const qlcInfo = useStore((state: any) => state.qlc?.qlcWidgets);
   const createQlcListener = useStore((state) => state.addQLCSongTrigger);
@@ -467,7 +468,7 @@ function ConfirmationDialogRaw(props: any) {
                     */}
 
         {/* <div style={{ minWidth: '150px' }}></div> */}
-        <div>
+        <Root>
           {checkButtonType && (
             <label>QLC+ widget selected above (On/Off) </label>
           )}
@@ -480,7 +481,7 @@ function ConfirmationDialogRaw(props: any) {
               onChange={handleEventChange}
             />
           )}
-        </div>
+        </Root>
 
         <div style={{ minWidth: '150px' }}>
           {checkSliderType && <label>QLC Slider Widget Value</label>}
@@ -577,7 +578,6 @@ ConfirmationDialogRaw.propTypes = {
 };
 
 export default function ConfirmationDialog({ integration }: any) {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   // const dispatch = useDispatch();
   // console.log("YZ03:", event_types)

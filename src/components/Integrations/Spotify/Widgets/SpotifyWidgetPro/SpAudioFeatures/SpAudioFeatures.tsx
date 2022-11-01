@@ -11,20 +11,23 @@ import {
   Paper,
   Grid,
   Card,
-  Switch,
-} from '@material-ui/core';
-import { BarChart, MusicNote, Speed, Wallpaper } from '@material-ui//icons';
-import { Insights, Piano } from '@mui/icons-material';
-import { Stack } from '@mui/material';
+  Stack,
+  // useTheme,
+} from '@mui/material';
 import {
-  getTrackFeatures,
-  getTrackAnalysis,
-} from '../../../../../../utils/spotifyProxies';
+  BarChart,
+  MusicNote,
+  Speed,
+  Wallpaper,
+  Piano,
+} from '@mui/icons-material';
+import { getTrackFeatures, getTrackAnalysis } from '../../../../../../utils/spotifyProxies';
 import RadarChart from './SpRadarChart';
 import useStore from '../../../../../../store/useStore';
 import { SpotifyStateContext } from '../../../SpotifyProvider';
 
 export default function SpAudioFeatures() {
+  // const theme = useTheme();
   const spotifyState = useContext(SpotifyStateContext);
   const audioFeatures = useStore(
     (state) => state.spotify.spotifyData.audioFeatures
@@ -201,16 +204,19 @@ export default function SpAudioFeatures() {
         </Card>
       </Grid>
       <Grid xl={3} lg={4} md={6} sm={12} xs={12} item>
-        <div
-          style={{
-            height: '300px',
-            overflow: 'hidden',
-            border: '1px solid rgb(102, 102, 102)',
-            borderRadius: 4,
-          }}
-        >
-          <RadarChart {...audioFeatures} />
-        </div>
+        <Card>
+          <div
+            style={{
+              height: '250px',
+              overflow: 'hidden',
+              border: '1px solid rgb(102, 102, 102)',
+              borderRadius: 4,
+              // background: theme.palette.background.paper,
+            }}
+          >
+            <RadarChart {...audioFeatures} />
+          </div>
+        </Card>
       </Grid>
     </>
   );

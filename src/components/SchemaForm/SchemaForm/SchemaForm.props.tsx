@@ -17,10 +17,6 @@ export interface SchemaFormProps {
    */
   model: Record<string, unknown>;
   /**
-   * Hide underline on sub-elements
-   */
-  disableUnderline?: boolean;
-  /**
    * Hide Field-Description Toggle
    */
   hideToggle?: boolean;
@@ -35,7 +31,6 @@ export interface SchemaFormProps {
 }
 
 export const SchemaFormDefaultProps = {
-  disableUnderline: false,
   hideToggle: undefined,
   onModelChange: undefined,
   type: undefined,

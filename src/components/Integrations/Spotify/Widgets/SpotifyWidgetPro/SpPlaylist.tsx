@@ -1,10 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import {
   DataGrid,
   GridColDef,
@@ -12,12 +8,11 @@ import {
   GridRowParams,
 } from '@mui/x-data-grid';
 
-import { Grid, IconButton } from '@material-ui/core';
-import { Stack } from '@mui/material';
-import { PlayCircleFilled } from '@material-ui/icons';
+import { Card, Grid, IconButton , Stack } from '@mui/material';
+import { PlayCircleFilled } from '@mui/icons-material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
-import { useDataGridStyles } from './SpTriggerTable';
+import { classes } from './SpTriggerTable';
 import { SpotifyStateContext } from '../../SpotifyProvider';
 
 // function isScrolledIntoView(el: any) {
@@ -33,7 +28,6 @@ import { SpotifyStateContext } from '../../SpotifyProvider';
 // }
 
 export default function SpPlaylist() {
-  const classes = useDataGridStyles();
   const playlist = useStore((state) => state.spotify.playlist);
   const playerState = React.useContext(SpotifyStateContext);
   const playlistUri = playerState?.context?.metadata?.uri;
@@ -96,7 +90,7 @@ export default function SpPlaylist() {
   // console.log(playerState?.context.metadata?.current_item, rows.map((r: any)=>r.track))
   return (
     <Grid xl={7} lg={5} md={12} xs={12} item>
-      <Box sx={{ height: 300 }}>
+      <Card sx={{ height: 250 }}>
         <DataGrid
           className={`${classes.root} playlist`}
           rows={rows}
@@ -135,7 +129,7 @@ export default function SpPlaylist() {
               : ''
           }
         />
-      </Box>
+      </Card>
     </Grid>
   );
 }

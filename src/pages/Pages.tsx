@@ -4,15 +4,11 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  // Link,
 } from 'react-router-dom';
-
-import clsx from 'clsx';
 import { useHotkeys } from 'react-hotkeys-hook';
 import isElectron from 'is-electron';
+import { Box, useTheme } from '@mui/material';
 import ScrollToTop from '../utils/scrollToTop';
-
-import useStyles from '../App.styles';
 import '../App.css';
 
 import LeftBar from '../components/Bars/BarLeft';
@@ -29,12 +25,11 @@ import Integrations from './Integrations/Integrations';
 import LoginRedirect from './Login/LoginRedirect';
 import SmartBar from '../components/Dialogs/SmartBar';
 import useStore from '../store/useStore';
-
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect';
+import { drawerWidth } from '../utils/helpers';
 
 const Routings = ({ handleWs }: any) => {
-  const classes = useStyles();
-
+  const theme = useTheme();
   const smartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.smartBar.open
   );
@@ -55,12 +50,34 @@ const Routings = ({ handleWs }: any) => {
       <MessageBar />
       <TopBar />
       <LeftBar />
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: leftBarOpen,
-        })}
+      <Box
+        sx={{
+          flexGrow: 1,
+          background: 'transparent',
+          padding: theme.spacing(0),
+          transition: theme.transitions.create('margin', {
+            easing: leftBarOpen
+              ? theme.transitions.easing.easeOut
+              : theme.transitions.easing.sharp,
+            duration: leftBarOpen
+              ? theme.transitions.duration.enteringScreen
+              : theme.transitions.duration.leavingScreen,
+          }),
+          marginLeft: leftBarOpen ? 0 : `-${drawerWidth}px`,
+          '@media (max-width: 580px)': {
+            padding: '8px',
+          },
+        }}
       >
-        <div className={classes.drawerHeader} />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: theme.spacing(0, 1),
+            ...theme.mixins.toolbar,
+          }}
+        />
         <Routes>
           <Route
             path="/connect/:providerName/redirect"
@@ -80,7 +97,7 @@ const Routings = ({ handleWs }: any) => {
           setOpen={(e) => setSmartBarOpen(!!e)}
           direct={false}
         />
-      </main>
+      </Box>
       <BottomBar />
     </>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 import {
   Fab,
   Icon,
@@ -7,15 +7,28 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Add,
   Send,
   Wallpaper,
   SettingsInputComponent,
   SettingsInputSvideo,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import useStore from '../store/useStore';
+
+const PREFIX = 'AddButton';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+};
+
+const Root = styled('div')({
+  [`& .${classes.paper}`]: {
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    transform: 'translateY(-1rem) !important',
+  },
+});
 
 const MenuLine = React.forwardRef((props: any, ref: any) => {
   const { icon = <Send fontSize="small" />, name = 'MenuItem', action } = props;
@@ -27,15 +40,10 @@ const MenuLine = React.forwardRef((props: any, ref: any) => {
   );
 });
 
-const StyledMenu = withStyles({
-  paper: {
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    transform: 'translateY(-1rem) !important',
-  },
-})((props: any) => (
+const StyledMenu = ({ open, ...props }: any) => (
   <Menu
     elevation={0}
-    getContentAnchorEl={null}
+    // getContentAnchorEl={null}
     anchorOrigin={{
       vertical: 'top',
       horizontal: 'center',
@@ -44,12 +52,12 @@ const StyledMenu = withStyles({
       vertical: 'bottom',
       horizontal: 'center',
     }}
-    open={props.open}
+    open={open}
     {...props}
   />
-));
+);
 
-const AddButton = ({ className, style, setBackdrop }: any) => {
+const AddButton = ({ className, style, setBackdrop, sx }: any) => {
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -121,8 +129,13 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
     });
   }
   return (
-    <div className={className} style={{ zIndex: 5, ...style }}>
-      <Fab color="primary" aria-label="add" onClick={handleClick}>
+    <Root className={className} style={{ zIndex: 5, ...style }} sx={sx}>
+      <Fab
+        color="primary"
+        variant="circular"
+        aria-label="add"
+        onClick={handleClick}
+      >
         <Add />
       </Fab>
       <StyledMenu
@@ -131,6 +144,9 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        classes={{
+          paper: classes.paper,
+        }}
       >
         {menuitems.map((menuitem) => (
           <MenuLine
@@ -141,7 +157,7 @@ const AddButton = ({ className, style, setBackdrop }: any) => {
           />
         ))}
       </StyledMenu>
-    </div>
+    </Root>
   );
 };
 

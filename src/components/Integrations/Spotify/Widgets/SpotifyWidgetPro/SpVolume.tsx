@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import { VolumeDown, VolumeMute, VolumeUp } from '@material-ui/icons';
+import { VolumeDown, VolumeMute, VolumeUp } from '@mui/icons-material';
 import { VolSliderStyles } from './SpWidgetPro.styles';
 import {
   SpotifyControlContext,

@@ -11,7 +11,7 @@ import {
   DialogTitle,
   Button,
   Link,
-} from '@material-ui/core';
+} from '@mui/material';
 import useStore from '../../store/useStore';
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
@@ -125,7 +125,7 @@ const AddVirtualDialog = () => {
           : 'Settings'}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText component="div">
           With Virtuals, you can split devices into segments and merge several
           segments over several devices into one Virtual-Device.
           <div style={{ marginTop: '1rem', color: '#666' }}>

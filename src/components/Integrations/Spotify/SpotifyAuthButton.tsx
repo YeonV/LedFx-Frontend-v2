@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import axios from 'axios';
 import Cookies from 'universal-cookie/es6';
 import getPkce from 'oauth-pkce';
@@ -117,7 +117,6 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   return !spAuthenticated ? (
     <Button
       disabled={disabled}
-      variant="outlined"
       size="small"
       color="inherit"
       className={classes.editButton}
@@ -130,7 +129,6 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   ) : (
     <Button
       disabled={disabled}
-      variant="outlined"
       size="small"
       color="inherit"
       className={classes.editButton}

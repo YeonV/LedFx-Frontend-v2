@@ -1,14 +1,14 @@
 /* eslint-disable no-plusplus */
 import { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import useStore from '../../store/useStore';
 import DeviceCard from './DeviceCard/DeviceCard.wrapper';
 import NoYet from '../../components/NoYet';
 import ws from '../../utils/Websocket';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   cardWrapper: {
-    padding: theme.spacing(1),
+    // padding: theme.spacing(1),
     paddingTop: 0,
     display: 'flex',
     flexWrap: 'wrap',
@@ -33,7 +33,8 @@ const Devices = () => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const virtuals = useStore((state) => state.virtuals);
   const setPixelGraphs = useStore((state) => state.setPixelGraphs);
-  const graphs = useStore((state) => state.graphs);
+  const graphs = useStore((state) => state.graphsMulti);
+  const graphsMulti = useStore((state) => state.graphsMulti);
 
   useEffect(() => {
     getDevices();
@@ -69,10 +70,10 @@ const Devices = () => {
   }, []);
 
   useEffect(() => {
-    if (graphs) {
+    if (graphs && graphsMulti) {
       setPixelGraphs(Object.keys(virtuals));
     }
-  }, [graphs, setPixelGraphs]);
+  }, [graphs, graphsMulti, setPixelGraphs]);
 
   return (
     <div className={classes.cardWrapper}>

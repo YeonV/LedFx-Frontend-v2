@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core/';
+import { Grid, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import useStore from '../../store/useStore';
 import EffectsCard from './Effects';
@@ -10,15 +9,7 @@ import TransitionCard from './Transition';
 import MelbankCard from './Frequencies';
 import StreamToCard from './StreamTo';
 
-const useStyles = makeStyles(() => ({
-  virtualWrapper: {
-    justifyContent: 'center',
-  },
-  girdItem: { flexShrink: 0, flexGrow: 1, maxWidth: '540px', width: '100%' },
-}));
-
 const Device = () => {
-  const classes = useStyles();
   const { virtId } = useParams();
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getPresets = useStore((state) => state.getPresets);
@@ -53,15 +44,31 @@ const Device = () => {
       container
       direction="row"
       spacing={2}
-      className={classes.virtualWrapper}
+      sx={{ justifyContent: 'center', paddingTop: '1rem' }}
     >
       {virtual && (
         <>
-          <Grid item className={classes.girdItem}>
+          <Grid
+            item
+            sx={{
+              flexShrink: 0,
+              flexGrow: 1,
+              maxWidth: '540px',
+              width: '100%',
+            }}
+          >
             <EffectsCard virtId={virtId || ''} />
           </Grid>
 
-          <Grid item className={classes.girdItem}>
+          <Grid
+            item
+            sx={{
+              flexShrink: 0,
+              flexGrow: 1,
+              maxWidth: '540px',
+              width: '100%',
+            }}
+          >
             {effectType && presets && (
               <PresetsCard
                 virtual={virtual}

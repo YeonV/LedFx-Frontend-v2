@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import Popper from '@material-ui/core/Popper';
+import Popper from '@mui/material/Popper';
 import ReactGPicker from 'react-gcolor-picker';
-import { TextField, Button } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { TextField, Button, useTheme } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import useClickOutside from '../../../../utils/useClickOutside';
 import Popover from '../../../Popover/Popover';
 import DeleteColorsDialog from '../../../Dialogs/DeleteColors';
@@ -23,6 +23,7 @@ const GradientPicker = ({
   sendColorToVirtuals,
 }: GradientPickerProps) => {
   const classes = useStyles();
+  const theme = useTheme();
   const popover = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [name, setName] = useState('');
@@ -71,7 +72,13 @@ const GradientPicker = ({
   return (
     <div
       className={`${classes.wrapper} step-effect-${index} gradient-picker`}
-      style={{ ...wrapperStyle }}
+      style={{ ...(wrapperStyle as any) }}
+      // style={{
+      //   ...wrapperStyle,
+      //   '& > label': {
+      //     backgroundColor: theme.palette.background.paper,
+      //   },
+      // }}
     >
       <label className="MuiFormLabel-root">
         {title &&
@@ -89,7 +96,22 @@ const GradientPicker = ({
       />
 
       <Popper id={id} open={open} anchorEl={anchorEl} ref={popover && popover}>
-        <div className={`${classes.paper} gradient-picker`}>
+        <div
+          className={`${classes.paper} gradient-picker`}
+          style={{
+            padding: theme.spacing(1),
+            backgroundColor: theme.palette.background.paper,
+            // '& .popup_tabs-header-label-active': {
+            //   color: theme.palette.text.primary,
+            // },
+            // '& .popup_tabs-header-label': {
+            //   color: theme.palette.text.disabled,
+            //   '&.popup_tabs-header-label-active': {
+            //     color: theme.palette.text.primary,
+            //   },
+            // },
+          }}
+        >
           <ReactGPicker
             colorBoardHeight={150}
             debounce
@@ -127,7 +149,6 @@ const GradientPicker = ({
                 marginRight: 16,
                 cursor: 'pointer',
               }}
-              variant="outlined"
               onClick={() => handleDeleteDialog()}
               disabled={
                 colors &&
@@ -143,8 +164,7 @@ const GradientPicker = ({
             <Popover
               className={classes.addButton}
               popoverStyle={{ padding: '0.5rem' }}
-              color="default"
-              variant="outlined"
+              color="primary"
               content={
                 <TextField
                   autoFocus
@@ -166,7 +186,6 @@ const GradientPicker = ({
                       ).length > 0)
                   }
                   size="small"
-                  variant="outlined"
                   id="gradientNameInput"
                   label="Enter name to save as..."
                   style={{ marginRight: '1rem', flex: 1 }}

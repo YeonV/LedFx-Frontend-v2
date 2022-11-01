@@ -24,7 +24,6 @@ export const BladeSliderInnerDefaultProps = {
   disabled: undefined,
   marks: undefined,
   hideDesc: undefined,
-  disableUnderline: undefined,
   full: undefined,
 };
 
@@ -33,7 +32,6 @@ export interface BladeSliderProps {
    * `outlined` or not. More might come
    */
   variant?: string;
-  disableUnderline?: boolean;
   /**
    * Renders slider if:
    *

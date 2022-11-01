@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   Link,
-} from '@material-ui/core';
+} from '@mui/material';
 import GitInfo from 'react-git-info/macro';
 import useStore from '../../store/useStore';
 import fversion from '../../../package.json';
@@ -50,7 +50,6 @@ export default function AboutDialog({ className, children, startIcon }: any) {
       <Button
         size="small"
         startIcon={startIcon}
-        variant="outlined"
         className={className}
         onClick={handleClickOpen}
       >

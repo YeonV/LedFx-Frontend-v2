@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
-import { Input } from '@material-ui/core';
+import { Input , Divider } from '@mui/material';
 import { useLongPress } from 'use-long-press';
 import useStore from '../../store/useStore';
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles';
@@ -23,6 +23,8 @@ const UICard = () => {
   const setViewMode = useStore((state) => state.setViewMode);
   const graphs = useStore((state) => state.graphs);
   const toggleGraphs = useStore((state) => state.toggleGraphs);
+  const graphsMulti = useStore((state) => state.graphsMulti);
+  const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti);
   const setFeatures = useStore((state) => state.setFeatures);
   const showFeatures = useStore((state) => state.showFeatures);
   const setShowFeatures = useStore((state) => state.setShowFeatures);
@@ -59,8 +61,18 @@ const UICard = () => {
 
   return (
     <div style={{ width: '100%' }}>
-      {config.visualisation_fps && (
+
+      <div className={`${classes.settingsRow} step-settings-x `}>
+        <label>Show Graphs (eats performance)</label>
+        <SettingsSwitch checked={graphs} onChange={() => toggleGraphs()} />
+      </div>
+      {config.visualisation_fps && graphs && (
         <>
+          <Divider sx={{ m: '0.25rem 0 0.5rem 0'}} />
+          <div className={`${classes.settingsRow} step-settings-x `}>
+            <label>Also on Devices page</label>
+            <SettingsSwitch checked={graphsMulti} onChange={() => toggleGraphsMulti()} />
+          </div>
           <div className={`${classes.settingsRow} slider step-settings-two`}>
             <label>Frontend FPS</label>
             <div style={{ flexGrow: 1 }}>
@@ -141,12 +153,9 @@ const UICard = () => {
               }}
             />
           </div>
+          <Divider sx={{ m: '0.5rem 0 0.25rem 0'}} />
         </>
       )}
-      <div className={`${classes.settingsRow} step-settings-x `}>
-        <label>Show Graphs (eats performance)</label>
-        <SettingsSwitch checked={graphs} onChange={() => toggleGraphs()} />
-      </div>
       <div className={`${classes.settingsRow} step-settings-x `}>
         <label {...longPress}>Expert Mode</label>
         <SettingsSwitch
@@ -174,7 +183,7 @@ const UICard = () => {
           />
         </div>
       )}
-      {showFeatures.integrations && (
+      {showFeatures.integrations && viewMode !== 'user' && (
         <div className={`${classes.settingsRow} step-settings-x `}>
           <label>Integrations</label>
           <SettingsSwitch

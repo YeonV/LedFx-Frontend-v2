@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -12,10 +13,15 @@ import Typography from '@mui/material/Typography';
 // import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { makeStyles } from '@material-ui/core/styles';
 
-export const useDataGridStyles = makeStyles((theme: any) => ({
-  root: {
+const PREFIX = 'QLCDropdownTable';
+
+const classes = {
+  root: `${PREFIX}-root`,
+};
+
+const StyledTableContainer = styled(TableContainer)(({ theme }: any) => ({
+  [`&.${classes.root}`]: {
     '&.MuiDataGrid-cellContent .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
         color: theme.palette.text.secondary,
@@ -101,7 +107,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
+              <Typography variant="h6" component="div">
                 QLC+ Widget (Do This)
               </Typography>
               <Table size="small" aria-label="purchases">
@@ -144,9 +150,8 @@ const rows = [
 ];
 
 export default function QLCDropdownTable() {
-  const classes = useDataGridStyles();
   return (
-    <TableContainer className={classes.root}>
+    <StyledTableContainer className={classes.root}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
@@ -162,6 +167,6 @@ export default function QLCDropdownTable() {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
+    </StyledTableContainer>
   );
 }

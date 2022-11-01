@@ -1,8 +1,3 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
 import Cookies from 'universal-cookie/es6';
 import axios from 'axios';
@@ -23,7 +18,7 @@ const redirectUrl = `${
     : 'http://localhost:3000'
 }/callback/#/Integrations?`;
 
-const spotify = axios.create({
+axios.create({
   baseURL: redirectUrl,
 });
 
@@ -69,6 +64,7 @@ export const finishAuth = async () => {
   return axios
     .post(
       'https://accounts.spotify.com/api/token',
+      // encodeURI(JSON.stringify(postData)),
       qs.stringify(postData),
       config
     )
@@ -114,6 +110,7 @@ export function refreshAuth() {
   return axios
     .post(
       'https://accounts.spotify.com/api/token',
+      // encodeURI(JSON.stringify(postData)),
       qs.stringify(postData),
       config
     )
@@ -250,7 +247,7 @@ export async function spotifyPlaySong(
     }
     return 'Error';
   } catch (_error) {
-    const showSnackbar = useStore.getState().ui.showSnackbar;
+    const { showSnackbar } = useStore.getState().ui;
     showSnackbar('error', 'Song is not available');
     return 'Error';
   }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, forwardRef } from 'react';
+import { useState, forwardRef, useEffect } from 'react';
 import {
   Button,
   Dialog,
@@ -11,11 +11,9 @@ import {
   Icon,
   Grid,
   CircularProgress,
-} from '@material-ui/core';
-import { BugReport, NavigateBefore } from '@material-ui/icons';
-import Moment from 'react-moment';
-import moment from 'moment';
-import { TransitionProps } from '@material-ui/core/transitions';
+} from '@mui/material';
+import { BugReport, NavigateBefore } from '@mui/icons-material';
+import { TransitionProps } from '@mui/material/transitions';
 import useTroubleshootStyles from './Troubleshoot.styles';
 import useStore from '../../store/useStore';
 import Wled from '../../components/Icons/Wled';
@@ -24,7 +22,7 @@ const Transition = forwardRef<unknown, TransitionProps>(function Transition(
   props,
   ref
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...(props as any)} />;
 });
 
 const Row = ({ name, value }: { name: string; value: any }) => {
@@ -47,6 +45,7 @@ export default function TroubleshootButton({
   const [wledData, setWledData] = useState<any>({});
   const [pingData, setPingData] = useState<any>({});
   const [loading, setLoading] = useState(false);
+  const [uptime, setUptime] = useState(0);
 
   const ping = async () => {
     if (devices[virtual.id]) {
@@ -64,14 +63,29 @@ export default function TroubleshootButton({
     }
   };
 
+  useEffect(() => {
+    const TimerInt =
+      virtual &&
+      virtual.config &&
+      devices[virtual.id] &&
+      devices[virtual.id].type === 'wled' &&
+      setInterval(() => {
+        setUptime((time) => time + 1);
+      }, 1000);
+    return () => {
+      if (TimerInt !== false) {
+        clearInterval(TimerInt);
+      }
+    };
+  }, [virtual, devices]);
+
   return virtual &&
     virtual.config &&
     devices[virtual.id] &&
     devices[virtual.id].type === 'wled' ? (
     <>
       <Button
-        variant="outlined"
-        color="default"
+        color="inherit"
         onClick={() => setOpen(true)}
         style={{ marginRight: '.5rem' }}
       >
@@ -83,10 +97,10 @@ export default function TroubleshootButton({
         onClose={() => setOpen(false)}
         TransitionComponent={Transition}
       >
-        <AppBar className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
-              color="primary"
+              color="inherit"
               variant="contained"
               startIcon={<NavigateBefore />}
               onClick={() => setOpen(false)}
@@ -204,17 +218,15 @@ export default function TroubleshootButton({
                 <Row name="UDP Port" value={wledData.udpport} />
                 <Row
                   name="Uptime"
-                  value={
-                    <Moment interval={1000} format="hh:mm:ss" durationFromNow>
-                      {moment().add(wledData.uptime * -1, 's')}
-                    </Moment>
-                  }
+                  value={new Date((wledData.uptime + uptime) * 1000)
+                    .toISOString()
+                    .slice(11, 19)}
                 />
               </Grid>
             </Grid>
           ) : (
             <div style={{ textAlign: 'center', margin: 10 }}>
-              <Button variant="outlined" disabled={loading} onClick={ping}>
+              <Button disabled={loading} onClick={ping}>
                 Scan{' '}
               </Button>
             </div>

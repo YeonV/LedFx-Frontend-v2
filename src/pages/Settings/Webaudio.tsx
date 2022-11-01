@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 /* eslint-disable func-names */
-import { Button, Fab, TextField, Popover } from '@material-ui/core';
-import { Check, Close } from '@material-ui/icons';
+import { Button, Fab, TextField, Popover } from '@mui/material';
+import { Check, Close } from '@mui/icons-material';
 import { useState, useEffect, CSSProperties } from 'react';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import ws from '../../utils/Websocket';
@@ -238,7 +238,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
           <Button
             aria-describedby={id}
             variant="contained"
-            color="default"
+            color="primary"
             onClick={() => {
               setAnchorEl(null);
             }}

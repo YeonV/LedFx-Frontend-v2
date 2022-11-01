@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
   CardContent,
@@ -11,8 +10,9 @@ import {
   Grid,
   Typography,
   TextField,
-} from '@material-ui/core';
-import { Add, Cloud } from '@material-ui/icons';
+  useTheme,
+} from '@mui/material';
+import { Add, Cloud } from '@mui/icons-material';
 import axios from 'axios';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
@@ -23,43 +23,10 @@ const cloud = axios.create({
   baseURL: 'https://strapi.yeonv.com',
 });
 
-const useStyles = makeStyles((theme: any) => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    padding: theme.spacing(2),
-  },
-  presetButton: {
-    margin: theme.spacing(0),
-    textDecoration: 'none',
-  },
-  buttonGrid: {
-    // direction: 'row',
-  },
-  hint: {
-    color: theme.palette.text.disabled,
-  },
-  actions: {
-    display: 'flex',
-    flexDirection: 'row',
-    margin: theme.spacing(1),
-  },
-  deviceCard: {
-    width: '100%',
-    maxWidth: '540px',
-    '@media (max-width: 580px)': {
-      maxWidth: '97vw',
-      margin: '0 auto',
-    },
-  },
-}));
-
 const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
-  const classes = useStyles();
   const [name, setName] = useState('');
   const [valid, setValid] = useState(true);
-
+  const theme = useTheme();
   const activatePreset = useStore((state) => state.activatePreset);
   const addPreset = useStore((state) => state.addPreset);
   const getPresets = useStore((state) => state.getPresets);
@@ -165,9 +132,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       return (
         <Button
           style={{ margin: '0.5rem 0 0.5rem 0.5rem' }}
-          variant="outlined"
           size="small"
-          className={classes.presetButton}
           disabled
         >
           No {CATEGORY === 'default_presets' ? '' : 'Custom'} Presets
@@ -186,25 +151,23 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                   JSON.stringify(virtual.effect.config) ===
                   JSON.stringify(list[preset].config)
                     ? 'primary'
-                    : 'default'
+                    : 'inherit'
                 }
                 label={list[preset].name}
                 delPreset={handleRemovePreset(preset)}
                 uploadPresetCloud={() => uploadPresetCloud(list, preset)}
                 deletePresetCloud={() => deletePresetCloud(list, preset)}
-                className={classes.presetButton}
                 onClick={handleActivatePreset(virtual.id, CATEGORY, preset)}
               />
             ) : (
               <Button
-                className={classes.presetButton}
+                size="medium"
                 color={
                   JSON.stringify(virtual.effect.config) ===
                   JSON.stringify(list[preset].config)
                     ? 'primary'
-                    : 'default'
+                    : 'inherit'
                 }
-                variant="outlined"
                 onClick={handleActivatePreset(virtual.id, CATEGORY, preset)}
               >
                 {list[preset].name}
@@ -222,28 +185,23 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   }, [getVirtuals, effectType]);
 
   return (
-    <Card
-      variant="outlined"
-      className={`${classes.deviceCard} step-device-three`}
-      style={style}
-    >
+    <Card variant="outlined" className="step-device-three" style={style}>
       <CardHeader
         style={{ margin: '0' }}
         title="Presets"
         subheader="Explore different effect configurations or create your own."
       />
-      <CardContent className={classes.content}>
-        <Grid spacing={2} container className={classes.buttonGrid}>
+      <CardContent>
+        <Grid spacing={2} container>
           {renderPresetsButton(presets?.default_presets, 'default_presets')}
         </Grid>
         <Divider style={{ margin: '1rem 0' }} />
-        <Grid spacing={2} container className={classes.buttonGrid}>
+        <Grid spacing={2} container>
           {renderPresetsButton(presets?.custom_presets, 'custom_presets')}
           <Grid item>
             <Popover
-              className={classes.presetButton}
               popoverStyle={{ padding: '0.5rem' }}
-              color="default"
+              color="primary"
               variant="outlined"
               onSingleClick={() => {
                 // eslint-disable-next-line no-console
@@ -260,7 +218,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                       ).length > 0)
                   }
                   size="small"
-                  variant="outlined"
                   id="presetNameInput"
                   label={
                     presets.default_presets &&
@@ -300,7 +257,10 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               }
               footer={
                 <div style={{ margin: '0 0 0.5rem 1rem' }}>
-                  <Typography variant="body2" className={classes.hint}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: theme.palette.text.disabled }}
+                  >
                     Save the current effect configuration as a new preset.
                   </Typography>
                 </div>
@@ -332,7 +292,10 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               alignItems: 'flex-end',
             }}
           >
-            <Typography variant="body2" className={classes.hint}>
+            <Typography
+              variant="body2"
+              sx={{ color: theme.palette.text.disabled }}
+            >
               Long-Press or right-click to open context-menu
             </Typography>
             {features.cloud && !!localStorage.getItem('jwt') && isLogged && (

@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Button, useTheme } from '@material-ui/core';
+import { useTheme, Button, Fab } from '@mui/material';
 import Tour from 'reactour';
-import { Fab } from '@mui/material';
 import { LiveHelp } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 
@@ -123,7 +122,6 @@ const TourHome = ({
         </Fab>
       ) : (
         <Button
-          variant="outlined"
           className={`step-zero ${className}`}
           onClick={() => {
             setTour('home');
@@ -136,7 +134,7 @@ const TourHome = ({
       )}
       <Tour
         steps={steps}
-        accentColor={theme.palette.accent.main}
+        accentColor={theme.palette.primary.main}
         isOpen={isTourOpen}
         onRequestClose={() => setIsTourOpen(false)}
       />

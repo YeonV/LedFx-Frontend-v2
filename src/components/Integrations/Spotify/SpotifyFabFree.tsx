@@ -1,4 +1,4 @@
-import { Fab } from '@material-ui/core';
+import { Fab } from '@mui/material';
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
 import SpotifyWidgetFree from './Widgets/SpotifyWidgetFree/SpotifyWidgetFree';
 

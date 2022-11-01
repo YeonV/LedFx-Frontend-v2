@@ -1,7 +1,7 @@
-import { IconButton } from '@material-ui/core';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import LanguageIcon from '@material-ui/icons/Language';
-import ForumIcon from '@material-ui/icons/Forum';
+import { IconButton } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LanguageIcon from '@mui/icons-material/Language';
+import ForumIcon from '@mui/icons-material/Forum';
 import useStyles from './ButtonBar.styles';
 
 const ButtonBar = () => {

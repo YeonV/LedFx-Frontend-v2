@@ -1,18 +1,18 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useEditVirtualsStyles = makeStyles((theme) => ({
+const useEditVirtualsStyles = makeStyles(() => ({
   appBar: {
     position: 'relative',
     marginBottom: '1rem',
-    background: theme.palette.background.default,
-    color: theme.palette.text.primary,
+    // background: theme.palette.background.default,
+    // color: theme.palette.text.primary,
   },
   title: {
-    marginLeft: theme.spacing(2),
+    // marginLeft: theme.spacing(2),
     flex: 1,
   },
   dialog: {
-    background: theme.palette.background.default,
+    // background: theme.palette.background.default,
   },
   segmentTitle: {
     display: 'flex',
@@ -32,12 +32,12 @@ const useEditVirtualsStyles = makeStyles((theme) => ({
   cloudEffectCard: {
     cursor: 'pointer',
     width: 280,
-    '&:hover': {
-      borderColor: theme.palette.primary.main,
-    },
-    '&.active': {
-      borderColor: theme.palette.primary.main,
-    },
+    // '&:hover': {
+    //   borderColor: theme.palette.primary.main,
+    // },
+    // '&.active': {
+    //   borderColor: theme.palette.primary.main,
+    // },
   },
 }));
 

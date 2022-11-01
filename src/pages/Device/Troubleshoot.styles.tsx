@@ -1,14 +1,14 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useTroubleshootStyles = makeStyles((theme: any) => ({
+const useTroubleshootStyles = makeStyles(() => ({
   appBar: {
     position: 'relative',
     marginBottom: '1rem',
-    background: theme.palette.background.default,
-    color: theme.palette.text.primary,
+    // background: theme.palette.background.default,
+    // color: theme.palette.text.primary,
   },
   title: {
-    marginLeft: theme.spacing(2),
+    // marginLeft: theme.spacing(2),
     flex: 1,
   },
   row: {
