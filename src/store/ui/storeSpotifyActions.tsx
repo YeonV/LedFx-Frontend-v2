@@ -179,10 +179,13 @@ const storeSpotifyActions = (set: any) => ({
       case 'update':
         set(
           produce((state: any) => {
-            state.spotify.spTriggersList = [
-              ...state.spTriggersList,
-              newTrigger,
-            ];
+            // state.spotify.spTriggersList = [
+            //   ...state.spotify.spTriggersList,
+            //   newTrigger,
+            // ];
+            state.spotify.spTriggersList = state.spotify.spTriggersList.map(
+              (each: any) => (each.id === newTrigger.id ? newTrigger : each)
+            );
           }),
           false,
           'spotify/addToTriggerList'
