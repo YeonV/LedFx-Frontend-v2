@@ -7,23 +7,23 @@ import {
   InputLabel,
   FormControl,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+// import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(() => ({
-  select: {
-    color: '#ffffff',
-    width: '90%',
-    '&:before': {
-      borderColor: '#ffffff',
-    },
-    '&:after': {
-      borderColor: '#ffffff',
-    },
-  },
-  icon: {
-    fill: '#ffffff',
-  },
-}));
+// const useStyles = makeStyles(() => ({
+//   select: {
+//     color: '#ffffff',
+//     width: '90%',
+//     '&:before': {
+//       borderColor: '#ffffff',
+//     },
+//     '&:after': {
+//       borderColor: '#ffffff',
+//     },
+//   },
+//   icon: {
+//     fill: '#ffffff',
+//   },
+// }));
 
 const chords: { [key: string]: any } = {
   'Major Chords': {
@@ -101,7 +101,7 @@ export default function PitchSelect({ handleChordClick }: any) {
               defaultValue="0,1,2,3,4,5,6,7,8,9,10,11"
               onChange={handleChordClick}
               labelId={group}
-              className={useStyles}
+              // className={useStyles}
               // inputProps={{ classes: { icon: useStyles.icon } }}
             >
               {Object.keys(chords[group]).map((chord) => {
