@@ -273,6 +273,29 @@ const UICard = () => {
           />
         </div>
       )}
+      {viewMode !== 'user' && (<> 
+        <div className={`${classes.settingsRow} step-settings-x `}>
+          <label>SceneTables (Recent+Most)</label>
+          <SettingsSwitch
+            checked={features.scenetables}
+            onChange={() => setFeatures('scenetables', !features.scenetables)}
+          />
+        </div>
+        <div className={`${classes.settingsRow} step-settings-x `}>
+          <label>SceneChips (Filter Tags)</label>
+          <SettingsSwitch
+            checked={features.scenechips}
+            onChange={() => setFeatures('scenechips', !features.scenechips)}
+          />
+        </div>
+        <div className={`${classes.settingsRow} step-settings-x `}>
+          <label>Scene external call</label>
+          <SettingsSwitch
+            checked={features.sceneexternal}
+            onChange={() => setFeatures('sceneexternal', !features.sceneexternal)}
+          />
+        </div>
+      </> )}
       {showFeatures.dev && (
         <div className={`${classes.settingsRow} step-settings-x `}>
           <label>Dev Mode</label>

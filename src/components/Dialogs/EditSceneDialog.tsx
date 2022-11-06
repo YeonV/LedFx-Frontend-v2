@@ -25,7 +25,8 @@ const EditSceneDialog = () => {
   const open = useStore((state) => state.dialogs.addScene?.edit || false);
   // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
   const data = useStore((state: any) => state.dialogs.addScene?.editData);
-  const viewMode = useStore((state) => state.viewMode);
+  const features = useStore((state) => state.features);
+
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -141,7 +142,7 @@ const EditSceneDialog = () => {
           onChange={(e) => setTags(e.target.value)}
           fullWidth
         />
-        {viewMode !== 'user' && (
+        {features.sceneexternal && (
           <>
             <TextField
               margin="dense"
@@ -181,6 +182,8 @@ const EditSceneDialog = () => {
         </div>
         <Divider />
         {data &&
+          scenes &&
+          scenes[data.name.toLowerCase()] &&
           Object.keys(scenes[data.name.toLowerCase()].virtuals)
             .filter((d) => !!scenes[data.name.toLowerCase()].virtuals[d].type)
             .map((dev, i) => (
