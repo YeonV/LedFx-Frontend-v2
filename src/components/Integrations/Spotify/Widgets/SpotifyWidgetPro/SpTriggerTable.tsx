@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
-import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridRowParams,
+  GridCellParams,
+} from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 // import { useTheme } from '@mui/material/styles';
 import {
@@ -8,7 +13,15 @@ import {
   PlayCircleFilled,
 } from '@mui/icons-material';
 import { useContext, useEffect } from 'react';
-import { Card, IconButton, Stack } from '@mui/material';
+import {
+  Card,
+  FormControl,
+  IconButton,
+  Stack,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+} from '@mui/material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import Popover from '../../../../Popover/Popover';
@@ -18,9 +31,13 @@ const PREFIX = 'SpTriggerTable';
 
 export const classes = {
   root: `${PREFIX}-root`,
+  select: `${PREFIX}-select`,
 };
 
 const Root = styled('div')(({ theme }: any) => ({
+  [`& .${classes.select}`]: {
+    color: '#fff !important',
+  },
   [`& .${classes.root}`]: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
@@ -60,6 +77,7 @@ const Root = styled('div')(({ theme }: any) => ({
 
 export default function SpotifyTriggerTable() {
   const integrations = useStore((state) => state.integrations);
+  const scenes = useStore((state) => state.scenes);
   const getIntegrations = useStore((state) => state.getIntegrations);
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const playerState = useContext(SpotifyStateContext);
@@ -68,6 +86,7 @@ export default function SpotifyTriggerTable() {
   const getSpTriggers = useStore((state) => state.getSpTriggers);
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
   const getScenes = useStore((state) => state.getScenes);
+  const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger);
 
   useEffect(() => {
     getSpTriggers('spotify');
@@ -125,6 +144,25 @@ export default function SpotifyTriggerTable() {
     }
   }, [integrations]);
 
+  const updateSpTrigger = (rowData: any, val: any) => {
+    let sceneKey;
+    if (scenes) {
+      Object.keys(scenes)?.map((key: any) => {
+        if (scenes[key].name === val) {
+          sceneKey = key;
+        }
+        return null;
+      });
+    }
+    addToSpTriggerList({ ...rowData, sceneId: val }, 'update');
+    const data = {
+      scene_id: sceneKey,
+      song_id: rowData?.songId,
+      song_name: rowData?.songName,
+      song_position: rowData?.position_ms,
+    };
+    editSpotifySongTrigger(data).then(() => getIntegrations());
+  };
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteSpTrigger({
       data: {
@@ -159,6 +197,33 @@ export default function SpotifyTriggerTable() {
       width: 120,
       headerAlign: 'center',
       align: 'center',
+      renderCell: (params: any) => {
+        return (
+          <FormControl fullWidth>
+            <Select
+              style={{
+                color: 'white',
+              }}
+              classes={{
+                icon: classes.select,
+              }}
+              labelId="scene-select-label"
+              value={params?.row?.sceneId}
+              label="Scene"
+              onChange={(e: SelectChangeEvent) => {
+                updateSpTrigger(params?.row, e.target.value);
+              }}
+            >
+              {/* <MenuItem value="sceneId" /> */}
+              {Object.keys(scenes).map((s: any, i: number) => (
+                <MenuItem key={i} value={scenes[s].name || s}>
+                  {scenes[s].name || s}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        );
+      },
     },
     {
       field: 'actions',
@@ -227,6 +292,11 @@ export default function SpotifyTriggerTable() {
             color: '#fff',
             border: 1,
             borderColor: '#666',
+            '& .sceneStyle': {
+              border: '1px solid',
+              borderColor: '#fff !important',
+              padding: '0px',
+            },
           }}
           columns={columns}
           rows={rows}
@@ -238,6 +308,12 @@ export default function SpotifyTriggerTable() {
                 : 'currently_playing'
               : ''
           }
+          getCellClassName={(params: GridCellParams<any>) => {
+            if (params?.field === 'sceneId') {
+              return 'sceneStyle';
+            }
+            return '';
+          }}
         />
       </Card>
     </Root>
