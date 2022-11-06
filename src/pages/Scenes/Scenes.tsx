@@ -11,7 +11,7 @@ import {
   Grid,
   Chip,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { PlaylistAdd, Edit } from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
@@ -19,6 +19,7 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 // import ScenesTable from './ScenesTable';
 import ScenesRecent from './ScenesRecent';
 import ScenesMostUsed from './ScenesMostUsed';
+import ScenesPlaylist from './ScenesPlaylist';
 
 const useStyles = makeStyles({
   root: {
@@ -57,6 +58,7 @@ const Scenes = () => {
   const features = useStore((state) => state.features);
   const activateScene = useStore((state) => state.activateScene);
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags);
+  const addScene2PL = useStore((state) => state.addScene2PL);
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
   );
@@ -118,14 +120,7 @@ const Scenes = () => {
               width={450}
             >
               <ScenesRecent
-                scenes={
-                  scenes
-                  // &&
-                  // scenes.length &&
-                  // Object.keys(scenes).map(
-                  //   (sc: any) => recentScenes?.indexOf(sc) > -1 && scenes[sc]
-                  // )
-                }
+                scenes={scenes}
                 activateScene={handleActivateScene}
                 title="Recent Scenes"
               />
@@ -138,14 +133,22 @@ const Scenes = () => {
               width={450}
             >
               <ScenesMostUsed
-                scenes={
-                  scenes
-                  // &&
-                  // scenes.length &&
-                  // scenes.sort((a: any, b: any) => (a.used || 0) - (b.used || 0))
-                }
+                scenes={scenes}
                 activateScene={handleActivateScene}
                 title="Most Used Scenes"
+              />
+            </Grid>
+            <Grid
+              item
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              mb={['5rem', '5rem', 0, 0, 0]}
+              p="8px !important"
+              width={450}
+            >
+              <ScenesPlaylist
+                scenes={scenes}
+                activateScene={handleActivateScene}
+                title="Scene-Playlist"
               />
             </Grid>
           </Grid>
@@ -241,6 +244,12 @@ const Scenes = () => {
                     {scenes[s].name || s}
                   </Typography>
                   <div>
+                    <Popover
+                      onConfirm={() => handleDeleteScene(s)}
+                      variant="outlined"
+                      color="inherit"
+                      style={{ marginLeft: '0.5rem' }}
+                    />
                     <Button
                       onClick={() =>
                         setDialogOpenAddScene(false, true, s, scenes[s])
@@ -251,12 +260,14 @@ const Scenes = () => {
                     >
                       <Edit />
                     </Button>
-                    <Popover
-                      onConfirm={() => handleDeleteScene(s)}
+                    <Button
+                      onClick={() => addScene2PL(s)}
                       variant="outlined"
                       color="inherit"
-                      style={{ marginLeft: '0.5rem' }}
-                    />
+                      size="small"
+                    >
+                      <PlaylistAdd />
+                    </Button>
                   </div>
                 </CardActions>
               </Card>

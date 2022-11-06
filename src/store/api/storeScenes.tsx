@@ -10,6 +10,35 @@ const storeScenes = (set: any) => ({
   scenes: {} as any,
   recentScenes: [] as string[],
   count: {} as any,
+  scenePL: [] as any,
+  scenePLplay: false,
+  toggleScenePLplay: () => {
+    set(
+      produce((s: any) => {
+        s.scenePLplay = !s.scenePLplay;
+      }),
+      false,
+      'setScenes'
+    );
+  },
+  addScene2PL: (sceneId: string) => {
+    set(
+      produce((s: any) => {
+        s.scenePL = [...s.scenePL, sceneId];
+      }),
+      false,
+      'addScene2PL'
+    );
+  },
+  removeScene2PL: (id: number) => {
+    set(
+      produce((s: any) => {
+        s.scenePL = s.scenePL.filter((p: string, i: number) => i !== id);
+      }),
+      false,
+      'removeScene2PL'
+    );
+  },
   getScenes: async () => {
     const resp = await Ledfx('/api/scenes');
     if (resp && resp.scenes) {
