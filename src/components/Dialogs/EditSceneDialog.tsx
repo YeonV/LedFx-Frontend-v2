@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useEffect, useState } from 'react';
 import {
   Link,
@@ -142,7 +143,7 @@ const EditSceneDialog = () => {
           onChange={(e) => setTags(e.target.value)}
           fullWidth
         />
-        {features.sceneexternal && (
+        {features.sceneexternal ? (
           <>
             <TextField
               margin="dense"
@@ -168,6 +169,8 @@ const EditSceneDialog = () => {
               fullWidth
             />
           </>
+        ) : (
+          <></>
         )}
         <Divider sx={{ mt: '1rem' }} />
         <div
