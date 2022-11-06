@@ -24,7 +24,8 @@ const AddSceneDialog = () => {
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const open = useStore((state) => state.dialogs.addScene?.open || false);
-  const viewMode = useStore((state) => state.viewMode);
+  const features = useStore((state) => state.features);
+
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -134,7 +135,7 @@ const AddSceneDialog = () => {
           onChange={(e) => setTags(e.target.value)}
           fullWidth
         />
-        {viewMode !== 'user' && (
+        {features.sceneexternal && (
           <>
             <TextField
               margin="dense"

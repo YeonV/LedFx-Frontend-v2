@@ -16,7 +16,9 @@ import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-// import SmartBar from '../../components/Dialogs/SmartBar';
+// import ScenesTable from './ScenesTable';
+import ScenesRecent from './ScenesRecent';
+import ScenesMostUsed from './ScenesMostUsed';
 
 const useStyles = makeStyles({
   root: {
@@ -52,6 +54,7 @@ const Scenes = () => {
   const classes = useStyles();
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
+  const features = useStore((state) => state.features);
   const activateScene = useStore((state) => state.activateScene);
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags);
   const toggletSceneActiveTag = useStore(
@@ -63,7 +66,6 @@ const Scenes = () => {
     (state) => state.setDialogOpenAddScene
   );
   const handleActivateScene = (e: string) => {
-    // console.log('captivate', e, scenes[e]);
     activateScene(e);
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
@@ -89,6 +91,7 @@ const Scenes = () => {
   useEffect(() => {
     getScenes();
   }, [getScenes]);
+
   return (
     <>
       <div
@@ -99,21 +102,82 @@ const Scenes = () => {
           flexDirection: 'column',
         }}
       >
-        {/* <SmartBar direct /> */}
-        <div>
-          {Object.keys(scenes)
-            .flatMap((s) => scenes[s].scene_tags?.split(','))
-            .filter((v, i, a) => a.indexOf(v) === i && v)
-            .map((t: string) => (
-              <Chip
-                variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}
-                sx={{ ml: 1, mt: 1, mr: 1 }}
-                key={t}
-                label={t}
-                onClick={() => toggletSceneActiveTag(t)}
+        {scenes && Object.keys(scenes).length && features.scenetables && (
+          <Grid
+            container
+            spacing={[0, 0, 2, 2, 2]}
+            justifyContent="center"
+            m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
+            sx={{ maxWidth: '100%' }}
+          >
+            <Grid
+              item
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              mb={['5rem', '5rem', 0, 0, 0]}
+              p="8px !important"
+              width={450}
+            >
+              <ScenesRecent
+                scenes={
+                  scenes
+                  // &&
+                  // scenes.length &&
+                  // Object.keys(scenes).map(
+                  //   (sc: any) => recentScenes?.indexOf(sc) > -1 && scenes[sc]
+                  // )
+                }
+                activateScene={handleActivateScene}
+                title="Recent Scenes"
               />
-            ))}
-        </div>
+            </Grid>
+            <Grid
+              item
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              mb={['5rem', '5rem', 0, 0, 0]}
+              p="8px !important"
+              width={450}
+            >
+              <ScenesMostUsed
+                scenes={
+                  scenes
+                  // &&
+                  // scenes.length &&
+                  // scenes.sort((a: any, b: any) => (a.used || 0) - (b.used || 0))
+                }
+                activateScene={handleActivateScene}
+                title="Most Used Scenes"
+              />
+            </Grid>
+          </Grid>
+        )}
+        {scenes && Object.keys(scenes).length && features.scenechips && (
+          <div>
+            {Object.keys(scenes)
+              .flatMap((s) => scenes[s].scene_tags?.split(','))
+              .map((item: string) => item.trim())
+              .filter((v, i, a) => a.indexOf(v) === i && v)
+              .map((t: string) => {
+                return (
+                  <Chip
+                    variant={
+                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
+                    }
+                    sx={{
+                      ml: 1,
+                      mt: 1,
+                      mr: 1,
+                      cursor: sceneActiveTags.includes(t)
+                        ? 'zoom-out'
+                        : 'zoom-in',
+                    }}
+                    key={t}
+                    label={t}
+                    onClick={() => toggletSceneActiveTag(t)}
+                  />
+                );
+              })}
+          </div>
+        )}
       </div>
       <Grid
         container
@@ -131,7 +195,12 @@ const Scenes = () => {
               )
             : Object.keys(scenes)
           ).map((s, i) => (
-            <Grid item key={i} mt={['0.5rem', '0.5rem', 0, 0, 0]}>
+            <Grid
+              item
+              key={i}
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              p="8px !important"
+            >
               <Card className={classes.root}>
                 <CardActionArea
                   style={{ background: '#090909' }}
@@ -139,9 +208,22 @@ const Scenes = () => {
                 >
                   {sceneImage(scenes[s].scene_image || 'Wallpaper')}
                   <div style={{ position: 'absolute', top: 0, right: 0 }}>
-                    {scenes[s].scene_tags?.split(',').map((t: string) => (
-                      <Chip label={t} key={t} />
-                    ))}
+                    {scenes[s].scene_tags?.split(',').map(
+                      (t: string) =>
+                        t.length &&
+                        features.scenechips && (
+                          <Chip
+                            variant="filled"
+                            label={t}
+                            key={t}
+                            sx={{
+                              cursor: 'pointer',
+                              backgroundColor: '#333',
+                              border: '1px solid #999',
+                            }}
+                          />
+                        )
+                    )}
                   </div>
                 </CardActionArea>
                 <CardActions
@@ -184,6 +266,8 @@ const Scenes = () => {
           <NoYet type="Scene" />
         )}
       </Grid>
+
+      {/* {scenes && Object.keys(scenes).length && <ScenesTable scenes={scenes} />} */}
     </>
   );
 };
