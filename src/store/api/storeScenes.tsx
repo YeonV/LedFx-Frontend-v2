@@ -20,13 +20,22 @@ const storeScenes = (set: any) => ({
         s.scenePLplay = !s.scenePLplay;
       }),
       false,
-      'setScenes'
+      'toggleScenePLplay'
     );
   },
   setScenePLinterval: (seconds: number) => {
     set(
       produce((s: any) => {
         s.scenePLinterval = seconds;
+      }),
+      false,
+      'setScenePLinterval'
+    );
+  },
+  setScenePL: (scenes: string[]) => {
+    set(
+      produce((s: any) => {
+        s.scenePL = scenes;
       }),
       false,
       'setScenePLactiveIndex'

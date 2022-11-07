@@ -13,6 +13,7 @@ import { PlayArrow, PlaylistRemove, Stop } from '@mui/icons-material';
 
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import useStore from '../../store/useStore';
+import Popover from '../../components/Popover/Popover';
 
 const sceneImage = (iconName: string) =>
   iconName && iconName.startsWith('image:') ? (
@@ -74,6 +75,7 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
   const theme = useTheme();
   const [theScenes, setTheScenes] = useState([]);
   const scenePL = useStore((state) => state.scenePL);
+  const setScenePL = useStore((state) => state.setScenePL);
   const scenePLplay = useStore((state) => state.scenePLplay);
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay);
   const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex);
@@ -132,6 +134,12 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
         >
           {title}
           <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Popover
+              onConfirm={() => setScenePL([])}
+              variant="outlined"
+              color="inherit"
+              style={{ marginRight: '0.5rem' }}
+            />
             sec
             <TextField
               variant="standard"
