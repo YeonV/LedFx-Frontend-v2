@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { Button, Card, CardMedia, TextField, Typography } from '@mui/material';
-import { Pause, PlayArrow, PlaylistRemove } from '@mui/icons-material';
+import {
+  Button,
+  Card,
+  CardMedia,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { PlayArrow, PlaylistRemove, Stop } from '@mui/icons-material';
+
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import useStore from '../../store/useStore';
 
@@ -29,18 +37,31 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Name',
-    width: 200,
+    width: 220,
+    renderCell: (params: GridRenderCellParams<string>) => (
+      <Typography
+        variant="body2"
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {params.value}
+      </Typography>
+    ),
   },
   {
     field: 'scene_id',
     headerName: 'Scene ID',
-    width: 120,
+    width: 100,
     renderCell: (params: GridRenderCellParams<string>) => {
       const removeScene2PL = useStore((state) => state.removeScene2PL);
       return (
         <Button
           onClick={() => removeScene2PL(params.id as number)}
           size="small"
+          variant="text"
         >
           <PlaylistRemove />
         </Button>
@@ -49,11 +70,18 @@ const columns: GridColDef[] = [
   },
 ];
 
-export default function ScenesPlaylist({ scenes, title }: any) {
+export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
+  const theme = useTheme();
   const [theScenes, setTheScenes] = useState([]);
   const scenePL = useStore((state) => state.scenePL);
   const scenePLplay = useStore((state) => state.scenePLplay);
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay);
+  const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex);
+  const scenePLinterval = useStore((state) => state.scenePLinterval);
+  const setScenePLinterval = useStore((state) => state.setScenePLinterval);
+  const setScenePLactiveIndex = useStore(
+    (state) => state.setScenePLactiveIndex
+  );
 
   useEffect(() => {
     const current = scenePL.map((key: string, id: number) => ({
@@ -64,7 +92,26 @@ export default function ScenesPlaylist({ scenes, title }: any) {
     return setTheScenes(current);
   }, [scenes, scenePL]);
 
-  console.log(theScenes);
+  let timer = null as any;
+  useEffect(() => {
+    if (scenePLplay && timer === null) {
+      timer = setTimeout(() => {
+        if (scenePL[scenePLactiveIndex + 1])
+          activateScene(scenePL[scenePLactiveIndex + 1]);
+        setScenePLactiveIndex(scenePLactiveIndex + 1);
+      }, scenePLinterval * 1000);
+    } else if (timer) {
+      clearTimeout(timer);
+    }
+    return () => clearTimeout(timer);
+  }, [scenePLplay, scenePLactiveIndex]);
+
+  useEffect(() => {
+    if (scenePLplay && timer && scenePLactiveIndex >= theScenes.length) {
+      toggleScenePLplay();
+      setScenePLactiveIndex(-1);
+    }
+  }, [scenePLplay, scenePLactiveIndex]);
 
   return (
     <Card>
@@ -106,11 +153,19 @@ export default function ScenesPlaylist({ scenes, title }: any) {
                 },
               }}
               type="number"
-              // value={spNetworkTime}
-              // onChange={(e: any) => setSpNetworkTime(e.target.value)}
+              value={scenePLinterval}
+              onChange={(e: any) => setScenePLinterval(e.target.value)}
             />
-            <Button sx={{ mr: 1 }} onClick={() => toggleScenePLplay()}>
-              {scenePLplay ? <Pause /> : <PlayArrow />}
+            <Button
+              sx={{ mr: 1 }}
+              onClick={() => {
+                if (scenePLplay) {
+                  setScenePLactiveIndex(-1);
+                }
+                toggleScenePLplay();
+              }}
+            >
+              {scenePLplay ? <Stop /> : <PlayArrow />}
             </Button>
           </div>
         </Typography>
@@ -129,6 +184,9 @@ export default function ScenesPlaylist({ scenes, title }: any) {
             id: i + 1,
             ...v,
           }))}
+          getRowClassName={(params) =>
+            `row${params.row.id === scenePLactiveIndex ? '--active' : ''}`
+          }
           initialState={{
             pagination: {
               pageSize: 100,
@@ -146,6 +204,9 @@ export default function ScenesPlaylist({ scenes, title }: any) {
           sx={{
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important',
+            },
+            '&.MuiDataGrid-root .row--active': {
+              background: `${theme.palette.primary.main}30`,
             },
           }}
         />

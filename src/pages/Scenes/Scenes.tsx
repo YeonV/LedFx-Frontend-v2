@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
-  Button,
   Card,
   CardActionArea,
   CardActions,
@@ -11,22 +10,24 @@ import {
   Grid,
   Chip,
 } from '@mui/material';
-import { PlaylistAdd, Edit } from '@mui/icons-material';
 import useStore from '../../store/useStore';
-import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 // import ScenesTable from './ScenesTable';
 import ScenesRecent from './ScenesRecent';
 import ScenesMostUsed from './ScenesMostUsed';
 import ScenesPlaylist from './ScenesPlaylist';
+import ScenesMenu from './ScenesMenu';
 
 const useStyles = makeStyles({
   root: {
     width: 'min(92vw, 345px)',
   },
   sceneTitle: {
-    fontSize: '1.5rem',
+    fontSize: '1.1rem',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   '@media (max-width: 580px)': {
     root: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
     },
     sceneTitle: {
       fontSize: '1rem',
+      cursor: 'default',
     },
   },
   media: {
@@ -58,25 +60,15 @@ const Scenes = () => {
   const features = useStore((state) => state.features);
   const activateScene = useStore((state) => state.activateScene);
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags);
-  const addScene2PL = useStore((state) => state.addScene2PL);
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
   );
   const captivateScene = useStore((state) => state.captivateScene);
-  const deleteScene = useStore((state) => state.deleteScene);
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
+
   const handleActivateScene = (e: string) => {
     activateScene(e);
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
-  };
-
-  const handleDeleteScene = (e: any) => {
-    deleteScene(e).then(() => {
-      getScenes();
-    });
   };
 
   const sceneImage = (iconName: string) =>
@@ -197,82 +189,59 @@ const Scenes = () => {
                   .some((sce: string) => sceneActiveTags.includes(sce))
               )
             : Object.keys(scenes)
-          ).map((s, i) => (
-            <Grid
-              item
-              key={i}
-              mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              p="8px !important"
-            >
-              <Card className={classes.root}>
-                <CardActionArea
-                  style={{ background: '#090909' }}
-                  onClick={() => handleActivateScene(s)}
-                >
-                  {sceneImage(scenes[s].scene_image || 'Wallpaper')}
-                  <div style={{ position: 'absolute', top: 0, right: 0 }}>
-                    {scenes[s].scene_tags?.split(',').map(
-                      (t: string) =>
-                        t.length &&
-                        features.scenechips && (
-                          <Chip
-                            variant="filled"
-                            label={t}
-                            key={t}
-                            sx={{
-                              cursor: 'pointer',
-                              backgroundColor: '#333',
-                              border: '1px solid #999',
-                            }}
-                          />
-                        )
-                    )}
-                  </div>
-                </CardActionArea>
-                <CardActions
-                  style={{
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                  }}
-                >
-                  <Typography
-                    className={classes.sceneTitle}
-                    variant="h5"
-                    component="h2"
+          ).map((s, i) => {
+            return (
+              <Grid
+                item
+                key={i}
+                mt={['0.5rem', '0.5rem', 0, 0, 0]}
+                p="8px !important"
+              >
+                <Card className={classes.root}>
+                  <CardActionArea
+                    style={{ background: '#090909' }}
+                    onClick={() => handleActivateScene(s)}
                   >
-                    {scenes[s].name || s}
-                  </Typography>
-                  <div>
-                    <Popover
-                      onConfirm={() => handleDeleteScene(s)}
-                      variant="outlined"
-                      color="inherit"
-                      style={{ marginLeft: '0.5rem' }}
-                    />
-                    <Button
-                      onClick={() =>
-                        setDialogOpenAddScene(false, true, s, scenes[s])
-                      }
-                      variant="outlined"
-                      color="inherit"
-                      size="small"
+                    {sceneImage(scenes[s].scene_image || 'Wallpaper')}
+                    <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                      {scenes[s].scene_tags?.split(',').map(
+                        (t: string) =>
+                          t.length > 0 &&
+                          features.scenechips && (
+                            <Chip
+                              variant="filled"
+                              label={t}
+                              key={t}
+                              sx={{
+                                cursor: 'pointer',
+                                backgroundColor: '#333',
+                                border: '1px solid #999',
+                              }}
+                            />
+                          )
+                      )}
+                    </div>
+                  </CardActionArea>
+                  <CardActions
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    <Typography
+                      className={classes.sceneTitle}
+                      variant="h5"
+                      component="h2"
                     >
-                      <Edit />
-                    </Button>
-                    <Button
-                      onClick={() => addScene2PL(s)}
-                      variant="outlined"
-                      color="inherit"
-                      size="small"
-                    >
-                      <PlaylistAdd />
-                    </Button>
-                  </div>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))
+                      {scenes[s].name || s}
+                    </Typography>
+                    <ScenesMenu sceneId={s} />
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })
         ) : (
           <NoYet type="Scene" />
         )}
