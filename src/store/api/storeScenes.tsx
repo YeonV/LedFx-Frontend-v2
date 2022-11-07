@@ -12,6 +12,8 @@ const storeScenes = (set: any) => ({
   count: {} as any,
   scenePL: [] as any,
   scenePLplay: false,
+  scenePLactiveIndex: -1,
+  scenePLinterval: 2,
   toggleScenePLplay: () => {
     set(
       produce((s: any) => {
@@ -19,6 +21,24 @@ const storeScenes = (set: any) => ({
       }),
       false,
       'setScenes'
+    );
+  },
+  setScenePLinterval: (seconds: number) => {
+    set(
+      produce((s: any) => {
+        s.scenePLinterval = seconds;
+      }),
+      false,
+      'setScenePLactiveIndex'
+    );
+  },
+  setScenePLactiveIndex: (index: number) => {
+    set(
+      produce((s: any) => {
+        s.scenePLactiveIndex = index;
+      }),
+      false,
+      'setScenePLactiveIndex'
     );
   },
   addScene2PL: (sceneId: string) => {
