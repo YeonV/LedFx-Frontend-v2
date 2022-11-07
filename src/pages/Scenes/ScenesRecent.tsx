@@ -45,7 +45,7 @@ const columns: GridColDef[] = [
 
 export default function ScenesRecent({ scenes, activateScene, title }: any) {
   const recentScenes = useStore((state) => state.recentScenes);
-  const [theScenes, setTheScenes] = useState({ ...scenes });
+  const [theScenes, setTheScenes] = useState({});
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
