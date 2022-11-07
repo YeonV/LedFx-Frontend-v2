@@ -46,7 +46,6 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            console.log(sceneId);
             addScene2PL(sceneId);
             handleClose();
           }}

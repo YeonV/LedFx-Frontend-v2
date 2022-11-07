@@ -140,7 +140,7 @@ const Scenes = () => {
               <ScenesPlaylist
                 scenes={scenes}
                 activateScene={handleActivateScene}
-                title="Scene-Playlist"
+                title="Playlist"
               />
             </Grid>
           </Grid>
