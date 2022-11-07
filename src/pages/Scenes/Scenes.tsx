@@ -147,30 +147,33 @@ const Scenes = () => {
         )}
         {scenes && Object.keys(scenes).length && features.scenechips && (
           <div>
-            {Object.keys(scenes)
-              .flatMap((s) => scenes[s].scene_tags?.split(','))
-              .map((item: string) => item.trim())
-              .filter((v, i, a) => a.indexOf(v) === i && v)
-              .map((t: string) => {
-                return (
-                  <Chip
-                    variant={
-                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
-                    }
-                    sx={{
-                      ml: 1,
-                      mt: 1,
-                      mr: 1,
-                      cursor: sceneActiveTags.includes(t)
-                        ? 'zoom-out'
-                        : 'zoom-in',
-                    }}
-                    key={t}
-                    label={t}
-                    onClick={() => toggletSceneActiveTag(t)}
-                  />
-                );
-              })}
+            {Object.keys(scenes).flatMap((s) =>
+              scenes[s].scene_tags?.split(',')
+            ).length > 0 &&
+              Object.keys(scenes)
+                .flatMap((s) => scenes[s].scene_tags?.split(','))
+                .map((item: string) => item.trim())
+                .filter((v, i, a) => a.indexOf(v) === i && v)
+                .map((t: string) => {
+                  return (
+                    <Chip
+                      variant={
+                        sceneActiveTags.includes(t) ? 'filled' : 'outlined'
+                      }
+                      sx={{
+                        ml: 1,
+                        mt: 1,
+                        mr: 1,
+                        cursor: sceneActiveTags.includes(t)
+                          ? 'zoom-out'
+                          : 'zoom-in',
+                      }}
+                      key={t}
+                      label={t}
+                      onClick={() => toggletSceneActiveTag(t)}
+                    />
+                  );
+                })}
           </div>
         )}
       </div>

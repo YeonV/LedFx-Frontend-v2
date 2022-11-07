@@ -45,7 +45,7 @@ const columns: GridColDef[] = [
 
 export default function ScenesMostUsed({ scenes, activateScene, title }: any) {
   const count = useStore((state) => state.count);
-  const [mostUsedScenes, setMostUsedScenes] = useState({ ...scenes });
+  const [mostUsedScenes, setMostUsedScenes] = useState({});
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
