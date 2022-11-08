@@ -96,7 +96,7 @@ const Scenes = () => {
           flexDirection: 'column',
         }}
       >
-        {scenes && Object.keys(scenes).length && features.scenetables && (
+        {scenes && Object.keys(scenes).length && features.scenetables ? (
           <Grid
             container
             spacing={[0, 0, 2, 2, 2]}
@@ -144,38 +144,39 @@ const Scenes = () => {
               />
             </Grid>
           </Grid>
-        )}
-        {scenes && Object.keys(scenes).length && features.scenechips && (
+        ) : null}
+        {scenes && Object.keys(scenes).length && features.scenechips ? (
           <div>
-            {Object.keys(scenes).flatMap((s) =>
-              scenes[s].scene_tags?.split(',')
-            ).length > 0 &&
-              Object.keys(scenes)
-                .flatMap((s) => scenes[s].scene_tags?.split(','))
-                .map((item: string) => item.trim())
-                .filter((v, i, a) => a.indexOf(v) === i && v)
-                .map((t: string) => {
-                  return (
-                    <Chip
-                      variant={
-                        sceneActiveTags.includes(t) ? 'filled' : 'outlined'
-                      }
-                      sx={{
-                        ml: 1,
-                        mt: 1,
-                        mr: 1,
-                        cursor: sceneActiveTags.includes(t)
-                          ? 'zoom-out'
-                          : 'zoom-in',
-                      }}
-                      key={t}
-                      label={t}
-                      onClick={() => toggletSceneActiveTag(t)}
-                    />
-                  );
-                })}
+            {Object.keys(scenes)
+              .flatMap((s) =>
+                !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
+                  ? scenes[s].scene_tags.split(',')
+                  : null
+              )
+              .filter((n: string) => !!n && n.trim())
+              .filter((v, i, a) => a.indexOf(v) === i && v)
+              .map((t: string) => {
+                return (
+                  <Chip
+                    variant={
+                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
+                    }
+                    sx={{
+                      ml: 1,
+                      mt: 1,
+                      mr: 1,
+                      cursor: sceneActiveTags.includes(t)
+                        ? 'zoom-out'
+                        : 'zoom-in',
+                    }}
+                    key={t}
+                    label={t}
+                    onClick={() => toggletSceneActiveTag(t)}
+                  />
+                );
+              })}
           </div>
-        )}
+        ) : null}
       </div>
       <Grid
         container
