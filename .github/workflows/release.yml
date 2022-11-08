@@ -117,4 +117,4 @@ jobs:
           workflow: Build LedFx Chained
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}} | cut -d. -f3" }'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
