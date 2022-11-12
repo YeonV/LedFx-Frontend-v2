@@ -42,7 +42,9 @@ export const common = {
     MuiSelect: {
       defaultProps: {
         variant: 'standard' as 'filled' | 'outlined' | 'standard' | undefined,
-        disableUnderline: true,
+        // inputProps: {
+        //   disableUnderline: true,
+        // },
       },
     },
     MuiDialog: {

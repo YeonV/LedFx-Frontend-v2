@@ -114,7 +114,7 @@ jobs:
       - name: Trigger Build
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: Build LedFx
+          workflow: Build LedFx Chained
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
           inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'

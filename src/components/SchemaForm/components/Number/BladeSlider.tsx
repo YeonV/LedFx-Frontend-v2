@@ -19,7 +19,6 @@ const BladeSliderInner = ({
   disabled,
   marks,
   hideDesc,
-  disableUnderline,
 }: BladeSliderInnerProps) => {
   const classes = useStyles();
   // eslint-disable-next-line
@@ -132,7 +131,7 @@ const BladeSliderInner = ({
     <TextField
       disabled={disabled}
       InputProps={{
-        disableUnderline,
+        // disableUnderline,
         endAdornment: model_id === 'delay_ms' ? 'ms' : null,
       }}
       type="number"
