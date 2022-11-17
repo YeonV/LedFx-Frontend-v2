@@ -88,6 +88,8 @@ const Bar = ({ handleClose, direct }: any) => {
               setFeatures('integrations', false);
               setFeatures('spotify', false);
               setFeatures('webaudio', false);
+              setFeatures('beta', false);
+              setFeatures('alpha', false);
               window.localStorage.removeItem('ledfx-theme');
               window.localStorage.setItem('BladeMod', '0');
               window.location.reload();
@@ -118,6 +120,9 @@ const Bar = ({ handleClose, direct }: any) => {
             }
             if (value === 'BladeEffectFilter') {
               setShowFeatures('effectfilter', true);
+            }
+            if (value === 'BladeAlpha') {
+              setShowFeatures('alpha', true);
             }
             if (
               value.startsWith('theme:') &&
@@ -158,6 +163,8 @@ const Bar = ({ handleClose, direct }: any) => {
             setFeatures('effectfilter', true);
             setFeatures('spotify', true);
             setFeatures('webaudio', true);
+            setFeatures('beta', true);
+            setFeatures('alpha', true);
             window.localStorage.setItem('ledfx-theme', 'DarkRed');
             window.location.reload();
           }
