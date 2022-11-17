@@ -1,5 +1,15 @@
 import { makeStyles, styled } from '@mui/styles';
-import { Button, Slider, Switch } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Slider,
+  Switch,
+  Typography,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
+import useStore from '../../store/useStore';
 
 export const useStyles = makeStyles(() => ({
   content: {
@@ -53,7 +63,7 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-export const SettingsSlider = styled(Slider)(({ theme }: any) => ({
+export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
   color: '#eeeeee',
   height: 2,
   padding: '15px 0',
@@ -104,6 +114,12 @@ export const SettingsSlider = styled(Slider)(({ theme }: any) => ({
     },
   },
 }));
+
+export const SettingsSlider = (props: any) => (
+  <div style={{ flexGrow: 1 }}>
+    <SettingsStylesSlider {...props} />
+  </div>
+);
 
 export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
   width: 50,
@@ -157,4 +173,69 @@ export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
 export const SettingsButton = (props: any) => {
   const classes = useStyles();
   return <Button size="small" className={classes.actionButton} {...props} />;
+};
+
+export const SettingsRow = ({
+  step,
+  title,
+  checked,
+  onChange,
+  children,
+}: {
+  step?: string;
+  title: string;
+  checked?: boolean;
+  onChange?: () => void;
+  children?: any;
+}) => {
+  const classes = useStyles();
+  return (
+    <div className={`${classes.settingsRow} step-settings-${step} `}>
+      <label>{title}</label>
+      {children || <SettingsSwitch checked={checked} onChange={onChange} />}
+    </div>
+  );
+};
+
+SettingsRow.defaultProps = {
+  step: 'x',
+  children: null,
+  checked: false,
+  onChange: null,
+};
+
+export const SettingsAccordion = ({
+  title,
+  accId,
+  children,
+}: {
+  title: string;
+  accId: string;
+  children: any;
+}) => {
+  const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
+  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
+  const handleExpanded = (panel: any, _event: any, isExpanded: any) => {
+    setSettingsExpanded(isExpanded ? panel : false);
+  };
+  return (
+    <Accordion
+      onDoubleClick={() => setSettingsExpanded('all')}
+      expanded={
+        settingsExpanded === 'all' || settingsExpanded === `panel${accId}`
+      }
+      onChange={(event, isExpanded) =>
+        handleExpanded(`panel${accId}`, event, isExpanded)
+      }
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMore />}
+        aria-controls={`panel${accId}-content`}
+        id={`panel${accId}-header`}
+      >
+        <Typography>{title}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>{children}</AccordionDetails>
+    </Accordion>
+  );
 };
