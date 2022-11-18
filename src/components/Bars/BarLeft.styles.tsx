@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
   },
   logo: {
     position: 'relative',
-    padding: '0 15px',
+    padding: '0 0 0 5px',
     zIndex: 4,
   },
   logoLink: {
@@ -58,14 +58,13 @@ const useStyles = makeStyles(() => ({
     width: '30px',
     display: 'inline-block',
     maxHeight: '30px',
-    marginLeft: '10px',
     marginRight: '15px',
 
     '& img': {
       width: '35px',
-      top: -2,
-      position: 'absolute',
-      verticalAlign: 'middle',
+      marginTop: '-2px',
+      // position: 'absolute',
+      // verticalAlign: 'middle',
       border: '0',
     },
   },
@@ -74,12 +73,15 @@ const useStyles = makeStyles(() => ({
     color: '#fff',
     borderRadius: isElectron() ? 0 : '15px',
     width: '150px',
-    padding: '5px 25px',
+    padding: '5px 15px',
     backgroundSize: isElectron() ? '270px' : '230px',
     height: '20px',
     backgroundRepeat: 'no-repeat',
     textAlign: 'right',
     backgroundPosition: isElectron() ? '-66px 50%' : '-40px 50%',
+    transform: 'scale(0.9)',
+    marginRight: '-15px',
+    transformOrigin: 'left center',
   },
 }));
 export default useStyles;

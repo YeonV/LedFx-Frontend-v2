@@ -19,6 +19,7 @@ import isElectron from 'is-electron';
 import useStore from '../../store/useStore';
 import useStyles from './BarLeft.styles';
 import logoAsset from '../../assets/logo.png';
+// import bannerAsset from '../../assets/banner.png';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon';
 
 const LeftBar = () => {
@@ -37,23 +38,27 @@ const LeftBar = () => {
   const logo = (
     <div className={classes.logo}>
       {!isElectron() && (
-        <a href="/#" className={classes.logoLink}>
-          <div className={classes.logoImage}>
-            <img src={logoAsset} alt="logo" />
-          </div>
-          LedFx
-        </a>
+        <>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <div className={classes.logoImage}>
+              <img src={logoAsset} alt="logo" />
+            </div>
+            <Box
+              className={classes.devbadge}
+              onClick={() => window.localStorage.setItem('BladeMod', '0')}
+              sx={{
+                border: theme.palette.primary.main,
+                backgroundColor: isElectron()
+                  ? 'transparent'
+                  : theme.palette.secondary.main,
+              }}
+            />
+          </Box>
+          {/* <Box sx={{ display: 'flex' }}>
+            <img src={bannerAsset} alt="logo" style={{ maxWidth: '100%' }} />
+          </Box> */}
+        </>
       )}
-      <Box
-        className={classes.devbadge}
-        onClick={() => window.localStorage.setItem('BladeMod', '0')}
-        sx={{
-          border: theme.palette.primary.main,
-          backgroundColor: isElectron()
-            ? 'transparent'
-            : theme.palette.secondary.main,
-        }}
-      />
     </div>
   );
 
