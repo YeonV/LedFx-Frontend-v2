@@ -14,7 +14,7 @@ const MessageBar = () => {
   }
 
   useEffect(() => {
-    if (message.startsWith('Created Virtual ')) {
+    if (typeof message === 'string' && message.startsWith('Created Virtual ')) {
       setCurrentVirtual(message.replace('Created Virtual ', ''));
     }
   }, [message]);

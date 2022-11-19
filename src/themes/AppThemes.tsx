@@ -99,6 +99,9 @@ export const BladeDarkBlueTheme = createTheme({
     accent: {
       main: '#0018c',
     },
+    error: {
+      main: '#a00000',
+    },
     background: {
       default: '#030303',
       paper: '#111',
