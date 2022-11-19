@@ -76,7 +76,7 @@ export default function Home() {
         <CardActions style={{ justifyContent: 'center' }}>
           <Badge
             variant="dot"
-            color="primary"
+            color="error"
             invisible={invisible}
             sx={{ mr: 1 }}
           >
