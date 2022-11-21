@@ -1,4 +1,4 @@
-name: Build & deploy
+name: Deploy App & Storybook to GH pages
 
 on:
   push:
