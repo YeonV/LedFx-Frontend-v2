@@ -58,7 +58,7 @@ const TransitionCard = ({ virtual, style }: any) => {
         <FormControl sx={{ marginRight: '0.5rem', flex: 1 }}>
           <BladeFrame title="Duration">
             <Slider
-              defaultValue={transition_time || schemas?.transition_time.default}
+              defaultValue={transition_time ?? schemas?.transition_time.default}
               onChangeCommitted={onSliderChange}
               aria-labelledby="discrete-slider"
               step={0.1}
