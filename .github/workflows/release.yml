@@ -80,6 +80,30 @@ jobs:
           asset_path: ./ledfx_frontend_v2.zip
           asset_name: ledfx_frontend_v2.zip
           asset_content_type: application/zip
+          
+      - name: Prepare Trigger
+        id: get-id
+        run: |
+          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
+          echo "::set-output name=id::$id"
+      - name: Trigger Build
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Build LedFx Chained
+          repo: YeonV/LedFx-Builds
+          token: ${{ secrets.FRONTEND_TOKEN }}
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          protocol: ftps
+          port: 22
+          local-dir: ./ledfx_frontend_v2/
+          
       - name: Build project Hass
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
@@ -106,15 +130,4 @@ jobs:
           asset_name: ledfx_frontend_hass.zip
           asset_content_type: application/zip
 
-      - name: Prepare Trigger
-        id: get-id
-        run: |
-          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
-          echo "::set-output name=id::$id"
-      - name: Trigger Build
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: Build LedFx Chained
-          repo: YeonV/LedFx-Builds
-          token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
+
