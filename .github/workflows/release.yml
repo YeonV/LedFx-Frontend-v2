@@ -105,6 +105,7 @@ jobs:
           LOCAL_DIR: ./ledfx_frontend_v2/
           REMOTE_DIR: ./my.ledfx.app/test/
           
+          
       - name: Build project Hass
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
