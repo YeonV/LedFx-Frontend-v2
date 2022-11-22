@@ -103,6 +103,7 @@ jobs:
           protocol: ftps
           port: 22
           local-dir: ./ledfx_frontend_v2/
+          dry-run: true
           
       - name: Build project Hass
         env:
