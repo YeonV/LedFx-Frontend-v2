@@ -2,7 +2,7 @@
   "name": "ledfx",
   "version": "2.0.55",
   "description": "LedFx - BladeMOD",
-  "author": "YeonV aka Blade",
+  "author": "YeonV aka Blade ",
   "private": true,
   "main": "public/electron.js",
   "homepage": ".",
