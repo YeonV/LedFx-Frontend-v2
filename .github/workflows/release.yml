@@ -140,6 +140,7 @@ jobs:
         with:
           workflow: Builder
           repo: YeonV/home-assistant-addons
+          ref: refs/heads/master
           token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
           inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
 
