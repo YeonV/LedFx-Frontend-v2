@@ -56,7 +56,6 @@ New [LedFx](https://github.com/LedFx/LedFx)-client
 
 </details>
 
-
 ---
 
 ## Credits
