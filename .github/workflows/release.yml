@@ -103,7 +103,7 @@ jobs:
           PORT: 22
           METHOD: sftp
           LOCAL_DIR: ./ledfx_frontend_v2/
-          REMOTE_DIR: ./my.ledfx.app/test/
+          REMOTE_DIR: ./preview.ledfx.app/
           
           
       - name: Build project Hass
