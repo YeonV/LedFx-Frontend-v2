@@ -9,7 +9,13 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { PlayArrow, PlaylistRemove, Stop } from '@mui/icons-material';
+import {
+  PlayArrow,
+  PlaylistRemove,
+  Repeat,
+  RepeatOn,
+  Stop,
+} from '@mui/icons-material';
 
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import useStore from '../../store/useStore';
@@ -78,6 +84,8 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
   const setScenePL = useStore((state) => state.setScenePL);
   const scenePLplay = useStore((state) => state.scenePLplay);
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay);
+  const scenePLrepeat = useStore((state) => state.scenePLrepeat);
+  const toggleScenePLrepeat = useStore((state) => state.toggleScenePLrepeat);
   const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex);
   const scenePLinterval = useStore((state) => state.scenePLinterval);
   const setScenePLinterval = useStore((state) => state.setScenePLinterval);
@@ -110,8 +118,13 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
 
   useEffect(() => {
     if (scenePLplay && timer && scenePLactiveIndex >= theScenes.length) {
-      toggleScenePLplay();
-      setScenePLactiveIndex(-1);
+      if (scenePLrepeat) {
+        activateScene(scenePL[0]);
+        setScenePLactiveIndex(0);
+      } else {
+        toggleScenePLplay();
+        setScenePLactiveIndex(-1);
+      }
     }
   }, [scenePLplay, scenePLactiveIndex]);
 
@@ -125,7 +138,8 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
             pl: 1,
             pt: 0.5,
             pb: 0.5,
-            border: '1px solid #666',
+            border: '1px solid',
+            borderColor: theme.palette.divider,
             borderBottom: 0,
             display: 'flex',
             justifyContent: 'space-between',
@@ -140,12 +154,21 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
               color="inherit"
               style={{ marginRight: '0.5rem' }}
             />
+            <Button
+              sx={{ mr: 1 }}
+              onClick={() => {
+                toggleScenePLrepeat();
+              }}
+            >
+              {scenePLrepeat ? <RepeatOn /> : <Repeat />}
+            </Button>
             sec
             <TextField
               variant="standard"
               sx={{
                 width: 70,
-                border: '1px solid #666',
+                border: '1px solid',
+                borderColor: theme.palette.divider,
                 marginRight: 1,
                 marginLeft: 1,
                 borderRadius: 1,
@@ -169,6 +192,9 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
               onClick={() => {
                 if (scenePLplay) {
                   setScenePLactiveIndex(-1);
+                } else {
+                  activateScene(scenePL[0]);
+                  setScenePLactiveIndex(0);
                 }
                 toggleScenePLplay();
               }}
