@@ -12,7 +12,7 @@ import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers';
 import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
-import { common, ledfxThemes, ledfxTheme } from './themes/AppThemes';
+import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes';
 
 export default function App() {
   const { height, width } = useWindowDimensions();
@@ -34,16 +34,16 @@ export default function App() {
         ...common,
         palette: {
           ...ledfxThemes[ledfxTheme].palette,
-          mode: darkMode ? 'dark' : 'light',
-          background: darkMode
-            ? {
-                default: '#030303',
-                paper: '#151515',
-              }
-            : {
-                default: '#bbb',
-                paper: '#fefefe',
-              },
+          // mode: darkMode ? 'dark' : 'light',
+          // background: darkMode
+          //   ? {
+          //       default: '#030303',
+          //       paper: '#151515',
+          //     }
+          //   : {
+          //       default: '#bbb',
+          //       paper: '#fefefe',
+          //     },
         },
       }),
     [darkMode]

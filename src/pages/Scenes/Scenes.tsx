@@ -9,6 +9,7 @@ import {
   Typography,
   Grid,
   Chip,
+  useTheme,
 } from '@mui/material';
 import useStore from '../../store/useStore';
 import NoYet from '../../components/NoYet';
@@ -55,6 +56,7 @@ const useStyles = makeStyles({
 
 const Scenes = () => {
   const classes = useStyles();
+  const theme = useTheme();
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
   const features = useStore((state) => state.features);
@@ -201,9 +203,15 @@ const Scenes = () => {
                 mt={['0.5rem', '0.5rem', 0, 0, 0]}
                 p="8px !important"
               >
-                <Card className={classes.root}>
+                <Card
+                  className={classes.root}
+                  sx={{
+                    border: '1px solid',
+                    borderColor: theme.palette.divider,
+                  }}
+                >
                   <CardActionArea
-                    style={{ background: '#090909' }}
+                    style={{ background: theme.palette.background.default }}
                     onClick={() => handleActivateScene(s)}
                   >
                     {sceneImage(scenes[s].scene_image || 'Wallpaper')}
@@ -218,8 +226,9 @@ const Scenes = () => {
                               key={t}
                               sx={{
                                 cursor: 'pointer',
-                                backgroundColor: '#333',
-                                border: '1px solid #999',
+                                backgroundColor: theme.palette.background.paper,
+                                border: '1px solid',
+                                borderColor: theme.palette.text.disabled,
                               }}
                             />
                           )
