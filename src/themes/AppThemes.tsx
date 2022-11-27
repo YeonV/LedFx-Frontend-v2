@@ -197,6 +197,10 @@ export const BladeLightTheme = createTheme({
     accent: {
       main: '#a00000',
     },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee',
+    },
   },
 });
 

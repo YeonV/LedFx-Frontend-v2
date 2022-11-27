@@ -80,8 +80,6 @@ export default function BarBottom() {
     setValue(pathname);
   }, [pathname]);
 
-  // console.log(bottomBarOpen);
-
   return (
     <>
       <BottomNavigation
@@ -92,8 +90,8 @@ export default function BarBottom() {
           position: 'fixed',
           bottom: 0,
           zIndex: 4,
-          boxShadow: '0px -10px 30px 25px #030303',
-          background: theme.palette.background.default,
+          boxShadow: `0px -10px 30px 25px ${theme.palette.background.default}`,
+          background: theme.palette.background.paper,
           transition: leftOpen
             ? theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.easeOut,

@@ -6,7 +6,7 @@ import {
   GridEventListener,
   GridRenderCellParams,
 } from '@mui/x-data-grid';
-import { Card, CardMedia, Typography } from '@mui/material';
+import { Card, CardMedia, Typography, useTheme } from '@mui/material';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import useStore from '../../store/useStore';
 
@@ -44,6 +44,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function ScenesRecent({ scenes, activateScene, title }: any) {
+  const theme = useTheme();
   const recentScenes = useStore((state) => state.recentScenes);
   const [theScenes, setTheScenes] = useState({});
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
@@ -69,7 +70,8 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
             pl: 1,
             pt: 0.5,
             pb: 0.5,
-            border: '1px solid #666',
+            border: '1px solid',
+            borderColor: theme.palette.divider,
             borderBottom: 0,
           }}
         >
