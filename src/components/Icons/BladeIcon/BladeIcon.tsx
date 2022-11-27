@@ -13,6 +13,7 @@ import { camelToSnake } from '../../../utils/helpers';
 import '../../../assets/materialdesignicons.css';
 import '../../../index.css';
 import { BladeIconDefaultProps, BladeIconProps } from './BladeIcon.interface';
+import HomeAssistantLogo from '../HomeAssistant';
 
 /**
  * Icon component supporting 2 libraries
@@ -78,6 +79,8 @@ function BladeIcon({
         <RazerMouse />
       ) : name.startsWith('razer:logo') ? (
         <RazerLogo />
+      ) : name.startsWith('homeAssistant') ? (
+        <HomeAssistantLogo />
       ) : name.startsWith('mdi:') ? (
         <span
           style={{ position: 'relative', display: 'flex' }}
