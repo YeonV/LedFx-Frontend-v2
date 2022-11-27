@@ -30,7 +30,7 @@ export const common = {
       },
       styleOverrides: {
         root: {
-          borderColor: 'rgba(255,255,255,0.23)',
+          borderColor: '#bbb',
         },
       },
     },

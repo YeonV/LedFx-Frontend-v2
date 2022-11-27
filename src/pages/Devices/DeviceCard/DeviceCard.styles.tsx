@@ -72,6 +72,7 @@ const useStyle = makeStyles(() => ({
     alignItems: 'center',
     width: '100%',
     height: '100%',
+    minHeight: '73px',
     padding: '0 0.3rem',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -111,6 +112,7 @@ const useStyle = makeStyles(() => ({
     margin: 0,
     padding: '0.5rem 80px 0.5rem 0.5rem',
     background: 'rgba(0,0,0,0.93)',
+    color: '#fff',
     '& > div, & > button': {
       flexGrow: 1,
       flexBasis: '30%',

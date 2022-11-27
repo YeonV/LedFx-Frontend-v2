@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { Slider, Input, TextField, Typography, useTheme } from '@mui/material';
+import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material';
 import useStyles from './BladeSlider.styles';
 import {
   BladeSliderDefaultProps,
@@ -21,6 +22,7 @@ const BladeSliderInner = ({
   hideDesc,
 }: BladeSliderInnerProps) => {
   const classes = useStyles();
+  const theme = useTheme();
   // eslint-disable-next-line
   const [value, setValue] = useState((model_id && typeof model[model_id]) === 'number' ? model_id && model[model_id] : typeof schema.default === 'number' ? schema.default : 1 );
   const handleSliderChange = (_event: any, newValue: any) => {
@@ -93,8 +95,13 @@ const BladeSliderInner = ({
         className={classes.input}
         style={
           model_id === 'delay_ms'
-            ? { minWidth: 90, textAlign: 'right', paddingTop: 0 }
-            : {}
+            ? {
+              minWidth: 90,
+              textAlign: 'right',
+              paddingTop: 0,
+              backgroundColor: theme.palette.divider,
+            }
+            : { backgroundColor: theme.palette.divider }
         }
         value={value}
         margin="dense"
@@ -138,7 +145,7 @@ const BladeSliderInner = ({
       value={value}
       onChange={handleTextChange}
       helperText={!hideDesc && schema.description}
-      style={{ ...style, width: '100%' }}
+      style={{ ...style, width: '100%', backgroundColor: theme.palette.background.paper }}
     />
   );
 };
@@ -172,10 +179,12 @@ const BladeSlider = ({
   const classes = useStyles();
   const theme = useTheme();
   return variant === 'outlined' ? (
-    <div
+    <Box
       className={`${classes.wrapper} step-effect-${index}`}
-      style={{
+      sx={{
         ...style,
+        border: '1px solid',
+        borderColor: theme.palette.divider,
         width: full ? '100%' : style.width,
         '& > label': {
           backgroundColor: theme.palette.background.paper,
@@ -188,8 +197,8 @@ const BladeSlider = ({
       <label
         style={{
           color: disabled
-            ? 'rgba(255, 255, 255, 0.5)'
-            : 'rgba(255, 255, 255, 0.7)',
+            ? theme.palette.text.disabled
+            : theme.palette.text.primary,
         }}
         className="MuiFormLabel-root"
       >
@@ -208,7 +217,7 @@ const BladeSlider = ({
         marks={marks}
         hideDesc={hideDesc}
       />
-    </div>
+    </Box>
   ) : (
     <BladeSliderInner
       style={style}

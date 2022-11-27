@@ -4,7 +4,8 @@ import { ReactElement } from 'react';
 const Root = styled('div')(({ theme }) => ({
   minWidth: '23.5%',
   padding: '16px 1.2rem 6px 1.2rem',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
+  border: '1px solid',
+  borderColor: theme.palette.divider,
   borderRadius: '10px',
   position: 'relative',
   display: 'flex',
