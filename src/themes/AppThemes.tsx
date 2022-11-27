@@ -185,7 +185,7 @@ export const BladeDarkPinkTheme = createTheme({
   },
 });
 
-export const BladeLightTheme = createTheme({
+export const BladeLightRedTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
@@ -203,12 +203,31 @@ export const BladeLightTheme = createTheme({
     },
   },
 });
+export const BladeLightBlueTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#03a9f4',
+    },
+    secondary: {
+      main: '#03a9f4',
+    },
+    accent: {
+      main: '#0288d1',
+    },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee',
+    },
+  },
+});
 
 export const ledfxThemes = {
   Dark: BladeDarkTheme,
   DarkRed: BladeDarkTheme,
   DarkOrange: BladeDarkOrangeTheme,
-  Light: BladeLightTheme,
+  LightRed: BladeLightRedTheme,
+  LightBlue: BladeLightBlueTheme,
   DarkGreen: BladeDarkGreenTheme,
   DarkBlue: BladeDarkBlueTheme,
   DarkGrey: BladeDarkGreyTheme,

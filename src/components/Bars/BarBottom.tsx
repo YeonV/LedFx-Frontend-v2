@@ -90,7 +90,7 @@ export default function BarBottom() {
           position: 'fixed',
           bottom: 0,
           zIndex: 4,
-          boxShadow: `0px -10px 30px 25px ${theme.palette.background.default}`,
+          boxShadow: `0px -1px 6px 5px ${theme.palette.background.default}`,
           background: theme.palette.background.paper,
           transition: leftOpen
             ? theme.transitions.create(['margin', 'width'], {

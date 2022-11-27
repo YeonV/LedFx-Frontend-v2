@@ -76,6 +76,7 @@ const LeftBar = () => {
         className={classes.drawerHeader}
         sx={{
           padding: theme.spacing(0, 1),
+          background: theme.palette.primary.main,
           ...theme.mixins.toolbar,
         }}
       >
