@@ -14,9 +14,10 @@ import {
   CardHeader,
   Switch,
   Link,
-  CardContent,
   useTheme,
+  Avatar,
 } from '@mui/material';
+import { InsertLink, QuestionMark } from '@mui/icons-material';
 import Popover from '../../../components/Popover/Popover';
 import useStore from '../../../store/useStore';
 import useIntegrationCardStyles from './IntegrationCard.styles';
@@ -62,7 +63,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={
+        subheader={`Current Status: ${
           integrations[integration].status === 3
             ? 'Connecting...'
             : integrations[integration].status === 2
@@ -72,7 +73,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
             : integrations[integration].status === 0
             ? 'Disconnected'
             : 'Unknown'
-        }
+        }`}
         action={
           <Switch
             aria-label="status"
@@ -80,24 +81,16 @@ const IntegrationCardQLC = ({ integration }: any) => {
             onClick={() => handleActivateIntegration(integrations[integration])}
           />
         }
+        avatar={
+          <Avatar
+            aria-label="recipe"
+            sx={{ width: 56, height: 56, color: '#fff' }}
+          >
+            Q
+          </Avatar>
+        }
       />
 
-      <Link target="_blank" href="http://127.0.0.1:9999">
-        {`QLC+ API: http://${integrations[integration].config.ip_address}:${integrations[integration].config.port}`}
-      </Link>
-      <CardContent>
-        {integrations[integration].status === 1 ? (
-          // <DialogAddEventListener integration={integrations[integration]} />
-          <div>...</div>
-        ) : (
-          <Link
-            target="_blank"
-            href="https://www.qlcplus.org/docs/html_en_EN/webinterface.html"
-          >
-            Click here for setup guide.
-          </Link>
-        )}
-      </CardContent>
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton
@@ -135,6 +128,37 @@ const IntegrationCardQLC = ({ integration }: any) => {
             >
               <EditIcon />
             </Button>
+            {integrations[integration].status !== 1 && (
+              <Link
+                target="_blank"
+                href="https://www.qlcplus.org/docs/html_en_EN/webinterface.html"
+                color={color}
+              >
+                <Button
+                  variant={variant}
+                  size="small"
+                  color={color}
+                  className={classes.editButton}
+                >
+                  <QuestionMark />
+                </Button>
+              </Link>
+            )}
+            {integrations[integration].status === 1 && (
+              <Link
+                target="_blank"
+                href={`http://${integrations[integration].config.ip_address}:${integrations[integration].config.port}`}
+              >
+                <Button
+                  variant={variant}
+                  size="small"
+                  color={color}
+                  className={classes.editButton}
+                >
+                  <InsertLink />
+                </Button>
+              </Link>
+            )}
             <QLCScreen
               icon={<AddIcon />}
               variant={variant}
