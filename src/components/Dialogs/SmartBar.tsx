@@ -129,7 +129,8 @@ const Bar = ({ handleClose, direct }: any) => {
               [
                 'DarkRed',
                 'DarkOrange',
-                'Light',
+                'LightRed',
+                'LightBlue',
                 'DarkGreen',
                 'DarkBlue',
                 'DarkGrey',
