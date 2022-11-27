@@ -72,7 +72,7 @@ const GradientPicker = ({
   return (
     <div
       className={`${classes.wrapper} step-effect-${index} gradient-picker`}
-      style={{ ...(wrapperStyle as any) }}
+      style={{ borderColor: theme.palette.divider, ...(wrapperStyle as any) }}
       // style={{
       //   ...wrapperStyle,
       //   '& > label': {
@@ -80,7 +80,10 @@ const GradientPicker = ({
       //   },
       // }}
     >
-      <label className="MuiFormLabel-root">
+      <label
+        className="MuiFormLabel-root"
+        style={{ background: theme.palette.background.paper }}
+      >
         {title &&
           title
             .replaceAll('_', ' ')
