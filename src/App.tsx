@@ -112,11 +112,6 @@ export default function App() {
     }
   }, [protoCall, showSnackbar]);
 
-  console.log(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDay()
-  );
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={5}>
