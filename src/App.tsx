@@ -13,6 +13,8 @@ import WaveLines from './components/Icons/waves';
 import Pages from './pages/Pages';
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider';
 import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes';
+import xmas from './assets/xmas.png';
+import newyear from './assets/fireworks.jpg';
 
 export default function App() {
   const { height, width } = useWindowDimensions();
@@ -110,6 +112,11 @@ export default function App() {
     }
   }, [protoCall, showSnackbar]);
 
+  console.log(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDay()
+  );
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={5}>
@@ -132,6 +139,46 @@ export default function App() {
             height={height}
           />
         )}
+        {new Date().getFullYear() === 2022 && (
+          <div
+            style={{
+              margin: 'auto',
+              backgroundImage: `url(${xmas})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'bottom',
+              display: 'block',
+              zIndex: -1,
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              opacity: 0.7,
+            }}
+          />
+        )}
+        {new Date().getFullYear() === 2023 &&
+          new Date().getMonth() === 0 &&
+          new Date().getDate() === 1 && (
+            <div
+              style={{
+                margin: 'auto',
+                backgroundImage: `url(${newyear})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'bottom right',
+                display: 'block',
+                zIndex: -1,
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                opacity: 0.7,
+              }}
+            />
+          )}
       </SnackbarProvider>
     </ThemeProvider>
   );
