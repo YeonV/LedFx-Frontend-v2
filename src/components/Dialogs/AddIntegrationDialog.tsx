@@ -99,9 +99,11 @@ const AddIntegrationDialog = () => {
         : undefined;
     }
 
-    const valid = currentSchema.required.every((val: string) =>
-      Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
-    );
+    const valid = !currentSchema.required
+      ? true
+      : currentSchema.required?.every((val: string) =>
+          Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
+        );
 
     if (!valid) {
       showSnackbar('warning', 'Please fill in all required fields.');
