@@ -183,21 +183,9 @@ const AddIntegrationDialog = () => {
                 <MenuItem
                   key={i}
                   value={item}
-                  disabled={
-                    ['mqtt_hass', 'spotify', 'qlc'].indexOf(item) === -1
-                  }
+                  disabled={integrationsTypes[item].beta}
                 >
-                  {item === 'spotify'
-                    ? 'Spotify'
-                    : item === 'qlc'
-                    ? 'QLC'
-                    : item === 'mqtt_hass'
-                    ? 'HomeAssistant (MQTT)'
-                    : item === 'mqtt'
-                    ? 'MQTT'
-                    : item === 'midi'
-                    ? 'MIDI'
-                    : item}
+                  {integrationsTypes[item].name}
                 </MenuItem>
               ))}
           </Select>
