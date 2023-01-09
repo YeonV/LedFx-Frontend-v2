@@ -52,12 +52,13 @@ const Segment = ({ s, i, virtual, segments }: any) => {
       (v: any) => virtuals[v].is_device === deviceId
     );
     setVirtualEffect(virtual.id, 'singleColor', { color: '#000000' }, false);
-    setVirtualEffect(
-      virtuals[vd!].id,
-      'singleColor',
-      { color: '#000000' },
-      false
-    );
+    if (vd)
+      setVirtualEffect(
+        virtuals[vd].id,
+        'singleColor',
+        { color: '#000000' },
+        false
+      );
     updateVirtualSegments(virtual.id, newSegments).then(() =>
       getVirtuals().then(() =>
         setVirtualEffect(virtual.id, 'singleColor', { color: '#FF0000' }, false)
