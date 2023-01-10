@@ -39,7 +39,7 @@ const TourScenes = ({ cally }: any) => {
         }}
       >
         <ListItemIcon>
-          <Badge variant="dot" color="primary" invisible={invisible}>
+          <Badge variant="dot" color="error" invisible={invisible}>
             <InfoRounded />
           </Badge>
         </ListItemIcon>

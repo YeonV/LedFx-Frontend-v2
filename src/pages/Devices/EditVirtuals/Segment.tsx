@@ -13,6 +13,7 @@ import useSegmentStyles from './Segment.styles';
 const Segment = ({ s, i, virtual, segments }: any) => {
   const getDevices = useStore((state) => state.getDevices);
   const devices = useStore((state) => state.devices);
+  const virtuals = useStore((state) => state.virtuals);
 
   const title =
     devices &&
@@ -23,6 +24,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     (state) => state.updateVirtualSegments
   );
   const getVirtuals = useStore((state) => state.getVirtuals);
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
 
   const handleInvert = () => {
     const newSegments = segments.map((seg: any[], index: number) =>
@@ -45,7 +47,23 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     const newSegments = segments.map((seg: any, index: number) =>
       index === i ? [seg[0], start, end, seg[3]] : seg
     );
-    updateVirtualSegments(virtual.id, newSegments).then(() => getVirtuals());
+    const deviceId = segments[i][0];
+    const vd = Object.keys(virtuals).find(
+      (v: any) => virtuals[v].is_device === deviceId
+    );
+    setVirtualEffect(virtual.id, 'singleColor', { color: '#000000' }, false);
+    if (vd)
+      setVirtualEffect(
+        virtuals[vd].id,
+        'singleColor',
+        { color: '#000000' },
+        false
+      );
+    updateVirtualSegments(virtual.id, newSegments).then(() =>
+      getVirtuals().then(() =>
+        setVirtualEffect(virtual.id, 'singleColor', { color: '#FF0000' }, false)
+      )
+    );
   };
 
   useEffect(() => {

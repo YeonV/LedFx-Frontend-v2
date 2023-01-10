@@ -6,6 +6,15 @@ import { Ledfx } from '../../api/ledfx';
 
 const storeVirtuals = (set: any) => ({
   virtuals: {} as any,
+  currentVirtual: null as null | string,
+  setCurrentVirtual: (v: null | string) =>
+    set(
+      produce((state: any) => {
+        state.currentVirtual = v;
+      }),
+      false,
+      'api/setCurrentVirtual'
+    ),
   getVirtuals: async () => {
     const resp = await Ledfx('/api/virtuals');
     if (resp) {

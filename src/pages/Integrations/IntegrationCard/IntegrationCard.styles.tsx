@@ -7,7 +7,7 @@ const useIntegrationCardStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'flex-start',
     flexDirection: 'column',
-    width: '290px',
+    width: '360px',
     justifyContent: 'space-between',
     '@media (max-width: 580px)': {
       maxWidth: '97vw',

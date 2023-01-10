@@ -71,29 +71,20 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
     };
     getMe();
   }, [integrations[integration].status, spAuthenticated]);
-  // eslint-disable-next-line no-console
-  // console.log('me', me);
 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
         subheader={integrations[integration].config.description}
-        // subheader={integrations[integration].status === 3
-        //     ? 'Connecting...'
-        //     : integrations[integration].status === 2
-        //     ? 'Disconnecting'
-        //     : integrations[integration].status === 1
-        //     ? 'Connected'
-        //     : integrations[integration].status === 0
-        //     ? 'Disconnected'
-        //     : 'Unknown'
-        // }
-        // avatar={
-        //   <Avatar aria-label="recipe">
-        //     <BladeIcon name="mdi:spotify" />
-        //   </Avatar>
-        // }
+        avatar={
+          <Avatar
+            aria-label="recipe"
+            sx={{ width: 56, height: 56, color: '#fff' }}
+          >
+            <BladeIcon name="mdi:spotify" style={{ fontSize: 46 }} />
+          </Avatar>
+        }
         action={
           <Switch
             aria-label="status"
@@ -163,16 +154,6 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
             >
               <EditIcon />
             </Button>
-            {/* <Button
-              variant={variant}
-              size="small"
-              color={color}
-              className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !spAuthenticated}
-              onClick={() => console.log('coming soon...')}
-            >
-              <AddIcon />
-            </Button> */}
             <SpotifyScreen
               icon={<BladeIcon name="mdi:spotify" />}
               variant={variant}

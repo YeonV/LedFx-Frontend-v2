@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import {
-  Button,
   Card,
   CardActionArea,
   CardActions,
@@ -10,20 +9,26 @@ import {
   Typography,
   Grid,
   Chip,
+  useTheme,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
 import useStore from '../../store/useStore';
-import Popover from '../../components/Popover/Popover';
 import NoYet from '../../components/NoYet';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-// import SmartBar from '../../components/Dialogs/SmartBar';
+// import ScenesTable from './ScenesTable';
+import ScenesRecent from './ScenesRecent';
+import ScenesMostUsed from './ScenesMostUsed';
+import ScenesPlaylist from './ScenesPlaylist';
+import ScenesMenu from './ScenesMenu';
 
 const useStyles = makeStyles({
   root: {
     width: 'min(92vw, 345px)',
   },
   sceneTitle: {
-    fontSize: '1.5rem',
+    fontSize: '1.1rem',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   '@media (max-width: 580px)': {
     root: {
@@ -31,6 +36,7 @@ const useStyles = makeStyles({
     },
     sceneTitle: {
       fontSize: '1rem',
+      cursor: 'default',
     },
   },
   media: {
@@ -50,29 +56,21 @@ const useStyles = makeStyles({
 
 const Scenes = () => {
   const classes = useStyles();
+  const theme = useTheme();
   const getScenes = useStore((state) => state.getScenes);
   const scenes = useStore((state) => state.scenes);
+  const features = useStore((state) => state.features);
   const activateScene = useStore((state) => state.activateScene);
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags);
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
   );
   const captivateScene = useStore((state) => state.captivateScene);
-  const deleteScene = useStore((state) => state.deleteScene);
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
+
   const handleActivateScene = (e: string) => {
-    // console.log('captivate', e, scenes[e]);
     activateScene(e);
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
-  };
-
-  const handleDeleteScene = (e: any) => {
-    deleteScene(e).then(() => {
-      getScenes();
-    });
   };
 
   const sceneImage = (iconName: string) =>
@@ -89,6 +87,7 @@ const Scenes = () => {
   useEffect(() => {
     getScenes();
   }, [getScenes]);
+
   return (
     <>
       <div
@@ -99,21 +98,87 @@ const Scenes = () => {
           flexDirection: 'column',
         }}
       >
-        {/* <SmartBar direct /> */}
-        <div>
-          {Object.keys(scenes)
-            .flatMap((s) => scenes[s].scene_tags?.split(','))
-            .filter((v, i, a) => a.indexOf(v) === i && v)
-            .map((t: string) => (
-              <Chip
-                variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}
-                sx={{ ml: 1, mt: 1, mr: 1 }}
-                key={t}
-                label={t}
-                onClick={() => toggletSceneActiveTag(t)}
+        {scenes && Object.keys(scenes).length && features.scenetables ? (
+          <Grid
+            container
+            spacing={[0, 0, 2, 2, 2]}
+            justifyContent="center"
+            m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
+            sx={{ maxWidth: '100%' }}
+          >
+            <Grid
+              item
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              mb={['5rem', '5rem', 0, 0, 0]}
+              p="8px !important"
+              width={450}
+            >
+              <ScenesRecent
+                scenes={scenes}
+                activateScene={handleActivateScene}
+                title="Recent Scenes"
               />
-            ))}
-        </div>
+            </Grid>
+            <Grid
+              item
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              mb={['5rem', '5rem', 0, 0, 0]}
+              p="8px !important"
+              width={450}
+            >
+              <ScenesMostUsed
+                scenes={scenes}
+                activateScene={handleActivateScene}
+                title="Most Used Scenes"
+              />
+            </Grid>
+            <Grid
+              item
+              mt={['0.5rem', '0.5rem', 0, 0, 0]}
+              mb={['5rem', '5rem', 0, 0, 0]}
+              p="8px !important"
+              width={450}
+            >
+              <ScenesPlaylist
+                scenes={scenes}
+                activateScene={handleActivateScene}
+                title="Playlist"
+              />
+            </Grid>
+          </Grid>
+        ) : null}
+        {scenes && Object.keys(scenes).length && features.scenechips ? (
+          <div>
+            {Object.keys(scenes)
+              .flatMap((s) =>
+                !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
+                  ? scenes[s].scene_tags.split(',')
+                  : null
+              )
+              .filter((n: string) => !!n && n.trim())
+              .filter((v, i, a) => a.indexOf(v) === i && v)
+              .map((t: string) => {
+                return (
+                  <Chip
+                    variant={
+                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
+                    }
+                    sx={{
+                      ml: 1,
+                      mt: 1,
+                      mr: 1,
+                      cursor: sceneActiveTags.includes(t)
+                        ? 'zoom-out'
+                        : 'zoom-in',
+                    }}
+                    key={t}
+                    label={t}
+                    onClick={() => toggletSceneActiveTag(t)}
+                  />
+                );
+              })}
+          </div>
+        ) : null}
       </div>
       <Grid
         container
@@ -130,60 +195,72 @@ const Scenes = () => {
                   .some((sce: string) => sceneActiveTags.includes(sce))
               )
             : Object.keys(scenes)
-          ).map((s, i) => (
-            <Grid item key={i} mt={['0.5rem', '0.5rem', 0, 0, 0]}>
-              <Card className={classes.root}>
-                <CardActionArea
-                  style={{ background: '#090909' }}
-                  onClick={() => handleActivateScene(s)}
-                >
-                  {sceneImage(scenes[s].scene_image || 'Wallpaper')}
-                  <div style={{ position: 'absolute', top: 0, right: 0 }}>
-                    {scenes[s].scene_tags?.split(',').map((t: string) => (
-                      <Chip label={t} key={t} />
-                    ))}
-                  </div>
-                </CardActionArea>
-                <CardActions
-                  style={{
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
+          ).map((s, i) => {
+            return (
+              <Grid
+                item
+                key={i}
+                mt={['0.5rem', '0.5rem', 0, 0, 0]}
+                p="8px !important"
+              >
+                <Card
+                  className={classes.root}
+                  sx={{
+                    border: '1px solid',
+                    borderColor: theme.palette.divider,
                   }}
                 >
-                  <Typography
-                    className={classes.sceneTitle}
-                    variant="h5"
-                    component="h2"
+                  <CardActionArea
+                    style={{ background: theme.palette.background.default }}
+                    onClick={() => handleActivateScene(s)}
                   >
-                    {scenes[s].name || s}
-                  </Typography>
-                  <div>
-                    <Button
-                      onClick={() =>
-                        setDialogOpenAddScene(false, true, s, scenes[s])
-                      }
-                      variant="outlined"
-                      color="inherit"
-                      size="small"
+                    {sceneImage(scenes[s].scene_image || 'Wallpaper')}
+                    <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                      {scenes[s].scene_tags?.split(',').map(
+                        (t: string) =>
+                          t.length > 0 &&
+                          features.scenechips && (
+                            <Chip
+                              variant="filled"
+                              label={t}
+                              key={t}
+                              sx={{
+                                cursor: 'pointer',
+                                backgroundColor: theme.palette.background.paper,
+                                border: '1px solid',
+                                borderColor: theme.palette.text.disabled,
+                              }}
+                            />
+                          )
+                      )}
+                    </div>
+                  </CardActionArea>
+                  <CardActions
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    <Typography
+                      className={classes.sceneTitle}
+                      variant="h5"
+                      component="h2"
                     >
-                      <Edit />
-                    </Button>
-                    <Popover
-                      onConfirm={() => handleDeleteScene(s)}
-                      variant="outlined"
-                      color="inherit"
-                      style={{ marginLeft: '0.5rem' }}
-                    />
-                  </div>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))
+                      {scenes[s].name || s}
+                    </Typography>
+                    <ScenesMenu sceneId={s} />
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })
         ) : (
           <NoYet type="Scene" />
         )}
       </Grid>
+
+      {/* {scenes && Object.keys(scenes).length && <ScenesTable scenes={scenes} />} */}
     </>
   );
 };

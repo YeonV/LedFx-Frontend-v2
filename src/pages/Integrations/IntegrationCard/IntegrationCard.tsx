@@ -5,10 +5,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import Collapse from '@mui/material/Collapse';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import IconButton from '@mui/material/IconButton';
-import { CardActions, CardHeader, Switch, useTheme } from '@mui/material';
+import {
+  Avatar,
+  CardActions,
+  CardHeader,
+  Switch,
+  useTheme,
+} from '@mui/material';
 import Popover from '../../../components/Popover/Popover';
 import useStore from '../../../store/useStore';
 import useIntegrationCardStyles from './IntegrationCard.styles';
+import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon';
 // import SpotifyView from '../Spotify/SpotifyAuth';
 
 const IntegrationCard = ({ integration }: any) => {
@@ -56,6 +63,21 @@ const IntegrationCard = ({ integration }: any) => {
             checked={integrations[integration].active}
             onClick={() => handleActivateIntegration(integrations[integration])}
           />
+        }
+        avatar={
+          <Avatar
+            aria-label="recipe"
+            sx={{ width: 56, height: 56, color: '#fff' }}
+          >
+            <BladeIcon
+              name={
+                integrations[integration].config.name.startsWith('Home')
+                  ? 'homeAssistant'
+                  : 'mdi:spotify'
+              }
+              style={{ fontSize: 48 }}
+            />
+          </Avatar>
         }
       />
       <CardActions style={{ alignSelf: 'flex-end' }}>

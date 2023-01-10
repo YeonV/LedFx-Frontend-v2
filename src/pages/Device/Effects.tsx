@@ -222,7 +222,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
           <Card variant="outlined" style={{ marginTop: '1rem' }}>
             <CardContent style={{ padding: '0 16px' }}>
               <Accordion
-                style={{ padding: 0 }}
+                style={{ padding: 0, boxShadow: 'none' }}
                 defaultExpanded
                 // defaultExpanded={viewMode !== 'user'}
               >

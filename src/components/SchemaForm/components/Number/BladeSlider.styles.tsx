@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles(() => ({
   input: {
     marginLeft: '1rem',
-    backgroundColor: 'rgb(57, 57, 61)',
+    // backgroundColor: 'rgb(57, 57, 61)',
     paddingLeft: '0.5rem',
     borderRadius: '5px',
     paddingTop: '3px',
@@ -12,7 +12,8 @@ const useStyles = makeStyles(() => ({
     // minWidth: '220px',
     width: '49%',
     padding: '16px 1.2rem 6px 1.2rem',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    // border: '1px solid',
+    // borderColor: theme.palette.divider,
     borderRadius: '10px',
     position: 'relative',
     display: 'flex',
