@@ -76,6 +76,11 @@ const TopBar = () => {
   const features = useStore((state) => state.features);
   const [anchorEl, setAnchorEl] = useState(null);
   const platform = useStore((state) => state.platform);
+  const invDevice = useStore((state) => state.tours.device);
+  const invSettings = useStore((state) => state.tours.settings);
+  const invIntegrations = useStore((state) => state.tours.integrations);
+  const invDevices = useStore((state) => state.tours.devices);
+  const invScenes = useStore((state) => state.tours.scenes);
 
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
@@ -232,6 +237,7 @@ const TopBar = () => {
                 </IconButton>
               </Box>
             )}
+
             <IconButton
               aria-label="display more actions"
               edge="end"
@@ -240,7 +246,25 @@ const TopBar = () => {
               className="step-two"
               style={{ marginLeft: '1rem' }}
             >
-              <MoreVert />
+              <Badge
+                variant="dot"
+                color="error"
+                invisible={
+                  pathname.split('/')[1] === 'device'
+                    ? invDevice
+                    : pathname.split('/')[1] === 'Scenes'
+                    ? invScenes
+                    : pathname.split('/')[1] === 'Settings'
+                    ? invSettings
+                    : pathname.split('/')[1] === 'Devices'
+                    ? invDevices
+                    : pathname.split('/')[1] === 'Integrations'
+                    ? invIntegrations
+                    : false
+                }
+              >
+                <MoreVert />
+              </Badge>
             </IconButton>
           </div>
 
@@ -262,7 +286,7 @@ const TopBar = () => {
                         ? 'logged in'
                         : localStorage.getItem('ledfx-cloud-role')
                     }
-                    color="secondary"
+                    color="primary"
                   >
                     <GitHub />
                   </StyledBadge>

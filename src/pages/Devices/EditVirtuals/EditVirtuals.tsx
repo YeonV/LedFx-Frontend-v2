@@ -37,7 +37,7 @@ const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
   );
 });
 
-export default function FullScreenDialog({
+export default function EditVirtuals({
   virtId,
   icon = <Settings />,
   startIcon,
@@ -49,12 +49,18 @@ export default function FullScreenDialog({
   onClick = () => {},
   innerKey,
 }: any) {
+  const currentVirtual = useStore((state) => state.currentVirtual);
+  const setCurrentVirtual = useStore((state) => state.setCurrentVirtual);
   const classes = useEditVirtualsStyles();
   const showSnackbar = useStore((state) => state.ui.showSnackbar);
   const getDevices = useStore((state) => state.getDevices);
   const virtuals = useStore((state) => state.virtuals);
-  const virtual = virtuals[virtId];
-  const [open, setOpen] = React.useState(false);
+  // const editVirtual = useStore((state) => state.dialogs.editVirtual);
+  const setDialogOpenEditVirtual = useStore(
+    (state) => state.setDialogOpenEditVirtual
+  );
+  const virtual = virtuals[currentVirtual || virtId];
+  const [open, setOpen] = React.useState(!!currentVirtual || false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -70,6 +76,8 @@ export default function FullScreenDialog({
       );
     } else {
       setOpen(false);
+      setDialogOpenEditVirtual(false);
+      setCurrentVirtual(null);
       onClick();
     }
   };
@@ -77,6 +85,12 @@ export default function FullScreenDialog({
   useEffect(() => {
     getDevices();
   }, [getDevices]);
+
+  useEffect(() => {
+    if (currentVirtual && type === 'hidden') {
+      setOpen(true);
+    }
+  }, [currentVirtual]);
 
   return virtual && virtual.config ? (
     <>
@@ -92,7 +106,7 @@ export default function FullScreenDialog({
           <ListItemIcon>{icon}</ListItemIcon>
           {label}
         </MuiMenuItem>
-      ) : (
+      ) : type === 'hidden' ? null : (
         <Button
           variant={variant}
           startIcon={startIcon}

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const WaveLines = ({
-  backgroundColor = '#030303',
+  backgroundColor = 'transparent',
   startColor = '#1db954',
   stopColor = '#030303',
   width = 3000,

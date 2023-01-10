@@ -1,4 +1,5 @@
 import { Icon, IconButton, Snackbar, Alert, AlertColor } from '@mui/material';
+import { useEffect } from 'react';
 import useStore from '../../store/useStore';
 
 const MessageBar = () => {
@@ -6,10 +7,17 @@ const MessageBar = () => {
     (state) => state.ui.snackbar
   );
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
+  const setCurrentVirtual = useStore((state) => state.setCurrentVirtual);
 
   function handleClose() {
     clearSnackbar();
   }
+
+  useEffect(() => {
+    if (typeof message === 'string' && message.startsWith('Created Virtual ')) {
+      setCurrentVirtual(message.replace('Created Virtual ', ''));
+    }
+  }, [message]);
 
   return (
     <Snackbar

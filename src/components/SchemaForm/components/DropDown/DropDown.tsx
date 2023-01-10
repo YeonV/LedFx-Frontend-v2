@@ -32,8 +32,17 @@ const EffectDropDown = ({
   };
 
   return (
-    <FormControl className={`${classes.FormRow} step-device-one`}>
-      <InputLabel htmlFor="groupsed-select" sx={{ p: '0 !important' }}>
+    <FormControl
+      className={`${classes.FormRow} step-device-one`}
+      style={{ borderColor: theme.palette.divider }}
+    >
+      <InputLabel
+        htmlFor="groupsed-select"
+        sx={{
+          p: '0 10px !important',
+          background: theme.palette.background.paper,
+        }}
+      >
         {title}
       </InputLabel>
       <Select

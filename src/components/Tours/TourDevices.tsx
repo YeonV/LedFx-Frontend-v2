@@ -10,7 +10,7 @@ const steps = [
     content: (
       <div>
         <h2>Devices</h2>
-        Add at least one device using the red button to get specific tour.
+        Add at least one device using the PLUS button to get specific tour.
       </div>
     ),
     style: {
@@ -110,7 +110,7 @@ const TourDevices = ({ cally }: any) => {
         }}
       >
         <ListItemIcon>
-          <Badge variant="dot" color="primary" invisible={invisible}>
+          <Badge variant="dot" color="error" invisible={invisible}>
             <InfoRounded />
           </Badge>
         </ListItemIcon>

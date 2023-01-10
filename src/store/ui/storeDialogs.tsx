@@ -21,6 +21,10 @@ const storeDialogs = (set: any) => ({
       open: false,
       edit: {} as any,
     },
+    editVirtual: {
+      open: false,
+      edit: {} as any,
+    },
     addIntegration: {
       open: false,
       edit: {} as any,
@@ -76,6 +80,17 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/AddVirtual'
+    ),
+  setDialogOpenEditVirtual: (open: boolean, edit?: boolean) =>
+    set(
+      produce((state: any) => {
+        state.dialogs.editVirtual = {
+          open,
+          edit,
+        };
+      }),
+      false,
+      'api/dialog/EditVirtual'
     ),
   setDialogOpenAddIntegration: (open: boolean, edit?: boolean) =>
     set(

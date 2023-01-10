@@ -30,7 +30,7 @@ export const common = {
       },
       styleOverrides: {
         root: {
-          borderColor: 'rgba(255,255,255,0.23)',
+          borderColor: '#bbb',
         },
       },
     },
@@ -42,7 +42,9 @@ export const common = {
     MuiSelect: {
       defaultProps: {
         variant: 'standard' as 'filled' | 'outlined' | 'standard' | undefined,
-        disableUnderline: true,
+        // inputProps: {
+        //   disableUnderline: true,
+        // },
       },
     },
     MuiDialog: {
@@ -96,6 +98,9 @@ export const BladeDarkBlueTheme = createTheme({
     },
     accent: {
       main: '#0018c',
+    },
+    error: {
+      main: '#a00000',
     },
     background: {
       default: '#030303',
@@ -180,7 +185,7 @@ export const BladeDarkPinkTheme = createTheme({
   },
 });
 
-export const BladeLightTheme = createTheme({
+export const BladeLightRedTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
@@ -192,6 +197,28 @@ export const BladeLightTheme = createTheme({
     accent: {
       main: '#a00000',
     },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee',
+    },
+  },
+});
+export const BladeLightBlueTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#03a9f4',
+    },
+    secondary: {
+      main: '#03a9f4',
+    },
+    accent: {
+      main: '#0288d1',
+    },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee',
+    },
   },
 });
 
@@ -199,7 +226,8 @@ export const ledfxThemes = {
   Dark: BladeDarkTheme,
   DarkRed: BladeDarkTheme,
   DarkOrange: BladeDarkOrangeTheme,
-  Light: BladeLightTheme,
+  LightRed: BladeLightRedTheme,
+  LightBlue: BladeLightBlueTheme,
   DarkGreen: BladeDarkGreenTheme,
   DarkBlue: BladeDarkBlueTheme,
   DarkGrey: BladeDarkGreyTheme,

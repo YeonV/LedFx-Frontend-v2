@@ -80,6 +80,31 @@ jobs:
           asset_path: ./ledfx_frontend_v2.zip
           asset_name: ledfx_frontend_v2.zip
           asset_content_type: application/zip
+          
+      - name: Prepare Trigger
+        id: get-id
+        run: |
+          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
+          echo "::set-output name=id::$id"
+      - name: Trigger Build
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Build LedFx
+          repo: YeonV/LedFx-Builds
+          token: ${{ secrets.FRONTEND_TOKEN }}
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.ftp_server }}
+          FTP_USERNAME: ${{ secrets.ftp_username }}
+          FTP_PASSWORD: ${{ secrets.ftp_password }}
+          PORT: 22
+          METHOD: sftp
+          LOCAL_DIR: ./ledfx_frontend_v2/
+          REMOTE_DIR: ./preview.ledfx.app/
+          
+          
       - name: Build project Hass
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
@@ -105,16 +130,17 @@ jobs:
           asset_path: ./ledfx_frontend_hass.zip
           asset_name: ledfx_frontend_hass.zip
           asset_content_type: application/zip
-
-      - name: Prepare Trigger
-        id: get-id
+      - name: Prepare Trigger Hass
+        id: hass
         run: |
-          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
+          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f1,2,3)
           echo "::set-output name=id::$id"
-      - name: Trigger Build
+      - name: Trigger Hass
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: Build LedFx
-          repo: YeonV/LedFx-Builds
-          token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
+          workflow: Builder
+          repo: YeonV/home-assistant-addons
+          ref: refs/heads/master
+          token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
+          inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
+

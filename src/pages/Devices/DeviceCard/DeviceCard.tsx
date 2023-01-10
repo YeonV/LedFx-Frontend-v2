@@ -100,7 +100,11 @@ const DeviceCard = ({
               className={`${classes.virtualIcon} ${
                 !graphsActive ? 'graphs' : ''
               } ${expanded ? 'extended' : ''}`}
-              style={{ zIndex: 3, opacity: online ? 1 : 0.3 }}
+              style={{
+                zIndex: 3,
+                opacity: online ? 1 : 0.3,
+                color: expanded ? '#fff' : '',
+              }}
               card
             />
           </div>
