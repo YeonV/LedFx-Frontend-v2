@@ -61,7 +61,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
       );
     updateVirtualSegments(virtual.id, newSegments).then(() =>
       getVirtuals().then(() =>
-        setVirtualEffect(virtual.id, 'singleColor', { color: '#FF0000' }, false)
+        setVirtualEffect(virtual.id, 'rainbow', { speed: 10 }, true)
       )
     );
   };
