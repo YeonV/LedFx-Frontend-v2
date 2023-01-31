@@ -7,6 +7,8 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Button,
+  useTheme,
 } from '@mui/material';
 import {
   Add,
@@ -16,6 +18,7 @@ import {
   SettingsInputSvideo,
 } from '@mui/icons-material';
 import useStore from '../store/useStore';
+import GlobalActionBar from './GlobalActionBar';
 
 const PREFIX = 'AddButton';
 
@@ -58,6 +61,7 @@ const StyledMenu = ({ open, ...props }: any) => (
 );
 
 const AddButton = ({ className, style, setBackdrop, sx }: any) => {
+  const theme = useTheme();
   const setDialogOpenAddScene = useStore(
     (state) => state.setDialogOpenAddScene
   );
@@ -129,35 +133,103 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
     });
   }
   return (
-    <Root className={className} style={{ zIndex: 5, ...style }} sx={sx}>
-      <Fab
-        color="primary"
-        variant="circular"
-        aria-label="add"
-        onClick={handleClick}
+    <>
+      <Root
+        className={`${className} hideHd`}
+        style={{ zIndex: 5, ...style }}
+        sx={sx}
       >
-        <Add />
-      </Fab>
-      <StyledMenu
-        id="customized-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        classes={{
-          paper: classes.paper,
+        <Fab
+          color="primary"
+          variant="circular"
+          aria-label="add"
+          onClick={handleClick}
+        >
+          <Add />
+        </Fab>
+        <StyledMenu
+          id="customized-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          classes={{
+            paper: classes.paper,
+          }}
+        >
+          {menuitems.map((menuitem) => (
+            <MenuLine
+              key={menuitem.name}
+              name={menuitem.name}
+              icon={menuitem.icon}
+              action={menuitem.action}
+            />
+          ))}
+        </StyledMenu>
+      </Root>
+      <div
+        className="showHd"
+        style={{
+          position: 'fixed',
+          bottom: 56,
+          left: 0,
+          right: 0,
+          paddingLeft: 32,
+          paddingRight: 32,
+          height: 56,
+          display: 'flex',
+          justifyContent: 'space-between',
+          background: theme.palette.background.paper,
+          alignItems: 'center',
+          zIndex: 10,
         }}
       >
-        {menuitems.map((menuitem) => (
-          <MenuLine
-            key={menuitem.name}
-            name={menuitem.name}
-            icon={menuitem.icon}
-            action={menuitem.action}
-          />
-        ))}
-      </StyledMenu>
-    </Root>
+        <GlobalActionBar
+          sx={{
+            flexGrow: 1,
+            paddingRight: 2,
+            paddingLeft: 0,
+            color: theme.palette.primary.main,
+          }}
+          height={15}
+          type="button"
+        />
+        <Root
+          className={className}
+          // style={{ zIndex: 5, ...style, position: 'relative', bottom: 0 }}
+          // sx={sx}
+        >
+          <Button
+            color="primary"
+            variant="contained"
+            aria-label="add"
+            onClick={handleClick}
+            sx={{ borderRadius: 3 }}
+          >
+            <Add />
+          </Button>
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            classes={{
+              paper: classes.paper,
+            }}
+          >
+            {menuitems.map((menuitem) => (
+              <MenuLine
+                key={menuitem.name}
+                name={menuitem.name}
+                icon={menuitem.icon}
+                action={menuitem.action}
+              />
+            ))}
+          </StyledMenu>
+        </Root>
+      </div>
+    </>
   );
 };
 

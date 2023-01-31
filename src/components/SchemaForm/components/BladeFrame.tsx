@@ -42,6 +42,7 @@ interface BladeFrameProps {
   variant?: 'outlined' | 'contained' | 'inherit';
   className?: any;
   disabled?: boolean;
+  labelStyle?: any;
 }
 
 const BladeFrame = ({
@@ -54,6 +55,7 @@ const BladeFrame = ({
   variant = 'outlined',
   className,
   disabled,
+  labelStyle = {},
 }: BladeFrameProps): ReactElement<any, any> => {
   return variant === 'outlined' ? (
     <Root
@@ -64,6 +66,7 @@ const BladeFrame = ({
       }}
     >
       <label
+        style={{ ...labelStyle }}
         className={`MuiFormLabel-root${
           disabled ? ' Mui-disabled' : ''
         }  step-effect-${index}`}
@@ -91,6 +94,7 @@ BladeFrame.defaultProps = {
   variant: 'outlined',
   className: undefined,
   disabled: undefined,
+  labelStyle: undefined,
 };
 
 export default BladeFrame;

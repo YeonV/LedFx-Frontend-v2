@@ -21,6 +21,7 @@ const UICard = () => {
   const features = useStore((state) => state.features);
 
   const [fps, setFps] = useState(30);
+  const [globalBrightness, setGlobalBrightness] = useState(100);
   const [pixelLength, setPixelLength] = useState(50);
 
   const setSystemSetting = (setting: string, value: any) => {
@@ -86,6 +87,42 @@ const UICard = () => {
               inputProps={{
                 min: 1,
                 max: 60,
+                type: 'number',
+                'aria-labelledby': 'input-slider',
+              }}
+            />
+          </SettingsRow>
+          <SettingsRow title="Global Brightness" step="two">
+            <SettingsSlider
+              value={globalBrightness}
+              step={1}
+              min={0}
+              max={100}
+              onChangeCommitted={(_e: any, val: any) =>
+                setSystemSetting('global_brightness', val / 100)
+              }
+              onChange={(_e: any, val: any) => {
+                setGlobalBrightness(val);
+              }}
+            />
+            <Input
+              disableUnderline
+              className={sliderClasses.input}
+              style={{ width: 50 }}
+              value={globalBrightness}
+              margin="dense"
+              onChange={(e) => {
+                setGlobalBrightness(parseInt(e.target.value, 10));
+              }}
+              onBlur={(e) => {
+                setSystemSetting(
+                  'global_brightness',
+                  parseInt(e.target.value, 10)
+                );
+              }}
+              inputProps={{
+                min: 0,
+                max: 100,
                 type: 'number',
                 'aria-labelledby': 'input-slider',
               }}
