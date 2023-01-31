@@ -39,6 +39,8 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import Popover from '../../components/Popover/Popover';
 import TourHome from '../../components/Tours/TourHome';
 import SmartBar from '../../components/Dialogs/SmartBar';
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
+import GlobalActionBar from '../../components/GlobalActionBar';
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -221,7 +223,7 @@ const Dashboard = () => {
               />
             )}
           </Box>
-          <Tooltip title="Play / Pause LedFx Effect-streaming">
+          {/* <Tooltip title="Play / Pause LedFx Effect-streaming">
             <Fab
               aria-label="play-pause"
               onClick={() => {
@@ -239,7 +241,7 @@ const Dashboard = () => {
             >
               {paused ? <PlayArrow /> : <PauseOutlined />}
             </Fab>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Clear Frontend Data">
             <span style={{ margin: 0 }}>
               <Popover
@@ -254,7 +256,7 @@ const Dashboard = () => {
               />
             </span>
           </Tooltip>
-          <Tooltip title="SmartBar (CTRL+ALT+Y/Z)">
+          {/* <Tooltip title="SmartBar (CTRL+ALT+Y/Z)">
             <Fab
               aria-label="smartbar"
               onClick={() => setSmartBarOpen(true)}
@@ -270,7 +272,7 @@ const Dashboard = () => {
             >
               <Dvr />
             </Fab>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Guided Tour">
             <span style={{ margin: 0 }}>
               <TourHome className="step-one" variant="fab" />
@@ -354,6 +356,17 @@ const Dashboard = () => {
             </Fab>
           </Tooltip>
         </Stack>
+
+        <BladeFrame
+          labelStyle={{
+            background: theme.palette.background.default,
+            color: theme.palette.primary.main,
+          }}
+          style={{ borderColor: theme.palette.primary.main, paddingLeft: 10 }}
+          title="Global Actions"
+        >
+          <GlobalActionBar />
+        </BladeFrame>
       </Stack>
     </div>
   );
