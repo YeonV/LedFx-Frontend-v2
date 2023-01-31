@@ -38,6 +38,8 @@ import TourSettings from '../Tours/TourSettings';
 import TourDevices from '../Tours/TourDevices';
 import TourIntegrations from '../Tours/TourIntegrations';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon';
+import GlobalActionBar from '../GlobalActionBar';
+import pkg from '../../../package.json';
 
 const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -56,6 +58,8 @@ const TopBar = () => {
   const open = useStore(
     (state) => state.ui.bars && state.ui.bars?.leftBar.open
   );
+  const latestTag = useStore((state) => state.ui.latestTag);
+  const setLatestTag = useStore((state) => state.ui.setLatestTag);
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen);
   // const darkMode = useStore((state) => state.ui.darkMode);
   // const setDarkMode = useStore((state) => state.ui.setDarkMode);
@@ -115,6 +119,18 @@ const TopBar = () => {
   useEffect(() => {
     setIsLogged(!!localStorage.getItem('jwt'));
   }, [pathname]);
+
+  useEffect(() => {
+    const latest = async () => {
+      const res = await fetch(
+        'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
+      );
+      const resp = await res.json();
+      console.log(resp.tag_name !== latestTag);
+      return resp.tag_name;
+    };
+    latest().then((r: any) => r !== latestTag && setLatestTag(r));
+  }, []);
 
   useEffect(() => {
     const handleDisconnect = (e: any) => {
@@ -195,12 +211,30 @@ const TopBar = () => {
           </div>
 
           <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
-            {pathname === '/'
-              ? 'LedFx'
-              : pathname.split('/').length === 3 &&
-                pathname.split('/')[1] === 'device'
-              ? virtuals[pathname.split('/')[2]]?.config.name
-              : pathname.split('/').pop()}
+            {pathname === '/' ? (
+              <>
+                {`LedFx v${pkg.version}`}
+                {latestTag !== pkg.version ? (
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={() =>
+                      window.open(
+                        'https://github.com/YeonV/LedFx-Builds/releases/latest'
+                      )
+                    }
+                    sx={{ ml: 2 }}
+                  >
+                    New Update
+                  </Button>
+                ) : null}
+              </>
+            ) : pathname.split('/').length === 3 &&
+              pathname.split('/')[1] === 'device' ? (
+              virtuals[pathname.split('/')[2]]?.config.name
+            ) : (
+              pathname.split('/').pop()
+            )}
           </Typography>
           <div
             style={{
@@ -210,6 +244,7 @@ const TopBar = () => {
               right: 16,
             }}
           >
+            <GlobalActionBar className="hideHd" />
             {disconnected && (
               <Box>
                 <IconButton
