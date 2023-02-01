@@ -126,7 +126,6 @@ const TopBar = () => {
         'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
       );
       const resp = await res.json();
-      console.log(resp.tag_name !== latestTag);
       return resp.tag_name;
     };
     latest().then((r: any) => r !== latestTag && setLatestTag(r));
@@ -214,7 +213,7 @@ const TopBar = () => {
             {pathname === '/' ? (
               <>
                 {`LedFx v${pkg.version}`}
-                {latestTag !== pkg.version ? (
+                {latestTag !== `v${pkg.version}` ? (
                   <Button
                     color="error"
                     variant="contained"
@@ -295,7 +294,7 @@ const TopBar = () => {
                     ? invDevices
                     : pathname.split('/')[1] === 'Integrations'
                     ? invIntegrations
-                    : false
+                    : true
                 }
               >
                 <MoreVert />

@@ -6,7 +6,7 @@ export interface PopoverProps {
    * Render as [Button](https://mui.com/api/button/) or [MenuItem](https://mui.com/api/menu-item/) <br />
    * examples: [Button](https://mui.com/components/buttons/), [MenuItem](https://mui.com/components/menu-item/)
    */
-  type?: 'menuItem' | 'button' | 'fab';
+  type?: 'menuItem' | 'button' | 'fab' | 'iconbutton';
   /**
    * Set the [variant](https://mui.com/components/buttons/#basic-button)
    */

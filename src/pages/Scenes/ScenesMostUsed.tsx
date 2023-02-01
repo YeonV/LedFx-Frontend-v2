@@ -10,40 +10,12 @@ import { Card, CardMedia, Typography, useTheme } from '@mui/material';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import useStore from '../../store/useStore';
 
-const sceneImage = (iconName: string) =>
-  iconName && iconName.startsWith('image:') ? (
-    <CardMedia
-      image={iconName.split('image:')[1]}
-      title="Contemplative Reptile"
-      sx={{ width: '100%', height: '100%' }}
-    />
-  ) : (
-    <BladeIcon scene name={iconName} />
-  );
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  {
-    field: 'scene_image',
-    headerName: 'Image',
-    width: 150,
-    renderCell: (params: GridRenderCellParams<string>) =>
-      sceneImage(params.value || 'Wallpaper'),
-  },
-  {
-    field: 'name',
-    headerName: 'Name',
-    width: 220,
-  },
-  {
-    field: 'used',
-    headerName: 'Used',
-    type: 'number',
-    width: 20,
-  },
-];
-
-export default function ScenesMostUsed({ scenes, activateScene, title }: any) {
+export default function ScenesMostUsed({
+  scenes,
+  activateScene,
+  title,
+  db,
+}: any) {
   const theme = useTheme();
   const count = useStore((state) => state.count);
   const [mostUsedScenes, setMostUsedScenes] = useState({});
@@ -60,27 +32,74 @@ export default function ScenesMostUsed({ scenes, activateScene, title }: any) {
     });
   }, [scenes, count]);
 
+  const sceneImage = (iconName: string) =>
+    iconName && iconName.startsWith('image:') ? (
+      <CardMedia
+        image={iconName.split('image:')[1]}
+        title="Contemplative Reptile"
+        sx={{ width: '100%', height: '100%' }}
+      />
+    ) : (
+      <BladeIcon scene name={iconName} />
+    );
+
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    {
+      field: 'scene_image',
+      headerName: 'Image',
+      width: db ? 100 : 150,
+      renderCell: (params: GridRenderCellParams<string>) =>
+        sceneImage(params.value || 'Wallpaper'),
+    },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: db ? 136 : 220,
+    },
+    {
+      field: 'used',
+      headerName: 'Used',
+      type: 'number',
+      width: 20,
+    },
+  ];
+
   return (
-    <Card>
-      <Box sx={{ height: 293, width: '100%', maxWidth: '470px', m: '0 auto' }}>
-        <Typography
-          color="GrayText"
-          variant="h6"
-          sx={{
-            pl: 1,
-            pt: 0.5,
-            pb: 0.5,
-            border: '1px solid',
-            borderColor: theme.palette.divider,
-            borderBottom: 0,
-          }}
-        >
-          {title}
-        </Typography>
+    <Card
+      sx={{
+        background: db ? 'transparent' : '',
+        borderColor: db ? 'transparent' : '',
+      }}
+    >
+      <Box
+        sx={{
+          height: db ? 301 : 293,
+          width: '100%',
+          maxWidth: '470px',
+          m: '0 auto',
+        }}
+      >
+        {!db && (
+          <Typography
+            color="GrayText"
+            variant="h6"
+            sx={{
+              pl: 1,
+              pt: 0.5,
+              pb: 0.5,
+              border: '1px solid',
+              borderColor: db ? 'transparent' : theme.palette.divider,
+              borderBottom: 0,
+            }}
+          >
+            {title}
+          </Typography>
+        )}
         <DataGrid
           onRowClick={handleEvent}
           rowHeight={50}
-          columns={columns}
+          columns={db ? columns.filter((c) => c.field !== 'used') : columns}
           hideFooter
           headerHeight={1}
           pageSize={5}
@@ -104,6 +123,7 @@ export default function ScenesMostUsed({ scenes, activateScene, title }: any) {
             },
           }}
           sx={{
+            borderColor: db ? 'transparent' : theme.palette.divider,
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important',
             },
