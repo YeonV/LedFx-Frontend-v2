@@ -7,6 +7,7 @@ import {
   Popover as PopoverOriginal,
   useTheme,
   Fab,
+  IconButton,
 } from '@mui/material';
 import { Delete, Close, Check } from '@mui/icons-material';
 import { useLongPress } from 'use-long-press';
@@ -134,6 +135,15 @@ const Popover = ({
           {label}
           {!startIcon && !noIcon && icon}
         </Button>
+      ) : type === 'iconbutton' ? (
+        <IconButton
+          color={color}
+          style={style}
+          onClick={(e) => openPopover(e)}
+          disabled={disabled}
+        >
+          {!startIcon && !noIcon && icon}
+        </IconButton>
       ) : (
         <Fab
           aria-label="clear-data"

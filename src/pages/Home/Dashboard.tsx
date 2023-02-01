@@ -20,6 +20,10 @@ import {
   CircularProgress as CircularProgress5,
   Fab,
   Tooltip,
+  IconButton,
+  Icon,
+  createSvgIcon,
+  SvgIcon,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -33,7 +37,7 @@ import {
 } from '@mui/icons-material';
 import green from '@mui/material/colors/green';
 import useStore from '../../store/useStore';
-import { deleteFrontendConfig } from '../../utils/helpers';
+import { deleteFrontendConfig, sleep } from '../../utils/helpers';
 import Gauge from './Gauge';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import Popover from '../../components/Popover/Popover';
@@ -41,24 +45,29 @@ import TourHome from '../../components/Tours/TourHome';
 import SmartBar from '../../components/Dialogs/SmartBar';
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
 import GlobalActionBar from '../../components/GlobalActionBar';
-
-const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
+import DbButton from './DbButton';
+import DbLinks from './DbLinks';
+import DbRow from './DbRow';
+import DbStats from './DbStats';
+import DbConfig from './DbConfig';
+import DbGlobalActions from './DbGlobalActions';
+import DbScenes from './DbScenes';
+import DbScenesPL from './DbScenesPL';
 
 const Dashboard = () => {
   const theme = useTheme();
+  const db = true;
   const navigate = useNavigate();
   const scanForDevices = useStore((state) => state.scanForDevices);
   const devices = useStore((state) => state.devices);
   const virtuals = useStore((state) => state.virtuals);
   const scenes = useStore((state) => state.scenes);
   const integrations = useStore((state) => state.integrations);
-  const paused = useStore((state) => state.paused);
-  const togglePause = useStore((state) => state.togglePause);
+
   const config = useStore((state) => state.config);
   const getDevices = useStore((state) => state.getDevices);
   const getVirtuals = useStore((state) => state.getVirtuals);
+
   const getScenes = useStore((state) => state.getScenes);
   const [scanning, setScanning] = useState(-1);
   const setSmartBarOpen = useStore(
@@ -103,7 +112,7 @@ const Dashboard = () => {
   //     .map((e: any) => Object.keys(e).length)
   //     .reduce((a: number, b: number) => a + b)
   // );
-
+  console.log(config);
   return (
     <div className="Content">
       <Stack spacing={[0, 0, 2, 2, 2]} alignItems="center">
@@ -177,7 +186,7 @@ const Dashboard = () => {
           />
         </Stack>
 
-        <SmartBar direct />
+        {db ? <SmartBar direct /> : <SmartBar direct />}
         <Stack spacing={2} direction="row">
           <Box sx={{ m: 1, position: 'relative' }}>
             <Tooltip title="Scan for WLED Devices">
@@ -356,17 +365,19 @@ const Dashboard = () => {
             </Fab>
           </Tooltip>
         </Stack>
+        <Stack direction="row" gap={2}>
+          <Stack>
+            <DbScenes />
+            <DbScenesPL />
+          </Stack>
 
-        <BladeFrame
-          labelStyle={{
-            background: theme.palette.background.default,
-            color: theme.palette.primary.main,
-          }}
-          style={{ borderColor: theme.palette.primary.main, paddingLeft: 10 }}
-          title="Global Actions"
-        >
-          <GlobalActionBar />
-        </BladeFrame>
+          <Stack>
+            <DbGlobalActions />
+            <DbLinks />
+            <DbStats />
+            <DbConfig />
+          </Stack>
+        </Stack>
       </Stack>
     </div>
   );

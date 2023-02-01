@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, IconButton, Slider, Stack, useTheme } from '@mui/material';
-import { PauseOutlined, PlayArrow } from '@mui/icons-material';
+import { Brightness7, PauseOutlined, PlayArrow } from '@mui/icons-material';
 // import { SettingsSlider } from '../pages/Settings/SettingsComponents';
 import useStore from '../store/useStore';
 
@@ -13,7 +13,7 @@ const GlobalActionBar = ({
   className?: any;
   sx?: any;
   height?: number;
-  type?: 'button' | 'icon';
+  type?: 'button' | 'icon' | 'indicator';
 }) => {
   const theme = useTheme();
   const [globalBrightness, setGlobalBrightness] = useState(100);
@@ -47,7 +47,7 @@ const GlobalActionBar = ({
         >
           {paused ? <PlayArrow /> : <PauseOutlined />}
         </IconButton>
-      ) : (
+      ) : type === 'button' ? (
         <Button
           variant="contained"
           color="primary"
@@ -62,7 +62,11 @@ const GlobalActionBar = ({
         >
           {paused ? <PlayArrow /> : <PauseOutlined />}
         </Button>
+      ) : (
+        // <BladeIcon name="Brightness7" />
+        <Brightness7 sx={{ ml: 2, mr: 2 }} />
       )}
+
       <Slider
         sx={{
           height,

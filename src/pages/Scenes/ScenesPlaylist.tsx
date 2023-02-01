@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardMedia,
+  IconButton,
   TextField,
   Typography,
   useTheme,
@@ -21,63 +22,12 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import useStore from '../../store/useStore';
 import Popover from '../../components/Popover/Popover';
 
-const sceneImage = (iconName: string) =>
-  iconName && iconName.startsWith('image:') ? (
-    <CardMedia
-      image={iconName.split('image:')[1]}
-      title="Contemplative Reptile"
-      sx={{ width: '100%', height: '100%' }}
-    />
-  ) : (
-    <BladeIcon scene name={iconName} />
-  );
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 0 },
-  {
-    field: 'scene_image',
-    headerName: 'Image',
-    width: 150,
-    renderCell: (params: GridRenderCellParams<string>) =>
-      sceneImage(params.value || 'Wallpaper'),
-  },
-  {
-    field: 'name',
-    headerName: 'Name',
-    width: 220,
-    renderCell: (params: GridRenderCellParams<string>) => (
-      <Typography
-        variant="body2"
-        sx={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {params.value}
-      </Typography>
-    ),
-  },
-  {
-    field: 'scene_id',
-    headerName: 'Scene ID',
-    width: 100,
-    renderCell: (params: GridRenderCellParams<string>) => {
-      const removeScene2PL = useStore((state) => state.removeScene2PL);
-      return (
-        <Button
-          onClick={() => removeScene2PL(params.id as number)}
-          size="small"
-          variant="text"
-        >
-          <PlaylistRemove />
-        </Button>
-      );
-    },
-  },
-];
-
-export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
+export default function ScenesPlaylist({
+  scenes,
+  title,
+  activateScene,
+  db,
+}: any) {
   const theme = useTheme();
   const [theScenes, setTheScenes] = useState([]);
   const scenePL = useStore((state) => state.scenePL);
@@ -128,9 +78,77 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
     }
   }, [scenePLplay, scenePLactiveIndex]);
 
+  const sceneImage = (iconName: string) =>
+    iconName && iconName.startsWith('image:') ? (
+      <CardMedia
+        image={iconName.split('image:')[1]}
+        title="Contemplative Reptile"
+        sx={{ width: '100%', height: '100%' }}
+      />
+    ) : (
+      <BladeIcon scene name={iconName} />
+    );
+
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 0 },
+    {
+      field: 'scene_image',
+      headerName: 'Image',
+      width: db ? 100 : 150,
+      renderCell: (params: GridRenderCellParams<string>) =>
+        sceneImage(params.value || 'Wallpaper'),
+    },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: db ? 136 : 220,
+      renderCell: (params: GridRenderCellParams<string>) => (
+        <Typography
+          variant="body2"
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {params.value}
+        </Typography>
+      ),
+    },
+    {
+      field: 'scene_id',
+      headerName: 'Scene ID',
+      width: 100,
+      renderCell: (params: GridRenderCellParams<string>) => {
+        const removeScene2PL = useStore((state) => state.removeScene2PL);
+        return (
+          <Button
+            onClick={() => removeScene2PL(params.id as number)}
+            size="small"
+            variant="text"
+          >
+            <PlaylistRemove />
+          </Button>
+        );
+      },
+    },
+  ];
+
   return (
-    <Card>
-      <Box sx={{ height: 293, width: '100%', maxWidth: '470px', m: '0 auto' }}>
+    <Card
+      sx={{
+        background: db ? 'transparent' : '',
+        borderColor: db ? 'transparent' : '',
+      }}
+    >
+      <Box
+        sx={{
+          height: db ? 301 : 293,
+          width: '100%',
+          maxWidth: '470px',
+          m: '0 auto',
+        }}
+      >
         <Typography
           color="GrayText"
           variant="h6"
@@ -139,7 +157,7 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
             pt: 0.5,
             pb: 0.5,
             border: '1px solid',
-            borderColor: theme.palette.divider,
+            borderColor: db ? 'transparent' : theme.palette.divider,
             borderBottom: 0,
             display: 'flex',
             justifyContent: 'space-between',
@@ -147,22 +165,40 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
           }}
         >
           {title}
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              color: db ? theme.palette.text.primary : '',
+            }}
+          >
             <Popover
               onConfirm={() => setScenePL([])}
               variant="outlined"
               color="inherit"
               style={{ marginRight: '0.5rem' }}
+              type="iconbutton"
             />
-            <Button
-              sx={{ mr: 1 }}
-              onClick={() => {
-                toggleScenePLrepeat();
-              }}
-            >
-              {scenePLrepeat ? <RepeatOn /> : <Repeat />}
-            </Button>
-            sec
+            {db ? (
+              <IconButton
+                sx={{ mr: 1 }}
+                onClick={() => {
+                  toggleScenePLrepeat();
+                }}
+              >
+                {scenePLrepeat ? <RepeatOn /> : <Repeat />}
+              </IconButton>
+            ) : (
+              <Button
+                sx={{ mr: 1 }}
+                onClick={() => {
+                  toggleScenePLrepeat();
+                }}
+              >
+                {scenePLrepeat ? <RepeatOn /> : <Repeat />}
+              </Button>
+            )}
+            {db ? '' : 'sec'}
             <TextField
               variant="standard"
               sx={{
@@ -187,20 +223,37 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
               value={scenePLinterval}
               onChange={(e: any) => setScenePLinterval(e.target.value)}
             />
-            <Button
-              sx={{ mr: 1 }}
-              onClick={() => {
-                if (scenePLplay) {
-                  setScenePLactiveIndex(-1);
-                } else {
-                  activateScene(scenePL[0]);
-                  setScenePLactiveIndex(0);
-                }
-                toggleScenePLplay();
-              }}
-            >
-              {scenePLplay ? <Stop /> : <PlayArrow />}
-            </Button>
+            {db ? (
+              <IconButton
+                sx={{ mr: 1 }}
+                onClick={() => {
+                  if (scenePLplay) {
+                    setScenePLactiveIndex(-1);
+                  } else {
+                    activateScene(scenePL[0]);
+                    setScenePLactiveIndex(0);
+                  }
+                  toggleScenePLplay();
+                }}
+              >
+                {scenePLplay ? <Stop /> : <PlayArrow />}
+              </IconButton>
+            ) : (
+              <Button
+                sx={{ mr: 1 }}
+                onClick={() => {
+                  if (scenePLplay) {
+                    setScenePLactiveIndex(-1);
+                  } else {
+                    activateScene(scenePL[0]);
+                    setScenePLactiveIndex(0);
+                  }
+                  toggleScenePLplay();
+                }}
+              >
+                {scenePLplay ? <Stop /> : <PlayArrow />}
+              </Button>
+            )}
           </div>
         </Typography>
 
@@ -236,6 +289,7 @@ export default function ScenesPlaylist({ scenes, title, activateScene }: any) {
             },
           }}
           sx={{
+            borderColor: db ? 'transparent' : theme.palette.divider,
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important',
             },
