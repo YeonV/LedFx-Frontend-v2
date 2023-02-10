@@ -18,6 +18,7 @@ const storeFeatures = (set: any) => ({
     frequencies: false,
     go: false,
     dashboard: false,
+    dashboardDetailed: false,
     scenetables: false,
     scenechips: false,
     sceneexternal: false,

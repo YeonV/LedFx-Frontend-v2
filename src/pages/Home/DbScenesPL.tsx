@@ -25,7 +25,7 @@ const DbScenesPL = () => {
         padding: 20,
         minWidth: 280,
       }}
-      title="Most used Scenes"
+      title="Scenes Playlist"
     >
       <Stack width="100%">
         <ScenesPlaylist

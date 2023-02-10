@@ -65,6 +65,14 @@ function createSocket() {
             })
           );
         }
+        if (JSON.parse(event.data).event_type === 'graph_update') {
+          console.log('yyyyy', event.data);
+          document.dispatchEvent(
+            new CustomEvent('YZoldDev', {
+              detail: 'graph_update',
+            })
+          );
+        }
       },
       // onreconnect: e => console.log('Reconnecting...', e),
       // onmaximum: e => console.log('Stop Attempting!', e),

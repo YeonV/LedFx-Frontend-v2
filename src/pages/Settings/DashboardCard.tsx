@@ -15,6 +15,15 @@ const DashboardCard = () => {
           onChange={() => setFeatures('dashboard', !features.dashboard)}
         />
       </div>
+      <div className={`${classes.settingsRow} step-settings-x `}>
+        <label>Detailed Dashboard</label>
+        <SettingsSwitch
+          checked={features.dashboardDetailed}
+          onChange={() =>
+            setFeatures('dashboardDetailed', !features.dashboardDetailed)
+          }
+        />
+      </div>
     </div>
   );
 };
