@@ -21,6 +21,7 @@ import FX from '../../components/Icons/FX';
 import ButtonBar from '../../components/ButtonBar';
 import Dashboard from './Dashboard';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+import DashboardDetailed from './DashboardDetailed';
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -51,7 +52,11 @@ export default function Home() {
       });
   };
   return features.dashboard ? (
-    <Dashboard />
+    features.dashboardDetailed ? (
+      <DashboardDetailed />
+    ) : (
+      <Dashboard />
+    )
   ) : (
     <>
       <div className="Content">

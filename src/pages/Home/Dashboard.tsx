@@ -365,19 +365,6 @@ const Dashboard = () => {
             </Fab>
           </Tooltip>
         </Stack>
-        <Stack direction="row" gap={2}>
-          <Stack>
-            <DbScenes />
-            <DbScenesPL />
-          </Stack>
-
-          <Stack>
-            <DbGlobalActions />
-            <DbLinks />
-            <DbStats />
-            <DbConfig />
-          </Stack>
-        </Stack>
       </Stack>
     </div>
   );

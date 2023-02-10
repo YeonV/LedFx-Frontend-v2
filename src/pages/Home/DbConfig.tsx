@@ -19,7 +19,7 @@ const DbConfig = () => {
         borderColor: theme.palette.primary.main,
         padding: 20,
         minWidth: 280,
-        marginBottom: '5rem',
+        // marginBottom: '5rem',
       }}
       title="Core Config"
     >
