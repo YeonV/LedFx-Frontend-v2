@@ -8,6 +8,7 @@ import { Ledfx } from '../../api/ledfx';
 
 const storeScenes = (set: any) => ({
   scenes: {} as any,
+  mostUsedScenes: {} as any,
   recentScenes: [] as string[],
   count: {} as any,
   scenePL: [] as any,
@@ -40,6 +41,18 @@ const storeScenes = (set: any) => ({
       }),
       false,
       'setScenePLinterval'
+    );
+  },
+  setMostUsedScenes: (key: string, count: number) => {
+    set(
+      produce((s: any) => {
+        s.mostUsedScenes[key] = {
+          ...s.scenes[key],
+          used: count,
+        };
+      }),
+      false,
+      'setMostUsedScenes'
     );
   },
   setScenePL: (scenes: string[]) => {
