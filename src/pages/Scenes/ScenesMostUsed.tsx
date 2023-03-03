@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import {
   DataGrid,
@@ -18,18 +18,17 @@ export default function ScenesMostUsed({
 }: any) {
   const theme = useTheme();
   const count = useStore((state) => state.count);
-  const [mostUsedScenes, setMostUsedScenes] = useState({});
+  // const [mostUsedScenes, setMostUsedScenes] = useState({});
+  const mostUsedScenes = useStore((state) => state.mostUsedScenes);
+  const setMostUsedScenes = useStore((state) => state.setMostUsedScenes);
+
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
     );
 
   useEffect(() => {
-    const current = {} as any;
-    Object.keys(count).map((key: string) => {
-      current[key] = { ...scenes[key], used: count[key] };
-      return setMostUsedScenes(current);
-    });
+    Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]));
   }, [scenes, count]);
 
   const sceneImage = (iconName: string) =>
