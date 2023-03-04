@@ -1,8 +1,4 @@
-/* eslint-disable default-case */
-/* eslint-disable no-console */
 /* eslint-disable import/no-cycle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
 
 import produce from 'immer';
@@ -34,7 +30,7 @@ const storeQLCActions = (set: any) => ({
       false,
       'qlc/setQLCData'
     ),
-  getQLCTriggers: async (id: string) => {
+  getQLCTriggers: async () => {
     const resp = await Ledfx('/api/integrations', set, 'GET');
     // const res = await resp.json()
     if (resp) {
@@ -82,7 +78,7 @@ const storeQLCActions = (set: any) => ({
         set(
           produce((state: IStore) => {
             state.qlc.qlcTriggersList = [
-              ...state.addToQLCTriggerList, // @mattallmighty check this
+              // ...state.addToQLCTriggerList, // @mattallmighty check this
               newTrigger,
             ];
           }),
@@ -90,6 +86,7 @@ const storeQLCActions = (set: any) => ({
           'qlc/addToTriggerList'
         );
         break;
+      default:
     }
   },
   getQLCWidgets: async () => {
