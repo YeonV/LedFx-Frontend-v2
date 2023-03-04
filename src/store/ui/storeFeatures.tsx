@@ -19,6 +19,11 @@ type IFeatures =
   | 'frequencies'
   | 'go'
   | 'dashboard'
+  | 'beta'
+  | 'sceneexternal'
+  | 'dashboardDetailed'
+  | 'scenetables'
+  | 'scenechips'
   | 'alpha';
 const storeFeatures = (set: any) => ({
   features: {
@@ -60,6 +65,11 @@ const storeFeatures = (set: any) => ({
     frequencies: false,
     go: false,
     dashboard: false,
+    dashboardDetailed: false,
+    scenetables: false,
+    scenechips: false,
+    sceneexternal: false,
+    beta: false,
     alpha: false,
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
