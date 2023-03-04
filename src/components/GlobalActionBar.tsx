@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, IconButton, Slider, Stack, useTheme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 import { Brightness7, PauseOutlined, PlayArrow } from '@mui/icons-material';
 // import { SettingsSlider } from '../pages/Settings/SettingsComponents';
 import useStore from '../store/useStore';
@@ -10,8 +11,8 @@ const GlobalActionBar = ({
   height,
   type,
 }: {
-  className?: any;
-  sx?: any;
+  className?: string | undefined;
+  sx?: SxProps<Theme> | undefined;
   height?: number;
   type?: 'button' | 'icon' | 'indicator';
 }) => {
