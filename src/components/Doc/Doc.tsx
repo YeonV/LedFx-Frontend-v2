@@ -23,7 +23,12 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
   }
 );
 
-type Props = { _?: never; className?: any; onClick?: any; children?: any };
+type Props = {
+  _?: never;
+  className?: string | undefined;
+  onClick?: any;
+  children?: any;
+};
 
 const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
   const { children } = props;

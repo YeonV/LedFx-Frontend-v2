@@ -40,7 +40,7 @@ interface BladeFrameProps {
   style?: any;
   required?: boolean;
   variant?: 'outlined' | 'contained' | 'inherit';
-  className?: any;
+  className?: string | undefined;
   disabled?: boolean;
   labelStyle?: any;
 }

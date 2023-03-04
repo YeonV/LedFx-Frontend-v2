@@ -26,7 +26,12 @@ const Transition = React.forwardRef<unknown, TransitionProps>(
     return <Slide direction="up" ref={ref} {...(props as any)} />;
   }
 );
-type Props = { _?: never; children?: any; className?: any; onClick?: any };
+type Props = {
+  _?: never;
+  children?: any;
+  className?: string | undefined;
+  onClick?: any;
+};
 
 const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
   const { children } = props;
