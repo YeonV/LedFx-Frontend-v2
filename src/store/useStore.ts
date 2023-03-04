@@ -66,4 +66,7 @@ const useStore = create(
   )
 );
 
+const state = useStore.getState();
+export type IStore = typeof state;
+
 export default useStore;

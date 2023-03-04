@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import type { IStore } from '../useStore';
 
 const storeDialogs = (set: any) => ({
   dialogs: {
@@ -32,10 +33,10 @@ const storeDialogs = (set: any) => ({
   },
   setDialogOpen: (open: boolean, edit?: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.nohost = {
           open,
-          edit,
+          edit: edit || false,
         };
       }),
       false,
@@ -45,15 +46,15 @@ const storeDialogs = (set: any) => ({
     open: boolean,
     edit?: boolean,
     sceneKey?: string,
-    editData?: object
+    editData?: string
   ) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.addScene = {
           open,
-          edit,
-          sceneKey,
-          editData,
+          edit: edit || false,
+          sceneKey: sceneKey || '',
+          editData: editData || '',
         };
       }),
       false,
@@ -61,7 +62,7 @@ const storeDialogs = (set: any) => ({
     ),
   setDialogOpenAddDevice: (open: boolean, edit?: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.addDevice = {
           open,
           edit,
@@ -72,7 +73,7 @@ const storeDialogs = (set: any) => ({
     ),
   setDialogOpenAddVirtual: (open: boolean, edit?: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.addVirtual = {
           open,
           edit,
@@ -83,7 +84,7 @@ const storeDialogs = (set: any) => ({
     ),
   setDialogOpenEditVirtual: (open: boolean, edit?: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.editVirtual = {
           open,
           edit,
@@ -94,7 +95,7 @@ const storeDialogs = (set: any) => ({
     ),
   setDialogOpenAddIntegration: (open: boolean, edit?: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.addIntegration = {
           open,
           edit,

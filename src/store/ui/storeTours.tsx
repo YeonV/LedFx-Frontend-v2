@@ -1,5 +1,8 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import type { IStore } from '../useStore';
+// eslint-disable-next-line prettier/prettier
+type ITours = 'home' | 'devices' | 'device' | 'integrations' | 'scenes' | 'settings';
 
 const storeTours = (set: any) => ({
   tours: {
@@ -10,9 +13,9 @@ const storeTours = (set: any) => ({
     scenes: false,
     settings: false,
   },
-  setTour: (tour: string): void =>
+  setTour: (tour: ITours): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.tours[tour] = true;
       }),
       false,

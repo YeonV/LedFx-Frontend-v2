@@ -1,3 +1,5 @@
+import { SpotifyState } from './SpotifyState';
+
 const storeSpotify = () => ({
   spotifyEmbedUrl:
     'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
@@ -16,6 +18,10 @@ const storeSpotify = () => ({
   spActTriggers: [] as string[],
   playlist: [] as any,
   me: {} as any,
+  spotifyState: {} as SpotifyState,
+  spotifyVol: 0,
+  spotifyPos: null as any,
+  spotify: null as any,
 });
 
 export default storeSpotify;

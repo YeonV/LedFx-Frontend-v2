@@ -3,13 +3,14 @@
 /* eslint-disable import/no-cycle */
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
+import type { IStore } from '../useStore';
 
 const storeVirtuals = (set: any) => ({
   virtuals: {} as any,
   currentVirtual: null as null | string,
   setCurrentVirtual: (v: null | string) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.currentVirtual = v;
       }),
       false,
@@ -19,7 +20,7 @@ const storeVirtuals = (set: any) => ({
     const resp = await Ledfx('/api/virtuals');
     if (resp) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.paused = resp.paused;
         }),
         false,
@@ -27,7 +28,7 @@ const storeVirtuals = (set: any) => ({
       );
       if (resp && resp.virtuals) {
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             state.virtuals = resp.virtuals;
           }),
           false,
@@ -58,7 +59,7 @@ const storeVirtuals = (set: any) => ({
 
     if (resp && resp.effect) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.virtuals[virtId].effect = {
             type: resp.effect.type,
             name: resp.effect.name,
@@ -84,7 +85,7 @@ const storeVirtuals = (set: any) => ({
     if (resp && resp.status && resp.status === 'success') {
       if (resp && resp.effect) {
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             state.virtuals[virtId].effect = {
               type: resp.effect.type,
               name: resp.effect.name,
@@ -104,7 +105,7 @@ const storeVirtuals = (set: any) => ({
     if (resp && resp.status && resp.status === 'success') {
       if (resp && resp.effect) {
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             state.virtuals[virtId].effect = {
               type: resp.effect.type,
               name: resp.effect.name,

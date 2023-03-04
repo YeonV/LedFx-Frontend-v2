@@ -1,6 +1,25 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import type { IStore } from '../useStore';
 
+type IFeatures =
+  | 'dev'
+  | 'cloud'
+  | 'wled'
+  | 'integrations'
+  | 'spotify'
+  | 'spotifypro'
+  | 'youtube'
+  | 'webaudio'
+  | 'waves'
+  | 'streamto'
+  | 'effectfilter'
+  | 'transitions'
+  | 'frequencies'
+  | 'go'
+  | 'dashboard'
+  | 'alpha';
 const storeFeatures = (set: any) => ({
   features: {
     dev: false,
@@ -43,17 +62,17 @@ const storeFeatures = (set: any) => ({
     dashboard: false,
     alpha: false,
   },
-  setFeatures: (feat: string, use: boolean): void =>
+  setFeatures: (feat: IFeatures, use: boolean): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.features[feat] = use;
       }),
       false,
       'ui/setFeature'
     ),
-  setShowFeatures: (feat: string, show: boolean): void =>
+  setShowFeatures: (feat: IFeatures, show: boolean): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.showFeatures[feat] = show;
       }),
       false,
