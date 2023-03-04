@@ -3,13 +3,14 @@
 /* eslint-disable import/no-cycle */
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
+import type { IStore } from '../useStore';
 
 const storeActions = (set: any) => ({
   scanForDevices: async () => {
     const resp = await Ledfx('/api/find_devices', 'POST', {});
     if (!(resp && resp.status === 'success')) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.dialogs.nohost.open = true;
         }),
         false,

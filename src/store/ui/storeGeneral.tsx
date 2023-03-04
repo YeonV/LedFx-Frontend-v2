@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
 import isElectron from 'is-electron';
+import type { IStore } from '../useStore';
 
 const storeGeneral = (set: any) => ({
   host: isElectron()
@@ -9,7 +10,7 @@ const storeGeneral = (set: any) => ({
   setHost: (host: any) => {
     window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
     return set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.host = host;
       }),
       false,
@@ -19,7 +20,7 @@ const storeGeneral = (set: any) => ({
   platform: 'yz',
   setPlatform: (platform: string) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.platform = platform;
       }),
       false,
@@ -28,7 +29,7 @@ const storeGeneral = (set: any) => ({
   protoCall: '',
   setProtoCall: (msg: string) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.protoCall = msg;
       }),
       false,
@@ -37,7 +38,7 @@ const storeGeneral = (set: any) => ({
   disconnected: false,
   setDisconnected: (dis: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.disconnected = dis;
       }),
       false,
@@ -46,7 +47,7 @@ const storeGeneral = (set: any) => ({
   streamingToDevices: [] as string[],
   setStreamingToDevices: (devices: any) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.streamingToDevices = devices;
       }),
       false,
@@ -58,7 +59,7 @@ const storeGeneral = (set: any) => ({
   graphs: true,
   toggleGraphs: () => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.graphs = !state.graphs;
       }),
       false,
@@ -68,7 +69,7 @@ const storeGeneral = (set: any) => ({
   graphsMulti: false,
   toggleGraphsMulti: () => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.graphsMulti = !state.graphsMulti;
       }),
       false,
@@ -76,10 +77,10 @@ const storeGeneral = (set: any) => ({
     );
   },
 
-  pixelGraphs: [],
-  setPixelGraphs: (virtuals: any): void =>
+  pixelGraphs: [] as string[],
+  setPixelGraphs: (virtuals: string[]): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.pixelGraphs = [...virtuals];
       }),
       false,
@@ -88,7 +89,7 @@ const storeGeneral = (set: any) => ({
   viewMode: 'user',
   setViewMode: (mode: string): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.viewMode = mode;
       }),
       false,
@@ -98,7 +99,7 @@ const storeGeneral = (set: any) => ({
   isLogged: false,
   setIsLogged: (logged: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.isLogged = logged;
       }),
       false,
@@ -111,7 +112,7 @@ const storeGeneral = (set: any) => ({
   },
   increase: (by: number) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.animals.bears += by;
       })
     ),

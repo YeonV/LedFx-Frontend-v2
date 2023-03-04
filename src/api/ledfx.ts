@@ -5,7 +5,7 @@ import isElectron from 'is-electron';
 // import { useStore } from '@/store/useStore';
 // eslint-disable-next-line import/no-cycle
 import useStore from '../store/useStore';
-
+import type { IStore } from '../store/useStore';
 // eslint-disable-next-line prettier/prettier
 const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host');
@@ -41,7 +41,7 @@ export const Ledfx = async (
     // console.log('1:', response);
     if (response.data && response.data.payload) {
       setState(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.ui.snackbar = {
             isOpen: true,
             messageType: response.data.payload.type || 'error',
@@ -60,7 +60,7 @@ export const Ledfx = async (
     // console.log('3:', response);
     if (response.payload) {
       setState(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.ui.snackbar = {
             isOpen: true,
             messageType: response.payload.type || 'error',
@@ -76,7 +76,7 @@ export const Ledfx = async (
     if (response.status === 200) {
       // console.log('4eyyy:', response);
       setState(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.disconnected = false;
         })
       );
@@ -84,7 +84,7 @@ export const Ledfx = async (
     }
     // console.log('5:', response);
     return setState(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.snackbar = {
           isOpen: true,
           messageType: 'error',
@@ -95,7 +95,7 @@ export const Ledfx = async (
   } catch (error: any) {
     if (error.message) {
       return setState(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.ui.snackbar = {
             isOpen: true,
             messageType: 'error',
@@ -105,7 +105,7 @@ export const Ledfx = async (
       );
     }
     setState(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.snackbar = {
           isOpen: true,
           messageType: 'error',

@@ -3,6 +3,7 @@
 /* eslint-disable import/no-cycle */
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
+import type { IStore } from '../useStore';
 
 const storeConfig = (set: any) => ({
   schemas: {} as any,
@@ -24,7 +25,7 @@ const storeConfig = (set: any) => ({
     const resp = await Ledfx('/api/config');
     if (resp && resp.host) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.config = {
             ...resp,
             ...{
@@ -41,7 +42,7 @@ const storeConfig = (set: any) => ({
       );
     } else {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.dialogs.nohost.open = true;
         }),
         false,
@@ -55,7 +56,7 @@ const storeConfig = (set: any) => ({
       return { ...resp, ...{ ledfx_presets: undefined } };
     }
     return set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.dialogs.nohost.open = true;
       }),
       false,

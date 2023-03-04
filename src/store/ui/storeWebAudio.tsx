@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
 import produce from 'immer';
+import type { IStore } from '../useStore';
 
 const storeWebAudio = (set: any) => ({
   webAud: false,
   setWebAud: (newState: any) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.webAud = newState;
       }),
       false,
@@ -15,7 +16,7 @@ const storeWebAudio = (set: any) => ({
   webAudName: '',
   setWebAudName: (newState: any) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.webAudName = newState;
       }),
       false,
@@ -26,7 +27,7 @@ const storeWebAudio = (set: any) => ({
   clientDevices: null as any,
   setClientDevice: (newState: any) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.clientDevice = newState;
       }),
       false,
@@ -35,7 +36,7 @@ const storeWebAudio = (set: any) => ({
   },
   setClientDevices: (newState: any) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.clientDevices = newState;
       }),
       false,

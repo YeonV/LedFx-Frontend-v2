@@ -4,30 +4,32 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
+
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
+import type { IStore } from '../useStore';
 
 const storeQLCActions = (set: any) => ({
   setQLCEmbedUrl: (url: string) =>
     set(
-      produce((state: any) => {
-        state.qlc.qlcEmbedUrl = url;
+      produce((state: IStore) => {
+        state.qlc.QLCEmbedUrl = url;
       }),
       false,
       'qlc/setQLCEmbedUrl'
     ),
   setQLCPos: (pos: any) =>
     set(
-      produce((state: any) => {
-        state.qlc.qlcPos = pos;
+      produce((state: IStore) => {
+        state.qlc.QLCPos = pos;
       }),
       false,
       'qlc/setQLCPos'
     ),
   setQLCData: (type: string, data: any) =>
     set(
-      produce((state: any) => {
-        state.qlc.qlcData[type] = data;
+      produce((state: IStore) => {
+        state.qlc.QLCData[type] = data;
       }),
       false,
       'qlc/setQLCData'
@@ -37,7 +39,7 @@ const storeQLCActions = (set: any) => ({
     // const res = await resp.json()
     if (resp) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.qlc.qlc = resp.qlc;
         }),
         false,
@@ -47,8 +49,8 @@ const storeQLCActions = (set: any) => ({
   },
   setQLCActTriggers: async (ids: string[]) => {
     set(
-      produce((state: any) => {
-        state.qlc.qlcActTriggers = ids;
+      produce((state: IStore) => {
+        state.qlc.QLCActTriggers = ids;
       }),
       false,
       'qlc/setTriggers'
@@ -56,8 +58,8 @@ const storeQLCActions = (set: any) => ({
   },
   removeQLCActTriggers: async (id: string) => {
     set(
-      produce((state: any) => {
-        state.qlc.qlcActTriggers = state.qlc.qlcActTriggers.filter(
+      produce((state: IStore) => {
+        state.qlc.QLCActTriggers = state.qlc.QLCActTriggers.filter(
           (f: any) => f.id !== id
         );
       }),
@@ -69,7 +71,7 @@ const storeQLCActions = (set: any) => ({
     switch (type) {
       case 'create':
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             state.qlc.qlcTriggersList = [...newTrigger];
           }),
           false,
@@ -78,8 +80,11 @@ const storeQLCActions = (set: any) => ({
         break;
       case 'update':
         set(
-          produce((state: any) => {
-            state.qlc.qlcTriggersList = [...state.qlcTriggersList, newTrigger];
+          produce((state: IStore) => {
+            state.qlc.qlcTriggersList = [
+              ...state.addToQLCTriggerList, // @mattallmighty check this
+              newTrigger,
+            ];
           }),
           false,
           'qlc/addToTriggerList'
@@ -92,7 +97,7 @@ const storeQLCActions = (set: any) => ({
     // const res = await resp.json()
     if (resp) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.qlc.qlcWidgets = resp;
         }),
         false,

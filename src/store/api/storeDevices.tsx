@@ -3,6 +3,7 @@
 /* eslint-disable import/no-cycle */
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
+import type { IStore } from '../useStore';
 
 const storeDevices = (set: any) => ({
   devices: {} as any,
@@ -10,7 +11,7 @@ const storeDevices = (set: any) => ({
     const resp = await Ledfx('/api/devices');
     if (resp && resp.devices) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.devices = resp.devices;
         }),
         false,
@@ -37,7 +38,7 @@ const storeDevices = (set: any) => ({
     const resp = await Ledfx(`/api/devices/${deviceId}`, 'POST', {});
     if (resp) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.paused = resp.paused;
         }),
         false,
@@ -46,7 +47,7 @@ const storeDevices = (set: any) => ({
 
       if (resp && resp.virtuals) {
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             state.virtuals = resp.virtuals;
           }),
           false,

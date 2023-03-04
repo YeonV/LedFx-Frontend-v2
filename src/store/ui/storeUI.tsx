@@ -2,12 +2,13 @@
 import produce from 'immer';
 import { VariantType } from 'notistack';
 import pkg from '../../../package.json';
+import type { IStore } from '../useStore';
 
 const storeUI = (set: any) => ({
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.latestTag = tag;
       }),
       false,
@@ -17,7 +18,7 @@ const storeUI = (set: any) => ({
   darkMode: true,
   setDarkMode: (dark: boolean): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.darkMode = dark;
       }),
       false,
@@ -29,9 +30,9 @@ const storeUI = (set: any) => ({
     messageType: 'error' as VariantType,
     message: 'NO MESSAGE',
   },
-  showSnackbar: (messageType: string, message: string): void =>
+  showSnackbar: (messageType: VariantType, message: string): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.snackbar = { isOpen: true, message, messageType };
       }),
       false,
@@ -39,7 +40,7 @@ const storeUI = (set: any) => ({
     ),
   clearSnackbar: (): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.snackbar.isOpen = false;
       }),
       false,
@@ -56,7 +57,7 @@ const storeUI = (set: any) => ({
   },
   setLeftBarOpen: (open: boolean): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.bars.leftBar.open = open;
       }),
       false,
@@ -64,7 +65,7 @@ const storeUI = (set: any) => ({
     ),
   setBottomBarOpen: (page: string): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         if (state.ui.bars.bottomBar.indexOf(page) === -1) {
           state.ui.bars.bottomBar = [...state.ui.bars.bottomBar, page];
         } else {
@@ -78,7 +79,7 @@ const storeUI = (set: any) => ({
     ),
   setSmartBarOpen: (open: boolean): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.bars.smartBar.open = open;
       }),
       false,
@@ -88,7 +89,7 @@ const storeUI = (set: any) => ({
   settingsExpanded: 'false',
   setSettingsExpanded: (setting: any): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.settingsExpanded = setting;
       }),
       false,
@@ -97,7 +98,7 @@ const storeUI = (set: any) => ({
   sceneActiveTags: [] as string[],
   toggletSceneActiveTag: (tag: string): void =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.ui.sceneActiveTags = state.ui.sceneActiveTags.includes(tag)
           ? state.ui.sceneActiveTags.filter((t: string) => t !== tag)
           : [...state.ui.sceneActiveTags, tag];

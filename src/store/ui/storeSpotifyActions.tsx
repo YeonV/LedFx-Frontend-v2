@@ -7,11 +7,12 @@
 import produce from 'immer';
 import { Ledfx } from '../../api/ledfx';
 import { SpotifyState } from './SpotifyState';
+import type { IStore } from '../useStore';
 
 const storeSpotifyActions = (set: any) => ({
   setSpotifyState: (spState: SpotifyState) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyState = spState;
       }),
       false,
@@ -19,7 +20,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSpEmbedUrl: (url: string) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyEmbedUrl = url;
       }),
       false,
@@ -27,7 +28,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSpAuthToken: (token: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyAuthToken = token;
       }),
       false,
@@ -35,7 +36,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setPlayer: (player: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.player = player;
       }),
       false,
@@ -44,7 +45,7 @@ const storeSpotifyActions = (set: any) => ({
   getVolume: null as any,
   setGetVolume: (val: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.getVolume = val;
       }),
       false,
@@ -52,7 +53,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSwSize: (x: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.swSize = x || 'small';
       }),
       false,
@@ -60,7 +61,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSwX: (x: number) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.swX = x || 50;
       }),
       false,
@@ -68,7 +69,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSwY: (y: number) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.swY = y || 200;
       }),
       false,
@@ -76,7 +77,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSwWidth: (width: number) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.swWidth = width;
       }),
       false,
@@ -84,7 +85,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSpVol: (vol: number) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyVol = vol;
       }),
       false,
@@ -92,7 +93,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSpPos: (pos: any) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyPos = pos;
       }),
       false,
@@ -101,7 +102,7 @@ const storeSpotifyActions = (set: any) => ({
   },
   setSpAuthenticated: (val: boolean) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spAuthenticated = val;
       }),
       false,
@@ -109,7 +110,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSpData: (type: string, data: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyData[type] = data;
       }),
       false,
@@ -117,7 +118,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setSpDevice: (id: string) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spotifyDevice = id;
       }),
       false,
@@ -128,7 +129,7 @@ const storeSpotifyActions = (set: any) => ({
     // const res = await resp.json()
     if (resp) {
       set(
-        produce((state: any) => {
+        produce((state: IStore) => {
           state.spotify.spotify = resp.spotify;
         }),
         false,
@@ -138,7 +139,7 @@ const storeSpotifyActions = (set: any) => ({
   },
   setSpNetworkTime: async (delay: number) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spNetworkTime = delay;
       }),
       false,
@@ -147,7 +148,7 @@ const storeSpotifyActions = (set: any) => ({
   },
   setSpActTriggers: async (ids: string[]) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spActTriggers = ids;
       }),
       false,
@@ -156,7 +157,7 @@ const storeSpotifyActions = (set: any) => ({
   },
   removeSpActTriggers: async (id: string) => {
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.spActTriggers = state.spotify.spActTriggers.filter(
           (f: any) => f.id !== id
         );
@@ -169,7 +170,7 @@ const storeSpotifyActions = (set: any) => ({
     switch (type) {
       case 'create':
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             state.spotify.spTriggersList = [...newTrigger];
           }),
           false,
@@ -178,7 +179,7 @@ const storeSpotifyActions = (set: any) => ({
         break;
       case 'update':
         set(
-          produce((state: any) => {
+          produce((state: IStore) => {
             // state.spotify.spTriggersList = [
             //   ...state.spotify.spTriggersList,
             //   newTrigger,
@@ -227,7 +228,7 @@ const storeSpotifyActions = (set: any) => ({
   },
   setPlaylist: (playerlist: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.playlist = playerlist;
       }),
       false,
@@ -235,7 +236,7 @@ const storeSpotifyActions = (set: any) => ({
     ),
   setMe: (me: any) =>
     set(
-      produce((state: any) => {
+      produce((state: IStore) => {
         state.spotify.me = me;
       }),
       false,
