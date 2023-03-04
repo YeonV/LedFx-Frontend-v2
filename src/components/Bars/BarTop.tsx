@@ -40,6 +40,7 @@ import TourIntegrations from '../Tours/TourIntegrations';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon';
 import GlobalActionBar from '../GlobalActionBar';
 import pkg from '../../../package.json';
+import { Ledfx } from '../../api/ledfx';
 
 const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -119,6 +120,28 @@ const TopBar = () => {
   useEffect(() => {
     setIsLogged(!!localStorage.getItem('jwt'));
   }, [pathname]);
+
+  useEffect(() => {
+    if (latestTag !== `v${pkg.version}`) {
+      if (
+        Date.now() -
+          parseInt(
+            window.localStorage.getItem('last-update-notification') || '0',
+            10
+          ) >
+        86400000 // show once per day
+      ) {
+        Ledfx('/api/notify', 'PUT', {
+          title: 'Update available',
+          text: 'A new version of LedFx has been released',
+        });
+        window.localStorage.setItem(
+          'last-update-notification',
+          `${Date.now()}`
+        );
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const latest = async () => {
