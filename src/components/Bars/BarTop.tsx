@@ -86,7 +86,9 @@ const TopBar = () => {
   const invIntegrations = useStore((state) => state.tours.integrations);
   const invDevices = useStore((state) => state.tours.devices);
   const invScenes = useStore((state) => state.tours.scenes);
-
+  const updateNotificationInterval = useStore(
+    (state) => state.updateNotificationInterval
+  );
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true);
   };
@@ -129,7 +131,7 @@ const TopBar = () => {
             window.localStorage.getItem('last-update-notification') || '0',
             10
           ) >
-        86400000 // show once per day
+        updateNotificationInterval * 1000 * 60
       ) {
         Ledfx('/api/notify', 'PUT', {
           title: 'Update available',
@@ -141,7 +143,7 @@ const TopBar = () => {
         );
       }
     }
-  }, []);
+  }, [updateNotificationInterval]);
 
   useEffect(() => {
     const latest = async () => {

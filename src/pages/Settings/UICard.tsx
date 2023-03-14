@@ -19,6 +19,12 @@ const UICard = () => {
   const setFeatures = useStore((state) => state.setFeatures);
   const showFeatures = useStore((state) => state.showFeatures);
   const features = useStore((state) => state.features);
+  const updateNotificationInterval = useStore(
+    (state) => state.updateNotificationInterval
+  );
+  const setUpdateNotificationInterval = useStore(
+    (state) => state.setUpdateNotificationInterval
+  );
 
   const [fps, setFps] = useState(30);
   const [globalBrightness, setGlobalBrightness] = useState(100);
@@ -72,7 +78,7 @@ const UICard = () => {
             <Input
               disableUnderline
               className={sliderClasses.input}
-              style={{ width: 50 }}
+              style={{ width: 70 }}
               value={fps}
               margin="dense"
               onChange={(e) => {
@@ -108,7 +114,7 @@ const UICard = () => {
             <Input
               disableUnderline
               className={sliderClasses.input}
-              style={{ width: 50 }}
+              style={{ width: 70 }}
               value={globalBrightness}
               margin="dense"
               onChange={(e) => {
@@ -146,7 +152,7 @@ const UICard = () => {
               disableUnderline
               className={sliderClasses.input}
               value={pixelLength}
-              style={{ width: 50 }}
+              style={{ width: 70 }}
               margin="dense"
               onChange={(e) => {
                 setPixelLength(parseInt(e.target.value, 10));
@@ -160,6 +166,34 @@ const UICard = () => {
               inputProps={{
                 min: 1,
                 max: 300,
+                type: 'number',
+                'aria-labelledby': 'input-slider',
+              }}
+            />
+          </SettingsRow>
+
+          <SettingsRow title="Update Notification: wait min">
+            <SettingsSlider
+              value={updateNotificationInterval}
+              step={1}
+              min={1}
+              max={4320}
+              onChange={(_e: any, val: number) =>
+                setUpdateNotificationInterval(val)
+              }
+            />
+            <Input
+              disableUnderline
+              className={sliderClasses.input}
+              style={{ width: 70 }}
+              value={updateNotificationInterval}
+              margin="dense"
+              onChange={(e) => {
+                setUpdateNotificationInterval(parseInt(e.target.value, 10));
+              }}
+              inputProps={{
+                min: 1,
+                max: 4320,
                 type: 'number',
                 'aria-labelledby': 'input-slider',
               }}
