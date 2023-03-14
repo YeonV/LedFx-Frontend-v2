@@ -93,16 +93,16 @@ jobs:
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
           inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@2.0.0
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          PORT: 22
-          METHOD: sftp
-          LOCAL_DIR: ./ledfx_frontend_v2/
-          REMOTE_DIR: ./preview.ledfx.app/
+#      - name: 📂 Sync files
+#        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+#        env:
+#          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+#          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+#          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+#          PORT: 22
+#          METHOD: sftp
+#          LOCAL_DIR: ./ledfx_frontend_v2/
+#          REMOTE_DIR: ./preview.ledfx.app/
           
           
       - name: Build project Hass
