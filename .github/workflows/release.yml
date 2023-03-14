@@ -96,9 +96,9 @@ jobs:
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@2.0.0
         env:
-          FTP_SERVER: ${{ secrets.ftp_server }}
-          FTP_USERNAME: ${{ secrets.ftp_username }}
-          FTP_PASSWORD: ${{ secrets.ftp_password }}
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           PORT: 22
           METHOD: sftp
           LOCAL_DIR: ./ledfx_frontend_v2/
