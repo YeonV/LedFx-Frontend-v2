@@ -93,16 +93,17 @@ jobs:
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
           inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
-#      - name: 📂 Sync files
-#        uses: SamKirkland/FTP-Deploy-Action@2.0.0
-#        env:
-#          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-#          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-#          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-#          PORT: 22
-#          METHOD: sftp
-#          LOCAL_DIR: ./ledfx_frontend_v2/
-#          REMOTE_DIR: ./preview.ledfx.app/
+      - name: 📂 Sync files
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          PORT: 22
+          METHOD: sftp
+          LOCAL_DIR: ./ledfx_frontend_v2/
+          REMOTE_DIR: ./preview.ledfx.app/
           
           
       - name: Build project Hass
@@ -130,17 +131,17 @@ jobs:
           asset_path: ./ledfx_frontend_hass.zip
           asset_name: ledfx_frontend_hass.zip
           asset_content_type: application/zip
-      - name: Prepare Trigger Hass
-        id: hass
-        run: |
-          id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f1,2,3)
-          echo "::set-output name=id::$id"
-      - name: Trigger Hass
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: Builder
-          repo: YeonV/home-assistant-addons
-          ref: refs/heads/master
-          token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
-          inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
+      # - name: Prepare Trigger Hass
+      #   id: hass
+      #   run: |
+      #     id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f1,2,3)
+      #     echo "::set-output name=id::$id"
+      # - name: Trigger Hass
+      #   uses: benc-uk/workflow-dispatch@v1
+      #   with:
+      #     workflow: Builder
+      #     repo: YeonV/home-assistant-addons
+      #     ref: refs/heads/master
+      #     token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
+      #     inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
 
