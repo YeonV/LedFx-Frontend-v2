@@ -29,3 +29,4 @@ yarn-error.log*
 /extraResources/*.app
 /extraResources/*.exe
 src/assets/DMG_BG.psd
+extraResources/*
