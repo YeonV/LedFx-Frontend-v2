@@ -100,6 +100,9 @@ const Segment = ({ s, i, virtual, segments }: any) => {
           </div>
           <div style={{ minWidth: '120px' }}>
             <Typography color="textSecondary">{title}</Typography>
+            <Typography color="textSecondary">
+              {s[1] === s[2] ? s[1] : `[ ${s[1]} - ${s[2]} ]`}
+            </Typography>
           </div>
         </div>
         <div className={classes.segmentsColPixelSlider}>
