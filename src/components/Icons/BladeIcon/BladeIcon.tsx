@@ -14,6 +14,7 @@ import '../../../assets/materialdesignicons.css';
 import '../../../index.css';
 import { BladeIconDefaultProps, BladeIconProps } from './BladeIcon.interface';
 import HomeAssistantLogo from '../HomeAssistant';
+import NovationLogo from '../Novation';
 
 /**
  * Icon component supporting 2 libraries
@@ -81,6 +82,8 @@ function BladeIcon({
         <RazerLogo />
       ) : name.startsWith('homeAssistant') ? (
         <HomeAssistantLogo />
+      ) : name.startsWith('launchpad') ? (
+        <NovationLogo />
       ) : name.startsWith('mdi:') ? (
         <span
           style={{ position: 'relative', display: 'flex' }}
