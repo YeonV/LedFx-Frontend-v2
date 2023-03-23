@@ -23,6 +23,9 @@ const DeviceCardWrapper = ({
   const setDialogOpenAddVirtual = useStore(
     (state) => state.setDialogOpenAddVirtual
   );
+  const showActiveDevicesFirst = useStore(
+    (state) => state.showActiveDevicesFirst
+  );
   const graphs = useStore((state) => state.graphs);
   const graphsMulti = useStore((state) => state.graphsMulti);
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
@@ -127,13 +130,15 @@ const DeviceCardWrapper = ({
       }
       isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
       additionalStyle={{
-        order: !(
-          devices[Object.keys(devices).find((d) => d === virtual) || '']
-            ?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name
-        )
-          ? 100
-          : !virtuals[virtual]?.effect.name
-          ? 50
+        order: showActiveDevicesFirst
+          ? !(
+              devices[Object.keys(devices).find((d) => d === virtual) || '']
+                ?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name
+            )
+            ? 100
+            : !virtuals[virtual]?.effect.name
+            ? 50
+            : 'unset'
           : 'unset',
       }}
     />
