@@ -23,14 +23,24 @@ import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean'];
 
-const orderEffectProperties = (schema: Schema) => {
+const orderEffectProperties = (schema: Schema, hidden_keys?: string[]) => {
   const properties: any[] =
     schema &&
     schema.properties &&
-    Object.keys(schema.properties).map((sk) => ({
-      ...schema.properties[sk],
-      id: sk,
-    }));
+    Object.keys(schema.properties)
+      .filter((k) => {
+        if (hidden_keys && hidden_keys.length > 1) {
+          return hidden_keys?.indexOf(k) === -1;
+        }
+        if ((hidden_keys && hidden_keys.length === 0) || !hidden_keys) {
+          return k;
+        }
+        return false;
+      })
+      .map((sk) => ({
+        ...schema.properties[sk],
+        id: sk,
+      }));
   const ordered = [] as any[];
   configOrder.forEach((type) => {
     ordered.push(...properties.filter((x) => x.type === type));
@@ -73,8 +83,12 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const effectType = virtual && virtual.effect.type;
   const [theModel, setTheModel] = useState(virtual?.effect?.config);
   const orderedProperties =
-    effects && effectType && orderEffectProperties(effects[effectType].schema);
-
+    effects &&
+    effectType &&
+    orderEffectProperties(
+      effects[effectType].schema,
+      effects[effectType].hidden_keys
+    );
   const handleClearEffect = () => {
     clearVirtualEffect(virtId).then(() => {
       setFade(true);
