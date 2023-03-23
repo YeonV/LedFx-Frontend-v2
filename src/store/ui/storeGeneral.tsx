@@ -56,6 +56,16 @@ const storeGeneral = (set: any) => ({
   },
 
   // graphs: !!isElectron(),
+  showActiveDevicesFirst: true,
+  setShowActiveDevicesFirst: (val: boolean) => {
+    set(
+      produce((state: IStore) => {
+        state.showActiveDevicesFirst = val;
+      }),
+      false,
+      'general/setShowActiveDevicesFirst'
+    );
+  },
   graphs: true,
   toggleGraphs: () => {
     set(
