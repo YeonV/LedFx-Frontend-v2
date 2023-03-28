@@ -6,11 +6,11 @@ const MessageBar = () => {
   const { message, messageType, isOpen } = useStore(
     (state) => state.ui.snackbar
   );
-  const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
+  const clearSnackbar = useStore((state) => state.ui?.clearSnackbar);
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual);
 
   function handleClose() {
-    clearSnackbar();
+    clearSnackbar?.();
   }
 
   useEffect(() => {
