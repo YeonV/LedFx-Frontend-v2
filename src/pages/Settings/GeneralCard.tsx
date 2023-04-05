@@ -179,6 +179,18 @@ const GeneralCard = () => {
           }
         />
       </div>
+      <div
+        className={`${classes.settingsRow} step-settings-eight `}
+        style={{ flexBasis: '100%' }}
+      >
+        <label>Auto-generate Virtuals for Segments</label>
+        <SettingsSwitch
+          checked={settings.create_segments}
+          onChange={() =>
+            onSystemSettingsChange('create_segments', !settings.create_segments)
+          }
+        />
+      </div>
     </div>
   );
 };
