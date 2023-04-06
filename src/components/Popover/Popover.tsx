@@ -15,6 +15,7 @@ import { PopoverProps, PopoverDefaults } from './Popover.interface';
 
 const Popover = ({
   onConfirm,
+  onCancel,
   confirmDisabled,
   confirmContent,
   onSingleClick,
@@ -38,9 +39,11 @@ const Popover = ({
   footer,
   className,
   style = {},
+  sx,
   popoverStyle,
   wrapperStyle,
   type = 'button',
+  children,
 }: PopoverProps): ReactElement<any, any> => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -134,6 +137,7 @@ const Popover = ({
         >
           {label}
           {!startIcon && !noIcon && icon}
+          {children}
         </Button>
       ) : type === 'iconbutton' ? (
         <IconButton
@@ -166,9 +170,11 @@ const Popover = ({
             '&:hover': {
               bgcolor: theme.palette.primary.light,
             },
+            ...sx,
           }}
         >
           {!startIcon && !noIcon && icon}
+          {children}
         </Fab>
       )}
       <PopoverOriginal
@@ -211,6 +217,7 @@ const Popover = ({
             color="primary"
             onClick={(e) => {
               e.preventDefault();
+              if (onCancel) onCancel(e);
               setAnchorEl(null);
             }}
           >

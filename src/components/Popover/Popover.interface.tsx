@@ -1,5 +1,6 @@
 import { PopoverProps as PopoverOriginalProps } from '@mui/material/Popover';
 import { Delete } from '@mui/icons-material';
+import type { SxProps, Theme } from '@mui/material';
 
 export interface PopoverProps {
   /**
@@ -49,6 +50,10 @@ export interface PopoverProps {
    */
   onConfirm?: (e: any) => typeof e;
   /**
+   * Function to call when cancel is clicked
+   */
+  onCancel?: (e: any) => typeof e;
+  /**
    * Function to call when button is clicked
    */
   onSingleClick?: (e: any) => typeof e;
@@ -89,9 +94,13 @@ export interface PopoverProps {
    */
   icon?: React.ReactNode;
   /**
-   * Content
+   * Content of the Popover
    */
   content?: React.ReactNode;
+  /**
+   * Content
+   */
+  children?: React.ReactNode;
   /**
    * Footer
    */
@@ -100,6 +109,10 @@ export interface PopoverProps {
    * JSX className
    */
   className?: string;
+  /**
+   * JSX style
+   */
+  sx?: SxProps<Theme>;
   /**
    * JSX style
    */

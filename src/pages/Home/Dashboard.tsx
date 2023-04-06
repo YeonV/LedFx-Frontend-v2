@@ -86,6 +86,12 @@ const Dashboard = () => {
     .map((d) => devices[d].online && devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0);
 
+  const getSystemConfig = useStore((state) => state.getSystemConfig);
+  const setSystemConfig = useStore((state) => state.setSystemConfig);
+
+  const onSystemSettingsChange = (setting: string, value: any) => {
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
+  };
   const handleScan = () => {
     setScanning(0);
     scanForDevices()
@@ -188,23 +194,19 @@ const Dashboard = () => {
 
         {db ? <SmartBar direct /> : <SmartBar direct />}
         <Stack spacing={2} direction="row">
-          <Box sx={{ m: 1, position: 'relative' }}>
-            <Tooltip title="Scan for WLED Devices">
-              <Fab
-                aria-label="scan-wled"
-                sx={{
-                  bgcolor: theme.palette.primary.main,
-                  '&:hover': {
-                    bgcolor: theme.palette.primary.light,
-                  },
-                  ...(scanning > -1 && {
-                    bgcolor: theme.palette.primary.main,
-                    '&:hover': {
-                      bgcolor: theme.palette.primary.main,
-                    },
-                  }),
+          <Tooltip title="Scan for WLED Devices">
+            <Box sx={{ m: 0, position: 'relative' }}>
+              <Popover
+                type="fab"
+                noIcon
+                onConfirm={() => {
+                  onSystemSettingsChange('create_segments', true);
+                  handleScan();
                 }}
-                onClick={handleScan}
+                onCancel={() => {
+                  onSystemSettingsChange('create_segments', false);
+                  handleScan();
+                }}
               >
                 {scanning > -1 ? (
                   <Typography
@@ -217,21 +219,22 @@ const Dashboard = () => {
                 ) : (
                   <BladeIcon name="wled" />
                 )}
-              </Fab>
-            </Tooltip>
-            {scanning > -1 && (
-              <CircularProgress5
-                size={68}
-                sx={{
-                  color: theme.palette.primary.main,
-                  position: 'absolute',
-                  top: -6,
-                  left: -6,
-                  zIndex: 1,
-                }}
-              />
-            )}
-          </Box>
+                {scanning > -1 && (
+                  <CircularProgress5
+                    size={68}
+                    sx={{
+                      color: theme.palette.primary.main,
+                      position: 'absolute',
+                      top: -6,
+                      left: -6,
+                      zIndex: 1,
+                    }}
+                  />
+                )}
+              </Popover>
+            </Box>
+          </Tooltip>
+
           {/* <Tooltip title="Play / Pause LedFx Effect-streaming">
             <Fab
               aria-label="play-pause"
