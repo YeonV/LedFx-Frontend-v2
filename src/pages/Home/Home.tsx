@@ -3,7 +3,6 @@
 /* eslint-disable no-await-in-loop */
 import { useState } from 'react';
 import {
-  Button,
   Box,
   Typography,
   Card,
@@ -22,6 +21,7 @@ import ButtonBar from '../../components/ButtonBar';
 import Dashboard from './Dashboard';
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 import DashboardDetailed from './DashboardDetailed';
+import Popover from '../../components/Popover/Popover';
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -34,7 +34,12 @@ export default function Home() {
   const [scanning, setScanning] = useState(-1);
   const invisible = useStore((state) => state.tours.home);
   const features = useStore((state) => state.features);
+  const getSystemConfig = useStore((state) => state.getSystemConfig);
+  const setSystemConfig = useStore((state) => state.setSystemConfig);
 
+  const onSystemSettingsChange = (setting: string, value: any) => {
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
+  };
   const handleScan = () => {
     setScanning(0);
     scanForDevices()
@@ -87,39 +92,59 @@ export default function Home() {
           >
             <TourHome />
           </Badge>
-          <Button onClick={() => handleScan()} variant="outlined">
-            <BladeIcon name="wled" style={{ marginTop: -3, marginRight: 10 }} />
-            {scanning > -1 ? (
-              <div style={{ position: 'relative', marginLeft: 20, height: 24 }}>
-                <CircularProgress
-                  variant="determinate"
-                  value={(scanning / 30) * 100}
-                  size={24}
-                />
-                <Box
-                  top={0}
-                  left={0}
-                  bottom={0}
-                  right={0}
-                  position="absolute"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+          <Popover
+            noIcon
+            variant="outlined"
+            color="inherit"
+            onConfirm={() => {
+              onSystemSettingsChange('create_segments', true);
+              handleScan();
+            }}
+            onCancel={() => {
+              onSystemSettingsChange('create_segments', false);
+              handleScan();
+            }}
+            text="Import Segments?"
+          >
+            <>
+              <BladeIcon
+                name="wled"
+                style={{ marginTop: -3, marginRight: 10 }}
+              />
+              {scanning > -1 ? (
+                <div
+                  style={{ position: 'relative', marginLeft: 20, height: 24 }}
                 >
-                  <Typography
-                    variant="caption"
-                    style={{ fontSize: 10 }}
-                    component="div"
-                    color="textSecondary"
+                  <CircularProgress
+                    variant="determinate"
+                    value={(scanning / 30) * 100}
+                    size={24}
+                  />
+                  <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    {`${Math.round((scanning / 30) * 100)}%`}
-                  </Typography>
-                </Box>
-              </div>
-            ) : (
-              <>WLED-scan</>
-            )}
-          </Button>
+                    <Typography
+                      variant="caption"
+                      style={{ fontSize: 10 }}
+                      component="div"
+                      color="textSecondary"
+                    >
+                      {`${Math.round((scanning / 30) * 100)}%`}
+                    </Typography>
+                  </Box>
+                </div>
+              ) : (
+                <>WLED-scan</>
+              )}
+            </>
+          </Popover>
           {/* <Button
             onClick={() => {
               deleteFrontendConfig();

@@ -6,7 +6,7 @@ const DbButton = ({
   icon,
   text,
 }: {
-  onClick: any;
+  onClick: (e: any) => typeof e;
   icon: string | undefined;
   text: string | undefined;
 }) => {
