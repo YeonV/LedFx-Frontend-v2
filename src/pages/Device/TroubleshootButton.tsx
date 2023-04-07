@@ -145,7 +145,7 @@ export default function TroubleshootButton({
                 </div>
                 <Divider style={{ margin: '0.25rem 0 1rem 0' }} />
                 <Row
-                  name="AVERAGE PING"
+                  name="MAXIMUM PING"
                   value={
                     pingData.max_ping ? (
                       `${pingData.max_ping.toFixed(2)} ms`
