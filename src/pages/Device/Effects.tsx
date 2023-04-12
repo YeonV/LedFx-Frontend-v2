@@ -23,19 +23,24 @@ import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean'];
 
-const orderEffectProperties = (schema: Schema, hidden_keys?: string[]) => {
+const orderEffectProperties = (
+  schema: Schema,
+  hidden_keys?: string[],
+  advanced_keys?: string[],
+  advanced?: boolean
+) => {
   const properties: any[] =
     schema &&
     schema.properties &&
     Object.keys(schema.properties)
       .filter((k) => {
-        if (hidden_keys && hidden_keys.length > 1) {
+        if (advanced_keys && advanced_keys.length > 0 && !advanced) {
+          return advanced_keys?.indexOf(k) === -1;
+        }
+        if (hidden_keys && hidden_keys.length > 0) {
           return hidden_keys?.indexOf(k) === -1;
         }
-        if ((hidden_keys && hidden_keys.length === 0) || !hidden_keys) {
-          return k;
-        }
-        return false;
+        return k;
       })
       .map((sk) => ({
         ...schema.properties[sk],
@@ -87,7 +92,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     effectType &&
     orderEffectProperties(
       effects[effectType].schema,
-      effects[effectType].hidden_keys
+      effects[effectType].hidden_keys,
+      effects[effectType].advanced_keys,
+      theModel?.advanced
     );
   const handleClearEffect = () => {
     clearVirtualEffect(virtId).then(() => {
