@@ -46,6 +46,13 @@ function createSocket() {
         };
         // console.log("Send");
         (ws as any).send(JSON.stringify(++req.id && req));
+        const requ = {
+          event_type: 'device_created',
+          id: 1,
+          type: 'subscribe_event',
+        };
+        // console.log("Send");
+        (ws as any).send(JSON.stringify(++requ.id && requ));
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === 'visualisation_update') {
@@ -62,6 +69,16 @@ function createSocket() {
           document.dispatchEvent(
             new CustomEvent('YZold', {
               detail: 'devices_updated',
+            })
+          );
+        }
+        if (JSON.parse(event.data).event_type === 'device_created') {
+          document.dispatchEvent(
+            new CustomEvent('YZ_device_created', {
+              detail: {
+                id: 'device_created',
+                device_name: JSON.parse(event.data).device_name,
+              },
             })
           );
         }

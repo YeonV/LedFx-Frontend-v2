@@ -113,12 +113,6 @@ const Dashboard = () => {
     getScenes();
   }, []);
 
-  // console.log(
-  //   Object.values(config.ledfx_presets)
-  //     .map((e: any) => Object.keys(e).length)
-  //     .reduce((a: number, b: number) => a + b)
-  // );
-  console.log(config);
   return (
     <div className="Content">
       <Stack spacing={[0, 0, 2, 2, 2]} alignItems="center">
