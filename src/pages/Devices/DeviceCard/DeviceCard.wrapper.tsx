@@ -31,6 +31,7 @@ const DeviceCardWrapper = ({
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
   const updateVirtual = useStore((state) => state.updateVirtual);
   const activateDevice = useStore((state) => state.activateDevice);
+  const showMatrix = useStore((state) => state.showMatrix);
 
   const [_fade, setFade] = useState(false);
   const [_isActive, setIsActive] = useState(
@@ -114,6 +115,7 @@ const DeviceCardWrapper = ({
       effectName={virtuals[virtual]?.effect.name}
       graphsActive={graphs && graphsMulti}
       graphsMulti={graphsMulti}
+      showMatrix={showMatrix}
       isDevice={virtuals[virtual]?.is_device}
       activateDevice={handleActivateDevice}
       colorIndicator={false}

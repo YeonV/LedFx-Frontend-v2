@@ -12,7 +12,14 @@ import {
   Typography,
   Box,
 } from '@mui/material';
-import { Clear, ExpandMore, Pause, PlayArrow } from '@mui/icons-material';
+import {
+  Clear,
+  ExpandMore,
+  Pause,
+  PlayArrow,
+  GridOn,
+  GridOff,
+} from '@mui/icons-material';
 import useStore from '../../store/useStore';
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper';
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm';
@@ -63,6 +70,7 @@ const orderEffectProperties = (
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false);
+  const [matrix, setMatrix] = useState(false);
   const getVirtuals = useStore((state) => state.getVirtuals);
   const getSchemas = useStore((state) => state.getSchemas);
   const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
@@ -174,6 +182,13 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   <Button
                     style={{ marginRight: '.5rem' }}
                     className="step-device-six"
+                    onClick={() => setMatrix(!matrix)}
+                  >
+                    {matrix ? <GridOff /> : <GridOn />}
+                  </Button>
+                  <Button
+                    style={{ marginRight: '.5rem' }}
+                    className="step-device-six"
                     onClick={() => handlePlayPause()}
                   >
                     {virtual.active ? <Pause /> : <PlayArrow />}
@@ -206,6 +221,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             }}
           >
             <PixelGraph
+              showMatrix={matrix}
               virtId={virtId}
               active={
                 virtuals &&

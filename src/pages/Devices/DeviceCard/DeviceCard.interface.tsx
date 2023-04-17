@@ -48,6 +48,10 @@ export interface DeviceCardProps {
    */
   graphsMulti?: boolean;
   /**
+   * Show Matrix
+   */
+  showMatrix?: boolean;
+  /**
    * Colorize?
    */
   colorIndicator?: boolean;
@@ -117,4 +121,5 @@ export const DeviceCardDefaults: DeviceCardProps = {
   transitionTime: 5,
   isDevice: 'yz-quad',
   graphsActive: true,
+  showMatrix: false,
 };
