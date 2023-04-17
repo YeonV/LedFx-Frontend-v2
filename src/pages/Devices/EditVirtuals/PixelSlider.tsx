@@ -29,10 +29,10 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
   };
 
   const marks = [
-    { value: 0, label: 0 },
+    { value: 0, label: 1 },
     {
       value: devices[s[0]].config.pixel_count - 1,
-      label: devices[s[0]].config.pixel_count - 1,
+      label: devices[s[0]].config.pixel_count,
     },
   ];
 
@@ -40,6 +40,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
     <Slider
       value={range}
       marks={marks}
+      valueLabelFormat={(e) => e + 1}
       min={0}
       max={devices[s[0]].config.pixel_count - 1}
       onChange={(_event: any, n: any) => setRange(n)}
