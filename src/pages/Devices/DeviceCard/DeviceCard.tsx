@@ -52,6 +52,7 @@ const DeviceCard = ({
   transitionTime,
   isDevice,
   graphsMulti,
+  showMatrix,
   activateDevice,
 }: DeviceCardProps) => {
   const classes = useStyle();
@@ -259,6 +260,7 @@ const DeviceCard = ({
             }}
           >
             <PixelGraph
+              showMatrix={showMatrix}
               intGraphs={graphsActive}
               active={isActive}
               virtId={virtId || ''}

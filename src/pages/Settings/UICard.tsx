@@ -16,6 +16,8 @@ const UICard = () => {
   const toggleGraphs = useStore((state) => state.toggleGraphs);
   const graphsMulti = useStore((state) => state.graphsMulti);
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti);
+  const showMatrix = useStore((state) => state.showMatrix);
+  const toggleShowMatrix = useStore((state) => state.toggleShowMatrix);
   const setFeatures = useStore((state) => state.setFeatures);
   const showFeatures = useStore((state) => state.showFeatures);
   const features = useStore((state) => state.features);
@@ -56,12 +58,17 @@ const UICard = () => {
       />
       {config.visualisation_fps && graphs && (
         <>
-          <Divider sx={{ m: '0.25rem 0 0.5rem 0' }} />
           <SettingsRow
             title="Also on Devices page"
             checked={graphsMulti}
             onChange={() => toggleGraphsMulti()}
           />
+          <SettingsRow
+            title="Show Matrix on Devices page"
+            checked={showMatrix}
+            onChange={() => toggleShowMatrix()}
+          />
+          <Divider sx={{ m: '0.25rem 0 0.5rem 0' }} />
           <SettingsRow title="Frontend FPS" step="two">
             <SettingsSlider
               value={fps}

@@ -86,6 +86,16 @@ const storeGeneral = (set: any) => ({
       'general/toggleGraphsMulti'
     );
   },
+  showMatrix: false,
+  toggleShowMatrix: () => {
+    set(
+      produce((state: IStore) => {
+        state.showMatrix = !state.showMatrix;
+      }),
+      false,
+      'general/toggleShowMatrix'
+    );
+  },
 
   pixelGraphs: [] as string[],
   setPixelGraphs: (virtuals: string[]): void =>

@@ -9,12 +9,14 @@ const PixelGraph = ({
   className = '',
   active = false,
   intGraphs = false,
+  showMatrix = false,
 }: {
   virtId: string;
   dummy?: boolean;
   className?: string;
   active?: boolean;
   intGraphs?: boolean;
+  showMatrix?: boolean;
 }) => {
   const [pixels, setPixels] = useState<any>([]);
   const pixelGraphs = useStore((state) => state.pixelGraphs);
@@ -23,7 +25,8 @@ const PixelGraph = ({
   const graphs = useStore((state) => state.graphs);
   const rows = virtuals[virtId].is_device ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1 : virtuals[virtId].config.rows || 1;
   
-  
+  console.log(rows, pixels[0]?.length)
+
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
@@ -62,7 +65,7 @@ const PixelGraph = ({
         }}
       />
     </div>
-  ) : pixels && pixels[0] && pixels[0].length && rows > 1 ? <div
+  ) : pixels && pixels[0] && pixels[0].length && rows > 1 && showMatrix ? <div
     style={{
       maxWidth: '520px',
       display: 'flex',
@@ -73,7 +76,7 @@ const PixelGraph = ({
       margin: '0.5rem 0 0 0',
     }}
     className={`${className}  ${active ? 'active' : ''}`}
-  >{[0,1,2,3,4,5,6,7,8].map((row) => (
+  >{Array.from(Array(rows).keys()).map((row) => (
   
       <div
         key={`row-${row}`}
