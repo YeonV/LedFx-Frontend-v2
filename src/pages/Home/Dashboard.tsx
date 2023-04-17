@@ -140,14 +140,14 @@ const Dashboard = () => {
           <Gauge
             unit="User Presets"
             total={
-              Object.values(config.user_presets).length
+              config.user_presets && Object.values(config.user_presets)?.length
                 ? Object.values(config.user_presets)
                     .map((e: any) => Object.keys(e).length)
                     .reduce((a: number, b: number) => a + b, 0)
                 : 0
             }
             current={
-              Object.values(config.user_presets).length
+              config.user_presets && Object.values(config.user_presets).length
                 ? Object.values(config.user_presets)
                     .map((e: any) => Object.keys(e).length)
                     .reduce((a: number, b: number) => a + b, 0)
@@ -176,12 +176,20 @@ const Dashboard = () => {
           <Gauge
             unit="User Colors"
             total={
-              Object.keys(config.user_colors).length +
-              Object.keys(config.user_gradients).length
+              ((config.user_colors &&
+                Object.keys(config.user_colors)?.length) ||
+                0) +
+              ((config.user_gradients &&
+                Object.keys(config.user_gradients)?.length) ||
+                0)
             }
             current={
-              Object.keys(config.user_colors).length +
-              Object.keys(config.user_gradients).length
+              ((config.user_colors &&
+                Object.keys(config.user_colors)?.length) ||
+                0) +
+              ((config.user_gradients &&
+                Object.keys(config.user_gradients)?.length) ||
+                0)
             }
           />
         </Stack>

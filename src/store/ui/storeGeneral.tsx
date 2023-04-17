@@ -126,6 +126,16 @@ const storeGeneral = (set: any) => ({
       'general/setIsLogged'
     ),
 
+  intro: true,
+  setIntro: (intro: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.intro = intro;
+      }),
+      false,
+      'general/setIsLogged'
+    ),
+
   // Example
   animals: {
     bears: 1,
