@@ -95,7 +95,8 @@ const TourHome = ({
   variant?: string;
 }) => {
   const theme = useTheme();
-  const [isTourOpen, setIsTourOpen] = useState(false);
+  const tour = useStore((state) => state.tours.home);
+  const [isTourOpen, setIsTourOpen] = useState(tour);
   const setTour = useStore((state) => state.setTour);
 
   return (
