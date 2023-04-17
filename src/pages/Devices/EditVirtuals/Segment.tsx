@@ -101,7 +101,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
           <div style={{ minWidth: '120px' }}>
             <Typography color="textSecondary">{title}</Typography>
             <Typography color="textSecondary">
-              {s[1] === s[2] ? s[1] : `[ ${s[1]} - ${s[2]} ]`}
+              {s[1] === s[2] ? s[1] + 1 : `[ ${s[1] + 1} - ${s[2] + 1} ]`}
             </Typography>
           </div>
         </div>
