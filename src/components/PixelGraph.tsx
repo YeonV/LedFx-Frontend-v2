@@ -25,8 +25,6 @@ const PixelGraph = ({
   const graphs = useStore((state) => state.graphs);
   const rows = virtuals[virtId].is_device ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1 : virtuals[virtId].config.rows || 1;
   
-  console.log(rows, pixels[0]?.length)
-
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {

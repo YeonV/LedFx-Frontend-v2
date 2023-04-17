@@ -114,7 +114,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider maxSnack={5}>
+      <SnackbarProvider maxSnack={15}>
         <WsContext.Provider value={ws}>
           <SpotifyProvider>
             <Box
