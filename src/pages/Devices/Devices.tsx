@@ -43,7 +43,6 @@ const Devices = () => {
 
   useEffect(() => {
     const handleWebsockets = (e: any) => {
-      console.log(e);
       if (e.detail === 'devices_updated') {
         getDevices();
       }
