@@ -139,14 +139,14 @@ const ready = () => (
       } else {
         subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx/LedFx.exe')}`, ['-p', '8888', '--no-tray']);
       }
-    } 
+    }
 
     wind = integratedCore
       ? createWindow({ additionalArguments: ['integratedCore'] })
       : createWindow();
 
     require('@electron/remote/main').enable(wind.webContents);
-    
+
     if (isDev) {
       await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], {
         loadExtensionOptions: { allowFileAccess: true },
@@ -163,8 +163,7 @@ const ready = () => (
       contextMenu = Menu.buildFromTemplate([
         { label: 'Show', click: () => {
           if (process.platform === 'darwin') app.dock.show()
-          wind.show()
-        }},
+          wind.show()        }},
         { label: 'Minimize', click: () => wind.minimize() },
         { label: 'Minimize to tray', click: () => {
           if (process.platform === 'darwin') app.dock.hide()
@@ -200,7 +199,7 @@ const ready = () => (
       contextMenu = Menu.buildFromTemplate([
         { label: 'Show', click: () => {
           if (process.platform === 'darwin') app.dock.show()
-          wind.show() 
+          wind.show()
         }},
         { label: 'Minimize', click: () => wind.minimize() },
         { label: 'Minimize to tray', click: () => {
