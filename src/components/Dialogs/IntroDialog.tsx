@@ -5,7 +5,7 @@ import {
   Stack,
   Typography,
   useMediaQuery,
-  useTheme,
+  // useTheme,
 } from '@mui/material'
 import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
@@ -29,7 +29,7 @@ export default function IntroDialog({ handleScan, scanning }: any) {
   const handleClose = () => {
     setIntro(false)
   }
-  const theme = useTheme()
+  // const theme = useTheme()
   const [activeStep, setActiveStep] = useState(0)
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
