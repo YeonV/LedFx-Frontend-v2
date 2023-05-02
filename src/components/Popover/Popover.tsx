@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react'
 import {
   Typography,
   Button,
@@ -8,10 +8,10 @@ import {
   useTheme,
   Fab,
   IconButton,
-} from '@mui/material';
-import { Delete, Close, Check } from '@mui/icons-material';
-import { useLongPress } from 'use-long-press';
-import { PopoverProps, PopoverDefaults } from './Popover.interface';
+} from '@mui/material'
+import { Delete, Close, Check } from '@mui/icons-material'
+import { useLongPress } from 'use-long-press'
+import { PopoverProps, PopoverDefaults } from './Popover.interface'
 
 const Popover = ({
   onConfirm,
@@ -45,24 +45,24 @@ const Popover = ({
   type = 'button',
   children,
 }: PopoverProps): ReactElement<any, any> => {
-  const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const theme = useTheme()
+  const [anchorEl, setAnchorEl] = useState(null)
   const openPopover = (event: any) => {
     // eslint-disable-next-line
     setAnchorEl(() => event.currentTarget || event.target)
-  };
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
   const longPress = useLongPress((e) => openPopover(e), {
     onCancel: (e) => {
-      if (onSingleClick) onSingleClick(e);
+      if (onSingleClick) onSingleClick(e)
     },
     threshold: 1000,
     captureEvent: true,
-  });
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  })
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
   return (
     <div style={{ display: 'initial', margin: 0, ...wrapperStyle }}>
@@ -70,9 +70,9 @@ const Popover = ({
         <MenuItem
           className={className}
           onClick={(e) => {
-            e.preventDefault();
-            if (onSingleClick) onSingleClick(e);
-            openPopover(e);
+            e.preventDefault()
+            if (onSingleClick) onSingleClick(e)
+            openPopover(e)
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
@@ -120,9 +120,9 @@ const Popover = ({
           variant={variant}
           color={color}
           onClick={(e) => {
-            e.preventDefault();
-            if (!openOnDoubleClick) openPopover(e);
-            if (onSingleClick) onSingleClick(e);
+            e.preventDefault()
+            if (!openOnDoubleClick) openPopover(e)
+            if (onSingleClick) onSingleClick(e)
           }}
           size={size}
           className={className}
@@ -130,9 +130,9 @@ const Popover = ({
           startIcon={!noIcon && startIcon}
           disabled={disabled}
           onDoubleClick={(e) => {
-            e.preventDefault();
-            if (openOnDoubleClick) openPopover(e);
-            if (onDoubleClick) onDoubleClick(e);
+            e.preventDefault()
+            if (openOnDoubleClick) openPopover(e)
+            if (onDoubleClick) onDoubleClick(e)
           }}
         >
           {label}
@@ -152,14 +152,14 @@ const Popover = ({
         <Fab
           aria-label="clear-data"
           onClick={(e) => {
-            e.preventDefault();
-            if (!openOnDoubleClick) openPopover(e);
-            if (onSingleClick) onSingleClick(e);
+            e.preventDefault()
+            if (!openOnDoubleClick) openPopover(e)
+            if (onSingleClick) onSingleClick(e)
           }}
           onDoubleClick={(e) => {
-            e.preventDefault();
-            if (openOnDoubleClick) openPopover(e);
-            if (onDoubleClick) onDoubleClick(e);
+            e.preventDefault()
+            if (openOnDoubleClick) openPopover(e)
+            if (onDoubleClick) onDoubleClick(e)
           }}
           disabled={disabled}
           style={{
@@ -205,9 +205,9 @@ const Popover = ({
             variant="contained"
             color="primary"
             onClick={(e) => {
-              e.preventDefault();
-              if (onConfirm) onConfirm(e);
-              setAnchorEl(null);
+              e.preventDefault()
+              if (onConfirm) onConfirm(e)
+              setAnchorEl(null)
             }}
           >
             {confirmContent || <Check />}
@@ -216,9 +216,9 @@ const Popover = ({
             aria-describedby={id}
             color="primary"
             onClick={(e) => {
-              e.preventDefault();
-              if (onCancel) onCancel(e);
-              setAnchorEl(null);
+              e.preventDefault()
+              if (onCancel) onCancel(e)
+              setAnchorEl(null)
             }}
           >
             <Close />
@@ -227,9 +227,9 @@ const Popover = ({
         {footer}
       </PopoverOriginal>
     </div>
-  );
-};
+  )
+}
 
-Popover.defaultProps = PopoverDefaults;
+Popover.defaultProps = PopoverDefaults
 
-export default Popover;
+export default Popover

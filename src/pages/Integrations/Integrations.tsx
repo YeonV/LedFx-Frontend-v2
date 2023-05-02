@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
-import useStore from '../../store/useStore';
-import IntegrationCard from './IntegrationCard/IntegrationCard';
-import NoYet from '../../components/NoYet';
-import IntegrationCardSpotify from './IntegrationCard/IntegrationCardSpotify';
-import IntegrationCardQLC from './IntegrationCard/IntegrationCardQLC';
+import { useEffect } from 'react'
+import { makeStyles } from '@mui/styles'
+import useStore from '../../store/useStore'
+import IntegrationCard from './IntegrationCard/IntegrationCard'
+import NoYet from '../../components/NoYet'
+import IntegrationCardSpotify from './IntegrationCard/IntegrationCardSpotify'
+import IntegrationCardQLC from './IntegrationCard/IntegrationCardQLC'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -18,16 +18,16 @@ const useStyles = makeStyles(() => ({
       justifyContent: 'center',
     },
   },
-}));
+}))
 
 const Integrations = () => {
-  const classes = useStyles();
-  const getIntegrations = useStore((state) => state.getIntegrations);
-  const integrations = useStore((state) => state.integrations);
+  const classes = useStyles()
+  const getIntegrations = useStore((state) => state.getIntegrations)
+  const integrations = useStore((state) => state.integrations)
 
   useEffect(() => {
-    getIntegrations();
-  }, [getIntegrations]);
+    getIntegrations()
+  }, [getIntegrations])
   return (
     <div className={classes.cardWrapper}>
       {integrations && Object.keys(integrations).length ? (
@@ -44,7 +44,7 @@ const Integrations = () => {
         <NoYet type="Integration" />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Integrations;
+export default Integrations

@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState } from 'react';
-import { styled } from '@mui/material/styles';
+import { useState } from 'react'
+import { styled } from '@mui/material/styles'
 import {
   Button,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
-} from '@mui/material';
-import { useLongPress } from 'use-long-press';
-import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material';
-import useStore from '../../store/useStore';
-import Popover from '../../components/Popover/Popover';
+} from '@mui/material'
+import { useLongPress } from 'use-long-press'
+import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material'
+import useStore from '../../store/useStore'
+import Popover from '../../components/Popover/Popover'
 
-const PREFIX = 'PresetButton';
+const PREFIX = 'PresetButton'
 
 const classes = {
   bladeMenu: `${PREFIX}-bladeMenu`,
-};
+}
 
 const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.bladeMenu}`]: {
@@ -25,7 +25,7 @@ const Root = styled('div')(({ theme }: any) => ({
       backgroundColor: theme.palette.grey[900],
     },
   },
-}));
+}))
 
 export default function PresetButton({
   delPreset,
@@ -36,30 +36,30 @@ export default function PresetButton({
   className,
   onClick,
 }: any) {
-  const [anchorEl, setAnchorEl] = useState<any>(null);
-  const open = Boolean(anchorEl);
-  const isLogged = useStore((state) => state.isLogged);
-  const features = useStore((state) => state.features);
+  const [anchorEl, setAnchorEl] = useState<any>(null)
+  const open = Boolean(anchorEl)
+  const isLogged = useStore((state) => state.isLogged)
+  const features = useStore((state) => state.features)
 
   const longPress = useLongPress(
     (e) => {
-      e.preventDefault();
+      e.preventDefault()
       if (e.currentTarget) {
-        setAnchorEl(e.currentTarget);
+        setAnchorEl(e.currentTarget)
       } else {
-        setAnchorEl(e.target);
+        setAnchorEl(e.target)
       }
     },
     {
       onCancel: (e: any) => {
         if (e.button === 0) {
-          onClick();
+          onClick()
         }
       },
       threshold: 1000,
       captureEvent: true,
     }
-  );
+  )
 
   return (
     <Root>
@@ -70,8 +70,8 @@ export default function PresetButton({
         className={className}
         {...longPress()}
         onContextMenu={(e) => {
-          e.preventDefault();
-          setAnchorEl(e.currentTarget || e.target);
+          e.preventDefault()
+          setAnchorEl(e.currentTarget || e.target)
         }}
       >
         {label}
@@ -111,8 +111,8 @@ export default function PresetButton({
         </div>
         <MenuItem
           onClick={(e) => {
-            uploadPresetCloud(e);
-            setAnchorEl(null);
+            uploadPresetCloud(e)
+            setAnchorEl(null)
           }}
         >
           <ListItemIcon>
@@ -125,8 +125,8 @@ export default function PresetButton({
           isLogged && (
             <MenuItem
               onClick={(e) => {
-                uploadPresetCloud(e);
-                setAnchorEl(null);
+                uploadPresetCloud(e)
+                setAnchorEl(null)
               }}
             >
               <ListItemIcon>
@@ -140,8 +140,8 @@ export default function PresetButton({
           isLogged && (
             <MenuItem
               onClick={(e) => {
-                deletePresetCloud(e);
-                setAnchorEl(null);
+                deletePresetCloud(e)
+                setAnchorEl(null)
               }}
             >
               <ListItemIcon>
@@ -152,5 +152,5 @@ export default function PresetButton({
           )}
       </Menu>
     </Root>
-  );
+  )
 }

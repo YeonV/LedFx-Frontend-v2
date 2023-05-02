@@ -1,12 +1,12 @@
-import { styled } from '@mui/material/styles';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
+import { styled } from '@mui/material/styles'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import ToggleButton from '@mui/material/ToggleButton'
 import {
   PanoramaHorizontalSelect,
   PanoramaVerticalSelect,
   // PanoramaWideAngleSelect,
-} from '@mui/icons-material';
-import useStore from '../../../../../store/useStore';
+} from '@mui/icons-material'
+import useStore from '../../../../../store/useStore'
 
 const ButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   '& .MuiToggleButtonGroup-grouped': {
@@ -26,39 +26,39 @@ const ButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
       color: '#ddd',
     },
   },
-}));
+}))
 
 export default function SpLayoutButtons() {
-  const swSize = useStore((state) => state.spotify.swSize);
-  const setSwSize = useStore((state) => state.setSwSize);
+  const swSize = useStore((state) => state.spotify.swSize)
+  const setSwSize = useStore((state) => state.setSwSize)
 
-  const setSwWidth = useStore((state) => state.setSwWidth);
-  const swX = useStore((state) => state.spotify.swX);
-  const setSwX = useStore((state) => state.setSwX);
-  const swY = useStore((state) => state.spotify.swY);
-  const setSwY = useStore((state) => state.setSwY);
+  const setSwWidth = useStore((state) => state.setSwWidth)
+  const swX = useStore((state) => state.spotify.swX)
+  const setSwX = useStore((state) => state.setSwX)
+  const swY = useStore((state) => state.spotify.swY)
+  const setSwY = useStore((state) => state.setSwY)
 
   const settingSize = (newSize: string) => {
     if (newSize === 'large') {
-      setSwWidth(960);
-      setSwX(Math.max(swX - 660, 0));
-      setSwY(swY + 150);
+      setSwWidth(960)
+      setSwX(Math.max(swX - 660, 0))
+      setSwY(swY + 150)
     }
     if (newSize === 'small') {
-      setSwWidth(300);
-      setSwX(swX + 660);
-      setSwY(Math.max(swY - 150, 0));
+      setSwWidth(300)
+      setSwX(swX + 660)
+      setSwY(Math.max(swY - 150, 0))
     }
-    setSwSize(newSize);
-  };
+    setSwSize(newSize)
+  }
   const handleAlignment = (
     event: React.MouseEvent<HTMLElement>,
     newSize: string | null
   ) => {
     if (newSize !== null) {
-      settingSize(newSize);
+      settingSize(newSize)
     }
-  };
+  }
 
   return (
     <ButtonGroup
@@ -77,5 +77,5 @@ export default function SpLayoutButtons() {
         <PanoramaHorizontalSelect />
       </ToggleButton>
     </ButtonGroup>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Link,
   TextField,
@@ -8,52 +8,50 @@ import {
   DialogTitle,
   Button,
   Typography,
-} from '@mui/material';
-import useStore from '../../store/useStore';
+} from '@mui/material'
+import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [tags, setTags] = useState('');
-  const [url, setUrl] = useState('');
-  const [payload, setPayload] = useState('');
-  const [overwrite, setOverwrite] = useState(false);
-  const [invalid, setInvalid] = useState(false);
+  const [name, setName] = useState('')
+  const [image, setImage] = useState('')
+  const [tags, setTags] = useState('')
+  const [url, setUrl] = useState('')
+  const [payload, setPayload] = useState('')
+  const [overwrite, setOverwrite] = useState(false)
+  const [invalid, setInvalid] = useState(false)
 
-  const addScene = useStore((state) => state.addScene);
-  const getScenes = useStore((state) => state.getScenes);
-  const scenes = useStore((state) => state.scenes);
-  const open = useStore((state) => state.dialogs.addScene?.open || false);
-  const features = useStore((state) => state.features);
+  const addScene = useStore((state) => state.addScene)
+  const getScenes = useStore((state) => state.getScenes)
+  const scenes = useStore((state) => state.scenes)
+  const open = useStore((state) => state.dialogs.addScene?.open || false)
+  const features = useStore((state) => state.features)
 
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
+  const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
   useEffect(() => {
-    setInvalid(false);
-  }, []);
+    setInvalid(false)
+  }, [])
   function isValidURL(string: string) {
     const res = string.match(
       /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
-    );
-    return res !== null;
+    )
+    return res !== null
   }
   const handleClose = () => {
-    setDialogOpenAddScene(false);
-  };
+    setDialogOpenAddScene(false)
+  }
   const handleAddScene = () => {
     if (!invalid) {
       addScene(name, image, tags, url, payload).then(() => {
-        getScenes();
-      });
-      setName('');
-      setImage('');
-      setTags('');
-      setUrl('');
-      setPayload('');
-      setDialogOpenAddScene(false);
+        getScenes()
+      })
+      setName('')
+      setImage('')
+      setTags('')
+      setUrl('')
+      setPayload('')
+      setDialogOpenAddScene(false)
     }
-  };
+  }
 
   return (
     <Dialog
@@ -110,7 +108,7 @@ const AddSceneDialog = () => {
           onBlur={(e) => {
             setOverwrite(
               Object.keys(scenes).indexOf(e.target.value.toLowerCase()) > -1
-            );
+            )
           }}
           error={overwrite}
           helperText={overwrite && 'Scene already existing!'}
@@ -148,7 +146,7 @@ const AddSceneDialog = () => {
               error={invalid}
               helperText={invalid && 'Enter valid URL!'}
               onBlur={(e) => {
-                setInvalid(!isValidURL(e.target.value));
+                setInvalid(!isValidURL(e.target.value))
               }}
             />
             <TextField
@@ -170,7 +168,7 @@ const AddSceneDialog = () => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default AddSceneDialog;
+export default AddSceneDialog

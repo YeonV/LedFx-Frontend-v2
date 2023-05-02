@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement } from 'react'
 
 const HomeAssistantLogo = (): ReactElement<any, any> => (
   <svg
@@ -25,6 +25,6 @@ const HomeAssistantLogo = (): ReactElement<any, any> => (
       fill="currentColor"
     />
   </svg>
-);
+)
 
-export default HomeAssistantLogo;
+export default HomeAssistantLogo

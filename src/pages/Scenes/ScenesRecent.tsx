@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
+import { useEffect, useState } from 'react'
+import Box from '@mui/material/Box'
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
   GridRenderCellParams,
-} from '@mui/x-data-grid';
-import { Card, CardMedia, Typography, useTheme } from '@mui/material';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-import useStore from '../../store/useStore';
+} from '@mui/x-data-grid'
+import { Card, CardMedia, Typography, useTheme } from '@mui/material'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import useStore from '../../store/useStore'
 
 const sceneImage = (iconName: string) =>
   iconName && iconName.startsWith('image:') ? (
@@ -19,7 +19,7 @@ const sceneImage = (iconName: string) =>
     />
   ) : (
     <BladeIcon scene name={iconName} />
-  );
+  )
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -41,24 +41,24 @@ const columns: GridColDef[] = [
     headerName: 'Order',
     width: 10,
   },
-];
+]
 
 export default function ScenesRecent({ scenes, activateScene, title }: any) {
-  const theme = useTheme();
-  const recentScenes = useStore((state) => state.recentScenes);
-  const [theScenes, setTheScenes] = useState({});
+  const theme = useTheme()
+  const recentScenes = useStore((state) => state.recentScenes)
+  const [theScenes, setTheScenes] = useState({})
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
-    );
+    )
 
   useEffect(() => {
-    const current = {} as any;
+    const current = {} as any
     recentScenes.map((key: string, i: number) => {
-      current[key] = { ...scenes[key], used: i + 1 };
-      return setTheScenes(current);
-    });
-  }, [scenes, recentScenes]);
+      current[key] = { ...scenes[key], used: i + 1 }
+      return setTheScenes(current)
+    })
+  }, [scenes, recentScenes])
 
   return (
     <Card>
@@ -111,5 +111,5 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
         />
       </Box>
     </Card>
-  );
+  )
 }

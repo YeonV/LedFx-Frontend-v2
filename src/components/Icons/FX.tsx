@@ -1,14 +1,14 @@
-import './FX.css';
+import './FX.css'
 
 interface FXProps {
   /**
    * color
    */
-  currentColor?: string;
+  currentColor?: string
   /**
    * stroke color
    */
-  stroke?: string;
+  stroke?: string
 }
 
 /**
@@ -34,11 +34,11 @@ const FX = ({ stroke = '#ffffff', currentColor = 'transparent' }: FXProps) => (
       />
     </g>
   </svg>
-);
+)
 
 FX.defaultProps = {
   stroke: '#ffffff',
   currentColor: 'transparent',
-};
+}
 
-export default FX;
+export default FX

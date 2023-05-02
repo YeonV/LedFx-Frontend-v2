@@ -1,13 +1,13 @@
-import { MenuItem, Select } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import useStore from '../../store/useStore';
+import { MenuItem, Select } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import useStore from '../../store/useStore'
 
-const PREFIX = 'ClientAudioCard';
+const PREFIX = 'ClientAudioCard'
 
 const classes = {
   select: `${PREFIX}-select`,
-};
+}
 
 const StyledBladeFrame = styled(BladeFrame)(() => ({
   [`&.${classes.select}`]: {
@@ -15,13 +15,13 @@ const StyledBladeFrame = styled(BladeFrame)(() => ({
       padding: '6px 0',
     },
   },
-}));
+}))
 
 const ClientAudioCard = ({ style }: any) => {
-  const clientDevice = useStore((state) => state.clientDevice);
-  const clientDevices = useStore((state) => state.clientDevices);
-  const setClientDevice = useStore((state) => state.setClientDevice);
-  const webAudName = useStore((state) => state.webAudName);
+  const clientDevice = useStore((state) => state.clientDevice)
+  const clientDevices = useStore((state) => state.clientDevices)
+  const setClientDevice = useStore((state) => state.setClientDevice)
+  const webAudName = useStore((state) => state.webAudName)
 
   return (
     clientDevices && (
@@ -35,7 +35,7 @@ const ClientAudioCard = ({ style }: any) => {
           value={clientDevice || clientDevices[0].deviceId}
           style={{ width: '100%' }}
           onChange={(e) => {
-            setClientDevice(e.target.value);
+            setClientDevice(e.target.value)
           }}
         >
           {clientDevices
@@ -48,7 +48,7 @@ const ClientAudioCard = ({ style }: any) => {
         </Select>
       </StyledBladeFrame>
     )
-  );
-};
+  )
+}
 
-export default ClientAudioCard;
+export default ClientAudioCard

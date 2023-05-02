@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Select, MenuItem, TextField, InputAdornment } from '@mui/material';
-import { useState } from 'react';
-import BladeIcon from '../../../Icons/BladeIcon/BladeIcon';
-import BladeFrame from '../BladeFrame';
-import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props';
+import { Select, MenuItem, TextField, InputAdornment } from '@mui/material'
+import { useState } from 'react'
+import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
+import BladeFrame from '../BladeFrame'
+import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
 
 /**
  * ## String
@@ -31,7 +31,7 @@ const BladeSelect = ({
       ? (model && model_id && model[model_id]) ||
           (schema.enum && schema.enum[0])
       : ''
-  );
+  )
   return (
     <BladeFrame
       title={schema.title}
@@ -152,15 +152,15 @@ const BladeSelect = ({
           }
           onBlur={(e) => onChange(model_id, e.target.value)}
           onChange={(e) => {
-            if (schema.id === 'icon_name') setIcon(e.target.value);
+            if (schema.id === 'icon_name') setIcon(e.target.value)
           }}
           style={textStyle as any}
         />
       )}
     </BladeFrame>
-  );
-};
+  )
+}
 
-BladeSelect.defaultProps = BladeSelectDefaultProps;
+BladeSelect.defaultProps = BladeSelectDefaultProps
 
-export default BladeSelect;
+export default BladeSelect

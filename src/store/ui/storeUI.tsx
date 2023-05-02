@@ -1,15 +1,15 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
-import { VariantType } from 'notistack';
-import pkg from '../../../package.json';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import { VariantType } from 'notistack'
+import pkg from '../../../package.json'
+import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
     set(
       produce((state: IStore) => {
-        state.ui.latestTag = tag;
+        state.ui.latestTag = tag
       }),
       false,
       'setLatestTag'
@@ -19,7 +19,7 @@ const storeUI = (set: any) => ({
   setDarkMode: (dark: boolean): void =>
     set(
       produce((state: IStore) => {
-        state.ui.darkMode = dark;
+        state.ui.darkMode = dark
       }),
       false,
       'ui/darkmode'
@@ -33,7 +33,7 @@ const storeUI = (set: any) => ({
   showSnackbar: (messageType: VariantType, message: string): void =>
     set(
       produce((state: IStore) => {
-        state.ui.snackbar = { isOpen: true, message, messageType };
+        state.ui.snackbar = { isOpen: true, message, messageType }
       }),
       false,
       'ui/showSnackbar'
@@ -41,7 +41,7 @@ const storeUI = (set: any) => ({
   clearSnackbar: (): void =>
     set(
       produce((state: IStore) => {
-        state.ui.snackbar.isOpen = false;
+        state.ui.snackbar.isOpen = false
       }),
       false,
       'ui/clearSnackbar'
@@ -58,7 +58,7 @@ const storeUI = (set: any) => ({
   setLeftBarOpen: (open: boolean): void =>
     set(
       produce((state: IStore) => {
-        state.ui.bars.leftBar.open = open;
+        state.ui.bars.leftBar.open = open
       }),
       false,
       'ui/setLeftBarOpen'
@@ -67,11 +67,11 @@ const storeUI = (set: any) => ({
     set(
       produce((state: IStore) => {
         if (state.ui.bars.bottomBar.indexOf(page) === -1) {
-          state.ui.bars.bottomBar = [...state.ui.bars.bottomBar, page];
+          state.ui.bars.bottomBar = [...state.ui.bars.bottomBar, page]
         } else {
           state.ui.bars.bottomBar = state.ui.bars.bottomBar.filter(
             (p: any) => p !== page
-          );
+          )
         }
       }),
       false,
@@ -80,7 +80,7 @@ const storeUI = (set: any) => ({
   setSmartBarOpen: (open: boolean): void =>
     set(
       produce((state: IStore) => {
-        state.ui.bars.smartBar.open = open;
+        state.ui.bars.smartBar.open = open
       }),
       false,
       'ui/setLeftBarOpen'
@@ -90,7 +90,7 @@ const storeUI = (set: any) => ({
   setSettingsExpanded: (setting: any): void =>
     set(
       produce((state: IStore) => {
-        state.ui.settingsExpanded = setting;
+        state.ui.settingsExpanded = setting
       }),
       false,
       'ui/settingsExpanded'
@@ -101,11 +101,11 @@ const storeUI = (set: any) => ({
       produce((state: IStore) => {
         state.ui.sceneActiveTags = state.ui.sceneActiveTags.includes(tag)
           ? state.ui.sceneActiveTags.filter((t: string) => t !== tag)
-          : [...state.ui.sceneActiveTags, tag];
+          : [...state.ui.sceneActiveTags, tag]
       }),
       false,
       'ui/settingsExpanded'
     ),
-});
+})
 
-export default storeUI;
+export default storeUI

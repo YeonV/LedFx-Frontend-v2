@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { MenuItem, ListItemIcon, Badge } from '@mui/material';
-import Tour from 'reactour';
-import { InfoRounded } from '@mui/icons-material';
-import useStore from '../../store/useStore';
+import { useState } from 'react'
+import { MenuItem, ListItemIcon, Badge } from '@mui/material'
+import Tour from 'reactour'
+import { InfoRounded } from '@mui/icons-material'
+import useStore from '../../store/useStore'
 
 const steps = [
   {
@@ -94,19 +94,19 @@ const steps = [
       backgroundColor: '#303030',
     },
   },
-];
+]
 
 const TourDevices = ({ cally }: any) => {
-  const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.setTour);
-  const invisible = useStore((state) => state.tours.devices);
+  const [isTourOpen, setIsTourOpen] = useState(false)
+  const setTour = useStore((state) => state.setTour)
+  const invisible = useStore((state) => state.tours.devices)
   return (
     <>
       <MenuItem
         onClick={(e) => {
-          setIsTourOpen(true);
-          cally(e);
-          setTour('devices');
+          setIsTourOpen(true)
+          cally(e)
+          setTour('devices')
         }}
       >
         <ListItemIcon>
@@ -123,7 +123,7 @@ const TourDevices = ({ cally }: any) => {
         onRequestClose={() => setIsTourOpen(false)}
       />
     </>
-  );
-};
+  )
+}
 
-export default TourDevices;
+export default TourDevices

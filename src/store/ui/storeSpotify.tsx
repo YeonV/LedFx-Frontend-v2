@@ -1,4 +1,4 @@
-import { SpotifyState } from './SpotifyState';
+import { SpotifyState } from './SpotifyState'
 
 const storeSpotify = () => ({
   spotifyEmbedUrl:
@@ -22,6 +22,6 @@ const storeSpotify = () => ({
   spotifyVol: 0,
   spotifyPos: null as any,
   spotify: null as any,
-});
+})
 
-export default storeSpotify;
+export default storeSpotify

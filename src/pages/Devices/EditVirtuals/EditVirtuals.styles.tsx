@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useEditVirtualsStyles = makeStyles(() => ({
   appBar: {
@@ -39,6 +39,6 @@ const useEditVirtualsStyles = makeStyles(() => ({
     //   borderColor: theme.palette.primary.main,
     // },
   },
-}));
+}))
 
-export default useEditVirtualsStyles;
+export default useEditVirtualsStyles

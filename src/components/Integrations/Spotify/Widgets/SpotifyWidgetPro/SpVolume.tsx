@@ -1,18 +1,18 @@
-import { useContext, useState } from 'react';
-import Slider from '@mui/material/Slider';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import { VolumeDown, VolumeMute, VolumeUp } from '@mui/icons-material';
-import { VolSliderStyles } from './SpWidgetPro.styles';
+import { useContext, useState } from 'react'
+import Slider from '@mui/material/Slider'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import { VolumeDown, VolumeMute, VolumeUp } from '@mui/icons-material'
+import { VolSliderStyles } from './SpWidgetPro.styles'
 import {
   SpotifyControlContext,
   SpotifyVolumeContext,
-} from '../../SpotifyProvider';
+} from '../../SpotifyProvider'
 
 export default function SpVolume() {
-  const [volu, setVolu] = useState(-1);
-  const spotifyVolume = useContext(SpotifyVolumeContext);
-  const ctrlSpotify = useContext(SpotifyControlContext);
+  const [volu, setVolu] = useState(-1)
+  const spotifyVolume = useContext(SpotifyVolumeContext)
+  const ctrlSpotify = useContext(SpotifyControlContext)
   return (
     <Stack
       spacing={2}
@@ -40,11 +40,11 @@ export default function SpVolume() {
         value={volu > 0 ? volu : spotifyVolume * 100}
         onChange={(_, v) => setVolu((v as number) / 100)}
         onChangeCommitted={(e, v: any) => {
-          ctrlSpotify.setVol(v / 100);
-          setVolu(-1);
+          ctrlSpotify.setVol(v / 100)
+          setVolu(-1)
         }}
         sx={{ ...VolSliderStyles, '&&&': { marginLeft: 0, marginRight: 3 } }}
       />
     </Stack>
-  );
+  )
 }

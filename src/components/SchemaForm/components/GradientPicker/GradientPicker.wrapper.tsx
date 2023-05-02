@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
-import { useEffect } from 'react';
-import useStore from '../../../../store/useStore';
-import GradientPicker from './GradientPicker';
+import { useEffect } from 'react'
+import useStore from '../../../../store/useStore'
+import GradientPicker from './GradientPicker'
 
 const GradientPickerWrapper = ({
   pickerBgColor,
@@ -12,22 +12,22 @@ const GradientPickerWrapper = ({
   isGradient = false,
   wrapperStyle,
 }: any) => {
-  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const virtuals = useStore((state) => state.virtuals);
-  const colors = useStore((state) => state.colors);
-  const getColors = useStore((state) => state.getColors);
-  const addColor = useStore((state) => state.addColor);
+  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const virtuals = useStore((state) => state.virtuals)
+  const colors = useStore((state) => state.colors)
+  const getColors = useStore((state) => state.getColors)
+  const addColor = useStore((state) => state.addColor)
 
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
-        return virtuals[prop];
+        return virtuals[prop]
       }
     }
-  };
+  }
 
-  const virtual = getV();
+  const virtual = getV()
 
   const sendColorToVirtuals = (e: any) => {
     if (virtual && virtual.effect && virtual.effect.type) {
@@ -37,20 +37,20 @@ const GradientPickerWrapper = ({
         { [title]: e },
         false
       ).then(() => {
-        getVirtuals();
-      });
+        getVirtuals()
+      })
     }
-  };
+  }
 
   const handleAddGradient = (name: string) => {
     addColor({ [name]: pickerBgColor }).then(() => {
-      getColors();
-    });
-  };
+      getColors()
+    })
+  }
 
   useEffect(() => {
-    getColors();
-  }, []);
+    getColors()
+  }, [])
 
   return (
     <GradientPicker
@@ -63,6 +63,6 @@ const GradientPickerWrapper = ({
       handleAddGradient={handleAddGradient}
       sendColorToVirtuals={sendColorToVirtuals}
     />
-  );
-};
-export default GradientPickerWrapper;
+  )
+}
+export default GradientPickerWrapper

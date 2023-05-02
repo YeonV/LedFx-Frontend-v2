@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react'
+import Box from '@mui/material/Box'
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import {
   Button,
   Card,
@@ -9,18 +9,18 @@ import {
   TextField,
   Typography,
   useTheme,
-} from '@mui/material';
+} from '@mui/material'
 import {
   PlayArrow,
   PlaylistRemove,
   Repeat,
   RepeatOn,
   Stop,
-} from '@mui/icons-material';
+} from '@mui/icons-material'
 
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-import useStore from '../../store/useStore';
-import Popover from '../../components/Popover/Popover';
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import useStore from '../../store/useStore'
+import Popover from '../../components/Popover/Popover'
 
 export default function ScenesPlaylist({
   scenes,
@@ -28,55 +28,53 @@ export default function ScenesPlaylist({
   activateScene,
   db,
 }: any) {
-  const theme = useTheme();
-  const [theScenes, setTheScenes] = useState([]);
-  const scenePL = useStore((state) => state.scenePL);
-  const setScenePL = useStore((state) => state.setScenePL);
-  const scenePLplay = useStore((state) => state.scenePLplay);
-  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay);
-  const scenePLrepeat = useStore((state) => state.scenePLrepeat);
-  const toggleScenePLrepeat = useStore((state) => state.toggleScenePLrepeat);
-  const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex);
-  const scenePLinterval = useStore((state) => state.scenePLinterval);
-  const setScenePLinterval = useStore((state) => state.setScenePLinterval);
-  const setScenePLactiveIndex = useStore(
-    (state) => state.setScenePLactiveIndex
-  );
+  const theme = useTheme()
+  const [theScenes, setTheScenes] = useState([])
+  const scenePL = useStore((state) => state.scenePL)
+  const setScenePL = useStore((state) => state.setScenePL)
+  const scenePLplay = useStore((state) => state.scenePLplay)
+  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
+  const scenePLrepeat = useStore((state) => state.scenePLrepeat)
+  const toggleScenePLrepeat = useStore((state) => state.toggleScenePLrepeat)
+  const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
+  const scenePLinterval = useStore((state) => state.scenePLinterval)
+  const setScenePLinterval = useStore((state) => state.setScenePLinterval)
+  const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
 
   useEffect(() => {
     const current = scenePL.map((key: string, id: number) => ({
       id,
       ...scenes[key],
       scene_id: key,
-    }));
-    return setTheScenes(current);
-  }, [scenes, scenePL]);
+    }))
+    return setTheScenes(current)
+  }, [scenes, scenePL])
 
-  let timer = null as any;
+  let timer = null as any
   useEffect(() => {
     if (scenePLplay && timer === null) {
       timer = setTimeout(() => {
         if (scenePL[scenePLactiveIndex + 1])
-          activateScene(scenePL[scenePLactiveIndex + 1]);
-        setScenePLactiveIndex(scenePLactiveIndex + 1);
-      }, scenePLinterval * 1000);
+          activateScene(scenePL[scenePLactiveIndex + 1])
+        setScenePLactiveIndex(scenePLactiveIndex + 1)
+      }, scenePLinterval * 1000)
     } else if (timer) {
-      clearTimeout(timer);
+      clearTimeout(timer)
     }
-    return () => clearTimeout(timer);
-  }, [scenePLplay, scenePLactiveIndex]);
+    return () => clearTimeout(timer)
+  }, [scenePLplay, scenePLactiveIndex])
 
   useEffect(() => {
     if (scenePLplay && timer && scenePLactiveIndex >= theScenes.length) {
       if (scenePLrepeat) {
-        activateScene(scenePL[0]);
-        setScenePLactiveIndex(0);
+        activateScene(scenePL[0])
+        setScenePLactiveIndex(0)
       } else {
-        toggleScenePLplay();
-        setScenePLactiveIndex(-1);
+        toggleScenePLplay()
+        setScenePLactiveIndex(-1)
       }
     }
-  }, [scenePLplay, scenePLactiveIndex]);
+  }, [scenePLplay, scenePLactiveIndex])
 
   const sceneImage = (iconName: string) =>
     iconName && iconName.startsWith('image:') ? (
@@ -87,7 +85,7 @@ export default function ScenesPlaylist({
       />
     ) : (
       <BladeIcon scene name={iconName} />
-    );
+    )
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 0 },
@@ -120,7 +118,7 @@ export default function ScenesPlaylist({
       headerName: 'Scene ID',
       width: 100,
       renderCell: (params: GridRenderCellParams<string>) => {
-        const removeScene2PL = useStore((state) => state.removeScene2PL);
+        const removeScene2PL = useStore((state) => state.removeScene2PL)
         return (
           <Button
             onClick={() => removeScene2PL(params.id as number)}
@@ -129,10 +127,10 @@ export default function ScenesPlaylist({
           >
             <PlaylistRemove />
           </Button>
-        );
+        )
       },
     },
-  ];
+  ]
 
   return (
     <Card
@@ -183,7 +181,7 @@ export default function ScenesPlaylist({
               <IconButton
                 sx={{ mr: 1 }}
                 onClick={() => {
-                  toggleScenePLrepeat();
+                  toggleScenePLrepeat()
                 }}
               >
                 {scenePLrepeat ? <RepeatOn /> : <Repeat />}
@@ -192,7 +190,7 @@ export default function ScenesPlaylist({
               <Button
                 sx={{ mr: 1 }}
                 onClick={() => {
-                  toggleScenePLrepeat();
+                  toggleScenePLrepeat()
                 }}
               >
                 {scenePLrepeat ? <RepeatOn /> : <Repeat />}
@@ -228,12 +226,12 @@ export default function ScenesPlaylist({
                 sx={{ mr: 1 }}
                 onClick={() => {
                   if (scenePLplay) {
-                    setScenePLactiveIndex(-1);
+                    setScenePLactiveIndex(-1)
                   } else {
-                    activateScene(scenePL[0]);
-                    setScenePLactiveIndex(0);
+                    activateScene(scenePL[0])
+                    setScenePLactiveIndex(0)
                   }
-                  toggleScenePLplay();
+                  toggleScenePLplay()
                 }}
               >
                 {scenePLplay ? <Stop /> : <PlayArrow />}
@@ -243,12 +241,12 @@ export default function ScenesPlaylist({
                 sx={{ mr: 1 }}
                 onClick={() => {
                   if (scenePLplay) {
-                    setScenePLactiveIndex(-1);
+                    setScenePLactiveIndex(-1)
                   } else {
-                    activateScene(scenePL[0]);
-                    setScenePLactiveIndex(0);
+                    activateScene(scenePL[0])
+                    setScenePLactiveIndex(0)
                   }
-                  toggleScenePLplay();
+                  toggleScenePLplay()
                 }}
               >
                 {scenePLplay ? <Stop /> : <PlayArrow />}
@@ -300,5 +298,5 @@ export default function ScenesPlaylist({
         />
       </Box>
     </Card>
-  );
+  )
 }

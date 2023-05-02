@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/indent */
-import { useState } from 'react';
-import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import Collapse from '@mui/material/Collapse';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import IconButton from '@mui/material/IconButton';
+import { useState } from 'react'
+import Card from '@mui/material/Card'
+import Button from '@mui/material/Button'
+import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
+import Collapse from '@mui/material/Collapse'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import IconButton from '@mui/material/IconButton'
 import {
   CardActions,
   CardHeader,
@@ -16,48 +16,48 @@ import {
   Link,
   useTheme,
   Avatar,
-} from '@mui/material';
-import { InsertLink, QuestionMark } from '@mui/icons-material';
-import Popover from '../../../components/Popover/Popover';
-import useStore from '../../../store/useStore';
-import useIntegrationCardStyles from './IntegrationCard.styles';
-import QLCScreen from '../QLCplus/QLCScreen/QLCScreen';
+} from '@mui/material'
+import { InsertLink, QuestionMark } from '@mui/icons-material'
+import Popover from '../../../components/Popover/Popover'
+import useStore from '../../../store/useStore'
+import useIntegrationCardStyles from './IntegrationCard.styles'
+import QLCScreen from '../QLCplus/QLCScreen/QLCScreen'
 // import SpotifyView from '../Spotify/SpotifyAuth';
 // import DialogAddEventListener from '../../../components/Integrations/QLC/DialogAddEventListener';
 
 const IntegrationCardQLC = ({ integration }: any) => {
-  const classes = useIntegrationCardStyles();
-  const theme = useTheme();
-  const getIntegrations = useStore((state) => state.getIntegrations);
-  const integrations = useStore((state) => state.integrations);
-  const deleteIntegration = useStore((state) => state.deleteIntegration);
-  const toggleIntegration = useStore((state) => state.toggleIntegration);
+  const classes = useIntegrationCardStyles()
+  const theme = useTheme()
+  const getIntegrations = useStore((state) => state.getIntegrations)
+  const integrations = useStore((state) => state.integrations)
+  const deleteIntegration = useStore((state) => state.deleteIntegration)
+  const toggleIntegration = useStore((state) => state.toggleIntegration)
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
-  );
+  )
 
-  const [expanded, setExpanded] = useState(false);
-  const variant = 'outlined';
-  const color = 'inherit';
+  const [expanded, setExpanded] = useState(false)
+  const variant = 'outlined'
+  const color = 'inherit'
 
   const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+    setExpanded(!expanded)
+  }
 
   const handleDeleteDevice = (integ: string) => {
     deleteIntegration(integrations[integ].id).then(() => {
-      getIntegrations();
-    });
-  };
+      getIntegrations()
+    })
+  }
 
   const handleEditIntegration = (integ: any) => {
-    setDialogOpenAddIntegration(true, integ);
-  };
+    setDialogOpenAddIntegration(true, integ)
+  }
   const handleActivateIntegration = (integ: any) => {
     toggleIntegration({
       id: integ.id,
-    }).then(() => getIntegrations());
-  };
+    }).then(() => getIntegrations())
+  }
 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
@@ -195,7 +195,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
         </Collapse>
       </CardActions>
     </Card>
-  ) : null;
-};
+  ) : null
+}
 
-export default IntegrationCardQLC;
+export default IntegrationCardQLC

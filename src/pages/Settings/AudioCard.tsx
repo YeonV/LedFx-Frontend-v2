@@ -1,16 +1,16 @@
-import { useEffect } from 'react';
-import useStore from '../../store/useStore';
-import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm';
+import { useEffect } from 'react'
+import useStore from '../../store/useStore'
+import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
 
 const AudioCard = ({ className }: any) => {
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const schema = useStore((state) => state?.schemas?.audio?.schema);
-  const model = useStore((state) => state?.config?.audio);
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const schema = useStore((state) => state?.schemas?.audio?.schema)
+  const model = useStore((state) => state?.config?.audio)
 
   useEffect(() => {
-    getSystemConfig();
-  }, []);
+    getSystemConfig()
+  }, [])
 
   return (
     <div className={className}>
@@ -22,12 +22,12 @@ const AudioCard = ({ className }: any) => {
           onModelChange={(e) => {
             setSystemConfig({
               audio: e,
-            }).then(() => getSystemConfig());
+            }).then(() => getSystemConfig())
           }}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AudioCard;
+export default AudioCard

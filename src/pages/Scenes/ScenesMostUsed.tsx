@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
-import Box from '@mui/material/Box';
+import { useEffect } from 'react'
+import Box from '@mui/material/Box'
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
   GridRenderCellParams,
-} from '@mui/x-data-grid';
-import { Card, CardMedia, Typography, useTheme } from '@mui/material';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-import useStore from '../../store/useStore';
+} from '@mui/x-data-grid'
+import { Card, CardMedia, Typography, useTheme } from '@mui/material'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import useStore from '../../store/useStore'
 
 export default function ScenesMostUsed({
   scenes,
@@ -16,20 +16,20 @@ export default function ScenesMostUsed({
   title,
   db,
 }: any) {
-  const theme = useTheme();
-  const count = useStore((state) => state.count);
+  const theme = useTheme()
+  const count = useStore((state) => state.count)
   // const [mostUsedScenes, setMostUsedScenes] = useState({});
-  const mostUsedScenes = useStore((state) => state.mostUsedScenes);
-  const setMostUsedScenes = useStore((state) => state.setMostUsedScenes);
+  const mostUsedScenes = useStore((state) => state.mostUsedScenes)
+  const setMostUsedScenes = useStore((state) => state.setMostUsedScenes)
 
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
-    );
+    )
 
   useEffect(() => {
-    Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]));
-  }, [scenes, count]);
+    Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]))
+  }, [scenes, count])
 
   const sceneImage = (iconName: string) =>
     iconName && iconName.startsWith('image:') ? (
@@ -40,7 +40,7 @@ export default function ScenesMostUsed({
       />
     ) : (
       <BladeIcon scene name={iconName} />
-    );
+    )
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -62,7 +62,7 @@ export default function ScenesMostUsed({
       type: 'number',
       width: 20,
     },
-  ];
+  ]
 
   return (
     <Card
@@ -130,5 +130,5 @@ export default function ScenesMostUsed({
         />
       </Box>
     </Card>
-  );
+  )
 }

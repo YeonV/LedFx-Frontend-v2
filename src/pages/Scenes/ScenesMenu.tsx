@@ -1,33 +1,31 @@
-import { useState, MouseEvent } from 'react';
-import { Menu, MenuItem, ListItemIcon, Button } from '@mui/material';
-import { PlaylistAdd, Edit, MoreVert } from '@mui/icons-material';
-import Popover from '../../components/Popover/Popover';
-import useStore from '../../store/useStore';
+import { useState, MouseEvent } from 'react'
+import { Menu, MenuItem, ListItemIcon, Button } from '@mui/material'
+import { PlaylistAdd, Edit, MoreVert } from '@mui/icons-material'
+import Popover from '../../components/Popover/Popover'
+import useStore from '../../store/useStore'
 
 const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
-  const deleteScene = useStore((state) => state.deleteScene);
-  const getScenes = useStore((state) => state.getScenes);
-  const scenes = useStore((state) => state.scenes);
-  const addScene2PL = useStore((state) => state.addScene2PL);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const deleteScene = useStore((state) => state.deleteScene)
+  const getScenes = useStore((state) => state.getScenes)
+  const scenes = useStore((state) => state.scenes)
+  const addScene2PL = useStore((state) => state.addScene2PL)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
+  const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
 
   const handleDeleteScene = (e: any) => {
     deleteScene(e).then(() => {
-      getScenes();
-    });
-  };
+      getScenes()
+    })
+  }
   return (
     <>
       <Button variant="text" onClick={handleClick} sx={{ minWidth: '32px' }}>
@@ -36,8 +34,8 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
-            setDialogOpenAddScene(false, true, sceneId, scenes[sceneId]);
-            handleClose();
+            setDialogOpenAddScene(false, true, sceneId, scenes[sceneId])
+            handleClose()
           }}
         >
           <ListItemIcon>
@@ -46,8 +44,8 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            addScene2PL(sceneId);
-            handleClose();
+            addScene2PL(sceneId)
+            handleClose()
           }}
         >
           <ListItemIcon>
@@ -57,8 +55,8 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
         <Popover
           type="menuItem"
           onConfirm={() => {
-            handleDeleteScene(sceneId);
-            handleClose();
+            handleDeleteScene(sceneId)
+            handleClose()
           }}
           variant="outlined"
           color="inherit"
@@ -66,7 +64,7 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
         />
       </Menu>
     </>
-  );
-};
+  )
+}
 
-export default ScenesMenu;
+export default ScenesMenu

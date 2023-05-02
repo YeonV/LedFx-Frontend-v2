@@ -1,32 +1,32 @@
-import React from 'react';
-import { styled } from '@mui/material/styles';
+import React from 'react'
+import { styled } from '@mui/material/styles'
 // import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Dialog from '@mui/material/Dialog';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import PropTypes from 'prop-types'
+import Button from '@mui/material/Button'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Dialog from '@mui/material/Dialog'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 // import {SchemaForm, utils}  from 'react-schema-form';
-import DialogContentText from '@mui/material/DialogContentText';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import ListSubheader from '@mui/material/ListSubheader';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { Slider, Switch } from '@mui/material';
-import FormHelperText from '@mui/material/FormHelperText';
-import ThisDropDown from './DialogAddEventListnerDropDown';
+import DialogContentText from '@mui/material/DialogContentText'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import ListSubheader from '@mui/material/ListSubheader'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import { Slider, Switch } from '@mui/material'
+import FormHelperText from '@mui/material/FormHelperText'
+import ThisDropDown from './DialogAddEventListnerDropDown'
 // import { createQlcListener } from 'modules/qlc';
-import useStore from '../../../store/useStore';
+import useStore from '../../../store/useStore'
 
-const PREFIX = 'DialogAddEventListener';
+const PREFIX = 'DialogAddEventListener'
 
 const classes = {
   root: `${PREFIX}-root`,
   paper: `${PREFIX}-paper`,
-};
+}
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.root}`]: {
@@ -39,7 +39,7 @@ const Root = styled('div')(({ theme }) => ({
     width: '80%',
     maxHeight: 535,
   },
-}));
+}))
 
 function ConfirmationDialogRaw(props: any) {
   const {
@@ -48,26 +48,26 @@ function ConfirmationDialogRaw(props: any) {
     open,
     // deviceList,
     ...other
-  } = props;
-  const [valueState, setValue] = React.useState(valueProp);
-  const [checkButtonType, setButtonType] = React.useState(false);
-  const [checkSliderType, setSliderType] = React.useState(false);
-  const [checkID, setID] = React.useState(null);
-  const [dropDownRenderList, setdropDownRenderList] = React.useState([]);
-  const [switchValue, setSwitchValue] = React.useState(false);
-  const [sliderValue, setSliderValue] = React.useState(0);
+  } = props
+  const [valueState, setValue] = React.useState(valueProp)
+  const [checkButtonType, setButtonType] = React.useState(false)
+  const [checkSliderType, setSliderType] = React.useState(false)
+  const [checkID, setID] = React.useState(null)
+  const [dropDownRenderList, setdropDownRenderList] = React.useState([])
+  const [switchValue, setSwitchValue] = React.useState(false)
+  const [sliderValue, setSliderValue] = React.useState(0)
   const [formData, setformData] = React.useState({
     event_type: null,
     event_filter: { scene_name: null },
     qlc_payload: null,
-  });
-  const [qlcData, setqlcData] = React.useState([]);
-  const radioGroupRef = React.useRef(null);
+  })
+  const [qlcData, setqlcData] = React.useState([])
+  const radioGroupRef = React.useRef(null)
   // const [model, setModel] = React.useState({});
 
-  const qlcInfo = useStore((state: any) => state.qlc?.qlcWidgets);
-  const createQlcListener = useStore((state) => state.addQLCSongTrigger);
-  const getIntegrations = useStore((state) => state.getIntegrations);
+  const qlcInfo = useStore((state: any) => state.qlc?.qlcWidgets)
+  const createQlcListener = useStore((state) => state.addQLCSongTrigger)
+  const getIntegrations = useStore((state) => state.getIntegrations)
 
   // console.log("qlcInfo - Response: ", qlcInfo);
   //  const effectNames = qlcInfo && qlcInfo.event_types && qlcInfo.event_types.effect_set.event_filters.effect_name
@@ -76,13 +76,13 @@ function ConfirmationDialogRaw(props: any) {
   const SceneSet =
     qlcInfo &&
     qlcInfo?.event_types &&
-    qlcInfo?.event_types?.scene_activated?.event_filters?.scene_name;
+    qlcInfo?.event_types?.scene_activated?.event_filters?.scene_name
 
-  const temp = qlcInfo && qlcInfo?.qlc_widgets;
-  const temp2 = [...temp];
+  const temp = qlcInfo && qlcInfo?.qlc_widgets
+  const temp2 = [...temp]
   const QLCWidgets =
     qlcInfo?.qlc_widgets.length &&
-    temp2?.sort((a: any, b: any) => Number(a[0]) - Number(b[0]));
+    temp2?.sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
   // const EVENT_TYPES= qlcInfo && qlcInfo.event_types && qlcInfo.event_types
   // console.log("test3",EVENT_TYPES);
   // const qlcStuff = [];
@@ -100,32 +100,32 @@ function ConfirmationDialogRaw(props: any) {
 
   React.useEffect(() => {
     if (!open) {
-      setValue(valueProp);
+      setValue(valueProp)
     }
-  }, [valueProp, open]);
+  }, [valueProp, open])
 
   const handleEntering = () => {
     if (radioGroupRef.current != null) {
       //   radioGroupRef.current.focus();
     }
-  };
+  }
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleOk = () => {
-    onClose(valueState);
+    onClose(valueState)
     // console.log('QLCFormEventTest1', formData);
-    const data = JSON.stringify(formData);
+    const data = JSON.stringify(formData)
     // eslint-disable-next-line no-console
-    console.error('QLCFormEventTest1', data);
+    console.error('QLCFormEventTest1', data)
     // dispatch(createQlcListener(props.integration.id, formData));
     createQlcListener(formData).then(() => {
-      getIntegrations();
-    });
+      getIntegrations()
+    })
     // if (typeof window !== 'undefined') window.location.href = window.location.href;
-  };
+  }
 
   // const onModelChange = (key:any, val:any) => {
   //   utils.selectOrSet(key, model, val);
@@ -138,42 +138,42 @@ function ConfirmationDialogRaw(props: any) {
   // const [f, setAge] = React.useState('');
   const handleEventChange = (event: any) => {
     // console.log('typetest', event.target);
-    let { value } = event.target;
+    let { value } = event.target
     if (event.target.type === 'checkbox') {
-      value = event.target.checked ? 255 : 0;
-      const qlcDatanewArr: any = qlcData.slice();
-      qlcDatanewArr[0][event.target.name] = value;
-      const newqlcPayload = Object.assign({}, ...qlcDatanewArr);
+      value = event.target.checked ? 255 : 0
+      const qlcDatanewArr: any = qlcData.slice()
+      qlcDatanewArr[0][event.target.name] = value
+      const newqlcPayload = Object.assign({}, ...qlcDatanewArr)
       const newSwitchState = {
         ...formData,
         qlc_payload: {
           ...newqlcPayload,
         },
-      };
-      setSwitchValue(event.target.checked);
-      setqlcData(qlcDatanewArr);
+      }
+      setSwitchValue(event.target.checked)
+      setqlcData(qlcDatanewArr)
       // console.log('test', newSwitchState);
-      setformData(newSwitchState);
+      setformData(newSwitchState)
     } else if (event.target.name === 'qlc_payload') {
-      const qlcDatanewArr: any = qlcData.slice();
+      const qlcDatanewArr: any = qlcData.slice()
       const qlcDataObj: any = {
         [event.target.value[0]]: 0,
-      };
-      qlcDatanewArr[0] = qlcDataObj;
-      setSwitchValue(false);
-      setqlcData(qlcDatanewArr);
-      const newqlcPayload = Object.assign({}, ...qlcDatanewArr);
+      }
+      qlcDatanewArr[0] = qlcDataObj
+      setSwitchValue(false)
+      setqlcData(qlcDatanewArr)
+      const newqlcPayload = Object.assign({}, ...qlcDatanewArr)
 
       const newSwitchState = {
         ...formData,
         qlc_payload: {
           ...newqlcPayload,
         },
-      };
+      }
       // console.log('test', newSwitchState);
-      setformData(newSwitchState);
+      setformData(newSwitchState)
     } else if (event.target.name === 'scene_name') {
-      value = JSON.parse(value);
+      value = JSON.parse(value)
       const newFormState = {
         ...formData,
         event_filter: {
@@ -181,45 +181,45 @@ function ConfirmationDialogRaw(props: any) {
           [event.target.name]: value?.event_name,
         },
         event_type: value?.event_type,
-      };
-      setformData(newFormState);
+      }
+      setformData(newFormState)
     } else {
       // console.log("typetest",val);
       // console.log("typevalue",checkID);
-      const qlcDatanewArr: any = qlcData.slice();
+      const qlcDatanewArr: any = qlcData.slice()
       //   qlcDatanewArr[0][checkID] = val;
-      qlcDatanewArr[0][event.target.value[0]] = value;
-      const newqlcPayload = Object.assign({}, ...qlcDatanewArr);
+      qlcDatanewArr[0][event.target.value[0]] = value
+      const newqlcPayload = Object.assign({}, ...qlcDatanewArr)
       const newSliderState = {
         ...formData,
         qlc_payload: {
           ...newqlcPayload,
         },
-      };
-      setSliderValue(value);
-      setformData(newSliderState);
+      }
+      setSliderValue(value)
+      setformData(newSliderState)
     }
 
     // setformData(inputs => ({...inputs, [event.target.name]: event.target.value}));
-  };
+  }
 
   const handleTypeChange = (event: any) => {
     // setButtonType(event.target.value.includes('Button') ? true : false);
     // setSliderType(event.target.value.includes('Slider') ? true : false);
     if (event.target.value.includes('Button')) {
-      setButtonType(true);
+      setButtonType(true)
     } else {
-      setButtonType(false);
+      setButtonType(false)
     }
     if (event.target.value.includes('Slider')) {
-      setSliderType(true);
+      setSliderType(true)
     } else {
-      setSliderType(false);
+      setSliderType(false)
     }
-    setSwitchValue(false);
-    setID(event.target.value[0]);
-    handleEventChange(event);
-  };
+    setSwitchValue(false)
+    setID(event.target.value[0])
+    handleEventChange(event)
+  }
 
   // work here next time to eliminate reference cloning probably make different handleswitchchange
   const handleDropTypeChange = (
@@ -230,86 +230,86 @@ function ConfirmationDialogRaw(props: any) {
   ) => {
     // console.log("testing1",event.target.value);
     // console.log("testing",dropDownRenderList)
-    const newArr: any = dropDownRenderList.slice();
+    const newArr: any = dropDownRenderList.slice()
     if (
       event.target.name === 'qlc_payload' &&
       event.target.value.includes('Button')
     ) {
-      newArr[index].showSwitch = true;
-      newArr[index].showSlider = false;
+      newArr[index].showSwitch = true
+      newArr[index].showSlider = false
     } else if (
       event.target.name === 'qlc_payload' &&
       event.target.value.includes('Slider')
     ) {
-      newArr[index].showSlider = true;
-      newArr[index].showSwitch = false;
+      newArr[index].showSlider = true
+      newArr[index].showSwitch = false
     }
     // if(event.target.name === "qlc_payload"){
 
     // }
-    let { value: value1 } = event.target;
+    let { value: value1 } = event.target
     if (event.target.type === 'checkbox') {
-      newArr[index].switchValue = event.target.checked;
+      newArr[index].switchValue = event.target.checked
       // event.target.checked ? (value = 255) : (value = 0);
-      value1 = event.target.checked ? 255 : 0;
-      const qlcDatanewArr: any = qlcData.slice();
-      qlcDatanewArr[index + 1][event.target.name] = value1;
-      const newqlcPayload = Object.assign({}, ...qlcDatanewArr);
+      value1 = event.target.checked ? 255 : 0
+      const qlcDatanewArr: any = qlcData.slice()
+      qlcDatanewArr[index + 1][event.target.name] = value1
+      const newqlcPayload = Object.assign({}, ...qlcDatanewArr)
       const newSwitchState = {
         ...formData,
         qlc_payload: {
           ...newqlcPayload,
         },
-      };
-
-      setqlcData(qlcDatanewArr);
-      setformData(newSwitchState);
-    } else if (event.target.name === 'qlc_payload') {
-      // newArr[index].value = event.target.value[0];
-      const [target] = event.target.value;
-      newArr[index].value = target;
-      // console.log('test13', newArr);
-      const qlcDatanewArr: any = qlcData.slice();
-      const qlcDataObj = {
-        [event.target.value[0]]: 0,
-      };
-      // console.log('test0', qlcDataObj);
-      if (qlcDatanewArr[index + 1] === undefined) {
-        qlcDatanewArr.push(qlcDataObj);
-      } else {
-        newArr[index].switchValue = false;
-        qlcDatanewArr[index + 1] = qlcDataObj;
       }
 
-      setqlcData(qlcDatanewArr);
+      setqlcData(qlcDatanewArr)
+      setformData(newSwitchState)
+    } else if (event.target.name === 'qlc_payload') {
+      // newArr[index].value = event.target.value[0];
+      const [target] = event.target.value
+      newArr[index].value = target
+      // console.log('test13', newArr);
+      const qlcDatanewArr: any = qlcData.slice()
+      const qlcDataObj = {
+        [event.target.value[0]]: 0,
+      }
+      // console.log('test0', qlcDataObj);
+      if (qlcDatanewArr[index + 1] === undefined) {
+        qlcDatanewArr.push(qlcDataObj)
+      } else {
+        newArr[index].switchValue = false
+        qlcDatanewArr[index + 1] = qlcDataObj
+      }
 
-      const newqlcPayload = Object.assign({}, ...qlcDatanewArr);
+      setqlcData(qlcDatanewArr)
+
+      const newqlcPayload = Object.assign({}, ...qlcDatanewArr)
 
       const newSwitchState = {
         ...formData,
         qlc_payload: {
           ...newqlcPayload,
         },
-      };
+      }
       // console.log('test', newSwitchState);
-      setformData(newSwitchState);
+      setformData(newSwitchState)
     } else {
-      const qlcDatanewArr: any = qlcData.slice();
-      qlcDatanewArr[index + 1][name] = val;
-      const newqlcPayload = Object.assign({}, ...qlcDatanewArr);
+      const qlcDatanewArr: any = qlcData.slice()
+      qlcDatanewArr[index + 1][name] = val
+      const newqlcPayload = Object.assign({}, ...qlcDatanewArr)
       const newSliderState = {
         ...formData,
         qlc_payload: {
           ...newqlcPayload,
         },
-      };
+      }
 
-      setqlcData(qlcDatanewArr);
-      setformData(newSliderState);
+      setqlcData(qlcDatanewArr)
+      setformData(newSliderState)
     }
 
-    return setdropDownRenderList(newArr);
-  };
+    return setdropDownRenderList(newArr)
+  }
 
   const handleTypeAddDropDown = () => {
     const newItem: any = {
@@ -318,37 +318,37 @@ function ConfirmationDialogRaw(props: any) {
       switchValue: false,
       showSwitch: false,
       showSlider: false,
-    };
+    }
 
-    const newArr: any = dropDownRenderList.slice();
-    newArr.push(newItem);
-    return setdropDownRenderList(newArr);
-  };
+    const newArr: any = dropDownRenderList.slice()
+    newArr.push(newItem)
+    return setdropDownRenderList(newArr)
+  }
 
   const handleTypeRemoveDropDown = (idx: any) => {
-    const newArr = dropDownRenderList.slice();
-    newArr.splice(idx, 1);
-    const newQlcData = qlcData.slice();
-    newQlcData.splice(idx + 1, 1);
-    setqlcData(newQlcData);
-    const newqlcPayload = Object.assign({}, ...newQlcData);
+    const newArr = dropDownRenderList.slice()
+    newArr.splice(idx, 1)
+    const newQlcData = qlcData.slice()
+    newQlcData.splice(idx + 1, 1)
+    setqlcData(newQlcData)
+    const newqlcPayload = Object.assign({}, ...newQlcData)
     const newSwitchState = {
       ...formData,
       qlc_payload: {
         ...newqlcPayload,
       },
-    };
+    }
     // console.log('test', newSwitchState);
-    setformData(newSwitchState);
-    return setdropDownRenderList(newArr);
-  };
+    setformData(newSwitchState)
+    return setdropDownRenderList(newArr)
+  }
 
   const marks = [
     { value: 1, label: '1' },
     { value: 255, label: '255' },
-  ];
+  ]
 
-  delete other.deviceList;
+  delete other.deviceList
 
   return (
     <Dialog
@@ -567,7 +567,7 @@ function ConfirmationDialogRaw(props: any) {
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  )
 }
 
 ConfirmationDialogRaw.propTypes = {
@@ -575,20 +575,20 @@ ConfirmationDialogRaw.propTypes = {
   open: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
   // config: PropTypes.any,
-};
+}
 
 export default function ConfirmationDialog({ integration }: any) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
   // const dispatch = useDispatch();
   // console.log("YZ03:", event_types)
 
   const handleClickListItem = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   return (
     <div className={classes.root}>
@@ -619,5 +619,5 @@ export default function ConfirmationDialog({ integration }: any) {
         //   createQlcListener={createQlcListener}
       />
     </div>
-  );
+  )
 }

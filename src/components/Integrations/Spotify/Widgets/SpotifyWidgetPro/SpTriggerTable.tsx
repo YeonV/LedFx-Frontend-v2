@@ -4,15 +4,15 @@ import {
   GridColDef,
   GridRowParams,
   GridCellParams,
-} from '@mui/x-data-grid';
-import { styled } from '@mui/material/styles';
+} from '@mui/x-data-grid'
+import { styled } from '@mui/material/styles'
 // import { useTheme } from '@mui/material/styles';
 import {
   DeleteForever,
   NotStarted,
   PlayCircleFilled,
-} from '@mui/icons-material';
-import { useContext, useEffect } from 'react';
+} from '@mui/icons-material'
+import { useContext, useEffect } from 'react'
 import {
   Card,
   FormControl,
@@ -21,18 +21,18 @@ import {
   Select,
   SelectChangeEvent,
   MenuItem,
-} from '@mui/material';
-import useStore from '../../../../../store/useStore';
-import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
-import Popover from '../../../../Popover/Popover';
-import { SpotifyStateContext } from '../../SpotifyProvider';
+} from '@mui/material'
+import useStore from '../../../../../store/useStore'
+import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'
+import Popover from '../../../../Popover/Popover'
+import { SpotifyStateContext } from '../../SpotifyProvider'
 
-const PREFIX = 'SpTriggerTable';
+const PREFIX = 'SpTriggerTable'
 
 export const classes = {
   root: `${PREFIX}-root`,
   select: `${PREFIX}-select`,
-};
+}
 
 const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.select}`]: {
@@ -73,54 +73,54 @@ const Root = styled('div')(({ theme }: any) => ({
       color: '#666',
     },
   },
-}));
+}))
 
 export default function SpotifyTriggerTable() {
-  const integrations = useStore((state) => state.integrations);
-  const scenes = useStore((state) => state.scenes);
-  const getIntegrations = useStore((state) => state.getIntegrations);
-  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const playerState = useContext(SpotifyStateContext);
-  const spTriggersList = useStore((state) => state.spotify.spTriggersList);
-  const deleteSpTrigger = useStore((state) => state.deleteSpTrigger);
-  const getSpTriggers = useStore((state) => state.getSpTriggers);
-  const addToSpTriggerList = useStore((state) => state.addToSpTriggerList);
-  const getScenes = useStore((state) => state.getScenes);
-  const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger);
+  const integrations = useStore((state) => state.integrations)
+  const scenes = useStore((state) => state.scenes)
+  const getIntegrations = useStore((state) => state.getIntegrations)
+  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice)
+  const playerState = useContext(SpotifyStateContext)
+  const spTriggersList = useStore((state) => state.spotify.spTriggersList)
+  const deleteSpTrigger = useStore((state) => state.deleteSpTrigger)
+  const getSpTriggers = useStore((state) => state.getSpTriggers)
+  const addToSpTriggerList = useStore((state) => state.addToSpTriggerList)
+  const getScenes = useStore((state) => state.getScenes)
+  const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger)
 
   useEffect(() => {
-    getSpTriggers('spotify');
-    getScenes();
-  }, []);
+    getSpTriggers('spotify')
+    getScenes()
+  }, [])
 
   const padTo2Digits = (num: any) => {
-    return num.toString().padStart(2, '0');
-  };
+    return num.toString().padStart(2, '0')
+  }
 
   const getTime = (milliseconds: any) => {
-    let seconds = Math.floor(milliseconds / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
+    let seconds = Math.floor(milliseconds / 1000)
+    let minutes = Math.floor(seconds / 60)
+    let hours = Math.floor(minutes / 60)
 
-    seconds %= 60;
-    minutes %= 60;
-    hours %= 24;
+    seconds %= 60
+    minutes %= 60
+    hours %= 24
 
     return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}:${padTo2Digits(
       seconds
-    )}`;
-  };
+    )}`
+  }
 
   // Here we get the current triggers from list and set to global state
   useEffect(() => {
-    const triggersNew: any = [];
-    let id = 1;
+    const triggersNew: any = []
+    let id = 1
     if (integrations?.spotify?.data) {
-      const temp = integrations?.spotify?.data;
+      const temp = integrations?.spotify?.data
       Object.keys(temp).map((key) => {
-        const temp1 = temp[key];
-        const sceneName = temp1.name;
-        const sceneId = temp1.name;
+        const temp1 = temp[key]
+        const sceneName = temp1.name
+        const sceneId = temp1.name
         Object.keys(temp1).map((key1) => {
           if (temp1[key1].constructor === Array) {
             triggersNew.push({
@@ -132,44 +132,44 @@ export default function SpotifyTriggerTable() {
               position_ms: temp1[key1][2],
               sceneId,
               sceneName,
-            });
-            id += 1;
+            })
+            id += 1
           }
 
-          return true;
-        });
-        return true;
-      });
-      addToSpTriggerList(triggersNew, 'create');
+          return true
+        })
+        return true
+      })
+      addToSpTriggerList(triggersNew, 'create')
     }
-  }, [integrations]);
+  }, [integrations])
 
   const updateSpTrigger = (rowData: any, val: any) => {
-    let sceneKey;
+    let sceneKey
     if (scenes) {
       Object.keys(scenes)?.map((key: any) => {
         if (scenes[key].name === val) {
-          sceneKey = key;
+          sceneKey = key
         }
-        return null;
-      });
+        return null
+      })
     }
-    addToSpTriggerList({ ...rowData, sceneId: val }, 'update');
+    addToSpTriggerList({ ...rowData, sceneId: val }, 'update')
     const data = {
       scene_id: sceneKey,
       song_id: rowData?.songId,
       song_name: rowData?.songName,
       song_position: rowData?.position_ms,
-    };
-    editSpotifySongTrigger(data).then(() => getIntegrations());
-  };
+    }
+    editSpotifySongTrigger(data).then(() => getIntegrations())
+  }
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteSpTrigger({
       data: {
         trigger_id: paramsTemp?.row?.trigger_id,
       },
-    }).then(() => getIntegrations());
-  };
+    }).then(() => getIntegrations())
+  }
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -211,7 +211,7 @@ export default function SpotifyTriggerTable() {
               value={params?.row?.sceneId}
               label="Scene"
               onChange={(e: SelectChangeEvent) => {
-                updateSpTrigger(params?.row, e.target.value);
+                updateSpTrigger(params?.row, e.target.value)
               }}
             >
               {/* <MenuItem value="sceneId" /> */}
@@ -222,7 +222,7 @@ export default function SpotifyTriggerTable() {
               ))}
             </Select>
           </FormControl>
-        );
+        )
       },
     },
     {
@@ -239,7 +239,7 @@ export default function SpotifyTriggerTable() {
             icon={<DeleteForever />}
             style={{ minWidth: 40 }}
             onConfirm={() => {
-              deleteTriggerHandler(params);
+              deleteTriggerHandler(params)
             }}
           />
           <IconButton
@@ -250,7 +250,7 @@ export default function SpotifyTriggerTable() {
                 spotifyDevice,
                 params.row.songId,
                 params.row.position_ms
-              );
+              )
             }}
           >
             <PlayCircleFilled fontSize="inherit" />
@@ -259,7 +259,7 @@ export default function SpotifyTriggerTable() {
             aria-label="playstart"
             color="inherit"
             onClick={() => {
-              spotifyPlaySong(spotifyDevice, params.row.songId);
+              spotifyPlaySong(spotifyDevice, params.row.songId)
             }}
           >
             <NotStarted fontSize="inherit" />
@@ -267,9 +267,9 @@ export default function SpotifyTriggerTable() {
         </Stack>
       ),
     },
-  ];
+  ]
 
-  const rows = spTriggersList || [{ id: 1 }];
+  const rows = spTriggersList || [{ id: 1 }]
 
   return (
     <Root
@@ -285,7 +285,7 @@ export default function SpotifyTriggerTable() {
           // checkboxSelection
           disableSelectionOnClick
           onRowDoubleClick={(params: any) => {
-            spotifyPlaySong(spotifyDevice, params.row.songId);
+            spotifyPlaySong(spotifyDevice, params.row.songId)
           }}
           sx={{
             boxShadow: 2,
@@ -310,12 +310,12 @@ export default function SpotifyTriggerTable() {
           }
           getCellClassName={(params: GridCellParams<any>) => {
             if (params?.field === 'sceneId') {
-              return 'sceneStyle';
+              return 'sceneStyle'
             }
-            return '';
+            return ''
           }}
         />
       </Card>
     </Root>
-  );
+  )
 }

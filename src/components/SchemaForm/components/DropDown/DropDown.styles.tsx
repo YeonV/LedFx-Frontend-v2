@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles(() => ({
   FormRow: {
@@ -47,6 +47,6 @@ const useStyles = makeStyles(() => ({
       flexGrow: 1,
     },
   },
-}));
+}))
 
-export default useStyles;
+export default useStyles

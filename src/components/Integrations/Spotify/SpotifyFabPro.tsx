@@ -1,10 +1,10 @@
-import { Fab } from '@mui/material';
-import { useState } from 'react';
-import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
-import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro';
+import { Fab } from '@mui/material'
+import { useState } from 'react'
+import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
+import SpotifyWidgetPro from './Widgets/SpotifyWidgetPro/SpWidgetPro'
 
 const SpotifyFabPro = ({ botHeight }: any) => {
-  const [floatingWidget, setFloatingWidget] = useState(false);
+  const [floatingWidget, setFloatingWidget] = useState(false)
 
   return (
     <>
@@ -43,7 +43,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
       </div>
       {floatingWidget && <SpotifyWidgetPro drag />}
     </>
-  );
-};
+  )
+}
 
-export default SpotifyFabPro;
+export default SpotifyFabPro

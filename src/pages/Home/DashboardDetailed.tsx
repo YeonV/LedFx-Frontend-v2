@@ -1,20 +1,20 @@
-import { useEffect } from 'react';
-import { Stack } from '@mui/material';
-import useStore from '../../store/useStore';
-import DbLinks from './DbLinks';
-import DbStats from './DbStats';
-import DbConfig from './DbConfig';
-import DbGlobalActions from './DbGlobalActions';
-import DbScenes from './DbScenes';
-import DbScenesPL from './DbScenesPL';
-import DbDevices from './DbDevices';
+import { useEffect } from 'react'
+import { Stack } from '@mui/material'
+import useStore from '../../store/useStore'
+import DbLinks from './DbLinks'
+import DbStats from './DbStats'
+import DbConfig from './DbConfig'
+import DbGlobalActions from './DbGlobalActions'
+import DbScenes from './DbScenes'
+import DbScenesPL from './DbScenesPL'
+import DbDevices from './DbDevices'
 
 const DashboardDetailed = () => {
-  const getScenes = useStore((state) => state.getScenes);
+  const getScenes = useStore((state) => state.getScenes)
 
   useEffect(() => {
-    getScenes();
-  }, []);
+    getScenes()
+  }, [])
 
   return (
     <div className="Content">
@@ -35,7 +35,7 @@ const DashboardDetailed = () => {
         {/* <MelbankGraph key="fft" graphId="1" /> */}
       </Stack>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardDetailed;
+export default DashboardDetailed

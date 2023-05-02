@@ -1,8 +1,8 @@
-import { Button, IconButton, Slider, Typography } from '@mui/material';
-import { QueueMusic } from '@mui/icons-material';
-import useAPIPolling, { APIPollingOptions } from 'use-api-polling';
-import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
-import ChangeYoutubeURLDialog from './ChangeYoutubeURLDialog';
+import { Button, IconButton, Slider, Typography } from '@mui/material'
+import { QueueMusic } from '@mui/icons-material'
+import useAPIPolling, { APIPollingOptions } from 'use-api-polling'
+import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
+import ChangeYoutubeURLDialog from './ChangeYoutubeURLDialog'
 
 const YoutubeWidgetBar = ({
   youtubeEnabled,
@@ -14,7 +14,7 @@ const YoutubeWidgetBar = ({
   state,
   setState,
 }: any) => {
-  const API_URL = 'http://localhost:8080/api/bridge';
+  const API_URL = 'http://localhost:8080/api/bridge'
   // const API_URL = '/api/bridge';
   async function postData(url = '', data = {}, res = false) {
     // Default options are marked with *
@@ -30,11 +30,11 @@ const YoutubeWidgetBar = ({
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(data), // body data type must match "Content-Type" header
-    });
+    })
     if (response && res) {
-      return response.json(); // parses JSON response into native JavaScript objects
+      return response.json() // parses JSON response into native JavaScript objects
     }
-    return { status: 'fail' };
+    return { status: 'fail' }
   }
 
   const initialState = {
@@ -57,34 +57,34 @@ const YoutubeWidgetBar = ({
         url: '',
       },
     ],
-  };
+  }
 
   const yt3 = async () => {
     const res = await fetch(`${API_URL}/ctl/youtube/info`)
       .then((datas) => {
-        return datas.json();
+        return datas.json()
       })
       .then((dat) => {
         if (dat) {
-          setState(dat);
+          setState(dat)
         }
-        return dat;
-      });
-    return res;
-  };
+        return dat
+      })
+    return res
+  }
 
-  type DataType = typeof initialState;
+  type DataType = typeof initialState
 
   const fetchFunc = async () => {
-    const res = await yt3();
-    return res;
-  };
+    const res = await yt3()
+    return res
+  }
   const options: APIPollingOptions<DataType> = {
     fetchFunc,
     initialState,
     delay: 1000,
-  };
-  const currentPosition = useAPIPolling(options);
+  }
+  const currentPosition = useAPIPolling(options)
 
   return (
     <>
@@ -138,7 +138,7 @@ const YoutubeWidgetBar = ({
               onClick={async () => {
                 await postData(`${API_URL}/ctl/youtube/set`, {
                   action: 'previous',
-                });
+                })
               }}
             >
               <BladeIcon name="SkipPrevious" />
@@ -148,7 +148,7 @@ const YoutubeWidgetBar = ({
                 onClick={async () => {
                   await postData(`${API_URL}/ctl/youtube/set`, {
                     action: 'play',
-                  });
+                  })
                 }}
               >
                 <BladeIcon name="PlayArrowRounded" />
@@ -158,7 +158,7 @@ const YoutubeWidgetBar = ({
                 onClick={async () => {
                   await postData(`${API_URL}/ctl/youtube/set`, {
                     action: 'resume',
-                  });
+                  })
                 }}
               >
                 <BladeIcon name="PlayArrowRounded" />
@@ -168,7 +168,7 @@ const YoutubeWidgetBar = ({
                 onClick={async () => {
                   await postData(`${API_URL}/ctl/youtube/set`, {
                     action: 'pause',
-                  });
+                  })
                 }}
               >
                 <BladeIcon name="PauseRounded" />
@@ -180,7 +180,7 @@ const YoutubeWidgetBar = ({
               onClick={async () => {
                 await postData(`${API_URL}/ctl/youtube/set`, {
                   action: 'next',
-                });
+                })
               }}
             >
               <BladeIcon name="SkipNext" />
@@ -274,7 +274,7 @@ const YoutubeWidgetBar = ({
                       <Button
                         disabled={!state.is_playing}
                         onClick={() => {
-                          window.open(t.url, '_blank')?.focus();
+                          window.open(t.url, '_blank')?.focus()
                         }}
                         color="primary"
                       >
@@ -322,6 +322,6 @@ const YoutubeWidgetBar = ({
         </div>
       </div>
     </>
-  );
-};
-export default YoutubeWidgetBar;
+  )
+}
+export default YoutubeWidgetBar

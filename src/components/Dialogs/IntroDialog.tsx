@@ -1,72 +1,89 @@
-import Dialog from '@mui/material/Dialog';
-import { useState } from 'react';
-import { DialogContent, Typography, useMediaQuery } from '@mui/material';
-import Box from '@mui/material/Box';
-import MobileStepper from '@mui/material/MobileStepper';
-import Button from '@mui/material/Button';
-import useStore from '../../store/useStore';
-import logoCircle from '../../icons/png/128x128.png';
-import wledLogo from '../../icons/png/wled.png';
+import Dialog from '@mui/material/Dialog'
+import { useEffect, useRef, useState } from 'react'
+import {
+  DialogContent,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
+import Box from '@mui/material/Box'
+import MobileStepper from '@mui/material/MobileStepper'
+import Button from '@mui/material/Button'
+import { ChevronLeft, ChevronRight } from '@mui/icons-material'
+import useStore from '../../store/useStore'
+import logoCircle from '../../icons/png/128x128.png'
+import wledLogo from '../../icons/png/wled.png'
+import BladeScene from '../../pages/Home/BladeScene'
 
 export default function IntroDialog({ handleScan, scanning }: any) {
-  const intro = useStore((state) => state.intro);
-  const devices = useStore((state) => state.devices);
-  const setIntro = useStore((state) => state.setIntro);
-  const setTour = useStore((state) => state.setTour);
-  const small = useMediaQuery('(max-width: 720px)');
-  const xsmall = useMediaQuery('(max-width: 600px)');
+  const intro = useStore((state) => state.intro)
+  const devices = useStore((state) => state.devices)
+  // const virtuals = useStore((state) => state.virtuals)
+  const setIntro = useStore((state) => state.setIntro)
+  const setTour = useStore((state) => state.setTour)
+  const small = useMediaQuery('(max-width: 720px)')
+  const xsmall = useMediaQuery('(max-width: 600px)')
 
+  // console.log('YZ', virtuals)
   const handleClose = () => {
-    setIntro(false);
-  };
-  //   const theme = useTheme();
-  const [activeStep, setActiveStep] = useState(0);
+    setIntro(false)
+  }
+  const theme = useTheme()
+  const [activeStep, setActiveStep] = useState(0)
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
+    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+  }
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
 
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
   const onSystemSettingsChange = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
 
-  const steps = [
+  const steps = useRef([
     {
-      title: 'New to LedFx?',
+      key: 'setup',
+      title: 'Start Setup-Assistant?',
       label_left: 'Nah, im an expert. Just let me in',
       label_right: 'Yes, please show me around',
       action_left: () => {
-        handleClose();
+        handleClose()
       },
       action_right: handleNext,
     },
     {
+      key: 'gotWled',
       title: 'Scan for WLEDs in network?',
       icon: 'wled',
       label_left: 'Nah, no WLEDs',
       label_right: 'Yes, please scan my network for WLEDs',
-      action_left: handleClose,
+      action_left: handleNext,
       action_right: handleNext,
     },
     {
+      key: 'wledSegs',
       title: 'Import Segments from WLED?',
       icon: 'wled',
       label_left: 'No, only main devices',
       label_right: 'Yes, import segments',
       action_left: () => {
-        onSystemSettingsChange('create_segments', false);
-        handleScan();
-        setTour('home');
-        handleNext();
+        onSystemSettingsChange('create_segments', false)
+        handleScan()
+        setTour('home')
+        handleNext()
       },
       action_right: () => {
-        onSystemSettingsChange('create_segments', true);
-        handleScan();
-        handleNext();
+        onSystemSettingsChange('create_segments', true)
+        handleScan()
+        handleNext()
       },
     },
     {
+      key: 'wledScanning',
       title:
         scanning && scanning > -1
           ? `Scanning...${scanning}%`
@@ -76,11 +93,42 @@ export default function IntroDialog({ handleScan, scanning }: any) {
       label_right: 'Start Introduction',
       action_left: handleClose,
       action_right: () => {
-        setTour('home');
-        handleClose();
+        setTour('home')
+        handleClose()
       },
     },
-  ];
+    {
+      key: 'audio',
+      title: 'Select your Audio Device',
+      icon: 'wled',
+      label_left: 'Skip Introduction',
+      label_right: 'Start Introduction',
+      action_left: handleClose,
+      action_right: handleClose,
+    },
+    {
+      key: 'scene',
+      title: 'Test Scene',
+      icon: 'wled',
+      label_left: 'Skip Introduction',
+      label_right: <BladeScene />,
+      action_left: handleClose,
+      action_right: handleClose,
+    },
+  ])
+
+  const [s, setS] = useState({} as Record<string, 'left' | 'right'>)
+
+  useEffect(() => {
+    steps.current = [
+      ...steps.current.filter((st: any) => {
+        console.log(st)
+        console.log(typeof steps.current[activeStep].label_right)
+
+        return !st.key.startsWith('ywled')
+      }),
+    ]
+  }, [s])
 
   return (
     <Dialog
@@ -95,24 +143,30 @@ export default function IntroDialog({ handleScan, scanning }: any) {
           <Box
             sx={{
               display: 'flex',
-              height: 256,
+              height: 300,
               alignItems: 'center',
               justifyContent: 'center',
-              flexDirection: xsmall ? 'column' : 'row',
+              flexDirection: 'column',
             }}
           >
             <img
               width={128}
-              src={steps[activeStep].icon === 'wled' ? wledLogo : logoCircle}
+              src={
+                !steps.current[activeStep].icon
+                  ? logoCircle
+                  : (steps.current[activeStep].icon === 'wled' && wledLogo) ||
+                    ''
+              }
               alt="logo-circle"
             />
             <div>
               <Typography
-                marginLeft={xsmall ? 0 : 5}
-                marginTop={xsmall ? 3 : 0}
+                marginLeft={0}
+                marginTop={5}
+                marginBottom={5}
                 variant={xsmall ? 'h4' : 'h3'}
               >
-                {steps[activeStep].title}
+                {steps.current[activeStep].title}
               </Typography>
               {scanning > -1 ? (
                 <Typography
@@ -133,85 +187,94 @@ export default function IntroDialog({ handleScan, scanning }: any) {
               )}
             </div>
           </Box>
+          <Stack direction="row" gap={3}>
+            <Button
+              size="small"
+              onClick={(_e) => {
+                steps.current[activeStep].action_left()
+                setS((p: any) => ({
+                  ...p,
+                  [steps.current[activeStep].key]: 'left',
+                }))
+              }}
+              sx={{
+                borderRadius: '3vh',
+                textTransform: 'none',
+                marginRight: small ? 0 : '1rem',
+                width: small ? '80vw' : 'min(40vw, 550px)',
+                minHeight: 'min(15vh, 120px)',
+                fontSize: '2rem',
+              }}
+            >
+              {steps.current[activeStep].label_left}
+            </Button>
+            {typeof steps.current[activeStep].label_right === 'string' ? (
+              <Button
+                size="small"
+                color={1 ? 'primary' : 'inherit'}
+                onClick={(_e) => {
+                  steps.current[activeStep].action_right()
+                  setS((p: any) => ({
+                    ...p,
+                    [steps.current[activeStep].key]: 'right',
+                  }))
+                }}
+                sx={{
+                  borderRadius: '3vh',
+                  borderColor: 1 ? theme.palette.primary.main : 'inherit',
+                  textTransform: 'none',
+                  marginLeft: small ? 0 : '1rem',
+                  marginTop: small ? '1rem' : 0,
+                  width: small ? '80vw' : 'min(40vw, 550px)',
+                  minHeight: 'min(15vh, 120px)',
+                  fontSize: '2rem',
+                }}
+              >
+                {steps.current[activeStep].label_right}
+              </Button>
+            ) : (
+              steps.current[activeStep].label_right
+            )}
+          </Stack>
           <MobileStepper
-            variant={undefined}
-            steps={2}
+            variant="dots"
+            steps={steps.current.length}
             position="static"
             activeStep={activeStep}
             sx={{
               flexDirection: small ? 'column' : ' row',
+              justifyContent: 'center',
               background: 'transparent',
               '& .MuiMobileStepper-dots': {
-                display: 'none',
+                display: activeStep > 0 ? 'flex' : 'none',
               },
             }}
             nextButton={
               <Button
                 size="small"
-                onClick={steps[activeStep].action_right}
-                // disabled={activeStep === maxSteps - 1}
-                sx={{
-                  borderRadius: '3vh',
-                  textTransform: 'none',
-                  marginLeft: small ? 0 : '1rem',
-                  marginTop: small ? '1rem' : 0,
-                  width: small ? '80vw' : '40vw',
-                  minHeight: '15vh',
-                  fontSize: '2rem',
-                }}
+                variant="text"
+                onClick={handleNext}
+                disabled={activeStep === steps.current.length - 1}
+                sx={{ display: activeStep > 0 ? 'flex' : 'none' }}
               >
-                {steps[activeStep].label_right}
+                <ChevronRight />
               </Button>
             }
             backButton={
               <Button
                 size="small"
-                onClick={steps[activeStep].action_left}
-                // disabled={activeStep === 0}
-                sx={{
-                  borderRadius: '3vh',
-                  textTransform: 'none',
-                  marginRight: small ? 0 : '1rem',
-                  width: small ? '80vw' : '40vw',
-                  minHeight: '15vh',
-                  fontSize: '2rem',
-                }}
+                variant="text"
+                onClick={handleBack}
+                disabled={activeStep === 0}
+                sx={{ display: activeStep > 0 ? 'flex' : 'none' }}
               >
-                {steps[activeStep].label_left}
+                <ChevronLeft />
               </Button>
             }
           />
         </Box>
+        {steps.current[activeStep].key === 'scene' && <BladeScene />}
       </DialogContent>
     </Dialog>
-  );
+  )
 }
-
-// export default function IntroDialog() {
-//   const [open, setOpen] = useState(true);
-
-//   //   const handleClickOpen = () => {
-//   //     setOpen(true);
-//   //   };
-
-//   const handleClose = (value: string) => {
-//     setOpen(false);
-//   };
-
-//   return (
-//     <div>
-//       {/* <Typography variant="subtitle1" component="div">
-//         Selected: {selectedValue}
-//       </Typography>
-//       <br />
-//       <Button variant="outlined" onClick={handleClickOpen}>
-//         Open simple dialog
-//       </Button> */}
-//       <SimpleDialog
-//         selectedValue={selectedValue}
-//         open={open}
-//         onClose={handleClose}
-//       />
-//     </div>
-//   );
-// }

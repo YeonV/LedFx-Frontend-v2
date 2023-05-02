@@ -12,7 +12,7 @@
     "editor.formatOnSave": false
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
     "editor.formatOnSave": false
   },
   "prettier.eslintIntegration": true,

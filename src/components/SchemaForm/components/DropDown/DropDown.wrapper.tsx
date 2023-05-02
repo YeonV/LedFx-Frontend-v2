@@ -1,11 +1,11 @@
-import DropDown from './DropDown';
+import DropDown from './DropDown'
 
 export interface EffectDropDownProps {
-  effects: any;
-  virtual: any;
-  features: any;
-  setVirtualEffect: any;
-  getVirtuals: any;
+  effects: any
+  virtual: any
+  features: any
+  setVirtualEffect: any
+  getVirtuals: any
 }
 
 const EffectDropDown = ({
@@ -21,20 +21,20 @@ const EffectDropDown = ({
       name: effects[eid].name,
       id: effects[eid].id,
       category: effects[eid].category,
-    }));
+    }))
 
   const groups =
     effectNames &&
     effectNames.reduce((r: any, a: any) => {
       // eslint-disable-next-line no-param-reassign
-      r[a.category] = [...(r[a.category] || []), a];
-      return r;
-    }, {});
+      r[a.category] = [...(r[a.category] || []), a]
+      return r
+    }, {})
 
   const onEffectTypeChange = (e: any) =>
     setVirtualEffect(virtual.id, e.target.value).then(() => {
-      getVirtuals();
-    });
+      getVirtuals()
+    })
 
   return (
     <DropDown
@@ -44,7 +44,7 @@ const EffectDropDown = ({
       showFilter={features.effectfilter}
       title="Effect Type"
     />
-  );
-};
+  )
+}
 
-export default EffectDropDown;
+export default EffectDropDown

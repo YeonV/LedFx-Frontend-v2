@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
+import { useContext, useEffect, useState } from 'react'
+import Box from '@mui/material/Box'
 import {
   InputAdornment,
   TextField,
@@ -7,52 +7,52 @@ import {
   FormControl,
   InputLabel,
   Select,
-} from '@mui/material';
-import useStore from '../../../../../store/useStore';
+} from '@mui/material'
+import useStore from '../../../../../store/useStore'
 
-import Popover from '../../../../Popover/Popover';
-import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon';
-import { SpotifyStateContext } from '../../SpotifyProvider';
+import Popover from '../../../../Popover/Popover'
+import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon'
+import { SpotifyStateContext } from '../../SpotifyProvider'
 
 export default function SpSceneTrigger() {
-  const spotifyState = useContext(SpotifyStateContext);
+  const spotifyState = useContext(SpotifyStateContext)
 
-  const scenes = useStore((state) => state.scenes);
-  const getScenes = useStore((state) => state.getScenes);
-  const [spotifyScene, setSpotifyScene] = useState(0);
-  const player = useStore((state) => state.spotify.player);
-  const spNetworkTime = useStore((state) => state.spotify.spNetworkTime);
-  const setSpNetworkTime = useStore((state) => state.setSpNetworkTime);
+  const scenes = useStore((state) => state.scenes)
+  const getScenes = useStore((state) => state.getScenes)
+  const [spotifyScene, setSpotifyScene] = useState(0)
+  const player = useStore((state) => state.spotify.player)
+  const spNetworkTime = useStore((state) => state.spotify.spNetworkTime)
+  const setSpNetworkTime = useStore((state) => state.setSpNetworkTime)
 
-  const addSpotifySongTrigger = useStore((state) => state.addSpSongTrigger);
-  const getIntegrations = useStore((state) => state.getIntegrations);
-  const songID = spotifyState?.track_window?.current_track?.id || '';
-  const songTitleAndArtist = `${spotifyState?.track_window?.current_track?.name} - ${spotifyState?.track_window?.current_track?.artists[0]?.name}`;
+  const addSpotifySongTrigger = useStore((state) => state.addSpSongTrigger)
+  const getIntegrations = useStore((state) => state.getIntegrations)
+  const songID = spotifyState?.track_window?.current_track?.id || ''
+  const songTitleAndArtist = `${spotifyState?.track_window?.current_track?.name} - ${spotifyState?.track_window?.current_track?.artists[0]?.name}`
   const spotifyTriggerData = {
     scene_id: spotifyScene, // Incorrectly sending scene_name instead of scene_id
     song_id: songID,
     song_name: songTitleAndArtist,
     song_position: spotifyState?.position,
-  };
+  }
 
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
     player.getCurrentState().then((state: any) => {
       if (!state) {
         // eslint-disable-next-line no-console
-        console.error('User is not playing music through the Web Playback SDK');
-        return;
+        console.error('User is not playing music through the Web Playback SDK')
+        return
       }
       const data = {
         ...spotifyTriggerDataTemp,
         ...{ song_position: state.position },
-      };
-      addSpotifySongTrigger(data).then(() => getIntegrations());
-    });
-  };
+      }
+      addSpotifySongTrigger(data).then(() => getIntegrations())
+    })
+  }
 
   useEffect(() => {
-    getScenes();
-  }, []);
+    getScenes()
+  }, [])
 
   return (
     <Popover
@@ -78,7 +78,7 @@ export default function SpSceneTrigger() {
                 value={spotifyScene}
                 label="Scene"
                 onChange={(_, v: any) => {
-                  setSpotifyScene(v.props.value);
+                  setSpotifyScene(v.props.value)
                 }}
               >
                 <MenuItem value={0}>select a scene</MenuItem>
@@ -112,5 +112,5 @@ export default function SpSceneTrigger() {
         </div>
       }
     />
-  );
+  )
 }

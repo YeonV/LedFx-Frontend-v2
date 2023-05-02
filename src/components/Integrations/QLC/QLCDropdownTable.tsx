@@ -1,24 +1,24 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
+import * as React from 'react'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
+import IconButton from '@mui/material/IconButton'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Typography from '@mui/material/Typography'
 // import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
-const PREFIX = 'QLCDropdownTable';
+const PREFIX = 'QLCDropdownTable'
 
 const classes = {
   root: `${PREFIX}-root`,
-};
+}
 
 const StyledTableContainer = styled(TableContainer)(({ theme }: any) => ({
   [`&.${classes.root}`]: {
@@ -57,7 +57,7 @@ const StyledTableContainer = styled(TableContainer)(({ theme }: any) => ({
       color: '#666',
     },
   },
-}));
+}))
 
 function createData(name: string, countWidgets: number, actions: number) {
   return {
@@ -78,12 +78,12 @@ function createData(name: string, countWidgets: number, actions: number) {
         qlcvalue: 'Off',
       },
     ],
-  };
+  }
 }
 
 function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
-  const [open, setOpen] = React.useState(true);
+  const { row } = props
+  const [open, setOpen] = React.useState(true)
 
   return (
     <>
@@ -141,13 +141,13 @@ function Row(props: { row: ReturnType<typeof createData> }) {
         </TableCell>
       </TableRow>
     </>
-  );
+  )
 }
 
 const rows = [
   createData('scene_activated: blue', 2, 6),
   createData('scene_activated: Red', 237, 9),
-];
+]
 
 export default function QLCDropdownTable() {
   return (
@@ -168,5 +168,5 @@ export default function QLCDropdownTable() {
         </TableBody>
       </Table>
     </StyledTableContainer>
-  );
+  )
 }

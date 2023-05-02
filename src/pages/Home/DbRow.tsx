@@ -1,11 +1,11 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material'
 
 const DbRow = ({
   left,
   right,
 }: {
-  left: string | undefined;
-  right: string | undefined;
+  left: string | undefined
+  right: string | undefined
 }) => {
   return (
     <Stack
@@ -17,7 +17,7 @@ const DbRow = ({
       <Typography variant="body1">{left}</Typography>
       <Typography>{right}</Typography>
     </Stack>
-  );
-};
+  )
+}
 
-export default DbRow;
+export default DbRow

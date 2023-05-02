@@ -6,10 +6,10 @@ import {
   Filler,
   // Tooltip,
   Legend,
-} from 'chart.js';
-import styled from 'styled-components';
-import { Radar } from 'react-chartjs-2';
-import { useTheme } from '@mui/material/styles';
+} from 'chart.js'
+import styled from 'styled-components'
+import { Radar } from 'react-chartjs-2'
+import { useTheme } from '@mui/material/styles'
 
 const RadarChartContainer = styled.div`
   width: 450px;
@@ -22,18 +22,12 @@ const RadarChartContainer = styled.div`
     font-size: 22px;
     color: white;
   }
-`;
+`
 
 const RadarChart = (props: any) => {
-  const theme = useTheme();
-  const TrackFeatures = props;
-  ChartJS.register(
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Legend
-  );
+  const theme = useTheme()
+  const TrackFeatures = props
+  ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Legend)
   const data = {
     labels: [
       'Energy',
@@ -59,7 +53,7 @@ const RadarChart = (props: any) => {
         ],
       },
     ],
-  };
+  }
 
   const chartOptions = {
     aspectRatio: 1.8,
@@ -92,15 +86,15 @@ const RadarChart = (props: any) => {
     tooltips: {
       callbacks: {
         label(tooltipItem: any) {
-          return tooltipItem.yLabel;
+          return tooltipItem.yLabel
         },
       },
     },
-  };
+  }
   return (
     <RadarChartContainer>
       <Radar data={data} options={chartOptions} />
     </RadarChartContainer>
-  );
-};
-export default RadarChart;
+  )
+}
+export default RadarChart

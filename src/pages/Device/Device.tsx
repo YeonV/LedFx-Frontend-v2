@@ -1,43 +1,43 @@
 /* eslint-disable no-restricted-syntax */
-import { useEffect } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { Link, useParams } from 'react-router-dom';
-import useStore from '../../store/useStore';
-import EffectsCard from './Effects';
-import PresetsCard from './Presets';
-import TransitionCard from './Transition';
-import MelbankCard from './Frequencies';
-import StreamToCard from './StreamTo';
+import { useEffect } from 'react'
+import { Grid, Typography } from '@mui/material'
+import { Link, useParams } from 'react-router-dom'
+import useStore from '../../store/useStore'
+import EffectsCard from './Effects'
+import PresetsCard from './Presets'
+import TransitionCard from './Transition'
+import MelbankCard from './Frequencies'
+import StreamToCard from './StreamTo'
 
 const Device = () => {
-  const { virtId } = useParams();
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const getPresets = useStore((state) => state.getPresets);
-  const getSchemas = useStore((state) => state.getSchemas);
-  const features = useStore((state) => state.features);
+  const { virtId } = useParams()
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getPresets = useStore((state) => state.getPresets)
+  const getSchemas = useStore((state) => state.getSchemas)
+  const features = useStore((state) => state.features)
 
-  const virtuals = useStore((state) => state.virtuals);
-  const presets = useStore((state) => state.presets);
+  const virtuals = useStore((state) => state.virtuals)
+  const presets = useStore((state) => state.presets)
 
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
-        return virtuals[prop];
+        return virtuals[prop]
       }
     }
-    return null;
-  };
+    return null
+  }
 
-  const virtual = getV();
+  const virtual = getV()
   // Object.keys(virtuals).length && virtuals.find((v) => v.id === virtId);
 
-  const effectType = virtual && virtual.effect.type;
+  const effectType = virtual && virtual.effect.type
 
   useEffect(() => {
-    getVirtuals();
-    getSchemas();
-    if (effectType) getPresets(effectType);
-  }, [getVirtuals, getSchemas, getPresets, effectType]);
+    getVirtuals()
+    getSchemas()
+    if (effectType) getPresets(effectType)
+  }, [getVirtuals, getSchemas, getPresets, effectType])
 
   return (
     <Grid
@@ -104,7 +104,7 @@ const Device = () => {
         </>
       )}
     </Grid>
-  );
-};
+  )
+}
 
-export default Device;
+export default Device

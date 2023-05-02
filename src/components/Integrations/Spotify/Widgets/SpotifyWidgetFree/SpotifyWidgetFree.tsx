@@ -1,6 +1,6 @@
-import { IconButton } from '@mui/material';
-import { QueueMusic } from '@mui/icons-material';
-import SpotifyChangeURLDialog from './SpotifyChangeURLDialog';
+import { IconButton } from '@mui/material'
+import { QueueMusic } from '@mui/icons-material'
+import SpotifyChangeURLDialog from './SpotifyChangeURLDialog'
 
 const SpotifyWidgetFree = ({
   spotifyEnabled,
@@ -43,7 +43,7 @@ const SpotifyWidgetFree = ({
         allow="encrypted-media"
       />
     </>
-  );
-};
+  )
+}
 
-export default SpotifyWidgetFree;
+export default SpotifyWidgetFree

@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Button } from '@mui/material';
-import Tour from 'reactour';
-import { Info } from '@mui/icons-material';
-import useStore from '../../store/useStore';
+import { useState } from 'react'
+import { Button } from '@mui/material'
+import Tour from 'reactour'
+import { Info } from '@mui/icons-material'
+import useStore from '../../store/useStore'
 
 const step = ({ title = 'Title', text = 'Text', number = 0 }) => ({
   selector: `.step-effect-${number}`,
@@ -15,11 +15,11 @@ const step = ({ title = 'Title', text = 'Text', number = 0 }) => ({
   style: {
     backgroundColor: '#303030',
   },
-});
+})
 
 const TourEffect = ({ schemaProperties }: any) => {
-  const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.setTour);
+  const [isTourOpen, setIsTourOpen] = useState(false)
+  const setTour = useStore((state) => state.setTour)
 
   const steps = schemaProperties.map((p: any, i: number) =>
     step({
@@ -27,14 +27,14 @@ const TourEffect = ({ schemaProperties }: any) => {
       text: p.description,
       number: i,
     })
-  );
+  )
 
   return (
     <>
       <Button
         onClick={() => {
-          setIsTourOpen(true);
-          setTour('effect');
+          setIsTourOpen(true)
+          setTour('effect')
         }}
         style={{ marginRight: '.5rem' }}
         className="step-device-seven"
@@ -51,7 +51,7 @@ const TourEffect = ({ schemaProperties }: any) => {
         showNumber={false}
       />
     </>
-  );
-};
+  )
+}
 
-export default TourEffect;
+export default TourEffect

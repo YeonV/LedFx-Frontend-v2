@@ -1,21 +1,21 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-import produce from 'immer';
-import { Ledfx } from '../../api/ledfx';
+import produce from 'immer'
+import { Ledfx } from '../../api/ledfx'
 
 const storePresets = (set: any) => ({
   presets: {},
   getPresets: async (effectId: string) => {
-    const resp = await Ledfx(`/api/effects/${effectId}/presets`);
+    const resp = await Ledfx(`/api/effects/${effectId}/presets`)
     if (resp && resp.status === 'success') {
       set(
         produce((s: any) => {
-          s.presets = resp;
+          s.presets = resp
         }),
         false,
         'gotPresets'
-      );
+      )
     }
   },
   addPreset: async (effectId: string, name: string) =>
@@ -38,6 +38,6 @@ const storePresets = (set: any) => ({
         category: 'user_presets',
       },
     }),
-});
+})
 
-export default storePresets;
+export default storePresets

@@ -1,19 +1,19 @@
-import { useTheme, Stack } from '@mui/material';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import ScenesMostUsed from '../Scenes/ScenesMostUsed';
-import useStore from '../../store/useStore';
+import { useTheme, Stack } from '@mui/material'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import ScenesMostUsed from '../Scenes/ScenesMostUsed'
+import useStore from '../../store/useStore'
 
 const DbScenes = () => {
-  const theme = useTheme();
-  const scenes = useStore((state) => state.scenes);
-  const captivateScene = useStore((state) => state.captivateScene);
-  const activateScene = useStore((state) => state.activateScene);
+  const theme = useTheme()
+  const scenes = useStore((state) => state.scenes)
+  const captivateScene = useStore((state) => state.captivateScene)
+  const activateScene = useStore((state) => state.activateScene)
 
   const handleActivateScene = (e: string) => {
-    activateScene(e);
+    activateScene(e)
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
-      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
-  };
+      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
+  }
   return (
     <BladeFrame
       labelStyle={{
@@ -35,7 +35,7 @@ const DbScenes = () => {
         />
       </Stack>
     </BladeFrame>
-  );
-};
+  )
+}
 
-export default DbScenes;
+export default DbScenes

@@ -1,11 +1,11 @@
-import { IconButton } from '@mui/material';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LanguageIcon from '@mui/icons-material/Language';
-import ForumIcon from '@mui/icons-material/Forum';
-import useStyles from './ButtonBar.styles';
+import { IconButton } from '@mui/material'
+import GitHubIcon from '@mui/icons-material/GitHub'
+import LanguageIcon from '@mui/icons-material/Language'
+import ForumIcon from '@mui/icons-material/Forum'
+import useStyles from './ButtonBar.styles'
 
 const ButtonBar = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <div className={classes.buttonBar}>
@@ -37,7 +37,7 @@ const ButtonBar = () => {
         <ForumIcon />
       </IconButton>
     </div>
-  );
-};
+  )
+}
 
-export default ButtonBar;
+export default ButtonBar

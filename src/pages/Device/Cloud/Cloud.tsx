@@ -2,8 +2,8 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { useEffect, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react'
+import { useTheme } from '@mui/material/styles'
 import {
   AppBar,
   Button,
@@ -15,12 +15,12 @@ import {
   ListItemIcon,
   Toolbar,
   Typography,
-} from '@mui/material';
-import { Settings, NavigateBefore, CloudDownload } from '@mui/icons-material';
-import useEditVirtualsStyles from '../../Devices/EditVirtuals/EditVirtuals.styles';
-import useStore from '../../../store/useStore';
+} from '@mui/material'
+import { Settings, NavigateBefore, CloudDownload } from '@mui/icons-material'
+import useEditVirtualsStyles from '../../Devices/EditVirtuals/EditVirtuals.styles'
+import useStore from '../../../store/useStore'
 
-import { cloud, Transition, MuiMenuItem } from './CloudComponents';
+import { cloud, Transition, MuiMenuItem } from './CloudComponents'
 
 export default function CloudScreen({
   virtId,
@@ -35,70 +35,70 @@ export default function CloudScreen({
   onClick = () => {},
   innerKey,
 }: any) {
-  const classes = useEditVirtualsStyles();
-  const theme = useTheme();
-  const [open, setOpen] = useState(false);
-  const [cloudEffects, setCloudEffects] = useState<any>([]);
-  const [activeCloudPreset, setActiveCloudPreset] = useState();
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
-  const addPreset = useStore((state) => state.addPreset);
-  const getPresets = useStore((state) => state.getPresets);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const virtuals = useStore((state) => state.virtuals);
+  const classes = useEditVirtualsStyles()
+  const theme = useTheme()
+  const [open, setOpen] = useState(false)
+  const [cloudEffects, setCloudEffects] = useState<any>([])
+  const [activeCloudPreset, setActiveCloudPreset] = useState()
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const addPreset = useStore((state) => state.addPreset)
+  const getPresets = useStore((state) => state.getPresets)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const virtuals = useStore((state) => state.virtuals)
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
-        return virtuals[prop];
+        return virtuals[prop]
       }
     }
-  };
+  }
 
-  const virtual = getV();
+  const virtual = getV()
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const refreshPresets = async () => {
     const response = await cloud.get('presets', {
       headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
-    });
+    })
     if (response.status !== 200) {
-      alert('No Access');
-      return;
+      alert('No Access')
+      return
     }
-    const res = await response.data;
-    const cEffects = {} as any;
+    const res = await response.data
+    const cEffects = {} as any
     res.forEach((p: { effect: { Name: string } }) => {
       if (!cEffects[p.effect.Name]) {
-        cEffects[p.effect.Name] = [];
+        cEffects[p.effect.Name] = []
       }
-      cEffects[p.effect.Name].push(p);
-    });
-    setCloudEffects(cEffects);
-  };
+      cEffects[p.effect.Name].push(p)
+    })
+    setCloudEffects(cEffects)
+  }
 
   const handleCloudPresets = async (p: any, save: boolean) => {
-    setActiveCloudPreset(p.Name.toLowerCase());
+    setActiveCloudPreset(p.Name.toLowerCase())
     if (p.effect.ledfx_id !== effectType) {
-      await setVirtualEffect(virtId, p.effect.ledfx_id, {}, false);
-      await getVirtuals();
+      await setVirtualEffect(virtId, p.effect.ledfx_id, {}, false)
+      await getVirtuals()
     }
-    await setVirtualEffect(virtId, p.effect.ledfx_id, p.config, true);
+    await setVirtualEffect(virtId, p.effect.ledfx_id, p.config, true)
     if (save) {
-      await addPreset(virtId, p.Name);
-      await getPresets(p.effect.ledfx_id);
+      await addPreset(virtId, p.Name)
+      await getPresets(p.effect.ledfx_id)
     }
-    await getVirtuals();
-  };
+    await getVirtuals()
+  }
 
   useEffect(() => {
-    refreshPresets();
-  }, []);
+    refreshPresets()
+  }, [])
 
   // console.log(virtual.effect.name, Object.keys(cloudEffects))
 
@@ -109,9 +109,9 @@ export default function CloudScreen({
           key={innerKey}
           className={className}
           onClick={(e: any) => {
-            e.preventDefault();
-            onClick(e);
-            handleClickOpen();
+            e.preventDefault()
+            onClick(e)
+            handleClickOpen()
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
@@ -123,9 +123,9 @@ export default function CloudScreen({
           startIcon={startIcon}
           color={color}
           onClick={(e) => {
-            onClick(e);
-            refreshPresets();
-            handleClickOpen();
+            onClick(e)
+            refreshPresets()
+            handleClickOpen()
           }}
           size="small"
           style={{ padding: '2px 15px', marginRight: '0.4rem' }}
@@ -204,8 +204,8 @@ export default function CloudScreen({
                           <IconButton
                             aria-label="Import"
                             onClick={(e) => {
-                              e.stopPropagation();
-                              handleCloudPresets(p, true);
+                              e.stopPropagation()
+                              handleCloudPresets(p, true)
                             }}
                           >
                             <CloudDownload />
@@ -221,5 +221,5 @@ export default function CloudScreen({
         </div>
       </Dialog>
     </>
-  );
+  )
 }

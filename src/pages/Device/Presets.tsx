@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -11,29 +11,29 @@ import {
   Typography,
   TextField,
   useTheme,
-} from '@mui/material';
-import { Add, Cloud } from '@mui/icons-material';
-import axios from 'axios';
-import useStore from '../../store/useStore';
-import Popover from '../../components/Popover/Popover';
-import CloudScreen from './Cloud/Cloud';
-import PresetButton from './PresetButton';
+} from '@mui/material'
+import { Add, Cloud } from '@mui/icons-material'
+import axios from 'axios'
+import useStore from '../../store/useStore'
+import Popover from '../../components/Popover/Popover'
+import CloudScreen from './Cloud/Cloud'
+import PresetButton from './PresetButton'
 
 const cloud = axios.create({
   baseURL: 'https://strapi.yeonv.com',
-});
+})
 
 const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
-  const [name, setName] = useState('');
-  const [valid, setValid] = useState(true);
-  const theme = useTheme();
-  const activatePreset = useStore((state) => state.activatePreset);
-  const addPreset = useStore((state) => state.addPreset);
-  const getPresets = useStore((state) => state.getPresets);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const deletePreset = useStore((state) => state.deletePreset);
-  const isLogged = useStore((state) => state.isLogged);
-  const features = useStore((state) => state.features);
+  const [name, setName] = useState('')
+  const [valid, setValid] = useState(true)
+  const theme = useTheme()
+  const activatePreset = useStore((state) => state.activatePreset)
+  const addPreset = useStore((state) => state.addPreset)
+  const getPresets = useStore((state) => state.getPresets)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const deletePreset = useStore((state) => state.deletePreset)
+  const isLogged = useStore((state) => state.isLogged)
+  const features = useStore((state) => state.features)
 
   const uploadPresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
@@ -45,14 +45,14 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
           Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         },
       }
-    );
-    const exists = await existing.data;
+    )
+    const exists = await existing.data
     const eff = await cloud.get(`effects?ledfx_id=${effectType}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('jwt')}`,
       },
-    });
-    const effId = await eff.data[0].id;
+    })
+    const effId = await eff.data[0].id
     // console.log(exists, existing)
     if (exists.length && exists.length > 0) {
       cloud.put(
@@ -68,7 +68,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`,
           },
         }
-      );
+      )
     } else {
       cloud.post(
         'presets',
@@ -83,9 +83,9 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`,
           },
         }
-      );
+      )
     }
-  };
+  }
 
   const deletePresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
@@ -97,35 +97,35 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
           Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         },
       }
-    );
-    const exists = await existing.data;
+    )
+    const exists = await existing.data
     if (exists.length && exists.length > 0) {
       cloud.delete(`presets/${exists[0].id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         },
-      });
+      })
     }
-  };
+  }
 
   const handleAddPreset = () => {
     addPreset(virtual.id, name).then(() => {
-      getPresets(effectType);
-    });
-    setName('');
-  };
+      getPresets(effectType)
+    })
+    setName('')
+  }
   const handleRemovePreset = (presetId: string) => () =>
     deletePreset(effectType, presetId).then(() => {
-      getPresets(effectType);
-    });
+      getPresets(effectType)
+    })
 
   const handleActivatePreset =
     (virtId: string, category: string, presetId: string) => () => {
       activatePreset(virtId, category, effectType, presetId).then(() =>
         getVirtuals()
-      );
-      setName('');
-    };
+      )
+      setName('')
+    }
 
   const renderPresetsButton = (list: any, CATEGORY: string) => {
     if (list && !Object.keys(list)?.length) {
@@ -137,7 +137,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
         >
           No {CATEGORY === 'default_presets' ? '' : 'Custom'} Presets
         </Button>
-      );
+      )
     }
 
     return (
@@ -174,15 +174,15 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               </Button>
             )}
           </Grid>
-        );
+        )
       })
-    );
-  };
+    )
+  }
 
   useEffect(() => {
-    getVirtuals();
-    if (effectType) getPresets(effectType);
-  }, [getVirtuals, effectType]);
+    getVirtuals()
+    if (effectType) getPresets(effectType)
+  }, [getVirtuals, effectType])
 
   return (
     <Card variant="outlined" className="step-device-three" style={style}>
@@ -205,7 +205,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               variant="outlined"
               onSingleClick={() => {
                 // eslint-disable-next-line no-console
-                console.log('hi');
+                console.log('hi')
               }}
               content={
                 <TextField
@@ -238,7 +238,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                   style={{ marginRight: '1rem', flex: 1 }}
                   value={name}
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setName(e.target.value)
                     if (
                       presets.custom_presets &&
                       (Object.keys(presets.custom_presets).indexOf(
@@ -248,9 +248,9 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                           (p: any) => p.name === e.target.value
                         ).length > 0)
                     ) {
-                      setValid(false);
+                      setValid(false)
                     } else {
-                      setValid(true);
+                      setValid(true)
                     }
                   }}
                 />
@@ -311,7 +311,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
         </div>
       </CardActions>
     </Card>
-  );
-};
+  )
+}
 
-export default PresetsCard;
+export default PresetsCard

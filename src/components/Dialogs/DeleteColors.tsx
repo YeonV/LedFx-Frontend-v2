@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   Button,
   Checkbox,
@@ -6,28 +6,28 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@mui/material';
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import { useTheme } from '@mui/material/styles';
-import useStore from '../../store/useStore';
+} from '@mui/material'
+import * as React from 'react'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import ListItemText from '@mui/material/ListItemText'
+import Select from '@mui/material/Select'
+import { useTheme } from '@mui/material/styles'
+import useStore from '../../store/useStore'
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
 
 const DeleteColorsDialog = ({
   dialogOpen,
   setDialogOpen,
 }: {
-  dialogOpen: boolean;
-  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  dialogOpen: boolean
+  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const theme = useTheme();
+  const theme = useTheme()
   const MenuProps = {
     PaperProps: {
       style: {
@@ -36,32 +36,32 @@ const DeleteColorsDialog = ({
         background: theme.palette.background.paper,
       },
     },
-  };
-  const [colorsToDelete, setColorsToDelete] = useState<string[]>([]);
+  }
+  const [colorsToDelete, setColorsToDelete] = useState<string[]>([])
 
   const handleChange = (event: any) => {
     const {
       target: { value },
-    } = event;
+    } = event
     setColorsToDelete(
       // On autofill we get a the stringified value.
       typeof value === 'string' ? value.split(',') : value
-    );
-  };
+    )
+  }
 
-  const colors = useStore((state) => state.colors);
-  const deleteColors = useStore((state) => state.deleteColors);
-  const getColors = useStore((state) => state.getColors);
+  const colors = useStore((state) => state.colors)
+  const deleteColors = useStore((state) => state.deleteColors)
+  const getColors = useStore((state) => state.getColors)
 
   const handleClose = () => {
-    setDialogOpen(false);
-  };
+    setDialogOpen(false)
+  }
 
   const handleDelete = () => {
-    deleteColors(colorsToDelete).then(() => getColors());
-    setColorsToDelete([]);
-    setDialogOpen(false);
-  };
+    deleteColors(colorsToDelete).then(() => getColors())
+    setColorsToDelete([])
+    setDialogOpen(false)
+  }
 
   return (
     <Dialog
@@ -149,7 +149,7 @@ const DeleteColorsDialog = ({
         <Button onClick={handleDelete}>Delete</Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default DeleteColorsDialog;
+export default DeleteColorsDialog

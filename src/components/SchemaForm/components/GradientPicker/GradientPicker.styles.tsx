@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -72,6 +72,6 @@ const useStyles = makeStyles(() => ({
       boxSizing: 'border-box',
     },
   },
-}));
+}))
 
-export default useStyles;
+export default useStyles

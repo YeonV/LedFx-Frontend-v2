@@ -1245,6 +1245,6 @@ paths:
 components:
   schemas: {}
   securitySchemes: {}
-`;
+`
 
-export default configApiYaml;
+export default configApiYaml

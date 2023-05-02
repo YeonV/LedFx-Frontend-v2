@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@mui/material';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Card, CardContent } from '@mui/material'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSelect from "./BladeSelect";
 
@@ -24,12 +24,12 @@ export default {
       panelPosition: 'bottom',
     },
   },
-} as ComponentMeta<typeof BladeSelect>;
+} as ComponentMeta<typeof BladeSelect>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof BladeSelect> = (args) => <BladeSelect {...args} />;
 
-export const String = Template.bind({});
+export const String = Template.bind({})
 String.args = {
   disabled: false,
   schema: {
@@ -49,4 +49,4 @@ String.args = {
   menuItemStyle: undefined,
   hideDesc: false,
   children: undefined,
-};
+}

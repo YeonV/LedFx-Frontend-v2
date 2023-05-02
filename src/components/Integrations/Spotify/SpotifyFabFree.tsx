@@ -1,6 +1,6 @@
-import { Fab } from '@mui/material';
-import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
-import SpotifyWidgetFree from './Widgets/SpotifyWidgetFree/SpotifyWidgetFree';
+import { Fab } from '@mui/material'
+import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
+import SpotifyWidgetFree from './Widgets/SpotifyWidgetFree/SpotifyWidgetFree'
 
 const SpotifyFabFree = ({
   spotifyEnabled,
@@ -19,12 +19,12 @@ const SpotifyFabFree = ({
         size="small"
         color="secondary"
         onClick={() => {
-          setYoutubeEnabled(false);
-          setYoutubeExpanded(false);
+          setYoutubeEnabled(false)
+          setYoutubeExpanded(false)
           if (spotifyEnabled && spotifyExpanded) {
-            setSpotifyExpanded(false);
+            setSpotifyExpanded(false)
           }
-          setSpotifyEnabled(!spotifyEnabled);
+          setSpotifyEnabled(!spotifyEnabled)
         }}
         style={{
           position: 'fixed',
@@ -53,7 +53,7 @@ const SpotifyFabFree = ({
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default SpotifyFabFree;
+export default SpotifyFabFree

@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-import { useState } from 'react';
-import { Fab } from '@mui/material';
+import { useState } from 'react'
+import { Fab } from '@mui/material'
 
 // import ChangeYoutubeURLDialog from './ChangeYoutubeURLDialog';
-import BladeIcon from '../../Icons/BladeIcon/BladeIcon';
-import YoutubeWidgetBar from './YoutubeWidgetBar';
+import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
+import YoutubeWidgetBar from './YoutubeWidgetBar'
 
 const YoutubeWidget = ({
   youtubeEnabled,
@@ -17,7 +17,7 @@ const YoutubeWidget = ({
   setSpotifyExpanded,
   botHeight,
 }: any) => {
-  const API_URL = 'http://localhost:8080/api/bridge';
+  const API_URL = 'http://localhost:8080/api/bridge'
   // const API_URL = '/api/bridge';
   async function postData(url = '', data = {}, res = false) {
     // Default options are marked with *
@@ -33,11 +33,11 @@ const YoutubeWidget = ({
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(data), // body data type must match "Content-Type" header
-    });
+    })
     if (response && res) {
-      return response.json(); // parses JSON response into native JavaScript objects
+      return response.json() // parses JSON response into native JavaScript objects
     }
-    return { status: 'fail' };
+    return { status: 'fail' }
   }
 
   const initialState = {
@@ -60,16 +60,16 @@ const YoutubeWidget = ({
         url: '',
       },
     ],
-  };
+  }
 
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState(initialState)
 
   const yt1 = async () => {
-    await postData(`${API_URL}/set/input/youtube`, { verbose: true });
-  };
+    await postData(`${API_URL}/set/input/youtube`, { verbose: true })
+  }
   const yt2 = async () => {
-    await postData(`${API_URL}/add/output/local`, { verbose: true });
-  };
+    await postData(`${API_URL}/add/output/local`, { verbose: true })
+  }
   // const yt3 = async () => {
   //   const res = await fetch(`${API_URL}/ctl/youtube/info`)
   //     .then((datas) => {
@@ -87,24 +87,24 @@ const YoutubeWidget = ({
     await postData(`${API_URL}/ctl/youtube/set`, {
       action: 'download',
       url: youtubeURL,
-    });
-  };
+    })
+  }
 
   const initYoutube = async () => {
-    yt1();
+    yt1()
     setTimeout(() => {
-      yt2();
-    }, 10);
+      yt2()
+    }, 10)
     // setTimeout(() => {
     //   yt3();
     // }, 20);
     setTimeout(() => {
-      yt4();
-    }, 30);
+      yt4()
+    }, 30)
     // setTimeout(() => {
     //   yt3();
     // }, 100);
-  };
+  }
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -118,15 +118,15 @@ const YoutubeWidget = ({
         size="small"
         color="secondary"
         onClick={() => {
-          setSpotifyEnabled(false);
-          setSpotifyExpanded(false);
+          setSpotifyEnabled(false)
+          setSpotifyExpanded(false)
           if (!youtubeEnabled) {
-            initYoutube();
+            initYoutube()
           }
           if (youtubeEnabled && youtubeExpanded) {
-            setYoutubeExpanded(false);
+            setYoutubeExpanded(false)
           }
-          setYoutubeEnabled(!youtubeEnabled);
+          setYoutubeEnabled(!youtubeEnabled)
         }}
         style={{
           position: 'fixed',
@@ -158,7 +158,7 @@ const YoutubeWidget = ({
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default YoutubeWidget;
+export default YoutubeWidget

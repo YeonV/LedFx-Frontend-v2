@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@mui/material';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Card, CardContent } from '@mui/material'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSchemaForm from "./SchemaForm";
 
@@ -28,12 +28,12 @@ export default {
       </Card>
     ),
   ],
-} as ComponentMeta<typeof BladeSchemaForm>;
+} as ComponentMeta<typeof BladeSchemaForm>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
 
-export const AddDeviceAdaLight = Template.bind({});
+export const AddDeviceAdaLight = Template.bind({})
 AddDeviceAdaLight.args = {
   schema: {
     properties: {
@@ -105,9 +105,9 @@ AddDeviceAdaLight.args = {
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
   hideToggle: false,
-};
+}
 
-export const AddDeviceWLED = Template.bind({});
+export const AddDeviceWLED = Template.bind({})
 AddDeviceWLED.args = {
   schema: {
     properties: {
@@ -172,9 +172,9 @@ AddDeviceWLED.args = {
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
   hideToggle: false,
-};
+}
 
-export const AddDeviceUDP = Template.bind({});
+export const AddDeviceUDP = Template.bind({})
 AddDeviceUDP.args = {
   schema: {
     properties: {
@@ -264,9 +264,9 @@ AddDeviceUDP.args = {
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
   hideToggle: false,
-};
+}
 
-export const AddVirtual = Template.bind({});
+export const AddVirtual = Template.bind({})
 AddVirtual.args = {
   schema: {
     properties: {
@@ -368,9 +368,9 @@ AddVirtual.args = {
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
   hideToggle: false,
-};
+}
 
-export const AudioCard = Template.bind({});
+export const AudioCard = Template.bind({})
 AudioCard.args = {
   schema: {
     properties: {
@@ -429,4 +429,4 @@ AudioCard.args = {
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
   hideToggle: false,
-};
+}

@@ -1,46 +1,46 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-plusplus */
-import { useTheme, Stack, Box } from '@mui/material';
-import { useState } from 'react';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import DbButton from './DbButton';
-import GlobalActionBar from '../../components/GlobalActionBar';
-import useStore from '../../store/useStore';
-import { deleteFrontendConfig, sleep } from '../../utils/helpers';
-import Popover from '../../components/Popover/Popover';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+import { useTheme, Stack, Box } from '@mui/material'
+import { useState } from 'react'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import DbButton from './DbButton'
+import GlobalActionBar from '../../components/GlobalActionBar'
+import useStore from '../../store/useStore'
+import { deleteFrontendConfig, sleep } from '../../utils/helpers'
+import Popover from '../../components/Popover/Popover'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
 const DbGlobalActions = () => {
-  const theme = useTheme();
-  const [scanning, setScanning] = useState(-1);
-  const paused = useStore((state) => state.paused);
-  const togglePause = useStore((state) => state.togglePause);
-  const scanForDevices = useStore((state) => state.scanForDevices);
-  const getDevices = useStore((state) => state.getDevices);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
+  const theme = useTheme()
+  const [scanning, setScanning] = useState(-1)
+  const paused = useStore((state) => state.paused)
+  const togglePause = useStore((state) => state.togglePause)
+  const scanForDevices = useStore((state) => state.scanForDevices)
+  const getDevices = useStore((state) => state.getDevices)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
 
   const onSystemSettingsChange = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
 
   const handleScan = () => {
-    setScanning(0);
+    setScanning(0)
     scanForDevices()
       .then(async () => {
         for (let sec = 1; sec <= 30; sec++) {
           await sleep(1000).then(() => {
-            getDevices();
-            getVirtuals();
-            setScanning(sec);
-          });
+            getDevices()
+            getVirtuals()
+            setScanning(sec)
+          })
         }
       })
       .then(() => {
-        setScanning(-1);
-      });
-  };
+        setScanning(-1)
+      })
+  }
 
   return (
     <BladeFrame
@@ -66,12 +66,12 @@ const DbGlobalActions = () => {
           style={{ padding: '11px', marginLeft: '0rem', flex: 1 }}
           wrapperStyle={{ display: 'flex' }}
           onConfirm={() => {
-            onSystemSettingsChange('create_segments', true);
-            handleScan();
+            onSystemSettingsChange('create_segments', true)
+            handleScan()
           }}
           onCancel={() => {
-            onSystemSettingsChange('create_segments', false);
-            handleScan();
+            onSystemSettingsChange('create_segments', false)
+            handleScan()
           }}
           text="Import Segments?"
         >
@@ -109,7 +109,7 @@ const DbGlobalActions = () => {
         />
       </Stack>
     </BladeFrame>
-  );
-};
+  )
+}
 
-export default DbGlobalActions;
+export default DbGlobalActions

@@ -1,6 +1,6 @@
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles(() => ({
   spWrapper: {
@@ -130,7 +130,7 @@ const useStyles = makeStyles(() => ({
       },
     },
   },
-}));
+}))
 
 export const CoverImage = styled('div')({
   width: 100,
@@ -143,14 +143,14 @@ export const CoverImage = styled('div')({
   '& > img': {
     width: '100%',
   },
-});
+})
 
 export const TinyText = styled(Typography)({
   fontSize: '0.75rem',
   opacity: 0.38,
   fontWeight: 500,
   letterSpacing: 0.2,
-});
+})
 
 export const PosSliderStyles = {
   color: '#fff',
@@ -200,7 +200,7 @@ export const PosSliderStyles = {
   '& .MuiSlider-markActive + .MuiSlider-markLabel': {
     opacity: 1,
   },
-};
+}
 
 export const VolSliderStyles = {
   color: '#fff',
@@ -218,6 +218,6 @@ export const VolSliderStyles = {
       boxShadow: 'none',
     },
   },
-};
+}
 
-export default useStyles;
+export default useStyles

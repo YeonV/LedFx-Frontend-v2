@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import type { IStore } from '../useStore'
 
 type IFeatures =
   | 'dev'
@@ -24,7 +24,7 @@ type IFeatures =
   | 'dashboardDetailed'
   | 'scenetables'
   | 'scenechips'
-  | 'alpha';
+  | 'alpha'
 const storeFeatures = (set: any) => ({
   features: {
     dev: false,
@@ -75,7 +75,7 @@ const storeFeatures = (set: any) => ({
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(
       produce((state: IStore) => {
-        state.features[feat] = use;
+        state.features[feat] = use
       }),
       false,
       'ui/setFeature'
@@ -83,11 +83,11 @@ const storeFeatures = (set: any) => ({
   setShowFeatures: (feat: IFeatures, show: boolean): void =>
     set(
       produce((state: IStore) => {
-        state.showFeatures[feat] = show;
+        state.showFeatures[feat] = show
       }),
       false,
       'ui/setShowFeature'
     ),
-});
+})
 
-export default storeFeatures;
+export default storeFeatures

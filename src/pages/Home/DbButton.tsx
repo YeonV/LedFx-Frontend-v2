@@ -1,14 +1,14 @@
-import { Button } from '@mui/material';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+import { Button } from '@mui/material'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
 const DbButton = ({
   onClick,
   icon,
   text,
 }: {
-  onClick: (e: any) => typeof e;
-  icon: string | undefined;
-  text: string | undefined;
+  onClick: (e: any) => typeof e
+  icon: string | undefined
+  text: string | undefined
 }) => {
   return (
     <Button
@@ -32,7 +32,7 @@ const DbButton = ({
     >
       {text}
     </Button>
-  );
-};
+  )
+}
 
-export default DbButton;
+export default DbButton

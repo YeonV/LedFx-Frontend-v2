@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useStyle = makeStyles(() => ({
   virtualCardPortraitW: {
@@ -135,6 +135,6 @@ const useStyle = makeStyles(() => ({
     transition: 'opacity',
     transitionDuration: '1s',
   },
-}));
+}))
 
-export default useStyle;
+export default useStyle

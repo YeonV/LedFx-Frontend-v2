@@ -1,16 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
-import Popper from '@mui/material/Popper';
-import ReactGPicker from 'react-gcolor-picker';
-import { TextField, Button, useTheme } from '@mui/material';
-import { Add } from '@mui/icons-material';
-import useClickOutside from '../../../../utils/useClickOutside';
-import Popover from '../../../Popover/Popover';
-import DeleteColorsDialog from '../../../Dialogs/DeleteColors';
-import useStyles from './GradientPicker.styles';
+import { useState, useRef, useEffect } from 'react'
+import Popper from '@mui/material/Popper'
+import ReactGPicker from 'react-gcolor-picker'
+import { TextField, Button, useTheme } from '@mui/material'
+import { Add } from '@mui/icons-material'
+import useClickOutside from '../../../../utils/useClickOutside'
+import Popover from '../../../Popover/Popover'
+import DeleteColorsDialog from '../../../Dialogs/DeleteColors'
+import useStyles from './GradientPicker.styles'
 import {
   GradientPickerDefaultProps,
   GradientPickerProps,
-} from './GradientPicker.props';
+} from './GradientPicker.props'
 
 const GradientPicker = ({
   pickerBgColor,
@@ -22,57 +22,65 @@ const GradientPicker = ({
   handleAddGradient,
   sendColorToVirtuals,
 }: GradientPickerProps) => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const popover = useRef(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [name, setName] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor);
+  const classes = useStyles()
+  const theme = useTheme()
+  const popover = useRef(null)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [name, setName] = useState('')
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor)
 
-  const defaultColors: any = {};
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+  const defaultColors: any = {}
   Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
-    defaultColors[k] = g;
-  });
+    defaultColors[k] = g
+  })
   Object.entries(colors.gradients.user).forEach(([k, g]) => {
-    defaultColors[k] = g;
-  });
+    defaultColors[k] = g
+  })
   Object.entries(colors.colors.builtin).forEach(([k, g]) => {
-    defaultColors[k] = g;
-  });
+    defaultColors[k] = g
+  })
   Object.entries(colors.colors.user).forEach(([k, g]) => {
-    defaultColors[k] = g;
-  });
+    defaultColors[k] = g
+  })
 
   const handleClick = (event: any) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+    setAnchorEl(anchorEl ? null : event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  useClickOutside(popover, handleClose);
+  useClickOutside(popover, handleClose)
 
   const handleDeleteDialog = () => {
-    setAnchorEl(null);
-    setDialogOpen(true);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popper' : undefined;
+    setAnchorEl(null)
+    setDialogOpen(true)
+  }
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popper' : undefined
 
   useEffect(() => {
-    setPickerBgColorInt(pickerBgColor);
-  }, [pickerBgColor, setPickerBgColorInt]);
+    setPickerBgColorInt(pickerBgColor)
+  }, [pickerBgColor, setPickerBgColorInt])
 
   useEffect(() => {
-    setPickerBgColorInt(pickerBgColor);
-  }, [pickerBgColor, setPickerBgColorInt]);
+    setPickerBgColorInt(pickerBgColor)
+  }, [pickerBgColor, setPickerBgColorInt])
 
   return (
     <div
       className={`${classes.wrapper} step-effect-${index} gradient-picker`}
-      style={{ borderColor: theme.palette.divider, ...(wrapperStyle as any) }}
+      style={{
+        borderColor: theme.palette.divider,
+        minWidth: ios ? 'unset' : 530,
+        ...(wrapperStyle as any),
+      }}
       // style={{
       //   ...wrapperStyle,
       //   '& > label': {
@@ -123,8 +131,8 @@ const GradientPicker = ({
             gradient={isGradient}
             solid
             onChange={(c) => {
-              setPickerBgColorInt(c);
-              return sendColorToVirtuals(c);
+              setPickerBgColorInt(c)
+              return sendColorToVirtuals(c)
             }}
             popupWidth={288}
             showAlpha={false}
@@ -194,7 +202,7 @@ const GradientPicker = ({
                   style={{ marginRight: '1rem', flex: 1 }}
                   value={name}
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setName(e.target.value)
                   }}
                 />
               }
@@ -212,9 +220,9 @@ const GradientPicker = ({
         dialogOpen={dialogOpen}
       />
     </div>
-  );
-};
+  )
+}
 
-GradientPicker.defaultProps = GradientPickerDefaultProps;
+GradientPicker.defaultProps = GradientPickerDefaultProps
 
-export default GradientPicker;
+export default GradientPicker

@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
-import { useTheme } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
-import SettingsIcon from '@mui/icons-material/Settings';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import TuneIcon from '@mui/icons-material/Tune';
-import BuildIcon from '@mui/icons-material/Build';
-import { NavLink } from 'react-router-dom';
-import Collapse from '@mui/material/Collapse';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import { useState, useEffect } from 'react'
+import { useTheme } from '@mui/material/styles'
+import Card from '@mui/material/Card'
+import Button from '@mui/material/Button'
+import SettingsIcon from '@mui/icons-material/Settings'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import TuneIcon from '@mui/icons-material/Tune'
+import BuildIcon from '@mui/icons-material/Build'
+import { NavLink } from 'react-router-dom'
+import Collapse from '@mui/material/Collapse'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import {
   Clear,
   Delete,
   Pause,
   PlayArrow,
   SyncProblem,
-} from '@mui/icons-material';
-import Popover from '../../../components/Popover/Popover';
-import EditVirtuals from '../EditVirtuals/EditVirtuals';
-import PixelGraph from '../../../components/PixelGraph';
-import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon';
-import useStyle from './DeviceCard.styles';
-import { DeviceCardDefaults, DeviceCardProps } from './DeviceCard.interface';
+} from '@mui/icons-material'
+import Popover from '../../../components/Popover/Popover'
+import EditVirtuals from '../EditVirtuals/EditVirtuals'
+import PixelGraph from '../../../components/PixelGraph'
+import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
+import useStyle from './DeviceCard.styles'
+import { DeviceCardDefaults, DeviceCardProps } from './DeviceCard.interface'
 
 /**
  * Pixelgraphs will not connect via Websocket in Storybook
@@ -55,22 +55,22 @@ const DeviceCard = ({
   showMatrix,
   activateDevice,
 }: DeviceCardProps) => {
-  const classes = useStyle();
-  const theme = useTheme();
+  const classes = useStyle()
+  const theme = useTheme()
   // eslint-disable-next-line
   const [fade, _setFade] = useState(false);
-  const [isActive, setIsActive] = useState(isEffectSet || isStreaming);
+  const [isActive, setIsActive] = useState(isEffectSet || isStreaming)
 
-  const [expanded, setExpanded] = useState(false);
-  const color = 'inherit';
+  const [expanded, setExpanded] = useState(false)
+  const color = 'inherit'
 
   const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+    setExpanded(!expanded)
+  }
 
   useEffect(() => {
-    setIsActive(isEffectSet || isStreaming);
-  }, [isEffectSet, isStreaming]);
+    setIsActive(isEffectSet || isStreaming)
+  }, [isEffectSet, isStreaming])
 
   return (
     <NavLink
@@ -146,9 +146,9 @@ const DeviceCard = ({
                   variant="text"
                   size="small"
                   onClick={(e) => {
-                    e.preventDefault();
+                    e.preventDefault()
                     if (isDevice) {
-                      activateDevice(isDevice);
+                      activateDevice(isDevice)
                     }
                   }}
                   style={{
@@ -174,8 +174,8 @@ const DeviceCard = ({
                   variant="text"
                   size="small"
                   onClick={(e) => {
-                    e.preventDefault();
-                    handlePlayPause();
+                    e.preventDefault()
+                    handlePlayPause()
                   }}
                   style={{
                     color: '#999',
@@ -189,8 +189,8 @@ const DeviceCard = ({
                   size="small"
                   variant="text"
                   onClick={(e) => {
-                    e.preventDefault();
-                    handleClearEffect(virtId);
+                    e.preventDefault()
+                    handleClearEffect(virtId)
                   }}
                   style={{
                     color: '#999',
@@ -238,8 +238,8 @@ const DeviceCard = ({
               display: 'block',
             }}
             onClick={(e) => {
-              e.preventDefault();
-              handleExpandClick();
+              e.preventDefault()
+              handleExpandClick()
             }}
             aria-expanded={expanded}
             aria-label="show more"
@@ -306,8 +306,8 @@ const DeviceCard = ({
                   label="delete"
                   color={color}
                   onConfirm={() => {
-                    handleDeleteDevice(virtId);
-                    handleExpandClick();
+                    handleDeleteDevice(virtId)
+                    handleExpandClick()
                   }}
                   className={`step-devices-three-${index}`}
                   style={{ width: '100%' }}
@@ -321,9 +321,9 @@ const DeviceCard = ({
                     startIcon={<BuildIcon />}
                     className={`step-devices-four-${index}`}
                     onClick={(e) => {
-                      e.preventDefault();
-                      handleEditDevice(isDevice);
-                      handleExpandClick();
+                      e.preventDefault()
+                      handleEditDevice(isDevice)
+                      handleExpandClick()
                     }}
                   >
                     Edit Device
@@ -349,9 +349,9 @@ const DeviceCard = ({
                   color={color}
                   className={`step-devices-five-${index}`}
                   onClick={(e) => {
-                    e.preventDefault();
-                    handleEditVirtual(virtId);
-                    handleExpandClick();
+                    e.preventDefault()
+                    handleEditVirtual(virtId)
+                    handleExpandClick()
                   }}
                 >
                   Settings
@@ -362,9 +362,9 @@ const DeviceCard = ({
         </div>
       </Card>
     </NavLink>
-  );
-};
+  )
+}
 
-DeviceCard.defaultProps = DeviceCardDefaults;
+DeviceCard.defaultProps = DeviceCardDefaults
 
-export default DeviceCard;
+export default DeviceCard

@@ -1,4 +1,4 @@
-import { makeStyles, styled } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles'
 import {
   Accordion,
   AccordionDetails,
@@ -7,9 +7,9 @@ import {
   Slider,
   Switch,
   Typography,
-} from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
-import useStore from '../../store/useStore';
+} from '@mui/material'
+import { ChevronRight, ExpandMore } from '@mui/icons-material'
+import useStore from '../../store/useStore'
 
 export const useStyles = makeStyles(() => ({
   content: {
@@ -61,7 +61,7 @@ export const useStyles = makeStyles(() => ({
       },
     },
   },
-}));
+}))
 
 export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
   color: '#eeeeee',
@@ -113,13 +113,13 @@ export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
       backgroundColor: 'currentColor',
     },
   },
-}));
+}))
 
 export const SettingsSlider = (props: any) => (
   <div style={{ flexGrow: 1 }}>
     <SettingsStylesSlider {...props} />
   </div>
-);
+)
 
 export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
   width: 50,
@@ -168,12 +168,12 @@ export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
       duration: 500,
     }),
   },
-}));
+}))
 
 export const SettingsButton = (props: any) => {
-  const classes = useStyles();
-  return <Button size="small" className={classes.actionButton} {...props} />;
-};
+  const classes = useStyles()
+  return <Button size="small" className={classes.actionButton} {...props} />
+}
 
 export const SettingsRow = ({
   step,
@@ -181,43 +181,72 @@ export const SettingsRow = ({
   checked,
   onChange,
   children,
+  direct,
+  value,
 }: {
-  step?: string;
-  title: string;
-  checked?: boolean;
-  onChange?: () => void;
-  children?: any;
+  step?: string
+  title: string
+  value?: any
+  checked?: boolean
+  direct?: boolean
+  onChange?: () => void
+  children?: any
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+
   return (
     <div className={`${classes.settingsRow} step-settings-${step} `}>
       <label>{title}</label>
-      {children || <SettingsSwitch checked={checked} onChange={onChange} />}
+      <div
+        style={{
+          display: 'flex',
+          color: '#7b7a7c',
+          flexGrow: 1,
+          justifyContent: 'flex-end',
+          textAlign: 'right',
+        }}
+      >
+        {ios ? (
+          children ? (
+            value
+          ) : direct ? (
+            <SettingsSwitch checked={checked} onChange={onChange} />
+          ) : null
+        ) : (
+          children || <SettingsSwitch checked={checked} onChange={onChange} />
+        )}
+        {ios && !direct && <ChevronRight sx={{ ml: 1, color: '#57565a' }} />}
+      </div>
     </div>
-  );
-};
+  )
+}
 
 SettingsRow.defaultProps = {
   step: 'x',
   children: null,
+  value: null,
   checked: false,
+  direct: false,
   onChange: null,
-};
+}
 
 export const SettingsAccordion = ({
   title,
   accId,
   children,
 }: {
-  title: string;
-  accId: string;
-  children: any;
+  title: string
+  accId: string
+  children: any
 }) => {
-  const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
-  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
+  const settingsExpanded = useStore((state) => state.ui.settingsExpanded)
+  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded)
   const handleExpanded = (panel: any, _event: any, isExpanded: any) => {
-    setSettingsExpanded(isExpanded ? panel : false);
-  };
+    setSettingsExpanded(isExpanded ? panel : false)
+  }
   return (
     <Accordion
       onDoubleClick={() => setSettingsExpanded('all')}
@@ -237,5 +266,5 @@ export const SettingsAccordion = ({
       </AccordionSummary>
       <AccordionDetails>{children}</AccordionDetails>
     </Accordion>
-  );
-};
+  )
+}

@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { useLayoutEffect, useState } from 'react';
-import { MenuItem, ListItemIcon, Badge } from '@mui/material';
-import Tour from 'reactour';
-import { InfoRounded } from '@mui/icons-material';
-import useStore from '../../store/useStore';
-import gif from '../../assets/transitions.gif';
+import { useLayoutEffect, useState } from 'react'
+import { MenuItem, ListItemIcon, Badge } from '@mui/material'
+import Tour from 'reactour'
+import { InfoRounded } from '@mui/icons-material'
+import useStore from '../../store/useStore'
+import gif from '../../assets/transitions.gif'
 
 const steps = [
   {
@@ -125,29 +125,29 @@ const steps = [
       maxWidth: 600,
     },
   },
-];
+]
 
 const TourSettings = ({ cally }: any) => {
-  const [isTourOpen, setIsTourOpen] = useState(false);
-  const setTour = useStore((state) => state.setTour);
-  const invisible = useStore((state) => state.tours.settings);
-  const settingsExpanded = useStore((state) => state.ui.settingsExpanded);
-  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
-  const features = useStore((state) => state.features);
+  const [isTourOpen, setIsTourOpen] = useState(false)
+  const setTour = useStore((state) => state.setTour)
+  const invisible = useStore((state) => state.tours.settings)
+  const settingsExpanded = useStore((state) => state.ui.settingsExpanded)
+  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded)
+  const features = useStore((state) => state.features)
 
   useLayoutEffect(() => {
     if (isTourOpen && settingsExpanded !== 'all') {
-      setSettingsExpanded('all');
+      setSettingsExpanded('all')
     }
-  }, [isTourOpen]);
+  }, [isTourOpen])
 
   return (
     <>
       <MenuItem
         onClick={(e) => {
-          setIsTourOpen(true);
-          cally(e);
-          setTour('settings');
+          setIsTourOpen(true)
+          cally(e)
+          setTour('settings')
         }}
       >
         <ListItemIcon>
@@ -166,12 +166,12 @@ const TourSettings = ({ cally }: any) => {
         accentColor="#800000"
         isOpen={isTourOpen}
         onRequestClose={() => {
-          setSettingsExpanded('false');
-          setIsTourOpen(false);
+          setSettingsExpanded('false')
+          setIsTourOpen(false)
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default TourSettings;
+export default TourSettings

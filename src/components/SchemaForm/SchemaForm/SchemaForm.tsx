@@ -1,5 +1,5 @@
-import { ReactElement, useState } from 'react';
-import { styled } from '@mui/material/styles';
+import { ReactElement, useState } from 'react'
+import { styled } from '@mui/material/styles'
 import {
   DialogContentText,
   Select,
@@ -8,23 +8,23 @@ import {
   Switch,
   FormControlLabel,
   Divider,
-} from '@mui/material';
-import { Info } from '@mui/icons-material';
-import MicIcon from '@mui/icons-material/Mic';
-import SpeakerIcon from '@mui/icons-material/Speaker';
-import BladeBoolean from '../components/Boolean/BladeBoolean';
-import BladeSelect from '../components/String/BladeSelect';
-import BladeSlider from '../components/Number/BladeSlider';
-import BladeFrame from '../components/BladeFrame';
-import { SchemaFormDefaultProps, SchemaFormProps } from './SchemaForm.props';
+} from '@mui/material'
+import { Info } from '@mui/icons-material'
+import MicIcon from '@mui/icons-material/Mic'
+import SpeakerIcon from '@mui/icons-material/Speaker'
+import BladeBoolean from '../components/Boolean/BladeBoolean'
+import BladeSelect from '../components/String/BladeSelect'
+import BladeSlider from '../components/Number/BladeSlider'
+import BladeFrame from '../components/BladeFrame'
+import { SchemaFormDefaultProps, SchemaFormProps } from './SchemaForm.props'
 
-const PREFIX = 'SchemaForm';
+const PREFIX = 'SchemaForm'
 
 const classes = {
   bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
   FormListHeaders: `${PREFIX}-FormListHeaders`,
   bladeSelect: `${PREFIX}-bladeSelect`,
-};
+}
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.bladeSchemaForm}`]: {
@@ -44,7 +44,7 @@ const Root = styled('div')(({ theme }) => ({
       alignItems: 'center',
     },
   },
-}));
+}))
 
 /**
  * Dynamically render Forms based on a `schema` <br />
@@ -58,7 +58,7 @@ const SchemaForm = ({
   onModelChange,
   type,
 }: SchemaFormProps): ReactElement<any, any> => {
-  const [hideDesc, setHideDesc] = useState(true);
+  const [hideDesc, setHideDesc] = useState(true)
 
   const yzSchema =
     schema &&
@@ -73,10 +73,10 @@ const SchemaForm = ({
           : true,
       }))
       .sort((a, _b) => (a.required ? -1 : 1))
-      .sort((a, _b) => (a.id === 'name' ? -1 : 1));
+      .sort((a, _b) => (a.id === 'name' ? -1 : 1))
 
   function onlyUnique(value: string, index: number, self: any) {
-    return self.indexOf(value) === index;
+    return self.indexOf(value) === index
   }
 
   return (
@@ -97,24 +97,24 @@ const SchemaForm = ({
                     style={{ margin: '0.5rem 0', flexBasis: '49%' }}
                     schema={s}
                     onClick={(model_id: string, value: any) => {
-                      const c: any = {};
-                      c[model_id] = value;
+                      const c: any = {}
+                      c[model_id] = value
                       if (onModelChange) {
-                        return onModelChange(c);
+                        return onModelChange(c)
                       }
-                      return null;
+                      return null
                     }}
                   />
-                );
+                )
               case 'string': {
-                const group: any = {};
-                let audio_groups: any = [];
+                const group: any = {}
+                let audio_groups: any = []
                 if (schema?.properties?.audio_device?.enum) {
                   // eslint-disable-next-line
                 for (const [key, value] of Object.entries(schema.properties.audio_device?.enum)) {
                     if (typeof value === 'string') {
                       if (!group[value?.split(':')[0]]) {
-                        group[value.split(':')[0]] = {};
+                        group[value.split(':')[0]] = {}
                       }
                       // eslint-disable-next-line
                     group[value.split(':')[0]][key] = value.split(':')[1];
@@ -125,7 +125,7 @@ const SchemaForm = ({
                     schema.properties.audio_device?.enum
                   )
                     .map((d: any) => d.split(':')[0])
-                    .filter(onlyUnique);
+                    .filter(onlyUnique)
                 }
 
                 return audio_groups?.length ? (
@@ -139,12 +139,12 @@ const SchemaForm = ({
                       value={(model && model.audio_device) || 0}
                       fullWidth
                       onChange={(e: any) => {
-                        const c: any = {};
-                        c.audio_device = parseInt(e.target.value, 10);
+                        const c: any = {}
+                        c.audio_device = parseInt(e.target.value, 10)
                         if (onModelChange) {
-                          return onModelChange(c);
+                          return onModelChange(c)
                         }
-                        return null;
+                        return null
                       }}
                       className={classes.bladeSelect}
                       id="grouped-select"
@@ -197,16 +197,16 @@ const SchemaForm = ({
                       key={i}
                       index={i}
                       onChange={(model_id: string, value: any) => {
-                        const c: any = {};
-                        c[model_id] = value;
+                        const c: any = {}
+                        c[model_id] = value
                         if (onModelChange) {
-                          return onModelChange(c);
+                          return onModelChange(c)
                         }
-                        return null;
+                        return null
                       }}
                     />
                   )
-                );
+                )
               }
               case 'number':
                 return (
@@ -220,15 +220,15 @@ const SchemaForm = ({
                     required={s.required}
                     schema={s}
                     onChange={(model_id: string, value: any) => {
-                      const c: any = {};
-                      c[model_id] = value;
+                      const c: any = {}
+                      c[model_id] = value
                       if (onModelChange) {
-                        return onModelChange(c);
+                        return onModelChange(c)
                       }
-                      return null;
+                      return null
                     }}
                   />
-                );
+                )
 
               case 'integer':
                 return (
@@ -247,15 +247,15 @@ const SchemaForm = ({
                     index={undefined}
                     style={{ margin: '0.5rem 0', width: '49%' }}
                     onChange={(model_id: string, value: any) => {
-                      const c: any = {};
-                      c[model_id] = value;
+                      const c: any = {}
+                      c[model_id] = value
                       if (onModelChange) {
-                        return onModelChange(c);
+                        return onModelChange(c)
                       }
-                      return null;
+                      return null
                     }}
                   />
-                );
+                )
               case 'int':
                 return s?.enum?.length > 10 ? (
                   <BladeSlider
@@ -271,12 +271,12 @@ const SchemaForm = ({
                     textfield={false}
                     style={{ margin: '0.5rem 0', width: '49%' }}
                     onChange={(model_id: string, value: any) => {
-                      const c: any = {};
-                      c[model_id] = value;
+                      const c: any = {}
+                      c[model_id] = value
                       if (onModelChange) {
-                        return onModelChange(c);
+                        return onModelChange(c)
                       }
-                      return null;
+                      return null
                     }}
                   />
                 ) : (
@@ -293,22 +293,22 @@ const SchemaForm = ({
                     textfield={false}
                     style={{ margin: '0.5rem 0', width: '49%' }}
                     onChange={(model_id: string, value: any) => {
-                      const c: any = {};
-                      c[model_id] = value;
+                      const c: any = {}
+                      c[model_id] = value
                       if (onModelChange) {
-                        return onModelChange(c);
+                        return onModelChange(c)
                       }
-                      return null;
+                      return null
                     }}
                   />
-                );
+                )
               default:
                 return (
                   <>
                     Unsupported type:
                     {s.type}
                   </>
-                );
+                )
             }
           })}
       </div>
@@ -341,9 +341,9 @@ const SchemaForm = ({
         </>
       )}
     </Root>
-  );
-};
+  )
+}
 
-SchemaForm.defaultProps = SchemaFormDefaultProps;
+SchemaForm.defaultProps = SchemaFormDefaultProps
 
-export default SchemaForm;
+export default SchemaForm

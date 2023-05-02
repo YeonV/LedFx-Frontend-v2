@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 /* eslint-disable func-names */
-import { Button, Fab, TextField, Popover } from '@mui/material';
-import { Check, Close } from '@mui/icons-material';
-import { useState, useEffect, CSSProperties } from 'react';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-import ws from '../../utils/Websocket';
-import useStore from '../../store/useStore';
+import { Button, Fab, TextField, Popover } from '@mui/material'
+import { Check, Close } from '@mui/icons-material'
+import { useState, useEffect, CSSProperties } from 'react'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import ws from '../../utils/Websocket'
+import useStore from '../../store/useStore'
 
 const getMedia = async (clientDevice: MediaDeviceInfo) => {
   const audioSetting: boolean | MediaTrackConstraints | undefined =
@@ -15,64 +15,64 @@ const getMedia = async (clientDevice: MediaDeviceInfo) => {
       .then(function (devices): any {
         return clientDevice === null || devices.indexOf(clientDevice) === -1
           ? true
-          : { deviceId: { exact: clientDevice } };
-      });
+          : { deviceId: { exact: clientDevice } }
+      })
   try {
     return await navigator.mediaDevices.getUserMedia({
       audio: audioSetting,
       video: false,
-    });
+    })
   } catch (err) {
-    return console.log('Error:', err);
+    return console.log('Error:', err)
   }
-};
+}
 
 const Webaudio = ({ style }: { style: CSSProperties }) => {
-  const webAud = useStore((state) => state.webAud);
-  const setWebAud = useStore((state) => state.setWebAud);
-  const [wsReady, setWsReady] = useState(false);
-  const webAudName = useStore((state) => state.webAudName);
-  const setWebAudName = useStore((state) => state.setWebAudName);
+  const webAud = useStore((state) => state.webAud)
+  const setWebAud = useStore((state) => state.setWebAud)
+  const [wsReady, setWsReady] = useState(false)
+  const webAudName = useStore((state) => state.webAudName)
+  const setWebAudName = useStore((state) => state.setWebAudName)
 
   const audioContext =
-    webAud && new (window.AudioContext || (window as any).webkitAudioContext)();
-  const [anchorEl, setAnchorEl] = useState(null);
+    webAud && new (window.AudioContext || (window as any).webkitAudioContext)()
+  const [anchorEl, setAnchorEl] = useState(null)
 
-  const getSchemas = useStore((state) => state.getSchemas);
-  const clientDevice = useStore((state) => state.clientDevice);
-  const setClientDevices = useStore((state) => state.setClientDevices);
+  const getSchemas = useStore((state) => state.getSchemas)
+  const clientDevice = useStore((state) => state.clientDevice)
+  const setClientDevices = useStore((state) => state.setClientDevices)
 
   const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+    setAnchorEl(null)
+  }
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
-  let s: MediaStream;
+  let s: MediaStream
   useEffect(() => {
     if (webAud) {
       getMedia(clientDevice).then((stream) => {
         if (stream) {
-          s = stream;
+          s = stream
           if (!audioContext || audioContext.state === 'closed') {
-            return;
+            return
           }
 
-          const source = stream && audioContext.createMediaStreamSource(stream);
-          const scriptNode = audioContext.createScriptProcessor(1024, 1, 1);
+          const source = stream && audioContext.createMediaStreamSource(stream)
+          const scriptNode = audioContext.createScriptProcessor(1024, 1, 1)
           // const analyser = audioContext.createAnalyser()
           // // const scriptNode = audioContext.createScriptProcessor(0, 1, 1);
           // console.log("THIS", analyser);
-          source.connect(scriptNode);
+          source.connect(scriptNode)
           // analyser.connect(scriptNode);
-          scriptNode.connect(audioContext.destination);
+          scriptNode.connect(audioContext.destination)
           if (wsReady) {
             if (webAud) {
               const sendWs = async () => {
-                const i = 0;
+                const i = 0
                 const request = {
                   data: {
                     sampleRate: scriptNode?.context?.sampleRate,
@@ -81,37 +81,37 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                   client: webAudName,
                   id: i,
                   type: 'audio_stream_config',
-                };
-                (ws as any).ws.send(JSON.stringify(++request.id && request));
-              };
-              sendWs();
+                }
+                ;(ws as any).ws.send(JSON.stringify(++request.id && request))
+              }
+              sendWs()
             }
           }
           scriptNode.onaudioprocess = (e) => {
             if (wsReady) {
               if (webAud) {
                 const sendWs = async () => {
-                  const i = 0;
+                  const i = 0
                   const request = {
                     data: e.inputBuffer.getChannelData(0),
                     client: webAudName,
                     id: i,
                     type: 'audio_stream_data',
-                  };
-                  (ws as any).ws.send(JSON.stringify(++request.id && request));
-                };
-                sendWs();
+                  }
+                  ;(ws as any).ws.send(JSON.stringify(++request.id && request))
+                }
+                sendWs()
               }
             }
-          };
+          }
         }
-      });
+      })
     }
-  }, [audioContext]);
+  }, [audioContext])
 
   if (!wsReady) {
     if (ws && (ws as any).ws && (ws as any).ws.readyState === 1) {
-      setWsReady(true);
+      setWsReady(true)
     }
   }
 
@@ -124,24 +124,24 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
         onClick={(e: any) => {
           if (webAud) {
             if (audioContext) {
-              s.getTracks().forEach((track) => track.stop());
-              audioContext.close();
+              s.getTracks().forEach((track) => track.stop())
+              audioContext.close()
             }
             const sendWs = async () => {
-              const i = 0;
+              const i = 0
               const request = {
                 client: webAudName,
                 id: i,
                 type: 'audio_stream_stop',
-              };
-              (ws as any).ws.send(JSON.stringify(++request.id && request));
-            };
-            sendWs().then(() => getSchemas());
-            setWebAud(false);
-            setClientDevices(null);
-            window.location.reload();
+              }
+              ;(ws as any).ws.send(JSON.stringify(++request.id && request))
+            }
+            sendWs().then(() => getSchemas())
+            setWebAud(false)
+            setClientDevices(null)
+            window.location.reload()
           } else {
-            handleClick(e);
+            handleClick(e)
           }
         }}
         data-webaud={webAud}
@@ -206,31 +206,31 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                   navigator.mediaDevices
                     .enumerateDevices()
                     .then(function (devices) {
-                      setClientDevices(devices);
+                      setClientDevices(devices)
                     })
                     .catch(function (err) {
-                      console.log(`${err.name}: ${err.message}`);
-                    });
+                      console.log(`${err.name}: ${err.message}`)
+                    })
                   const sendWs = async () => {
                     const request = {
                       data: {},
                       client: webAudName,
                       id: 1,
                       type: 'audio_stream_start',
-                    };
-                    (ws as any).ws.send(
+                    }
+                    ;(ws as any).ws.send(
                       JSON.stringify(++request.id && request)
-                    );
-                  };
-                  sendWs();
+                    )
+                  }
+                  sendWs()
                   setTimeout(() => {
-                    getSchemas();
-                  }, 1000);
+                    getSchemas()
+                  }, 1000)
                 }
               }
 
-              setAnchorEl(null);
-              setWebAud(true);
+              setAnchorEl(null)
+              setWebAud(true)
             }}
           >
             <Check />
@@ -240,7 +240,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
             variant="contained"
             color="primary"
             onClick={() => {
-              setAnchorEl(null);
+              setAnchorEl(null)
             }}
           >
             <Close />
@@ -249,7 +249,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
       </Popover>
       {/* <canvas width={dw} height={dh} style={style} ref={canvas} /> */}
     </>
-  );
-};
+  )
+}
 
-export default Webaudio;
+export default Webaudio

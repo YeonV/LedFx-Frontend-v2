@@ -2,99 +2,99 @@ export interface DeviceCardProps {
   /**
    * The Name of the device
    */
-  deviceName?: string;
+  deviceName?: string
   /**
    * IconName. Refer to `Icon`
    */
-  iconName?: string;
+  iconName?: string
   /**
    * Name of the current Effect
    */
-  effectName: string | undefined;
+  effectName: string | undefined
   /**
    * Flag if Effect is set
    */
-  isEffectSet?: boolean;
+  isEffectSet?: boolean
   /**
    * Is device online
    */
-  online?: boolean;
+  online?: boolean
   /**
    * Play/Pause
    */
-  isPlaying?: boolean;
+  isPlaying?: boolean
   /**
    * Is streaming from other sources
    */
-  isStreaming?: boolean;
+  isStreaming?: boolean
   /**
    * Do not send to leds
    */
-  previewOnly?: boolean;
+  previewOnly?: boolean
   /**
    * TransitionTime of the Device
    */
-  transitionTime?: number;
+  transitionTime?: number
   /**
    * DeviceId if its a device, else undefined if its a virtual
    */
-  isDevice?: string | undefined;
+  isDevice?: string | undefined
   /**
    * Graphs active?
    */
-  graphsActive?: boolean;
+  graphsActive?: boolean
   /**
    * Do not send to leds
    */
-  graphsMulti?: boolean;
+  graphsMulti?: boolean
   /**
    * Show Matrix
    */
-  showMatrix?: boolean;
+  showMatrix?: boolean
   /**
    * Colorize?
    */
-  colorIndicator?: boolean;
+  colorIndicator?: boolean
   /**
    * VirtualId
    */
-  virtId?: string;
+  virtId?: string
   /**
    * Index
    */
-  index?: number;
+  index?: number
   /**
    * Handle Function
    */
-  handleDeleteDevice?: any;
+  handleDeleteDevice?: any
   /**
    * Handle Function
    */
-  handleEditVirtual?: any;
+  handleEditVirtual?: any
   /**
    * Handle Function
    */
-  handleEditDevice?: any;
+  handleEditDevice?: any
   /**
    * Handle Function
    */
-  handleClearEffect?: any;
+  handleClearEffect?: any
   /**
    * Handle Function
    */
-  handlePlayPause?: any;
+  handlePlayPause?: any
   /**
    * Handle Function
    */
-  activateDevice?: any;
+  activateDevice?: any
   /**
    * Handle Function
    */
-  linkTo?: any;
+  linkTo?: any
   /**
    * onClick Link
    */
-  additionalStyle?: any;
+  additionalStyle?: any
   /**
    * JSX styles
    */
@@ -122,4 +122,4 @@ export const DeviceCardDefaults: DeviceCardProps = {
   isDevice: 'yz-quad',
   graphsActive: true,
   showMatrix: false,
-};
+}

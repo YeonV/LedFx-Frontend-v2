@@ -1,10 +1,10 @@
 /* eslint-disable no-plusplus */
-import { useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
-import useStore from '../../store/useStore';
-import DeviceCard from './DeviceCard/DeviceCard.wrapper';
-import NoYet from '../../components/NoYet';
-import ws from '../../utils/Websocket';
+import { useEffect } from 'react'
+import { makeStyles } from '@mui/styles'
+import useStore from '../../store/useStore'
+import DeviceCard from './DeviceCard/DeviceCard.wrapper'
+import NoYet from '../../components/NoYet'
+import ws from '../../utils/Websocket'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -25,33 +25,33 @@ const useStyles = makeStyles(() => ({
       padding: 0,
     },
   },
-}));
+}))
 
 const Devices = () => {
-  const classes = useStyles();
-  const getDevices = useStore((state) => state.getDevices);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const virtuals = useStore((state) => state.virtuals);
-  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
-  const graphs = useStore((state) => state.graphsMulti);
-  const graphsMulti = useStore((state) => state.graphsMulti);
+  const classes = useStyles()
+  const getDevices = useStore((state) => state.getDevices)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const virtuals = useStore((state) => state.virtuals)
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs)
+  const graphs = useStore((state) => state.graphsMulti)
+  const graphsMulti = useStore((state) => state.graphsMulti)
 
   useEffect(() => {
-    getDevices();
-    getVirtuals();
-  }, [getDevices, getVirtuals]);
+    getDevices()
+    getVirtuals()
+  }, [getDevices, getVirtuals])
 
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail === 'devices_updated') {
-        getDevices();
+        getDevices()
       }
-    };
-    document.addEventListener('YZold', handleWebsockets);
+    }
+    document.addEventListener('YZold', handleWebsockets)
     return () => {
-      document.removeEventListener('YZold', handleWebsockets);
-    };
-  }, [getDevices]);
+      document.removeEventListener('YZold', handleWebsockets)
+    }
+  }, [getDevices])
 
   useEffect(() => {
     const handleWebsockets = () => {
@@ -59,21 +59,21 @@ const Devices = () => {
         event_type: 'devices_updated',
         id: 1,
         type: 'subscribe_event',
-      };
+      }
       // console.log("Send");
-      (ws as any).send(JSON.stringify(++req.id && req));
-    };
-    document.addEventListener('YZold', handleWebsockets);
+      ;(ws as any).send(JSON.stringify(++req.id && req))
+    }
+    document.addEventListener('YZold', handleWebsockets)
     return () => {
-      document.removeEventListener('YZold', handleWebsockets);
-    };
-  }, []);
+      document.removeEventListener('YZold', handleWebsockets)
+    }
+  }, [])
 
   useEffect(() => {
     if (graphs && graphsMulti) {
-      setPixelGraphs(Object.keys(virtuals));
+      setPixelGraphs(Object.keys(virtuals))
     }
-  }, [graphs, graphsMulti, setPixelGraphs]);
+  }, [graphs, graphsMulti, setPixelGraphs])
 
   return (
     <div className={classes.cardWrapper}>
@@ -85,7 +85,7 @@ const Devices = () => {
         <NoYet type="Device" />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Devices;
+export default Devices

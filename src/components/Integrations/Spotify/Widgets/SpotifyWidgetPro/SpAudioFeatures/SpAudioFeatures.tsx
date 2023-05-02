@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react'
 import {
   // Typography,
   Table,
@@ -13,40 +13,40 @@ import {
   Card,
   Stack,
   // useTheme,
-} from '@mui/material';
+} from '@mui/material'
 import {
   BarChart,
   MusicNote,
   Speed,
   Wallpaper,
   Piano,
-} from '@mui/icons-material';
-import { getTrackFeatures } from '../../../../../../utils/spotifyProxies';
-import RadarChart from './SpRadarChart';
-import useStore from '../../../../../../store/useStore';
-import { SpotifyStateContext } from '../../../SpotifyProvider';
+} from '@mui/icons-material'
+import { getTrackFeatures } from '../../../../../../utils/spotifyProxies'
+import RadarChart from './SpRadarChart'
+import useStore from '../../../../../../store/useStore'
+import { SpotifyStateContext } from '../../../SpotifyProvider'
 
 export default function SpAudioFeatures() {
   // const theme = useTheme();
-  const spotifyState = useContext(SpotifyStateContext);
+  const spotifyState = useContext(SpotifyStateContext)
   const audioFeatures = useStore(
     (state) => state.spotify.spotifyData.audioFeatures
-  );
-  const songID = spotifyState?.track_window?.current_track?.id || '';
+  )
+  const songID = spotifyState?.track_window?.current_track?.id || ''
   // const getTrackFeaturesData = useStore((state) =>
   //   (state as any).getTrackFeaturesData
   // );
-  const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken);
-  const setSpotifyData = useStore((state) => state.setSpData);
+  const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken)
+  const setSpotifyData = useStore((state) => state.setSpData)
 
-  const meta = spotifyState?.context?.metadata?.current_item?.name;
+  const meta = spotifyState?.context?.metadata?.current_item?.name
 
   useEffect(() => {
     if (songID)
       getTrackFeatures(songID, spotifyToken).then((res) => {
-        setSpotifyData('audioFeatures', res);
-      });
-  }, [meta]);
+        setSpotifyData('audioFeatures', res)
+      })
+  }, [meta])
 
   // const audioFeatures = {
   //   danceability: 0.76,
@@ -191,5 +191,5 @@ export default function SpAudioFeatures() {
         </Card>
       </Grid>
     </>
-  );
+  )
 }

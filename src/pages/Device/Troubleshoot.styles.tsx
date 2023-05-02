@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useTroubleshootStyles = makeStyles(() => ({
   appBar: {
@@ -24,6 +24,6 @@ const useTroubleshootStyles = makeStyles(() => ({
     padding: '0.5rem 0',
     margin: '0 1rem',
   },
-}));
+}))
 
-export default useTroubleshootStyles;
+export default useTroubleshootStyles

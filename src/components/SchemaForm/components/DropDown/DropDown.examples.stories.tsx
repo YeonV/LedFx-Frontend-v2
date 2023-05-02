@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@mui/material';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Card, CardContent } from '@mui/material'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 // eslint-disable-next-line
 import DropDown from "./DropDown";
 
@@ -28,13 +28,13 @@ export default {
       panelPosition: 'bottom',
     },
   },
-} as ComponentMeta<typeof DropDown>;
+} as ComponentMeta<typeof DropDown>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof DropDown> = (args) => <DropDown {...args} />;
 
-export const EffectType = Template.bind({});
-EffectType.storyName = 'Effect Type';
+export const EffectType = Template.bind({})
+EffectType.storyName = 'Effect Type'
 EffectType.args = {
   showFilter: false,
   groups: {
@@ -196,4 +196,4 @@ EffectType.args = {
   },
   value: '',
   onChange: undefined,
-};
+}

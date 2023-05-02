@@ -1,3 +1,3 @@
 export default function useSpotifyPro() {
-  return [];
+  return []
 }

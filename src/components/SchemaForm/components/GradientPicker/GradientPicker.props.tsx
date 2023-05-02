@@ -1,14 +1,14 @@
-import { CSSProperties } from '@mui/styles';
+import { CSSProperties } from '@mui/styles'
 
 export interface GradientPickerProps {
-  pickerBgColor: string;
-  title?: string;
-  index?: number;
-  isGradient?: boolean;
-  wrapperStyle?: CSSProperties;
-  colors?: any;
-  handleAddGradient?: any;
-  sendColorToVirtuals?: any;
+  pickerBgColor: string
+  title?: string
+  index?: number
+  isGradient?: boolean
+  wrapperStyle?: CSSProperties
+  colors?: any
+  handleAddGradient?: any
+  sendColorToVirtuals?: any
 }
 
 export const GradientPickerDefaultProps = {
@@ -20,4 +20,4 @@ export const GradientPickerDefaultProps = {
   colors: undefined,
   handleAddGradient: undefined,
   sendColorToVirtuals: undefined,
-};
+}

@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles(() => ({
   buttonBar: {
@@ -14,6 +14,6 @@ const useStyles = makeStyles(() => ({
       margin: '0 5px',
     },
   },
-}));
+}))
 
-export default useStyles;
+export default useStyles

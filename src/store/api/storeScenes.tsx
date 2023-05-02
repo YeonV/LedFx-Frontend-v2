@@ -2,9 +2,9 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-import produce from 'immer';
+import produce from 'immer'
 // import { string } from 'prop-types';
-import { Ledfx } from '../../api/ledfx';
+import { Ledfx } from '../../api/ledfx'
 
 const storeScenes = (set: any) => ({
   scenes: {} as any,
@@ -19,29 +19,29 @@ const storeScenes = (set: any) => ({
   toggleScenePLplay: () => {
     set(
       produce((s: any) => {
-        s.scenePLplay = !s.scenePLplay;
+        s.scenePLplay = !s.scenePLplay
       }),
       false,
       'toggleScenePLplay'
-    );
+    )
   },
   toggleScenePLrepeat: () => {
     set(
       produce((s: any) => {
-        s.scenePLrepeat = !s.scenePLrepeat;
+        s.scenePLrepeat = !s.scenePLrepeat
       }),
       false,
       'toggleScenePLrepeat'
-    );
+    )
   },
   setScenePLinterval: (seconds: number) => {
     set(
       produce((s: any) => {
-        s.scenePLinterval = seconds;
+        s.scenePLinterval = seconds
       }),
       false,
       'setScenePLinterval'
-    );
+    )
   },
   setMostUsedScenes: (key: string, count: number) => {
     set(
@@ -49,58 +49,58 @@ const storeScenes = (set: any) => ({
         s.mostUsedScenes[key] = {
           ...s.scenes[key],
           used: count,
-        };
+        }
       }),
       false,
       'setMostUsedScenes'
-    );
+    )
   },
   setScenePL: (scenes: string[]) => {
     set(
       produce((s: any) => {
-        s.scenePL = scenes;
+        s.scenePL = scenes
       }),
       false,
       'setScenePLactiveIndex'
-    );
+    )
   },
   setScenePLactiveIndex: (index: number) => {
     set(
       produce((s: any) => {
-        s.scenePLactiveIndex = index;
+        s.scenePLactiveIndex = index
       }),
       false,
       'setScenePLactiveIndex'
-    );
+    )
   },
   addScene2PL: (sceneId: string) => {
     set(
       produce((s: any) => {
-        s.scenePL = [...s.scenePL, sceneId];
+        s.scenePL = [...s.scenePL, sceneId]
       }),
       false,
       'addScene2PL'
-    );
+    )
   },
   removeScene2PL: (id: number) => {
     set(
       produce((s: any) => {
-        s.scenePL = s.scenePL.filter((p: string, i: number) => i !== id);
+        s.scenePL = s.scenePL.filter((p: string, i: number) => i !== id)
       }),
       false,
       'removeScene2PL'
-    );
+    )
   },
   getScenes: async () => {
-    const resp = await Ledfx('/api/scenes');
+    const resp = await Ledfx('/api/scenes')
     if (resp && resp.scenes) {
       set(
         produce((s: any) => {
-          s.scenes = resp.scenes;
+          s.scenes = resp.scenes
         }),
         false,
         'gotScenes'
-      );
+      )
     }
   },
   addScene: async (
@@ -124,22 +124,22 @@ const storeScenes = (set: any) => ({
           ? s.recentScenes.indexOf(id) > -1
             ? [id, ...s.recentScenes.filter((t: any) => t !== id)]
             : [id, ...s.recentScenes].slice(0, 5)
-          : [id];
+          : [id]
       }),
       false,
       'setScenes'
-    );
+    )
     set(
       produce((s: any) => {
-        s.count[id] = (s.count[id] || 0) + 1;
+        s.count[id] = (s.count[id] || 0) + 1
       }),
       false,
       'setScenes'
-    );
+    )
     return await Ledfx('/api/scenes', 'PUT', {
       id,
       action: 'activate',
-    });
+    })
   },
   activateSceneIn: async (id: string, ms: number) =>
     await Ledfx('/api/scenes', 'PUT', {
@@ -152,6 +152,6 @@ const storeScenes = (set: any) => ({
 
   captivateScene: async (scene_puturl: string, scene_payload: string) =>
     await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload)),
-});
+})
 
-export default storeScenes;
+export default storeScenes

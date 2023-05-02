@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Typography,
   Toolbar,
@@ -6,19 +6,19 @@ import {
   Dialog,
   Button,
   Grid,
-} from '@mui/material';
-import { Settings, NavigateBefore, Add } from '@mui/icons-material';
+} from '@mui/material'
+import { Settings, NavigateBefore, Add } from '@mui/icons-material'
 import {
   MuiMenuItem,
   QLCScreenDefaultProps,
   QLCScreenProps,
   Transition,
-} from './QLCScreen.props';
-import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles';
-import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable';
-import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable';
-import DialogAddEventListener from '../../../../components/Integrations/QLC/DialogAddEventListener';
-import useStore from '../../../../store/useStore';
+} from './QLCScreen.props'
+import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
+import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable'
+import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable'
+import DialogAddEventListener from '../../../../components/Integrations/QLC/DialogAddEventListener'
+import useStore from '../../../../store/useStore'
 
 export default function QLCScreen({
   icon = <Settings />,
@@ -32,17 +32,17 @@ export default function QLCScreen({
   disabled = false,
   size = 'small',
 }: QLCScreenProps) {
-  const classes = useEditVirtualsStyles();
-  const [open, setOpen] = React.useState(false);
-  const integrations = useStore((state) => state.integrations);
+  const classes = useEditVirtualsStyles()
+  const [open, setOpen] = React.useState(false)
+  const integrations = useStore((state) => state.integrations)
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
   return (
     <>
       {type === 'menuItem' ? (
@@ -50,8 +50,8 @@ export default function QLCScreen({
           key={innerKey}
           className={className}
           onClick={(e: any) => {
-            e.preventDefault();
-            handleClickOpen();
+            e.preventDefault()
+            handleClickOpen()
           }}
         >
           <Add />
@@ -63,7 +63,7 @@ export default function QLCScreen({
           startIcon={startIcon}
           color={color}
           onClick={() => {
-            handleClickOpen();
+            handleClickOpen()
           }}
           size={size}
           disabled={disabled}
@@ -117,7 +117,7 @@ export default function QLCScreen({
         </div>
       </Dialog>
     </>
-  );
+  )
 }
 
-QLCScreen.defaultProps = QLCScreenDefaultProps;
+QLCScreen.defaultProps = QLCScreenDefaultProps
