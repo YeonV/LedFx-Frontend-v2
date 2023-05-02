@@ -65,10 +65,11 @@ const Dashboard = () => {
     scanForDevices()
       .then(async () => {
         for (let sec = 1; sec <= 30; sec++) {
+          if (scanning === -1) break
           await sleep(1000).then(() => {
             getDevices()
             getVirtuals()
-            setScanning(sec)
+            if (scanning !== -1) setScanning(sec)
           })
         }
       })
@@ -80,7 +81,6 @@ const Dashboard = () => {
   useEffect(() => {
     getScenes()
   }, [])
-  console.log(config)
 
   return (
     <div className="Content">

@@ -22,6 +22,14 @@ const storeTours = (set: any) => ({
       false,
       'ui/setTour'
     ),
+  setTourOpen: (tour: ITours, open: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.tours[tour] = open
+      }),
+      false,
+      'ui/setTour'
+    ),
 })
 
 export default storeTours
