@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 import Dialog from '@mui/material/Dialog'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DialogContent,
   Stack,
@@ -15,13 +17,16 @@ import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import wledLogo from '../../icons/png/wled.png'
 import BladeScene from '../../pages/Home/BladeScene'
+import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 
-export default function IntroDialog({ handleScan, scanning }: any) {
+export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
   const intro = useStore((state) => state.intro)
   const devices = useStore((state) => state.devices)
   // const virtuals = useStore((state) => state.virtuals)
   const setIntro = useStore((state) => state.setIntro)
   const setTour = useStore((state) => state.setTour)
+  const setTourOpen = useStore((state) => state.setTourOpen)
   const small = useMediaQuery('(max-width: 720px)')
   const xsmall = useMediaQuery('(max-width: 600px)')
 
@@ -44,7 +49,23 @@ export default function IntroDialog({ handleScan, scanning }: any) {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
   }
 
-  const steps = useRef([
+  const schem = useStore((state) => state?.schemas?.audio?.schema)
+  const schema = {
+    properties: {
+      audio_device: schem?.properties?.audio_device || {},
+      delay_ms: schem?.properties?.delay_ms || {},
+      min_volume: schem?.properties?.min_volume || {},
+    },
+  }
+  const model = useStore((state) => state?.config?.audio)
+
+  useEffect(() => {
+    getSystemConfig()
+  }, [])
+
+  const [s, setS] = useState({} as Record<string, 'left' | 'right'>)
+
+  const [steps, setSteps] = useState([
     {
       key: 'setup',
       title: 'Start Setup-Assistant?',
@@ -65,70 +86,153 @@ export default function IntroDialog({ handleScan, scanning }: any) {
       action_right: handleNext,
     },
     {
-      key: 'wledSegs',
-      title: 'Import Segments from WLED?',
-      icon: 'wled',
-      label_left: 'No, only main devices',
-      label_right: 'Yes, import segments',
-      action_left: () => {
-        onSystemSettingsChange('create_segments', false)
-        handleScan()
-        setTour('home')
-        handleNext()
-      },
-      action_right: () => {
-        onSystemSettingsChange('create_segments', true)
-        handleScan()
-        handleNext()
-      },
-    },
-    {
-      key: 'wledScanning',
-      title:
-        scanning && scanning > -1
-          ? `Scanning...${scanning}%`
-          : `${devices && Object.keys(devices)?.length} WLEDs found`,
-      icon: 'wled',
-      label_left: 'Skip Introduction',
-      label_right: 'Start Introduction',
-      action_left: handleClose,
-      action_right: () => {
-        setTour('home')
-        handleClose()
-      },
+      key: 'bladeScene',
+      title: 'Create a test Scene for a quick start?',
+      icon: 'yz',
+      label_left: 'Skip Blade Scene',
+      label_right: <BladeScene onClick={() => handleNext()} />,
+      action_left: handleNext,
+      action_right: handleNext,
     },
     {
       key: 'audio',
       title: 'Select your Audio Device',
-      icon: 'wled',
-      label_left: 'Skip Introduction',
-      label_right: 'Start Introduction',
-      action_left: handleClose,
-      action_right: handleClose,
+      icon: 'volumeUp',
+      label_left: schema && (
+        <BladeSchemaForm
+          hideToggle
+          schema={schema}
+          model={model}
+          onModelChange={(e) => {
+            setSystemConfig({
+              audio: e,
+            }).then(() => getSystemConfig())
+          }}
+        />
+      ),
+      label_right: 'Apply',
+      action_left: (): any => false,
+      action_right: handleNext,
     },
     {
-      key: 'scene',
-      title: 'Test Scene',
-      icon: 'wled',
+      key: 'tour',
+      title: 'Initial Setup complete!',
       label_left: 'Skip Introduction',
-      label_right: <BladeScene />,
-      action_left: handleClose,
-      action_right: handleClose,
+      label_right: 'Start Introduction',
+      action_left: () => {
+        setTourOpen('home', false)
+        handleClose()
+      },
+      action_right: () => {
+        setTourOpen('home', true)
+        handleClose()
+      },
     },
-  ])
-
-  const [s, setS] = useState({} as Record<string, 'left' | 'right'>)
-
+  ] as any)
+  
   useEffect(() => {
-    steps.current = [
-      ...steps.current.filter((st: any) => {
-        // console.log(st)
-        // console.log(typeof steps.current[activeStep].label_right)
+    const ste = [
+      {
+        key: 'setup',
+        title: 'Start Setup-Assistant?',
+        label_left: 'Nah, im an expert. Just let me in',
+        label_right: 'Yes, please show me around',
+        action_left: () => {
+          handleClose()
+        },
+        action_right: handleNext,
+      },
+      {
+        key: 'gotWled',
+        title: 'Scan for WLEDs in network?',
+        icon: 'wled',
+        label_left: 'Nah, no WLEDs',
+        label_right: 'Yes, please scan my network for WLEDs',
+        action_left: handleNext,
+        action_right: handleNext,
+      },
+      s.gotWled === 'right' && {
+        key: 'wledSegs',
+        title: 'Import Segments from WLED?',
+        icon: 'wled',
+        label_left: 'No, only main devices',
+        label_right: 'Yes, import segments',
+        action_left: () => {
+          onSystemSettingsChange('create_segments', false)
+          handleScan()
+          setTour('home')
+          handleNext()
+        },
+        action_right: () => {
+          onSystemSettingsChange('create_segments', true)
+          handleScan()
+          handleNext()
+        },
+      },
+      s.gotWled === 'right' && {
+        key: 'wledScanning',
+        title:
+          scanning && scanning > -1
+            ? `Scanning...${scanning}%`
+            : `${devices && Object.keys(devices)?.length} new WLEDs found`,
+        icon: 'wled',
+        label_left: 'RESCAN',
+        label_right: 'Continue',
+        action_left: (): any => false,
+        action_right: ()=> {
+          setScanning(-1)
+          handleNext()
+        },
+      },
+      {
+        key: 'bladeScene',
+        title: 'Create a test Scene for a quick start?',
+        icon: 'yz:logo2',
+        label_left: 'Skip Blade Scene',
+        label_right: <BladeScene onClick={() => handleNext()} />,
+        action_left: handleNext,
+        action_right: handleNext,
+      },
+      {
+        key: 'audio',
+        title: 'No Party yet? Adjust your Audio Settings',
+        icon: 'volumeUp',
+        label_left: schema && (
+          <BladeSchemaForm
+            hideToggle
+            schema={schema}
+            model={model}
+            onModelChange={(e) => {
+              setSystemConfig({
+                audio: e,
+              }).then(() => getSystemConfig())
+            }}
+          />
+        ),
+        label_right: 'Apply',
+        action_left: (): any => false,
+        action_right: handleNext,
+      },
+      {
+        key: 'tour',
+        title: 'Initial Setup complete!',
+        label_left: 'Skip Introduction',
+        label_right: 'Start Introduction',
+        action_left: () => {
+          setTourOpen('home', false)
+          handleClose()
+        },
+        action_right: () => {
+          setTourOpen('home', true)
+          handleClose()
+        },
+      },
+    ].filter((n: any) => n !== false)
 
-        return !st.key.startsWith('ywled')
-      }),
-    ]
+    setSteps(ste)
   }, [s])
+  
+
 
   return (
     <Dialog
@@ -149,16 +253,21 @@ export default function IntroDialog({ handleScan, scanning }: any) {
               flexDirection: 'column',
             }}
           >
-            <img
-              width={128}
-              src={
-                !steps.current[activeStep].icon
-                  ? logoCircle
-                  : (steps.current[activeStep].icon === 'wled' && wledLogo) ||
-                    ''
-              }
-              alt="logo-circle"
-            />
+            {!steps[activeStep].icon ||
+            steps[activeStep].icon === 'wled'
+              ? <img
+                  width={128}
+                  src={!steps[activeStep].icon ? logoCircle : wledLogo}
+                  alt="logo-circle"
+                />
+              : <BladeIcon
+                  intro
+                  style={{ fontSize: 128 }}
+                  name={steps[activeStep].icon}
+                  
+                />
+            }
+
             <div>
               <Typography
                 marginLeft={0}
@@ -166,35 +275,22 @@ export default function IntroDialog({ handleScan, scanning }: any) {
                 marginBottom={5}
                 variant={xsmall ? 'h4' : 'h3'}
               >
-                {steps.current[activeStep].title}
+                {steps[activeStep].key === 'wledScanning'
+                ? (scanning && scanning > -1)
+                    ? `Scanning...${scanning}%`
+                    : `${devices && Object.keys(devices)?.length} new WLEDs found` 
+                :steps[activeStep].title}                
               </Typography>
-              {scanning > -1 ? (
-                <Typography
-                  color="GrayText"
-                  marginLeft={xsmall ? 0 : 5}
-                  variant="subtitle1"
-                >
-                  {`${devices && Object.keys(devices)?.length} WLEDs found`}
-                </Typography>
-              ) : (
-                <Typography
-                  color="GrayText"
-                  marginLeft={xsmall ? 0 : 5}
-                  variant="subtitle1"
-                >
-                  {' '}
-                </Typography>
-              )}
             </div>
           </Box>
           <Stack direction="row" gap={3}>
             <Button
               size="small"
               onClick={(_e) => {
-                steps.current[activeStep].action_left()
+                steps[activeStep].action_left()
                 setS((p: any) => ({
                   ...p,
-                  [steps.current[activeStep].key]: 'left',
+                  [steps[activeStep].key]: 'left',
                 }))
               }}
               sx={{
@@ -206,18 +302,18 @@ export default function IntroDialog({ handleScan, scanning }: any) {
                 fontSize: '2rem',
               }}
             >
-              {steps.current[activeStep].label_left}
+              {steps[activeStep].label_left}
             </Button>
-            {typeof steps.current[activeStep].label_right === 'string' ? (
+            {typeof steps[activeStep].label_right === 'string' ? (
               <Button
                 size="small"
                 color="inherit"
                 // color={1 === 1 ? 'primary' : 'inherit'}
                 onClick={(_e) => {
-                  steps.current[activeStep].action_right()
+                  steps[activeStep].action_right()
                   setS((p: any) => ({
                     ...p,
-                    [steps.current[activeStep].key]: 'right',
+                    [steps[activeStep].key]: 'right',
                   }))
                 }}
                 sx={{
@@ -232,15 +328,15 @@ export default function IntroDialog({ handleScan, scanning }: any) {
                   fontSize: '2rem',
                 }}
               >
-                {steps.current[activeStep].label_right}
+                {steps[activeStep].label_right}
               </Button>
             ) : (
-              steps.current[activeStep].label_right
+              steps[activeStep].label_right
             )}
           </Stack>
           <MobileStepper
             variant="dots"
-            steps={steps.current.length}
+            steps={steps.length}
             position="static"
             activeStep={activeStep}
             sx={{
@@ -256,7 +352,7 @@ export default function IntroDialog({ handleScan, scanning }: any) {
                 size="small"
                 variant="text"
                 onClick={handleNext}
-                disabled={activeStep === steps.current.length - 1}
+                disabled={activeStep === steps.length - 1}
                 sx={{ display: activeStep > 0 ? 'flex' : 'none' }}
               >
                 <ChevronRight />
@@ -275,7 +371,6 @@ export default function IntroDialog({ handleScan, scanning }: any) {
             }
           />
         </Box>
-        {steps.current[activeStep].key === 'scene' && <BladeScene />}
       </DialogContent>
     </Dialog>
   )

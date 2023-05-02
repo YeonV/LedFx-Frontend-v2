@@ -122,6 +122,10 @@ export default function Home() {
       <Dashboard />
     )
   ) : (
-    <IntroDialog scanning={scanning} handleScan={handleScan} />
+    <IntroDialog
+      scanning={scanning}
+      handleScan={handleScan}
+      setScanning={setScanning}
+    />
   )
 }

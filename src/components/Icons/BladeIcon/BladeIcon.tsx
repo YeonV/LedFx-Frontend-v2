@@ -32,6 +32,7 @@ function BladeIcon({
   style,
   scene = false,
   card = false,
+  intro = false,
 }: BladeIconProps): JSX.Element {
   return (
     <Icon
@@ -70,7 +71,8 @@ function BladeIcon({
       ) : name.startsWith('yz:logo2') ? (
         <YZLogo2
           style={{
-            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            // eslint-disable-next-line prettier/prettier
+            transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
             marginTop: '3px',
           }}
         />

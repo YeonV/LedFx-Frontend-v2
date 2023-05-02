@@ -30,9 +30,9 @@ const GradientPicker = ({
   const [dialogOpen, setDialogOpen] = useState(false)
   const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor)
 
-  const ios =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+  // const ios =
+  //   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  //   (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
 
   const defaultColors: any = {}
   Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
@@ -78,7 +78,7 @@ const GradientPicker = ({
       className={`${classes.wrapper} step-effect-${index} gradient-picker`}
       style={{
         borderColor: theme.palette.divider,
-        minWidth: ios ? 'unset' : 530,
+        minWidth: 'unset',
         ...(wrapperStyle as any),
       }}
       // style={{

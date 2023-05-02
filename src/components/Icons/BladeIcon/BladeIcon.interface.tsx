@@ -12,6 +12,10 @@ export interface BladeIconProps {
    */
   card?: boolean
   /**
+   * Icon is rendered in Intro
+   */
+  intro?: boolean
+  /**
    * examples: `wled`, `Light`, `mdi:led-strip`
    */
   name?: string

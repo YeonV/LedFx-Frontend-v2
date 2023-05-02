@@ -101,14 +101,13 @@ const UICard = () => {
                 )
               }}
               sx={{
-                textAlign: 'right',
+                '& input': { textAlign: 'right' },
               }}
               inputProps={{
                 min: 1,
                 max: 60,
                 type: 'number',
                 'aria-labelledby': 'input-slider',
-                textAlign: 'right',
               }}
             />
           </SettingsRow>
@@ -143,6 +142,9 @@ const UICard = () => {
                   'global_brightness',
                   parseInt(e.target.value, 10)
                 )
+              }}
+              sx={{
+                '& input': { textAlign: 'right' },
               }}
               inputProps={{
                 min: 0,
@@ -181,6 +183,9 @@ const UICard = () => {
                   parseInt(e.target.value, 10)
                 )
               }
+              sx={{
+                '& input': { textAlign: 'right' },
+              }}
               inputProps={{
                 min: 1,
                 max: 300,
@@ -211,6 +216,9 @@ const UICard = () => {
               margin="dense"
               onChange={(e) => {
                 setUpdateNotificationInterval(parseInt(e.target.value, 10))
+              }}
+              sx={{
+                '& input': { textAlign: 'right' },
               }}
               inputProps={{
                 min: 1,
