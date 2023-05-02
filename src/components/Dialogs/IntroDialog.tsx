@@ -122,8 +122,8 @@ export default function IntroDialog({ handleScan, scanning }: any) {
   useEffect(() => {
     steps.current = [
       ...steps.current.filter((st: any) => {
-        console.log(st)
-        console.log(typeof steps.current[activeStep].label_right)
+        // console.log(st)
+        // console.log(typeof steps.current[activeStep].label_right)
 
         return !st.key.startsWith('ywled')
       }),
@@ -211,7 +211,8 @@ export default function IntroDialog({ handleScan, scanning }: any) {
             {typeof steps.current[activeStep].label_right === 'string' ? (
               <Button
                 size="small"
-                color={1 ? 'primary' : 'inherit'}
+                color="inherit"
+                // color={1 === 1 ? 'primary' : 'inherit'}
                 onClick={(_e) => {
                   steps.current[activeStep].action_right()
                   setS((p: any) => ({
