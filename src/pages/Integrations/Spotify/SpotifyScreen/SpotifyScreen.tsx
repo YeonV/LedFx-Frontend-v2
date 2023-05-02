@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   ListItemIcon,
   Typography,
@@ -8,20 +8,20 @@ import {
   Button,
   Grid,
   useTheme,
-} from '@mui/material';
-import { Settings, NavigateBefore } from '@mui/icons-material';
+} from '@mui/material'
+import { Settings, NavigateBefore } from '@mui/icons-material'
 import {
   MuiMenuItem,
   SpotifyScreenDefaultProps,
   SpotifyScreenProps,
   Transition,
-} from './SpotifyScreen.props';
-import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles';
-import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro';
+} from './SpotifyScreen.props'
+import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
+import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro'
 // import RadarChart from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpRadarChart';
-import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures';
-import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable';
-import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist';
+import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures'
+import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable'
+import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist'
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -35,17 +35,17 @@ export default function SpotifyScreen({
   disabled = false,
   size = 'small',
 }: SpotifyScreenProps) {
-  const classes = useEditVirtualsStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const classes = useEditVirtualsStyles()
+  const theme = useTheme()
+  const [open, setOpen] = React.useState(false)
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   return (
     <>
@@ -54,8 +54,8 @@ export default function SpotifyScreen({
           key={innerKey}
           className={className}
           onClick={(e: any) => {
-            e.preventDefault();
-            handleClickOpen();
+            e.preventDefault()
+            handleClickOpen()
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
@@ -67,7 +67,7 @@ export default function SpotifyScreen({
           startIcon={startIcon}
           color={color}
           onClick={() => {
-            handleClickOpen();
+            handleClickOpen()
           }}
           size={size}
           disabled={disabled}
@@ -120,7 +120,7 @@ export default function SpotifyScreen({
         <SpotifyWidgetDev  /> */}
       </Dialog>
     </>
-  );
+  )
 }
 
-SpotifyScreen.defaultProps = SpotifyScreenDefaultProps;
+SpotifyScreen.defaultProps = SpotifyScreenDefaultProps

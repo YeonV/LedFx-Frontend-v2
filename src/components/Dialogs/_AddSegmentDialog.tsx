@@ -1,9 +1,9 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/destructuring-assignment */
-import React from 'react';
-import { styled } from '@mui/material/styles';
-import PropTypes from 'prop-types';
+import React from 'react'
+import { styled } from '@mui/material/styles'
+import PropTypes from 'prop-types'
 import {
   Button,
   DialogTitle,
@@ -12,17 +12,17 @@ import {
   Dialog,
   MenuItem,
   Select,
-} from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import useStore from '../../store/useStore';
-import BladeFrame from '../SchemaForm/components/BladeFrame';
+} from '@mui/material'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import useStore from '../../store/useStore'
+import BladeFrame from '../SchemaForm/components/BladeFrame'
 
-const PREFIX = '_AddSegmentDialog';
+const PREFIX = '_AddSegmentDialog'
 
 const classes = {
   root: `${PREFIX}-root`,
   paper: `${PREFIX}-paper`,
-};
+}
 
 const Root = styled('div')(({ theme }) => ({
   [`&.${classes.root}`]: {
@@ -34,25 +34,25 @@ const Root = styled('div')(({ theme }) => ({
     width: '80%',
     maxHeight: 435,
   },
-}));
+}))
 
 function ConfirmationDialogRaw(props: any) {
-  const { onClose, value: valueProp, open, ...other } = props;
-  const [value, setValue] = React.useState(valueProp);
+  const { onClose, value: valueProp, open, ...other } = props
+  const [value, setValue] = React.useState(valueProp)
 
   const handleCancel = () => {
-    onClose();
-  };
+    onClose()
+  }
 
   const handleOk = () => {
-    onClose(value);
-  };
+    onClose(value)
+  }
 
   const handleChange = (event: any) => {
-    setValue(event.target.value);
-  };
+    setValue(event.target.value)
+  }
 
-  delete other.deviceList;
+  delete other.deviceList
   return (
     <Dialog
       disableEscapeKeyDown
@@ -89,7 +89,7 @@ function ConfirmationDialogRaw(props: any) {
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  )
 }
 
 ConfirmationDialogRaw.propTypes = {
@@ -101,45 +101,43 @@ ConfirmationDialogRaw.propTypes = {
   id: PropTypes.string,
   keepMounted: PropTypes.bool,
   deviceList: PropTypes.any,
-};
+}
 
 export default function ConfirmationDialog({
   virtual,
   config = {},
 }: {
-  virtual: any;
-  config?: any;
+  virtual: any
+  config?: any
 }) {
-  const [open, setOpen] = React.useState(false);
-  const deviceList = useStore((state) => state.devices) || {};
-  const updateVirtualSegments = useStore(
-    (state) => state.updateVirtualSegments
-  );
-  const getVirtuals = useStore((state) => state.getVirtuals);
+  const [open, setOpen] = React.useState(false)
+  const deviceList = useStore((state) => state.devices) || {}
+  const updateVirtualSegments = useStore((state) => state.updateVirtualSegments)
+  const getVirtuals = useStore((state) => state.getVirtuals)
 
   const handleClickListItem = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = (newValue: string) => {
-    setOpen(false);
+    setOpen(false)
     if (newValue) {
       const device = {
         ...deviceList[
           Object.keys(deviceList).find((d) => deviceList[d].id === newValue) ||
             0
         ],
-      };
+      }
       if (device && device.config) {
         const temp = [
           ...virtual.segments,
           [device.id, 0, device.config.pixel_count - 1, false],
-        ];
-        const test = temp.filter((t) => t.length === 4);
-        updateVirtualSegments(virtual.id, test).then(() => getVirtuals());
+        ]
+        const test = temp.filter((t) => t.length === 4)
+        updateVirtualSegments(virtual.id, test).then(() => getVirtuals())
       }
     }
-  };
+  }
 
   return (
     <Root className={classes.root}>
@@ -172,5 +170,5 @@ export default function ConfirmationDialog({
         </>
       ) : null}
     </Root>
-  );
+  )
 }

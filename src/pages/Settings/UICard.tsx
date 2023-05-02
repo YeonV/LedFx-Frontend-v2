@@ -1,53 +1,53 @@
-import { useEffect, useState } from 'react';
-import { Input, Divider } from '@mui/material';
-import { SettingsSlider, SettingsRow } from './SettingsComponents';
-import useStore from '../../store/useStore';
-import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles';
+import { useEffect, useState } from 'react'
+import { Input, Divider } from '@mui/material'
+import { SettingsSlider, SettingsRow } from './SettingsComponents'
+import useStore from '../../store/useStore'
+import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 
 const UICard = () => {
-  const sliderClasses = useSliderStyles();
+  const sliderClasses = useSliderStyles()
 
-  const config = useStore((state) => state.config);
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
-  const viewMode = useStore((state) => state.viewMode);
-  const setViewMode = useStore((state) => state.setViewMode);
-  const graphs = useStore((state) => state.graphs);
-  const toggleGraphs = useStore((state) => state.toggleGraphs);
-  const graphsMulti = useStore((state) => state.graphsMulti);
-  const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti);
-  const showMatrix = useStore((state) => state.showMatrix);
-  const toggleShowMatrix = useStore((state) => state.toggleShowMatrix);
-  const setFeatures = useStore((state) => state.setFeatures);
-  const showFeatures = useStore((state) => state.showFeatures);
-  const features = useStore((state) => state.features);
+  const config = useStore((state) => state.config)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const viewMode = useStore((state) => state.viewMode)
+  const setViewMode = useStore((state) => state.setViewMode)
+  const graphs = useStore((state) => state.graphs)
+  const toggleGraphs = useStore((state) => state.toggleGraphs)
+  const graphsMulti = useStore((state) => state.graphsMulti)
+  const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
+  const showMatrix = useStore((state) => state.showMatrix)
+  const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
+  const setFeatures = useStore((state) => state.setFeatures)
+  const showFeatures = useStore((state) => state.showFeatures)
+  const features = useStore((state) => state.features)
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
-  );
+  )
   const setUpdateNotificationInterval = useStore(
     (state) => state.setUpdateNotificationInterval
-  );
+  )
 
-  const [fps, setFps] = useState(30);
-  const [globalBrightness, setGlobalBrightness] = useState(100);
-  const [pixelLength, setPixelLength] = useState(50);
+  const [fps, setFps] = useState(30)
+  const [globalBrightness, setGlobalBrightness] = useState(100)
+  const [pixelLength, setPixelLength] = useState(50)
 
   const setSystemSetting = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
 
   useEffect(() => {
     if (typeof config.visualisation_fps === 'number') {
-      setFps(config.visualisation_fps);
+      setFps(config.visualisation_fps)
     }
     if (typeof config.visualisation_maxlen === 'number') {
-      setPixelLength(config.visualisation_maxlen);
+      setPixelLength(config.visualisation_maxlen)
     }
-  }, [config]);
+  }, [config])
 
   useEffect(() => {
-    getSystemConfig();
-  }, []);
+    getSystemConfig()
+  }, [])
 
   return (
     <>
@@ -55,6 +55,7 @@ const UICard = () => {
         title="Show Graphs (eats performance)"
         checked={graphs}
         onChange={() => toggleGraphs()}
+        direct
       />
       {config.visualisation_fps && graphs && (
         <>
@@ -62,14 +63,16 @@ const UICard = () => {
             title="Also on Devices page"
             checked={graphsMulti}
             onChange={() => toggleGraphsMulti()}
+            direct
           />
           <SettingsRow
             title="Show Matrix on Devices page"
             checked={showMatrix}
             onChange={() => toggleShowMatrix()}
+            direct
           />
           <Divider sx={{ m: '0.25rem 0 0.5rem 0' }} />
-          <SettingsRow title="Frontend FPS" step="two">
+          <SettingsRow title="Frontend FPS" step="two" value={fps}>
             <SettingsSlider
               value={fps}
               step={1}
@@ -79,7 +82,7 @@ const UICard = () => {
                 setSystemSetting('visualisation_fps', val)
               }
               onChange={(_e: any, val: any) => {
-                setFps(val);
+                setFps(val)
               }}
             />
             <Input
@@ -89,23 +92,31 @@ const UICard = () => {
               value={fps}
               margin="dense"
               onChange={(e) => {
-                setFps(parseInt(e.target.value, 10));
+                setFps(parseInt(e.target.value, 10))
               }}
               onBlur={(e) => {
                 setSystemSetting(
                   'visualisation_fps',
                   parseInt(e.target.value, 10)
-                );
+                )
+              }}
+              sx={{
+                textAlign: 'right',
               }}
               inputProps={{
                 min: 1,
                 max: 60,
                 type: 'number',
                 'aria-labelledby': 'input-slider',
+                textAlign: 'right',
               }}
             />
           </SettingsRow>
-          <SettingsRow title="Global Brightness" step="two">
+          <SettingsRow
+            title="Global Brightness"
+            step="two"
+            value={globalBrightness}
+          >
             <SettingsSlider
               value={globalBrightness}
               step={1}
@@ -115,7 +126,7 @@ const UICard = () => {
                 setSystemSetting('global_brightness', val / 100)
               }
               onChange={(_e: any, val: any) => {
-                setGlobalBrightness(val);
+                setGlobalBrightness(val)
               }}
             />
             <Input
@@ -125,13 +136,13 @@ const UICard = () => {
               value={globalBrightness}
               margin="dense"
               onChange={(e) => {
-                setGlobalBrightness(parseInt(e.target.value, 10));
+                setGlobalBrightness(parseInt(e.target.value, 10))
               }}
               onBlur={(e) => {
                 setSystemSetting(
                   'global_brightness',
                   parseInt(e.target.value, 10)
-                );
+                )
               }}
               inputProps={{
                 min: 0,
@@ -141,7 +152,7 @@ const UICard = () => {
               }}
             />
           </SettingsRow>
-          <SettingsRow title="Frontend Pixels" step="three">
+          <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
             <SettingsSlider
               value={pixelLength}
               step={1}
@@ -152,7 +163,7 @@ const UICard = () => {
                 setSystemSetting('visualisation_maxlen', val)
               }
               onChange={(_e: any, val: any) => {
-                setPixelLength(val);
+                setPixelLength(val)
               }}
             />
             <Input
@@ -162,7 +173,7 @@ const UICard = () => {
               style={{ width: 70 }}
               margin="dense"
               onChange={(e) => {
-                setPixelLength(parseInt(e.target.value, 10));
+                setPixelLength(parseInt(e.target.value, 10))
               }}
               onBlur={(e) =>
                 setSystemSetting(
@@ -179,7 +190,10 @@ const UICard = () => {
             />
           </SettingsRow>
 
-          <SettingsRow title="Update Notification: wait min">
+          <SettingsRow
+            title="Update Notification: wait min"
+            value={updateNotificationInterval}
+          >
             <SettingsSlider
               value={updateNotificationInterval}
               step={1}
@@ -196,7 +210,7 @@ const UICard = () => {
               value={updateNotificationInterval}
               margin="dense"
               onChange={(e) => {
-                setUpdateNotificationInterval(parseInt(e.target.value, 10));
+                setUpdateNotificationInterval(parseInt(e.target.value, 10))
               }}
               inputProps={{
                 min: 1,
@@ -211,6 +225,7 @@ const UICard = () => {
       )}
       <SettingsRow
         title="Expert Mode"
+        direct
         checked={viewMode !== 'user'}
         onChange={() =>
           viewMode === 'user' ? setViewMode('expert') : setViewMode('user')
@@ -231,7 +246,7 @@ const UICard = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default UICard;
+export default UICard

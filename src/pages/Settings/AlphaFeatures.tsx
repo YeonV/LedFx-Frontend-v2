@@ -1,10 +1,10 @@
-import useStore from '../../store/useStore';
-import { SettingsRow } from './SettingsComponents';
+import useStore from '../../store/useStore'
+import { SettingsRow } from './SettingsComponents'
 
 const AlphaFeatures = () => {
-  const setFeatures = useStore((state) => state.setFeatures);
-  const showFeatures = useStore((state) => state.showFeatures);
-  const features = useStore((state) => state.features);
+  const setFeatures = useStore((state) => state.setFeatures)
+  const showFeatures = useStore((state) => state.showFeatures)
+  const features = useStore((state) => state.features)
 
   return (
     <>
@@ -34,7 +34,7 @@ const AlphaFeatures = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default AlphaFeatures;
+export default AlphaFeatures

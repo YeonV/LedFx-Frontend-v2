@@ -1,84 +1,90 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   BottomNavigation,
   BottomNavigationAction,
   Backdrop,
   useTheme,
-} from '@mui/material';
+} from '@mui/material'
 import {
   Settings,
   Home,
-  Wallpaper,
-  SettingsInputSvideo,
-  SettingsInputComponent,
+  // Wallpaper,
+  // SettingsInputSvideo,
+  // SettingsInputComponent,
   Dashboard,
-} from '@mui/icons-material';
-import { useLocation, Link } from 'react-router-dom';
-import useStore from '../../store/useStore';
-import AddSceneDialog from '../Dialogs/AddSceneDialog';
-import AddDeviceDialog from '../Dialogs/AddDeviceDialog';
-import AddVirtualDialog from '../Dialogs/AddVirtualDialog';
-import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog';
-import SpotifyFabFree from '../Integrations/Spotify/SpotifyFabFree';
-import AddButton from '../AddButton';
-import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget';
-import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro';
-import { drawerWidth } from '../../utils/helpers';
-import EditSceneDialog from '../Dialogs/EditSceneDialog';
+  ElectricalServices,
+} from '@mui/icons-material'
+import { useLocation, Link } from 'react-router-dom'
+import useStore from '../../store/useStore'
+import AddSceneDialog from '../Dialogs/AddSceneDialog'
+import AddDeviceDialog from '../Dialogs/AddDeviceDialog'
+import AddVirtualDialog from '../Dialogs/AddVirtualDialog'
+import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog'
+import SpotifyFabFree from '../Integrations/Spotify/SpotifyFabFree'
+import AddButton from '../AddButton'
+import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget'
+import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro'
+import { drawerWidth } from '../../utils/helpers'
+import EditSceneDialog from '../Dialogs/EditSceneDialog'
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 
 export default function BarBottom() {
-  const theme = useTheme();
-  const { pathname } = useLocation();
-  const [value, setValue] = useState(pathname);
-  const [backdrop, setBackdrop] = useState(false);
+  const theme = useTheme()
+  const { pathname } = useLocation()
+  const [value, setValue] = useState(pathname)
+  const [backdrop, setBackdrop] = useState(false)
   const leftOpen = useStore(
     (state) => state.ui.bars && state.ui.bars?.leftBar.open
-  );
+  )
   const bottomBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars?.bottomBar
-  );
+  )
 
   // const setBottomBarOpen = useStore((state) => state.ui.setBottomBarOpen);
-  const features = useStore((state) => state.features);
-  const integrations = useStore((state) => state.integrations);
+  const features = useStore((state) => state.features)
+  const integrations = useStore((state) => state.integrations)
 
-  const [spotifyEnabled, setSpotifyEnabled] = useState(false);
-  const [spotifyExpanded, setSpotifyExpanded] = useState(false);
-  const spotifyURL = useStore((state) => state.spotify.spotifyEmbedUrl);
-  const setSpotifyURL = useStore((state) => state.setSpEmbedUrl);
+  const [spotifyEnabled, setSpotifyEnabled] = useState(false)
+  const [spotifyExpanded, setSpotifyExpanded] = useState(false)
+  const spotifyURL = useStore((state) => state.spotify.spotifyEmbedUrl)
+  const setSpotifyURL = useStore((state) => state.setSpEmbedUrl)
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+
   // const setSpotifyAuthURL = useStore(
   //   (state) => state.setSpotifyAuthUrl
   // );
 
-  const [youtubeEnabled, setYoutubeEnabled] = useState(false);
-  const [youtubeExpanded, setYoutubeExpanded] = useState(false);
-  const youtubeURL = useStore((state) => state.youtubeURL);
-  const setYoutubeURL = useStore((state) => state.setYoutubeURL);
+  const [youtubeEnabled, setYoutubeEnabled] = useState(false)
+  const [youtubeExpanded, setYoutubeExpanded] = useState(false)
+  const youtubeURL = useStore((state) => state.youtubeURL)
+  const setYoutubeURL = useStore((state) => state.setYoutubeURL)
 
-  const [botHeight, setBotHeight] = useState(0);
-  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated);
+  const [botHeight, setBotHeight] = useState(0)
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
 
   useEffect(() => {
-    let height = 0;
+    let height = 0
     if (spotifyEnabled) {
-      height += 80;
+      height += 80
     }
     if (spotifyExpanded) {
-      height += 220;
+      height += 220
     }
     if (youtubeEnabled) {
-      height += 80;
+      height += 80
     }
     if (youtubeExpanded) {
-      height += 220;
+      height += 220
     }
-    setBotHeight(height);
-  }, [spotifyEnabled, spotifyExpanded, youtubeEnabled, youtubeExpanded]);
+    setBotHeight(height)
+  }, [spotifyEnabled, spotifyExpanded, youtubeEnabled, youtubeExpanded])
 
   useEffect(() => {
-    setValue(pathname);
-  }, [pathname]);
+    setValue(pathname)
+  }, [pathname])
 
   return (
     <>
@@ -87,11 +93,19 @@ export default function BarBottom() {
         sx={{
           width: leftOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
           marginLeft: leftOpen ? `${drawerWidth}px` : 0,
+          height: ios ? 80 : 56,
+          paddingBottom: ios ? '16px' : 0,
+          paddingTop: ios ? '8px' : 0,
           position: 'fixed',
           bottom: 0,
           zIndex: 4,
-          boxShadow: `0px -1px 6px 5px ${theme.palette.background.default}`,
-          background: theme.palette.background.paper,
+          boxShadow: ios
+            ? ''
+            : `0px -1px 6px 5px ${theme.palette.background.default}`,
+          background: ios
+            ? 'rgba(54,54,54,0.8)'
+            : theme.palette.background.paper,
+          backdropFilter: 'blur(20px)',
           transition: leftOpen
             ? theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.easeOut,
@@ -103,9 +117,10 @@ export default function BarBottom() {
               }),
         }}
         showLabels
-        style={{ bottom: botHeight }}
+        style={{ bottom: botHeight, color: '#a1998e' }}
       >
         <BottomNavigationAction
+          sx={{ minWidth: 50 }}
           component={Link}
           className="step-one"
           label={features.dashboard ? 'Dashboard' : 'Home'}
@@ -118,7 +133,7 @@ export default function BarBottom() {
           value="/Devices"
           component={Link}
           to="/Devices"
-          icon={<SettingsInputComponent />}
+          icon={<BladeIcon name="mdi:led-strip-variant" />}
           style={
             bottomBarOpen.indexOf('Devices') > -1
               ? { color: theme.palette.primary.main }
@@ -134,7 +149,7 @@ export default function BarBottom() {
           to="/Scenes"
           label="Scenes"
           value="/Scenes"
-          icon={<Wallpaper />}
+          icon={<BladeIcon name="mdi:image" />}
           style={
             bottomBarOpen.indexOf('Scenes') > -1
               ? { color: theme.palette.primary.main }
@@ -152,7 +167,7 @@ export default function BarBottom() {
             value="/Integrations"
             component={Link}
             to="/Integrations"
-            icon={<SettingsInputSvideo />}
+            icon={<ElectricalServices />}
             style={
               bottomBarOpen.indexOf('Integrations') > -1
                 ? { color: theme.palette.primary.main }
@@ -263,5 +278,5 @@ export default function BarBottom() {
         open={backdrop}
       />
     </>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement } from 'react'
 
 const RazerLogo = (): ReactElement<any, any> => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196.01 196.9">
@@ -33,6 +33,6 @@ const RazerLogo = (): ReactElement<any, any> => (
       transform="translate(-1.43 -1.87)"
     />
   </svg>
-);
+)
 
-export default RazerLogo;
+export default RazerLogo

@@ -5,7 +5,7 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-await-in-loop */
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Button,
   Box,
@@ -24,8 +24,8 @@ import {
   Icon,
   createSvgIcon,
   SvgIcon,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import {
   Chat,
   Check,
@@ -34,84 +34,85 @@ import {
   PauseOutlined,
   PlayArrow,
   Dvr,
-} from '@mui/icons-material';
-import green from '@mui/material/colors/green';
-import useStore from '../../store/useStore';
-import { deleteFrontendConfig, sleep } from '../../utils/helpers';
-import Gauge from './Gauge';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
-import Popover from '../../components/Popover/Popover';
-import TourHome from '../../components/Tours/TourHome';
-import SmartBar from '../../components/Dialogs/SmartBar';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import GlobalActionBar from '../../components/GlobalActionBar';
-import DbButton from './DbButton';
-import DbLinks from './DbLinks';
-import DbRow from './DbRow';
-import DbStats from './DbStats';
-import DbConfig from './DbConfig';
-import DbGlobalActions from './DbGlobalActions';
-import DbScenes from './DbScenes';
-import DbScenesPL from './DbScenesPL';
+} from '@mui/icons-material'
+import green from '@mui/material/colors/green'
+import useStore from '../../store/useStore'
+import { deleteFrontendConfig, sleep } from '../../utils/helpers'
+import Gauge from './Gauge'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import Popover from '../../components/Popover/Popover'
+import TourHome from '../../components/Tours/TourHome'
+import SmartBar from '../../components/Dialogs/SmartBar'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import GlobalActionBar from '../../components/GlobalActionBar'
+import DbButton from './DbButton'
+import DbLinks from './DbLinks'
+import DbRow from './DbRow'
+import DbStats from './DbStats'
+import DbConfig from './DbConfig'
+import DbGlobalActions from './DbGlobalActions'
+import DbScenes from './DbScenes'
+import DbScenesPL from './DbScenesPL'
+import MGraph from '../../components/MGraph'
 
 const Dashboard = () => {
-  const theme = useTheme();
-  const db = true;
-  const navigate = useNavigate();
-  const scanForDevices = useStore((state) => state.scanForDevices);
-  const devices = useStore((state) => state.devices);
-  const virtuals = useStore((state) => state.virtuals);
-  const scenes = useStore((state) => state.scenes);
-  const integrations = useStore((state) => state.integrations);
+  const theme = useTheme()
+  const db = true
+  const navigate = useNavigate()
+  const scanForDevices = useStore((state) => state.scanForDevices)
+  const devices = useStore((state) => state.devices)
+  const virtuals = useStore((state) => state.virtuals)
+  const scenes = useStore((state) => state.scenes)
+  const integrations = useStore((state) => state.integrations)
 
-  const config = useStore((state) => state.config);
-  const getDevices = useStore((state) => state.getDevices);
-  const getVirtuals = useStore((state) => state.getVirtuals);
+  const config = useStore((state) => state.config)
+  const getDevices = useStore((state) => state.getDevices)
+  const getVirtuals = useStore((state) => state.getVirtuals)
 
-  const getScenes = useStore((state) => state.getScenes);
-  const [scanning, setScanning] = useState(-1);
+  const getScenes = useStore((state) => state.getScenes)
+  const [scanning, setScanning] = useState(-1)
   const setSmartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.setSmartBarOpen
-  );
+  )
   const pixelTotal = Object.keys(devices)
     .map((d) => devices[d].config.pixel_count)
-    .reduce((a, b) => a + b, 0);
+    .reduce((a, b) => a + b, 0)
 
-  const devicesOnline = Object.keys(devices).filter((d) => devices[d].online);
+  const devicesOnline = Object.keys(devices).filter((d) => devices[d].online)
   const virtualsReal = Object.keys(virtuals).filter(
     (d) => !virtuals[d].is_device
-  );
+  )
 
   const pixelTotalOnline = Object.keys(devices)
     .map((d) => devices[d].online && devices[d].config.pixel_count)
-    .reduce((a, b) => a + b, 0);
+    .reduce((a, b) => a + b, 0)
 
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
 
   const onSystemSettingsChange = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
   const handleScan = () => {
-    setScanning(0);
+    setScanning(0)
     scanForDevices()
       .then(async () => {
         for (let sec = 1; sec <= 30; sec++) {
           await sleep(1000).then(() => {
-            getDevices();
-            getVirtuals();
-            setScanning(sec);
-          });
+            getDevices()
+            getVirtuals()
+            setScanning(sec)
+          })
         }
       })
       .then(() => {
-        setScanning(-1);
-      });
-  };
+        setScanning(-1)
+      })
+  }
 
   useEffect(() => {
-    getScenes();
-  }, []);
+    getScenes()
+  }, [])
 
   return (
     <div className="Content">
@@ -202,12 +203,12 @@ const Dashboard = () => {
                 type="fab"
                 noIcon
                 onConfirm={() => {
-                  onSystemSettingsChange('create_segments', true);
-                  handleScan();
+                  onSystemSettingsChange('create_segments', true)
+                  handleScan()
                 }}
                 onCancel={() => {
-                  onSystemSettingsChange('create_segments', false);
-                  handleScan();
+                  onSystemSettingsChange('create_segments', false)
+                  handleScan()
                 }}
               >
                 {scanning > -1 ? (
@@ -265,7 +266,7 @@ const Dashboard = () => {
                 icon={<DeleteForever />}
                 text="Delete frontend data?"
                 onConfirm={() => {
-                  deleteFrontendConfig();
+                  deleteFrontendConfig()
                 }}
               />
             </span>
@@ -371,8 +372,9 @@ const Dashboard = () => {
           </Tooltip>
         </Stack>
       </Stack>
+      <MGraph />
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

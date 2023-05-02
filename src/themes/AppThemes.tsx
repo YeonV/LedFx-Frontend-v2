@@ -1,16 +1,16 @@
-import { PaletteMode } from '@mui/material';
-import { createTheme, Theme } from '@mui/material/styles';
-import isElectron from 'is-electron';
+import { PaletteMode } from '@mui/material'
+import { createTheme, Theme } from '@mui/material/styles'
+import isElectron from 'is-electron'
 
 declare module '@mui/styles' {
-  type DefaultTheme = Theme;
+  type DefaultTheme = Theme
 }
 declare module '@mui/material/styles' {
   interface Palette {
-    accent: Palette['primary'];
+    accent: Palette['primary']
   }
   interface PaletteOptions {
-    accent: PaletteOptions['primary'];
+    accent: PaletteOptions['primary']
   }
 }
 
@@ -69,8 +69,13 @@ export const common = {
         },
       },
     },
+    MuiBottomNavigationAction: {
+      defaultProps: {
+        sx: { minWidth: 50, color: '#a1998e' },
+      },
+    },
   },
-};
+}
 
 export const BladeDarkGreenTheme = {
   palette: {
@@ -85,11 +90,14 @@ export const BladeDarkGreenTheme = {
       main: '#20173c',
     },
   },
-};
+}
 
 export const BladeDarkBlueTheme = createTheme({
   palette: {
     mode: 'dark',
+    text: {
+      primary: '#f9f9fb',
+    },
     primary: {
       main: '#0dbedc',
     },
@@ -103,11 +111,11 @@ export const BladeDarkBlueTheme = createTheme({
       main: '#a00000',
     },
     background: {
-      default: '#030303',
-      paper: '#111',
+      default: '#000',
+      paper: '#1c1c1e',
     },
   },
-});
+})
 
 export const BladeDarkTheme = createTheme({
   palette: {
@@ -126,7 +134,7 @@ export const BladeDarkTheme = createTheme({
       paper: '#111',
     },
   },
-});
+})
 
 export const BladeDarkGreyTheme: Theme = createTheme({
   palette: {
@@ -145,7 +153,7 @@ export const BladeDarkGreyTheme: Theme = createTheme({
       paper: '#111',
     },
   },
-});
+})
 
 export const BladeDarkOrangeTheme = createTheme({
   palette: {
@@ -164,7 +172,7 @@ export const BladeDarkOrangeTheme = createTheme({
       paper: '#111',
     },
   },
-});
+})
 
 export const BladeDarkPinkTheme = createTheme({
   palette: {
@@ -183,7 +191,7 @@ export const BladeDarkPinkTheme = createTheme({
       paper: '#111',
     },
   },
-});
+})
 
 export const BladeLightRedTheme = createTheme({
   palette: {
@@ -202,7 +210,7 @@ export const BladeLightRedTheme = createTheme({
       paper: '#eee',
     },
   },
-});
+})
 export const BladeLightBlueTheme = createTheme({
   palette: {
     mode: 'light',
@@ -220,7 +228,7 @@ export const BladeLightBlueTheme = createTheme({
       paper: '#eee',
     },
   },
-});
+})
 
 export const ledfxThemes = {
   Dark: BladeDarkTheme,
@@ -232,7 +240,7 @@ export const ledfxThemes = {
   DarkBlue: BladeDarkBlueTheme,
   DarkGrey: BladeDarkGreyTheme,
   DarkPink: BladeDarkPinkTheme,
-} as any;
+} as any
 
 /* eslint-disable @typescript-eslint/indent */
 export const ledfxTheme =
@@ -244,5 +252,5 @@ export const ledfxTheme =
     ? 'DarkGreen'
     : isElectron()
     ? 'DarkOrange'
-    : 'DarkBlue') || 'DarkBlue';
+    : 'DarkBlue') || 'DarkBlue'
 /* eslint-enable @typescript-eslint/indent */

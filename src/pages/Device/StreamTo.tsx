@@ -1,17 +1,17 @@
 /* eslint-disable react/require-default-props */
-import * as React from 'react';
+import * as React from 'react'
 
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import { Button, Chip, OutlinedInput, Select, Box } from '@mui/material';
-import useStore from '../../store/useStore';
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import FormControl from '@mui/material/FormControl'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
+import { Button, Chip, OutlinedInput, Select, Box } from '@mui/material'
+import useStore from '../../store/useStore'
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
 const MenuProps = {
   PaperProps: {
     style: {
@@ -19,7 +19,7 @@ const MenuProps = {
       width: 250,
     },
   },
-};
+}
 
 const StreamToCard = ({
   virtual,
@@ -27,23 +27,21 @@ const StreamToCard = ({
   style,
 }: {
   virtual: {
-    id: string;
-  };
-  virtuals: any;
-  style?: any;
+    id: string
+  }
+  virtuals: any
+  style?: any
 }) => {
-  const streamingToDevices = useStore((state) => state.streamingToDevices);
-  const setStreamingToDevices = useStore(
-    (state) => state.setStreamingToDevices
-  );
+  const streamingToDevices = useStore((state) => state.streamingToDevices)
+  const setStreamingToDevices = useStore((state) => state.setStreamingToDevices)
 
   const [streamingTo, setStreamingTo] = React.useState(
     streamingToDevices.indexOf(virtual.id) === -1
       ? [virtual.id]
       : streamingToDevices
-  );
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
-  const getVirtuals = useStore((state) => state.getVirtuals);
+  )
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const getVirtuals = useStore((state) => state.getVirtuals)
 
   const handleEffectConfig = (
     virtual_id: string,
@@ -52,21 +50,21 @@ const StreamToCard = ({
   ) =>
     setVirtualEffect(virtual_id, selectedType, config, true).then(() =>
       getVirtuals()
-    );
+    )
 
   const handleToggle = (value: string) => {
-    const currentIndex = streamingTo.indexOf(value);
-    const newStreamingDevices = [...streamingTo];
+    const currentIndex = streamingTo.indexOf(value)
+    const newStreamingDevices = [...streamingTo]
 
     if (currentIndex === -1) {
-      newStreamingDevices.push(value);
+      newStreamingDevices.push(value)
     } else {
-      newStreamingDevices.splice(currentIndex, 1);
+      newStreamingDevices.splice(currentIndex, 1)
     }
 
-    setStreamingTo(newStreamingDevices);
-    setStreamingToDevices(newStreamingDevices);
-  };
+    setStreamingTo(newStreamingDevices)
+    setStreamingToDevices(newStreamingDevices)
+  }
 
   const handleCopy = () => {
     streamingTo.map((e: string) =>
@@ -75,8 +73,8 @@ const StreamToCard = ({
         virtuals[virtual.id]?.effect.config,
         virtuals[virtual.id]?.effect.type
       )
-    );
-  };
+    )
+  }
 
   return (
     <Card variant="outlined" className="step-device-twob" style={style}>
@@ -135,7 +133,7 @@ const StreamToCard = ({
         </Button>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default StreamToCard;
+export default StreamToCard

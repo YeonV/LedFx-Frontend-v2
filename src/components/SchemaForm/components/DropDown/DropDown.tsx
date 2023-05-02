@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import ListSubheader from '@mui/material/ListSubheader';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { useTheme } from '@mui/material';
-import useStyles from './DropDown.styles';
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import ListSubheader from '@mui/material/ListSubheader'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import { useTheme } from '@mui/material'
+import useStyles from './DropDown.styles'
 import {
   EffectDropDownDefaultProps,
   EffectDropDownProps,
-} from './DropDown.props';
+} from './DropDown.props'
 
 const EffectDropDown = ({
   value,
@@ -21,15 +21,15 @@ const EffectDropDown = ({
   showFilter,
   title,
 }: EffectDropDownProps) => {
-  const classes = useStyles();
-  const theme = useTheme();
+  const classes = useStyles()
+  const theme = useTheme()
   const [formats, setFormats] = useState(
     () => groups && Object.keys(groups).map((c) => c || [])
-  );
+  )
 
   const handleFormat = (_: any, newFormats: any) => {
-    setFormats(newFormats);
-  };
+    setFormats(newFormats)
+  }
 
   return (
     <FormControl
@@ -96,8 +96,8 @@ const EffectDropDown = ({
         </ToggleButtonGroup>
       )}
     </FormControl>
-  );
-};
-EffectDropDown.defaultProps = EffectDropDownDefaultProps;
+  )
+}
+EffectDropDown.defaultProps = EffectDropDownDefaultProps
 
-export default EffectDropDown;
+export default EffectDropDown

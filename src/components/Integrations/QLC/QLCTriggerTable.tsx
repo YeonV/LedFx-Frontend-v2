@@ -1,16 +1,16 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { styled } from '@mui/material/styles';
-import { DeleteForever, Edit } from '@mui/icons-material';
-import { useEffect } from 'react';
-import { IconButton, Stack, Switch } from '@mui/material';
-import useStore from '../../../store/useStore';
-import Popover from '../../Popover/Popover';
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { styled } from '@mui/material/styles'
+import { DeleteForever, Edit } from '@mui/icons-material'
+import { useEffect } from 'react'
+import { IconButton, Stack, Switch } from '@mui/material'
+import useStore from '../../../store/useStore'
+import Popover from '../../Popover/Popover'
 
-const PREFIX = 'QLCTriggerTable';
+const PREFIX = 'QLCTriggerTable'
 
 const classes = {
   root: `${PREFIX}-root`,
-};
+}
 
 const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.root}`]: {
@@ -48,55 +48,55 @@ const Root = styled('div')(({ theme }: any) => ({
       color: '#666',
     },
   },
-}));
+}))
 
 export default function QLCTriggerTable() {
-  const integrations = useStore((state) => state.integrations);
-  const getIntegrations = useStore((state) => state.getIntegrations);
-  const getQLCWidgets = useStore((state) => state.getQLCWidgets);
-  const qlcInfo = useStore((state) => state.qlc.qlcWidgets);
-  const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList);
-  const deleteQLCTrigger = useStore((state) => state.deleteQLCTrigger);
-  const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList);
-  const toggleQLCTrigger = useStore((state) => state.toggleQLCTrigger);
+  const integrations = useStore((state) => state.integrations)
+  const getIntegrations = useStore((state) => state.getIntegrations)
+  const getQLCWidgets = useStore((state) => state.getQLCWidgets)
+  const qlcInfo = useStore((state) => state.qlc.qlcWidgets)
+  const QLCTriggersList = useStore((state) => state.qlc.qlcTriggersList)
+  const deleteQLCTrigger = useStore((state) => state.deleteQLCTrigger)
+  const addToQLCTriggerList = useStore((state) => state.addToQLCTriggerList)
+  const toggleQLCTrigger = useStore((state) => state.toggleQLCTrigger)
 
   useEffect(() => {
-    getQLCWidgets();
-  }, []);
+    getQLCWidgets()
+  }, [])
 
   // Here we get the current triggers from list and set to global state
   useEffect(() => {
-    const triggersNew: any = [];
-    let id = 1;
+    const triggersNew: any = []
+    let id = 1
     if (integrations?.qlc?.data) {
-      const temp = integrations?.qlc?.data;
+      const temp = integrations?.qlc?.data
       Object.keys(temp).map((key) => {
-        const temp1 = temp[key];
-        const sceneName = temp1[1].scene_name;
-        const sceneId = temp1[1].scene_name;
-        const triggerType = 'scene_activated';
-        const enabled = true;
-        const qlc_id = temp1[3];
-        const triggerName = temp1[1].scene_name;
-        const qlc_widgetType = temp1[3];
-        const qlc_name = temp1[3];
-        const qlc_value = temp1[3];
+        const temp1 = temp[key]
+        const sceneName = temp1[1].scene_name
+        const sceneId = temp1[1].scene_name
+        const triggerType = 'scene_activated'
+        const enabled = true
+        const qlc_id = temp1[3]
+        const triggerName = temp1[1].scene_name
+        const qlc_widgetType = temp1[3]
+        const qlc_name = temp1[3]
+        const qlc_value = temp1[3]
 
-        const current_data = temp1[3];
-        const arr_widgets: any = [];
-        const arr_values: any = [];
+        const current_data = temp1[3]
+        const arr_widgets: any = []
+        const arr_values: any = []
         Object.entries(current_data)?.forEach(([k, v]) => {
           const other_data =
-            qlcInfo && qlcInfo?.qlc_widgets?.find((widg: any) => widg[0] === k);
-          const obj = { ID: '', Type: '', Name: '' };
-          obj.ID = k;
-          obj.Type = other_data && other_data[1];
-          obj.Name = other_data && other_data[2];
-          arr_widgets.push(obj);
-          arr_values.push(v);
-        });
-        const csv_widgets = JSON.stringify(arr_widgets);
-        const csv_values = JSON.stringify(arr_values);
+            qlcInfo && qlcInfo?.qlc_widgets?.find((widg: any) => widg[0] === k)
+          const obj = { ID: '', Type: '', Name: '' }
+          obj.ID = k
+          obj.Type = other_data && other_data[1]
+          obj.Name = other_data && other_data[2]
+          arr_widgets.push(obj)
+          arr_values.push(v)
+        })
+        const csv_widgets = JSON.stringify(arr_widgets)
+        const csv_values = JSON.stringify(arr_values)
 
         if (temp1.constructor === Array) {
           triggersNew.push({
@@ -126,15 +126,15 @@ export default function QLCTriggerTable() {
                 qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
               },
             ],
-          });
-          id += 1;
+          })
+          id += 1
         }
-        return triggersNew;
-      });
-      addToQLCTriggerList(triggersNew, 'create');
+        return triggersNew
+      })
+      addToQLCTriggerList(triggersNew, 'create')
       // console.log('QLC triggersNew', triggersNew);
     }
-  }, [integrations]);
+  }, [integrations])
 
   // const SceneSet =
   //   qlcInfo &&
@@ -168,8 +168,8 @@ export default function QLCTriggerTable() {
       data: {
         trigger_id: paramsTemp?.row?.trigger_id,
       },
-    }).then(() => getIntegrations());
-  };
+    }).then(() => getIntegrations())
+  }
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -216,7 +216,7 @@ export default function QLCTriggerTable() {
               // console.log('params.row.enabled', params);
               toggleQLCTrigger('qlc', {
                 enabled: !params.row.enabled,
-              });
+              })
             }}
           />
           <IconButton
@@ -233,15 +233,15 @@ export default function QLCTriggerTable() {
             icon={<DeleteForever />}
             style={{ minWidth: 40 }}
             onConfirm={() => {
-              deleteTriggerHandler(params);
+              deleteTriggerHandler(params)
             }}
           />
         </Stack>
       ),
     },
-  ];
+  ]
 
-  const rows = QLCTriggersList || [{ id: 1 }];
+  const rows = QLCTriggersList || [{ id: 1 }]
 
   return (
     <Root
@@ -265,5 +265,5 @@ export default function QLCTriggerTable() {
         rows={rows}
       />
     </Root>
-  );
+  )
 }

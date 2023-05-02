@@ -1,22 +1,22 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-import produce from 'immer';
-import { Ledfx } from '../../api/ledfx';
+import produce from 'immer'
+import { Ledfx } from '../../api/ledfx'
 
 const storeIntegrations = (set: any) => ({
   integrations: {} as any,
   getIntegrations: async () => {
-    const resp = await Ledfx('/api/integrations');
+    const resp = await Ledfx('/api/integrations')
     if (resp && resp.integrations) {
       // console.log(resp.integrations);
       set(
         produce((s: any) => {
-          s.integrations = resp.integrations;
+          s.integrations = resp.integrations
         }),
         false,
         'gotIntegrations'
-      );
+      )
     }
   },
   addIntegration: async (config: any) =>
@@ -27,6 +27,6 @@ const storeIntegrations = (set: any) => ({
     await Ledfx('/api/integrations', 'PUT', config),
   deleteIntegration: async (config: any) =>
     await Ledfx('/api/integrations', 'DELETE', { data: { id: config } }),
-});
+})
 
-export default storeIntegrations;
+export default storeIntegrations

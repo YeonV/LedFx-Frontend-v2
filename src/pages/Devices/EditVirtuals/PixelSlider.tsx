@@ -1,32 +1,32 @@
-import { useEffect, useState } from 'react';
-import Slider from '@mui/material/Slider';
-import useStore from '../../../store/useStore';
+import { useEffect, useState } from 'react'
+import Slider from '@mui/material/Slider'
+import useStore from '../../../store/useStore'
 
 const PixelSlider = ({ s, handleRangeSegment }: any) => {
-  const getDevices = useStore((state) => state.getDevices);
-  const devices = useStore((state) => state.devices);
+  const getDevices = useStore((state) => state.getDevices)
+  const devices = useStore((state) => state.devices)
 
-  const [range, setRange] = useState([s[1], s[2]]);
-
-  useEffect(() => {
-    getDevices();
-  }, [getDevices]);
+  const [range, setRange] = useState([s[1], s[2]])
 
   useEffect(() => {
-    setRange([s[1], s[2]]);
-  }, [s]);
+    getDevices()
+  }, [getDevices])
+
+  useEffect(() => {
+    setRange([s[1], s[2]])
+  }, [s])
 
   if (!devices[s[0]]) {
-    return null;
+    return null
   }
 
-  const pixelRange = [s[1], s[2]];
+  const pixelRange = [s[1], s[2]]
 
   const handleChange = (_event: any, newValue: any) => {
     if (newValue !== pixelRange) {
-      handleRangeSegment(newValue[0], newValue[1]);
+      handleRangeSegment(newValue[0], newValue[1])
     }
-  };
+  }
 
   const marks = [
     { value: 0, label: 1 },
@@ -34,7 +34,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
       value: devices[s[0]].config.pixel_count - 1,
       label: devices[s[0]].config.pixel_count,
     },
-  ];
+  ]
 
   return (
     <Slider
@@ -48,7 +48,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
       aria-labelledby="range-slider"
       valueLabelDisplay="auto"
     />
-  );
-};
+  )
+}
 
-export default PixelSlider;
+export default PixelSlider

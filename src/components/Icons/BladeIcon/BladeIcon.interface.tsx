@@ -2,27 +2,27 @@ export interface BladeIconProps {
   /**
    * flag indicator
    */
-  colorIndicator?: boolean;
+  colorIndicator?: boolean
   /**
    * Icon is rendered in SceneList
    */
-  scene?: boolean;
+  scene?: boolean
   /**
    * Icon is rendered in SceneList
    */
-  card?: boolean;
+  card?: boolean
   /**
    * examples: `wled`, `Light`, `mdi:led-strip`
    */
-  name?: string;
+  name?: string
   /**
    * JSX className
    */
-  className?: string;
+  className?: string
   /**
    * JSX style
    */
-  style?: Record<string, unknown>;
+  style?: Record<string, unknown>
 }
 
 export const BladeIconDefaultProps = {
@@ -32,4 +32,4 @@ export const BladeIconDefaultProps = {
   style: {},
   scene: false,
   card: false,
-};
+}

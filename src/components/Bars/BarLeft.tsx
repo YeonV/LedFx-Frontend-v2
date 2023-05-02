@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import {
   ListItem,
   ListItemIcon,
@@ -13,27 +13,32 @@ import {
   Divider,
   IconButton,
   Box,
-} from '@mui/material';
-import { useLocation, Link } from 'react-router-dom';
-import isElectron from 'is-electron';
-import useStore from '../../store/useStore';
-import useStyles from './BarLeft.styles';
-import logoAsset from '../../assets/logo.png';
+} from '@mui/material'
+import { useLocation, Link } from 'react-router-dom'
+import isElectron from 'is-electron'
+import { useRef } from 'react'
+import useStore from '../../store/useStore'
+import useStyles from './BarLeft.styles'
+import logoAsset from '../../assets/logo.png'
 // import bannerAsset from '../../assets/banner.png';
-import BladeIcon from '../Icons/BladeIcon/BladeIcon';
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import useClickOutside from '../../utils/useClickOutside'
 
 const LeftBar = () => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const { pathname } = useLocation();
-  const virtuals = useStore((state) => state.virtuals);
-  const open = useStore((state) => state.ui.bars?.leftBar.open);
-  const setOpen = useStore((state) => state.ui.setLeftBarOpen);
-  const smallScreen = useMediaQuery('(max-width:768px)');
-
+  const classes = useStyles()
+  const theme = useTheme()
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+  const { pathname } = useLocation()
+  const virtuals = useStore((state) => state.virtuals)
+  const open = useStore((state) => state.ui.bars?.leftBar.open)
+  const setOpen = useStore((state) => state.ui.setLeftBarOpen)
+  const smallScreen = useMediaQuery('(max-width:768px)')
+  const leftDrawer = useRef(null)
   const handleDrawerClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const logo = (
     <div className={classes.logo}>
@@ -60,10 +65,12 @@ const LeftBar = () => {
         </>
       )}
     </div>
-  );
+  )
+  useClickOutside(leftDrawer, handleDrawerClose)
 
   return (
     <Drawer
+      ref={ios ? leftDrawer : null}
       className={classes.drawer}
       variant="persistent"
       anchor="left"
@@ -79,9 +86,10 @@ const LeftBar = () => {
           background: theme.palette.primary.main,
           ...theme.mixins.toolbar,
         }}
+        onClick={handleDrawerClose}
       >
         {logo}
-        <IconButton onClick={handleDrawerClose}>
+        <IconButton>
           {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
         </IconButton>
       </Box>
@@ -93,7 +101,7 @@ const LeftBar = () => {
             key={i}
             to={`/device/${virtuals[d].id}`}
             onClick={() => {
-              if (smallScreen) handleDrawerClose();
+              if (smallScreen) handleDrawerClose()
             }}
           >
             <ListItem
@@ -153,7 +161,7 @@ const LeftBar = () => {
       </List>
       <Divider />
     </Drawer>
-  );
-};
+  )
+}
 
-export default LeftBar;
+export default LeftBar

@@ -1,10 +1,10 @@
-import { Button, useTheme, Stack, SvgIcon } from '@mui/material';
-import { GitHub } from '@mui/icons-material';
+import { Button, useTheme, Stack, SvgIcon } from '@mui/material'
+import { GitHub } from '@mui/icons-material'
 
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 
 const DbLinks = () => {
-  const theme = useTheme();
+  const theme = useTheme()
 
   return (
     <BladeFrame
@@ -90,7 +90,7 @@ const DbLinks = () => {
         </Button>
       </Stack>
     </BladeFrame>
-  );
-};
+  )
+}
 
-export default DbLinks;
+export default DbLinks

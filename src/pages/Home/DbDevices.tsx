@@ -1,24 +1,24 @@
-import { useTheme, Stack, Chip } from '@mui/material';
+import { useTheme, Stack, Chip } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
   GridRenderCellParams,
   // GridRenderCellParams,
-} from '@mui/x-data-grid';
-import { useNavigate } from 'react-router-dom';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import useStore from '../../store/useStore';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+} from '@mui/x-data-grid'
+import { useNavigate } from 'react-router-dom'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import useStore from '../../store/useStore'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 // import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
 
 const DbDevices = () => {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const virtuals = useStore((state) => state.virtuals);
+  const theme = useTheme()
+  const navigate = useNavigate()
+  const virtuals = useStore((state) => state.virtuals)
 
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
-    navigate(`/device/${params.row.id}`);
+    navigate(`/device/${params.row.id}`)
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -54,12 +54,12 @@ const DbDevices = () => {
         <Chip label={params.row.is_device ? 'Device' : 'Virtual'} />
       ),
     },
-  ];
+  ]
 
   const rows: any = Object.values(virtuals).map((v: any) => ({
     ...v,
     ...v.config,
-  }));
+  }))
 
   return (
     <BladeFrame
@@ -106,7 +106,7 @@ const DbDevices = () => {
         />
       </Stack>
     </BladeFrame>
-  );
-};
+  )
+}
 
-export default DbDevices;
+export default DbDevices

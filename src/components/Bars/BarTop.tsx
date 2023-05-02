@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, useEffect } from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import {
   Menu as MenuIcon,
   MoreVert,
@@ -13,8 +13,8 @@ import {
   ChevronLeft,
   Login,
   Logout,
-} from '@mui/icons-material';
-import isElectron from 'is-electron';
+} from '@mui/icons-material'
+import isElectron from 'is-electron'
 import {
   AppBar,
   Box,
@@ -27,20 +27,20 @@ import {
   MenuItem,
   ListItemIcon,
   Button,
-} from '@mui/material';
-import { styled } from '@mui/styles';
-import { useTheme } from '@mui/material/styles';
-import useStore from '../../store/useStore';
-import { drawerWidth } from '../../utils/helpers';
-import TourDevice from '../Tours/TourDevice';
-import TourScenes from '../Tours/TourScenes';
-import TourSettings from '../Tours/TourSettings';
-import TourDevices from '../Tours/TourDevices';
-import TourIntegrations from '../Tours/TourIntegrations';
-import BladeIcon from '../Icons/BladeIcon/BladeIcon';
-import GlobalActionBar from '../GlobalActionBar';
-import pkg from '../../../package.json';
-import { Ledfx } from '../../api/ledfx';
+} from '@mui/material'
+import { styled } from '@mui/styles'
+import { useTheme } from '@mui/material/styles'
+import useStore from '../../store/useStore'
+import { drawerWidth } from '../../utils/helpers'
+import TourDevice from '../Tours/TourDevice'
+import TourScenes from '../Tours/TourScenes'
+import TourSettings from '../Tours/TourSettings'
+import TourDevices from '../Tours/TourDevices'
+import TourIntegrations from '../Tours/TourIntegrations'
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import GlobalActionBar from '../GlobalActionBar'
+import pkg from '../../../package.json'
+import { Ledfx } from '../../api/ledfx'
 
 const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -51,77 +51,79 @@ const StyledBadge = styled(Badge)(() => ({
     fontSize: 'x-small',
     height: '14px',
   },
-}));
+}))
 
 const TopBar = () => {
   // const classes = useStyles();
-  const theme = useTheme();
-  const open = useStore(
-    (state) => state.ui.bars && state.ui.bars?.leftBar.open
-  );
-  const latestTag = useStore((state) => state.ui.latestTag);
-  const setLatestTag = useStore((state) => state.ui.setLatestTag);
-  const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen);
+  const theme = useTheme()
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+  const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open)
+  const latestTag = useStore((state) => state.ui.latestTag)
+  const setLatestTag = useStore((state) => state.ui.setLatestTag)
+  const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen)
   // const darkMode = useStore((state) => state.ui.darkMode);
   // const setDarkMode = useStore((state) => state.ui.setDarkMode);
-  const virtuals = useStore((state) => state.virtuals);
-  const setDialogOpen = useStore((state) => state.setDialogOpen);
-  const togglePause = useStore((state) => state.togglePause);
-  const toggleGraphs = useStore((state) => state.toggleGraphs);
-  const paused = useStore((state) => state.paused);
-  const graphs = useStore((state) => state.graphs);
+  const virtuals = useStore((state) => state.virtuals)
+  const setDialogOpen = useStore((state) => state.setDialogOpen)
+  const togglePause = useStore((state) => state.togglePause)
+  const toggleGraphs = useStore((state) => state.toggleGraphs)
+  const paused = useStore((state) => state.paused)
+  const graphs = useStore((state) => state.graphs)
   // const config = useStore((state) => state.config);
-  const isLogged = useStore((state) => state.isLogged);
-  const setIsLogged = useStore((state) => state.setIsLogged);
-  const disconnected = useStore((state) => state.disconnected);
-  const setDisconnected = useStore((state) => state.setDisconnected);
-  const { pathname } = useLocation();
-  const history = useNavigate();
-  const clearSnackbar = useStore((state) => state.ui.clearSnackbar);
-  const features = useStore((state) => state.features);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const platform = useStore((state) => state.platform);
-  const invDevice = useStore((state) => state.tours.device);
-  const invSettings = useStore((state) => state.tours.settings);
-  const invIntegrations = useStore((state) => state.tours.integrations);
-  const invDevices = useStore((state) => state.tours.devices);
-  const invScenes = useStore((state) => state.tours.scenes);
+  const isLogged = useStore((state) => state.isLogged)
+  const setIsLogged = useStore((state) => state.setIsLogged)
+  const disconnected = useStore((state) => state.disconnected)
+  const setDisconnected = useStore((state) => state.setDisconnected)
+  const { pathname } = useLocation()
+  const history = useNavigate()
+  const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
+  const features = useStore((state) => state.features)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const platform = useStore((state) => state.platform)
+  const invDevice = useStore((state) => state.tours.device)
+  const invSettings = useStore((state) => state.tours.settings)
+  const invIntegrations = useStore((state) => state.tours.integrations)
+  const invDevices = useStore((state) => state.tours.devices)
+  const invScenes = useStore((state) => state.tours.scenes)
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
-  );
+  )
   const handleLeftBarOpen = () => {
-    setLeftBarOpen(true);
-  };
+    setLeftBarOpen(true)
+  }
   const changeHost = () => {
-    setDialogOpen(true, true);
-    setAnchorEl(null);
-  };
+    setDialogOpen(true, true)
+    setAnchorEl(null)
+  }
   // const toggleDarkMode = () => {
   //   setDarkMode(!darkMode);
   // };
   const changePause = () => {
-    togglePause();
-  };
+    togglePause()
+  }
   const changeGraphs = () => {
-    toggleGraphs();
-  };
+    toggleGraphs()
+  }
 
   const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const logout = (e: any) => {
-    e.preventDefault();
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('username');
-    localStorage.removeItem('ledfx-cloud-userid');
-    localStorage.removeItem('ledfx-cloud-role');
-    setIsLogged(false);
-  };
+    e.preventDefault()
+    localStorage.removeItem('jwt')
+    localStorage.removeItem('username')
+    localStorage.removeItem('ledfx-cloud-userid')
+    localStorage.removeItem('ledfx-cloud-role')
+    setIsLogged(false)
+  }
 
   useEffect(() => {
-    setIsLogged(!!localStorage.getItem('jwt'));
-  }, [pathname]);
+    setIsLogged(!!localStorage.getItem('jwt'))
+  }, [pathname])
 
   useEffect(() => {
     if (latestTag !== `v${pkg.version}`) {
@@ -136,45 +138,42 @@ const TopBar = () => {
         Ledfx('/api/notify', 'PUT', {
           title: 'Update available',
           text: 'A new version of LedFx has been released',
-        });
-        window.localStorage.setItem(
-          'last-update-notification',
-          `${Date.now()}`
-        );
+        })
+        window.localStorage.setItem('last-update-notification', `${Date.now()}`)
       }
     }
-  }, [updateNotificationInterval]);
+  }, [updateNotificationInterval])
 
   useEffect(() => {
     const latest = async () => {
       const res = await fetch(
         'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
-      );
-      const resp = await res.json();
-      return resp.tag_name;
-    };
-    latest().then((r: any) => r !== latestTag && setLatestTag(r));
-  }, []);
+      )
+      const resp = await res.json()
+      return resp.tag_name
+    }
+    latest().then((r: any) => r !== latestTag && setLatestTag(r))
+  }, [])
 
   useEffect(() => {
     const handleDisconnect = (e: any) => {
       if (e.detail) {
-        setDisconnected(e.detail.isDisconnected);
+        setDisconnected(e.detail.isDisconnected)
         if (e.detail.isDisconnected === false) {
-          window.localStorage.removeItem('undefined');
-          setDialogOpen(false, true);
-          clearSnackbar();
+          window.localStorage.removeItem('undefined')
+          setDialogOpen(false, true)
+          clearSnackbar()
           if (window.localStorage.getItem('core-init') !== 'initialized') {
-            window.localStorage.setItem('core-init', 'initialized');
+            window.localStorage.setItem('core-init', 'initialized')
           }
         }
       }
-    };
-    document.addEventListener('disconnected', handleDisconnect);
+    }
+    document.addEventListener('disconnected', handleDisconnect)
     return () => {
-      document.removeEventListener('disconnected', handleDisconnect);
-    };
-  }, []);
+      document.removeEventListener('disconnected', handleDisconnect)
+    }
+  }, [])
 
   return (
     <>
@@ -189,6 +188,9 @@ const TopBar = () => {
         color="secondary"
         position="fixed"
         sx={{
+          background: ios ? 'rgba(54,54,54,0.8)' : '',
+          backdropFilter: ios ? 'blur(20px)' : '',
+          color: ios ? '#fff' : '',
           paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
           zIndex: 10,
           transition: theme.transitions.create(['margin', 'width'], {
@@ -205,32 +207,59 @@ const TopBar = () => {
           }),
         }}
       >
-        <Toolbar style={{ justifyContent: 'space-between' }}>
-          <div style={{ position: 'absolute', top: 10, left: 16 }}>
-            {!open && (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleLeftBarOpen}
-                edge="start"
-                sx={{ marginRight: theme.spacing(2) }}
-                className="step-three"
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            {((pathname.split('/').length === 3 &&
+        <Toolbar
+          style={{
+            justifyContent: 'space-between',
+          }}
+        >
+          <div style={{ position: 'absolute', top: 0, left: 16 }}>
+            {(pathname.split('/').length === 3 &&
               pathname.split('/')[1] === 'device') ||
-              pathname === '/Settings') && (
-              <Button
-                size="large"
-                variant="text"
-                color="inherit"
-                startIcon={<ChevronLeft />}
-                onClick={() => history(-1)}
-              >
-                Back
-              </Button>
+            pathname === '/Settings' ? (
+              ios ? (
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={() => history(-1)}
+                >
+                  <ChevronLeft sx={{ fontSize: 32 }} />
+                </IconButton>
+              ) : (
+                <Button
+                  size="large"
+                  variant="text"
+                  color="inherit"
+                  startIcon={<ChevronLeft />}
+                  onClick={() => history(-1)}
+                >
+                  Back
+                </Button>
+              )
+            ) : (
+              !open &&
+              (ios ? (
+                <Box
+                  style={{
+                    backgroundImage: 'url(/icon.png)',
+                    marginTop: 10,
+                    width: 32,
+                    height: 32,
+                    backgroundSize: 'contain',
+                  }}
+                  onClick={handleLeftBarOpen}
+                />
+              ) : (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleLeftBarOpen}
+                  edge="start"
+                  sx={{ marginRight: theme.spacing(2) }}
+                  className="step-three"
+                >
+                  <MenuIcon />
+                </IconButton>
+              ))
             )}
           </div>
 
@@ -264,7 +293,7 @@ const TopBar = () => {
             style={{
               display: 'flex',
               position: 'absolute',
-              top: 10,
+              top: 4,
               right: 16,
             }}
           >
@@ -288,7 +317,7 @@ const TopBar = () => {
                     style={{
                       color: 'rgba(0,0,0,0.6)',
                       position: 'absolute',
-                      top: 3,
+                      top: 0,
                       left: 0,
                       zIndex: 1,
                     }}
@@ -322,7 +351,7 @@ const TopBar = () => {
                     : true
                 }
               >
-                <MoreVert />
+                <MoreVert sx={{ fontSize: 32 }} />
               </Badge>
             </IconButton>
           </div>
@@ -405,9 +434,9 @@ const TopBar = () => {
               <MenuItem
                 onClick={(e) => {
                   if (isLogged) {
-                    logout(e);
+                    logout(e)
                   } else {
-                    window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`;
+                    window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
                   }
                 }}
               >
@@ -419,7 +448,7 @@ const TopBar = () => {
         </Toolbar>
       </AppBar>
     </>
-  );
-};
+  )
+}
 
-export default TopBar;
+export default TopBar

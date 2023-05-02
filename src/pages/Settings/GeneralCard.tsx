@@ -7,58 +7,54 @@ import {
   Delete,
   Refresh,
   Info,
-} from '@mui/icons-material';
-import isElectron from 'is-electron';
-import { Divider } from '@mui/material';
-import useStore from '../../store/useStore';
-import { deleteFrontendConfig, download } from '../../utils/helpers';
-import PopoverSure from '../../components/Popover/Popover';
+} from '@mui/icons-material'
+import isElectron from 'is-electron'
+import { Divider } from '@mui/material'
+import useStore from '../../store/useStore'
+import { deleteFrontendConfig, download } from '../../utils/helpers'
+import PopoverSure from '../../components/Popover/Popover'
 
-import AboutDialog from '../../components/Dialogs/AboutDialog';
-import {
-  useStyles,
-  SettingsButton,
-  SettingsSwitch,
-} from './SettingsComponents';
+import AboutDialog from '../../components/Dialogs/AboutDialog'
+import { useStyles, SettingsButton, SettingsSwitch } from './SettingsComponents'
 
 const GeneralCard = () => {
-  const classes = useStyles();
-  const getFullConfig = useStore((state) => state.getFullConfig);
-  const deleteSystemConfig = useStore((state) => state.deleteSystemConfig);
-  const importSystemConfig = useStore((state) => state.importSystemConfig);
-  const shutdown = useStore((state) => state.shutdown);
-  const restart = useStore((state) => state.restart);
-  const disconnected = useStore((state) => state.disconnected);
-  const settings = useStore((state) => state.config);
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
+  const classes = useStyles()
+  const getFullConfig = useStore((state) => state.getFullConfig)
+  const deleteSystemConfig = useStore((state) => state.deleteSystemConfig)
+  const importSystemConfig = useStore((state) => state.importSystemConfig)
+  const shutdown = useStore((state) => state.shutdown)
+  const restart = useStore((state) => state.restart)
+  const disconnected = useStore((state) => state.disconnected)
+  const settings = useStore((state) => state.config)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
 
   const configDownload = async () => {
     getFullConfig().then((newConfig) =>
       download(newConfig, 'config.json', 'application/json')
-    );
-  };
+    )
+  }
 
   const configDelete = async () => {
-    deleteFrontendConfig();
+    deleteFrontendConfig()
     deleteSystemConfig().then(() => {
-      window.location.href = window.location.href;
-    });
-  };
+      window.location.href = window.location.href
+    })
+  }
 
   const fileChanged = async (e: any) => {
-    const fileReader = new FileReader();
-    fileReader.readAsText(e.target.files[0], 'UTF-8');
+    const fileReader = new FileReader()
+    fileReader.readAsText(e.target.files[0], 'UTF-8')
     fileReader.onload = (ev: any) => {
       importSystemConfig(ev.target.result).then(() => {
-        window.location.href = window.location.href;
-      });
-    };
-  };
+        window.location.href = window.location.href
+      })
+    }
+  }
 
   const onSystemSettingsChange = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
 
   return (
     <div>
@@ -143,7 +139,7 @@ const GeneralCard = () => {
               <SettingsButton
                 startIcon={<PowerSettingsNew />}
                 onClick={() => {
-                  (window as any).api.send('toMain', 'start-core');
+                  ;(window as any).api.send('toMain', 'start-core')
                 }}
               >
                 Start Core
@@ -192,7 +188,7 @@ const GeneralCard = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default GeneralCard;
+export default GeneralCard

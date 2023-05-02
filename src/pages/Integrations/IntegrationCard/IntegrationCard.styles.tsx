@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useIntegrationCardStyles = makeStyles(() => ({
   integrationCardPortrait: {
@@ -90,6 +90,6 @@ const useIntegrationCardStyles = makeStyles(() => ({
       width: '100%',
     },
   },
-}));
+}))
 
-export default useIntegrationCardStyles;
+export default useIntegrationCardStyles

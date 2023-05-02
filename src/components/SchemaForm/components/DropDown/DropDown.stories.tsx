@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@mui/material';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Card, CardContent } from '@mui/material'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 // eslint-disable-next-line
 import DropDown from "./DropDown";
 
@@ -28,13 +28,13 @@ export default {
       panelPosition: 'bottom',
     },
   },
-} as ComponentMeta<typeof DropDown>;
+} as ComponentMeta<typeof DropDown>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof DropDown> = (args) => <DropDown {...args} />;
 
-export const GroupedDropdown = Template.bind({});
-GroupedDropdown.storyName = 'Grouped Dropdown';
+export const GroupedDropdown = Template.bind({})
+GroupedDropdown.storyName = 'Grouped Dropdown'
 GroupedDropdown.args = {
   title: 'Grouped Dropdown',
   showFilter: false,
@@ -61,4 +61,4 @@ GroupedDropdown.args = {
   },
   value: 'item11',
   onChange: undefined,
-};
+}

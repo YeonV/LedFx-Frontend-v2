@@ -1,7 +1,7 @@
-import { makeStyles } from '@mui/styles';
-import isElectron from 'is-electron';
-import { drawerWidth } from '../../utils/helpers';
-import blademod from '../../assets/blademod.svg';
+import { makeStyles } from '@mui/styles'
+import isElectron from 'is-electron'
+import { drawerWidth } from '../../utils/helpers'
+import blademod from '../../assets/blademod.svg'
 
 const useStyles = makeStyles(() => ({
   '@global': {
@@ -83,5 +83,5 @@ const useStyles = makeStyles(() => ({
     marginRight: '-15px',
     transformOrigin: 'left center',
   },
-}));
-export default useStyles;
+}))
+export default useStyles

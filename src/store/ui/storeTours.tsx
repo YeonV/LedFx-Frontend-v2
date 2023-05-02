@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import type { IStore } from '../useStore'
 // eslint-disable-next-line prettier/prettier
 type ITours = 'home' | 'devices' | 'device' | 'effect' | 'integrations' | 'scenes' | 'settings';
 
@@ -17,11 +17,11 @@ const storeTours = (set: any) => ({
   setTour: (tour: ITours): void =>
     set(
       produce((state: IStore) => {
-        state.tours[tour] = true;
+        state.tours[tour] = true
       }),
       false,
       'ui/setTour'
     ),
-});
+})
 
-export default storeTours;
+export default storeTours

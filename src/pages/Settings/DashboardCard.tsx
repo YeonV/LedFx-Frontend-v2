@@ -1,10 +1,10 @@
-import useStore from '../../store/useStore';
-import { useStyles, SettingsSwitch } from './SettingsComponents';
+import useStore from '../../store/useStore'
+import { useStyles, SettingsSwitch } from './SettingsComponents'
 
 const DashboardCard = () => {
-  const classes = useStyles();
-  const features = useStore((state) => state.features);
-  const setFeatures = useStore((state) => state.setFeatures);
+  const classes = useStyles()
+  const features = useStore((state) => state.features)
+  const setFeatures = useStore((state) => state.setFeatures)
 
   return (
     <div style={{ width: '100%' }}>
@@ -25,7 +25,7 @@ const DashboardCard = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardCard;
+export default DashboardCard

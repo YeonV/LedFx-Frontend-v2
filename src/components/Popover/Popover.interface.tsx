@@ -1,17 +1,17 @@
-import { PopoverProps as PopoverOriginalProps } from '@mui/material/Popover';
-import { Delete } from '@mui/icons-material';
-import type { SxProps, Theme } from '@mui/material';
+import { PopoverProps as PopoverOriginalProps } from '@mui/material/Popover'
+import { Delete } from '@mui/icons-material'
+import type { SxProps, Theme } from '@mui/material'
 
 export interface PopoverProps {
   /**
    * Render as [Button](https://mui.com/api/button/) or [MenuItem](https://mui.com/api/menu-item/) <br />
    * examples: [Button](https://mui.com/components/buttons/), [MenuItem](https://mui.com/components/menu-item/)
    */
-  type?: 'menuItem' | 'button' | 'fab' | 'iconbutton';
+  type?: 'menuItem' | 'button' | 'fab' | 'iconbutton'
   /**
    * Set the [variant](https://mui.com/components/buttons/#basic-button)
    */
-  variant?: 'text' | 'outlined' | 'contained' | undefined;
+  variant?: 'text' | 'outlined' | 'contained' | undefined
   /**
    * Set the [color](https://mui.com/components/buttons/#color)
    */
@@ -20,111 +20,111 @@ export interface PopoverProps {
   /**
    * Set the [size](https://mui.com/components/buttons/#sizes)
    */
-  size?: 'small' | 'medium' | 'large' | undefined;
+  size?: 'small' | 'medium' | 'large' | undefined
   /**
    * Should the popup open on doubleclick? Ignored if openOnLongPress is `true`
    */
-  openOnDoubleClick?: boolean;
+  openOnDoubleClick?: boolean
   /**
    * Should the popup open on longpress? (openOnDoubleClick gets ignored if set)
    */
-  openOnLongPress?: boolean;
+  openOnLongPress?: boolean
   /**
    * Set Popover [position](https://mui.com/components/popover/#anchor-playground)
    */
-  vertical?: number | 'center' | 'bottom' | 'top';
+  vertical?: number | 'center' | 'bottom' | 'top'
   /**
    * Set Popover [position](https://mui.com/components/popover/#anchor-playground)
    */
-  horizontal?: number | 'center' | 'left' | 'right';
+  horizontal?: number | 'center' | 'left' | 'right'
   /**
    * Set Popover [position](https://mui.com/components/popover/#anchor-playground)
    */
-  anchorOrigin?: PopoverOriginalProps['anchorOrigin'];
+  anchorOrigin?: PopoverOriginalProps['anchorOrigin']
   /**
    * Set Popover [position](https://mui.com/components/popover/#anchor-playground)
    */
-  transformOrigin?: PopoverOriginalProps['transformOrigin'];
+  transformOrigin?: PopoverOriginalProps['transformOrigin']
   /**
    * Function to call when confirm is clicked
    */
-  onConfirm?: (e: any) => typeof e;
+  onConfirm?: (e: any) => typeof e
   /**
    * Function to call when cancel is clicked
    */
-  onCancel?: (e: any) => typeof e;
+  onCancel?: (e: any) => typeof e
   /**
    * Function to call when button is clicked
    */
-  onSingleClick?: (e: any) => typeof e;
+  onSingleClick?: (e: any) => typeof e
   /**
    * Function to call when button is doubleclicked
    */
-  onDoubleClick?: (e: any) => typeof e;
+  onDoubleClick?: (e: any) => typeof e
   /**
    * Remove Icon
    */
-  noIcon?: boolean;
+  noIcon?: boolean
   /**
    * Disabled state
    */
-  disabled?: boolean;
+  disabled?: boolean
   /**
    * flag indicator
    */
-  confirmDisabled?: boolean;
+  confirmDisabled?: boolean
   /**
    * flag indicator
    */
-  confirmContent?: any;
+  confirmContent?: any
   /**
    * Text to show in the popup
    */
-  text?: string;
+  text?: string
   /**
    * [Label](https://mui.com/components/buttons/#buttons-with-icons-and-label)
    */
-  label?: string | undefined;
+  label?: string | undefined
   /**
    * [startIcon](https://mui.com/components/buttons/#buttons-with-icons-and-label)
    */
-  startIcon?: React.ReactNode;
+  startIcon?: React.ReactNode
   /**
    * [Icon](https://mui.com/components/material-icons/)
    */
-  icon?: React.ReactNode;
+  icon?: React.ReactNode
   /**
    * Content of the Popover
    */
-  content?: React.ReactNode;
+  content?: React.ReactNode
   /**
    * Content
    */
-  children?: React.ReactNode;
+  children?: React.ReactNode
   /**
    * Footer
    */
-  footer?: React.ReactNode;
+  footer?: React.ReactNode
   /**
    * JSX className
    */
-  className?: string;
+  className?: string
   /**
    * JSX style
    */
-  sx?: SxProps<Theme>;
+  sx?: SxProps<Theme>
   /**
    * JSX style
    */
-  style?: Record<string, unknown>;
+  style?: Record<string, unknown>
   /**
    * JSX style
    */
-  popoverStyle?: Record<string, unknown>;
+  popoverStyle?: Record<string, unknown>
   /**
    * JSX style
    */
-  wrapperStyle?: Record<string, unknown>;
+  wrapperStyle?: Record<string, unknown>
 }
 
 export const PopoverDefaults: PopoverProps = {
@@ -155,4 +155,4 @@ export const PopoverDefaults: PopoverProps = {
   popoverStyle: undefined,
   wrapperStyle: undefined,
   type: 'button',
-};
+}

@@ -1,11 +1,11 @@
-import useStore from '../../store/useStore';
-import { SettingsRow } from './SettingsComponents';
+import useStore from '../../store/useStore'
+import { SettingsRow } from './SettingsComponents'
 
 const BetaFeatures = () => {
-  const setFeatures = useStore((state) => state.setFeatures);
-  const showFeatures = useStore((state) => state.showFeatures);
-  const setShowFeatures = useStore((state) => state.setShowFeatures);
-  const features = useStore((state) => state.features);
+  const setFeatures = useStore((state) => state.setFeatures)
+  const showFeatures = useStore((state) => state.showFeatures)
+  const setShowFeatures = useStore((state) => state.setShowFeatures)
+  const features = useStore((state) => state.features)
 
   return (
     <>
@@ -34,7 +34,7 @@ const BetaFeatures = () => {
         onChange={() => setFeatures('sceneexternal', !features.sceneexternal)}
       />
     </>
-  );
-};
+  )
+}
 
-export default BetaFeatures;
+export default BetaFeatures

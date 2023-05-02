@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Link,
   TextField,
@@ -10,59 +10,57 @@ import {
   Button,
   Typography,
   Divider,
-} from '@mui/material';
-import useStore from '../../store/useStore';
+} from '@mui/material'
+import useStore from '../../store/useStore'
 
 const EditSceneDialog = () => {
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [tags, setTags] = useState('');
-  const [url, setUrl] = useState('');
-  const [payload, setPayload] = useState('');
-  const [invalid, setInvalid] = useState(false);
-  const addScene = useStore((state) => state.addScene);
-  const getScenes = useStore((state) => state.getScenes);
-  const scenes = useStore((state) => state.scenes);
-  const open = useStore((state) => state.dialogs.addScene?.edit || false);
+  const [name, setName] = useState('')
+  const [image, setImage] = useState('')
+  const [tags, setTags] = useState('')
+  const [url, setUrl] = useState('')
+  const [payload, setPayload] = useState('')
+  const [invalid, setInvalid] = useState(false)
+  const addScene = useStore((state) => state.addScene)
+  const getScenes = useStore((state) => state.getScenes)
+  const scenes = useStore((state) => state.scenes)
+  const open = useStore((state) => state.dialogs.addScene?.edit || false)
   // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
-  const data = useStore((state: any) => state.dialogs.addScene?.editData);
-  const features = useStore((state) => state.features);
+  const data = useStore((state: any) => state.dialogs.addScene?.editData)
+  const features = useStore((state) => state.features)
 
-  const setDialogOpenAddScene = useStore(
-    (state) => state.setDialogOpenAddScene
-  );
+  const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
 
   function isValidURL(string: string) {
     const res = string.match(
       /(?![\s\S])|\d(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g
-    );
-    return res !== null;
+    )
+    return res !== null
   }
 
   useEffect(() => {
     if (data) {
-      setName(data?.name);
-      setImage(data?.scene_image);
-      setTags(data?.scene_tags);
-      setUrl(data?.scene_puturl);
-      setPayload(data?.scene_payload);
+      setName(data?.name)
+      setImage(data?.scene_image)
+      setTags(data?.scene_tags)
+      setUrl(data?.scene_puturl)
+      setPayload(data?.scene_payload)
     }
-  }, [data]);
+  }, [data])
   const handleClose = () => {
-    setDialogOpenAddScene(false, false);
-  };
+    setDialogOpenAddScene(false, false)
+  }
 
   const handleAddScene = () => {
     addScene(name, image, tags, url, payload).then(() => {
-      getScenes();
-    });
-    setName('');
-    setImage('');
-    setTags('');
-    setUrl('');
-    setPayload('');
-    setDialogOpenAddScene(false, false);
-  };
+      getScenes()
+    })
+    setName('')
+    setImage('')
+    setTags('')
+    setUrl('')
+    setPayload('')
+    setDialogOpenAddScene(false, false)
+  }
 
   return (
     <Dialog
@@ -156,7 +154,7 @@ const EditSceneDialog = () => {
               error={invalid}
               helperText={invalid && 'Enter valid URL!'}
               onBlur={(e) => {
-                setInvalid(!isValidURL(e.target.value));
+                setInvalid(!isValidURL(e.target.value))
               }}
             />
             <TextField
@@ -210,7 +208,7 @@ const EditSceneDialog = () => {
         <Button onClick={handleAddScene}>Update</Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default EditSceneDialog;
+export default EditSceneDialog

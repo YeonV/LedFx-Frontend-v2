@@ -1,39 +1,39 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useEffect } from 'react';
-import useStore from '../../../store/useStore';
-import DeviceCard from './DeviceCard';
+import { useState, useEffect } from 'react'
+import useStore from '../../../store/useStore'
+import DeviceCard from './DeviceCard'
 
 const DeviceCardWrapper = ({
   virtual,
   index,
 }: {
-  virtual: any;
-  index: number;
+  virtual: any
+  index: number
 }) => {
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const getDevices = useStore((state) => state.getDevices);
-  const virtuals = useStore((state) => state.virtuals);
-  const devices = useStore((state) => state.devices);
-  const deleteVirtual = useStore((state) => state.deleteVirtual);
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getDevices = useStore((state) => state.getDevices)
+  const virtuals = useStore((state) => state.virtuals)
+  const devices = useStore((state) => state.devices)
+  const deleteVirtual = useStore((state) => state.deleteVirtual)
   const setDialogOpenAddDevice = useStore(
     (state) => state.setDialogOpenAddDevice
-  );
+  )
   const setDialogOpenAddVirtual = useStore(
     (state) => state.setDialogOpenAddVirtual
-  );
+  )
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
-  );
-  const graphs = useStore((state) => state.graphs);
-  const graphsMulti = useStore((state) => state.graphsMulti);
-  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
-  const updateVirtual = useStore((state) => state.updateVirtual);
-  const activateDevice = useStore((state) => state.activateDevice);
-  const showMatrix = useStore((state) => state.showMatrix);
+  )
+  const graphs = useStore((state) => state.graphs)
+  const graphsMulti = useStore((state) => state.graphsMulti)
+  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect)
+  const updateVirtual = useStore((state) => state.updateVirtual)
+  const activateDevice = useStore((state) => state.activateDevice)
+  const showMatrix = useStore((state) => state.showMatrix)
 
-  const [_fade, setFade] = useState(false);
+  const [_fade, setFade] = useState(false)
   const [_isActive, setIsActive] = useState(
     (virtuals &&
       virtual &&
@@ -43,43 +43,43 @@ const DeviceCardWrapper = ({
       (devices &&
         devices[Object.keys(devices).find((d) => d === virtual) || '']
           ?.active_virtuals?.length > 0)
-  );
+  )
 
   const handleDeleteDevice = () => {
     deleteVirtual(virtuals[virtual]?.id).then(() => {
-      getVirtuals();
-    });
-  };
+      getVirtuals()
+    })
+  }
 
   const handleEditVirtual = () => {
-    setDialogOpenAddVirtual(true, virtual);
-  };
+    setDialogOpenAddVirtual(true, virtual)
+  }
   const handleEditDevice = (device: any) => {
-    setDialogOpenAddDevice(true, device);
-  };
+    setDialogOpenAddDevice(true, device)
+  }
 
   const handleClearEffect = () => {
     clearVirtualEffect(virtual).then(() => {
-      setFade(true);
+      setFade(true)
       setTimeout(() => {
-        getVirtuals();
-        getDevices();
-      }, virtuals[virtual].config.transition_time * 1000);
+        getVirtuals()
+        getDevices()
+      }, virtuals[virtual].config.transition_time * 1000)
       setTimeout(() => {
-        setFade(false);
-      }, virtuals[virtual].config.transition_time * 1000 + 300);
-    });
-  };
+        setFade(false)
+      }, virtuals[virtual].config.transition_time * 1000 + 300)
+    })
+  }
 
   const handlePlayPause = () => {
     updateVirtual(virtuals[virtual].id, !virtuals[virtual].active).then(() =>
       getVirtuals()
-    );
-  };
+    )
+  }
 
   const handleActivateDevice = (e: any) => {
-    activateDevice(e).then(() => getDevices());
-  };
+    activateDevice(e).then(() => getDevices())
+  }
 
   useEffect(() => {
     setIsActive(
@@ -88,8 +88,8 @@ const DeviceCardWrapper = ({
         Object.keys(virtuals[virtual]?.effect)?.length > 0) ||
         devices[Object.keys(devices).find((d) => d === virtual) || '']
           ?.active_virtuals?.length > 0
-    );
-  }, [virtuals, devices]);
+    )
+  }, [virtuals, devices])
 
   return virtual && virtuals[virtual] ? (
     <DeviceCard
@@ -144,7 +144,7 @@ const DeviceCardWrapper = ({
           : 'unset',
       }}
     />
-  ) : null;
-};
+  ) : null
+}
 
-export default DeviceCardWrapper;
+export default DeviceCardWrapper

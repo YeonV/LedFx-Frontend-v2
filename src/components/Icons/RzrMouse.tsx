@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement } from 'react'
 
 const RazerMouse = (): ReactElement<any, any> => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -30,6 +30,6 @@ const RazerMouse = (): ReactElement<any, any> => (
       </g>
     </g>
   </svg>
-);
+)
 
-export default RazerMouse;
+export default RazerMouse

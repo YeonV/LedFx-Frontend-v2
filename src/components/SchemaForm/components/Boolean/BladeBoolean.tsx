@@ -1,9 +1,9 @@
-import { Switch, Checkbox, Button, Typography } from '@mui/material';
-import BladeFrame from '../BladeFrame';
+import { Switch, Checkbox, Button, Typography } from '@mui/material'
+import BladeFrame from '../BladeFrame'
 import {
   BladeBooleanDefaultProps,
   BladeBooleanProps,
-} from './BladeBoolean.props';
+} from './BladeBoolean.props'
 
 /**
  * ## Boolean
@@ -42,7 +42,7 @@ const BladeBoolean = ({
             </Typography>
           ) : null}
         </BladeFrame>
-      );
+      )
     case 'checkbox':
       return (
         <BladeFrame
@@ -57,7 +57,7 @@ const BladeBoolean = ({
             color="primary"
           />
         </BladeFrame>
-      );
+      )
     case 'button':
       return (
         <Button
@@ -67,13 +67,13 @@ const BladeBoolean = ({
         >
           {schema.title.replaceAll('_', ' ').replaceAll('color', 'c')}
         </Button>
-      );
+      )
 
     default:
-      return <div>unset</div>;
+      return <div>unset</div>
   }
-};
+}
 
-BladeBoolean.defaultProps = BladeBooleanDefaultProps;
+BladeBoolean.defaultProps = BladeBooleanDefaultProps
 
-export default BladeBoolean;
+export default BladeBoolean

@@ -1,18 +1,18 @@
-import { styled } from '@mui/material/styles';
-import BladeBoolean from '../components/Boolean/BladeBoolean';
-import BladeSelect from '../components/String/BladeSelect';
-import BladeSlider from '../components/Number/BladeSlider';
-import GradientPickerWrapper from '../components/GradientPicker/GradientPicker.wrapper';
+import { styled } from '@mui/material/styles'
+import BladeBoolean from '../components/Boolean/BladeBoolean'
+import BladeSelect from '../components/String/BladeSelect'
+import BladeSlider from '../components/Number/BladeSlider'
+import GradientPickerWrapper from '../components/GradientPicker/GradientPicker.wrapper'
 import {
   EffectSchemaFormDefaultProps,
   EffectSchemaFormProps,
-} from './EffectSchemaForm.props';
+} from './EffectSchemaForm.props'
 
-const PREFIX = 'EffectSchemaForm';
+const PREFIX = 'EffectSchemaForm'
 
 const classes = {
   bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
-};
+}
 
 const Root = styled('div')({
   [`&.${classes.bladeSchemaForm}`]: {
@@ -23,7 +23,7 @@ const Root = styled('div')({
       boxSizing: 'border-box',
     },
   },
-});
+})
 
 const EffectSchemaForm = ({
   schemaProperties,
@@ -47,12 +47,12 @@ const EffectSchemaForm = ({
                   schema={s}
                   hideDesc
                   onClick={(model_id: string, value: any) => {
-                    const c: any = {};
-                    c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(c);
+                    const c: any = {}
+                    c[model_id] = value
+                    return handleEffectConfig && handleEffectConfig(c)
                   }}
                 />
-              );
+              )
             case 'string':
               return (
                 <BladeSelect
@@ -63,12 +63,12 @@ const EffectSchemaForm = ({
                   key={i}
                   index={i}
                   onChange={(model_id: string, value: any) => {
-                    const c: any = {};
-                    c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(c);
+                    const c: any = {}
+                    c[model_id] = value
+                    return handleEffectConfig && handleEffectConfig(c)
                   }}
                 />
-              );
+              )
 
             case 'number':
               return (
@@ -80,12 +80,12 @@ const EffectSchemaForm = ({
                   model={model}
                   schema={s}
                   onChange={(model_id: string, value: any) => {
-                    const c: any = {};
-                    c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(c);
+                    const c: any = {}
+                    c[model_id] = value
+                    return handleEffectConfig && handleEffectConfig(c)
                   }}
                 />
-              );
+              )
 
             case 'integer':
               return (
@@ -99,12 +99,12 @@ const EffectSchemaForm = ({
                   schema={s}
                   style={{ margin: '0.5rem 0' }}
                   onChange={(model_id: string, value: any) => {
-                    const c: any = {};
-                    c[model_id] = value;
-                    return handleEffectConfig && handleEffectConfig(c);
+                    const c: any = {}
+                    c[model_id] = value
+                    return handleEffectConfig && handleEffectConfig(c)
                   }}
                 />
-              );
+              )
             case 'color':
               return (
                 <GradientPickerWrapper
@@ -118,20 +118,20 @@ const EffectSchemaForm = ({
                   wrapperStyle={{ width: '49%' }}
                   isGradient={s.gradient}
                 />
-              );
+              )
             default:
               return (
                 <>
                   Unsupported type:--
                   {s.type}
                 </>
-              );
+              )
           }
         })}
     </Root>
-  );
-};
+  )
+}
 
-EffectSchemaForm.defaultProps = EffectSchemaFormDefaultProps;
+EffectSchemaForm.defaultProps = EffectSchemaFormDefaultProps
 
-export default EffectSchemaForm;
+export default EffectSchemaForm

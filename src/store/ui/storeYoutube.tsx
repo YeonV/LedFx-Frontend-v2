@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
+import produce from 'immer'
 
 const storeYoutube = (set: any) => ({
   youtubeURL:
@@ -7,12 +7,12 @@ const storeYoutube = (set: any) => ({
   setYoutubeURL: (url: string) => {
     set(
       produce((state: any) => {
-        state.youtube.youtubeURL = url;
+        state.youtube.youtubeURL = url
       }),
       false,
       'youtube/setYoutubeURL'
-    );
+    )
   },
-});
+})
 
-export default storeYoutube;
+export default storeYoutube

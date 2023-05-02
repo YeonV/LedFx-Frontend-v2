@@ -1,34 +1,34 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Slider from '@mui/material/Slider';
-import useStore from '../../store/useStore';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import Slider from '@mui/material/Slider'
+import useStore from '../../store/useStore'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 
 const TransitionCard = ({ virtual, style }: any) => {
   const schemas = useStore(
     (state) =>
       state.schemas.virtuals && state.schemas.virtuals.schema.properties
-  );
-  const addVirtual = useStore((state) => state.addVirtual);
+  )
+  const addVirtual = useStore((state) => state.addVirtual)
   const transition_mode =
-    virtual && virtual.config && virtual.config.transition_mode;
+    virtual && virtual.config && virtual.config.transition_mode
   const transition_time =
-    virtual && virtual.config && virtual.config.transition_time;
+    virtual && virtual.config && virtual.config.transition_time
 
   const handleSetTransition = (virtId: string, config: any) =>
     addVirtual({
       id: virtId,
       config,
-    });
+    })
 
   const onSliderChange = (_e: any, newValue: number | number[]) =>
     handleSetTransition(virtual.id, {
       transition_time: newValue,
-    });
+    })
 
   const marks = [
     {
@@ -39,7 +39,7 @@ const TransitionCard = ({ virtual, style }: any) => {
       value: schemas?.transition_time.maximum,
       label: `${schemas?.transition_time.maximum}s`,
     },
-  ];
+  ]
 
   return (
     <Card variant="outlined" className="step-device-two" style={style}>
@@ -85,7 +85,7 @@ const TransitionCard = ({ virtual, style }: any) => {
             onChange={(e) => {
               handleSetTransition(virtual.id, {
                 transition_mode: e.target.value,
-              });
+              })
             }}
           >
             {schemas?.transition_mode.enum.map((mode: string, i: number) => (
@@ -97,7 +97,7 @@ const TransitionCard = ({ virtual, style }: any) => {
         </BladeFrame>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default TransitionCard;
+export default TransitionCard

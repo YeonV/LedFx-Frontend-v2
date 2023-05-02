@@ -1,31 +1,31 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { SettingsAccordion, useStyles } from './SettingsComponents';
-import useStore from '../../store/useStore';
-import AudioCard from './AudioCard';
-import WledCard from './WledCard';
-import Webaudio from './Webaudio';
-import ClientAudioCard from './ClientAudioCard';
-import UICard from './UICard';
-import GeneralCard from './GeneralCard';
-import DashboardCard from './DashboardCard';
-import AlphaFeatures from './AlphaFeatures';
-import BetaFeatures from './BetaFeatures';
-import ExpertFeatures from './ExpertFeatures';
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { SettingsAccordion, useStyles } from './SettingsComponents'
+import useStore from '../../store/useStore'
+import AudioCard from './AudioCard'
+import WledCard from './WledCard'
+import Webaudio from './Webaudio'
+import ClientAudioCard from './ClientAudioCard'
+import UICard from './UICard'
+import GeneralCard from './GeneralCard'
+import DashboardCard from './DashboardCard'
+import AlphaFeatures from './AlphaFeatures'
+import BetaFeatures from './BetaFeatures'
+import ExpertFeatures from './ExpertFeatures'
 
 const Settings = () => {
-  const classes = useStyles();
-  const viewMode = useStore((state) => state.viewMode);
-  const features = useStore((state) => state.features);
-  const showFeatures = useStore((state) => state.showFeatures);
-  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded);
-  const loc = useLocation();
+  const classes = useStyles()
+  const viewMode = useStore((state) => state.viewMode)
+  const features = useStore((state) => state.features)
+  const showFeatures = useStore((state) => state.showFeatures)
+  const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded)
+  const loc = useLocation()
 
   useEffect(() => {
     if (loc.search.indexOf('ui') > -1) {
-      setSettingsExpanded('panel2');
+      setSettingsExpanded('panel2')
     }
-  }, [loc]);
+  }, [loc])
 
   return (
     <div className={classes.card} style={{ marginBottom: '3rem' }}>
@@ -74,7 +74,7 @@ const Settings = () => {
         </SettingsAccordion>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings

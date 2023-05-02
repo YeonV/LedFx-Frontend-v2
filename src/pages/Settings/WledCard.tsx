@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { styled } from '@mui/material/styles';
+import { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import {
   Card,
   CardHeader,
@@ -15,12 +15,12 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Wled from '../../components/Icons/Wled';
-import useStore from '../../store/useStore';
+} from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Wled from '../../components/Icons/Wled'
+import useStore from '../../store/useStore'
 
-const PREFIX = 'WledCard';
+const PREFIX = 'WledCard'
 
 const classes = {
   content: `${PREFIX}-content`,
@@ -29,7 +29,7 @@ const classes = {
   row: `${PREFIX}-row`,
   formControl: `${PREFIX}-formControl`,
   check: `${PREFIX}-check`,
-};
+}
 
 const StyledCard = styled(Card)({
   [`& .${classes.content}`]: {
@@ -62,30 +62,30 @@ const StyledCard = styled(Card)({
       height: '2rem',
     },
   },
-});
+})
 
 const WledCard = ({ className }: any) => {
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const settings = useStore((state) => state.config);
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const settings = useStore((state) => state.config)
 
   const toggleSetting = (setting: string, value: any) => {
     setSystemConfig({
       wled_preferences: { [setting]: { user_enabled: value } },
-    }).then(() => getSystemConfig());
-  };
+    }).then(() => getSystemConfig())
+  }
   const onChangeSetting = (setting: string, value: any) => {
     setSystemConfig({
       wled_preferences: { [setting]: { setting: value } },
-    }).then(() => getSystemConfig());
-  };
+    }).then(() => getSystemConfig())
+  }
   const onScanOnStart = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
 
   useEffect(() => {
-    getSystemConfig();
-  }, [getSystemConfig]);
+    getSystemConfig()
+  }, [getSystemConfig])
 
   return settings.wled_preferences ? (
     <StyledCard style={{ marginBottom: '2rem' }} className={className}>
@@ -385,7 +385,7 @@ const WledCard = ({ className }: any) => {
         </Accordion>
       </CardContent>
     </StyledCard>
-  ) : null;
-};
+  ) : null
+}
 
-export default WledCard;
+export default WledCard

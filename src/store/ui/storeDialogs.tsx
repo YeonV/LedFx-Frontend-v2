@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import type { IStore } from '../useStore'
 
 const storeDialogs = (set: any) => ({
   dialogs: {
@@ -37,7 +37,7 @@ const storeDialogs = (set: any) => ({
         state.dialogs.nohost = {
           open,
           edit: edit || false,
-        };
+        }
       }),
       false,
       'api/dialog/nohost'
@@ -55,7 +55,7 @@ const storeDialogs = (set: any) => ({
           edit: edit || false,
           sceneKey: sceneKey || '',
           editData: editData || '',
-        };
+        }
       }),
       false,
       'api/dialog/AddScene'
@@ -66,7 +66,7 @@ const storeDialogs = (set: any) => ({
         state.dialogs.addDevice = {
           open,
           edit,
-        };
+        }
       }),
       false,
       'api/dialog/AddDevice'
@@ -77,7 +77,7 @@ const storeDialogs = (set: any) => ({
         state.dialogs.addVirtual = {
           open,
           edit,
-        };
+        }
       }),
       false,
       'api/dialog/AddVirtual'
@@ -88,7 +88,7 @@ const storeDialogs = (set: any) => ({
         state.dialogs.editVirtual = {
           open,
           edit,
-        };
+        }
       }),
       false,
       'api/dialog/EditVirtual'
@@ -99,11 +99,11 @@ const storeDialogs = (set: any) => ({
         state.dialogs.addIntegration = {
           open,
           edit,
-        };
+        }
       }),
       false,
       'api/dialog/AddIntegration'
     ),
-});
+})
 
-export default storeDialogs;
+export default storeDialogs

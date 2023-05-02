@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const WaveLines = ({
   backgroundColor = 'transparent',
@@ -8,6 +8,9 @@ const WaveLines = ({
   height = 1615,
   duration = '20s',
 }: any) => {
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -20,6 +23,7 @@ const WaveLines = ({
         position: 'fixed',
         top: 0,
         opacity: 0.7,
+        transform: ios ? 'scaleX(1.05)' : '',
       }}
       width={width}
       height={height}
@@ -97,7 +101,7 @@ const WaveLines = ({
         </path>
       </g>
     </svg>
-  );
-};
+  )
+}
 
-export default WaveLines;
+export default WaveLines

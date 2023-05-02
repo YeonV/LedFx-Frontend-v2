@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, forwardRef, useEffect } from 'react';
+import { useState, forwardRef, useEffect } from 'react'
 import {
   Button,
   Dialog,
@@ -11,57 +11,57 @@ import {
   Icon,
   Grid,
   CircularProgress,
-} from '@mui/material';
-import { BugReport, NavigateBefore } from '@mui/icons-material';
-import { TransitionProps } from '@mui/material/transitions';
-import useTroubleshootStyles from './Troubleshoot.styles';
-import useStore from '../../store/useStore';
-import Wled from '../../components/Icons/Wled';
+} from '@mui/material'
+import { BugReport, NavigateBefore } from '@mui/icons-material'
+import { TransitionProps } from '@mui/material/transitions'
+import useTroubleshootStyles from './Troubleshoot.styles'
+import useStore from '../../store/useStore'
+import Wled from '../../components/Icons/Wled'
 
 const Transition = forwardRef<unknown, TransitionProps>(function Transition(
   props,
   ref
 ) {
-  return <Slide direction="up" ref={ref} {...(props as any)} />;
-});
+  return <Slide direction="up" ref={ref} {...(props as any)} />
+})
 
 const Row = ({ name, value }: { name: string; value: any }) => {
-  const classes = useTroubleshootStyles();
+  const classes = useTroubleshootStyles()
   return (
     <div className={classes.row}>
       <Typography className={classes.title}>{name}</Typography>
       {typeof value === 'object' ? value : <Typography>{value}</Typography>}
     </div>
-  );
-};
+  )
+}
 
 export default function TroubleshootButton({
   virtual,
 }: any): JSX.Element | null {
-  const classes = useTroubleshootStyles();
-  const devices = useStore((state) => state.devices);
-  const getPing = useStore((state) => state.getPing);
-  const [open, setOpen] = useState(false);
-  const [wledData, setWledData] = useState<any>({});
-  const [pingData, setPingData] = useState<any>({});
-  const [loading, setLoading] = useState(false);
-  const [uptime, setUptime] = useState(0);
+  const classes = useTroubleshootStyles()
+  const devices = useStore((state) => state.devices)
+  const getPing = useStore((state) => state.getPing)
+  const [open, setOpen] = useState(false)
+  const [wledData, setWledData] = useState<any>({})
+  const [pingData, setPingData] = useState<any>({})
+  const [loading, setLoading] = useState(false)
+  const [uptime, setUptime] = useState(0)
 
   const ping = async () => {
     if (devices[virtual.id]) {
       if (!loading) {
-        setLoading(true);
+        setLoading(true)
       }
       const res = await fetch(
         `http://${devices[virtual.id].config.ip_address}/json/info`
-      );
-      const resp = await res.json();
-      setWledData(resp);
-      const pinging = getPing(virtual.id);
-      const resPing = await pinging;
-      setPingData(resPing);
+      )
+      const resp = await res.json()
+      setWledData(resp)
+      const pinging = getPing(virtual.id)
+      const resPing = await pinging
+      setPingData(resPing)
     }
-  };
+  }
 
   useEffect(() => {
     const TimerInt =
@@ -70,14 +70,14 @@ export default function TroubleshootButton({
       devices[virtual.id] &&
       devices[virtual.id].type === 'wled' &&
       setInterval(() => {
-        setUptime((time) => time + 1);
-      }, 1000);
+        setUptime((time) => time + 1)
+      }, 1000)
     return () => {
       if (TimerInt !== false) {
-        clearInterval(TimerInt);
+        clearInterval(TimerInt)
       }
-    };
-  }, [virtual, devices]);
+    }
+  }, [virtual, devices])
 
   return virtual &&
     virtual.config &&
@@ -234,5 +234,5 @@ export default function TroubleshootButton({
         </div>
       </Dialog>
     </>
-  ) : null;
+  ) : null
 }

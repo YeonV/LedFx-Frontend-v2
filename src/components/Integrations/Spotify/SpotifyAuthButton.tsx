@@ -1,28 +1,28 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import axios from 'axios';
-import Cookies from 'universal-cookie/es6';
-import getPkce from 'oauth-pkce';
-import isElectron from 'is-electron';
-import { Login, Logout } from '@mui/icons-material';
-import useStore from '../../../store/useStore';
+import { useState, useEffect } from 'react'
+import Button from '@mui/material/Button'
+import axios from 'axios'
+import Cookies from 'universal-cookie/es6'
+import getPkce from 'oauth-pkce'
+import isElectron from 'is-electron'
+import { Login, Logout } from '@mui/icons-material'
+import useStore from '../../../store/useStore'
 import {
   finishAuth,
   refreshAuth,
   logoutAuth,
-} from '../../../utils/spotifyProxies';
-import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles';
+} from '../../../utils/spotifyProxies'
+import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
 
 // eslint-disable-next-line prettier/prettier
 const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
-const storedURL = window.localStorage.getItem('ledfx-host');
+const storedURL = window.localStorage.getItem('ledfx-host')
 const redirectUrl = `${
   process.env.NODE_ENV === 'production'
     ? storedURL || baseURL
     : 'http://localhost:3000'
-}/callback/#/Integrations?`;
+}/callback/#/Integrations?`
 
 // const spotify = axios.create({
 //   baseURL: redirectUrl,
@@ -50,26 +50,26 @@ const apiCredentials = {
     'user-library-read',
     'user-library-modify',
   ],
-};
+}
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {
-  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated);
-  const player = useStore((state) => state.spotify.player);
-  const setspAuthenticated = useStore((state) => state.setSpAuthenticated);
-  const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken);
-  const [codes, setCodes] = useState({});
-  const cookies = new Cookies();
-  const classes = useIntegrationCardStyles();
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
+  const player = useStore((state) => state.spotify.player)
+  const setspAuthenticated = useStore((state) => state.setSpAuthenticated)
+  const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken)
+  const [codes, setCodes] = useState({})
+  const cookies = new Cookies()
+  const classes = useIntegrationCardStyles()
   useEffect(() => {
     getPkce(50, (_error: any, { verifier, challenge }: any) => {
-      setCodes({ verifier, challenge });
-    });
+      setCodes({ verifier, challenge })
+    })
     if (cookies.get('access_token')) {
-      setspAuthenticated(true);
+      setspAuthenticated(true)
     }
-  }, []);
+  }, [])
   const beginAuth = () => {
-    cookies.set('verifier', (codes as any).verifier);
+    cookies.set('verifier', (codes as any).verifier)
     const authURL =
       'https://accounts.spotify.com/authorize/' +
       '?response_type=code' +
@@ -81,38 +81,38 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
         apiCredentials.REDIRECT_URL
       )}&code_challenge=${encodeURIComponent(
         (codes as any).challenge
-      )}&code_challenge_method=S256`;
-    window.location.href = authURL;
-  };
+      )}&code_challenge_method=S256`
+    window.location.href = authURL
+  }
 
   useEffect(() => {
-    const accessTest = cookies.get('logout');
-    const accessTest1 = cookies.get('access_token');
+    const accessTest = cookies.get('logout')
+    const accessTest1 = cookies.get('access_token')
     if ((accessTest === 'false' || !accessTest) && !accessTest1) {
-      refreshAuth();
-      cookies.set('logout', false);
-      setspAuthenticated(true);
+      refreshAuth()
+      cookies.set('logout', false)
+      setspAuthenticated(true)
     }
     if (localStorage.getItem('Spotify-Token')) {
-      setspAuthenticated(true);
+      setspAuthenticated(true)
 
       try {
-        finishAuth();
+        finishAuth()
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn(err);
+        console.warn(err)
       }
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (cookies.get('access_token')) {
-      setspAuthenticated(true);
-      setSpotifyAuthToken(cookies.get('access_token'));
+      setspAuthenticated(true)
+      setSpotifyAuthToken(cookies.get('access_token'))
     } else {
-      setspAuthenticated(false);
+      setspAuthenticated(false)
     }
-  }, [cookies]);
+  }, [cookies])
 
   return !spAuthenticated ? (
     <Button
@@ -121,7 +121,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       color="inherit"
       className={classes.editButton}
       onClick={() => {
-        beginAuth();
+        beginAuth()
       }}
     >
       <Login />
@@ -133,15 +133,15 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       color="inherit"
       className={classes.editButton}
       onClick={() => {
-        logoutAuth();
-        if (player) player.disconnect();
-        setspAuthenticated(false);
-        setSpotifyAuthToken(false);
+        logoutAuth()
+        if (player) player.disconnect()
+        setspAuthenticated(false)
+        setSpotifyAuthToken(false)
       }}
     >
       <Logout />
     </Button>
-  );
-};
+  )
+}
 
-export default SpotifyAuthButton;
+export default SpotifyAuthButton

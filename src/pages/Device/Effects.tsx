@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable consistent-return */
 /* eslint-disable no-restricted-syntax */
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -11,7 +11,7 @@ import {
   AccordionSummary,
   Typography,
   Box,
-} from '@mui/material';
+} from '@mui/material'
 import {
   Clear,
   ExpandMore,
@@ -19,16 +19,16 @@ import {
   PlayArrow,
   GridOn,
   GridOff,
-} from '@mui/icons-material';
-import useStore from '../../store/useStore';
-import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper';
-import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm';
-import PixelGraph from '../../components/PixelGraph';
-import TourEffect from '../../components/Tours/TourEffect';
-import TroubleshootButton from './TroubleshootButton';
-import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props';
+} from '@mui/icons-material'
+import useStore from '../../store/useStore'
+import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
+import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
+import PixelGraph from '../../components/PixelGraph'
+import TourEffect from '../../components/Tours/TourEffect'
+import TroubleshootButton from './TroubleshootButton'
+import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 
-const configOrder = ['color', 'number', 'integer', 'string', 'boolean'];
+const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
 const orderEffectProperties = (
   schema: Schema,
@@ -42,22 +42,22 @@ const orderEffectProperties = (
     Object.keys(schema.properties)
       .filter((k) => {
         if (advanced_keys && advanced_keys.length > 0 && !advanced) {
-          return advanced_keys?.indexOf(k) === -1;
+          return advanced_keys?.indexOf(k) === -1
         }
         if (hidden_keys && hidden_keys.length > 0) {
-          return hidden_keys?.indexOf(k) === -1;
+          return hidden_keys?.indexOf(k) === -1
         }
-        return k;
+        return k
       })
       .map((sk) => ({
         ...schema.properties[sk],
         id: sk,
-      }));
-  const ordered = [] as any[];
+      }))
+  const ordered = [] as any[]
   configOrder.forEach((type) => {
-    ordered.push(...properties.filter((x) => x.type === type));
-  });
-  ordered.push(...properties.filter((x) => !configOrder.includes(x.type)));
+    ordered.push(...properties.filter((x) => x.type === type))
+  })
+  ordered.push(...properties.filter((x) => !configOrder.includes(x.type)))
   return ordered
     .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
     .sort((a) => (a.type === 'number' ? -1 : 1))
@@ -65,36 +65,36 @@ const orderEffectProperties = (
     .sort((a) => (a.id === 'bg_color' ? -1 : 1))
     .sort((a) => (a.type === 'color' ? -1 : 1))
     .sort((a) => (a.id === 'color' ? -1 : 1))
-    .sort((a) => (a.id === 'gradient' ? -1 : 1));
-};
+    .sort((a) => (a.id === 'gradient' ? -1 : 1))
+}
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
-  const [fade, setFade] = useState(false);
-  const [matrix, setMatrix] = useState(false);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const getSchemas = useStore((state) => state.getSchemas);
-  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect);
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect);
-  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect);
-  const virtuals = useStore((state) => state.virtuals);
-  const effects = useStore((state) => state.schemas.effects);
-  const setPixelGraphs = useStore((state) => state.setPixelGraphs);
-  const viewMode = useStore((state) => state.viewMode);
-  const updateVirtual = useStore((state) => state.updateVirtual);
-  const features = useStore((state) => state.features);
+  const [fade, setFade] = useState(false)
+  const [matrix, setMatrix] = useState(false)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getSchemas = useStore((state) => state.getSchemas)
+  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect)
+  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect)
+  const virtuals = useStore((state) => state.virtuals)
+  const effects = useStore((state) => state.schemas.effects)
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs)
+  const viewMode = useStore((state) => state.viewMode)
+  const updateVirtual = useStore((state) => state.updateVirtual)
+  const features = useStore((state) => state.features)
 
-  const graphs = useStore((state) => state.graphs);
+  const graphs = useStore((state) => state.graphs)
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
-        return virtuals[prop];
+        return virtuals[prop]
       }
     }
-  };
-  const virtual = getV();
+  }
+  const virtual = getV()
 
-  const effectType = virtual && virtual.effect.type;
-  const [theModel, setTheModel] = useState(virtual?.effect?.config);
+  const effectType = virtual && virtual.effect.type
+  const [theModel, setTheModel] = useState(virtual?.effect?.config)
   const orderedProperties =
     effects &&
     effectType &&
@@ -103,42 +103,42 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       effects[effectType].hidden_keys,
       effects[effectType].advanced_keys,
       theModel?.advanced
-    );
+    )
   const handleClearEffect = () => {
     clearVirtualEffect(virtId).then(() => {
-      setFade(true);
+      setFade(true)
       setTimeout(() => {
-        getVirtuals();
-      }, virtual.config.transition_time * 1000);
+        getVirtuals()
+      }, virtual.config.transition_time * 1000)
       setTimeout(() => {
-        setFade(false);
-      }, virtual.config.transition_time * 1000 + 300);
-    });
-  };
+        setFade(false)
+      }, virtual.config.transition_time * 1000 + 300)
+    })
+  }
 
   const handleEffectConfig = (config: any) => {
     if (updateVirtualEffect && getVirtuals !== undefined) {
       updateVirtualEffect(virtId, effectType, config, false).then(() => {
-        getVirtuals();
-      });
+        getVirtuals()
+      })
     }
-  };
+  }
 
   const handlePlayPause = () => {
-    updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals());
-  };
+    updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
+  }
 
   useEffect(() => {
-    getVirtuals();
-    getSchemas();
+    getVirtuals()
+    getSchemas()
     if (graphs) {
-      setPixelGraphs([virtId]);
+      setPixelGraphs([virtId])
     }
-  }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType]);
+  }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType])
 
   useEffect(() => {
-    if (virtuals && virtual?.effect?.config) setTheModel(virtual.effect.config);
-  }, [virtuals, virtual, virtual.effect, virtual.effect.config]);
+    if (virtuals && virtual?.effect?.config) setTheModel(virtual.effect.config)
+  }, [virtuals, virtual, virtual.effect, virtual.effect.config])
 
   return (
     <>
@@ -179,13 +179,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                     >
                     <Casino />
                   </Button> */}
-                  <Button
-                    style={{ marginRight: '.5rem' }}
-                    className="step-device-six"
-                    onClick={() => setMatrix(!matrix)}
-                  >
-                    {matrix ? <GridOff /> : <GridOn />}
-                  </Button>
+                  {virtual.config.rows > 1 && (
+                    <Button
+                      style={{ marginRight: '.5rem' }}
+                      className="step-device-six"
+                      onClick={() => setMatrix(!matrix)}
+                    >
+                      {matrix ? <GridOff /> : <GridOn />}
+                    </Button>
+                  )}
                   <Button
                     style={{ marginRight: '.5rem' }}
                     className="step-device-six"
@@ -287,7 +289,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
           </Card>
         )}
     </>
-  );
-};
+  )
+}
 
-export default EffectsCard;
+export default EffectsCard

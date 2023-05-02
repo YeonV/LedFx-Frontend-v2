@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
+import { useEffect } from 'react'
+import { makeStyles } from '@mui/styles'
 import {
   Card,
   CardActionArea,
@@ -10,15 +10,15 @@ import {
   Grid,
   Chip,
   useTheme,
-} from '@mui/material';
-import useStore from '../../store/useStore';
-import NoYet from '../../components/NoYet';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+} from '@mui/material'
+import useStore from '../../store/useStore'
+import NoYet from '../../components/NoYet'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 // import ScenesTable from './ScenesTable';
-import ScenesRecent from './ScenesRecent';
-import ScenesMostUsed from './ScenesMostUsed';
-import ScenesPlaylist from './ScenesPlaylist';
-import ScenesMenu from './ScenesMenu';
+import ScenesRecent from './ScenesRecent'
+import ScenesMostUsed from './ScenesMostUsed'
+import ScenesPlaylist from './ScenesPlaylist'
+import ScenesMenu from './ScenesMenu'
 
 const useStyles = makeStyles({
   root: {
@@ -52,26 +52,26 @@ const useStyles = makeStyles({
       position: 'relative',
     },
   },
-});
+})
 
 const Scenes = () => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const getScenes = useStore((state) => state.getScenes);
-  const scenes = useStore((state) => state.scenes);
-  const features = useStore((state) => state.features);
-  const activateScene = useStore((state) => state.activateScene);
-  const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags);
+  const classes = useStyles()
+  const theme = useTheme()
+  const getScenes = useStore((state) => state.getScenes)
+  const scenes = useStore((state) => state.scenes)
+  const features = useStore((state) => state.features)
+  const activateScene = useStore((state) => state.activateScene)
+  const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
-  );
-  const captivateScene = useStore((state) => state.captivateScene);
+  )
+  const captivateScene = useStore((state) => state.captivateScene)
 
   const handleActivateScene = (e: string) => {
-    activateScene(e);
+    activateScene(e)
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
-      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload);
-  };
+      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
+  }
 
   const sceneImage = (iconName: string) =>
     iconName && iconName.startsWith('image:') ? (
@@ -82,11 +82,11 @@ const Scenes = () => {
       />
     ) : (
       <BladeIcon scene className={classes.iconMedia} name={iconName} />
-    );
+    )
 
   useEffect(() => {
-    getScenes();
-  }, [getScenes]);
+    getScenes()
+  }, [getScenes])
 
   return (
     <>
@@ -175,7 +175,7 @@ const Scenes = () => {
                     label={t}
                     onClick={() => toggletSceneActiveTag(t)}
                   />
-                );
+                )
               })}
           </div>
         ) : null}
@@ -253,7 +253,7 @@ const Scenes = () => {
                   </CardActions>
                 </Card>
               </Grid>
-            );
+            )
           })
         ) : (
           <NoYet type="Scene" />
@@ -262,7 +262,7 @@ const Scenes = () => {
 
       {/* {scenes && Object.keys(scenes).length && <ScenesTable scenes={scenes} />} */}
     </>
-  );
-};
+  )
+}
 
-export default Scenes;
+export default Scenes

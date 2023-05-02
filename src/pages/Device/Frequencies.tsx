@@ -1,20 +1,20 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import { useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import Tooltip from '@mui/material/Tooltip';
-import Slider from '@mui/material/Slider';
-import { InputAdornment, TextField } from '@mui/material';
-import useStore from '../../store/useStore';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
+import { useState } from 'react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Tooltip from '@mui/material/Tooltip'
+import Slider from '@mui/material/Slider'
+import { InputAdornment, TextField } from '@mui/material'
+import useStore from '../../store/useStore'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 
-const log13 = (x: number) => Math.log(x) / Math.log(13);
-const logIt = (x: number) => 3700.0 * log13(1 + x / 200.0);
-const hzIt = (x: number) => 200.0 * 13 ** (x / 3700.0) - 200.0;
+const log13 = (x: number) => Math.log(x) / Math.log(13)
+const logIt = (x: number) => 3700.0 * log13(1 + x / 200.0)
+const hzIt = (x: number) => 200.0 * 13 ** (x / 3700.0) - 200.0
 
 function ValueLabelComponent(props: any) {
-  const { children, open, value } = props;
+  const { children, open, value } = props
 
   return (
     <Tooltip
@@ -25,23 +25,23 @@ function ValueLabelComponent(props: any) {
     >
       {children}
     </Tooltip>
-  );
+  )
 }
 
 const FrequenciesCard = ({ virtual, style }: any) => {
-  const addVirtual = useStore((state) => state.addVirtual);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const config = useStore((state) => state.config);
+  const addVirtual = useStore((state) => state.addVirtual)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const config = useStore((state) => state.config)
 
   const [value, setValue] = useState([
     logIt(virtual.config.frequency_min),
     logIt(virtual.config.frequency_max),
-  ]);
+  ])
 
   const freq_max = config.melbanks?.max_frequencies.map((f: number) => ({
     value: f,
     label: `${f > 1000 ? `${f / 1000}kHz` : `${f}Hz`}`,
-  }));
+  }))
 
   const freq_min = {
     value: config.melbanks?.min_frequency,
@@ -50,26 +50,26 @@ const FrequenciesCard = ({ virtual, style }: any) => {
         ? `${(config.melbanks?.min_frequency || 0) / 1000}kHz`
         : `${config.melbanks?.min_frequency}Hz`
     }`,
-  };
-  const marks = freq_max && [freq_min, ...freq_max];
+  }
+  const marks = freq_max && [freq_min, ...freq_max]
 
   const convertedMarks = marks?.map((m: any) => ({
     value: logIt(m.value),
     label: m.label,
-  }));
+  }))
 
   const handleChange = (_event: React.ChangeEvent<any>, newValue: number[]) => {
-    const copy = [...newValue];
+    const copy = [...newValue]
     convertedMarks.forEach((m: any) => {
       if (Math.abs(newValue[0] - m.value) < 100) {
-        copy[0] = m.value;
+        copy[0] = m.value
       }
       if (Math.abs(newValue[1] - m.value) < 100) {
-        copy[1] = m.value;
+        copy[1] = m.value
       }
-    });
-    setValue(copy);
-  };
+    })
+    setValue(copy)
+  }
 
   return (
     <Card variant="outlined" className="step-device-four" style={style}>
@@ -114,7 +114,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     frequency_min: Math.round(hzIt(value[0])),
                     frequency_max: Math.round(hzIt(value[1])),
                   },
-                }).then(() => getVirtuals());
+                }).then(() => getVirtuals())
               }}
             />
           </BladeFrame>
@@ -149,7 +149,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     : Math.round(hzIt(value[0]))
                 }
                 onChange={(e: any) => {
-                  setValue([logIt(e.target.value), value[1]]);
+                  setValue([logIt(e.target.value), value[1]])
                 }}
               />
             </div>
@@ -164,7 +164,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                     : Math.round(hzIt(value[1]))
                 }
                 onChange={(e: any) => {
-                  setValue([value[0], logIt(e.target.value)]);
+                  setValue([value[0], logIt(e.target.value)])
                 }}
                 inputProps={{
                   min: 20,
@@ -184,7 +184,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default FrequenciesCard;
+export default FrequenciesCard

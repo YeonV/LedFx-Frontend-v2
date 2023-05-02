@@ -1,8 +1,8 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { CardMedia, Chip } from '@mui/material';
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { CardMedia, Chip } from '@mui/material'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
 const sceneImage = (iconName: string) =>
   iconName && iconName.startsWith('image:') ? (
@@ -13,7 +13,7 @@ const sceneImage = (iconName: string) =>
     />
   ) : (
     <BladeIcon scene name={iconName} />
-  );
+  )
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -47,7 +47,7 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
   },
-];
+]
 
 export default function ScenesTable({ scenes }: any) {
   return (
@@ -66,5 +66,5 @@ export default function ScenesTable({ scenes }: any) {
         experimentalFeatures={{ newEditingApi: true }}
       />
     </Box>
-  );
+  )
 }

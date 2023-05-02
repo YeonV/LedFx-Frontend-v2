@@ -1,20 +1,20 @@
-import { Icon } from '@mui/material';
-import Wled from '../Wled';
-import RazerMouse from '../RzrMouse';
-import RazerLogo from '../RzrLogo';
+import { Icon } from '@mui/material'
+import Wled from '../Wled'
+import RazerMouse from '../RzrMouse'
+import RazerLogo from '../RzrLogo'
 import {
   YZLogo2,
   YZLogo2Bottom,
   YZLogo2Top,
   YZLogo2Y,
   YZLogo2Z,
-} from '../YZ-Logo2';
-import { camelToSnake } from '../../../utils/helpers';
-import '../../../assets/materialdesignicons.css';
-import '../../../index.css';
-import { BladeIconDefaultProps, BladeIconProps } from './BladeIcon.interface';
-import HomeAssistantLogo from '../HomeAssistant';
-import NovationLogo from '../Novation';
+} from '../YZ-Logo2'
+import { camelToSnake } from '../../../utils/helpers'
+import '../../../assets/materialdesignicons.css'
+import '../../../index.css'
+import { BladeIconDefaultProps, BladeIconProps } from './BladeIcon.interface'
+import HomeAssistantLogo from '../HomeAssistant'
+import NovationLogo from '../Novation'
 
 /**
  * Icon component supporting 2 libraries
@@ -142,9 +142,9 @@ function BladeIcon({
         name && camelToSnake(name)
       )} */}
     </Icon>
-  );
+  )
 }
 
-BladeIcon.defaultProps = BladeIconDefaultProps;
+BladeIcon.defaultProps = BladeIconDefaultProps
 
-export default BladeIcon;
+export default BladeIcon

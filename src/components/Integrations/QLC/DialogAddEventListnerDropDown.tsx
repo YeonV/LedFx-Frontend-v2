@@ -1,27 +1,27 @@
-import React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Slider, Switch } from '@mui/material';
+import React from 'react'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { Slider, Switch } from '@mui/material'
 
 const marks = [
   { value: 1, label: '1' },
   { value: 255, label: '255' },
-];
+]
 interface DropDownProps {
   // key: any;
-  idx: number;
-  QLCWidgets: Array<[]>;
+  idx: number
+  QLCWidgets: Array<[]>
   // id: any;
-  value: any;
-  switchValue: any;
-  showSwitch: any;
-  showSlider: boolean;
-  handleDropTypeChange: any;
-  handleTypeRemoveDropDown: any;
+  value: any
+  switchValue: any
+  showSwitch: any
+  showSlider: boolean
+  handleDropTypeChange: any
+  handleTypeRemoveDropDown: any
 }
 
 const ThisDropDown: React.FC<DropDownProps> = (props) => {
@@ -36,7 +36,7 @@ const ThisDropDown: React.FC<DropDownProps> = (props) => {
     showSlider,
     handleDropTypeChange,
     handleTypeRemoveDropDown,
-  } = props;
+  } = props
   return (
     <>
       <FormControl>
@@ -94,6 +94,6 @@ const ThisDropDown: React.FC<DropDownProps> = (props) => {
         )}
       </div>
     </>
-  );
-};
-export default ThisDropDown;
+  )
+}
+export default ThisDropDown

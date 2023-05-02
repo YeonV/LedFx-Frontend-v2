@@ -1,26 +1,26 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-import produce from 'immer';
-import { Ledfx } from '../../api/ledfx';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import { Ledfx } from '../../api/ledfx'
+import type { IStore } from '../useStore'
 
 const storeDevices = (set: any) => ({
   devices: {} as any,
   getDevices: async () => {
-    const resp = await Ledfx('/api/devices');
+    const resp = await Ledfx('/api/devices')
     if (resp && resp.devices) {
       set(
         produce((state: IStore) => {
-          state.devices = resp.devices;
+          state.devices = resp.devices
         }),
         false,
         'api/gotDevices'
-      );
+      )
     }
   },
   getDevice: async (deviceId: string) => {
-    const resp = await Ledfx(`/api/devices/${deviceId}`);
+    const resp = await Ledfx(`/api/devices/${deviceId}`)
     if (resp && resp.data) {
       return {
         key: deviceId,
@@ -29,35 +29,35 @@ const storeDevices = (set: any) => ({
         config: resp.data,
         virtuals: resp.data.virtuals,
         active_virtuals: resp.data.active_virtuals,
-      };
+      }
     }
-    return {};
+    return {}
   },
   addDevice: async (config: any) => await Ledfx('/api/devices', 'POST', config),
   activateDevice: async (deviceId: string) => {
-    const resp = await Ledfx(`/api/devices/${deviceId}`, 'POST', {});
+    const resp = await Ledfx(`/api/devices/${deviceId}`, 'POST', {})
     if (resp) {
       set(
         produce((state: IStore) => {
-          state.paused = resp.paused;
+          state.paused = resp.paused
         }),
         false,
         'api/gotPausedState'
-      );
+      )
 
       if (resp && resp.virtuals) {
         set(
           produce((state: IStore) => {
-            state.virtuals = resp.virtuals;
+            state.virtuals = resp.virtuals
           }),
           false,
           'api/gotVirtuals'
-        );
+        )
       }
     }
   },
   updateDevice: async (deviceId: string, config: any) =>
     await Ledfx(`/api/devices/${deviceId}`, 'PUT', config),
-});
+})
 
-export default storeDevices;
+export default storeDevices

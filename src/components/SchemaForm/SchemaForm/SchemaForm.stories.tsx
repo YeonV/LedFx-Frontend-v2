@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@mui/material';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Card, CardContent } from '@mui/material'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSchemaForm from "./SchemaForm";
 
@@ -28,13 +28,13 @@ export default {
       panelPosition: 'bottom',
     },
   },
-} as ComponentMeta<typeof BladeSchemaForm>;
+} as ComponentMeta<typeof BladeSchemaForm>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
 
-export const Default = Template.bind({});
-Default.storyName = 'Default';
+export const Default = Template.bind({})
+Default.storyName = 'Default'
 Default.args = {
   schema: {
     properties: {},
@@ -45,4 +45,4 @@ Default.args = {
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
   hideToggle: false,
-};
+}

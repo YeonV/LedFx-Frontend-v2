@@ -1,9 +1,9 @@
-import { useTheme } from '@mui/material/styles';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 export default function Gauge(props: any) {
-  const theme = useTheme();
-  const { unit, total, current, value, onClick } = props;
+  const theme = useTheme()
+  const { unit, total, current, value, onClick } = props
   return (
     <Box
       sx={{
@@ -52,5 +52,5 @@ export default function Gauge(props: any) {
         </Typography>
       </Box>
     </Box>
-  );
+  )
 }

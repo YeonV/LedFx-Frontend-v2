@@ -1,28 +1,28 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/destructuring-assignment */
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
-  children?: ReactNode;
+  children?: ReactNode
 }
 
 interface State {
-  hasError: boolean;
+  hasError: boolean
 }
 
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
+    super(props)
+    this.state = { hasError: false }
   }
 
   static getDerivedStateFromError(_: Error) {
-    return { hasError: true };
+    return { hasError: true }
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // eslint-disable-next-line no-console
-    console.warn(error, errorInfo);
+    console.warn(error, errorInfo)
   }
 
   render() {
@@ -58,18 +58,18 @@ class ErrorBoundary extends Component<Props, State> {
               cursor: 'pointer',
             }}
             onClick={() => {
-              window.localStorage.removeItem('undefined');
-              window.localStorage.removeItem('ledfx-storage');
-              window.localStorage.removeItem('ledfx-host');
-              window.localStorage.removeItem('ledfx-hosts');
-              window.localStorage.removeItem('ledfx-frontend');
-              window.localStorage.removeItem('ledfx-cloud-role');
-              window.localStorage.removeItem('ledfx-cloud-userid');
-              window.localStorage.removeItem('ledfx-theme');
-              window.localStorage.removeItem('jwt');
-              window.localStorage.removeItem('username');
-              window.localStorage.removeItem('BladeMod');
-              window.location.reload();
+              window.localStorage.removeItem('undefined')
+              window.localStorage.removeItem('ledfx-storage')
+              window.localStorage.removeItem('ledfx-host')
+              window.localStorage.removeItem('ledfx-hosts')
+              window.localStorage.removeItem('ledfx-frontend')
+              window.localStorage.removeItem('ledfx-cloud-role')
+              window.localStorage.removeItem('ledfx-cloud-userid')
+              window.localStorage.removeItem('ledfx-theme')
+              window.localStorage.removeItem('jwt')
+              window.localStorage.removeItem('username')
+              window.localStorage.removeItem('BladeMod')
+              window.location.reload()
             }}
           >
             Clear Browser-Data
@@ -86,17 +86,17 @@ class ErrorBoundary extends Component<Props, State> {
               cursor: 'pointer',
             }}
             onClick={() => {
-              window.location.reload();
+              window.location.reload()
             }}
           >
             Just refresh
           </button>
         </div>
-      );
+      )
     }
 
-    return this.props.children;
+    return this.props.children
   }
 }
 
-export default ErrorBoundary;
+export default ErrorBoundary

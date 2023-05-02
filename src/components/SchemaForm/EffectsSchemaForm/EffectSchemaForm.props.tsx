@@ -1,30 +1,30 @@
 export interface Schema {
-  properties?: any;
-  required?: any;
-  permitted_keys?: any;
+  properties?: any
+  required?: any
+  permitted_keys?: any
 }
 
 export interface EffectSchemaFormProps {
-  schemaProperties: any[];
+  schemaProperties: any[]
   /**
    * Model is the current value of the schema
    */
-  model: Record<string, unknown>;
+  model: Record<string, unknown>
   /**
    * ID of the current active virtual
    */
-  virtId: string;
+  virtId: string
   /**
    * onChange function for the given model
    */
-  handleEffectConfig?: any;
+  handleEffectConfig?: any
   /**
    * updateVirtualEffect function for the given model
    */
-  getVirtuals?: () => true;
+  getVirtuals?: () => true
 }
 
 export const EffectSchemaFormDefaultProps = {
   onModelChange: undefined,
   selectedType: undefined,
-};
+}

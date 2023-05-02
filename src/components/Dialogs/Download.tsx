@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import { Box, LinearProgress, Typography } from '@mui/material';
+import PropTypes from 'prop-types'
+import { Box, LinearProgress, Typography } from '@mui/material'
 
 export default function LinearProgressWithLabel(props: any) {
   return (
@@ -14,7 +14,7 @@ export default function LinearProgressWithLabel(props: any) {
         )}%`}</Typography>
       </Box>
     </Box>
-  );
+  )
 }
 
 LinearProgressWithLabel.propTypes = {
@@ -23,4 +23,4 @@ LinearProgressWithLabel.propTypes = {
    * Value between 0 and 100.
    */
   value: PropTypes.number.isRequired,
-};
+}

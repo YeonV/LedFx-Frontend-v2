@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useSegmentStyles = makeStyles(() => ({
   segmentsWrapper: {
@@ -48,6 +48,6 @@ const useSegmentStyles = makeStyles(() => ({
       right: '1rem',
     },
   },
-}));
+}))
 
-export default useSegmentStyles;
+export default useSegmentStyles

@@ -1,5 +1,5 @@
-import { styled } from '@mui/material/styles';
-import { ReactElement } from 'react';
+import { styled } from '@mui/material/styles'
+import { ReactElement } from 'react'
 
 const Root = styled('div')(({ theme }) => ({
   minWidth: '23.5%',
@@ -30,19 +30,19 @@ const Root = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     boxSizing: 'border-box',
   },
-}));
+}))
 
 interface BladeFrameProps {
-  title?: string;
-  index?: number;
-  children?: any;
-  full?: boolean;
-  style?: any;
-  required?: boolean;
-  variant?: 'outlined' | 'contained' | 'inherit';
-  className?: string | undefined;
-  disabled?: boolean;
-  labelStyle?: any;
+  title?: string
+  index?: number
+  children?: any
+  full?: boolean
+  style?: any
+  required?: boolean
+  variant?: 'outlined' | 'contained' | 'inherit'
+  className?: string | undefined
+  disabled?: boolean
+  labelStyle?: any
 }
 
 const BladeFrame = ({
@@ -78,8 +78,8 @@ const BladeFrame = ({
     </Root>
   ) : (
     children
-  );
-};
+  )
+}
 
 BladeFrame.defaultProps = {
   index: undefined,
@@ -95,6 +95,6 @@ BladeFrame.defaultProps = {
   className: undefined,
   disabled: undefined,
   labelStyle: undefined,
-};
+}
 
-export default BladeFrame;
+export default BladeFrame

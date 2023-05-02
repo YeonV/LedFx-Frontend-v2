@@ -4,16 +4,16 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
-import { Ledfx } from '../../api/ledfx';
-import { SpotifyState } from './SpotifyState';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import { Ledfx } from '../../api/ledfx'
+import { SpotifyState } from './SpotifyState'
+import type { IStore } from '../useStore'
 
 const storeSpotifyActions = (set: any) => ({
   setSpotifyState: (spState: SpotifyState) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyState = spState;
+        state.spotify.spotifyState = spState
       }),
       false,
       'spotify/setSpotifyState'
@@ -21,7 +21,7 @@ const storeSpotifyActions = (set: any) => ({
   setSpEmbedUrl: (url: string) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyEmbedUrl = url;
+        state.spotify.spotifyEmbedUrl = url
       }),
       false,
       'spotify/setSpotifyEmbedUrl'
@@ -29,7 +29,7 @@ const storeSpotifyActions = (set: any) => ({
   setSpAuthToken: (token: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyAuthToken = token;
+        state.spotify.spotifyAuthToken = token
       }),
       false,
       'spotify/setSpotifyAuthToken'
@@ -37,7 +37,7 @@ const storeSpotifyActions = (set: any) => ({
   setPlayer: (player: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.player = player;
+        state.spotify.player = player
       }),
       false,
       'spotify/setPlayer'
@@ -46,7 +46,7 @@ const storeSpotifyActions = (set: any) => ({
   setGetVolume: (val: any) =>
     set(
       produce((state: IStore) => {
-        state.getVolume = val;
+        state.getVolume = val
       }),
       false,
       'spotify/setPlayer'
@@ -54,7 +54,7 @@ const storeSpotifyActions = (set: any) => ({
   setSwSize: (x: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.swSize = x || 'small';
+        state.spotify.swSize = x || 'small'
       }),
       false,
       'spotify/setSwSize'
@@ -62,7 +62,7 @@ const storeSpotifyActions = (set: any) => ({
   setSwX: (x: number) =>
     set(
       produce((state: IStore) => {
-        state.spotify.swX = x || 50;
+        state.spotify.swX = x || 50
       }),
       false,
       'spotify/setSwX'
@@ -70,7 +70,7 @@ const storeSpotifyActions = (set: any) => ({
   setSwY: (y: number) =>
     set(
       produce((state: IStore) => {
-        state.spotify.swY = y || 200;
+        state.spotify.swY = y || 200
       }),
       false,
       'spotify/setSwY'
@@ -78,7 +78,7 @@ const storeSpotifyActions = (set: any) => ({
   setSwWidth: (width: number) =>
     set(
       produce((state: IStore) => {
-        state.spotify.swWidth = width;
+        state.spotify.swWidth = width
       }),
       false,
       'spotify/setSwWidth'
@@ -86,7 +86,7 @@ const storeSpotifyActions = (set: any) => ({
   setSpVol: (vol: number) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyVol = vol;
+        state.spotify.spotifyVol = vol
       }),
       false,
       'spotify/setSpotifyVol'
@@ -94,16 +94,16 @@ const storeSpotifyActions = (set: any) => ({
   setSpPos: (pos: any) => {
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyPos = pos;
+        state.spotify.spotifyPos = pos
       }),
       false,
       'spotify/setSpotifyPos'
-    );
+    )
   },
   setSpAuthenticated: (val: boolean) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spAuthenticated = val;
+        state.spotify.spAuthenticated = val
       }),
       false,
       'spotify/setSpAuthenticated'
@@ -111,7 +111,7 @@ const storeSpotifyActions = (set: any) => ({
   setSpData: (type: string, data: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyData[type] = data;
+        state.spotify.spotifyData[type] = data
       }),
       false,
       'spotify/setSpotifyData'
@@ -119,64 +119,64 @@ const storeSpotifyActions = (set: any) => ({
   setSpDevice: (id: string) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyDevice = id;
+        state.spotify.spotifyDevice = id
       }),
       false,
       'spotify/setSpotifyDevice'
     ),
   getSpTriggers: async (id: string) => {
-    const resp = await Ledfx('/api/integrations', set, 'GET');
+    const resp = await Ledfx('/api/integrations', set, 'GET')
     // const res = await resp.json()
     if (resp) {
       set(
         produce((state: IStore) => {
-          state.spotify.spotify = resp.spotify;
+          state.spotify.spotify = resp.spotify
         }),
         false,
         'spotify/getTriggers'
-      );
+      )
     }
   },
   setSpNetworkTime: async (delay: number) => {
     set(
       produce((state: IStore) => {
-        state.spotify.spNetworkTime = delay;
+        state.spotify.spNetworkTime = delay
       }),
       false,
       'spotify/setDelay'
-    );
+    )
   },
   setSpActTriggers: async (ids: string[]) => {
     set(
       produce((state: IStore) => {
-        state.spotify.spActTriggers = ids;
+        state.spotify.spActTriggers = ids
       }),
       false,
       'spotify/setTriggers'
-    );
+    )
   },
   removeSpActTriggers: async (id: string) => {
     set(
       produce((state: IStore) => {
         state.spotify.spActTriggers = state.spotify.spActTriggers.filter(
           (f: any) => f.id !== id
-        );
+        )
       }),
       false,
       'spotify/delTriggers'
-    );
+    )
   },
   addToSpTriggerList: async (newTrigger: any, type: string) => {
     switch (type) {
       case 'create':
         set(
           produce((state: IStore) => {
-            state.spotify.spTriggersList = [...newTrigger];
+            state.spotify.spTriggersList = [...newTrigger]
           }),
           false,
           'spotify/addToTriggerList'
-        );
-        break;
+        )
+        break
       case 'update':
         set(
           produce((state: IStore) => {
@@ -186,12 +186,12 @@ const storeSpotifyActions = (set: any) => ({
             // ];
             state.spotify.spTriggersList = state.spotify.spTriggersList.map(
               (each: any) => (each.id === newTrigger.id ? newTrigger : each)
-            );
+            )
           }),
           false,
           'spotify/addToTriggerList'
-        );
-        break;
+        )
+        break
     }
   },
   addSpSongTrigger: async ({
@@ -205,7 +205,7 @@ const storeSpotifyActions = (set: any) => ({
       song_id,
       song_name,
       song_position,
-    });
+    })
   },
   editSpSongTrigger: async ({
     scene_id,
@@ -218,18 +218,18 @@ const storeSpotifyActions = (set: any) => ({
       song_id,
       song_name,
       song_position,
-    });
+    })
   },
   toggleSpTrigger: (SpotifyId: string, config: any) =>
     Ledfx(`/api/integrations/spotify/${SpotifyId}`, 'PUT', config),
   deleteSpTrigger: async (config: any) => {
-    await Ledfx('/api/integrations/spotify/spotify', 'DELETE', config);
+    await Ledfx('/api/integrations/spotify/spotify', 'DELETE', config)
     // set(state=>state.getIntegrations())
   },
   setPlaylist: (playerlist: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.playlist = playerlist;
+        state.spotify.playlist = playerlist
       }),
       false,
       'spotify/setPlayer'
@@ -237,11 +237,11 @@ const storeSpotifyActions = (set: any) => ({
   setMe: (me: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.me = me;
+        state.spotify.me = me
       }),
       false,
       'spotify/setMe'
     ),
-});
+})
 
-export default storeSpotifyActions;
+export default storeSpotifyActions

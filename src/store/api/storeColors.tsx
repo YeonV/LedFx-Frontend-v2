@@ -1,8 +1,8 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-import produce from 'immer';
-import { Ledfx } from '../../api/ledfx';
+import produce from 'immer'
+import { Ledfx } from '../../api/ledfx'
 
 const storeColors = (set: any) => ({
   colors: {
@@ -16,15 +16,15 @@ const storeColors = (set: any) => ({
     },
   },
   getColors: async () => {
-    const resp = await Ledfx('/api/colors', set);
+    const resp = await Ledfx('/api/colors', set)
     if (resp) {
       set(
         produce((s: any) => {
-          s.colors = resp;
+          s.colors = resp
         }),
         false,
         'gotColors'
-      );
+      )
     }
   },
   // HERE API DOC
@@ -38,6 +38,6 @@ const storeColors = (set: any) => ({
     await Ledfx('/api/colors', 'DELETE', {
       data: colorkey,
     }),
-});
+})
 
-export default storeColors;
+export default storeColors

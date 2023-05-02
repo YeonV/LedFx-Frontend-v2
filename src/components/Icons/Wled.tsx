@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement } from 'react'
 
 const Wled = (): ReactElement<any, any> => (
   <svg viewBox="1.2738999999999998 0.896900000000001 21.511300000000002 17.9544">
@@ -7,6 +7,6 @@ const Wled = (): ReactElement<any, any> => (
       fill="currentColor"
     />
   </svg>
-);
+)
 
-export default Wled;
+export default Wled

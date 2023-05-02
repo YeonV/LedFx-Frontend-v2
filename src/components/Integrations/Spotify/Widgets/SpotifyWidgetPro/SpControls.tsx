@@ -9,44 +9,44 @@ import {
   VolumeUp,
   PauseCircle,
   PlayCircle,
-} from '@mui/icons-material';
-import { Button, Box, IconButton, Slider } from '@mui/material';
-import { useState, useContext } from 'react';
-import useStore from '../../../../../store/useStore';
-import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles';
-import { formatTime } from '../../../../../utils/helpers';
+} from '@mui/icons-material'
+import { Button, Box, IconButton, Slider } from '@mui/material'
+import { useState, useContext } from 'react'
+import useStore from '../../../../../store/useStore'
+import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles'
+import { formatTime } from '../../../../../utils/helpers'
 import {
   spotifyRepeat,
   spotifyShuffle,
   spotifyPlay,
-} from '../../../../../utils/spotifyProxies';
-import SpSceneTrigger from './SpSceneTrigger';
+} from '../../../../../utils/spotifyProxies'
+import SpSceneTrigger from './SpSceneTrigger'
 import {
   SpotifyControlContext,
   SpotifyStateContext,
   SpotifyTriggersContext,
   SpotifyVolumeContext,
-} from '../../SpotifyProvider';
+} from '../../SpotifyProvider'
 
 export default function SpControls({ className }: any) {
-  const classes = useStyle();
-  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const ctrlSpotify = useContext(SpotifyControlContext);
-  const spotifyVolume = useContext(SpotifyVolumeContext);
-  const triggers = useContext(SpotifyTriggersContext);
-  const spotifyCtx = useContext(SpotifyStateContext);
-  const hijack = spotifyCtx?.track_window?.current_track?.album.name || '';
-  const [position, setPosition] = useState(-1);
+  const classes = useStyle()
+  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice)
+  const ctrlSpotify = useContext(SpotifyControlContext)
+  const spotifyVolume = useContext(SpotifyVolumeContext)
+  const triggers = useContext(SpotifyTriggersContext)
+  const spotifyCtx = useContext(SpotifyStateContext)
+  const hijack = spotifyCtx?.track_window?.current_track?.album.name || ''
+  const [position, setPosition] = useState(-1)
 
-  const duration = spotifyCtx?.duration || 0;
-  const paused = spotifyCtx?.paused || false;
-  const repeat_mode = spotifyCtx?.repeat_mode || 0;
-  const shuffle = spotifyCtx?.shuffle || false;
+  const duration = spotifyCtx?.duration || 0
+  const paused = spotifyCtx?.paused || false
+  const repeat_mode = spotifyCtx?.repeat_mode || 0
+  const shuffle = spotifyCtx?.shuffle || false
 
   const marks = triggers.map((x) => ({
     value: x.position_ms,
     label: x.sceneName,
-  }));
+  }))
 
   return (
     <Box
@@ -157,11 +157,11 @@ export default function SpControls({ className }: any) {
               step={1}
               max={spotifyCtx?.duration}
               onChange={(_, value) => {
-                setPosition(value as number);
+                setPosition(value as number)
               }}
               onChangeCommitted={(_, value) => {
-                setTimeout(() => setPosition(-1), 1000);
-                ctrlSpotify.setPos(value as number);
+                setTimeout(() => setPosition(-1), 1000)
+                ctrlSpotify.setPos(value as number)
               }}
               sx={{ ...PosSliderStyles, margin: '0 10px' }}
             />
@@ -170,5 +170,5 @@ export default function SpControls({ className }: any) {
         </>
       )}
     </Box>
-  );
+  )
 }

@@ -1,27 +1,27 @@
 /* eslint-disable import/no-cycle */
-import create from 'zustand';
-import { devtools, combine, persist } from 'zustand/middleware';
+import create from 'zustand'
+import { devtools, combine, persist } from 'zustand/middleware'
 
-import storeGeneral from './ui/storeGeneral';
-import storeFeatures from './ui/storeFeatures';
-import storeTours from './ui/storeTours';
-import storeUI from './ui/storeUI';
-import storeDialogs from './ui/storeDialogs';
-import storeSpotify from './ui/storeSpotify';
-import storeQLC from './ui/storeQLC';
-import storeWebAudio from './ui/storeWebAudio';
-import storeYoutube from './ui/storeYoutube';
-import storeDevices from './api/storeDevices';
-import storeVirtuals from './api/storeVirtuals';
-import storeScenes from './api/storeScenes';
-import storeIntegrations from './api/storeIntegrations';
-import storePresets from './api/storePresets';
-import storeConfig from './api/storeConfig';
-import storeActions from './api/storeActions';
-import storeColors from './api/storeColors';
-import storeSpotifyActions from './ui/storeSpotifyActions';
-import storeQLCActions from './ui/storeQLCActions';
-import storeNotifications from './ui/storeNotifications';
+import storeGeneral from './ui/storeGeneral'
+import storeFeatures from './ui/storeFeatures'
+import storeTours from './ui/storeTours'
+import storeUI from './ui/storeUI'
+import storeDialogs from './ui/storeDialogs'
+import storeSpotify from './ui/storeSpotify'
+import storeQLC from './ui/storeQLC'
+import storeWebAudio from './ui/storeWebAudio'
+import storeYoutube from './ui/storeYoutube'
+import storeDevices from './api/storeDevices'
+import storeVirtuals from './api/storeVirtuals'
+import storeScenes from './api/storeScenes'
+import storeIntegrations from './api/storeIntegrations'
+import storePresets from './api/storePresets'
+import storeConfig from './api/storeConfig'
+import storeActions from './api/storeActions'
+import storeColors from './api/storeColors'
+import storeSpotifyActions from './ui/storeSpotifyActions'
+import storeQLCActions from './ui/storeQLCActions'
+import storeNotifications from './ui/storeNotifications'
 
 const useStore = create(
   devtools(
@@ -66,9 +66,9 @@ const useStore = create(
       }
     )
   )
-);
+)
 
-const state = useStore.getState();
-export type IStore = typeof state;
+const state = useStore.getState()
+export type IStore = typeof state
 
-export default useStore;
+export default useStore

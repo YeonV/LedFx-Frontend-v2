@@ -1,5 +1,5 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { MemoryRouter } from 'react-router-dom';
+import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { MemoryRouter } from 'react-router-dom'
 
 // eslint-disable-next-line
 import DeviceCard from './DeviceCard';
@@ -17,14 +17,14 @@ export default {
       showPanel: true,
     },
   },
-} as ComponentMeta<typeof DeviceCard>;
+} as ComponentMeta<typeof DeviceCard>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof DeviceCard> = (args) => (
   <DeviceCard {...args} />
-);
+)
 
-export const Default = Template.bind({});
+export const Default = Template.bind({})
 Default.args = {
   deviceName: 'My Wled',
   iconName: 'wled',
@@ -46,4 +46,4 @@ Default.args = {
   isDevice: 'yz-quad',
   linkTo: '/',
   index: 1,
-};
+}

@@ -12,6 +12,6 @@ const IntegrationRow = ({ installedIntegrations, installedIntegration }: any) =>
       //   type={installedIntegrations[installedIntegration].type}
       //   data={installedIntegrations[installedIntegration].data}
       // />
-      null;
+      null
 
-export default IntegrationRow;
+export default IntegrationRow

@@ -1,9 +1,9 @@
-import { Card, CardHeader } from '@mui/material';
-import { Info } from '@mui/icons-material';
-import PropTypes from 'prop-types';
+import { Card, CardHeader } from '@mui/material'
+import { Info } from '@mui/icons-material'
+import PropTypes from 'prop-types'
 
 interface NoYetProps {
-  type?: string;
+  type?: string
 }
 
 const NoYet: React.FC<NoYetProps> = ({ type }): JSX.Element => (
@@ -14,14 +14,14 @@ const NoYet: React.FC<NoYetProps> = ({ type }): JSX.Element => (
       subheader={`You can add your first ${type} using the plus button`}
     />
   </Card>
-);
+)
 
 NoYet.propTypes = {
   type: PropTypes.string,
-};
+}
 
 NoYet.defaultProps = {
   type: 'Thing',
-};
+}
 
-export default NoYet;
+export default NoYet

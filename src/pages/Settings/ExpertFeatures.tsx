@@ -1,17 +1,17 @@
-import { Divider } from '@mui/material';
-import { SettingsRow } from './SettingsComponents';
-import useStore from '../../store/useStore';
+import { Divider } from '@mui/material'
+import { SettingsRow } from './SettingsComponents'
+import useStore from '../../store/useStore'
 
 const ExpertFeatures = () => {
-  const setFeatures = useStore((state) => state.setFeatures);
-  const showFeatures = useStore((state) => state.showFeatures);
-  const features = useStore((state) => state.features);
+  const setFeatures = useStore((state) => state.setFeatures)
+  const showFeatures = useStore((state) => state.showFeatures)
+  const features = useStore((state) => state.features)
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
-  );
+  )
   const setShowActiveDevicesFirst = useStore(
     (state) => state.setShowActiveDevicesFirst
-  );
+  )
   return (
     <>
       {showFeatures.cloud && (
@@ -29,7 +29,7 @@ const ExpertFeatures = () => {
         />
       )}
       <SettingsRow
-        title="Show active and streaming devices first"
+        title="Sort active devices first"
         checked={showActiveDevicesFirst}
         onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
       />
@@ -86,7 +86,7 @@ const ExpertFeatures = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default ExpertFeatures;
+export default ExpertFeatures

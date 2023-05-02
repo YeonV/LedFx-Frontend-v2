@@ -1,18 +1,18 @@
 /* eslint-disable no-param-reassign */
-import axios from 'axios';
-import produce from 'immer';
-import isElectron from 'is-electron';
+import axios from 'axios'
+import produce from 'immer'
+import isElectron from 'is-electron'
 // import { useStore } from '@/store/useStore';
 // eslint-disable-next-line import/no-cycle
-import useStore from '../store/useStore';
-import type { IStore } from '../store/useStore';
+import useStore from '../store/useStore'
+import type { IStore } from '../store/useStore'
 // eslint-disable-next-line prettier/prettier
 const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
-const storedURL = window.localStorage.getItem('ledfx-host');
+const storedURL = window.localStorage.getItem('ledfx-host')
 
 const api = axios.create({
   baseURL: storedURL || baseURL,
-});
+})
 
 // eslint-disable-next-line import/prefer-default-export
 export const Ledfx = async (
@@ -20,23 +20,23 @@ export const Ledfx = async (
   method?: 'GET' | 'PUT' | 'POST' | 'DELETE',
   body?: any
 ): Promise<any> => {
-  const { setState } = useStore;
+  const { setState } = useStore
   try {
-    let response = null as any;
+    let response = null as any
     switch (method) {
       case 'PUT':
-        response = await api.put(path, body);
-        break;
+        response = await api.put(path, body)
+        break
       case 'DELETE':
-        response = await api.delete(path, body);
-        break;
+        response = await api.delete(path, body)
+        break
       case 'POST':
-        response = await api.post(path, body);
-        break;
+        response = await api.post(path, body)
+        break
 
       default:
-        response = await api.get(path);
-        break;
+        response = await api.get(path)
+        break
     }
     // console.log('1:', response);
     if (response.data && response.data.payload) {
@@ -49,12 +49,12 @@ export const Ledfx = async (
               response.data.payload.reason ||
               response.data.payload.message ||
               JSON.stringify(response.data.payload),
-          };
+          }
         })
-      );
+      )
       // console.log('2:', response);
       if (response.data.status) {
-        return response.data.status;
+        return response.data.status
       }
     }
     // console.log('3:', response);
@@ -68,19 +68,19 @@ export const Ledfx = async (
               response.payload.reason ||
               response.payload.message ||
               JSON.stringify(response.payload),
-          };
+          }
         })
-      );
+      )
     }
     // console.log('4:', response);
     if (response.status === 200) {
       // console.log('4eyyy:', response);
       setState(
         produce((state: IStore) => {
-          state.disconnected = false;
+          state.disconnected = false
         })
-      );
-      return response.data || response;
+      )
+      return response.data || response
     }
     // console.log('5:', response);
     return setState(
@@ -89,9 +89,9 @@ export const Ledfx = async (
           isOpen: true,
           messageType: 'error',
           message: response.error || JSON.stringify(response),
-        };
+        }
       })
-    );
+    )
   } catch (error: any) {
     if (error.message) {
       return setState(
@@ -100,9 +100,9 @@ export const Ledfx = async (
             isOpen: true,
             messageType: 'error',
             message: JSON.stringify(error.message),
-          };
+          }
         })
-      );
+      )
     }
     setState(
       produce((state: IStore) => {
@@ -110,9 +110,9 @@ export const Ledfx = async (
           isOpen: true,
           messageType: 'error',
           message: JSON.stringify(error, null, 2),
-        };
+        }
       })
-    );
+    )
   }
-  return true;
-};
+  return true
+}

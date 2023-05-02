@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useTheme, Button, Fab } from '@mui/material';
-import Tour from 'reactour';
-import { LiveHelp } from '@mui/icons-material';
-import useStore from '../../store/useStore';
+import { useState } from 'react'
+import { useTheme, Button, Fab } from '@mui/material'
+import Tour from 'reactour'
+import { LiveHelp } from '@mui/icons-material'
+import useStore from '../../store/useStore'
 
 const steps = [
   {
@@ -85,19 +85,19 @@ const steps = [
       backgroundColor: '#303030',
     },
   },
-];
+]
 
 const TourHome = ({
   className,
   variant = 'button',
 }: {
-  className?: string;
-  variant?: string;
+  className?: string
+  variant?: string
 }) => {
-  const theme = useTheme();
-  const tour = useStore((state) => state.tours.home);
-  const [isTourOpen, setIsTourOpen] = useState(tour);
-  const setTour = useStore((state) => state.setTour);
+  const theme = useTheme()
+  const tour = useStore((state) => state.tours.home)
+  const [isTourOpen, setIsTourOpen] = useState(tour)
+  const setTour = useStore((state) => state.setTour)
 
   return (
     <>
@@ -106,8 +106,8 @@ const TourHome = ({
           aria-label="guided-tour"
           className="step-zero"
           onClick={() => {
-            setTour('home');
-            setIsTourOpen(true);
+            setTour('home')
+            setIsTourOpen(true)
           }}
           style={{
             margin: '8px',
@@ -125,8 +125,8 @@ const TourHome = ({
         <Button
           className={`step-zero ${className}`}
           onClick={() => {
-            setTour('home');
-            setIsTourOpen(true);
+            setTour('home')
+            setIsTourOpen(true)
           }}
         >
           <LiveHelp sx={{ mr: '8px' }} />
@@ -140,12 +140,12 @@ const TourHome = ({
         onRequestClose={() => setIsTourOpen(false)}
       />
     </>
-  );
-};
+  )
+}
 
 TourHome.defaultProps = {
   className: '',
   variant: 'button',
-};
+}
 
-export default TourHome;
+export default TourHome

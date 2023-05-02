@@ -1,46 +1,46 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/require-default-props */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { useEffect } from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Slide from '@mui/material/Slide';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import React, { useEffect } from 'react'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import Slide from '@mui/material/Slide'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 
-import { ListItemIcon, MenuItem } from '@mui/material';
-import { Settings } from '@mui/icons-material';
-import { TransitionProps } from '@mui/material/transitions';
-import { getOverlapping } from '../../../utils/helpers';
-import useStore from '../../../store/useStore';
+import { ListItemIcon, MenuItem } from '@mui/material'
+import { Settings } from '@mui/icons-material'
+import { TransitionProps } from '@mui/material/transitions'
+import { getOverlapping } from '../../../utils/helpers'
+import useStore from '../../../store/useStore'
 
-import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog';
-import Segment from './Segment';
+import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog'
+import Segment from './Segment'
 
-import useEditVirtualsStyles from './EditVirtuals.styles';
+import useEditVirtualsStyles from './EditVirtuals.styles'
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...(props as any)} />;
+    return <Slide direction="up" ref={ref} {...(props as any)} />
   }
-);
+)
 type Props = {
-  _?: never;
-  children?: any;
-  className?: string | undefined;
-  onClick?: any;
-};
+  _?: never
+  children?: any
+  className?: string | undefined
+  onClick?: any
+}
 
 const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
-  const { children } = props;
+  const { children } = props
   return (
     <MenuItem ref={ref} {...props}>
       {children}
     </MenuItem>
-  );
-});
+  )
+})
 
 export default function EditVirtuals({
   virtId,
@@ -54,48 +54,48 @@ export default function EditVirtuals({
   onClick = () => {},
   innerKey,
 }: any) {
-  const currentVirtual = useStore((state) => state.currentVirtual);
-  const setCurrentVirtual = useStore((state) => state.setCurrentVirtual);
-  const classes = useEditVirtualsStyles();
-  const showSnackbar = useStore((state) => state.ui.showSnackbar);
-  const getDevices = useStore((state) => state.getDevices);
-  const virtuals = useStore((state) => state.virtuals);
+  const currentVirtual = useStore((state) => state.currentVirtual)
+  const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
+  const classes = useEditVirtualsStyles()
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
+  const getDevices = useStore((state) => state.getDevices)
+  const virtuals = useStore((state) => state.virtuals)
   // const editVirtual = useStore((state) => state.dialogs.editVirtual);
   const setDialogOpenEditVirtual = useStore(
     (state) => state.setDialogOpenEditVirtual
-  );
-  const virtual = virtuals[currentVirtual || virtId];
-  const [open, setOpen] = React.useState(!!currentVirtual || false);
+  )
+  const virtual = virtuals[currentVirtual || virtId]
+  const [open, setOpen] = React.useState(!!currentVirtual || false)
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    const output = getOverlapping(virtual.segments);
-    const overlap = Object.keys(output).find((k) => output[k].overlap);
+    const output = getOverlapping(virtual.segments)
+    const overlap = Object.keys(output).find((k) => output[k].overlap)
     if (overlap) {
       showSnackbar(
         'warning',
         `Overlapping in ${overlap} detected! Please Check your config`
-      );
+      )
     } else {
-      setOpen(false);
-      setDialogOpenEditVirtual(false);
-      setCurrentVirtual(null);
-      onClick();
+      setOpen(false)
+      setDialogOpenEditVirtual(false)
+      setCurrentVirtual(null)
+      onClick()
     }
-  };
+  }
 
   useEffect(() => {
-    getDevices();
-  }, [getDevices]);
+    getDevices()
+  }, [getDevices])
 
   useEffect(() => {
     if (currentVirtual && type === 'hidden') {
-      setOpen(true);
+      setOpen(true)
     }
-  }, [currentVirtual]);
+  }, [currentVirtual])
 
   return virtual && virtual.config ? (
     <>
@@ -104,8 +104,8 @@ export default function EditVirtuals({
           key={innerKey}
           className={className}
           onClick={(e: any) => {
-            e.preventDefault();
-            handleClickOpen();
+            e.preventDefault()
+            handleClickOpen()
           }}
         >
           <ListItemIcon>{icon}</ListItemIcon>
@@ -118,7 +118,7 @@ export default function EditVirtuals({
           color={color}
           onClick={() => {
             // onClick(e);
-            handleClickOpen();
+            handleClickOpen()
           }}
           size="small"
           className={className}
@@ -169,5 +169,5 @@ export default function EditVirtuals({
         </div>
       </Dialog>
     </>
-  ) : null;
+  ) : null
 }

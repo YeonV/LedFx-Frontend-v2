@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@mui/material';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Card, CardContent } from '@mui/material'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSlider from "./BladeSlider";
 
@@ -24,12 +24,12 @@ export default {
       panelPosition: 'bottom',
     },
   },
-} as ComponentMeta<typeof BladeSlider>;
+} as ComponentMeta<typeof BladeSlider>
 
 // eslint-disable-next-line
 const Template: ComponentStory<typeof BladeSlider> = (args) => <BladeSlider {...args} />;
 
-export const Number = Template.bind({});
+export const Number = Template.bind({})
 Number.args = {
   variant: 'outlined',
   step: undefined,
@@ -50,4 +50,4 @@ Number.args = {
   marks: undefined,
   index: undefined,
   style: {},
-};
+}

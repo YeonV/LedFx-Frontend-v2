@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Button,
   Card,
@@ -9,41 +9,41 @@ import {
   DialogContent,
   DialogTitle,
   Link,
-} from '@mui/material';
-import GitInfo from 'react-git-info/macro';
-import useStore from '../../store/useStore';
-import fversion from '../../../package.json';
+} from '@mui/material'
+import GitInfo from 'react-git-info/macro'
+import useStore from '../../store/useStore'
+import fversion from '../../../package.json'
 
 export default function AboutDialog({ className, children, startIcon }: any) {
-  const config = useStore((state) => state.config);
-  const getInfo = useStore((state) => state.getInfo);
-  const gitInfo = GitInfo();
+  const config = useStore((state) => state.config)
+  const getInfo = useStore((state) => state.getInfo)
+  const gitInfo = GitInfo()
 
-  const [open, setOpen] = useState(false);
-  const [bcommit, setBcommit] = useState('');
-  const [bversion, setBversion] = useState('');
+  const [open, setOpen] = useState(false)
+  const [bcommit, setBcommit] = useState('')
+  const [bversion, setBversion] = useState('')
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   useEffect(() => {
     async function fetchData() {
-      const info = await getInfo();
+      const info = await getInfo()
       if (info && info.git_build_commit) {
-        setBcommit(info.git_build_commit);
-        setBversion(info.version);
+        setBcommit(info.git_build_commit)
+        setBversion(info.version)
       }
     }
 
     if (open) {
-      fetchData();
+      fetchData()
     }
-  }, [open]);
+  }, [open])
 
   return (
     <div>
@@ -129,5 +129,5 @@ export default function AboutDialog({ className, children, startIcon }: any) {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

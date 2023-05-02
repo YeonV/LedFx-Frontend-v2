@@ -4,45 +4,48 @@ import {
   BrowserRouter,
   Routes,
   Route,
-} from 'react-router-dom';
-import { useHotkeys } from 'react-hotkeys-hook';
-import isElectron from 'is-electron';
-import { Box, useTheme } from '@mui/material';
-import ScrollToTop from '../utils/scrollToTop';
-import '../App.css';
+} from 'react-router-dom'
+import { useHotkeys } from 'react-hotkeys-hook'
+import isElectron from 'is-electron'
+import { Box, useTheme } from '@mui/material'
+import ScrollToTop from '../utils/scrollToTop'
+import '../App.css'
 
-import LeftBar from '../components/Bars/BarLeft';
-import TopBar from '../components/Bars/BarTop';
-import BottomBar from '../components/Bars/BarBottom';
-import MessageBar from '../components/Bars/BarMessage';
-import NoHostDialog from '../components/Dialogs/NoHostDialog';
-import Home from './Home/Home';
-import Devices from './Devices/Devices';
-import Device from './Device/Device';
-import Scenes from './Scenes/Scenes';
-import Settings from './Settings/Settings';
-import Integrations from './Integrations/Integrations';
-import LoginRedirect from './Login/LoginRedirect';
-import SmartBar from '../components/Dialogs/SmartBar';
-import useStore from '../store/useStore';
-import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect';
-import { drawerWidth } from '../utils/helpers';
+import LeftBar from '../components/Bars/BarLeft'
+import TopBar from '../components/Bars/BarTop'
+import BottomBar from '../components/Bars/BarBottom'
+import MessageBar from '../components/Bars/BarMessage'
+import NoHostDialog from '../components/Dialogs/NoHostDialog'
+import Home from './Home/Home'
+import Devices from './Devices/Devices'
+import Device from './Device/Device'
+import Scenes from './Scenes/Scenes'
+import Settings from './Settings/Settings'
+import Integrations from './Integrations/Integrations'
+import LoginRedirect from './Login/LoginRedirect'
+import SmartBar from '../components/Dialogs/SmartBar'
+import useStore from '../store/useStore'
+import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
+import { drawerWidth } from '../utils/helpers'
 
 const Routings = ({ handleWs }: any) => {
-  const theme = useTheme();
+  const theme = useTheme()
   const smartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.smartBar.open
-  );
+  )
   const setSmartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.setSmartBarOpen
-  );
+  )
   const leftBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.leftBar.open
-  );
+  )
 
-  useHotkeys('ctrl+alt+y', () => setSmartBarOpen(!smartBarOpen));
-  useHotkeys('ctrl+alt+z', () => setSmartBarOpen(!smartBarOpen));
+  useHotkeys('ctrl+alt+y', () => setSmartBarOpen(!smartBarOpen))
+  useHotkeys('ctrl+alt+z', () => setSmartBarOpen(!smartBarOpen))
 
+  const ios =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
   return (
     <>
       <ScrollToTop />
@@ -54,7 +57,7 @@ const Routings = ({ handleWs }: any) => {
         sx={{
           flexGrow: 1,
           background: 'transparent',
-          padding: theme.spacing(0),
+          padding: ios ? 0 : theme.spacing(0),
           transition: theme.transitions.create('margin', {
             easing: leftBarOpen
               ? theme.transitions.easing.easeOut
@@ -100,8 +103,8 @@ const Routings = ({ handleWs }: any) => {
       </Box>
       <BottomBar />
     </>
-  );
-};
+  )
+}
 
 const Pages = ({ handleWs }: any) => {
   return (
@@ -123,7 +126,7 @@ const Pages = ({ handleWs }: any) => {
         </Routes>
       </BrowserRouter>
     </>
-  );
-};
+  )
+}
 
-export default Pages;
+export default Pages

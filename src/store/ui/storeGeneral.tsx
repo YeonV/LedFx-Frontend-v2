@@ -1,27 +1,27 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer';
-import isElectron from 'is-electron';
-import type { IStore } from '../useStore';
+import produce from 'immer'
+import isElectron from 'is-electron'
+import type { IStore } from '../useStore'
 
 const storeGeneral = (set: any) => ({
   host: isElectron()
     ? 'http://localhost:8888'
     : window.location.href.split('#')[0],
   setHost: (host: any) => {
-    window.localStorage.setItem('ledfx-host', host.title ? host.title : host);
+    window.localStorage.setItem('ledfx-host', host.title ? host.title : host)
     return set(
       produce((state: IStore) => {
-        state.host = host;
+        state.host = host
       }),
       false,
       'general/host'
-    );
+    )
   },
   platform: 'yz',
   setPlatform: (platform: string) =>
     set(
       produce((state: IStore) => {
-        state.platform = platform;
+        state.platform = platform
       }),
       false,
       'general/setPlatform'
@@ -30,7 +30,7 @@ const storeGeneral = (set: any) => ({
   setProtoCall: (msg: string) =>
     set(
       produce((state: IStore) => {
-        state.protoCall = msg;
+        state.protoCall = msg
       }),
       false,
       'general/setPlatform'
@@ -39,7 +39,7 @@ const storeGeneral = (set: any) => ({
   setDisconnected: (dis: boolean) =>
     set(
       produce((state: IStore) => {
-        state.disconnected = dis;
+        state.disconnected = dis
       }),
       false,
       'general/setStreamingToDevices'
@@ -48,11 +48,11 @@ const storeGeneral = (set: any) => ({
   setStreamingToDevices: (devices: any) => {
     set(
       produce((state: IStore) => {
-        state.streamingToDevices = devices;
+        state.streamingToDevices = devices
       }),
       false,
       'general/setStreamingToDevices'
-    );
+    )
   },
 
   // graphs: !!isElectron(),
@@ -60,48 +60,48 @@ const storeGeneral = (set: any) => ({
   setShowActiveDevicesFirst: (val: boolean) => {
     set(
       produce((state: IStore) => {
-        state.showActiveDevicesFirst = val;
+        state.showActiveDevicesFirst = val
       }),
       false,
       'general/setShowActiveDevicesFirst'
-    );
+    )
   },
   graphs: true,
   toggleGraphs: () => {
     set(
       produce((state: IStore) => {
-        state.graphs = !state.graphs;
+        state.graphs = !state.graphs
       }),
       false,
       'general/toggleGraphs'
-    );
+    )
   },
   graphsMulti: false,
   toggleGraphsMulti: () => {
     set(
       produce((state: IStore) => {
-        state.graphsMulti = !state.graphsMulti;
+        state.graphsMulti = !state.graphsMulti
       }),
       false,
       'general/toggleGraphsMulti'
-    );
+    )
   },
   showMatrix: false,
   toggleShowMatrix: () => {
     set(
       produce((state: IStore) => {
-        state.showMatrix = !state.showMatrix;
+        state.showMatrix = !state.showMatrix
       }),
       false,
       'general/toggleShowMatrix'
-    );
+    )
   },
 
   pixelGraphs: [] as string[],
   setPixelGraphs: (virtuals: string[]): void =>
     set(
       produce((state: IStore) => {
-        state.pixelGraphs = [...virtuals];
+        state.pixelGraphs = [...virtuals]
       }),
       false,
       'ui/setPixelGraphs'
@@ -110,7 +110,7 @@ const storeGeneral = (set: any) => ({
   setViewMode: (mode: string): void =>
     set(
       produce((state: IStore) => {
-        state.viewMode = mode;
+        state.viewMode = mode
       }),
       false,
       'ui/setViewMode'
@@ -120,7 +120,7 @@ const storeGeneral = (set: any) => ({
   setIsLogged: (logged: boolean) =>
     set(
       produce((state: IStore) => {
-        state.isLogged = logged;
+        state.isLogged = logged
       }),
       false,
       'general/setIsLogged'
@@ -130,7 +130,7 @@ const storeGeneral = (set: any) => ({
   setIntro: (intro: boolean) =>
     set(
       produce((state: IStore) => {
-        state.intro = intro;
+        state.intro = intro
       }),
       false,
       'general/setIsLogged'
@@ -143,9 +143,9 @@ const storeGeneral = (set: any) => ({
   increase: (by: number) =>
     set(
       produce((state: IStore) => {
-        state.animals.bears += by;
+        state.animals.bears += by
       })
     ),
-});
+})
 
-export default storeGeneral;
+export default storeGeneral

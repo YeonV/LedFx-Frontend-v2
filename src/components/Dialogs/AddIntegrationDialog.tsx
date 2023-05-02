@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
-import { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
+import { useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import {
   Button,
   MenuItem,
@@ -14,15 +14,15 @@ import {
   DialogActions,
   Dialog,
   Divider,
-} from '@mui/material';
-import useStore from '../../store/useStore';
-import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
+} from '@mui/material'
+import useStore from '../../store/useStore'
+import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 
-const PREFIX = 'AddIntegrationDialog';
+const PREFIX = 'AddIntegrationDialog'
 
 const classes = {
   wrapper: `${PREFIX}-wrapper`,
-};
+}
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   [`& .${classes.wrapper}`]: {
@@ -52,61 +52,61 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
       boxSizing: 'border-box',
     },
   },
-}));
+}))
 
 const AddIntegrationDialog = () => {
-  const getIntegrations = useStore((state) => state.getIntegrations);
+  const getIntegrations = useStore((state) => state.getIntegrations)
 
-  const addIntegration = useStore((state) => state.addIntegration);
-  const updateIntegration = useStore((state) => state.updateIntegration);
-  const integrations = useStore((state) => state.integrations);
+  const addIntegration = useStore((state) => state.addIntegration)
+  const updateIntegration = useStore((state) => state.updateIntegration)
+  const integrations = useStore((state) => state.integrations)
 
-  const open = useStore((state) => state.dialogs.addIntegration?.open || false);
+  const open = useStore((state) => state.dialogs.addIntegration?.open || false)
 
   const integrationId = useStore(
     (state) => state.dialogs.addIntegration?.edit || false
-  );
+  )
   const initial =
     typeof integrationId === 'string'
       ? integrations[integrationId]
-      : { type: '', config: {} };
+      : { type: '', config: {} }
 
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
-  );
+  )
 
-  const integrationsTypes = useStore((state) => state.schemas?.integrations);
-  const showSnackbar = useStore((state) => state.ui.showSnackbar);
-  const [integrationType, setIntegrationType] = useState('');
-  const [model, setModel] = useState({});
+  const integrationsTypes = useStore((state) => state.schemas?.integrations)
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
+  const [integrationType, setIntegrationType] = useState('')
+  const [model, setModel] = useState({})
 
   const currentSchema = integrationType
     ? integrationsTypes[integrationType].schema
-    : {};
+    : {}
 
   const handleClose = () => {
-    setDialogOpenAddIntegration(false);
-  };
+    setDialogOpenAddIntegration(false)
+  }
   const handleAddDevice = () => {
     const cleanedModel = Object.fromEntries(
       Object.entries(model).filter(([_, v]) => v !== '')
-    );
-    const defaultModel = {} as any;
+    )
+    const defaultModel = {} as any
 
     for (const key in currentSchema.properties) {
       currentSchema.properties[key].default !== undefined
         ? (defaultModel[key] = currentSchema.properties[key].default)
-        : undefined;
+        : undefined
     }
 
     const valid = !currentSchema.required
       ? true
       : currentSchema.required?.every((val: string) =>
           Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
-        );
+        )
 
     if (!valid) {
-      showSnackbar('warning', 'Please fill in all required fields.');
+      showSnackbar('warning', 'Please fill in all required fields.')
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
@@ -118,10 +118,10 @@ const AddIntegrationDialog = () => {
         config: { ...defaultModel, ...cleanedModel },
       }).then((res) => {
         if (res !== 'failed') {
-          setDialogOpenAddIntegration(false);
-          getIntegrations();
+          setDialogOpenAddIntegration(false)
+          getIntegrations()
         }
-      });
+      })
     } else {
       // console.log("EDITING");
       updateIntegration({
@@ -130,23 +130,23 @@ const AddIntegrationDialog = () => {
         config: { ...model },
       }).then((res) => {
         if (res !== 'failed') {
-          setDialogOpenAddIntegration(false);
-          getIntegrations();
+          setDialogOpenAddIntegration(false)
+          getIntegrations()
         }
-      });
+      })
     }
-  };
+  }
   const handleTypeChange = (value: string, init = {}) => {
-    setIntegrationType(value);
-    setModel(init);
-  };
+    setIntegrationType(value)
+    setModel(init)
+  }
   const handleModelChange = (config: any) => {
-    setModel({ ...model, ...config });
-  };
+    setModel({ ...model, ...config })
+  }
 
   useEffect(() => {
-    handleTypeChange(initial.type, initial.config);
-  }, [initial.type]);
+    handleTypeChange(initial.type, initial.config)
+  }, [initial.type])
 
   return (
     <StyledDialog
@@ -214,7 +214,7 @@ const AddIntegrationDialog = () => {
         </Button>
       </DialogActions>
     </StyledDialog>
-  );
-};
+  )
+}
 
-export default AddIntegrationDialog;
+export default AddIntegrationDialog

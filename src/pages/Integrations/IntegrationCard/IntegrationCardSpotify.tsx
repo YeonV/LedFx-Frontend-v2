@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import Collapse from '@mui/material/Collapse';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import IconButton from '@mui/material/IconButton';
+import { useEffect, useState } from 'react'
+import Card from '@mui/material/Card'
+import Button from '@mui/material/Button'
+import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
+import Collapse from '@mui/material/Collapse'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import IconButton from '@mui/material/IconButton'
 import {
   CardActions,
   Chip,
@@ -15,62 +15,62 @@ import {
   Switch,
   Avatar,
   useTheme,
-} from '@mui/material';
-import Popover from '../../../components/Popover/Popover';
-import useStore from '../../../store/useStore';
-import useIntegrationCardStyles from './IntegrationCard.styles';
-import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyAuthButton';
-import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen';
-import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon';
-import { spotifyMe } from '../../../utils/spotifyProxies';
+} from '@mui/material'
+import Popover from '../../../components/Popover/Popover'
+import useStore from '../../../store/useStore'
+import useIntegrationCardStyles from './IntegrationCard.styles'
+import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyAuthButton'
+import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen'
+import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
+import { spotifyMe } from '../../../utils/spotifyProxies'
 
 const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
-  const classes = useIntegrationCardStyles();
-  const theme = useTheme();
-  const getIntegrations = useStore((state) => state.getIntegrations);
-  const integrations = useStore((state) => state.integrations);
-  const deleteIntegration = useStore((state) => state.deleteIntegration);
-  const toggleIntegration = useStore((state) => state.toggleIntegration);
-  const setMe = useStore((state) => state.setMe);
-  const me = useStore((state) => state.spotify.me);
-  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated);
+  const classes = useIntegrationCardStyles()
+  const theme = useTheme()
+  const getIntegrations = useStore((state) => state.getIntegrations)
+  const integrations = useStore((state) => state.integrations)
+  const deleteIntegration = useStore((state) => state.deleteIntegration)
+  const toggleIntegration = useStore((state) => state.toggleIntegration)
+  const setMe = useStore((state) => state.setMe)
+  const me = useStore((state) => state.spotify.me)
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
   const setDialogOpenAddIntegration = useStore(
     (state) => state.setDialogOpenAddIntegration
-  );
-  const player = useStore((state) => state.spotify.player);
+  )
+  const player = useStore((state) => state.spotify.player)
 
-  const [expanded, setExpanded] = useState(false);
-  const variant = 'outlined';
-  const color = 'inherit';
+  const [expanded, setExpanded] = useState(false)
+  const variant = 'outlined'
+  const color = 'inherit'
 
   const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+    setExpanded(!expanded)
+  }
 
   const handleDeleteDevice = (integ: string) => {
     deleteIntegration(integrations[integ].id).then(() => {
-      getIntegrations();
-    });
-  };
+      getIntegrations()
+    })
+  }
 
   const handleEditIntegration = (integ: any) => {
-    setDialogOpenAddIntegration(true, integ);
-  };
+    setDialogOpenAddIntegration(true, integ)
+  }
   const handleActivateIntegration = (integ: any) => {
     toggleIntegration({
       id: integ.id,
-    }).then(() => getIntegrations());
-  };
+    }).then(() => getIntegrations())
+  }
 
   useEffect(() => {
     const getMe = async () => {
-      const i = await spotifyMe();
+      const i = await spotifyMe()
       if (i) {
-        setMe(i);
+        setMe(i)
       }
-    };
-    getMe();
-  }, [integrations[integration].status, spAuthenticated]);
+    }
+    getMe()
+  }, [integrations[integration].status, spAuthenticated])
 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
@@ -92,12 +92,12 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
             onClick={async () => {
               if ((window as any).Spotify && player && spAuthenticated) {
                 if (!integrations[integration].active) {
-                  await player.connect();
+                  await player.connect()
                 } else {
-                  await player.disconnect();
+                  await player.disconnect()
                 }
               }
-              return handleActivateIntegration(integrations[integration]);
+              return handleActivateIntegration(integrations[integration])
             }}
           />
         }
@@ -202,7 +202,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         </Collapse>
       </CardActions>
     </Card>
-  ) : null;
-};
+  ) : null
+}
 
-export default IntegrationCardSpotify;
+export default IntegrationCardSpotify
