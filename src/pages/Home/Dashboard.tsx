@@ -1,41 +1,21 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-await-in-loop */
 import { useEffect, useState } from 'react'
 import {
-  Button,
   Box,
   Typography,
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
-  CircularProgress,
   useTheme,
   Stack,
   CircularProgress as CircularProgress5,
   Fab,
   Tooltip,
-  IconButton,
-  Icon,
-  createSvgIcon,
-  SvgIcon,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import {
-  Chat,
-  Check,
-  DeleteForever,
-  GitHub,
-  PauseOutlined,
-  PlayArrow,
-  Dvr,
-} from '@mui/icons-material'
-import green from '@mui/material/colors/green'
+import { DeleteForever, GitHub } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, sleep } from '../../utils/helpers'
 import Gauge from './Gauge'
@@ -43,16 +23,6 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import Popover from '../../components/Popover/Popover'
 import TourHome from '../../components/Tours/TourHome'
 import SmartBar from '../../components/Dialogs/SmartBar'
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
-import GlobalActionBar from '../../components/GlobalActionBar'
-import DbButton from './DbButton'
-import DbLinks from './DbLinks'
-import DbRow from './DbRow'
-import DbStats from './DbStats'
-import DbConfig from './DbConfig'
-import DbGlobalActions from './DbGlobalActions'
-import DbScenes from './DbScenes'
-import DbScenesPL from './DbScenesPL'
 import MGraph from '../../components/MGraph'
 
 const Dashboard = () => {
@@ -63,7 +33,6 @@ const Dashboard = () => {
   const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
-  const integrations = useStore((state) => state.integrations)
 
   const config = useStore((state) => state.config)
   const getDevices = useStore((state) => state.getDevices)
@@ -71,9 +40,7 @@ const Dashboard = () => {
 
   const getScenes = useStore((state) => state.getScenes)
   const [scanning, setScanning] = useState(-1)
-  const setSmartBarOpen = useStore(
-    (state) => state.ui.bars && state.ui.setSmartBarOpen
-  )
+
   const pixelTotal = Object.keys(devices)
     .map((d) => devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0)
@@ -113,6 +80,7 @@ const Dashboard = () => {
   useEffect(() => {
     getScenes()
   }, [])
+  console.log(config)
 
   return (
     <div className="Content">
@@ -372,7 +340,7 @@ const Dashboard = () => {
           </Tooltip>
         </Stack>
       </Stack>
-      <MGraph />
+      {config.dev_mode && <MGraph />}
     </div>
   )
 }

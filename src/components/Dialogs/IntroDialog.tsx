@@ -222,7 +222,8 @@ export default function IntroDialog({ handleScan, scanning }: any) {
                 }}
                 sx={{
                   borderRadius: '3vh',
-                  borderColor: 1 ? theme.palette.primary.main : 'inherit',
+                  // borderColor: 1 ? theme.palette.primary.main : 'inherit',
+                  borderColor: 'inherit',
                   textTransform: 'none',
                   marginLeft: small ? 0 : '1rem',
                   marginTop: small ? '1rem' : 0,
