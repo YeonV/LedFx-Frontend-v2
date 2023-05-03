@@ -183,6 +183,7 @@ export const SettingsRow = ({
   children,
   direct,
   value,
+  style,
 }: {
   step?: string
   title: string
@@ -191,6 +192,7 @@ export const SettingsRow = ({
   direct?: boolean
   onChange?: () => void
   children?: any
+  style?: any
 }) => {
   const classes = useStyles()
   const ios =
@@ -198,7 +200,10 @@ export const SettingsRow = ({
     (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
 
   return (
-    <div className={`${classes.settingsRow} step-settings-${step} `}>
+    <div
+      className={`${classes.settingsRow} step-settings-${step} `}
+      style={style}
+    >
       <label>{title}</label>
       <div
         style={{
@@ -231,6 +236,7 @@ SettingsRow.defaultProps = {
   checked: false,
   direct: false,
   onChange: null,
+  style: null,
 }
 
 export const SettingsAccordion = ({
