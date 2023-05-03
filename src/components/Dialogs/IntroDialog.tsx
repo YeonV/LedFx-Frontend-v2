@@ -19,6 +19,7 @@ import wledLogo from '../../icons/png/wled.png'
 import BladeScene from '../../pages/Home/BladeScene'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import { SettingsRow } from '../../pages/Settings/SettingsComponents'
 
 export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
   const intro = useStore((state) => state.intro)
@@ -43,6 +44,9 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
 
+  
+  const graphsMulti = useStore((state) => state.graphsMulti)
+  const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const onSystemSettingsChange = (setting: string, value: any) => {
@@ -195,9 +199,9 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       },
       {
         key: 'audio',
-        title: 'No Party yet? Adjust your Audio Settings',
+        title: 'No Party yet? Adjust some Settings',
         icon: 'volumeUp',
-        label_left: schema && (
+        label_left: <div style={{ padding: '1rem'}}>{schema && (
           <BladeSchemaForm
             hideToggle
             schema={schema}
@@ -208,7 +212,15 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               }).then(() => getSystemConfig())
             }}
           />
-        ),
+        )}
+        <SettingsRow
+            title="Graphs (overkill)"
+            checked={graphsMulti}
+            onChange={() => toggleGraphsMulti()}
+            style={{ fontSize: 16, paddingLeft: '0.25rem',}}
+            direct
+          />
+        </div>,
         label_right: 'Apply',
         action_left: (): any => false,
         action_right: handleNext,
