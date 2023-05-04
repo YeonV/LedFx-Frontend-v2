@@ -111,49 +111,6 @@ const UICard = () => {
               }}
             />
           </SettingsRow>
-          <SettingsRow
-            title="Global Brightness"
-            step="two"
-            value={globalBrightness}
-          >
-            <SettingsSlider
-              value={globalBrightness}
-              step={1}
-              min={0}
-              max={100}
-              onChangeCommitted={(_e: any, val: any) =>
-                setSystemSetting('global_brightness', val / 100)
-              }
-              onChange={(_e: any, val: any) => {
-                setGlobalBrightness(val)
-              }}
-            />
-            <Input
-              disableUnderline
-              className={sliderClasses.input}
-              style={{ width: 70 }}
-              value={globalBrightness}
-              margin="dense"
-              onChange={(e) => {
-                setGlobalBrightness(parseInt(e.target.value, 10))
-              }}
-              onBlur={(e) => {
-                setSystemSetting(
-                  'global_brightness',
-                  parseInt(e.target.value, 10)
-                )
-              }}
-              sx={{
-                '& input': { textAlign: 'right' },
-              }}
-              inputProps={{
-                min: 0,
-                max: 100,
-                type: 'number',
-                'aria-labelledby': 'input-slider',
-              }}
-            />
-          </SettingsRow>
           <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
             <SettingsSlider
               value={pixelLength}
@@ -194,43 +151,82 @@ const UICard = () => {
               }}
             />
           </SettingsRow>
-
-          <SettingsRow
-            title="Update Notification: wait min"
-            value={updateNotificationInterval}
-          >
-            <SettingsSlider
-              value={updateNotificationInterval}
-              step={1}
-              min={1}
-              max={4320}
-              onChange={(_e: any, val: number) =>
-                setUpdateNotificationInterval(val)
-              }
-            />
-            <Input
-              disableUnderline
-              className={sliderClasses.input}
-              style={{ width: 70 }}
-              value={updateNotificationInterval}
-              margin="dense"
-              onChange={(e) => {
-                setUpdateNotificationInterval(parseInt(e.target.value, 10))
-              }}
-              sx={{
-                '& input': { textAlign: 'right' },
-              }}
-              inputProps={{
-                min: 1,
-                max: 4320,
-                type: 'number',
-                'aria-labelledby': 'input-slider',
-              }}
-            />
-          </SettingsRow>
-          <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
         </>
       )}
+      <SettingsRow
+        title="Global Brightness"
+        step="two"
+        value={globalBrightness}
+      >
+        <SettingsSlider
+          value={globalBrightness}
+          step={1}
+          min={0}
+          max={100}
+          onChangeCommitted={(_e: any, val: any) =>
+            setSystemSetting('global_brightness', val / 100)
+          }
+          onChange={(_e: any, val: any) => {
+            setGlobalBrightness(val)
+          }}
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          style={{ width: 70 }}
+          value={globalBrightness}
+          margin="dense"
+          onChange={(e) => {
+            setGlobalBrightness(parseInt(e.target.value, 10))
+          }}
+          onBlur={(e) => {
+            setSystemSetting('global_brightness', parseInt(e.target.value, 10))
+          }}
+          sx={{
+            '& input': { textAlign: 'right' },
+          }}
+          inputProps={{
+            min: 0,
+            max: 100,
+            type: 'number',
+            'aria-labelledby': 'input-slider',
+          }}
+        />
+      </SettingsRow>
+      <SettingsRow
+        title="Update Notification: wait min"
+        value={updateNotificationInterval}
+      >
+        <SettingsSlider
+          value={updateNotificationInterval}
+          step={1}
+          min={1}
+          max={4320}
+          onChange={(_e: any, val: number) =>
+            setUpdateNotificationInterval(val)
+          }
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          style={{ width: 70 }}
+          value={updateNotificationInterval}
+          margin="dense"
+          onChange={(e) => {
+            setUpdateNotificationInterval(parseInt(e.target.value, 10))
+          }}
+          sx={{
+            '& input': { textAlign: 'right' },
+          }}
+          inputProps={{
+            min: 1,
+            max: 4320,
+            type: 'number',
+            'aria-labelledby': 'input-slider',
+          }}
+        />
+      </SettingsRow>
+      <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
       <SettingsRow
         title="Expert Mode"
         direct
