@@ -8,7 +8,8 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
-import { ChevronRight, ExpandMore } from '@mui/icons-material'
+import { ExpandMore } from '@mui/icons-material'
+// import { ChevronRight, ExpandMore } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
 export const useStyles = makeStyles(() => ({
@@ -181,7 +182,9 @@ export const SettingsRow = ({
   checked,
   onChange,
   children,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   direct,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   value,
   style,
 }: {
@@ -195,9 +198,9 @@ export const SettingsRow = ({
   style?: any
 }) => {
   const classes = useStyles()
-  const ios =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+  // const ios =
+  //   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  //   (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
 
   return (
     <div
@@ -214,16 +217,17 @@ export const SettingsRow = ({
           textAlign: 'right',
         }}
       >
-        {ios ? (
-          children ? (
-            value
-          ) : direct ? (
-            <SettingsSwitch checked={checked} onChange={onChange} />
-          ) : null
-        ) : (
+        {
+          // ios ? (
+          //   children ? (
+          //     value
+          //   ) : direct ? (
+          //     <SettingsSwitch checked={checked} onChange={onChange} />
+          //   ) : null
+          // ) :
           children || <SettingsSwitch checked={checked} onChange={onChange} />
-        )}
-        {ios && !direct && <ChevronRight sx={{ ml: 1, color: '#57565a' }} />}
+        }
+        {/* {ios && !direct && <ChevronRight sx={{ ml: 1, color: '#57565a' }} />} */}
       </div>
     </div>
   )
