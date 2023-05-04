@@ -22,6 +22,9 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
   const addScene = useStore((state) => state.addScene)
   const small = useMediaQuery('(max-width: 720px)')
 
+  const matrix = Object.keys(virtuals).filter(
+    (v: string) => virtuals[v].config.rows > 1
+  )
   const smalls = Object.keys(virtuals).filter(
     (v: string) => virtuals[v].pixel_count < 9
   )
@@ -92,6 +95,16 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       setVirtualEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'default_presets', 'blade_power_plus', 'ocean-bass')
     }
+    if (Object.keys(matrix).length > 0) {
+      matrix.map((v) => {
+        return setVirtualEffect(
+          v,
+          'equalizer',
+          { gradient_repeat: virtuals[v].config.rows },
+          true
+        )
+      })
+    }
     // }
     addScene('Blade Scene', 'yz:logo2', '', '', '')
   }
@@ -103,11 +116,10 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
         onClick()
       }}
       sx={{
-        borderRadius: '3vh',
+        borderRadius: '3rem',
         textTransform: 'none',
         marginRight: small ? 0 : '1rem',
         width: small ? '80vw' : 'min(40vw, 550px)',
-        minHeight: 'min(15vh, 120px)',
         fontSize: '2rem',
       }}
     >

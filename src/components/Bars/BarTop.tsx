@@ -210,6 +210,7 @@ const TopBar = () => {
         <Toolbar
           style={{
             justifyContent: 'space-between',
+            minHeight: 56,
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 16 }}>
@@ -254,7 +255,7 @@ const TopBar = () => {
                   aria-label="open drawer"
                   onClick={handleLeftBarOpen}
                   edge="start"
-                  sx={{ marginRight: theme.spacing(2) }}
+                  sx={{ marginRight: theme.spacing(2), top: 8 }}
                   className="step-three"
                 >
                   <MenuIcon />
