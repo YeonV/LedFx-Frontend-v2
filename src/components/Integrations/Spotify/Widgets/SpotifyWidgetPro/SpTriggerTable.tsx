@@ -283,7 +283,7 @@ export default function SpotifyTriggerTable() {
           className={classes.root}
           autoHeight
           // checkboxSelection
-          disableSelectionOnClick
+          disableRowSelectionOnClick
           onRowDoubleClick={(params: any) => {
             spotifyPlaySong(spotifyDevice, params.row.songId)
           }}

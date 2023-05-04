@@ -27,7 +27,7 @@ const columns: GridColDef[] = [
     field: 'scene_image',
     headerName: 'Image',
     width: 150,
-    renderCell: (params: GridRenderCellParams<string>) =>
+    renderCell: (params: GridRenderCellParams) =>
       sceneImage(params.value || 'Wallpaper'),
   },
   {
@@ -82,17 +82,17 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
           rowHeight={50}
           columns={columns}
           hideFooter
-          headerHeight={1}
-          pageSize={5}
-          disableSelectionOnClick
+          // headerHeight={1}
+          pageSizeOptions={[5]}
+          disableRowSelectionOnClick
           rows={Object.values(theScenes).map((v: any, i: number) => ({
             id: i + 1,
             ...v,
           }))}
           initialState={{
-            pagination: {
-              pageSize: 100,
-            },
+            // pagination: {
+            //   pageSize: 100,
+            // },
             sorting: {
               sortModel: [{ field: 'used', sort: 'asc' }],
             },

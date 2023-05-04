@@ -43,9 +43,11 @@ export default function SpControls({ className }: any) {
   const repeat_mode = spotifyCtx?.repeat_mode || 0
   const shuffle = spotifyCtx?.shuffle || false
 
-  const marks = triggers.map((x) => ({
-    value: x.position_ms,
-    label: x.sceneName,
+  const { setVol, prev, togglePlay, next, setPos } = ctrlSpotify
+
+  const marks = triggers?.map(({ position_ms, sceneName }) => ({
+    value: position_ms,
+    label: sceneName,
   }))
 
   return (
@@ -71,7 +73,7 @@ export default function SpControls({ className }: any) {
               <IconButton
                 aria-label="next song"
                 sx={{ marginLeft: '0 !important' }}
-                onClick={() => ctrlSpotify.setVol(spotifyVolume === 0 ? 1 : 0)}
+                onClick={() => setVol(spotifyVolume === 0 ? 1 : 0)}
               >
                 {spotifyVolume === 0 ? (
                   <VolumeMute
@@ -101,15 +103,12 @@ export default function SpControls({ className }: any) {
                 <Shuffle htmlColor="#bbb" />
               )}
             </IconButton>
-            <IconButton
-              aria-label="previous song"
-              onClick={() => ctrlSpotify.prev()}
-            >
+            <IconButton aria-label="previous song" onClick={() => prev()}>
               <SkipPrevious fontSize="large" htmlColor="#bbb" />
             </IconButton>
             <IconButton
               aria-label={paused ? 'play' : 'pause'}
-              onClick={() => ctrlSpotify.togglePlay()}
+              onClick={() => togglePlay()}
             >
               {paused ? (
                 <PlayCircle sx={{ fontSize: '3rem' }} htmlColor="#fff" />
@@ -117,10 +116,7 @@ export default function SpControls({ className }: any) {
                 <PauseCircle sx={{ fontSize: '3rem' }} htmlColor="#fff" />
               )}
             </IconButton>
-            <IconButton
-              aria-label="next song"
-              onClick={() => ctrlSpotify.next()}
-            >
+            <IconButton aria-label="next song" onClick={() => next()}>
               <SkipNext fontSize="large" htmlColor="#bbb" />
             </IconButton>
             <IconButton
@@ -161,7 +157,7 @@ export default function SpControls({ className }: any) {
               }}
               onChangeCommitted={(_, value) => {
                 setTimeout(() => setPosition(-1), 1000)
-                ctrlSpotify.setPos(value as number)
+                setPos(value as number)
               }}
               sx={{ ...PosSliderStyles, margin: '0 10px' }}
             />

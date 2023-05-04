@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer'
+import { produce } from 'immer'
 import { VariantType } from 'notistack'
 import pkg from '../../../package.json'
 import type { IStore } from '../useStore'

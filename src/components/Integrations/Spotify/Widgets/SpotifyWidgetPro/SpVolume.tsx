@@ -12,7 +12,7 @@ import {
 export default function SpVolume() {
   const [volu, setVolu] = useState(-1)
   const spotifyVolume = useContext(SpotifyVolumeContext)
-  const ctrlSpotify = useContext(SpotifyControlContext)
+  const { setVol } = useContext(SpotifyControlContext)
   return (
     <Stack
       spacing={2}
@@ -23,7 +23,7 @@ export default function SpVolume() {
       <IconButton
         aria-label="next song"
         sx={{ marginLeft: '0 !important' }}
-        onClick={() => ctrlSpotify.setVol(spotifyVolume === 0 ? 1 : 0)}
+        onClick={() => setVol(spotifyVolume === 0 ? 1 : 0)}
       >
         {spotifyVolume === 0 ? (
           <VolumeMute htmlColor="rgba(255,255,255,0.4)" />
@@ -40,7 +40,7 @@ export default function SpVolume() {
         value={volu > 0 ? volu : spotifyVolume * 100}
         onChange={(_, v) => setVolu((v as number) / 100)}
         onChangeCommitted={(e, v: any) => {
-          ctrlSpotify.setVol(v / 100)
+          setVol(v / 100)
           setVolu(-1)
         }}
         sx={{ ...VolSliderStyles, '&&&': { marginLeft: 0, marginRight: 3 } }}

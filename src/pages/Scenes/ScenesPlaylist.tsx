@@ -93,14 +93,14 @@ export default function ScenesPlaylist({
       field: 'scene_image',
       headerName: 'Image',
       width: db ? 100 : 150,
-      renderCell: (params: GridRenderCellParams<string>) =>
+      renderCell: (params: GridRenderCellParams) =>
         sceneImage(params.value || 'Wallpaper'),
     },
     {
       field: 'name',
       headerName: 'Name',
       width: db ? 136 : 220,
-      renderCell: (params: GridRenderCellParams<string>) => (
+      renderCell: (params: GridRenderCellParams) => (
         <Typography
           variant="body2"
           sx={{
@@ -117,7 +117,7 @@ export default function ScenesPlaylist({
       field: 'scene_id',
       headerName: 'Scene ID',
       width: 100,
-      renderCell: (params: GridRenderCellParams<string>) => {
+      renderCell: (params: GridRenderCellParams) => {
         const removeScene2PL = useStore((state) => state.removeScene2PL)
         return (
           <Button
@@ -259,9 +259,9 @@ export default function ScenesPlaylist({
           rowHeight={50}
           columns={columns}
           hideFooter
-          headerHeight={1}
+          // headerHeight={1}
           // pageSize={5}
-          disableSelectionOnClick
+          disableRowSelectionOnClick
           rows={(
             (theScenes && theScenes.length > 0 && Object.values(theScenes)) ||
             []
@@ -272,10 +272,8 @@ export default function ScenesPlaylist({
           getRowClassName={(params) =>
             `row${params.row.id === scenePLactiveIndex ? '--active' : ''}`
           }
+          pageSizeOptions={[100]}
           initialState={{
-            pagination: {
-              pageSize: 100,
-            },
             sorting: {
               sortModel: [{ field: 'id', sort: 'asc' }],
             },

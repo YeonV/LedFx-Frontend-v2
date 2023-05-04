@@ -26,7 +26,7 @@ const DbDevices = () => {
       field: 'icon_name',
       headerName: '',
       width: 50,
-      renderCell: (params: GridRenderCellParams<string>) => (
+      renderCell: (params: GridRenderCellParams) => (
         <BladeIcon name={params.value} />
       ),
     },
@@ -50,7 +50,7 @@ const DbDevices = () => {
       field: 'is_device',
       headerName: 'is_device',
       width: 100,
-      renderCell: (params: GridRenderCellParams<string>) => (
+      renderCell: (params: GridRenderCellParams) => (
         <Chip label={params.row.is_device ? 'Device' : 'Virtual'} />
       ),
     },
@@ -80,14 +80,14 @@ const DbDevices = () => {
           rowHeight={50}
           columns={columns}
           hideFooter
-          headerHeight={1}
-          pageSize={100}
-          disableSelectionOnClick
+          // headerHeight={1}
+          pageSizeOptions={[100]}
+          disableRowSelectionOnClick
           rows={rows}
           initialState={{
-            pagination: {
-              pageSize: 100,
-            },
+            // pagination: {
+            //   pageSize: 100,
+            // },
             sorting: {
               sortModel: [{ field: 'name', sort: 'asc' }],
             },

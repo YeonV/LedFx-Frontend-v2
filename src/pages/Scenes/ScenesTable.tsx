@@ -21,7 +21,7 @@ const columns: GridColDef[] = [
     field: 'scene_image',
     headerName: 'Image',
     width: 150,
-    renderCell: (params: GridRenderCellParams<string>) =>
+    renderCell: (params: GridRenderCellParams) =>
       sceneImage(params.value || 'Wallpaper'),
   },
   {
@@ -35,7 +35,7 @@ const columns: GridColDef[] = [
     headerName: 'Tags',
     width: 200,
     editable: true,
-    renderCell: (params: GridRenderCellParams<string>) =>
+    renderCell: (params: GridRenderCellParams) =>
       params?.value &&
       params.value
         .split(',')
@@ -59,11 +59,11 @@ export default function ScenesTable({ scenes }: any) {
         }))}
         rowHeight={100}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSizeOptions={[5]}
+        // rowsPerPageOptions={[5]}
         checkboxSelection
-        disableSelectionOnClick
-        experimentalFeatures={{ newEditingApi: true }}
+        disableRowSelectionOnClick
+        // experimentalFeatures={{ newEditingApi: true }}
       />
     </Box>
   )
