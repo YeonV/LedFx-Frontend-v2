@@ -75,7 +75,6 @@ const PixelGraph = ({
     }}
     className={`${className}  ${active ? 'active' : ''}`}
   >{Array.from(Array(rows).keys()).map((row) => (
-  
       <div
         key={`row-${row}`}
         style={{
@@ -88,7 +87,7 @@ const PixelGraph = ({
         }}
         className={`${className}  ${active ? 'active' : ''}`}
       >
-        {pixels[0].slice(row * rows, (row + 1) * rows).map((_p: any, i: number) => (
+        {pixels[0].slice(row * pixels[0].length / rows, (row + 1) * pixels[0].length / rows).map((_p: any, i: number) => (
           <div
             key={i}
             style={{
@@ -98,7 +97,7 @@ const PixelGraph = ({
               margin: '2px',
               borderRadius: '5px',
               backgroundColor: active
-                ? `rgb(${pixels[0][row * rows + i]},${pixels[1][row * rows + i]},${pixels[2][row * rows + i]})`
+                ? `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
                 : '#0002',
             }}
           />
