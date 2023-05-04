@@ -4,7 +4,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
-import produce from 'immer'
+import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import { SpotifyState } from './SpotifyState'
 import type { IStore } from '../useStore'

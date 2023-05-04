@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios'
-import produce from 'immer'
+import { produce } from 'immer'
 import isElectron from 'is-electron'
 // import { useStore } from '@/store/useStore';
 // eslint-disable-next-line import/no-cycle

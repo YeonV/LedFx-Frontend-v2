@@ -95,11 +95,11 @@ export default function SpPlaylist() {
           className={`${classes.root} playlist`}
           rows={rows}
           columns={columns}
-          disableSelectionOnClick
-          headerHeight={0}
+          disableRowSelectionOnClick
+          // headerHeight={0}
           hideFooter
           disableVirtualization
-          showColumnRightBorder={false}
+          // showColumnRightBorder={false}
           onRowDoubleClick={(params: any) => {
             spotifyPlaySong(
               spotifyDevice,
@@ -117,8 +117,8 @@ export default function SpPlaylist() {
               borderBottom: 0,
             },
           }}
-          pageSize={rows.length}
-          rowsPerPageOptions={[rows.length]}
+          // pageSize={rows.length}
+          // rowsPerPageOptions={[rows.length]}
           getRowClassName={(params: GridRowParams<any>) =>
             (params.row.track.name ===
             playerState?.context.metadata?.current_item.name) && (

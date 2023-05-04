@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer'
+import { produce } from 'immer'
 import type { IStore } from '../useStore'
 // eslint-disable-next-line prettier/prettier
 type ITours = 'home' | 'devices' | 'device' | 'effect' | 'integrations' | 'scenes' | 'settings';

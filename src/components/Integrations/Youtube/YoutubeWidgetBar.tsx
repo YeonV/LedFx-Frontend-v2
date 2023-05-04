@@ -257,7 +257,7 @@ const YoutubeWidgetBar = ({
               }}
             >
               {state.queued.length > 0 &&
-                state.queued.map((t: typeof state.queued[0], i: number) => (
+                state.queued.map((t: (typeof state.queued)[0], i: number) => (
                   <div
                     key={i}
                     style={{

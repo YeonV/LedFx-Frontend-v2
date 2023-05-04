@@ -48,7 +48,7 @@ export default function ScenesMostUsed({
       field: 'scene_image',
       headerName: 'Image',
       width: db ? 100 : 150,
-      renderCell: (params: GridRenderCellParams<string>) =>
+      renderCell: (params: GridRenderCellParams) =>
         sceneImage(params.value || 'Wallpaper'),
     },
     {
@@ -100,17 +100,17 @@ export default function ScenesMostUsed({
           rowHeight={50}
           columns={db ? columns.filter((c) => c.field !== 'used') : columns}
           hideFooter
-          headerHeight={1}
-          pageSize={5}
-          disableSelectionOnClick
+          // headerHeight={1}
+          pageSizeOptions={[5]}
+          disableRowSelectionOnClick
           rows={Object.values(mostUsedScenes).map((v: any, i: number) => ({
             id: i + 1,
             ...v,
           }))}
           initialState={{
-            pagination: {
-              pageSize: 100,
-            },
+            // pagination: {
+            //   pageSize: 100,
+            // },
             sorting: {
               sortModel: [{ field: 'used', sort: 'desc' }],
             },

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import create from 'zustand'
+import { create } from 'zustand'
 import { devtools, combine, persist } from 'zustand/middleware'
 
 import storeGeneral from './ui/storeGeneral'

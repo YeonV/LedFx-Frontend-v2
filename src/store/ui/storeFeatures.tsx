@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
-import produce from 'immer'
+import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
 type IFeatures =

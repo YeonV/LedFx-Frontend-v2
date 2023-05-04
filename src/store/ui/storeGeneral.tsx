@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import produce from 'immer'
+import { produce } from 'immer'
 import isElectron from 'is-electron'
 import type { IStore } from '../useStore'
 

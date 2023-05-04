@@ -254,7 +254,7 @@ export default function QLCTriggerTable() {
         className={classes.root}
         autoHeight
         // checkboxSelection
-        disableSelectionOnClick
+        disableRowSelectionOnClick
         sx={{
           boxShadow: 2,
           color: '#fff',
