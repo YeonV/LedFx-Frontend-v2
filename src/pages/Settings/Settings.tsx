@@ -61,11 +61,9 @@ const Settings = () => {
           <AlphaFeatures />
         </SettingsAccordion>
       )}
-      {showFeatures.dashboard && (
-        <SettingsAccordion title="Dashboard Settings" accId="1db">
-          <DashboardCard />
-        </SettingsAccordion>
-      )}
+      <SettingsAccordion title="Dashboard Settings" accId="1db">
+        <DashboardCard />
+      </SettingsAccordion>
       {features.wled && (
         <SettingsAccordion title="WLED Settings" accId="4">
           <div>

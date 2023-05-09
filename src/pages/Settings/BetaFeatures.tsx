@@ -4,7 +4,6 @@ import { SettingsRow } from './SettingsComponents'
 const BetaFeatures = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const showFeatures = useStore((state) => state.showFeatures)
-  const setShowFeatures = useStore((state) => state.setShowFeatures)
   const features = useStore((state) => state.features)
 
   return (
@@ -23,11 +22,6 @@ const BetaFeatures = () => {
           onChange={() => setFeatures('spotifypro', !features.spotifypro)}
         />
       )}
-      <SettingsRow
-        title="Dashboard (wip)"
-        checked={showFeatures.dashboard}
-        onChange={() => setShowFeatures('dashboard', !showFeatures.dashboard)}
-      />
       <SettingsRow
         title="Scene external call"
         checked={features.sceneexternal}
