@@ -228,7 +228,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
   return (
     <Dialog
       onClose={handleClose}
-      open={intro && devices.length === 0}
+      open={intro || devices.length === 0}
       PaperProps={{
         style: { maxWidth: 'calc(100vw - 64px)' },
       }}
