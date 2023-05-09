@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   PointElement,
   LineElement,
   Title,
@@ -16,6 +18,7 @@ import {
   CardContent,
   CardHeader,
   Slider,
+  Switch,
   TextField,
   useTheme,
 } from '@mui/material'
@@ -24,6 +27,7 @@ import BladeFrame from './SchemaForm/components/BladeFrame'
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   PointElement,
   LineElement,
   Title,
@@ -35,6 +39,8 @@ ChartJS.register(
 const MGraph = () => {
   const [data, setData] = useState({} as any)
   const theme = useTheme()
+
+  const [scaleType, setScaleType] = useState(false)
 
   const [animationDuration, setAnimationDuration] = useState<number>(10)
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
@@ -80,6 +86,7 @@ const MGraph = () => {
         datasets: [
           {
             label: '',
+            id: 1,
             lineTension,
             backgroundColor: `#0dbedc${fillOpacity.toString(16)}`,
             fill: true,
@@ -91,10 +98,9 @@ const MGraph = () => {
       }
 
       // Adjust the axes based on the max
-      const melbankMax = Math.max(...messageData.melbank)
       const chartOptions = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
         tooltips: { enabled: false },
         hover: {
           animationDuration: 0,
@@ -105,7 +111,12 @@ const MGraph = () => {
         },
         responsiveAnimationDuration: 0,
         scales: {
+          xAxis: {
+            display: false,
+            maxTicksLimit: 3,
+          },
           x: {
+            display: true,
             title: {
               display: true,
               text: 'Frequency',
@@ -114,24 +125,35 @@ const MGraph = () => {
               borderColor: '#fff',
               maxTicksLimit: 12,
               callback(value: any, _index: any, _values: any) {
-                return `$${value} Hz`
+                return `${value} Hz`
               },
             },
             grid: {
               color: 'rgba(255, 255, 255, 0)',
               // borderColor: 'rgba(255, 255, 255, 0.15)',
             },
+            ...(scaleType && { type: 'logarithmic' }),
+          },
+          yAxis: {
+            min: 0,
+            max: 2.0
           },
           y: {
+            title: {
+              display: true,
+              text: 'Melbank',
+            },
             ticks: {
-              min: 0,
-              max: Math.max(2.0, melbankMax),
-              stepSize: 0.5,
+              display: false,
+              maxTicksLimit: 7,
+              callback(value: any, _index: any, _values: any) {
+                return `${parseFloat(value).toFixed(2)}`
+              },
             },
-            grid: {
-              color: 'rgba(255, 255, 255, 0)',
-              // borderColor: 'rgba(255, 255, 255, 0.15)',
-            },
+            // grid: {
+            //   color: 'rgba(255, 255, 255, 0)',
+            //   // borderColor: 'rgba(255, 255, 255, 0.15)',
+            // },
           },
         },
         plugins: {
@@ -146,8 +168,9 @@ const MGraph = () => {
     return () => {
       document.removeEventListener('YZoldDev', handleWebsockets)
     }
-  }, [animationDuration, fillOpacity])
+  }, [animationDuration, fillOpacity, scaleType])
 
+  
   return (
     <div>
       <Card
@@ -239,6 +262,16 @@ const MGraph = () => {
                 width: '130px',
                 backgroundColor: theme.palette.background.paper,
               }}
+            />
+          </BladeFrame>
+
+          <BladeFrame
+            title="Logarithmic"
+            style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}
+          >
+            <Switch
+              value={scaleType}
+              onChange={() => setScaleType(!scaleType)}
             />
           </BladeFrame>
         </CardContent>
