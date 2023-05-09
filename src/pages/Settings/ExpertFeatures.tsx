@@ -6,12 +6,6 @@ const ExpertFeatures = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const showFeatures = useStore((state) => state.showFeatures)
   const features = useStore((state) => state.features)
-  const showActiveDevicesFirst = useStore(
-    (state) => state.showActiveDevicesFirst
-  )
-  const setShowActiveDevicesFirst = useStore(
-    (state) => state.setShowActiveDevicesFirst
-  )
   return (
     <>
       {showFeatures.cloud && (
@@ -28,11 +22,6 @@ const ExpertFeatures = () => {
           onChange={() => setFeatures('webaudio', !features.webaudio)}
         />
       )}
-      <SettingsRow
-        title="Sort active devices first"
-        checked={showActiveDevicesFirst}
-        onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
-      />
       <SettingsRow
         title="Copy To"
         checked={features.streamto}

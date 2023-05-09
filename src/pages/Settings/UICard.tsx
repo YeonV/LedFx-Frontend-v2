@@ -49,10 +49,17 @@ const UICard = () => {
     getSystemConfig()
   }, [])
 
+  const showActiveDevicesFirst = useStore(
+    (state) => state.showActiveDevicesFirst
+  )
+  const setShowActiveDevicesFirst = useStore(
+    (state) => state.setShowActiveDevicesFirst
+  )
+
   return (
     <>
       <SettingsRow
-        title="Show Graphs (eats performance)"
+        title="Show Graph on Device page (eats performance)"
         checked={graphs}
         onChange={() => toggleGraphs()}
         direct
@@ -60,7 +67,7 @@ const UICard = () => {
       {config.visualisation_fps && graphs && (
         <>
           <SettingsRow
-            title="Also on Devices page"
+            title="Show Graphs on Devices page (crazy)"
             checked={graphsMulti}
             onChange={() => toggleGraphsMulti()}
             direct
@@ -227,6 +234,11 @@ const UICard = () => {
         />
       </SettingsRow>
       <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
+      <SettingsRow
+        title="Sort active devices first"
+        checked={showActiveDevicesFirst}
+        onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
+      />
       <SettingsRow
         title="Expert Mode"
         direct

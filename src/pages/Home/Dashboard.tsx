@@ -166,7 +166,7 @@ const Dashboard = () => {
         {db ? <SmartBar direct /> : <SmartBar direct />}
         <Stack spacing={2} direction="row">
           <Tooltip title="Scan for WLED Devices">
-            <Box sx={{ m: 0, position: 'relative' }}>
+            <Box sx={{ m: 0, position: 'relative', zIndex: 0 }}>
               <Popover
                 type="fab"
                 noIcon
@@ -226,7 +226,7 @@ const Dashboard = () => {
             </Fab>
           </Tooltip> */}
           <Tooltip title="Clear Frontend Data">
-            <span style={{ margin: 0 }}>
+            <span style={{ margin: 0, zIndex: 0 }}>
               <Popover
                 type="fab"
                 color="primary"
@@ -257,7 +257,7 @@ const Dashboard = () => {
             </Fab>
           </Tooltip> */}
           <Tooltip title="Guided Tour">
-            <span style={{ margin: 0 }}>
+            <span style={{ margin: 0, zIndex: 0 }}>
               <TourHome className="step-one" variant="fab" />
             </span>
           </Tooltip>
@@ -275,6 +275,7 @@ const Dashboard = () => {
               }
               style={{
                 margin: '8px',
+                zIndex: 0,
               }}
               sx={{
                 bgcolor: theme.palette.text.disabled,
@@ -298,6 +299,7 @@ const Dashboard = () => {
               }
               style={{
                 margin: '8px',
+                zIndex: 0,
               }}
               sx={{
                 bgcolor: theme.palette.text.disabled,
@@ -321,6 +323,7 @@ const Dashboard = () => {
               }
               style={{
                 margin: '8px',
+                zIndex: 0,
               }}
               sx={{
                 bgcolor: theme.palette.text.disabled,

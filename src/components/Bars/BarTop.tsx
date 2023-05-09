@@ -298,8 +298,7 @@ const TopBar = () => {
               right: 16,
             }}
           >
-            <GlobalActionBar className="hideHd" />
-            {disconnected && (
+            {disconnected ? (
               <Box>
                 <IconButton
                   aria-label="display more actions"
@@ -325,6 +324,8 @@ const TopBar = () => {
                   />
                 </IconButton>
               </Box>
+            ) : (
+              <GlobalActionBar className="hideHd" />
             )}
 
             <IconButton
