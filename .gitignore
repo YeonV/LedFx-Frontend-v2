@@ -30,3 +30,4 @@ yarn-error.log*
 /extraResources/*.exe
 src/assets/DMG_BG.psd
 extraResources/*
+.github/workflows/workflow-file-private.yml
