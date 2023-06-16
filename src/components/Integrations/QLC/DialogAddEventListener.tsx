@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from 'react'
 import { styled } from '@mui/material/styles'
 // import { useSelector, useDispatch } from 'react-redux';
@@ -58,7 +59,7 @@ function ConfirmationDialogRaw(props: any) {
   const [sliderValue, setSliderValue] = React.useState(0)
   const [formData, setformData] = React.useState({
     event_type: null,
-    event_filter: { scene_name: null },
+    event_filter: { scene_id: null },
     qlc_payload: null,
   })
   const [qlcData, setqlcData] = React.useState([])
@@ -76,13 +77,16 @@ function ConfirmationDialogRaw(props: any) {
   const SceneSet =
     qlcInfo &&
     qlcInfo?.event_types &&
-    qlcInfo?.event_types?.scene_activated?.event_filters?.scene_name
+    qlcInfo?.event_types?.scene_activated?.event_filters?.scene_id
+  const temp = (qlcInfo && qlcInfo?.qlc_widgets) || []
 
-  const temp = qlcInfo && qlcInfo?.qlc_widgets
-  const temp2 = [...temp]
   const QLCWidgets =
-    qlcInfo?.qlc_widgets.length &&
-    temp2?.sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
+    temp.length > 0
+      ? [...temp].sort(
+        (a: string[], b: string[]) => parseInt(a[0], 10) - parseInt(b[0], 10)
+      )
+      : []
+
   // const EVENT_TYPES= qlcInfo && qlcInfo.event_types && qlcInfo.event_types
   // console.log("test3",EVENT_TYPES);
   // const qlcStuff = [];
@@ -375,7 +379,7 @@ function ConfirmationDialogRaw(props: any) {
           </InputLabel>
           <Select
             id="grouped-select"
-            defaultValue={formData?.event_filter?.scene_name}
+            defaultValue={formData?.event_filter?.scene_id}
             name="scene_name"
             onChange={handleEventChange}
           >
@@ -431,6 +435,7 @@ function ConfirmationDialogRaw(props: any) {
             // value={formData.qlc_payload}
             name="qlc_payload"
             onChange={handleTypeChange}
+            sx={{ minWidth: 250 }}
           >
             <MenuItem value="" />
             {QLCWidgets &&
@@ -475,7 +480,6 @@ function ConfirmationDialogRaw(props: any) {
           {checkButtonType && (
             <Switch
               color="primary"
-              // value={!formData.switch_value?255:0}
               checked={switchValue}
               name={checkID || ''}
               onChange={handleEventChange}
@@ -513,50 +517,17 @@ function ConfirmationDialogRaw(props: any) {
             handleTypeRemoveDropDown={handleTypeRemoveDropDown}
           />
         ))}
-        {/*
-                If Below button pressed, then show additional 'Then do this' dropdown field.
-                */}
+        {/* If Below button pressed, then show additional 'Then do this' dropdown field. */}
         <Button
           variant="contained"
           color="primary"
           aria-label="Add"
           endIcon={<AddCircleIcon />}
-          // aria-haspopup="true"
-          // integrationsProxies.deleteIntegration(data);
           onClick={handleTypeAddDropDown}
           role="listitem"
         >
           ADD additional `then do this`
         </Button>
-
-        {/* <SchemaForm
-          className={classes.schemaForm}
-          schema={{
-            type: 'object',
-            title: 'Configuration',
-            properties: {},
-            ...{
-             integrationTypes ? integrationTypes[integration].schema : {}
-            },
-          }}
-          form={
-                        integrationTypes[integration] &&
-                        integrationTypes[integration].schema.required
-                        Line 413 backup <Button onClick={console.log("QLCFormEventTest",formData)} color="primary">
-                    }
-                              model={model}
-          onModelChange={onModelChange}
-        /> */}
-        {/* Maybe BladeSchemaForm to be used instead of SchemaForm here? */}
-        {/* <BladeSchemaForm
-          schema={{
-            type: 'object',
-            title: 'Configuration',
-            properties: {},
-          }}
-          model={model}
-          onModelChange={onModelChange}
-        /> */}
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel} color="primary">
@@ -574,13 +545,10 @@ ConfirmationDialogRaw.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   value: PropTypes.string.isRequired,
-  // config: PropTypes.any,
 }
 
 export default function ConfirmationDialog({ integration }: any) {
   const [open, setOpen] = React.useState(false)
-  // const dispatch = useDispatch();
-  // console.log("YZ03:", event_types)
 
   const handleClickListItem = () => {
     setOpen(true)
@@ -596,9 +564,7 @@ export default function ConfirmationDialog({ integration }: any) {
         variant="contained"
         color="primary"
         aria-label="Add"
-        //   className={classes.button}
         endIcon={<AddCircleIcon />}
-        // aria-haspopup="true"
         onClick={handleClickListItem}
         role="listitem"
       >
@@ -606,17 +572,9 @@ export default function ConfirmationDialog({ integration }: any) {
       </Button>
 
       <ConfirmationDialogRaw
-        //   classes={{
-        //     paper: classes.paper,
-        //   }}
-        //   id="ringtone-menu"
-        //   keepMounted
         open={open}
         onClose={handleClose}
         value={integration}
-        //   deviceList={deviceList}
-        // integration={integration}
-        //   createQlcListener={createQlcListener}
       />
     </div>
   )
