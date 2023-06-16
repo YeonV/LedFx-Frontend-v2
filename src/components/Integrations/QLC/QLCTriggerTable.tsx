@@ -46,11 +46,11 @@ export default function QLCTriggerTable() {
       const temp = integrations?.qlc?.data
       Object.keys(temp).map((key) => {
         const temp1 = temp[key]
-        const sceneName = temp1[1].scene_name
-        const sceneId = temp1[1].scene_name // FIX: should be temp1[1].scene_id
+        const sceneName = temp1[1].scene_id
+        const sceneId = temp1[1].scene_id // FIX: should be temp1[1].scene_id
         const triggerType = 'scene_activated'
         const enabled = true
-        const triggerName = temp1[1].scene_name
+        const triggerName = temp1[1].scene_id
         const current_data = temp1[3]
         const arr_widgets: any = []
         const arr_values: any = []
@@ -69,9 +69,10 @@ export default function QLCTriggerTable() {
         const qlc_string = arr_widgets
           .map(
             (widget: any) =>
-              `ID: ${widget.ID}, Type: ${widget.Type}, Name: ${widget.Name}`
+              `ID: ${widget.ID}, Type: ${widget.Type}, Name: ${widget.Name}<br>`
           )
-          .join(<div />)
+          .join('')
+
         const csv_values = JSON.stringify(arr_values)
 
         if (temp1.constructor === Array) {
@@ -145,7 +146,10 @@ export default function QLCTriggerTable() {
             aria-label="Enable/Disable Trigger"
             onChange={() => {
               toggleQLCTrigger('qlc', {
-                enabled: !params.row.enabled,
+                event_type: 'scene_activated',
+                event_filter: {
+                  scene_id: 'blabla',
+                },
               })
             }}
           />
