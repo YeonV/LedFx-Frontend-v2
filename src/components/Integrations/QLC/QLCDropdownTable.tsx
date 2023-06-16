@@ -10,9 +10,22 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-// import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+
+interface QLCTriggerRow {
+  qlcid: number
+  qlctype: string
+  qlcname: string
+  qlcvalue: number | string
+}
+
+interface RowData {
+  name: string
+  countWidgets: number
+  actions: number
+  qlcTrigger: QLCTriggerRow[]
+}
 
 const PREFIX = 'QLCDropdownTable'
 
@@ -59,7 +72,11 @@ const StyledTableContainer = styled(TableContainer)(({ theme }: any) => ({
   },
 }))
 
-function createData(name: string, countWidgets: number, actions: number) {
+function createData(
+  name: string,
+  countWidgets: number,
+  actions: number
+): RowData {
   return {
     name,
     countWidgets,
@@ -81,7 +98,7 @@ function createData(name: string, countWidgets: number, actions: number) {
   }
 }
 
-function Row(props: { row: ReturnType<typeof createData> }) {
+function Row(props: { row: RowData }): JSX.Element {
   const { row } = props
   const [open, setOpen] = React.useState(true)
 
@@ -149,7 +166,7 @@ const rows = [
   createData('scene_activated: Red', 237, 9),
 ]
 
-export default function QLCDropdownTable() {
+export default function QLCDropdownTable(): JSX.Element {
   return (
     <StyledTableContainer className={classes.root}>
       <Table aria-label="collapsible table">

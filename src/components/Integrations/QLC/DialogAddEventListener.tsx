@@ -55,7 +55,7 @@ function ConfirmationDialogRaw(props: any) {
   const [sliderValue, setSliderValue] = React.useState(0)
   const [formData, setformData] = React.useState({
     event_type: null,
-    event_filter: { scene_id: null },
+    event_filter: { scene_name: null },
     qlc_payload: null,
   })
   const [qlcData, setqlcData] = React.useState([])
@@ -68,7 +68,7 @@ function ConfirmationDialogRaw(props: any) {
   const SceneSet =
     qlcInfo &&
     qlcInfo?.event_types &&
-    qlcInfo?.event_types?.scene_activated?.event_filters?.scene_id
+    qlcInfo?.event_types?.scene_activated?.event_filters?.scene_name
   const temp = (qlcInfo && qlcInfo?.qlc_widgets) || []
 
   const QLCWidgets =
@@ -322,9 +322,10 @@ function ConfirmationDialogRaw(props: any) {
           </InputLabel>
           <Select
             id="grouped-select"
-            defaultValue={formData?.event_filter?.scene_id}
+            defaultValue={formData?.event_filter?.scene_name}
             name="scene_name"
             onChange={handleEventChange}
+            sx={{ minWidth: 250 }}
           >
             <MenuItem value="">
               <em>None</em>
