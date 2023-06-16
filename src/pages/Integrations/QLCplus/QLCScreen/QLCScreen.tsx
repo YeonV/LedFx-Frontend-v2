@@ -16,7 +16,7 @@ import {
 } from './QLCScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
 import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable'
-import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable'
+// import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable'
 import DialogAddEventListener from '../../../../components/Integrations/QLC/DialogAddEventListener'
 import useStore from '../../../../store/useStore'
 
@@ -113,7 +113,7 @@ export default function QLCScreen({
           <Grid xl={12} container item alignItems="center" spacing={1} />
           <div style={{ marginTop: '1rem' }} />
           <QLCTriggerTable />
-          <QLCDropdownTable />
+          {/* <QLCDropdownTable /> */}
         </div>
       </Dialog>
     </>
