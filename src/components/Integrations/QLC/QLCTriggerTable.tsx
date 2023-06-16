@@ -21,31 +21,6 @@ const Root = styled('div')(({ theme }: any) => ({
     '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
       color: theme.palette.text.secondary,
     },
-    '&.MuiDataGrid-root .MuiDataGrid-cell': {
-      borderColor: '#333',
-    },
-    '&.MuiDataGrid-root .MuiDataGrid-cell:focus, &.MuiDataGrid-root .MuiDataGrid-cell:focus-within':
-      {
-        outline: 'none',
-      },
-    '& .currently_playing, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
-      {
-        backgroundColor: `${theme.palette.primary.main}20`,
-        color: theme.palette.text.primary,
-      },
-    '& .activated, .activated.MuiDataGrid-row:hover, .activated.MuiDataGrid-row.Mui-hovered':
-      {
-        backgroundColor: `${theme.palette.primary.main}50`,
-        color: theme.palette.text.primary,
-      },
-    '& .disabled.MuiDataGrid-row': {
-      pointerEvents: 'none',
-      color: '#666',
-    },
-    '& .disabled.MuiDataGrid-row .MuiIconButton-root': {
-      pointerEvents: 'none',
-      color: '#666',
-    },
   },
 }))
 
@@ -75,12 +50,7 @@ export default function QLCTriggerTable() {
         const sceneId = temp1[1].scene_name // FIX: should be temp1[1].scene_id
         const triggerType = 'scene_activated'
         const enabled = true
-        const qlc_id = temp1[3]
         const triggerName = temp1[1].scene_name
-        const qlc_widgetType = temp1[3]
-        const qlc_name = temp1[3]
-        const qlc_value = temp1[3]
-
         const current_data = temp1[3]
         const arr_widgets: any = []
         const arr_values: any = []
@@ -94,8 +64,14 @@ export default function QLCTriggerTable() {
           arr_widgets.push(obj)
           arr_values.push(v)
         })
-        // FIX: csv_parameters should be csv_widgets
-        const csv_widgets = JSON.stringify(arr_widgets)
+
+        // Join all the objects in the array as strings and put them together as one string
+        const qlc_string = arr_widgets
+          .map(
+            (widget: any) =>
+              `ID: ${widget.ID}, Type: ${widget.Type}, Name: ${widget.Name}`
+          )
+          .join(<div />)
         const csv_values = JSON.stringify(arr_values)
 
         if (temp1.constructor === Array) {
@@ -107,24 +83,8 @@ export default function QLCTriggerTable() {
             sceneName,
             enabled,
             trigger: `${triggerType}: ${sceneName}`,
-            qlc_string: csv_widgets,
+            qlc_string, // use new string here
             qlc_value: csv_values,
-            qlc_widgets: [
-              {
-                qlc_id: 34,
-                qlc_widgetType: 'Button',
-                qlc_name: 'Medium colour cycle (138 bpm)',
-                qlc_value,
-                qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
-              },
-              {
-                qlc_id: 32,
-                qlc_widgetType: 'Button',
-                qlc_name: 'Turn off back light',
-                qlc_value,
-                qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
-              },
-            ],
           })
           id += 1
         }
