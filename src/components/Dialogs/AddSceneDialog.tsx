@@ -22,7 +22,6 @@ const AddSceneDialog = () => {
   const [payload, setPayload] = useState('')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
-  const [midiInput, setMidiInput] = useState('')
   const [latestNoteOn, setLatestNoteOn] = useState('')
 
   const addScene = useStore((state) => state.addScene)
@@ -92,33 +91,6 @@ const AddSceneDialog = () => {
     >
       <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
       <DialogContent>
-        {/* Display all input devices */}
-        {WebMidi.inputs.length > 0 ? (
-          <>
-            <Typography variant="subtitle1" gutterBottom>
-              Input Devices:
-            </Typography>
-            <ul style={{ paddingLeft: '1rem' }}>
-              {WebMidi.inputs.map((input: Input) => (
-                <li key={input.id}>{input.name}</li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <Typography color="error">No input devices found</Typography>
-        )}
-        {/* Display latest MIDI note on */}
-        {latestNoteOn && (
-          <TextField
-            margin="dense"
-            id="latest_note_on"
-            label="Latest MIDI Note On"
-            type="text"
-            value={latestNoteOn}
-            fullWidth
-            disabled
-          />
-        )}
         Image is optional and can be one of:
         <ul style={{ paddingLeft: '1rem' }}>
           <li>
@@ -218,15 +190,33 @@ const AddSceneDialog = () => {
             />
           </>
         )}
-        <TextField
-          margin="dense"
-          id="midi_input"
-          label="MIDI Input"
-          type="text"
-          value={midiInput}
-          onChange={(e) => setMidiInput(e.target.value)}
-          fullWidth
-        />
+        {/* Display all input devices */}
+        {WebMidi.inputs.length > 0 ? (
+          <>
+            <Typography variant="subtitle1" gutterBottom>
+              MIDI Input Devices:
+            </Typography>
+            <ul style={{ paddingLeft: '1rem' }}>
+              {WebMidi.inputs.map((input: Input) => (
+                <li key={input.id}>{input.name}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <Typography color="error">No MIDI input devices found</Typography>
+        )}
+        {/* Display latest MIDI note on */}
+        {latestNoteOn && (
+          <TextField
+            margin="dense"
+            id="latest_note_on"
+            label="Latest MIDI Note On"
+            type="text"
+            value={latestNoteOn}
+            fullWidth
+            disabled
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
