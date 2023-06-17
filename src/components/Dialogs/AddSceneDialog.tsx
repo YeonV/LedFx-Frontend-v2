@@ -1,3 +1,4 @@
+// Import the required types
 import { useEffect, useState } from 'react'
 import {
   Link,
@@ -9,7 +10,8 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { WebMidi } from 'webmidi'
+import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
+
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -34,21 +36,18 @@ const AddSceneDialog = () => {
     setInvalid(false)
 
     WebMidi.enable({
-      callback: (err: any) => {
+      callback(err: Error) {
         if (err) {
           console.log('WebMidi could not be enabled:', err)
         } else {
           // Get the first input device
-          const input = WebMidi.inputs[0]
+          const input: Input | undefined = WebMidi.inputs[0]
 
           if (input) {
-            // Listen for MIDI messages
-            input.addListener('noteon', 'all', (event: MessageEvent) => {
+            // Listen for MIDI messages on all channels
+            input.addListener('noteon', (event: NoteMessageEvent) => {
               // Handle MIDI input here
               console.log('MIDI note on:', event.note.name)
-
-              // Set the MIDI input text box value
-              setMidiInput(event.note.name)
             })
           }
         }
@@ -72,6 +71,7 @@ const AddSceneDialog = () => {
       addScene(name, image, tags, url, payload).then(() => {
         getScenes()
       })
+
       setName('')
       setImage('')
       setTags('')
