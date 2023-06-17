@@ -11,6 +11,7 @@ import {
   Typography,
   Divider,
 } from '@mui/material'
+import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 import useStore from '../../store/useStore'
 
 const EditSceneDialog = () => {
@@ -27,8 +28,33 @@ const EditSceneDialog = () => {
   // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
   const data = useStore((state: any) => state.dialogs.addScene?.editData)
   const features = useStore((state) => state.features)
+  const [midiInput, setmidiInput] = useState('')
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
+
+  useEffect(() => {
+    setInvalid(false)
+
+    WebMidi.enable({
+      callback(err: Error) {
+        if (err) {
+          console.log('WebMidi could not be enabled:', err)
+        } else {
+          // Get all input devices
+          const { inputs } = WebMidi
+
+          if (inputs.length > 0) {
+            // Listen for MIDI messages on all channels and all input devices
+            inputs.forEach((input: Input) =>
+              input.addListener('noteon', (event: NoteMessageEvent) => {
+                setmidiInput(`${event.note.name}${event.note.octave}`) // Set the latest note on in state
+              })
+            )
+          }
+        }
+      },
+    })
+  }, [])
 
   function isValidURL(string: string) {
     const res = string.match(
@@ -202,6 +228,28 @@ const EditSceneDialog = () => {
                 </span>
               </div>
             ))}
+        {/* Display all input devices */}
+        {WebMidi.inputs.length > 0 ? (
+          <>
+            <Typography variant="subtitle1" gutterBottom>
+              MIDI Devices detected. Press a MIDI button.
+            </Typography>
+          </>
+        ) : (
+          <Typography color="error">No MIDI input devices found</Typography>
+        )}
+        {/* Display latest MIDI note on */}
+        {midiInput && (
+          <TextField
+            margin="dense"
+            id="latest_note_on"
+            label="MIDI Note to activate scene"
+            type="text"
+            value={midiInput}
+            fullWidth
+            disabled
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
