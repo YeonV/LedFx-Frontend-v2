@@ -26,6 +26,7 @@
     "eslint-config-react-app": "7.0.1",
     "immer": "10.0.1",
     "is-electron": "^2.2.2",
+    "midi": "^2.0.0",
     "notistack": "^3.0.1",
     "oauth-pkce": "0.0.6",
     "prop-types": "^15.8.1",

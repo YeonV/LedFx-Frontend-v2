@@ -33,31 +33,30 @@ const AddSceneDialog = () => {
   useEffect(() => {
     setInvalid(false)
 
-    // Request access to MIDI devices
-    WebMidi.enable((err: any) => {
-      if (err) {
-        console.log('WebMidi could not be enabled:', err)
-      } else {
-        console.log('WebMidi enabled!')
+    WebMidi.enable({
+      callback: (err: any) => {
+        if (err) {
+          console.log('WebMidi could not be enabled:', err)
+        } else {
+          // Get the first input device
+          const input = WebMidi.inputs[0]
 
-        // Get the first input device
-        const input = WebMidi.inputs[0]
+          if (input) {
+            // Listen for MIDI messages
+            input.addListener('noteon', 'all', (event: MessageEvent) => {
+              // Handle MIDI input here
+              console.log('MIDI note on:', event.note.name)
 
-        if (input) {
-          // Listen for MIDI messages
-          input.addListener('noteon', 'all', (event: any) => {
-            // Handle MIDI input here
-            console.log('MIDI note on:', event.note.name)
-
-            // Set the MIDI input text box value
-            setMidiInput(event.note.name)
-          })
+              // Set the MIDI input text box value
+              setMidiInput(event.note.name)
+            })
+          }
         }
-      }
+      },
     })
   }, [])
 
-  function isValidURL(string: string) {
+  const isValidURL = (string: string) => {
     const res = string.match(
       /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
     )
