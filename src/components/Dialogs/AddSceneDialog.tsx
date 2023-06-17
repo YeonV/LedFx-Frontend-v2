@@ -9,7 +9,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import WebMidi from 'webmidi'
+import { WebMidi } from 'webmidi'
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -34,23 +34,25 @@ const AddSceneDialog = () => {
     setInvalid(false)
 
     // Request access to MIDI devices
-    WebMidi.enable((err) => {
+    WebMidi.enable((err: any) => {
       if (err) {
         console.log('WebMidi could not be enabled:', err)
       } else {
         console.log('WebMidi enabled!')
 
         // Get the first input device
-        const input = WebMidi.getInputByName(WebMidi.inputs[0].name)
+        const input = WebMidi.inputs[0]
 
-        // Listen for MIDI messages
-        input.addListener('noteon', 'all', (event) => {
-          // Handle MIDI input here
-          console.log('MIDI note on:', event.note.name)
+        if (input) {
+          // Listen for MIDI messages
+          input.addListener('noteon', 'all', (event: any) => {
+            // Handle MIDI input here
+            console.log('MIDI note on:', event.note.name)
 
-          // Set the MIDI input text box value
-          setMidiInput(event.note.name)
-        })
+            // Set the MIDI input text box value
+            setMidiInput(event.note.name)
+          })
+        }
       }
     })
   }, [])
