@@ -22,7 +22,7 @@ const AddSceneDialog = () => {
   const [payload, setPayload] = useState('')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
-  const [latestNoteOn, setLatestNoteOn] = useState('')
+  const [midiInput, setmidiInput] = useState('')
 
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
@@ -47,8 +47,10 @@ const AddSceneDialog = () => {
             // Listen for MIDI messages on all channels and all input devices
             inputs.forEach((input: Input) =>
               input.addListener('noteon', (event: NoteMessageEvent) => {
-                console.log(`MIDI note on from ${input.name}:`, event.note.name) // Display which input device the midi note came from
-                setLatestNoteOn(event.note.name) // Set the latest note on in state
+                console.log(
+                  `MIDI note on from ${input.name}: Note: ${event.note.name}${event.note.octave}`
+                ) // Display which input device the midi note came from, note name and octave.
+                setmidiInput(`${event.note.name}${event.note.octave}`) // Set the latest note on in state
               })
             )
           }
@@ -206,13 +208,13 @@ const AddSceneDialog = () => {
           <Typography color="error">No MIDI input devices found</Typography>
         )}
         {/* Display latest MIDI note on */}
-        {latestNoteOn && (
+        {midiInput && (
           <TextField
             margin="dense"
             id="latest_note_on"
-            label="Latest MIDI Note On"
+            label="MIDI Note to activate scene"
             type="text"
-            value={latestNoteOn}
+            value={midiInput}
             fullWidth
             disabled
           />
