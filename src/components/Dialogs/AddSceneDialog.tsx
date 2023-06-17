@@ -50,7 +50,9 @@ const AddSceneDialog = () => {
                 console.log(
                   `MIDI note on from ${input.name}: Note: ${event.note.name}${event.note.octave}`
                 ) // Display which input device the midi note came from, note name and octave.
-                setmidiInput(`${event.note.name}${event.note.octave}`) // Set the latest note on in state
+                setmidiInput(
+                  `${input.name} Note: ${event.note.name}${event.note.octave}`
+                ) // Set the latest note on in state
               })
             )
           }
@@ -194,16 +196,9 @@ const AddSceneDialog = () => {
         )}
         {/* Display all input devices */}
         {WebMidi.inputs.length > 0 ? (
-          <>
-            <Typography variant="subtitle1" gutterBottom>
-              MIDI Input Devices:
-            </Typography>
-            <ul style={{ paddingLeft: '1rem' }}>
-              {WebMidi.inputs.map((input: Input) => (
-                <li key={input.id}>{input.name}</li>
-              ))}
-            </ul>
-          </>
+          <Typography variant="subtitle1" gutterBottom>
+            MIDI Device/s detected. Press a MIDI button to assign to this scene.
+          </Typography>
         ) : (
           <Typography color="error">No MIDI input devices found</Typography>
         )}
