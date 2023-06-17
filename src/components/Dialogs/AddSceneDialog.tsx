@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
+import WebMidi from 'webmidi'
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -19,6 +20,7 @@ const AddSceneDialog = () => {
   const [payload, setPayload] = useState('')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
+  const [midiInput, setMidiInput] = useState('')
 
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
@@ -27,18 +29,43 @@ const AddSceneDialog = () => {
   const features = useStore((state) => state.features)
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
+
   useEffect(() => {
     setInvalid(false)
+
+    // Request access to MIDI devices
+    WebMidi.enable((err) => {
+      if (err) {
+        console.log('WebMidi could not be enabled:', err)
+      } else {
+        console.log('WebMidi enabled!')
+
+        // Get the first input device
+        const input = WebMidi.getInputByName(WebMidi.inputs[0].name)
+
+        // Listen for MIDI messages
+        input.addListener('noteon', 'all', (event) => {
+          // Handle MIDI input here
+          console.log('MIDI note on:', event.note.name)
+
+          // Set the MIDI input text box value
+          setMidiInput(event.note.name)
+        })
+      }
+    })
   }, [])
+
   function isValidURL(string: string) {
     const res = string.match(
       /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
     )
     return res !== null
   }
+
   const handleClose = () => {
     setDialogOpenAddScene(false)
   }
+
   const handleAddScene = () => {
     if (!invalid) {
       addScene(name, image, tags, url, payload).then(() => {
@@ -160,6 +187,15 @@ const AddSceneDialog = () => {
             />
           </>
         )}
+        <TextField
+          margin="dense"
+          id="midi_input"
+          label="MIDI Input"
+          type="text"
+          value={midiInput}
+          onChange={(e) => setMidiInput(e.target.value)}
+          fullWidth
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
