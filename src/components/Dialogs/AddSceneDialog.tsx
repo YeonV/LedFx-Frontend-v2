@@ -23,6 +23,7 @@ const AddSceneDialog = () => {
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
   const [midiInput, setMidiInput] = useState('')
+  const [latestNoteOn, setLatestNoteOn] = useState('')
 
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
@@ -40,15 +41,17 @@ const AddSceneDialog = () => {
         if (err) {
           console.log('WebMidi could not be enabled:', err)
         } else {
-          // Get the first input device
-          const input: Input | undefined = WebMidi.inputs[0]
+          // Get all input devices
+          const { inputs } = WebMidi
 
-          if (input) {
-            // Listen for MIDI messages on all channels
-            input.addListener('noteon', (event: NoteMessageEvent) => {
-              // Handle MIDI input here
-              console.log('MIDI note on:', event.note.name)
-            })
+          if (inputs.length > 0) {
+            // Listen for MIDI messages on all channels and all input devices
+            inputs.forEach((input: Input) =>
+              input.addListener('noteon', (event: NoteMessageEvent) => {
+                console.log(`MIDI note on from ${input.name}:`, event.note.name) // Display which input device the midi note came from
+                setLatestNoteOn(event.note.name) // Set the latest note on in state
+              })
+            )
           }
         }
       },
@@ -89,6 +92,33 @@ const AddSceneDialog = () => {
     >
       <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
       <DialogContent>
+        {/* Display all input devices */}
+        {WebMidi.inputs.length > 0 ? (
+          <>
+            <Typography variant="subtitle1" gutterBottom>
+              Input Devices:
+            </Typography>
+            <ul style={{ paddingLeft: '1rem' }}>
+              {WebMidi.inputs.map((input: Input) => (
+                <li key={input.id}>{input.name}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <Typography color="error">No input devices found</Typography>
+        )}
+        {/* Display latest MIDI note on */}
+        {latestNoteOn && (
+          <TextField
+            margin="dense"
+            id="latest_note_on"
+            label="Latest MIDI Note On"
+            type="text"
+            value={latestNoteOn}
+            fullWidth
+            disabled
+          />
+        )}
         Image is optional and can be one of:
         <ul style={{ paddingLeft: '1rem' }}>
           <li>
