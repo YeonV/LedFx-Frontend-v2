@@ -47,7 +47,9 @@ const EditSceneDialog = () => {
             // Listen for MIDI messages on all channels and all input devices
             inputs.forEach((input: Input) =>
               input.addListener('noteon', (event: NoteMessageEvent) => {
-                setmidiInput(`${event.note.name}${event.note.octave}`) // Set the latest note on in state
+                setmidiInput(
+                  `${input.name} Note: ${event.note.name}${event.note.octave}`
+                ) // Set the latest note on in state
               })
             )
           }
@@ -232,7 +234,8 @@ const EditSceneDialog = () => {
         {WebMidi.inputs.length > 0 ? (
           <>
             <Typography variant="subtitle1" gutterBottom>
-              MIDI Devices detected. Press a MIDI button.
+              MIDI Device/s detected. Press a MIDI button to assign to this
+              scene.
             </Typography>
           </>
         ) : (
