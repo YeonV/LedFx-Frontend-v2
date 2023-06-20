@@ -31,6 +31,23 @@ const storeDialogs = (set: any) => ({
       edit: {} as any,
     },
   },
+  assistant: {
+    wled: true,
+    wledSegments: true,
+    openRgb: true,
+    launchpad: true,
+  },
+  setAssistant: (
+    kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad',
+    val: boolean
+  ) =>
+    set(
+      produce((state: IStore) => {
+        state.assistant[kind] = val
+      }),
+      false,
+      'api/dialog/nohost'
+    ),
   setDialogOpen: (open: boolean, edit?: boolean) =>
     set(
       produce((state: IStore) => {
