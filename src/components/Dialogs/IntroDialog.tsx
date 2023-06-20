@@ -19,6 +19,8 @@ import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import banner from '../../icons/png/banner.png'
 import wledLogo from '../../icons/png/wled.png'
+import openrgbLogo from '../../icons/png/openrgb.png'
+import launchpadLogo from '../../icons/png/launchpad.png'
 import BladeScene from '../../pages/Home/BladeScene'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
@@ -28,7 +30,13 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
   const navigate = useNavigate()
   const intro = useStore((state) => state.intro)
   const devices = useStore((state) => state.devices)
+  const openRgbDevices = useStore((state) => state.openRgbDevices)
+  const launchpadDevice = useStore((state) => state.launchpadDevice)
   // const virtuals = useStore((state) => state.virtuals)
+  const scanForOpenRgbDevices = useStore((state) => state.scanForOpenRgbDevices)
+  const scanForLaunchpadDevices = useStore(
+    (state) => state.scanForLaunchpadDevices
+  )
   const setIntro = useStore((state) => state.setIntro)
   const setTour = useStore((state) => state.setTour)
   const setTourOpen = useStore((state) => state.setTourOpen)
@@ -50,12 +58,15 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
 
   
   const graphsMulti = useStore((state) => state.graphsMulti)
+  const assistant = useStore((state) => state.assistant)
+  const setAssistant= useStore((state) => state.setAssistant)
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const onSystemSettingsChange = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
   }
+
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
 
@@ -88,10 +99,10 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     },
     {
       key: 'gotWled',
-      title: 'Scan for WLEDs in network?',
+      title: 'Scan for Devices?',
       icon: 'wled',
-      label_left: 'Nah, no WLEDs',
-      label_right: 'Yes, please scan my network for WLEDs',
+      label_left: 'No',
+      label_right: 'Yes',
       action_left: handleNext,
       action_right: handleNext,
     },
@@ -143,31 +154,44 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       },
       {
         key: 'gotWled',
-        title: 'Scan for WLEDs in network?',
+        title: 'Scan for devices?',
         icon: 'wled',
-        label_left: 'No WLEDs',
-        label_right: 'Yes, scan my network',
-        action_left: handleNext,
-        action_right: handleNext,
-      },
-      s.gotWled === 'right' && {
-        key: 'wledSegs',
-        title: 'Import Segments from WLED?',
-        icon: 'wled',
-        label_left: 'No, only main devices',
-        label_right: 'Yes, import segments',
+        label_left: 'Skip',
+        label_right: 'Yes',
         action_left: () => {
-          onSystemSettingsChange('create_segments', false)
-          handleScan()
+          onSystemSettingsChange('create_segments', assistant.wledSegments)
+          if (assistant.openRgb) scanForOpenRgbDevices()
+          if (assistant.launchpad) scanForLaunchpadDevices()
+          if (assistant.wled) setScanning(0)
+          if (assistant.wled) handleScan()
           setTour('home')
           handleNext()
         },
         action_right: () => {
-          onSystemSettingsChange('create_segments', true)
-          handleScan()
+          onSystemSettingsChange('create_segments', assistant.wledSegments)
+          if (assistant.openRgb) scanForOpenRgbDevices()
+          if (assistant.launchpad) scanForLaunchpadDevices()
+          if (assistant.wled) setScanning(0)
+          if (assistant.wled) handleScan()
           handleNext()
         },
       },
+      // s.gotWled === 'right' && {
+      //   key: 'wledSegs',
+      //   title: 'Import Segments from WLED?',
+      //   icon: 'wled',
+      //   label_left: 'No, only main devices',
+      //   label_right: 'Yes, import segments',
+      //   action_left: () => {
+      //     handleScan()
+      //     setTour('home')
+      //     handleNext()
+      //   },
+      //   action_right: () => {
+      //     handleScan()
+      //     handleNext()
+      //   },
+      // },
       s.gotWled === 'right' && {
         key: 'wledScanning',
         title: `${devices && Object.keys(devices)?.length}`,
@@ -221,7 +245,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     ].filter((n: any) => n !== false)
 
     setSteps(ste)
-  }, [s, graphsMulti])
+  }, [s, graphsMulti, assistant])
   
 
 
@@ -266,14 +290,29 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               <Typography
                 marginLeft={0}
                 marginTop={5}
-                marginBottom={3}
+                marginBottom={0}
                 variant={xsmall ? 'h4' : 'h3'}
                 textAlign={small ? 'center' : 'left'}
               >
                 {steps[activeStep].key === 'wledScanning'
-                ? `${devices && Object.keys(devices)?.length} new WLEDs found` 
+                ? <>New Devices found:<br />
+                </>
+                  
                 :steps[activeStep].title}                
               </Typography>
+              {steps[activeStep].key === 'wledScanning'
+                && 
+              <Typography
+                marginLeft={0}
+                marginTop={1}
+                marginBottom={3}
+                variant="h5"
+                textAlign={small ? 'center' : 'left'}
+              >
+                <span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{devices && Object.keys(devices)?.length}</span><span>WLEDs</span>
+                {openRgbDevices.length > 1 && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{`${openRgbDevices.length}`}</span>OpenRGB Devices</>}
+                {launchpadDevice !== '' && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>1</span>Launchpad</>}
+              </Typography>}
             </div>
           </Box>
           {steps[activeStep].key === 'audio' && <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', flexWrap: small ? 'wrap' : 'nowrap'}}>
@@ -321,6 +360,54 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           />
         </Box>
         </div>}
+        {steps[activeStep].key === 'gotWled' && <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', flexWrap: small ? 'wrap' : 'nowrap'}}>
+        <Box sx={{ flexBasis: small ? '100%' : '48%' }} />
+        <Box sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%', pl: '1rem' }}>
+          <Stack direction="row" alignItems="center"> 
+            <img width={32} height="auto" src={wledLogo} alt="wled" />
+            <SettingsRow
+              title="WLED"
+              checked={assistant.wled}
+              onChange={() => setAssistant('wled', !assistant.wled)}
+              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
+              direct
+            />
+          </Stack>
+          <Stack direction="row" alignItems="center"> 
+            <img width={32} height="auto" src={wledLogo} alt="wled" />
+            <SettingsRow
+              title="WLED Segments"
+              checked={assistant.wledSegments}
+              onChange={() => setAssistant('wledSegments', !assistant.wledSegments)}
+              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
+              direct
+            />
+          </Stack>
+          <Stack direction="row" alignItems="center"> 
+            <img width={32} height="auto" src={openrgbLogo} alt="wled" />
+             <SettingsRow
+              title="OpenRGB"
+              checked={assistant.openRgb}
+              onChange={() => setAssistant('openRgb', !assistant.openRgb)}
+              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
+              direct
+            />
+          </Stack>
+          <Stack direction="row" alignItems="center"> 
+            <img width={32} height="auto" src={launchpadLogo} alt="wled" />
+            <SettingsRow
+              title="Launchpad"
+              checked={assistant.launchpad}
+              onChange={() => setAssistant('launchpad', !assistant.launchpad)}
+              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
+              direct
+            />
+          </Stack>
+        
+       
+       
+        </Box>
+          </div>}
           <Stack direction={small ? 'column' : 'row'} gap={3} justifyContent="center" marginTop={3} marginBottom={3}>
             {steps[activeStep].label_left && <Button
               size="small"
