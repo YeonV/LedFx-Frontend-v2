@@ -3,10 +3,12 @@
 /* eslint-disable import/no-cycle */
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
-import type { IStore } from '../useStore'
+import type { IStore, IOpenRgbDevice } from '../useStore'
 
 const storeDevices = (set: any) => ({
   devices: {} as any,
+  openRgbDevices: [] as IOpenRgbDevice[],
+  launchpadDevice: '' as string,
   getDevices: async () => {
     const resp = await Ledfx('/api/devices')
     if (resp && resp.devices) {

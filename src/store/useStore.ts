@@ -71,4 +71,11 @@ const useStore = create(
 const state = useStore.getState()
 export type IStore = typeof state
 
+export interface IOpenRgbDevice {
+  name: string
+  type: number
+  id: number
+  leds: number
+}
+
 export default useStore

@@ -1,11 +1,70 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-return-await */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
-import type { IStore } from '../useStore'
+import type { IStore, IOpenRgbDevice } from '../useStore'
 
 const storeActions = (set: any) => ({
+  scanForOpenRgbDevices: async () => {
+    const resp = await Ledfx('/api/find_openrgb', 'GET', {})
+    if (resp && resp.status === 'success') {
+      set(
+        produce((state: IStore) => {
+          state.openRgbDevices = resp.devices as IOpenRgbDevice[]
+        }),
+        false,
+        'api/scanForDevices'
+      )
+      resp.devices.map(
+        async (d: IOpenRgbDevice) =>
+          await Ledfx('/api/devices', 'POST', {
+            type: 'openrgb',
+            config: {
+              icon_name:
+                d.type === 0 ? 'mdi:chip'
+              : d.type === 2 ? 'mdi:expansion-card-variant'
+              : d.type === 6 ? (d.name.includes('Razer') ? 'razer:mouse' : 'mouse')
+              : 'mdi:led-strip',
+              center_offset: 0,
+              refresh_rate: 64,
+              openrgb_id: d.id,
+              pixel_count: d.leds,
+              port: 6742,
+              name: d.name,
+              ip_address: '127.0.0.1',
+            },
+          })
+      )
+    }
+  },
+  scanForLaunchpadDevices: async () => {
+    const resp = await Ledfx('/api/find_launchpad', 'GET', {})
+    if (resp && resp.status === 'success') {
+      set(
+        produce((state: IStore) => {
+          state.launchpadDevice = resp.device
+        }),
+        false,
+        'api/scanForDevices'
+      )
+      return await Ledfx('/api/devices', 'POST', {
+        type: 'launchpad',
+        config: {
+          center_offset: 0,
+          refresh_rate: 64,
+          pixel_count: 81,
+          rows: 9,
+          icon_name: 'launchpad',
+          create_segments: resp.device === 'Launchpad X',
+          name: resp.device,
+        },
+      })
+    }
+    return false
+  },
   scanForDevices: async () => {
     const resp = await Ledfx('/api/find_devices', 'POST', {})
     if (!(resp && resp.status === 'success')) {
