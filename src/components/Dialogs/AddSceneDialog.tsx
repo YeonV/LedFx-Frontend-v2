@@ -1,5 +1,5 @@
 // Import the required types
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Link,
   TextField,
@@ -10,8 +10,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
-
+import MIDIListener from './MidiInput'
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -22,7 +21,6 @@ const AddSceneDialog = () => {
   const [payload, setPayload] = useState('')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
-  const [midiInput, setmidiInput] = useState('')
 
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
@@ -31,35 +29,6 @@ const AddSceneDialog = () => {
   const features = useStore((state) => state.features)
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
-
-  useEffect(() => {
-    setInvalid(false)
-
-    WebMidi.enable({
-      callback(err: Error) {
-        if (err) {
-          console.log('WebMidi could not be enabled:', err)
-        } else {
-          // Get all input devices
-          const { inputs } = WebMidi
-
-          if (inputs.length > 0) {
-            // Listen for MIDI messages on all channels and all input devices
-            inputs.forEach((input: Input) =>
-              input.addListener('noteon', (event: NoteMessageEvent) => {
-                console.log(
-                  `MIDI note on from ${input.name}: Note: ${event.note.name}${event.note.octave}`
-                ) // Display which input device the midi note came from, note name and octave.
-                setmidiInput(
-                  `${input.name} Note: ${event.note.name}${event.note.octave}`
-                ) // Set the latest note on in state
-              })
-            )
-          }
-        }
-      },
-    })
-  }, [])
 
   const isValidURL = (string: string) => {
     const res = string.match(
@@ -194,26 +163,7 @@ const AddSceneDialog = () => {
             />
           </>
         )}
-        {/* Display all input devices */}
-        {WebMidi.inputs.length > 0 ? (
-          <Typography variant="subtitle1" gutterBottom>
-            MIDI Device/s detected. Press a MIDI button to assign to this scene.
-          </Typography>
-        ) : (
-          <Typography color="error">No MIDI input devices found</Typography>
-        )}
-        {/* Display latest MIDI note on */}
-        {midiInput && (
-          <TextField
-            margin="dense"
-            id="latest_note_on"
-            label="MIDI Note to activate scene"
-            type="text"
-            value={midiInput}
-            fullWidth
-            disabled
-          />
-        )}
+        <MIDIListener />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
