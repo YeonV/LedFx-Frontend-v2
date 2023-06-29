@@ -106,7 +106,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       })
     }
     // }
-    addScene('Blade Scene', 'yz:logo2', '', '', '')
+    addScene('Blade Scene', 'yz:logo2', '', '', '', '')
   }
 
   return (
