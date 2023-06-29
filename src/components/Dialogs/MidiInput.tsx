@@ -11,7 +11,7 @@ const MIDIListener = () => {
   const getScenes = useStore((state) => state.getScenes)
   const activateScene = useStore((state) => state.activateScene)
 
-  const assignMidiKey = (key) => {
+  const assignMidiKey = (key: string) => {
     // Check if the midi key has already been assigned
     const isKeyAssigned = assignedKeys.includes(key)
     if (isKeyAssigned) {
@@ -38,7 +38,7 @@ const MIDIListener = () => {
               input.addListener('noteon', (event: NoteMessageEvent) => {
                 console.log(
                   `MIDI note on from ${input.name}: Note: ${event.note.identifier}`
-                ) // Display which input device the midi note came from identifier.
+                ) // Display which input device the midi note came from, note identifier
                 setMidiInput(`${input.name} Note: ${event.note.identifier}`) // Set the latest note on in state
 
                 // Assign the MIDI key

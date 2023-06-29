@@ -11,7 +11,6 @@ import {
   Typography,
   Divider,
 } from '@mui/material'
-import MIDIListener from './MidiInput'
 import useStore from '../../store/useStore'
 
 const EditSceneDialog = () => {
@@ -20,6 +19,7 @@ const EditSceneDialog = () => {
   const [tags, setTags] = useState('')
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
+  const [midiactivate, setMIDIActivate] = useState('')
   const [invalid, setInvalid] = useState(false)
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
@@ -45,6 +45,7 @@ const EditSceneDialog = () => {
       setTags(data?.scene_tags)
       setUrl(data?.scene_puturl)
       setPayload(data?.scene_payload)
+      setMIDIActivate(data?.scene_midiactivate)
     }
   }, [data])
   const handleClose = () => {
@@ -52,7 +53,7 @@ const EditSceneDialog = () => {
   }
 
   const handleAddScene = () => {
-    addScene(name, image, tags, url, payload).then(() => {
+    addScene(name, image, tags, url, payload, midiactivate).then(() => {
       getScenes()
     })
     setName('')
@@ -60,6 +61,7 @@ const EditSceneDialog = () => {
     setTags('')
     setUrl('')
     setPayload('')
+    setMIDIActivate('')
     setDialogOpenAddScene(false, false)
   }
 
@@ -203,7 +205,6 @@ const EditSceneDialog = () => {
                 </span>
               </div>
             ))}
-        <MIDIListener />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>

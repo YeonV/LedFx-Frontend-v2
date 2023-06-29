@@ -108,7 +108,8 @@ const storeScenes = (set: any) => ({
     scene_image: string,
     scene_tags: string,
     scene_puturl: string,
-    scene_payload: string
+    scene_payload: string,
+    scene_midiactivate: string
   ) =>
     await Ledfx('/api/scenes', 'POST', {
       name,
@@ -116,6 +117,7 @@ const storeScenes = (set: any) => ({
       scene_tags,
       scene_puturl,
       scene_payload,
+      scene_midiactivate,
     }),
   activateScene: async (id: string) => {
     set(

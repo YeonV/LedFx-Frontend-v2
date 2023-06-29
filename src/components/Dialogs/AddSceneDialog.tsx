@@ -19,6 +19,7 @@ const AddSceneDialog = () => {
   const [tags, setTags] = useState('')
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
+  const [midiactivate, setMIDIActivate] = useState('')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
 
@@ -43,7 +44,7 @@ const AddSceneDialog = () => {
 
   const handleAddScene = () => {
     if (!invalid) {
-      addScene(name, image, tags, url, payload).then(() => {
+      addScene(name, image, tags, url, payload, midiactivate).then(() => {
         getScenes()
       })
 
@@ -52,6 +53,7 @@ const AddSceneDialog = () => {
       setTags('')
       setUrl('')
       setPayload('')
+      setMIDIActivate('')
       setDialogOpenAddScene(false)
     }
   }
