@@ -10,7 +10,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import MIDIListener from './MidiInput'
+import { WebMidi } from 'webmidi'
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -19,7 +19,7 @@ const AddSceneDialog = () => {
   const [tags, setTags] = useState('')
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
-  const [midiactivate, setMIDIActivate] = useState('')
+  const [midiactivate, setMIDIActivate] = useState('2- Launchpad S 16 Note: E8')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
 
@@ -165,7 +165,25 @@ const AddSceneDialog = () => {
             />
           </>
         )}
-        <MIDIListener />
+        {WebMidi.inputs.length > 0 ? (
+          <Typography variant="subtitle1" gutterBottom>
+            MIDI Device/s detected. Press a MIDI button to assign to this scene.
+          </Typography>
+        ) : (
+          <Typography color="error">No MIDI input devices found</Typography>
+        )}
+        {/* Display latest MIDI note on */}
+        {midiactivate && (
+          <TextField
+            margin="dense"
+            id="latest_note_on"
+            label="MIDI Note to activate scene"
+            type="text"
+            value={midiactivate}
+            fullWidth
+            disabled
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
