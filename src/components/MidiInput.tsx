@@ -1,30 +1,32 @@
 import { useEffect } from 'react'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
-
 import useStore from '../store/useStore'
 
 const MIDIListener = () => {
   const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
 
-  // const handleActivateScene = (e: string) => {
-  //   if (scenes[e]?.scene_midiactivate) activateScene(e)
-  // }
-
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
       console.log(`${input.name}: Note: ${event.note.identifier}`)
 
-      Object.keys(scenes).forEach((sceneKey) => {
-        const scene = scenes[sceneKey]
-        // console.log(scene)
+      Object.keys(scenes).forEach((key) => {
+        const scene = scenes[key]
+
+        console.log((scene && scene.scene_midiactivate) || 'Blank')
+        console.log(scene)
+
+        console.log('') // Empty line
+
         if (
-          scene.scene_midiactivate ===
-          `${input.name}: Note: ${event.note.identifier}`
+          scene &&
+          (scene.scene_midiactivate === '' ||
+            scene.scene_midiactivate ===
+              `${input.name}: Note: ${event.note.identifier}`)
         ) {
-          console.log('get here?')
-          activateScene(sceneKey)
-          console.log('get here? 2')
+          console.log('Getting here?')
+          activateScene(key)
+          console.log('Getting here? 2')
         }
       })
     }
@@ -41,7 +43,7 @@ const MIDIListener = () => {
             inputs.forEach((input: Input) =>
               input.addListener('noteon', (event: NoteMessageEvent) => {
                 handleMidiEvent(input, event)
-                // console.log(`${input.name}: Note: ${event.note.identifier}`)
+                // console.log(`${input.name}: Note: ${event.note.identifier}`);
               })
             )
           }
