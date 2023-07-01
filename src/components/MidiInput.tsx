@@ -1,26 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 
 import useStore from '../store/useStore'
 
 const MIDIListener = () => {
-  const [assignedKeys, setAssignedKeys] = useState<string[]>([])
-
   const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
 
-  const assignMidiKey = (key: string) => {
-    // Check if the midi key has already been assigned
-    const isKeyAssigned = assignedKeys.includes(key)
-    if (isKeyAssigned) {
-      console.log('Cannot assign MIDI key that has already been assigned')
-      return
-    }
-    // Assign the midi key
-    setAssignedKeys((prevKeys) => [...prevKeys, key])
-  }
+  // const handleActivateScene = (e: string) => {
+  //   if (scenes[e]?.scene_midiactivate) activateScene(e)
+  // }
 
   useEffect(() => {
+    const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
+      console.log(`${input.name}: Note: ${event.note.identifier}`)
+
+      Object.keys(scenes).forEach((sceneKey) => {
+        const scene = scenes[sceneKey]
+        // console.log(scene)
+        if (
+          scene.scene_midiactivate ===
+          `${input.name}: Note: ${event.note.identifier}`
+        ) {
+          console.log('get here?')
+          activateScene(sceneKey)
+          console.log('get here? 2')
+        }
+      })
+    }
+
     WebMidi.enable({
       callback(err: Error) {
         if (err) {
@@ -32,14 +40,8 @@ const MIDIListener = () => {
             // Listen for MIDI messages on all channels and all input devices
             inputs.forEach((input: Input) =>
               input.addListener('noteon', (event: NoteMessageEvent) => {
-                console.log(
-                  `MIDI note on from ${input.name}: Note: ${event.note.identifier}`
-                )
-                assignMidiKey(event.note.identifier)
-                // Activate the scene if the assigned key is pressed
-                if (scenes?.scene_midiactivate) {
-                  activateScene('blade-scene')
-                }
+                handleMidiEvent(input, event)
+                // console.log(`${input.name}: Note: ${event.note.identifier}`)
               })
             )
           }
