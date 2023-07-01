@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
-import { TextField, Typography } from '@mui/material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 
-import useStore from '../../store/useStore'
+import useStore from '../store/useStore'
 
 const MIDIListener = () => {
-  const [midiInput, setMidiInput] = useState('')
   const [assignedKeys, setAssignedKeys] = useState<string[]>([])
 
-  const getScenes = useStore((state) => state.getScenes)
+  const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
 
   const assignMidiKey = (key: string) => {
@@ -37,11 +35,10 @@ const MIDIListener = () => {
                 console.log(
                   `MIDI note on from ${input.name}: Note: ${event.note.identifier}`
                 )
-                setMidiInput(`${input.name} Note: ${event.note.identifier}`)
                 assignMidiKey(event.note.identifier)
                 // Activate the scene if the assigned key is pressed
-                if (getScenes()[event.note.identifier]?.scene_midiactivate) {
-                  activateScene(sceneId)
+                if (scenes?.scene_midiactivate) {
+                  activateScene('blade-scene')
                 }
               })
             )
@@ -51,29 +48,7 @@ const MIDIListener = () => {
     })
   }, [])
 
-  return (
-    <>
-      {WebMidi.inputs.length > 0 ? (
-        <Typography variant="subtitle1" gutterBottom>
-          MIDI Device/s detected. Press a MIDI button to assign to this scene.
-        </Typography>
-      ) : (
-        <Typography color="error">No MIDI input devices found</Typography>
-      )}
-      {/* Display latest MIDI note on */}
-      {midiInput && (
-        <TextField
-          margin="dense"
-          id="latest_note_on"
-          label="MIDI Note to activate scene"
-          type="text"
-          value={midiInput}
-          fullWidth
-          disabled
-        />
-      )}
-    </>
-  )
+  return null
 }
 
 export default MIDIListener
