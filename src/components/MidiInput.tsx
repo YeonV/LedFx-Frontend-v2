@@ -8,27 +8,18 @@ const MIDIListener = () => {
 
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
-      const midiInput = `${input.name}: Note: ${event.note.identifier}`
+      const midiInput = `${input.name} Note: ${event.note.identifier}`
 
       console.log(`${input.name}: Note: ${event.note.identifier}`)
 
       Object.keys(scenes).forEach((key) => {
         const scene = scenes[key]
-
-        console.log((scene && scene.scene_midiactivate) || 'Blank')
-        console.log(
-          `if "${midiInput}" matches "${scene.scene_midiactivate}" than activateScene
-(${key})`
-        )
-        if (
-          scene &&
-          scene.scene_midiactivate &&
-          scene.scene_midiactivate ===
-            `${input.name}: Note: ${event.note.identifier}`
-        ) {
-          console.log('Getting here?')
+        // Debug only:
+        // console.log(
+        //   `if "${midiInput}" matches "${scene.scene_midiactivate}" than activateScene (${key})`
+        // )
+        if (midiInput === scene.scene_midiactivate) {
           activateScene(key)
-          console.log('Getting here? 2')
         }
       })
     }
