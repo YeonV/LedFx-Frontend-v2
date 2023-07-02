@@ -8,7 +8,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { WebMidi, Input } from 'webmidi'
+import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -28,9 +28,9 @@ const AddSceneDialog = () => {
   const features = useStore((state) => state.features)
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
 
-  const isValidURL = (string) => {
+  function isValidURL(string: string) {
     const res = string.match(
-      /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
+      /(?![\s\S])|\d(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g
     )
     return res !== null
   }
@@ -55,16 +55,27 @@ const AddSceneDialog = () => {
   }
 
   useEffect(() => {
-    const handleMIDIMessage = (input, event) => {
-      if (event && event.note && event.note.identifier) {
-        setMIDIActivate(`${input.name} Note: ${event.note.identifier}`)
-      }
+    const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
+      setMIDIActivate(`${input.name} Note: ${event.note.identifier}`)
     }
-
-    WebMidi.inputs.forEach((input) => {
-      input.addListener('midimessage', (event) => {
-        handleMIDIMessage(input, event)
-      })
+    WebMidi.enable({
+      callback(err: Error) {
+        if (err) {
+          console.log('WebMidi could not be enabled:', err)
+        } else {
+          // Get all input devices
+          const { inputs } = WebMidi
+          if (inputs.length > 0) {
+            // Listen for MIDI messages on all channels and all input devices
+            inputs.forEach((input: Input) =>
+              input.addListener('noteon', (event: NoteMessageEvent) => {
+                handleMidiEvent(input, event)
+                // console.log(`${input.name}: Note: ${event.note.identifier}`);
+              })
+            )
+          }
+        }
+      },
     })
   }, [])
 
