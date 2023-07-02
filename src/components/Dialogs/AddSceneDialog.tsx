@@ -1,7 +1,5 @@
-// Import the required types
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
-  Link,
   TextField,
   Dialog,
   DialogActions,
@@ -10,7 +8,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { WebMidi } from 'webmidi'
+import { WebMidi, Input } from 'webmidi'
 import useStore from '../../store/useStore'
 
 const AddSceneDialog = () => {
@@ -19,7 +17,7 @@ const AddSceneDialog = () => {
   const [tags, setTags] = useState('')
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
-  const [midiactivate, setMIDIActivate] = useState('2- Launchpad S 16 Note: E8')
+  const [midiActivate, setMIDIActivate] = useState('')
   const [overwrite, setOverwrite] = useState(false)
   const [invalid, setInvalid] = useState(false)
 
@@ -28,10 +26,9 @@ const AddSceneDialog = () => {
   const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.open || false)
   const features = useStore((state) => state.features)
-
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
 
-  const isValidURL = (string: string) => {
+  const isValidURL = (string) => {
     const res = string.match(
       /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
     )
@@ -44,10 +41,9 @@ const AddSceneDialog = () => {
 
   const handleAddScene = () => {
     if (!invalid) {
-      addScene(name, image, tags, url, payload, midiactivate).then(() => {
+      addScene(name, image, tags, url, payload, midiActivate).then(() => {
         getScenes()
       })
-
       setName('')
       setImage('')
       setTags('')
@@ -58,50 +54,39 @@ const AddSceneDialog = () => {
     }
   }
 
+  useEffect(() => {
+    const handleMIDIMessage = (input, event) => {
+      if (event && event.note && event.note.identifier) {
+        setMIDIActivate(`${input.name} Note: ${event.note.identifier}`)
+      }
+    }
+
+    WebMidi.inputs.forEach((input) => {
+      input.addListener('midimessage', (event) => {
+        handleMIDIMessage(input, event)
+      })
+    })
+  }, [])
+
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Add Scene</DialogTitle>
       <DialogContent>
-        Image is optional and can be one of:
+        <Typography variant="subtitle1">
+          Image is optional and can be one of:
+        </Typography>
         <ul style={{ paddingLeft: '1rem' }}>
+          <li>iconName - Find MUI icons here, eg. flare, AccessAlarms</li>
           <li>
-            iconName{' '}
-            <Link
-              href="https://material-ui.com/components/material-icons/"
-              target="_blank"
-            >
-              Find MUI icons here
-            </Link>
-            <Typography color="textSecondary" variant="subtitle1">
-              <em>eg. flare, AccessAlarms</em>
-            </Typography>
+            mdi:icon-name - Find Material Design icons here, eg. mdi:balloon,
+            mdi:led-strip-variant
           </li>
           <li>
-            mdi:icon-name{' '}
-            <Link href="https://materialdesignicons.com" target="_blank">
-              Find Material Design icons here
-            </Link>
-            <Typography color="textSecondary" variant="subtitle1">
-              <em>eg. mdi:balloon, mdi:led-strip-variant</em>
-            </Typography>
-          </li>
-          <li>
-            image:custom-url
-            <Typography
-              color="textSecondary"
-              variant="subtitle1"
-              style={{ wordBreak: 'break-all' }}
-            >
-              <em>
-                eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
-              </em>
-            </Typography>
+            image:custom-url -
+            eg.image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
           </li>
         </ul>
+
         <TextField
           autoFocus
           margin="dense"
@@ -138,6 +123,7 @@ const AddSceneDialog = () => {
           onChange={(e) => setTags(e.target.value)}
           fullWidth
         />
+
         {features.sceneexternal && (
           <>
             <TextField
@@ -165,25 +151,41 @@ const AddSceneDialog = () => {
             />
           </>
         )}
+
         {WebMidi.inputs.length > 0 ? (
-          <Typography variant="subtitle1" gutterBottom>
-            MIDI Device/s detected. Press a MIDI button to assign to this scene.
-          </Typography>
+          <>
+            {midiActivate && (
+              <Typography>
+                MIDI Device/s detected. Press a MIDI button to assign to this
+                scene.
+              </Typography>
+            )}
+
+            {scenes &&
+              Array.isArray(scenes) &&
+              scenes.map(
+                (scene) =>
+                  scene.midiactivate && (
+                    <Typography key={scene.name}>
+                      Please select another MIDI key/button. Already assigned to{' '}
+                      {scene.name}
+                    </Typography>
+                  )
+              )}
+          </>
         ) : (
-          <Typography color="error">No MIDI input devices found</Typography>
+          <Typography>No MIDI input devices found.</Typography>
         )}
-        {/* Display latest MIDI note on */}
-        {midiactivate && (
-          <TextField
-            margin="dense"
-            id="latest_note_on"
-            label="MIDI Note to activate scene"
-            type="text"
-            value={midiactivate}
-            fullWidth
-            disabled
-          />
-        )}
+
+        <TextField
+          margin="dense"
+          id="latest_note_on"
+          label="MIDI Note to activate scene"
+          type="text"
+          value={midiActivate}
+          fullWidth
+          disabled
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
