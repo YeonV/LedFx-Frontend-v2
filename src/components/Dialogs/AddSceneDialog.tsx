@@ -61,7 +61,8 @@ const AddSceneDialog = () => {
     WebMidi.enable({
       callback(err: Error) {
         if (err) {
-          console.log('WebMidi could not be enabled:', err)
+          // eslint-disable-next-line no-console
+          console.error('WebMidi could not be enabled:', err)
         } else {
           // Get all input devices
           const { inputs } = WebMidi
