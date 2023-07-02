@@ -9,36 +9,43 @@ const MIDIListener = () => {
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
       const midiInput = `${input.name} Note: ${event.note.identifier}`
-
-      console.log(`${input.name}: Note: ${event.note.identifier}`)
+      const inputName = input.name
+      const pitch = event.note.number
+      console.log(midiInput)
 
       Object.keys(scenes).forEach((key) => {
-        const scene = scenes[key]
-        // Debug only:
-        // console.log(
-        //   `if "${midiInput}" matches "${scene.scene_midiactivate}" than activateScene (${key})`
-        // )
-        if (midiInput === scene.scene_midiactivate) {
+        const scene = scenes[key] as { scene_midiactivate: number }
+        if (midiInput === String(scene.scene_midiactivate)) {
           activateScene(key)
+          const output = WebMidi.getOutputByName(inputName)
+          if (output) {
+            output.playNote(pitch, {
+              duration: 500,
+              attack: 0,
+              release: 0,
+            })
+            // Send MIDI message
+            output.sendControlChange(0x0, 127) // Turn on the LED light
+            console.log('MIDI LED light turned on')
+          } else {
+            console.error('Output device not found')
+          }
         }
       })
     }
 
     WebMidi.enable({
-      callback(err: Error) {
+      callback: (err: Error) => {
         if (err) {
-          console.log('WebMidi could not be enabled:', err)
+          console.error('WebMidi could not be enabled:', err)
         } else {
-          // Get all input devices
           const { inputs } = WebMidi
           if (inputs.length > 0) {
-            // Listen for MIDI messages on all channels and all input devices
-            inputs.forEach((input: Input) =>
+            inputs.forEach((input: Input) => {
               input.addListener('noteon', (event: NoteMessageEvent) => {
                 handleMidiEvent(input, event)
-                // console.log(`${input.name}: Note: ${event.note.identifier}`);
               })
-            )
+            })
           }
         }
       },
