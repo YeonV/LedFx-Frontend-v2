@@ -10,7 +10,7 @@ const MIDIListener = () => {
     const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
       const midiInput = `${input.name} Note: ${event.note.identifier}`
       const inputName = input.name
-      const pitch = event.note.number
+      const buttonNumber = event.note.number
       console.log(midiInput)
 
       Object.keys(scenes).forEach((key) => {
@@ -19,14 +19,10 @@ const MIDIListener = () => {
           activateScene(key)
           const output = WebMidi.getOutputByName(inputName)
           if (output) {
-            output.playNote(pitch, {
-              duration: 500,
-              attack: 0,
-              release: 0,
-            })
-            // Send MIDI message
-            output.sendControlChange(0x0, 127) // Turn on the LED light
-            console.log('MIDI LED light turned on')
+            // Reset all LEDs to off
+            output.send([0xb0, 0x00, 0x00])
+            // Set the LED of the pressed button to on
+            output.send([0x90, buttonNumber, 60])
           } else {
             console.error('Output device not found')
           }
