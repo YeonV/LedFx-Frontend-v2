@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
+  Link,
   TextField,
   Dialog,
   DialogActions,
@@ -27,14 +28,16 @@ const AddSceneDialog = () => {
   const open = useStore((state) => state.dialogs.addScene?.open || false)
   const features = useStore((state) => state.features)
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
+  useEffect(() => {
+    setInvalid(false)
+  }, [])
 
   function isValidURL(string: string) {
     const res = string.match(
-      /(?![\s\S])|\d(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g
+      /(?![\s\S])|\d^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/g
     )
     return res !== null
   }
-
   const handleClose = () => {
     setDialogOpenAddScene(false)
   }
@@ -88,14 +91,38 @@ const AddSceneDialog = () => {
           Image is optional and can be one of:
         </Typography>
         <ul style={{ paddingLeft: '1rem' }}>
-          <li>iconName - Find MUI icons here, eg. flare, AccessAlarms</li>
           <li>
-            mdi:icon-name - Find Material Design icons here, eg. mdi:balloon,
-            mdi:led-strip-variant
+            iconName{' '}
+            <Link
+              href="https://material-ui.com/components/material-icons/"
+              target="_blank"
+            >
+              Find MUI icons here
+            </Link>
+            <Typography color="textSecondary" variant="subtitle1">
+              <em>eg. flare, AccessAlarms</em>
+            </Typography>
           </li>
           <li>
-            image:custom-url -
-            eg.image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
+            mdi:icon-name{' '}
+            <Link href="https://materialdesignicons.com" target="_blank">
+              Find Material Design icons here
+            </Link>
+            <Typography color="textSecondary" variant="subtitle1">
+              <em>eg. mdi:balloon, mdi:led-strip-variant</em>
+            </Typography>
+          </li>
+          <li>
+            image:custom-url
+            <Typography
+              color="textSecondary"
+              variant="subtitle1"
+              style={{ wordBreak: 'break-all' }}
+            >
+              <em>
+                eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
+              </em>
+            </Typography>
           </li>
         </ul>
 
@@ -163,6 +190,15 @@ const AddSceneDialog = () => {
             />
           </>
         )}
+        <TextField
+          margin="dense"
+          id="latest_note_on"
+          label="MIDI Note to activate scene"
+          type="text"
+          value={midiActivate}
+          fullWidth
+          disabled
+        />
         {WebMidi.inputs.length > 0 ? (
           <>
             <Typography>
@@ -184,16 +220,6 @@ const AddSceneDialog = () => {
         ) : (
           <Typography>No MIDI input devices found.</Typography>
         )}
-
-        <TextField
-          margin="dense"
-          id="latest_note_on"
-          label="MIDI Note to activate scene"
-          type="text"
-          value={midiActivate}
-          fullWidth
-          disabled
-        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
