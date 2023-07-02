@@ -63,7 +63,6 @@ const AddSceneDialog = () => {
         if (err) {
           console.log('WebMidi could not be enabled:', err)
         } else {
-          console.log(WebMidi.inputs.length)
           // Get all input devices
           const { inputs } = WebMidi
           if (inputs.length > 0) {
