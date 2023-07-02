@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   TextField,
   Dialog,
@@ -63,6 +63,7 @@ const AddSceneDialog = () => {
         if (err) {
           console.log('WebMidi could not be enabled:', err)
         } else {
+          console.log(WebMidi.inputs.length)
           // Get all input devices
           const { inputs } = WebMidi
           if (inputs.length > 0) {
@@ -162,16 +163,12 @@ const AddSceneDialog = () => {
             />
           </>
         )}
-
         {WebMidi.inputs.length > 0 ? (
           <>
-            {midiActivate && (
-              <Typography>
-                MIDI Device/s detected. Press a MIDI button to assign to this
-                scene.
-              </Typography>
-            )}
-
+            <Typography>
+              MIDI Device/s detected. Press a MIDI button to assign to this
+              scene.
+            </Typography>
             {scenes &&
               Array.isArray(scenes) &&
               scenes.map(

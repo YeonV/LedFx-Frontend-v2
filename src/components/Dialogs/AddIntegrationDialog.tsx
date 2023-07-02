@@ -183,7 +183,7 @@ const AddIntegrationDialog = () => {
                 <MenuItem
                   key={i}
                   value={item}
-                  // disabled={integrationsTypes[item].beta}
+                  disabled={integrationsTypes[item].beta}
                 >
                   {integrationsTypes[item].name}
                 </MenuItem>
