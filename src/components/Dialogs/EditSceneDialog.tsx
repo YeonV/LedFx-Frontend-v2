@@ -200,6 +200,15 @@ const EditSceneDialog = () => {
         ) : (
           <></>
         )}
+        <TextField
+          margin="dense"
+          id="latest_note_on"
+          label="MIDI Note to activate scene"
+          type="text"
+          value={midiActivate}
+          fullWidth
+          disabled
+        />
         {WebMidi.inputs.length > 0 ? (
           <>
             <Typography>
@@ -221,16 +230,7 @@ const EditSceneDialog = () => {
         ) : (
           <Typography>No MIDI input devices found.</Typography>
         )}
-        ;
-        <TextField
-          margin="dense"
-          id="latest_note_on"
-          label="MIDI Note to activate scene"
-          type="text"
-          value={midiActivate}
-          fullWidth
-          disabled
-        />
+
         <Divider sx={{ mt: '1rem' }} />
         <div
           style={{
