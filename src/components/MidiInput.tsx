@@ -12,6 +12,7 @@ const MIDIListener = () => {
       const midiInput = `${input.name} Note: ${event.note.identifier}`
       const inputName = input.name
       const buttonNumber = event.note.number
+      console.log(midiInput)
       Object.keys(scenes).forEach((key) => {
         const scene = scenes[key] as { scene_midiactivate: number }
         if (midiInput === String(scene.scene_midiactivate)) {
