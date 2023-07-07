@@ -239,7 +239,7 @@ export default function BarBottom() {
           setSpotifyExpanded={setSpotifyExpanded}
         />
       )}
-      <MIDIListener />
+      {features.scenemidi && <MIDIListener />}
       <AddSceneDialog />
       <AddDeviceDialog />
       <AddVirtualDialog />
