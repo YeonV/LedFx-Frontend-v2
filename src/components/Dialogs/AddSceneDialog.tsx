@@ -59,7 +59,9 @@ const AddSceneDialog = () => {
 
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
-      setMIDIActivate(`${input.name} Note: ${event.note.identifier}`)
+      setMIDIActivate(
+        `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
+      )
     }
     WebMidi.enable({
       callback(err: Error) {
@@ -74,7 +76,7 @@ const AddSceneDialog = () => {
             inputs.forEach((input: Input) =>
               input.addListener('noteon', (event: NoteMessageEvent) => {
                 handleMidiEvent(input, event)
-                // console.log(`${input.name}: Note: ${event.note.identifier}`);
+                // console.log(;`${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`);
               })
             )
           }

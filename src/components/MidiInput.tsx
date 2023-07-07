@@ -9,19 +9,29 @@ const MIDIListener = () => {
 
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
-      const midiInput = `${input.name} Note: ${event.note.identifier}`
-      const inputName = input.name
-      const buttonNumber = event.note.number
-      // console.log(`${const inputName = input.name} buttonNumber: ${buttonNumber}`)
+      const midiInput = `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
+      const inputName = '2- Launchpad S 16'
+      const output = WebMidi.getOutputByName(inputName)
+
+      if (output) {
+        // Reset all LEDs to off
+        output.send([0xb0, 0x00, 0x00])
+      } else {
+        console.error('Output device not found')
+      }
+
       Object.keys(scenes).forEach((key) => {
-        const scene = scenes[key] as { scene_midiactivate: number }
+        const scene = scenes[key] as { scene_midiactivate: string }
+
         if (midiInput === String(scene.scene_midiactivate)) {
           activateScene(key)
-          const output = WebMidi.getOutputByName(inputName)
+
           if (output) {
-            // Reset all LEDs to off
-            output.send([0xb0, 0x00, 0x00])
             // Set the LED of the pressed button to on
+            const buttonNumber = parseInt(
+              scene.scene_midiactivate.split(':')[1].trim(),
+              10
+            )
             output.send([0x90, buttonNumber, 60])
           } else {
             console.error('Output device not found')
@@ -49,6 +59,55 @@ const MIDIListener = () => {
           }
         }
       },
+    })
+
+    // Websocket setup
+    const webSocket = new WebSocket('ws://localhost:8888/api/websocket')
+    webSocket.addEventListener('open', () => {
+      const message = JSON.stringify({
+        event_type: 'scene_activated',
+        id: 100,
+        type: 'subscribe_event',
+      })
+      webSocket.send(message)
+    })
+
+    webSocket.addEventListener('message', (event) => {
+      try {
+        const data = JSON.parse(event.data)
+        if (data.type === 'event' && data.event_type === 'scene_activated') {
+          const { scene_id } = data
+          Object.keys(scenes).forEach((key) => {
+            const scene = scenes[key] as {
+              name: any
+              scene_midiactivate: string
+            }
+            console.log(scene)
+            if (scene.name === scene_id) {
+              const buttonNumber = scene.scene_midiactivate
+                .split('buttonNumber: ')[1]
+                .split(' ')[0]
+              console.log(scene.scene_midiactivate)
+              const inputName = scene.scene_midiactivate
+                .split('inputName=\'')[1]
+                .split("'")[0]
+              const output = WebMidi.getOutputByName(inputName)
+
+              if (output) {
+                // Reset all LEDs to off
+                output.send([0xb0, 0x00, 0x00])
+
+                // Set the LED of the pressed button to on
+                output.send([0x90, parseInt(buttonNumber), 60])
+              } else {
+                console.error('Output device not found')
+              }
+            }
+          })
+        }
+      } catch (error) {
+        console.error('Error parsing websocket message:', error)
+      }
     })
   }, [])
 
