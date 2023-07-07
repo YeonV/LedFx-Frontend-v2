@@ -82,11 +82,12 @@ const MIDIListener = () => {
               name: any
               scene_midiactivate: string
             }
-            console.log(scene)
             if (scene.name === scene_id) {
-              const inputName = '2- Launchpad S 16'
-              const buttonNumber = 113
-              console.log(buttonNumber)
+              const inputName = scene.scene_midiactivate.split(' Note:')[0]
+              const buttonNumber = parseInt(
+                scene.scene_midiactivate.split('buttonNumber: ')[1],
+                10
+              )
               const output = WebMidi.getOutputByName(inputName)
 
               if (output) {
