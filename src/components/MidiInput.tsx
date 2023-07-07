@@ -84,13 +84,9 @@ const MIDIListener = () => {
             }
             console.log(scene)
             if (scene.name === scene_id) {
-              const buttonNumber = scene.scene_midiactivate
-                .split('buttonNumber: ')[1]
-                .split(' ')[0]
-              console.log(scene.scene_midiactivate)
-              const inputName = scene.scene_midiactivate
-                .split('inputName=\'')[1]
-                .split("'")[0]
+              const inputName = '2- Launchpad S 16'
+              const buttonNumber = 113
+              console.log(buttonNumber)
               const output = WebMidi.getOutputByName(inputName)
 
               if (output) {
@@ -98,7 +94,7 @@ const MIDIListener = () => {
                 output.send([0xb0, 0x00, 0x00])
 
                 // Set the LED of the pressed button to on
-                output.send([0x90, parseInt(buttonNumber), 60])
+                output.send([0x90, buttonNumber, 60])
               } else {
                 console.error('Output device not found')
               }
