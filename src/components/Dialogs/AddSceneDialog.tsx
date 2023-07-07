@@ -58,31 +58,33 @@ const AddSceneDialog = () => {
   }
 
   useEffect(() => {
-    const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
-      setMIDIActivate(
-        `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
-      )
-    }
-    WebMidi.enable({
-      callback(err: Error) {
-        if (err) {
-          // eslint-disable-next-line no-console
-          console.error('WebMidi could not be enabled:', err)
-        } else {
-          // Get all input devices
-          const { inputs } = WebMidi
-          if (inputs.length > 0) {
-            // Listen for MIDI messages on all channels and all input devices
-            inputs.forEach((input: Input) =>
-              input.addListener('noteon', (event: NoteMessageEvent) => {
-                handleMidiEvent(input, event)
-                // console.log(;`${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`);
-              })
-            )
+    if (features.scenemidi) {
+      const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
+        setMIDIActivate(
+          `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
+        )
+      }
+      WebMidi.enable({
+        callback(err: Error) {
+          if (err) {
+            // eslint-disable-next-line no-console
+            console.error('WebMidi could not be enabled:', err)
+          } else {
+            // Get all input devices
+            const { inputs } = WebMidi
+            if (inputs.length > 0) {
+              // Listen for MIDI messages on all channels and all input devices
+              inputs.forEach((input: Input) =>
+                input.addListener('noteon', (event: NoteMessageEvent) => {
+                  handleMidiEvent(input, event)
+                  // console.log(;`${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`);
+                })
+              )
+            }
           }
-        }
-      },
-    })
+        },
+      })
+    }
   }, [])
 
   return (
@@ -192,35 +194,39 @@ const AddSceneDialog = () => {
             />
           </>
         )}
-        <TextField
-          margin="dense"
-          id="latest_note_on"
-          label="MIDI Note to activate scene"
-          type="text"
-          value={midiActivate}
-          fullWidth
-          disabled
-        />
-        {WebMidi.inputs.length > 0 ? (
+        {features.scenemidi && (
           <>
-            <Typography>
-              MIDI Device/s detected. Press a MIDI button to assign to this
-              scene.
-            </Typography>
-            {scenes &&
-              Array.isArray(scenes) &&
-              scenes.map(
-                (scene) =>
-                  scene.midiactivate && (
-                    <Typography key={scene.name}>
-                      Please select another MIDI key/button. Already assigned to{' '}
-                      {scene.name}
-                    </Typography>
-                  )
-              )}
+            <TextField
+              margin="dense"
+              id="latest_note_on"
+              label="MIDI Note to activate scene"
+              type="text"
+              value={midiActivate}
+              fullWidth
+              disabled
+            />
+            {WebMidi.inputs.length > 0 ? (
+              <>
+                <Typography>
+                  MIDI Device/s detected. Press a MIDI button to assign to this
+                  scene.
+                </Typography>
+                {scenes &&
+                  Array.isArray(scenes) &&
+                  scenes.map(
+                    (scene) =>
+                      scene.midiactivate && (
+                        <Typography key={scene.name}>
+                          Please select another MIDI key/button. Already
+                          assigned to {scene.name}
+                        </Typography>
+                      )
+                  )}
+              </>
+            ) : (
+              <Typography>No MIDI input devices found.</Typography>
+            )}
           </>
-        ) : (
-          <Typography>No MIDI input devices found.</Typography>
         )}
       </DialogContent>
       <DialogActions>
