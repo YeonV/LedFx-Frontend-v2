@@ -25,17 +25,6 @@ const MIDIListener = () => {
 
         if (midiInput === String(scene.scene_midiactivate)) {
           activateScene(key)
-
-          if (output) {
-            // Set the LED of the pressed button to on
-            const buttonNumber = parseInt(
-              scene.scene_midiactivate.split(':')[1].trim(),
-              10
-            )
-            output.send([0x90, buttonNumber, 60])
-          } else {
-            console.error('Output device not found')
-          }
         }
       })
     }
@@ -61,7 +50,7 @@ const MIDIListener = () => {
       },
     })
 
-    // Websocket setup
+    // WebSocket setup
     const webSocket = new WebSocket('ws://localhost:8888/api/websocket')
     webSocket.addEventListener('open', () => {
       const message = JSON.stringify({
@@ -83,7 +72,9 @@ const MIDIListener = () => {
               scene_midiactivate: string
             }
             if (scene.name === scene_id) {
-              const inputName = scene.scene_midiactivate.split(' Note:')[0]
+              const inputName =
+                scene.scene_midiactivate.split(' Note:')[0] ||
+                '2- Launchpad S 16'
               const buttonNumber = parseInt(
                 scene.scene_midiactivate.split('buttonNumber: ')[1],
                 10
@@ -95,9 +86,13 @@ const MIDIListener = () => {
                 output.send([0xb0, 0x00, 0x00])
 
                 // Set the LED of the pressed button to on
-                output.send([0x90, buttonNumber, 60])
+                if (Number.isNaN(buttonNumber)) {
+                  // bla
+                } else {
+                  output.send([0x90, buttonNumber, 60])
+                }
               } else {
-                console.error('Output device not found')
+                console.error('Output device not found/Not defined:', inputName)
               }
             }
           })
