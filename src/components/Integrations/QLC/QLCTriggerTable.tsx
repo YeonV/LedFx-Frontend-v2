@@ -65,11 +65,12 @@ export default function QLCTriggerTable() {
           arr_values.push(v)
         })
 
-        // Join all the objects in the array as strings and put them together as one string
+        // Join all the objects in the array as strings and put them together as one string.
         const qlc_string = arr_widgets
           .map(
             (widget: any) =>
-              `ID: ${widget.ID}, Type: ${widget.Type}, Name: ${widget.Name}<br>`
+              // Hmmm want new line per object but couldnt figure it out.
+              `ID: ${widget.ID}, Type: ${widget.Type}, Name: ${widget.Name}`
           )
           .join('')
 
