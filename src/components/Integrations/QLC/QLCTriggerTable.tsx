@@ -47,9 +47,9 @@ export default function QLCTriggerTable() {
       Object.keys(temp).map((key) => {
         const temp1 = temp[key]
         const sceneName = temp1[1].scene_id
-        const sceneId = temp1[1].scene_id // FIX: should be temp1[1].scene_id
+        const sceneId = temp1[1].scene_id
         const triggerType = 'scene_activated'
-        const enabled = true
+        const enabled = temp1[2]
         const triggerName = temp1[1].scene_id
         const current_data = temp1[3]
         const arr_widgets: any = []
@@ -85,7 +85,7 @@ export default function QLCTriggerTable() {
             sceneName,
             enabled,
             trigger: `${triggerType}: ${sceneName}`,
-            qlc_string, // use new string here
+            qlc_string,
             qlc_value: csv_values,
           })
           id += 1
@@ -99,7 +99,8 @@ export default function QLCTriggerTable() {
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteQLCTrigger({
       data: {
-        trigger_id: paramsTemp?.row?.trigger_id,
+        event_filter: { scene_id: paramsTemp?.row?.sceneId },
+        event_type: paramsTemp?.row?.triggerType,
       },
     }).then(() => getIntegrations())
   }
@@ -147,11 +148,9 @@ export default function QLCTriggerTable() {
             aria-label="Enable/Disable Trigger"
             onChange={() => {
               toggleQLCTrigger('qlc', {
-                event_type: 'scene_activated',
-                event_filter: {
-                  scene_id: 'blabla',
-                },
-              })
+                event_filter: { scene_id: params?.row?.sceneId },
+                event_type: params?.row?.triggerType,
+              }).then(() => getIntegrations())
             }}
           />
           <IconButton

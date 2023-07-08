@@ -115,7 +115,7 @@ export default function QLCScreen({
           <QLCTriggerTable />
           <Typography>
             Please note, QLC+ integration is in Beta, and might notice bugs;
-            such as delete/edit button.
+            such as edit button.
           </Typography>
           <Typography>
             To find out if known bug or to report a bug, please visit our LedFx
