@@ -113,6 +113,14 @@ export default function QLCScreen({
           <Grid xl={12} container item alignItems="center" spacing={1} />
           <div style={{ marginTop: '1rem' }} />
           <QLCTriggerTable />
+          <Typography>
+            Please note, QLC+ integration is in Beta, and might notice bugs;
+            such as delete/edit button.
+          </Typography>
+          <Typography>
+            To find out if known bug or to report a bug, please visit our LedFx
+            discord Integrations channel: QLC+.
+          </Typography>
           {/* <QLCDropdownTable /> */}
         </div>
       </Dialog>
