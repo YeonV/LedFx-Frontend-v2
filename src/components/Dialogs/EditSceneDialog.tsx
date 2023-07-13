@@ -18,9 +18,10 @@ import {
   Chip,
   Select,
   MenuItem,
+  ListSubheader,
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
-import merge from 'ts-deepmerge'
+// import merge from 'ts-deepmerge'
 import useStore from '../../store/useStore'
 import { filterKeys, ordered } from '../../utils/helpers'
 
@@ -36,12 +37,14 @@ const EditSceneDialog = () => {
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
   const [invalid, setInvalid] = useState(false)
-  // const [effectPreset, setEffectPreset] = useState(
+  // const [ledfxPreset, setEffectPreset] = useState(
   //   undefined as string | false | undefined
   // )
   const [scVirtualsToIgnore, setScVirtualsToIgnore] = useState<string[]>([])
   const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const getVirtuals = useStore((state) => state.getVirtuals)
 
+  const activatePreset = useStore((state) => state.activatePreset)
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
   const scenes = useStore((state) => state.scenes)
@@ -52,11 +55,7 @@ const EditSceneDialog = () => {
   // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
   const data = useStore((state: any) => state.dialogs.addScene?.editData)
   const features = useStore((state) => state.features)
-  // const presets = useStore((state) => state.presets) as any
-  // const pres = {
-  //   ...presets.default_presets,
-  //   ...presets.custom_presets,
-  // }
+
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -151,27 +150,47 @@ const EditSceneDialog = () => {
 
   useEffect(() => {
     getLedFxPresets().then((ledfx_presets) => {
-      setLp(merge(ledfx_presets, user_presets))
-      return 'ledfx_presets'
+      setLp(ledfx_presets)
     })
   }, [])
 
-  const renderPresets = (press: any, dev: string) => {
-    if (press) {
-      const effectPreset =
-        Object.keys(press).length > 0 &&
-        Object.keys(press).find(
+  const renderPresets = (
+    ledfx_presets: any,
+    // user_presets: any,
+    dev: string
+  ) => {
+    if (ledfx_presets) {
+      const ledfxPreset =
+        Object.keys(ledfx_presets).length > 0 &&
+        Object.keys(ledfx_presets).find(
           (k) =>
-            JSON.stringify(ordered((press[k] as any).config)) ===
+            JSON.stringify(ordered((ledfx_presets[k] as any).config)) ===
+            JSON.stringify(
+              ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
+            )
+        )
+      const userPreset =
+        Object.keys(user_presets).length > 0 &&
+        Object.keys(user_presets).find(
+          (k) =>
+            JSON.stringify(ordered((user_presets[k] as any).config)) ===
             JSON.stringify(
               ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
             )
         )
 
-      return effectPreset ? (
+      return ledfxPreset || userPreset ? (
         <Select
-          value={effectPreset}
-          // onChange={(e) => setEffectPreset(e.target.value)}
+          defaultValue={ledfxPreset || userPreset}
+          onChange={(e) =>
+            e.target.value &&
+            activatePreset(
+              dev,
+              'default_presets',
+              scenes[data.name.toLowerCase()].virtuals[dev].type,
+              e.target.value
+            ).then(() => getVirtuals())
+          }
           disabled={scVirtualsToIgnore.indexOf(dev) > -1}
           disableUnderline
           sx={{
@@ -179,7 +198,16 @@ const EditSceneDialog = () => {
               scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : '',
           }}
         >
-          {Object.keys(press)
+          <ListSubheader>LedFx Presets</ListSubheader>
+          {Object.keys(ledfx_presets)
+            .sort((k) => (k === 'reset' ? -1 : 1))
+            .map((ke, i) => (
+              <MenuItem key={ke + i} value={ke}>
+                {ke === 'reset' ? 'Default' : ke}
+              </MenuItem>
+            ))}
+          <ListSubheader>User Presets</ListSubheader>
+          {Object.keys(user_presets)
             .sort((k) => (k === 'reset' ? -1 : 1))
             .map((ke, i) => (
               <MenuItem key={ke + i} value={ke}>
