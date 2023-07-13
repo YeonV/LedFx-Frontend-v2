@@ -21,13 +21,9 @@ import {
   ListSubheader,
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
-// import merge from 'ts-deepmerge'
-import useStore from '../../store/useStore'
 import { filterKeys, ordered } from '../../utils/helpers'
-
+import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
-
-// Based on: https://stackoverflow.com/a/55736757/1762224
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -37,26 +33,26 @@ const EditSceneDialog = () => {
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
   const [invalid, setInvalid] = useState(false)
-  // const [ledfxPreset, setEffectPreset] = useState(
-  //   undefined as string | false | undefined
-  // )
+  const [lp, setLp] = useState(undefined as any)
+  const [disabledPSelector, setDisabledPSelector] = useState([] as string[])
   const [scVirtualsToIgnore, setScVirtualsToIgnore] = useState<string[]>([])
+
+  const { user_presets } = useStore((state) => state.config)
+  const { effects } = useStore((state) => state.schemas)
+  const scenes = useStore((state) => state.scenes)
+  const open = useStore((state) => state.dialogs.addScene?.edit || false)
+  const data = useStore((state: any) => state.dialogs.addScene?.editData)
+  const features = useStore((state) => state.features)
+  const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
+
+  const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
   const setVirtualEffect = useStore((state) => state.setVirtualEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
-
   const activatePreset = useStore((state) => state.activatePreset)
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
-  const scenes = useStore((state) => state.scenes)
-  const { user_presets } = useStore((state) => state.config)
-  const { effects } = useStore((state) => state.schemas)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
-  const open = useStore((state) => state.dialogs.addScene?.edit || false)
-  // const key = useStore((state: any) => state.dialogs.addScene?.sceneKey || '');
-  const data = useStore((state: any) => state.dialogs.addScene?.editData)
-  const features = useStore((state) => state.features)
 
-  const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
   )
@@ -90,12 +86,10 @@ const EditSceneDialog = () => {
               position: 'relative',
             },
           }}
-          // className={classes.iconMedia}
           name={iconName}
         />
       </div>
     )
-  const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
 
   function isValidURL(string: string) {
     const res = string.match(
@@ -126,6 +120,7 @@ const EditSceneDialog = () => {
     setTags('')
     setUrl('')
     setPayload('')
+    setDisabledPSelector([])
     setDialogOpenAddScene(false, false)
   }
   const handleAddSceneWithVirtuals = () => {
@@ -135,7 +130,10 @@ const EditSceneDialog = () => {
       tags,
       url,
       payload,
-      filterKeys(scenes[data.name.toLowerCase()].virtuals, scVirtualsToIgnore)
+      filterKeys(
+        scenes[data.name.toLowerCase().replace(' ', '-')].virtuals,
+        scVirtualsToIgnore
+      )
     ).then(() => {
       getScenes()
     })
@@ -144,9 +142,9 @@ const EditSceneDialog = () => {
     setTags('')
     setUrl('')
     setPayload('')
+    setDisabledPSelector([])
     setDialogOpenAddScene(false, false)
   }
-  const [lp, setLp] = useState(undefined as any)
 
   useEffect(() => {
     getLedFxPresets().then((ledfx_presets) => {
@@ -154,12 +152,7 @@ const EditSceneDialog = () => {
     })
   }, [])
 
-  const renderPresets = (
-    ledfx_presets: any,
-    // user_presets: any,
-    dev: string,
-    effectId: string
-  ) => {
+  const renderPresets = (ledfx_presets: any, dev: string, effectId: string) => {
     if (ledfx_presets) {
       const ledfxPreset =
         ledfx_presets &&
@@ -168,7 +161,10 @@ const EditSceneDialog = () => {
           (k) =>
             JSON.stringify(ordered((ledfx_presets[k] as any).config)) ===
             JSON.stringify(
-              ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
+              ordered(
+                scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[dev]
+                  .config
+              )
             )
         )
 
@@ -181,7 +177,11 @@ const EditSceneDialog = () => {
                 ordered((user_presets[effectId][k] as any).config)
               ) ===
                 JSON.stringify(
-                  ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
+                  ordered(
+                    scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[
+                      dev
+                    ].config
+                  )
                 ) && k
           )
           .filter((n) => !!n)
@@ -196,11 +196,15 @@ const EditSceneDialog = () => {
             activatePreset(
               dev,
               'default_presets',
-              scenes[data.name.toLowerCase()].virtuals[dev].type,
+              scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[dev]
+                .type,
               e.target.value
             ).then(() => getVirtuals())
           }
-          disabled={scVirtualsToIgnore.indexOf(dev) > -1}
+          disabled={
+            scVirtualsToIgnore.indexOf(dev) > -1 ||
+            disabledPSelector.indexOf(dev) > -1
+          }
           disableUnderline
           sx={{
             textDecoration:
@@ -238,7 +242,10 @@ const EditSceneDialog = () => {
       effects && (
         <Select
           defaultValue={effect}
-          onChange={(e) => setVirtualEffect(dev, e.target.value, {}, true)}
+          onChange={(e) => {
+            setVirtualEffect(dev, e.target.value, {}, true)
+            setDisabledPSelector([...disabledPSelector, dev])
+          }}
           disabled={scVirtualsToIgnore.indexOf(dev) > -1}
           disableUnderline
           sx={{
@@ -273,7 +280,10 @@ const EditSceneDialog = () => {
             color="primary"
             variant="contained"
             startIcon={<NavigateBefore />}
-            onClick={handleClose}
+            onClick={() => {
+              setDisabledPSelector([])
+              handleClose()
+            }}
             style={{ marginRight: '1rem' }}
           >
             back
@@ -460,9 +470,15 @@ const EditSceneDialog = () => {
         <Divider sx={{ margin: '0 auto', maxWidth: '960px' }} />
         {data &&
           scenes &&
-          scenes[data.name.toLowerCase()] &&
-          Object.keys(scenes[data.name.toLowerCase()].virtuals)
-            .filter((d) => !!scenes[data.name.toLowerCase()].virtuals[d].type)
+          scenes[data.name.toLowerCase().replace(' ', '-')] &&
+          Object.keys(
+            scenes[data.name.toLowerCase().replace(' ', '-')].virtuals
+          )
+            .filter(
+              (d) =>
+                !!scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[d]
+                  .type
+            )
             .map((dev, i) => (
               <div
                 key={i}
@@ -490,15 +506,21 @@ const EditSceneDialog = () => {
                   }}
                 >
                   {renderEffects(
-                    scenes[data.name.toLowerCase()].virtuals[dev].type,
+                    scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[
+                      dev
+                    ].type,
                     dev
                   )}
                   <span style={{ width: 180, textAlign: 'right' }}>
                     {lp &&
                       renderPresets(
-                        lp[scenes[data.name.toLowerCase()].virtuals[dev].type],
+                        lp[
+                          scenes[data.name.toLowerCase().replace(' ', '-')]
+                            .virtuals[dev].type
+                        ],
                         dev,
-                        scenes[data.name.toLowerCase()].virtuals[dev].type
+                        scenes[data.name.toLowerCase().replace(' ', '-')]
+                          .virtuals[dev].type
                       )}
                   </span>
                   <Box
@@ -527,8 +549,11 @@ const EditSceneDialog = () => {
             ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleAddScene}>Reset to match current</Button>
-        <Button onClick={handleAddSceneWithVirtuals}>Apply Changes</Button>
+        {disabledPSelector.length > 0 && <>OHH</>}
+        <Button onClick={handleAddScene}>OLD ADD SCENE</Button>
+        <Button onClick={handleAddSceneWithVirtuals}>
+          NEW ADD SCENE WITH DYNAMIC VIRTUALS
+        </Button>
       </DialogActions>
     </Dialog>
   )
