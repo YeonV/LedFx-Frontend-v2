@@ -41,15 +41,14 @@ const AddSceneDialog = () => {
   }
   const handleAddScene = () => {
     if (!invalid) {
-      addScene(name, image, tags, url, payload).then(() => {
-        getScenes()
+      addScene(name, image, tags, url, payload).then(async () => {
+        const newScenes = await getScenes()
+        const sceneId = Object.keys(newScenes).find(
+          (s) => newScenes[s].name === name
+        )
+        if (sceneId)
+          setDialogOpenAddScene(true, true, sceneId, newScenes[sceneId])
       })
-      setName('')
-      setImage('')
-      setTags('')
-      setUrl('')
-      setPayload('')
-      setDialogOpenAddScene(false)
     }
   }
 
@@ -164,7 +163,7 @@ const AddSceneDialog = () => {
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={handleAddScene}>
-          {overwrite ? 'Overwrite' : 'Add'}
+          {overwrite ? 'Overwrite' : 'Add & Configure'}
         </Button>
       </DialogActions>
     </Dialog>
