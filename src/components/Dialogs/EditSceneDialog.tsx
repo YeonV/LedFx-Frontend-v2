@@ -124,6 +124,7 @@ const EditSceneDialog = () => {
     setUrl('')
     setPayload('')
     setDisabledPSelector([])
+    setScVirtualsToIgnore([])
     setDialogOpenAddScene(false, false)
   }
   const handleAddSceneWithVirtuals = () => {
@@ -146,6 +147,7 @@ const EditSceneDialog = () => {
     setUrl('')
     setPayload('')
     setDisabledPSelector([])
+    setScVirtualsToIgnore([])
     setDialogOpenAddScene(false, false)
   }
 
@@ -289,6 +291,7 @@ const EditSceneDialog = () => {
             startIcon={<NavigateBefore />}
             onClick={() => {
               setDisabledPSelector([])
+              setScVirtualsToIgnore([])
               handleClose()
             }}
             style={{ marginRight: '1rem' }}
@@ -611,6 +614,18 @@ const EditSceneDialog = () => {
             <Typography>
               Effect-Type Changed! Preset-Selectors saved until applied or
               canceled
+            </Typography>
+          </Alert>
+        )}
+        {scVirtualsToIgnore.length > 0 && (
+          <Alert severity="info" sx={{ margin: '2rem auto', maxWidth: 960 }}>
+            <Typography>
+              Removing detected: <br />
+              You can use this to make this scene ignore disabled Virtuals, so
+              it will not overwrite those on activation.
+              <br />
+              However, once saved you can <b>not</b> undo it. You would need to
+              add a new Scene.
             </Typography>
           </Alert>
         )}
