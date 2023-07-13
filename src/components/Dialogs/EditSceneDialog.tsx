@@ -19,8 +19,10 @@ import {
   Select,
   MenuItem,
   ListSubheader,
+  Alert,
+  Tooltip,
 } from '@mui/material'
-import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
+import { Clear, Undo, NavigateBefore, InfoRounded } from '@mui/icons-material'
 import { filterKeys, ordered } from '../../utils/helpers'
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
@@ -49,6 +51,7 @@ const EditSceneDialog = () => {
   const setVirtualEffect = useStore((state) => state.setVirtualEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const activatePreset = useStore((state) => state.activatePreset)
+  const activateScene = useStore((state) => state.activateScene)
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
@@ -131,7 +134,7 @@ const EditSceneDialog = () => {
       url,
       payload,
       filterKeys(
-        scenes[data.name.toLowerCase().replace(' ', '-')].virtuals,
+        scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals,
         scVirtualsToIgnore
       )
     ).then(() => {
@@ -152,6 +155,10 @@ const EditSceneDialog = () => {
     })
   }, [])
 
+  useEffect(() => {
+    if (open) activateScene(data.name.toLowerCase().replaceAll(' ', '-'))
+  }, [open])
+
   const renderPresets = (ledfx_presets: any, dev: string, effectId: string) => {
     if (ledfx_presets) {
       const ledfxPreset =
@@ -162,8 +169,9 @@ const EditSceneDialog = () => {
             JSON.stringify(ordered((ledfx_presets[k] as any).config)) ===
             JSON.stringify(
               ordered(
-                scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[dev]
-                  .config
+                scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals[
+                  dev
+                ].config
               )
             )
         )
@@ -178,9 +186,8 @@ const EditSceneDialog = () => {
               ) ===
                 JSON.stringify(
                   ordered(
-                    scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[
-                      dev
-                    ].config
+                    scenes[data.name.toLowerCase().replaceAll(' ', '-')]
+                      .virtuals[dev].config
                   )
                 ) && k
           )
@@ -196,7 +203,7 @@ const EditSceneDialog = () => {
             activatePreset(
               dev,
               'default_presets',
-              scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[dev]
+              scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals[dev]
                 .type,
               e.target.value
             ).then(() => getVirtuals())
@@ -358,6 +365,58 @@ const EditSceneDialog = () => {
               margin="dense"
               id="scene_image"
               label="Image"
+              helperText={
+                <Tooltip
+                  sx={{ mt: 1, ml: -2 }}
+                  placement="bottom-start"
+                  title={
+                    <div>
+                      Image is optional and can be one of:
+                      <ul style={{ paddingLeft: '1rem' }}>
+                        <li>
+                          iconName{' '}
+                          <Link
+                            href="https://material-ui.com/components/material-icons/"
+                            target="_blank"
+                          >
+                            Find MUI icons here
+                          </Link>
+                          <Typography color="textSecondary" variant="subtitle1">
+                            <em>eg. flare, AccessAlarms</em>
+                          </Typography>
+                        </li>
+                        <li>
+                          mdi:icon-name{' '}
+                          <Link
+                            href="https://materialdesignicons.com"
+                            target="_blank"
+                          >
+                            Find Material Design icons here
+                          </Link>
+                          <Typography color="textSecondary" variant="subtitle1">
+                            <em>eg. mdi:balloon, mdi:led-strip-variant</em>
+                          </Typography>
+                        </li>
+                        <li>
+                          image:custom-url
+                          <Typography
+                            color="textSecondary"
+                            variant="subtitle1"
+                            style={{ wordBreak: 'break-all' }}
+                          >
+                            <em>
+                              eg.
+                              image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
+                            </em>
+                          </Typography>
+                        </li>
+                      </ul>
+                    </div>
+                  }
+                >
+                  <InfoRounded />
+                </Tooltip>
+              }
               type="text"
               value={image}
               onChange={(e) => setImage(e.target.value)}
@@ -470,14 +529,15 @@ const EditSceneDialog = () => {
         <Divider sx={{ margin: '0 auto', maxWidth: '960px' }} />
         {data &&
           scenes &&
-          scenes[data.name.toLowerCase().replace(' ', '-')] &&
+          scenes[data.name.toLowerCase().replaceAll(' ', '-')] &&
           Object.keys(
-            scenes[data.name.toLowerCase().replace(' ', '-')].virtuals
+            scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals
           )
             .filter(
               (d) =>
-                !!scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[d]
-                  .type
+                !!scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals[
+                  d
+                ].type
             )
             .map((dev, i) => (
               <div
@@ -506,20 +566,19 @@ const EditSceneDialog = () => {
                   }}
                 >
                   {renderEffects(
-                    scenes[data.name.toLowerCase().replace(' ', '-')].virtuals[
-                      dev
-                    ].type,
+                    scenes[data.name.toLowerCase().replaceAll(' ', '-')]
+                      .virtuals[dev].type,
                     dev
                   )}
                   <span style={{ width: 180, textAlign: 'right' }}>
                     {lp &&
                       renderPresets(
                         lp[
-                          scenes[data.name.toLowerCase().replace(' ', '-')]
+                          scenes[data.name.toLowerCase().replaceAll(' ', '-')]
                             .virtuals[dev].type
                         ],
                         dev,
-                        scenes[data.name.toLowerCase().replace(' ', '-')]
+                        scenes[data.name.toLowerCase().replaceAll(' ', '-')]
                           .virtuals[dev].type
                       )}
                   </span>
@@ -547,12 +606,25 @@ const EditSceneDialog = () => {
                 </span>
               </div>
             ))}
+        {disabledPSelector.length > 0 && (
+          <Alert severity="info" sx={{ margin: '2rem auto', maxWidth: 960 }}>
+            <Typography>
+              Effect-Type Changed! Preset-Selectors saved until applied or
+              canceled
+            </Typography>
+          </Alert>
+        )}
       </DialogContent>
       <DialogActions>
-        {disabledPSelector.length > 0 && <>OHH</>}
-        <Button onClick={handleAddScene}>OLD ADD SCENE</Button>
-        <Button onClick={handleAddSceneWithVirtuals}>
-          NEW ADD SCENE WITH DYNAMIC VIRTUALS
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          onClick={() =>
+            scVirtualsToIgnore.length > 0
+              ? handleAddSceneWithVirtuals()
+              : handleAddScene()
+          }
+        >
+          Save
         </Button>
       </DialogActions>
     </Dialog>
