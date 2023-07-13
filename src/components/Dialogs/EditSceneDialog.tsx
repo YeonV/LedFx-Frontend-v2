@@ -157,10 +157,12 @@ const EditSceneDialog = () => {
   const renderPresets = (
     ledfx_presets: any,
     // user_presets: any,
-    dev: string
+    dev: string,
+    effectId: string
   ) => {
     if (ledfx_presets) {
       const ledfxPreset =
+        ledfx_presets &&
         Object.keys(ledfx_presets).length > 0 &&
         Object.keys(ledfx_presets).find(
           (k) =>
@@ -169,15 +171,22 @@ const EditSceneDialog = () => {
               ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
             )
         )
+
+      const userPresets =
+        user_presets[effectId] &&
+        Object.keys(user_presets[effectId])
+          .map(
+            (k) =>
+              JSON.stringify(
+                ordered((user_presets[effectId][k] as any).config)
+              ) ===
+                JSON.stringify(
+                  ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
+                ) && k
+          )
+          .filter((n) => !!n)
       const userPreset =
-        Object.keys(user_presets).length > 0 &&
-        Object.keys(user_presets).find(
-          (k) =>
-            JSON.stringify(ordered((user_presets[k] as any).config)) ===
-            JSON.stringify(
-              ordered(scenes[data.name.toLowerCase()].virtuals[dev].config)
-            )
-        )
+        userPresets && userPresets.length === 1 && userPresets[0]
 
       return ledfxPreset || userPreset ? (
         <Select
@@ -198,25 +207,26 @@ const EditSceneDialog = () => {
               scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : '',
           }}
         >
-          <ListSubheader>LedFx Presets</ListSubheader>
-          {Object.keys(ledfx_presets)
-            .sort((k) => (k === 'reset' ? -1 : 1))
-            .map((ke, i) => (
+          {ledfx_presets && <ListSubheader>LedFx Presets</ListSubheader>}
+          {ledfx_presets &&
+            Object.keys(ledfx_presets)
+              .sort((k) => (k === 'reset' ? -1 : 1))
+              .map((ke, i) => (
+                <MenuItem key={ke + i} value={ke}>
+                  {ke === 'reset' ? 'Default' : ke}
+                </MenuItem>
+              ))}
+          {user_presets && <ListSubheader>User Presets</ListSubheader>}
+          {user_presets &&
+            user_presets[effectId] &&
+            Object.keys(user_presets[effectId]).map((ke, i) => (
               <MenuItem key={ke + i} value={ke}>
-                {ke === 'reset' ? 'Default' : ke}
-              </MenuItem>
-            ))}
-          <ListSubheader>User Presets</ListSubheader>
-          {Object.keys(user_presets)
-            .sort((k) => (k === 'reset' ? -1 : 1))
-            .map((ke, i) => (
-              <MenuItem key={ke + i} value={ke}>
-                {ke === 'reset' ? 'Default' : ke}
+                {ke}
               </MenuItem>
             ))}
         </Select>
       ) : (
-        <Select value="Not saved as Preset" disableUnderline disabled>
+        <Select value="Not saved as Preset" disableUnderline>
           <MenuItem value="Not saved as Preset">Not saved as Preset</MenuItem>
         </Select>
       )
@@ -487,7 +497,8 @@ const EditSceneDialog = () => {
                     {lp &&
                       renderPresets(
                         lp[scenes[data.name.toLowerCase()].virtuals[dev].type],
-                        dev
+                        dev,
+                        scenes[data.name.toLowerCase()].virtuals[dev].type
                       )}
                   </span>
                   <Box
