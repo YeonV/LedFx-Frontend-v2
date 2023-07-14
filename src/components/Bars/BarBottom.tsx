@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material'
 import { useLocation, Link } from 'react-router-dom'
 import useStore from '../../store/useStore'
-import AddSceneDialog from '../Dialogs/AddSceneDialog'
+import AddSceneDialog from '../Dialogs/SceneDialogs/AddSceneDialog'
 import AddDeviceDialog from '../Dialogs/AddDeviceDialog'
 import AddVirtualDialog from '../Dialogs/AddVirtualDialog'
 import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog'
@@ -26,7 +26,7 @@ import AddButton from '../AddButton'
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget'
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro'
 import { drawerWidth } from '../../utils/helpers'
-import EditSceneDialog from '../Dialogs/EditSceneDialog'
+import EditSceneDialog from '../Dialogs/SceneDialogs/EditSceneDialog'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 
 export default function BarBottom() {

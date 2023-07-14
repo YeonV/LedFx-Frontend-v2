@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react/jsx-no-useless-fragment */
 import { useEffect, useState } from 'react'
 import {
@@ -20,12 +21,14 @@ import {
   MenuItem,
   ListSubheader,
   Alert,
-  Tooltip,
+  InputAdornment,
 } from '@mui/material'
-import { Clear, Undo, NavigateBefore, InfoRounded } from '@mui/icons-material'
-import { filterKeys, ordered } from '../../utils/helpers'
-import useStore from '../../store/useStore'
-import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
+import { filterKeys, ordered } from '../../../utils/helpers'
+import useStore from '../../../store/useStore'
+import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
+import TooltipImage from './TooltipImage'
+import TooltipTags from './TooltipTags'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -65,7 +68,7 @@ const EditSceneDialog = () => {
       <div>
         <CardMedia
           style={{
-            height: features.scenechips ? 140 : 125,
+            height: tags?.split(',')[0].length > 0 ? 140 : 125,
             width: 334,
             marginTop: '1rem',
           }}
@@ -82,7 +85,7 @@ const EditSceneDialog = () => {
             width: 334,
             display: 'flex',
             alignItems: 'center',
-            margin: `${features.scenechips ? 0 : '1.25rem'} auto 0`,
+            margin: `${tags?.split(',')[0].length > 0 ? 0 : '1.25rem'} auto 0`,
             justifyContent: 'center',
             fontSize: 140,
             '& > span:before': {
@@ -368,74 +371,34 @@ const EditSceneDialog = () => {
               margin="dense"
               id="scene_image"
               label="Image"
-              helperText={
-                <Tooltip
-                  sx={{ mt: 1, ml: -2 }}
-                  placement="bottom-start"
-                  title={
-                    <div>
-                      Image is optional and can be one of:
-                      <ul style={{ paddingLeft: '1rem' }}>
-                        <li>
-                          iconName{' '}
-                          <Link
-                            href="https://material-ui.com/components/material-icons/"
-                            target="_blank"
-                          >
-                            Find MUI icons here
-                          </Link>
-                          <Typography color="textSecondary" variant="subtitle1">
-                            <em>eg. flare, AccessAlarms</em>
-                          </Typography>
-                        </li>
-                        <li>
-                          mdi:icon-name{' '}
-                          <Link
-                            href="https://materialdesignicons.com"
-                            target="_blank"
-                          >
-                            Find Material Design icons here
-                          </Link>
-                          <Typography color="textSecondary" variant="subtitle1">
-                            <em>eg. mdi:balloon, mdi:led-strip-variant</em>
-                          </Typography>
-                        </li>
-                        <li>
-                          image:custom-url
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle1"
-                            style={{ wordBreak: 'break-all' }}
-                          >
-                            <em>
-                              eg.
-                              image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
-                            </em>
-                          </Typography>
-                        </li>
-                      </ul>
-                    </div>
-                  }
-                >
-                  <InfoRounded />
-                </Tooltip>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <TooltipImage />
+                  </InputAdornment>
+                ),
+              }}
               type="text"
               value={image}
               onChange={(e) => setImage(e.target.value)}
               fullWidth
             />
-            {features.scenechips && (
-              <TextField
-                margin="dense"
-                id="scene_tags"
-                label="Tags"
-                type="tags"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                fullWidth
-              />
-            )}
+            <TextField
+              margin="dense"
+              id="scene_tags"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <TooltipTags />
+                  </InputAdornment>
+                ),
+              }}
+              label="Tags"
+              type="tags"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              fullWidth
+            />
           </div>
           <div
             style={{
@@ -446,7 +409,10 @@ const EditSceneDialog = () => {
             }}
           >
             {sceneImage(image || 'Wallpaper')}
-            {scenes && Object.keys(scenes).length && features.scenechips ? (
+            {scenes &&
+            Object.keys(scenes).length &&
+            features.scenechips &&
+            tags?.split(',')[0].length > 0 ? (
               <div
                 style={{
                   display: 'flex',
@@ -457,28 +423,26 @@ const EditSceneDialog = () => {
                   width: '100%',
                 }}
               >
-                {tags.split(',').map((t: string) => {
-                  return (
-                    <Chip
-                      variant={
-                        sceneActiveTags.includes(t) ? 'filled' : 'outlined'
-                      }
-                      sx={{
-                        flexGrow: 0,
-                        minWidth: 50,
-                        ml: 1,
-                        mt: 1,
-                        mr: 1,
-                        cursor: sceneActiveTags.includes(t)
-                          ? 'zoom-out'
-                          : 'zoom-in',
-                      }}
-                      key={t}
-                      label={t}
-                      onClick={() => toggletSceneActiveTag(t)}
-                    />
-                  )
-                })}
+                {tags?.split(',').map((t: string) => (
+                  <Chip
+                    variant={
+                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
+                    }
+                    sx={{
+                      flexGrow: 0,
+                      minWidth: 50,
+                      ml: 1,
+                      mt: 1,
+                      mr: 1,
+                      cursor: sceneActiveTags.includes(t)
+                        ? 'zoom-out'
+                        : 'zoom-in',
+                    }}
+                    key={t}
+                    label={t}
+                    onClick={() => toggletSceneActiveTag(t)}
+                  />
+                ))}
               </div>
             ) : null}
           </div>
@@ -612,7 +576,7 @@ const EditSceneDialog = () => {
         {disabledPSelector.length > 0 && (
           <Alert severity="info" sx={{ margin: '2rem auto', maxWidth: 960 }}>
             <Typography>
-              Effect-Type Changed! Preset-Selectors saved until applied or
+              Effect-Type Changed! Preset-Selectors disabled until saved or
               canceled
             </Typography>
           </Alert>
