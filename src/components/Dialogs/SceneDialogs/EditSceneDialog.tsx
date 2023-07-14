@@ -180,7 +180,6 @@ const EditSceneDialog = () => {
               )
             )
         )
-
       const userPresets =
         user_presets[effectId] &&
         Object.keys(user_presets[effectId])
