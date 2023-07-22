@@ -13590,6 +13590,11 @@ ts-dedent@^2.0.0:
   resolved "https://registry.yarnpkg.com/ts-dedent/-/ts-dedent-2.2.0.tgz#39e4bd297cd036292ae2394eb3412be63f563bb5"
   integrity sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==
 
+ts-deepmerge@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/ts-deepmerge/-/ts-deepmerge-6.1.0.tgz#1a77431d062fbe45f2dd5abc553c5499d98bed1e"
+  integrity sha512-YVJBhdIwYAZv6QoYz/mihpgbv+r0+QfQazTcSS6WXhQkbCxjTRoV+IOLtyArtz3au7xb+fPQVp1d7o5Qw1f1fg==
+
 ts-interface-checker@^0.1.9:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz#784fd3d679722bc103b1b4b8030bcddb5db2a699"
