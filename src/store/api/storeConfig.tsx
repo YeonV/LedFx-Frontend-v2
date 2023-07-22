@@ -60,7 +60,20 @@ const storeConfig = (set: any) => ({
         state.dialogs.nohost.open = true
       }),
       false,
-      'api/failedFullConfig'
+      'api/getFullConfig'
+    )
+  },
+  getLedFxPresets: async () => {
+    const resp = await Ledfx('/api/config')
+    if (resp && resp.host) {
+      return resp.ledfx_presets
+    }
+    return set(
+      produce((state: IStore) => {
+        state.dialogs.nohost.open = true
+      }),
+      false,
+      'api/getLedFxPresets'
     )
   },
   setSystemConfig: async (config: any) =>
