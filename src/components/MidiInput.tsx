@@ -10,7 +10,7 @@ const MIDIListener = () => {
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: any) => {
       const midiInput = `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
-      // Doubleched Launchpad on backend and no impact implementing the below. Backend LED launchpad will take preference.
+      // Checked & tested Launchpad device on backend and this code has no impact. Backend LED launchpad will take preference.
       const output = WebMidi.getOutputByName(input.name)
       Object.keys(scenes).forEach((key) => {
         const scene = scenes[key]
