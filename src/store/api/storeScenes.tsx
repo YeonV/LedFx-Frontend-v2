@@ -111,6 +111,7 @@ const storeScenes = (set: any) => ({
     scene_tags?: string,
     scene_puturl?: string,
     scene_payload?: string,
+    scene_midiactivate?: string,
     virtuals?: Record<string, any>
   ) =>
     virtuals
