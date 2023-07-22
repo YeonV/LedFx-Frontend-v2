@@ -61,7 +61,7 @@ const MIDIListener = () => {
           const { scene_id } = data
           Object.keys(scenes).forEach((key) => {
             const scene = scenes[key]
-            if (scene.name === scene_id) {
+            if (key === scene_id) {
               const inputName =
                 scene.scene_midiactivate.split(' Note:')[0] ||
                 '2- Launchpad S 16'
