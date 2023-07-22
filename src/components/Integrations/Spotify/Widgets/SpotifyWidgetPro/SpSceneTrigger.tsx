@@ -29,7 +29,7 @@ export default function SpSceneTrigger() {
   const songID = spotifyState?.track_window?.current_track?.id || ''
   const songTitleAndArtist = `${spotifyState?.track_window?.current_track?.name} - ${spotifyState?.track_window?.current_track?.artists[0]?.name}`
   const spotifyTriggerData = {
-    scene_id: spotifyScene, // Incorrectly sending scene_name instead of scene_id
+    scene_id: spotifyScene, // Incorrectly sending scene_id instead of scene_id
     song_id: songID,
     song_name: songTitleAndArtist,
     song_position: spotifyState?.position,

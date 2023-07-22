@@ -101,24 +101,36 @@ const storeScenes = (set: any) => ({
         false,
         'gotScenes'
       )
+      return resp.scenes
     }
+    return null
   },
   addScene: async (
     name: string,
-    scene_image: string,
-    scene_tags: string,
-    scene_puturl: string,
-    scene_payload: string,
-    scene_midiactivate: string
+    scene_image?: string,
+    scene_tags?: string,
+    scene_puturl?: string,
+    scene_payload?: string,
+    virtuals?: Record<string, any>
   ) =>
-    await Ledfx('/api/scenes', 'POST', {
-      name,
-      scene_image,
-      scene_tags,
-      scene_puturl,
-      scene_payload,
-      scene_midiactivate,
-    }),
+    virtuals
+      ? await Ledfx('/api/scenes', 'POST', {
+          name,
+          scene_image,
+          scene_tags,
+          scene_puturl,
+          scene_payload,
+          scene_midiactivate,
+          virtuals,
+        })
+      : await Ledfx('/api/scenes', 'POST', {
+          name,
+          scene_image,
+          scene_tags,
+          scene_puturl,
+          scene_payload,
+          scene_midiactivate,
+        }),
   activateScene: async (id: string) => {
     set(
       produce((s: any) => {

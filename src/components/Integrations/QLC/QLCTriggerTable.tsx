@@ -21,32 +21,6 @@ const Root = styled('div')(({ theme }: any) => ({
     '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
       color: theme.palette.text.secondary,
     },
-    '&.MuiDataGrid-root .MuiDataGrid-cell': {
-      borderColor: '#333',
-    },
-    '&.MuiDataGrid-root .MuiDataGrid-cell:focus, &.MuiDataGrid-root .MuiDataGrid-cell:focus-within':
-      {
-        outline: 'none',
-      },
-
-    '& .currently_playing, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
-      {
-        backgroundColor: `${theme.palette.primary.main}20`,
-        color: theme.palette.text.primary,
-      },
-    '& .activated, .activated.MuiDataGrid-row:hover, .activated.MuiDataGrid-row.Mui-hovered':
-      {
-        backgroundColor: `${theme.palette.primary.main}50`,
-        color: theme.palette.text.primary,
-      },
-    '& .disabled.MuiDataGrid-row': {
-      pointerEvents: 'none',
-      color: '#666',
-    },
-    '& .disabled.MuiDataGrid-row .MuiIconButton-root': {
-      pointerEvents: 'none',
-      color: '#666',
-    },
   },
 }))
 
@@ -72,16 +46,11 @@ export default function QLCTriggerTable() {
       const temp = integrations?.qlc?.data
       Object.keys(temp).map((key) => {
         const temp1 = temp[key]
-        const sceneName = temp1[1].scene_name
-        const sceneId = temp1[1].scene_name
+        const sceneName = temp1[1].scene_id
+        const sceneId = temp1[1].scene_id
         const triggerType = 'scene_activated'
-        const enabled = true
-        const qlc_id = temp1[3]
-        const triggerName = temp1[1].scene_name
-        const qlc_widgetType = temp1[3]
-        const qlc_name = temp1[3]
-        const qlc_value = temp1[3]
-
+        const enabled = temp1[2]
+        const triggerName = temp1[1].scene_id
         const current_data = temp1[3]
         const arr_widgets: any = []
         const arr_values: any = []
@@ -95,7 +64,16 @@ export default function QLCTriggerTable() {
           arr_widgets.push(obj)
           arr_values.push(v)
         })
-        const csv_widgets = JSON.stringify(arr_widgets)
+
+        // Join all the objects in the array as strings and put them together as one string.
+        const qlc_string = arr_widgets
+          .map(
+            (widget: any) =>
+              // Hmmm want new line per object but couldnt figure it out.
+              `ID: ${widget.ID}, Type: ${widget.Type}, Name: ${widget.Name}`
+          )
+          .join('')
+
         const csv_values = JSON.stringify(arr_values)
 
         if (temp1.constructor === Array) {
@@ -107,66 +85,22 @@ export default function QLCTriggerTable() {
             sceneName,
             enabled,
             trigger: `${triggerType}: ${sceneName}`,
-            // qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
-            qlc_string: csv_widgets,
+            qlc_string,
             qlc_value: csv_values,
-            qlc_widgets: [
-              {
-                qlc_id: 34,
-                qlc_widgetType: 'Button',
-                qlc_name: 'Medium colour cycle (138 bpm)',
-                qlc_value,
-                qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
-              },
-              {
-                qlc_id: 32,
-                qlc_widgetType: 'Button',
-                qlc_name: 'Turn off back light',
-                qlc_value,
-                qlc_string: `ID: ${qlc_id}, Type: ${qlc_widgetType}, Name: ${qlc_name}`,
-              },
-            ],
           })
           id += 1
         }
         return triggersNew
       })
       addToQLCTriggerList(triggersNew, 'create')
-      // console.log('QLC triggersNew', triggersNew);
     }
   }, [integrations])
-
-  // const SceneSet =
-  //   qlcInfo &&
-  //   qlcInfo.event_types &&
-  //   qlcInfo.event_types.scene_activated.event_filters.scene_name;
-  // const QLCWidgets =
-  //   qlcInfo &&
-  //   qlcInfo.qlc_widgets &&
-  //   qlcInfo.qlc_widgets.sort(
-  //     (a: string[], b: string[]) => parseInt(a[0]) - parseInt(b[0])
-  //   );
-  // const qlcStuff: never[] = [];
-  // const qlcID = {};
-  // qlcInfo &&
-  //   qlcInfo.qlc_widgets &&
-  //   qlcInfo.qlc_widgets.map((a) => {
-  //     qlcStuff[a[0]] = { id: a[0], Type: a[1], Name: a[2] };
-  //     qlcID[a[0]] = a[1];
-  //     // qlcType[a[0]] = (a[1]);
-  //     return true;
-  //   });
-  // console.log('SceneSet', SceneSet);
-  // console.log('QLCWidgets', QLCWidgets);
-  // console.log('qlcStuff', qlcStuff);
-  // console.log('qlcID', qlcID);
-
-  // triggersNew.find((item: any) => item.id === params.row.id)?.activated}
 
   const deleteTriggerHandler = (paramsTemp: any) => {
     deleteQLCTrigger({
       data: {
-        trigger_id: paramsTemp?.row?.trigger_id,
+        event_filter: { scene_id: paramsTemp?.row?.sceneId },
+        event_type: paramsTemp?.row?.triggerType,
       },
     }).then(() => getIntegrations())
   }
@@ -213,10 +147,10 @@ export default function QLCTriggerTable() {
             color="primary"
             aria-label="Enable/Disable Trigger"
             onChange={() => {
-              // console.log('params.row.enabled', params);
               toggleQLCTrigger('qlc', {
-                enabled: !params.row.enabled,
-              })
+                event_filter: { scene_id: params?.row?.sceneId },
+                event_type: params?.row?.triggerType,
+              }).then(() => getIntegrations())
             }}
           />
           <IconButton
@@ -253,7 +187,6 @@ export default function QLCTriggerTable() {
       <DataGrid
         className={classes.root}
         autoHeight
-        // checkboxSelection
         disableRowSelectionOnClick
         sx={{
           boxShadow: 2,
