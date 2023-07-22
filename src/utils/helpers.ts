@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/indent */
 export const drawerWidth = 240
 export const frontendConfig = 9
@@ -115,3 +116,23 @@ export const sleep = (ms: number) => {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+export const filterKeys = (obj: Record<string, any>, keys = [] as string[]) => {
+  // NOTE: Clone object to avoid mutating original!
+  const objct = JSON.parse(JSON.stringify(obj))
+
+  keys.forEach((key) => delete objct[key])
+
+  return objct
+}
+
+export const ordered = (unordered: Record<string, any>) =>
+  Object.keys(unordered)
+    .sort()
+    .reduce((obj: any, key) => {
+      // eslint-disable-next-line no-param-reassign
+      obj[key] = unordered[key]
+      return obj
+    }, {})
+
+
