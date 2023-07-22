@@ -24,6 +24,7 @@ import {
   InputAdornment,
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
+import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 import { filterKeys, ordered } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
@@ -37,6 +38,7 @@ const EditSceneDialog = () => {
   const [tags, setTags] = useState('')
   const [url, setUrl] = useState('')
   const [payload, setPayload] = useState('')
+  const [midiActivate, setMIDIActivate] = useState('')
   const [invalid, setInvalid] = useState(false)
   const [lp, setLp] = useState(undefined as any)
   const [disabledPSelector, setDisabledPSelector] = useState([] as string[])
@@ -111,6 +113,7 @@ const EditSceneDialog = () => {
       setTags(data?.scene_tags)
       setUrl(data?.scene_puturl)
       setPayload(data?.scene_payload)
+      setMIDIActivate(data?.scene_midiactivate)
     }
   }, [data])
   const handleClose = () => {
@@ -118,7 +121,7 @@ const EditSceneDialog = () => {
   }
 
   const handleAddScene = () => {
-    addScene(name, image, tags, url, payload).then(() => {
+    addScene(name, image, tags, url, payload, midiActivate).then(() => {
       getScenes()
     })
     setName('')
@@ -126,6 +129,7 @@ const EditSceneDialog = () => {
     setTags('')
     setUrl('')
     setPayload('')
+    setMIDIActivate('')
     setDisabledPSelector([])
     setScVirtualsToIgnore([])
     setDialogOpenAddScene(false, false)
@@ -137,6 +141,7 @@ const EditSceneDialog = () => {
       tags,
       url,
       payload,
+      midiActivate,
       filterKeys(
         scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals,
         scVirtualsToIgnore
@@ -149,6 +154,7 @@ const EditSceneDialog = () => {
     setTags('')
     setUrl('')
     setPayload('')
+    setMIDIActivate('')
     setDisabledPSelector([])
     setScVirtualsToIgnore([])
     setDialogOpenAddScene(false, false)
@@ -163,6 +169,36 @@ const EditSceneDialog = () => {
   useEffect(() => {
     if (open) activateScene(data.name.toLowerCase().replaceAll(' ', '-'))
   }, [open])
+
+  useEffect(() => {
+    if (features.scenemidi) {
+      const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
+        setMIDIActivate(
+          `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
+        )
+      }
+      WebMidi.enable({
+        callback(err: Error) {
+          if (err) {
+            // eslint-disable-next-line no-console
+            console.error('WebMidi could not be enabled:', err)
+          } else {
+            // Get all input devices
+            const { inputs } = WebMidi
+            if (inputs.length > 0) {
+              // Listen for MIDI messages on all channels and all input devices
+              inputs.forEach((input: Input) =>
+                input.addListener('noteon', (event: NoteMessageEvent) => {
+                  handleMidiEvent(input, event)
+                  // console.log(;`${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`);
+                })
+              )
+            }
+          }
+        },
+      })
+    }
+  }, [])
 
   const renderPresets = (ledfx_presets: any, dev: string, effectId: string) => {
     if (ledfx_presets) {
@@ -472,6 +508,53 @@ const EditSceneDialog = () => {
               fullWidth
             />
           </div>
+        ) : (
+          <></>
+        )}
+        {features && features.scenemidi ? (
+          <>
+            <div
+              style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}
+            >
+              <TextField
+                margin="dense"
+                id="latest_note_on"
+                label="MIDI Note to activate scene"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                type="text"
+                value={midiActivate}
+                fullWidth
+                disabled
+              />
+            </div>
+            <div
+              style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}
+            >
+              {WebMidi.inputs.length > 0 ? (
+                <>
+                  <Typography>
+                    MIDI Device/s detected. Press a MIDI button to assign to
+                    this scene.
+                  </Typography>
+                  {scenes &&
+                    Array.isArray(scenes) &&
+                    scenes.map(
+                      (scene) =>
+                        scene.midiactivate && (
+                          <Typography key={scene.name}>
+                            Please select another MIDI key/button. Already
+                            assigned to {scene.name}
+                          </Typography>
+                        )
+                    )}
+                </>
+              ) : (
+                <Typography>No MIDI input devices found.</Typography>
+              )}
+            </div>
+          </>
         ) : (
           <></>
         )}
