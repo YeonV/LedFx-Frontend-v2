@@ -43,9 +43,9 @@ const storeVirtuals = (set: any) => ({
     await Ledfx(`/api/virtuals/${virtId}`, 'PUT', { active }),
   deleteVirtual: async (virtId: string) =>
     await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
-  clearVirtualEffect: async (virtId: string) =>
+  clearEffect: async (virtId: string) =>
     await Ledfx(`/api/virtuals/${virtId}/effects`, 'DELETE'),
-  setVirtualEffect: async (
+  setEffect: async (
     virtId: string,
     type: string,
     config: any,
@@ -67,11 +67,11 @@ const storeVirtuals = (set: any) => ({
           }
         }),
         false,
-        'api/setVirtualEffect'
+        'api/setEffect'
       )
     }
   },
-  updateVirtualEffect: async (
+  updateEffect: async (
     virtId: string,
     type: string,
     config: any,
@@ -93,12 +93,12 @@ const storeVirtuals = (set: any) => ({
             }
           }),
           false,
-          'api/updateVirtualEffect'
+          'api/updateEffect'
         )
       }
     }
   },
-  updateVirtualSegments: async (virtId: string, segments: any) => {
+  updateSegments: async (virtId: string, segments: any) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}`, 'POST', {
       segments: [...segments],
     })
@@ -118,7 +118,7 @@ const storeVirtuals = (set: any) => ({
       }
     }
   },
-  highlightVirtualSegment: async (virtId: string, segment: number) => {
+  highlightSegment: async (virtId: string, segment: number) => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
       tool: 'highlight',
       segment,

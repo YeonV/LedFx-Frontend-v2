@@ -19,7 +19,7 @@ export interface EffectSchemaFormProps {
    */
   handleEffectConfig?: any
   /**
-   * updateVirtualEffect function for the given model
+   * updateEffect function for the given model
    */
   getVirtuals?: () => true
 }

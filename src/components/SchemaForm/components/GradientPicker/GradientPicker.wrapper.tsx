@@ -12,7 +12,7 @@ const GradientPickerWrapper = ({
   isGradient = false,
   wrapperStyle,
 }: any) => {
-  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect)
+  const updateEffect = useStore((state) => state.updateEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const virtuals = useStore((state) => state.virtuals)
   const colors = useStore((state) => state.colors)
@@ -31,14 +31,11 @@ const GradientPickerWrapper = ({
 
   const sendColorToVirtuals = (e: any) => {
     if (virtual && virtual.effect && virtual.effect.type) {
-      updateVirtualEffect(
-        virtual.id,
-        virtual.effect.type,
-        { [title]: e },
-        false
-      ).then(() => {
-        getVirtuals()
-      })
+      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false).then(
+        () => {
+          getVirtuals()
+        }
+      )
     }
   }
 

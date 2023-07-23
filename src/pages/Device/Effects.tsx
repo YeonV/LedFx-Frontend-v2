@@ -73,9 +73,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [matrix, setMatrix] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
-  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect)
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
-  const updateVirtualEffect = useStore((state) => state.updateVirtualEffect)
+  const clearEffect = useStore((state) => state.clearEffect)
+  const setEffect = useStore((state) => state.setEffect)
+  const updateEffect = useStore((state) => state.updateEffect)
   const virtuals = useStore((state) => state.virtuals)
   const effects = useStore((state) => state.schemas.effects)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
@@ -105,7 +105,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       theModel?.advanced
     )
   const handleClearEffect = () => {
-    clearVirtualEffect(virtId).then(() => {
+    clearEffect(virtId).then(() => {
       setFade(true)
       setTimeout(() => {
         getVirtuals()
@@ -117,8 +117,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }
 
   const handleEffectConfig = (config: any) => {
-    if (updateVirtualEffect && getVirtuals !== undefined) {
-      updateVirtualEffect(virtId, effectType, config, false).then(() => {
+    if (updateEffect && getVirtuals !== undefined) {
+      updateEffect(virtId, effectType, config, false).then(() => {
         getVirtuals()
       })
     }
@@ -249,7 +249,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             virtual={virtual}
             features={features}
             getVirtuals={getVirtuals}
-            setVirtualEffect={setVirtualEffect}
+            setEffect={setEffect}
           />
         </CardContent>
       </Card>

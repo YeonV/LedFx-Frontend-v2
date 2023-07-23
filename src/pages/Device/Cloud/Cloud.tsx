@@ -40,7 +40,7 @@ export default function CloudScreen({
   const [open, setOpen] = useState(false)
   const [cloudEffects, setCloudEffects] = useState<any>([])
   const [activeCloudPreset, setActiveCloudPreset] = useState()
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const setEffect = useStore((state) => state.setEffect)
   const addPreset = useStore((state) => state.addPreset)
   const getPresets = useStore((state) => state.getPresets)
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -85,10 +85,10 @@ export default function CloudScreen({
   const handleCloudPresets = async (p: any, save: boolean) => {
     setActiveCloudPreset(p.Name.toLowerCase())
     if (p.effect.ledfx_id !== effectType) {
-      await setVirtualEffect(virtId, p.effect.ledfx_id, {}, false)
+      await setEffect(virtId, p.effect.ledfx_id, {}, false)
       await getVirtuals()
     }
-    await setVirtualEffect(virtId, p.effect.ledfx_id, p.config, true)
+    await setEffect(virtId, p.effect.ledfx_id, p.config, true)
     if (save) {
       await addPreset(virtId, p.Name)
       await getPresets(p.effect.ledfx_id)
