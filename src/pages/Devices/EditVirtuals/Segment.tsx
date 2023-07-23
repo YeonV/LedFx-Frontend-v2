@@ -69,7 +69,8 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     updateSegments(virtual.id, newSegments).then(
       () => {
         getVirtuals()
-        highlightSegment(virtual.id, virtual.segments.length - 1)
+        // highlightSegment(virtual.id, -1)
+        highlightSegment(virtual.id, i)
       }
       // .then(() =>
       //   setEffect(virtual.id, 'rainbow', { speed: 10 }, true)
