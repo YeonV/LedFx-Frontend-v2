@@ -56,6 +56,7 @@ export default function EditVirtuals({
 }: any) {
   const currentVirtual = useStore((state) => state.currentVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
+  const calibrationMode = useStore((state) => state.calibrationMode)
   const classes = useEditVirtualsStyles()
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const getDevices = useStore((state) => state.getDevices)
@@ -96,6 +97,14 @@ export default function EditVirtuals({
       setOpen(true)
     }
   }, [currentVirtual])
+
+  useEffect(() => {
+    if (virtual?.id && open) calibrationMode(virtual?.id, 'on')
+
+    return () => {
+      if (virtual?.id && open) calibrationMode(virtual?.id, 'off')
+    }
+  }, [virtual?.id, open])
 
   return virtual && virtual.config ? (
     <>
