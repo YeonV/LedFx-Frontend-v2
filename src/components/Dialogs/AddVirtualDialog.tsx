@@ -160,7 +160,7 @@ const AddVirtualDialog = () => {
               Object.keys(initial.config).length === 0 &&
               initial.config.constructor === Object
                 ? model
-                : { ...model, ...initial.config }
+                : { ...initial.config, ...model }
             }
             onModelChange={handleModelChange}
           />

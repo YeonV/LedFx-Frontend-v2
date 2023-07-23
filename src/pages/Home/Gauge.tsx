@@ -1,9 +1,21 @@
+/* eslint-disable prettier/prettier */
 import { useTheme } from '@mui/material/styles'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, CircularProgress, Typography, useMediaQuery } from '@mui/material'
 
 export default function Gauge(props: any) {
   const theme = useTheme()
   const { unit, total, current, value, onClick } = props
+  const xSmallHeight = useMediaQuery('(max-height: 730px)')
+  const smallHeight = useMediaQuery('(max-height: 800px)')
+  const mediumHeight = useMediaQuery('(max-height: 900px)')
+  const size = xSmallHeight
+    ? 6
+    : smallHeight
+      ? 8
+      : mediumHeight
+        ? 10
+        :12
+
   return (
     <Box
       sx={{
@@ -14,7 +26,7 @@ export default function Gauge(props: any) {
       onClick={onClick}
     >
       <CircularProgress
-        size="12rem"
+        size={`${size}em`}
         variant="determinate"
         value={100}
         style={{
@@ -23,7 +35,7 @@ export default function Gauge(props: any) {
         }}
       />
       <CircularProgress
-        size="12rem"
+        size={`${size}em`}
         variant="determinate"
         value={value || (total === 0 ? 0 : Math.round((current * 100) / total))}
       />
@@ -40,12 +52,18 @@ export default function Gauge(props: any) {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="h2" color="secondary" style={{ lineHeight: 1 }}>
+        <Typography
+          variant="h2"
+          color="secondary"
+          fontSize={`${size/4}em`}
+          style={{ lineHeight: 1 }}
+        >
           {current}
         </Typography>
         <Typography
           variant="caption"
           color="secondary"
+          fontSize={`${size/12}em`}
           style={{ lineHeight: 1 }}
         >
           {unit}

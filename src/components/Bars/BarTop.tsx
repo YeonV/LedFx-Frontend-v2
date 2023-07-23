@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useState, useEffect } from 'react'
-import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Menu as MenuIcon,
   MoreVert,
-  PlayCircleOutline,
   Language,
   BarChart,
-  Pause,
-  Settings,
   GitHub,
   ChevronLeft,
   Login,
@@ -68,9 +65,7 @@ const TopBar = () => {
   // const setDarkMode = useStore((state) => state.ui.setDarkMode);
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
-  const togglePause = useStore((state) => state.togglePause)
   const toggleGraphs = useStore((state) => state.toggleGraphs)
-  const paused = useStore((state) => state.paused)
   const graphs = useStore((state) => state.graphs)
   // const config = useStore((state) => state.config);
   const isLogged = useStore((state) => state.isLogged)
@@ -101,9 +96,7 @@ const TopBar = () => {
   // const toggleDarkMode = () => {
   //   setDarkMode(!darkMode);
   // };
-  const changePause = () => {
-    togglePause()
-  }
+
   const changeGraphs = () => {
     toggleGraphs()
   }
@@ -398,12 +391,6 @@ const TopBar = () => {
               </ListItemIcon>
               Darkmode
             </MenuItem> */}
-            <MenuItem onClick={changePause}>
-              <ListItemIcon>
-                {paused ? <PlayCircleOutline /> : <Pause />}
-              </ListItemIcon>
-              {paused ? 'Play' : 'Pause'}
-            </MenuItem>
             <MenuItem onClick={changeGraphs}>
               <ListItemIcon>
                 <BarChart color={graphs ? 'inherit' : 'secondary'} />
@@ -422,16 +409,7 @@ const TopBar = () => {
               <TourIntegrations cally={() => setAnchorEl(null)} />
             ) : null}
             {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
-            <MenuItem
-              onClick={() => setAnchorEl(null)}
-              component={Link}
-              to="/Settings"
-            >
-              <ListItemIcon>
-                <Settings />
-              </ListItemIcon>
-              Settings
-            </MenuItem>
+
             {features.cloud && (
               <MenuItem
                 onClick={(e) => {
