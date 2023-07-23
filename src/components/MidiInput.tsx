@@ -16,6 +16,7 @@ const MIDIListener = () => {
         const scene = scenes[key]
         if (midiInput === String(scene.scene_midiactivate)) {
           activateScene(key)
+          localStorage.setItem('midiDeviceName', input.name) // Store MIDI device name
         } else {
           output.send([0xb0, 0x00, 0x00])
         }
@@ -63,8 +64,7 @@ const MIDIListener = () => {
             const scene = scenes[key]
             if (key === scene_id) {
               const inputName =
-                scene.scene_midiactivate.split(' Note:')[0] ||
-                '2- Launchpad S 16'
+                localStorage.getItem('midiDeviceName') || '2- Launchpad S 16'
               const buttonNumber = parseInt(
                 scene.scene_midiactivate.split('buttonNumber: ')[1],
                 10
@@ -75,6 +75,7 @@ const MIDIListener = () => {
                 output.send([0xb0, 0x00, 0x00])
 
                 if (!Number.isNaN(buttonNumber)) {
+                  console.log(output, buttonNumber)
                   output.send([0x90, buttonNumber, 60])
                 }
               } else {
