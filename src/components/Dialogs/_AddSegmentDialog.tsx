@@ -112,11 +112,9 @@ export default function ConfirmationDialog({
 }) {
   const [open, setOpen] = React.useState(false)
   const deviceList = useStore((state) => state.devices) || {}
-  const updateVirtualSegments = useStore((state) => state.updateVirtualSegments)
+  const updateSegments = useStore((state) => state.updateSegments)
   const getVirtuals = useStore((state) => state.getVirtuals)
-  const highlightVirtualSegment = useStore(
-    (state) => state.highlightVirtualSegment
-  )
+  const highlightSegment = useStore((state) => state.highlightSegment)
 
   const handleClickListItem = () => {
     setOpen(true)
@@ -137,9 +135,9 @@ export default function ConfirmationDialog({
           [device.id, 0, device.config.pixel_count - 1, false],
         ]
         const test = temp.filter((t) => t.length === 4)
-        updateVirtualSegments(virtual.id, test).then(() => {
+        updateSegments(virtual.id, test).then(() => {
           getVirtuals()
-          highlightVirtualSegment(virtual.id, virtual.segments.length)
+          highlightSegment(virtual.id, virtual.segments.length)
         })
       }
     }

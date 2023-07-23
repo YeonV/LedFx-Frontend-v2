@@ -28,7 +28,7 @@ const DeviceCardWrapper = ({
   )
   const graphs = useStore((state) => state.graphs)
   const graphsMulti = useStore((state) => state.graphsMulti)
-  const clearVirtualEffect = useStore((state) => state.clearVirtualEffect)
+  const clearEffect = useStore((state) => state.clearEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const activateDevice = useStore((state) => state.activateDevice)
   const showMatrix = useStore((state) => state.showMatrix)
@@ -59,7 +59,7 @@ const DeviceCardWrapper = ({
   }
 
   const handleClearEffect = () => {
-    clearVirtualEffect(virtual).then(() => {
+    clearEffect(virtual).then(() => {
       setFade(true)
       setTimeout(() => {
         getVirtuals()

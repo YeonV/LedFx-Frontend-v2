@@ -51,7 +51,7 @@ const EditSceneDialog = () => {
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const setEffect = useStore((state) => state.setEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const activatePreset = useStore((state) => state.activatePreset)
   const activateScene = useStore((state) => state.activateScene)
@@ -254,7 +254,7 @@ const EditSceneDialog = () => {
         <Select
           defaultValue={effect}
           onChange={(e) => {
-            setVirtualEffect(dev, e.target.value, {}, true)
+            setEffect(dev, e.target.value, {}, true)
             setDisabledPSelector([...disabledPSelector, dev])
           }}
           disabled={scVirtualsToIgnore.indexOf(dev) > -1}

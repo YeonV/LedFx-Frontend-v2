@@ -40,7 +40,7 @@ const StreamToCard = ({
       ? [virtual.id]
       : streamingToDevices
   )
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  const setEffect = useStore((state) => state.setEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
   const handleEffectConfig = (
@@ -48,9 +48,7 @@ const StreamToCard = ({
     config: any,
     selectedType: string
   ) =>
-    setVirtualEffect(virtual_id, selectedType, config, true).then(() =>
-      getVirtuals()
-    )
+    setEffect(virtual_id, selectedType, config, true).then(() => getVirtuals())
 
   const handleToggle = (value: string) => {
     const currentIndex = streamingTo.indexOf(value)

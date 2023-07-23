@@ -19,37 +19,35 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     devices &&
     devices[devices && Object.keys(devices).find((d) => d === s[0])].config.name
   const classes = useSegmentStyles()
-  const updateVirtualSegments = useStore((state) => state.updateVirtualSegments)
-  const highlightVirtualSegment = useStore(
-    (state) => state.highlightVirtualSegment
-  )
+  const updateSegments = useStore((state) => state.updateSegments)
+  const highlightSegment = useStore((state) => state.highlightSegment)
   const getVirtuals = useStore((state) => state.getVirtuals)
-  // const setVirtualEffect = useStore((state) => state.setVirtualEffect)
+  // const setEffect = useStore((state) => state.setEffect)
 
   const handleInvert = () => {
     const newSegments = segments.map((seg: any[], index: number) =>
       index === i ? [seg[0], seg[1], seg[2], !seg[3]] : seg
     )
-    updateVirtualSegments(virtual.id, newSegments).then(() => {
+    updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightVirtualSegment(virtual.id, virtual.segments.length - 1)
+      highlightSegment(virtual.id, i)
     })
   }
   const reorder = (direction: string) => {
     const newSegments =
       direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1)
-    updateVirtualSegments(virtual.id, newSegments).then(() => {
+    updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightVirtualSegment(virtual.id, virtual.segments.length - 1)
+      highlightSegment(virtual.id, direction === 'UP' ? i - 1 : i + 1)
     })
   }
   const handleDeleteSegment = () => {
     const newSegments = segments.filter(
       (_seg: any, index: number) => index !== i
     )
-    updateVirtualSegments(virtual.id, newSegments).then(() => {
+    updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightVirtualSegment(virtual.id, virtual.segments.length - 1)
+      highlightSegment(virtual.id, -1)
     })
   }
   const handleRangeSegment = (start: number, end: number) => {
@@ -60,21 +58,21 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     // const vd = Object.keys(virtuals).find(
     //   (v: any) => virtuals[v].is_device === deviceId
     // )
-    // setVirtualEffect(virtual.id, 'singleColor', { color: '#000000' }, false)
+    // setEffect(virtual.id, 'singleColor', { color: '#000000' }, false)
     // if (vd)
-    //   setVirtualEffect(
+    //   setEffect(
     //     virtuals[vd].id,
     //     'singleColor',
     //     { color: '#000000' },
     //     false
     //   )
-    updateVirtualSegments(virtual.id, newSegments).then(
+    updateSegments(virtual.id, newSegments).then(
       () => {
         getVirtuals()
-        highlightVirtualSegment(virtual.id, virtual.segments.length - 1)
+        highlightSegment(virtual.id, virtual.segments.length - 1)
       }
       // .then(() =>
-      //   setVirtualEffect(virtual.id, 'rainbow', { speed: 10 }, true)
+      //   setEffect(virtual.id, 'rainbow', { speed: 10 }, true)
       // )
     )
   }

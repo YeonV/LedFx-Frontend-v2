@@ -16,8 +16,8 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       }
     }, {})
 
-  const setVirtualEffect = useStore((state) => state.setVirtualEffect)
-  // const updateVirtualEffect = useStore((state) => state.updateVirtualEffect)
+  const setEffect = useStore((state) => state.setEffect)
+  // const updateEffect = useStore((state) => state.updateEffect)
   const activatePreset = useStore((state) => state.activatePreset)
   const addScene = useStore((state) => state.addScene)
   const small = useMediaQuery('(max-width: 720px)')
@@ -38,13 +38,13 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
   const addBladeScene = () => {
     // if (noAuto) {
     large.map((v) => {
-      setVirtualEffect(v, 'melt', {}, true)
+      setEffect(v, 'melt', {}, true)
       return activatePreset(v, 'default_presets', 'melt', 'bladesmooth')
     })
     medium.map((v, _i) => {
-      setVirtualEffect(v, 'blade_power_plus', {}, true)
+      setEffect(v, 'blade_power_plus', {}, true)
       // if (_i % 2 === 0)
-      //   updateVirtualEffect(v, 'blade_power_plus', { flip: true }, false)
+      //   updateEffect(v, 'blade_power_plus', { flip: true }, false)
       return activatePreset(
         v,
         'default_presets',
@@ -54,7 +54,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
     })
 
     smalls.map((v) => {
-      setVirtualEffect(v, 'blade_power_plus', {}, true)
+      setEffect(v, 'blade_power_plus', {}, true)
       return activatePreset(
         v,
         'default_presets',
@@ -67,7 +67,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       const v = medium.sort(
         (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
       )[0]
-      setVirtualEffect(v, 'blade_power_plus', {}, true)
+      setEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'default_presets', 'blade_power_plus', 'orange-hi-hat')
     }
     // Use medium as large
@@ -75,7 +75,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       const v = medium.sort(
         (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
       )[Object.keys(medium).length - 1]
-      setVirtualEffect(v, 'melt', {}, true)
+      setEffect(v, 'melt', {}, true)
       activatePreset(v, 'default_presets', 'melt', 'bladesmooth')
     }
 
@@ -84,7 +84,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       const v = large.sort(
         (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
       )[0]
-      setVirtualEffect(v, 'blade_power_plus', {}, true)
+      setEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'default_presets', 'blade_power_plus', 'orange-hi-hat')
     }
     // Use large as medium
@@ -92,12 +92,12 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       const v = large.sort(
         (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
       )[1]
-      setVirtualEffect(v, 'blade_power_plus', {}, true)
+      setEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'default_presets', 'blade_power_plus', 'ocean-bass')
     }
     if (Object.keys(matrix).length > 0) {
       matrix.map((v) => {
-        return setVirtualEffect(
+        return setEffect(
           v,
           'equalizer',
           { gradient_repeat: virtuals[v].config.rows },
