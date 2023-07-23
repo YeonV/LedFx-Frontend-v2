@@ -63,9 +63,10 @@ export const getOverlapping = (data: any) => {
   return tmp
 }
 
-/* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["array"] }] */
 export const swap = (array: any[], i: number, j: number) => {
-  ;[array[i], array[j]] = [array[j], array[i]]
+  const arr = [...array]
+  arr[i] = arr.splice(j, 1, arr[i])[0];
+  return arr
 }
 
 export const deleteFrontendConfig = () => {
