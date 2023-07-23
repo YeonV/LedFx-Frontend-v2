@@ -30,7 +30,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     )
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightSegment(virtual.id, i)
+      highlightSegment(virtual.id, i, newSegments[i][0])
     })
   }
   const reorder = (direction: string) => {
@@ -38,7 +38,11 @@ const Segment = ({ s, i, virtual, segments }: any) => {
       direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1)
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightSegment(virtual.id, direction === 'UP' ? i - 1 : i + 1)
+      highlightSegment(
+        virtual.id,
+        direction === 'UP' ? i - 1 : i + 1,
+        newSegments[0]
+      )
     })
   }
   const handleDeleteSegment = () => {
@@ -70,7 +74,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
       () => {
         getVirtuals()
         // highlightSegment(virtual.id, -1)
-        highlightSegment(virtual.id, i)
+        highlightSegment(virtual.id, i, newSegments[i][0])
       }
       // .then(() =>
       //   setEffect(virtual.id, 'rainbow', { speed: 10 }, true)
