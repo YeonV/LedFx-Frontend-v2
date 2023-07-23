@@ -7,11 +7,10 @@ import Dialog from '@mui/material/Dialog'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import Slide from '@mui/material/Slide'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 
-import { ListItemIcon, MenuItem } from '@mui/material'
-import { Settings } from '@mui/icons-material'
+import { ListItemIcon, MenuItem, Slide, IconButton } from '@mui/material'
+import { Settings, Visibility } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
 import { getOverlapping } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
@@ -67,6 +66,7 @@ export default function EditVirtuals({
   )
   const virtual = virtuals[currentVirtual || virtId]
   const [open, setOpen] = React.useState(!!currentVirtual || false)
+  const [calib, setCalib] = React.useState(true)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -157,6 +157,14 @@ export default function EditVirtuals({
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>
+            <IconButton
+              onClick={() => {
+                calibrationMode(virtual?.id, calib ? 'off' : 'on')
+                setCalib(!calib)
+              }}
+            >
+              <Visibility />
+            </IconButton>
           </Toolbar>
         </AppBar>
 
