@@ -118,6 +118,26 @@ const storeVirtuals = (set: any) => ({
       }
     }
   },
+  highlightVirtualSegment: async (virtId: string, segment: number) => {
+    const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
+      tool: 'highlight',
+      segment,
+    })
+    if (resp && resp.status && resp.status === 'success') {
+      return true
+    }
+    return false
+  },
+  calibrationMode: async (virtId: string, mode: 'on' | 'off') => {
+    const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
+      tool: 'calibration',
+      mode,
+    })
+    if (resp && resp.status && resp.status === 'success') {
+      return true
+    }
+    return false
+  },
 })
 
 export default storeVirtuals
