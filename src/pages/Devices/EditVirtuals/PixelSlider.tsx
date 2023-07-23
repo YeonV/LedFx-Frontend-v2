@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useThrottledCallback } from 'use-debounce'
 import Slider from '@mui/material/Slider'
 import useStore from '../../../store/useStore'
 
@@ -27,6 +28,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
       handleRangeSegment(newValue[0], newValue[1])
     }
   }
+  const throttled = useThrottledCallback(handleChange, 100)
 
   const marks = [
     { value: 0, label: 1 },
@@ -43,8 +45,10 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
       valueLabelFormat={(e) => e + 1}
       min={0}
       max={devices[s[0]].config.pixel_count - 1}
-      onChange={(_event: any, n: any) => setRange(n)}
-      onChangeCommitted={handleChange}
+      onChange={(_event: any, n: any) => {
+        setRange(n)
+        throttled(_event, n)
+      }}
       aria-labelledby="range-slider"
       valueLabelDisplay="auto"
     />
