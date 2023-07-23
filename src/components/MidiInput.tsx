@@ -75,7 +75,6 @@ const MIDIListener = () => {
                 output.send([0xb0, 0x00, 0x00])
 
                 if (!Number.isNaN(buttonNumber)) {
-                  console.log(output, buttonNumber)
                   output.send([0x90, buttonNumber, 60])
                 }
               } else {
