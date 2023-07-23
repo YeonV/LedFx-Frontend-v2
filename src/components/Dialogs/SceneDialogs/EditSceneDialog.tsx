@@ -526,7 +526,7 @@ const EditSceneDialog = () => {
                 type="text"
                 value={midiActivate}
                 fullWidth
-                disabled
+                // disabled
               />
             </div>
             <div
