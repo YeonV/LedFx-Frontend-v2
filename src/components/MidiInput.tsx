@@ -6,6 +6,9 @@ import useStore from '../store/useStore'
 const MIDIListener = () => {
   const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
+  const sceneDialogOpen = useStore(
+    (state) => state.dialogs.addScene.sceneKey !== ''
+  )
 
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: any) => {
@@ -14,12 +17,11 @@ const MIDIListener = () => {
       const output = WebMidi.getOutputByName(input.name)
       Object.keys(scenes).forEach((key) => {
         const scene = scenes[key]
+        console.log(sceneDialogOpen)
         if (midiInput === String(scene.scene_midiactivate)) {
-          activateScene(key)
+          if (!sceneDialogOpen) activateScene(key)
           localStorage.setItem('midiDeviceName', input.name) // Store MIDI device name
-        } else {
-          output?.send([0xb0, 0x00, 0x00])
-        }
+        } else if (!sceneDialogOpen) output?.send([0xb0, 0x00, 0x00])
       })
     }
 
@@ -46,16 +48,15 @@ const MIDIListener = () => {
 
     const webSocket = new WebSocket('ws://localhost:8888/api/websocket')
 
-    webSocket.addEventListener('open', () => {
-      const message = JSON.stringify({
-        event_type: 'scene_activated',
-        id: 100,
-        type: 'subscribe_event'
-      })
-      webSocket?.send(message)
-    })
-
-    webSocket.addEventListener('message', (event) => {
+    // const handleOpen = () => {
+    //   const message = JSON.stringify({
+    //     event_type: 'scene_activated',
+    //     id: 100,
+    //     type: 'subscribe_event'
+    //   })
+    //   webSocket?.send(message)
+    // }
+    const handleMessage = (event: any) => {
       try {
         const data = JSON.parse(event.data)
         if (data.type === 'event' && data.event_type === 'scene_activated') {
@@ -86,8 +87,14 @@ const MIDIListener = () => {
       } catch (error) {
         console.error('Error parsing websocket message:', error)
       }
-    })
-  }, [])
+    }
+    // webSocket.addEventListener('open', handleOpen)
+    webSocket.addEventListener('message', handleMessage)
+    return () => {
+      // webSocket.removeEventListener('open', handleOpen)
+      webSocket.removeEventListener('message', handleMessage)
+    }
+  }, [scenes, sceneDialogOpen])
 
   return null
 }

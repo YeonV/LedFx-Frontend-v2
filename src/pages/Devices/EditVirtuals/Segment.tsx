@@ -97,7 +97,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     <div
       style={{
         padding: '0 1rem',
-        background: calib && i === activeSegment ? '#ffffff18' : '',
+        background: calib && i === activeSegment ? '#ffffff18' : ''
       }}
     >
       <div className={classes.segmentsWrapper}>

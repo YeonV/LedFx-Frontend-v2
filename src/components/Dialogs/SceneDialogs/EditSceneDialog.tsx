@@ -21,7 +21,11 @@ import {
   MenuItem,
   ListSubheader,
   Alert,
-  InputAdornment
+  InputAdornment,
+  Stack,
+  InputLabel,
+  FormControl,
+  IconButton
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
@@ -30,6 +34,7 @@ import useStore from '../../../store/useStore'
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
 import TooltipImage from './TooltipImage'
 import TooltipTags from './TooltipTags'
+import TooltipMidi from './TooltipMidi'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -116,6 +121,7 @@ const EditSceneDialog = () => {
       setMIDIActivate(data?.scene_midiactivate)
     }
   }, [data])
+
   const handleClose = () => {
     setDialogOpenAddScene(false, false)
   }
@@ -143,7 +149,7 @@ const EditSceneDialog = () => {
       payload,
       midiActivate,
       filterKeys(
-        scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals,
+        scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals,
         scVirtualsToIgnore
       )
     ).then(() => {
@@ -167,7 +173,7 @@ const EditSceneDialog = () => {
   }, [])
 
   useEffect(() => {
-    if (open) activateScene(data.name.toLowerCase().replaceAll(' ', '-'))
+    if (open) activateScene(data.name?.toLowerCase().replaceAll(' ', '-'))
   }, [open])
 
   useEffect(() => {
@@ -190,7 +196,6 @@ const EditSceneDialog = () => {
               inputs.forEach((input: Input) =>
                 input.addListener('noteon', (event: NoteMessageEvent) => {
                   handleMidiEvent(input, event)
-                  // console.log(;`${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`);
                 })
               )
             }
@@ -210,7 +215,7 @@ const EditSceneDialog = () => {
             JSON.stringify(ordered((ledfx_presets[k] as any).config)) ===
             JSON.stringify(
               ordered(
-                scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals[
+                scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals[
                   dev
                 ].config
               )
@@ -226,7 +231,7 @@ const EditSceneDialog = () => {
               ) ===
                 JSON.stringify(
                   ordered(
-                    scenes[data.name.toLowerCase().replaceAll(' ', '-')]
+                    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
                       .virtuals[dev].config
                   )
                 ) && k
@@ -243,8 +248,9 @@ const EditSceneDialog = () => {
             activatePreset(
               dev,
               'default_presets',
-              scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals[dev]
-                .type,
+              scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals[
+                dev
+              ].type,
               e.target.value
             ).then(() => getVirtuals())
           }
@@ -418,6 +424,7 @@ const EditSceneDialog = () => {
               onChange={(e) => setImage(e.target.value)}
               fullWidth
             />
+
             <TextField
               margin="dense"
               id="scene_tags"
@@ -434,6 +441,131 @@ const EditSceneDialog = () => {
               onChange={(e) => setTags(e.target.value)}
               fullWidth
             />
+            {features.sceneexternal ? (
+              <div
+                style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}
+              >
+                <TextField
+                  margin="dense"
+                  id="url"
+                  label="Url"
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  fullWidth
+                  error={invalid}
+                  helperText={invalid && 'Enter valid URL!'}
+                  onBlur={(e) => {
+                    setInvalid(!isValidURL(e.target.value))
+                  }}
+                />
+                <TextField
+                  margin="dense"
+                  id="payload"
+                  label="Payload"
+                  type="text"
+                  value={payload}
+                  onChange={(e) => setPayload(e.target.value)}
+                  fullWidth
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+            {features && features.scenemidi && WebMidi.inputs.length > 0 ? (
+              <>
+                <Stack direction="row" gap={1}>
+                  <FormControl sx={{ mt: 1, width: '130px' }}>
+                    <InputLabel id="midi-label">Connected To</InputLabel>
+                    <Select
+                      variant="outlined"
+                      defaultValue="Client"
+                      label="Connected To"
+                    >
+                      <MenuItem value="Client">Client</MenuItem>
+                      <MenuItem value="Core" disabled>
+                        Core
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    margin="dense"
+                    id="latest_note_on"
+                    label="MIDI Note to activate scene"
+                    error={
+                      midiActivate !== '' &&
+                      Object.keys(scenes)
+                        .filter(
+                          (k) =>
+                            k !== data.name?.toLowerCase().replaceAll(' ', '-')
+                        )
+                        .some(
+                          (sceneId: any) =>
+                            scenes[sceneId]?.scene_midiactivate === midiActivate
+                        )
+                    }
+                    helperText={
+                      midiActivate !== '' &&
+                      Object.keys(scenes)
+                        .filter(
+                          (k) =>
+                            k !== data.name?.toLowerCase().replaceAll(' ', '-')
+                        )
+                        .some(
+                          (sceneId: any) =>
+                            scenes[sceneId]?.scene_midiactivate === midiActivate
+                        ) && (
+                        <Typography>
+                          Please select another MIDI key/button. Already
+                          assigned to{' '}
+                          {
+                            scenes[
+                              Object.keys(scenes)
+                                .filter(
+                                  (k) =>
+                                    k !==
+                                    data.name
+                                      ?.toLowerCase()
+                                      .replaceAll(' ', '-')
+                                )
+                                .find(
+                                  (sceneId: any) =>
+                                    scenes[sceneId]?.scene_midiactivate ===
+                                    midiActivate
+                                )!
+                            ]!.name
+                          }
+                        </Typography>
+                      )
+                    }
+                    type="text"
+                    value={midiActivate}
+                    fullWidth
+                    disabled
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <TooltipMidi />
+                        </InputAdornment>
+                      ),
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton onClick={() => setMIDIActivate('')}>
+                            <Clear />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                  {scenes &&
+                    Array.isArray(scenes) &&
+                    scenes.map((scene) => console.log(scene))}
+                </Stack>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
           <div
             style={{
@@ -482,82 +614,7 @@ const EditSceneDialog = () => {
             ) : null}
           </div>
         </div>
-        {features.sceneexternal ? (
-          <div style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}>
-            <TextField
-              margin="dense"
-              id="url"
-              label="Url"
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              fullWidth
-              error={invalid}
-              helperText={invalid && 'Enter valid URL!'}
-              onBlur={(e) => {
-                setInvalid(!isValidURL(e.target.value))
-              }}
-            />
-            <TextField
-              margin="dense"
-              id="payload"
-              label="Payload"
-              type="text"
-              value={payload}
-              onChange={(e) => setPayload(e.target.value)}
-              fullWidth
-            />
-          </div>
-        ) : (
-          <></>
-        )}
-        {features && features.scenemidi ? (
-          <>
-            <div
-              style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}
-            >
-              <TextField
-                margin="dense"
-                id="latest_note_on"
-                label="MIDI Note to activate scene"
-                InputLabelProps={{
-                  shrink: true
-                }}
-                type="text"
-                value={midiActivate}
-                fullWidth
-                // disabled
-              />
-            </div>
-            <div
-              style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}
-            >
-              {WebMidi.inputs.length > 0 ? (
-                <>
-                  <Typography>
-                    MIDI Device/s detected. Press a MIDI button to assign to
-                    this scene.
-                  </Typography>
-                  {scenes &&
-                    Array.isArray(scenes) &&
-                    scenes.map(
-                      (scene) =>
-                        scene.midiactivate && (
-                          <Typography key={scene.name}>
-                            Please select another MIDI key/button. Already
-                            assigned to {scene.name}
-                          </Typography>
-                        )
-                    )}
-                </>
-              ) : (
-                <Typography>No MIDI input devices found.</Typography>
-              )}
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
+
         <Divider sx={{ margin: '2rem auto 0', maxWidth: '960px' }} />
         <div
           style={{
@@ -578,15 +635,15 @@ const EditSceneDialog = () => {
         <Divider sx={{ margin: '0 auto', maxWidth: '960px' }} />
         {data &&
           scenes &&
-          scenes[data.name.toLowerCase().replaceAll(' ', '-')] &&
+          data.name?.toLowerCase().replaceAll(' ', '-') &&
+          scenes[data.name?.toLowerCase().replaceAll(' ', '-')] &&
           Object.keys(
-            scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals
+            scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals
           )
             .filter(
               (d) =>
-                !!scenes[data.name.toLowerCase().replaceAll(' ', '-')].virtuals[
-                  d
-                ].type
+                !!scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
+                  .virtuals[d].type
             )
             .map((dev, i) => (
               <div
@@ -615,7 +672,7 @@ const EditSceneDialog = () => {
                   }}
                 >
                   {renderEffects(
-                    scenes[data.name.toLowerCase().replaceAll(' ', '-')]
+                    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
                       .virtuals[dev].type,
                     dev
                   )}
@@ -623,11 +680,11 @@ const EditSceneDialog = () => {
                     {lp &&
                       renderPresets(
                         lp[
-                          scenes[data.name.toLowerCase().replaceAll(' ', '-')]
+                          scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
                             .virtuals[dev].type
                         ],
                         dev,
-                        scenes[data.name.toLowerCase().replaceAll(' ', '-')]
+                        scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
                           .virtuals[dev].type
                       )}
                   </span>
