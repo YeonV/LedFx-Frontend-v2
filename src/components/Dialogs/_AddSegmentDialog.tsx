@@ -137,7 +137,7 @@ export default function ConfirmationDialog({
         const test = temp.filter((t) => t.length === 4)
         updateSegments(virtual.id, test).then(() => {
           getVirtuals()
-          highlightSegment(virtual.id, virtual.segments.length)
+          highlightSegment(virtual.id, virtual.segments.length, device.id, test)
         })
       }
     }

@@ -64,6 +64,9 @@ export default function EditVirtuals({
   const setDialogOpenEditVirtual = useStore(
     (state) => state.setDialogOpenEditVirtual
   )
+  const activeSegment = useStore((state) => state.activeSegment)
+  const highlightSegment = useStore((state) => state.highlightSegment)
+
   const virtual = virtuals[currentVirtual || virtId]
   const [open, setOpen] = React.useState(!!currentVirtual || false)
   const [calib, setCalib] = React.useState(true)
@@ -160,6 +163,13 @@ export default function EditVirtuals({
             <IconButton
               onClick={() => {
                 calibrationMode(virtual?.id, calib ? 'off' : 'on')
+                if (!calib)
+                  highlightSegment(
+                    virtual.id,
+                    activeSegment,
+                    virtual.segments[activeSegment][0],
+                    virtual.segments
+                  )
                 setCalib(!calib)
               }}
             >
