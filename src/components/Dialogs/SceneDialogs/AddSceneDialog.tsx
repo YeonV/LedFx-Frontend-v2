@@ -35,6 +35,7 @@ const AddSceneDialog = () => {
         const sceneId = Object.keys(newScenes).find(
           (s) => newScenes[s].name === name
         )
+        setName('')
         if (sceneId)
           setDialogOpenAddScene(true, true, sceneId, newScenes[sceneId])
       })
