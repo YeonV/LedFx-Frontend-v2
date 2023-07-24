@@ -21,6 +21,7 @@ type IFeatures =
   | 'dashboard'
   | 'beta'
   | 'sceneexternal'
+  | 'scenemidi'
   | 'dashboardDetailed'
   | 'scenetables'
   | 'scenechips'
@@ -46,6 +47,7 @@ const storeFeatures = (set: any) => ({
     scenetables: false,
     scenechips: false,
     sceneexternal: false,
+    scenemidi: false,
     beta: false,
     alpha: false,
   },
@@ -69,6 +71,7 @@ const storeFeatures = (set: any) => ({
     scenetables: false,
     scenechips: false,
     sceneexternal: false,
+    scenemidi: false,
     beta: false,
     alpha: false,
   },

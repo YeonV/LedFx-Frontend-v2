@@ -25,6 +25,7 @@ import SpotifyFabFree from '../Integrations/Spotify/SpotifyFabFree'
 import AddButton from '../AddButton'
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget'
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro'
+import MIDIListener from '../MidiInput'
 import { drawerWidth } from '../../utils/helpers'
 import EditSceneDialog from '../Dialogs/SceneDialogs/EditSceneDialog'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
@@ -238,6 +239,7 @@ export default function BarBottom() {
           setSpotifyExpanded={setSpotifyExpanded}
         />
       )}
+      {features.scenemidi && <MIDIListener />}
       <AddSceneDialog />
       <AddDeviceDialog />
       <AddVirtualDialog />
