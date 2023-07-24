@@ -112,6 +112,7 @@ export default function ConfirmationDialog({
 }) {
   const [open, setOpen] = React.useState(false)
   const deviceList = useStore((state) => state.devices) || {}
+  const virtuals = useStore((state) => state.virtuals) || {}
   const updateSegments = useStore((state) => state.updateSegments)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const highlightSegment = useStore((state) => state.highlightSegment)
@@ -140,8 +141,22 @@ export default function ConfirmationDialog({
         updateSegments(virtual.id, test).then(() => {
           getVirtuals()
           if (virtual.active === false && virtual.segments.length === 0) {
-            console.log(device)
-            setEffect(virtual.id, 'rainbow', {}, true)
+            if (
+              device.active_virtuals &&
+              device.active_virtuals[0] &&
+              virtuals &&
+              virtuals[device.active_virtuals[0]] &&
+              virtuals[device.active_virtuals[0]].effect
+            ) {
+              setEffect(
+                virtual.id,
+                virtuals[device.active_virtuals[0]].effect.type,
+                virtuals[device.active_virtuals[0]].effect.config,
+                true
+              )
+            } else {
+              setEffect(virtual.id, 'rainbow', {}, true)
+            }
           }
           highlightSegment(
             virtual.id,
