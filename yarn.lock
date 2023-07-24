@@ -1078,9 +1078,9 @@
     regenerator-runtime "^0.13.11"
 
 "@babel/runtime@^7.20.6":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.5.tgz#8564dd588182ce0047d55d7a75e93921107b57ec"
-  integrity sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==
+  version "7.22.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.6.tgz#57d64b9ae3cff1d67eb067ae117dac087f5bd438"
+  integrity sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -9456,9 +9456,9 @@ jszip@^3.1.0:
     setimmediate "^1.0.5"
 
 jzz@^1.5.6:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/jzz/-/jzz-1.6.4.tgz#f769cf408ef09f35b51fc80c35576b789d0b01f5"
-  integrity sha512-vUEyCChbCKL3g5YE4KJU1XbmGxX/29L/Ba3BpVpqwF2vuW/H3izbHNc73rl3Htve20OoHt77rWw2Nh4ckYorGw==
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/jzz/-/jzz-1.6.6.tgz#d92382356ce931838a2b00940bb38158a08b24bd"
+  integrity sha512-Swp7o+fCvXUDgL6o9mQ/KsuFPrhppjusLF4xtgNVBP4MGctkNx+2SZ/KoXWV0cEgEAwVZEWAQcXxyIZVpo76mg==
   dependencies:
     "@types/webmidi" "^2.0.7"
     jazz-midi "^1.7.9"
