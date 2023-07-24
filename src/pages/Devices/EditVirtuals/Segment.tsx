@@ -10,7 +10,7 @@ import useStore from '../../../store/useStore'
 import { swap } from '../../../utils/helpers'
 import useSegmentStyles from './Segment.styles'
 
-const Segment = ({ s, i, virtual, segments }: any) => {
+const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const getDevices = useStore((state) => state.getDevices)
   const devices = useStore((state) => state.devices)
   // const virtuals = useStore((state) => state.virtuals)
@@ -30,7 +30,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     )
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightSegment(virtual.id, i, newSegments[i][0])
+      if (calib) highlightSegment(virtual.id, i, newSegments[i][0])
     })
   }
   const reorder = (direction: string) => {
@@ -38,11 +38,12 @@ const Segment = ({ s, i, virtual, segments }: any) => {
       direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1)
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightSegment(
-        virtual.id,
-        direction === 'UP' ? i - 1 : i + 1,
-        newSegments[0]
-      )
+      if (calib)
+        highlightSegment(
+          virtual.id,
+          direction === 'UP' ? i - 1 : i + 1,
+          newSegments[i][0]
+        )
     })
   }
   const handleDeleteSegment = () => {
@@ -51,7 +52,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
     )
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      highlightSegment(virtual.id, -1)
+      if (calib) highlightSegment(virtual.id, -1)
     })
   }
   const handleRangeSegment = (start: number, end: number) => {
@@ -74,7 +75,7 @@ const Segment = ({ s, i, virtual, segments }: any) => {
       () => {
         getVirtuals()
         // highlightSegment(virtual.id, -1)
-        highlightSegment(virtual.id, i, newSegments[i][0])
+        if (calib) highlightSegment(virtual.id, i, newSegments[i][0])
       }
       // .then(() =>
       //   setEffect(virtual.id, 'rainbow', { speed: 10 }, true)

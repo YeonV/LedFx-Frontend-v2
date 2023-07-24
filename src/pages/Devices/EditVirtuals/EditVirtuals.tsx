@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 
 import { ListItemIcon, MenuItem, Slide, IconButton } from '@mui/material'
-import { Settings, Visibility } from '@mui/icons-material'
+import { Settings, Visibility, VisibilityOff } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
 import { getOverlapping } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
@@ -163,7 +163,7 @@ export default function EditVirtuals({
                 setCalib(!calib)
               }}
             >
-              <Visibility />
+              {calib ? <Visibility /> : <VisibilityOff />}
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -179,6 +179,7 @@ export default function EditVirtuals({
               key={i}
               virtual={virtual}
               segments={virtual.segments}
+              calib={calib}
             />
           ))}
         <div className={classes.segmentButtonWrapper}>
