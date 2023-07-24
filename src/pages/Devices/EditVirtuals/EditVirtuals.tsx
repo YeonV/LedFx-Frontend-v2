@@ -163,7 +163,7 @@ export default function EditVirtuals({
             <IconButton
               onClick={() => {
                 calibrationMode(virtual?.id, calib ? 'off' : 'on')
-                if (!calib)
+                if (!calib && virtual.segments[activeSegment])
                   highlightSegment(
                     virtual.id,
                     virtual.segments[activeSegment][0],
