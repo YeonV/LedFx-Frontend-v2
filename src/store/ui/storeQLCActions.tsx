@@ -79,7 +79,7 @@ const storeQLCActions = (set: any) => ({
           produce((state: IStore) => {
             state.qlc.qlcTriggersList = [
               // ...state.addToQLCTriggerList, // @mattallmighty check this
-              newTrigger,
+              newTrigger
             ]
           }),
           false,
@@ -106,7 +106,7 @@ const storeQLCActions = (set: any) => ({
     await Ledfx('/api/integrations/qlc/qlc', 'POST', {
       event_type,
       event_filter,
-      qlc_payload,
+      qlc_payload
     })
   },
   toggleQLCTrigger: (QLCId: string, config: any) =>
@@ -114,7 +114,7 @@ const storeQLCActions = (set: any) => ({
   deleteQLCTrigger: async (config: any) => {
     await Ledfx('/api/integrations/qlc/qlc', 'DELETE', config)
     // set(state=>state.getIntegrations())
-  },
+  }
 })
 
 export default storeQLCActions

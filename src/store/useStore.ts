@@ -28,7 +28,7 @@ const useStore = create(
     persist(
       combine(
         {
-          hackedBy: 'Blade',
+          hackedBy: 'Blade'
         },
         (set: any) => ({
           ui: storeUI(set),
@@ -51,7 +51,7 @@ const useStore = create(
           ...storeIntegrations(set),
           ...storePresets(set),
           ...storeConfig(set),
-          ...storeActions(set),
+          ...storeActions(set)
         })
       ),
       {
@@ -62,7 +62,7 @@ const useStore = create(
               ([key]) =>
                 !['dialogs', 'disconnected', 'ui', 'spotify'].includes(key)
             )
-          ),
+          )
       }
     )
   )

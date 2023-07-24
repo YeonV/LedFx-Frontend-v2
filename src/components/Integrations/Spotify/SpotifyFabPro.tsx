@@ -15,7 +15,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
           position: 'fixed',
           bottom: botHeight + 105,
           right: 10,
-          zIndex: 4,
+          zIndex: 4
         }}
       >
         <Fab
@@ -27,7 +27,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
             bottom: botHeight + 115,
             right: 10,
             zIndex: 4,
-            backgroundColor: '#1db954',
+            backgroundColor: '#1db954'
           }}
         >
           <BladeIcon
@@ -36,7 +36,7 @@ const SpotifyFabPro = ({ botHeight }: any) => {
               marginLeft: '50%',
               marginTop: '50%',
               transform: 'translate(-43%, -43%)',
-              display: 'flex',
+              display: 'flex'
             }}
           />
         </Fab>

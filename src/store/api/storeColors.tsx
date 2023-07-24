@@ -8,12 +8,12 @@ const storeColors = (set: any) => ({
   colors: {
     colors: {
       user: {} as any,
-      builtin: {} as any,
+      builtin: {} as any
     },
     gradients: {
       user: {} as any,
-      builtin: {} as any,
-    },
+      builtin: {} as any
+    }
   },
   getColors: async () => {
     const resp = await Ledfx('/api/colors', set)
@@ -36,8 +36,8 @@ const storeColors = (set: any) => ({
     ),
   deleteColors: async (colorkey: any) =>
     await Ledfx('/api/colors', 'DELETE', {
-      data: colorkey,
-    }),
+      data: colorkey
+    })
 })
 
 export default storeColors

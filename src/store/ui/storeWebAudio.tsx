@@ -42,7 +42,7 @@ const storeWebAudio = (set: any) => ({
       false,
       'webaudio/setClientDevices'
     )
-  },
+  }
 })
 
 export default storeWebAudio

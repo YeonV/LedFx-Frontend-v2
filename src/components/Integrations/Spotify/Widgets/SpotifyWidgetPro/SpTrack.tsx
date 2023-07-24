@@ -18,7 +18,7 @@ export default function SpTrack({ className }: any) {
     spotifyCtx?.track_window?.current_track?.album.images[0].url ||
     'https://github.com/LedFx/LedFx/raw/main/icons/discord.png'
   const artist = spotifyCtx?.track_window?.current_track?.artists || [
-    { name: 'on LedFx' },
+    { name: 'on LedFx' }
   ]
 
   useEffect(() => {

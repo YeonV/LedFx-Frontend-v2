@@ -8,39 +8,39 @@ const useStyles = makeStyles(() => ({
     '*::-webkit-scrollbar': {
       backgroundColor: '#ffffff30',
       width: '8px',
-      borderRadius: '8px',
+      borderRadius: '8px'
     },
     '*::-webkit-scrollbar-track': {
       backgroundColor: '#00000060',
-      borderRadius: '8px',
+      borderRadius: '8px'
     },
     '*::-webkit-scrollbar-thumb': {
       backgroundColor: '#555555',
-      borderRadius: '8px',
+      borderRadius: '8px'
     },
     '*::-webkit-scrollbar-button': {
-      display: 'none',
-    },
+      display: 'none'
+    }
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
+    flexShrink: 0
     // backgroundColor: theme.palette.background.default,
   },
   drawerPaper: {
     width: drawerWidth,
     overflowX: 'hidden',
-    paddingTop: isElectron() ? '30px' : 0,
+    paddingTop: isElectron() ? '30px' : 0
   },
   drawerHeader: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   logo: {
     position: 'relative',
     padding: '0 0 0 5px',
-    zIndex: 4,
+    zIndex: 4
   },
   logoLink: {
     display: 'block',
@@ -51,8 +51,8 @@ const useStyles = makeStyles(() => ({
     textDecoration: 'none',
     backgroundColor: 'transparent',
     '&,&:hover': {
-      color: '#FFFFFF',
-    },
+      color: '#FFFFFF'
+    }
   },
   logoImage: {
     width: '30px',
@@ -65,8 +65,8 @@ const useStyles = makeStyles(() => ({
       marginTop: '-2px',
       // position: 'absolute',
       // verticalAlign: 'middle',
-      border: '0',
-    },
+      border: '0'
+    }
   },
   devbadge: {
     backgroundImage: `url(${blademod})`,
@@ -81,7 +81,7 @@ const useStyles = makeStyles(() => ({
     backgroundPosition: isElectron() ? '-66px 50%' : '-40px 50%',
     transform: 'scale(0.9)',
     marginRight: '-15px',
-    transformOrigin: 'left center',
-  },
+    transformOrigin: 'left center'
+  }
 }))
 export default useStyles

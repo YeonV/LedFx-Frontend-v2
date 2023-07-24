@@ -18,7 +18,7 @@ const Bar = ({ handleClose, direct }: any) => {
     stringify: (option: any) =>
       Object.keys(option).indexOf('is_device') > -1
         ? `device ${option.config.name}`
-        : `scene ${option.name}`,
+        : `scene ${option.name}`
   })
   return (
     <div
@@ -27,7 +27,7 @@ const Bar = ({ handleClose, direct }: any) => {
         maxWidth: 500,
         height: 80,
         padding: 10,
-        overflow: 'hidden',
+        overflow: 'hidden'
       }}
     >
       <Autocomplete
@@ -134,7 +134,7 @@ const Bar = ({ handleClose, direct }: any) => {
                 'DarkGreen',
                 'DarkBlue',
                 'DarkGrey',
-                'DarkPink',
+                'DarkPink'
               ].indexOf(value.replace('theme:', '')) > -1
             ) {
               window.localStorage.setItem(
@@ -178,7 +178,7 @@ const Bar = ({ handleClose, direct }: any) => {
               color: theme.palette.text.secondary,
               width: '100%',
               padding: '5px 50px',
-              '&&&': { justifyContent: 'space-between' },
+              '&&&': { justifyContent: 'space-between' }
             }}
           >
             <Typography variant="body1">
@@ -196,7 +196,7 @@ const Bar = ({ handleClose, direct }: any) => {
                   opacity: 0.6,
                   border: '1px solid',
                   borderRadius: 5,
-                  padding: '2px 5px',
+                  padding: '2px 5px'
                 }}
                 variant="caption"
               >
@@ -215,7 +215,7 @@ const Bar = ({ handleClose, direct }: any) => {
               maxWidth: direct ? 480 : 500,
               marginLeft: direct ? 0 : -10,
               marginRight: direct ? 0 : -10,
-              background: theme.palette.background.paper,
+              background: theme.palette.background.paper
             }}
           >
             {children}
@@ -230,7 +230,7 @@ const Bar = ({ handleClose, direct }: any) => {
             label="Jump to device / Activate scene"
             inputProps={{
               ...params.inputProps,
-              autoComplete: 'off', // disable autocomplete and autofill
+              autoComplete: 'off' // disable autocomplete and autofill
             }}
           />
         )}
@@ -242,7 +242,7 @@ const Bar = ({ handleClose, direct }: any) => {
 const SmartBar = ({
   open,
   setOpen,
-  direct,
+  direct
 }: {
   open?: boolean
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>
@@ -261,8 +261,8 @@ const SmartBar = ({
           alignSelf: 'flex-start',
           marginTop: '75px',
           width: '100%',
-          maxWidth: 500,
-        },
+          maxWidth: 500
+        }
       }}
       open={open}
       onClose={handleClose}
@@ -278,7 +278,7 @@ const SmartBar = ({
 SmartBar.defaultProps = {
   open: false,
   setOpen: undefined,
-  direct: false,
+  direct: false
 }
 
 export default SmartBar

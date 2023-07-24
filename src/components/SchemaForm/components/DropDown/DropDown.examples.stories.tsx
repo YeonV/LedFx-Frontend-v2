@@ -12,22 +12,22 @@ export default {
   component: DropDown,
   argTypes: {
     type: {
-      control: false,
-    },
+      control: false
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
-  },
+      panelPosition: 'bottom'
+    }
+  }
 } as ComponentMeta<typeof DropDown>
 
 // eslint-disable-next-line
@@ -42,158 +42,158 @@ EffectType.args = {
       {
         name: 'Gradient',
         id: 'gradient',
-        category: 'Non-Reactive',
+        category: 'Non-Reactive'
       },
       {
         name: 'Fade',
         id: 'fade',
-        category: 'Non-Reactive',
+        category: 'Non-Reactive'
       },
       {
         name: 'Rainbow',
         id: 'rainbow',
-        category: 'Non-Reactive',
+        category: 'Non-Reactive'
       },
       {
         name: 'Single Color',
         id: 'singleColor',
-        category: 'Non-Reactive',
-      },
+        category: 'Non-Reactive'
+      }
     ],
     '2D': [
       {
         name: 'Bands',
         id: 'bands',
-        category: '2D',
+        category: '2D'
       },
       {
         name: 'Bands Matrix',
         id: 'bands_matrix',
-        category: '2D',
+        category: '2D'
       },
       {
         name: 'Blocks',
         id: 'blocks',
-        category: '2D',
+        category: '2D'
       },
       {
         name: 'Equalizer',
         id: 'equalizer',
-        category: '2D',
-      },
+        category: '2D'
+      }
     ],
     BPM: [
       {
         name: 'Bar',
         id: 'bar',
-        category: 'BPM',
+        category: 'BPM'
       },
       {
         name: 'Multicolor Bar',
         id: 'multiBar',
-        category: 'BPM',
+        category: 'BPM'
       },
       {
         name: 'BPM Strobe',
         id: 'strobe',
-        category: 'BPM',
-      },
+        category: 'BPM'
+      }
     ],
     Classic: [
       {
         name: 'Blade Power+',
         id: 'blade_power_plus',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Energy',
         id: 'energy',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Magnitude',
         id: 'magnitude',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Pitch Spectrum',
         id: 'pitchSpectrum',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Power',
         id: 'power',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Rain',
         id: 'rain',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Strobe',
         id: 'real_strobe',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Scroll',
         id: 'scroll',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Spectrum',
         id: 'spectrum',
-        category: 'Classic',
+        category: 'Classic'
       },
       {
         name: 'Wavelength',
         id: 'wavelength',
-        category: 'Classic',
-      },
+        category: 'Classic'
+      }
     ],
     Atmospheric: [
       {
         name: 'Block Reflections',
         id: 'block_reflections',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Crawler',
         id: 'crawler',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Energy 2',
         id: 'energy2',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Fire',
         id: 'fire',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Glitch',
         id: 'glitch',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Lava lamp',
         id: 'lava_lamp',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Marching',
         id: 'marching',
-        category: 'Atmospheric',
+        category: 'Atmospheric'
       },
       {
         name: 'Melt',
         id: 'melt',
-        category: 'Atmospheric',
-      },
-    ],
+        category: 'Atmospheric'
+      }
+    ]
   },
   value: '',
-  onChange: undefined,
+  onChange: undefined
 }

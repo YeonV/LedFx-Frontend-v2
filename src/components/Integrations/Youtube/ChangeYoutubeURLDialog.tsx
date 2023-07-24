@@ -12,7 +12,7 @@ import { Language } from '@mui/icons-material'
 export default function ChangeYoutubeURLDialog({
   style,
   youtubeURL,
-  setYoutubeURL,
+  setYoutubeURL
 }: any) {
   const [open, setOpen] = React.useState(false)
   const [url, setUrl] = React.useState(youtubeURL)

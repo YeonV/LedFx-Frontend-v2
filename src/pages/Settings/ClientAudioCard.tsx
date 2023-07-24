@@ -6,15 +6,15 @@ import useStore from '../../store/useStore'
 const PREFIX = 'ClientAudioCard'
 
 const classes = {
-  select: `${PREFIX}-select`,
+  select: `${PREFIX}-select`
 }
 
 const StyledBladeFrame = styled(BladeFrame)(() => ({
   [`&.${classes.select}`]: {
     '& div.MuiSelect-select': {
-      padding: '6px 0',
-    },
-  },
+      padding: '6px 0'
+    }
+  }
 }))
 
 const ClientAudioCard = ({ style }: any) => {

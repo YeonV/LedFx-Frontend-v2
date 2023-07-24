@@ -14,8 +14,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-devices-two-0',
@@ -26,8 +26,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-devices-three-0',
@@ -37,8 +37,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-devices-four-0',
@@ -50,8 +50,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-devices-five-0',
@@ -62,8 +62,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-devices-six',
@@ -74,8 +74,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-devices-seven',
@@ -91,9 +91,9 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
-  },
+      backgroundColor: '#303030'
+    }
+  }
 ]
 
 const TourDevices = ({ cally }: any) => {

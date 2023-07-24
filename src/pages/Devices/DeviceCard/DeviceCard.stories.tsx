@@ -14,9 +14,9 @@ export default {
   decorators: [(Story) => <MemoryRouter>{Story()}</MemoryRouter>],
   parameters: {
     options: {
-      showPanel: true,
-    },
-  },
+      showPanel: true
+    }
+  }
 } as ComponentMeta<typeof DeviceCard>
 
 // eslint-disable-next-line
@@ -45,5 +45,5 @@ Default.args = {
   virtId: 'yz-quad',
   isDevice: 'yz-quad',
   linkTo: '/',
-  index: 1,
+  index: 1
 }

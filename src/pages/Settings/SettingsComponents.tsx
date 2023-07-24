@@ -6,7 +6,7 @@ import {
   Button,
   Slider,
   Switch,
-  Typography,
+  Typography
 } from '@mui/material'
 import { ExpandMore } from '@mui/icons-material'
 // import { ChevronRight, ExpandMore } from '@mui/icons-material'
@@ -21,8 +21,8 @@ export const useStyles = makeStyles(() => ({
     '&>div': {
       display: 'flex',
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
-    },
+      justifyContent: 'space-between'
+    }
   },
   settingsRow: {
     order: 'unset',
@@ -32,36 +32,36 @@ export const useStyles = makeStyles(() => ({
     alignItems: 'center',
     height: 40,
     '&>label': {
-      marginRight: '1rem',
+      marginRight: '1rem'
     },
     '&.slider>label': {
-      width: 150,
-    },
+      width: 150
+    }
   },
   actionButton: {
     marginTop: '0.5rem',
     flexBasis: '49%',
     width: '100%',
-    borderColor: '#444',
+    borderColor: '#444'
   },
   card: {
     maxWidth: '540px',
-    margin: '1rem auto 0', // mobile
+    margin: '1rem auto 0' // mobile
   },
   '@media (max-width: 580px)': {
     card: {
       maxWidth: '97vw',
-      margin: '0 auto',
-    },
+      margin: '0 auto'
+    }
   },
   audioCard: {
     '& > div > div:not(:last-child)': {
       '@media (max-width: 580px)': {
         width: '48% !important',
-        minWidth: 'unset',
-      },
-    },
-  },
+        minWidth: 'unset'
+      }
+    }
+  }
 }))
 
 export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
@@ -80,9 +80,9 @@ export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
       // Reset on touch devices, it doesn't add specificity
       '@media (hover: none)': {
         boxShadow:
-          '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
-      },
-    },
+          '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
+      }
+    }
   },
   '& .MuiSliderValueLabel ': {
     fontSize: 12,
@@ -91,19 +91,19 @@ export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
     backgroundColor: 'unset',
     color: theme.palette.text.primary,
     '&:before': {
-      display: 'none',
+      display: 'none'
     },
     '& *': {
       background: 'transparent',
-      color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-    },
+      color: theme.palette.mode === 'dark' ? '#fff' : '#000'
+    }
   },
   '& .MuiSlider-track': {
-    border: 'none',
+    border: 'none'
   },
   '& .MuiSlider-rail': {
     opacity: 0.5,
-    backgroundColor: '#bfbfbf',
+    backgroundColor: '#bfbfbf'
   },
   '& .MuiSlider-mark': {
     backgroundColor: '#bfbfbf',
@@ -111,9 +111,9 @@ export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
     width: 1,
     '&.MuiSlider-markActive': {
       opacity: 1,
-      backgroundColor: 'currentColor',
-    },
-  },
+      backgroundColor: 'currentColor'
+    }
+  }
 }))
 
 export const SettingsSlider = (props: any) => (
@@ -136,39 +136,39 @@ export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
       '& + .MuiSwitch-track': {
         backgroundColor: theme.palette.primary,
         opacity: 1,
-        border: 0,
+        border: 0
       },
       '&.Mui-disabled + .MuiSwitch-track': {
-        opacity: 0.5,
-      },
+        opacity: 0.5
+      }
     },
     '&.Mui-focusVisible .MuiSwitch-thumb': {
       color: '#33cf4d',
-      border: '6px solid #fff',
+      border: '6px solid #fff'
     },
     '&.Mui-disabled .MuiSwitch-thumb': {
       color:
         theme.palette.mode === 'light'
           ? theme.palette.grey[100]
-          : theme.palette.grey[600],
+          : theme.palette.grey[600]
     },
     '&.Mui-disabled + .MuiSwitch-track': {
-      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-    },
+      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3
+    }
   },
   '& .MuiSwitch-thumb': {
     boxSizing: 'border-box',
     width: 22,
-    height: 22,
+    height: 22
   },
   '& .MuiSwitch-track': {
     borderRadius: 26 / 2,
     backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
     opacity: 1,
     transition: theme.transitions.create(['background-color'], {
-      duration: 500,
-    }),
-  },
+      duration: 500
+    })
+  }
 }))
 
 export const SettingsButton = (props: any) => {
@@ -186,7 +186,7 @@ export const SettingsRow = ({
   direct,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   value,
-  style,
+  style
 }: {
   step?: string
   title: string
@@ -214,7 +214,7 @@ export const SettingsRow = ({
           color: '#7b7a7c',
           flexGrow: 1,
           justifyContent: 'flex-end',
-          textAlign: 'right',
+          textAlign: 'right'
         }}
       >
         {
@@ -240,13 +240,13 @@ SettingsRow.defaultProps = {
   checked: false,
   direct: false,
   onChange: null,
-  style: null,
+  style: null
 }
 
 export const SettingsAccordion = ({
   title,
   accId,
-  children,
+  children
 }: {
   title: string
   accId: string

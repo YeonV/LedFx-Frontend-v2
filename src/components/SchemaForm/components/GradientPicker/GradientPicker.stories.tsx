@@ -11,23 +11,23 @@ export default {
     sendColorToVirtuals: { action: 'clicked' },
     pickerBgColor: {
       table: {
-        disable: true,
-      },
-    },
+        disable: true
+      }
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'right',
-    },
-  },
+      panelPosition: 'right'
+    }
+  }
 } as ComponentMeta<typeof GradientPicker>
 
 // eslint-disable-next-line
@@ -79,9 +79,9 @@ Color.args = {
         skyblue: '#87ceeb',
         steelblue: '#4682b4',
         tan: '#d2b48c',
-        violetred: '#d02090',
+        violetred: '#d02090'
       },
-      user: {},
+      user: {}
     },
     gradients: {
       builtin: {
@@ -109,13 +109,13 @@ Color.args = {
           'linear-gradient(90deg, rgb(255, 40, 0) 0%, rgb(128, 0, 128) 33%, rgb(0, 199, 140) 66%, rgb(0, 255, 0) 99%)',
         Rust: 'linear-gradient(90deg, rgb(255, 40, 0) 0%, rgb(255, 0, 0) 100%)',
         Winamp:
-          'linear-gradient(90deg, rgb(0, 255, 0) 0%, rgb(255, 200, 0) 25%, rgb(255, 120, 0) 50%, rgb(255, 40, 0) 75%, rgb(255, 0, 0) 100%)',
+          'linear-gradient(90deg, rgb(0, 255, 0) 0%, rgb(255, 200, 0) 25%, rgb(255, 120, 0) 50%, rgb(255, 40, 0) 75%, rgb(255, 0, 0) 100%)'
       },
       user: {
         '1': 'linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)',
-        '2': 'linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)',
-      },
-    },
+        '2': 'linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)'
+      }
+    }
   },
-  handleAddGradient: undefined,
+  handleAddGradient: undefined
 }

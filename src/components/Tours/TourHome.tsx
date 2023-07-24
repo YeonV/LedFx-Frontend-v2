@@ -15,8 +15,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-one',
@@ -27,8 +27,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-two',
@@ -46,8 +46,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-three',
@@ -58,8 +58,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-four',
@@ -82,14 +82,14 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
-  },
+      backgroundColor: '#303030'
+    }
+  }
 ]
 
 const TourHome = ({
   className,
-  variant = 'button',
+  variant = 'button'
 }: {
   className?: string
   variant?: string
@@ -110,13 +110,13 @@ const TourHome = ({
             setIsTourOpen(true)
           }}
           style={{
-            margin: '8px',
+            margin: '8px'
           }}
           sx={{
             bgcolor: theme.palette.primary.main,
             '&:hover': {
-              bgcolor: theme.palette.primary.light,
-            },
+              bgcolor: theme.palette.primary.light
+            }
           }}
         >
           <LiveHelp />
@@ -145,7 +145,7 @@ const TourHome = ({
 
 TourHome.defaultProps = {
   className: '',
-  variant: 'button',
+  variant: 'button'
 }
 
 export default TourHome

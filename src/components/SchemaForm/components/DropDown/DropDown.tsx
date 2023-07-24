@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material'
 import useStyles from './DropDown.styles'
 import {
   EffectDropDownDefaultProps,
-  EffectDropDownProps,
+  EffectDropDownProps
 } from './DropDown.props'
 
 const EffectDropDown = ({
@@ -19,7 +19,7 @@ const EffectDropDown = ({
   onChange,
   groups,
   showFilter,
-  title,
+  title
 }: EffectDropDownProps) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -40,7 +40,7 @@ const EffectDropDown = ({
         htmlFor="groupsed-select"
         sx={{
           p: '0 10px !important',
-          background: theme.palette.background.paper,
+          background: theme.palette.background.paper
         }}
       >
         {title}
@@ -71,7 +71,7 @@ const EffectDropDown = ({
                   <MenuItem className={classes.FormListItem} value={e.id}>
                     {e.name}
                   </MenuItem>
-                )),
+                ))
               ]
           )}
       </Select>

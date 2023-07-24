@@ -6,7 +6,7 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem,
+  MenuItem
 } from '@mui/material'
 import { useLongPress } from 'use-long-press'
 import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material'
@@ -16,15 +16,15 @@ import Popover from '../../components/Popover/Popover'
 const PREFIX = 'PresetButton'
 
 const classes = {
-  bladeMenu: `${PREFIX}-bladeMenu`,
+  bladeMenu: `${PREFIX}-bladeMenu`
 }
 
 const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.bladeMenu}`]: {
     '& .MuiPaper-root': {
-      backgroundColor: theme.palette.grey[900],
-    },
-  },
+      backgroundColor: theme.palette.grey[900]
+    }
+  }
 }))
 
 export default function PresetButton({
@@ -34,7 +34,7 @@ export default function PresetButton({
   label = 'Button',
   buttonColor,
   className,
-  onClick,
+  onClick
 }: any) {
   const [anchorEl, setAnchorEl] = useState<any>(null)
   const open = Boolean(anchorEl)
@@ -57,7 +57,7 @@ export default function PresetButton({
         }
       },
       threshold: 1000,
-      captureEvent: true,
+      captureEvent: true
     }
   )
 
@@ -83,15 +83,15 @@ export default function PresetButton({
         onClose={() => setAnchorEl(null)}
         className={classes.bladeMenu}
         MenuListProps={{
-          'aria-labelledby': 'basic-button',
+          'aria-labelledby': 'basic-button'
         }}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'center'
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'center'
         }}
       >
         <div>
@@ -101,11 +101,11 @@ export default function PresetButton({
             label="Delete Preset"
             anchorOrigin={{
               vertical: 'top',
-              horizontal: 'center',
+              horizontal: 'center'
             }}
             transformOrigin={{
               vertical: 'bottom',
-              horizontal: 'center',
+              horizontal: 'center'
             }}
           />
         </div>

@@ -43,24 +43,20 @@ const DbStats = () => {
             Object.keys(devices).length
           }`}
         />
-        <DbRow left="Virtuals:" right={`${virtualsReal.length}`} />
-        <DbRow left="Scenes:" right={`${Object.keys(scenes).length}`} />
+        <DbRow left="Virtuals:" right={String(virtualsReal.length)} />
+        <DbRow left="Scenes:" right={String(Object.keys(scenes).length)} />
         <DbRow
           left="User Colors:"
-          right={`${
-            Object.keys(config.user_colors).length +
-            Object.keys(config.user_gradients).length
-          }`}
+          right={String(Object.keys(config.user_colors).length +
+            Object.keys(config.user_gradients).length)}
         />
         <DbRow
           left="User Presets:"
-          right={`${
-            Object.values(config.user_presets).length
-              ? Object.values(config.user_presets)
-                .map((e: any) => Object.keys(e).length)
-                .reduce((a: number, b: number) => a + b, 0)
-              : 0
-          }`}
+          right={String(Object.values(config.user_presets).length
+            ? Object.values(config.user_presets)
+              .map((e: any) => Object.keys(e).length)
+              .reduce((a: number, b: number) => a + b, 0)
+            : 0)}
         />
       </Stack>
     </BladeFrame>

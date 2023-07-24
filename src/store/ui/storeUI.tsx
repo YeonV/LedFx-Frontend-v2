@@ -28,7 +28,7 @@ const storeUI = (set: any) => ({
   snackbar: {
     isOpen: false,
     messageType: 'error' as VariantType,
-    message: 'NO MESSAGE',
+    message: 'NO MESSAGE'
   },
   showSnackbar: (messageType: VariantType, message: string): void =>
     set(
@@ -48,12 +48,12 @@ const storeUI = (set: any) => ({
     ),
   bars: {
     leftBar: {
-      open: false,
+      open: false
     },
     smartBar: {
-      open: false,
+      open: false
     },
-    bottomBar: [] as any,
+    bottomBar: [] as any
   },
   setLeftBarOpen: (open: boolean): void =>
     set(
@@ -105,7 +105,7 @@ const storeUI = (set: any) => ({
       }),
       false,
       'ui/settingsExpanded'
-    ),
+    )
 })
 
 export default storeUI

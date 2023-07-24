@@ -26,7 +26,7 @@ const storeIntegrations = (set: any) => ({
   toggleIntegration: async (config: any) =>
     await Ledfx('/api/integrations', 'PUT', config),
   deleteIntegration: async (config: any) =>
-    await Ledfx('/api/integrations', 'DELETE', { data: { id: config } }),
+    await Ledfx('/api/integrations', 'DELETE', { data: { id: config } })
 })
 
 export default storeIntegrations

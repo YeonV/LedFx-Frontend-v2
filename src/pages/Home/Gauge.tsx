@@ -21,7 +21,7 @@ export default function Gauge(props: any) {
       sx={{
         position: 'relative',
         display: 'inline-flex',
-        cursor: onClick ? 'pointer' : 'default',
+        cursor: onClick ? 'pointer' : 'default'
       }}
       onClick={onClick}
     >
@@ -31,7 +31,7 @@ export default function Gauge(props: any) {
         value={100}
         style={{
           position: 'absolute',
-          color: `${theme.palette.primary.main}30`,
+          color: `${theme.palette.primary.main}30`
         }}
       />
       <CircularProgress
@@ -49,7 +49,7 @@ export default function Gauge(props: any) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'center'
         }}
       >
         <Typography

@@ -8,7 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Link,
+  Link
 } from '@mui/material'
 import GitInfo from 'react-git-info/macro'
 import useStore from '../../store/useStore'
@@ -61,7 +61,7 @@ export default function AboutDialog({ className, children, startIcon }: any) {
         aria-labelledby="about-dialog-title"
         aria-describedby="about-dialog-description"
         PaperProps={{
-          style: { margin: '0 auto' },
+          style: { margin: '0 auto' }
         }}
       >
         <DialogTitle id="about-dialog-title">About LedFx</DialogTitle>

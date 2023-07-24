@@ -12,7 +12,7 @@ const storeYoutube = (set: any) => ({
       false,
       'youtube/setYoutubeURL'
     )
-  },
+  }
 })
 
 export default storeYoutube

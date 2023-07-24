@@ -9,7 +9,7 @@ import { Slider, Switch } from '@mui/material'
 
 const marks = [
   { value: 1, label: '1' },
-  { value: 255, label: '255' },
+  { value: 255, label: '255' }
 ]
 interface DropDownProps {
   // key: any;
@@ -35,7 +35,7 @@ const ThisDropDown: React.FC<DropDownProps> = (props) => {
     showSwitch,
     showSlider,
     handleDropTypeChange,
-    handleTypeRemoveDropDown,
+    handleTypeRemoveDropDown
   } = props
   return (
     <>

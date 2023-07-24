@@ -13,18 +13,18 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexWrap: 'wrap',
     marginTop: '0.5rem',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   '@media (max-width: 580px)': {
     cardWrapper: {
-      justifyContent: 'center',
-    },
+      justifyContent: 'center'
+    }
   },
   '@media (max-width: 410px)': {
     cardWrapper: {
-      padding: 0,
-    },
-  },
+      padding: 0
+    }
+  }
 }))
 
 const Devices = () => {
@@ -58,7 +58,7 @@ const Devices = () => {
       const req = {
         event_type: 'devices_updated',
         id: 1,
-        type: 'subscribe_event',
+        type: 'subscribe_event'
       }
       // console.log("Send");
       ;(ws as any).send(JSON.stringify(++req.id && req))

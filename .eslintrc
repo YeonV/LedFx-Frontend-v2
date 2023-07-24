@@ -40,6 +40,7 @@
          2,
          "single"
       ],
+      "comma-dangle": "off",
       "prettier/prettier": [
          "error",
          {
@@ -78,6 +79,7 @@
       "camelcase": 0,
       "react/no-array-index-key": 0,
       "@typescript-eslint/no-explicit-any": 0,
+      "@prettier/trailing-comma": 0,
       "no-unused-vars": [
          "error",
          {
@@ -90,6 +92,6 @@
             "argsIgnorePattern": "^_"
          }
       ],
-      "jsx-a11y/label-has-associated-control": 0
+      "jsx-a11y/label-has-associated-control": 0,
    }
 }

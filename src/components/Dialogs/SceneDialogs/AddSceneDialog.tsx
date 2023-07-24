@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  Typography,
+  Typography
 } from '@mui/material'
 import useStore from '../../../store/useStore'
 

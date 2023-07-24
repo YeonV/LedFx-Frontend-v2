@@ -6,7 +6,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Select,
+  Select
 } from '@mui/material'
 import useStore from '../../../../../store/useStore'
 
@@ -32,7 +32,7 @@ export default function SpSceneTrigger() {
     scene_id: spotifyScene, // Incorrectly sending scene_id instead of scene_id
     song_id: songID,
     song_name: songTitleAndArtist,
-    song_position: spotifyState?.position,
+    song_position: spotifyState?.position
   }
 
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
@@ -44,7 +44,7 @@ export default function SpSceneTrigger() {
       }
       const data = {
         ...spotifyTriggerDataTemp,
-        ...{ song_position: state.position },
+        ...{ song_position: state.position }
       }
       addSpotifySongTrigger(data).then(() => getIntegrations())
     })
@@ -97,12 +97,10 @@ export default function SpSceneTrigger() {
                 width: 150,
                 color: '#fff',
                 border: 0,
-                marginLeft: 10,
+                marginLeft: 10
               }}
               InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">ms</InputAdornment>
-                ),
+                endAdornment: <InputAdornment position="end">ms</InputAdornment>
               }}
               type="number"
               value={spNetworkTime}

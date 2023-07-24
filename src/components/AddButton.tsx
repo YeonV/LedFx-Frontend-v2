@@ -7,7 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
   useTheme,
-  IconButton,
+  IconButton
 } from '@mui/material'
 import { AddSharp as Add, Send, ElectricalServices } from '@mui/icons-material'
 import useStore from '../store/useStore'
@@ -17,14 +17,14 @@ import BladeIcon from './Icons/BladeIcon/BladeIcon'
 const PREFIX = 'AddButton'
 
 const classes = {
-  paper: `${PREFIX}-paper`,
+  paper: `${PREFIX}-paper`
 }
 
 const Root = styled('div')({
   [`& .${classes.paper}`]: {
     border: '1px solid rgba(255, 255, 255, 0.12)',
-    transform: 'translateY(-1rem) !important',
-  },
+    transform: 'translateY(-1rem) !important'
+  }
 })
 
 const MenuLine = React.forwardRef((props: any, ref: any) => {
@@ -43,11 +43,11 @@ const StyledMenu = ({ open, ...props }: any) => (
     // getContentAnchorEl={null}
     anchorOrigin={{
       vertical: 'top',
-      horizontal: 'center',
+      horizontal: 'center'
     }}
     transformOrigin={{
       vertical: 'bottom',
-      horizontal: 'center',
+      horizontal: 'center'
     }}
     open={open}
     {...props}
@@ -91,7 +91,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
       action: () => {
         setDialogOpenAddDevice(true)
         handleClose()
-      },
+      }
     },
     {
       icon: <BladeIcon name="mdi:led-strip-variant" />,
@@ -99,7 +99,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
       action: () => {
         setDialogOpenAddVirtual(true)
         handleClose()
-      },
+      }
     },
     {
       icon: <BladeIcon name="mdi:image-plus" />,
@@ -107,8 +107,8 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
       action: () => {
         setDialogOpenAddScene(true)
         handleClose()
-      },
-    },
+      }
+    }
   ]
 
   if (features.integrations) {
@@ -118,7 +118,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
       action: () => {
         setDialogOpenAddIntegration(true)
         handleClose()
-      },
+      }
     })
   }
   return (
@@ -143,7 +143,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
           classes={{
-            paper: classes.paper,
+            paper: classes.paper
           }}
         >
           {menuitems.map((menuitem) => (
@@ -174,7 +174,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
           backdropFilter: 'blur(20px)',
           borderBottom: '1px solid #a1998e30',
           alignItems: 'center',
-          zIndex: 10,
+          zIndex: 10
         }}
       >
         <GlobalActionBar
@@ -182,7 +182,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
             flexGrow: 1,
             paddingRight: 2,
             paddingLeft: 0,
-            color: theme.palette.primary.main,
+            color: theme.palette.primary.main
           }}
           height={15}
           type="icon"
@@ -198,7 +198,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
             onClick={handleClick}
             style={{
               margin: '0 8px 0 0',
-              color: '#fff',
+              color: '#fff'
             }}
           >
             <Add sx={{ fontSize: 32 }} />
@@ -210,7 +210,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: any) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
             classes={{
-              paper: classes.paper,
+              paper: classes.paper
             }}
           >
             {menuitems.map((menuitem) => (

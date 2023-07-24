@@ -19,9 +19,9 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
-  },
+      backgroundColor: '#303030'
+    }
+  }
 ]
 
 const TourScenes = ({ cally }: any) => {

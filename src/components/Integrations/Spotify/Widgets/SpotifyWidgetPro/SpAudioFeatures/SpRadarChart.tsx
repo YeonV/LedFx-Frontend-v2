@@ -5,7 +5,7 @@ import {
   LineElement,
   Filler,
   // Tooltip,
-  Legend,
+  Legend
 } from 'chart.js'
 import styled from 'styled-components'
 import { Radar } from 'react-chartjs-2'
@@ -34,7 +34,7 @@ const RadarChart = (props: any) => {
       'Danceability',
       'Positiveness',
       'Instrumentalness',
-      'Loudness',
+      'Loudness'
     ],
     datasets: [
       {
@@ -49,10 +49,10 @@ const RadarChart = (props: any) => {
           TrackFeatures?.danceability,
           TrackFeatures?.valence,
           TrackFeatures?.instrumentalness,
-          ((TrackFeatures?.loudness || 0) * -1) / 13,
-        ],
-      },
-    ],
+          ((TrackFeatures?.loudness || 0) * -1) / 13
+        ]
+      }
+    ]
   }
 
   const chartOptions = {
@@ -60,36 +60,36 @@ const RadarChart = (props: any) => {
     responsive: true,
     plugins: {
       legend: {
-        display: false,
-      },
+        display: false
+      }
     },
     layout: {
-      autoPadding: false,
+      autoPadding: false
     },
     scales: {
       radial: {
         title: {
-          color: '#f00',
+          color: '#f00'
         },
         ticks: {
-          display: false,
+          display: false
         },
         grid: {
-          color: '#333',
+          color: '#333'
         },
         angleLines: {
           display: true,
-          color: '#333',
-        },
-      },
+          color: '#333'
+        }
+      }
     },
     tooltips: {
       callbacks: {
         label(tooltipItem: any) {
           return tooltipItem.yLabel
-        },
-      },
-    },
+        }
+      }
+    }
   }
   return (
     <RadarChartContainer>

@@ -2,7 +2,7 @@ import { Switch, Checkbox, Button, Typography } from '@mui/material'
 import BladeFrame from '../BladeFrame'
 import {
   BladeBooleanDefaultProps,
-  BladeBooleanProps,
+  BladeBooleanProps
 } from './BladeBoolean.props'
 
 /**
@@ -18,7 +18,7 @@ const BladeBoolean = ({
   schema,
   model,
   hideDesc = false,
-  model_id,
+  model_id
 }: BladeBooleanProps) => {
   switch (type) {
     case 'switch':

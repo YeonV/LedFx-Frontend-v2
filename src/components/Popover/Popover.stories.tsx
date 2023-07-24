@@ -12,14 +12,14 @@ export default {
   argTypes: {
     type: {
       options: ['menuItem', 'button'],
-      control: { type: 'select' },
-    },
+      control: { type: 'select' }
+    }
   },
   parameters: {
     options: {
-      showPanel: true,
-    },
-  },
+      showPanel: true
+    }
+  }
 } as ComponentMeta<typeof Popover>
 
 // eslint-disable-next-line
@@ -30,5 +30,5 @@ Default.args = {}
 
 export const Example = Template.bind({})
 Example.args = {
-  type: 'button',
+  type: 'button'
 }

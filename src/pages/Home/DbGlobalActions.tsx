@@ -46,7 +46,7 @@ const DbGlobalActions = () => {
     <BladeFrame
       labelStyle={{
         background: theme.palette.background.default,
-        color: theme.palette.primary.main,
+        color: theme.palette.primary.main
       }}
       style={{ borderColor: theme.palette.primary.main, paddingLeft: 10 }}
       title="Global Actions"
@@ -83,8 +83,8 @@ const DbGlobalActions = () => {
               textTransform: 'none',
               alignItems: 'center',
               '& .MuiButton-startIcon': {
-                mr: 3,
-              },
+                mr: 3
+              }
             }}
           >
             <BladeIcon
@@ -92,7 +92,7 @@ const DbGlobalActions = () => {
               style={{
                 marginTop: -4,
                 marginRight: 18,
-                marginLeft: 4,
+                marginLeft: 4
               }}
             />
             <span style={{ fontSize: '0.8125rem', lineHeight: '1.75' }}>

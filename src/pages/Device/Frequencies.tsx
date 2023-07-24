@@ -35,12 +35,12 @@ const FrequenciesCard = ({ virtual, style }: any) => {
 
   const [value, setValue] = useState([
     logIt(virtual.config.frequency_min),
-    logIt(virtual.config.frequency_max),
+    logIt(virtual.config.frequency_max)
   ])
 
   const freq_max = config.melbanks?.max_frequencies.map((f: number) => ({
     value: f,
-    label: `${f > 1000 ? `${f / 1000}kHz` : `${f}Hz`}`,
+    label: `${f > 1000 ? `${f / 1000}kHz` : `${f}Hz`}`
   }))
 
   const freq_min = {
@@ -49,13 +49,13 @@ const FrequenciesCard = ({ virtual, style }: any) => {
       config.melbanks?.min_frequency > 1000
         ? `${(config.melbanks?.min_frequency || 0) / 1000}kHz`
         : `${config.melbanks?.min_frequency}Hz`
-    }`,
+    }`
   }
   const marks = freq_max && [freq_min, ...freq_max]
 
   const convertedMarks = marks?.map((m: any) => ({
     value: logIt(m.value),
-    label: m.label,
+    label: m.label
   }))
 
   const handleChange = (_event: React.ChangeEvent<any>, newValue: number[]) => {
@@ -82,7 +82,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
           display: 'flex',
           alignItems: 'center',
           width: '100%',
-          padding: '0 1rem 0.75rem 0.9rem !important',
+          padding: '0 1rem 0.75rem 0.9rem !important'
         }}
       >
         <div style={{ width: '100%' }}>
@@ -112,8 +112,8 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                   config: {
                     ...virtual.config,
                     frequency_min: Math.round(hzIt(value[0])),
-                    frequency_max: Math.round(hzIt(value[1])),
-                  },
+                    frequency_max: Math.round(hzIt(value[1]))
+                  }
                 }).then(() => getVirtuals())
               }}
             />
@@ -122,7 +122,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
             style={{
               width: '100%',
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
             <div style={{ maxWidth: '120px' }}>
@@ -131,17 +131,17 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 label="Min"
                 type="number"
                 InputLabelProps={{
-                  shrink: true,
+                  shrink: true
                 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">Hz</InputAdornment>
-                  ),
+                  )
                 }}
                 inputProps={{
                   style: { textAlign: 'right' },
                   min: 20,
-                  max: 20000,
+                  max: 20000
                 }}
                 value={
                   Math.round(hzIt(value[0])) < 5
@@ -168,15 +168,15 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 }}
                 inputProps={{
                   min: 20,
-                  max: 20000,
+                  max: 20000
                 }}
                 InputLabelProps={{
-                  shrink: true,
+                  shrink: true
                 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">Hz</InputAdornment>
-                  ),
+                  )
                 }}
               />
             </div>

@@ -8,14 +8,14 @@ import {
   IconButton,
   TextField,
   Typography,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import {
   PlayArrow,
   PlaylistRemove,
   Repeat,
   RepeatOn,
-  Stop,
+  Stop
 } from '@mui/icons-material'
 
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -26,7 +26,7 @@ export default function ScenesPlaylist({
   scenes,
   title,
   activateScene,
-  db,
+  db
 }: any) {
   const theme = useTheme()
   const [theScenes, setTheScenes] = useState([])
@@ -45,7 +45,7 @@ export default function ScenesPlaylist({
     const current = scenePL.map((key: string, id: number) => ({
       id,
       ...scenes[key],
-      scene_id: key,
+      scene_id: key
     }))
     return setTheScenes(current)
   }, [scenes, scenePL])
@@ -94,7 +94,7 @@ export default function ScenesPlaylist({
       headerName: 'Image',
       width: db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) =>
-        sceneImage(params.value || 'Wallpaper'),
+        sceneImage(params.value || 'Wallpaper')
     },
     {
       field: 'name',
@@ -106,12 +106,12 @@ export default function ScenesPlaylist({
           sx={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
+            textOverflow: 'ellipsis'
           }}
         >
           {params.value}
         </Typography>
-      ),
+      )
     },
     {
       field: 'scene_id',
@@ -128,15 +128,15 @@ export default function ScenesPlaylist({
             <PlaylistRemove />
           </Button>
         )
-      },
-    },
+      }
+    }
   ]
 
   return (
     <Card
       sx={{
         background: db ? 'transparent' : '',
-        borderColor: db ? 'transparent' : '',
+        borderColor: db ? 'transparent' : ''
       }}
     >
       <Box
@@ -144,7 +144,7 @@ export default function ScenesPlaylist({
           height: db ? 301 : 293,
           width: '100%',
           maxWidth: '470px',
-          m: '0 auto',
+          m: '0 auto'
         }}
       >
         <Typography
@@ -159,7 +159,7 @@ export default function ScenesPlaylist({
             borderBottom: 0,
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           {title}
@@ -167,7 +167,7 @@ export default function ScenesPlaylist({
             style={{
               display: 'flex',
               alignItems: 'center',
-              color: db ? theme.palette.text.primary : '',
+              color: db ? theme.palette.text.primary : ''
             }}
           >
             <Popover
@@ -208,14 +208,14 @@ export default function ScenesPlaylist({
                 borderRadius: 1,
                 '& input': {
                   textAlign: 'right',
-                  padding: '5px 0 2px',
+                  padding: '5px 0 2px'
                 },
                 '& .MuiInput-underline:before': {
-                  display: 'none',
+                  display: 'none'
                 },
                 '& .MuiInput-underline:after': {
-                  display: 'none',
-                },
+                  display: 'none'
+                }
               }}
               type="number"
               value={scenePLinterval}
@@ -267,7 +267,7 @@ export default function ScenesPlaylist({
             []
           ).map((v: any, i: number) => ({
             id: i + 1,
-            ...v,
+            ...v
           }))}
           getRowClassName={(params) =>
             `row${params.row.id === scenePLactiveIndex ? '--active' : ''}`
@@ -275,23 +275,23 @@ export default function ScenesPlaylist({
           pageSizeOptions={[100]}
           initialState={{
             sorting: {
-              sortModel: [{ field: 'id', sort: 'asc' }],
+              sortModel: [{ field: 'id', sort: 'asc' }]
             },
             columns: {
               columnVisibilityModel: {
                 id: false,
-                scene_tags: false,
-              },
-            },
+                scene_tags: false
+              }
+            }
           }}
           sx={{
             borderColor: db ? 'transparent' : theme.palette.divider,
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-              outline: 'none !important',
+              outline: 'none !important'
             },
             '&.MuiDataGrid-root .row--active': {
-              background: `${theme.palette.primary.main}30`,
-            },
+              background: `${theme.palette.primary.main}30`
+            }
           }}
         />
       </Box>

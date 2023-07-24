@@ -41,7 +41,7 @@ export const SpotifyControlContext = createContext<ControlSpotify>({
   setPos: () => undefined,
   next: () => undefined,
   prev: () => undefined,
-  setVol: () => undefined,
+  setVol: () => undefined
 })
 
 interface ISpotifyProviderProps {
@@ -83,7 +83,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       setVol: (vol) => {
         setVolume(vol)
         player.setVolume(vol)
-      },
+      }
     }),
     [player, spotifyState]
   )
@@ -128,7 +128,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
             position: getTime(temp1[key1][2]),
             position_ms: temp1[key1][2],
             sceneId,
-            sceneName,
+            sceneName
           })
           id += 1
         }
@@ -166,7 +166,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
           name: 'LedFX',
           getOAuthToken: (cb: any) => {
             cb(token)
-          },
+          }
         })
         setPlayer(new_player)
         if (new_player) {

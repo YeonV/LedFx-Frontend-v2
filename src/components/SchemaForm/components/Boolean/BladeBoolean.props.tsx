@@ -17,9 +17,9 @@ export const BladeBooleanDefaultProps = {
   onClick: undefined,
   type: 'switch',
   schema: {
-    title: 'Check me',
+    title: 'Check me'
   },
   model: undefined,
   hideDesc: undefined,
-  model_id: undefined,
+  model_id: undefined
 }

@@ -30,7 +30,7 @@ const storeDevices = (set: any) => ({
         name: resp.data.name,
         config: resp.data,
         virtuals: resp.data.virtuals,
-        active_virtuals: resp.data.active_virtuals,
+        active_virtuals: resp.data.active_virtuals
       }
     }
     return {}
@@ -59,7 +59,7 @@ const storeDevices = (set: any) => ({
     }
   },
   updateDevice: async (deviceId: string, config: any) =>
-    await Ledfx(`/api/devices/${deviceId}`, 'PUT', config),
+    await Ledfx(`/api/devices/${deviceId}`, 'PUT', config)
 })
 
 export default storeDevices

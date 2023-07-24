@@ -13,7 +13,7 @@ import {
   DialogContent,
   DialogActions,
   Dialog,
-  Divider,
+  Divider
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
@@ -21,7 +21,7 @@ import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 const PREFIX = 'AddIntegrationDialog'
 
 const classes = {
-  wrapper: `${PREFIX}-wrapper`,
+  wrapper: `${PREFIX}-wrapper`
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -36,7 +36,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     alignItems: 'center',
     '@media (max-width: 580px)': {
       width: '100%',
-      margin: '0.5rem 0',
+      margin: '0.5rem 0'
     },
     '& > label': {
       top: '-0.7rem',
@@ -49,9 +49,9 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: 'border-box',
-    },
-  },
+      boxSizing: 'border-box'
+    }
+  }
 }))
 
 const AddIntegrationDialog = () => {
@@ -115,7 +115,7 @@ const AddIntegrationDialog = () => {
       // console.log("ADDING");
       addIntegration({
         type: integrationType,
-        config: { ...defaultModel, ...cleanedModel },
+        config: { ...defaultModel, ...cleanedModel }
       }).then((res) => {
         if (res !== 'failed') {
           setDialogOpenAddIntegration(false)
@@ -127,7 +127,7 @@ const AddIntegrationDialog = () => {
       updateIntegration({
         id: integrationId,
         type: integrationType,
-        config: { ...model },
+        config: { ...model }
       }).then((res) => {
         if (res !== 'failed') {
           setDialogOpenAddIntegration(false)

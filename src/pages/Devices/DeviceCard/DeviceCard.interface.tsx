@@ -121,5 +121,5 @@ export const DeviceCardDefaults: DeviceCardProps = {
   transitionTime: 5,
   isDevice: 'yz-quad',
   graphsActive: true,
-  showMatrix: false,
+  showMatrix: false
 }

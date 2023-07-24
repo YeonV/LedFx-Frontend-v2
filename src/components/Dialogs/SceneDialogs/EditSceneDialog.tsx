@@ -21,7 +21,7 @@ import {
   MenuItem,
   ListSubheader,
   Alert,
-  InputAdornment,
+  InputAdornment
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
@@ -72,7 +72,7 @@ const EditSceneDialog = () => {
           style={{
             height: tags?.split(',')[0].length > 0 ? 140 : 125,
             width: 334,
-            marginTop: '1rem',
+            marginTop: '1rem'
           }}
           image={iconName.split('image:')[1]}
           title="Contemplative Reptile"
@@ -91,8 +91,8 @@ const EditSceneDialog = () => {
             justifyContent: 'center',
             fontSize: 140,
             '& > span:before': {
-              position: 'relative',
-            },
+              position: 'relative'
+            }
           }}
           name={iconName}
         />
@@ -195,7 +195,7 @@ const EditSceneDialog = () => {
               )
             }
           }
-        },
+        }
       })
     }
   }, [])
@@ -255,7 +255,7 @@ const EditSceneDialog = () => {
           disableUnderline
           sx={{
             textDecoration:
-              scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : '',
+              scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
           }}
         >
           {ledfx_presets && <ListSubheader>LedFx Presets</ListSubheader>}
@@ -297,7 +297,7 @@ const EditSceneDialog = () => {
           disableUnderline
           sx={{
             textDecoration:
-              scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : '',
+              scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
           }}
         >
           {Object.keys(effects).map((ke, i) => (
@@ -411,7 +411,7 @@ const EditSceneDialog = () => {
                   <InputAdornment position="end">
                     <TooltipImage />
                   </InputAdornment>
-                ),
+                )
               }}
               type="text"
               value={image}
@@ -426,7 +426,7 @@ const EditSceneDialog = () => {
                   <InputAdornment position="end">
                     <TooltipTags />
                   </InputAdornment>
-                ),
+                )
               }}
               label="Tags"
               type="tags"
@@ -440,7 +440,7 @@ const EditSceneDialog = () => {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              alignmentBaseline: 'central',
+              alignmentBaseline: 'central'
             }}
           >
             {sceneImage(image || 'Wallpaper')}
@@ -455,7 +455,7 @@ const EditSceneDialog = () => {
                   alignItems: 'center',
                   flexWrap: 'wrap',
                   maxWidth: '344px',
-                  width: '100%',
+                  width: '100%'
                 }}
               >
                 {tags?.split(',').map((t: string) => (
@@ -471,7 +471,7 @@ const EditSceneDialog = () => {
                       mr: 1,
                       cursor: sceneActiveTags.includes(t)
                         ? 'zoom-out'
-                        : 'zoom-in',
+                        : 'zoom-in'
                     }}
                     key={t}
                     label={t}
@@ -521,7 +521,7 @@ const EditSceneDialog = () => {
                 id="latest_note_on"
                 label="MIDI Note to activate scene"
                 InputLabelProps={{
-                  shrink: true,
+                  shrink: true
                 }}
                 type="text"
                 value={midiActivate}
@@ -566,7 +566,7 @@ const EditSceneDialog = () => {
             fontVariant: 'all-small-caps',
             textAlign: 'right',
             margin: '0 auto',
-            maxWidth: '960px',
+            maxWidth: '960px'
           }}
         >
           <span>Device</span>
@@ -603,7 +603,7 @@ const EditSceneDialog = () => {
                       ? theme.palette.text.disabled
                       : '',
                   textDecoration:
-                    scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : '',
+                    scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
                 }}
               >
                 <span>{dev}</span>
@@ -611,7 +611,7 @@ const EditSceneDialog = () => {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
+                    alignItems: 'center'
                   }}
                 >
                   {renderEffects(
@@ -636,7 +636,7 @@ const EditSceneDialog = () => {
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center',
+                      alignItems: 'center'
                     }}
                     onClick={() => {
                       setScVirtualsToIgnore((p) => {

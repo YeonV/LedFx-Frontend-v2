@@ -12,15 +12,15 @@ const useIntegrationCardStyles = makeStyles(() => ({
     '@media (max-width: 580px)': {
       maxWidth: '97vw',
       margin: '0 auto',
-      height: 'unset',
-    },
+      height: 'unset'
+    }
   },
   integrationLink: {
     flexGrow: 0,
     padding: '0 0.5rem',
     textDecoration: 'none',
     fontSize: 'large',
-    color: 'inherit',
+    color: 'inherit'
 
     // '&:hover': {
     //   color: theme.palette.primary.main,
@@ -30,7 +30,7 @@ const useIntegrationCardStyles = makeStyles(() => ({
     margingBottom: '4px',
     marginRight: '0.5rem',
     position: 'relative',
-    fontSize: '50px',
+    fontSize: '50px'
   },
   integrationCardContainer: {
     display: 'flex',
@@ -40,8 +40,8 @@ const useIntegrationCardStyles = makeStyles(() => ({
     height: '100%',
     justifyContent: 'space-between',
     '@media (max-width: 580px)': {
-      flexDirection: 'row',
-    },
+      flexDirection: 'row'
+    }
   },
   iconMedia: {
     height: 140,
@@ -50,32 +50,32 @@ const useIntegrationCardStyles = makeStyles(() => ({
     margin: '0 auto',
     fontSize: 100,
     '& > span:before': {
-      position: 'relative',
-    },
+      position: 'relative'
+    }
   },
   editButton: {
     minWidth: 32,
     // marginLeft: theme.spacing(1),
     '@media (max-width: 580px)': {
-      minWidth: 'unset',
-    },
+      minWidth: 'unset'
+    }
   },
   editButtonMobile: {
     minWidth: 32,
     // marginLeft: theme.spacing(1),
     '@media (max-width: 580px)': {
       minWidth: 'unset',
-      flexGrow: 1,
-    },
+      flexGrow: 1
+    }
   },
   buttonBar: {
     '@media (max-width: 580px)': {
-      display: 'none',
-    },
+      display: 'none'
+    }
   },
   buttonBarMobile: {
     width: '100%',
-    textAlign: 'right',
+    textAlign: 'right'
   },
   buttonBarMobileWrapper: {
     display: 'flex',
@@ -84,12 +84,12 @@ const useIntegrationCardStyles = makeStyles(() => ({
     background: 'rgba(0,0,0,0.4)',
     '& > div, & > button': {
       flexGrow: 1,
-      flexBasis: '30%',
+      flexBasis: '30%'
     },
     '& > div > button': {
-      width: '100%',
-    },
-  },
+      width: '100%'
+    }
+  }
 }))
 
 export default useIntegrationCardStyles

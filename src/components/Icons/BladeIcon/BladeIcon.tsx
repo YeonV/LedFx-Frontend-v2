@@ -7,7 +7,7 @@ import {
   YZLogo2Bottom,
   YZLogo2Top,
   YZLogo2Y,
-  YZLogo2Z,
+  YZLogo2Z
 } from '../YZ-Logo2'
 import { camelToSnake } from '../../../utils/helpers'
 import '../../../assets/materialdesignicons.css'
@@ -32,7 +32,7 @@ function BladeIcon({
   style,
   scene = false,
   card = false,
-  intro = false,
+  intro = false
 }: BladeIconProps): JSX.Element {
   return (
     <Icon
@@ -44,28 +44,28 @@ function BladeIcon({
         <YZLogo2Y
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px',
+            marginTop: '3px'
           }}
         />
       ) : name.startsWith('yz:logo2z') ? (
         <YZLogo2Z
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px',
+            marginTop: '3px'
           }}
         />
       ) : name.startsWith('yz:logo2top') ? (
         <YZLogo2Top
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px',
+            marginTop: '3px'
           }}
         />
       ) : name.startsWith('yz:logo2bot') ? (
         <YZLogo2Bottom
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px',
+            marginTop: '3px'
           }}
         />
       ) : name.startsWith('yz:logo2') ? (
@@ -73,7 +73,7 @@ function BladeIcon({
           style={{
             // eslint-disable-next-line prettier/prettier
             transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
-            marginTop: '3px',
+            marginTop: '3px'
           }}
         />
       ) : name.startsWith('wled') ? (

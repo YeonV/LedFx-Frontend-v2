@@ -37,7 +37,7 @@ class ErrorBoundary extends Component<Props, State> {
             justifyContent: 'center',
             textAlign: 'center',
             margin: '0 auto',
-            paddingTop: '3rem',
+            paddingTop: '3rem'
           }}
         >
           <h1>Something went wrong</h1>
@@ -55,7 +55,7 @@ class ErrorBoundary extends Component<Props, State> {
               border: '1px solid #999',
               color: '#fff',
               backgroundColor: '#600000',
-              cursor: 'pointer',
+              cursor: 'pointer'
             }}
             onClick={() => {
               window.localStorage.removeItem('undefined')
@@ -83,7 +83,7 @@ class ErrorBoundary extends Component<Props, State> {
               border: '1px solid #999',
               color: '#fff',
               backgroundColor: '#600000',
-              cursor: 'pointer',
+              cursor: 'pointer'
             }}
             onClick={() => {
               window.location.reload()

@@ -50,7 +50,7 @@ export default function Home() {
       if (e.detail.id === 'device_created') {
         if (lastFound.indexOf(e.detail.device_name) === -1) {
           enqueueSnackbar(`New Device added: ${e.detail.device_name}`, {
-            variant: 'info',
+            variant: 'info'
           })
           setLastFound([...lastFound, e.detail.device_name])
           getDevices()
@@ -68,7 +68,7 @@ export default function Home() {
       const req = {
         event_type: 'graph_update',
         id: 1337,
-        type: 'subscribe_event',
+        type: 'subscribe_event'
       }
       // console.log("Send");
       ;(ws as any).send(JSON.stringify(++req.id && req))
@@ -79,7 +79,7 @@ export default function Home() {
         const request = {
           id: 1337,
           type: 'unsubscribe_event',
-          event_type: 'graph_update',
+          event_type: 'graph_update'
         }
         ;(ws as any).send(JSON.stringify(++request.id && request))
       }
@@ -94,7 +94,7 @@ export default function Home() {
       const req = {
         event_type: 'device_created',
         id: 1337,
-        type: 'subscribe_event',
+        type: 'subscribe_event'
       }
       // console.log("Send");
       ;(ws as any).send(JSON.stringify(++req.id && req))
@@ -105,7 +105,7 @@ export default function Home() {
         const request = {
           id: 1337,
           type: 'unsubscribe_event',
-          event_type: 'device_created',
+          event_type: 'device_created'
         }
         ;(ws as any).send(JSON.stringify(++request.id && request))
       }

@@ -16,7 +16,7 @@ import {
   Delete,
   Pause,
   PlayArrow,
-  SyncProblem,
+  SyncProblem
 } from '@mui/icons-material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
@@ -53,7 +53,7 @@ const DeviceCard = ({
   isDevice,
   graphsMulti,
   showMatrix,
-  activateDevice,
+  activateDevice
 }: DeviceCardProps) => {
   const classes = useStyle()
   const theme = useTheme()
@@ -81,7 +81,7 @@ const DeviceCard = ({
       style={{
         ...additionalStyle,
         width: '100%',
-        background: theme.palette.background.paper,
+        background: theme.palette.background.paper
       }}
     >
       <Card
@@ -89,12 +89,12 @@ const DeviceCard = ({
         sx={{
           background: theme.palette.background.paper,
           '&:hover': {
-            borderColor: theme.palette.text.disabled,
-          },
+            borderColor: theme.palette.text.disabled
+          }
         }}
       >
         <div className={classes.virtualCardContainer}>
-          <div className={`${classes.virtualIconWrapper}`}>
+          <div className={classes.virtualIconWrapper}>
             <BladeIcon
               colorIndicator={false}
               name={iconName}
@@ -104,7 +104,7 @@ const DeviceCard = ({
               style={{
                 zIndex: 3,
                 opacity: online ? 1 : 0.3,
-                color: expanded ? '#fff' : '',
+                color: expanded ? '#fff' : ''
               }}
               card
             />
@@ -116,7 +116,7 @@ const DeviceCard = ({
               style={{
                 lineHeight: 1,
                 color: colorIndicator ? theme.palette.primary.light : 'inherit',
-                opacity: online ? 1 : 0.3,
+                opacity: online ? 1 : 0.3
               }}
             >
               {deviceName}
@@ -128,7 +128,7 @@ const DeviceCard = ({
                 style={{
                   height: 25,
                   display: 'flex',
-                  alignItems: 'center',
+                  alignItems: 'center'
                 }}
               >
                 <Typography
@@ -137,7 +137,7 @@ const DeviceCard = ({
                   color="textSecondary"
                   style={{
                     height: 25,
-                    opacity: online ? 1 : 0.3,
+                    opacity: online ? 1 : 0.3
                   }}
                 >
                   offline
@@ -156,7 +156,7 @@ const DeviceCard = ({
                     marginLeft: '1rem',
                     marginTop: '0rem',
                     minWidth: 'unset',
-                    zIndex: expanded ? 1 : 3,
+                    zIndex: expanded ? 1 : 3
                   }}
                 >
                   <SyncProblem />
@@ -180,7 +180,7 @@ const DeviceCard = ({
                   style={{
                     color: '#999',
                     minWidth: 'unset',
-                    zIndex: expanded ? 1 : 3,
+                    zIndex: expanded ? 1 : 3
                   }}
                 >
                   {isPlaying ? <Pause /> : <PlayArrow />}
@@ -195,7 +195,7 @@ const DeviceCard = ({
                   style={{
                     color: '#999',
                     minWidth: 'unset',
-                    zIndex: expanded ? 1 : 3,
+                    zIndex: expanded ? 1 : 3
                   }}
                 >
                   <Clear />
@@ -233,9 +233,9 @@ const DeviceCard = ({
               alignSelf: 'flex-start',
               marginLeft: 'auto',
               transition: theme.transitions.create('transform', {
-                duration: theme.transitions.duration.shortest,
+                duration: theme.transitions.duration.shortest
               }),
-              display: 'block',
+              display: 'block'
             }}
             onClick={(e) => {
               e.preventDefault()
@@ -256,7 +256,7 @@ const DeviceCard = ({
                 ? `${transitionTime || 1}s`
                 : `${transitionTime || 0}s`,
               width: '100%',
-              transition: 'opacity',
+              transition: 'opacity'
             }}
           >
             <PixelGraph
@@ -275,7 +275,7 @@ const DeviceCard = ({
             top: 0,
             bottom: 0,
             right: 0,
-            zIndex: 2,
+            zIndex: 2
           }}
         >
           <Collapse
@@ -297,7 +297,7 @@ const DeviceCard = ({
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-end',
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 <Popover

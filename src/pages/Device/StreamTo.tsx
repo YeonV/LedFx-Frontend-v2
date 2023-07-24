@@ -16,15 +16,15 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
+      width: 250
+    }
+  }
 }
 
 const StreamToCard = ({
   virtual,
   virtuals,
-  style,
+  style
 }: {
   virtual: {
     id: string
@@ -87,7 +87,7 @@ const StreamToCard = ({
           flexDirection: 'row',
           alignItems: 'center',
           width: '100%',
-          p: '0.25rem 1rem 0.4rem 0.4rem !important',
+          p: '0.25rem 1rem 0.4rem 0.4rem !important'
         }}
       >
         <FormControl style={{ margin: 10, width: '100%' }}>

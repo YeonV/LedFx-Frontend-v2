@@ -16,8 +16,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-four',
@@ -28,8 +28,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-six',
@@ -40,8 +40,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-seven',
@@ -52,8 +52,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-one',
@@ -65,8 +65,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-two',
@@ -81,8 +81,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-three',
@@ -94,8 +94,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-five',
@@ -106,8 +106,8 @@ const steps = [
       </div>
     ),
     style: {
-      backgroundColor: '#303030',
-    },
+      backgroundColor: '#303030'
+    }
   },
   {
     selector: '.step-settings-eight',
@@ -122,9 +122,9 @@ const steps = [
     ),
     style: {
       backgroundColor: '#303030',
-      maxWidth: 600,
-    },
-  },
+      maxWidth: 600
+    }
+  }
 ]
 
 const TourSettings = ({ cally }: any) => {

@@ -10,12 +10,12 @@ const DbLinks = () => {
     <BladeFrame
       labelStyle={{
         background: theme.palette.background.default,
-        color: theme.palette.primary.main,
+        color: theme.palette.primary.main
       }}
       style={{
         borderColor: theme.palette.primary.main,
         padding: 20,
-        minWidth: 280,
+        minWidth: 280
         // color: theme.palette.text.disabled,
       }}
       title="Links"
@@ -36,8 +36,8 @@ const DbLinks = () => {
             textTransform: 'none',
             justifyContent: 'flex-start',
             '& .MuiButton-startIcon': {
-              mr: 3,
-            },
+              mr: 3
+            }
           }}
         >
           Core (python)
@@ -57,8 +57,8 @@ const DbLinks = () => {
             textTransform: 'none',
             justifyContent: 'flex-start',
             '& .MuiButton-startIcon': {
-              mr: 3,
-            },
+              mr: 3
+            }
           }}
         >
           Client (react)
@@ -82,8 +82,8 @@ const DbLinks = () => {
             textTransform: 'none',
             justifyContent: 'flex-start',
             '& .MuiButton-startIcon': {
-              mr: 3,
-            },
+              mr: 3
+            }
           }}
         >
           Community

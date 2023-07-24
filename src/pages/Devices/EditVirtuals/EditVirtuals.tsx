@@ -51,7 +51,7 @@ export default function EditVirtuals({
   color = 'inherit',
   variant = 'contained',
   onClick = () => {},
-  innerKey,
+  innerKey
 }: any) {
   const currentVirtual = useStore((state) => state.currentVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)

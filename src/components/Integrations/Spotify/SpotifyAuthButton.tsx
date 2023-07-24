@@ -11,7 +11,7 @@ import useStore from '../../../store/useStore'
 import {
   finishAuth,
   refreshAuth,
-  logoutAuth,
+  logoutAuth
 } from '../../../utils/spotifyProxies'
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
 
@@ -48,8 +48,8 @@ const apiCredentials = {
     'user-read-recently-played',
     // Library
     'user-library-read',
-    'user-library-modify',
-  ],
+    'user-library-modify'
+  ]
 }
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {

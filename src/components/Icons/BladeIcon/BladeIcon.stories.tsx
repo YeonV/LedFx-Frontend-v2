@@ -11,9 +11,9 @@ export default {
   component: BladeIcon,
   parameters: {
     options: {
-      showPanel: true,
-    },
-  },
+      showPanel: true
+    }
+  }
 } as ComponentMeta<typeof BladeIcon>
 
 // eslint-disable-next-line
@@ -24,15 +24,15 @@ Default.args = {}
 
 export const WLED = Template.bind({})
 WLED.args = {
-  name: 'wled',
+  name: 'wled'
 }
 
 export const MUI = Template.bind({})
 MUI.args = {
-  name: 'Light',
+  name: 'Light'
 }
 
 export const MDI = Template.bind({})
 MDI.args = {
-  name: 'mdi:led-strip',
+  name: 'mdi:led-strip'
 }

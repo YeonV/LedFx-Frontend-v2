@@ -8,45 +8,45 @@ const useStyles = makeStyles(() => ({
     borderRadius: '10px',
     margin: '0 0 0.5rem',
     '@media (max-width: 580px)': {
-      flexDirection: 'column',
-    },
+      flexDirection: 'column'
+    }
   },
   FormLabel: {
     marginLeft: '1rem',
     paddingTop: '0.5rem',
     '@media (max-width: 580px)': {
-      display: 'none',
-    },
+      display: 'none'
+    }
   },
   FormSelect: {
     flexGrow: 1,
     marginLeft: '1rem',
     paddingTop: '0.5rem',
     '&:before, &:after': {
-      display: 'none',
+      display: 'none'
     },
     '& > .MuiSelect-select:focus': {
-      backgroundColor: 'unset',
-    },
+      backgroundColor: 'unset'
+    }
   },
   FormListHeaders: {
     pointerEvents: 'none',
-    color: '#fff',
+    color: '#fff'
   },
   FormListItem: {
-    paddingLeft: '2rem',
+    paddingLeft: '2rem'
   },
   FormToggleWrapper: {
     '@media (max-width: 580px)': {
-      order: -1,
-    },
+      order: -1
+    }
   },
 
   FormToggle: {
     '@media (max-width: 580px)': {
-      flexGrow: 1,
-    },
-  },
+      flexGrow: 1
+    }
+  }
 }))
 
 export default useStyles

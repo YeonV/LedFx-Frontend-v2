@@ -7,7 +7,7 @@ import DeviceCard from './DeviceCard'
 
 const DeviceCardWrapper = ({
   virtual,
-  index,
+  index
 }: {
   virtual: any
   index: number
@@ -65,9 +65,12 @@ const DeviceCardWrapper = ({
         getVirtuals()
         getDevices()
       }, virtuals[virtual].config.transition_time * 1000)
-      setTimeout(() => {
-        setFade(false)
-      }, virtuals[virtual].config.transition_time * 1000 + 300)
+      setTimeout(
+        () => {
+          setFade(false)
+        },
+        virtuals[virtual].config.transition_time * 1000 + 300
+      )
     })
   }
 
@@ -141,7 +144,7 @@ const DeviceCardWrapper = ({
             : !virtuals[virtual]?.effect.name
             ? 50
             : 'unset'
-          : 'unset',
+          : 'unset'
       }}
     />
   ) : null

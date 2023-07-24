@@ -13,7 +13,7 @@ import {
   CircularProgress as CircularProgress5,
   Fab,
   Tooltip,
-  useMediaQuery,
+  useMediaQuery
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { DeleteForever, GitHub } from '@mui/icons-material'
@@ -210,7 +210,7 @@ const Dashboard = () => {
                         position: 'absolute',
                         top: -6,
                         left: -6,
-                        zIndex: 1,
+                        zIndex: 1
                       }}
                     />
                   )}
@@ -287,13 +287,13 @@ const Dashboard = () => {
                 }
                 style={{
                   margin: '8px',
-                  zIndex: 0,
+                  zIndex: 0
                 }}
                 sx={{
                   bgcolor: theme.palette.text.disabled,
                   '&:hover': {
-                    bgcolor: theme.palette.primary.main,
-                  },
+                    bgcolor: theme.palette.primary.main
+                  }
                 }}
               >
                 <GitHub />
@@ -311,13 +311,13 @@ const Dashboard = () => {
                 }
                 style={{
                   margin: '8px',
-                  zIndex: 0,
+                  zIndex: 0
                 }}
                 sx={{
                   bgcolor: theme.palette.text.disabled,
                   '&:hover': {
-                    bgcolor: theme.palette.primary.main,
-                  },
+                    bgcolor: theme.palette.primary.main
+                  }
                 }}
               >
                 <GitHub />
@@ -335,13 +335,13 @@ const Dashboard = () => {
                 }
                 style={{
                   margin: '8px',
-                  zIndex: 0,
+                  zIndex: 0
                 }}
                 sx={{
                   bgcolor: theme.palette.text.disabled,
                   '&:hover': {
-                    bgcolor: theme.palette.primary.main,
-                  },
+                    bgcolor: theme.palette.primary.main
+                  }
                 }}
               >
                 <svg

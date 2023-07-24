@@ -34,8 +34,8 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
     { value: 0, label: 1 },
     {
       value: devices[s[0]].config.pixel_count - 1,
-      label: devices[s[0]].config.pixel_count,
-    },
+      label: devices[s[0]].config.pixel_count
+    }
   ]
 
   return (

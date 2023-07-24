@@ -21,7 +21,7 @@ const AudioCard = ({ className }: any) => {
           model={model}
           onModelChange={(e) => {
             setSystemConfig({
-              audio: e,
+              audio: e
             }).then(() => getSystemConfig())
           }}
         />

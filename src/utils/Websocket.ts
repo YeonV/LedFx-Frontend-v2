@@ -34,29 +34,29 @@ function createSocket() {
         document.dispatchEvent(
           new CustomEvent('disconnected', {
             detail: {
-              isDisconnected: false,
-            },
+              isDisconnected: false
+            }
           })
         )
         ;(_ws as any).ws = e.target
         const req = {
           event_type: 'devices_updated',
           id: 1,
-          type: 'subscribe_event',
+          type: 'subscribe_event'
         }
         // console.log("Send");
         ;(ws as any).send(JSON.stringify(++req.id && req))
         const requ = {
           event_type: 'device_created',
           id: 1,
-          type: 'subscribe_event',
+          type: 'subscribe_event'
         }
         // console.log("Send");
         ;(ws as any).send(JSON.stringify(++requ.id && requ))
         const reque = {
           event_type: 'graph_update',
           id: 1,
-          type: 'subscribe_event',
+          type: 'subscribe_event'
         }
         // console.log("Send");
         ;(ws as any).send(JSON.stringify(++reque.id && reque))
@@ -67,15 +67,15 @@ function createSocket() {
             new CustomEvent('YZ', {
               detail: {
                 id: JSON.parse(event.data).vis_id,
-                pixels: JSON.parse(event.data).pixels,
-              },
+                pixels: JSON.parse(event.data).pixels
+              }
             })
           )
         }
         if (JSON.parse(event.data).event_type === 'devices_updated') {
           document.dispatchEvent(
             new CustomEvent('YZold', {
-              detail: 'devices_updated',
+              detail: 'devices_updated'
             })
           )
         }
@@ -84,15 +84,15 @@ function createSocket() {
             new CustomEvent('YZ_device_created', {
               detail: {
                 id: 'device_created',
-                device_name: JSON.parse(event.data).device_name,
-              },
+                device_name: JSON.parse(event.data).device_name
+              }
             })
           )
         }
         if (JSON.parse(event.data).event_type === 'graph_update') {
           document.dispatchEvent(
             new CustomEvent('YZoldDev', {
-              detail: JSON.parse(event.data),
+              detail: JSON.parse(event.data)
             })
           )
         }
@@ -105,11 +105,11 @@ function createSocket() {
         document.dispatchEvent(
           new CustomEvent('disconnected', {
             detail: {
-              isDisconnected: true,
-            },
+              isDisconnected: true
+            }
           })
         )
-      },
+      }
       // onerror: e => console.log('Error:', e)
     }
   )
@@ -147,11 +147,11 @@ export const HandleWs = () => {
           const request = {
             event_filter: {
               vis_id: d,
-              is_device: !!virtuals[d]?.is_device,
+              is_device: !!virtuals[d]?.is_device
             },
             event_type: 'visualisation_update',
             id: i,
-            type: 'subscribe_event',
+            type: 'subscribe_event'
           }
           // console.log("Send");
           ;(ws as any).send(JSON.stringify(++request.id && request))
@@ -165,7 +165,7 @@ export const HandleWs = () => {
             const request = {
               id: i,
               type: 'unsubscribe_event',
-              event_type: 'visualisation_update',
+              event_type: 'visualisation_update'
             }
             ;(ws as any).send(JSON.stringify(++request.id && request))
           }

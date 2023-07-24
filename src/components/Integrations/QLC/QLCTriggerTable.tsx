@@ -9,19 +9,19 @@ import Popover from '../../Popover/Popover'
 const PREFIX = 'QLCTriggerTable'
 
 const classes = {
-  root: `${PREFIX}-root`,
+  root: `${PREFIX}-root`
 }
 
 const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.root}`]: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.secondary
       },
     '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
-      color: theme.palette.text.secondary,
-    },
-  },
+      color: theme.palette.text.secondary
+    }
+  }
 }))
 
 export default function QLCTriggerTable() {
@@ -86,7 +86,7 @@ export default function QLCTriggerTable() {
             enabled,
             trigger: `${triggerType}: ${sceneName}`,
             qlc_string,
-            qlc_value: csv_values,
+            qlc_value: csv_values
           })
           id += 1
         }
@@ -100,8 +100,8 @@ export default function QLCTriggerTable() {
     deleteQLCTrigger({
       data: {
         event_filter: { scene_id: paramsTemp?.row?.sceneId },
-        event_type: paramsTemp?.row?.triggerType,
-      },
+        event_type: paramsTemp?.row?.triggerType
+      }
     }).then(() => getIntegrations())
   }
   const columns: GridColDef[] = [
@@ -110,14 +110,14 @@ export default function QLCTriggerTable() {
       headerName: 'ID',
       width: 60,
       align: 'center',
-      headerAlign: 'center',
+      headerAlign: 'center'
     },
     {
       field: 'trigger',
       headerName: 'Trigger Event Type & Name (If This)',
       width: 350,
       headerAlign: 'center',
-      align: 'center',
+      align: 'center'
     },
 
     {
@@ -125,14 +125,14 @@ export default function QLCTriggerTable() {
       headerName: 'QLC+ Widget (Do This)',
       width: 500,
       headerAlign: 'center',
-      align: 'center',
+      align: 'center'
     },
     {
       field: 'qlc_value',
       headerName: 'QLC+ Value',
       width: 150,
       headerAlign: 'center',
-      align: 'center',
+      align: 'center'
     },
     {
       field: 'actions',
@@ -149,7 +149,7 @@ export default function QLCTriggerTable() {
             onChange={() => {
               toggleQLCTrigger('qlc', {
                 event_filter: { scene_id: params?.row?.sceneId },
-                event_type: params?.row?.triggerType,
+                event_type: params?.row?.triggerType
               }).then(() => getIntegrations())
             }}
           />
@@ -171,8 +171,8 @@ export default function QLCTriggerTable() {
             }}
           />
         </Stack>
-      ),
-    },
+      )
+    }
   ]
 
   const rows = QLCTriggersList || [{ id: 1 }]
@@ -181,7 +181,7 @@ export default function QLCTriggerTable() {
     <Root
       style={{
         display: 'flex',
-        width: '100%',
+        width: '100%'
       }}
     >
       <DataGrid
@@ -192,7 +192,7 @@ export default function QLCTriggerTable() {
           boxShadow: 2,
           color: '#fff',
           border: 1,
-          borderColor: '#666',
+          borderColor: '#666'
         }}
         columns={columns}
         rows={rows}

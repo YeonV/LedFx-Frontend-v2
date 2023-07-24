@@ -138,14 +138,14 @@ const storeGeneral = (set: any) => ({
 
   // Example
   animals: {
-    bears: 1,
+    bears: 1
   },
   increase: (by: number) =>
     set(
       produce((state: IStore) => {
         state.animals.bears += by
       })
-    ),
+    )
 })
 
 export default storeGeneral

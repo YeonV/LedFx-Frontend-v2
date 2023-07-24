@@ -3,7 +3,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import axios from 'axios'
 
 const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com',
+  baseURL: 'https://strapi.yeonv.com'
 })
 // const backendUrl = process.env.REACT_APP_BACKEND_URL;
 const backendUrl = 'https://strapi.yeonv.com'
@@ -35,8 +35,8 @@ const LoginRedirect = () => {
         localStorage.setItem('username', res.user.username)
         const me = await cloud.get('users/me', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-          },
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+          }
         })
         const user = await me.data
         // console.log(user)

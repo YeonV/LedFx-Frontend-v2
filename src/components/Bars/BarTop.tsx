@@ -9,7 +9,7 @@ import {
   GitHub,
   ChevronLeft,
   Login,
-  Logout,
+  Logout
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import {
@@ -23,7 +23,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  Button,
+  Button
 } from '@mui/material'
 import { styled } from '@mui/styles'
 import { useTheme } from '@mui/material/styles'
@@ -46,8 +46,8 @@ const StyledBadge = styled(Badge)(() => ({
     // border: `1px solid ${theme.palette.background.paper}`,
     padding: '0 4px',
     fontSize: 'x-small',
-    height: '14px',
-  },
+    height: '14px'
+  }
 }))
 
 const TopBar = () => {
@@ -130,7 +130,7 @@ const TopBar = () => {
       ) {
         Ledfx('/api/notify', 'PUT', {
           title: 'Update available',
-          text: 'A new version of LedFx has been released',
+          text: 'A new version of LedFx has been released'
         })
         window.localStorage.setItem('last-update-notification', `${Date.now()}`)
       }
@@ -188,22 +188,22 @@ const TopBar = () => {
           zIndex: 10,
           transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
+            duration: theme.transitions.duration.leavingScreen
           }),
           ...(open && {
             width: `calc(100% - ${drawerWidth}px)`,
             marginLeft: `${drawerWidth}px`,
             transition: theme.transitions.create(['margin', 'width'], {
               easing: theme.transitions.easing.easeOut,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
-          }),
+              duration: theme.transitions.duration.enteringScreen
+            })
+          })
         }}
       >
         <Toolbar
           style={{
             justifyContent: 'space-between',
-            minHeight: 56,
+            minHeight: 56
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 16 }}>
@@ -238,7 +238,7 @@ const TopBar = () => {
                     marginTop: 10,
                     width: 32,
                     height: 32,
-                    backgroundSize: 'contain',
+                    backgroundSize: 'contain'
                   }}
                   onClick={handleLeftBarOpen}
                 />
@@ -288,7 +288,7 @@ const TopBar = () => {
               display: 'flex',
               position: 'absolute',
               top: 4,
-              right: 16,
+              right: 16
             }}
           >
             {disconnected ? (
@@ -312,7 +312,7 @@ const TopBar = () => {
                       position: 'absolute',
                       top: 0,
                       left: 0,
-                      zIndex: 1,
+                      zIndex: 1
                     }}
                   />
                 </IconButton>

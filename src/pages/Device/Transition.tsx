@@ -22,23 +22,23 @@ const TransitionCard = ({ virtual, style }: any) => {
   const handleSetTransition = (virtId: string, config: any) =>
     addVirtual({
       id: virtId,
-      config,
+      config
     })
 
   const onSliderChange = (_e: any, newValue: number | number[]) =>
     handleSetTransition(virtual.id, {
-      transition_time: newValue,
+      transition_time: newValue
     })
 
   const marks = [
     {
       value: schemas?.transition_time.minimum,
-      label: `${schemas?.transition_time.minimum}s`,
+      label: `${schemas?.transition_time.minimum}s`
     },
     {
       value: schemas?.transition_time.maximum,
-      label: `${schemas?.transition_time.maximum}s`,
-    },
+      label: `${schemas?.transition_time.maximum}s`
+    }
   ]
 
   return (
@@ -52,7 +52,7 @@ const TransitionCard = ({ virtual, style }: any) => {
           display: 'flex',
           alignItems: 'center',
           width: '100%',
-          padding: '0 1rem 0.4rem 0.9rem !important',
+          padding: '0 1rem 0.4rem 0.9rem !important'
         }}
       >
         <FormControl sx={{ marginRight: '0.5rem', flex: 1 }}>
@@ -76,7 +76,7 @@ const TransitionCard = ({ virtual, style }: any) => {
             flexGrow: 0,
             flexBasis: '180px',
             minWidth: '180px',
-            minHeight: '72px',
+            minHeight: '72px'
           }}
         >
           <Select
@@ -84,7 +84,7 @@ const TransitionCard = ({ virtual, style }: any) => {
             defaultValue={transition_mode || schemas?.transition_mode.default}
             onChange={(e) => {
               handleSetTransition(virtual.id, {
-                transition_mode: e.target.value,
+                transition_mode: e.target.value
               })
             }}
           >

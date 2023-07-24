@@ -22,13 +22,13 @@ const columns: GridColDef[] = [
     headerName: 'Image',
     width: 150,
     renderCell: (params: GridRenderCellParams) =>
-      sceneImage(params.value || 'Wallpaper'),
+      sceneImage(params.value || 'Wallpaper')
   },
   {
     field: 'name',
     headerName: 'Name',
     width: 300,
-    editable: true,
+    editable: true
   },
   {
     field: 'scene_tags',
@@ -41,12 +41,12 @@ const columns: GridColDef[] = [
         .split(',')
         .map((t: string) => (
           <Chip label={t} key={t} sx={{ cursor: 'pointer' }} />
-        )),
+        ))
   },
   {
     field: 'actions',
-    headerName: 'Actions',
-  },
+    headerName: 'Actions'
+  }
 ]
 
 export default function ScenesTable({ scenes }: any) {
@@ -55,7 +55,7 @@ export default function ScenesTable({ scenes }: any) {
       <DataGrid
         rows={Object.values(scenes).map((v: any, i: number) => ({
           id: i + 1,
-          ...v,
+          ...v
         }))}
         rowHeight={100}
         columns={columns}

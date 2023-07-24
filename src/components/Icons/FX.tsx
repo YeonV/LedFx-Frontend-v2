@@ -38,7 +38,7 @@ const FX = ({ stroke = '#ffffff', currentColor = 'transparent' }: FXProps) => (
 
 FX.defaultProps = {
   stroke: '#ffffff',
-  currentColor: 'transparent',
+  currentColor: 'transparent'
 }
 
 export default FX

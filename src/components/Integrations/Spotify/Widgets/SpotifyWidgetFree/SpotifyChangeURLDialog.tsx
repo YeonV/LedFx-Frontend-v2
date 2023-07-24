@@ -12,7 +12,7 @@ import { Language } from '@mui/icons-material'
 export default function SpotifyChangeURLDialog({
   style,
   spotifyURL,
-  setSpotifyURL,
+  setSpotifyURL
 }: any) {
   const [open, setOpen] = React.useState(false)
   const [url, setUrl] = React.useState(spotifyURL)
