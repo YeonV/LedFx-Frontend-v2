@@ -9,7 +9,7 @@ const DashboardCard = () => {
   return (
     <div style={{ width: '100%' }}>
       <div className={`${classes.settingsRow} step-settings-x `}>
-        <label>Replace Home with Dashboard</label>
+        <label>Use Dashboard Icon & Name</label>
         <SettingsSwitch
           checked={features.dashboard}
           onChange={() => setFeatures('dashboard', !features.dashboard)}

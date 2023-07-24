@@ -83,7 +83,7 @@ const storeUI = (set: any) => ({
         state.ui.bars.smartBar.open = open
       }),
       false,
-      'ui/setLeftBarOpen'
+      'ui/setSmartBarOpen'
     ),
 
   settingsExpanded: 'false',

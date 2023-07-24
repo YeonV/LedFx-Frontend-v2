@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { makeStyles, styled } from '@mui/styles'
 import {
   Accordion,
@@ -6,11 +7,13 @@ import {
   Button,
   Slider,
   Switch,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material'
 import { ExpandMore } from '@mui/icons-material'
 // import { ChevronRight, ExpandMore } from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
 export const useStyles = makeStyles(() => ({
   content: {
@@ -186,7 +189,8 @@ export const SettingsRow = ({
   direct,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   value,
-  style
+  style,
+  disabled
 }: {
   step?: string
   title: string
@@ -196,8 +200,10 @@ export const SettingsRow = ({
   onChange?: () => void
   children?: any
   style?: any
+  disabled?: boolean
 }) => {
   const classes = useStyles()
+  const theme = useTheme()
   // const ios =
   //   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
   //   (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
@@ -205,13 +211,18 @@ export const SettingsRow = ({
   return (
     <div
       className={`${classes.settingsRow} step-settings-${step} `}
-      style={style}
+      style={{
+        ...style,
+        color: disabled
+          ? theme.palette.text.disabled
+          : theme.palette.text.primary
+      }}
     >
       <label>{title}</label>
       <div
         style={{
           display: 'flex',
-          color: '#7b7a7c',
+          color: disabled ? '#000' : '#7b7a7c',
           flexGrow: 1,
           justifyContent: 'flex-end',
           textAlign: 'right'
@@ -225,7 +236,13 @@ export const SettingsRow = ({
           //     <SettingsSwitch checked={checked} onChange={onChange} />
           //   ) : null
           // ) :
-          children || <SettingsSwitch checked={checked} onChange={onChange} />
+          children || (
+            <SettingsSwitch
+              disabled={disabled}
+              checked={checked}
+              onChange={onChange}
+            />
+          )
         }
         {/* {ios && !direct && <ChevronRight sx={{ ml: 1, color: '#57565a' }} />} */}
       </div>
@@ -240,17 +257,21 @@ SettingsRow.defaultProps = {
   checked: false,
   direct: false,
   onChange: null,
-  style: null
+  style: null,
+  disabled: false
 }
 
 export const SettingsAccordion = ({
   title,
   accId,
-  children
+  children,
+  icon = ''
 }: {
   title: string
   accId: string
   children: any
+  // eslint-disable-next-line react/require-default-props
+  icon?: string
 }) => {
   const settingsExpanded = useStore((state) => state.ui.settingsExpanded)
   const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded)
@@ -272,6 +293,11 @@ export const SettingsAccordion = ({
         aria-controls={`panel${accId}-content`}
         id={`panel${accId}-header`}
       >
+        {icon && icon !== '' ? (
+          <BladeIcon name={icon} style={{ marginRight: '0.75rem' }} />
+        ) : (
+          <></>
+        )}
         <Typography>{title}</Typography>
       </AccordionSummary>
       <AccordionDetails>{children}</AccordionDetails>

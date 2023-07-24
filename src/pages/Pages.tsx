@@ -40,7 +40,7 @@ const Routings = ({ handleWs }: any) => {
     (state) => state.ui.bars && state.ui.bars.leftBar.open
   )
 
-  useHotkeys('ctrl+alt+y', () => setSmartBarOpen(!smartBarOpen))
+  useHotkeys('ctrl+alt+y', () => setSmartBarOpen(true))
   useHotkeys('ctrl+alt+z', () => setSmartBarOpen(!smartBarOpen))
 
   const ios =
@@ -97,7 +97,7 @@ const Routings = ({ handleWs }: any) => {
         <NoHostDialog />
         <SmartBar
           open={smartBarOpen}
-          setOpen={(e) => setSmartBarOpen(!!e)}
+          setOpen={(e) => console.log(e)}
           direct={false}
         />
       </Box>
