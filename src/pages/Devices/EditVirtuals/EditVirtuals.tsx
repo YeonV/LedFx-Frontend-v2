@@ -166,9 +166,10 @@ export default function EditVirtuals({
                 if (!calib)
                   highlightSegment(
                     virtual.id,
-                    activeSegment,
                     virtual.segments[activeSegment][0],
-                    virtual.segments
+                    virtual.segments[activeSegment][1],
+                    virtual.segments[activeSegment][2],
+                    virtual.segments[activeSegment][3]
                   )
                 setCalib(!calib)
               }}

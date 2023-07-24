@@ -17,6 +17,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const classes = useSegmentStyles()
   const updateSegments = useStore((state) => state.updateSegments)
   const highlightSegment = useStore((state) => state.highlightSegment)
+  const highlightOffSegment = useStore((state) => state.highlightOffSegment)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const activeSegment = useStore((state) => state.activeSegment)
   const setActiveSegment = useStore((state) => state.setActiveSegment)
@@ -28,7 +29,13 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
       if (calib) {
-        highlightSegment(virtual.id, i, newSegments[i][0], newSegments)
+        highlightSegment(
+          virtual.id,
+          newSegments[i][0],
+          newSegments[i][1],
+          newSegments[i][2],
+          newSegments[i][3]
+        )
         setActiveSegment(i)
       }
     })
@@ -41,9 +48,10 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
       if (calib) {
         highlightSegment(
           virtual.id,
-          direction === 'UP' ? i - 1 : i + 1,
           newSegments[direction === 'UP' ? i - 1 : i + 1][0],
-          newSegments
+          newSegments[direction === 'UP' ? i - 1 : i + 1][1],
+          newSegments[direction === 'UP' ? i - 1 : i + 1][2],
+          newSegments[direction === 'UP' ? i - 1 : i + 1][3]
         )
         setActiveSegment(direction === 'UP' ? i - 1 : i + 1)
       }
@@ -56,7 +64,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
       if (calib) {
-        highlightSegment(virtual.id, -1)
+        highlightOffSegment(virtual.id)
         setActiveSegment(-1)
       }
     })
@@ -69,7 +77,13 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
       if (calib) {
-        highlightSegment(virtual.id, i, newSegments[i][0], newSegments)
+        highlightSegment(
+          virtual.id,
+          newSegments[i][0],
+          newSegments[i][1],
+          newSegments[i][2],
+          newSegments[i][3]
+        )
         setActiveSegment(i)
       }
     })
