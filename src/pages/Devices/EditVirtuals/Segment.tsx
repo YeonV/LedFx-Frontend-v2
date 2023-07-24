@@ -1,19 +1,15 @@
 import { useEffect } from 'react'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import { Typography, Button } from '@mui/material'
+import { ExpandLess, ExpandMore, SwapHoriz } from '@mui/icons-material'
+import { swap } from '../../../utils/helpers'
 import PopoverSure from '../../../components/Popover/Popover'
 import PixelSlider from './PixelSlider'
 import useStore from '../../../store/useStore'
-import { swap } from '../../../utils/helpers'
 import useSegmentStyles from './Segment.styles'
 
 const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const getDevices = useStore((state) => state.getDevices)
   const devices = useStore((state) => state.devices)
-  // const virtuals = useStore((state) => state.virtuals)
 
   const title =
     devices &&
@@ -22,7 +18,8 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const updateSegments = useStore((state) => state.updateSegments)
   const highlightSegment = useStore((state) => state.highlightSegment)
   const getVirtuals = useStore((state) => state.getVirtuals)
-  // const setEffect = useStore((state) => state.setEffect)
+  const activeSegment = useStore((state) => state.activeSegment)
+  const setActiveSegment = useStore((state) => state.setActiveSegment)
 
   const handleInvert = () => {
     const newSegments = segments.map((seg: any[], index: number) =>
@@ -30,7 +27,10 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     )
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      if (calib) highlightSegment(virtual.id, i, newSegments[i][0])
+      if (calib) {
+        highlightSegment(virtual.id, i, newSegments[i][0], newSegments)
+        setActiveSegment(i)
+      }
     })
   }
   const reorder = (direction: string) => {
@@ -38,12 +38,15 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
       direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1)
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      if (calib)
+      if (calib) {
         highlightSegment(
           virtual.id,
           direction === 'UP' ? i - 1 : i + 1,
-          newSegments[i][0]
+          newSegments[direction === 'UP' ? i - 1 : i + 1][0],
+          newSegments
         )
+        setActiveSegment(direction === 'UP' ? i - 1 : i + 1)
+      }
     })
   }
   const handleDeleteSegment = () => {
@@ -52,35 +55,24 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     )
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
-      if (calib) highlightSegment(virtual.id, -1)
+      if (calib) {
+        highlightSegment(virtual.id, -1)
+        setActiveSegment(-1)
+      }
     })
   }
   const handleRangeSegment = (start: number, end: number) => {
     const newSegments = segments.map((seg: any, index: number) =>
       index === i ? [seg[0], start, end, seg[3]] : seg
     )
-    // const deviceId = segments[i][0]
-    // const vd = Object.keys(virtuals).find(
-    //   (v: any) => virtuals[v].is_device === deviceId
-    // )
-    // setEffect(virtual.id, 'singleColor', { color: '#000000' }, false)
-    // if (vd)
-    //   setEffect(
-    //     virtuals[vd].id,
-    //     'singleColor',
-    //     { color: '#000000' },
-    //     false
-    //   )
-    updateSegments(virtual.id, newSegments).then(
-      () => {
-        getVirtuals()
-        // highlightSegment(virtual.id, -1)
-        if (calib) highlightSegment(virtual.id, i, newSegments[i][0])
+
+    updateSegments(virtual.id, newSegments).then(() => {
+      getVirtuals()
+      if (calib) {
+        highlightSegment(virtual.id, i, newSegments[i][0], newSegments)
+        setActiveSegment(i)
       }
-      // .then(() =>
-      //   setEffect(virtual.id, 'rainbow', { speed: 10 }, true)
-      // )
-    )
+    })
   }
 
   useEffect(() => {
@@ -88,7 +80,12 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
   }, [getDevices])
 
   return (
-    <div style={{ padding: '0 1rem' }}>
+    <div
+      style={{
+        padding: '0 1rem',
+        background: calib && i === activeSegment ? '#ffffff18' : '',
+      }}
+    >
       <div className={classes.segmentsWrapper}>
         <div className={classes.segmentsColOrder}>
           <div style={{ display: 'flex' }}>
@@ -130,7 +127,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
             <Button
               variant={s[3] ? 'contained' : 'outlined'}
               color={s[3] ? 'primary' : 'inherit'}
-              endIcon={<SwapHorizIcon />}
+              endIcon={<SwapHoriz />}
               onClick={handleInvert}
               style={{ margin: '0 1rem 0 1.5rem' }}
             >

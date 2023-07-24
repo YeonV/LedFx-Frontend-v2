@@ -7,6 +7,15 @@ import type { IStore } from '../useStore'
 
 const storeVirtuals = (set: any) => ({
   virtuals: {} as any,
+  activeSegment: -1,
+  setActiveSegment: (v: number) =>
+    set(
+      produce((state: IStore) => {
+        state.activeSegment = v
+      }),
+      false,
+      'api/setCurrentVirtual'
+    ),
   currentVirtual: null as null | string,
   setCurrentVirtual: (v: null | string) =>
     set(
@@ -121,12 +130,14 @@ const storeVirtuals = (set: any) => ({
   highlightSegment: async (
     virtId: string,
     segment: number,
-    device?: string
+    device?: string,
+    segments?: any[]
   ) => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
       tool: 'highlight',
       segment,
       device,
+      segments,
     })
     if (resp && resp.status && resp.status === 'success') {
       return true
