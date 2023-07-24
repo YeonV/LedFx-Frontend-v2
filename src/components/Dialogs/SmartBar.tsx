@@ -1,10 +1,17 @@
-import { TextField, Dialog, Typography, Paper } from '@mui/material'
+import {
+  TextField,
+  Dialog,
+  Typography,
+  Paper,
+  InputAdornment
+} from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
+import { LocalPlay } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
-const Bar = ({ handleClose, direct }: any) => {
+const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
   const theme = useTheme()
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
@@ -24,9 +31,9 @@ const Bar = ({ handleClose, direct }: any) => {
     <div
       style={{
         width: '100%',
-        maxWidth: 500,
+        maxWidth,
         height: 80,
-        padding: 10,
+        padding: '16px 0',
         overflow: 'hidden'
       }}
     >
@@ -37,7 +44,7 @@ const Bar = ({ handleClose, direct }: any) => {
         // open={true}
         disableCloseOnSelect={direct}
         id="smartbar-autocomplete"
-        sx={{ width: '100%', maxWidth: 480, height: 50 }}
+        sx={{ width: '100%', maxWidth: maxWidth || 480, height: 50 }}
         options={[...Object.values(virtuals), ...Object.values(scenes)]}
         popupIcon={null}
         filterOptions={filterOptions}
@@ -212,7 +219,7 @@ const Bar = ({ handleClose, direct }: any) => {
           <Paper
             style={{
               width: 'calc(100% + 20px)',
-              maxWidth: direct ? 480 : 500,
+              maxWidth: direct ? maxWidth || 480 : maxWidth || 500,
               marginLeft: direct ? 0 : -10,
               marginRight: direct ? 0 : -10,
               background: theme.palette.background.paper
@@ -224,10 +231,20 @@ const Bar = ({ handleClose, direct }: any) => {
         renderInput={(params) => (
           <TextField
             {...params}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start" sx={{ ml: 1 }}>
+                  <LocalPlay />
+                </InputAdornment>
+              )
+            }}
             autoFocus={!direct}
             color="primary"
             style={{ borderRadius: '50%' }}
-            label="Jump to device / Activate scene"
+            label="SmartBar"
+            placeholder="Jump to device / Activate scene"
+            // eslint-disable-next-line react/jsx-no-duplicate-props
             inputProps={{
               ...params.inputProps,
               autoComplete: 'off' // disable autocomplete and autofill
@@ -242,18 +259,20 @@ const Bar = ({ handleClose, direct }: any) => {
 const SmartBar = ({
   open,
   setOpen,
-  direct
+  direct,
+  maxWidth
 }: {
   open?: boolean
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>
   direct?: boolean
+  maxWidth?: any
 }) => {
   const handleClose = () => {
     if (setOpen !== undefined) setOpen(false)
   }
 
   return direct ? (
-    <Bar direct />
+    <Bar direct maxWidth={maxWidth} />
   ) : open !== undefined && setOpen ? (
     <Dialog
       PaperProps={{
@@ -261,14 +280,14 @@ const SmartBar = ({
           alignSelf: 'flex-start',
           marginTop: '75px',
           width: '100%',
-          maxWidth: 500
+          maxWidth
         }
       }}
       open={open}
-      onClose={handleClose}
+      onClose={() => handleClose()}
       aria-labelledby="form-dialog-title"
     >
-      <Bar handleClose={handleClose} />
+      <Bar handleClose={() => handleClose} />
     </Dialog>
   ) : (
     <>Failed</>
@@ -278,7 +297,8 @@ const SmartBar = ({
 SmartBar.defaultProps = {
   open: false,
   setOpen: undefined,
-  direct: false
+  direct: false,
+  maxWidth: 500
 }
 
 export default SmartBar

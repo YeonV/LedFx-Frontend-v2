@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import useStore from '../../store/useStore'
 import { SettingsRow } from './SettingsComponents'
 
@@ -6,33 +7,14 @@ const BetaFeatures = () => {
   const showFeatures = useStore((state) => state.showFeatures)
   const features = useStore((state) => state.features)
 
-  return (
-    <>
-      {showFeatures.integrations && (
-        <SettingsRow
-          title="Integrations"
-          checked={features.integrations}
-          onChange={() => setFeatures('integrations', !features.integrations)}
-        />
-      )}
-      {features.integrations && (
-        <SettingsRow
-          title="Spotify Pro"
-          checked={features.spotifypro}
-          onChange={() => setFeatures('spotifypro', !features.spotifypro)}
-        />
-      )}
-      <SettingsRow
-        title="Scene external call"
-        checked={features.sceneexternal}
-        onChange={() => setFeatures('sceneexternal', !features.sceneexternal)}
-      />
-      <SettingsRow
-        title="Assign MIDI & Activate Scene"
-        checked={features.scenemidi}
-        onChange={() => setFeatures('scenemidi', !features.scenemidi)}
-      />
-    </>
+  return showFeatures.integrations ? (
+    <SettingsRow
+      title="Integrations"
+      checked={features.integrations}
+      onChange={() => setFeatures('integrations', !features.integrations)}
+    />
+  ) : (
+    <></>
   )
 }
 

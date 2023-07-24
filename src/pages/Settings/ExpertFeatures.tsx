@@ -50,30 +50,6 @@ const ExpertFeatures = () => {
         checked={features.waves}
         onChange={() => setFeatures('waves', !features.waves)}
       />
-      <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
-      <SettingsRow
-        title="SceneTables (Recent+Most)"
-        checked={features.scenetables}
-        onChange={() => setFeatures('scenetables', !features.scenetables)}
-      />
-      <SettingsRow
-        title="SceneChips (Filter Tags)"
-        checked={features.scenechips}
-        onChange={() => setFeatures('scenechips', !features.scenechips)}
-      />
-      <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
-      <SettingsRow
-        title="Beta Mode"
-        checked={features.beta}
-        onChange={() => setFeatures('beta', !features.beta)}
-      />
-      {showFeatures.alpha && (
-        <SettingsRow
-          title="Alpha Mode"
-          checked={features.alpha}
-          onChange={() => setFeatures('alpha', !features.alpha)}
-        />
-      )}
     </>
   )
 }

@@ -12,12 +12,6 @@ const UICard = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const viewMode = useStore((state) => state.viewMode)
   const setViewMode = useStore((state) => state.setViewMode)
-  const graphs = useStore((state) => state.graphs)
-  const toggleGraphs = useStore((state) => state.toggleGraphs)
-  const graphsMulti = useStore((state) => state.graphsMulti)
-  const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
-  const showMatrix = useStore((state) => state.showMatrix)
-  const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
   const setFeatures = useStore((state) => state.setFeatures)
   const showFeatures = useStore((state) => state.showFeatures)
   const features = useStore((state) => state.features)
@@ -49,117 +43,84 @@ const UICard = () => {
     getSystemConfig()
   }, [])
 
-  const showActiveDevicesFirst = useStore(
-    (state) => state.showActiveDevicesFirst
-  )
-  const setShowActiveDevicesFirst = useStore(
-    (state) => state.setShowActiveDevicesFirst
-  )
-
   return (
     <>
-      <SettingsRow
-        title="Show Graph on Device page (eats performance)"
-        checked={graphs}
-        onChange={() => toggleGraphs()}
-        direct
-      />
-      {config.visualisation_fps && graphs && (
-        <>
-          <SettingsRow
-            title="Show Graphs on Devices page (crazy)"
-            checked={graphsMulti}
-            onChange={() => toggleGraphsMulti()}
-            direct
-          />
-          <SettingsRow
-            title="Show Matrix on Devices page"
-            checked={showMatrix}
-            onChange={() => toggleShowMatrix()}
-            direct
-          />
-          <Divider sx={{ m: '0.25rem 0 0.5rem 0' }} />
-          <SettingsRow title="Frontend FPS" step="two" value={fps}>
-            <SettingsSlider
-              value={fps}
-              step={1}
-              min={1}
-              max={60}
-              onChangeCommitted={(_e: any, val: any) =>
-                setSystemSetting('visualisation_fps', val)
-              }
-              onChange={(_e: any, val: any) => {
-                setFps(val)
-              }}
-            />
-            <Input
-              disableUnderline
-              className={sliderClasses.input}
-              style={{ width: 70 }}
-              value={fps}
-              margin="dense"
-              onChange={(e) => {
-                setFps(parseInt(e.target.value, 10))
-              }}
-              onBlur={(e) => {
-                setSystemSetting(
-                  'visualisation_fps',
-                  parseInt(e.target.value, 10)
-                )
-              }}
-              sx={{
-                '& input': { textAlign: 'right' }
-              }}
-              inputProps={{
-                min: 1,
-                max: 60,
-                type: 'number',
-                'aria-labelledby': 'input-slider'
-              }}
-            />
-          </SettingsRow>
-          <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
-            <SettingsSlider
-              value={pixelLength}
-              step={1}
-              valueLabelDisplay="auto"
-              min={1}
-              max={300}
-              onChangeCommitted={(_e: any, val: any) =>
-                setSystemSetting('visualisation_maxlen', val)
-              }
-              onChange={(_e: any, val: any) => {
-                setPixelLength(val)
-              }}
-            />
-            <Input
-              disableUnderline
-              className={sliderClasses.input}
-              value={pixelLength}
-              style={{ width: 70 }}
-              margin="dense"
-              onChange={(e) => {
-                setPixelLength(parseInt(e.target.value, 10))
-              }}
-              onBlur={(e) =>
-                setSystemSetting(
-                  'visualisation_maxlen',
-                  parseInt(e.target.value, 10)
-                )
-              }
-              sx={{
-                '& input': { textAlign: 'right' }
-              }}
-              inputProps={{
-                min: 1,
-                max: 300,
-                type: 'number',
-                'aria-labelledby': 'input-slider'
-              }}
-            />
-          </SettingsRow>
-        </>
-      )}
+      <SettingsRow title="Frontend FPS" step="two" value={fps}>
+        <SettingsSlider
+          value={fps}
+          step={1}
+          min={1}
+          max={60}
+          onChangeCommitted={(_e: any, val: any) =>
+            setSystemSetting('visualisation_fps', val)
+          }
+          onChange={(_e: any, val: any) => {
+            setFps(val)
+          }}
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          style={{ width: 70 }}
+          value={fps}
+          margin="dense"
+          onChange={(e) => {
+            setFps(parseInt(e.target.value, 10))
+          }}
+          onBlur={(e) => {
+            setSystemSetting('visualisation_fps', parseInt(e.target.value, 10))
+          }}
+          sx={{
+            '& input': { textAlign: 'right' }
+          }}
+          inputProps={{
+            min: 1,
+            max: 60,
+            type: 'number',
+            'aria-labelledby': 'input-slider'
+          }}
+        />
+      </SettingsRow>
+      <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
+        <SettingsSlider
+          value={pixelLength}
+          step={1}
+          valueLabelDisplay="auto"
+          min={1}
+          max={300}
+          onChangeCommitted={(_e: any, val: any) =>
+            setSystemSetting('visualisation_maxlen', val)
+          }
+          onChange={(_e: any, val: any) => {
+            setPixelLength(val)
+          }}
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          value={pixelLength}
+          style={{ width: 70 }}
+          margin="dense"
+          onChange={(e) => {
+            setPixelLength(parseInt(e.target.value, 10))
+          }}
+          onBlur={(e) =>
+            setSystemSetting(
+              'visualisation_maxlen',
+              parseInt(e.target.value, 10)
+            )
+          }
+          sx={{
+            '& input': { textAlign: 'right' }
+          }}
+          inputProps={{
+            min: 1,
+            max: 300,
+            type: 'number',
+            'aria-labelledby': 'input-slider'
+          }}
+        />
+      </SettingsRow>
       <SettingsRow
         title="Global Brightness"
         step="two"
@@ -235,11 +196,6 @@ const UICard = () => {
       </SettingsRow>
       <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
       <SettingsRow
-        title="Sort active devices first"
-        checked={showActiveDevicesFirst}
-        onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
-      />
-      <SettingsRow
         title="Expert Mode"
         direct
         checked={viewMode !== 'user'}
@@ -247,18 +203,18 @@ const UICard = () => {
           viewMode === 'user' ? setViewMode('expert') : setViewMode('user')
         }
       />
-      {showFeatures.cloud && (
+      {viewMode !== 'user' && (
         <SettingsRow
-          title="LedFx Cloud"
-          checked={features.cloud}
-          onChange={() => setFeatures('cloud', !features.cloud)}
+          title="Beta Mode"
+          checked={features.beta}
+          onChange={() => setFeatures('beta', !features.beta)}
         />
       )}
-      {showFeatures.webaudio && (
+      {showFeatures.alpha && viewMode !== 'user' && (
         <SettingsRow
-          title="WebAudio"
-          checked={features.webaudio}
-          onChange={() => setFeatures('webaudio', !features.webaudio)}
+          title="Alpha Mode"
+          checked={features.alpha}
+          onChange={() => setFeatures('alpha', !features.alpha)}
         />
       )}
     </>
