@@ -115,6 +115,7 @@ export default function ConfirmationDialog({
   const updateSegments = useStore((state) => state.updateSegments)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const highlightSegment = useStore((state) => state.highlightSegment)
+  const setEffect = useStore((state) => state.setEffect)
 
   const handleClickListItem = () => {
     setOpen(true)
@@ -135,8 +136,13 @@ export default function ConfirmationDialog({
           [device.id, 0, device.config.pixel_count - 1, false]
         ]
         const test = temp.filter((t) => t.length === 4)
+
         updateSegments(virtual.id, test).then(() => {
           getVirtuals()
+          if (virtual.active === false && virtual.segments.length === 0) {
+            console.log(device)
+            setEffect(virtual.id, 'rainbow', {}, true)
+          }
           highlightSegment(
             virtual.id,
             device.id,
