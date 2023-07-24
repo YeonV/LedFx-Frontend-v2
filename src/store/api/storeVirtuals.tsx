@@ -149,7 +149,7 @@ const storeVirtuals = (set: any) => ({
   highlightOffSegment: async (virtId: string) => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
       tool: 'highlight',
-      state: 'off',
+      state: false,
     })
     if (resp && resp.status && resp.status === 'success') {
       return true
