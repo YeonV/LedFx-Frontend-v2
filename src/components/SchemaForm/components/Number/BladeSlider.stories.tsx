@@ -8,22 +8,22 @@ export default {
   component: BladeSlider,
   argTypes: {
     type: {
-      control: false,
-    },
+      control: false
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
-  },
+      panelPosition: 'bottom'
+    }
+  }
 } as ComponentMeta<typeof BladeSlider>
 
 // eslint-disable-next-line
@@ -42,12 +42,12 @@ Number.args = {
     minimum: 5,
     maximum: 50,
     step: 2,
-    description: 'some description',
+    description: 'some description'
   },
   model: undefined,
   model_id: '',
   onChange: undefined,
   marks: undefined,
   index: undefined,
-  style: {},
+  style: {}
 }

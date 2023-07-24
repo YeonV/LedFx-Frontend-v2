@@ -31,5 +31,5 @@ export const BladeSelectDefaultProps = {
   textStyle: undefined,
   menuItemStyle: undefined,
   hideDesc: false,
-  children: undefined,
+  children: undefined
 }

@@ -19,5 +19,5 @@ export const GradientPickerDefaultProps = {
   wrapperStyle: undefined,
   colors: undefined,
   handleAddGradient: undefined,
-  sendColorToVirtuals: undefined,
+  sendColorToVirtuals: undefined
 }

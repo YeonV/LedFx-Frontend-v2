@@ -3,7 +3,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import {
   PanoramaHorizontalSelect,
-  PanoramaVerticalSelect,
+  PanoramaVerticalSelect
   // PanoramaWideAngleSelect,
 } from '@mui/icons-material'
 import useStore from '../../../../../store/useStore'
@@ -14,18 +14,18 @@ const ButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     border: 0,
     color: '#444',
     '&.Mui-disabled': {
-      border: 0,
+      border: 0
     },
     '&:not(:first-of-type)': {
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: theme.shape.borderRadius
     },
     '&:first-of-type': {
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: theme.shape.borderRadius
     },
     '&.Mui-selected': {
-      color: '#ddd',
-    },
-  },
+      color: '#ddd'
+    }
+  }
 }))
 
 export default function SpLayoutButtons() {

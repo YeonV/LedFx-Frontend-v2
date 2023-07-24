@@ -10,7 +10,7 @@ const GradientPickerWrapper = ({
   index,
   virtId,
   isGradient = false,
-  wrapperStyle,
+  wrapperStyle
 }: any) => {
   const updateEffect = useStore((state) => state.updateEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)

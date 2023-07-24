@@ -35,5 +35,5 @@ export const BladeIconDefaultProps = {
   className: '',
   style: {},
   scene: false,
-  card: false,
+  card: false
 }

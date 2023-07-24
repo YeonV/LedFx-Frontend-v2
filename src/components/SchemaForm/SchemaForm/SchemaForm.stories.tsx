@@ -12,22 +12,22 @@ export default {
   component: BladeSchemaForm,
   argTypes: {
     type: {
-      control: false,
-    },
+      control: false
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
-  },
+      panelPosition: 'bottom'
+    }
+  }
 } as ComponentMeta<typeof BladeSchemaForm>
 
 // eslint-disable-next-line
@@ -39,10 +39,10 @@ Default.args = {
   schema: {
     properties: {},
     permitted_keys: [],
-    required: [],
+    required: []
   },
   model: {},
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
-  hideToggle: false,
+  hideToggle: false
 }

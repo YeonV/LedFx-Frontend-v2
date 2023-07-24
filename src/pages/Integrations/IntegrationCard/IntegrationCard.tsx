@@ -10,7 +10,7 @@ import {
   CardActions,
   CardHeader,
   Switch,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import useStore from '../../../store/useStore'
@@ -48,7 +48,7 @@ const IntegrationCard = ({ integration }: any) => {
   }
   const handleActivateIntegration = (integ: any) => {
     toggleIntegration({
-      id: integ.id,
+      id: integ.id
     }).then(() => getIntegrations())
   }
 
@@ -88,11 +88,11 @@ const IntegrationCard = ({ integration }: any) => {
               transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
               marginLeft: 'auto',
               transition: theme.transitions.create('transform', {
-                duration: theme.transitions.duration.shortest,
+                duration: theme.transitions.duration.shortest
               }),
               '@media (max-width: 580px)': {
-                display: 'block',
-              },
+                display: 'block'
+              }
             }}
             onClick={handleExpandClick}
             aria-expanded={expanded}

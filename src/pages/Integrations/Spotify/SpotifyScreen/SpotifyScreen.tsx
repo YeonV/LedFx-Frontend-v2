@@ -7,14 +7,14 @@ import {
   Dialog,
   Button,
   Grid,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import { Settings, NavigateBefore } from '@mui/icons-material'
 import {
   MuiMenuItem,
   SpotifyScreenDefaultProps,
   SpotifyScreenProps,
-  Transition,
+  Transition
 } from './SpotifyScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro'
@@ -33,7 +33,7 @@ export default function SpotifyScreen({
   variant = 'contained',
   innerKey,
   disabled = false,
-  size = 'small',
+  size = 'small'
 }: SpotifyScreenProps) {
   const classes = useEditVirtualsStyles()
   const theme = useTheme()
@@ -84,8 +84,8 @@ export default function SpotifyScreen({
         TransitionComponent={Transition}
         PaperProps={{
           style: {
-            backgroundColor: theme.palette.background.default,
-          },
+            backgroundColor: theme.palette.background.default
+          }
         }}
       >
         <AppBar enableColorOnDark className={classes.appBar}>

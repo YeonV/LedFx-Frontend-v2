@@ -6,7 +6,7 @@ const WaveLines = ({
   stopColor = '#030303',
   width = 3000,
   height = 1615,
-  duration = '20s',
+  duration = '20s'
 }: any) => {
   const ios =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -23,7 +23,7 @@ const WaveLines = ({
         position: 'fixed',
         top: 0,
         opacity: 0.7,
-        transform: ios ? 'scaleX(1.05)' : '',
+        transform: ios ? 'scaleX(1.05)' : ''
       }}
       width={width}
       height={height}

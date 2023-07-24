@@ -11,13 +11,13 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexWrap: 'wrap',
     marginTop: '0.5rem',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   '@media (max-width: 580px)': {
     cardWrapper: {
-      justifyContent: 'center',
-    },
-  },
+      justifyContent: 'center'
+    }
+  }
 }))
 
 const Integrations = () => {

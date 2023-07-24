@@ -9,7 +9,7 @@ import DeleteColorsDialog from '../../../Dialogs/DeleteColors'
 import useStyles from './GradientPicker.styles'
 import {
   GradientPickerDefaultProps,
-  GradientPickerProps,
+  GradientPickerProps
 } from './GradientPicker.props'
 
 const GradientPicker = ({
@@ -20,7 +20,7 @@ const GradientPicker = ({
   wrapperStyle,
   colors,
   handleAddGradient,
-  sendColorToVirtuals,
+  sendColorToVirtuals
 }: GradientPickerProps) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -79,7 +79,7 @@ const GradientPicker = ({
       style={{
         borderColor: theme.palette.divider,
         minWidth: 'unset',
-        ...(wrapperStyle as any),
+        ...(wrapperStyle as any)
       }}
       // style={{
       //   ...wrapperStyle,
@@ -111,7 +111,7 @@ const GradientPicker = ({
           className={`${classes.paper} gradient-picker`}
           style={{
             padding: theme.spacing(1),
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: theme.palette.background.paper
             // '& .popup_tabs-header-label-active': {
             //   color: theme.palette.text.primary,
             // },
@@ -144,7 +144,7 @@ const GradientPicker = ({
               marginTop: 2.5,
               width: '100%',
               display: 'flex',
-              justifyContent: 'flex-end',
+              justifyContent: 'flex-end'
             }}
           >
             <Button
@@ -158,7 +158,7 @@ const GradientPicker = ({
                 alignItems: 'center',
                 fontSize: 24,
                 marginRight: 16,
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
               onClick={() => handleDeleteDialog()}
               disabled={

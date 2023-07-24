@@ -6,7 +6,7 @@ import { Slide, MenuItem } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
 
 export const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com',
+  baseURL: 'https://strapi.yeonv.com'
 })
 
 export const Transition = React.forwardRef<unknown, TransitionProps>(

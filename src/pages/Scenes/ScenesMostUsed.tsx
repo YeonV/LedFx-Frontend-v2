@@ -4,7 +4,7 @@ import {
   DataGrid,
   GridColDef,
   GridEventListener,
-  GridRenderCellParams,
+  GridRenderCellParams
 } from '@mui/x-data-grid'
 import { Card, CardMedia, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -14,7 +14,7 @@ export default function ScenesMostUsed({
   scenes,
   activateScene,
   title,
-  db,
+  db
 }: any) {
   const theme = useTheme()
   const count = useStore((state) => state.count)
@@ -49,26 +49,26 @@ export default function ScenesMostUsed({
       headerName: 'Image',
       width: db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) =>
-        sceneImage(params.value || 'Wallpaper'),
+        sceneImage(params.value || 'Wallpaper')
     },
     {
       field: 'name',
       headerName: 'Name',
-      width: db ? 136 : 220,
+      width: db ? 136 : 220
     },
     {
       field: 'used',
       headerName: 'Used',
       type: 'number',
-      width: 20,
-    },
+      width: 20
+    }
   ]
 
   return (
     <Card
       sx={{
         background: db ? 'transparent' : '',
-        borderColor: db ? 'transparent' : '',
+        borderColor: db ? 'transparent' : ''
       }}
     >
       <Box
@@ -76,7 +76,7 @@ export default function ScenesMostUsed({
           height: db ? 301 : 293,
           width: '100%',
           maxWidth: '470px',
-          m: '0 auto',
+          m: '0 auto'
         }}
       >
         {!db && (
@@ -89,7 +89,7 @@ export default function ScenesMostUsed({
               pb: 0.5,
               border: '1px solid',
               borderColor: db ? 'transparent' : theme.palette.divider,
-              borderBottom: 0,
+              borderBottom: 0
             }}
           >
             {title}
@@ -105,27 +105,27 @@ export default function ScenesMostUsed({
           disableRowSelectionOnClick
           rows={Object.values(mostUsedScenes).map((v: any, i: number) => ({
             id: i + 1,
-            ...v,
+            ...v
           }))}
           initialState={{
             // pagination: {
             //   pageSize: 100,
             // },
             sorting: {
-              sortModel: [{ field: 'used', sort: 'desc' }],
+              sortModel: [{ field: 'used', sort: 'desc' }]
             },
             columns: {
               columnVisibilityModel: {
                 id: false,
-                scene_tags: false,
-              },
-            },
+                scene_tags: false
+              }
+            }
           }}
           sx={{
             borderColor: db ? 'transparent' : theme.palette.divider,
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-              outline: 'none !important',
-            },
+              outline: 'none !important'
+            }
           }}
         />
       </Box>

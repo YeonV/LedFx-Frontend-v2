@@ -5,14 +5,14 @@ import {
   AppBar,
   Dialog,
   Button,
-  Grid,
+  Grid
 } from '@mui/material'
 import { Settings, NavigateBefore, Add } from '@mui/icons-material'
 import {
   MuiMenuItem,
   QLCScreenDefaultProps,
   QLCScreenProps,
-  Transition,
+  Transition
 } from './QLCScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
 import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable'
@@ -30,7 +30,7 @@ export default function QLCScreen({
   variant = 'contained',
   innerKey,
   disabled = false,
-  size = 'small',
+  size = 'small'
 }: QLCScreenProps) {
   const classes = useEditVirtualsStyles()
   const [open, setOpen] = React.useState(false)

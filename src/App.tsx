@@ -35,7 +35,7 @@ export default function App() {
         ...ledfxThemes[ledfxTheme],
         ...common,
         palette: {
-          ...ledfxThemes[ledfxTheme].palette,
+          ...ledfxThemes[ledfxTheme].palette
           // mode: darkMode ? 'dark' : 'light',
           // background: darkMode
           //   ? {
@@ -46,7 +46,7 @@ export default function App() {
           //       default: '#bbb',
           //       paper: '#fefefe',
           //     },
-        },
+        }
       }),
     [darkMode]
   )
@@ -105,7 +105,7 @@ export default function App() {
       console.table({
         Domain: proto[1],
         Action: proto[2],
-        Payload: proto[3],
+        Payload: proto[3]
       })
       setProtoCall('')
     }
@@ -148,7 +148,7 @@ export default function App() {
               right: 0,
               bottom: 0,
               left: 0,
-              opacity: 0.7,
+              opacity: 0.7
             }}
           />
         )}
@@ -169,7 +169,7 @@ export default function App() {
                 right: 0,
                 bottom: 0,
                 left: 0,
-                opacity: 0.7,
+                opacity: 0.7
               }}
             />
           )}

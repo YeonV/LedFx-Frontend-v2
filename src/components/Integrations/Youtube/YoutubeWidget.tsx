@@ -15,7 +15,7 @@ const YoutubeWidget = ({
   setYoutubeURL,
   setSpotifyEnabled,
   setSpotifyExpanded,
-  botHeight,
+  botHeight
 }: any) => {
   const API_URL = 'http://localhost:8080/api/bridge'
   // const API_URL = '/api/bridge';
@@ -27,12 +27,12 @@ const YoutubeWidget = ({
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
     })
     if (response && res) {
       return response.json() // parses JSON response into native JavaScript objects
@@ -50,16 +50,16 @@ const YoutubeWidget = ({
       title: '',
       duration: '',
       filesize: 0,
-      url: '',
+      url: ''
     },
     queued: [
       {
         artist: '',
         title: '',
         duration: '',
-        url: '',
-      },
-    ],
+        url: ''
+      }
+    ]
   }
 
   const [state, setState] = useState(initialState)
@@ -86,7 +86,7 @@ const YoutubeWidget = ({
   const yt4 = async () => {
     await postData(`${API_URL}/ctl/youtube/set`, {
       action: 'download',
-      url: youtubeURL,
+      url: youtubeURL
     })
   }
 
@@ -132,7 +132,7 @@ const YoutubeWidget = ({
           position: 'fixed',
           bottom: botHeight + 115,
           right: 10,
-          zIndex: 4,
+          zIndex: 4
         }}
       >
         <BladeIcon
@@ -141,7 +141,7 @@ const YoutubeWidget = ({
             marginLeft: '50%',
             marginTop: '50%',
             transform: 'translate(-43%, -43%)',
-            display: 'flex',
+            display: 'flex'
           }}
         />
       </Fab>

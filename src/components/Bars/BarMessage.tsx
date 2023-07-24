@@ -23,7 +23,7 @@ const MessageBar = () => {
     <Snackbar
       anchorOrigin={{
         vertical: 'bottom',
-        horizontal: 'center',
+        horizontal: 'center'
       }}
       open={isOpen}
       autoHideDuration={2000 + (message.length || 0) * 60}
@@ -37,7 +37,7 @@ const MessageBar = () => {
           onClick={() => handleClose()}
         >
           <Icon>close</Icon>
-        </IconButton>,
+        </IconButton>
       ]}
     >
       <Alert

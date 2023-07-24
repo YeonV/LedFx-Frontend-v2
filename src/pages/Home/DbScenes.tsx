@@ -18,12 +18,12 @@ const DbScenes = () => {
     <BladeFrame
       labelStyle={{
         background: theme.palette.background.default,
-        color: theme.palette.primary.main,
+        color: theme.palette.primary.main
       }}
       style={{
         borderColor: theme.palette.primary.main,
         padding: 20,
-        minWidth: 280,
+        minWidth: 280
       }}
       title="Most used Scenes"
     >

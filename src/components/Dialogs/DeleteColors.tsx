@@ -5,7 +5,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
+  DialogTitle
 } from '@mui/material'
 import * as React from 'react'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -22,7 +22,7 @@ const ITEM_PADDING_TOP = 8
 
 const DeleteColorsDialog = ({
   dialogOpen,
-  setDialogOpen,
+  setDialogOpen
 }: {
   dialogOpen: boolean
   setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -33,15 +33,15 @@ const DeleteColorsDialog = ({
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
         width: 250,
-        background: theme.palette.background.paper,
-      },
-    },
+        background: theme.palette.background.paper
+      }
+    }
   }
   const [colorsToDelete, setColorsToDelete] = useState<string[]>([])
 
   const handleChange = (event: any) => {
     const {
-      target: { value },
+      target: { value }
     } = event
     setColorsToDelete(
       // On autofill we get a the stringified value.
@@ -68,8 +68,8 @@ const DeleteColorsDialog = ({
       PaperProps={{
         sx: {
           background: theme.palette.background.paper,
-          color: theme.palette.text.primary,
-        },
+          color: theme.palette.text.primary
+        }
       }}
       open={dialogOpen}
       disableEscapeKeyDown
@@ -85,8 +85,8 @@ const DeleteColorsDialog = ({
             m: 1,
             width: 300,
             '&&& fieldset, &&& fieldset:hover': {
-              borderColor: theme.palette.text.primary,
-            },
+              borderColor: theme.palette.text.primary
+            }
           }}
         >
           <InputLabel
@@ -115,14 +115,14 @@ const DeleteColorsDialog = ({
               colors.gradients &&
               [
                 ...Object.keys(colors.colors.user),
-                ...Object.keys(colors.gradients.user),
+                ...Object.keys(colors.gradients.user)
               ].map((color) => (
                 <MenuItem
                   key={color}
                   value={color}
                   sx={{
                     background: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.primary
                   }}
                 >
                   <Checkbox
@@ -136,7 +136,7 @@ const DeleteColorsDialog = ({
                       height: 50,
                       background:
                         colors.colors.user[color] ||
-                        colors.gradients.user[color],
+                        colors.gradients.user[color]
                     }}
                   />
                 </MenuItem>

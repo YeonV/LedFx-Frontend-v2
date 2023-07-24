@@ -24,7 +24,7 @@ export const BladeSliderInnerDefaultProps = {
   disabled: undefined,
   marks: undefined,
   hideDesc: undefined,
-  full: undefined,
+  full: undefined
 }
 
 export interface BladeSliderProps {
@@ -70,7 +70,7 @@ export const BladeSliderDefaultProps = {
   variant: 'outlined',
   disableUnderline: undefined,
   schema: {
-    title: 'Slide me',
+    title: 'Slide me'
   },
   model: undefined,
   model_id: '',
@@ -83,5 +83,5 @@ export const BladeSliderDefaultProps = {
   disabled: false,
   hideDesc: false,
   style: {},
-  full: false,
+  full: false
 }

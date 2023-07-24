@@ -6,7 +6,7 @@ export default {
   component: IFrame,
   parameters: {
     options: {
-      showPanel: false,
+      showPanel: false
     },
     previewTabs: {
       eject: { hidden: true },
@@ -14,20 +14,20 @@ export default {
       fullscreen: { hidden: true },
       'storybook/background': { hidden: true },
       'storybook/viewport': { hidden: true },
-      'storybook/docs/panel': { hidden: true },
-    },
+      'storybook/docs/panel': { hidden: true }
+    }
   },
   argTypes: {
     showPanel: false,
     tooltip: {
       table: {
-        disable: true,
+        disable: true
       },
       control: false,
       actions: false,
-      showPanel: false,
-    },
-  },
+      showPanel: false
+    }
+  }
 }
 
 export function AllRoutes() {
@@ -41,5 +41,5 @@ export function AllRoutes() {
   )
 }
 AllRoutes.parameters = {
-  controls: { hideNoControlsWarning: true, disable: true, showPanel: false },
+  controls: { hideNoControlsWarning: true, disable: true, showPanel: false }
 }

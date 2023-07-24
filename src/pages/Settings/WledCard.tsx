@@ -14,7 +14,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Typography,
+  Typography
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Wled from '../../components/Icons/Wled'
@@ -28,40 +28,40 @@ const classes = {
   rowB: `${PREFIX}-rowB`,
   row: `${PREFIX}-row`,
   formControl: `${PREFIX}-formControl`,
-  check: `${PREFIX}-check`,
+  check: `${PREFIX}-check`
 }
 
 const StyledCard = styled(Card)({
   [`& .${classes.content}`]: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
   [`& .${classes.rowContainer}`]: {
     border: '1px solid',
-    borderRadius: '4px',
+    borderRadius: '4px'
   },
   [`& .${classes.rowB}`]: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   [`& .${classes.row}`]: {
     display: 'flex',
     flexDirection: 'row',
     padding: '10px 5px',
     '&:not(:last-child)': {
-      borderBottom: '1px solid',
-    },
+      borderBottom: '1px solid'
+    }
   },
   [`& .${classes.formControl}`]: {
     width: '100%',
-    marginRight: '1rem',
+    marginRight: '1rem'
   },
   [`& .${classes.check}`]: {
     '& .MuiSvgIcon-root': {
       width: '2rem',
-      height: '2rem',
-    },
-  },
+      height: '2rem'
+    }
+  }
 })
 
 const WledCard = ({ className }: any) => {
@@ -71,12 +71,12 @@ const WledCard = ({ className }: any) => {
 
   const toggleSetting = (setting: string, value: any) => {
     setSystemConfig({
-      wled_preferences: { [setting]: { user_enabled: value } },
+      wled_preferences: { [setting]: { user_enabled: value } }
     }).then(() => getSystemConfig())
   }
   const onChangeSetting = (setting: string, value: any) => {
     setSystemConfig({
-      wled_preferences: { [setting]: { setting: value } },
+      wled_preferences: { [setting]: { setting: value } }
     }).then(() => getSystemConfig())
   }
   const onScanOnStart = (setting: string, value: any) => {
@@ -96,7 +96,7 @@ const WledCard = ({ className }: any) => {
           <Icon
             style={{
               margin: '1rem',
-              fontSize: '2.5rem',
+              fontSize: '2.5rem'
             }}
           >
             <Wled />

@@ -198,26 +198,26 @@ const storeSpotifyActions = (set: any) => ({
     scene_id,
     song_id,
     song_name,
-    song_position,
+    song_position
   }: any) => {
     await Ledfx('/api/integrations/spotify/spotify', 'POST', {
       scene_id,
       song_id,
       song_name,
-      song_position,
+      song_position
     })
   },
   editSpSongTrigger: async ({
     scene_id,
     song_id,
     song_name,
-    song_position,
+    song_position
   }: any) => {
     await Ledfx('/api/integrations/spotify/spotify', 'PUT', {
       scene_id,
       song_id,
       song_name,
-      song_position,
+      song_position
     })
   },
   toggleSpTrigger: (SpotifyId: string, config: any) =>
@@ -241,7 +241,7 @@ const storeSpotifyActions = (set: any) => ({
       }),
       false,
       'spotify/setMe'
-    ),
+    )
 })
 
 export default storeSpotifyActions

@@ -19,7 +19,7 @@ const SpotifyWidgetPro = ({ drag }: { drag?: boolean }) => {
       <div className={classes.Widget}>
         <Box className={`${classes.spWrapper} ${drag ? swSize : ''}`}>
           <SpTrack className={`${classes.spTrack} ${drag ? swSize : ''}`} />
-          <SpControls className={`${drag ? swSize : ''}`} />
+          <SpControls className={drag ? swSize : ''} />
           <Stack className={`${classes.spDeskVol} ${drag ? swSize : ''}`}>
             <Stack direction="row">
               {drag && <SpLayoutButtons />}
@@ -34,6 +34,6 @@ const SpotifyWidgetPro = ({ drag }: { drag?: boolean }) => {
 }
 
 SpotifyWidgetPro.defaultProps = {
-  drag: false,
+  drag: false
 }
 export default SpotifyWidgetPro

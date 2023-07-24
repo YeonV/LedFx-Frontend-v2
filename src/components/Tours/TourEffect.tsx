@@ -13,8 +13,8 @@ const step = ({ title = 'Title', text = 'Text', number = 0 }) => ({
     </div>
   ),
   style: {
-    backgroundColor: '#303030',
-  },
+    backgroundColor: '#303030'
+  }
 })
 
 const TourEffect = ({ schemaProperties }: any) => {
@@ -25,7 +25,7 @@ const TourEffect = ({ schemaProperties }: any) => {
     step({
       title: p.title,
       text: p.description,
-      number: i,
+      number: i
     })
   )
 

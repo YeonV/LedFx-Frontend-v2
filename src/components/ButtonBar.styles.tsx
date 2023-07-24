@@ -11,9 +11,9 @@ const useStyles = makeStyles(() => ({
     textAlign: 'center',
     color: '#FFFFFF',
     '& > a': {
-      margin: '0 5px',
-    },
-  },
+      margin: '0 5px'
+    }
+  }
 }))
 
 export default useStyles

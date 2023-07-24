@@ -63,7 +63,7 @@ const storeVirtuals = (set: any) => ({
     const resp = await Ledfx(`/api/virtuals/${virtId}/effects`, 'POST', {
       type,
       config,
-      active,
+      active
     })
 
     if (resp && resp.effect) {
@@ -72,7 +72,7 @@ const storeVirtuals = (set: any) => ({
           state.virtuals[virtId].effect = {
             type: resp.effect.type,
             name: resp.effect.name,
-            config: resp.effect.config,
+            config: resp.effect.config
           }
         }),
         false,
@@ -89,7 +89,7 @@ const storeVirtuals = (set: any) => ({
     const resp = await Ledfx(`/api/virtuals/${virtId}/effects`, 'PUT', {
       type,
       config,
-      active,
+      active
     })
     if (resp && resp.status && resp.status === 'success') {
       if (resp && resp.effect) {
@@ -98,7 +98,7 @@ const storeVirtuals = (set: any) => ({
             state.virtuals[virtId].effect = {
               type: resp.effect.type,
               name: resp.effect.name,
-              config: resp.effect.config,
+              config: resp.effect.config
             }
           }),
           false,
@@ -109,7 +109,7 @@ const storeVirtuals = (set: any) => ({
   },
   updateSegments: async (virtId: string, segments: any) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}`, 'POST', {
-      segments: [...segments],
+      segments: [...segments]
     })
     if (resp && resp.status && resp.status === 'success') {
       if (resp && resp.effect) {
@@ -118,7 +118,7 @@ const storeVirtuals = (set: any) => ({
             state.virtuals[virtId].effect = {
               type: resp.effect.type,
               name: resp.effect.name,
-              config: resp.effect.config,
+              config: resp.effect.config
             }
           }),
           false,
@@ -139,7 +139,7 @@ const storeVirtuals = (set: any) => ({
       device,
       start,
       stop,
-      flip,
+      flip
     })
     if (resp && resp.status && resp.status === 'success') {
       return true
@@ -149,7 +149,7 @@ const storeVirtuals = (set: any) => ({
   highlightOffSegment: async (virtId: string) => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
       tool: 'highlight',
-      state: false,
+      state: false
     })
     if (resp && resp.status && resp.status === 'success') {
       return true
@@ -159,13 +159,13 @@ const storeVirtuals = (set: any) => ({
   calibrationMode: async (virtId: string, mode: 'on' | 'off') => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
       tool: 'calibration',
-      mode,
+      mode
     })
     if (resp && resp.status && resp.status === 'success') {
       return true
     }
     return false
-  },
+  }
 })
 
 export default storeVirtuals

@@ -11,7 +11,7 @@ const SpotifyFabFree = ({
   setSpotifyURL,
   setYoutubeExpanded,
   setYoutubeEnabled,
-  botHeight,
+  botHeight
 }: any) => {
   return (
     <>
@@ -30,7 +30,7 @@ const SpotifyFabFree = ({
           position: 'fixed',
           bottom: botHeight + 65,
           right: 10,
-          zIndex: 4,
+          zIndex: 4
         }}
       >
         <BladeIcon
@@ -39,7 +39,7 @@ const SpotifyFabFree = ({
             marginLeft: '50%',
             marginTop: '50%',
             transform: 'translate(-43%, -43%)',
-            display: 'flex',
+            display: 'flex'
           }}
         />
       </Fab>

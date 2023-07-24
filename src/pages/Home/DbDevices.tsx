@@ -3,7 +3,7 @@ import {
   DataGrid,
   GridColDef,
   GridEventListener,
-  GridRenderCellParams,
+  GridRenderCellParams
   // GridRenderCellParams,
 } from '@mui/x-data-grid'
 import { useNavigate } from 'react-router-dom'
@@ -28,12 +28,12 @@ const DbDevices = () => {
       width: 50,
       renderCell: (params: GridRenderCellParams) => (
         <BladeIcon name={params.value} />
-      ),
+      )
     },
     {
       field: 'name',
       headerName: 'Name',
-      width: 220,
+      width: 220
 
       // renderCell: (params: GridRenderCellParams<string>) => (
       //   <Link
@@ -52,25 +52,25 @@ const DbDevices = () => {
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <Chip label={params.row.is_device ? 'Device' : 'Virtual'} />
-      ),
-    },
+      )
+    }
   ]
 
   const rows: any = Object.values(virtuals).map((v: any) => ({
     ...v,
-    ...v.config,
+    ...v.config
   }))
 
   return (
     <BladeFrame
       labelStyle={{
         background: theme.palette.background.default,
-        color: theme.palette.primary.main,
+        color: theme.palette.primary.main
       }}
       style={{
         borderColor: theme.palette.primary.main,
         padding: 20,
-        minWidth: 450,
+        minWidth: 450
       }}
       title="Entities"
     >
@@ -89,19 +89,19 @@ const DbDevices = () => {
             //   pageSize: 100,
             // },
             sorting: {
-              sortModel: [{ field: 'name', sort: 'asc' }],
+              sortModel: [{ field: 'name', sort: 'asc' }]
             },
             columns: {
               columnVisibilityModel: {
-                id: false,
-              },
-            },
+                id: false
+              }
+            }
           }}
           sx={{
             borderColor: 'transparent',
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-              outline: 'none !important',
-            },
+              outline: 'none !important'
+            }
           }}
         />
       </Stack>

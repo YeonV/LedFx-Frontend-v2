@@ -18,7 +18,7 @@ const MIDIListener = () => {
           activateScene(key)
           localStorage.setItem('midiDeviceName', input.name) // Store MIDI device name
         } else {
-          output.send([0xb0, 0x00, 0x00])
+          output?.send([0xb0, 0x00, 0x00])
         }
       })
     }
@@ -41,7 +41,7 @@ const MIDIListener = () => {
             })
           }
         }
-      },
+      }
     })
 
     const webSocket = new WebSocket('ws://localhost:8888/api/websocket')
@@ -50,9 +50,9 @@ const MIDIListener = () => {
       const message = JSON.stringify({
         event_type: 'scene_activated',
         id: 100,
-        type: 'subscribe_event',
+        type: 'subscribe_event'
       })
-      webSocket.send(message)
+      webSocket?.send(message)
     })
 
     webSocket.addEventListener('message', (event) => {
@@ -72,10 +72,10 @@ const MIDIListener = () => {
               const output = WebMidi.getOutputByName(inputName)
 
               if (output) {
-                output.send([0xb0, 0x00, 0x00])
+                output?.send([0xb0, 0x00, 0x00])
 
                 if (!Number.isNaN(buttonNumber)) {
-                  output.send([0x90, buttonNumber, 60])
+                  output?.send([0x90, buttonNumber, 60])
                 }
               } else {
                 console.error('Output device not found/Not defined:', inputName)

@@ -10,7 +10,7 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
-  Link,
+  Link
 } from '@mui/material'
 import { Tune } from '@mui/icons-material'
 import useStore from '../../store/useStore'
@@ -79,7 +79,7 @@ const AddVirtualDialog = () => {
     ) {
       // console.log("ADDING");
       addVirtual({
-        config: { ...defaultModel, ...cleanedModel },
+        config: { ...defaultModel, ...cleanedModel }
       }).then((res) => {
         // console.log(res);
         if (res !== 'failed') {
@@ -95,7 +95,7 @@ const AddVirtualDialog = () => {
       // console.log("EDITING");
       addVirtual({
         id: virtId,
-        config: { ...model },
+        config: { ...model }
       }).then((res) => {
         // console.log(res);
         if (res !== 'failed') {

@@ -6,7 +6,7 @@ import {
   PowerSettingsNew,
   Delete,
   Refresh,
-  Info,
+  Info
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import { Divider } from '@mui/material'
@@ -79,7 +79,7 @@ const GeneralCard = () => {
             vertical="top"
             wrapperStyle={{
               marginTop: '0.5rem',
-              flexBasis: '49%',
+              flexBasis: '49%'
             }}
           />
           <input

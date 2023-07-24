@@ -24,7 +24,7 @@ const BladeSelect = ({
   textStyle = {},
   menuItemStyle = {},
   hideDesc,
-  children,
+  children
 }: BladeSelectProps) => {
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
@@ -46,7 +46,7 @@ const BladeSelect = ({
       required={required}
       style={{
         ...wrapperStyle,
-        flexBasis: schema.title === 'Name' ? '100%' : '49%',
+        flexBasis: schema.title === 'Name' ? '100%' : '49%'
       }}
     >
       {variant === 'contained' ? (
@@ -56,7 +56,7 @@ const BladeSelect = ({
             disabled={disabled}
             style={{
               flexGrow: 'unset',
-              ...(selectStyle as any),
+              ...(selectStyle as any)
             }}
             defaultValue={schema.default}
             value={(model && model_id && model[model_id]) || schema.enum[0]}
@@ -87,7 +87,7 @@ const BladeSelect = ({
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...(selectStyle as any),
+            ...(selectStyle as any)
           }}
           defaultValue={schema.default}
           value={(model && model_id && model[model_id]) || schema.enum[0]}
@@ -104,7 +104,7 @@ const BladeSelect = ({
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
-            ...(selectStyle as any),
+            ...(selectStyle as any)
           }}
           defaultValue={schema.default}
           value={
@@ -140,7 +140,7 @@ const BladeSelect = ({
                     <InputAdornment position="start">
                       <BladeIcon name={icon} style={{ color: '#eee' }} />
                     </InputAdornment>
-                  ),
+                  )
                 }
               : {}
           }

@@ -12,22 +12,22 @@ export default {
   component: BladeSchemaForm,
   argTypes: {
     type: {
-      control: false,
-    },
+      control: false
+    }
   },
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
+      panelPosition: 'bottom'
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
-  ],
+    )
+  ]
 } as ComponentMeta<typeof BladeSchemaForm>
 
 // eslint-disable-next-line
@@ -40,54 +40,54 @@ AddDeviceAdaLight.args = {
       name: {
         type: 'string',
         title: 'Name',
-        description: 'Friendly name for the device',
+        description: 'Friendly name for the device'
       },
       icon_name: {
         type: 'string',
         title: 'Icon Name',
         description: 'https://material-ui.com/components/material-icons/',
-        default: 'mdi:led-strip',
+        default: 'mdi:led-strip'
       },
       center_offset: {
         type: 'integer',
         title: 'Center Offset',
         description: 'Number of pixels from the perceived center of the device',
-        default: 0,
+        default: 0
       },
       refresh_rate: {
         type: 'int',
         enum: [10, 12, 16, 21, 32, 64],
         title: 'Refresh Rate',
         description: 'Target rate that pixels are sent to the device',
-        default: 64,
+        default: 64
       },
       com_port: {
         type: 'string',
         enum: ['COM1'],
         title: 'Com Port',
-        description: 'COM port for Adalight compatible device',
+        description: 'COM port for Adalight compatible device'
       },
       baudrate: {
         type: 'integer',
         minimum: 115200,
         title: 'Baudrate',
         description: 'baudrate',
-        default: 500000,
+        default: 500000
       },
       pixel_count: {
         type: 'integer',
         minimum: 1,
         title: 'Pixel Count',
         description: 'Number of individual pixels',
-        default: 1,
+        default: 1
       },
       color_order: {
         type: 'string',
         enum: ['RGB', 'RBG', 'GRB', 'BRG', 'GBR', 'BGR'],
         title: 'Color Order',
         description: 'Color order',
-        default: 'RGB',
-      },
+        default: 'RGB'
+      }
     },
     permitted_keys: [
       'name',
@@ -97,14 +97,14 @@ AddDeviceAdaLight.args = {
       'com_port',
       'baudrate',
       'pixel_count',
-      'color_order',
+      'color_order'
     ],
-    required: ['name', 'com_port', 'baudrate', 'pixel_count', 'color_order'],
+    required: ['name', 'com_port', 'baudrate', 'pixel_count', 'color_order']
   },
   model: {},
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
-  hideToggle: false,
+  hideToggle: false
 }
 
 export const AddDeviceWLED = Template.bind({})
@@ -114,31 +114,31 @@ AddDeviceWLED.args = {
       name: {
         type: 'string',
         title: 'Name',
-        description: 'Friendly name for the device',
+        description: 'Friendly name for the device'
       },
       icon_name: {
         type: 'string',
         title: 'Icon Name',
         description: 'https://material-ui.com/components/material-icons/',
-        default: 'mdi:led-strip',
+        default: 'mdi:led-strip'
       },
       center_offset: {
         type: 'integer',
         title: 'Center Offset',
         description: 'Number of pixels from the perceived center of the device',
-        default: 0,
+        default: 0
       },
       refresh_rate: {
         type: 'int',
         enum: [10, 12, 16, 21, 32, 64],
         title: 'Refresh Rate',
         description: 'Target rate that pixels are sent to the device',
-        default: 64,
+        default: 64
       },
       ip_address: {
         type: 'string',
         title: 'Ip Address',
-        description: 'Hostname or IP address of the device',
+        description: 'Hostname or IP address of the device'
       },
       sync_mode: {
         type: 'string',
@@ -146,7 +146,7 @@ AddDeviceWLED.args = {
         title: 'Sync Mode',
         description:
           'Streaming protocol to WLED device. Recommended: UDP<480px, DDP>480px',
-        default: 'UDP',
+        default: 'UDP'
       },
       timeout: {
         type: 'integer',
@@ -154,8 +154,8 @@ AddDeviceWLED.args = {
         maximum: 255,
         title: 'Timeout',
         description: 'Time between LedFx effect off and WLED effect activate',
-        default: 1,
-      },
+        default: 1
+      }
     },
     permitted_keys: [
       'name',
@@ -164,14 +164,14 @@ AddDeviceWLED.args = {
       'refresh_rate',
       'ip_address',
       'sync_mode',
-      'timeout',
+      'timeout'
     ],
-    required: ['name', 'ip_address'],
+    required: ['name', 'ip_address']
   },
   model: {},
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
-  hideToggle: false,
+  hideToggle: false
 }
 
 export const AddDeviceUDP = Template.bind({})
@@ -181,38 +181,38 @@ AddDeviceUDP.args = {
       name: {
         type: 'string',
         title: 'Name',
-        description: 'Friendly name for the device',
+        description: 'Friendly name for the device'
       },
       icon_name: {
         type: 'string',
         title: 'Icon Name',
         description: 'https://material-ui.com/components/material-icons/',
-        default: 'mdi:led-strip',
+        default: 'mdi:led-strip'
       },
       center_offset: {
         type: 'integer',
         title: 'Center Offset',
         description: 'Number of pixels from the perceived center of the device',
-        default: 0,
+        default: 0
       },
       refresh_rate: {
         type: 'int',
         enum: [10, 12, 16, 21, 32, 64],
         title: 'Refresh Rate',
         description: 'Target rate that pixels are sent to the device',
-        default: 64,
+        default: 64
       },
       ip_address: {
         type: 'string',
         title: 'Ip Address',
-        description: 'Hostname or IP address of the device',
+        description: 'Hostname or IP address of the device'
       },
       pixel_count: {
         type: 'integer',
         minimum: 1,
         title: 'Pixel Count',
         description: 'Number of individual pixels',
-        default: 1,
+        default: 1
       },
       port: {
         type: 'integer',
@@ -220,14 +220,14 @@ AddDeviceUDP.args = {
         maximum: 65535,
         title: 'Port',
         description: 'Port for the UDP device',
-        default: 21324,
+        default: 21324
       },
       udp_packet_type: {
         type: 'string',
         enum: ['DRGB', 'WARLS', 'DRGBW', 'DNRGB', 'adaptive_smallest'],
         title: 'Udp Packet Type',
         description: 'RGB packet encoding',
-        default: 'DRGB',
+        default: 'DRGB'
       },
       timeout: {
         type: 'integer',
@@ -236,15 +236,15 @@ AddDeviceUDP.args = {
         title: 'Timeout',
         description:
           'Seconds to wait after the last received packet to yield device control',
-        default: 1,
+        default: 1
       },
       minimise_traffic: {
         type: 'boolean',
         title: 'Minimise Traffic',
         description:
           'Will not send updates if nothing has changed on the LED device',
-        default: true,
-      },
+        default: true
+      }
     },
     permitted_keys: [
       'name',
@@ -256,14 +256,14 @@ AddDeviceUDP.args = {
       'port',
       'udp_packet_type',
       'timeout',
-      'minimise_traffic',
+      'minimise_traffic'
     ],
-    required: ['name', 'ip_address', 'pixel_count', 'port', 'udp_packet_type'],
+    required: ['name', 'ip_address', 'pixel_count', 'port', 'udp_packet_type']
   },
   model: {},
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
-  hideToggle: false,
+  hideToggle: false
 }
 
 export const AddVirtual = Template.bind({})
@@ -273,7 +273,7 @@ AddVirtual.args = {
       name: {
         type: 'string',
         title: 'Name',
-        description: 'Friendly name for the device',
+        description: 'Friendly name for the device'
       },
       mapping: {
         type: 'string',
@@ -281,13 +281,13 @@ AddVirtual.args = {
         title: 'Mapping',
         description:
           'Span: Effect spans all segments. Copy: Effect copied on each segment',
-        default: 'span',
+        default: 'span'
       },
       icon_name: {
         type: 'string',
         title: 'Icon Name',
         description: 'Icon for the device*',
-        default: 'mdi:led-strip-variant',
+        default: 'mdi:led-strip-variant'
       },
       max_brightness: {
         type: 'number',
@@ -295,19 +295,19 @@ AddVirtual.args = {
         maximum: 1,
         title: 'Max Brightness',
         description: 'Max brightness for the device',
-        default: 1,
+        default: 1
       },
       center_offset: {
         type: 'integer',
         title: 'Center Offset',
         description: 'Number of pixels from the perceived center of the device',
-        default: 0,
+        default: 0
       },
       preview_only: {
         type: 'boolean',
         title: 'Preview Only',
         description: 'Preview the pixels without updating the devices',
-        default: false,
+        default: false
       },
       transition_time: {
         type: 'number',
@@ -315,7 +315,7 @@ AddVirtual.args = {
         maximum: 5,
         title: 'Transition Time',
         description: 'Length of transition between effects',
-        default: 0.4,
+        default: 0.4
       },
       transition_mode: {
         type: 'string',
@@ -327,11 +327,11 @@ AddVirtual.args = {
           'Iris',
           'Through White',
           'Through Black',
-          'None',
+          'None'
         ],
         title: 'Transition Mode',
         description: 'Type of transition between effects',
-        default: 'Add',
+        default: 'Add'
       },
       frequency_min: {
         type: 'integer',
@@ -339,7 +339,7 @@ AddVirtual.args = {
         maximum: 15000,
         title: 'Frequency Min',
         description: 'Lowest frequency audio reactive effects of this virtual',
-        default: 20,
+        default: 20
       },
       frequency_max: {
         type: 'integer',
@@ -347,8 +347,8 @@ AddVirtual.args = {
         maximum: 15000,
         title: 'Frequency Max',
         description: 'Highest frequency audio reactive effects of this virtual',
-        default: 15000,
-      },
+        default: 15000
+      }
     },
     permitted_keys: [
       'name',
@@ -360,14 +360,14 @@ AddVirtual.args = {
       'transition_time',
       'transition_mode',
       'frequency_min',
-      'frequency_max',
+      'frequency_max'
     ],
-    required: ['name', 'mapping'],
+    required: ['name', 'mapping']
   },
   model: {},
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
-  hideToggle: false,
+  hideToggle: false
 }
 
 export const AudioCard = Template.bind({})
@@ -377,24 +377,24 @@ AudioCard.args = {
       sample_rate: {
         type: 'integer',
         title: 'Sample Rate',
-        default: 60,
+        default: 60
       },
       mic_rate: {
         type: 'integer',
         title: 'Mic Rate',
-        default: 30000,
+        default: 30000
       },
       fft_size: {
         type: 'integer',
         title: 'Fft Size',
-        default: 4096,
+        default: 4096
       },
       min_volume: {
         type: 'number',
         minimum: 0,
         maximum: 10,
         title: 'Min Volume',
-        default: 0.2,
+        default: 0.2
       },
       audio_device: {
         type: 'string',
@@ -416,17 +416,17 @@ AudioCard.args = {
           35: 'Windows WDM-KS: Stereomix (Realtek HD Audio Stereo input)',
           37: 'Windows WDM-KS: Mikrofon (USB PnP Audio Device)',
           40: 'Windows WDM-KS: VoiceMeeter Output (VoiceMeeter vaio)',
-          43: 'Windows WDM-KS: Kopfhörer (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Jabra Elite 75t))',
+          43: 'Windows WDM-KS: Kopfhörer (@System32\\drivers\\bthhfenum.sys,#2;%1 Hands-Free%0\r\n;(Jabra Elite 75t))'
         },
         title: 'Audio Device',
-        default: 1,
-      },
+        default: 1
+      }
     },
     permitted_keys: ['min_volume', 'audio_device'],
-    required: [],
+    required: []
   },
   model: {},
   // eslint-disable-next-line
   onModelChange: (e) => console.log(e),
-  hideToggle: false,
+  hideToggle: false
 }

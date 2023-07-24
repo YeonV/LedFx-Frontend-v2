@@ -14,7 +14,7 @@ import {
   IconButton,
   ListItemIcon,
   Toolbar,
-  Typography,
+  Typography
 } from '@mui/material'
 import { Settings, NavigateBefore, CloudDownload } from '@mui/icons-material'
 import useEditVirtualsStyles from '../../Devices/EditVirtuals/EditVirtuals.styles'
@@ -33,7 +33,7 @@ export default function CloudScreen({
   color = 'inherit',
   variant = 'contained',
   onClick = () => {},
-  innerKey,
+  innerKey
 }: any) {
   const classes = useEditVirtualsStyles()
   const theme = useTheme()
@@ -65,7 +65,7 @@ export default function CloudScreen({
 
   const refreshPresets = async () => {
     const response = await cloud.get('presets', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
     })
     if (response.status !== 200) {
       alert('No Access')
@@ -164,7 +164,7 @@ export default function CloudScreen({
                 order:
                   virtual.effect.name.toLowerCase() === effect.toLowerCase()
                     ? -1
-                    : 1,
+                    : 1
               }}
             >
               <Typography
@@ -174,7 +174,7 @@ export default function CloudScreen({
                   color:
                     virtual.effect.name.toLowerCase() === effect.toLowerCase()
                       ? theme.palette.primary.main
-                      : theme.palette.text.primary,
+                      : theme.palette.text.primary
                 }}
               >
                 {effect}

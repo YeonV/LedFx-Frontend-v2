@@ -7,7 +7,7 @@ import {
   ListSubheader,
   Switch,
   FormControlLabel,
-  Divider,
+  Divider
 } from '@mui/material'
 import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
@@ -23,27 +23,27 @@ const PREFIX = 'SchemaForm'
 const classes = {
   bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
   FormListHeaders: `${PREFIX}-FormListHeaders`,
-  bladeSelect: `${PREFIX}-bladeSelect`,
+  bladeSelect: `${PREFIX}-bladeSelect`
 }
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.bladeSchemaForm}`]: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
 
   [`& .${classes.FormListHeaders}`]: {
     background: theme.palette.secondary.main,
-    color: '#fff',
+    color: '#fff'
   },
 
   [`& .${classes.bladeSelect}`]: {
     '& .MuiSelect-select': {
       display: 'flex',
-      alignItems: 'center',
-    },
-  },
+      alignItems: 'center'
+    }
+  }
 }))
 
 /**
@@ -56,7 +56,7 @@ const SchemaForm = ({
   model,
   hideToggle,
   onModelChange,
-  type,
+  type
 }: SchemaFormProps): ReactElement<any, any> => {
   const [hideDesc, setHideDesc] = useState(true)
 
@@ -70,7 +70,7 @@ const SchemaForm = ({
         required: schema.required && schema.required.indexOf(sk) !== -1,
         permitted: schema.permitted_keys
           ? schema.permitted_keys.indexOf(sk) > -1
-          : true,
+          : true
       }))
       .sort((a, _b) => (a.required ? -1 : 1))
       .sort((a, _b) => (a.id === 'name' ? -1 : 1))
@@ -169,7 +169,7 @@ const SchemaForm = ({
                             )}
                             {group[c][e].replace('[Loopback]', '')}
                           </MenuItem>
-                        )),
+                        ))
                       ])}
                     </Select>
                   </BladeFrame>
@@ -188,7 +188,7 @@ const SchemaForm = ({
                       wrapperStyle={{
                         margin: '0.5rem 0',
                         width: '49%',
-                        flexBasis: 'unset',
+                        flexBasis: 'unset'
                       }}
                       textStyle={{ width: '100%' }}
                       schema={s}
@@ -329,7 +329,7 @@ const SchemaForm = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: 0,
+                  marginBottom: 0
                 }}
               >
                 Field-Descriptions

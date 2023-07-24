@@ -13,14 +13,14 @@ const EffectDropDown = ({
   virtual,
   features,
   setEffect,
-  getVirtuals,
+  getVirtuals
 }: EffectDropDownProps) => {
   const effectNames =
     effects &&
     Object.keys(effects).map((eid) => ({
       name: effects[eid].name,
       id: effects[eid].id,
-      category: effects[eid].category,
+      category: effects[eid].category
     }))
 
   const groups =

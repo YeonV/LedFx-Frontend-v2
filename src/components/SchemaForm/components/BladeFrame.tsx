@@ -14,7 +14,7 @@ const Root = styled('div')(({ theme }) => ({
   margin: '0.5rem 0',
   '@media (max-width: 580px)': {
     width: '100% !important',
-    margin: '0.5rem 0',
+    margin: '0.5rem 0'
   },
   '& > label': {
     top: '-0.75rem',
@@ -28,8 +28,8 @@ const Root = styled('div')(({ theme }) => ({
     letterSpacing: '0.1rem',
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxSizing: 'border-box',
-  },
+    boxSizing: 'border-box'
+  }
 }))
 
 interface BladeFrameProps {
@@ -55,14 +55,14 @@ const BladeFrame = ({
   variant = 'outlined',
   className,
   disabled,
-  labelStyle = {},
+  labelStyle = {}
 }: BladeFrameProps): ReactElement<any, any> => {
   return variant === 'outlined' ? (
     <Root
       className={className || ''}
       style={{
         ...style,
-        width: full ? '100%' : style.width,
+        width: full ? '100%' : style.width
       }}
     >
       <label
@@ -88,13 +88,13 @@ BladeFrame.defaultProps = {
   full: false,
   style: {
     width: 'unset',
-    order: 0,
+    order: 0
   },
   required: false,
   variant: 'outlined',
   className: undefined,
   disabled: undefined,
-  labelStyle: undefined,
+  labelStyle: undefined
 }
 
 export default BladeFrame

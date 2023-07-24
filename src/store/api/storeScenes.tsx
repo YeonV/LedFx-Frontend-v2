@@ -48,7 +48,7 @@ const storeScenes = (set: any) => ({
       produce((s: any) => {
         s.mostUsedScenes[key] = {
           ...s.scenes[key],
-          used: count,
+          used: count
         }
       }),
       false,
@@ -122,7 +122,7 @@ const storeScenes = (set: any) => ({
           scene_puturl,
           scene_payload,
           scene_midiactivate,
-          virtuals,
+          virtuals
         })
       : await Ledfx('/api/scenes', 'POST', {
           name,
@@ -130,7 +130,7 @@ const storeScenes = (set: any) => ({
           scene_tags,
           scene_puturl,
           scene_payload,
-          scene_midiactivate,
+          scene_midiactivate
         }),
   activateScene: async (id: string) => {
     set(
@@ -153,20 +153,20 @@ const storeScenes = (set: any) => ({
     )
     return await Ledfx('/api/scenes', 'PUT', {
       id,
-      action: 'activate',
+      action: 'activate'
     })
   },
   activateSceneIn: async (id: string, ms: number) =>
     await Ledfx('/api/scenes', 'PUT', {
       id,
       action: 'activate_in',
-      ms,
+      ms
     }),
   deleteScene: async (name: string) =>
     await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
 
   captivateScene: async (scene_puturl: string, scene_payload: string) =>
-    await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload)),
+    await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload))
 })
 
 export default storeScenes

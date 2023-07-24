@@ -6,7 +6,7 @@ import { VolumeDown, VolumeMute, VolumeUp } from '@mui/icons-material'
 import { VolSliderStyles } from './SpWidgetPro.styles'
 import {
   SpotifyControlContext,
-  SpotifyVolumeContext,
+  SpotifyVolumeContext
 } from '../../SpotifyProvider'
 
 export default function SpVolume() {

@@ -29,15 +29,15 @@ const storePresets = (set: any) => ({
     await Ledfx(`/api/virtuals/${virtId}/presets`, 'PUT', {
       category,
       effect_id: effectType,
-      preset_id: presetId,
+      preset_id: presetId
     }),
   deletePreset: async (effectId: string, presetId: string) =>
     await Ledfx(`/api/effects/${effectId}/presets`, 'DELETE', {
       data: {
         preset_id: presetId,
-        category: 'user_presets',
-      },
-    }),
+        category: 'user_presets'
+      }
+    })
 })
 
 export default storePresets

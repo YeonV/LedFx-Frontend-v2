@@ -7,7 +7,7 @@ import {
   Popover as PopoverOriginal,
   useTheme,
   Fab,
-  IconButton,
+  IconButton
 } from '@mui/material'
 import { Delete, Close, Check } from '@mui/icons-material'
 import { useLongPress } from 'use-long-press'
@@ -43,7 +43,7 @@ const Popover = ({
   popoverStyle,
   wrapperStyle,
   type = 'button',
-  children,
+  children
 }: PopoverProps): ReactElement<any, any> => {
   const theme = useTheme()
   const [anchorEl, setAnchorEl] = useState(null)
@@ -59,7 +59,7 @@ const Popover = ({
       if (onSingleClick) onSingleClick(e)
     },
     threshold: 1000,
-    captureEvent: true,
+    captureEvent: true
   })
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
@@ -102,13 +102,13 @@ const Popover = ({
             disabled={disabled}
             style={{
               margin: '8px',
-              ...style,
+              ...style
             }}
             sx={{
               bgcolor: theme.palette.primary.main,
               '&:hover': {
-                bgcolor: theme.palette.primary.light,
-              },
+                bgcolor: theme.palette.primary.light
+              }
             }}
           >
             {!startIcon && !noIcon && icon}
@@ -163,14 +163,14 @@ const Popover = ({
           }}
           disabled={disabled}
           style={{
-            margin: '8px',
+            margin: '8px'
           }}
           sx={{
             bgcolor: theme.palette.primary.main,
             '&:hover': {
-              bgcolor: theme.palette.primary.light,
+              bgcolor: theme.palette.primary.light
             },
-            ...sx,
+            ...sx
           }}
         >
           {!startIcon && !noIcon && icon}
@@ -185,13 +185,13 @@ const Popover = ({
         anchorOrigin={
           anchorOrigin || {
             vertical,
-            horizontal,
+            horizontal
           }
         }
         transformOrigin={
           transformOrigin || {
             vertical,
-            horizontal: horizontal === 'center' ? 'center' : 'right',
+            horizontal: horizontal === 'center' ? 'center' : 'right'
           }
         }
       >

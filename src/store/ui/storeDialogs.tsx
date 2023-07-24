@@ -6,36 +6,36 @@ const storeDialogs = (set: any) => ({
   dialogs: {
     nohost: {
       open: false,
-      edit: false,
+      edit: false
     },
     addScene: {
       open: false,
       edit: false,
       sceneKey: '',
-      editData: '',
+      editData: ''
     },
     addDevice: {
       open: false,
-      edit: {} as any,
+      edit: {} as any
     },
     addVirtual: {
       open: false,
-      edit: {} as any,
+      edit: {} as any
     },
     editVirtual: {
       open: false,
-      edit: {} as any,
+      edit: {} as any
     },
     addIntegration: {
       open: false,
-      edit: {} as any,
-    },
+      edit: {} as any
+    }
   },
   assistant: {
     wled: true,
     wledSegments: true,
     openRgb: true,
-    launchpad: true,
+    launchpad: true
   },
   setAssistant: (
     kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad',
@@ -53,7 +53,7 @@ const storeDialogs = (set: any) => ({
       produce((state: IStore) => {
         state.dialogs.nohost = {
           open,
-          edit: edit || false,
+          edit: edit || false
         }
       }),
       false,
@@ -71,7 +71,7 @@ const storeDialogs = (set: any) => ({
           open,
           edit: edit || false,
           sceneKey: sceneKey || '',
-          editData: editData || '',
+          editData: editData || ''
         }
       }),
       false,
@@ -82,7 +82,7 @@ const storeDialogs = (set: any) => ({
       produce((state: IStore) => {
         state.dialogs.addDevice = {
           open,
-          edit,
+          edit
         }
       }),
       false,
@@ -93,7 +93,7 @@ const storeDialogs = (set: any) => ({
       produce((state: IStore) => {
         state.dialogs.addVirtual = {
           open,
-          edit,
+          edit
         }
       }),
       false,
@@ -104,7 +104,7 @@ const storeDialogs = (set: any) => ({
       produce((state: IStore) => {
         state.dialogs.editVirtual = {
           open,
-          edit,
+          edit
         }
       }),
       false,
@@ -115,12 +115,12 @@ const storeDialogs = (set: any) => ({
       produce((state: IStore) => {
         state.dialogs.addIntegration = {
           open,
-          edit,
+          edit
         }
       }),
       false,
       'api/dialog/AddIntegration'
-    ),
+    )
 })
 
 export default storeDialogs

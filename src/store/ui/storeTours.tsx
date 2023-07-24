@@ -12,7 +12,7 @@ const storeTours = (set: any) => ({
     effect: false,
     integrations: false,
     scenes: false,
-    settings: false,
+    settings: false
   },
   setTour: (tour: ITours): void =>
     set(
@@ -29,7 +29,7 @@ const storeTours = (set: any) => ({
       }),
       false,
       'ui/setTour'
-    ),
+    )
 })
 
 export default storeTours

@@ -12,7 +12,7 @@ const YoutubeWidgetBar = ({
   setYoutubeURL,
   botHeight,
   state,
-  setState,
+  setState
 }: any) => {
   const API_URL = 'http://localhost:8080/api/bridge'
   // const API_URL = '/api/bridge';
@@ -24,12 +24,12 @@ const YoutubeWidgetBar = ({
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
     })
     if (response && res) {
       return response.json() // parses JSON response into native JavaScript objects
@@ -47,16 +47,16 @@ const YoutubeWidgetBar = ({
       title: '',
       duration: '',
       filesize: 0,
-      url: '',
+      url: ''
     },
     queued: [
       {
         artist: '',
         title: '',
         duration: '',
-        url: '',
-      },
-    ],
+        url: ''
+      }
+    ]
   }
 
   const yt3 = async () => {
@@ -82,7 +82,7 @@ const YoutubeWidgetBar = ({
   const options: APIPollingOptions<DataType> = {
     fetchFunc,
     initialState,
-    delay: 1000,
+    delay: 1000
   }
   const currentPosition = useAPIPolling(options)
 
@@ -94,7 +94,7 @@ const YoutubeWidgetBar = ({
           display: 'flex',
           bottom: botHeight - 50,
           right: 36,
-          zIndex: 5,
+          zIndex: 5
         }}
       >
         {/* <Button
@@ -121,7 +121,7 @@ const YoutubeWidgetBar = ({
           left: 0,
           width: '100%',
           height: youtubeEnabled ? (youtubeExpanded ? 300 : 80) : 0,
-          zIndex: 4,
+          zIndex: 4
         }}
       >
         <div
@@ -129,7 +129,7 @@ const YoutubeWidgetBar = ({
             display: 'flex',
             height: '100%',
             alignItems: 'center',
-            flexWrap: 'wrap',
+            flexWrap: 'wrap'
           }}
         >
           <div style={{ margin: '0 20px' }}>
@@ -137,7 +137,7 @@ const YoutubeWidgetBar = ({
               disabled={state.track_index === 0}
               onClick={async () => {
                 await postData(`${API_URL}/ctl/youtube/set`, {
-                  action: 'previous',
+                  action: 'previous'
                 })
               }}
             >
@@ -147,7 +147,7 @@ const YoutubeWidgetBar = ({
               <Button
                 onClick={async () => {
                   await postData(`${API_URL}/ctl/youtube/set`, {
-                    action: 'play',
+                    action: 'play'
                   })
                 }}
               >
@@ -157,7 +157,7 @@ const YoutubeWidgetBar = ({
               <Button
                 onClick={async () => {
                   await postData(`${API_URL}/ctl/youtube/set`, {
-                    action: 'resume',
+                    action: 'resume'
                   })
                 }}
               >
@@ -167,7 +167,7 @@ const YoutubeWidgetBar = ({
               <Button
                 onClick={async () => {
                   await postData(`${API_URL}/ctl/youtube/set`, {
-                    action: 'pause',
+                    action: 'pause'
                   })
                 }}
               >
@@ -179,7 +179,7 @@ const YoutubeWidgetBar = ({
               disabled={state.queued.length - state.track_index < 1}
               onClick={async () => {
                 await postData(`${API_URL}/ctl/youtube/set`, {
-                  action: 'next',
+                  action: 'next'
                 })
               }}
             >
@@ -192,7 +192,7 @@ const YoutubeWidgetBar = ({
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                height: '100%',
+                height: '100%'
               }}
             >
               <Typography variant="h6">
@@ -217,7 +217,7 @@ const YoutubeWidgetBar = ({
             style={{
               width: '100%',
               maxWidth: 600,
-              margin: '0px 60px -25px 60px',
+              margin: '0px 60px -25px 60px'
             }}
           >
             <Slider
@@ -236,7 +236,7 @@ const YoutubeWidgetBar = ({
                 alignItems: 'center',
                 width: '100%',
                 maxWidth: 600,
-                marginTop: -15,
+                marginTop: -15
               }}
             >
               <Typography variant="caption" color="textSecondary">
@@ -253,7 +253,7 @@ const YoutubeWidgetBar = ({
                 flexBasis: '100%',
                 background: '#111',
                 height: 220,
-                overflow: 'auto',
+                overflow: 'auto'
               }}
             >
               {state.queued.length > 0 &&
@@ -267,7 +267,7 @@ const YoutubeWidgetBar = ({
                       borderBottom: '1px solid #333',
                       borderTop: i === 0 ? '1px solid #333' : 0,
                       backgroundColor:
-                        i === state.track_index ? '#fff2' : '#fff0',
+                        i === state.track_index ? '#fff2' : '#fff0'
                     }}
                   >
                     <div style={{ margin: '0 20px' }}>

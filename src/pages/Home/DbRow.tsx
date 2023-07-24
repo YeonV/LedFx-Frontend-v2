@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material'
 
 const DbRow = ({
   left,
-  right,
+  right
 }: {
   left: string | undefined
   right: string | undefined

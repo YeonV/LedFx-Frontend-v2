@@ -5,13 +5,13 @@ import BladeSlider from '../components/Number/BladeSlider'
 import GradientPickerWrapper from '../components/GradientPicker/GradientPicker.wrapper'
 import {
   EffectSchemaFormDefaultProps,
-  EffectSchemaFormProps,
+  EffectSchemaFormProps
 } from './EffectSchemaForm.props'
 
 const PREFIX = 'EffectSchemaForm'
 
 const classes = {
-  bladeSchemaForm: `${PREFIX}-bladeSchemaForm`,
+  bladeSchemaForm: `${PREFIX}-bladeSchemaForm`
 }
 
 const Root = styled('div')({
@@ -20,16 +20,16 @@ const Root = styled('div')({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     '& *': {
-      boxSizing: 'border-box',
-    },
-  },
+      boxSizing: 'border-box'
+    }
+  }
 })
 
 const EffectSchemaForm = ({
   schemaProperties,
   model,
   virtId,
-  handleEffectConfig,
+  handleEffectConfig
 }: EffectSchemaFormProps) => {
   return (
     <Root className={classes.bladeSchemaForm}>

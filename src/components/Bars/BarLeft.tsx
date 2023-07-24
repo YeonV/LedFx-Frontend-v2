@@ -12,7 +12,7 @@ import {
   List,
   Divider,
   IconButton,
-  Box,
+  Box
 } from '@mui/material'
 import { useLocation, Link } from 'react-router-dom'
 import isElectron from 'is-electron'
@@ -55,7 +55,7 @@ const LeftBar = () => {
                 border: theme.palette.primary.main,
                 backgroundColor: isElectron()
                   ? 'transparent'
-                  : theme.palette.secondary.main,
+                  : theme.palette.secondary.main
               }}
             />
           </Box>
@@ -76,7 +76,7 @@ const LeftBar = () => {
       anchor="left"
       open={open}
       classes={{
-        paper: classes.drawerPaper,
+        paper: classes.drawerPaper
       }}
     >
       <Box
@@ -84,7 +84,7 @@ const LeftBar = () => {
         sx={{
           padding: theme.spacing(0, 1),
           background: theme.palette.primary.main,
-          ...theme.mixins.toolbar,
+          ...theme.mixins.toolbar
         }}
         onClick={handleDrawerClose}
       >
@@ -114,9 +114,9 @@ const LeftBar = () => {
                       boxShadow: theme.shadows[12],
                       '&:hover,&:focus,&:visited,&': {
                         backgroundColor: theme.palette.secondary.main,
-                        boxShadow: theme.shadows[12],
+                        boxShadow: theme.shadows[12]
                       },
-                      color: '#fff',
+                      color: '#fff'
                     }
                   : {}
               }
@@ -151,7 +151,7 @@ const LeftBar = () => {
                       pathname.split('/')[2] === d
                     ) && Object.keys(virtuals[d]?.effect).length > 0
                       ? theme.palette.primary.light
-                      : theme.palette.text.primary,
+                      : theme.palette.text.primary
                 }}
                 primary={virtuals[d].config.name}
               />

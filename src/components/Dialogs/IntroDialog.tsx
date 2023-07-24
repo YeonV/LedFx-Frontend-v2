@@ -310,7 +310,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                 textAlign={small ? 'center' : 'left'}
               >
                 <span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{devices && Object.keys(devices)?.length}</span><span>WLEDs</span>
-                {openRgbDevices.length > 1 && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{`${openRgbDevices.length}`}</span>OpenRGB Devices</>}
+                {openRgbDevices.length > 1 && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{openRgbDevices.length}</span>OpenRGB Devices</>}
                 {launchpadDevice !== '' && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>1</span>Launchpad</>}
               </Typography>}
             </div>

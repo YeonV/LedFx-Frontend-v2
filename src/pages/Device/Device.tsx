@@ -54,7 +54,7 @@ const Device = () => {
               flexShrink: 0,
               flexGrow: 1,
               maxWidth: '540px',
-              width: '100%',
+              width: '100%'
             }}
           >
             <EffectsCard virtId={virtId || ''} />
@@ -66,7 +66,7 @@ const Device = () => {
               flexShrink: 0,
               flexGrow: 1,
               maxWidth: '540px',
-              width: '100%',
+              width: '100%'
             }}
           >
             {effectType && presets && (

@@ -4,7 +4,7 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Backdrop,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import {
   Settings,
@@ -13,7 +13,7 @@ import {
   // SettingsInputSvideo,
   // SettingsInputComponent,
   Dashboard,
-  ElectricalServices,
+  ElectricalServices
 } from '@mui/icons-material'
 import { useLocation, Link } from 'react-router-dom'
 import useStore from '../../store/useStore'
@@ -110,12 +110,12 @@ export default function BarBottom() {
           transition: leftOpen
             ? theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
+                duration: theme.transitions.duration.enteringScreen
               })
             : theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-              }),
+                duration: theme.transitions.duration.leavingScreen
+              })
         }}
         showLabels
         style={{ bottom: botHeight, color: '#a1998e' }}
@@ -256,22 +256,22 @@ export default function BarBottom() {
           transition: leftOpen
             ? theme.transitions.create(['margin'], {
                 easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
+                duration: theme.transitions.duration.enteringScreen
               })
             : theme.transitions.create(['margin'], {
                 easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
+                duration: theme.transitions.duration.leavingScreen
               }),
           '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-            bottom: theme.spacing(2) + 25,
+            bottom: theme.spacing(2) + 25
           },
           '& > button.MuiFab-primary': {
-            backgroundColor: theme.palette.secondary.main,
+            backgroundColor: theme.palette.secondary.main
           },
           '& .MuiSpeedDialAction-staticTooltipLabel': {
             backgroundColor: 'transparent',
-            marginLeft: '-1rem',
-          },
+            marginLeft: '-1rem'
+          }
         }}
         className="step-four"
       />

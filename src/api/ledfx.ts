@@ -11,7 +11,7 @@ const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.sp
 const storedURL = window.localStorage.getItem('ledfx-host')
 
 const api = axios.create({
-  baseURL: storedURL || baseURL,
+  baseURL: storedURL || baseURL
 })
 
 // eslint-disable-next-line import/prefer-default-export
@@ -48,7 +48,7 @@ export const Ledfx = async (
             message:
               response.data.payload.reason ||
               response.data.payload.message ||
-              JSON.stringify(response.data.payload),
+              JSON.stringify(response.data.payload)
           }
         })
       )
@@ -67,7 +67,7 @@ export const Ledfx = async (
             message:
               response.payload.reason ||
               response.payload.message ||
-              JSON.stringify(response.payload),
+              JSON.stringify(response.payload)
           }
         })
       )
@@ -88,7 +88,7 @@ export const Ledfx = async (
         state.ui.snackbar = {
           isOpen: true,
           messageType: 'error',
-          message: response.error || JSON.stringify(response),
+          message: response.error || JSON.stringify(response)
         }
       })
     )
@@ -99,7 +99,7 @@ export const Ledfx = async (
           state.ui.snackbar = {
             isOpen: true,
             messageType: 'error',
-            message: JSON.stringify(error.message),
+            message: JSON.stringify(error.message)
           }
         })
       )
@@ -109,7 +109,7 @@ export const Ledfx = async (
         state.ui.snackbar = {
           isOpen: true,
           messageType: 'error',
-          message: JSON.stringify(error, null, 2),
+          message: JSON.stringify(error, null, 2)
         }
       })
     )

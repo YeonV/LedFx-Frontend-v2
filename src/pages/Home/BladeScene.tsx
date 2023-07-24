@@ -12,7 +12,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
     .reduce((obj, key) => {
       return {
         ...obj,
-        [key]: vs[key],
+        [key]: vs[key]
       }
     }, {})
 
@@ -120,7 +120,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
         textTransform: 'none',
         marginRight: small ? 0 : '1rem',
         width: small ? '80vw' : 'min(40vw, 550px)',
-        fontSize: '2rem',
+        fontSize: '2rem'
       }}
     >
       Add Blade Scene

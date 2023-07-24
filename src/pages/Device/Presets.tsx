@@ -10,7 +10,7 @@ import {
   Grid,
   Typography,
   TextField,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import { Add, Cloud } from '@mui/icons-material'
 import axios from 'axios'
@@ -20,7 +20,7 @@ import CloudScreen from './Cloud/Cloud'
 import PresetButton from './PresetButton'
 
 const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com',
+  baseURL: 'https://strapi.yeonv.com'
 })
 
 const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
@@ -42,15 +42,15 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       }`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
       }
     )
     const exists = await existing.data
     const eff = await cloud.get(`effects?ledfx_id=${effectType}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-      },
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`
+      }
     })
     const effId = await eff.data[0].id
     // console.log(exists, existing)
@@ -61,12 +61,12 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
           Name: list[preset].name,
           config: virtual.effect.config,
           effect: effId,
-          user: localStorage.getItem('ledfx-cloud-userid'),
+          user: localStorage.getItem('ledfx-cloud-userid')
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-          },
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+          }
         }
       )
     } else {
@@ -76,12 +76,12 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
           Name: list[preset].name,
           config: virtual.effect.config,
           effect: effId,
-          user: localStorage.getItem('ledfx-cloud-userid'),
+          user: localStorage.getItem('ledfx-cloud-userid')
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-          },
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+          }
         }
       )
     }
@@ -94,16 +94,16 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       }`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
       }
     )
     const exists = await existing.data
     if (exists.length && exists.length > 0) {
       cloud.delete(`presets/${exists[0].id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
       })
     }
   }
@@ -289,7 +289,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               marginLeft: '0.5rem',
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'flex-end',
+              alignItems: 'flex-end'
             }}
           >
             <Typography

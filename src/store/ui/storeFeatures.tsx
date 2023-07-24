@@ -49,7 +49,7 @@ const storeFeatures = (set: any) => ({
     sceneexternal: false,
     scenemidi: false,
     beta: false,
-    alpha: false,
+    alpha: false
   },
   showFeatures: {
     dev: false,
@@ -73,7 +73,7 @@ const storeFeatures = (set: any) => ({
     sceneexternal: false,
     scenemidi: false,
     beta: false,
-    alpha: false,
+    alpha: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(
@@ -90,7 +90,7 @@ const storeFeatures = (set: any) => ({
       }),
       false,
       'ui/setShowFeature'
-    ),
+    )
 })
 
 export default storeFeatures

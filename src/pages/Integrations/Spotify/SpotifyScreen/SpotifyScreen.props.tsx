@@ -27,7 +27,7 @@ export const SpotifyScreenDefaultProps = {
   variant: 'contained',
   innerKey: undefined,
   disabled: false,
-  size: 'small',
+  size: 'small'
 }
 
 export const Transition = React.forwardRef(function Transition(
@@ -38,7 +38,7 @@ export const Transition = React.forwardRef(function Transition(
 })
 
 Transition.defaultProps = {
-  children: <div>loading</div>,
+  children: <div>loading</div>
 }
 
 export const MuiMenuItem = React.forwardRef(

@@ -4,7 +4,7 @@ import {
   DataGrid,
   GridColDef,
   GridEventListener,
-  GridRenderCellParams,
+  GridRenderCellParams
 } from '@mui/x-data-grid'
 import { Card, CardMedia, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -28,19 +28,19 @@ const columns: GridColDef[] = [
     headerName: 'Image',
     width: 150,
     renderCell: (params: GridRenderCellParams) =>
-      sceneImage(params.value || 'Wallpaper'),
+      sceneImage(params.value || 'Wallpaper')
   },
   {
     field: 'name',
     headerName: 'Name',
-    width: 220,
+    width: 220
   },
   {
     field: 'used',
     type: 'number',
     headerName: 'Order',
-    width: 10,
-  },
+    width: 10
+  }
 ]
 
 export default function ScenesRecent({ scenes, activateScene, title }: any) {
@@ -72,7 +72,7 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
             pb: 0.5,
             border: '1px solid',
             borderColor: theme.palette.divider,
-            borderBottom: 0,
+            borderBottom: 0
           }}
         >
           {title}
@@ -87,26 +87,26 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
           disableRowSelectionOnClick
           rows={Object.values(theScenes).map((v: any, i: number) => ({
             id: i + 1,
-            ...v,
+            ...v
           }))}
           initialState={{
             // pagination: {
             //   pageSize: 100,
             // },
             sorting: {
-              sortModel: [{ field: 'used', sort: 'asc' }],
+              sortModel: [{ field: 'used', sort: 'asc' }]
             },
             columns: {
               columnVisibilityModel: {
                 id: false,
-                scene_tags: false,
-              },
-            },
+                scene_tags: false
+              }
+            }
           }}
           sx={{
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-              outline: 'none !important',
-            },
+              outline: 'none !important'
+            }
           }}
         />
       </Box>

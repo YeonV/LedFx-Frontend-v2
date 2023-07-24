@@ -20,7 +20,7 @@ const getMedia = async (clientDevice: MediaDeviceInfo) => {
   try {
     return await navigator.mediaDevices.getUserMedia({
       audio: audioSetting,
-      video: false,
+      video: false
     })
   } catch (err) {
     return console.log('Error:', err)
@@ -76,11 +76,11 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                 const request = {
                   data: {
                     sampleRate: scriptNode?.context?.sampleRate,
-                    bufferSize: scriptNode?.bufferSize,
+                    bufferSize: scriptNode?.bufferSize
                   },
                   client: webAudName,
                   id: i,
-                  type: 'audio_stream_config',
+                  type: 'audio_stream_config'
                 }
                 ;(ws as any).ws.send(JSON.stringify(++request.id && request))
               }
@@ -96,7 +96,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                     data: e.inputBuffer.getChannelData(0),
                     client: webAudName,
                     id: i,
-                    type: 'audio_stream_data',
+                    type: 'audio_stream_data'
                   }
                   ;(ws as any).ws.send(JSON.stringify(++request.id && request))
                 }
@@ -132,7 +132,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
               const request = {
                 client: webAudName,
                 id: i,
-                type: 'audio_stream_stop',
+                type: 'audio_stream_stop'
               }
               ;(ws as any).ws.send(JSON.stringify(++request.id && request))
             }
@@ -154,7 +154,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
               colorIndicator={webAud}
               style={{
                 position: 'relative',
-                transform: 'scale(0.8) translate(20%,-30%)',
+                transform: 'scale(0.8) translate(20%,-30%)'
               }}
             />
             <BladeIcon
@@ -162,7 +162,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
               colorIndicator={webAud}
               style={{
                 position: 'absolute',
-                transform: 'scale(0.7) translate(-20%,50%)',
+                transform: 'scale(0.7) translate(-20%,50%)'
               }}
             />
           </>
@@ -181,11 +181,11 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'center',
-          horizontal: 'left',
+          horizontal: 'left'
         }}
         transformOrigin={{
           vertical: 'center',
-          horizontal: 'right',
+          horizontal: 'right'
         }}
       >
         <div style={{ display: 'flex', margin: 20 }}>
@@ -216,7 +216,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                       data: {},
                       client: webAudName,
                       id: 1,
-                      type: 'audio_stream_start',
+                      type: 'audio_stream_start'
                     }
                     ;(ws as any).ws.send(
                       JSON.stringify(++request.id && request)

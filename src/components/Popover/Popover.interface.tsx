@@ -154,5 +154,5 @@ export const PopoverDefaults: PopoverProps = {
   style: {},
   popoverStyle: undefined,
   wrapperStyle: undefined,
-  type: 'button',
+  type: 'button'
 }

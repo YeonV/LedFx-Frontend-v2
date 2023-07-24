@@ -33,8 +33,8 @@ const storeConfig = (set: any) => ({
               devices: undefined,
               virtuals: undefined,
               integrations: undefined,
-              scenes: undefined,
-            },
+              scenes: undefined
+            }
           }
         }),
         false,
@@ -80,7 +80,7 @@ const storeConfig = (set: any) => ({
     await Ledfx('/api/config', 'PUT', config),
   deleteSystemConfig: async () => await Ledfx('/api/config', 'DELETE'),
   importSystemConfig: async (config: any) =>
-    await Ledfx('/api/config', 'POST', config),
+    await Ledfx('/api/config', 'POST', config)
 })
 
 export default storeConfig

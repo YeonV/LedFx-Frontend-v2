@@ -11,7 +11,7 @@ import {
   DialogActions,
   Dialog,
   MenuItem,
-  Select,
+  Select
 } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import useStore from '../../store/useStore'
@@ -21,19 +21,19 @@ const PREFIX = '_AddSegmentDialog'
 
 const classes = {
   root: `${PREFIX}-root`,
-  paper: `${PREFIX}-paper`,
+  paper: `${PREFIX}-paper`
 }
 
 const Root = styled('div')(({ theme }) => ({
   [`&.${classes.root}`]: {
     margin: '1rem auto',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
 
   [`& .${classes.paper}`]: {
     width: '80%',
-    maxHeight: 435,
-  },
+    maxHeight: 435
+  }
 }))
 
 function ConfirmationDialogRaw(props: any) {
@@ -100,12 +100,12 @@ ConfirmationDialogRaw.propTypes = {
   classes: PropTypes.any,
   id: PropTypes.string,
   keepMounted: PropTypes.bool,
-  deviceList: PropTypes.any,
+  deviceList: PropTypes.any
 }
 
 export default function ConfirmationDialog({
   virtual,
-  config = {},
+  config = {}
 }: {
   virtual: any
   config?: any
@@ -127,12 +127,12 @@ export default function ConfirmationDialog({
         ...deviceList[
           Object.keys(deviceList).find((d) => deviceList[d].id === newValue) ||
             0
-        ],
+        ]
       }
       if (device && device.config) {
         const temp = [
           ...virtual.segments,
-          [device.id, 0, device.config.pixel_count - 1, false],
+          [device.id, 0, device.config.pixel_count - 1, false]
         ]
         const test = temp.filter((t) => t.length === 4)
         updateSegments(virtual.id, test).then(() => {
@@ -166,7 +166,7 @@ export default function ConfirmationDialog({
 
           <ConfirmationDialogRaw
             classes={{
-              paper: classes.paper,
+              paper: classes.paper
             }}
             config={config}
             id="ringtone-menu"

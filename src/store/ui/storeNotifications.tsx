@@ -11,7 +11,7 @@ const storeNotifications = (set: any) => ({
       }),
       false,
       'setUpdateNotificationInterval'
-    ),
+    )
 })
 
 export default storeNotifications

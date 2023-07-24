@@ -9,7 +9,7 @@ const storeQLC = () => ({
   qlcWidgets: [] as any,
   qlc_widgets: {} as any,
   event_types: {} as any,
-  createQlcListener: {} as any,
+  createQlcListener: {} as any
 })
 
 export default storeQLC

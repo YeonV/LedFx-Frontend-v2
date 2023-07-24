@@ -59,7 +59,7 @@ function FrameWrapper() {
       style={{
         maxWidth: 640,
         width: '100%',
-        overflow: 'auto',
+        overflow: 'auto'
       }}
     />
   )
@@ -74,7 +74,7 @@ export default function Doc({
   color = 'inherit',
   variant = 'contained',
   onClick = () => {},
-  innerKey,
+  innerKey
 }: any) {
   const [open, setOpen] = React.useState(false)
   const theme = useTheme()
@@ -129,7 +129,7 @@ export default function Doc({
             position: 'relative',
             marginBottom: '1rem',
             background: theme.palette.background.default,
-            color: theme.palette.text.primary,
+            color: theme.palette.text.primary
           }}
         >
           <Toolbar>
@@ -147,7 +147,7 @@ export default function Doc({
               variant="h6"
               sx={{
                 marginLeft: theme.spacing(2),
-                flex: 1,
+                flex: 1
               }}
             >
               Documentation

@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/indent */
 // import DataRow from './DataRow';
 
-const IntegrationRow = ({ installedIntegrations, installedIntegration }: any) =>
+const IntegrationRow = ({
+  installedIntegrations,
+  installedIntegration
+}: any) =>
   installedIntegrations[installedIntegration] &&
   installedIntegrations[installedIntegration].data &&
   installedIntegrations[installedIntegration].data.length > 0

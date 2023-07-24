@@ -26,5 +26,5 @@ export interface EffectSchemaFormProps {
 
 export const EffectSchemaFormDefaultProps = {
   onModelChange: undefined,
-  selectedType: undefined,
+  selectedType: undefined
 }

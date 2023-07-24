@@ -11,7 +11,7 @@ import {
   Paper,
   Grid,
   Card,
-  Stack,
+  Stack
   // useTheme,
 } from '@mui/material'
 import {
@@ -19,7 +19,7 @@ import {
   MusicNote,
   Speed,
   Wallpaper,
-  Piano,
+  Piano
 } from '@mui/icons-material'
 import { getTrackFeatures } from '../../../../../../utils/spotifyProxies'
 import RadarChart from './SpRadarChart'
@@ -182,7 +182,7 @@ export default function SpAudioFeatures() {
               height: '250px',
               overflow: 'hidden',
               border: '1px solid rgb(102, 102, 102)',
-              borderRadius: 4,
+              borderRadius: 4
               // background: theme.palette.background.paper,
             }}
           >

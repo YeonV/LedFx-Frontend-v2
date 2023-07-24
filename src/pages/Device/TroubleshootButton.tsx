@@ -10,7 +10,7 @@ import {
   Divider,
   Icon,
   Grid,
-  CircularProgress,
+  CircularProgress
 } from '@mui/material'
 import { BugReport, NavigateBefore } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
@@ -18,12 +18,11 @@ import useTroubleshootStyles from './Troubleshoot.styles'
 import useStore from '../../store/useStore'
 import Wled from '../../components/Icons/Wled'
 
-const Transition = forwardRef<unknown, TransitionProps>(function Transition(
-  props,
-  ref
-) {
-  return <Slide direction="up" ref={ref} {...(props as any)} />
-})
+const Transition = forwardRef<unknown, TransitionProps>(
+  function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...(props as any)} />
+  }
+)
 
 const Row = ({ name, value }: { name: string; value: any }) => {
   const classes = useTroubleshootStyles()
@@ -36,7 +35,7 @@ const Row = ({ name, value }: { name: string; value: any }) => {
 }
 
 export default function TroubleshootButton({
-  virtual,
+  virtual
 }: any): JSX.Element | null {
   const classes = useTroubleshootStyles()
   const devices = useStore((state) => state.devices)
@@ -124,7 +123,7 @@ export default function TroubleshootButton({
               style={{
                 width: 'calc(max(38.5vw, 480px))',
                 paddingLeft: '0.5rem',
-                margin: '0 auto',
+                margin: '0 auto'
               }}
             >
               <Grid item xs={12} lg={6}>
@@ -134,7 +133,7 @@ export default function TroubleshootButton({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    fontSize: '1.5rem',
+                    fontSize: '1.5rem'
                   }}
                 >
                   <Icon style={{ marginRight: '0.7rem' }}>

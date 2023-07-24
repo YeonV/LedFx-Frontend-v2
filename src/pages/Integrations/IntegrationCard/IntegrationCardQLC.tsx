@@ -15,7 +15,7 @@ import {
   Switch,
   Link,
   useTheme,
-  Avatar,
+  Avatar
 } from '@mui/material'
 import { InsertLink, QuestionMark } from '@mui/icons-material'
 import Popover from '../../../components/Popover/Popover'
@@ -55,7 +55,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
   }
   const handleActivateIntegration = (integ: any) => {
     toggleIntegration({
-      id: integ.id,
+      id: integ.id
     }).then(() => getIntegrations())
   }
 
@@ -99,11 +99,11 @@ const IntegrationCardQLC = ({ integration }: any) => {
               transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
               marginLeft: 'auto',
               transition: theme.transitions.create('transform', {
-                duration: theme.transitions.duration.shortest,
+                duration: theme.transitions.duration.shortest
               }),
               '@media (max-width: 580px)': {
-                display: 'block',
-              },
+                display: 'block'
+              }
             }}
             onClick={handleExpandClick}
             aria-expanded={expanded}

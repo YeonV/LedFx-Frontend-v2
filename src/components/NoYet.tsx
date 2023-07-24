@@ -17,11 +17,11 @@ const NoYet: React.FC<NoYetProps> = ({ type }): JSX.Element => (
 )
 
 NoYet.propTypes = {
-  type: PropTypes.string,
+  type: PropTypes.string
 }
 
 NoYet.defaultProps = {
-  type: 'Thing',
+  type: 'Thing'
 }
 
 export default NoYet

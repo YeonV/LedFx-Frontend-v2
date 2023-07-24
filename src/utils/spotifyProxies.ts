@@ -18,7 +18,7 @@ const redirectUrl = `${
 }/callback/#/Integrations?`
 
 axios.create({
-  baseURL: redirectUrl,
+  baseURL: redirectUrl
 })
 
 const apiCredentials = {
@@ -41,8 +41,8 @@ const apiCredentials = {
     'user-read-recently-played',
     // Library
     'user-library-read',
-    'user-library-modify',
-  ],
+    'user-library-modify'
+  ]
 }
 
 export const finishAuth = async () => {
@@ -55,10 +55,10 @@ export const finishAuth = async () => {
     grant_type: 'authorization_code',
     code: params,
     redirect_uri: apiCredentials.REDIRECT_URL,
-    code_verifier: cookies.get('verifier'),
+    code_verifier: cookies.get('verifier')
   }
   const config = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   }
   return axios
     .post(
@@ -83,7 +83,7 @@ export const finishAuth = async () => {
       refreshExpDate.setDate(refreshExpDate.getDate() + 7)
       cookies.remove('refresh_token')
       cookies.set('refresh_token', res.data.refresh_token, {
-        expires: refreshExpDate,
+        expires: refreshExpDate
       })
       tokens.refreshToken = res.data.refresh_token
       cookies.remove('verifier')
@@ -101,10 +101,10 @@ export function refreshAuth() {
   const postData = {
     client_id: '7658827aea6f47f98c8de593f1491da5',
     grant_type: 'refresh_token',
-    refresh_token: rT,
+    refresh_token: rT
   }
   const config = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   }
   return axios
     .post(
@@ -125,7 +125,7 @@ export function refreshAuth() {
       refreshExpDate.setDate(refreshExpDate.getDate() + 7)
       cookies.remove('refresh_token', { path: '/integrations' })
       cookies.set('refresh_token', res.data.refresh_token, {
-        expires: refreshExpDate,
+        expires: refreshExpDate
       })
       freshTokens.refreshToken = res.data.refreshToken
 
@@ -154,8 +154,8 @@ export async function spotifyMe() {
   const cookies = new Cookies()
   const res = await axios.get('https://api.spotify.com/v1/me', {
     headers: {
-      Authorization: `Bearer ${cookies.get('access_token')}`,
-    },
+      Authorization: `Bearer ${cookies.get('access_token')}`
+    }
   })
   if (res.status === 200) {
     return res.data
@@ -170,8 +170,8 @@ export async function spotifyPause() {
     {},
     {
       headers: {
-        Authorization: `Bearer ${cookies.get('access_token')}`,
-      },
+        Authorization: `Bearer ${cookies.get('access_token')}`
+      }
     }
   )
   if (res.status === 200) {
@@ -188,8 +188,8 @@ export async function spotifyPlay(deviceId: string) {
       { device_ids: [deviceId], play: true },
       {
         headers: {
-          Authorization: `Bearer ${cookies.get('access_token')}`,
-        },
+          Authorization: `Bearer ${cookies.get('access_token')}`
+        }
       }
     )
     if (res.status === 200) {
@@ -208,8 +208,8 @@ export async function spotifyPlayOnly(deviceId: string) {
     {},
     {
       headers: {
-        Authorization: `Bearer ${cookies.get('access_token')}`,
-      },
+        Authorization: `Bearer ${cookies.get('access_token')}`
+      }
     }
   )
   if (res.status === 200) {
@@ -232,12 +232,12 @@ export async function spotifyPlaySong(
         uris: context ? undefined : [`spotify:track:${id}`],
         position_ms: position_ms || 0,
         context_uri: context && context !== '' ? context : undefined,
-        offset: context ? { uri: `spotify:track:${id}` } : undefined,
+        offset: context ? { uri: `spotify:track:${id}` } : undefined
       },
       {
         headers: {
-          Authorization: `Bearer ${cookies.get('access_token')}`,
-        },
+          Authorization: `Bearer ${cookies.get('access_token')}`
+        }
       }
     )
     if (res.status === 200) {
@@ -259,8 +259,8 @@ export async function spotifyRepeat(deviceId: string, mode: number) {
     {},
     {
       headers: {
-        Authorization: `Bearer ${cookies.get('access_token')}`,
-      },
+        Authorization: `Bearer ${cookies.get('access_token')}`
+      }
     }
   )
   if (res.status === 200) {
@@ -277,8 +277,8 @@ export async function spotifyShuffle(deviceId: string, state: any) {
     {},
     {
       headers: {
-        Authorization: `Bearer ${cookies.get('access_token')}`,
-      },
+        Authorization: `Bearer ${cookies.get('access_token')}`
+      }
     }
   )
   if (res.status === 200) {
@@ -303,8 +303,8 @@ export async function getTrackFeatures(id: string, token: string) {
     `https://api.spotify.com/v1/audio-features/${id}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     }
   )
   if (res.status === 200) {
@@ -318,8 +318,8 @@ export async function getTrackAnalysis(id: string, token: string) {
     `https://api.spotify.com/v1/audio-analysis/${id}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     }
   )
   if (res.status === 200) {
@@ -360,8 +360,8 @@ export async function getPlaylist(id: string, token: string) {
     `https://api.spotify.com/v1/playlists/${id}/tracks`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     }
   )
   if (res.status === 200) {
@@ -373,8 +373,8 @@ export async function getPlaylist(id: string, token: string) {
 export async function getPlaylistB(id: string, token: string) {
   const res = await axios.get(`https://api.spotify.com/v1/playlists/${id}`, {
     headers: {
-      Authorization: `Bearer ${token}`,
-    },
+      Authorization: `Bearer ${token}`
+    }
   })
   if (res.status === 200) {
     return res.data

@@ -6,7 +6,7 @@ const useStyles = makeStyles(() => ({
     // backgroundColor: 'rgb(57, 57, 61)',
     paddingLeft: '0.5rem',
     borderRadius: '5px',
-    paddingTop: '3px',
+    paddingTop: '3px'
   },
   wrapper: {
     // minWidth: '220px',
@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     margin: '0.5rem 0',
     '@media (max-width: 580px)': {
-      width: '100% !important',
+      width: '100% !important'
     },
     '& > label': {
       top: '-0.75rem',
@@ -31,12 +31,12 @@ const useStyles = makeStyles(() => ({
       fontVariant: 'all-small-caps',
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
-      boxSizing: 'border-box',
+      boxSizing: 'border-box'
     },
     '& .sortable-handler': {
-      touchAction: 'none',
-    },
-  },
+      touchAction: 'none'
+    }
+  }
 }))
 
 export default useStyles

@@ -11,14 +11,14 @@ export default {
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
-  },
+      panelPosition: 'bottom'
+    }
+  }
 } as ComponentMeta<typeof BladeBoolean>
 
 // eslint-disable-next-line
@@ -34,8 +34,8 @@ Boolean.args = {
   onClick: undefined,
   schema: {
     title: 'Check me',
-    description: 'some nice description',
+    description: 'some nice description'
   },
   model: undefined,
-  model_id: undefined,
+  model_id: undefined
 }

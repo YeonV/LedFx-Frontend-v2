@@ -8,7 +8,7 @@ import {
   VolumeMute,
   VolumeUp,
   PauseCircle,
-  PlayCircle,
+  PlayCircle
 } from '@mui/icons-material'
 import { Button, Box, IconButton, Slider } from '@mui/material'
 import { useState, useContext } from 'react'
@@ -18,14 +18,14 @@ import { formatTime } from '../../../../../utils/helpers'
 import {
   spotifyRepeat,
   spotifyShuffle,
-  spotifyPlay,
+  spotifyPlay
 } from '../../../../../utils/spotifyProxies'
 import SpSceneTrigger from './SpSceneTrigger'
 import {
   SpotifyControlContext,
   SpotifyStateContext,
   SpotifyTriggersContext,
-  SpotifyVolumeContext,
+  SpotifyVolumeContext
 } from '../../SpotifyProvider'
 
 export default function SpControls({ className }: any) {
@@ -47,7 +47,7 @@ export default function SpControls({ className }: any) {
 
   const marks = triggers?.map(({ position_ms, sceneName }) => ({
     value: position_ms,
-    label: sceneName,
+    label: sceneName
   }))
 
   return (
@@ -66,7 +66,7 @@ export default function SpControls({ className }: any) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              mt: -1,
+              mt: -1
             }}
           >
             <div className="showTablet">
@@ -140,7 +140,7 @@ export default function SpControls({ className }: any) {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
             <TinyText>{formatTime(spotifyCtx?.position ?? 0)}</TinyText>

@@ -12,22 +12,22 @@ export default {
   component: DropDown,
   argTypes: {
     type: {
-      control: false,
-    },
+      control: false
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
-  },
+      panelPosition: 'bottom'
+    }
+  }
 } as ComponentMeta<typeof DropDown>
 
 // eslint-disable-next-line
@@ -43,22 +43,22 @@ GroupedDropdown.args = {
       {
         name: 'Item 1',
         id: 'item11',
-        category: 'Group 1',
+        category: 'Group 1'
       },
       {
         name: 'Item2',
         id: 'item12',
-        category: 'Group 1',
-      },
+        category: 'Group 1'
+      }
     ],
     'Group 2': [
       {
         name: 'Item 1',
         id: 'item21',
-        category: 'Group 2',
-      },
-    ],
+        category: 'Group 2'
+      }
+    ]
   },
   value: 'item11',
-  onChange: undefined,
+  onChange: undefined
 }

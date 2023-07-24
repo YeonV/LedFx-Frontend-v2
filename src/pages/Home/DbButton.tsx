@@ -4,7 +4,7 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 const DbButton = ({
   onClick,
   icon,
-  text,
+  text
 }: {
   onClick: (e: any) => typeof e
   icon: string | undefined
@@ -26,8 +26,8 @@ const DbButton = ({
         justifyContent: 'flex-start',
         ml: 1,
         '& .MuiButton-startIcon': {
-          mr: 3,
-        },
+          mr: 3
+        }
       }}
     >
       {text}

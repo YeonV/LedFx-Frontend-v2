@@ -9,7 +9,7 @@ import {
   Typography,
   Grid,
   Chip,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
@@ -22,25 +22,25 @@ import ScenesMenu from './ScenesMenu'
 
 const useStyles = makeStyles({
   root: {
-    width: 'min(92vw, 345px)',
+    width: 'min(92vw, 345px)'
   },
   sceneTitle: {
     fontSize: '1.1rem',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    textOverflow: 'ellipsis'
   },
   '@media (max-width: 580px)': {
     root: {
-      width: '95vw',
+      width: '95vw'
     },
     sceneTitle: {
       fontSize: '1rem',
-      cursor: 'default',
-    },
+      cursor: 'default'
+    }
   },
   media: {
-    height: 140,
+    height: 140
   },
   iconMedia: {
     height: 140,
@@ -49,9 +49,9 @@ const useStyles = makeStyles({
     margin: '0 auto',
     fontSize: 100,
     '& > span:before': {
-      position: 'relative',
-    },
-  },
+      position: 'relative'
+    }
+  }
 })
 
 const Scenes = () => {
@@ -95,7 +95,7 @@ const Scenes = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: 'column',
+          flexDirection: 'column'
         }}
       >
         {scenes && Object.keys(scenes).length && features.scenetables ? (
@@ -169,7 +169,7 @@ const Scenes = () => {
                       mr: 1,
                       cursor: sceneActiveTags.includes(t)
                         ? 'zoom-out'
-                        : 'zoom-in',
+                        : 'zoom-in'
                     }}
                     key={t}
                     label={t}
@@ -189,10 +189,11 @@ const Scenes = () => {
       >
         {scenes && Object.keys(scenes).length ? (
           (sceneActiveTags.length
-            ? Object.keys(scenes).filter((sc) =>
-                scenes[sc].scene_tags
-                  ?.split(',')
-                  .some((sce: string) => sceneActiveTags.includes(sce))
+            ? Object.keys(scenes).filter(
+                (sc) =>
+                  scenes[sc].scene_tags
+                    ?.split(',')
+                    .some((sce: string) => sceneActiveTags.includes(sce))
               )
             : Object.keys(scenes)
           ).map((s, i) => {
@@ -207,7 +208,7 @@ const Scenes = () => {
                   className={classes.root}
                   sx={{
                     border: '1px solid',
-                    borderColor: theme.palette.divider,
+                    borderColor: theme.palette.divider
                   }}
                 >
                   <CardActionArea
@@ -228,7 +229,7 @@ const Scenes = () => {
                                 cursor: 'pointer',
                                 backgroundColor: theme.palette.background.paper,
                                 border: '1px solid',
-                                borderColor: theme.palette.text.disabled,
+                                borderColor: theme.palette.text.disabled
                               }}
                             />
                           )
@@ -239,7 +240,7 @@ const Scenes = () => {
                     style={{
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      width: '100%',
+                      width: '100%'
                     }}
                   >
                     <Typography

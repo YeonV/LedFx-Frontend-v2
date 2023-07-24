@@ -108,13 +108,13 @@ const UICard = () => {
                 )
               }}
               sx={{
-                '& input': { textAlign: 'right' },
+                '& input': { textAlign: 'right' }
               }}
               inputProps={{
                 min: 1,
                 max: 60,
                 type: 'number',
-                'aria-labelledby': 'input-slider',
+                'aria-labelledby': 'input-slider'
               }}
             />
           </SettingsRow>
@@ -148,13 +148,13 @@ const UICard = () => {
                 )
               }
               sx={{
-                '& input': { textAlign: 'right' },
+                '& input': { textAlign: 'right' }
               }}
               inputProps={{
                 min: 1,
                 max: 300,
                 type: 'number',
-                'aria-labelledby': 'input-slider',
+                'aria-labelledby': 'input-slider'
               }}
             />
           </SettingsRow>
@@ -190,13 +190,13 @@ const UICard = () => {
             setSystemSetting('global_brightness', parseInt(e.target.value, 10))
           }}
           sx={{
-            '& input': { textAlign: 'right' },
+            '& input': { textAlign: 'right' }
           }}
           inputProps={{
             min: 0,
             max: 100,
             type: 'number',
-            'aria-labelledby': 'input-slider',
+            'aria-labelledby': 'input-slider'
           }}
         />
       </SettingsRow>
@@ -223,13 +223,13 @@ const UICard = () => {
             setUpdateNotificationInterval(parseInt(e.target.value, 10))
           }}
           sx={{
-            '& input': { textAlign: 'right' },
+            '& input': { textAlign: 'right' }
           }}
           inputProps={{
             min: 1,
             max: 4320,
             type: 'number',
-            'aria-labelledby': 'input-slider',
+            'aria-labelledby': 'input-slider'
           }}
         />
       </SettingsRow>

@@ -15,21 +15,21 @@ export const EffectDropDownDefaultProps = {
       {
         name: 'Item 1',
         id: 'item1',
-        category: 'Group 1',
+        category: 'Group 1'
       },
       {
         name: 'Item2',
         id: 'item2',
-        category: 'Group 1',
-      },
+        category: 'Group 1'
+      }
     ],
     'Group 2': [
       {
         name: 'Item 1',
         id: 'item11',
-        category: 'Group 2',
-      },
-    ],
+        category: 'Group 2'
+      }
+    ]
   },
-  showFilter: false,
+  showFilter: false
 }

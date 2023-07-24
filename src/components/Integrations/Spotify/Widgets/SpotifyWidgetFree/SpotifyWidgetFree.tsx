@@ -7,7 +7,7 @@ const SpotifyWidgetFree = ({
   spotifyExpanded,
   setSpotifyExpanded,
   spotifyURL,
-  setSpotifyURL,
+  setSpotifyURL
 }: any) => {
   return (
     <>
@@ -17,7 +17,7 @@ const SpotifyWidgetFree = ({
           display: 'flex',
           bottom: spotifyExpanded ? 258 : 38,
           right: 36,
-          zIndex: 2,
+          zIndex: 2
         }}
       >
         <SpotifyChangeURLDialog

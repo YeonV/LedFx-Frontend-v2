@@ -9,26 +9,26 @@ const useStyles = makeStyles(() => ({
     maxWidth: '308px',
     overflow: 'auto',
     '& .gradient-result': {
-      display: 'none',
+      display: 'none'
     },
     '& .input_rgba': {
-      display: 'none',
+      display: 'none'
     },
     '& .gradient-interaction': {
       order: -1,
-      marginBottom: '1rem',
+      marginBottom: '1rem'
     },
     '& .colorpicker': {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column'
     },
     '& .color-picker-panel, & .popup_tabs-header, & .popup_tabs, & .colorpicker, & .colorpicker .color-picker-panel, & .popup_tabs-header .popup_tabs-header-label-active':
       {
-        backgroundColor: 'transparent',
+        backgroundColor: 'transparent'
       },
     '& .popup_tabs-body': {
-      paddingBottom: 4,
-    },
+      paddingBottom: 4
+    }
   },
   addButton: {
     width: 69,
@@ -42,15 +42,15 @@ const useStyles = makeStyles(() => ({
     margin: '0 auto',
     cursor: 'pointer',
     '&:hover': {
-      borderColor: '#fff',
-    },
+      borderColor: '#fff'
+    }
   },
   picker: {
     height: '30px',
     margin: '15px 10px 10px 10px',
     borderRadius: '10px',
     cursor: 'pointer',
-    border: '1px solid #fff',
+    border: '1px solid #fff'
   },
   wrapper: {
     border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -69,9 +69,9 @@ const useStyles = makeStyles(() => ({
       fontVariant: 'all-small-caps',
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
-      boxSizing: 'border-box',
-    },
-  },
+      boxSizing: 'border-box'
+    }
+  }
 }))
 
 export default useStyles

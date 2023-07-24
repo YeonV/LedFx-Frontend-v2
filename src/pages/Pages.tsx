@@ -3,7 +3,7 @@ import {
   HashRouter as Router,
   BrowserRouter,
   Routes,
-  Route,
+  Route
 } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
@@ -64,12 +64,12 @@ const Routings = ({ handleWs }: any) => {
               : theme.transitions.easing.sharp,
             duration: leftBarOpen
               ? theme.transitions.duration.enteringScreen
-              : theme.transitions.duration.leavingScreen,
+              : theme.transitions.duration.leavingScreen
           }),
           marginLeft: leftBarOpen ? 0 : `-${drawerWidth}px`,
           '@media (max-width: 580px)': {
-            padding: '8px',
-          },
+            padding: '8px'
+          }
         }}
       >
         <Box
@@ -78,7 +78,7 @@ const Routings = ({ handleWs }: any) => {
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: theme.spacing(0, 1),
-            ...theme.mixins.toolbar,
+            ...theme.mixins.toolbar
           }}
         />
         <Routes>

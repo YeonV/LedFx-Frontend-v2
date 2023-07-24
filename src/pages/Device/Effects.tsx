@@ -10,7 +10,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-  Box,
+  Box
 } from '@mui/material'
 import {
   Clear,
@@ -18,7 +18,7 @@ import {
   Pause,
   PlayArrow,
   GridOn,
-  GridOff,
+  GridOff
 } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
@@ -51,7 +51,7 @@ const orderEffectProperties = (
       })
       .map((sk) => ({
         ...schema.properties[sk],
-        id: sk,
+        id: sk
       }))
   const ordered = [] as any[]
   configOrder.forEach((type) => {
@@ -110,9 +110,12 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       setTimeout(() => {
         getVirtuals()
       }, virtual.config.transition_time * 1000)
-      setTimeout(() => {
-        setFade(false)
-      }, virtual.config.transition_time * 1000 + 300)
+      setTimeout(
+        () => {
+          setFade(false)
+        },
+        virtual.config.transition_time * 1000 + 300
+      )
     })
   }
 
@@ -146,8 +149,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
         variant="outlined"
         sx={{
           '& > .MuiCardContent-root': {
-            pb: '0.25rem',
-          },
+            pb: '0.25rem'
+          }
         }}
       >
         <CardContent>
@@ -155,7 +158,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             style={{
               display: 'flex',
               flexDirection: 'column-reverse',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
             <h1>{virtual && virtual.config.name}</h1>
@@ -163,7 +166,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'flex-end',
+                justifyContent: 'flex-end'
               }}
             >
               {effects && effectType && (
@@ -211,15 +214,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 ? {
                     opacity: 0.2,
                     transition: 'opacity',
-                    transitionDuration: '1000',
+                    transitionDuration: '1000'
                   }
                 : {
                     opacity: 1,
-                    transitionDuration: '0',
+                    transitionDuration: '0'
                   }
             }
             style={{
-              transitionDuration: `${virtual.config.transition_time * 1000}`,
+              transitionDuration: `${virtual.config.transition_time * 1000}`
             }}
           >
             <PixelGraph

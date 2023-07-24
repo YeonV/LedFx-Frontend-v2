@@ -8,22 +8,22 @@ export default {
   component: BladeSelect,
   argTypes: {
     type: {
-      control: false,
-    },
+      control: false
+    }
   },
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
         <CardContent>{Story()}</CardContent>
       </Card>
-    ),
+    )
   ],
   parameters: {
     options: {
       showPanel: true,
-      panelPosition: 'bottom',
-    },
-  },
+      panelPosition: 'bottom'
+    }
+  }
 } as ComponentMeta<typeof BladeSelect>
 
 // eslint-disable-next-line
@@ -36,7 +36,7 @@ String.args = {
     default: 'UDP',
     enum: ['UDP', 'DDP', 'E131'],
     title: 'Sync Mode',
-    type: 'string',
+    type: 'string'
   },
   model: {},
   model_id: '',
@@ -48,5 +48,5 @@ String.args = {
   textStyle: undefined,
   menuItemStyle: undefined,
   hideDesc: false,
-  children: undefined,
+  children: undefined
 }
