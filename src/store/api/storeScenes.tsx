@@ -111,6 +111,7 @@ const storeScenes = (set: any) => ({
     scene_tags?: string,
     scene_puturl?: string,
     scene_payload?: string,
+    scene_midiactivate?: string,
     virtuals?: Record<string, any>
   ) =>
     virtuals
@@ -120,6 +121,7 @@ const storeScenes = (set: any) => ({
           scene_tags,
           scene_puturl,
           scene_payload,
+          scene_midiactivate,
           virtuals,
         })
       : await Ledfx('/api/scenes', 'POST', {
@@ -128,6 +130,7 @@ const storeScenes = (set: any) => ({
           scene_tags,
           scene_puturl,
           scene_payload,
+          scene_midiactivate,
         }),
   activateScene: async (id: string) => {
     set(
