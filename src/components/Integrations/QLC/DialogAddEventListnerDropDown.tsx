@@ -1,11 +1,10 @@
 import React from 'react'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-import FormHelperText from '@mui/material/FormHelperText'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Slider, Switch } from '@mui/material'
+import { InputAdornment, Slider, Switch } from '@mui/material'
 
 const marks = [
   { value: 1, label: '1' },
@@ -39,9 +38,23 @@ const ThisDropDown: React.FC<DropDownProps> = (props) => {
   } = props
   return (
     <>
-      <FormControl>
-        <InputLabel htmlFor="grouped-select">Then Do This</InputLabel>
+      <FormControl fullWidth sx={{ mt: 2 }}>
+        <InputLabel htmlFor="grouped-select">Action</InputLabel>
         <Select
+          fullWidth
+          endAdornment={
+            <InputAdornment
+              position="end"
+              sx={{ mr: 2, cursor: 'pointer' }}
+              onClick={(e) => {
+                e.preventDefault()
+                handleTypeRemoveDropDown(idx)
+              }}
+            >
+              <DeleteIcon />
+            </InputAdornment>
+          }
+          variant="outlined"
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           name="qlc_payload"
@@ -56,16 +69,7 @@ const ThisDropDown: React.FC<DropDownProps> = (props) => {
               </MenuItem>
             ))}
         </Select>
-        <FormHelperText>Some important helper text</FormHelperText>
       </FormControl>
-      <button
-        type="button"
-        // variant="contained"
-        color="primary"
-        onClick={() => handleTypeRemoveDropDown(idx)}
-      >
-        <DeleteIcon />
-      </button>
       <div style={{ minWidth: '150px' }} />
       {showSwitch && <label>QLC+ widget selected above (On/Off) </label>}
       {showSwitch && (
