@@ -25,9 +25,11 @@ import {
   Stack,
   InputLabel,
   FormControl,
-  IconButton
+  Avatar,
+  useMediaQuery,
+  Autocomplete
 } from '@mui/material'
-import { Clear, Undo, NavigateBefore } from '@mui/icons-material'
+import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 import { filterKeys, ordered } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
@@ -48,6 +50,9 @@ const EditSceneDialog = () => {
   const [lp, setLp] = useState(undefined as any)
   const [disabledPSelector, setDisabledPSelector] = useState([] as string[])
   const [scVirtualsToIgnore, setScVirtualsToIgnore] = useState<string[]>([])
+  const medium = useMediaQuery('(max-width: 920px )')
+  const small = useMediaQuery('(max-width: 580px )')
+  const xsmall = useMediaQuery('(max-width: 480px )')
 
   const { user_presets } = useStore((state) => state.config)
   const { effects } = useStore((state) => state.schemas)
@@ -76,10 +81,11 @@ const EditSceneDialog = () => {
         <CardMedia
           style={{
             height: tags?.split(',')[0].length > 0 ? 140 : 125,
-            width: 334,
+            maxWidth: 334,
+            width: small ? '100%' : 334,
             marginTop: '1rem'
           }}
-          image={iconName.split('image:')[1]}
+          image={iconName?.split('image:')[1]}
           title="Contemplative Reptile"
         />
       </div>
@@ -89,7 +95,8 @@ const EditSceneDialog = () => {
           scene
           style={{
             height: 140,
-            width: 334,
+            maxWidth: 334,
+            width: small ? '100%' : 334,
             display: 'flex',
             alignItems: 'center',
             margin: `${tags?.split(',')[0].length > 0 ? 0 : '1.25rem'} auto 0`,
@@ -393,8 +400,15 @@ const EditSceneDialog = () => {
             </ul>
           </>
         )}
-        <div style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}>
-          <div style={{ flexGrow: 1, paddingRight: '2rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            margin: '0 auto',
+            maxWidth: '960px',
+            flexDirection: medium ? 'column-reverse' : 'row'
+          }}
+        >
+          <div style={{ flexGrow: 1, paddingRight: medium ? 0 : '2rem' }}>
             <TextField
               sx={{ mt: data ? '2rem' : '' }}
               autoFocus
@@ -425,21 +439,51 @@ const EditSceneDialog = () => {
               fullWidth
             />
 
-            <TextField
-              margin="dense"
-              id="scene_tags"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <TooltipTags />
-                  </InputAdornment>
+            <Autocomplete
+              onChange={(e, a) => setTags(a.join(','))}
+              multiple
+              limitTags={4}
+              id="tags"
+              options={
+                Object.values(scenes)
+                  .flatMap((s: any) => s.scene_tags?.split(','))
+                  .filter((n) => !!n) || []
+              }
+              defaultValue={tags?.split(',').filter((n) => !!n) || []}
+              freeSolo
+              renderTags={(value: readonly string[], getTagProps) =>
+                value.map(
+                  (option: string, index: number) =>
+                    option &&
+                    option.length > 0 && (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        {...getTagProps({ index })}
+                      />
+                    )
                 )
-              }}
-              label="Tags"
-              type="tags"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              fullWidth
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Tags"
+                  sx={{
+                    mt: '0.5rem',
+                    mb: '0.5rem',
+                    '& .MuiInputBase-root': { pr: '9px !important' }
+                  }}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <InputAdornment position="end" sx={{ mr: '5px' }}>
+                        <TooltipTags />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
             />
             {features.sceneexternal ? (
               <div
@@ -474,8 +518,8 @@ const EditSceneDialog = () => {
             )}
             {features && features.scenemidi && WebMidi.inputs.length > 0 ? (
               <>
-                <Stack direction="row" gap={1}>
-                  <FormControl sx={{ mt: 1, width: '130px' }}>
+                <Stack direction={small ? 'column' : 'row'} gap={1}>
+                  <FormControl sx={{ mt: 1, width: small ? '100%' : '130px' }}>
                     <InputLabel id="midi-label">Connected To</InputLabel>
                     <Select
                       variant="outlined"
@@ -493,6 +537,7 @@ const EditSceneDialog = () => {
                     id="latest_note_on"
                     label="MIDI Note to activate scene"
                     error={
+                      midiActivate !== null &&
                       midiActivate !== '' &&
                       Object.keys(scenes)
                         .filter(
@@ -505,6 +550,7 @@ const EditSceneDialog = () => {
                         )
                     }
                     helperText={
+                      midiActivate !== null &&
                       midiActivate !== '' &&
                       Object.keys(scenes)
                         .filter(
@@ -539,9 +585,16 @@ const EditSceneDialog = () => {
                       )
                     }
                     type="text"
-                    value={midiActivate}
+                    // value={midiActivate}
                     fullWidth
                     disabled
+                    sx={{
+                      color: 'transparent',
+                      '& input': {
+                        width: xsmall ? '5px' : '100%',
+                        height: xsmall ? '5rem' : ''
+                      }
+                    }}
                     InputLabelProps={{ shrink: true }}
                     InputProps={{
                       endAdornment: (
@@ -550,10 +603,64 @@ const EditSceneDialog = () => {
                         </InputAdornment>
                       ),
                       startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton onClick={() => setMIDIActivate('')}>
-                            <Clear />
-                          </IconButton>
+                        <InputAdornment
+                          position="start"
+                          sx={{
+                            flexWrap: xsmall ? 'wrap' : '',
+                            mt: xsmall ? -8 : ''
+                          }}
+                        >
+                          {midiActivate?.split(' ')?.length > 1 && (
+                            <>
+                              <Chip
+                                label={midiActivate
+                                  ?.split(' ')[0]
+                                  .replace('MIDI', '')}
+                                avatar={
+                                  <Avatar>
+                                    <BladeIcon name="mdi:midi" />
+                                  </Avatar>
+                                }
+                              />
+                              {/* <Chip
+                            label={/\((.*?)\)/.exec(midiActivate)?.[1]}
+                            onDelete={() => setMIDIActivate('')}
+                            avatar={
+                              <Avatar>
+                                {/\((.*?)\)/.exec(midiActivate)?.[1]}
+                              </Avatar>
+                            }
+                          /> */}
+                              <Chip
+                                label={
+                                  midiActivate
+                                    ?.split('Note: ')[1]
+                                    ?.split(' ')[0]
+                                }
+                                avatar={
+                                  <Avatar>
+                                    <MusicNote />
+                                  </Avatar>
+                                }
+                              />
+                              <Chip
+                                // onDelete={() => setMIDIActivate('')}
+                                label={
+                                  midiActivate
+                                    ?.split('buttonNumber: ')[1]
+                                    ?.split(' ')[0]
+                                }
+                                avatar={<Avatar>No</Avatar>}
+                              />
+                              <Chip
+                                onDelete={() => setMIDIActivate('')}
+                                label={/\((.*?)\)/
+                                  .exec(midiActivate)?.[1]
+                                  .replace('MIDI', '')}
+                                icon={<BladeIcon name="mdi:midi" />}
+                              />
+                            </>
+                          )}
                         </InputAdornment>
                       )
                     }}
@@ -579,7 +686,7 @@ const EditSceneDialog = () => {
             {scenes &&
             Object.keys(scenes).length &&
             features.scenechips &&
-            tags?.split(',')[0].length > 0 ? (
+            tags?.split(',').length > 0 ? (
               <div
                 style={{
                   display: 'flex',

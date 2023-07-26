@@ -8,6 +8,7 @@ const DevicesSection = () => {
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const showMatrix = useStore((state) => state.showMatrix)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
+  const features = useStore((state) => state.features)
 
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
@@ -31,13 +32,15 @@ const DevicesSection = () => {
         onChange={() => toggleGraphsMulti()}
         direct
       />
-      <SettingsRow
-        disabled={!graphs}
-        title="Show Matrix on Devices page"
-        checked={showMatrix}
-        onChange={() => toggleShowMatrix()}
-        direct
-      />
+      {features.beta && (
+        <SettingsRow
+          disabled={!graphs}
+          title="Show Matrix on Devices page (beta)"
+          checked={showMatrix}
+          onChange={() => toggleShowMatrix()}
+          direct
+        />
+      )}
 
       <SettingsRow
         title="Sort active devices first"

@@ -55,11 +55,11 @@ const storeActions = (set: any) => ({
         config: {
           center_offset: 0,
           refresh_rate: 64,
-          pixel_count: 81,
-          rows: 9,
+          pixel_count: resp.device.pixels,
+          rows: resp.device.rows,
           icon_name: 'launchpad',
-          create_segments: resp.device === 'Launchpad X',
-          name: resp.device,
+          create_segments: resp.device.name === 'Launchpad X',
+          name: resp.device.name,
         },
       })
     }
