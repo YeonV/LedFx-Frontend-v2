@@ -17,7 +17,6 @@ const MIDIListener = () => {
       const output = WebMidi.getOutputByName(input.name)
       Object.keys(scenes).forEach((key) => {
         const scene = scenes[key]
-        console.log(sceneDialogOpen)
         if (midiInput === String(scene.scene_midiactivate)) {
           if (!sceneDialogOpen) activateScene(key)
           localStorage.setItem('midiDeviceName', input.name) // Store MIDI device name
