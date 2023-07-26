@@ -312,17 +312,17 @@ function ConfirmationDialogRaw(props: any) {
       </DialogTitle>
       <DialogContent dividers>
         <DialogContentText>
-          To add a Event Listener to LedFx, please first select the type of
-          event trigger (If This), and then provide the expected output (Then Do
-          This).
+          Trigger <b>Actions</b> based on <b>Events</b>.
         </DialogContentText>
-        <FormControl className={classes.root}>
+        <FormControl className={classes.root} style={{ margin: '1rem 0'}}>
           <InputLabel htmlFor="grouped-select">
-            Event Trigger (If This)
+            Event
           </InputLabel>
           <Select
+            variant='outlined'
             id="grouped-select"
             defaultValue={formData?.event_filter?.scene_id}
+            placeholder='If THIS'
             name="scene_id"
             onChange={handleEventChange}
             sx={{ minWidth: 250 }}
@@ -348,15 +348,17 @@ function ConfirmationDialogRaw(props: any) {
           </Select>
         </FormControl>
         <FormHelperText>
-          {' '}
+          {/* {' '}
           If you select an existing event trigger, then this will update/replace
-          the existing `Then Do This`.
+          the existing `Then Do This`. */}
         </FormHelperText>
         <FormControl className={classes.root}>
-          <InputLabel htmlFor="grouped-select">Then Do This</InputLabel>
+          <InputLabel htmlFor="grouped-select">Action</InputLabel>
           <Select
             labelId="demo-simple-select-helper-label"
             id="demo-simple-select-helper"
+            placeholder='Then Do THIS'
+            variant='outlined'
             // value={formData.qlc_payload}
             name="qlc_payload"
             onChange={handleTypeChange}
@@ -422,21 +424,22 @@ function ConfirmationDialogRaw(props: any) {
         ))}
         {/* If Below button pressed, then show additional 'Then do this' dropdown field. */}
         <Button
-          variant="contained"
+          sx={{ mt: 2, mb: 3}}
+          fullWidth
           color="primary"
           aria-label="Add"
           endIcon={<AddCircleIcon />}
           onClick={handleTypeAddDropDown}
           role="listitem"
         >
-          ADD additional `then do this`
+          ADD Action
         </Button>
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleOk} color="primary">
+        <Button onClick={handleOk} color="primary" sx={{ mr: 2}}>
           Ok
         </Button>
       </DialogActions>
