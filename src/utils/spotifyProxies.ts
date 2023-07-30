@@ -97,11 +97,15 @@ export const finishAuth = async () => {
 export function refreshAuth() {
   console.log('refreshing')
   const cookies = new Cookies()
-  const rT = cookies.get('refresh_token')
+  const access_token = cookies.get('access_token')
+  if (!access_token) {
+    console.error('Access Token is not defined')
+    return 'Error'
+  }
   const postData = {
     client_id: '7658827aea6f47f98c8de593f1491da5',
     grant_type: 'refresh_token',
-    refresh_token: rT
+    refresh_token: access_token
   }
   const config = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
