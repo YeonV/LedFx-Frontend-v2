@@ -152,9 +152,14 @@ export function logoutAuth() {
 
 export async function spotifyMe() {
   const cookies = new Cookies()
+  const access_token = cookies.get('access_token')
+  if (!access_token) {
+    console.error('Access Token is not defined')
+    return 'Error'
+  }
   const res = await axios.get('https://api.spotify.com/v1/me', {
     headers: {
-      Authorization: `Bearer ${cookies.get('access_token')}`
+      Authorization: `Bearer ${access_token}`
     }
   })
   if (res.status === 200) {
@@ -307,6 +312,18 @@ export async function getTrackFeatures(id: string, token: string) {
       }
     }
   )
+  if (res.status === 200) {
+    return res.data
+  }
+  return 'Error'
+}
+
+export async function getTrackArtist(id: string, token: string) {
+  const res = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
   if (res.status === 200) {
     return res.data
   }
