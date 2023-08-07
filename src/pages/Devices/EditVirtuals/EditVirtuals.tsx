@@ -109,6 +109,17 @@ export default function EditVirtuals({
     }
   }, [virtual?.id, open])
 
+  useEffect(() => {
+    const unloadCallback = (event: any) => {
+      event.preventDefault()
+      if (virtual?.id) calibrationMode(virtual?.id, 'off')
+      return ''
+    }
+
+    window.addEventListener('beforeunload', unloadCallback)
+    return () => window.removeEventListener('beforeunload', unloadCallback)
+  }, [])
+
   return virtual && virtual.config ? (
     <>
       {type === 'menuItem' ? (
