@@ -42,7 +42,7 @@ const storeActions = (set: any) => ({
   },
   scanForLaunchpadDevices: async () => {
     const resp = await Ledfx('/api/find_launchpad', 'GET', {})
-    if (resp && resp.status === 'success') {
+    if (resp && resp.status === 'success' && resp.device) {
       set(
         produce((state: IStore) => {
           state.launchpadDevice = resp.device

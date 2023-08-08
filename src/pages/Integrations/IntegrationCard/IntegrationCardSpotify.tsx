@@ -69,7 +69,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         setMe(i)
       }
     }
-    getMe()
+    if (spAuthenticated && integrations[integration].status === 1) getMe()
   }, [integrations[integration].status, spAuthenticated])
 
   return integrations[integration]?.config ? (

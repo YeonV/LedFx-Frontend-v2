@@ -107,39 +107,44 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
   }
 
   useEffect(() => {
-    if (!integrations.spotify?.data) return
+    if (!integrations.spotify?.data && integrations.spotify?.status === 1)
+      return
     const triggersNew: SpotifyTrigger[] = []
     let id = 1
     const temp = integrations?.spotify?.data
 
-    Object.keys(temp).forEach((key) => {
-      const temp1 = temp[key]
-      const sceneName = temp1.name
-      const sceneId = key
-      Object.keys(temp1).forEach((key1) => {
-        if (temp1[key1].constructor === Array) {
-          if (temp1[key1][0] !== spotifyState?.track_window?.current_track?.id)
-            return
-          triggersNew.push({
-            id,
-            trigger_id: `${temp1[key1][0]}-${temp1[key1][2]}`,
-            songId: temp1[key1][0],
-            songName: temp1[key1][1],
-            position: getTime(temp1[key1][2]),
-            position_ms: temp1[key1][2],
-            sceneId,
-            sceneName
-          })
-          id += 1
-        }
+    if (temp) {
+      Object.keys(temp).forEach((key) => {
+        const temp1 = temp[key]
+        const sceneName = temp1.name
+        const sceneId = key
+        Object.keys(temp1).forEach((key1) => {
+          if (temp1[key1].constructor === Array) {
+            if (
+              temp1[key1][0] !== spotifyState?.track_window?.current_track?.id
+            )
+              return
+            triggersNew.push({
+              id,
+              trigger_id: `${temp1[key1][0]}-${temp1[key1][2]}`,
+              songId: temp1[key1][0],
+              songName: temp1[key1][1],
+              position: getTime(temp1[key1][2]),
+              position_ms: temp1[key1][2],
+              sceneId,
+              sceneName
+            })
+            id += 1
+          }
+        })
       })
-    })
+    }
     triggersNew.sort((a, b) => a.position_ms - b.position_ms)
     setCurrentTriggers(triggersNew)
   }, [spotifyState?.track_window?.current_track?.id, sceneTriggers.length])
 
   useEffect(() => {
-    if (!player) {
+    if (!player || integrations.spotify.status === 0) {
       setSpotifyState(undefined)
       return () => '' as any
     }

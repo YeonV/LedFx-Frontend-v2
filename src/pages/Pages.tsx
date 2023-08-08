@@ -95,11 +95,7 @@ const Routings = ({ handleWs }: any) => {
           <Route path="*" element={<Home />} />
         </Routes>
         <NoHostDialog />
-        <SmartBar
-          open={smartBarOpen}
-          setOpen={(e) => console.log(e)}
-          direct={false}
-        />
+        <SmartBar open={smartBarOpen} setOpen={() => false} direct={false} />
       </Box>
       <BottomBar />
     </>
