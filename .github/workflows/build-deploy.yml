@@ -23,7 +23,7 @@ jobs:
         node-version: 20.x
     
     - name: Install NPM packages
-      run: yarn
+      run: yarn install --cache-folder .yarn_cache
     
     - name: Build project
       run: |
