@@ -31,3 +31,4 @@ yarn-error.log*
 src/assets/DMG_BG.psd
 extraResources/*
 .github/workflows/workflow-file-private.yml
+.yarn_cache/*
