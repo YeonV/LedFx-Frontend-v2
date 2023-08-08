@@ -169,8 +169,8 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         },
         action_right: () => {
           onSystemSettingsChange('create_segments', assistant.wledSegments)
-          if (assistant.openRgb) scanForOpenRgbDevices()
           if (assistant.launchpad) scanForLaunchpadDevices()
+          if (assistant.openRgb) scanForOpenRgbDevices()
           if (assistant.wled) setScanning(0)
           if (assistant.wled) handleScan()
           handleNext()

@@ -665,9 +665,6 @@ const EditSceneDialog = () => {
                       )
                     }}
                   />
-                  {scenes &&
-                    Array.isArray(scenes) &&
-                    scenes.map((scene) => console.log(scene))}
                 </Stack>
               </>
             ) : (
