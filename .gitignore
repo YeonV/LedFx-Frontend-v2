@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# we want to start with a clean base
+yarn.lock
+
 # dependencies
 /node_modules
 /.pnp
@@ -32,3 +35,4 @@ src/assets/DMG_BG.psd
 extraResources/*
 .github/workflows/workflow-file-private.yml
 .yarn_cache/*
+
