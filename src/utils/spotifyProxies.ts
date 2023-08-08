@@ -97,11 +97,15 @@ export const finishAuth = async () => {
 export function refreshAuth() {
   console.log('refreshing')
   const cookies = new Cookies()
-  const rT = cookies.get('refresh_token')
+  const access_token = cookies.get('access_token')
+  if (!access_token) {
+    console.error('Access Token is not defined')
+    return 'Error'
+  }
   const postData = {
     client_id: '7658827aea6f47f98c8de593f1491da5',
     grant_type: 'refresh_token',
-    refresh_token: rT
+    refresh_token: access_token
   }
   const config = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -152,9 +156,14 @@ export function logoutAuth() {
 
 export async function spotifyMe() {
   const cookies = new Cookies()
+  const access_token = cookies.get('access_token')
+  if (!access_token) {
+    console.error('Access Token is not defined')
+    return 'Error'
+  }
   const res = await axios.get('https://api.spotify.com/v1/me', {
     headers: {
-      Authorization: `Bearer ${cookies.get('access_token')}`
+      Authorization: `Bearer ${access_token}`
     }
   })
   if (res.status === 200) {
@@ -307,6 +316,18 @@ export async function getTrackFeatures(id: string, token: string) {
       }
     }
   )
+  if (res.status === 200) {
+    return res.data
+  }
+  return 'Error'
+}
+
+export async function getTrackArtist(id: string, token: string) {
+  const res = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
   if (res.status === 200) {
     return res.data
   }
