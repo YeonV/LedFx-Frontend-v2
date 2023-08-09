@@ -24,7 +24,17 @@ const storeUI = (set: any) => ({
       false,
       'ui/darkmode'
     ),
-
+  infoAlerts: {
+    scenes: true
+  },
+  setInfoAlerts: (key: 'scenes', val: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.infoAlerts[key] = val
+      }),
+      false,
+      'ui/setInfoAlerts'
+    ),
   snackbar: {
     isOpen: false,
     messageType: 'error' as VariantType,

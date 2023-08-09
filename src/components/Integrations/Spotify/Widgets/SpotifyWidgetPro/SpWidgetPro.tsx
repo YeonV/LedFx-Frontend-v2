@@ -1,6 +1,6 @@
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
+import { Stack, Box } from '@mui/material'
 
+import { Fragment } from 'react'
 import useStyle from './SpWidgetPro.styles'
 import SpControls from './SpControls'
 import SpTrack from './SpTrack'
@@ -15,7 +15,7 @@ const SpotifyWidgetPro = ({ drag }: { drag?: boolean }) => {
   const swSize = useStore((state) => state.spotify.swSize)
 
   return (
-    <Box component={drag ? SpFloating : undefined}>
+    <Box component={drag ? SpFloating : Fragment}>
       <div className={classes.Widget}>
         <Box className={`${classes.spWrapper} ${drag ? swSize : ''}`}>
           <SpTrack className={`${classes.spTrack} ${drag ? swSize : ''}`} />
