@@ -9,7 +9,9 @@ import {
   Typography,
   Grid,
   Chip,
-  useTheme
+  useTheme,
+  Alert,
+  Collapse
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
@@ -61,6 +63,8 @@ const Scenes = () => {
   const scenes = useStore((state) => state.scenes)
   const features = useStore((state) => state.features)
   const activateScene = useStore((state) => state.activateScene)
+  const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -98,6 +102,19 @@ const Scenes = () => {
           flexDirection: 'column'
         }}
       >
+        <Collapse in={infoAlerts.scenes}>
+          <Alert
+            severity="info"
+            onClose={() => {
+              setInfoAlerts('scenes', false)
+            }}
+          >
+            Head over to Devices-Page and adjust all effects for all devices.
+            <br />
+            You can then save everything as a scene by using the{' '}
+            <strong>+</strong> button
+          </Alert>
+        </Collapse>
         {scenes && Object.keys(scenes).length && features.scenetables ? (
           <Grid
             container
