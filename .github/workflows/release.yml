@@ -131,6 +131,7 @@ jobs:
           asset_path: ./ledfx_frontend_hass.zip
           asset_name: ledfx_frontend_hass.zip
           asset_content_type: application/zip
+          
       # - name: Prepare Trigger Hass
       #   id: hass
       #   run: |
