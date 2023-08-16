@@ -25,9 +25,10 @@ const storeUI = (set: any) => ({
       'ui/darkmode'
     ),
   infoAlerts: {
-    scenes: true
+    scenes: true,
+    devices: true
   },
-  setInfoAlerts: (key: 'scenes', val: boolean): void =>
+  setInfoAlerts: (key: 'scenes' | 'devices', val: boolean): void =>
     set(
       produce((state: IStore) => {
         state.ui.infoAlerts[key] = val

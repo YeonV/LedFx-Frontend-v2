@@ -1,6 +1,7 @@
 /* eslint-disable no-plusplus */
 import { useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
+import { Alert, Collapse } from '@mui/material'
 import useStore from '../../store/useStore'
 import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
@@ -35,7 +36,8 @@ const Devices = () => {
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const graphs = useStore((state) => state.graphsMulti)
   const graphsMulti = useStore((state) => state.graphsMulti)
-
+  const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   useEffect(() => {
     getDevices()
     getVirtuals()
@@ -76,14 +78,36 @@ const Devices = () => {
   }, [graphs, graphsMulti, setPixelGraphs])
 
   return (
-    <div className={classes.cardWrapper}>
-      {virtuals && Object.keys(virtuals).length ? (
-        Object.keys(virtuals).map((virtual, i) => (
-          <DeviceCard virtual={virtual} key={i} index={i} />
-        ))
-      ) : (
-        <NoYet type="Device" />
-      )}
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}
+    >
+      <Collapse in={infoAlerts.devices}>
+        <Alert
+          severity="info"
+          onClose={() => {
+            setInfoAlerts('devices', false)
+          }}
+        >
+          Use the + Button to add a new device or virtual.
+          <br />
+          Virtuals can be used to <strong>split</strong> or{' '}
+          <strong> group</strong> segments of devices.
+        </Alert>
+      </Collapse>
+      <div className={classes.cardWrapper}>
+        {virtuals && Object.keys(virtuals).length ? (
+          Object.keys(virtuals).map((virtual, i) => (
+            <DeviceCard virtual={virtual} key={i} index={i} />
+          ))
+        ) : (
+          <NoYet type="Device" />
+        )}
+      </div>
     </div>
   )
 }

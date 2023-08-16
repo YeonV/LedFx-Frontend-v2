@@ -9,7 +9,8 @@ const DevicesSection = () => {
   const showMatrix = useStore((state) => state.showMatrix)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
   const features = useStore((state) => state.features)
-
+  const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
   )
@@ -19,6 +20,12 @@ const DevicesSection = () => {
 
   return (
     <>
+      <SettingsRow
+        title="Show Infobox on Devices page"
+        checked={infoAlerts.devices}
+        onChange={() => setInfoAlerts('devices', !infoAlerts.devices)}
+        direct
+      />
       <SettingsRow
         title="Show Graph on Device page (eats performance)"
         checked={graphs}

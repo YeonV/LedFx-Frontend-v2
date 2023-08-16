@@ -4,9 +4,17 @@ import useStore from '../../store/useStore'
 const ScenesSection = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
+  const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
 
   return (
     <>
+      <SettingsRow
+        title="Show Infobox on Scenes page"
+        checked={infoAlerts.scenes}
+        onChange={() => setInfoAlerts('scenes', !infoAlerts.scenes)}
+        direct
+      />
       <SettingsRow
         title="SceneTables (Recent+Most)"
         checked={features.scenetables}
