@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/require-default-props */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import AppBar from '@mui/material/AppBar'
@@ -19,6 +19,7 @@ import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog'
 import Segment from './Segment'
 
 import useEditVirtualsStyles from './EditVirtuals.styles'
+import EditMatrix from './EditMatrix'
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -53,6 +54,7 @@ export default function EditVirtuals({
   onClick = () => {},
   innerKey
 }: any) {
+  const [matrix, setMatrix] = useState(false)
   const currentVirtual = useStore((state) => state.currentVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
   const calibrationMode = useStore((state) => state.calibrationMode)
@@ -109,16 +111,16 @@ export default function EditVirtuals({
     }
   }, [virtual?.id, open])
 
-  useEffect(() => {
-    const unloadCallback = (event: any) => {
-      event.preventDefault()
-      if (virtual?.id) calibrationMode(virtual?.id, 'off')
-      return ''
-    }
+  // useEffect(() => {
+  //   const unloadCallback = (event: any) => {
+  //     event.preventDefault()
+  //     if (virtual?.id) calibrationMode(virtual?.id, 'off')
+  //     return ''
+  //   }
 
-    window.addEventListener('beforeunload', unloadCallback)
-    return () => window.removeEventListener('beforeunload', unloadCallback)
-  }, [])
+  //   window.addEventListener('beforeunload', unloadCallback)
+  //   return () => window.removeEventListener('beforeunload', unloadCallback)
+  // }, [])
 
   return virtual && virtual.config ? (
     <>
@@ -168,6 +170,18 @@ export default function EditVirtuals({
             >
               back
             </Button>
+            <Button
+              autoFocus
+              color="primary"
+              variant="contained"
+              startIcon={<NavigateBeforeIcon />}
+              onClick={() => {
+                setMatrix(!matrix)
+              }}
+              style={{ marginRight: '1rem' }}
+            >
+              matrix
+            </Button>
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>
@@ -189,24 +203,29 @@ export default function EditVirtuals({
             </IconButton>
           </Toolbar>
         </AppBar>
-
-        <div className={classes.segmentTitle}>
-          <Typography variant="caption">Segments-Settings</Typography>
-        </div>
-        {virtual.segments?.length > 0 &&
-          virtual.segments.map((s: any, i: number) => (
-            <Segment
-              s={s}
-              i={i}
-              key={i}
-              virtual={virtual}
-              segments={virtual.segments}
-              calib={calib}
-            />
-          ))}
-        <div className={classes.segmentButtonWrapper}>
-          <AddSegmentDialog virtual={virtual} />
-        </div>
+        {matrix ? (
+          <EditMatrix />
+        ) : (
+          <>
+            <div className={classes.segmentTitle}>
+              <Typography variant="caption">Segments-Settings</Typography>
+            </div>
+            {virtual.segments?.length > 0 &&
+              virtual.segments.map((s: any, i: number) => (
+                <Segment
+                  s={s}
+                  i={i}
+                  key={i}
+                  virtual={virtual}
+                  segments={virtual.segments}
+                  calib={calib}
+                />
+              ))}
+            <div className={classes.segmentButtonWrapper}>
+              <AddSegmentDialog virtual={virtual} />
+            </div>
+          </>
+        )}
       </Dialog>
     </>
   ) : null
