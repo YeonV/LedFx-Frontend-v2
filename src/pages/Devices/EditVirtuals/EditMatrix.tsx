@@ -1,4 +1,11 @@
-import { Box, Dialog, MenuItem, Select, Slider } from '@mui/material'
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  MenuItem,
+  Select,
+  Slider
+} from '@mui/material'
 import { useState } from 'react'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import useStore from '../../../store/useStore'
@@ -11,6 +18,7 @@ const EditMatrix = () => {
   //   const [width, setWidth] = useState(500)
   //   const [height, setHeight] = useState(500)
   const [open, setOpen] = useState(false)
+
   return (
     <div
       style={{
@@ -67,7 +75,10 @@ const EditMatrix = () => {
                 .map((d, i) => (
                   <Box
                     key={i}
-                    onContextMenu={() => setOpen(false)}
+                    onContextMenu={(e) => {
+                      e.preventDefault()
+                      setOpen(true)
+                    }}
                     sx={{
                       cursor: 'copy',
                       border: '1px solid #fff',
@@ -88,11 +99,14 @@ const EditMatrix = () => {
                 ))}
             </div>
             <Dialog onClose={() => setOpen(false)} open={open}>
-              <Select>
-                {devices!.map((d: any, i: number) => (
-                  <MenuItem key={i}>{d.config.name}</MenuItem>
-                ))}
-              </Select>
+              <DialogContent>
+                <Select>
+                  {devices &&
+                    Object.keys(devices).map((d: any, i: number) => (
+                      <MenuItem key={i}>{devices[d].config.name}</MenuItem>
+                    ))}
+                </Select>
+              </DialogContent>
             </Dialog>
           </div>
         </TransformComponent>
