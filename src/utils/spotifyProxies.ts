@@ -46,7 +46,7 @@ const apiCredentials = {
 }
 
 export const finishAuth = async () => {
-  // console.log('finishing');
+  console.log('finishAuth')
   // const search = window.location.search.substring(1);
   const params = localStorage.getItem('Spotify-Token')
   const cookies = new Cookies()
@@ -94,51 +94,59 @@ export const finishAuth = async () => {
     .catch((e) => console.log(e))
 }
 
-export function refreshAuth() {
-  console.log('refreshing')
+export async function refreshAuth() {
+  console.log('starting refreshAuth')
   const cookies = new Cookies()
   const access_token = cookies.get('access_token')
-  if (!access_token) {
-    console.error('Access Token is not defined')
-    return 'Error'
-  }
+  const refresh_token = cookies.get('refresh_token')
+
   const postData = {
     client_id: '7658827aea6f47f98c8de593f1491da5',
     grant_type: 'refresh_token',
-    refresh_token: access_token
+    refresh_token
   }
+
+  if (!access_token || !refresh_token) {
+    console.error('Access Token or Refresh Token is not defined')
+    return 'Error'
+  }
+
   const config = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   }
-  return axios
-    .post(
+
+  try {
+    const res = await axios.post(
       'https://accounts.spotify.com/api/token',
-      // encodeURI(JSON.stringify(postData)),
       qs.stringify(postData),
       config
     )
-    .then((res) => {
-      const freshTokens = {} as any
-      const expDate = new Date()
-      expDate.setHours(expDate.getHours() + 1)
-      cookies.remove('access_token', { path: '/integrations' })
-      cookies.set('access_token', res.data.access_token, { expires: expDate })
-      freshTokens.accessToken = res.data.access_token
 
-      const refreshExpDate = new Date()
-      refreshExpDate.setDate(refreshExpDate.getDate() + 7)
-      cookies.remove('refresh_token', { path: '/integrations' })
-      cookies.set('refresh_token', res.data.refresh_token, {
-        expires: refreshExpDate
-      })
-      freshTokens.refreshToken = res.data.refreshToken
+    const freshTokens = {} as any
+    const expDate = new Date()
+    expDate.setHours(expDate.getHours() + 1)
 
-      return freshTokens
+    cookies.remove('access_token', { path: '/integrations' })
+    cookies.set('access_token', res.data.access_token, { expires: expDate })
+    freshTokens.accessToken = res.data.access_token
+
+    const refreshExpDate = new Date()
+    refreshExpDate.setDate(refreshExpDate.getDate() + 7)
+    cookies.remove('refresh_token', { path: '/integrations' })
+    cookies.set('refresh_token', res.data.refresh_token, {
+      expires: refreshExpDate
     })
-    .catch((e) => console.log(e))
+    freshTokens.refreshToken = res.data.refreshToken
+
+    return freshTokens
+  } catch (error) {
+    console.log(error)
+    return 'Error'
+  }
 }
 
 export function logoutAuth() {
+  console.log('starting logoutAuth')
   const cookies = new Cookies()
   cookies.remove('logout', { path: '/' })
   cookies.remove('logout', { path: '/integrations' })
@@ -154,21 +162,51 @@ export function logoutAuth() {
   return true
 }
 
+// Helper function to wait for the access_token cookie to be defined
+function waitForAccessToken(timeout: number) {
+  console.log('starting waitForAccessToken')
+  return new Promise<void>((resolve, reject) => {
+    const startTime = Date.now()
+    const interval = setInterval(() => {
+      const cookies = new Cookies()
+      const access_token = cookies.get('access_token')
+      if (access_token) {
+        clearInterval(interval)
+        resolve()
+      } else if (Date.now() - startTime >= timeout) {
+        clearInterval(interval)
+        reject(new Error('Access Token not defined after waiting timeout'))
+      }
+    }, 100)
+  })
+}
+
 export async function spotifyMe() {
+  console.log('starting spotifyMe')
   const cookies = new Cookies()
-  const access_token = cookies.get('access_token')
+  let access_token = cookies.get('access_token')
+
+  if (!access_token) {
+    // Wait for 10 seconds for the access_token cookie to be defined; otherwise, throw an error
+    await waitForAccessToken(10000)
+    access_token = cookies.get('access_token')
+  }
+
   if (!access_token) {
     console.error('Access Token is not defined')
     return 'Error'
   }
+
   const res = await axios.get('https://api.spotify.com/v1/me', {
     headers: {
       Authorization: `Bearer ${access_token}`
     }
   })
+
   if (res.status === 200) {
     return res.data
   }
+
   return 'Error'
 }
 
