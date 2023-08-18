@@ -119,7 +119,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
         const sceneName = temp1.name
         const sceneId = key
         Object.keys(temp1).forEach((key1) => {
-          if (temp1[key1].constructor === Array) {
+          if (temp1[key1]?.constructor === Array) {
             if (
               temp1[key1][0] !== spotifyState?.track_window?.current_track?.id
             )

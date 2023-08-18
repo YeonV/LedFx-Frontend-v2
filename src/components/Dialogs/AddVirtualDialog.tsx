@@ -75,7 +75,7 @@ const AddVirtualDialog = () => {
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
-      initial.config.constructor === Object
+      initial.config?.constructor === Object
     ) {
       // console.log("ADDING");
       addVirtual({
@@ -128,7 +128,7 @@ const AddVirtualDialog = () => {
         <DialogTitle id="form-dialog-title">
           {initial.config &&
           Object.keys(initial.config).length === 0 &&
-          initial.config.constructor === Object
+          initial.config?.constructor === Object
             ? 'Add Virtual Device'
             : 'Settings'}
         </DialogTitle>
@@ -158,7 +158,7 @@ const AddVirtualDialog = () => {
             model={
               initial.config &&
               Object.keys(initial.config).length === 0 &&
-              initial.config.constructor === Object
+              initial.config?.constructor === Object
                 ? model
                 : { ...initial.config, ...model }
             }
@@ -172,7 +172,7 @@ const AddVirtualDialog = () => {
           <Button onClick={handleAddVirtual} color="primary">
             {initial.config &&
             Object.keys(initial.config).length === 0 &&
-            initial.config.constructor === Object
+            initial.config?.constructor === Object
               ? 'Add & Setup Segments'
               : 'Save'}
           </Button>

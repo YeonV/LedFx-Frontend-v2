@@ -106,7 +106,7 @@ const AddDeviceDialog = () => {
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
-      initial.config.constructor === Object
+      initial.config?.constructor === Object
     ) {
       // console.log("ADDING");
       addDevice({
@@ -155,7 +155,7 @@ const AddDeviceDialog = () => {
       <DialogTitle id="form-dialog-title">
         {initial.config &&
         Object.keys(initial.config).length === 0 &&
-        initial.config.constructor === Object
+        initial.config?.constructor === Object
           ? `Add ${deviceType.toUpperCase()} Device`
           : `${deviceType.toUpperCase()} Config`}
       </DialogTitle>
@@ -172,7 +172,7 @@ const AddDeviceDialog = () => {
               !(
                 initial.config &&
                 Object.keys(initial.config).length === 0 &&
-                initial.config.constructor === Object
+                initial.config?.constructor === Object
               )
             }
             style={{ flexGrow: 1 }}
@@ -192,14 +192,14 @@ const AddDeviceDialog = () => {
           <BladeSchemaForm
             schema={initial.config &&
               Object.keys(initial.config).length === 0 &&
-              initial.config.constructor === Object
+              initial.config?.constructor === Object
                 ? currentSchema
                 : { ...currentSchema, properties: currentSchema.properties && Object.keys(currentSchema.properties).filter(p => p !== 'icon_name' && p !== 'name')
                   .reduce((cur, key) => Object.assign(cur, { [key]: currentSchema.properties[key] }), {})
                 }}
             model={initial.config &&
               Object.keys(initial.config).length === 0 &&
-              initial.config.constructor === Object
+              initial.config?.constructor === Object
                 ? model
                 : filterObject(model, (p:string,_v: any) => p !== 'icon_name' && p !== 'name')}
             onModelChange={handleModelChange}
@@ -214,7 +214,7 @@ const AddDeviceDialog = () => {
         <Button onClick={handleAddDevice} color="primary">
           {initial.config &&
           Object.keys(initial.config).length === 0 &&
-          initial.config.constructor === Object
+          initial.config?.constructor === Object
             ? 'Add'
             : 'Save'}
         </Button>

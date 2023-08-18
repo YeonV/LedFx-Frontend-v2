@@ -110,7 +110,7 @@ const AddIntegrationDialog = () => {
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
-      initial.config.constructor === Object
+      initial.config?.constructor === Object
     ) {
       // console.log("ADDING");
       addIntegration({
@@ -157,7 +157,7 @@ const AddIntegrationDialog = () => {
       <DialogTitle id="form-dialog-title">
         {initial.config &&
         Object.keys(initial.config).length === 0 &&
-        initial.config.constructor === Object
+        initial.config?.constructor === Object
           ? 'Add'
           : 'Edit'}{' '}
         {integrationType.toUpperCase()} Integration
@@ -208,7 +208,7 @@ const AddIntegrationDialog = () => {
         <Button onClick={handleAddDevice} color="primary">
           {initial.config &&
           Object.keys(initial.config).length === 0 &&
-          initial.config.constructor === Object
+          initial.config?.constructor === Object
             ? 'Add'
             : 'Save'}
         </Button>

@@ -122,7 +122,7 @@ export default function SpotifyTriggerTable() {
         const sceneName = temp1.name
         const sceneId = temp1.name
         Object.keys(temp1).map((key1) => {
-          if (temp1[key1].constructor === Array) {
+          if (temp1[key1]?.constructor === Array) {
             triggersNew.push({
               id,
               trigger_id: `${temp1[key1][0]}-${temp1[key1][2]}`,
