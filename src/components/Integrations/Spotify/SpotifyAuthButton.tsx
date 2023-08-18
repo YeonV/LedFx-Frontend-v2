@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from 'react'
@@ -14,14 +15,20 @@ import {
   logoutAuth
 } from '../../../utils/spotifyProxies'
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
+import { log } from '../../../utils/helpers'
 
 // eslint-disable-next-line prettier/prettier
-const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
+const baseURL = isElectron() ? 'ledfx:/' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
+// const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host')
 const redirectUrl = `${
   process.env.NODE_ENV === 'production'
-    ? storedURL || baseURL
-    : 'http://localhost:3000'
+    ? isElectron()
+      ? baseURL
+      : storedURL || baseURL
+    : isElectron()
+      ? baseURL
+      : 'http://localhost:3000'
 }/callback/#/Integrations?`
 
 // const spotify = axios.create({
@@ -82,7 +89,8 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       )}&code_challenge=${encodeURIComponent(
         (codes as any).challenge
       )}&code_challenge_method=S256`
-    window.location.href = authURL
+    // window.location.href = authURL
+    window.open(authURL, '_blank', 'noopener,noreferrer')
   }
 
   useEffect(() => {

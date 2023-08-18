@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
 import { Box, CssBaseline } from '@mui/material'
+import Cookies from 'universal-cookie/es6'
 import ws, { WsContext, HandleWs } from './utils/Websocket'
 import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
@@ -107,6 +108,17 @@ export default function App() {
         Action: proto[2],
         Payload: proto[3]
       })
+      if (proto[1] === 'callback') {
+        const cookies = new Cookies()
+        const expDate = new Date()
+        expDate.setHours(expDate.getHours() + 1)
+        cookies.remove('access_token', { path: '/integrations' })
+        cookies.set(
+          'access_token',
+          proto[2].replace('?code=', '').replace('#%2FIntegrations%3F', ''),
+          { expires: expDate }
+        )
+      }
       setProtoCall('')
     }
   }, [protoCall, showSnackbar])

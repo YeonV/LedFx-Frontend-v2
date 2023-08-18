@@ -232,6 +232,13 @@ const ready = () => (
     tray.setIgnoreDoubleClickEvents(true);
     tray.on('click', () => wind.show());
 
+    wind.webContents.setWindowOpenHandler(({ url }) => {
+      if (url.includes(' https://accounts.spotify.com/authorize')) {
+        shell.openExternal(url)
+      }
+      return { action: 'allow' }
+    })
+
     ipcMain.on('toMain', (event, parameters) => {
       console.log(parameters);
       if (parameters === 'get-platform') {
@@ -308,7 +315,7 @@ if (process.platform === 'win32') {
     ready()
     // Handle the protocol. In this case, we choose to show an Error Box.
     app.on('open-url', (event, url) => {
-      event.preventDefault()
+      // event.preventDefault()
       console.log(event, url)
     })
 
@@ -317,7 +324,7 @@ if (process.platform === 'win32') {
   ready()
   // Handle the protocol. In this case, we choose to show an Error Box.
   app.on('open-url', (event, url) => {
-    event.preventDefault()
+    // event.preventDefault()
     console.log(event, url)
   })
 }
