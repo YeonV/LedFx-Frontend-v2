@@ -47,6 +47,7 @@ const EditMatrix = ({ virtual }: any) => {
     setSelectedPixel(0)
     setGroup(false)
   }
+
   const deviceRef = useRef()
 
   useEffect(() => {
@@ -58,6 +59,53 @@ const EditMatrix = ({ virtual }: any) => {
       setSelectedPixel(selectedPixel[0])
     }
   }, [group])
+
+  useEffect(() => {
+    setMatrix(
+      Array(rowNumber * colNumber).fill({
+        deviceId: '',
+        pixel: 0
+      })
+    )
+  }, [rowNumber, colNumber])
+
+  const handleSliderChange = (
+    e: Event,
+    newPixelRange: number | number[],
+    activeThumb: number
+  ) => {
+    if (typeof newPixelRange !== 'number') {
+      const [col, row] = currentCell
+      let maxRange = 0
+
+      if (direction === 'right') {
+        maxRange = colNumber * rowNumber - (row * colNumber + col)
+      } else if (direction === 'left') {
+        maxRange = col * rowNumber + row
+      } else if (direction === 'bottom') {
+        maxRange = colNumber * rowNumber - (row * colNumber + col)
+      } else if (direction === 'top') {
+        maxRange = (colNumber - col - 1) * rowNumber + (rowNumber - row)
+      }
+
+      const distance = newPixelRange[1] - newPixelRange[0]
+
+      let adjustedLeftThumb = newPixelRange[0]
+      let adjustedRightThumb = newPixelRange[1]
+
+      if (distance > maxRange) {
+        if (activeThumb === 0) {
+          adjustedRightThumb = adjustedLeftThumb + maxRange
+        } else {
+          adjustedLeftThumb = adjustedRightThumb - maxRange
+        }
+      }
+
+      setSelectedPixel([adjustedLeftThumb, adjustedRightThumb])
+    } else {
+      setSelectedPixel(newPixelRange)
+    }
+  }
 
   return (
     <div
@@ -72,7 +120,6 @@ const EditMatrix = ({ virtual }: any) => {
       <Alert severity="info" sx={{ width: 500, marginBottom: 2 }}>
         <strong>Concept Draft</strong>
         <ul style={{ padding: '0 1rem' }}>
-          <li>Use a maximum of 50 Pixels for the Matrix (e.g. 5x10)</li>
           <li>Use Mousewheel to Zoom</li>
           <li>Use left-click with drag&drop to move around</li>
           <li>Use right-click to assign Pixels</li>
@@ -289,38 +336,7 @@ const EditMatrix = ({ virtual }: any) => {
                         min={0}
                         max={devices[currentDevice].config.pixel_count}
                         value={selectedPixel}
-                        onChange={(e, newPixelRange, activeThumb) => {
-                          if (typeof newPixelRange !== 'number') {
-                            const [col, row] = currentCell
-                            const maxRange =
-                              direction === 'right'
-                                ? colNumber * rowNumber -
-                                  (row * colNumber + col)
-                                : colNumber * rowNumber -
-                                  (col * rowNumber + row)
-                            const distance = newPixelRange[1] - newPixelRange[0]
-
-                            let adjustedLeftThumb = newPixelRange[0]
-                            let adjustedRightThumb = newPixelRange[1]
-
-                            if (distance > maxRange) {
-                              if (activeThumb === 0) {
-                                adjustedRightThumb =
-                                  adjustedLeftThumb + maxRange
-                              } else {
-                                adjustedLeftThumb =
-                                  adjustedRightThumb - maxRange
-                              }
-                            }
-
-                            setSelectedPixel([
-                              adjustedLeftThumb,
-                              adjustedRightThumb
-                            ])
-                          } else {
-                            setSelectedPixel(newPixelRange)
-                          }
-                        }}
+                        onChange={handleSliderChange}
                       />
                     </BladeFrame>
                     {matrix[currentCell[1] * colNumber + currentCell[0]]
@@ -388,6 +404,12 @@ const EditMatrix = ({ virtual }: any) => {
                           >
                             <MenuItem value="right">To Right</MenuItem>
                             <MenuItem value="bottom">To Bottom</MenuItem>
+                            <MenuItem disabled value="left">
+                              To Left
+                            </MenuItem>
+                            <MenuItem disabled value="top">
+                              To Top
+                            </MenuItem>
                           </Select>
                         </BladeFrame>
                       </>
@@ -438,6 +460,20 @@ const EditMatrix = ({ virtual }: any) => {
                             ((row + index) % rowNumber) * colNumber +
                               col +
                               Math.floor(index / rowNumber)
+                          ] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }
+                        } else if (direction === 'left') {
+                          updatedMatrix[row * colNumber + col - index] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }
+                        } else if (direction === 'top') {
+                          updatedMatrix[
+                            ((row - index + rowNumber) % rowNumber) *
+                              colNumber +
+                              col
                           ] = {
                             deviceId: currentDevice,
                             pixel: selectedPixel[0] + index
