@@ -10,7 +10,12 @@ import Typography from '@mui/material/Typography'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 
 import { ListItemIcon, MenuItem, Slide, IconButton } from '@mui/material'
-import { Settings, Visibility, VisibilityOff } from '@mui/icons-material'
+import {
+  GridOn,
+  Settings,
+  Visibility,
+  VisibilityOff
+} from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
 import { getOverlapping } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
@@ -174,7 +179,7 @@ export default function EditVirtuals({
               autoFocus
               color="primary"
               variant="contained"
-              startIcon={<NavigateBeforeIcon />}
+              startIcon={<GridOn />}
               onClick={() => {
                 setMatrix(!matrix)
               }}
