@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,7 +21,7 @@ import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
 const EditMatrix = () => {
   const devices = useStore((state) => state.devices)
 
-  const [rowNumber, setRowNumber] = useState(10)
+  const [rowNumber, setRowNumber] = useState(5)
   const [colNumber, setColNumber] = useState(5)
   const [currentCell, setCurrentCell] = useState([-1, -1])
   const [open, setOpen] = useState(false)
@@ -65,18 +64,15 @@ const EditMatrix = () => {
         maxHeight: '80vh'
       }}
     >
-      {' '}
-      <Collapse in sx={{ marginBottom: 7 }}>
-        <Alert severity="info" sx={{ width: 500 }}>
-          <strong>Concept Draft</strong>
-          <ul style={{ padding: '0 1rem' }}>
-            <li>Use a maximum of 50 Pixels for the Matrix (e.g. 5x10)</li>
-            <li>Use Mousewheel to Zoom</li>
-            <li>Use left-click with drag&drop to move around</li>
-            <li>Use right-click to assign Pixels</li>
-          </ul>
-        </Alert>
-      </Collapse>
+      <Alert severity="info" sx={{ width: 500, marginBottom: 2 }}>
+        <strong>Concept Draft</strong>
+        <ul style={{ padding: '0 1rem' }}>
+          <li>Use a maximum of 50 Pixels for the Matrix (e.g. 5x10)</li>
+          <li>Use Mousewheel to Zoom</li>
+          <li>Use left-click with drag&drop to move around</li>
+          <li>Use right-click to assign Pixels</li>
+        </ul>
+      </Alert>
       <Stack direction="row" width={500} justifyContent="space-between">
         Rows:
         <Box width={400}>
