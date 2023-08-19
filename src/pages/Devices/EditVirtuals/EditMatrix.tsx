@@ -15,10 +15,13 @@ import {
 } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
+import { Save } from '@mui/icons-material'
 import useStore from '../../../store/useStore'
 import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
+import Popover from '../../../components/Popover/Popover'
+import { Ledfx } from '../../../api/ledfx'
 
-const EditMatrix = () => {
+const EditMatrix = ({ virtual }: any) => {
   const devices = useStore((state) => state.devices)
 
   const [rowNumber, setRowNumber] = useState(5)
@@ -55,7 +58,7 @@ const EditMatrix = () => {
       setSelectedPixel(selectedPixel[0])
     }
   }, [group])
-
+  console.log(virtual)
   return (
     <div
       style={{
@@ -104,6 +107,41 @@ const EditMatrix = () => {
           />
         </Box>
         {colNumber}
+      </Stack>
+      <Stack
+        direction="row"
+        width={500}
+        justifyContent="flex-end"
+        margin="1rem 0"
+      >
+        <Popover
+          style={{ marginRight: 16 }}
+          color="inherit"
+          variant="outlined"
+          onConfirm={() =>
+            setMatrix(
+              Array(rowNumber * colNumber).fill({
+                deviceId: '',
+                pixel: 0
+              })
+            )
+          }
+        />
+        <Button
+          onClick={() =>
+            Ledfx('/api/virtuals', 'POST', {
+              config: {
+                ...virtual.config,
+                rows: rowNumber
+              },
+              matrix,
+              id: virtual.id
+            })
+          }
+          startIcon={<Save />}
+        >
+          Save
+        </Button>
       </Stack>
       <TransformWrapper
         centerZoomedOut
