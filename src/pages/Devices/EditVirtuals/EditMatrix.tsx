@@ -30,7 +30,6 @@ const EditMatrix = ({ virtual }: any) => {
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [currentDevice, setCurrentDevice] = useState('')
   const [direction, setDirection] = useState('right')
   const [matrix, setMatrix] = useState(
     Array(rowNumber * colNumber).fill({
@@ -38,6 +37,7 @@ const EditMatrix = ({ virtual }: any) => {
       pixel: 0
     })
   )
+  const [currentDevice, setCurrentDevice] = useState('')
   //   const [width, setWidth] = useState(500)
   //   const [height, setHeight] = useState(500)
 
@@ -58,7 +58,7 @@ const EditMatrix = ({ virtual }: any) => {
       setSelectedPixel(selectedPixel[0])
     }
   }, [group])
-  console.log(virtual)
+
   return (
     <div
       style={{
@@ -178,6 +178,8 @@ const EditMatrix = ({ virtual }: any) => {
                   onContextMenu={(e) => {
                     e.preventDefault()
                     setCurrentCell([i % colNumber, Math.floor(i / colNumber)])
+                    setCurrentDevice(d.deviceId !== '' ? d.deviceId : '')
+                    setSelectedPixel(d.pixel || 0)
                     setOpen(true)
                   }}
                   sx={{
@@ -235,7 +237,11 @@ const EditMatrix = ({ virtual }: any) => {
                     justifyContent: 'space-between'
                   }}
                 >
-                  Assign Pixel
+                  {matrix[currentCell[1] * colNumber + currentCell[0]]
+                    ?.deviceId !== ''
+                    ? 'Edit'
+                    : 'Assign'}{' '}
+                  Pixel
                   <Typography variant="caption" align="right">
                     Row: {currentCell[1] + 1}
                     <br />
@@ -317,20 +323,23 @@ const EditMatrix = ({ virtual }: any) => {
                         }}
                       />
                     </BladeFrame>
-                    <BladeFrame
-                      title="Group"
-                      style={{
-                        justifyContent: 'space-between',
-                        paddingRight: 2,
-                        marginBottom: '1rem'
-                      }}
-                    >
-                      <Typography>Assign multiple</Typography>
-                      <Switch
-                        checked={group}
-                        onClick={() => setGroup(!group)}
-                      />
-                    </BladeFrame>
+                    {matrix[currentCell[1] * colNumber + currentCell[0]]
+                      .deviceId === '' && (
+                      <BladeFrame
+                        title="Group"
+                        style={{
+                          justifyContent: 'space-between',
+                          paddingRight: 2,
+                          marginBottom: '1rem'
+                        }}
+                      >
+                        <Typography>Assign multiple</Typography>
+                        <Switch
+                          checked={group}
+                          onClick={() => setGroup(!group)}
+                        />
+                      </BladeFrame>
+                    )}
                     {group && (
                       <>
                         <BladeFrame
@@ -387,6 +396,22 @@ const EditMatrix = ({ virtual }: any) => {
                 )}
               </DialogContent>
               <DialogActions>
+                <Button
+                  onClick={() => {
+                    const updatedMatrix = [...matrix]
+                    const [col, row] = currentCell
+                    if (typeof selectedPixel === 'number') {
+                      updatedMatrix[row * colNumber + col] = {
+                        deviceId: '',
+                        pixel: 0
+                      }
+                    }
+                    setMatrix(updatedMatrix)
+                    closeClear()
+                  }}
+                >
+                  Clear
+                </Button>
                 <Button
                   onClick={() => {
                     const updatedMatrix = [...matrix]
