@@ -209,7 +209,7 @@ export default function EditVirtuals({
           </Toolbar>
         </AppBar>
         {matrix ? (
-          <EditMatrix />
+          <EditMatrix virtual={virtual} />
         ) : (
           <>
             <div className={classes.segmentTitle}>
