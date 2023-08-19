@@ -1,6 +1,8 @@
 import {
+  Alert,
   Box,
   Button,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -8,6 +10,7 @@ import {
   MenuItem,
   Select,
   Slider,
+  Stack,
   Switch,
   Typography
 } from '@mui/material'
@@ -62,18 +65,48 @@ const EditMatrix = () => {
         maxHeight: '80vh'
       }}
     >
-      <Slider
-        value={rowNumber}
-        onChange={(e, newRowNumber) =>
-          typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
-        }
-      />
-      <Slider
-        value={colNumber}
-        onChange={(e, newColNumber) =>
-          typeof newColNumber === 'number' && setColNumber(newColNumber)
-        }
-      />
+      {' '}
+      <Collapse in sx={{ marginBottom: 7 }}>
+        <Alert severity="info" sx={{ width: 500 }}>
+          <strong>Concept Draft</strong>
+          <ul style={{ padding: '0 1rem' }}>
+            <li>Use a maximum of 50 Pixels for the Matrix (e.g. 5x10)</li>
+            <li>Use Mousewheel to Zoom</li>
+            <li>Use left-click with drag&drop to move around</li>
+            <li>Use right-click to assign Pixels</li>
+          </ul>
+        </Alert>
+      </Collapse>
+      <Stack direction="row" width={500} justifyContent="space-between">
+        Rows:
+        <Box width={400}>
+          <Slider
+            min={1}
+            max={50}
+            // disabled={matrix.some((d) => d.deviceId !== '')}
+            value={rowNumber}
+            onChange={(e, newRowNumber) =>
+              typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
+            }
+          />
+        </Box>
+        {rowNumber}
+      </Stack>
+      <Stack direction="row" width={500} justifyContent="space-between">
+        Columns:
+        <Box width={400}>
+          <Slider
+            min={1}
+            max={50}
+            // disabled={matrix.some((d) => d.deviceId !== '')}
+            value={colNumber}
+            onChange={(e, newColNumber) =>
+              typeof newColNumber === 'number' && setColNumber(newColNumber)
+            }
+          />
+        </Box>
+        {colNumber}
+      </Stack>
       <TransformWrapper
         centerZoomedOut
         initialScale={
@@ -82,12 +115,7 @@ const EditMatrix = () => {
             ? 1
             : 0.1
         }
-        minScale={
-          colNumber * 100 < window.innerWidth ||
-          rowNumber * 100 < window.innerHeight * 0.8
-            ? 1
-            : 0.1
-        }
+        minScale={0.1}
       >
         <TransformComponent>
           <div
