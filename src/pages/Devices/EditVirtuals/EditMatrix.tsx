@@ -28,6 +28,7 @@ const EditMatrix = () => {
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
   const [currentDevice, setCurrentDevice] = useState('')
+  const [direction, setDirection] = useState('right')
   const [matrix, setMatrix] = useState(
     Array(rowNumber * colNumber).fill({
       deviceId: '',
@@ -41,6 +42,7 @@ const EditMatrix = () => {
     setOpen(false)
     setCurrentDevice('')
     setSelectedPixel(0)
+    setGroup(false)
   }
   const deviceRef = useRef()
 
@@ -243,7 +245,38 @@ const EditMatrix = () => {
                         min={0}
                         max={devices[currentDevice].config.pixel_count}
                         value={selectedPixel}
-                        onChange={(e, newPixel) => setSelectedPixel(newPixel)}
+                        onChange={(e, newPixelRange, activeThumb) => {
+                          if (typeof newPixelRange !== 'number') {
+                            const [col, row] = currentCell
+                            const maxRange =
+                              direction === 'right'
+                                ? colNumber * rowNumber -
+                                  (row * colNumber + col)
+                                : colNumber * rowNumber -
+                                  (col * rowNumber + row)
+                            const distance = newPixelRange[1] - newPixelRange[0]
+
+                            let adjustedLeftThumb = newPixelRange[0]
+                            let adjustedRightThumb = newPixelRange[1]
+
+                            if (distance > maxRange) {
+                              if (activeThumb === 0) {
+                                adjustedRightThumb =
+                                  adjustedLeftThumb + maxRange
+                              } else {
+                                adjustedLeftThumb =
+                                  adjustedRightThumb - maxRange
+                              }
+                            }
+
+                            setSelectedPixel([
+                              adjustedLeftThumb,
+                              adjustedRightThumb
+                            ])
+                          } else {
+                            setSelectedPixel(newPixelRange)
+                          }
+                        }}
                       />
                     </BladeFrame>
                     <BladeFrame
@@ -282,12 +315,32 @@ const EditMatrix = () => {
                           style={{ marginBottom: '1rem' }}
                         >
                           <Select
-                            disabled
-                            defaultValue="right"
+                            value={direction}
+                            onChange={(e) => {
+                              setDirection(e.target.value)
+                              if (typeof selectedPixel !== 'number') {
+                                const [col, row] = currentCell
+                                const maxRange =
+                                  e.target.value === 'right'
+                                    ? colNumber * rowNumber -
+                                      (row * colNumber + col)
+                                    : colNumber * rowNumber -
+                                      (col * rowNumber + row)
+                                const distance =
+                                  selectedPixel[1] - selectedPixel[0]
+                                if (distance > maxRange) {
+                                  setSelectedPixel([
+                                    selectedPixel[0],
+                                    selectedPixel[0] + maxRange
+                                  ])
+                                }
+                              }
+                            }}
                             variant="standard"
                             fullWidth
                           >
                             <MenuItem value="right">To Right</MenuItem>
+                            <MenuItem value="bottom">To Bottom</MenuItem>
                           </Select>
                         </BladeFrame>
                       </>
@@ -312,9 +365,20 @@ const EditMatrix = () => {
                         // eslint-disable-next-line no-plusplus
                         index++
                       ) {
-                        updatedMatrix[row * colNumber + col + index] = {
-                          deviceId: currentDevice,
-                          pixel: selectedPixel[0] + index
+                        if (direction === 'right') {
+                          updatedMatrix[row * colNumber + col + index] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }
+                        } else if (direction === 'bottom') {
+                          updatedMatrix[
+                            ((row + index) % rowNumber) * colNumber +
+                              col +
+                              Math.floor(index / rowNumber)
+                          ] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }
                         }
                       }
                     }
