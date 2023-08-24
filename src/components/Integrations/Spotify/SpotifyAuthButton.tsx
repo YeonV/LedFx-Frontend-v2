@@ -89,8 +89,8 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       )}&code_challenge=${encodeURIComponent(
         (codes as any).challenge
       )}&code_challenge_method=S256`
-    // window.location.href = authURL
-    window.open(authURL, '_blank', 'noopener,noreferrer')
+    window.location.href = authURL
+    // window.open(authURL, '_blank', 'noopener,noreferrer')
   }
 
   useEffect(() => {
