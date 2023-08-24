@@ -1,7 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 /* eslint-disable no-return-assign */
 /* eslint-disable prettier/prettier */
-import React from 'react'
 import isElectron from 'is-electron';
 import {
   finishAuth,
