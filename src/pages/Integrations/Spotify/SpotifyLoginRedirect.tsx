@@ -24,7 +24,7 @@ const SpotifyLoginRedirect = () => {
           ? storedURL || baseURL
           : 'http://localhost:3000'
       }/#/Integrations?`),
-    1000
+    3000
   ) // Redirect to homepage after 3 sec
   return (
     <div style={{ margin: '6rem auto' }}>Successfully logged in with Spotify...</div>
