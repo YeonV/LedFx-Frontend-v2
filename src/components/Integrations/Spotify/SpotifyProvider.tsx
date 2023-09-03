@@ -117,7 +117,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       Object.keys(temp).forEach((key) => {
         const temp1 = temp[key]
         const sceneName = temp1?.name
-        const sceneId = key?
+        const sceneId = key
         Object.keys(temp1).forEach((key1) => {
           if (temp1[key1]?.constructor === Array) {
             if (
