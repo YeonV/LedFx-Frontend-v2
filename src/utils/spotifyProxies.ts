@@ -97,7 +97,7 @@ export const finishAuth = async () => {
 export async function refreshAuth() {
   console.log('starting refreshAuth')
   const cookies = new Cookies()
-  const access_token = cookies.get('access_token')
+  // const access_token = cookies.get('access_token')
   const refresh_token = cookies.get('refresh_token')
 
   const postData = {
@@ -106,10 +106,14 @@ export async function refreshAuth() {
     refresh_token
   }
 
-  if (!access_token || !refresh_token) {
-    console.error('Access Token or Refresh Token is not defined')
+  if (!refresh_token) {
+    console.error('Refresh Token is not defined')
     return 'Error'
   }
+  // if (!access_token) {
+  //   console.error('Access Token is not defined')
+  //   return 'Error'
+  // }
 
   const config = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -137,7 +141,14 @@ export async function refreshAuth() {
       expires: refreshExpDate
     })
     freshTokens.refreshToken = res.data.refreshToken
-
+    const res2 = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${freshTokens.accessToken}`
+      }
+    })
+    if (res2.status === 200) {
+      return res2.data
+    }
     return freshTokens
   } catch (error) {
     console.log(error)

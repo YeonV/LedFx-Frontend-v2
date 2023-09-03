@@ -17,7 +17,15 @@ const SpotifyLoginRedirect = () => {
   );
   finishAuth()
   refreshAuth()
-  setTimeout(() => window.location.href = `${process.env.NODE_ENV === 'production' ? storedURL || baseURL : 'http://localhost:3000' }/#/Integrations?`, 200 ); // Redirect to homepage after 3 sec
+  setTimeout(
+    () =>
+      (window.location.href = `${
+        process.env.NODE_ENV === 'production'
+          ? storedURL || baseURL
+          : 'http://localhost:3000'
+      }/#/Integrations?`),
+    3000
+  ) // Redirect to homepage after 3 sec
   return (
     <div style={{ margin: '6rem auto' }}>Successfully logged in with Spotify...</div>
   );
