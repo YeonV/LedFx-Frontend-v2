@@ -18,7 +18,7 @@ import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCar
 import { log } from '../../../utils/helpers'
 
 // eslint-disable-next-line prettier/prettier
-const baseURL = isElectron() ? 'ledfx:/' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
+const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 // const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host')
 const redirectUrl = `${
@@ -89,8 +89,8 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       )}&code_challenge=${encodeURIComponent(
         (codes as any).challenge
       )}&code_challenge_method=S256`
-    // window.location.href = authURL
-    window.open(authURL, '_blank', 'noopener,noreferrer')
+    window.location.href = authURL
+    // window.open(authURL, '_blank', 'noopener,noreferrer')
   }
 
   useEffect(() => {
