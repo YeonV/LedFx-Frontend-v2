@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   ListItemIcon,
   Typography,
@@ -23,6 +23,7 @@ import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widget
 import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpAudioFeatures'
 import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable'
 import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist'
+import { SpotifyStateContext } from '../../../../components/Integrations/Spotify/SpotifyProvider'
 
 export default function SpotifyScreen({
   icon = <Settings />,
@@ -39,7 +40,8 @@ export default function SpotifyScreen({
   const classes = useEditVirtualsStyles()
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
-
+  const spotifyCtx = useContext(SpotifyStateContext)
+  const premium = spotifyCtx?.track_window?.current_track?.album.name
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -110,7 +112,7 @@ export default function SpotifyScreen({
           <SpotifyWidgetPro />
           <div style={{ marginTop: '1rem' }} />
           <Grid xl={12} container item alignItems="center" spacing={1}>
-            {!isElectron() && <SpAudioFeatures />}
+            {premium && !isElectron() && <SpAudioFeatures />}
             <SpPlaylist />
           </Grid>
           <div style={{ marginTop: '1rem' }} />

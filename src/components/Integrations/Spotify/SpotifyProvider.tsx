@@ -172,7 +172,8 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     }
     spotifyGetDevices().then((s) => setSpDevices(s.devices))
     const updateState = () => {
-      spotifyCurrentTime().then((s: SpState) => setSpState(s))
+      if (!spotifyState?.track_window?.current_track?.album.name)
+        spotifyCurrentTime().then((s: SpState) => setSpState(s))
       player.getCurrentState().then((state: any) => {
         setSpotifyState(state)
       })
@@ -201,7 +202,14 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
             console.error(message)
           })
           new_player.addListener('account_error', ({ message }: any) => {
-            console.error(message)
+            if (
+              message ===
+              'This functionality is restricted to premium users only'
+            ) {
+              log('successSpotify', 'Switching to Spotify-Free')
+            } else {
+              console.error(message)
+            }
           })
           new_player.addListener('playback_error', ({ message }: any) => {
             console.error(message)
@@ -241,12 +249,10 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       setPlayer(undefined)
     }
   }, [spotifyAuthToken])
-  console.log('.11...', currentSceneTriggers)
+
   if (currentSceneTriggers.length > 0) {
-    console.log(spState)
     const spotifyPos =
       (spotifyState as any)?.progress_ms || 0 || spState?.progress_ms
-    console.log('....', spotifyPos)
     const nxtSceneIdx = currentSceneTriggers.findIndex(
       (x) => x.position_ms > spotifyPos
     )

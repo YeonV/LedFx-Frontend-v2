@@ -25,7 +25,7 @@ import {
 import useStore from '../../../../../store/useStore'
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'
 import Popover from '../../../../Popover/Popover'
-import { SpotifyStateContext } from '../../SpotifyProvider'
+import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider'
 
 const PREFIX = 'SpTriggerTable'
 
@@ -38,6 +38,11 @@ const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.select}`]: {
     color: '#fff !important'
   },
+  '& .currently_playing, .currently_playing, .currently_playing.MuiDataGrid-row, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
+    {
+      backgroundColor: `${theme.palette.primary.main}20`,
+      color: theme.palette.text.primary
+    },
   [`& .${classes.root}`]: {
     '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
       {
@@ -54,7 +59,7 @@ const Root = styled('div')(({ theme }: any) => ({
         outline: 'none'
       },
 
-    '& .currently_playing, .currently_playing, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
+    '& .currently_playing, .currently_playing, .currently_playing.MuiDataGrid-row, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
       {
         backgroundColor: `${theme.palette.primary.main}20`,
         color: theme.palette.text.primary
@@ -81,6 +86,7 @@ export default function SpotifyTriggerTable() {
   const getIntegrations = useStore((state) => state.getIntegrations)
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice)
   const playerState = useContext(SpotifyStateContext)
+  const spCtx = useContext(SpStateContext)
   const spTriggersList = useStore((state) => state.spotify.spTriggersList)
   const deleteSpTrigger = useStore((state) => state.deleteSpTrigger)
   const getSpTriggers = useStore((state) => state.getSpTriggers)
@@ -270,7 +276,6 @@ export default function SpotifyTriggerTable() {
   ]
 
   const rows = spTriggersList || [{ id: 1 }]
-
   return (
     <Root
       style={{
@@ -302,8 +307,11 @@ export default function SpotifyTriggerTable() {
           rows={rows}
           getRowClassName={(params: GridRowParams<any>) =>
             params.row.songId ===
-            playerState?.context.metadata?.current_item.uri.split(':')[2]
-              ? (playerState?.position ?? 0) > params.row.position_ms
+            (
+              playerState?.context.metadata?.current_item || spCtx!.item
+            )?.uri.split(':')[2]
+              ? ((playerState?.position || spCtx?.progress_ms) ?? 0) >
+                params.row.position_ms
                 ? 'activated'
                 : 'currently_playing'
               : ''

@@ -157,26 +157,28 @@ export default function SpControls({ className }: any) {
                 )}
               </IconButton>
             )}
-            <Select
-              disabled
-              variant="outlined"
-              defaultValue={
-                spotifyDevices &&
-                spotifyDevices.length > 0 &&
-                spotifyDevices.find((d) => d.is_active)?.id
-              }
-            >
-              {spotifyDevices &&
-                spotifyDevices.length > 0 &&
-                spotifyDevices.map((d, i) => (
-                  <MenuItem key={d.id + i} value={d.id}>
-                    <div style={{ display: 'flex' }}>
-                      <BladeIcon name={d.type} />
-                      <Typography sx={{ marginLeft: 2 }}>{d.name}</Typography>
-                    </div>
-                  </MenuItem>
-                ))}
-            </Select>
+            {!spotifyCtx?.track_window?.current_track?.album.name && (
+              <Select
+                disabled
+                variant="outlined"
+                defaultValue={
+                  spotifyDevices &&
+                  spotifyDevices.length > 0 &&
+                  spotifyDevices.find((d) => d.is_active)?.id
+                }
+              >
+                {spotifyDevices &&
+                  spotifyDevices.length > 0 &&
+                  spotifyDevices.map((d, i) => (
+                    <MenuItem key={d.id + i} value={d.id}>
+                      <div style={{ display: 'flex' }}>
+                        <BladeIcon name={d.type} />
+                        <Typography sx={{ marginLeft: 2 }}>{d.name}</Typography>
+                      </div>
+                    </MenuItem>
+                  ))}
+              </Select>
+            )}
             <div className="showTablet">
               <SpSceneTrigger />
             </div>

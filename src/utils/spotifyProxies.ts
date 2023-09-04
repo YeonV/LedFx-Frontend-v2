@@ -250,7 +250,6 @@ export async function spotifyCurrentTime() {
   return 'Error'
 }
 export async function spotifyGetDevices() {
-  console.log('starting spotifyGetDevices')
   const cookies = new Cookies()
   let access_token = cookies.get('access_token')
 

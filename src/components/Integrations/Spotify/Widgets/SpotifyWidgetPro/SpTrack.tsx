@@ -26,18 +26,14 @@ export default function SpTrack({ className }: any) {
     spCtx?.item?.artists || [{ name: 'on LedFx' }]
 
   useEffect(() => {
-    console.log('YOOO', spCtx)
-    const playlistUri = spotifyCtx?.context?.metadata?.uri || spCtx?.context.uri
+    const playlistUri =
+      spotifyCtx?.context?.metadata?.uri || spCtx?.context?.uri
     if (playlistUri?.split(':')[1] === 'playlist') {
       getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) => {
-        // console.log(r);
         setPlaylist(r.items)
       })
-      // getPlaylistB(playlistUri.split(':')[2], spotifyToken).then((r) =>
-      //   console.log(r)
-      // );
     }
-  }, [spotifyCtx?.context?.metadata?.uri, spCtx?.context.uri])
+  }, [spotifyCtx?.context?.metadata?.uri, spCtx?.context?.uri])
 
   const album =
     spotifyCtx?.track_window?.current_track?.album.name ||
