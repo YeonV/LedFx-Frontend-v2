@@ -193,7 +193,6 @@ function waitForAccessToken(timeout: number) {
 }
 
 export async function spotifyMe() {
-  console.log('starting spotifyMe')
   const cookies = new Cookies()
   let access_token = cookies.get('access_token')
 
@@ -220,6 +219,92 @@ export async function spotifyMe() {
 
   return 'Error'
 }
+export async function spotifyCurrentTime() {
+  const cookies = new Cookies()
+  let access_token = cookies.get('access_token')
+
+  if (!access_token) {
+    // Wait for 10 seconds for the access_token cookie to be defined; otherwise, throw an error
+    await waitForAccessToken(10000)
+    access_token = cookies.get('access_token')
+  }
+
+  if (!access_token) {
+    console.error('Access Token is not defined')
+    return 'Error'
+  }
+
+  const res = await axios.get(
+    'https://api.spotify.com/v1/me/player/currently-playing',
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    }
+  )
+
+  if (res.status === 200) {
+    return res.data
+  }
+
+  return 'Error'
+}
+export async function spotifyGetDevices() {
+  console.log('starting spotifyGetDevices')
+  const cookies = new Cookies()
+  let access_token = cookies.get('access_token')
+
+  if (!access_token) {
+    // Wait for 10 seconds for the access_token cookie to be defined; otherwise, throw an error
+    await waitForAccessToken(10000)
+    access_token = cookies.get('access_token')
+  }
+
+  if (!access_token) {
+    console.error('Access Token is not defined')
+    return 'Error'
+  }
+
+  const res = await axios.get('https://api.spotify.com/v1/me/player/devices', {
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    }
+  })
+
+  if (res.status === 200) {
+    return res.data
+  }
+
+  return 'Error'
+}
+// export async function spotifyTogglePlay(id: string) {
+//   console.log('starting spotifyTogglePlay')
+//   const cookies = new Cookies()
+//   let access_token = cookies.get('access_token')
+
+//   if (!access_token) {
+//     // Wait for 10 seconds for the access_token cookie to be defined; otherwise, throw an error
+//     await waitForAccessToken(10000)
+//     access_token = cookies.get('access_token')
+//   }
+
+//   if (!access_token) {
+//     console.error('Access Token is not defined')
+//     return 'Error'
+//   }
+
+//   const res = await axios.get('https://api.spotify.com/v1/me/player/play', {
+//     headers: {
+//       Authorization: `Bearer ${access_token}`
+//     }
+//   })
+
+//   if (res.status === 200) {
+//     return res.data
+//   }
+
+//   return 'Error'
+// }
 
 export async function spotifyPause() {
   const cookies = new Cookies()

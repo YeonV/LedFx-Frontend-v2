@@ -10,6 +10,7 @@ import {
   useTheme
 } from '@mui/material'
 import { Settings, NavigateBefore } from '@mui/icons-material'
+import isElectron from 'is-electron'
 import {
   MuiMenuItem,
   SpotifyScreenDefaultProps,
@@ -109,7 +110,7 @@ export default function SpotifyScreen({
           <SpotifyWidgetPro />
           <div style={{ marginTop: '1rem' }} />
           <Grid xl={12} container item alignItems="center" spacing={1}>
-            <SpAudioFeatures />
+            {!isElectron() && <SpAudioFeatures />}
             <SpPlaylist />
           </Grid>
           <div style={{ marginTop: '1rem' }} />

@@ -13,7 +13,7 @@ import { PlayCircleFilled } from '@mui/icons-material';
 import useStore from '../../../../../store/useStore';
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
 import { classes } from './SpTriggerTable';
-import { SpotifyStateContext } from '../../SpotifyProvider';
+import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider';
 
 // function isScrolledIntoView(el: any) {
 //   const rect = el.getBoundingClientRect();
@@ -30,6 +30,7 @@ import { SpotifyStateContext } from '../../SpotifyProvider';
 export default function SpPlaylist() {
   const playlist = useStore((state) => state.spotify.playlist);
   const playerState = React.useContext(SpotifyStateContext);
+  const spCtx = React.useContext(SpStateContext);
   const playlistUri = playerState?.context?.metadata?.uri;
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
   const columns: GridColDef[] = [
@@ -119,14 +120,15 @@ export default function SpPlaylist() {
           }}
           // pageSize={rows.length}
           // rowsPerPageOptions={[rows.length]}
-          getRowClassName={(params: GridRowParams<any>) =>
-            (params.row.track.name ===
+          getRowClassName={(params: GridRowParams<any>) =>{
+            return ((params.row.track.name ===
             playerState?.context.metadata?.current_item.name) && (
               params.row.track.artists?.[0].uri ===
               playerState?.context.metadata?.current_item.artists?.[0].uri
-            )
+            ) || (params.row.track.name ===
+              spCtx?.item?.name && params.row.track.artists?.[0].name === spCtx?.item?.artists?.[0].name) )
               ? 'currently_playing'
-              : ''
+              : ''}
           }
         />
       </Card>

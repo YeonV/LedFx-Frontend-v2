@@ -4,25 +4,30 @@ import Typography from '@mui/material/Typography'
 import { useContext, useEffect } from 'react'
 import useStore from '../../../../../store/useStore'
 import { getPlaylist } from '../../../../../utils/spotifyProxies'
-import { SpotifyStateContext } from '../../SpotifyProvider'
+import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import useStyle, { CoverImage } from './SpWidgetPro.styles'
 
 export default function SpTrack({ className }: any) {
   const classes = useStyle()
 
   const spotifyCtx = useContext(SpotifyStateContext)
+  const spCtx = useContext(SpStateContext)
   const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken)
   const setPlaylist = useStore((state) => state.setPlaylist)
-  const title = spotifyCtx?.track_window?.current_track?.name || 'Not playing'
+  const title =
+    spotifyCtx?.track_window?.current_track?.name ||
+    spCtx?.item?.name ||
+    'Not playing'
   const image =
     spotifyCtx?.track_window?.current_track?.album.images[0].url ||
+    spCtx?.item?.album?.images[0].url ||
     'https://github.com/LedFx/LedFx/raw/main/icons/discord.png'
-  const artist = spotifyCtx?.track_window?.current_track?.artists || [
-    { name: 'on LedFx' }
-  ]
+  const artist = spotifyCtx?.track_window?.current_track?.artists ||
+    spCtx?.item?.artists || [{ name: 'on LedFx' }]
 
   useEffect(() => {
-    const playlistUri = spotifyCtx?.context?.metadata?.uri
+    console.log('YOOO', spCtx)
+    const playlistUri = spotifyCtx?.context?.metadata?.uri || spCtx?.context.uri
     if (playlistUri?.split(':')[1] === 'playlist') {
       getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) => {
         // console.log(r);
@@ -32,9 +37,12 @@ export default function SpTrack({ className }: any) {
       //   console.log(r)
       // );
     }
-  }, [spotifyCtx?.context?.metadata?.uri])
+  }, [spotifyCtx?.context?.metadata?.uri, spCtx?.context.uri])
 
-  const album = spotifyCtx?.track_window?.current_track?.album.name || ''
+  const album =
+    spotifyCtx?.track_window?.current_track?.album.name ||
+    spCtx?.item?.album?.name ||
+    ''
   return (
     <Box className={className}>
       <CoverImage className={classes.albumImg}>

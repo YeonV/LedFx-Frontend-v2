@@ -8,6 +8,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import { SpotifyState } from './SpotifyState'
 import type { IStore } from '../useStore'
+import { spDevice } from './SpState'
 
 const storeSpotifyActions = (set: any) => ({
   setSpotifyState: (spState: SpotifyState) =>
@@ -120,6 +121,14 @@ const storeSpotifyActions = (set: any) => ({
     set(
       produce((state: IStore) => {
         state.spotify.spotifyDevice = id
+      }),
+      false,
+      'spotify/setSpotifyDevice'
+    ),
+  setSpDevices: (devices: spDevice[]) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyDevices = devices
       }),
       false,
       'spotify/setSpotifyDevice'

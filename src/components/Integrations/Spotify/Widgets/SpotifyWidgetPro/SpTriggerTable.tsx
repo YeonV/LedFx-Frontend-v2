@@ -54,7 +54,7 @@ const Root = styled('div')(({ theme }: any) => ({
         outline: 'none'
       },
 
-    '& .currently_playing, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
+    '& .currently_playing, .currently_playing, .currently_playing.MuiDataGrid-row:hover, .currently_playing.MuiDataGrid-row.Mui-hovered':
       {
         backgroundColor: `${theme.palette.primary.main}20`,
         color: theme.palette.text.primary

@@ -1,10 +1,16 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
 import { createContext, useEffect, useMemo, useState } from 'react'
 
 import { SpotifyState } from '../../../store/ui/SpotifyState'
 import useStore from '../../../store/useStore'
-import { spotifyPlay } from '../../../utils/spotifyProxies'
+import {
+  spotifyCurrentTime,
+  spotifyGetDevices,
+  spotifyPlay
+} from '../../../utils/spotifyProxies'
 import { log } from '../../../utils/helpers'
+import { SpState } from '../../../store/ui/SpState'
 
 export interface ControlSpotify {
   togglePlay: () => void
@@ -28,9 +34,11 @@ interface SpotifyTrigger {
   sceneName: string
 }
 
-export const SpotifyStateContext = createContext<SpotifyState | undefined>(
-  undefined
-)
+export const SpotifyStateContext = createContext<
+  SpotifyState | undefined
+  // Partial<SpotifyState> | undefined
+>(undefined)
+export const SpStateContext = createContext<SpState | undefined>(undefined)
 
 export const SpotifyVolumeContext = createContext<number>(1)
 export const SpotifyTriggersContext = createContext<SpotifyTrigger[]>([])
@@ -49,12 +57,15 @@ interface ISpotifyProviderProps {
 }
 
 const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
-  const [spotifyState, setSpotifyState] = useState<SpotifyState | undefined>(
-    undefined
-  )
+  const [spotifyState, setSpotifyState] = useState<
+    SpotifyState | undefined
+    // Partial<SpotifyState> | undefined
+  >(undefined)
+  const [spState, setSpState] = useState<SpState | undefined>(undefined)
 
   const integrations = useStore((state) => state.integrations)
   const setSpotifyDevice = useStore((state) => state.setSpDevice)
+  const setSpDevices = useStore((state) => state.setSpDevices)
   const setPlayer = useStore((state) => state.setPlayer)
   const player = useStore((state) => state.spotify.player)
   const activateScene = useStore((state) => state.activateScene)
@@ -121,9 +132,12 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
         Object.keys(temp1).forEach((key1) => {
           if (temp1[key1]?.constructor === Array) {
             if (
-              temp1[key1][0] !== spotifyState?.track_window?.current_track?.id
-            )
+              temp1[key1][0] !==
+              (spotifyState?.track_window?.current_track || spState?.item)?.id
+            ) {
+              console.log('22', SpStateContext)
               return
+            }
             triggersNew.push({
               id,
               trigger_id: `${temp1[key1][0]}-${temp1[key1][2]}`,
@@ -141,7 +155,11 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     }
     triggersNew.sort((a, b) => a.position_ms - b.position_ms)
     setCurrentTriggers(triggersNew)
-  }, [spotifyState?.track_window?.current_track?.id, sceneTriggers.length])
+  }, [
+    spotifyState?.track_window?.current_track?.id,
+    sceneTriggers.length,
+    spState?.item?.id
+  ])
 
   useEffect(() => {
     if (!player || integrations.spotify.status === 0) {
@@ -152,17 +170,18 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     if (spotifyState?.paused === true) {
       return () => '' as any
     }
+    spotifyGetDevices().then((s) => setSpDevices(s.devices))
     const updateState = () => {
+      spotifyCurrentTime().then((s: SpState) => setSpState(s))
       player.getCurrentState().then((state: any) => {
         setSpotifyState(state)
       })
-      player.getVolume().then((v: number) => setVolume(v))
+      // player.getVolume().then((v: number) => setVolume(v))
     }
     const update = setInterval(updateState, 1000)
 
     return () => clearInterval(update)
-  }, [player, spotifyState?.paused])
-
+  }, [player, spotifyState?.paused, integrations])
   useEffect(() => {
     const createWebPlayer = async (token: string) => {
       // console.log(token);
@@ -222,13 +241,12 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       setPlayer(undefined)
     }
   }, [spotifyAuthToken])
-
-  if (
-    spotifyState &&
-    spotifyState?.loading === false &&
-    currentSceneTriggers.length > 0
-  ) {
-    const spotifyPos = spotifyState.position
+  console.log('.11...', currentSceneTriggers)
+  if (currentSceneTriggers.length > 0) {
+    console.log(spState)
+    const spotifyPos =
+      (spotifyState as any)?.progress_ms || 0 || spState?.progress_ms
+    console.log('....', spotifyPos)
     const nxtSceneIdx = currentSceneTriggers.findIndex(
       (x) => x.position_ms > spotifyPos
     )
@@ -256,13 +274,15 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
 
   return (
     <SpotifyVolumeContext.Provider value={volume}>
-      <SpotifyStateContext.Provider value={spotifyState}>
-        <SpotifyTriggersContext.Provider value={currentSceneTriggers}>
-          <SpotifyControlContext.Provider value={controlSp}>
-            {children}
-          </SpotifyControlContext.Provider>
-        </SpotifyTriggersContext.Provider>
-      </SpotifyStateContext.Provider>
+      <SpStateContext.Provider value={spState}>
+        <SpotifyStateContext.Provider value={spotifyState}>
+          <SpotifyTriggersContext.Provider value={currentSceneTriggers}>
+            <SpotifyControlContext.Provider value={controlSp}>
+              {children}
+            </SpotifyControlContext.Provider>
+          </SpotifyTriggersContext.Provider>
+        </SpotifyStateContext.Provider>
+      </SpStateContext.Provider>
     </SpotifyVolumeContext.Provider>
   )
 }
