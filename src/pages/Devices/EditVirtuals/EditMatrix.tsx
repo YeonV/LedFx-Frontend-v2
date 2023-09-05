@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable prettier/prettier */
 import {
   Alert,
   Box,
@@ -30,7 +32,8 @@ const EditMatrix = ({ virtual }: any) => {
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState('right')
+  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom'>('right')
+  const [mode, setMode] = useState<'linear' | 'snake'>('linear')
   const [matrix, setMatrix] = useState(
     Array(rowNumber * colNumber).fill({
       deviceId: '',
@@ -38,8 +41,6 @@ const EditMatrix = ({ virtual }: any) => {
     })
   )
   const [currentDevice, setCurrentDevice] = useState('')
-  //   const [width, setWidth] = useState(500)
-  //   const [height, setHeight] = useState(500)
 
   const closeClear = () => {
     setOpen(false)
@@ -75,38 +76,43 @@ const EditMatrix = ({ virtual }: any) => {
     activeThumb: number
   ) => {
     if (typeof newPixelRange !== 'number') {
-      const [col, row] = currentCell
-      let maxRange = 0
-
+      const [col, row] = currentCell;
+      let maxRange = 0;
+  
       if (direction === 'right') {
-        maxRange = colNumber * rowNumber - (row * colNumber + col)
+        maxRange = colNumber * rowNumber - (row * colNumber + col - 1);
       } else if (direction === 'left') {
-        maxRange = col * rowNumber + row
+        maxRange = row * colNumber + col + 1;
       } else if (direction === 'bottom') {
-        maxRange = colNumber * rowNumber - (row * colNumber + col)
+        maxRange = colNumber * rowNumber - (colNumber * col  + row);
       } else if (direction === 'top') {
-        maxRange = (colNumber - col - 1) * rowNumber + (rowNumber - row)
+        maxRange = (rowNumber * col) + row + 1
       }
-
-      const distance = newPixelRange[1] - newPixelRange[0]
-
-      let adjustedLeftThumb = newPixelRange[0]
-      let adjustedRightThumb = newPixelRange[1]
-
+  
+      const distance = newPixelRange[1] - newPixelRange[0];
+  
+      let adjustedLeftThumb = newPixelRange[0];
+      let adjustedRightThumb = newPixelRange[1];
+  
       if (distance > maxRange) {
         if (activeThumb === 0) {
-          adjustedRightThumb = adjustedLeftThumb + maxRange
+          adjustedRightThumb = adjustedLeftThumb + maxRange;
         } else {
-          adjustedLeftThumb = adjustedRightThumb - maxRange
+          adjustedLeftThumb = adjustedRightThumb - maxRange;
         }
       }
-
-      setSelectedPixel([adjustedLeftThumb, adjustedRightThumb])
+  
+      const updatedSelectedPixel =
+        direction === 'top'
+          ? [adjustedRightThumb, adjustedLeftThumb]
+          : [adjustedLeftThumb, adjustedRightThumb];
+  
+      setSelectedPixel(updatedSelectedPixel);
     } else {
-      setSelectedPixel(newPixelRange)
+      setSelectedPixel(newPixelRange);
     }
-  }
-
+  };
+  
   return (
     <div
       style={{
@@ -131,7 +137,6 @@ const EditMatrix = ({ virtual }: any) => {
           <Slider
             min={1}
             max={50}
-            // disabled={matrix.some((d) => d.deviceId !== '')}
             value={rowNumber}
             onChange={(e, newRowNumber) =>
               typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
@@ -146,7 +151,6 @@ const EditMatrix = ({ virtual }: any) => {
           <Slider
             min={1}
             max={50}
-            // disabled={matrix.some((d) => d.deviceId !== '')}
             value={colNumber}
             onChange={(e, newColNumber) =>
               typeof newColNumber === 'number' && setColNumber(newColNumber)
@@ -238,12 +242,6 @@ const EditMatrix = ({ virtual }: any) => {
                     '&:hover': {
                       background: '#999'
                     }
-                    //   width: `min(${width / colNumber}px, ${
-                    //     height / rowNumber
-                    //   }px)`,
-                    //   height: `min(${width / colNumber}px, ${
-                    //     height / rowNumber
-                    //   }px)`
                   }}
                 >
                   {d.deviceId !== '' && (
@@ -359,36 +357,26 @@ const EditMatrix = ({ virtual }: any) => {
                     {group && (
                       <>
                         <BladeFrame
-                          title="Mode"
-                          full={false}
-                          style={{ marginBottom: '1rem' }}
-                        >
-                          <Select
-                            disabled
-                            defaultValue="linear"
-                            variant="standard"
-                            fullWidth
-                          >
-                            <MenuItem value="linear">Linear</MenuItem>
-                          </Select>
-                        </BladeFrame>
-                        <BladeFrame
                           title="Fill Direction"
                           full={false}
                           style={{ marginBottom: '1rem' }}
                         >
+
                           <Select
                             value={direction}
                             onChange={(e) => {
-                              setDirection(e.target.value)
+                              setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom')
                               if (typeof selectedPixel !== 'number') {
                                 const [col, row] = currentCell
                                 const maxRange =
                                   e.target.value === 'right'
                                     ? colNumber * rowNumber -
-                                      (row * colNumber + col)
-                                    : colNumber * rowNumber -
-                                      (col * rowNumber + row)
+                                      (row * colNumber + col - 1)
+                                    : e.target.value === 'left'
+                                      ? row * colNumber + col + 1
+                                      : e.target.value === 'bottom'
+                                        ? colNumber * rowNumber - (colNumber * col  + row)
+                                        : (rowNumber * col) + row + 1
                                 const distance =
                                   selectedPixel[1] - selectedPixel[0]
                                 if (distance > maxRange) {
@@ -404,12 +392,23 @@ const EditMatrix = ({ virtual }: any) => {
                           >
                             <MenuItem value="right">To Right</MenuItem>
                             <MenuItem value="bottom">To Bottom</MenuItem>
-                            <MenuItem disabled value="left">
-                              To Left
-                            </MenuItem>
-                            <MenuItem disabled value="top">
-                              To Top
-                            </MenuItem>
+                            <MenuItem value="left">To Left</MenuItem>
+                            <MenuItem value="top">To Top</MenuItem>
+                          </Select>
+                        </BladeFrame>
+                        <BladeFrame
+                          title="Mode"
+                          full={false}
+                          style={{ marginBottom: '1rem' }}
+                        >
+                          <Select
+                            value={mode}
+                            onChange={(e) => setMode(e.target.value as 'linear' | 'snake')}
+                            variant="standard"
+                            fullWidth
+                          >
+                            <MenuItem value="linear">Linear</MenuItem>
+                            <MenuItem value="snake">Snake</MenuItem>
                           </Select>
                         </BladeFrame>
                       </>
@@ -447,7 +446,6 @@ const EditMatrix = ({ virtual }: any) => {
                       for (
                         let index = 0;
                         index < selectedPixel[1] - selectedPixel[0];
-                        // eslint-disable-next-line no-plusplus
                         index++
                       ) {
                         if (direction === 'right') {
@@ -471,9 +469,9 @@ const EditMatrix = ({ virtual }: any) => {
                           }
                         } else if (direction === 'top') {
                           updatedMatrix[
-                            ((row - index + rowNumber) % rowNumber) *
-                              colNumber +
-                              col
+                            ((row - index) % rowNumber) * colNumber +
+                              row + 
+                              Math.floor(index / rowNumber)
                           ] = {
                             deviceId: currentDevice,
                             pixel: selectedPixel[0] + index
