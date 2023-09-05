@@ -1,7 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable prettier/prettier */
 import {
-  Alert,
   Box,
   Button,
   Dialog,
@@ -11,17 +10,15 @@ import {
   MenuItem,
   Select,
   Slider,
-  Stack,
   Switch,
-  Typography
+  Typography,
 } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
-import { Save } from '@mui/icons-material'
 import useStore from '../../../store/useStore'
 import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
-import Popover from '../../../components/Popover/Popover'
-import { Ledfx } from '../../../api/ledfx'
+import EditMatrixWrapper from './EditMatrixWrapper'
+import EditMatrixControls from './EditMatrixControls'
 
 const EditMatrix = ({ virtual }: any) => {
   const devices = useStore((state) => state.devices)
@@ -114,86 +111,15 @@ const EditMatrix = ({ virtual }: any) => {
   };
   
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        maxHeight: '80vh'
-      }}
-    >
-      <Alert severity="info" sx={{ width: 500, marginBottom: 2 }}>
-        <strong>Concept Draft</strong>
-        <ul style={{ padding: '0 1rem' }}>
-          <li>Use Mousewheel to Zoom</li>
-          <li>Use left-click with drag&drop to move around</li>
-          <li>Use right-click to assign Pixels</li>
-        </ul>
-      </Alert>
-      <Stack direction="row" width={500} justifyContent="space-between">
-        Rows:
-        <Box width={400}>
-          <Slider
-            min={1}
-            max={50}
-            value={rowNumber}
-            onChange={(e, newRowNumber) =>
-              typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
-            }
-          />
-        </Box>
-        {rowNumber}
-      </Stack>
-      <Stack direction="row" width={500} justifyContent="space-between">
-        Columns:
-        <Box width={400}>
-          <Slider
-            min={1}
-            max={50}
-            value={colNumber}
-            onChange={(e, newColNumber) =>
-              typeof newColNumber === 'number' && setColNumber(newColNumber)
-            }
-          />
-        </Box>
-        {colNumber}
-      </Stack>
-      <Stack
-        direction="row"
-        width={500}
-        justifyContent="flex-end"
-        margin="1rem 0"
-      >
-        <Popover
-          style={{ marginRight: 16 }}
-          color="inherit"
-          variant="outlined"
-          onConfirm={() =>
-            setMatrix(
-              Array(rowNumber * colNumber).fill({
-                deviceId: '',
-                pixel: 0
-              })
-            )
-          }
-        />
-        <Button
-          onClick={() =>
-            Ledfx('/api/virtuals', 'POST', {
-              config: {
-                ...virtual.config,
-                rows: rowNumber
-              },
-              matrix,
-              id: virtual.id
-            })
-          }
-          startIcon={<Save />}
-        >
-          Save
-        </Button>
-      </Stack>
+    <EditMatrixWrapper>
+      <EditMatrixControls
+        rowNumber={rowNumber}
+        colNumber={colNumber}
+        setRowNumber={setRowNumber}
+        setColNumber={setColNumber}
+        setMatrix={setMatrix}
+        virtual={virtual}
+        matrix={matrix} />
       <TransformWrapper
         centerZoomedOut
         initialScale={
@@ -205,7 +131,7 @@ const EditMatrix = ({ virtual }: any) => {
         minScale={0.1}
       >
         <TransformComponent>
-          <div
+          <div 
             style={{
               width: colNumber * 100,
               height: rowNumber * 100,
@@ -490,7 +416,7 @@ const EditMatrix = ({ virtual }: any) => {
           </div>
         </TransformComponent>
       </TransformWrapper>
-    </div>
+    </EditMatrixWrapper>
   )
 }
 
