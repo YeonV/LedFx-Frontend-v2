@@ -1,28 +1,19 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable prettier/prettier */
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  Select,
-  Slider,
-  Switch,
-  Typography,
-} from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, Slider, Switch, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import useStore from '../../../store/useStore'
 import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
 import EditMatrixWrapper from './EditMatrixWrapper'
 import EditMatrixControls from './EditMatrixControls'
+import useStyles from './EditMatrix.styles'
 
 const EditMatrix = ({ virtual }: any) => {
+  const classes = useStyles()
+  const deviceRef = useRef()
   const devices = useStore((state) => state.devices)
-
+  const [currentDevice, setCurrentDevice] = useState('')
   const [rowNumber, setRowNumber] = useState(5)
   const [colNumber, setColNumber] = useState(5)
   const [currentCell, setCurrentCell] = useState([-1, -1])
@@ -31,13 +22,7 @@ const EditMatrix = ({ virtual }: any) => {
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
   const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom'>('right')
   const [mode, setMode] = useState<'linear' | 'snake'>('linear')
-  const [matrix, setMatrix] = useState(
-    Array(rowNumber * colNumber).fill({
-      deviceId: '',
-      pixel: 0
-    })
-  )
-  const [currentDevice, setCurrentDevice] = useState('')
+  const [matrix, setMatrix] = useState(Array(rowNumber * colNumber).fill({deviceId: '', pixel: 0}))
 
   const closeClear = () => {
     setOpen(false)
@@ -45,8 +30,6 @@ const EditMatrix = ({ virtual }: any) => {
     setSelectedPixel(0)
     setGroup(false)
   }
-
-  const deviceRef = useRef()
 
   useEffect(() => {
     if (group) {
@@ -73,43 +56,39 @@ const EditMatrix = ({ virtual }: any) => {
     activeThumb: number
   ) => {
     if (typeof newPixelRange !== 'number') {
-      const [col, row] = currentCell;
-      let maxRange = 0;
+      const [col, row] = currentCell
+      let maxRange = 0
   
       if (direction === 'right') {
-        maxRange = colNumber * rowNumber - (row * colNumber + col - 1);
+        maxRange = colNumber * rowNumber - (row * colNumber + col - 1)
       } else if (direction === 'left') {
-        maxRange = row * colNumber + col + 1;
+        maxRange = row * colNumber + col + 1
       } else if (direction === 'bottom') {
-        maxRange = colNumber * rowNumber - (colNumber * col  + row);
+        maxRange = colNumber * rowNumber - (colNumber * col  + row)
       } else if (direction === 'top') {
         maxRange = (rowNumber * col) + row + 1
       }
   
-      const distance = newPixelRange[1] - newPixelRange[0];
-  
-      let adjustedLeftThumb = newPixelRange[0];
-      let adjustedRightThumb = newPixelRange[1];
-  
+      const distance = newPixelRange[1] - newPixelRange[0]  
+      let adjustedLeftThumb = newPixelRange[0]
+      let adjustedRightThumb = newPixelRange[1]
       if (distance > maxRange) {
         if (activeThumb === 0) {
-          adjustedRightThumb = adjustedLeftThumb + maxRange;
+          adjustedRightThumb = adjustedLeftThumb + maxRange
         } else {
-          adjustedLeftThumb = adjustedRightThumb - maxRange;
+          adjustedLeftThumb = adjustedRightThumb - maxRange
         }
-      }
-  
+      }  
       const updatedSelectedPixel =
         direction === 'top'
           ? [adjustedRightThumb, adjustedLeftThumb]
-          : [adjustedLeftThumb, adjustedRightThumb];
+          : [adjustedLeftThumb, adjustedRightThumb]
   
-      setSelectedPixel(updatedSelectedPixel);
+      setSelectedPixel(updatedSelectedPixel)
     } else {
-      setSelectedPixel(newPixelRange);
+      setSelectedPixel(newPixelRange)
     }
-  };
-  
+  }  
   return (
     <EditMatrixWrapper>
       <EditMatrixControls
@@ -122,70 +101,30 @@ const EditMatrix = ({ virtual }: any) => {
         matrix={matrix} />
       <TransformWrapper
         centerZoomedOut
+        minScale={0.1}
         initialScale={
           colNumber * 100 < window.innerWidth ||
           rowNumber * 100 < window.innerHeight * 0.8
             ? 1
             : 0.1
-        }
-        minScale={0.1}
-      >
+        }>
         <TransformComponent>
-          <div 
-            style={{
-              width: colNumber * 100,
-              height: rowNumber * 100,
-              background: '#111',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                height: '100%',
-                width: '100%'
-              }}
-            >
+          <div className={classes.gridCellContainer}
+            style={{ width: colNumber * 100, height: rowNumber * 100 }}>
+            <div className={classes.gridCellInner}>
               {matrix.map((d, i) => (
                 <Box
                   key={i}
+                  className={classes.gridCell}
                   onContextMenu={(e) => {
                     e.preventDefault()
                     setCurrentCell([i % colNumber, Math.floor(i / colNumber)])
                     setCurrentDevice(d.deviceId !== '' ? d.deviceId : '')
                     setSelectedPixel(d.pixel || 0)
                     setOpen(true)
-                  }}
-                  sx={{
-                    cursor: 'copy',
-                    border: '1px solid #666',
-                    background: '#111',
-                    width: 100,
-                    height: 100,
-                    '&:hover': {
-                      background: '#999'
-                    }
-                  }}
-                >
+                  }}>
                   {d.deviceId !== '' && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        height: '98px',
-                        background: '#444',
-                        width: '98px',
-                        border: '5px solid #111',
-                        boxSizing: 'border-box',
-                        padding: '8px',
-                        borderRadius: '10px'
-                      }}
-                    >
+                    <div className={classes.pixel}>
                       <Typography variant="caption">
                         {devices[d.deviceId].config.name}
                       </Typography>
@@ -198,16 +137,9 @@ const EditMatrix = ({ virtual }: any) => {
             <Dialog
               onClose={() => closeClear()}
               open={open}
-              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}
-            >
+              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
               <DialogTitle>
-                <div
-                  style={{
-                    display: 'flex',
-                    width: '100%',
-                    justifyContent: 'space-between'
-                  }}
-                >
+                <div className={classes.centered}>
                   {matrix[currentCell[1] * colNumber + currentCell[0]]
                     ?.deviceId !== ''
                     ? 'Edit'
@@ -221,11 +153,7 @@ const EditMatrix = ({ virtual }: any) => {
                 </div>
               </DialogTitle>
               <DialogContent>
-                <BladeFrame
-                  title="Device"
-                  full={false}
-                  style={{ marginBottom: '1rem' }}
-                >
+                <BladeFrame title="Device" full={false} style={{ marginBottom: '1rem' }}>
                   <Select
                     value={currentDevice}
                     onChange={(e) => setCurrentDevice(e.target.value || '')}
@@ -243,11 +171,7 @@ const EditMatrix = ({ virtual }: any) => {
                 </BladeFrame>
                 {currentDevice && (
                   <>
-                    <BladeFrame
-                      title={`Pixel${group ? 's' : ''}`}
-                      full={false}
-                      style={{ marginBottom: '1rem' }}
-                    >
+                    <BladeFrame title={`Pixel${group ? 's' : ''}`} full={false} style={{ marginBottom: '1rem' }}>
                       <Slider
                         marks={[
                           { value: 0, label: '0' },
@@ -287,9 +211,10 @@ const EditMatrix = ({ virtual }: any) => {
                           full={false}
                           style={{ marginBottom: '1rem' }}
                         >
-
                           <Select
                             value={direction}
+                            variant="standard"
+                            fullWidth
                             onChange={(e) => {
                               setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom')
                               if (typeof selectedPixel !== 'number') {
@@ -309,24 +234,14 @@ const EditMatrix = ({ virtual }: any) => {
                                   setSelectedPixel([
                                     selectedPixel[0],
                                     selectedPixel[0] + maxRange
-                                  ])
-                                }
-                              }
-                            }}
-                            variant="standard"
-                            fullWidth
-                          >
+                                  ])}}}}>
                             <MenuItem value="right">To Right</MenuItem>
                             <MenuItem value="bottom">To Bottom</MenuItem>
                             <MenuItem value="left">To Left</MenuItem>
                             <MenuItem value="top">To Top</MenuItem>
                           </Select>
                         </BladeFrame>
-                        <BladeFrame
-                          title="Mode"
-                          full={false}
-                          style={{ marginBottom: '1rem' }}
-                        >
+                        <BladeFrame title="Mode" full={false} style={{ marginBottom: '1rem' }}>
                           <Select
                             value={mode}
                             onChange={(e) => setMode(e.target.value as 'linear' | 'snake')}
@@ -355,8 +270,7 @@ const EditMatrix = ({ virtual }: any) => {
                     }
                     setMatrix(updatedMatrix)
                     closeClear()
-                  }}
-                >
+                  }}>
                   Clear
                 </Button>
                 <Button
@@ -401,10 +315,7 @@ const EditMatrix = ({ virtual }: any) => {
                           ] = {
                             deviceId: currentDevice,
                             pixel: selectedPixel[0] + index
-                          }
-                        }
-                      }
-                    }
+                          }}}}
                     setMatrix(updatedMatrix)
                     closeClear()
                   }}
@@ -416,8 +327,6 @@ const EditMatrix = ({ virtual }: any) => {
           </div>
         </TransformComponent>
       </TransformWrapper>
-    </EditMatrixWrapper>
-  )
-}
+    </EditMatrixWrapper>)}
 
 export default EditMatrix
