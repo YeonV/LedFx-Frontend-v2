@@ -23,6 +23,7 @@ const EditMatrix = ({ virtual }: any) => {
   const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom'>('right')
   const [mode, setMode] = useState<'linear' | 'snake'>('linear')
   const [matrix, setMatrix] = useState(Array(rowNumber * colNumber).fill({deviceId: '', pixel: 0}))
+  const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
 
   const closeClear = () => {
     setOpen(false)
@@ -48,6 +49,7 @@ const EditMatrix = ({ virtual }: any) => {
         pixel: 0
       })
     )
+    setM(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
   }, [rowNumber, colNumber])
 
   const handleSliderChange = (
@@ -60,11 +62,11 @@ const EditMatrix = ({ virtual }: any) => {
       let maxRange = 0
   
       if (direction === 'right') {
-        maxRange = colNumber * rowNumber - (row * colNumber + col - 1)
+        maxRange = colNumber * rowNumber - (row * colNumber + col)
       } else if (direction === 'left') {
         maxRange = row * colNumber + col + 1
       } else if (direction === 'bottom') {
-        maxRange = colNumber * rowNumber - (colNumber * col  + row)
+        maxRange = colNumber * rowNumber - (rowNumber * col  + row)
       } else if (direction === 'top') {
         maxRange = (rowNumber * col) + row + 1
       }
@@ -111,8 +113,31 @@ const EditMatrix = ({ virtual }: any) => {
         <TransformComponent>
           <div className={classes.gridCellContainer}
             style={{ width: colNumber * 100, height: rowNumber * 100 }}>
-            <div className={classes.gridCellInner}>
-              {matrix.map((d, i) => (
+            <div style={{ display: 'flex', flexDirection: 'column'}}>
+              {/* <div className={classes.gridCellInner}> */}
+              {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex'}}>
+                {yzrow.map((yzcolumn: any, currentColIndex: number) => <Box
+                  key={`col-${currentColIndex}`}
+                  className={classes.gridCell}
+                  onContextMenu={(e) => {
+                    e.preventDefault()
+                    setCurrentCell([currentColIndex, currentRowIndex])
+                    // setCurrentCell([currentColIndex % colNumber, Math.floor(currentColIndex / colNumber)])
+                    setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
+                    setSelectedPixel(yzcolumn.pixel || 0)
+                    setOpen(true)
+                  }}>
+                  {yzcolumn.deviceId !== '' && (
+                    <div className={classes.pixel}>
+                      <Typography variant="caption">
+                        {devices[yzcolumn.deviceId].config.name}
+                      </Typography>
+                      <Typography variant="caption">{yzcolumn.pixel}</Typography>
+                    </div>
+                  )}
+                </Box>)}
+              </div>)}
+              {/* {matrix.map((d, i) => (
                 <Box
                   key={i}
                   className={classes.gridCell}
@@ -132,7 +157,7 @@ const EditMatrix = ({ virtual }: any) => {
                     </div>
                   )}
                 </Box>
-              ))}
+              ))} */}
             </div>
             <Dialog
               onClose={() => closeClear()}
@@ -226,7 +251,7 @@ const EditMatrix = ({ virtual }: any) => {
                                     : e.target.value === 'left'
                                       ? row * colNumber + col + 1
                                       : e.target.value === 'bottom'
-                                        ? colNumber * rowNumber - (colNumber * col  + row)
+                                        ? colNumber * rowNumber - (rowNumber * col  + row)
                                         : (rowNumber * col) + row + 1
                                 const distance =
                                   selectedPixel[1] - selectedPixel[0]
@@ -276,8 +301,15 @@ const EditMatrix = ({ virtual }: any) => {
                 <Button
                   onClick={() => {
                     const updatedMatrix = [...matrix]
+                                        
+                    const updatedM = JSON.parse(JSON.stringify(m))
                     const [col, row] = currentCell
                     if (typeof selectedPixel === 'number') {
+                      updatedM[row][col] = {
+                        deviceId: currentDevice,
+                        pixel: selectedPixel
+                      }
+
                       updatedMatrix[row * colNumber + col] = {
                         deviceId: currentDevice,
                         pixel: selectedPixel
@@ -289,25 +321,41 @@ const EditMatrix = ({ virtual }: any) => {
                         index++
                       ) {
                         if (direction === 'right') {
+                          updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }
                           updatedMatrix[row * colNumber + col + index] = {
                             deviceId: currentDevice,
                             pixel: selectedPixel[0] + index
                           }
                         } else if (direction === 'bottom') {
+                          updatedM[((index + col) % colNumber)][row + Math.floor((index + col) / colNumber)] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }                         
                           updatedMatrix[
-                            ((row + index) % rowNumber) * colNumber +
+                            ((index % rowNumber) - 1 === rowNumber - row - 1 ? (col ) : 0) + (((row + index) % rowNumber) * colNumber) +
                               col +
                               Math.floor(index / rowNumber)
                           ] = {
                             deviceId: currentDevice,
                             pixel: selectedPixel[0] + index
                           }
-                        } else if (direction === 'left') {
+                        }else if (direction === 'left') {
+                          updatedM[row - Math.floor((index + col) / colNumber)][col - (index % colNumber)] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }
                           updatedMatrix[row * colNumber + col - index] = {
                             deviceId: currentDevice,
                             pixel: selectedPixel[0] + index
                           }
                         } else if (direction === 'top') {
+                          updatedM[((index + col) % colNumber)][row + Math.floor((index + col) / colNumber)] = {
+                            deviceId: currentDevice,
+                            pixel: selectedPixel[0] + index
+                          }    
                           updatedMatrix[
                             ((row - index) % rowNumber) * colNumber +
                               row + 
@@ -317,6 +365,7 @@ const EditMatrix = ({ virtual }: any) => {
                             pixel: selectedPixel[0] + index
                           }}}}
                     setMatrix(updatedMatrix)
+                    setM(updatedM)
                     closeClear()
                   }}
                 >
