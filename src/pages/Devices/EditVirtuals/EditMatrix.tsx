@@ -8,14 +8,34 @@ import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
 import EditMatrixWrapper from './EditMatrixWrapper'
 import EditMatrixControls from './EditMatrixControls'
 import useStyles from './EditMatrix.styles'
+import rightSnake from '../../../assets/right-snake.svg'
+import bottomSnake from '../../../assets/bottom-snake.svg'
+import leftSnake from '../../../assets/left-snake.svg'
+import topSnake from '../../../assets/top-snake.svg'
+import right from '../../../assets/right.svg'
+import bottom from '../../../assets/bottom.svg'
+import left from '../../../assets/left.svg'
+import top from '../../../assets/top.svg'
+
+function transpose(matrix: any[][]) {
+  const res = [];
+  for(let i = 0;  i < matrix[0].length; i++) {
+    res[i] = [] as any;
+    for(let j = 0;  j < matrix.length; j++) {
+      res[i][j] = matrix[j][i];
+    }
+  }
+  return res; 
+}
+
 
 const EditMatrix = ({ virtual }: any) => {
   const classes = useStyles()
   const deviceRef = useRef()
   const devices = useStore((state) => state.devices)
   const [currentDevice, setCurrentDevice] = useState('')
-  const [rowNumber, setRowNumber] = useState(5)
-  const [colNumber, setColNumber] = useState(5)
+  const [rowNumber, setRowNumber] = useState(4)
+  const [colNumber, setColNumber] = useState(6)
   const [currentCell, setCurrentCell] = useState([-1, -1])
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
@@ -90,7 +110,9 @@ const EditMatrix = ({ virtual }: any) => {
     } else {
       setSelectedPixel(newPixelRange)
     }
+    console.log(selectedPixel)
   }  
+  
   return (
     <EditMatrixWrapper>
       <EditMatrixControls
@@ -206,6 +228,17 @@ const EditMatrix = ({ virtual }: any) => {
                     {/* )} */}
                     {group && (
                       <>
+                        <BladeFrame title="Mode" full={false} style={{ marginBottom: '1rem' }}>
+                          <Select
+                            value={mode}
+                            onChange={(e) => setMode(e.target.value as 'linear' | 'snake')}
+                            variant="standard"
+                            fullWidth
+                          >
+                            <MenuItem value="linear">Linear</MenuItem>
+                            <MenuItem value="snake">Snake</MenuItem>
+                          </Select>
+                        </BladeFrame>
                         <BladeFrame
                           title="Fill Direction"
                           full={false}
@@ -235,21 +268,10 @@ const EditMatrix = ({ virtual }: any) => {
                                     selectedPixel[0],
                                     selectedPixel[0] + maxRange
                                   ])}}}}>
-                            <MenuItem value="right">To Right</MenuItem>
-                            <MenuItem value="bottom">To Bottom</MenuItem>
-                            <MenuItem value="left">To Left</MenuItem>
-                            <MenuItem value="top">To Top</MenuItem>
-                          </Select>
-                        </BladeFrame>
-                        <BladeFrame title="Mode" full={false} style={{ marginBottom: '1rem' }}>
-                          <Select
-                            value={mode}
-                            onChange={(e) => setMode(e.target.value as 'linear' | 'snake')}
-                            variant="standard"
-                            fullWidth
-                          >
-                            <MenuItem value="linear">Linear</MenuItem>
-                            <MenuItem value="snake">Snake</MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Right</div><img width="50px" src={mode === 'snake' ? rightSnake : right} alt="rightSnake" /></div></MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Bottom</div><img width="50px" src={mode === 'snake' ? bottomSnake : bottom} alt="bottomSnake" /></div></MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Left</div><img width="50px" src={mode === 'snake' ? leftSnake : left} alt="leftSnake" /></div></MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Top</div><img width="50px" src={mode === 'snake' ? topSnake : top} alt="topSnake" /></div></MenuItem>
                           </Select>
                         </BladeFrame>
                       </>
@@ -275,7 +297,7 @@ const EditMatrix = ({ virtual }: any) => {
                 <Button
                   onClick={() => {
                                         
-                    const updatedM = JSON.parse(JSON.stringify(m))
+                    let updatedM = JSON.parse(JSON.stringify(m))
                     const [col, row] = currentCell
                     if (typeof selectedPixel === 'number') {
                       updatedM[row][col] = {
@@ -289,33 +311,61 @@ const EditMatrix = ({ virtual }: any) => {
                         index++
                       ) {
                         if (direction === 'right') {
-                          if (mode === 'snake') {
-                            updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
-                              deviceId: currentDevice,
-                              pixel: selectedPixel[0] + index
-                            }
-                          }
-                          if (mode === 'linear') {
-                            updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
-                              deviceId: currentDevice,
-                              pixel: selectedPixel[0] + index
-                            }
-                          }
+                          updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
+                            deviceId: currentDevice,
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          };
                         } else if (direction === 'bottom') {
-                          updatedM[(index+row) % rowNumber][col + Math.floor((index + row)/rowNumber)] = {
+                          updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
                           }
-                        } else if (direction === 'left') {
-                          updatedM[row - Math.abs(Math.floor((col - index)/colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
+                        }
+                        else if (direction === 'left') {
+                          updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
-                          }
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          };
                         } else if (direction === 'top') {
-                          updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index)/rowNumber))] = {
+                          updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
-                          }}}}
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          };
+                        }
+                      }
+                    }
+                    if (mode === 'snake') {
+                      if (direction === 'right') {
+                        for (let i = row; i < rowNumber; i++) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
+                        }                        
+                      }
+                      if (direction === 'bottom') {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i < colNumber; i++) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)
+                      }
+                      if (direction === 'left') {
+                        for (let i = row; i >= 0; i--) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
+                        }
+                      }
+                      if (direction === 'top') {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i > 0; i--) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)
+                      }
+                    }
                     setM(updatedM)
                     closeClear()
                   }}
