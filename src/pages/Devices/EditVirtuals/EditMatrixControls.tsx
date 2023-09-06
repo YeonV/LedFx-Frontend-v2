@@ -8,9 +8,9 @@ const EditMatrixControls = ({
   colNumber,
   setRowNumber,
   setColNumber,
-  setMatrix,
   virtual,
-  matrix
+  m,
+  setM
 }: any) => {
   return (
     <>
@@ -52,14 +52,13 @@ const EditMatrixControls = ({
           style={{ marginRight: 16 }}
           color="inherit"
           variant="outlined"
-          onConfirm={() =>
-            setMatrix(
-              Array(rowNumber * colNumber).fill({
-                deviceId: '',
-                pixel: 0
-              })
+          onConfirm={() => {
+            setM(
+              Array(rowNumber).fill(
+                Array(colNumber).fill({ deviceId: '', pixel: 0 })
+              )
             )
-          }
+          }}
         />
         <Button
           onClick={() =>
@@ -68,7 +67,7 @@ const EditMatrixControls = ({
                 ...virtual.config,
                 rows: rowNumber
               },
-              matrix,
+              matrix: m,
               id: virtual.id
             })
           }
