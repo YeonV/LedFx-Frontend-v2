@@ -1,3 +1,4 @@
+import { spDevice } from './SpState'
 import { SpotifyState } from './SpotifyState'
 
 const storeSpotify = () => ({
@@ -13,6 +14,7 @@ const storeSpotify = () => ({
   spAuthenticated: false,
   spotifyData: {} as any,
   spotifyDevice: {} as any,
+  spotifyDevices: [] as spDevice[],
   spotifytriggers: {},
   spTriggersList: [] as any,
   spActTriggers: [] as string[],
