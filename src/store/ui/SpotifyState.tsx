@@ -24,7 +24,7 @@ export type SpotifyState = {
   shuffle: boolean // True if shuffled, false otherwise.
   track_window: {
     current_track: WebPlaybackTrack // The track currently on local playback
-    previous_tracks: WebPlaybackTrack[] // Previously played tracks. Number can vary.
-    next_tracks: WebPlaybackTrack[] // Tracks queued next. Number can vary.
+    previous_tracks?: WebPlaybackTrack[] // Previously played tracks. Number can vary.
+    next_tracks?: WebPlaybackTrack[] // Tracks queued next. Number can vary.
   }
 }

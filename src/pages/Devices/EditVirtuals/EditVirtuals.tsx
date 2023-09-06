@@ -9,7 +9,14 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 
-import { ListItemIcon, MenuItem, Slide, IconButton } from '@mui/material'
+import {
+  ListItemIcon,
+  MenuItem,
+  Slide,
+  IconButton,
+  ToggleButtonGroup,
+  ToggleButton
+} from '@mui/material'
 import {
   GridOn,
   Settings,
@@ -25,6 +32,7 @@ import Segment from './Segment'
 
 import useEditVirtualsStyles from './EditVirtuals.styles'
 import EditMatrix from './EditMatrix'
+import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -175,18 +183,26 @@ export default function EditVirtuals({
             >
               back
             </Button>
-            <Button
-              autoFocus
-              color="primary"
-              variant="contained"
-              startIcon={<GridOn />}
-              onClick={() => {
-                setMatrix(!matrix)
-              }}
+            <ToggleButtonGroup
+              value={matrix}
               style={{ marginRight: '1rem' }}
+              size="small"
+              exclusive
+              onChange={() => setMatrix(!matrix)}
+              aria-label="mode"
             >
-              matrix
-            </Button>
+              <ToggleButton value={false}>
+                <BladeIcon name="mdi:led-strip" />
+              </ToggleButton>
+              <ToggleButton value>
+                <GridOn />
+              </ToggleButton>
+              {/* <ToggleButton disabled value="3d">
+                <BladeIcon name="mdi:cube-outline" />
+              </ToggleButton> */}
+            </ToggleButtonGroup>
+
+            {/* {matrix ? '2D matrix' : '1D Strip'} */}
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>

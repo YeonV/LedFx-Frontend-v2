@@ -1,45 +1,49 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  Select,
-  Slider,
-  Stack,
-  Switch,
-  Typography
-} from '@mui/material'
+/* eslint-disable no-plusplus */
+/* eslint-disable prettier/prettier */
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, Slider, Switch, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
-import { Save } from '@mui/icons-material'
 import useStore from '../../../store/useStore'
 import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
-import Popover from '../../../components/Popover/Popover'
-import { Ledfx } from '../../../api/ledfx'
+import EditMatrixWrapper from './EditMatrixWrapper'
+import EditMatrixControls from './EditMatrixControls'
+import useStyles from './EditMatrix.styles'
+import rightSnake from '../../../assets/right-snake.svg'
+import bottomSnake from '../../../assets/bottom-snake.svg'
+import leftSnake from '../../../assets/left-snake.svg'
+import topSnake from '../../../assets/top-snake.svg'
+import right from '../../../assets/right.svg'
+import bottom from '../../../assets/bottom.svg'
+import left from '../../../assets/left.svg'
+import top from '../../../assets/top.svg'
+
+function transpose(matrix: any[][]) {
+  const res = [];
+  for(let i = 0;  i < matrix[0].length; i++) {
+    res[i] = [] as any;
+    for(let j = 0;  j < matrix.length; j++) {
+      res[i][j] = matrix[j][i];
+    }
+  }
+  return res; 
+}
+
 
 const EditMatrix = ({ virtual }: any) => {
+  const classes = useStyles()
+  const deviceRef = useRef()
   const devices = useStore((state) => state.devices)
-
-  const [rowNumber, setRowNumber] = useState(5)
-  const [colNumber, setColNumber] = useState(5)
+  const [currentDevice, setCurrentDevice] = useState('')
+  const [rowNumber, setRowNumber] = useState(4)
+  const [colNumber, setColNumber] = useState(6)
   const [currentCell, setCurrentCell] = useState([-1, -1])
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState('right')
-  const [matrix, setMatrix] = useState(
-    Array(rowNumber * colNumber).fill({
-      deviceId: '',
-      pixel: 0
-    })
-  )
-  const [currentDevice, setCurrentDevice] = useState('')
-  //   const [width, setWidth] = useState(500)
-  //   const [height, setHeight] = useState(500)
+  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom'>('right')
+  const [mode, setMode] = useState<'linear' | 'snake'>('linear')
+  // const [matrix, setMatrix] = useState(Array(rowNumber * colNumber).fill({deviceId: '', pixel: 0})) // [{},{}]
+  const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0}))) // [[{},{}],[{},{}]]
 
   const closeClear = () => {
     setOpen(false)
@@ -47,8 +51,6 @@ const EditMatrix = ({ virtual }: any) => {
     setSelectedPixel(0)
     setGroup(false)
   }
-
-  const deviceRef = useRef()
 
   useEffect(() => {
     if (group) {
@@ -61,12 +63,13 @@ const EditMatrix = ({ virtual }: any) => {
   }, [group])
 
   useEffect(() => {
-    setMatrix(
-      Array(rowNumber * colNumber).fill({
-        deviceId: '',
-        pixel: 0
-      })
-    )
+    // setMatrix(
+    //   Array(rowNumber * colNumber).fill({
+    //     deviceId: '',
+    //     pixel: 0
+    //   })
+    // )
+    setM(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
   }, [rowNumber, colNumber])
 
   const handleSliderChange = (
@@ -77,217 +80,94 @@ const EditMatrix = ({ virtual }: any) => {
     if (typeof newPixelRange !== 'number') {
       const [col, row] = currentCell
       let maxRange = 0
-
+  
       if (direction === 'right') {
         maxRange = colNumber * rowNumber - (row * colNumber + col)
       } else if (direction === 'left') {
-        maxRange = col * rowNumber + row
+        maxRange = row * colNumber + col + 1
       } else if (direction === 'bottom') {
-        maxRange = colNumber * rowNumber - (row * colNumber + col)
+        maxRange = colNumber * rowNumber - (rowNumber * col  + row)
       } else if (direction === 'top') {
-        maxRange = (colNumber - col - 1) * rowNumber + (rowNumber - row)
+        maxRange = (rowNumber * col) + row + 1
       }
-
-      const distance = newPixelRange[1] - newPixelRange[0]
-
+  
+      const distance = newPixelRange[1] - newPixelRange[0]  
       let adjustedLeftThumb = newPixelRange[0]
       let adjustedRightThumb = newPixelRange[1]
-
       if (distance > maxRange) {
         if (activeThumb === 0) {
           adjustedRightThumb = adjustedLeftThumb + maxRange
         } else {
           adjustedLeftThumb = adjustedRightThumb - maxRange
         }
-      }
-
-      setSelectedPixel([adjustedLeftThumb, adjustedRightThumb])
+      }  
+      const updatedSelectedPixel =
+        direction === 'top'
+          ? [adjustedRightThumb, adjustedLeftThumb]
+          : [adjustedLeftThumb, adjustedRightThumb]
+  
+      setSelectedPixel(updatedSelectedPixel)
     } else {
       setSelectedPixel(newPixelRange)
     }
-  }
-
+    console.log(selectedPixel)
+  }  
+  
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        maxHeight: '80vh'
-      }}
-    >
-      <Alert severity="info" sx={{ width: 500, marginBottom: 2 }}>
-        <strong>Concept Draft</strong>
-        <ul style={{ padding: '0 1rem' }}>
-          <li>Use Mousewheel to Zoom</li>
-          <li>Use left-click with drag&drop to move around</li>
-          <li>Use right-click to assign Pixels</li>
-        </ul>
-      </Alert>
-      <Stack direction="row" width={500} justifyContent="space-between">
-        Rows:
-        <Box width={400}>
-          <Slider
-            min={1}
-            max={50}
-            // disabled={matrix.some((d) => d.deviceId !== '')}
-            value={rowNumber}
-            onChange={(e, newRowNumber) =>
-              typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
-            }
-          />
-        </Box>
-        {rowNumber}
-      </Stack>
-      <Stack direction="row" width={500} justifyContent="space-between">
-        Columns:
-        <Box width={400}>
-          <Slider
-            min={1}
-            max={50}
-            // disabled={matrix.some((d) => d.deviceId !== '')}
-            value={colNumber}
-            onChange={(e, newColNumber) =>
-              typeof newColNumber === 'number' && setColNumber(newColNumber)
-            }
-          />
-        </Box>
-        {colNumber}
-      </Stack>
-      <Stack
-        direction="row"
-        width={500}
-        justifyContent="flex-end"
-        margin="1rem 0"
-      >
-        <Popover
-          style={{ marginRight: 16 }}
-          color="inherit"
-          variant="outlined"
-          onConfirm={() =>
-            setMatrix(
-              Array(rowNumber * colNumber).fill({
-                deviceId: '',
-                pixel: 0
-              })
-            )
-          }
-        />
-        <Button
-          onClick={() =>
-            Ledfx('/api/virtuals', 'POST', {
-              config: {
-                ...virtual.config,
-                rows: rowNumber
-              },
-              matrix,
-              id: virtual.id
-            })
-          }
-          startIcon={<Save />}
-        >
-          Save
-        </Button>
-      </Stack>
+    <EditMatrixWrapper>
+      <EditMatrixControls
+        rowNumber={rowNumber}
+        colNumber={colNumber}
+        setRowNumber={setRowNumber}
+        setColNumber={setColNumber}
+        virtual={virtual}
+        m={m}
+        setM={setM} />
       <TransformWrapper
         centerZoomedOut
+        minScale={0.1}
         initialScale={
           colNumber * 100 < window.innerWidth ||
           rowNumber * 100 < window.innerHeight * 0.8
             ? 1
             : 0.1
-        }
-        minScale={0.1}
-      >
+        }>
         <TransformComponent>
-          <div
-            style={{
-              width: colNumber * 100,
-              height: rowNumber * 100,
-              background: '#111',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                height: '100%',
-                width: '100%'
-              }}
-            >
-              {matrix.map((d, i) => (
-                <Box
-                  key={i}
+          <div className={classes.gridCellContainer}
+            style={{ width: colNumber * 100, height: rowNumber * 100 }}>
+            <div style={{ display: 'flex', flexDirection: 'column'}}>
+              {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex'}}>
+                {yzrow.map((yzcolumn: any, currentColIndex: number) => <Box
+                  key={`col-${currentColIndex}`}
+                  className={classes.gridCell}
                   onContextMenu={(e) => {
                     e.preventDefault()
-                    setCurrentCell([i % colNumber, Math.floor(i / colNumber)])
-                    setCurrentDevice(d.deviceId !== '' ? d.deviceId : '')
-                    setSelectedPixel(d.pixel || 0)
+                    setCurrentCell([currentColIndex, currentRowIndex])
+                    setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
+                    setSelectedPixel(yzcolumn.pixel || 0)
                     setOpen(true)
-                  }}
-                  sx={{
-                    cursor: 'copy',
-                    border: '1px solid #666',
-                    background: '#111',
-                    width: 100,
-                    height: 100,
-                    '&:hover': {
-                      background: '#999'
-                    }
-                    //   width: `min(${width / colNumber}px, ${
-                    //     height / rowNumber
-                    //   }px)`,
-                    //   height: `min(${width / colNumber}px, ${
-                    //     height / rowNumber
-                    //   }px)`
-                  }}
-                >
-                  {d.deviceId !== '' && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        height: '98px',
-                        background: '#444',
-                        width: '98px',
-                        border: '5px solid #111',
-                        boxSizing: 'border-box',
-                        padding: '8px',
-                        borderRadius: '10px'
-                      }}
-                    >
+                  }}>
+                  {yzcolumn.deviceId !== '' && (
+                    <div className={classes.pixel}>
                       <Typography variant="caption">
-                        {devices[d.deviceId].config.name}
+                        {devices[yzcolumn.deviceId].config.name}
                       </Typography>
-                      <Typography variant="caption">{d.pixel}</Typography>
+                      <Typography variant="caption">{yzcolumn.pixel}</Typography>
                     </div>
                   )}
-                </Box>
-              ))}
+                </Box>)}
+              </div>)}
             </div>
             <Dialog
               onClose={() => closeClear()}
               open={open}
-              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}
-            >
+              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
               <DialogTitle>
-                <div
-                  style={{
-                    display: 'flex',
-                    width: '100%',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  {matrix[currentCell[1] * colNumber + currentCell[0]]
+                <div className={classes.centered}>
+                  {/* {matrix[currentCell[1] * colNumber + currentCell[0]]
                     ?.deviceId !== ''
                     ? 'Edit'
-                    : 'Assign'}{' '}
+                    : 'Assign'}{' '} */}
                   Pixel
                   <Typography variant="caption" align="right">
                     Row: {currentCell[1] + 1}
@@ -297,11 +177,7 @@ const EditMatrix = ({ virtual }: any) => {
                 </div>
               </DialogTitle>
               <DialogContent>
-                <BladeFrame
-                  title="Device"
-                  full={false}
-                  style={{ marginBottom: '1rem' }}
-                >
+                <BladeFrame title="Device" full={false} style={{ marginBottom: '1rem' }}>
                   <Select
                     value={currentDevice}
                     onChange={(e) => setCurrentDevice(e.target.value || '')}
@@ -319,11 +195,7 @@ const EditMatrix = ({ virtual }: any) => {
                 </BladeFrame>
                 {currentDevice && (
                   <>
-                    <BladeFrame
-                      title={`Pixel${group ? 's' : ''}`}
-                      full={false}
-                      style={{ marginBottom: '1rem' }}
-                    >
+                    <BladeFrame title={`Pixel${group ? 's' : ''}`} full={false} style={{ marginBottom: '1rem' }}>
                       <Slider
                         marks={[
                           { value: 0, label: '0' },
@@ -339,37 +211,32 @@ const EditMatrix = ({ virtual }: any) => {
                         onChange={handleSliderChange}
                       />
                     </BladeFrame>
-                    {matrix[currentCell[1] * colNumber + currentCell[0]]
-                      .deviceId === '' && (
-                      <BladeFrame
-                        title="Group"
-                        style={{
-                          justifyContent: 'space-between',
-                          paddingRight: 2,
-                          marginBottom: '1rem'
-                        }}
-                      >
-                        <Typography>Assign multiple</Typography>
-                        <Switch
-                          checked={group}
-                          onClick={() => setGroup(!group)}
-                        />
-                      </BladeFrame>
-                    )}
+                    <BladeFrame
+                      title="Group"
+                      style={{
+                        justifyContent: 'space-between',
+                        paddingRight: 2,
+                        marginBottom: '1rem'
+                      }}
+                    >
+                      <Typography>Assign multiple</Typography>
+                      <Switch
+                        checked={group}
+                        onClick={() => setGroup(!group)}
+                      />
+                    </BladeFrame>
+                    {/* )} */}
                     {group && (
                       <>
-                        <BladeFrame
-                          title="Mode"
-                          full={false}
-                          style={{ marginBottom: '1rem' }}
-                        >
+                        <BladeFrame title="Mode" full={false} style={{ marginBottom: '1rem' }}>
                           <Select
-                            disabled
-                            defaultValue="linear"
+                            value={mode}
+                            onChange={(e) => setMode(e.target.value as 'linear' | 'snake')}
                             variant="standard"
                             fullWidth
                           >
                             <MenuItem value="linear">Linear</MenuItem>
+                            <MenuItem value="snake">Snake</MenuItem>
                           </Select>
                         </BladeFrame>
                         <BladeFrame
@@ -379,37 +246,32 @@ const EditMatrix = ({ virtual }: any) => {
                         >
                           <Select
                             value={direction}
+                            variant="standard"
+                            fullWidth
                             onChange={(e) => {
-                              setDirection(e.target.value)
+                              setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom')
                               if (typeof selectedPixel !== 'number') {
                                 const [col, row] = currentCell
                                 const maxRange =
                                   e.target.value === 'right'
                                     ? colNumber * rowNumber -
-                                      (row * colNumber + col)
-                                    : colNumber * rowNumber -
-                                      (col * rowNumber + row)
+                                      (row * colNumber + col - 1)
+                                    : e.target.value === 'left'
+                                      ? row * colNumber + col + 1
+                                      : e.target.value === 'bottom'
+                                        ? colNumber * rowNumber - (rowNumber * col  + row)
+                                        : (rowNumber * col) + row + 1
                                 const distance =
                                   selectedPixel[1] - selectedPixel[0]
                                 if (distance > maxRange) {
                                   setSelectedPixel([
                                     selectedPixel[0],
                                     selectedPixel[0] + maxRange
-                                  ])
-                                }
-                              }
-                            }}
-                            variant="standard"
-                            fullWidth
-                          >
-                            <MenuItem value="right">To Right</MenuItem>
-                            <MenuItem value="bottom">To Bottom</MenuItem>
-                            <MenuItem disabled value="left">
-                              To Left
-                            </MenuItem>
-                            <MenuItem disabled value="top">
-                              To Top
-                            </MenuItem>
+                                  ])}}}}>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Right</div><img width="50px" src={mode === 'snake' ? rightSnake : right} alt="rightSnake" /></div></MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Bottom</div><img width="50px" src={mode === 'snake' ? bottomSnake : bottom} alt="bottomSnake" /></div></MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Left</div><img width="50px" src={mode === 'snake' ? leftSnake : left} alt="leftSnake" /></div></MenuItem>
+                            <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Top</div><img width="50px" src={mode === 'snake' ? topSnake : top} alt="topSnake" /></div></MenuItem>
                           </Select>
                         </BladeFrame>
                       </>
@@ -420,68 +282,91 @@ const EditMatrix = ({ virtual }: any) => {
               <DialogActions>
                 <Button
                   onClick={() => {
-                    const updatedMatrix = [...matrix]
+                    const updatedM = JSON.parse(JSON.stringify(m))
                     const [col, row] = currentCell
                     if (typeof selectedPixel === 'number') {
-                      updatedMatrix[row * colNumber + col] = {
+                      updatedM[row][col] = {
                         deviceId: '',
                         pixel: 0
                       }
                     }
-                    setMatrix(updatedMatrix)
                     closeClear()
-                  }}
-                >
+                  }}>
                   Clear
                 </Button>
                 <Button
                   onClick={() => {
-                    const updatedMatrix = [...matrix]
+                                        
+                    let updatedM = JSON.parse(JSON.stringify(m))
                     const [col, row] = currentCell
                     if (typeof selectedPixel === 'number') {
-                      updatedMatrix[row * colNumber + col] = {
+                      updatedM[row][col] = {
                         deviceId: currentDevice,
                         pixel: selectedPixel
                       }
                     } else {
                       for (
                         let index = 0;
-                        index < selectedPixel[1] - selectedPixel[0];
-                        // eslint-disable-next-line no-plusplus
+                        index < Math.abs(selectedPixel[1] - selectedPixel[0]);
                         index++
                       ) {
                         if (direction === 'right') {
-                          updatedMatrix[row * colNumber + col + index] = {
+                          updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
-                          }
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          };
                         } else if (direction === 'bottom') {
-                          updatedMatrix[
-                            ((row + index) % rowNumber) * colNumber +
-                              col +
-                              Math.floor(index / rowNumber)
-                          ] = {
+                          updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
                           }
-                        } else if (direction === 'left') {
-                          updatedMatrix[row * colNumber + col - index] = {
+                        }
+                        else if (direction === 'left') {
+                          updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
-                          }
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          };
                         } else if (direction === 'top') {
-                          updatedMatrix[
-                            ((row - index + rowNumber) % rowNumber) *
-                              colNumber +
-                              col
-                          ] = {
+                          updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
                             deviceId: currentDevice,
-                            pixel: selectedPixel[0] + index
-                          }
+                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          };
                         }
                       }
                     }
-                    setMatrix(updatedMatrix)
+                    if (mode === 'snake') {
+                      if (direction === 'right') {
+                        for (let i = row; i < rowNumber; i++) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
+                        }                        
+                      }
+                      if (direction === 'bottom') {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i < colNumber; i++) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)
+                      }
+                      if (direction === 'left') {
+                        for (let i = row; i >= 0; i--) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
+                        }
+                      }
+                      if (direction === 'top') {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i > 0; i--) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)
+                      }
+                    }
+                    setM(updatedM)
                     closeClear()
                   }}
                 >
@@ -492,8 +377,6 @@ const EditMatrix = ({ virtual }: any) => {
           </div>
         </TransformComponent>
       </TransformWrapper>
-    </div>
-  )
-}
+    </EditMatrixWrapper>)}
 
 export default EditMatrix

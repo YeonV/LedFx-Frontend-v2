@@ -12,10 +12,11 @@ import useStore from '../../../../../store/useStore'
 
 import Popover from '../../../../Popover/Popover'
 import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon'
-import { SpotifyStateContext } from '../../SpotifyProvider'
+import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider'
 
 export default function SpSceneTrigger() {
   const spotifyState = useContext(SpotifyStateContext)
+  const spCtx = useContext(SpStateContext)
 
   const scenes = useStore((state) => state.scenes)
   const getScenes = useStore((state) => state.getScenes)
@@ -26,13 +27,19 @@ export default function SpSceneTrigger() {
 
   const addSpotifySongTrigger = useStore((state) => state.addSpSongTrigger)
   const getIntegrations = useStore((state) => state.getIntegrations)
-  const songID = spotifyState?.track_window?.current_track?.id || ''
-  const songTitleAndArtist = `${spotifyState?.track_window?.current_track?.name} - ${spotifyState?.track_window?.current_track?.artists[0]?.name}`
+  const songID =
+    spotifyState?.track_window?.current_track?.id || spCtx?.item?.id || ''
+  const songTitleAndArtist = `${
+    spotifyState?.track_window?.current_track?.name || spCtx?.item?.name
+  } - ${
+    spotifyState?.track_window?.current_track?.artists[0]?.name ||
+    spCtx?.item?.artists[0]?.name
+  }`
   const spotifyTriggerData = {
     scene_id: spotifyScene, // Incorrectly sending scene_id instead of scene_id
     song_id: songID,
     song_name: songTitleAndArtist,
-    song_position: spotifyState?.position
+    song_position: spotifyState?.position || spCtx!.progress_ms
   }
 
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
@@ -40,11 +47,12 @@ export default function SpSceneTrigger() {
       if (!state) {
         // eslint-disable-next-line no-console
         console.error('User is not playing music through the Web Playback SDK')
-        return
+
+        // return
       }
       const data = {
         ...spotifyTriggerDataTemp,
-        ...{ song_position: state.position }
+        ...{ song_position: state?.position || spCtx!.progress_ms }
       }
       addSpotifySongTrigger(data).then(() => getIntegrations())
     })

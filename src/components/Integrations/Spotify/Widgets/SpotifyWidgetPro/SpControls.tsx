@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import {
   Repeat,
   RepeatOne,
@@ -10,7 +11,15 @@ import {
   PauseCircle,
   PlayCircle
 } from '@mui/icons-material'
-import { Button, Box, IconButton, Slider } from '@mui/material'
+import {
+  Button,
+  Box,
+  IconButton,
+  Slider,
+  Select,
+  MenuItem,
+  Typography
+} from '@mui/material'
 import { useState, useContext } from 'react'
 import useStore from '../../../../../store/useStore'
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles'
@@ -18,33 +27,41 @@ import { formatTime } from '../../../../../utils/helpers'
 import {
   spotifyRepeat,
   spotifyShuffle,
-  spotifyPlay
+  // spotifyPlay,
+  spotifyPlayOnly
 } from '../../../../../utils/spotifyProxies'
 import SpSceneTrigger from './SpSceneTrigger'
 import {
+  SpStateContext,
   SpotifyControlContext,
   SpotifyStateContext,
   SpotifyTriggersContext,
   SpotifyVolumeContext
 } from '../../SpotifyProvider'
+import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon'
 
 export default function SpControls({ className }: any) {
   const classes = useStyle()
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice)
+  const spotifyDevices = useStore((state) => state.spotify.spotifyDevices)
+
   const ctrlSpotify = useContext(SpotifyControlContext)
   const spotifyVolume = useContext(SpotifyVolumeContext)
   const triggers = useContext(SpotifyTriggersContext)
   const spotifyCtx = useContext(SpotifyStateContext)
-  const hijack = spotifyCtx?.track_window?.current_track?.album.name || ''
+  const spCtx = useContext(SpStateContext)
+  const hijack =
+    spotifyCtx?.track_window?.current_track?.album.name ||
+    spCtx?.item?.album.name ||
+    ''
   const [position, setPosition] = useState(-1)
 
-  const duration = spotifyCtx?.duration || 0
-  const paused = spotifyCtx?.paused || false
+  const duration = spotifyCtx?.duration || spCtx?.item?.duration_ms || 0
+  const paused = spotifyCtx?.paused || spCtx?.is_playing || false
   const repeat_mode = spotifyCtx?.repeat_mode || 0
   const shuffle = spotifyCtx?.shuffle || false
 
   const { setVol, prev, togglePlay, next, setPos } = ctrlSpotify
-
   const marks = triggers?.map(({ position_ms, sceneName }) => ({
     value: position_ms,
     label: sceneName
@@ -57,7 +74,7 @@ export default function SpControls({ className }: any) {
     >
       {hijack === '' ? (
         <div>
-          <Button onClick={() => spotifyPlay(spotifyDevice)}>HiJack</Button>
+          <Button onClick={() => spotifyPlayOnly(spotifyDevice)}>HiJack</Button>
         </div>
       ) : (
         <>
@@ -93,20 +110,25 @@ export default function SpControls({ className }: any) {
                 )}
               </IconButton>
             </div>
+            {spotifyCtx?.track_window?.current_track?.album.name && (
+              <IconButton
+                aria-label="shuffle"
+                onClick={() => spotifyShuffle(spotifyDevice, !shuffle)}
+              >
+                {shuffle ? (
+                  <Shuffle color="primary" />
+                ) : (
+                  <Shuffle htmlColor="#bbb" />
+                )}
+              </IconButton>
+            )}
+            {spotifyCtx?.track_window?.current_track?.album.name && (
+              <IconButton aria-label="previous song" onClick={() => prev()}>
+                <SkipPrevious fontSize="large" htmlColor="#bbb" />
+              </IconButton>
+            )}
             <IconButton
-              aria-label="previous song"
-              onClick={() => spotifyShuffle(spotifyDevice, !shuffle)}
-            >
-              {shuffle ? (
-                <Shuffle color="primary" />
-              ) : (
-                <Shuffle htmlColor="#bbb" />
-              )}
-            </IconButton>
-            <IconButton aria-label="previous song" onClick={() => prev()}>
-              <SkipPrevious fontSize="large" htmlColor="#bbb" />
-            </IconButton>
-            <IconButton
+              disabled={!spotifyCtx?.track_window?.current_track?.album.name}
               aria-label={paused ? 'play' : 'pause'}
               onClick={() => togglePlay()}
             >
@@ -116,21 +138,47 @@ export default function SpControls({ className }: any) {
                 <PauseCircle sx={{ fontSize: '3rem' }} htmlColor="#fff" />
               )}
             </IconButton>
-            <IconButton aria-label="next song" onClick={() => next()}>
-              <SkipNext fontSize="large" htmlColor="#bbb" />
-            </IconButton>
-            <IconButton
-              aria-label="repeat"
-              onClick={() => spotifyRepeat(spotifyDevice, repeat_mode)}
-            >
-              {repeat_mode === 0 ? (
-                <Repeat htmlColor="#bbb" />
-              ) : repeat_mode === 1 ? (
-                <Repeat color="primary" />
-              ) : (
-                <RepeatOne color="primary" />
-              )}
-            </IconButton>
+            {spotifyCtx?.track_window?.current_track?.album.name && (
+              <IconButton aria-label="next song" onClick={() => next()}>
+                <SkipNext fontSize="large" htmlColor="#bbb" />
+              </IconButton>
+            )}
+            {spotifyCtx?.track_window?.current_track?.album.name && (
+              <IconButton
+                aria-label="repeat"
+                onClick={() => spotifyRepeat(spotifyDevice, repeat_mode)}
+              >
+                {repeat_mode === 0 ? (
+                  <Repeat htmlColor="#bbb" />
+                ) : repeat_mode === 1 ? (
+                  <Repeat color="primary" />
+                ) : (
+                  <RepeatOne color="primary" />
+                )}
+              </IconButton>
+            )}
+            {!spotifyCtx?.track_window?.current_track?.album.name && (
+              <Select
+                disabled
+                variant="outlined"
+                defaultValue={
+                  spotifyDevices &&
+                  spotifyDevices.length > 0 &&
+                  spotifyDevices.find((d) => d.is_active)?.id
+                }
+              >
+                {spotifyDevices &&
+                  spotifyDevices.length > 0 &&
+                  spotifyDevices.map((d, i) => (
+                    <MenuItem key={d.id + i} value={d.id}>
+                      <div style={{ display: 'flex' }}>
+                        <BladeIcon name={d.type} />
+                        <Typography sx={{ marginLeft: 2 }}>{d.name}</Typography>
+                      </div>
+                    </MenuItem>
+                  ))}
+              </Select>
+            )}
             <div className="showTablet">
               <SpSceneTrigger />
             </div>
@@ -143,15 +191,21 @@ export default function SpControls({ className }: any) {
               justifyContent: 'space-between'
             }}
           >
-            <TinyText>{formatTime(spotifyCtx?.position ?? 0)}</TinyText>
+            <TinyText>
+              {formatTime((spotifyCtx?.position || spCtx!.progress_ms) ?? 0)}
+            </TinyText>
             <Slider
               aria-label="time-indicator"
               size="small"
               marks={marks}
-              value={position >= 0 ? position : spotifyCtx?.position ?? 0}
+              value={
+                position >= 0
+                  ? position
+                  : (spotifyCtx?.position || spCtx!.progress_ms) ?? 0
+              }
               min={0}
               step={1}
-              max={spotifyCtx?.duration}
+              max={duration}
               onChange={(_, value) => {
                 setPosition(value as number)
               }}
