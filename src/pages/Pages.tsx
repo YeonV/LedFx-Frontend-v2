@@ -40,8 +40,7 @@ const Routings = ({ handleWs }: any) => {
     (state) => state.ui.bars && state.ui.bars.leftBar.open
   )
 
-  useHotkeys('ctrl+alt+y', () => setSmartBarOpen(true))
-  useHotkeys('ctrl+alt+z', () => setSmartBarOpen(!smartBarOpen))
+  useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
 
   const ios =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -95,7 +94,11 @@ const Routings = ({ handleWs }: any) => {
           <Route path="*" element={<Home />} />
         </Routes>
         <NoHostDialog />
-        <SmartBar open={smartBarOpen} setOpen={() => false} direct={false} />
+        <SmartBar
+          open={smartBarOpen}
+          setOpen={setSmartBarOpen}
+          direct={false}
+        />
       </Box>
       <BottomBar />
     </>
