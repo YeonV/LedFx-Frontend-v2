@@ -41,7 +41,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
         autoComplete
         openOnFocus
         autoHighlight={!direct}
-        // open={true}
         disableCloseOnSelect={direct}
         id="smartbar-autocomplete"
         sx={{ width: '100%', maxWidth: maxWidth || 480, height: 50 }}
@@ -263,7 +262,7 @@ const SmartBar = ({
   maxWidth
 }: {
   open?: boolean
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen?: any
   direct?: boolean
   maxWidth?: any
 }) => {
