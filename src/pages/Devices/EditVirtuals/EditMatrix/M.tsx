@@ -1,6 +1,16 @@
 /* eslint-disable prettier/prettier */
-import { Box, Button, Dialog, DialogActions, DialogContent, MenuItem, Select, Typography } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+/* eslint-disable @typescript-eslint/indent */
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  MenuItem,
+  Select,
+  Typography
+} from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import useStore from '../../../../store/useStore'
 import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
@@ -14,19 +24,24 @@ import MDialogTitle from './MDialogTitle'
 import MSwitch from './MSwitch'
 import MSlider from './MSlider'
 
-const EditMatrix = ({ virtual }: any) => {
+type MatrixCell = {
+  deviceId: string
+  pixel: number
+}
+
+const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
-  const deviceRef = useRef()
+  const deviceRef = useRef<HTMLInputElement | null>(null)
   const devices = useStore((state) => state.devices)
-  const [currentDevice, setCurrentDevice] = useState('')
-  const [rowNumber, setRowNumber] = useState(4)
-  const [colNumber, setColNumber] = useState(6)
-  const [currentCell, setCurrentCell] = useState([-1, -1])
-  const [open, setOpen] = useState(false)
-  const [group, setGroup] = useState(false)
+  const [currentDevice, setCurrentDevice] = useState<string>('')
+  const [rowNumber, setRowNumber] = useState<number>(4)
+  const [colNumber, setColNumber] = useState<number>(6)
+  const [currentCell, setCurrentCell] = useState<[number, number]>([-1, -1])
+  const [open, setOpen] = useState<boolean>(false)
+  const [group, setGroup] = useState<boolean>(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState<typeof dir[number]>('right')
-  const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
+  const [direction, setDirection] = useState<(typeof dir)[number]>('right')
+  const [m, setM] = useState<MatrixCell[][]>(Array(rowNumber).fill(Array(colNumber).fill({ deviceId: '', pixel: 0 })))
 
   const closeClear = () => {
     setOpen(false)
@@ -35,36 +50,32 @@ const EditMatrix = ({ virtual }: any) => {
     setGroup(false)
   }
 
-  const handleDirectionChange = (d: typeof dir[number]) => {
+  const handleDirectionChange = (d: (typeof dir)[number]) => {
     setDirection(d)
     if (typeof selectedPixel !== 'number') {
       const [col, row] = currentCell
-      const maxRange =
-          d.includes('right')
-            ? d.includes('flip')
-              ? row * colNumber + colNumber - col
-              : colNumber * rowNumber - (row * colNumber + col)
-            : d.includes('left')
-              ? d.includes('flip') 
-                ? (rowNumber - row - 1) * colNumber + col + 1
-                : row * colNumber + col + 1
-              : d.includes('bottom')
-                ? d.includes('flip') 
-                  ? (rowNumber * col) + (rowNumber - row)
-                  : colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
-                : d.includes('flip') 
-                  ? colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
-                  : (rowNumber * col) + row + 1
+      const maxRange = d.includes('right')
+        ? d.includes('flip')
+          ? row * colNumber + colNumber - col
+          : colNumber * rowNumber - (row * colNumber + col)
+        : d.includes('left')
+          ? d.includes('flip')
+            ? (rowNumber - row - 1) * colNumber + col + 1
+            : row * colNumber + col + 1
+          : d.includes('bottom')
+              ? d.includes('flip')
+                ? rowNumber * col + (rowNumber - row)
+                : colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
+              : d.includes('flip')
+                ? colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
+                : rowNumber * col + row + 1
       const distance = selectedPixel[1] - selectedPixel[0]
       if (distance > maxRange) {
-        setSelectedPixel([
-          selectedPixel[0],
-          selectedPixel[0] + maxRange
-        ])}}
-  }
+        setSelectedPixel([selectedPixel[0], selectedPixel[0] + maxRange])
+      }}}
 
-  const assignPixels = () => {                                        
-    let updatedM = JSON.parse(JSON.stringify(m))
+  const assignPixels = () => {
+    let updatedM: MatrixCell[][] = JSON.parse(JSON.stringify(m))
     const [col, row] = currentCell
     if (typeof selectedPixel === 'number') {
       updatedM[row][col] = {
@@ -75,15 +86,16 @@ const EditMatrix = ({ virtual }: any) => {
       for (
         let index = 0;
         index < Math.abs(selectedPixel[1] - selectedPixel[0]);
-        index+=1
+        index += 1
       ) {
         if (direction.includes('right')) {
           if (direction.includes('flip')) {
-            updatedM[row - Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
+            updatedM[row - Math.floor((index + col) / colNumber)][(index + col) % colNumber] = {
               deviceId: currentDevice,
               pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }} else {
-            updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
+            }
+          } else {
+            updatedM[row + Math.floor((index + col) / colNumber)][(index + col) % colNumber] = {
               deviceId: currentDevice,
               pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
             }
@@ -93,35 +105,36 @@ const EditMatrix = ({ virtual }: any) => {
             updatedM[(index + row) % rowNumber][col - Math.floor((index + row) / rowNumber)] = {
               deviceId: currentDevice,
               pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }} else {
+            }
+          } else {
             updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
               deviceId: currentDevice,
               pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
             }
           }
-        }
-        else if (direction.includes('left')) {
-          if (direction.includes('flip')) {                           
-            updatedM[row + Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }} else {
-            updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            };
-          }
-        } else if (direction.includes('top')) {
-          if (direction.includes('flip')) {                           
-            updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col + Math.abs(Math.floor((row - index) / rowNumber))] = {
+        } else if (direction.includes('left')) {
+          if (direction.includes('flip')) {
+            updatedM[row + Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index) % colNumber)) % colNumber] = {
               deviceId: currentDevice,
               pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
             }
           } else {
-            updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
+            updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index) % colNumber)) % colNumber] = {
               deviceId: currentDevice,
               pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            };
+            }
+          }
+        } else if (direction.includes('top')) {
+          if (direction.includes('flip')) {
+            updatedM[(rowNumber + ((row - index) % rowNumber)) % rowNumber][col + Math.abs(Math.floor((row - index) / rowNumber))] = {
+              deviceId: currentDevice,
+              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+            }
+          } else {
+            updatedM[(rowNumber + ((row - index) % rowNumber)) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
+              deviceId: currentDevice,
+              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+            }
           }
         }
       }
@@ -129,13 +142,13 @@ const EditMatrix = ({ virtual }: any) => {
 
     if (direction.includes('right-snake')) {
       if (direction.includes('flip')) {
-        for (let i = row; i >= 0; i-=1) {
-          const currentRow = [...updatedM[i]];
+        for (let i = row; i >= 0; i -= 1) {
+          const currentRow = [...updatedM[i]]
           if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
       } else {
-        for (let i = row; i < rowNumber; i+=1) {
-          const currentRow = [...updatedM[i]];
+        for (let i = row; i < rowNumber; i += 1) {
+          const currentRow = [...updatedM[i]]
           if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
       }
@@ -144,52 +157,52 @@ const EditMatrix = ({ virtual }: any) => {
       if (direction.includes('flip')) {
         const mat = JSON.parse(JSON.stringify(updatedM))
         const temp = transpose(mat)
-        for (let i = col; i >= 0; i-=1) {
-          const currentCol = [...temp[i]];
+        for (let i = col; i >= 0; i -= 1) {
+          const currentCol = [...temp[i]]
           if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        } 
-        updatedM = transpose(temp)  
+        }
+        updatedM = transpose(temp)
       } else {
         const mat = JSON.parse(JSON.stringify(updatedM))
         const temp = transpose(mat)
-        for (let i = col; i < colNumber; i+=1) {
-          const currentCol = [...temp[i]];
+        for (let i = col; i < colNumber; i += 1) {
+          const currentCol = [...temp[i]]
           if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        } 
-        updatedM = transpose(temp)  
-      }                                       
+        }
+        updatedM = transpose(temp)
+      }
     }
     if (direction.includes('left-snake')) {
       if (direction.includes('flip')) {
-        for (let i = row; i < rowNumber; i+=1) {
-          const currentRow = [...updatedM[i]];
-          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
+        for (let i = row; i < rowNumber; i += 1) {
+          const currentRow = [...updatedM[i]]
+          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
       } else {
-        for (let i = row; i >= 0; i-=1) {
-          const currentRow = [...updatedM[i]];
-          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
+        for (let i = row; i >= 0; i -= 1) {
+          const currentRow = [...updatedM[i]]
+          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
-      }                        
+      }
     }
-    if (direction.includes('top-snake')) {                      
+    if (direction.includes('top-snake')) {
       if (direction.includes('flip')) {
         const mat = JSON.parse(JSON.stringify(updatedM))
         const temp = transpose(mat)
-        for (let i = col; i < colNumber; i+=1) {
-          const currentCol = [...temp[i]];
+        for (let i = col; i < colNumber; i += 1) {
+          const currentCol = [...temp[i]]
           if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        } 
+        }
         updatedM = transpose(temp)
       } else {
         const mat = JSON.parse(JSON.stringify(updatedM))
         const temp = transpose(mat)
-        for (let i = col; i >= 0; i-=1) {
-          const currentCol = [...temp[i]];
+        for (let i = col; i >= 0; i -= 1) {
+          const currentCol = [...temp[i]]
           if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        } 
+        }
         updatedM = transpose(temp)
-      }                      
+      }
     }
     setM(updatedM)
     closeClear()
@@ -197,14 +210,13 @@ const EditMatrix = ({ virtual }: any) => {
 
   const handleSliderChange = (
     e: Event,
-    newPixelRange: number | number[],
+    newPixelRange: number | [number, number],
     activeThumb: number
   ) => {
     if (typeof newPixelRange !== 'number') {
       const [col, row] = currentCell
       let maxRange = 0
 
-  
       if (direction.includes('right')) {
         maxRange = colNumber * rowNumber - (row * colNumber + col)
         if (direction.includes('flip')) {
@@ -216,19 +228,18 @@ const EditMatrix = ({ virtual }: any) => {
           maxRange = (rowNumber - row - 1) * colNumber + col + 1
         }
       } else if (direction.includes('bottom')) {
-        // maxRange = colNumber * rowNumber - (rowNumber * col  + row)
-        maxRange = colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
+        maxRange = colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
         if (direction.includes('flip')) {
-          maxRange = (rowNumber * col) + (rowNumber - row)
+          maxRange = rowNumber * col + (rowNumber - row)
         }
       } else if (direction.includes('top')) {
-        maxRange = (rowNumber * col) + row + 1
+        maxRange = rowNumber * col + row + 1
         if (direction.includes('flip')) {
-          maxRange = colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
+          maxRange = colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
         }
       }
-  
-      const distance = newPixelRange[1] - newPixelRange[0]  
+
+      const distance = newPixelRange[1] - newPixelRange[0]
       let adjustedLeftThumb = newPixelRange[0]
       let adjustedRightThumb = newPixelRange[1]
       if (distance > maxRange) {
@@ -237,12 +248,12 @@ const EditMatrix = ({ virtual }: any) => {
         } else {
           adjustedLeftThumb = adjustedRightThumb - maxRange
         }
-      }  
+      }
       const updatedSelectedPixel =
         direction === 'top'
           ? [adjustedRightThumb, adjustedLeftThumb]
           : [adjustedLeftThumb, adjustedRightThumb]
-  
+
       setSelectedPixel(updatedSelectedPixel)
     } else {
       setSelectedPixel(newPixelRange)
@@ -260,7 +271,6 @@ const EditMatrix = ({ virtual }: any) => {
     closeClear()
   }
 
-  
   useEffect(() => {
     if (group) {
       if (typeof selectedPixel === 'number') {
@@ -272,9 +282,9 @@ const EditMatrix = ({ virtual }: any) => {
   }, [group])
 
   useEffect(() => {
-    setM(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
+    setM(Array(rowNumber).fill(Array(colNumber).fill({ deviceId: '', pixel: 0 })))
   }, [rowNumber, colNumber])
-  
+
   return (
     <MWrapper>
       <MControls
@@ -284,7 +294,8 @@ const EditMatrix = ({ virtual }: any) => {
         setColNumber={setColNumber}
         virtual={virtual}
         m={m}
-        setM={setM} />
+        setM={setM}
+      />
       <TransformWrapper
         centerZoomedOut
         minScale={0.1}
@@ -293,37 +304,42 @@ const EditMatrix = ({ virtual }: any) => {
           rowNumber * 100 < window.innerHeight * 0.8
             ? 1
             : 0.1
-        }>
+        }
+      >
         <TransformComponent>
-          <div className={classes.gridCellContainer}
-            style={{ width: colNumber * 100, height: rowNumber * 100 }}>
-            <div style={{ display: 'flex', flexDirection: 'column'}}>
-              {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex'}}>
-                {yzrow.map((yzcolumn: any, currentColIndex: number) => <Box
-                  key={`col-${currentColIndex}`}
-                  className={classes.gridCell}
-                  onContextMenu={(e) => {
-                    e.preventDefault()
-                    setCurrentCell([currentColIndex, currentRowIndex])
-                    setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
-                    setSelectedPixel(yzcolumn.pixel || 0)
-                    setOpen(true)
-                  }}>
-                  {yzcolumn.deviceId !== '' && (
-                    <div className={classes.pixel}>
-                      <Typography variant="caption">
-                        {devices[yzcolumn.deviceId].config.name}
-                      </Typography>
-                      <Typography variant="caption">{yzcolumn.pixel}</Typography>
-                    </div>
-                  )}
-                </Box>)}
-              </div>)}
+          <div
+            className={classes.gridCellContainer}
+            style={{ width: colNumber * 100, height: rowNumber * 100 }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {m.map((yzrow, currentRowIndex) => (
+                <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
+                  {yzrow.map((yzcolumn: MatrixCell, currentColIndex: number) => (
+                      <Box
+                        key={`col-${currentColIndex}`}
+                        className={classes.gridCell}
+                        onContextMenu={(e) => {
+                          e.preventDefault()
+                          setCurrentCell([currentColIndex, currentRowIndex])
+                          setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
+                          setSelectedPixel(yzcolumn.pixel || 0)
+                          setOpen(true)
+                        }}
+                      >
+                        {yzcolumn.deviceId !== '' && (
+                          <div className={classes.pixel}>
+                            <Typography variant="caption">{devices[yzcolumn.deviceId].config.name}</Typography>
+                            <Typography variant="caption">{yzcolumn.pixel}</Typography>
+                          </div>
+                        )}
+                      </Box>))}
+                </div>))}
             </div>
             <Dialog
               onClose={() => closeClear()}
               open={open}
-              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
+              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}
+            >
               <MDialogTitle currentCell={currentCell} m={m} />
               <DialogContent>
                 <BladeFrame title="Device" full={false} style={{ marginBottom: '1rem' }}>
@@ -344,7 +360,7 @@ const EditMatrix = ({ virtual }: any) => {
                 </BladeFrame>
                 {currentDevice && (
                   <>
-                    <MSwitch group={group} setGroup={setGroup} />                    
+                    <MSwitch group={group} setGroup={setGroup} />
                     {group && <MFillSelector direction={direction} onChange={handleDirectionChange} />}
                     <MSlider
                       group={group}
@@ -357,13 +373,15 @@ const EditMatrix = ({ virtual }: any) => {
                 )}
               </DialogContent>
               <DialogActions>
-                <Button onClick={()=> clearPixel()}>Clear</Button>
-                <Button onClick={()=> assignPixels()}>Save</Button>
+                <Button onClick={() => clearPixel()}>Clear</Button>
+                <Button onClick={() => assignPixels()}>Save</Button>
               </DialogActions>
             </Dialog>
           </div>
         </TransformComponent>
       </TransformWrapper>
-    </MWrapper>)}
+    </MWrapper>
+  )
+}
 
 export default EditMatrix
