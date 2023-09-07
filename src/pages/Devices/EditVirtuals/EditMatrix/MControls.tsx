@@ -5,11 +5,11 @@ import {
   SwapVert
 } from '@mui/icons-material'
 import { Box, Button, Slider, Stack } from '@mui/material'
-import { Ledfx } from '../../../api/ledfx'
-import Popover from '../../../components/Popover/Popover'
-import { transpose } from '../../../utils/helpers'
+import { Ledfx } from '../../../../api/ledfx'
+import Popover from '../../../../components/Popover/Popover'
+import { transpose } from '../../../../utils/helpers'
 
-const EditMatrixControls = ({
+const MControls = ({
   rowNumber,
   colNumber,
   setRowNumber,
@@ -115,4 +115,4 @@ const EditMatrixControls = ({
   )
 }
 
-export default EditMatrixControls
+export default MControls

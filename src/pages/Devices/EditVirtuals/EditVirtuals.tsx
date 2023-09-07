@@ -31,7 +31,7 @@ import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog'
 import Segment from './Segment'
 
 import useEditVirtualsStyles from './EditVirtuals.styles'
-import EditMatrix from './EditMatrix'
+import EditMatrix from './EditMatrix/M'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
