@@ -1,6 +1,6 @@
 import { Alert } from '@mui/material'
 
-const EditMatrixWrapper = ({ children }: any) => {
+const MWrapper = ({ children }: any) => {
   return (
     <div
       style={{
@@ -24,4 +24,4 @@ const EditMatrixWrapper = ({ children }: any) => {
   )
 }
 
-export default EditMatrixWrapper
+export default MWrapper
