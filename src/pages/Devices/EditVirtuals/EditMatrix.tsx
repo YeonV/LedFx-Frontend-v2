@@ -16,18 +16,7 @@ import right from '../../../assets/right.svg'
 import bottom from '../../../assets/bottom.svg'
 import left from '../../../assets/left.svg'
 import top from '../../../assets/top.svg'
-
-function transpose(matrix: any[][]) {
-  const res = [];
-  for(let i = 0;  i < matrix[0].length; i++) {
-    res[i] = [] as any;
-    for(let j = 0;  j < matrix.length; j++) {
-      res[i][j] = matrix[j][i];
-    }
-  }
-  return res; 
-}
-
+import { transpose } from '../../../utils/helpers'
 
 const EditMatrix = ({ virtual }: any) => {
   const classes = useStyles()
@@ -40,10 +29,8 @@ const EditMatrix = ({ virtual }: any) => {
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom'>('right')
-  const [mode, setMode] = useState<'linear' | 'snake'>('linear')
-  // const [matrix, setMatrix] = useState(Array(rowNumber * colNumber).fill({deviceId: '', pixel: 0})) // [{},{}]
-  const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0}))) // [[{},{}],[{},{}]]
+  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake'>('right')
+  const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
 
   const closeClear = () => {
     setOpen(false)
@@ -63,12 +50,6 @@ const EditMatrix = ({ virtual }: any) => {
   }, [group])
 
   useEffect(() => {
-    // setMatrix(
-    //   Array(rowNumber * colNumber).fill({
-    //     deviceId: '',
-    //     pixel: 0
-    //   })
-    // )
     setM(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
   }, [rowNumber, colNumber])
 
@@ -80,14 +61,15 @@ const EditMatrix = ({ virtual }: any) => {
     if (typeof newPixelRange !== 'number') {
       const [col, row] = currentCell
       let maxRange = 0
+
   
-      if (direction === 'right') {
+      if (direction.includes('right')) {
         maxRange = colNumber * rowNumber - (row * colNumber + col)
-      } else if (direction === 'left') {
+      } else if (direction.includes('left')) {
         maxRange = row * colNumber + col + 1
-      } else if (direction === 'bottom') {
+      } else if (direction.includes('bottom')) {
         maxRange = colNumber * rowNumber - (rowNumber * col  + row)
-      } else if (direction === 'top') {
+      } else if (direction.includes('top')) {
         maxRange = (rowNumber * col) + row + 1
       }
   
@@ -110,7 +92,6 @@ const EditMatrix = ({ virtual }: any) => {
     } else {
       setSelectedPixel(newPixelRange)
     }
-    console.log(selectedPixel)
   }  
   
   return (
@@ -164,10 +145,10 @@ const EditMatrix = ({ virtual }: any) => {
               PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
               <DialogTitle>
                 <div className={classes.centered}>
-                  {/* {matrix[currentCell[1] * colNumber + currentCell[0]]
+                  {currentCell[1] >= 0 && currentCell[0] >=0 && m[currentCell[1]][currentCell[0]]
                     ?.deviceId !== ''
                     ? 'Edit'
-                    : 'Assign'}{' '} */}
+                    : 'Assign'}{' '}
                   Pixel
                   <Typography variant="caption" align="right">
                     Row: {currentCell[1] + 1}
@@ -195,22 +176,6 @@ const EditMatrix = ({ virtual }: any) => {
                 </BladeFrame>
                 {currentDevice && (
                   <>
-                    <BladeFrame title={`Pixel${group ? 's' : ''}`} full={false} style={{ marginBottom: '1rem' }}>
-                      <Slider
-                        marks={[
-                          { value: 0, label: '0' },
-                          {
-                            value: devices[currentDevice].config.pixel_count,
-                            label: devices[currentDevice].config.pixel_count
-                          }
-                        ]}
-                        valueLabelDisplay="auto"
-                        min={0}
-                        max={devices[currentDevice].config.pixel_count}
-                        value={selectedPixel}
-                        onChange={handleSliderChange}
-                      />
-                    </BladeFrame>
                     <BladeFrame
                       title="Group"
                       style={{
@@ -227,55 +192,62 @@ const EditMatrix = ({ virtual }: any) => {
                     </BladeFrame>
                     {/* )} */}
                     {group && (
-                      <>
-                        <BladeFrame title="Mode" full={false} style={{ marginBottom: '1rem' }}>
-                          <Select
-                            value={mode}
-                            onChange={(e) => setMode(e.target.value as 'linear' | 'snake')}
-                            variant="standard"
-                            fullWidth
-                          >
-                            <MenuItem value="linear">Linear</MenuItem>
-                            <MenuItem value="snake">Snake</MenuItem>
-                          </Select>
-                        </BladeFrame>
-                        <BladeFrame
-                          title="Fill Direction"
-                          full={false}
-                          style={{ marginBottom: '1rem' }}
-                        >
-                          <Select
-                            value={direction}
-                            variant="standard"
-                            fullWidth
-                            onChange={(e) => {
-                              setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom')
-                              if (typeof selectedPixel !== 'number') {
-                                const [col, row] = currentCell
-                                const maxRange =
-                                  e.target.value === 'right'
-                                    ? colNumber * rowNumber -
-                                      (row * colNumber + col - 1)
-                                    : e.target.value === 'left'
+                      <BladeFrame
+                        title="Fill Direction"
+                        full={false}
+                        style={{ marginBottom: '1rem' }}
+                      >
+                        <Select
+                          value={direction}
+                          variant="standard"
+                          fullWidth
+                          onChange={(e) => {
+                            setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake')
+                            if (typeof selectedPixel !== 'number') {
+                              const [col, row] = currentCell
+                              const maxRange =
+                                  e.target.value.includes('right')
+                                    ? colNumber * rowNumber - (row * colNumber + col - 1)
+                                    : e.target.value.includes('left')
                                       ? row * colNumber + col + 1
-                                      : e.target.value === 'bottom'
+                                      : e.target.value.includes('bottom')
                                         ? colNumber * rowNumber - (rowNumber * col  + row)
                                         : (rowNumber * col) + row + 1
-                                const distance =
+                              const distance =
                                   selectedPixel[1] - selectedPixel[0]
-                                if (distance > maxRange) {
-                                  setSelectedPixel([
-                                    selectedPixel[0],
-                                    selectedPixel[0] + maxRange
-                                  ])}}}}>
-                            <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Right</div><img width="50px" src={mode === 'snake' ? rightSnake : right} alt="rightSnake" /></div></MenuItem>
-                            <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Bottom</div><img width="50px" src={mode === 'snake' ? bottomSnake : bottom} alt="bottomSnake" /></div></MenuItem>
-                            <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Left</div><img width="50px" src={mode === 'snake' ? leftSnake : left} alt="leftSnake" /></div></MenuItem>
-                            <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>To Top</div><img width="50px" src={mode === 'snake' ? topSnake : top} alt="topSnake" /></div></MenuItem>
-                          </Select>
-                        </BladeFrame>
-                      </>
+                              if (distance > maxRange) {
+                                setSelectedPixel([
+                                  selectedPixel[0],
+                                  selectedPixel[0] + maxRange
+                                ])}}}}>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right</div><img width="30px" src={right} alt="rightSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Bottom</div><img width="30px" src={bottom} alt="bottomSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left</div><img width="30px" src={left} alt="leftSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Top</div><img width="30px" src={top} alt="topSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Snake</div><img width="30px" src={rightSnake} alt="rightSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Bottom Snake</div><img width="30px" src={bottomSnake} alt="bottomSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left Snake</div><img width="30px" src={leftSnake} alt="leftSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Top Snake</div><img width="30px" src={topSnake} alt="topSnake" /></div></MenuItem>
+                        </Select>
+                      </BladeFrame>
                     )}
+
+                    <BladeFrame title={`Pixel${group ? 's' : ''}`} full={false} style={{ marginBottom: '1rem' }}>
+                      <Slider
+                        marks={[
+                          { value: 0, label: '0' },
+                          {
+                            value: devices[currentDevice].config.pixel_count,
+                            label: devices[currentDevice].config.pixel_count
+                          }
+                        ]}
+                        valueLabelDisplay="auto"
+                        min={0}
+                        max={devices[currentDevice].config.pixel_count}
+                        value={selectedPixel}
+                        onChange={handleSliderChange}
+                      />
+                    </BladeFrame>
                   </>
                 )}
               </DialogContent>
@@ -284,12 +256,11 @@ const EditMatrix = ({ virtual }: any) => {
                   onClick={() => {
                     const updatedM = JSON.parse(JSON.stringify(m))
                     const [col, row] = currentCell
-                    if (typeof selectedPixel === 'number') {
-                      updatedM[row][col] = {
-                        deviceId: '',
-                        pixel: 0
-                      }
+                    updatedM[row][col] = {
+                      deviceId: '',
+                      pixel: 0
                     }
+                    setM(updatedM)
                     closeClear()
                   }}>
                   Clear
@@ -310,23 +281,23 @@ const EditMatrix = ({ virtual }: any) => {
                         index < Math.abs(selectedPixel[1] - selectedPixel[0]);
                         index++
                       ) {
-                        if (direction === 'right') {
+                        if (direction.includes('right')) {
                           updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
                             deviceId: currentDevice,
                             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
                           };
-                        } else if (direction === 'bottom') {
+                        } else if (direction.includes('bottom')) {
                           updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
                             deviceId: currentDevice,
                             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
                           }
                         }
-                        else if (direction === 'left') {
+                        else if (direction.includes('left')) {
                           updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
                             deviceId: currentDevice,
                             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
                           };
-                        } else if (direction === 'top') {
+                        } else if (direction.includes('top')) {
                           updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
                             deviceId: currentDevice,
                             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
@@ -334,37 +305,35 @@ const EditMatrix = ({ virtual }: any) => {
                         }
                       }
                     }
-                    if (mode === 'snake') {
-                      if (direction === 'right') {
-                        for (let i = row; i < rowNumber; i++) {
-                          const currentRow = [...updatedM[i]];
-                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
-                        }                        
+                    if (direction.includes('right-snake')) {
+                      for (let i = row; i < rowNumber; i++) {
+                        const currentRow = [...updatedM[i]];
+                        if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
+                      }           
+                    }
+                    if (direction.includes('bottom-snake')) {
+                      const mat = JSON.parse(JSON.stringify(updatedM))
+                      const temp = transpose(mat)
+                      for (let i = col; i < colNumber; i++) {
+                        const currentCol = [...temp[i]];
+                        if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                      } 
+                      updatedM = transpose(temp)
+                    }
+                    if (direction.includes('left-snake')) {
+                      for (let i = row; i >= 0; i--) {
+                        const currentRow = [...updatedM[i]];
+                        if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
                       }
-                      if (direction === 'bottom') {
-                        const mat = JSON.parse(JSON.stringify(updatedM))
-                        const temp = transpose(mat)
-                        for (let i = col; i < colNumber; i++) {
-                          const currentCol = [...temp[i]];
-                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-                        } 
-                        updatedM = transpose(temp)
-                      }
-                      if (direction === 'left') {
-                        for (let i = row; i >= 0; i--) {
-                          const currentRow = [...updatedM[i]];
-                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
-                        }
-                      }
-                      if (direction === 'top') {
-                        const mat = JSON.parse(JSON.stringify(updatedM))
-                        const temp = transpose(mat)
-                        for (let i = col; i > 0; i--) {
-                          const currentCol = [...temp[i]];
-                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-                        } 
-                        updatedM = transpose(temp)
-                      }
+                    }
+                    if (direction.includes('top-snake')) {
+                      const mat = JSON.parse(JSON.stringify(updatedM))
+                      const temp = transpose(mat)
+                      for (let i = col; i > 0; i--) {
+                        const currentCol = [...temp[i]];
+                        if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                      } 
+                      updatedM = transpose(temp)
                     }
                     setM(updatedM)
                     closeClear()
