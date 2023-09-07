@@ -8,6 +8,7 @@ import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
 import EditMatrixWrapper from './EditMatrixWrapper'
 import EditMatrixControls from './EditMatrixControls'
 import useStyles from './EditMatrix.styles'
+import rightFlip from '../../../assets/right-flip.svg'
 import rightSnake from '../../../assets/right-snake.svg'
 import bottomSnake from '../../../assets/bottom-snake.svg'
 import leftSnake from '../../../assets/left-snake.svg'
@@ -29,7 +30,7 @@ const EditMatrix = ({ virtual }: any) => {
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake'>('right')
+  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake' | 'right-flip'>('right')
   const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
 
   const closeClear = () => {
@@ -65,6 +66,9 @@ const EditMatrix = ({ virtual }: any) => {
   
       if (direction.includes('right')) {
         maxRange = colNumber * rowNumber - (row * colNumber + col)
+        if (direction.includes('flip')) {
+          maxRange = row * colNumber + colNumber - col
+        }
       } else if (direction.includes('left')) {
         maxRange = row * colNumber + col + 1
       } else if (direction.includes('bottom')) {
@@ -202,12 +206,14 @@ const EditMatrix = ({ virtual }: any) => {
                           variant="standard"
                           fullWidth
                           onChange={(e) => {
-                            setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake')
+                            setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake' | 'right-flip')
                             if (typeof selectedPixel !== 'number') {
                               const [col, row] = currentCell
                               const maxRange =
                                   e.target.value.includes('right')
-                                    ? colNumber * rowNumber - (row * colNumber + col - 1)
+                                    ? e.target.value.includes('flip')
+                                      ? row * colNumber + colNumber - col
+                                      : colNumber * rowNumber - (row * colNumber + col)
                                     : e.target.value.includes('left')
                                       ? row * colNumber + col + 1
                                       : e.target.value.includes('bottom')
@@ -220,14 +226,15 @@ const EditMatrix = ({ virtual }: any) => {
                                   selectedPixel[0],
                                   selectedPixel[0] + maxRange
                                 ])}}}}>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right</div><img width="30px" src={right} alt="rightSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Bottom</div><img width="30px" src={bottom} alt="bottomSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left</div><img width="30px" src={left} alt="leftSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Top</div><img width="30px" src={top} alt="topSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Snake</div><img width="30px" src={rightSnake} alt="rightSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Bottom Snake</div><img width="30px" src={bottomSnake} alt="bottomSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left Snake</div><img width="30px" src={leftSnake} alt="leftSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Top Snake</div><img width="30px" src={topSnake} alt="topSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Down</div><img width="30px" src={right} alt="rightSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-flip"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Up</div><img width="30px" src={rightFlip} alt="rightFlip" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Snake Down</div><img width="30px" src={rightSnake} alt="rightSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Down Right</div><img width="30px" src={bottom} alt="bottomSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Down Snake Right</div><img width="30px" src={bottomSnake} alt="bottomSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left Up</div><img width="30px" src={left} alt="leftSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left Snake Up</div><img width="30px" src={leftSnake} alt="leftSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Up Left</div><img width="30px" src={top} alt="topSnake" /></div></MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Up Snake Left</div><img width="30px" src={topSnake} alt="topSnake" /></div></MenuItem>
                         </Select>
                       </BladeFrame>
                     )}
@@ -282,10 +289,16 @@ const EditMatrix = ({ virtual }: any) => {
                         index++
                       ) {
                         if (direction.includes('right')) {
-                          updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
-                            deviceId: currentDevice,
-                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-                          };
+                          if (direction.includes('flip')) {
+                            updatedM[row - Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            }} else {
+                            updatedM[row + Math.floor((index + col) / colNumber)][((index + col) % colNumber)] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            }
+                          }
                         } else if (direction.includes('bottom')) {
                           updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
                             deviceId: currentDevice,
@@ -305,11 +318,14 @@ const EditMatrix = ({ virtual }: any) => {
                         }
                       }
                     }
+                    // if (direction.includes('right-flip')) {
+                    //   updatedM = JSON.parse(JSON.stringify(m)).reverse()
+                    // }
                     if (direction.includes('right-snake')) {
                       for (let i = row; i < rowNumber; i++) {
                         const currentRow = [...updatedM[i]];
                         if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
-                      }           
+                      }
                     }
                     if (direction.includes('bottom-snake')) {
                       const mat = JSON.parse(JSON.stringify(updatedM))
