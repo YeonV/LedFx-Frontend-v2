@@ -1,6 +1,5 @@
-/* eslint-disable no-plusplus */
 /* eslint-disable prettier/prettier */
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, Slider, Switch, Typography } from '@mui/material'
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, ListSubheader, MenuItem, Select, Slider, Switch, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import useStore from '../../../store/useStore'
@@ -8,16 +7,24 @@ import BladeFrame from '../../../components/SchemaForm/components/BladeFrame'
 import EditMatrixWrapper from './EditMatrixWrapper'
 import EditMatrixControls from './EditMatrixControls'
 import useStyles from './EditMatrix.styles'
-import rightFlip from '../../../assets/right-flip.svg'
-import rightSnake from '../../../assets/right-snake.svg'
-import bottomSnake from '../../../assets/bottom-snake.svg'
-import leftSnake from '../../../assets/left-snake.svg'
-import topSnake from '../../../assets/top-snake.svg'
 import right from '../../../assets/right.svg'
+import rightSnake from '../../../assets/right-snake.svg'
+import rightFlip from '../../../assets/right-flip.svg'
+import rightSnakeFlip from '../../../assets/right-snake-flip.svg'
 import bottom from '../../../assets/bottom.svg'
+import bottomFlip from '../../../assets/bottom-flip.svg'
+import bottomSnake from '../../../assets/bottom-snake.svg'
+import bottomSnakeFlip from '../../../assets/bottom-snake-flip.svg'
 import left from '../../../assets/left.svg'
+import leftSnake from '../../../assets/left-snake.svg'
+import leftFlip from '../../../assets/left-flip.svg'
+import leftSnakeFlip from '../../../assets/left-snake-flip.svg'
 import top from '../../../assets/top.svg'
+import topSnake from '../../../assets/top-snake.svg'
+import topFlip from '../../../assets/top-flip.svg'
+import topSnakeFlip from '../../../assets/top-snake-flip.svg'
 import { transpose } from '../../../utils/helpers'
+import dir from './EditMatrix.props'
 
 const EditMatrix = ({ virtual }: any) => {
   const classes = useStyles()
@@ -30,7 +37,7 @@ const EditMatrix = ({ virtual }: any) => {
   const [open, setOpen] = useState(false)
   const [group, setGroup] = useState(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState<'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake' | 'right-flip'>('right')
+  const [direction, setDirection] = useState<typeof dir[number]>('right')
   const [m, setM] = useState(Array(rowNumber).fill(Array(colNumber).fill({deviceId: '',pixel: 0})))
 
   const closeClear = () => {
@@ -38,6 +45,34 @@ const EditMatrix = ({ virtual }: any) => {
     setCurrentDevice('')
     setSelectedPixel(0)
     setGroup(false)
+  }
+  const handleDirectionChange = (d: typeof dir[number]) => {
+    setDirection(d)
+    if (typeof selectedPixel !== 'number') {
+      const [col, row] = currentCell
+      const maxRange =
+          d.includes('right')
+            ? d.includes('flip')
+              ? row * colNumber + colNumber - col
+              : colNumber * rowNumber - (row * colNumber + col)
+            : d.includes('left')
+              ? d.includes('flip') 
+                ? (rowNumber - row - 1) * colNumber + col + 1
+                : row * colNumber + col + 1
+              : d.includes('bottom')
+                ? d.includes('flip') 
+                  ? (rowNumber * col) + (rowNumber - row)
+                  : colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
+                : d.includes('flip') 
+                  ? colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
+                  : (rowNumber * col) + row + 1
+      const distance =
+          selectedPixel[1] - selectedPixel[0]
+      if (distance > maxRange) {
+        setSelectedPixel([
+          selectedPixel[0],
+          selectedPixel[0] + maxRange
+        ])}}
   }
 
   useEffect(() => {
@@ -71,10 +106,20 @@ const EditMatrix = ({ virtual }: any) => {
         }
       } else if (direction.includes('left')) {
         maxRange = row * colNumber + col + 1
+        if (direction.includes('flip')) {
+          maxRange = (rowNumber - row - 1) * colNumber + col + 1
+        }
       } else if (direction.includes('bottom')) {
-        maxRange = colNumber * rowNumber - (rowNumber * col  + row)
+        // maxRange = colNumber * rowNumber - (rowNumber * col  + row)
+        maxRange = colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
+        if (direction.includes('flip')) {
+          maxRange = (rowNumber * col) + (rowNumber - row)
+        }
       } else if (direction.includes('top')) {
         maxRange = (rowNumber * col) + row + 1
+        if (direction.includes('flip')) {
+          maxRange = colNumber * rowNumber - (rowNumber * col  + (rowNumber - row - 1))
+        }
       }
   
       const distance = newPixelRange[1] - newPixelRange[0]  
@@ -205,36 +250,130 @@ const EditMatrix = ({ virtual }: any) => {
                           value={direction}
                           variant="standard"
                           fullWidth
-                          onChange={(e) => {
-                            setDirection(e.target.value as 'right' | 'left' | 'top' | 'bottom' | 'right-snake' | 'left-snake' | 'top-snake' | 'bottom-snake' | 'right-flip')
-                            if (typeof selectedPixel !== 'number') {
-                              const [col, row] = currentCell
-                              const maxRange =
-                                  e.target.value.includes('right')
-                                    ? e.target.value.includes('flip')
-                                      ? row * colNumber + colNumber - col
-                                      : colNumber * rowNumber - (row * colNumber + col)
-                                    : e.target.value.includes('left')
-                                      ? row * colNumber + col + 1
-                                      : e.target.value.includes('bottom')
-                                        ? colNumber * rowNumber - (rowNumber * col  + row)
-                                        : (rowNumber * col) + row + 1
-                              const distance =
-                                  selectedPixel[1] - selectedPixel[0]
-                              if (distance > maxRange) {
-                                setSelectedPixel([
-                                  selectedPixel[0],
-                                  selectedPixel[0] + maxRange
-                                ])}}}}>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="right"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Down</div><img width="30px" src={right} alt="rightSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-flip"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Up</div><img width="30px" src={rightFlip} alt="rightFlip" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Right Snake Down</div><img width="30px" src={rightSnake} alt="rightSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Down Right</div><img width="30px" src={bottom} alt="bottomSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Down Snake Right</div><img width="30px" src={bottomSnake} alt="bottomSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="left"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left Up</div><img width="30px" src={left} alt="leftSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Left Snake Up</div><img width="30px" src={leftSnake} alt="leftSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="top"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Up Left</div><img width="30px" src={top} alt="topSnake" /></div></MenuItem>
-                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-snake"><div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><div>Up Snake Left</div><img width="30px" src={topSnake} alt="topSnake" /></div></MenuItem>
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 300,
+                              },
+                            },
+                          }}
+                          onChange={(e) => handleDirectionChange(e.target.value)}>
+                          <ListSubheader>Right</ListSubheader>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                              Linear<Chip size='small' label="Down" variant="outlined" />
+                              </div>
+                              <img width="30px" src={right} alt="rightSnake" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                              Linear<Chip size='small' label="Up" variant="outlined" />                                
+                              </div>
+                              <img width="30px" src={rightFlip} alt="rightFlip" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-snake">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Down" variant="outlined" />
+                              </div>
+                              <img width="30px" src={rightSnake} alt="rightSnake" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="right-snake-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Up" variant="outlined" />
+                              </div>
+                              <img width="30px" src={rightSnakeFlip} alt="rightSnakeFlip" /></div>
+                          </MenuItem>
+                          <ListSubheader>Down</ListSubheader>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Linear<Chip size='small' label="Right" variant="outlined" />
+                              </div>
+                              <img width="30px" src={bottom} alt="bottomSnake" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Linear<Chip size='small' label="Left" variant="outlined" />
+                              </div>
+                              <img width="30px" src={bottomFlip} alt="bottomSnakeFlip" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-snake">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Right" variant="outlined" />
+                              </div>
+                              <img width="30px" src={bottomSnake} alt="bottomSnake" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="bottom-snake-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Left" variant="outlined" />
+                              </div>
+                              <img width="30px" src={bottomSnakeFlip} alt="bottomSnakeFlip" /></div>
+                          </MenuItem>
+                          <ListSubheader>Left</ListSubheader>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Linear<Chip size='small' label="Down" variant="outlined" />
+                              </div>
+                              <img width="30px" src={leftFlip} alt="leftFlip" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Linear<Chip size='small' label="Up" variant="outlined" />
+                              </div>
+                              <img width="30px" src={left} alt="left" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-snake">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Up" variant="outlined" />
+                              </div>
+                              <img width="30px" src={leftSnake} alt="leftSnake" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="left-snake-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Down" variant="outlined" />
+                              </div>
+                              <img width="30px" src={leftSnakeFlip} alt="leftSnakeFlip" /></div>
+                          </MenuItem>
+                          <ListSubheader>Up</ListSubheader>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Linear<Chip size='small' label="Left" variant="outlined" />
+                              </div>
+                              <img width="30px" src={top} alt="top" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Linear<Chip size='small' label="Right" variant="outlined" />
+                              </div>
+                              <img width="30px" src={topFlip} alt="topFlip" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-snake">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Left" variant="outlined" />
+                              </div>
+                              <img width="30px" src={topSnake} alt="topSnake" /></div>
+                          </MenuItem>
+                          <MenuItem sx={{justifyContent: 'space-between'}} value="top-snake-flip">
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <div>
+                                Snake<Chip size='small' label="Right" variant="outlined" />
+                              </div>
+                              <img width="30px" src={topSnakeFlip} alt="topSnakeFlip" /></div>
+                          </MenuItem>
                         </Select>
                       </BladeFrame>
                     )}
@@ -286,7 +425,7 @@ const EditMatrix = ({ virtual }: any) => {
                       for (
                         let index = 0;
                         index < Math.abs(selectedPixel[1] - selectedPixel[0]);
-                        index++
+                        index+=1
                       ) {
                         if (direction.includes('right')) {
                           if (direction.includes('flip')) {
@@ -300,56 +439,113 @@ const EditMatrix = ({ virtual }: any) => {
                             }
                           }
                         } else if (direction.includes('bottom')) {
-                          updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
-                            deviceId: currentDevice,
-                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                          if (direction.includes('flip')) {
+                            updatedM[(index + row) % rowNumber][col - Math.floor((index + row) / rowNumber)] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            }} else {
+                            updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            }
                           }
                         }
                         else if (direction.includes('left')) {
-                          updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
-                            deviceId: currentDevice,
-                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-                          };
+                          if (direction.includes('flip')) {                           
+                            updatedM[row + Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            }} else {
+                            updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index)) % colNumber) % colNumber] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            };
+                          }
                         } else if (direction.includes('top')) {
-                          updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
-                            deviceId: currentDevice,
-                            pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-                          };
+                          if (direction.includes('flip')) {                           
+                            updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col + Math.abs(Math.floor((row - index) / rowNumber))] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            }
+                          } else {
+                            updatedM[(rowNumber + ((row - index)) % rowNumber) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
+                              deviceId: currentDevice,
+                              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
+                            };
+                          }
                         }
                       }
                     }
-                    // if (direction.includes('right-flip')) {
-                    //   updatedM = JSON.parse(JSON.stringify(m)).reverse()
-                    // }
+
                     if (direction.includes('right-snake')) {
-                      for (let i = row; i < rowNumber; i++) {
-                        const currentRow = [...updatedM[i]];
-                        if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
+
+                      if (direction.includes('flip')) {
+                        for (let i = row; i >= 0; i-=1) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
+                        }
+                      } else {
+                        for (let i = row; i < rowNumber; i+=1) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
+                        }
                       }
                     }
                     if (direction.includes('bottom-snake')) {
-                      const mat = JSON.parse(JSON.stringify(updatedM))
-                      const temp = transpose(mat)
-                      for (let i = col; i < colNumber; i++) {
-                        const currentCol = [...temp[i]];
-                        if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-                      } 
-                      updatedM = transpose(temp)
+                      if (direction.includes('flip')) {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i >= 0; i-=1) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)  
+                      } else {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i < colNumber; i+=1) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)  
+                      }
+
+
+                                       
                     }
                     if (direction.includes('left-snake')) {
-                      for (let i = row; i >= 0; i--) {
-                        const currentRow = [...updatedM[i]];
-                        if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
-                      }
+                      if (direction.includes('flip')) {
+                        for (let i = row; i < rowNumber; i+=1) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
+                        }
+                      } else {
+                        for (let i = row; i >= 0; i-=1) {
+                          const currentRow = [...updatedM[i]];
+                          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse();
+                        }
+                      }                        
                     }
                     if (direction.includes('top-snake')) {
-                      const mat = JSON.parse(JSON.stringify(updatedM))
-                      const temp = transpose(mat)
-                      for (let i = col; i > 0; i--) {
-                        const currentCol = [...temp[i]];
-                        if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-                      } 
-                      updatedM = transpose(temp)
+                      
+                      if (direction.includes('flip')) {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i < colNumber; i+=1) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)
+                      } else {
+                        const mat = JSON.parse(JSON.stringify(updatedM))
+                        const temp = transpose(mat)
+                        for (let i = col; i >= 0; i-=1) {
+                          const currentCol = [...temp[i]];
+                          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
+                        } 
+                        updatedM = transpose(temp)
+                      }
+                      
                     }
                     setM(updatedM)
                     closeClear()
