@@ -16,13 +16,13 @@ import top from '../../../../assets/top.svg'
 import topSnake from '../../../../assets/top-snake.svg'
 import topFlip from '../../../../assets/top-flip.svg'
 import topSnakeFlip from '../../../../assets/top-snake-flip.svg'
-import dir from './M.props'
+import type { IDir } from './M.utils'
 
 const MFillSelector = ({
   direction,
   onChange
 }: {
-  direction: (typeof dir)[number]
+  direction: IDir
   onChange: any
 }) => {
   return (

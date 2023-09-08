@@ -8,10 +8,11 @@ import { Box, Button, Slider, Stack } from '@mui/material'
 import { Ledfx } from '../../../../api/ledfx'
 import Popover from '../../../../components/Popover/Popover'
 import { transpose } from '../../../../utils/helpers'
+import { MCell } from './M.utils'
 
 const MControls = ({
-  rowNumber,
-  colNumber,
+  rowN,
+  colN,
   setRowNumber,
   setColNumber,
   virtual,
@@ -26,13 +27,13 @@ const MControls = ({
           <Slider
             min={1}
             max={50}
-            value={rowNumber}
+            value={rowN}
             onChange={(e, newRowNumber) =>
               typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
             }
           />
         </Box>
-        {rowNumber}
+        {rowN}
       </Stack>
       <Stack direction="row" width={500} justifyContent="space-between">
         Columns:
@@ -40,13 +41,13 @@ const MControls = ({
           <Slider
             min={1}
             max={50}
-            value={colNumber}
+            value={colN}
             onChange={(e, newColNumber) =>
               typeof newColNumber === 'number' && setColNumber(newColNumber)
             }
           />
         </Box>
-        {colNumber}
+        {colN}
       </Stack>
       <Stack
         direction="row"
@@ -86,11 +87,7 @@ const MControls = ({
             color="inherit"
             variant="outlined"
             onConfirm={() => {
-              setM(
-                Array(rowNumber).fill(
-                  Array(colNumber).fill({ deviceId: '', pixel: 0 })
-                )
-              )
+              setM(Array(rowN).fill(Array(colN).fill(MCell)))
             }}
           />
 
@@ -99,7 +96,7 @@ const MControls = ({
               Ledfx('/api/virtuals', 'POST', {
                 config: {
                   ...virtual.config,
-                  rows: rowNumber
+                  rows: rowN
                 },
                 matrix: m,
                 id: virtual.id
