@@ -1,47 +1,33 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/indent */
-import React, { useEffect, useRef, useState } from 'react'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  MenuItem,
-  Select,
-  Typography
-} from '@mui/material'
+import { useEffect, useRef, useState, FC } from 'react'
+import { Box, Button, Dialog, DialogActions, DialogContent, MenuItem, Select, Typography } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
+import { transpose } from '../../../../utils/helpers'
 import useStore from '../../../../store/useStore'
+import useStyles from './M.styles'
+import { MCell, clone, getMaxRange } from './M.utils'
+import type { IMCell, IDir } from './M.utils'
 import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
 import MWrapper from './MWrapper'
 import MControls from './MControls'
 import MFillSelector from './MFillSelector'
-import useStyles from './M.styles'
-import { transpose } from '../../../../utils/helpers'
-import dir from './M.props'
 import MDialogTitle from './MDialogTitle'
 import MSwitch from './MSwitch'
 import MSlider from './MSlider'
 
-type MatrixCell = {
-  deviceId: string
-  pixel: number
-}
-
-const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
+const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
   const deviceRef = useRef<HTMLInputElement | null>(null)
   const devices = useStore((state) => state.devices)
   const [currentDevice, setCurrentDevice] = useState<string>('')
-  const [rowNumber, setRowNumber] = useState<number>(4)
-  const [colNumber, setColNumber] = useState<number>(6)
+  const [rowN, setRowNumber] = useState<number>(4)
+  const [colN, setColNumber] = useState<number>(6)
   const [currentCell, setCurrentCell] = useState<[number, number]>([-1, -1])
   const [open, setOpen] = useState<boolean>(false)
   const [group, setGroup] = useState<boolean>(false)
   const [selectedPixel, setSelectedPixel] = useState<number | number[]>(0)
-  const [direction, setDirection] = useState<(typeof dir)[number]>('right')
-  const [m, setM] = useState<MatrixCell[][]>(Array(rowNumber).fill(Array(colNumber).fill({ deviceId: '', pixel: 0 })))
+  const [direction, setDirection] = useState<IDir>('right')
+  const [m, setM] = useState<IMCell[][]>(Array(rowN).fill(Array(colN).fill(MCell)))
 
   const closeClear = () => {
     setOpen(false)
@@ -50,96 +36,53 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
     setGroup(false)
   }
 
-  const handleDirectionChange = (d: (typeof dir)[number]) => {
+  const handleDirectionChange = (d: IDir) => {
     setDirection(d)
     if (typeof selectedPixel !== 'number') {
       const [col, row] = currentCell
-      const maxRange = d.includes('right')
-        ? d.includes('flip')
-          ? row * colNumber + colNumber - col
-          : colNumber * rowNumber - (row * colNumber + col)
-        : d.includes('left')
-          ? d.includes('flip')
-            ? (rowNumber - row - 1) * colNumber + col + 1
-            : row * colNumber + col + 1
-          : d.includes('bottom')
-              ? d.includes('flip')
-                ? rowNumber * col + (rowNumber - row)
-                : colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
-              : d.includes('flip')
-                ? colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
-                : rowNumber * col + row + 1
+      const maxRange = getMaxRange(direction, row, col, rowN, colN)
       const distance = selectedPixel[1] - selectedPixel[0]
       if (distance > maxRange) {
         setSelectedPixel([selectedPixel[0], selectedPixel[0] + maxRange])
-      }}}
+      }
+    }
+  }
 
   const assignPixels = () => {
-    let updatedM: MatrixCell[][] = JSON.parse(JSON.stringify(m))
+    let updatedM: IMCell[][] = clone(m)
     const [col, row] = currentCell
     if (typeof selectedPixel === 'number') {
-      updatedM[row][col] = {
-        deviceId: currentDevice,
-        pixel: selectedPixel
-      }
+      updatedM[row][col] = { deviceId: currentDevice, pixel: selectedPixel }
     } else {
-      for (
-        let index = 0;
-        index < Math.abs(selectedPixel[1] - selectedPixel[0]);
-        index += 1
-      ) {
+      for ( let index = 0; index < Math.abs(selectedPixel[1] - selectedPixel[0]); index += 1 ) {
+        const newM = { deviceId: currentDevice, pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index }
         if (direction.includes('right')) {
           if (direction.includes('flip')) {
-            updatedM[row - Math.floor((index + col) / colNumber)][(index + col) % colNumber] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[row - Math.floor((index + col) / colN)][(index + col) % colN] = newM
           } else {
-            updatedM[row + Math.floor((index + col) / colNumber)][(index + col) % colNumber] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[row + Math.floor((index + col) / colN)][(index + col) % colN] = newM
           }
         } else if (direction.includes('bottom')) {
           if (direction.includes('flip')) {
-            updatedM[(index + row) % rowNumber][col - Math.floor((index + row) / rowNumber)] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[(index + row) % rowN][col - Math.floor((index + row) / rowN)] = newM
           } else {
-            updatedM[(index + row) % rowNumber][col + Math.floor((index + row) / rowNumber)] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[(index + row) % rowN][col + Math.floor((index + row) / rowN)] = newM
           }
         } else if (direction.includes('left')) {
           if (direction.includes('flip')) {
-            updatedM[row + Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index) % colNumber)) % colNumber] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[row + Math.abs(Math.floor((col - index) / colN))][(colN + ((col - index) % colN)) % colN] = newM
           } else {
-            updatedM[row - Math.abs(Math.floor((col - index) / colNumber))][(colNumber + ((col - index) % colNumber)) % colNumber] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[row - Math.abs(Math.floor((col - index) / colN))][(colN + ((col - index) % colN)) % colN] = newM
           }
         } else if (direction.includes('top')) {
           if (direction.includes('flip')) {
-            updatedM[(rowNumber + ((row - index) % rowNumber)) % rowNumber][col + Math.abs(Math.floor((row - index) / rowNumber))] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[(rowN + ((row - index) % rowN)) % rowN][col + Math.abs(Math.floor((row - index) / rowN))] = newM
           } else {
-            updatedM[(rowNumber + ((row - index) % rowNumber)) % rowNumber][col - Math.abs(Math.floor((row - index) / rowNumber))] = {
-              deviceId: currentDevice,
-              pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index
-            }
+            updatedM[(rowN + ((row - index) % rowN)) % rowN][col - Math.abs(Math.floor((row - index) / rowN))] = newM
           }
         }
       }
     }
-
     if (direction.includes('right-snake')) {
       if (direction.includes('flip')) {
         for (let i = row; i >= 0; i -= 1) {
@@ -147,7 +90,7 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
           if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
       } else {
-        for (let i = row; i < rowNumber; i += 1) {
+        for (let i = row; i < rowN; i += 1) {
           const currentRow = [...updatedM[i]]
           if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
@@ -155,7 +98,7 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
     }
     if (direction.includes('bottom-snake')) {
       if (direction.includes('flip')) {
-        const mat = JSON.parse(JSON.stringify(updatedM))
+        const mat = clone(updatedM)
         const temp = transpose(mat)
         for (let i = col; i >= 0; i -= 1) {
           const currentCol = [...temp[i]]
@@ -163,9 +106,9 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
         }
         updatedM = transpose(temp)
       } else {
-        const mat = JSON.parse(JSON.stringify(updatedM))
+        const mat = clone(updatedM)
         const temp = transpose(mat)
-        for (let i = col; i < colNumber; i += 1) {
+        for (let i = col; i < colN; i += 1) {
           const currentCol = [...temp[i]]
           if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
         }
@@ -174,7 +117,7 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
     }
     if (direction.includes('left-snake')) {
       if (direction.includes('flip')) {
-        for (let i = row; i < rowNumber; i += 1) {
+        for (let i = row; i < rowN; i += 1) {
           const currentRow = [...updatedM[i]]
           if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
         }
@@ -187,15 +130,15 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
     }
     if (direction.includes('top-snake')) {
       if (direction.includes('flip')) {
-        const mat = JSON.parse(JSON.stringify(updatedM))
+        const mat = clone(updatedM)
         const temp = transpose(mat)
-        for (let i = col; i < colNumber; i += 1) {
+        for (let i = col; i < colN; i += 1) {
           const currentCol = [...temp[i]]
           if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
         }
         updatedM = transpose(temp)
       } else {
-        const mat = JSON.parse(JSON.stringify(updatedM))
+        const mat = clone(updatedM)
         const temp = transpose(mat)
         for (let i = col; i >= 0; i -= 1) {
           const currentCol = [...temp[i]]
@@ -208,38 +151,11 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
     closeClear()
   }
 
-  const handleSliderChange = (
-    e: Event,
-    newPixelRange: number | [number, number],
-    activeThumb: number
-  ) => {
+  const handleSliderChange = ( e: Event, newPixelRange: number | [number, number], activeThumb: number ) => {
     if (typeof newPixelRange !== 'number') {
       const [col, row] = currentCell
-      let maxRange = 0
-
-      if (direction.includes('right')) {
-        maxRange = colNumber * rowNumber - (row * colNumber + col)
-        if (direction.includes('flip')) {
-          maxRange = row * colNumber + colNumber - col
-        }
-      } else if (direction.includes('left')) {
-        maxRange = row * colNumber + col + 1
-        if (direction.includes('flip')) {
-          maxRange = (rowNumber - row - 1) * colNumber + col + 1
-        }
-      } else if (direction.includes('bottom')) {
-        maxRange = colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
-        if (direction.includes('flip')) {
-          maxRange = rowNumber * col + (rowNumber - row)
-        }
-      } else if (direction.includes('top')) {
-        maxRange = rowNumber * col + row + 1
-        if (direction.includes('flip')) {
-          maxRange = colNumber * rowNumber - (rowNumber * col + (rowNumber - row - 1))
-        }
-      }
-
-      const distance = newPixelRange[1] - newPixelRange[0]
+      const maxRange = getMaxRange(direction, row, col, rowN, colN)
+      const distance = Math.abs(newPixelRange[1] - newPixelRange[0])
       let adjustedLeftThumb = newPixelRange[0]
       let adjustedRightThumb = newPixelRange[1]
       if (distance > maxRange) {
@@ -249,11 +165,7 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
           adjustedLeftThumb = adjustedRightThumb - maxRange
         }
       }
-      const updatedSelectedPixel =
-        direction === 'top'
-          ? [adjustedRightThumb, adjustedLeftThumb]
-          : [adjustedLeftThumb, adjustedRightThumb]
-
+      const updatedSelectedPixel = direction === 'top' ? [adjustedRightThumb, adjustedLeftThumb] : [adjustedLeftThumb, adjustedRightThumb]
       setSelectedPixel(updatedSelectedPixel)
     } else {
       setSelectedPixel(newPixelRange)
@@ -261,12 +173,9 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
   }
 
   const clearPixel = () => {
-    const updatedM = JSON.parse(JSON.stringify(m))
+    const updatedM = clone(m)
     const [col, row] = currentCell
-    updatedM[row][col] = {
-      deviceId: '',
-      pixel: 0
-    }
+    updatedM[row][col] = { deviceId: '', pixel: 0 }
     setM(updatedM)
     closeClear()
   }
@@ -282,106 +191,60 @@ const EditMatrix: React.FC<{ virtual: any }> = ({ virtual }) => {
   }, [group])
 
   useEffect(() => {
-    setM(Array(rowNumber).fill(Array(colNumber).fill({ deviceId: '', pixel: 0 })))
-  }, [rowNumber, colNumber])
+    setM(Array(rowN).fill(Array(colN).fill(MCell)))
+  }, [rowN, colN])
 
-  return (
-    <MWrapper>
-      <MControls
-        rowNumber={rowNumber}
-        colNumber={colNumber}
-        setRowNumber={setRowNumber}
-        setColNumber={setColNumber}
-        virtual={virtual}
-        m={m}
-        setM={setM}
-      />
-      <TransformWrapper
-        centerZoomedOut
-        minScale={0.1}
-        initialScale={
-          colNumber * 100 < window.innerWidth ||
-          rowNumber * 100 < window.innerHeight * 0.8
-            ? 1
-            : 0.1
-        }
-      >
-        <TransformComponent>
-          <div
-            className={classes.gridCellContainer}
-            style={{ width: colNumber * 100, height: rowNumber * 100 }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {m.map((yzrow, currentRowIndex) => (
-                <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
-                  {yzrow.map((yzcolumn: MatrixCell, currentColIndex: number) => (
-                      <Box
-                        key={`col-${currentColIndex}`}
-                        className={classes.gridCell}
-                        onContextMenu={(e) => {
-                          e.preventDefault()
-                          setCurrentCell([currentColIndex, currentRowIndex])
-                          setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
-                          setSelectedPixel(yzcolumn.pixel || 0)
-                          setOpen(true)
-                        }}
-                      >
-                        {yzcolumn.deviceId !== '' && (
-                          <div className={classes.pixel}>
-                            <Typography variant="caption">{devices[yzcolumn.deviceId].config.name}</Typography>
-                            <Typography variant="caption">{yzcolumn.pixel}</Typography>
-                          </div>
-                        )}
-                      </Box>))}
-                </div>))}
+  return <MWrapper>
+    <MControls rowN={rowN} colN={colN} setRowNumber={setRowNumber} setColNumber={setColNumber} virtual={virtual} m={m} setM={setM} />
+    <TransformWrapper centerZoomedOut minScale={0.1} initialScale={colN * 100 < window.innerWidth || rowN * 100 < window.innerHeight * 0.8 ? 1 : 0.1}>
+      <TransformComponent>
+        <div className={classes.gridCellContainer} style={{ width: colN * 100, height: rowN * 100 }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
+              {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
+                <Box key={`col-${currentColIndex}`} className={classes.gridCell} onContextMenu={(e) => {
+                  e.preventDefault()
+                  setCurrentCell([currentColIndex, currentRowIndex])
+                  setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
+                  setSelectedPixel(yzcolumn.pixel || 0)
+                  setOpen(true)
+                }}>
+                  {yzcolumn.deviceId !== '' && (
+                    <div className={classes.pixel}>
+                      <Typography variant="caption">{devices[yzcolumn.deviceId].config.name}</Typography>
+                      <Typography variant="caption">{yzcolumn.pixel}</Typography>
+                    </div>
+                  )}
+                </Box>
+              ))}
             </div>
-            <Dialog
-              onClose={() => closeClear()}
-              open={open}
-              PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}
-            >
-              <MDialogTitle currentCell={currentCell} m={m} />
-              <DialogContent>
-                <BladeFrame title="Device" full={false} style={{ marginBottom: '1rem' }}>
-                  <Select
-                    value={currentDevice}
-                    onChange={(e) => setCurrentDevice(e.target.value || '')}
-                    inputRef={deviceRef}
-                    variant="standard"
-                    fullWidth
-                  >
-                    {devices &&
-                      Object.keys(devices).map((d: any, i: number) => (
-                        <MenuItem value={devices[d].id} key={i}>
-                          {devices[d].config.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </BladeFrame>
-                {currentDevice && (
-                  <>
-                    <MSwitch group={group} setGroup={setGroup} />
-                    {group && <MFillSelector direction={direction} onChange={handleDirectionChange} />}
-                    <MSlider
-                      group={group}
-                      devices={devices}
-                      currentDevice={currentDevice}
-                      selectedPixel={selectedPixel}
-                      handleSliderChange={handleSliderChange}
-                    />
-                  </>
-                )}
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => clearPixel()}>Clear</Button>
-                <Button onClick={() => assignPixels()}>Save</Button>
-              </DialogActions>
-            </Dialog>
+            )}
           </div>
-        </TransformComponent>
-      </TransformWrapper>
-    </MWrapper>
-  )
-}
+          <Dialog onClose={() => closeClear()} open={open} PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
+            <MDialogTitle currentCell={currentCell} m={m} />
+            <DialogContent>
+              <BladeFrame title="Device" style={{ marginBottom: '1rem' }}>
+                <Select value={currentDevice} onChange={(e) => setCurrentDevice(e.target.value || '')} inputRef={deviceRef} variant="standard" fullWidth>
+                  {devices &&
+                    Object.keys(devices).map((d: any, i: number) => (
+                      <MenuItem value={devices[d].id} key={i}>{devices[d].config.name}</MenuItem>
+                    ))}
+                </Select>
+              </BladeFrame>
+              {currentDevice && <>
+                <MSwitch group={group} setGroup={setGroup} />
+                {group && <MFillSelector direction={direction} onChange={handleDirectionChange} />}
+                <MSlider group={group} devices={devices} currentDevice={currentDevice} selectedPixel={selectedPixel} handleSliderChange={handleSliderChange} />
+              </>}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => clearPixel()}>Clear</Button>
+              <Button onClick={() => assignPixels()}>Save</Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      </TransformComponent>
+    </TransformWrapper>
+  </MWrapper>}
 
 export default EditMatrix
