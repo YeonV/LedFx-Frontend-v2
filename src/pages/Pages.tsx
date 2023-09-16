@@ -27,6 +27,7 @@ import SmartBar from '../components/Dialogs/SmartBar'
 import useStore from '../store/useStore'
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
 import { drawerWidth } from '../utils/helpers'
+import User from './User/User'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
@@ -91,6 +92,7 @@ const Routings = ({ handleWs }: any) => {
           <Route path="/scenes" element={<Scenes />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/user" element={<User />} />
           <Route path="*" element={<Home />} />
         </Routes>
         <NoHostDialog />
