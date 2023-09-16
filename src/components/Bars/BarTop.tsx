@@ -39,7 +39,7 @@ import GlobalActionBar from '../GlobalActionBar'
 import pkg from '../../../package.json'
 import { Ledfx } from '../../api/ledfx'
 
-const StyledBadge = styled(Badge)(() => ({
+export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
     right: '45%',
     top: '115%',
@@ -52,6 +52,8 @@ const StyledBadge = styled(Badge)(() => ({
 
 const TopBar = () => {
   // const classes = useStyles();
+  const navigate = useNavigate()
+
   const theme = useTheme()
   const ios =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -360,7 +362,13 @@ const TopBar = () => {
             // className={classes.bladeMenu}
           >
             {features.cloud && isLogged && (
-              <MenuItem disabled divider>
+              <MenuItem
+                divider
+                onClick={() => {
+                  setAnchorEl(null)
+                  navigate('/User')
+                }}
+              >
                 <ListItemIcon style={{ marginTop: -13 }}>
                   <StyledBadge
                     badgeContent={
