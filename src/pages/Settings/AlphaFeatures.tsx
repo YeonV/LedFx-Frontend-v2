@@ -18,6 +18,11 @@ const AlphaFeatures = () => {
         checked={features.webaudio}
         onChange={() => setFeatures('webaudio', !features.webaudio)}
       />
+      <SettingsRow
+        title="Matrix 2D"
+        checked={features.matrix}
+        onChange={() => setFeatures('matrix', !features.matrix)}
+      />
       {showFeatures.wled && (
         <SettingsRow
           title="WLED Integration"

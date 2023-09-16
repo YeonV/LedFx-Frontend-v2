@@ -172,6 +172,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
             setFeatures('webaudio', true)
             setFeatures('beta', true)
             setFeatures('alpha', true)
+            setFeatures('matrix', true)
             window.localStorage.setItem('ledfx-theme', 'DarkRed')
             window.location.reload()
           }
@@ -219,7 +220,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
             style={{
               width: 'calc(100% + 20px)',
               maxWidth: direct ? maxWidth || 480 : maxWidth || 500,
-              marginLeft: direct ? 0 : -10,
+              marginLeft: 0,
               marginRight: direct ? 0 : -10,
               background: theme.palette.background.paper
             }}

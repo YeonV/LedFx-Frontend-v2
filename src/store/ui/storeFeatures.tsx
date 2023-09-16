@@ -26,6 +26,7 @@ type IFeatures =
   | 'scenetables'
   | 'scenechips'
   | 'alpha'
+  | 'matrix'
 const storeFeatures = (set: any) => ({
   features: {
     dev: false,
@@ -49,7 +50,8 @@ const storeFeatures = (set: any) => ({
     sceneexternal: false,
     scenemidi: false,
     beta: false,
-    alpha: false
+    alpha: false,
+    matrix: false
   },
   showFeatures: {
     dev: false,
@@ -73,7 +75,8 @@ const storeFeatures = (set: any) => ({
     sceneexternal: false,
     scenemidi: false,
     beta: false,
-    alpha: false
+    alpha: false,
+    matrix: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

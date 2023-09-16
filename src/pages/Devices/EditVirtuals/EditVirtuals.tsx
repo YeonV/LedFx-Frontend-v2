@@ -68,6 +68,7 @@ export default function EditVirtuals({
   innerKey
 }: any) {
   const [matrix, setMatrix] = useState(false)
+  const features = useStore((state) => state.features)
   const currentVirtual = useStore((state) => state.currentVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
   const calibrationMode = useStore((state) => state.calibrationMode)
@@ -183,24 +184,26 @@ export default function EditVirtuals({
             >
               back
             </Button>
-            <ToggleButtonGroup
-              value={matrix}
-              style={{ marginRight: '1rem' }}
-              size="small"
-              exclusive
-              onChange={() => setMatrix(!matrix)}
-              aria-label="mode"
-            >
-              <ToggleButton value={false}>
-                <BladeIcon name="mdi:led-strip" />
-              </ToggleButton>
-              <ToggleButton value>
-                <GridOn />
-              </ToggleButton>
-              {/* <ToggleButton disabled value="3d">
+            {features.matrix && (
+              <ToggleButtonGroup
+                value={matrix}
+                style={{ marginRight: '1rem' }}
+                size="small"
+                exclusive
+                onChange={() => setMatrix(!matrix)}
+                aria-label="mode"
+              >
+                <ToggleButton value={false}>
+                  <BladeIcon name="mdi:led-strip" />
+                </ToggleButton>
+                <ToggleButton value>
+                  <GridOn />
+                </ToggleButton>
+                {/* <ToggleButton disabled value="3d">
                 <BladeIcon name="mdi:cube-outline" />
               </ToggleButton> */}
-            </ToggleButtonGroup>
+              </ToggleButtonGroup>
+            )}
 
             {/* {matrix ? '2D matrix' : '1D Strip'} */}
             <Typography variant="h6" className={classes.title}>
