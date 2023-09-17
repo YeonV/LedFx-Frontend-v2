@@ -2,6 +2,8 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable prettier/prettier */
 import isElectron from 'is-electron';
+import { CircularProgress, Dialog } from '@mui/material'
+import { CheckCircle } from '@mui/icons-material'
 import {
   finishAuth,
   refreshAuth
@@ -26,8 +28,14 @@ const SpotifyLoginRedirect = () => {
       }/#/Integrations?`),
     3000
   ) // Redirect to homepage after 3 sec
-  return (
-    <div style={{ margin: '6rem auto' }}>Successfully logged in with Spotify...</div>
+  return (<Dialog open fullScreen>
+    <div style={{ margin: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
+      <CheckCircle sx={{ fontSize: 120 }} />
+      Successfully logged in with Spotify...
+      <CircularProgress sx={{ marginTop: '2rem'}} />
+
+    </div>
+  </Dialog>
   );
 }
 

@@ -60,6 +60,7 @@ const AddIntegrationDialog = () => {
   const addIntegration = useStore((state) => state.addIntegration)
   const updateIntegration = useStore((state) => state.updateIntegration)
   const integrations = useStore((state) => state.integrations)
+  const features = useStore((state) => state.features) as any
 
   const open = useStore((state) => state.dialogs.addIntegration?.open || false)
 
@@ -183,7 +184,7 @@ const AddIntegrationDialog = () => {
                 <MenuItem
                   key={i}
                   value={item}
-                  disabled={integrationsTypes[item].beta}
+                  disabled={integrationsTypes[item].beta && !features[item]}
                 >
                   {integrationsTypes[item].name}
                 </MenuItem>
