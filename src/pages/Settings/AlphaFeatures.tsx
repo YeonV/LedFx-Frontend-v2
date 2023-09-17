@@ -23,6 +23,20 @@ const AlphaFeatures = () => {
         checked={features.matrix}
         onChange={() => setFeatures('matrix', !features.matrix)}
       />
+      {features.integrations && (
+        <>
+          <SettingsRow
+            title="MQTT"
+            checked={features.mqtt}
+            onChange={() => setFeatures('mqtt', !features.mqtt)}
+          />
+          <SettingsRow
+            title="MQTT HA"
+            checked={features.mqtt_hass}
+            onChange={() => setFeatures('mqtt_hass', !features.mqtt_hass)}
+          />
+        </>
+      )}
       {showFeatures.wled && (
         <SettingsRow
           title="WLED Integration"

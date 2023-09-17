@@ -3,7 +3,7 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
-type IFeatures =
+export type IFeatures =
   | 'dev'
   | 'cloud'
   | 'wled'
@@ -27,6 +27,8 @@ type IFeatures =
   | 'scenechips'
   | 'alpha'
   | 'matrix'
+  | 'mqtt'
+  | 'mqtt_hass'
 const storeFeatures = (set: any) => ({
   features: {
     dev: false,
@@ -51,7 +53,9 @@ const storeFeatures = (set: any) => ({
     scenemidi: false,
     beta: false,
     alpha: false,
-    matrix: false
+    matrix: false,
+    mqtt: false,
+    mqtt_hass: false
   },
   showFeatures: {
     dev: false,
@@ -76,7 +80,9 @@ const storeFeatures = (set: any) => ({
     scenemidi: false,
     beta: false,
     alpha: false,
-    matrix: false
+    matrix: false,
+    mqtt: false,
+    mqtt_hass: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

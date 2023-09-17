@@ -16,7 +16,7 @@ import ExpertFeatures from './ExpertFeatures'
 import DevicesSection from './DevicesSection'
 import SmartBar from '../../components/Dialogs/SmartBar'
 import ScenesSection from './ScenesSection'
-import IntegrationsSection from './IntegrationsSection'
+// import IntegrationsSection from './IntegrationsSection'
 
 const Settings = () => {
   const classes = useStyles()
@@ -75,7 +75,7 @@ const Settings = () => {
       <SettingsAccordion title="Scenes" accId="scenesSection" icon="Image">
         <ScenesSection />
       </SettingsAccordion>
-      {viewMode !== 'user' && features.integrations && (
+      {/* {viewMode !== 'user' && features.integrations && (
         <SettingsAccordion
           title="Integrations"
           accId="integrationsSection"
@@ -83,7 +83,7 @@ const Settings = () => {
         >
           <IntegrationsSection />
         </SettingsAccordion>
-      )}
+      )} */}
       <SettingsAccordion title="UI" accId="2a" icon="Widgets">
         <UICard />
       </SettingsAccordion>

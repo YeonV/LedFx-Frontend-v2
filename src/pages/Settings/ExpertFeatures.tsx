@@ -40,7 +40,7 @@ const ExpertFeatures = () => {
       />
       <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
       <SettingsRow
-        title="Spotify Embedded Player"
+        title="Spotify Embedded Player (old)"
         checked={features.spotify}
         onChange={() => setFeatures('spotify', !features.spotify)}
       />
