@@ -30,7 +30,7 @@ const LoginRedirect = () => {
       .then(async (res) => {
         // Successfully logged with Strapi
         // Now saving the jwt to use it for future authenticated requests to Strapi
-        // console.log(res)
+        console.log(res)
         localStorage.setItem('jwt', res.jwt)
         localStorage.setItem('username', res.user.username)
         const me = await cloud.get('users/me', {

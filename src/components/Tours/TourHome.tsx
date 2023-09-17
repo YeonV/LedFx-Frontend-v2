@@ -1,7 +1,14 @@
 import { useState } from 'react'
-import { useTheme, Button, Fab } from '@mui/material'
+import {
+  useTheme,
+  Button,
+  Fab,
+  MenuItem,
+  ListItemIcon,
+  Badge
+} from '@mui/material'
 import Tour from 'reactour'
-import { LiveHelp } from '@mui/icons-material'
+import { InfoRounded, LiveHelp } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
 const steps = [
@@ -89,14 +96,16 @@ const steps = [
 
 const TourHome = ({
   className,
+  cally,
   variant = 'button'
 }: {
   className?: string
   variant?: string
+  cally?: any
 }) => {
   const theme = useTheme()
   const tour = useStore((state) => state.tours.home)
-  const [isTourOpen, setIsTourOpen] = useState(tour)
+  const [isTourOpen, setIsTourOpen] = useState(false)
   const setTour = useStore((state) => state.setTour)
 
   return (
@@ -105,8 +114,9 @@ const TourHome = ({
         <Fab
           aria-label="guided-tour"
           className="step-zero"
-          onClick={() => {
+          onClick={(e) => {
             setTour('home')
+            cally(e)
             setIsTourOpen(true)
           }}
           style={{
@@ -121,6 +131,21 @@ const TourHome = ({
         >
           <LiveHelp />
         </Fab>
+      ) : variant === 'menuitem' ? (
+        <MenuItem
+          onClick={(e) => {
+            setIsTourOpen(true)
+            cally(e)
+            setTour('home')
+          }}
+        >
+          <ListItemIcon>
+            <Badge variant="dot" color="error" invisible={tour}>
+              <InfoRounded />
+            </Badge>
+          </ListItemIcon>
+          Tour
+        </MenuItem>
       ) : (
         <Button
           className={`step-zero ${className}`}
@@ -145,7 +170,8 @@ const TourHome = ({
 
 TourHome.defaultProps = {
   className: '',
-  variant: 'button'
+  variant: 'button',
+  cally: null
 }
 
 export default TourHome

@@ -38,6 +38,7 @@ import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import GlobalActionBar from '../GlobalActionBar'
 import pkg from '../../../package.json'
 import { Ledfx } from '../../api/ledfx'
+import TourHome from '../Tours/TourHome'
 
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -415,7 +416,9 @@ const TopBar = () => {
               <TourDevices cally={() => setAnchorEl(null)} />
             ) : pathname.split('/')[1] === 'Integrations' ? (
               <TourIntegrations cally={() => setAnchorEl(null)} />
-            ) : null}
+            ) : (
+              <TourHome variant="menuitem" cally={() => setAnchorEl(null)} />
+            )}
             {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
 
             {features.cloud && (
