@@ -253,6 +253,7 @@ const User = () => {
                 <Typography>Upload current config</Typography>
                 <Popover
                   icon={<CloudUpload />}
+                  disabled={cloudConfigs.length >= 5}
                   type="iconbutton"
                   color="inherit"
                   confirmDisabled={configName === ''}
