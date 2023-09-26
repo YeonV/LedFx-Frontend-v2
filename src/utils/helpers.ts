@@ -147,3 +147,6 @@ export function transpose(matrix: any[][]) {
   return res; 
 }
 
+export const ios =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
