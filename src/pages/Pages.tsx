@@ -26,7 +26,7 @@ import LoginRedirect from './Login/LoginRedirect'
 import SmartBar from '../components/Dialogs/SmartBar'
 import useStore from '../store/useStore'
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
-import { drawerWidth } from '../utils/helpers'
+import { drawerWidth, ios } from '../utils/helpers'
 import User from './User/User'
 
 const Routings = ({ handleWs }: any) => {
@@ -43,9 +43,6 @@ const Routings = ({ handleWs }: any) => {
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
 
-  const ios =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
   return (
     <>
       <ScrollToTop />

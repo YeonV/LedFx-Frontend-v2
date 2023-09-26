@@ -23,13 +23,11 @@ import logoAsset from '../../assets/logo.png'
 // import bannerAsset from '../../assets/banner.png';
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useClickOutside from '../../utils/useClickOutside'
+import { ios } from '../../utils/helpers'
 
 const LeftBar = () => {
   const classes = useStyles()
   const theme = useTheme()
-  const ios =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
   const { pathname } = useLocation()
   const virtuals = useStore((state) => state.virtuals)
   const open = useStore((state) => state.ui.bars?.leftBar.open)

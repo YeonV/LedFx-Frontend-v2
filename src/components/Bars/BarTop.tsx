@@ -28,7 +28,7 @@ import {
 import { styled } from '@mui/styles'
 import { useTheme } from '@mui/material/styles'
 import useStore from '../../store/useStore'
-import { drawerWidth } from '../../utils/helpers'
+import { drawerWidth, ios } from '../../utils/helpers'
 import TourDevice from '../Tours/TourDevice'
 import TourScenes from '../Tours/TourScenes'
 import TourSettings from '../Tours/TourSettings'
@@ -56,9 +56,6 @@ const TopBar = () => {
   const navigate = useNavigate()
 
   const theme = useTheme()
-  const ios =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
 
   const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open)
   const latestTag = useStore((state) => state.ui.latestTag)
