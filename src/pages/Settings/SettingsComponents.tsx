@@ -204,10 +204,6 @@ export const SettingsRow = ({
 }) => {
   const classes = useStyles()
   const theme = useTheme()
-  // const ios =
-  //   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-  //   (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
-
   return (
     <div
       className={`${classes.settingsRow} step-settings-${step} `}

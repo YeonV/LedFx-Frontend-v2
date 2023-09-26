@@ -26,7 +26,7 @@ import AddButton from '../AddButton/AddButton'
 import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget'
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro'
 import MIDIListener from '../MidiInput'
-import { drawerWidth } from '../../utils/helpers'
+import { drawerWidth, ios } from '../../utils/helpers'
 import EditSceneDialog from '../Dialogs/SceneDialogs/EditSceneDialog'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 
@@ -42,7 +42,6 @@ export default function BarBottom() {
     (state) => state.ui.bars && state.ui.bars?.bottomBar
   )
 
-  // const setBottomBarOpen = useStore((state) => state.ui.setBottomBarOpen);
   const features = useStore((state) => state.features)
   const integrations = useStore((state) => state.integrations)
 
@@ -50,13 +49,6 @@ export default function BarBottom() {
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
   const spotifyURL = useStore((state) => state.spotify.spotifyEmbedUrl)
   const setSpotifyURL = useStore((state) => state.setSpEmbedUrl)
-  const ios =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
-
-  // const setSpotifyAuthURL = useStore(
-  //   (state) => state.setSpotifyAuthUrl
-  // );
 
   const [youtubeEnabled, setYoutubeEnabled] = useState(false)
   const [youtubeExpanded, setYoutubeExpanded] = useState(false)
@@ -206,7 +198,6 @@ export default function BarBottom() {
           setSpotifyExpanded={setSpotifyExpanded}
           spotifyURL={spotifyURL}
           setSpotifyURL={setSpotifyURL}
-          // setSpotifyAuthURL={setSpotifyAuthURL}
           botHeight={botHeight}
           setYoutubeEnabled={setYoutubeEnabled}
           setYoutubeExpanded={setYoutubeExpanded}
@@ -220,7 +211,6 @@ export default function BarBottom() {
           setSpotifyExpanded={setSpotifyExpanded}
           spotifyURL={spotifyURL}
           setSpotifyURL={setSpotifyURL}
-          // setSpotifyAuthURL={setSpotifyAuthURL}
           botHeight={botHeight}
           setYoutubeEnabled={setYoutubeEnabled}
           setYoutubeExpanded={setYoutubeExpanded}
