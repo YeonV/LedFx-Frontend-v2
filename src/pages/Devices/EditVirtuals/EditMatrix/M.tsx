@@ -29,6 +29,22 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [direction, setDirection] = useState<IDir>('right')
   const [m, setM] = useState<IMCell[][]>(Array(rowN).fill(Array(colN).fill(MCell)))
 
+  const [pixels, setPixels] = useState<any>([]);
+  const pixelGraphs = useStore((state) => state.pixelGraphs);
+  const virtuals = useStore((state) => state.virtuals);
+  
+  useEffect(() => {
+    const handleWebsockets = (e: any) => {
+      if (e.detail.id === virtual.id) {        
+        setPixels(e.detail.pixels);
+      }
+    };
+    document.addEventListener('YZ', handleWebsockets);
+    return () => {
+      document.removeEventListener('YZ', handleWebsockets);
+    };
+  }, [virtuals, pixelGraphs]);
+
   const closeClear = () => {
     setOpen(false)
     setCurrentDevice('')
@@ -202,7 +218,10 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
               {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
-                <Box key={`col-${currentColIndex}`} className={classes.gridCell} onContextMenu={(e) => {
+                <Box key={`col-${currentColIndex}`} className={classes.gridCell} sx={{ 
+                  backgroundColor: pixels && pixels[0] && pixels[0].length ? `rgb(${pixels[0][currentRowIndex*colN + currentColIndex]},${pixels[1][currentRowIndex*colN + currentColIndex]},${pixels[2][currentRowIndex*colN + currentColIndex]})` : '#f00',
+                  opacity: yzcolumn.deviceId !== '' ? 1 : 0.3,
+                }} onContextMenu={(e) => {
                   e.preventDefault()
                   setCurrentCell([currentColIndex, currentRowIndex])
                   setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
