@@ -21,6 +21,7 @@ export interface EffectSchemaFormProps {
   /**
    * updateEffect function for the given model
    */
+  selectedType?: any
   getVirtuals?: () => true
 }
 
