@@ -5,8 +5,65 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 
+export type Segment = [
+  device: string,
+  start: number,
+  end: number,
+  reverse: boolean
+]
+
+export interface EffectConfig {
+  background_brightness?: number
+  background_color?: string
+  blur?: number
+  brightness?: number
+  color?: string
+  color_correction?: boolean
+  decay?: number
+  flip?: boolean
+  frequency_range?: string
+  gradient?: string
+  gradient_name?: string
+  gradient_repeat?: number
+  gradient_roll?: number
+  invert_roll?: boolean
+  mirror?: boolean
+  multiplier?: number
+  solid_color?: boolean
+  advanced?: boolean
+}
+
+export interface Effect {
+  config: EffectConfig
+  name: string
+  type: string
+}
+
+export interface Virtual {
+  config: {
+    center_offset: number
+    frequency_max: number
+    frequency_min: number
+    icon_name: string
+    mapping: string
+    max_brightness: number
+    name: string
+    preview_only: boolean
+    rows: number
+    transition_mode: string
+    transition_time: number
+  }
+  id: string
+  is_device: string
+  auto_generated: boolean
+  segments: Segment[]
+  pixel_count: number
+  active: boolean
+  effect: Effect
+}
+
 const storeVirtuals = (set: any) => ({
-  virtuals: {} as any,
+  virtuals: {} as Record<string, Virtual>,
   activeSegment: -1,
   setActiveSegment: (v: number) =>
     set(
@@ -38,7 +95,7 @@ const storeVirtuals = (set: any) => ({
       if (resp && resp.virtuals) {
         set(
           produce((state: IStore) => {
-            state.virtuals = resp.virtuals
+            state.virtuals = resp.virtuals as Record<string, Virtual>
           }),
           false,
           'api/gotVirtuals'
@@ -70,9 +127,9 @@ const storeVirtuals = (set: any) => ({
       set(
         produce((state: IStore) => {
           state.virtuals[virtId].effect = {
-            type: resp.effect.type,
-            name: resp.effect.name,
-            config: resp.effect.config
+            type: (resp.effect as Effect).type,
+            name: (resp.effect as Effect).name,
+            config: (resp.effect as Effect).config
           }
         }),
         false,
@@ -83,7 +140,7 @@ const storeVirtuals = (set: any) => ({
   updateEffect: async (
     virtId: string,
     type: string,
-    config: any,
+    config: EffectConfig,
     active: boolean
   ) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}/effects`, 'PUT', {
@@ -96,9 +153,9 @@ const storeVirtuals = (set: any) => ({
         set(
           produce((state: IStore) => {
             state.virtuals[virtId].effect = {
-              type: resp.effect.type,
-              name: resp.effect.name,
-              config: resp.effect.config
+              type: (resp.effect as Effect).type,
+              name: (resp.effect as Effect).name,
+              config: (resp.effect as Effect).config
             }
           }),
           false,
@@ -107,7 +164,7 @@ const storeVirtuals = (set: any) => ({
       }
     }
   },
-  updateSegments: async (virtId: string, segments: any) => {
+  updateSegments: async (virtId: string, segments: Segment[]) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}`, 'POST', {
       segments: [...segments]
     })
@@ -116,9 +173,9 @@ const storeVirtuals = (set: any) => ({
         set(
           produce((state: IStore) => {
             state.virtuals[virtId].effect = {
-              type: resp.effect.type,
-              name: resp.effect.name,
-              config: resp.effect.config
+              type: (resp.effect as Effect).type,
+              name: (resp.effect as Effect).name,
+              config: (resp.effect as Effect).config
             }
           }),
           false,

@@ -27,6 +27,7 @@ import PixelGraph from '../../components/PixelGraph'
 import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
+import { EffectConfig } from '../../store/api/storeVirtuals'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -105,22 +106,24 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       theModel?.advanced
     )
   const handleClearEffect = () => {
-    clearEffect(virtId).then(() => {
-      setFade(true)
-      setTimeout(() => {
-        getVirtuals()
-      }, virtual.config.transition_time * 1000)
-      setTimeout(
-        () => {
-          setFade(false)
-        },
-        virtual.config.transition_time * 1000 + 300
-      )
-    })
+    if (virtual) {
+      clearEffect(virtId).then(() => {
+        setFade(true)
+        setTimeout(() => {
+          getVirtuals()
+        }, virtual.config.transition_time * 1000)
+        setTimeout(
+          () => {
+            setFade(false)
+          },
+          virtual.config.transition_time * 1000 + 300
+        )
+      })
+    }
   }
 
-  const handleEffectConfig = (config: any) => {
-    if (updateEffect && getVirtuals !== undefined) {
+  const handleEffectConfig = (config: EffectConfig) => {
+    if (updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(virtId, effectType, config, false).then(() => {
         getVirtuals()
       })
@@ -128,7 +131,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }
 
   const handlePlayPause = () => {
-    updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
+    if (virtual)
+      updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
   }
 
   useEffect(() => {
@@ -141,7 +145,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   useEffect(() => {
     if (virtuals && virtual?.effect?.config) setTheModel(virtual.effect.config)
-  }, [virtuals, virtual, virtual.effect, virtual.effect.config])
+  }, [virtuals, virtual, virtual?.effect, virtual?.effect.config])
 
   return (
     <>
@@ -222,7 +226,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   }
             }
             style={{
-              transitionDuration: `${virtual.config.transition_time * 1000}`
+              transitionDuration: `${virtual!.config.transition_time * 1000}`
             }}
           >
             <PixelGraph
@@ -277,15 +281,17 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   <Typography variant="h5">Effect Configuration</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ padding: '0 0 8px 0' }}>
-                  <div>
-                    <BladeEffectSchemaForm
-                      handleEffectConfig={handleEffectConfig}
-                      virtId={virtual.id}
-                      schemaProperties={orderedProperties}
-                      model={theModel}
-                      selectedType={effectType}
-                    />
-                  </div>
+                  {theModel && effectType && (
+                    <div>
+                      <BladeEffectSchemaForm
+                        handleEffectConfig={handleEffectConfig}
+                        virtId={virtual.id}
+                        schemaProperties={orderedProperties}
+                        model={theModel as Record<string, unknown>}
+                        selectedType={effectType}
+                      />
+                    </div>
+                  )}
                 </AccordionDetails>
               </Accordion>
             </CardContent>

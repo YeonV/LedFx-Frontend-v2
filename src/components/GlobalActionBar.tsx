@@ -116,12 +116,10 @@ const GlobalActionBar = ({
         step={1}
         min={0}
         max={100}
-        onChangeCommitted={(_e: any, val: any) =>
-          setSystemSetting('global_brightness', val / 100)
+        onChangeCommitted={(_e, val) =>
+          typeof val === 'number' && setSystemSetting('global_brightness', val / 100)
         }
-        onChange={(_e: any, val: any) => {
-          setGlobalBrightness(val);
-        }}
+        onChange={(_e, val) =>  typeof val === 'number' && setGlobalBrightness(val)}
       />
     </Stack>
   );
