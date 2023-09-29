@@ -3,11 +3,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 import { produce } from 'immer'
-// import { string } from 'prop-types';
 import { Ledfx } from '../../api/ledfx'
+import type { IStore } from '../useStore'
 
 const storeScenes = (set: any) => ({
-  scenes: {} as any,
+  scenes: {} as Record<string, Record<string, any>>,
   mostUsedScenes: {} as any,
   recentScenes: [] as string[],
   count: {} as any,
@@ -18,7 +18,7 @@ const storeScenes = (set: any) => ({
   scenePLinterval: 2,
   toggleScenePLplay: () => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePLplay = !s.scenePLplay
       }),
       false,
@@ -27,7 +27,7 @@ const storeScenes = (set: any) => ({
   },
   toggleScenePLrepeat: () => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePLrepeat = !s.scenePLrepeat
       }),
       false,
@@ -36,7 +36,7 @@ const storeScenes = (set: any) => ({
   },
   setScenePLinterval: (seconds: number) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePLinterval = seconds
       }),
       false,
@@ -45,7 +45,7 @@ const storeScenes = (set: any) => ({
   },
   setMostUsedScenes: (key: string, count: number) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.mostUsedScenes[key] = {
           ...s.scenes[key],
           used: count
@@ -57,7 +57,7 @@ const storeScenes = (set: any) => ({
   },
   setScenePL: (scenes: string[]) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePL = scenes
       }),
       false,
@@ -66,7 +66,7 @@ const storeScenes = (set: any) => ({
   },
   setScenePLactiveIndex: (index: number) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePLactiveIndex = index
       }),
       false,
@@ -75,7 +75,7 @@ const storeScenes = (set: any) => ({
   },
   addScene2PL: (sceneId: string) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePL = [...s.scenePL, sceneId]
       }),
       false,
@@ -84,7 +84,7 @@ const storeScenes = (set: any) => ({
   },
   removeScene2PL: (id: number) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.scenePL = s.scenePL.filter((p: string, i: number) => i !== id)
       }),
       false,
@@ -95,7 +95,7 @@ const storeScenes = (set: any) => ({
     const resp = await Ledfx('/api/scenes')
     if (resp && resp.scenes) {
       set(
-        produce((s: any) => {
+        produce((s: IStore) => {
           s.scenes = resp.scenes
         }),
         false,
@@ -134,7 +134,7 @@ const storeScenes = (set: any) => ({
         }),
   activateScene: async (id: string) => {
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.recentScenes = s.recentScenes
           ? s.recentScenes.indexOf(id) > -1
             ? [id, ...s.recentScenes.filter((t: any) => t !== id)]
@@ -145,7 +145,7 @@ const storeScenes = (set: any) => ({
       'setScenes'
     )
     set(
-      produce((s: any) => {
+      produce((s: IStore) => {
         s.count[id] = (s.count[id] || 0) + 1
       }),
       false,

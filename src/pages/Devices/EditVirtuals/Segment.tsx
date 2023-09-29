@@ -13,7 +13,8 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
 
   const title =
     devices &&
-    devices[devices && Object.keys(devices).find((d) => d === s[0])].config.name
+    devices[devices && Object.keys(devices).find((d) => d === s[0])!].config!
+      .name
   const classes = useSegmentStyles()
   const updateSegments = useStore((state) => state.updateSegments)
   const highlightSegment = useStore((state) => state.highlightSegment)

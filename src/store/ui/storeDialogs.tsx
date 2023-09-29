@@ -12,7 +12,7 @@ const storeDialogs = (set: any) => ({
       open: false,
       edit: false,
       sceneKey: '',
-      editData: ''
+      editData: '' as string | Record<string, any>
     },
     addDevice: {
       open: false,
@@ -63,7 +63,7 @@ const storeDialogs = (set: any) => ({
     open: boolean,
     edit?: boolean,
     sceneKey?: string,
-    editData?: string
+    editData?: string | Record<string, any>
   ) =>
     set(
       produce((state: IStore) => {
