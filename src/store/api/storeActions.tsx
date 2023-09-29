@@ -83,7 +83,7 @@ const storeActions = (set: any) => ({
     const resp = await Ledfx('/api/virtuals', 'PUT', {})
     if (resp && resp.paused !== undefined) {
       set(
-        produce((s: any) => {
+        produce((s: IStore) => {
           s.paused = resp.paused
         }),
         false,

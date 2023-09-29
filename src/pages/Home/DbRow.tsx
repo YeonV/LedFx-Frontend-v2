@@ -5,7 +5,7 @@ const DbRow = ({
   right
 }: {
   left: string | undefined
-  right: string | undefined
+  right: string | number | undefined
 }) => {
   return (
     <Stack

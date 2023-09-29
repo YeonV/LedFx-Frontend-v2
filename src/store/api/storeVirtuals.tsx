@@ -15,11 +15,14 @@ export type Segment = [
 export interface EffectConfig {
   background_brightness?: number
   background_color?: string
+  beat_skip?: 'none' | 'odd' | 'even'
   blur?: number
   brightness?: number
   color?: string
   color_correction?: boolean
+  color_step?: number
   decay?: number
+  ease_method?: string
   flip?: boolean
   frequency_range?: string
   gradient?: string
@@ -28,7 +31,9 @@ export interface EffectConfig {
   gradient_roll?: number
   invert_roll?: boolean
   mirror?: boolean
+  mode?: string
   multiplier?: number
+  skip_every?: number
   solid_color?: boolean
   advanced?: boolean
 }
