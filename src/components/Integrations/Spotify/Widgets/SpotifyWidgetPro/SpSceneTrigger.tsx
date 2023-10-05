@@ -39,7 +39,7 @@ export default function SpSceneTrigger() {
     scene_id: spotifyScene, // Incorrectly sending scene_id instead of scene_id
     song_id: songID,
     song_name: songTitleAndArtist,
-    song_position: spotifyState?.position || spCtx!.progress_ms
+    song_position: spotifyState?.position || spCtx?.progress_ms || 0
   }
 
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
