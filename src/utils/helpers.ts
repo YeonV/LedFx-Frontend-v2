@@ -27,7 +27,7 @@ export const download = (
 ) => {
   const a = document.createElement('a')
   const file = new Blob([JSON.stringify(content, null, 4)], {
-    type: contentType,
+    type: contentType
   })
   a.href = URL.createObjectURL(file)
   a.download = fileName
@@ -65,7 +65,7 @@ export const getOverlapping = (data: any) => {
 
 export const swap = (array: any[], i: number, j: number) => {
   const arr = [...array]
-  arr[i] = arr.splice(j, 1, arr[i])[0];
+  arr[i] = arr.splice(j, 1, arr[i])[0]
   return arr
 }
 
@@ -137,16 +137,34 @@ export const ordered = (unordered: Record<string, any>) =>
     }, {})
 
 export function transpose(matrix: any[][]) {
-  const res = [];
-  for(let i = 0;  i < matrix[0].length; i++) {
-    res[i] = [] as any;
-    for(let j = 0;  j < matrix.length; j++) {
-      res[i][j] = matrix[j][i];
+  const res = []
+  for (let i = 0; i < matrix[0].length; i++) {
+    res[i] = [] as any
+    for (let j = 0; j < matrix.length; j++) {
+      res[i][j] = matrix[j][i]
     }
   }
-  return res; 
+  return res
 }
 
 export const ios =
   /iPad|iPhone|iPod/.test(navigator.userAgent) ||
   (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+export const padTo2Digits = (num: any) => {
+  return num.toString().padStart(2, '0')
+}
+
+export const getTime = (milliseconds: any) => {
+  let seconds = Math.floor(milliseconds / 1000)
+  let minutes = Math.floor(seconds / 60)
+  let hours = Math.floor(minutes / 60)
+
+  seconds %= 60
+  minutes %= 60
+  hours %= 24
+
+  return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}:${padTo2Digits(
+    seconds
+  )}`
+}
