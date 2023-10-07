@@ -186,6 +186,7 @@ function waitForAccessToken(timeout: number) {
         resolve()
       } else if (Date.now() - startTime >= timeout) {
         clearInterval(interval)
+        window.location.reload()
         reject(new Error('Access Token not defined after waiting timeout'))
       }
     }, 100)

@@ -92,6 +92,7 @@ export default function SpotifyTriggerTable() {
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList)
   const getScenes = useStore((state) => state.getScenes)
   const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger)
+  const premium = !!playerState?.track_window?.current_track?.album.name
 
   useEffect(() => {
     getSpTriggers()
@@ -229,28 +230,32 @@ export default function SpotifyTriggerTable() {
               deleteTriggerHandler(params)
             }}
           />
-          <IconButton
-            aria-label="play"
-            color="inherit"
-            onClick={() => {
-              spotifyPlaySong(
-                spotifyDevice,
-                params.row.songId,
-                params.row.position_ms
-              )
-            }}
-          >
-            <PlayCircleFilled fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            aria-label="playstart"
-            color="inherit"
-            onClick={() => {
-              spotifyPlaySong(spotifyDevice, params.row.songId)
-            }}
-          >
-            <NotStarted fontSize="inherit" />
-          </IconButton>
+          {premium && (
+            <>
+              <IconButton
+                aria-label="play"
+                color="inherit"
+                onClick={() => {
+                  spotifyPlaySong(
+                    spotifyDevice,
+                    params.row.songId,
+                    params.row.position_ms
+                  )
+                }}
+              >
+                <PlayCircleFilled fontSize="inherit" />
+              </IconButton>
+              <IconButton
+                aria-label="playstart"
+                color="inherit"
+                onClick={() => {
+                  spotifyPlaySong(spotifyDevice, params.row.songId)
+                }}
+              >
+                <NotStarted fontSize="inherit" />
+              </IconButton>
+            </>
+          )}
         </Stack>
       )
     }
@@ -271,7 +276,7 @@ export default function SpotifyTriggerTable() {
           // checkboxSelection
           disableRowSelectionOnClick
           onRowDoubleClick={(params: any) => {
-            spotifyPlaySong(spotifyDevice, params.row.songId)
+            if (premium) spotifyPlaySong(spotifyDevice, params.row.songId)
           }}
           sx={{
             boxShadow: 2,

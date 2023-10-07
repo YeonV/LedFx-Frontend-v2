@@ -34,8 +34,15 @@ export default function SpPlaylist() {
   const spCtx = React.useContext(SpStateContext);
   const playlistUri = playerState?.context?.metadata?.uri;
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const premium = playerState?.track_window?.current_track?.album.name
+  const premium = !!playerState?.track_window?.current_track?.album.name
   const columns: GridColDef[] = [
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 60,
+      align: 'center',
+      headerAlign: 'center'
+    },
     {
       field: 'actions',
       headerName: ' ',
@@ -103,6 +110,10 @@ export default function SpPlaylist() {
           hideFooter
           disableVirtualization
           // showColumnRightBorder={false}
+          columnVisibilityModel={{
+            id: !premium,
+            actions: premium,
+          }}
           onRowDoubleClick={(params: any) => {
             spotifyPlaySong(
               spotifyDevice,
