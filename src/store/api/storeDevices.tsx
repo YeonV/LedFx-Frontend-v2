@@ -4,9 +4,10 @@
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore, IOpenRgbDevice } from '../useStore'
+import type { IDevice } from './storeConfig'
 
 const storeDevices = (set: any) => ({
-  devices: {} as any,
+  devices: {} as Record<string, IDevice>,
   openRgbDevices: [] as IOpenRgbDevice[],
   launchpadDevice: '' as string,
   getDevices: async () => {
@@ -14,7 +15,7 @@ const storeDevices = (set: any) => ({
     if (resp && resp.devices) {
       set(
         produce((state: IStore) => {
-          state.devices = resp.devices
+          state.devices = resp.devices as Record<string, IDevice>
         }),
         false,
         'api/gotDevices'

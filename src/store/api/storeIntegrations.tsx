@@ -3,30 +3,32 @@
 /* eslint-disable import/no-cycle */
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
+import type { IStore } from '../useStore'
+import type { Intergration } from './storeConfig'
 
 const storeIntegrations = (set: any) => ({
-  integrations: {} as any,
+  integrations: {} as Record<string, Intergration>,
   getIntegrations: async () => {
     const resp = await Ledfx('/api/integrations')
     if (resp && resp.integrations) {
       // console.log(resp.integrations);
       set(
-        produce((s: any) => {
-          s.integrations = resp.integrations
+        produce((s: IStore) => {
+          s.integrations = resp.integrations as Record<string, Intergration>
         }),
         false,
         'gotIntegrations'
       )
     }
   },
-  addIntegration: async (config: any) =>
+  addIntegration: async (config: Record<string, any>) =>
     await Ledfx('/api/integrations', 'POST', config),
-  updateIntegration: async (config: any) =>
+  updateIntegration: async (config: Record<string, any>) =>
     await Ledfx('/api/integrations', 'POST', config),
-  toggleIntegration: async (config: any) =>
+  toggleIntegration: async (config: Record<string, any>) =>
     await Ledfx('/api/integrations', 'PUT', config),
-  deleteIntegration: async (config: any) =>
-    await Ledfx('/api/integrations', 'DELETE', { data: { id: config } })
+  deleteIntegration: async (id: string) =>
+    await Ledfx('/api/integrations', 'DELETE', { data: { id } })
 })
 
 export default storeIntegrations

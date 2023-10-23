@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   DataGrid,
   GridColDef,
@@ -6,7 +5,6 @@ import {
   GridCellParams
 } from '@mui/x-data-grid'
 import { styled } from '@mui/material/styles'
-// import { useTheme } from '@mui/material/styles';
 import {
   DeleteForever,
   NotStarted,
@@ -26,6 +24,7 @@ import useStore from '../../../../../store/useStore'
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'
 import Popover from '../../../../Popover/Popover'
 import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider'
+import { getTime } from '../../../../../utils/helpers'
 
 const PREFIX = 'SpTriggerTable'
 
@@ -93,29 +92,12 @@ export default function SpotifyTriggerTable() {
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList)
   const getScenes = useStore((state) => state.getScenes)
   const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger)
+  const premium = !!playerState?.track_window?.current_track?.album.name
 
   useEffect(() => {
-    getSpTriggers('spotify')
+    getSpTriggers()
     getScenes()
   }, [])
-
-  const padTo2Digits = (num: any) => {
-    return num.toString().padStart(2, '0')
-  }
-
-  const getTime = (milliseconds: any) => {
-    let seconds = Math.floor(milliseconds / 1000)
-    let minutes = Math.floor(seconds / 60)
-    let hours = Math.floor(minutes / 60)
-
-    seconds %= 60
-    minutes %= 60
-    hours %= 24
-
-    return `${padTo2Digits(hours)}:${padTo2Digits(minutes)}:${padTo2Digits(
-      seconds
-    )}`
-  }
 
   // Here we get the current triggers from list and set to global state
   useEffect(() => {
@@ -248,28 +230,32 @@ export default function SpotifyTriggerTable() {
               deleteTriggerHandler(params)
             }}
           />
-          <IconButton
-            aria-label="play"
-            color="inherit"
-            onClick={() => {
-              spotifyPlaySong(
-                spotifyDevice,
-                params.row.songId,
-                params.row.position_ms
-              )
-            }}
-          >
-            <PlayCircleFilled fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            aria-label="playstart"
-            color="inherit"
-            onClick={() => {
-              spotifyPlaySong(spotifyDevice, params.row.songId)
-            }}
-          >
-            <NotStarted fontSize="inherit" />
-          </IconButton>
+          {premium && (
+            <>
+              <IconButton
+                aria-label="play"
+                color="inherit"
+                onClick={() => {
+                  spotifyPlaySong(
+                    spotifyDevice,
+                    params.row.songId,
+                    params.row.position_ms
+                  )
+                }}
+              >
+                <PlayCircleFilled fontSize="inherit" />
+              </IconButton>
+              <IconButton
+                aria-label="playstart"
+                color="inherit"
+                onClick={() => {
+                  spotifyPlaySong(spotifyDevice, params.row.songId)
+                }}
+              >
+                <NotStarted fontSize="inherit" />
+              </IconButton>
+            </>
+          )}
         </Stack>
       )
     }
@@ -290,7 +276,7 @@ export default function SpotifyTriggerTable() {
           // checkboxSelection
           disableRowSelectionOnClick
           onRowDoubleClick={(params: any) => {
-            spotifyPlaySong(spotifyDevice, params.row.songId)
+            if (premium) spotifyPlaySong(spotifyDevice, params.row.songId)
           }}
           sx={{
             boxShadow: 2,
@@ -308,7 +294,7 @@ export default function SpotifyTriggerTable() {
           getRowClassName={(params: GridRowParams<any>) =>
             params.row.songId ===
             (
-              playerState?.context.metadata?.current_item || spCtx!.item
+              playerState?.context.metadata?.current_item || spCtx?.item
             )?.uri.split(':')[2]
               ? ((playerState?.position || spCtx?.progress_ms) ?? 0) >
                 params.row.position_ms

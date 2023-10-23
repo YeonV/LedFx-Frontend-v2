@@ -3,15 +3,18 @@
 /* eslint-disable import/no-cycle */
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
+import type { IPresets } from './storeConfig'
+import type { IStore } from '../useStore'
 
 const storePresets = (set: any) => ({
-  presets: {},
+  presets: {} as IPresets,
   getPresets: async (effectId: string) => {
     const resp = await Ledfx(`/api/effects/${effectId}/presets`)
     if (resp && resp.status === 'success') {
+      delete resp.status
       set(
-        produce((s: any) => {
-          s.presets = resp
+        produce((s: IStore) => {
+          s.presets = resp as IPresets
         }),
         false,
         'gotPresets'

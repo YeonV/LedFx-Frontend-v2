@@ -76,8 +76,8 @@ const TopBar = () => {
   const history = useNavigate()
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
   const features = useStore((state) => state.features)
-  const [anchorEl, setAnchorEl] = useState(null)
   const platform = useStore((state) => state.platform)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const invDevice = useStore((state) => state.tours.device)
   const invSettings = useStore((state) => state.tours.settings)
   const invIntegrations = useStore((state) => state.tours.integrations)
@@ -101,11 +101,11 @@ const TopBar = () => {
     toggleGraphs()
   }
 
-  const handleClick = (event: any) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
-  const logout = (e: any) => {
+  const logout = (e: React.MouseEvent<HTMLLIElement>) => {
     e.preventDefault()
     localStorage.removeItem('jwt')
     localStorage.removeItem('username')
@@ -143,9 +143,9 @@ const TopBar = () => {
         'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
       )
       const resp = await res.json()
-      return resp.tag_name
+      return resp.tag_name as string
     }
-    latest().then((r: any) => r !== latestTag && setLatestTag(r))
+    latest().then((r) => r !== latestTag && setLatestTag(r))
   }, [])
 
   useEffect(() => {

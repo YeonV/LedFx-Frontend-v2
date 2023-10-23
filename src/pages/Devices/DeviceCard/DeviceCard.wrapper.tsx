@@ -34,7 +34,7 @@ const DeviceCardWrapper = ({
   const showMatrix = useStore((state) => state.showMatrix)
 
   const [_fade, setFade] = useState(false)
-  const [_isActive, setIsActive] = useState(
+  const [_isActive, setIsActive] = useState<boolean>(
     (virtuals &&
       virtual &&
       virtuals[virtual] &&
@@ -42,7 +42,7 @@ const DeviceCardWrapper = ({
       Object.keys(virtuals[virtual].effect)?.length > 0) ||
       (devices &&
         devices[Object.keys(devices).find((d) => d === virtual) || '']
-          ?.active_virtuals?.length > 0)
+          ?.active_virtuals!.length > 0)
   )
 
   const handleDeleteDevice = () => {
@@ -90,7 +90,7 @@ const DeviceCardWrapper = ({
         virtuals[virtual] &&
         Object.keys(virtuals[virtual]?.effect)?.length > 0) ||
         devices[Object.keys(devices).find((d) => d === virtual) || '']
-          ?.active_virtuals?.length > 0
+          ?.active_virtuals!.length > 0
     )
   }, [virtuals, devices])
 
@@ -126,7 +126,7 @@ const DeviceCardWrapper = ({
       transitionTime={virtuals[virtual].config.transition_time * 1000}
       isStreaming={
         devices[Object.keys(devices).find((d) => d === virtual) || '']
-          ?.active_virtuals?.length > 0
+          ?.active_virtuals!.length > 0
       }
       previewOnly={
         virtual &&
@@ -138,7 +138,7 @@ const DeviceCardWrapper = ({
         order: showActiveDevicesFirst
           ? !(
               devices[Object.keys(devices).find((d) => d === virtual) || '']
-                ?.active_virtuals?.length > 0 || virtuals[virtual]?.effect.name
+                ?.active_virtuals!.length > 0 || virtuals[virtual]?.effect.name
             )
             ? 100
             : !virtuals[virtual]?.effect.name

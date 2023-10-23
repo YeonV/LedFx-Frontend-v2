@@ -15,6 +15,7 @@ import storeDevices from './api/storeDevices'
 import storeVirtuals from './api/storeVirtuals'
 import storeScenes from './api/storeScenes'
 import storeIntegrations from './api/storeIntegrations'
+import storeIntegrationsSpotify from './api/storeIntegrationsSpotify'
 import storePresets from './api/storePresets'
 import storeConfig from './api/storeConfig'
 import storeActions from './api/storeActions'
@@ -51,7 +52,8 @@ const useStore = create(
           ...storeIntegrations(set),
           ...storePresets(set),
           ...storeConfig(set),
-          ...storeActions(set)
+          ...storeActions(set),
+          ...storeIntegrationsSpotify(set)
         })
       ),
       {
