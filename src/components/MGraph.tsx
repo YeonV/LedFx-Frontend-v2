@@ -78,9 +78,14 @@ const MGraph = () => {
     setLineTension(event.target.value === '' ? 0 : Number(event.target.value))
   }
 
+  interface MessageData {
+    frequencies: any[]
+    melbank: [number[], number[], number[]]
+  }
+
   useEffect(() => {
     const handleWebsockets = (e: any) => {
-      const messageData = e.detail
+      const messageData = e.detail as MessageData
       const chartData = {
         labels: messageData.frequencies,
         datasets: [

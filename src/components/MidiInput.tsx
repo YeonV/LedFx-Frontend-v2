@@ -13,7 +13,6 @@ const MIDIListener = () => {
   useEffect(() => {
     const handleMidiEvent = (input: Input, event: any) => {
       const midiInput = `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
-      // Checked & tested Launchpad device on backend and this code has no impact. Backend LED launchpad will take preference.
       const output = WebMidi.getOutputByName(input.name)
       Object.keys(scenes).forEach((key) => {
         const scene = scenes[key]
@@ -47,14 +46,6 @@ const MIDIListener = () => {
 
     const webSocket = new WebSocket('ws://localhost:8888/api/websocket')
 
-    // const handleOpen = () => {
-    //   const message = JSON.stringify({
-    //     event_type: 'scene_activated',
-    //     id: 100,
-    //     type: 'subscribe_event'
-    //   })
-    //   webSocket?.send(message)
-    // }
     const handleMessage = (event: any) => {
       try {
         const data = JSON.parse(event.data)

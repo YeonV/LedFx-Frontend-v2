@@ -134,17 +134,6 @@ const storeGeneral = (set: any) => ({
       }),
       false,
       'general/setIsLogged'
-    ),
-
-  // Example
-  animals: {
-    bears: 1
-  },
-  increase: (by: number) =>
-    set(
-      produce((state: IStore) => {
-        state.animals.bears += by
-      })
     )
 })
 

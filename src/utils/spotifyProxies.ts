@@ -46,7 +46,7 @@ const apiCredentials = {
 }
 
 export const finishAuth = async () => {
-  console.log('finishAuth')
+  log('successSpotify', 'finishAuth')
   // const search = window.location.search.substring(1);
   const params = localStorage.getItem('Spotify-Token')
   const cookies = new Cookies()
@@ -95,7 +95,7 @@ export const finishAuth = async () => {
 }
 
 export async function refreshAuth() {
-  console.log('starting refreshAuth')
+  log('successSpotify', 'refreshAuth')
   const cookies = new Cookies()
   // const access_token = cookies.get('access_token')
   const refresh_token = cookies.get('refresh_token')
@@ -157,7 +157,7 @@ export async function refreshAuth() {
 }
 
 export function logoutAuth() {
-  console.log('starting logoutAuth')
+  log('successSpotify', 'starting logoutAuth')
   const cookies = new Cookies()
   cookies.remove('logout', { path: '/' })
   cookies.remove('logout', { path: '/integrations' })
@@ -175,7 +175,7 @@ export function logoutAuth() {
 
 // Helper function to wait for the access_token cookie to be defined
 function waitForAccessToken(timeout: number) {
-  console.log('starting waitForAccessToken')
+  log('successSpotify', 'starting waitForAccessToken')
   return new Promise<void>((resolve, reject) => {
     const startTime = Date.now()
     const interval = setInterval(() => {
@@ -186,6 +186,7 @@ function waitForAccessToken(timeout: number) {
         resolve()
       } else if (Date.now() - startTime >= timeout) {
         clearInterval(interval)
+        window.location.reload()
         reject(new Error('Access Token not defined after waiting timeout'))
       }
     }, 100)

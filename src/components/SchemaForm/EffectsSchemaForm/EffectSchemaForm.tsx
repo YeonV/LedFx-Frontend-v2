@@ -47,7 +47,7 @@ const EffectSchemaForm = ({
                   schema={s}
                   hideDesc
                   onClick={(model_id: string, value: any) => {
-                    const c: any = {}
+                    const c: Record<string, unknown> = {}
                     c[model_id] = value
                     return handleEffectConfig && handleEffectConfig(c)
                   }}
@@ -63,7 +63,7 @@ const EffectSchemaForm = ({
                   key={i}
                   index={i}
                   onChange={(model_id: string, value: any) => {
-                    const c: any = {}
+                    const c: Record<string, unknown> = {}
                     c[model_id] = value
                     return handleEffectConfig && handleEffectConfig(c)
                   }}
@@ -80,7 +80,7 @@ const EffectSchemaForm = ({
                   model={model}
                   schema={s}
                   onChange={(model_id: string, value: any) => {
-                    const c: any = {}
+                    const c: Record<string, unknown> = {}
                     c[model_id] = value
                     return handleEffectConfig && handleEffectConfig(c)
                   }}
@@ -99,7 +99,7 @@ const EffectSchemaForm = ({
                   schema={s}
                   style={{ margin: '0.5rem 0' }}
                   onChange={(model_id: string, value: any) => {
-                    const c: any = {}
+                    const c: Record<string, unknown> = {}
                     c[model_id] = value
                     return handleEffectConfig && handleEffectConfig(c)
                   }}

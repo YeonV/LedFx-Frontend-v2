@@ -1,11 +1,6 @@
 /* eslint-disable default-case */
-/* eslint-disable no-console */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
 import { produce } from 'immer'
-import { Ledfx } from '../../api/ledfx'
 import { SpotifyState } from './SpotifyState'
 import type { IStore } from '../useStore'
 import { spDevice } from './SpState'
@@ -133,19 +128,6 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpotifyDevice'
     ),
-  getSpTriggers: async (id: string) => {
-    const resp = await Ledfx('/api/integrations', set, 'GET')
-    // const res = await resp.json()
-    if (resp) {
-      set(
-        produce((state: IStore) => {
-          state.spotify.spotify = resp.spotify
-        }),
-        false,
-        'spotify/getTriggers'
-      )
-    }
-  },
   setSpNetworkTime: async (delay: number) => {
     set(
       produce((state: IStore) => {
@@ -202,38 +184,6 @@ const storeSpotifyActions = (set: any) => ({
         )
         break
     }
-  },
-  addSpSongTrigger: async ({
-    scene_id,
-    song_id,
-    song_name,
-    song_position
-  }: any) => {
-    await Ledfx('/api/integrations/spotify/spotify', 'POST', {
-      scene_id,
-      song_id,
-      song_name,
-      song_position
-    })
-  },
-  editSpSongTrigger: async ({
-    scene_id,
-    song_id,
-    song_name,
-    song_position
-  }: any) => {
-    await Ledfx('/api/integrations/spotify/spotify', 'PUT', {
-      scene_id,
-      song_id,
-      song_name,
-      song_position
-    })
-  },
-  toggleSpTrigger: (SpotifyId: string, config: any) =>
-    Ledfx(`/api/integrations/spotify/${SpotifyId}`, 'PUT', config),
-  deleteSpTrigger: async (config: any) => {
-    await Ledfx('/api/integrations/spotify/spotify', 'DELETE', config)
-    // set(state=>state.getIntegrations())
   },
   setPlaylist: (playerlist: any) =>
     set(
