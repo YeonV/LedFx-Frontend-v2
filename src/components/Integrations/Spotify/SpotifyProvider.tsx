@@ -170,7 +170,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     return () => clearInterval(update)
   }, [player, spotifyState?.paused, integrations])
   useEffect(() => {
-    if (integrations.spotify.status === 0 || !integrations.spotify!.active)
+    if (integrations.spotify?.status === 0 || !integrations.spotify?.active)
       return
     const createWebPlayer = async (token: string) => {
       ;(window as any).onSpotifyWebPlaybackSDKReady = async () => {
@@ -265,7 +265,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     }
   }
 
-  return integrations.spotify!.active ? (
+  return integrations.spotify?.active ? (
     <SpotifyVolumeContext.Provider value={volume}>
       <SpStateContext.Provider value={spState}>
         <SpotifyStateContext.Provider value={spotifyState}>
