@@ -34,7 +34,7 @@ export default function SpPlaylist() {
   const spCtx = React.useContext(SpStateContext);
   const playlistUri = playerState?.context?.metadata?.uri;
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
-  const premium = !!playerState?.track_window?.current_track?.album.name
+  const premium = !!playerState?.track_window?.current_track?.album?.name
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -139,12 +139,12 @@ export default function SpPlaylist() {
           // pageSize={rows.length}
           // rowsPerPageOptions={[rows.length]}
           getRowClassName={(params: GridRowParams<any>) =>{
-            return ((params.row.track.name ===
-            playerState?.context.metadata?.current_item.name) && (
+            return ((params.row.track?.name ===
+            playerState?.context.metadata?.current_item?.name) && (
               params.row.track.artists?.[0].uri ===
               playerState?.context.metadata?.current_item.artists?.[0].uri
-            ) || (params.row.track.name ===
-              spCtx?.item?.name && params.row.track.artists?.[0].name === spCtx?.item?.artists?.[0].name) )
+            ) || (params.row.track?.name ===
+              spCtx?.item?.name && params.row.track.artists?.[0]?.name === spCtx?.item?.artists?.[0]?.name) )
               ? 'currently_playing'
               : ''}
           }
