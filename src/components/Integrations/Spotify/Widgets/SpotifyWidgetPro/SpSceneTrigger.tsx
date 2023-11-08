@@ -52,7 +52,7 @@ export default function SpSceneTrigger() {
       }
       const data = {
         ...spotifyTriggerDataTemp,
-        ...{ song_position: state?.position || spCtx!.progress_ms }
+        ...{ song_position: state?.position || spCtx?.progress_ms || 0 }
       }
       addSpotifySongTrigger(data).then(() => getIntegrations())
     })
@@ -94,7 +94,7 @@ export default function SpSceneTrigger() {
                   Object.keys(scenes).length &&
                   Object.keys(scenes).map((s: any, i: number) => (
                     <MenuItem key={i} value={scenes[s].id || s}>
-                      {scenes[s].name || s}
+                      {scenes[s]?.name || s}
                     </MenuItem>
                   ))}
               </Select>
