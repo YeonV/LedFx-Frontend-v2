@@ -181,6 +181,7 @@ const Dashboard = () => {
               <Box sx={{ m: 0, position: 'relative', zIndex: 0 }}>
                 <Popover
                   type="fab"
+                  text="Create Segments?"
                   noIcon
                   onConfirm={() => {
                     onSystemSettingsChange('create_segments', true)

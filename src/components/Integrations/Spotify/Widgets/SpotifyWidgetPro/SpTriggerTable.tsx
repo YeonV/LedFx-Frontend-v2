@@ -92,7 +92,7 @@ export default function SpotifyTriggerTable() {
   const addToSpTriggerList = useStore((state) => state.addToSpTriggerList)
   const getScenes = useStore((state) => state.getScenes)
   const editSpotifySongTrigger = useStore((state) => state.editSpSongTrigger)
-  const premium = !!playerState?.track_window?.current_track?.album.name
+  const premium = !!playerState?.track_window?.current_track?.album?.name
 
   useEffect(() => {
     getSpTriggers()
@@ -107,8 +107,8 @@ export default function SpotifyTriggerTable() {
       const temp = integrations?.spotify?.data
       Object.keys(temp).map((key) => {
         const temp1 = temp[key]
-        const sceneName = temp1.name
-        const sceneId = temp1.name
+        const sceneName = temp1?.name
+        const sceneId = temp1?.name
         Object.keys(temp1).map((key1) => {
           if (temp1[key1]?.constructor === Array) {
             triggersNew.push({
@@ -136,7 +136,7 @@ export default function SpotifyTriggerTable() {
     let sceneKey
     if (scenes) {
       Object.keys(scenes)?.map((key: any) => {
-        if (scenes[key].name === val) {
+        if (scenes[key]?.name === val) {
           sceneKey = key
         }
         return null
@@ -204,8 +204,8 @@ export default function SpotifyTriggerTable() {
             >
               {/* <MenuItem value="sceneId" /> */}
               {Object.keys(scenes).map((s: any, i: number) => (
-                <MenuItem key={i} value={scenes[s].name || s}>
-                  {scenes[s].name || s}
+                <MenuItem key={i} value={scenes[s]?.name || s}>
+                  {scenes[s]?.name || s}
                 </MenuItem>
               ))}
             </Select>
@@ -296,7 +296,7 @@ export default function SpotifyTriggerTable() {
             (
               playerState?.context.metadata?.current_item || spCtx?.item
             )?.uri.split(':')[2]
-              ? ((playerState?.position || spCtx?.progress_ms) ?? 0) >
+              ? (playerState?.position || spCtx?.progress_ms || 0) >
                 params.row.position_ms
                 ? 'activated'
                 : 'currently_playing'

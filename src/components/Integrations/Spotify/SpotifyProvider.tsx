@@ -158,7 +158,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     }
     spotifyGetDevices().then((s) => setSpDevices(s.devices))
     const updateState = () => {
-      if (!spotifyState?.track_window?.current_track?.album.name)
+      if (!spotifyState?.track_window?.current_track?.album?.name)
         spotifyCurrentTime().then((s: SpState) => setSpState(s))
       player.getCurrentState().then((state: any) => {
         setSpotifyState(state)

@@ -50,8 +50,8 @@ export default function SpControls({ className }: any) {
   const triggers = useContext(SpotifyTriggersContext)
   const spotifyCtx = useContext(SpotifyStateContext)
   const spCtx = useContext(SpStateContext)
-  const premium = !!spotifyCtx?.track_window?.current_track?.album.name
-  const hijack = premium || spCtx?.item?.album.name || ''
+  const premium = !!spotifyCtx?.track_window?.current_track?.album?.name
+  const hijack = premium || spCtx?.item?.album?.name || ''
   const [position, setPosition] = useState(-1)
 
   const duration = spotifyCtx?.duration || spCtx?.item?.duration_ms || 0
@@ -199,7 +199,7 @@ export default function SpControls({ className }: any) {
             }}
           >
             <TinyText>
-              {formatTime((spotifyCtx?.position || spCtx!.progress_ms) ?? 0)}
+              {formatTime(spotifyCtx?.position || spCtx?.progress_ms || 0)}
             </TinyText>
             <Slider
               aria-label="time-indicator"
@@ -208,7 +208,7 @@ export default function SpControls({ className }: any) {
               value={
                 position >= 0
                   ? position
-                  : (spotifyCtx?.position || spCtx!.progress_ms) ?? 0
+                  : spotifyCtx?.position || spCtx?.progress_ms || 0
               }
               min={0}
               step={1}

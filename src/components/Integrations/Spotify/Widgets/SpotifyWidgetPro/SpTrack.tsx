@@ -36,7 +36,7 @@ export default function SpTrack({ className }: any) {
   }, [spotifyCtx?.context?.metadata?.uri, spCtx?.context?.uri])
 
   const album =
-    spotifyCtx?.track_window?.current_track?.album.name ||
+    spotifyCtx?.track_window?.current_track?.album?.name ||
     spCtx?.item?.album?.name ||
     ''
   return (
