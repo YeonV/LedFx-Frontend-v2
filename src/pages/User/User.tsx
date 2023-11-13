@@ -1,11 +1,29 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-self-assign */
 /* eslint-disable no-alert */
-import { Badge, Box, Divider, Stack, TextField, Tooltip } from '@mui/material'
+import {
+  Badge,
+  Box,
+  Divider,
+  Select,
+  Stack,
+  Step,
+  StepButton,
+  Stepper,
+  TextField,
+  Tooltip,
+  useTheme,
+  MenuItem
+} from '@mui/material'
 import {
   AccessTime,
   GitHub,
   CloudDownload,
-  CloudUpload
+  CloudUpload,
+  EmojiEventsOutlined,
+  Star,
+  StarOutline
 } from '@mui/icons-material'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -18,11 +36,31 @@ import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
 
 const User = () => {
+  const theme = useTheme()
   const [expanded, setExpanded] = useState<string | false>(false)
+  const [subExpanded, setSubExpanded] = useState<string | false>(false)
   const [cloudEffects, setCloudEffects] = useState<any>([])
   const [cloudConfigs, setCloudConfigs] = useState<any>([])
   const [configName, setConfigName] = useState('')
 
+  const [starred, setStarred] = useState({
+    core: false,
+    client: false,
+    build: false,
+    hass: false,
+    wledman: false,
+    audiopipes: false,
+    io: false
+  })
+  const [trophies, setTrophies] = useState({
+    fan: 0,
+    enthusiast: 0,
+    contributor: 0
+  })
+  // const trophies = useStore((state) => state.user.trophies)
+  // const setTrophies = useStore((state) => state.user.setTrophies)
+  // const starred = useStore((state) => state.user.starred)
+  // const setStarred = useStore((state) => state.user.setStarred)
   const getFullConfig = useStore((state) => state.getFullConfig)
   const isLogged = useStore((state) => state.isLogged)
   const importSystemConfig = useStore((state) => state.importSystemConfig)
@@ -36,6 +74,10 @@ const User = () => {
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false)
+    }
+  const handleChangeSub =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setSubExpanded(isExpanded ? panel : false)
     }
   const getCloudPresets = async () => {
     const response = await cloud.get('presets', {
@@ -69,6 +111,24 @@ const User = () => {
     setCloudConfigs(res)
   }
 
+  const hasStarred = async (owner = 'YeonV', repo = 'LedFx-Frontend-v2') => {
+    const s = [] as any
+
+    const gettingStars: any = async (index: number = 0) => {
+      const r = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/stargazers?per_page=100&page=${index}`
+      )
+      const re = await r.json()
+      s.push(...re)
+      if (re.length === 100) {
+        gettingStars(index + 1)
+      }
+      return s
+    }
+
+    const theStars = await gettingStars()
+    return theStars
+  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const deleteCloudConfig = async (name: string, date: any) => {
     const existing = await cloud.get(
@@ -100,6 +160,65 @@ const User = () => {
   }, [])
 
   const filteredCloudEffects = {} as any
+
+  useEffect(() => {
+    if (setTrophies) {
+      if (starred.core && starred.client && starred.build) {
+        setTrophies((s) => ({ ...s, fan: 1 }))
+      } else {
+        setTrophies((s) => ({ ...s, fan: 0 }))
+      }
+      if (starred.hass && starred.wledman && starred.audiopipes && starred.io) {
+        setTrophies((s) => ({ ...s, enthusiast: 1 }))
+      } else {
+        setTrophies((s) => ({ ...s, enthusiast: 0 }))
+      }
+      if (
+        Object.keys(filteredCloudEffects)
+          .map((effect) => filteredCloudEffects[effect].length)
+          .reduce((a, b) => a + b, 0) > 0
+      ) {
+        setTrophies((s) => ({ ...s, contributor: 1 }))
+      } else {
+        setTrophies((s) => ({ ...s, contributor: 0 }))
+      }
+    }
+  }, [starred])
+
+  useEffect(() => {
+    const promise1 = hasStarred('LedFx', 'LedFx')
+    const promise2 = hasStarred()
+    const promise3 = hasStarred('YeonV', 'LedFx-Builds')
+    const promise4 = hasStarred('YeonV', 'home-assistant-addons')
+    const promise5 = hasStarred('YeonV', 'wled-manager')
+    const promise6 = hasStarred('YeonV', 'audio-pipes')
+    const promise7 = hasStarred('YeonV', 'io')
+
+    Promise.all([
+      promise1,
+      promise2,
+      promise3,
+      promise4,
+      promise5,
+      promise6,
+      promise7
+    ]).then((values) => {
+      setTimeout(() => {
+        setStarred({
+          core: values[0].filter((r: any) => r.login === userName)?.length > 0,
+          client:
+            values[1].filter((r: any) => r.login === userName)?.length > 0,
+          build: values[2].filter((r: any) => r.login === userName)?.length > 0,
+          hass: values[3].filter((r: any) => r.login === userName)?.length > 0,
+          wledman:
+            values[4].filter((r: any) => r.login === userName)?.length > 0,
+          audiopipes:
+            values[5].filter((r: any) => r.login === userName)?.length > 0,
+          io: values[6].filter((r: any) => r.login === userName)?.length > 0
+        })
+      }, 3000)
+    })
+  }, [])
 
   Object.keys(cloudEffects).forEach((effectGroup) => {
     const filteredEffects = cloudEffects[effectGroup].filter((effect: any) => {
@@ -185,6 +304,355 @@ const User = () => {
                   : localStorage.getItem('ledfx-cloud-role')}
               </Typography>
             </AccordionSummary>
+          </Accordion>
+          <Accordion
+            expanded={expanded === 'panel001'}
+            onChange={handleChange('panel001')}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel001bh-content"
+              id="panel001bh-header"
+            >
+              <Typography sx={{ width: '60%', flexShrink: 0 }}>
+                Trophies
+              </Typography>
+              <Typography
+                sx={{
+                  color: 'text.secondary',
+                  textAlign: 'right',
+                  flexGrow: 1,
+                  paddingRight: 2
+                }}
+              >
+                {trophies.enthusiast + trophies.fan + trophies.contributor}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography variant="caption" color="GrayText">
+                earn trophies and unlock features
+              </Typography>
+              {/**
+               *
+               *
+               *
+               *
+               */}
+              <Accordion
+                expanded={subExpanded === 'sub1'}
+                onChange={handleChangeSub('sub1')}
+                sx={{ padding: 0 }}
+                elevation={0}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="sub1bh-content"
+                  id="sub1bh-header"
+                  sx={{ padding: 0, alignItems: 'center' }}
+                >
+                  <Typography
+                    sx={{
+                      width: '60%',
+                      flexShrink: 0,
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    Fan
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: 'text.secondary',
+                      textAlign: 'right',
+                      flexGrow: 1,
+                      paddingRight: 2,
+                      alignItems: 'center',
+                      display: 'flex',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <EmojiEventsOutlined />
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ textAlign: 'center' }}>
+                  <Typography variant="caption" align="center">
+                    star repos to earn trophy
+                  </Typography>
+                  <EmojiEventsOutlined
+                    sx={{
+                      fontSize: 150,
+                      width: '100%',
+                      alignSelf: 'center',
+                      color:
+                        starred.core && starred.client && starred.build
+                          ? theme.palette.primary.main
+                          : 'inherit'
+                    }}
+                  />
+                  <Typography>
+                    <Box sx={{ width: '100%', zIndex: 1000 }}>
+                      <Stepper nonLinear activeStep={1} alternativeLabel>
+                        <Step key="core" completed={starred.core}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/LedFx/LedFx',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.core
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={starred.core ? <Star /> : <StarOutline />}
+                          >
+                            core
+                          </StepButton>
+                        </Step>
+                        <Step key="client" completed={starred.client}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/YeonV/LedFx-Frontend-v2',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.client
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={starred.client ? <Star /> : <StarOutline />}
+                          >
+                            client
+                          </StepButton>
+                        </Step>
+                        <Step key="build" completed={starred.build}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/YeonV/LedFx-Builds',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.build
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={starred.build ? <Star /> : <StarOutline />}
+                          >
+                            build
+                          </StepButton>
+                        </Step>
+                      </Stepper>
+                    </Box>
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={subExpanded === 'sub2'}
+                onChange={handleChangeSub('sub2')}
+                sx={{ padding: 0, backgroundColor: 'transparent !important' }}
+                elevation={0}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="sub2bh-content"
+                  id="sub2bh-header"
+                  sx={{ padding: 0 }}
+                >
+                  <Typography
+                    sx={{
+                      width: '60%',
+                      flexShrink: 0,
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    Enthusiast
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: 'text.secondary',
+                      textAlign: 'right',
+                      flexGrow: 1,
+                      paddingRight: 2,
+                      alignItems: 'center',
+                      display: 'flex',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <EmojiEventsOutlined />
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ textAlign: 'center' }}>
+                  <Typography variant="caption" align="center">
+                    star repos to earn trophy
+                  </Typography>
+                  <EmojiEventsOutlined
+                    sx={{
+                      fontSize: 150,
+                      width: '100%',
+                      alignSelf: 'center',
+                      color:
+                        starred.hass &&
+                        starred.wledman &&
+                        starred.audiopipes &&
+                        starred.io
+                          ? theme.palette.primary.main
+                          : 'inherit'
+                    }}
+                  />
+                  <Typography>
+                    <Box sx={{ width: '100%', zIndex: 1000 }}>
+                      <Stepper nonLinear activeStep={1} orientation="vertical">
+                        <Step key="hass" completed={starred.hass}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/YeonV/home-assistant-addons',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.hass
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={starred.hass ? <Star /> : <StarOutline />}
+                          >
+                            home-assistant-addons
+                          </StepButton>
+                        </Step>
+                        <Step key="wledman" completed={starred.wledman}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/YeonV/wled-manager',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.wledman
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={starred.wledman ? <Star /> : <StarOutline />}
+                          >
+                            wled-manager
+                          </StepButton>
+                        </Step>
+                        <Step key="audiopipes" completed={starred.audiopipes}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/YeonV/audio-pipes',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.audiopipes
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={
+                              starred.audiopipes ? <Star /> : <StarOutline />
+                            }
+                          >
+                            audio-pipes
+                          </StepButton>
+                        </Step>
+                        <Step key="io" completed={starred.io}>
+                          <StepButton
+                            onClick={() => {
+                              window.open(
+                                'https://github.com/YeonV/io',
+                                '_blank'
+                              )
+                            }}
+                            sx={{
+                              textTransform: 'capitalize',
+                              color: starred.io
+                                ? theme.palette.primary.main
+                                : 'inherit'
+                            }}
+                            icon={starred.io ? <Star /> : <StarOutline />}
+                          >
+                            io
+                          </StepButton>
+                        </Step>
+                      </Stepper>
+                    </Box>
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={subExpanded === 'sub3'}
+                onChange={handleChangeSub('sub3')}
+                sx={{ padding: 0, backgroundColor: 'transparent !important' }}
+                elevation={0}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="sub3bh-content"
+                  id="sub3bh-header"
+                  sx={{ padding: 0 }}
+                >
+                  <Typography
+                    sx={{
+                      width: '60%',
+                      flexShrink: 0,
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    Contributor
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: 'text.secondary',
+                      textAlign: 'right',
+                      flexGrow: 1,
+                      paddingRight: 2,
+                      alignItems: 'center',
+                      display: 'flex',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <EmojiEventsOutlined />
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>Create amazing presets and share them</Typography>
+                  <EmojiEventsOutlined
+                    sx={{
+                      fontSize: 150,
+                      width: '100%',
+                      alignSelf: 'center',
+                      color:
+                        starred.core && starred.client && starred.build
+                          ? theme.palette.primary.main
+                          : 'inherit'
+                    }}
+                  />
+                </AccordionDetails>
+              </Accordion>
+
+              {/**
+               *
+               *
+               *
+               *
+               */}
+            </AccordionDetails>
           </Accordion>
           <Accordion
             expanded={expanded === 'panel1'}
@@ -359,6 +827,70 @@ const User = () => {
                 ))}
             </AccordionDetails>
           </Accordion>
+          {(trophies.fan > 0 ||
+            trophies.enthusiast > 0 ||
+            trophies.contributor > 0) && (
+            <Accordion
+              expanded={expanded === 'panel3'}
+              onChange={handleChange('panel3')}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel3bh-content"
+                id="panel3bh-header"
+              >
+                <Typography sx={{ width: '60%', flexShrink: 0 }}>
+                  Theme-Selector
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'text.secondary',
+                    textAlign: 'right',
+                    flexGrow: 1,
+                    paddingRight: 2
+                  }}
+                >
+                  {trophies.contributor > 0
+                    ? 4
+                    : trophies.enthusiast > 0
+                      ? 3
+                      : 2}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Select
+                  value={
+                    window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
+                  }
+                  fullWidth
+                  onChange={(e) => {
+                    if (e.target.value === 'DarkBlue') {
+                      window.localStorage.setItem('ledfx-theme', 'DarkBlue')
+                      window.location.reload()
+                    } else if (e.target.value === 'DarkOrange') {
+                      window.localStorage.setItem('ledfx-theme', 'DarkOrange')
+                      window.location.reload()
+                    } else if (e.target.value === 'DarkGreen') {
+                      window.localStorage.setItem('ledfx-theme', 'DarkGreen')
+                      window.location.reload()
+                    } else if (e.target.value === 'DarkRed') {
+                      window.localStorage.setItem('ledfx-theme', 'DarkRed')
+                      window.location.reload()
+                    }
+                  }}
+                >
+                  <MenuItem value="DarkBlue">Blade&apos;s Blue</MenuItem>
+                  <MenuItem value="DarkOrange">Blade&apos;s Orange</MenuItem>
+                  {(trophies.enthusiast > 0 || trophies.contributor > 0) && (
+                    <MenuItem value="DarkGreen">Blade&apos;s Green</MenuItem>
+                  )}
+                  {trophies.contributor > 0 && (
+                    <MenuItem value="DarkRed">Blade&apos;s Red</MenuItem>
+                  )}
+                </Select>
+              </AccordionDetails>
+            </Accordion>
+          )}
         </div>
       </Stack>
     </Box>
