@@ -100,7 +100,7 @@ export default function CloudScreen({
     refreshPresets()
   }, [])
 
-  // console.log(virtual.effect.name, Object.keys(cloudEffects))
+  // console.log(virtual.effect.name, Object.keys(cloudEffects)
 
   return (
     <>

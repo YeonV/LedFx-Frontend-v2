@@ -6,6 +6,7 @@ import storeGeneral from './ui/storeGeneral'
 import storeFeatures from './ui/storeFeatures'
 import storeTours from './ui/storeTours'
 import storeUI from './ui/storeUI'
+import storeUser from './ui/storeUser'
 import storeDialogs from './ui/storeDialogs'
 import storeSpotify from './ui/storeSpotify'
 import storeQLC from './ui/storeQLC'
@@ -35,6 +36,7 @@ const useStore = create(
           ui: storeUI(set),
           spotify: storeSpotify(),
           qlc: storeQLC(),
+          user: storeUser(set),
           ...storeNotifications(set),
           ...storeTours(set),
           ...storeSpotifyActions(set),

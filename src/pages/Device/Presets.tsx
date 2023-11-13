@@ -223,13 +223,13 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                       ).length > 0)
                       ? 'Default presets are readonly'
                       : presets.custom_presets &&
-                        (Object.keys(presets.custom_presets).indexOf(name) >
-                          -1 ||
-                          Object.values(presets.custom_presets).filter(
-                            (p: any) => p.name === name
-                          ).length > 0)
-                      ? 'Preset already exsisting'
-                      : 'Add Custom Preset'
+                          (Object.keys(presets.custom_presets).indexOf(name) >
+                            -1 ||
+                            Object.values(presets.custom_presets).filter(
+                              (p: any) => p.name === name
+                            ).length > 0)
+                        ? 'Preset already exsisting'
+                        : 'Add Custom Preset'
                   }
                   style={{ marginRight: '1rem', flex: 1 }}
                   value={name}
