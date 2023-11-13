@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/indent */
+/* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
