@@ -59,7 +59,11 @@ const BladeSelect = ({
               ...(selectStyle as any)
             }}
             defaultValue={schema.default}
-            value={(model && model_id && model[model_id]) || schema.enum[0]}
+            value={
+              (model && model_id && model[model_id]) ||
+              schema.default ||
+              schema.enum[0]
+            }
             onChange={(e) => onChange(model_id, e.target.value)}
           >
             {children ||
@@ -90,7 +94,11 @@ const BladeSelect = ({
             ...(selectStyle as any)
           }}
           defaultValue={schema.default}
-          value={(model && model_id && model[model_id]) || schema.enum[0]}
+          value={
+            (model && model_id && model[model_id]) ||
+            schema.default ||
+            schema.enum[0]
+          }
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
@@ -109,6 +117,7 @@ const BladeSelect = ({
           defaultValue={schema.default}
           value={
             (model && model_id && schema.enum[model[model_id]]) ||
+            schema.default ||
             schema.enum[0]
           }
           onChange={(e) =>
