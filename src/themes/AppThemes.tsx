@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { PaletteMode } from '@mui/material'
 import { createTheme, Theme } from '@mui/material/styles'
 import isElectron from 'is-electron'

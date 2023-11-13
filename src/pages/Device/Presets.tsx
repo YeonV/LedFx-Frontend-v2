@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import {
   Card,

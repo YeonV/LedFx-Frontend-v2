@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'

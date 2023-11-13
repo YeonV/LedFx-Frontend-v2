@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import useStore from '../../../store/useStore'
 import DeviceCard from './DeviceCard'
