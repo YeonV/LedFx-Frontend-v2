@@ -247,10 +247,10 @@ export const ledfxTheme =
   (window.localStorage.getItem('ledfx-theme')
     ? window.localStorage.getItem('ledfx-theme')
     : window.localStorage.getItem('hassTokens')
-      ? 'DarkBlue'
-      : window.location.origin === 'https://my.ledfx.app'
-        ? 'DarkGreen'
-        : isElectron()
-          ? 'DarkOrange'
-          : 'DarkBlue') || 'DarkBlue'
+    ? 'DarkBlue'
+    : window.location.origin === 'https://my.ledfx.app'
+    ? 'DarkGreen'
+    : isElectron()
+    ? 'DarkOrange'
+    : 'DarkBlue') || 'DarkBlue'
 /* eslint-enable @typescript-eslint/indent */
