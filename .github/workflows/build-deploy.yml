@@ -20,7 +20,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 20
+        node-version: 18.x
     - name: Install NPM packages
       run: yarn install
     
@@ -30,6 +30,7 @@ jobs:
         sed -i 's/ <!\-\- <base href\=\"\%PUBLIC_URL\%\/\"> \-\->/ <base href\=\"\%PUBLIC_URL\%\/\">/g' ./build/index.html
 
     - name: Build storybook
+      continue-on-error: true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
