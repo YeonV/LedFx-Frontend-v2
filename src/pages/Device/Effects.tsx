@@ -42,13 +42,16 @@ const orderEffectProperties = (
     schema.properties &&
     Object.keys(schema.properties)
       .filter((k) => {
-        if (advanced_keys && advanced_keys.length > 0 && !advanced) {
-          return advanced_keys?.indexOf(k) === -1
-        }
         if (hidden_keys && hidden_keys.length > 0) {
           return hidden_keys?.indexOf(k) === -1
         }
-        return k
+        return true
+      })
+      .filter((ke) => {
+        if (advanced_keys && advanced_keys.length > 0 && !advanced) {
+          return advanced_keys?.indexOf(ke) === -1
+        }
+        return true
       })
       .map((sk) => ({
         ...schema.properties[sk],
@@ -60,6 +63,7 @@ const orderEffectProperties = (
   })
   ordered.push(...properties.filter((x) => !configOrder.includes(x.type)))
   return ordered
+    .sort((a) => (a.id === 'advanced' ? 1 : -1))
     .sort((a) => (a.type === 'string' && a.enum && a.enum.length ? -1 : 1))
     .sort((a) => (a.type === 'number' ? -1 : 1))
     .sort((a) => (a.type === 'integer' ? -1 : 1))
