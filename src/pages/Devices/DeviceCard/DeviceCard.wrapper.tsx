@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
@@ -95,6 +94,24 @@ const DeviceCardWrapper = ({
     )
   }, [virtuals, devices])
 
+  const order = () => {
+    if (showActiveDevicesFirst) {
+      if (
+        !(
+          devices[Object.keys(devices).find((d) => d === virtual) || '']
+            ?.active_virtuals!.length > 0 || virtuals[virtual]?.effect.name
+        )
+      ) {
+        return 100
+      }
+      if (!virtuals[virtual]?.effect.name) {
+        return 50
+      }
+      return 'unset'
+    }
+    return 'unset'
+  }
+
   return virtual && virtuals[virtual] ? (
     <DeviceCard
       deviceName={
@@ -136,16 +153,7 @@ const DeviceCardWrapper = ({
       }
       isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
       additionalStyle={{
-        order: showActiveDevicesFirst
-          ? !(
-              devices[Object.keys(devices).find((d) => d === virtual) || '']
-                ?.active_virtuals!.length > 0 || virtuals[virtual]?.effect.name
-            )
-            ? 100
-            : !virtuals[virtual]?.effect.name
-            ? 50
-            : 'unset'
-          : 'unset'
+        order: order()
       }}
     />
   ) : null

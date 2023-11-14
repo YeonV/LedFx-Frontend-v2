@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable react/destructuring-assignment */
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -52,6 +51,96 @@ export const StyledBadge = styled(Badge)(() => ({
   }
 }))
 
+const LeftButtons = (
+  pathname: any,
+  history: any,
+  open?: boolean,
+  handleLeftBarOpen?: any
+) => {
+  const theme = useTheme()
+
+  if (
+    (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ||
+    pathname === '/Settings'
+  ) {
+    if (ios) {
+      return (
+        <IconButton size="large" color="inherit" onClick={() => history(-1)}>
+          <ChevronLeft sx={{ fontSize: 32 }} />
+        </IconButton>
+      )
+    }
+    return (
+      <Button
+        size="large"
+        variant="text"
+        color="inherit"
+        startIcon={<ChevronLeft />}
+        onClick={() => history(-1)}
+      >
+        Back
+      </Button>
+    )
+  }
+  if (!open) {
+    if (ios) {
+      return (
+        <Box
+          style={{
+            backgroundImage: 'url(/icon.png)',
+            marginTop: 10,
+            width: 32,
+            height: 32,
+            backgroundSize: 'contain'
+          }}
+          onClick={handleLeftBarOpen}
+        />
+      )
+    }
+    return (
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        onClick={handleLeftBarOpen}
+        edge="start"
+        sx={{ marginRight: theme.spacing(2), top: 8 }}
+        className="step-three"
+      >
+        <MenuIcon />
+      </IconButton>
+    )
+  }
+  return null
+}
+
+const Title = (pathname: string, latestTag: string, virtuals: any) => {
+  if (pathname === '/') {
+    return (
+      <>
+        {`LedFx v${pkg.version}`}
+        {latestTag !== `v${pkg.version}` ? (
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() =>
+              window.open(
+                'https://github.com/YeonV/LedFx-Builds/releases/latest'
+              )
+            }
+            sx={{ ml: 2 }}
+          >
+            New Update
+          </Button>
+        ) : null}
+      </>
+    )
+  }
+  if (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') {
+    return virtuals[pathname.split('/')[2]]?.config.name
+  }
+  return pathname.split('/').pop()
+}
+
 const TopBar = () => {
   // const classes = useStyles();
   const navigate = useNavigate()
@@ -87,6 +176,24 @@ const TopBar = () => {
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
   )
+
+  const invisible = () => {
+    switch (pathname.split('/')[1]) {
+      case 'device':
+        return invDevice
+      case 'Scenes':
+        return invScenes
+      case 'Settings':
+        return invSettings
+      case 'Devices':
+        return invDevices
+      case 'Integrations':
+        return invIntegrations
+      default:
+        return true
+    }
+  }
+
   const handleLeftBarOpen = () => {
     setLeftBarOpen(true)
   }
@@ -208,81 +315,10 @@ const TopBar = () => {
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 16 }}>
-            {(pathname.split('/').length === 3 &&
-              pathname.split('/')[1] === 'device') ||
-            pathname === '/Settings' ? (
-              ios ? (
-                <IconButton
-                  size="large"
-                  color="inherit"
-                  onClick={() => history(-1)}
-                >
-                  <ChevronLeft sx={{ fontSize: 32 }} />
-                </IconButton>
-              ) : (
-                <Button
-                  size="large"
-                  variant="text"
-                  color="inherit"
-                  startIcon={<ChevronLeft />}
-                  onClick={() => history(-1)}
-                >
-                  Back
-                </Button>
-              )
-            ) : (
-              !open &&
-              (ios ? (
-                <Box
-                  style={{
-                    backgroundImage: 'url(/icon.png)',
-                    marginTop: 10,
-                    width: 32,
-                    height: 32,
-                    backgroundSize: 'contain'
-                  }}
-                  onClick={handleLeftBarOpen}
-                />
-              ) : (
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleLeftBarOpen}
-                  edge="start"
-                  sx={{ marginRight: theme.spacing(2), top: 8 }}
-                  className="step-three"
-                >
-                  <MenuIcon />
-                </IconButton>
-              ))
-            )}
+            {LeftButtons(pathname, history, open, handleLeftBarOpen)}
           </div>
-
           <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
-            {pathname === '/' ? (
-              <>
-                {`LedFx v${pkg.version}`}
-                {latestTag !== `v${pkg.version}` ? (
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={() =>
-                      window.open(
-                        'https://github.com/YeonV/LedFx-Builds/releases/latest'
-                      )
-                    }
-                    sx={{ ml: 2 }}
-                  >
-                    New Update
-                  </Button>
-                ) : null}
-              </>
-            ) : pathname.split('/').length === 3 &&
-              pathname.split('/')[1] === 'device' ? (
-              virtuals[pathname.split('/')[2]]?.config.name
-            ) : (
-              pathname.split('/').pop()
-            )}
+            {Title(pathname, latestTag, virtuals)}
           </Typography>
           <div
             style={{
@@ -330,23 +366,7 @@ const TopBar = () => {
               className="step-two"
               style={{ marginLeft: '1rem' }}
             >
-              <Badge
-                variant="dot"
-                color="error"
-                invisible={
-                  pathname.split('/')[1] === 'device'
-                    ? invDevice
-                    : pathname.split('/')[1] === 'Scenes'
-                    ? invScenes
-                    : pathname.split('/')[1] === 'Settings'
-                    ? invSettings
-                    : pathname.split('/')[1] === 'Devices'
-                    ? invDevices
-                    : pathname.split('/')[1] === 'Integrations'
-                    ? invIntegrations
-                    : true
-                }
-              >
+              <Badge variant="dot" color="error" invisible={invisible()}>
                 <MoreVert sx={{ fontSize: 32 }} />
               </Badge>
             </IconButton>
