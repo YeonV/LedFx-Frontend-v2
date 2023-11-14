@@ -11,7 +11,7 @@ import {
   StepButton,
   Stepper,
   TextField,
-  // Tooltip,
+  Tooltip,
   useTheme,
   MenuItem
 } from '@mui/material'
@@ -771,11 +771,15 @@ const User = () => {
                           }
                           type="iconbutton"
                           color="inherit"
-                          icon={<CloudDownload />}
+                          icon={
+                            <Tooltip title="Load Config">
+                              <CloudDownload />
+                            </Tooltip>
+                          }
                         />
                         {/* </Tooltip> */}
 
-                        {/* <Tooltip
+                        <Tooltip
                           title={`Config from ${new Intl.DateTimeFormat(
                             'en-GB',
                             {
@@ -786,9 +790,9 @@ const User = () => {
                             .format(new Date(c.Date))
                             .split(',')
                             .join(' at ')}`}
-                        > */}
-                        <AccessTime sx={{ marginLeft: 1 }} />
-                        {/* </Tooltip> */}
+                        >
+                          <AccessTime sx={{ marginLeft: 1 }} />
+                        </Tooltip>
                       </Stack>
                     </Stack>
                   </div>
