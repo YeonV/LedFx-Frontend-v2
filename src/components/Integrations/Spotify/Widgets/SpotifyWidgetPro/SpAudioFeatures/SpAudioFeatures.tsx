@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable prettier/prettier */
 import { useContext, useEffect } from 'react'
 import {
   // Typography,
@@ -58,6 +56,41 @@ export default function SpAudioFeatures() {
     }
   }, [meta])
 
+  const audioFeaturesKey = () => {
+    if (audioFeatures?.key) {
+      switch (audioFeatures.key) {
+        case 0:
+          return 'C'
+        case 1:
+          return 'C#'
+        case 2:
+          return 'D'
+        case 3:
+          return 'D#'
+        case 4:
+          return 'E'
+        case 5:
+          return 'F'
+        case 6:
+          return 'F#'
+        case 7:
+          return 'G'
+        case 8:
+          return 'G#'
+        case 9:
+          return 'A'
+        case 10:
+          return 'A#'
+        case 11:
+          return 'B'
+        default:
+          return 'N/A'
+      }
+    } else {
+      return 'N/A'
+    }
+  }
+
   return (
     <>
       <Grid xl={2} lg={3} md={6} sm={12} xs={12} item>
@@ -99,33 +132,7 @@ export default function SpAudioFeatures() {
                     </Stack>
                   </TableCell>
                   <TableCell align="right" style={{ padding: '13px 16px' }}>
-                    {audioFeatures?.key
-                      ? audioFeatures.key === 0
-                        ? 'C'
-                        : audioFeatures.key === 1
-                        ? 'C#'
-                        : audioFeatures.key === 2
-                        ? 'D'
-                        : audioFeatures.key === 3
-                        ? 'D#'
-                        : audioFeatures.key === 4
-                        ? 'E'
-                        : audioFeatures.key === 5
-                        ? 'F'
-                        : audioFeatures.key === 6
-                        ? 'F#'
-                        : audioFeatures.key === 7
-                        ? 'G'
-                        : audioFeatures.key === 8
-                        ? 'G#'
-                        : audioFeatures.key === 9
-                        ? 'A'
-                        : audioFeatures.key === 10
-                        ? 'A#'
-                        : audioFeatures.key === 11
-                        ? 'B'
-                        : 'N/A'
-                      : 'N/A'}
+                    {audioFeaturesKey()}
                   </TableCell>
                 </TableRow>
                 <TableRow>

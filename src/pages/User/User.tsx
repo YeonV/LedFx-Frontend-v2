@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-self-assign */
 /* eslint-disable no-alert */
@@ -12,7 +11,7 @@ import {
   StepButton,
   Stepper,
   TextField,
-  Tooltip,
+  // Tooltip,
   useTheme,
   MenuItem
 } from '@mui/material'
@@ -42,6 +41,7 @@ const User = () => {
   const [cloudEffects, setCloudEffects] = useState<any>([])
   const [cloudConfigs, setCloudConfigs] = useState<any>([])
   const [configName, setConfigName] = useState('')
+  const [availableThemes, setAvailableThemes] = useState(0)
 
   const [starred, setStarred] = useState({
     core: false,
@@ -69,6 +69,17 @@ const User = () => {
 
   const cloud = axios.create({
     baseURL: 'https://strapi.yeonv.com'
+  })
+
+  const filteredCloudEffects = {} as any
+  Object.keys(cloudEffects).forEach((effectGroup) => {
+    const filteredEffects = cloudEffects[effectGroup].filter((effect: any) => {
+      return effect.user && effect.user.username === userName
+    })
+
+    if (filteredEffects.length > 0) {
+      filteredCloudEffects[effectGroup] = filteredEffects
+    }
   })
 
   const handleChange =
@@ -111,23 +122,19 @@ const User = () => {
     setCloudConfigs(res)
   }
 
-  const hasStarred = async (owner = 'YeonV', repo = 'LedFx-Frontend-v2') => {
-    const s = [] as any
-
-    const gettingStars: any = async (index: number = 0) => {
-      const r = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/stargazers?per_page=100&page=${index}`
-      )
-      const re = await r.json()
-      s.push(...re)
-      if (re.length === 100) {
-        gettingStars(index + 1)
-      }
-      return s
-    }
-
-    const theStars = await gettingStars()
-    return theStars
+  const hasStarred = async () => {
+    const r = await fetch(`https://api.github.com/users/${userName}/starred`)
+    const re = await r.json()
+    const repos = re.map((resp: any) => resp.full_name)
+    setStarred({
+      core: repos.includes('LedFx/LedFx'),
+      client: repos.includes('YeonV/LedFx-Frontend-v2'),
+      build: repos.includes('YeonV/LedFx-Builds'),
+      hass: repos.includes('YeonV/home-assistant-addons'),
+      wledman: repos.includes('YeonV/wled-manager'),
+      audiopipes: repos.includes('YeonV/audio-pipes'),
+      io: repos.includes('YeonV/io')
+    })
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const deleteCloudConfig = async (name: string, date: any) => {
@@ -152,16 +159,6 @@ const User = () => {
   }
 
   useEffect(() => {
-    getCloudPresets()
-  }, [])
-
-  useEffect(() => {
-    getCloudConfigs()
-  }, [])
-
-  const filteredCloudEffects = {} as any
-
-  useEffect(() => {
     if (setTrophies) {
       if (starred.core && starred.client && starred.build) {
         setTrophies((s) => ({ ...s, fan: 1 }))
@@ -183,52 +180,35 @@ const User = () => {
         setTrophies((s) => ({ ...s, contributor: 0 }))
       }
     }
-  }, [starred])
+  }, [starred, cloudEffects, setTrophies])
 
   useEffect(() => {
-    const promise1 = hasStarred('LedFx', 'LedFx')
-    const promise2 = hasStarred()
-    const promise3 = hasStarred('YeonV', 'LedFx-Builds')
-    const promise4 = hasStarred('YeonV', 'home-assistant-addons')
-    const promise5 = hasStarred('YeonV', 'wled-manager')
-    const promise6 = hasStarred('YeonV', 'audio-pipes')
-    const promise7 = hasStarred('YeonV', 'io')
-
-    Promise.all([
-      promise1,
-      promise2,
-      promise3,
-      promise4,
-      promise5,
-      promise6,
-      promise7
-    ]).then((values) => {
-      setTimeout(() => {
-        setStarred({
-          core: values[0].filter((r: any) => r.login === userName)?.length > 0,
-          client:
-            values[1].filter((r: any) => r.login === userName)?.length > 0,
-          build: values[2].filter((r: any) => r.login === userName)?.length > 0,
-          hass: values[3].filter((r: any) => r.login === userName)?.length > 0,
-          wledman:
-            values[4].filter((r: any) => r.login === userName)?.length > 0,
-          audiopipes:
-            values[5].filter((r: any) => r.login === userName)?.length > 0,
-          io: values[6].filter((r: any) => r.login === userName)?.length > 0
-        })
-      }, 3000)
-    })
+    getCloudPresets()
   }, [])
 
-  Object.keys(cloudEffects).forEach((effectGroup) => {
-    const filteredEffects = cloudEffects[effectGroup].filter((effect: any) => {
-      return effect.user && effect.user.username === userName
-    })
+  useEffect(() => {
+    getCloudConfigs()
+  }, [])
 
-    if (filteredEffects.length > 0) {
-      filteredCloudEffects[effectGroup] = filteredEffects
+  useEffect(() => {
+    hasStarred()
+  }, [])
+
+  useEffect(() => {
+    const t = () => {
+      if (trophies.contributor > 0) {
+        return 4
+      }
+      if (trophies.enthusiast > 0) {
+        return 3
+      }
+      if (trophies.fan > 0) {
+        return 2
+      }
+      return 0
     }
-  })
+    setAvailableThemes(t())
+  }, [trophies])
 
   return (
     <Box
@@ -384,74 +364,72 @@ const User = () => {
                       width: '100%',
                       alignSelf: 'center',
                       color:
-                        starred.core && starred.client && starred.build
+                        trophies.fan > 0
                           ? theme.palette.primary.main
                           : 'inherit'
                     }}
                   />
-                  <Typography>
-                    <Box sx={{ width: '100%', zIndex: 1000 }}>
-                      <Stepper nonLinear activeStep={1} alternativeLabel>
-                        <Step key="core" completed={starred.core}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/LedFx/LedFx',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.core
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={starred.core ? <Star /> : <StarOutline />}
-                          >
-                            core
-                          </StepButton>
-                        </Step>
-                        <Step key="client" completed={starred.client}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/YeonV/LedFx-Frontend-v2',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.client
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={starred.client ? <Star /> : <StarOutline />}
-                          >
-                            client
-                          </StepButton>
-                        </Step>
-                        <Step key="build" completed={starred.build}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/YeonV/LedFx-Builds',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.build
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={starred.build ? <Star /> : <StarOutline />}
-                          >
-                            build
-                          </StepButton>
-                        </Step>
-                      </Stepper>
-                    </Box>
-                  </Typography>
+                  <Box sx={{ width: '100%', zIndex: 1000 }}>
+                    <Stepper nonLinear activeStep={1} alternativeLabel>
+                      <Step key="core" completed={starred.core}>
+                        <StepButton
+                          onClick={() => {
+                            window.open(
+                              'https://github.com/LedFx/LedFx',
+                              '_blank'
+                            )
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.core
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.core ? <Star /> : <StarOutline />}
+                        >
+                          core
+                        </StepButton>
+                      </Step>
+                      <Step key="client" completed={starred.client}>
+                        <StepButton
+                          onClick={() => {
+                            window.open(
+                              'https://github.com/YeonV/LedFx-Frontend-v2',
+                              '_blank'
+                            )
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.client
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.client ? <Star /> : <StarOutline />}
+                        >
+                          client
+                        </StepButton>
+                      </Step>
+                      <Step key="build" completed={starred.build}>
+                        <StepButton
+                          onClick={() => {
+                            window.open(
+                              'https://github.com/YeonV/LedFx-Builds',
+                              '_blank'
+                            )
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.build
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.build ? <Star /> : <StarOutline />}
+                        >
+                          build
+                        </StepButton>
+                      </Step>
+                    </Stepper>
+                  </Box>
                 </AccordionDetails>
               </Accordion>
               <Accordion
@@ -500,98 +478,88 @@ const User = () => {
                       width: '100%',
                       alignSelf: 'center',
                       color:
-                        starred.hass &&
-                        starred.wledman &&
-                        starred.audiopipes &&
-                        starred.io
+                        trophies.enthusiast > 0
                           ? theme.palette.primary.main
                           : 'inherit'
                     }}
                   />
-                  <Typography>
-                    <Box sx={{ width: '100%', zIndex: 1000 }}>
-                      <Stepper nonLinear activeStep={1} orientation="vertical">
-                        <Step key="hass" completed={starred.hass}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/YeonV/home-assistant-addons',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.hass
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={starred.hass ? <Star /> : <StarOutline />}
-                          >
-                            home-assistant-addons
-                          </StepButton>
-                        </Step>
-                        <Step key="wledman" completed={starred.wledman}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/YeonV/wled-manager',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.wledman
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={starred.wledman ? <Star /> : <StarOutline />}
-                          >
-                            wled-manager
-                          </StepButton>
-                        </Step>
-                        <Step key="audiopipes" completed={starred.audiopipes}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/YeonV/audio-pipes',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.audiopipes
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={
-                              starred.audiopipes ? <Star /> : <StarOutline />
-                            }
-                          >
-                            audio-pipes
-                          </StepButton>
-                        </Step>
-                        <Step key="io" completed={starred.io}>
-                          <StepButton
-                            onClick={() => {
-                              window.open(
-                                'https://github.com/YeonV/io',
-                                '_blank'
-                              )
-                            }}
-                            sx={{
-                              textTransform: 'capitalize',
-                              color: starred.io
-                                ? theme.palette.primary.main
-                                : 'inherit'
-                            }}
-                            icon={starred.io ? <Star /> : <StarOutline />}
-                          >
-                            io
-                          </StepButton>
-                        </Step>
-                      </Stepper>
-                    </Box>
-                  </Typography>
+                  <Box sx={{ width: '100%', zIndex: 1000 }}>
+                    <Stepper nonLinear activeStep={1} orientation="vertical">
+                      <Step key="hass" completed={starred.hass}>
+                        <StepButton
+                          onClick={() => {
+                            window.open(
+                              'https://github.com/YeonV/home-assistant-addons',
+                              '_blank'
+                            )
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.hass
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.hass ? <Star /> : <StarOutline />}
+                        >
+                          home-assistant-addons
+                        </StepButton>
+                      </Step>
+                      <Step key="wledman" completed={starred.wledman}>
+                        <StepButton
+                          onClick={() => {
+                            window.open(
+                              'https://github.com/YeonV/wled-manager',
+                              '_blank'
+                            )
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.wledman
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.wledman ? <Star /> : <StarOutline />}
+                        >
+                          wled-manager
+                        </StepButton>
+                      </Step>
+                      <Step key="audiopipes" completed={starred.audiopipes}>
+                        <StepButton
+                          onClick={() => {
+                            window.open(
+                              'https://github.com/YeonV/audio-pipes',
+                              '_blank'
+                            )
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.audiopipes
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.audiopipes ? <Star /> : <StarOutline />}
+                        >
+                          audio-pipes
+                        </StepButton>
+                      </Step>
+                      <Step key="io" completed={starred.io}>
+                        <StepButton
+                          onClick={() => {
+                            window.open('https://github.com/YeonV/io', '_blank')
+                          }}
+                          sx={{
+                            textTransform: 'capitalize',
+                            color: starred.io
+                              ? theme.palette.primary.main
+                              : 'inherit'
+                          }}
+                          icon={starred.io ? <Star /> : <StarOutline />}
+                        >
+                          io
+                        </StepButton>
+                      </Step>
+                    </Stepper>
+                  </Box>
                 </AccordionDetails>
               </Accordion>
               <Accordion
@@ -638,7 +606,7 @@ const User = () => {
                       width: '100%',
                       alignSelf: 'center',
                       color:
-                        starred.core && starred.client && starred.build
+                        trophies.contributor > 0
                           ? theme.palette.primary.main
                           : 'inherit'
                     }}
@@ -757,8 +725,8 @@ const User = () => {
                 />
               </Stack>
               {cloudConfigs.length > 0 &&
-                cloudConfigs.map((c: any) => (
-                  <>
+                cloudConfigs.map((c: any, i: number) => (
+                  <div key={i}>
                     <Divider />
                     <Stack
                       direction="row"
@@ -779,35 +747,35 @@ const User = () => {
                             )
                           }
                         />
-                        <Tooltip title="Load Config">
-                          <Popover
-                            onConfirm={() => {
-                              importSystemConfig(c.config).then(() => {
-                                window.location.href = window.location.href
-                              })
-                            }}
-                            content={
-                              <Stack>
-                                <Typography
-                                  sx={{ padding: '0.5rem 1rem 0 1rem' }}
-                                >
-                                  overwrite current config?
-                                </Typography>
-                                <Typography
-                                  color="text.disabled"
-                                  sx={{ padding: '0 1rem 0.5rem 1rem' }}
-                                >
-                                  LedFx will restart after
-                                </Typography>
-                              </Stack>
-                            }
-                            type="iconbutton"
-                            color="inherit"
-                            icon={<CloudDownload />}
-                          />
-                        </Tooltip>
+                        {/* <Tooltip title="Load Config"> */}
+                        <Popover
+                          onConfirm={() => {
+                            importSystemConfig(c.config).then(() => {
+                              window.location.href = window.location.href
+                            })
+                          }}
+                          content={
+                            <Stack>
+                              <Typography
+                                sx={{ padding: '0.5rem 1rem 0 1rem' }}
+                              >
+                                overwrite current config?
+                              </Typography>
+                              <Typography
+                                color="text.disabled"
+                                sx={{ padding: '0 1rem 0.5rem 1rem' }}
+                              >
+                                LedFx will restart after
+                              </Typography>
+                            </Stack>
+                          }
+                          type="iconbutton"
+                          color="inherit"
+                          icon={<CloudDownload />}
+                        />
+                        {/* </Tooltip> */}
 
-                        <Tooltip
+                        {/* <Tooltip
                           title={`Config from ${new Intl.DateTimeFormat(
                             'en-GB',
                             {
@@ -818,12 +786,12 @@ const User = () => {
                             .format(new Date(c.Date))
                             .split(',')
                             .join(' at ')}`}
-                        >
-                          <AccessTime sx={{ marginLeft: 1 }} />
-                        </Tooltip>
+                        > */}
+                        <AccessTime sx={{ marginLeft: 1 }} />
+                        {/* </Tooltip> */}
                       </Stack>
                     </Stack>
-                  </>
+                  </div>
                 ))}
             </AccordionDetails>
           </Accordion>
@@ -850,11 +818,7 @@ const User = () => {
                     paddingRight: 2
                   }}
                 >
-                  {trophies.contributor > 0
-                    ? 4
-                    : trophies.enthusiast > 0
-                      ? 3
-                      : 2}
+                  {availableThemes}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
