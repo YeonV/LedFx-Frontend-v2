@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import { Icon } from '@mui/material'
 import Wled from '../Wled'
 import RazerMouse from '../RzrMouse'
@@ -50,6 +51,24 @@ function BladeIcon({
     >
       {name.startsWith('yz:logo2y') ? (
         <YZLogo2Y
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('<svg') ? (
+        <div
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+          dangerouslySetInnerHTML={{ __html: name }}
+        />
+      ) : name.startsWith('https://') ? (
+        <img
+          src={name.replaceAll('#000000', 'currentColor')}
+          width={50}
+          alt="icon"
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px'

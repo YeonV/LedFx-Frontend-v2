@@ -7,6 +7,7 @@ import {
   Button,
   Slider,
   Switch,
+  Tooltip,
   Typography,
   useTheme
 } from '@mui/material'
@@ -232,13 +233,22 @@ export const SettingsRow = ({
           //     <SettingsSwitch checked={checked} onChange={onChange} />
           //   ) : null
           // ) :
-          children || (
-            <SettingsSwitch
-              disabled={disabled}
-              checked={checked}
-              onChange={onChange}
-            />
-          )
+          children ||
+            (title === 'Beta Mode' ? (
+              <Tooltip title="AlphaMode: Smartbar -> HackedByBlade! -> OK -> BladeAlpha">
+                <SettingsSwitch
+                  disabled={disabled}
+                  checked={checked}
+                  onChange={onChange}
+                />
+              </Tooltip>
+            ) : (
+              <SettingsSwitch
+                disabled={disabled}
+                checked={checked}
+                onChange={onChange}
+              />
+            ))
         }
         {/* {ios && !direct && <ChevronRight sx={{ ml: 1, color: '#57565a' }} />} */}
       </div>
