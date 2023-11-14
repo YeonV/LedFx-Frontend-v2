@@ -9,6 +9,14 @@ import {
   YZLogo2Y,
   YZLogo2Z
 } from '../YZ-Logo2'
+import {
+  YZLogo3,
+  YZLogo3Left,
+  YZLogo3Right,
+  YZLogo3Top,
+  YZLogo3Y,
+  YZLogo3Z
+} from '../YZ-Logo3'
 import { camelToSnake } from '../../../utils/helpers'
 import '../../../assets/materialdesignicons.css'
 import '../../../index.css'
@@ -73,6 +81,48 @@ function BladeIcon({
           style={{
             // eslint-disable-next-line prettier/prettier
             transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('yz:logo3y') ? (
+        <YZLogo3Y
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('yz:logo3z') ? (
+        <YZLogo3Z
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('yz:logo3top') ? (
+        <YZLogo3Top
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('yz:logo3left') ? (
+        <YZLogo3Left
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('yz:logo3right') ? (
+        <YZLogo3Right
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
+            marginTop: '3px'
+          }}
+        />
+      ) : name.startsWith('yz:logo3') ? (
+        <YZLogo3
+          style={{
+            transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px'
           }}
         />
