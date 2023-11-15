@@ -1,7 +1,7 @@
 {
   "name": "ledfx",
   "version": "2.0.75",
-  "description": "LedFx - BladeMOD",
+  "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
   "main": "public/electron.js",
