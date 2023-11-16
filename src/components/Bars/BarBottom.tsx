@@ -29,6 +29,7 @@ import MIDIListener from '../MidiInput'
 import { drawerWidth, ios } from '../../utils/helpers'
 import EditSceneDialog from '../Dialogs/SceneDialogs/EditSceneDialog'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import AddWledDialog from '../Dialogs/AddWledDialog'
 
 export default function BarBottom() {
   const theme = useTheme()
@@ -232,6 +233,7 @@ export default function BarBottom() {
       {features.scenemidi && <MIDIListener />}
       <AddSceneDialog />
       <AddDeviceDialog />
+      <AddWledDialog />
       <AddVirtualDialog />
       <AddIntegrationDialog />
       <EditSceneDialog />
