@@ -14,6 +14,7 @@ import {
 } from '@mui/x-data-grid'
 import { useMemo } from 'react'
 import useStore from '../../store/useStore'
+// import nameToIcon from '../../utils/nameToIcon'
 
 const PREFIX = 'AddWledDialog'
 
@@ -69,13 +70,29 @@ const AddWledDialog = () => {
       refresh_rate: 64,
       sync_mode: 'DDP',
       timeout: 1,
-      create_segments: false,
+      create_segments: true,
       icon_name: 'wled'
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    // let icon = 'wled'
     const promises: any = apiRef.current.getSelectedRows().forEach((row) => {
+      // if row.name is part of a key of nametoicon then return the value else 'wled'
+
+      // Object.keys(nameToIcon).some((key) => {
+      //   if (row.name.toLowerCase().includes(key.toLowerCase())) {
+      //     icon = (nameToIcon as any)[key]
+      //     return true
+      //   }
+      //   return false
+      // })
       return addDevice({
         type: 'wled',
-        config: { ...row, ...defaultModel }
+        config: {
+          ...row,
+          ...defaultModel
+          // icon_name: icon
+        }
       })
     })
 
