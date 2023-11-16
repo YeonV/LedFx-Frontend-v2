@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import useStore from '../../store/useStore';
 import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
+import { Ledfx } from '../../api/ledfx'
 
 const PREFIX = 'AddDeviceDialog';
 
@@ -111,19 +112,21 @@ const AddDeviceDialog = () => {
     ) {
       if (deviceType === 'wled') {
         if (cleanedModel.ip_address) {
-          fetch(`http://${cleanedModel.ip_address}/json/nodes`).then((res) => res.json()).then((data) => {
-              const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
-              const newDevices = [] as { name: string, ip_address: string}[]
-              data.nodes.forEach((node: any) => {
-                if (node.ip && !deviceIps.includes(node.ip)) {                  
-                  newDevices.push({ name: node.name, ip_address: node.ip})
-                }                
-              })
-              if (newDevices.length > 0) {
-                setAddWled(newDevices)
-              }
-        })
-            
+          Ledfx(`/api/fetch/${encodeURIComponent(
+              `http://${(cleanedModel.ip_address as string)
+                .replace('https://', '').replace('http://', '').replaceAll('/', '')}/json/nodes`
+            )}`, 'GET', {}).then((data: any) => {
+            const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
+            const newDevices = [] as { name: string, ip_address: string}[]
+            data.nodes.forEach((node: any) => {
+              if (node.ip && !deviceIps.includes(node.ip)) {                  
+                newDevices.push({ name: node.name, ip_address: node.ip})
+              }                
+            })
+            if (newDevices.length > 0) {
+              setAddWled(newDevices)
+            }
+          })
         }
       }
       addDevice({
