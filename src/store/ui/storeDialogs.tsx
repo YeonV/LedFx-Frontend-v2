@@ -29,6 +29,9 @@ const storeDialogs = (set: any) => ({
     addIntegration: {
       open: false,
       edit: {} as any
+    },
+    addWled: {
+      open: [] as { name: string; ip_address: string }[]
     }
   },
   assistant: {
@@ -44,6 +47,16 @@ const storeDialogs = (set: any) => ({
     set(
       produce((state: IStore) => {
         state.assistant[kind] = val
+      }),
+      false,
+      'api/dialog/nohost'
+    ),
+  setAddWLed: (open: { name: string; ip_address: string }[]) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.addWled = {
+          open
+        }
       }),
       false,
       'api/dialog/nohost'

@@ -17,7 +17,7 @@ import {
   Divider,
 } from '@mui/material';
 import useStore from '../../store/useStore';
-import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
+import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
 
 const PREFIX = 'AddDeviceDialog';
 
@@ -66,6 +66,7 @@ const AddDeviceDialog = () => {
   const getVirtuals = useStore((state) => state.getVirtuals);
   const addDevice = useStore((state) => state.addDevice);
   const updateDevice = useStore((state) => state.updateDevice);
+  const setAddWled = useStore((state) => state.setAddWLed);
   const devices = useStore((state) => state.devices);
   const open = useStore((state) => state.dialogs.addDevice?.open || false);
   const deviceId = useStore((state) => state.dialogs.addDevice?.edit || false);
@@ -108,7 +109,23 @@ const AddDeviceDialog = () => {
       Object.keys(initial.config).length === 0 &&
       initial.config?.constructor === Object
     ) {
-      // console.log("ADDING");
+      if (deviceType === 'wled') {
+        if (cleanedModel.ip_address) {
+          fetch(`http://${cleanedModel.ip_address}/json/nodes`).then((res) => res.json()).then((data) => {
+              const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
+              const newDevices = [] as { name: string, ip_address: string}[]
+              data.nodes.forEach((node: any) => {
+                if (node.ip && !deviceIps.includes(node.ip)) {                  
+                  newDevices.push({ name: node.name, ip_address: node.ip})
+                }                
+              })
+              if (newDevices.length > 0) {
+                setAddWled(newDevices)
+              }
+        })
+            
+        }
+      }
       addDevice({
         type: deviceType,
         config: { ...defaultModel, ...cleanedModel },
@@ -189,7 +206,8 @@ const AddDeviceDialog = () => {
         </div>
         <Divider style={{ marginBottom: '1rem' }} />
         {model && (
-          <BladeSchemaForm
+          <SchemaForm
+            type={deviceType}
             schema={initial.config &&
               Object.keys(initial.config).length === 0 &&
               initial.config?.constructor === Object
