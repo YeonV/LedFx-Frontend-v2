@@ -67,7 +67,7 @@ export default function App() {
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
     )
-    if (!window.location.pathname.includes('hassio_ingress'))
+    if (window.location.pathname.includes('hassio_ingress'))
       // eslint-disable-next-line no-console
       console.info(
         // eslint-disable-next-line no-useless-concat
