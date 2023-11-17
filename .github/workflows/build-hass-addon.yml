@@ -49,22 +49,21 @@ jobs:
           filename: 'ledfx_frontend_hass_dev.zip'
           path: 'ledfx_frontend_hass_dev'
           exclusions: '*.git* /*node_modules/* .editorconfig'
-      - uses: AButler/upload-release-assets@v2.0
-        name: Upload Release Asset Hass
+      - name: Upload Release Asset Hass
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: './ledfx_frontend_hass_dev.zip'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.package-version.outputs.current-version}}
+          file: "./ledfx_frontend_hass_dev.zip"
+          overwrite: true
+          update_latest_release: true
       # - name: Upload Release Asset Hass
-      #   id: upload-release-asset-hass
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   uses: AButler/upload-release-assets@v2.0
       #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./ledfx_frontend_hass_dev.zip
-      #     asset_name: ledfx_frontend_hass_dev.zip
-      #     asset_content_type: application/zip
+      #     files: './ledfx_frontend_hass_dev.zip'
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     release-tag: ${{ steps.package-version.outputs.current-version}}
+
           
       # - name: Prepare Trigger Hass
       #   id: hass
