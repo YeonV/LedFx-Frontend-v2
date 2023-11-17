@@ -200,7 +200,7 @@ const BladeSelect = ({
                   if (model.ip_address === undefined || model.ip_address === '')
                     return
                   const { auth_token } = await Ledfx(
-                    '/api/getNanoleafToken',
+                    '/api/get_nanoleaf_token',
                     'POST',
                     {
                       ip_address: model.ip_address,
