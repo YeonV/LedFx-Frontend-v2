@@ -1,0 +1,82 @@
+name: LedFx-Frontend for HomeAssistant
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & Release
+    if: "startsWith(github.event.head_commit.message, 'hass:')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get commit-messages
+        id: get_messages
+        run: |
+          git log --pretty=format:"+ %s [\![by](https://img.shields.io/badge/by-$(echo '%an' | sed 's/ /_/g')-blue.svg?logo=github&logoColor=white)](https://github.com/YeonV/LedFx-Frontend-v2/commit/%h)" $(git describe --tags --abbrev=0 @^)..@ | grep -v -E '(cleanup|Update)' | awk '{ sub(/\[\[!\]\]/, ""); msg = substr($0, 1, index($0, "[!") - 1); if (length(msg) >= 5 && !seen[msg]++) { print $0 } }' | awk '{ while (match($0, /https:\/\/img\.shields\.io\/badge\/by-[^"]*-blue\.svg\?logo=github&logoColor=white/)) { url = substr($0, RSTART, RLENGTH); gsub(" ", "_", url); printf "%s%s", substr($0, 1, RSTART - 1), url; $0 = substr($0, RSTART + RLENGTH) } gsub(" ", "_", $0); print }' >> /tmp/messages.txt
+          cp /tmp/messages.txt .messages.md
+          cat /tmp/messages.txt
+          echo 'MESSAGES<<EOF' >> $GITHUB_ENV
+          printf '%b\n' "$(cat /tmp/messages.txt)" >> $GITHUB_ENV
+          echo EOF >> $GITHUB_ENV
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Node Modules
+        run: yarn
+      - name: Build project Hass
+        env:
+          release_version: ${{ steps.package-version.outputs.current-version}}
+          REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
+        run: yarn buildhass
+      - name: Preparing Archive
+        run: |
+          mv build ledfx_frontend_hass_dev
+          printf "${{ env.MESSAGES }}" >> ledfx_frontend_hass_dev/messages.md
+      - name: Create Archive
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'ledfx_frontend_hass_dev.zip'
+          path: 'ledfx_frontend_hass_dev'
+          exclusions: '*.git* /*node_modules/* .editorconfig'
+      - uses: AButler/upload-release-assets@v2.0
+        name: Upload Release Asset Hass
+        with:
+          files: './ledfx_frontend_hass_dev.zip'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ steps.package-version.outputs.current-version}}
+      # - name: Upload Release Asset Hass
+      #   id: upload-release-asset-hass
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./ledfx_frontend_hass_dev.zip
+      #     asset_name: ledfx_frontend_hass_dev.zip
+      #     asset_content_type: application/zip
+          
+      # - name: Prepare Trigger Hass
+      #   id: hass
+      #   run: |
+      #     id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f1,2,3)
+      #     echo "::set-output name=id::$id"
+      # - name: Trigger Hass
+      #   uses: benc-uk/workflow-dispatch@v1
+      #   with:
+      #     workflow: Builder
+      #     repo: YeonV/home-assistant-addons
+      #     ref: refs/heads/master
+      #     token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
+      #     inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
+
