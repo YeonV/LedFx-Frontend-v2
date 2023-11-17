@@ -199,15 +199,16 @@ const BladeSelect = ({
                 onClick={async () => {
                   if (model.ip_address === undefined || model.ip_address === '')
                     return
-                  const { token } = await Ledfx(
+                  const { auth_token } = await Ledfx(
                     '/api/getNanoleafToken',
                     'POST',
                     {
-                      ip_address: model.ip_address
+                      ip_address: model.ip_address,
+                      port: model.port
                     }
                   )
-                  onChange(model_id, token)
-                  inputRef.current.value = token
+                  onChange(model_id, auth_token)
+                  inputRef.current.value = auth_token
                 }}
               >
                 Get Token
