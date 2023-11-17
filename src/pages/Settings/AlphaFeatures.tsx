@@ -23,6 +23,11 @@ const AlphaFeatures = () => {
         checked={features.matrix}
         onChange={() => setFeatures('matrix', !features.matrix)}
       />
+      <SettingsRow
+        title="Gamepad"
+        checked={features.gamepad}
+        onChange={() => setFeatures('gamepad', !features.gamepad)}
+      />
       {features.integrations && (
         <>
           <SettingsRow

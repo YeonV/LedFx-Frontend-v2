@@ -57,12 +57,6 @@ jobs:
           file: "./ledfx_frontend_hass_dev.zip"
           overwrite: true
           update_latest_release: true
-      # - name: Upload Release Asset Hass
-      #   uses: AButler/upload-release-assets@v2.0
-      #   with:
-      #     files: './ledfx_frontend_hass_dev.zip'
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     release-tag: ${{ steps.package-version.outputs.current-version}}
 
           
       # - name: Prepare Trigger Hass
