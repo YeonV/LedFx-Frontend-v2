@@ -204,7 +204,7 @@ const BladeSelect = ({
                     'POST',
                     {
                       ip_address: model.ip_address,
-                      port: model.port
+                      port: model.port || 16021
                     }
                   )
                   onChange(model_id, auth_token)
