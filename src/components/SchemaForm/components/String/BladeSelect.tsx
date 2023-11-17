@@ -1,9 +1,17 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Select, MenuItem, TextField, InputAdornment } from '@mui/material'
+import {
+  Select,
+  MenuItem,
+  TextField,
+  InputAdornment,
+  Button,
+  Tooltip
+} from '@mui/material'
 import { useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
 import BladeFrame from '../BladeFrame'
 import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
+import { Ledfx } from '../../../../api/ledfx'
 
 /**
  * ## String
@@ -24,7 +32,8 @@ const BladeSelect = ({
   textStyle = {},
   menuItemStyle = {},
   hideDesc,
-  children
+  children,
+  type
 }: BladeSelectProps) => {
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
@@ -139,32 +148,69 @@ const BladeSelect = ({
           ))}
         </Select>
       ) : (
-        <TextField
-          type={schema.description?.includes('password') ? 'password' : 'unset'}
-          helperText={!hideDesc && schema.description}
-          InputProps={
-            schema.id === 'icon_name'
-              ? {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BladeIcon name={icon} style={{ color: '#eee' }} />
-                    </InputAdornment>
+        <>
+          <TextField
+            type={
+              schema.description?.includes('password') ? 'password' : 'unset'
+            }
+            helperText={!hideDesc && schema.description}
+            InputProps={
+              schema.id === 'icon_name'
+                ? {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <BladeIcon name={icon} style={{ color: '#eee' }} />
+                      </InputAdornment>
+                    )
+                  }
+                : {}
+            }
+            defaultValue={
+              (model && model_id && model[model_id]) ||
+              (schema.enum && schema.enum[0]) ||
+              schema.default ||
+              ''
+            }
+            onBlur={(e) => onChange(model_id, e.target.value)}
+            onChange={(e) => {
+              console.log(model)
+              if (schema.id === 'icon_name') setIcon(e.target.value)
+            }}
+            style={textStyle as any}
+          />
+          {model_id === 'auth_token' && type === 'nanoleaf' && (
+            <Tooltip
+              title={
+                model.ip_address === undefined || model.ip_address === ''
+                  ? 'please enter ip address of nanoleaf controller'
+                  : 'please hold power on nanoleaf controller for 7 seconds until white leds scan left to right and then press this button to acquire auth token'
+              }
+            >
+              <Button
+                sx={{
+                  fontSize: 10,
+                  height: 56,
+                  color:
+                    model.ip_address === undefined || model.ip_address === ''
+                      ? 'grey'
+                      : 'inherit'
+                }}
+                onClick={async () => {
+                  if (model.ip_address === undefined || model.ip_address === '')
+                    return
+                  const token = await Ledfx(
+                    '/api/devices/getNanoleafToken',
+                    'POST',
+                    { ip_address: model.ip_address }
                   )
-                }
-              : {}
-          }
-          defaultValue={
-            (model && model_id && model[model_id]) ||
-            (schema.enum && schema.enum[0]) ||
-            schema.default ||
-            ''
-          }
-          onBlur={(e) => onChange(model_id, e.target.value)}
-          onChange={(e) => {
-            if (schema.id === 'icon_name') setIcon(e.target.value)
-          }}
-          style={textStyle as any}
-        />
+                  onChange(model_id, token)
+                }}
+              >
+                Get Token
+              </Button>
+            </Tooltip>
+          )}
+        </>
       )}
     </BladeFrame>
   )
