@@ -21,6 +21,7 @@ import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
 import ScenesMenu from './ScenesMenu'
+import Gamepad from '../../components/Gamepad'
 
 const useStyles = makeStyles({
   root: {
@@ -104,6 +105,7 @@ const Scenes = () => {
       >
         <Collapse in={infoAlerts.scenes}>
           <Alert
+            sx={{ mb: 2 }}
             severity="info"
             onClose={() => {
               setInfoAlerts('scenes', false)
@@ -115,6 +117,7 @@ const Scenes = () => {
             <strong>+</strong> button
           </Alert>
         </Collapse>
+        {features.gamepad && <Gamepad setScene={handleActivateScene} />}
         {scenes && Object.keys(scenes).length && features.scenetables ? (
           <Grid
             container
@@ -277,7 +280,6 @@ const Scenes = () => {
           <NoYet type="Scene" />
         )}
       </Grid>
-
       {/* {scenes && Object.keys(scenes).length && <ScenesTable scenes={scenes} />} */}
     </>
   )
