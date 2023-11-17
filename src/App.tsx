@@ -67,6 +67,13 @@ export default function App() {
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
     )
+    if (!window.location.pathname.includes('hassio_ingress'))
+      // eslint-disable-next-line no-console
+      console.info(
+        // eslint-disable-next-line no-useless-concat
+        '%c HomeAssistant detected ',
+        'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
+      )
     ;(window as any).api?.send('toMain', 'get-platform')
   }, [])
   ;(window as any).api?.receive('fromMain', (parameters: string) => {
