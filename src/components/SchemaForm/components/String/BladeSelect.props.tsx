@@ -16,6 +16,7 @@ export interface BladeSelectProps {
   menuItemStyle?: CSSProperties
   hideDesc?: boolean
   children?: JsxElement
+  type?: string
 }
 
 export const BladeSelectDefaultProps = {

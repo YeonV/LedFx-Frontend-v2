@@ -182,6 +182,7 @@ const SchemaForm = ({
                       // eslint-disable-next-line
                       children={undefined}
                       hideDesc={hideDesc}
+                      type={type}
                       // hide={"test"}
                       model={model}
                       disabled={!s.permitted}
