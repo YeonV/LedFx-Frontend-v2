@@ -444,8 +444,14 @@ const TopBar = () => {
                 onClick={(e) => {
                   if (isLogged) {
                     logout(e)
-                  } else {
+                  } else if (
+                    window.location.pathname.includes('hassio_ingress')
+                  ) {
                     window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
+                  } else {
+                    window.open(
+                      `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
+                    )
                   }
                 }}
               >
