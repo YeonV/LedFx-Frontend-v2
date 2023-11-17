@@ -7,7 +7,7 @@ import {
   Button,
   Tooltip
 } from '@mui/material'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
 import BladeFrame from '../BladeFrame'
 import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
@@ -35,6 +35,7 @@ const BladeSelect = ({
   children,
   type
 }: BladeSelectProps) => {
+  const inputRef = useRef<any>(null)
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
       ? (model && model_id && model[model_id]) ||
@@ -150,6 +151,7 @@ const BladeSelect = ({
       ) : (
         <>
           <TextField
+            inputRef={inputRef}
             type={
               schema.description?.includes('password') ? 'password' : 'unset'
             }
@@ -173,7 +175,6 @@ const BladeSelect = ({
             }
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
-              console.log(model)
               if (schema.id === 'icon_name') setIcon(e.target.value)
             }}
             style={textStyle as any}
@@ -198,12 +199,15 @@ const BladeSelect = ({
                 onClick={async () => {
                   if (model.ip_address === undefined || model.ip_address === '')
                     return
-                  const token = await Ledfx(
-                    '/api/devices/getNanoleafToken',
+                  const { token } = await Ledfx(
+                    '/api/getNanoleafToken',
                     'POST',
-                    { ip_address: model.ip_address }
+                    {
+                      ip_address: model.ip_address
+                    }
                   )
                   onChange(model_id, token)
+                  inputRef.current.value = token
                 }}
               >
                 Get Token
