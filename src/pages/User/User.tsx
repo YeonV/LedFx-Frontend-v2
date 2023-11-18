@@ -13,7 +13,9 @@ import {
   TextField,
   Tooltip,
   useTheme,
-  MenuItem
+  MenuItem,
+  Collapse,
+  Alert
 } from '@mui/material'
 import {
   AccessTime,
@@ -61,6 +63,8 @@ const User = () => {
   // const setTrophies = useStore((state) => state.user.setTrophies)
   // const starred = useStore((state) => state.user.starred)
   // const setStarred = useStore((state) => state.user.setStarred)
+  const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const getFullConfig = useStore((state) => state.getFullConfig)
   const isLogged = useStore((state) => state.isLogged)
   const importSystemConfig = useStore((state) => state.importSystemConfig)
@@ -223,21 +227,62 @@ const User = () => {
         maxWidth={300}
         margin="0 auto"
       >
-        <GitHub sx={{ fontSize: 'min(25vw, 25vh, 200px)' }} />
-        <Typography variant="h5">{userName}</Typography>
-        {isLogged ? (
-          <Badge
-            sx={{ paddingTop: 2 }}
-            badgeContent={
-              localStorage.getItem('ledfx-cloud-role') === 'authenticated'
-                ? 'logged in'
-                : localStorage.getItem('ledfx-cloud-role')
-            }
-            color="primary"
-          />
-        ) : (
-          'Logged out'
-        )}
+        <Collapse in={infoAlerts.user}>
+          <Alert
+            sx={{ mb: 2 }}
+            severity="error"
+            onClose={() => {
+              if (localStorage.getItem('ledfx-cloud-role') === 'creator')
+                setInfoAlerts('user', false)
+            }}
+          >
+            LedFx Cloud is a proof of concept and is running on a cheap six bugs
+            a month server.
+            <br />
+            Dont expect anything in alpha-state. like if the server crashes the
+            data is gone!
+            <br />
+            <br />
+            You have been warned!
+          </Alert>
+        </Collapse>
+        <Stack
+          direction="row"
+          gap={2}
+          maxWidth={300}
+          alignItems="center"
+          margin="0 auto"
+          sx={{
+            border: '1px solid',
+            borderColor: 'text.disabled',
+            borderRadius: '40px',
+            padding: '2px 2rem 2px 5px'
+          }}
+        >
+          <GitHub sx={{ fontSize: 'min(25vw, 25vh, 75px)' }} />
+          <Stack
+            alignItems="center"
+            direction="column"
+            gap={2}
+            maxWidth={300}
+            margin="0 auto"
+          >
+            <Typography variant="h5">{userName}</Typography>
+            {isLogged ? (
+              <Badge
+                sx={{ paddingTop: 2 }}
+                badgeContent={
+                  localStorage.getItem('ledfx-cloud-role') === 'authenticated'
+                    ? 'logged in'
+                    : localStorage.getItem('ledfx-cloud-role')
+                }
+                color="primary"
+              />
+            ) : (
+              'Logged out'
+            )}
+          </Stack>
+        </Stack>
         <div style={{ width: 300 }}>
           <Accordion
             expanded={expanded === 'panel0'}
