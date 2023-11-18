@@ -21,7 +21,7 @@ import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
 import ScenesMenu from './ScenesMenu'
-import Gamepad from '../../components/Gamepad'
+import Gamepad from '../../components/Gamepad/Gamepad'
 
 const useStyles = makeStyles({
   root: {

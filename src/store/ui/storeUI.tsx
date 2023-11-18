@@ -27,9 +27,13 @@ const storeUI = (set: any) => ({
   infoAlerts: {
     scenes: true,
     devices: true,
-    user: true
+    user: true,
+    gamepad: true
   },
-  setInfoAlerts: (key: 'scenes' | 'devices' | 'user', val: boolean): void =>
+  setInfoAlerts: (
+    key: 'scenes' | 'devices' | 'user' | 'gamepad',
+    val: boolean
+  ): void =>
     set(
       produce((state: IStore) => {
         state.ui.infoAlerts[key] = val
