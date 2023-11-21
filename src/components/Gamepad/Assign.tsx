@@ -1,8 +1,18 @@
 import { Fab, FormControl, MenuItem, Select, Stack } from '@mui/material'
+import { Terminal, Wallpaper } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
-const Assign = ({ mapping, setMapping, pressed, index, padIndex }: any) => {
+const Assign = ({
+  mapping,
+  setMapping,
+  pressed,
+  index,
+  padIndex,
+  disabled
+}: any) => {
   const scenes = useStore((state) => state.scenes)
+  const modes = ['scene', 'command']
+  const commands = ['smartbar', 'play/pause']
 
   return (
     <Stack key={index} direction="row" alignItems="center" spacing={1}>
@@ -11,32 +21,104 @@ const Assign = ({ mapping, setMapping, pressed, index, padIndex }: any) => {
         color={pressed ? 'primary' : 'inherit'}
         sx={{
           background: pressed ? '#0dbedc' : '#333',
-          m: 1
+          m: 1,
+          color: disabled ? '#999' : 'inherit',
+          width: 40,
+          height: 40,
+          flexShrink: 0
         }}
       >
         {index}
       </Fab>
-      <FormControl fullWidth>
+      <FormControl
+        sx={{
+          maxWidth: 30,
+          minWidth: 30,
+          width: 30
+        }}
+      >
         <Select
+          disableUnderline
+          IconComponent={() => null}
+          disabled={disabled}
           style={{
             color: 'white'
           }}
+          sx={{
+            '& .MuiSelect-select': {
+              paddingRight: '0 !important',
+              marginTop: '10px'
+            }
+          }}
           labelId="scene-select-label"
           label="Scene"
-          value={mapping[padIndex][index] || 'none'}
+          value={mapping[padIndex][index]?.mode || 'scene'}
           onChange={(e) =>
             setMapping({
               ...mapping,
-              [padIndex]: { ...mapping[padIndex], [index]: e.target.value }
+              [padIndex]: {
+                ...mapping[padIndex],
+                [index]: { mode: e.target.value }
+              }
+            })
+          }
+        >
+          {modes.map((s: string) => (
+            <MenuItem key={s} value={s}>
+              {s === 'scene' ? <Wallpaper /> : <Terminal />}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl fullWidth sx={{ maxWidth: 150 }}>
+        <Select
+          disableUnderline
+          disabled={disabled}
+          IconComponent={() => null}
+          style={{
+            color: 'white'
+          }}
+          sx={{
+            '& .MuiSelect-select': {
+              paddingRight: '0 !important',
+              marginTop: '3px'
+            }
+          }}
+          labelId="scene-select-label"
+          label="Scene"
+          value={
+            (mapping[padIndex][index]?.mode === 'scene'
+              ? mapping[padIndex][index]?.scene
+              : mapping[padIndex][index]?.command) || 'none'
+          }
+          onChange={(e) =>
+            setMapping({
+              ...mapping,
+              [padIndex]: {
+                ...mapping[padIndex],
+                [index]:
+                  mapping[padIndex][index]?.mode === 'scene'
+                    ? { scene: e.target.value, mode: 'scene' }
+                    : { command: e.target.value, mode: 'command' }
+              }
             })
           }
         >
           <MenuItem value="none" key="none">
-            no scene assigned
+            {disabled
+              ? 'used by LedFx'
+              : mapping[padIndex][index]?.mode !== 'command'
+                ? 'choose scene'
+                : 'choose command'}
           </MenuItem>
-          {Object.keys(scenes).map((s: string) => (
+          {(mapping[padIndex][index]?.mode !== 'command'
+            ? Object.keys(scenes)
+            : commands
+          ).map((s: string) => (
             <MenuItem key={s} value={s}>
-              {scenes[s]?.name || s}
+              {mapping[padIndex][index]?.mode !== 'command'
+                ? scenes[s]?.name || s || 'none'
+                : s || 'none'}
             </MenuItem>
           ))}
         </Select>
