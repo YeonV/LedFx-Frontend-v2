@@ -2,9 +2,9 @@ import { useTheme } from '@mui/material'
 
 const GamepadSvg = ({
   pad,
-  stroke = 'rgba(0,0,0,0.2)',
-  stroke2 = 'rgba(0,0,0,0.5)',
-  stroke3 = 'rgba(0,0,0,0.8)',
+  stroke = 'rgba(255,255,255,0.2)',
+  stroke2 = 'rgba(255,255,255,0.5)',
+  stroke3 = 'rgba(255,255,255,0.5)',
   fill = 'rgba(0,0,0,0)',
   strokeOpacity = '1',
   strokeWidth = '3',

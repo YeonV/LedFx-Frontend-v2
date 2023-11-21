@@ -450,7 +450,9 @@ const TopBar = () => {
                     window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
                   } else {
                     window.open(
-                      `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
+                      `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`,
+                      '_blank',
+                      'noopener,noreferrer'
                     )
                   }
                 }}

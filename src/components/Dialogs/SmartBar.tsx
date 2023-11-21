@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles'
 import { LocalPlay } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
-const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
+const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
   const theme = useTheme()
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
@@ -20,13 +20,13 @@ const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
   const setShowFeatures = useStore((state) => state.setShowFeatures)
   const features = useStore((state) => state.features)
   const setViewMode = useStore((state) => state.setViewMode)
-
   const filterOptions = createFilterOptions({
     stringify: (option: any) =>
       Object.keys(option).indexOf('is_device') > -1
         ? `device ${option.config.name}`
         : `scene ${option.name}`
   })
+
   return (
     <div
       style={{
@@ -239,6 +239,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500 }: any) => {
                 </InputAdornment>
               )
             }}
+            inputRef={inputRef}
             autoFocus={!direct}
             color="primary"
             style={{ borderRadius: '50%' }}
@@ -260,12 +261,14 @@ const SmartBar = ({
   open,
   setOpen,
   direct,
-  maxWidth
+  maxWidth,
+  inputRef
 }: {
   open?: boolean
   setOpen?: any
   direct?: boolean
   maxWidth?: any
+  inputRef?: any
 }) => {
   const handleClose = () => {
     if (setOpen !== undefined) setOpen(false)
@@ -287,7 +290,7 @@ const SmartBar = ({
       onClose={() => handleClose()}
       aria-labelledby="form-dialog-title"
     >
-      <Bar handleClose={() => handleClose} />
+      <Bar handleClose={() => handleClose} inputRef={inputRef} />
     </Dialog>
   ) : (
     <>Failed</>
@@ -298,7 +301,8 @@ SmartBar.defaultProps = {
   open: false,
   setOpen: undefined,
   direct: false,
-  maxWidth: 500
+  maxWidth: 500,
+  inputRef: undefined
 }
 
 export default SmartBar

@@ -5,6 +5,20 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
+  mapping: {
+    0: {},
+    1: {},
+    2: {},
+    3: {}
+  } as any,
+  setMapping: (mapping: any): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.mapping = mapping
+      }),
+      false,
+      'setMapping'
+    ),
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
     set(
@@ -69,6 +83,9 @@ const storeUI = (set: any) => ({
     smartBar: {
       open: false
     },
+    smartBarPad: {
+      open: false
+    },
     bottomBar: [] as any
   },
   setLeftBarOpen: (open: boolean): void =>
@@ -97,6 +114,14 @@ const storeUI = (set: any) => ({
     set(
       produce((state: IStore) => {
         state.ui.bars.smartBar.open = open
+      }),
+      false,
+      'ui/setSmartBarOpen'
+    ),
+  setSmartBarPadOpen: (open: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.bars.smartBarPad.open = open
       }),
       false,
       'ui/setSmartBarOpen'

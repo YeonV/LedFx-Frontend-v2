@@ -21,7 +21,6 @@ import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
 import ScenesMenu from './ScenesMenu'
-import Gamepad from '../../components/Gamepad/Gamepad'
 
 const useStyles = makeStyles({
   root: {
@@ -117,7 +116,6 @@ const Scenes = () => {
             <strong>+</strong> button
           </Alert>
         </Collapse>
-        {features.gamepad && <Gamepad setScene={handleActivateScene} />}
         {scenes && Object.keys(scenes).length && features.scenetables ? (
           <Grid
             container

@@ -2,12 +2,15 @@ import { SportsEsports, SportsEsportsOutlined } from '@mui/icons-material'
 import {
   Alert,
   Box,
+  Button,
   CircularProgress,
   Collapse,
   Dialog,
   DialogContent,
   DialogTitle,
   Fab,
+  MenuItem,
+  Select,
   Stack,
   Tab,
   Tabs,
@@ -21,12 +24,17 @@ import PD from './PadData'
 import PT from './PadTitle'
 import Assign from './Assign'
 import GamepadSvg from './GamepadSvg'
+import GamepadSvgPs3 from './GamepadSvgPs3'
+import GamepadSvgPs4 from './GamepadSvgPs4'
+import GamepadSvgPs5 from './GamepadSvgPs5'
 
-const Gamepad = ({ setScene }: any) => {
+const Gamepad = ({ setScene, bottom }: any) => {
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const setFeatures = useStore((state) => state.setFeatures)
-
+  // const setSmartBarPadOpen = useStore(
+  //   (state) => state.ui.bars && state.ui.setSmartBarPadOpen
+  // )
   const [open, setOpen] = useState<boolean>(false)
   const [pad0, setPad0] = useState<any>()
   const [pad1, setPad1] = useState<any>()
@@ -34,7 +42,16 @@ const Gamepad = ({ setScene }: any) => {
   const [pad3, setPad3] = useState<any>()
   const [gp, setGp] = useState<any>()
   const [currentPad, setCurrentPad] = useState<number>(0)
-  const [mapping, setMapping] = useState<Record<number, string>>({})
+  // const [mapping, setMapping] = useState<Record<number, any>>({
+  //   0: {},
+  //   1: {},
+  //   2: {},
+  //   3: {}
+  // })
+  const mapping = useStore((state) => state.ui.mapping)
+  const setMapping = useStore((state) => state.ui.setMapping)
+  const padTypes = ['generic', 'ps3', 'ps4', 'ps5', 'xbox']
+  const [padType, setPadType] = useState('ps3')
 
   const handleChange = (_e: ev, v: number) => setCurrentPad(v)
 
@@ -56,13 +73,12 @@ const Gamepad = ({ setScene }: any) => {
   })
 
   return gp ? (
-    <div>
+    <div style={{ position: 'fixed', left: '1rem', bottom }}>
       <Tooltip title="Gamepad detected">
         <Fab color="primary" aria-label="gamepad" onClick={() => setOpen(true)}>
           <SportsEsports />
         </Fab>
       </Tooltip>
-
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
@@ -79,9 +95,7 @@ const Gamepad = ({ setScene }: any) => {
                 setInfoAlerts('gamepad', false)
               }}
             >
-              Note: This is a just proof of concept! Keep this dialog open while
-              using the gamepad. Mapping is NOT saved and will be lost on
-              closing the dialog.
+              Note: This is a proof of concept!
             </Alert>
           </Collapse>
           <Tabs value={currentPad} onChange={handleChange} variant="fullWidth">
@@ -121,21 +135,69 @@ const Gamepad = ({ setScene }: any) => {
                     </Stack>
                     <Stack
                       direction="row"
-                      justifyContent="space-between"
                       marginTop={2}
                       marginBottom={2}
+                      spacing={5}
                     >
                       <PD label="Motor" value={pad.vibrationActuator.type} />
+                      <Stack direction="column">
+                        <span
+                          style={{
+                            color: '#999',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          Type
+                        </span>
+                        <Select
+                          fullWidth
+                          disableUnderline
+                          id="pad-type"
+                          value={padType}
+                          onChange={(e) => setPadType(e.target.value)}
+                        >
+                          {padTypes.map((t: string, i: number) => (
+                            <MenuItem key={i} value={t}>
+                              {t.toUpperCase()}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Stack>
+                      <Button
+                        onClick={() =>
+                          pad.vibrationActuator.playEffect('dual-rumble', {
+                            duration: 1000
+                          })
+                        }
+                      >
+                        Test Motor
+                      </Button>
                     </Stack>
-                    <GamepadSvg pad={pad} />
+                    {padType === 'xbox' && <GamepadSvg pad={pad} />}
+                    {padType === 'ps5' && <GamepadSvgPs5 pad={pad} />}
+                    {padType === 'ps4' && <GamepadSvgPs4 pad={pad} />}
+                    {padType === 'ps3' && <GamepadSvgPs3 pad={pad} />}
+                    {padType === 'generic' && (
+                      <GamepadSvgPs3 pad={pad} type="generic" />
+                    )}
                   </Stack>
                   <Stack direction="column" spacing={1} sx={{ mt: 2 }}>
                     {pad?.buttons.map((b: any, i: number) => {
-                      if (b.pressed && mapping[i] && mapping[i] !== 'none') {
-                        setScene(mapping[i])
+                      if (i === 9 && b.pressed) {
+                        // setSmartBarPadOpen(true)
+                      } else if (i === 16 && b.pressed) {
+                        setOpen(true)
+                      } else if (
+                        b.pressed &&
+                        mapping[pad.index][i] &&
+                        mapping[pad.index][i] !== 'none'
+                      ) {
+                        setScene(mapping[pad.index][i])
                       }
+
                       return (
                         <Assign
+                          padIndex={pad.index}
                           mapping={mapping}
                           setMapping={setMapping}
                           pressed={b.pressed}
