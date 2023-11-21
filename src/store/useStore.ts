@@ -24,6 +24,7 @@ import storeColors from './api/storeColors'
 import storeSpotifyActions from './ui/storeSpotifyActions'
 import storeQLCActions from './ui/storeQLCActions'
 import storeNotifications from './ui/storeNotifications'
+import storePad from './ui/storePad'
 
 const useStore = create(
   devtools(
@@ -37,6 +38,7 @@ const useStore = create(
           spotify: storeSpotify(),
           qlc: storeQLC(),
           user: storeUser(set),
+          ...storePad(set),
           ...storeNotifications(set),
           ...storeTours(set),
           ...storeSpotifyActions(set),

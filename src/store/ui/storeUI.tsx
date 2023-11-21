@@ -5,20 +5,6 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
-  mapping: {
-    0: {},
-    1: {},
-    2: {},
-    3: {}
-  } as any,
-  setMapping: (mapping: any): void =>
-    set(
-      produce((state: IStore) => {
-        state.ui.mapping = mapping
-      }),
-      false,
-      'setMapping'
-    ),
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
     set(

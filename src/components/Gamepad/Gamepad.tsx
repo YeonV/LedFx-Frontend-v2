@@ -16,7 +16,7 @@ import {
   Tabs,
   Tooltip
 } from '@mui/material'
-import { useState, SyntheticEvent as ev } from 'react'
+import { useState, SyntheticEvent as ev, useEffect } from 'react'
 import { useGamepads } from 'react-gamepads'
 import useStore from '../../store/useStore'
 import { CustomTabPanel as PN, a11yProps } from './Gamepad.props'
@@ -32,9 +32,10 @@ const Gamepad = ({ setScene, bottom }: any) => {
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const setFeatures = useStore((state) => state.setFeatures)
-  // const setSmartBarPadOpen = useStore(
-  //   (state) => state.ui.bars && state.ui.setSmartBarPadOpen
-  // )
+  const smartBarPadOpen = useStore((state) => state.ui.bars.smartBarPad.open)
+  const setSmartBarPadOpen = useStore(
+    (state) => state.ui.bars && state.ui.setSmartBarPadOpen
+  )
   const [open, setOpen] = useState<boolean>(false)
   const [pad0, setPad0] = useState<any>()
   const [pad1, setPad1] = useState<any>()
@@ -42,18 +43,14 @@ const Gamepad = ({ setScene, bottom }: any) => {
   const [pad3, setPad3] = useState<any>()
   const [gp, setGp] = useState<any>()
   const [currentPad, setCurrentPad] = useState<number>(0)
-  // const [mapping, setMapping] = useState<Record<number, any>>({
-  //   0: {},
-  //   1: {},
-  //   2: {},
-  //   3: {}
-  // })
-  const mapping = useStore((state) => state.ui.mapping)
-  const setMapping = useStore((state) => state.ui.setMapping)
+
+  const mapping = useStore((state) => state.mapping)
+  const setMapping = useStore((state) => state.setMapping)
   const padTypes = ['generic', 'ps3', 'ps4', 'ps5', 'xbox']
   const [padType, setPadType] = useState('ps3')
 
   const handleChange = (_e: ev, v: number) => setCurrentPad(v)
+  const togglePause = useStore((state) => state.togglePause)
 
   useGamepads((g) => {
     if (g[0]) setPad0(g[0])
@@ -72,6 +69,43 @@ const Gamepad = ({ setScene, bottom }: any) => {
     }
   })
 
+  useEffect(() => {
+    ;[pad0, pad1, pad2, pad3].map(
+      (pad: any) =>
+        pad?.buttons.map((b: any, i: number) => {
+          if (i === 9 && b.pressed) {
+            setSmartBarPadOpen(!smartBarPadOpen)
+          } else if (i === 16 && b.pressed) {
+            setOpen(!open)
+          } else if (
+            b.pressed &&
+            mapping[pad.index][i] &&
+            mapping[pad.index][i].mode &&
+            mapping[pad.index][i].scene &&
+            mapping[pad.index][i].mode === 'scene' &&
+            mapping[pad.index][i].scene !== 'none'
+          ) {
+            setScene(mapping[pad.index][i].scene)
+          } else if (
+            b.pressed &&
+            mapping[pad.index][i] &&
+            mapping[pad.index][i].mode &&
+            mapping[pad.index][i].command &&
+            mapping[pad.index][i].mode === 'command' &&
+            mapping[pad.index][i].command !== 'none'
+          ) {
+            if (mapping[pad.index][i].command === 'smartbar') {
+              setSmartBarPadOpen(!smartBarPadOpen)
+            }
+            if (mapping[pad.index][i].command === 'play/pause') {
+              togglePause()
+            }
+          }
+          return null
+        })
+    )
+  }, [pad0, pad1, pad2, pad3])
+
   return gp ? (
     <div style={{ position: 'fixed', left: '1rem', bottom }}>
       <Tooltip title="Gamepad detected">
@@ -82,7 +116,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{ sx: { maxWidth: 720, minWidth: 720 } }}
+        PaperProps={{ sx: { maxWidth: 750, minWidth: 750 } }}
       >
         <DialogTitle display="flex" alignItems="center">
           <SportsEsports sx={{ mr: 2 }} /> Gamepad detected
@@ -139,7 +173,10 @@ const Gamepad = ({ setScene, bottom }: any) => {
                       marginBottom={2}
                       spacing={5}
                     >
-                      <PD label="Motor" value={pad.vibrationActuator.type} />
+                      <PD
+                        label="Motor"
+                        value={pad.vibrationActuator?.type || 'No Motor'}
+                      />
                       <Stack direction="column">
                         <span
                           style={{
@@ -163,15 +200,17 @@ const Gamepad = ({ setScene, bottom }: any) => {
                           ))}
                         </Select>
                       </Stack>
-                      <Button
-                        onClick={() =>
-                          pad.vibrationActuator.playEffect('dual-rumble', {
-                            duration: 1000
-                          })
-                        }
-                      >
-                        Test Motor
-                      </Button>
+                      {pad.vibrationActuator && (
+                        <Button
+                          onClick={() =>
+                            pad.vibrationActuator.playEffect('dual-rumble', {
+                              duration: 1000
+                            })
+                          }
+                        >
+                          Test Motor
+                        </Button>
+                      )}
                     </Stack>
                     {padType === 'xbox' && <GamepadSvg pad={pad} />}
                     {padType === 'ps5' && <GamepadSvgPs5 pad={pad} />}
@@ -183,25 +222,15 @@ const Gamepad = ({ setScene, bottom }: any) => {
                   </Stack>
                   <Stack direction="column" spacing={1} sx={{ mt: 2 }}>
                     {pad?.buttons.map((b: any, i: number) => {
-                      if (i === 9 && b.pressed) {
-                        // setSmartBarPadOpen(true)
-                      } else if (i === 16 && b.pressed) {
-                        setOpen(true)
-                      } else if (
-                        b.pressed &&
-                        mapping[pad.index][i] &&
-                        mapping[pad.index][i] !== 'none'
-                      ) {
-                        setScene(mapping[pad.index][i])
-                      }
-
                       return (
                         <Assign
+                          disabled={i === 16}
                           padIndex={pad.index}
                           mapping={mapping}
                           setMapping={setMapping}
                           pressed={b.pressed}
                           index={i}
+                          key={i}
                         />
                       )
                     })}
