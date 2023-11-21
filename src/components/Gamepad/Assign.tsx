@@ -1,7 +1,7 @@
 import { Fab, FormControl, MenuItem, Select, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 
-const Assign = ({ mapping, setMapping, pressed, index }: any) => {
+const Assign = ({ mapping, setMapping, pressed, index, padIndex }: any) => {
   const scenes = useStore((state) => state.scenes)
 
   return (
@@ -23,8 +23,13 @@ const Assign = ({ mapping, setMapping, pressed, index }: any) => {
           }}
           labelId="scene-select-label"
           label="Scene"
-          value={mapping[index] || 'none'}
-          onChange={(e) => setMapping({ ...mapping, [index]: e.target.value })}
+          value={mapping[padIndex][index] || 'none'}
+          onChange={(e) =>
+            setMapping({
+              ...mapping,
+              [padIndex]: { ...mapping[padIndex], [index]: e.target.value }
+            })
+          }
         >
           <MenuItem value="none" key="none">
             no scene assigned

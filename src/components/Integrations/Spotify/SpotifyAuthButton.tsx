@@ -92,7 +92,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     if (window.location.pathname.includes('hassio_ingress')) {
       window.location.href = authURL
     } else {
-      window.open(authURL)
+      window.open(authURL, '_blank', 'noopener,noreferrer')
     }
   }
 

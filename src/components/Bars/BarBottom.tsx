@@ -30,6 +30,8 @@ import { drawerWidth, ios } from '../../utils/helpers'
 import EditSceneDialog from '../Dialogs/SceneDialogs/EditSceneDialog'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import AddWledDialog from '../Dialogs/AddWledDialog'
+import Gamepad from '../Gamepad/Gamepad'
+import SmartBar from '../Dialogs/SmartBar'
 
 export default function BarBottom() {
   const theme = useTheme()
@@ -45,7 +47,20 @@ export default function BarBottom() {
 
   const features = useStore((state) => state.features)
   const integrations = useStore((state) => state.integrations)
-
+  const activateScene = useStore((state) => state.activateScene)
+  const captivateScene = useStore((state) => state.captivateScene)
+  const smartBarPadOpen = useStore(
+    (state) => state.ui.bars && state.ui.bars.smartBarPad.open
+  )
+  const setSmartBarPadOpen = useStore(
+    (state) => state.ui.bars && state.ui.setSmartBarPadOpen
+  )
+  const scenes = useStore((state) => state.scenes)
+  const handleActivateScene = (e: string) => {
+    activateScene(e)
+    if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
+      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
+  }
   const [spotifyEnabled, setSpotifyEnabled] = useState(false)
   const [spotifyExpanded, setSpotifyExpanded] = useState(false)
   const spotifyURL = useStore((state) => state.spotify.spotifyEmbedUrl)
@@ -237,6 +252,16 @@ export default function BarBottom() {
       <AddVirtualDialog />
       <AddIntegrationDialog />
       <EditSceneDialog />
+      {features.gamepad && (
+        <>
+          <Gamepad setScene={handleActivateScene} bottom={botHeight + 65} />
+          <SmartBar
+            open={smartBarPadOpen}
+            setOpen={setSmartBarPadOpen}
+            direct={false}
+          />
+        </>
+      )}
       <AddButton
         setBackdrop={setBackdrop}
         sx={{
