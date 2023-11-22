@@ -1,4 +1,11 @@
-import { Fab, FormControl, MenuItem, Select, Stack } from '@mui/material'
+import {
+  Fab,
+  FormControl,
+  MenuItem,
+  Select,
+  Stack,
+  useTheme
+} from '@mui/material'
 import { Terminal, Wallpaper } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
@@ -10,6 +17,7 @@ const Assign = ({
   padIndex,
   disabled
 }: any) => {
+  const theme = useTheme()
   const scenes = useStore((state) => state.scenes)
   const modes = ['scene', 'command']
   const commands = [
@@ -31,7 +39,7 @@ const Assign = ({
         size="small"
         color={pressed ? 'primary' : 'inherit'}
         sx={{
-          background: pressed ? '#0dbedc' : '#333',
+          background: pressed ? theme.palette.primary.main : '#333',
           m: 1,
           color: disabled ? '#999' : 'inherit',
           width: 40,

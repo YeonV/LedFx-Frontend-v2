@@ -138,6 +138,9 @@ const Title = (pathname: string, latestTag: string, virtuals: any) => {
   if (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') {
     return virtuals[pathname.split('/')[2]]?.config.name
   }
+  if (pathname === '/User') {
+    return 'LedFx Cloud User'
+  }
   return pathname.split('/').pop()
 }
 

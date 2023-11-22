@@ -43,6 +43,8 @@ const User = () => {
   const [cloudEffects, setCloudEffects] = useState<any>([])
   const [cloudConfigs, setCloudConfigs] = useState<any>([])
   const [configName, setConfigName] = useState('')
+  const [cloudPlaylists, setCloudPlaylists] = useState<any>([])
+  const [playlistName, setPlaylistName] = useState('')
   const [availableThemes, setAvailableThemes] = useState(0)
 
   const [starred, setStarred] = useState({
@@ -68,6 +70,8 @@ const User = () => {
   const getFullConfig = useStore((state) => state.getFullConfig)
   const isLogged = useStore((state) => state.isLogged)
   const importSystemConfig = useStore((state) => state.importSystemConfig)
+  const scenePL = useStore((state) => state.scenePL)
+  const setScenePL = useStore((state) => state.setScenePL)
 
   const userName = localStorage.getItem('username')
 
@@ -126,6 +130,21 @@ const User = () => {
     setCloudConfigs(res)
   }
 
+  const getCloudPlaylists = async () => {
+    const response = await cloud.get(
+      `playlists?user.username=${localStorage.getItem('username')}`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
+      }
+    )
+    if (response.status !== 200) {
+      alert('No Access')
+      return
+    }
+    const res = await response.data
+    setCloudPlaylists(res)
+  }
+
   const hasStarred = async () => {
     const r = await fetch(`https://api.github.com/users/${userName}/starred`)
     const re = await r.json()
@@ -140,8 +159,28 @@ const User = () => {
       io: repos.includes('YeonV/io')
     })
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const deleteCloudConfig = async (name: string, date: any) => {
+    const existing = await cloud.get(
+      `configs?user.username=${localStorage.getItem(
+        'username'
+      )}&Name=${name}&Date=${date}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+      }
+    )
+    const exists = await existing.data
+    if (exists.length && exists.length > 0) {
+      cloud.delete(`configs/${exists[0].id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+      })
+    }
+  }
+
+  const deleteCloudPlaylist = async (name: string, date: any) => {
     const existing = await cloud.get(
       `configs?user.username=${localStorage.getItem(
         'username'
@@ -188,13 +227,8 @@ const User = () => {
 
   useEffect(() => {
     getCloudPresets()
-  }, [])
-
-  useEffect(() => {
+    getCloudPlaylists()
     getCloudConfigs()
-  }, [])
-
-  useEffect(() => {
     hasStarred()
   }, [])
 
@@ -844,17 +878,149 @@ const User = () => {
                 ))}
             </AccordionDetails>
           </Accordion>
+
+          <Accordion
+            expanded={expanded === 'panel3'}
+            onChange={handleChange('panel3')}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel3bh-content"
+              id="panel3bh-header"
+            >
+              <Typography sx={{ width: '60%', flexShrink: 0 }}>
+                Cloud-Playlists
+              </Typography>
+              <Typography
+                sx={{
+                  color: 'text.secondary',
+                  textAlign: 'right',
+                  flexGrow: 1,
+                  paddingRight: 2
+                }}
+              >
+                {cloudPlaylists.length}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography>Upload current playlist</Typography>
+                <Popover
+                  icon={<CloudUpload />}
+                  disabled={cloudPlaylists.length >= 5}
+                  type="iconbutton"
+                  color="inherit"
+                  confirmDisabled={playlistName === ''}
+                  onConfirm={() => {
+                    cloud
+                      .post(
+                        'playlists',
+                        {
+                          Name: playlistName,
+                          Date: +new Date(),
+                          playlist: scenePL,
+                          user: localStorage.getItem('ledfx-cloud-userid')
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                              'jwt'
+                            )}`
+                          }
+                        }
+                      )
+                      .then(() => getCloudPlaylists())
+                  }}
+                  content={
+                    <TextField
+                      value={playlistName}
+                      onChange={(e) => setPlaylistName(e.target.value)}
+                      placeholder="Enter Playlist Name"
+                    />
+                  }
+                />
+              </Stack>
+              {cloudPlaylists.length > 0 &&
+                cloudPlaylists.map((p: any, i: number) => (
+                  <div key={i}>
+                    <Divider />
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography>{p.Name}</Typography>
+
+                      <Stack direction="row" alignItems="center">
+                        <Popover
+                          type="iconbutton"
+                          color="inherit"
+                          onConfirm={() =>
+                            deleteCloudPlaylist(p.Name, p.Date).then(() =>
+                              setTimeout(() => {
+                                getCloudPlaylists()
+                              }, 200)
+                            )
+                          }
+                        />
+                        <Popover
+                          onConfirm={() => {
+                            setScenePL(p.playlist)
+                          }}
+                          content={
+                            <Stack>
+                              <Typography
+                                sx={{ padding: '0.5rem 1rem 0 1rem' }}
+                              >
+                                overwrite current playlist?
+                              </Typography>
+                            </Stack>
+                          }
+                          type="iconbutton"
+                          color="inherit"
+                          icon={
+                            <Tooltip title="Load Playlist">
+                              <CloudDownload />
+                            </Tooltip>
+                          }
+                        />
+
+                        <Tooltip
+                          title={`Config from ${new Intl.DateTimeFormat(
+                            'en-GB',
+                            {
+                              dateStyle: 'medium',
+                              timeStyle: 'medium'
+                            }
+                          )
+                            .format(new Date(p.Date))
+                            .split(',')
+                            .join(' at ')}`}
+                        >
+                          <AccessTime sx={{ marginLeft: 1 }} />
+                        </Tooltip>
+                      </Stack>
+                    </Stack>
+                  </div>
+                ))}
+            </AccordionDetails>
+          </Accordion>
+
           {(trophies.fan > 0 ||
             trophies.enthusiast > 0 ||
             trophies.contributor > 0) && (
             <Accordion
-              expanded={expanded === 'panel3'}
-              onChange={handleChange('panel3')}
+              expanded={expanded === 'panel4'}
+              onChange={handleChange('panel4')}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel3bh-content"
-                id="panel3bh-header"
+                aria-controls="panel4bh-content"
+                id="panel4bh-header"
               >
                 <Typography sx={{ width: '60%', flexShrink: 0 }}>
                   Theme-Selector
