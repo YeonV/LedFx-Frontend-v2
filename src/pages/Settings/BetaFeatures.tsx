@@ -7,14 +7,23 @@ const BetaFeatures = () => {
   const showFeatures = useStore((state) => state.showFeatures)
   const features = useStore((state) => state.features)
 
-  return showFeatures.integrations ? (
-    <SettingsRow
-      title="Integrations"
-      checked={features.integrations}
-      onChange={() => setFeatures('integrations', !features.integrations)}
-    />
-  ) : (
-    <></>
+  return (
+    <>
+      <SettingsRow
+        title="Gamepad"
+        checked={features.gamepad}
+        onChange={() => setFeatures('gamepad', !features.gamepad)}
+      />
+      {showFeatures.integrations ? (
+        <SettingsRow
+          title="Integrations"
+          checked={features.integrations}
+          onChange={() => setFeatures('integrations', !features.integrations)}
+        />
+      ) : (
+        <></>
+      )}
+    </>
   )
 }
 
