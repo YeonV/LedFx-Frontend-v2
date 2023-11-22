@@ -2,7 +2,7 @@ import { SportsEsports, SportsEsportsOutlined } from '@mui/icons-material'
 import {
   Alert,
   Box,
-  Button,
+  // Button,
   CircularProgress,
   Collapse,
   Dialog,
@@ -189,9 +189,9 @@ const Gamepad = ({ setScene, bottom }: any) => {
                 setInfoAlerts('gamepad', false)
               }}
             >
-              1) LedFx window must be in focus for gamepad to work
+              1&#41; LedFx window must be in focus for gamepad to work
               <br />
-              2) Button 16 & 17 might conflict with OS
+              2&#41; Button 16 & 17 might conflict with OS
             </Alert>
           </Collapse>
           <Tabs value={currentPad} onChange={handleChange} variant="fullWidth">
@@ -262,7 +262,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
                           ))}
                         </Select>
                       </Stack>
-                      {pad.vibrationActuator && (
+                      {/* {pad.vibrationActuator && (
                         <Button
                           onClick={() =>
                             pad.vibrationActuator.playEffect('dual-rumble', {
@@ -272,7 +272,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
                         >
                           Test Motor
                         </Button>
-                      )}
+                      )} */}
                     </Stack>
                     {/* {padType === 'xbox' && <GamepadSvg pad={pad} />} */}
                     {padType === 'ps5' && <GamepadSvgPs5 pad={pad} />}
