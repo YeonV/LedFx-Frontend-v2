@@ -189,7 +189,9 @@ const Gamepad = ({ setScene, bottom }: any) => {
                 setInfoAlerts('gamepad', false)
               }}
             >
-              LedFx window must be in focus for gamepad to work
+              1) LedFx window must be in focus for gamepad to work
+              <br />
+              2) Button 16 & 17 might conflict with OS
             </Alert>
           </Collapse>
           <Tabs value={currentPad} onChange={handleChange} variant="fullWidth">

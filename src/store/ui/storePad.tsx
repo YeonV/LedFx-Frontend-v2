@@ -3,13 +3,13 @@ import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
 const defaultMapping = {
-  8: {
+  0: {
     mode: 'command',
-    command: 'smartbar'
+    command: 'play/pause'
   },
   9: {
     mode: 'command',
-    command: 'play/pause'
+    command: 'padscreen'
   },
   12: {
     mode: 'command',
@@ -18,10 +18,6 @@ const defaultMapping = {
   13: {
     mode: 'command',
     command: 'brightness-down'
-  },
-  16: {
-    mode: 'command',
-    command: 'padscreen'
   }
 }
 const storePad = (set: any) => ({
