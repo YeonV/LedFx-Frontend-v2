@@ -23,10 +23,11 @@ import { CustomTabPanel as PN, a11yProps } from './Gamepad.props'
 import PD from './PadData'
 import PT from './PadTitle'
 import Assign from './Assign'
-import GamepadSvg from './GamepadSvg'
+// import GamepadSvg from './GamepadSvg'
 import GamepadSvgPs3 from './GamepadSvgPs3'
 import GamepadSvgPs4 from './GamepadSvgPs4'
 import GamepadSvgPs5 from './GamepadSvgPs5'
+import { sleep } from '../../utils/helpers'
 
 const Gamepad = ({ setScene, bottom }: any) => {
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
@@ -46,11 +47,44 @@ const Gamepad = ({ setScene, bottom }: any) => {
 
   const mapping = useStore((state) => state.mapping)
   const setMapping = useStore((state) => state.setMapping)
-  const padTypes = ['generic', 'ps3', 'ps4', 'ps5', 'xbox']
-  const [padType, setPadType] = useState('ps3')
+  const padTypes = ['generic', 'ps3', 'ps4', 'ps5']
+  // const padTypes = ['generic', 'ps3', 'ps4', 'ps5', 'xbox']
+  const [padType, setPadType] = useState('generic')
 
   const handleChange = (_e: ev, v: number) => setCurrentPad(v)
   const togglePause = useStore((state) => state.togglePause)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const brightness = useStore((state) => state.config.global_brightness)
+  const setSystemSetting = (setting: string, value: any) => {
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
+  const [scanning, setScanning] = useState(-1)
+  const scanForDevices = useStore((state) => state.scanForDevices)
+  const getDevices = useStore((state) => state.getDevices)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
+
+  const features = useStore((state) => state.features)
+
+  const handleScan = () => {
+    setScanning(0)
+    scanForDevices()
+      .then(async () => {
+        // eslint-disable-next-line no-plusplus
+        for (let sec = 1; sec <= 30; sec++) {
+          if (scanning === -1) break
+          sleep(1000).then(() => {
+            getDevices()
+            getVirtuals()
+            if (scanning !== -1) setScanning(sec)
+          })
+        }
+      })
+      .then(() => {
+        setScanning(-1)
+      })
+  }
 
   useGamepads((g) => {
     if (g[0]) setPad0(g[0])
@@ -73,11 +107,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
     ;[pad0, pad1, pad2, pad3].map(
       (pad: any) =>
         pad?.buttons.map((b: any, i: number) => {
-          if (i === 9 && b.pressed) {
-            setSmartBarPadOpen(!smartBarPadOpen)
-          } else if (i === 16 && b.pressed) {
-            setOpen(!open)
-          } else if (
+          if (
             b.pressed &&
             mapping[pad.index][i] &&
             mapping[pad.index][i].mode &&
@@ -94,11 +124,41 @@ const Gamepad = ({ setScene, bottom }: any) => {
             mapping[pad.index][i].mode === 'command' &&
             mapping[pad.index][i].command !== 'none'
           ) {
+            if (mapping[pad.index][i].command === 'padscreen') {
+              setOpen(!open)
+            }
             if (mapping[pad.index][i].command === 'smartbar') {
               setSmartBarPadOpen(!smartBarPadOpen)
             }
             if (mapping[pad.index][i].command === 'play/pause') {
               togglePause()
+            }
+            if (mapping[pad.index][i].command === 'brightness-up') {
+              setSystemSetting(
+                'global_brightness',
+                Math.min(brightness + 0.1, 1).toFixed(2)
+              )
+            }
+            if (mapping[pad.index][i].command === 'brightness-down') {
+              setSystemSetting(
+                'global_brightness',
+                Math.max(brightness - 0.1, 0).toFixed(2)
+              )
+            }
+            if (mapping[pad.index][i].command === 'scan-wled') {
+              handleScan()
+            }
+            if (mapping[pad.index][i].command === 'copy-to') {
+              setFeatures('streamto', !features.streamto)
+            }
+            if (mapping[pad.index][i].command === 'transitions') {
+              setFeatures('transitions', !features.transitions)
+            }
+            if (mapping[pad.index][i].command === 'frequencies') {
+              setFeatures('frequencies', !features.frequencies)
+            }
+            if (mapping[pad.index][i].command === 'scene-playlist') {
+              toggleScenePLplay()
             }
           }
           return null
@@ -124,12 +184,12 @@ const Gamepad = ({ setScene, bottom }: any) => {
         <DialogContent>
           <Collapse in={infoAlerts.gamepad} unmountOnExit sx={{ mb: 2 }}>
             <Alert
-              severity="error"
+              severity="info"
               onClose={() => {
                 setInfoAlerts('gamepad', false)
               }}
             >
-              Note: This is a proof of concept!
+              LedFx window must be in focus for gamepad to work
             </Alert>
           </Collapse>
           <Tabs value={currentPad} onChange={handleChange} variant="fullWidth">
@@ -212,7 +272,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
                         </Button>
                       )}
                     </Stack>
-                    {padType === 'xbox' && <GamepadSvg pad={pad} />}
+                    {/* {padType === 'xbox' && <GamepadSvg pad={pad} />} */}
                     {padType === 'ps5' && <GamepadSvgPs5 pad={pad} />}
                     {padType === 'ps4' && <GamepadSvgPs4 pad={pad} />}
                     {padType === 'ps3' && <GamepadSvgPs3 pad={pad} />}
@@ -224,7 +284,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
                     {pad?.buttons.map((b: any, i: number) => {
                       return (
                         <Assign
-                          disabled={i === 16}
+                          // disabled={i === 16}
                           padIndex={pad.index}
                           mapping={mapping}
                           setMapping={setMapping}

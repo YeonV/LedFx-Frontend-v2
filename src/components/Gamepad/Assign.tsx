@@ -12,7 +12,18 @@ const Assign = ({
 }: any) => {
   const scenes = useStore((state) => state.scenes)
   const modes = ['scene', 'command']
-  const commands = ['smartbar', 'play/pause']
+  const commands = [
+    'smartbar',
+    'play/pause',
+    'brightness-up',
+    'brightness-down',
+    'scan-wled',
+    'copy-to',
+    'transitions',
+    'frequencies',
+    'scene-playlist',
+    'padscreen'
+  ]
 
   return (
     <Stack key={index} direction="row" alignItems="center" spacing={1}>
@@ -25,7 +36,8 @@ const Assign = ({
           color: disabled ? '#999' : 'inherit',
           width: 40,
           height: 40,
-          flexShrink: 0
+          flexShrink: 0,
+          pointerEvents: 'none'
         }}
       >
         {index}
@@ -42,7 +54,12 @@ const Assign = ({
           IconComponent={() => null}
           disabled={disabled}
           style={{
-            color: 'white'
+            color:
+              mapping[padIndex][index]?.mode &&
+              (mapping[padIndex][index]?.scene ||
+                mapping[padIndex][index]?.command)
+                ? 'white'
+                : 'grey'
           }}
           sx={{
             '& .MuiSelect-select': {
@@ -76,7 +93,12 @@ const Assign = ({
           disabled={disabled}
           IconComponent={() => null}
           style={{
-            color: 'white'
+            color:
+              mapping[padIndex][index]?.mode &&
+              (mapping[padIndex][index]?.scene ||
+                mapping[padIndex][index]?.command)
+                ? 'white'
+                : 'grey'
           }}
           sx={{
             '& .MuiSelect-select': {
