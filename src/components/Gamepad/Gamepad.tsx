@@ -127,42 +127,32 @@ const Gamepad = ({ setScene, bottom }: any) => {
           ) {
             if (mapping[pad.index][i].command === 'padscreen') {
               setOpen(!open)
-            }
-            if (mapping[pad.index][i].command === 'smartbar') {
+            } else if (mapping[pad.index][i].command === 'smartbar') {
               setSmartBarPadOpen(!smartBarPadOpen)
-            }
-            if (mapping[pad.index][i].command === 'play/pause') {
+            } else if (mapping[pad.index][i].command === 'play/pause') {
               togglePause()
-            }
-            if (mapping[pad.index][i].command === 'brightness-up') {
+            } else if (mapping[pad.index][i].command === 'brightness-up') {
               setSystemSetting(
                 'global_brightness',
                 Math.min(brightness + 0.1, 1).toFixed(2)
               )
-            }
-            if (mapping[pad.index][i].command === 'brightness-down') {
+            } else if (mapping[pad.index][i].command === 'brightness-down') {
               setSystemSetting(
                 'global_brightness',
                 Math.max(brightness - 0.1, 0).toFixed(2)
               )
-            }
-            if (mapping[pad.index][i].command === 'scan-wled') {
+            } else if (mapping[pad.index][i].command === 'scan-wled') {
               handleScan()
-            }
-            if (mapping[pad.index][i].command === 'copy-to') {
+            } else if (mapping[pad.index][i].command === 'copy-to') {
               setFeatures('streamto', !features.streamto)
-            }
-            if (mapping[pad.index][i].command === 'transitions') {
+            } else if (mapping[pad.index][i].command === 'transitions') {
               setFeatures('transitions', !features.transitions)
-            }
-            if (mapping[pad.index][i].command === 'frequencies') {
+            } else if (mapping[pad.index][i].command === 'frequencies') {
               setFeatures('frequencies', !features.frequencies)
-            }
-            if (mapping[pad.index][i].command === 'scene-playlist') {
+            } else if (mapping[pad.index][i].command === 'scene-playlist') {
               toggleScenePLplay()
-            }
-            if (mapping[pad.index][i].command === 'one-shot') {
-              oneShotAll('red', 10, 200, 2000)
+            } else if (mapping[pad.index][i].command === 'one-shot') {
+              oneShotAll('#0dbedc', 10, 200, 2000)
             }
           }
           return null
