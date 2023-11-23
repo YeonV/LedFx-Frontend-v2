@@ -2,6 +2,7 @@
 import { Button, IconButton, Slider, Stack, useTheme } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material';
 import { Brightness7, PauseOutlined, PlayArrow } from '@mui/icons-material';
+import { useEffect, useState } from 'react'
 import useStore from '../store/useStore';
 
 const GlobalActionBar = ({
@@ -24,9 +25,13 @@ const GlobalActionBar = ({
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
   };
 
-  // const [brightness, setBrightness] = useState(globalBrightness);
+  const [brightness, setBrightness] = useState(globalBrightness * 100);
   const paused = useStore((state) => state.paused);
   const togglePause = useStore((state) => state.togglePause);
+
+  useEffect(() => {
+    setBrightness(globalBrightness * 100);
+  }, [globalBrightness]);
 
   
   return (
@@ -111,12 +116,12 @@ const GlobalActionBar = ({
           },
         }}
         // valueLabelDisplay="on"
-        value={globalBrightness * 100}
-        // onChange={(_e, val) => typeof val === 'number' && setBrightness(val)}
+        value={brightness}
+        onChange={(_e, val) => typeof val === 'number' && setBrightness(val)}
         step={1}
         min={0}
         max={100}
-        onChange={(_e, val) =>
+        onChangeCommitted={(_e, val) =>
           typeof val === 'number' && setSystemSetting('global_brightness', val / 100)
         }
       />
