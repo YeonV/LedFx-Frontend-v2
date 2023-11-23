@@ -227,6 +227,43 @@ const storeVirtuals = (set: any) => ({
       return true
     }
     return false
+  },
+  oneShotAll: async (
+    color: string,
+    ramp: number,
+    hold: number,
+    fade: number
+  ) => {
+    const resp = await Ledfx('/api/virtuals_tools', 'PUT', {
+      tool: 'oneshot',
+      color,
+      ramp,
+      hold,
+      fade
+    })
+    if (resp && resp.status && resp.status === 'success') {
+      return true
+    }
+    return false
+  },
+  oneShot: async (
+    virtId: string,
+    color: string,
+    ramp: number,
+    hold: number,
+    fade: number
+  ) => {
+    const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
+      tool: 'oneshot',
+      color,
+      ramp,
+      hold,
+      fade
+    })
+    if (resp && resp.status && resp.status === 'success') {
+      return true
+    }
+    return false
   }
 })
 

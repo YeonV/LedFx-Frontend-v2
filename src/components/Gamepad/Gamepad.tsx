@@ -64,6 +64,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
+  const oneShotAll = useStore((state) => state.oneShotAll)
 
   const features = useStore((state) => state.features)
 
@@ -159,6 +160,9 @@ const Gamepad = ({ setScene, bottom }: any) => {
             }
             if (mapping[pad.index][i].command === 'scene-playlist') {
               toggleScenePLplay()
+            }
+            if (mapping[pad.index][i].command === 'one-shot') {
+              oneShotAll('red', 10, 200, 2000)
             }
           }
           return null
