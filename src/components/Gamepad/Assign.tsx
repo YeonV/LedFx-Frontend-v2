@@ -30,7 +30,8 @@ const Assign = ({
     'transitions',
     'frequencies',
     'scene-playlist',
-    'padscreen'
+    'padscreen',
+    'one-shot'
   ]
 
   return (
