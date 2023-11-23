@@ -170,13 +170,15 @@ export default function ScenesPlaylist({
               color: db ? theme.palette.text.primary : ''
             }}
           >
-            <Popover
-              onConfirm={() => setScenePL([])}
-              variant="outlined"
-              color="inherit"
-              style={{ marginRight: '0.5rem' }}
-              type="iconbutton"
-            />
+            {!(window.localStorage.getItem('guestmode') === 'activated') && (
+              <Popover
+                onConfirm={() => setScenePL([])}
+                variant="outlined"
+                color="inherit"
+                style={{ marginRight: '0.5rem' }}
+                type="iconbutton"
+              />
+            )}
             {db ? (
               <IconButton
                 sx={{ mr: 1 }}

@@ -42,6 +42,14 @@ const Routings = ({ handleWs }: any) => {
   )
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
+  useHotkeys(['ctrl+alt+l'], () => {
+    if (window.localStorage.getItem('guestmode') === 'activated') {
+      window.localStorage.removeItem('guestmode')
+    } else {
+      window.localStorage.setItem('guestmode', 'activated')
+    }
+    window.location.reload()
+  })
 
   return (
     <>
@@ -87,10 +95,23 @@ const Routings = ({ handleWs }: any) => {
           <Route path="/devices" element={<Devices />} />
           <Route path="/device/:virtId" element={<Device />} />
           <Route path="/scenes" element={<Scenes />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/settings" element={<Settings />} />
+          {!(window.localStorage.getItem('guestmode') === 'activated') && (
+            <Route path="/integrations" element={<Integrations />} />
+          )}
+          {!(window.localStorage.getItem('guestmode') === 'activated') && (
+            <Route path="/settings" element={<Settings />} />
+          )}
           <Route path="/user" element={<User />} />
-          <Route path="*" element={<Home />} />
+          <Route
+            path="*"
+            element={
+              !(window.localStorage.getItem('guestmode') === 'activated') ? (
+                <Home />
+              ) : (
+                <Scenes />
+              )
+            }
+          />
         </Routes>
         <NoHostDialog />
         <SmartBar

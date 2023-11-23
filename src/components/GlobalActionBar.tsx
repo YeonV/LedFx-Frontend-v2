@@ -38,7 +38,7 @@ const GlobalActionBar = ({
     <Stack
       className={className}
       direction="row"
-      sx={{ minWidth: 250, alignItems: 'center', ...sx }}
+      sx={{ minWidth: 250, alignItems: 'center', marginRight: 2, ...sx }}
     >
       {type === 'icon' ? (
         <IconButton

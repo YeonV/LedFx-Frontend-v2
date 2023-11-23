@@ -18,6 +18,7 @@ import {
   PlayArrow,
   SyncProblem
 } from '@mui/icons-material'
+import { Box } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph'
@@ -227,26 +228,36 @@ const DeviceCard = ({
             )}
           </div>
 
-          <IconButton
-            sx={{
-              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-              alignSelf: 'flex-start',
-              marginLeft: 'auto',
-              transition: theme.transitions.create('transform', {
-                duration: theme.transitions.duration.shortest
-              }),
-              display: 'block'
-            }}
-            onClick={(e) => {
-              e.preventDefault()
-              handleExpandClick()
-            }}
-            aria-expanded={expanded}
-            aria-label="show more"
-            style={{ zIndex: 3, color: '#999' }}
-          >
-            <ExpandMoreIcon className={`step-devices-two-${index}`} />
-          </IconButton>
+          {!(window.localStorage.getItem('guestmode') === 'activated') ? (
+            <IconButton
+              sx={{
+                transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                alignSelf: 'flex-start',
+                marginLeft: 'auto',
+                transition: theme.transitions.create('transform', {
+                  duration: theme.transitions.duration.shortest
+                }),
+                display: 'block'
+              }}
+              onClick={(e) => {
+                e.preventDefault()
+                handleExpandClick()
+              }}
+              aria-expanded={expanded}
+              aria-label="show more"
+              style={{ zIndex: 3, color: '#999' }}
+            >
+              <ExpandMoreIcon className={`step-devices-two-${index}`} />
+            </IconButton>
+          ) : (
+            <Box
+              sx={{
+                alignSelf: 'flex-start',
+                marginLeft: 'auto',
+                display: 'block'
+              }}
+            />
+          )}
         </div>
         {graphsMulti && (
           <div
