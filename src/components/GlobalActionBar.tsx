@@ -1,9 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { useState } from 'react';
 import { Button, IconButton, Slider, Stack, useTheme } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material';
 import { Brightness7, PauseOutlined, PlayArrow } from '@mui/icons-material';
-// import { SettingsSlider } from '../pages/Settings/SettingsComponents';
 import useStore from '../store/useStore';
 
 const GlobalActionBar = ({
@@ -18,18 +16,19 @@ const GlobalActionBar = ({
   type?: 'button' | 'icon' | 'indicator';
 }) => {
   const theme = useTheme();
-  const [globalBrightness, setGlobalBrightness] = useState(100);
 
   const getSystemConfig = useStore((state) => state.getSystemConfig);
   const setSystemConfig = useStore((state) => state.setSystemConfig);
-
+  const globalBrightness = useStore((state) => state.config.global_brightness);
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
   };
 
+  // const [brightness, setBrightness] = useState(globalBrightness);
   const paused = useStore((state) => state.paused);
   const togglePause = useStore((state) => state.togglePause);
 
+  
   return (
     <Stack
       className={className}
@@ -112,14 +111,14 @@ const GlobalActionBar = ({
           },
         }}
         // valueLabelDisplay="on"
-        value={globalBrightness}
+        value={globalBrightness * 100}
+        // onChange={(_e, val) => typeof val === 'number' && setBrightness(val)}
         step={1}
         min={0}
         max={100}
-        onChangeCommitted={(_e, val) =>
+        onChange={(_e, val) =>
           typeof val === 'number' && setSystemSetting('global_brightness', val / 100)
         }
-        onChange={(_e, val) =>  typeof val === 'number' && setGlobalBrightness(val)}
       />
     </Stack>
   );
