@@ -361,110 +361,116 @@ const TopBar = () => {
               <GlobalActionBar className="hideHd" />
             )}
 
-            <IconButton
-              aria-label="display more actions"
-              edge="end"
-              color="inherit"
-              onClick={handleClick}
-              className="step-two"
-              style={{ marginLeft: '1rem' }}
-            >
-              <Badge variant="dot" color="error" invisible={invisible()}>
-                <MoreVert sx={{ fontSize: 32 }} />
-              </Badge>
-            </IconButton>
+            {!(window.localStorage.getItem('guestmode') === 'activated') && (
+              <IconButton
+                aria-label="display more actions"
+                edge="end"
+                color="inherit"
+                onClick={handleClick}
+                className="step-two"
+                style={{ marginLeft: '1rem' }}
+              >
+                <Badge variant="dot" color="error" invisible={invisible()}>
+                  <MoreVert sx={{ fontSize: 32 }} />
+                </Badge>
+              </IconButton>
+            )}
           </div>
 
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-            // className={classes.bladeMenu}
-          >
-            {features.cloud && isLogged && (
-              <MenuItem
-                divider
-                onClick={() => {
-                  setAnchorEl(null)
-                  navigate('/User')
-                }}
-              >
-                <ListItemIcon style={{ marginTop: -13 }}>
-                  <StyledBadge
-                    badgeContent={
-                      localStorage.getItem('ledfx-cloud-role') ===
-                      'authenticated'
-                        ? 'logged in'
-                        : localStorage.getItem('ledfx-cloud-role')
-                    }
-                    color="primary"
-                  >
-                    <GitHub />
-                  </StyledBadge>
+          {!(window.localStorage.getItem('guestmode') === 'activated') && (
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)}
+              // className={classes.bladeMenu}
+            >
+              {features.cloud && isLogged && (
+                <MenuItem
+                  divider
+                  onClick={() => {
+                    setAnchorEl(null)
+                    navigate('/User')
+                  }}
+                >
+                  <ListItemIcon style={{ marginTop: -13 }}>
+                    <StyledBadge
+                      badgeContent={
+                        localStorage.getItem('ledfx-cloud-role') ===
+                        'authenticated'
+                          ? 'logged in'
+                          : localStorage.getItem('ledfx-cloud-role')
+                      }
+                      color="primary"
+                    >
+                      <GitHub />
+                    </StyledBadge>
+                  </ListItemIcon>
+                  <div>
+                    <div>{localStorage.getItem('username')}</div>
+                  </div>
+                </MenuItem>
+              )}
+              <MenuItem onClick={changeHost}>
+                <ListItemIcon>
+                  <Language />
                 </ListItemIcon>
-                <div>
-                  <div>{localStorage.getItem('username')}</div>
-                </div>
+                Change Host
               </MenuItem>
-            )}
-            <MenuItem onClick={changeHost}>
-              <ListItemIcon>
-                <Language />
-              </ListItemIcon>
-              Change Host
-            </MenuItem>
-            {/* <MenuItem onClick={toggleDarkMode}>
+              {/* <MenuItem onClick={toggleDarkMode}>
               <ListItemIcon>
                 <Language />
               </ListItemIcon>
               Darkmode
             </MenuItem> */}
-            <MenuItem onClick={changeGraphs}>
-              <ListItemIcon>
-                <BarChart color={graphs ? 'inherit' : 'secondary'} />
-              </ListItemIcon>
-              {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
-            </MenuItem>
-            {pathname.split('/')[1] === 'device' ? (
-              <TourDevice cally={() => setAnchorEl(null)} />
-            ) : pathname.split('/')[1] === 'Scenes' ? (
-              <TourScenes cally={() => setAnchorEl(null)} />
-            ) : pathname.split('/')[1] === 'Settings' ? (
-              <TourSettings cally={() => setAnchorEl(null)} />
-            ) : pathname.split('/')[1] === 'Devices' ? (
-              <TourDevices cally={() => setAnchorEl(null)} />
-            ) : pathname.split('/')[1] === 'Integrations' ? (
-              <TourIntegrations cally={() => setAnchorEl(null)} />
-            ) : (
-              <TourHome variant="menuitem" cally={() => setAnchorEl(null)} />
-            )}
-            {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
-
-            {features.cloud && (
-              <MenuItem
-                onClick={(e) => {
-                  if (isLogged) {
-                    logout(e)
-                  } else if (
-                    window.location.pathname.includes('hassio_ingress')
-                  ) {
-                    window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
-                  } else {
-                    window.open(
-                      `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`,
-                      '_blank',
-                      'noopener,noreferrer'
-                    )
-                  }
-                }}
-              >
-                <ListItemIcon>{isLogged ? <Logout /> : <Login />}</ListItemIcon>
-                {isLogged ? 'Logout' : 'Login with Github'}
+              <MenuItem onClick={changeGraphs}>
+                <ListItemIcon>
+                  <BarChart color={graphs ? 'inherit' : 'secondary'} />
+                </ListItemIcon>
+                {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
               </MenuItem>
-            )}
-          </Menu>
+              {pathname.split('/')[1] === 'device' ? (
+                <TourDevice cally={() => setAnchorEl(null)} />
+              ) : pathname.split('/')[1] === 'Scenes' ? (
+                <TourScenes cally={() => setAnchorEl(null)} />
+              ) : pathname.split('/')[1] === 'Settings' ? (
+                <TourSettings cally={() => setAnchorEl(null)} />
+              ) : pathname.split('/')[1] === 'Devices' ? (
+                <TourDevices cally={() => setAnchorEl(null)} />
+              ) : pathname.split('/')[1] === 'Integrations' ? (
+                <TourIntegrations cally={() => setAnchorEl(null)} />
+              ) : (
+                <TourHome variant="menuitem" cally={() => setAnchorEl(null)} />
+              )}
+              {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
+
+              {features.cloud && (
+                <MenuItem
+                  onClick={(e) => {
+                    if (isLogged) {
+                      logout(e)
+                    } else if (
+                      window.location.pathname.includes('hassio_ingress')
+                    ) {
+                      window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
+                    } else {
+                      window.open(
+                        `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`,
+                        '_blank',
+                        'noopener,noreferrer'
+                      )
+                    }
+                  }}
+                >
+                  <ListItemIcon>
+                    {isLogged ? <Logout /> : <Login />}
+                  </ListItemIcon>
+                  {isLogged ? 'Logout' : 'Login with Github'}
+                </MenuItem>
+              )}
+            </Menu>
+          )}
         </Toolbar>
       </AppBar>
     </>

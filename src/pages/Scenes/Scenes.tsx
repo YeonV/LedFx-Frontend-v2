@@ -268,7 +268,9 @@ const Scenes = () => {
                     >
                       {scenes[s].name || s}
                     </Typography>
-                    <ScenesMenu sceneId={s} />
+                    {!(
+                      window.localStorage.getItem('guestmode') === 'activated'
+                    ) && <ScenesMenu sceneId={s} />}
                   </CardActions>
                 </Card>
               </Grid>
