@@ -287,192 +287,199 @@ const TopBar = () => {
           LedFx
         </div>
       )}
-      <AppBar
-        enableColorOnDark
-        color="secondary"
-        position="fixed"
-        sx={{
-          background: ios ? 'rgba(54,54,54,0.8)' : '',
-          backdropFilter: ios ? 'blur(20px)' : '',
-          color: ios ? '#fff' : '',
-          paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
-          zIndex: 10,
-          transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-          }),
-          ...(open && {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: `${drawerWidth}px`,
+      {!(
+        isElectron() && window.localStorage.getItem('lock') === 'activated'
+      ) && (
+        <AppBar
+          enableColorOnDark
+          color="secondary"
+          position="fixed"
+          sx={{
+            background: ios ? 'rgba(54,54,54,0.8)' : '',
+            backdropFilter: ios ? 'blur(20px)' : '',
+            color: ios ? '#fff' : '',
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
+            zIndex: 10,
             transition: theme.transitions.create(['margin', 'width'], {
-              easing: theme.transitions.easing.easeOut,
-              duration: theme.transitions.duration.enteringScreen
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen
+            }),
+            ...(open && {
+              width: `calc(100% - ${drawerWidth}px)`,
+              marginLeft: `${drawerWidth}px`,
+              transition: theme.transitions.create(['margin', 'width'], {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen
+              })
             })
-          })
-        }}
-      >
-        <Toolbar
-          style={{
-            justifyContent: 'space-between',
-            minHeight: 56
           }}
         >
-          <div style={{ position: 'absolute', top: 0, left: 16 }}>
-            {LeftButtons(pathname, history, open, handleLeftBarOpen)}
-          </div>
-          <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
-            {Title(pathname, latestTag, virtuals)}
-          </Typography>
-          <div
+          <Toolbar
             style={{
-              display: 'flex',
-              position: 'absolute',
-              top: 4,
-              right: 16
+              justifyContent: 'space-between',
+              minHeight: 56
             }}
           >
-            {disconnected ? (
-              <Box>
+            <div style={{ position: 'absolute', top: 0, left: 16 }}>
+              {LeftButtons(pathname, history, open, handleLeftBarOpen)}
+            </div>
+            <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
+              {Title(pathname, latestTag, virtuals)}
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                position: 'absolute',
+                top: 4,
+                right: 16
+              }}
+            >
+              {disconnected ? (
+                <Box>
+                  <IconButton
+                    aria-label="display more actions"
+                    edge="end"
+                    color="inherit"
+                    onClick={changeHost}
+                    className="step-two"
+                    style={{ position: 'absolute', right: '4rem' }}
+                  >
+                    <BladeIcon
+                      style={{ position: 'relative' }}
+                      name="mdi:lan-disconnect"
+                    />
+                    <CircularProgress
+                      size={44}
+                      style={{
+                        color: 'rgba(0,0,0,0.6)',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        zIndex: 1
+                      }}
+                    />
+                  </IconButton>
+                </Box>
+              ) : (
+                <GlobalActionBar className="hideHd" />
+              )}
+
+              {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <IconButton
                   aria-label="display more actions"
                   edge="end"
                   color="inherit"
-                  onClick={changeHost}
+                  onClick={handleClick}
                   className="step-two"
-                  style={{ position: 'absolute', right: '4rem' }}
+                  style={{ marginLeft: '1rem' }}
                 >
-                  <BladeIcon
-                    style={{ position: 'relative' }}
-                    name="mdi:lan-disconnect"
-                  />
-                  <CircularProgress
-                    size={44}
-                    style={{
-                      color: 'rgba(0,0,0,0.6)',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      zIndex: 1
-                    }}
-                  />
+                  <Badge variant="dot" color="error" invisible={invisible()}>
+                    <MoreVert sx={{ fontSize: 32 }} />
+                  </Badge>
                 </IconButton>
-              </Box>
-            ) : (
-              <GlobalActionBar className="hideHd" />
-            )}
+              )}
+            </div>
 
             {!(window.localStorage.getItem('guestmode') === 'activated') && (
-              <IconButton
-                aria-label="display more actions"
-                edge="end"
-                color="inherit"
-                onClick={handleClick}
-                className="step-two"
-                style={{ marginLeft: '1rem' }}
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                // className={classes.bladeMenu}
               >
-                <Badge variant="dot" color="error" invisible={invisible()}>
-                  <MoreVert sx={{ fontSize: 32 }} />
-                </Badge>
-              </IconButton>
-            )}
-          </div>
-
-          {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}
-              // className={classes.bladeMenu}
-            >
-              {features.cloud && isLogged && (
-                <MenuItem
-                  divider
-                  onClick={() => {
-                    setAnchorEl(null)
-                    navigate('/User')
-                  }}
-                >
-                  <ListItemIcon style={{ marginTop: -13 }}>
-                    <StyledBadge
-                      badgeContent={
-                        localStorage.getItem('ledfx-cloud-role') ===
-                        'authenticated'
-                          ? 'logged in'
-                          : localStorage.getItem('ledfx-cloud-role')
-                      }
-                      color="primary"
-                    >
-                      <GitHub />
-                    </StyledBadge>
+                {features.cloud && isLogged && (
+                  <MenuItem
+                    divider
+                    onClick={() => {
+                      setAnchorEl(null)
+                      navigate('/User')
+                    }}
+                  >
+                    <ListItemIcon style={{ marginTop: -13 }}>
+                      <StyledBadge
+                        badgeContent={
+                          localStorage.getItem('ledfx-cloud-role') ===
+                          'authenticated'
+                            ? 'logged in'
+                            : localStorage.getItem('ledfx-cloud-role')
+                        }
+                        color="primary"
+                      >
+                        <GitHub />
+                      </StyledBadge>
+                    </ListItemIcon>
+                    <div>
+                      <div>{localStorage.getItem('username')}</div>
+                    </div>
+                  </MenuItem>
+                )}
+                <MenuItem onClick={changeHost}>
+                  <ListItemIcon>
+                    <Language />
                   </ListItemIcon>
-                  <div>
-                    <div>{localStorage.getItem('username')}</div>
-                  </div>
+                  Change Host
                 </MenuItem>
-              )}
-              <MenuItem onClick={changeHost}>
-                <ListItemIcon>
-                  <Language />
-                </ListItemIcon>
-                Change Host
-              </MenuItem>
-              {/* <MenuItem onClick={toggleDarkMode}>
+                {/* <MenuItem onClick={toggleDarkMode}>
               <ListItemIcon>
                 <Language />
               </ListItemIcon>
               Darkmode
             </MenuItem> */}
-              <MenuItem onClick={changeGraphs}>
-                <ListItemIcon>
-                  <BarChart color={graphs ? 'inherit' : 'secondary'} />
-                </ListItemIcon>
-                {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
-              </MenuItem>
-              {pathname.split('/')[1] === 'device' ? (
-                <TourDevice cally={() => setAnchorEl(null)} />
-              ) : pathname.split('/')[1] === 'Scenes' ? (
-                <TourScenes cally={() => setAnchorEl(null)} />
-              ) : pathname.split('/')[1] === 'Settings' ? (
-                <TourSettings cally={() => setAnchorEl(null)} />
-              ) : pathname.split('/')[1] === 'Devices' ? (
-                <TourDevices cally={() => setAnchorEl(null)} />
-              ) : pathname.split('/')[1] === 'Integrations' ? (
-                <TourIntegrations cally={() => setAnchorEl(null)} />
-              ) : (
-                <TourHome variant="menuitem" cally={() => setAnchorEl(null)} />
-              )}
-              {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
-
-              {features.cloud && (
-                <MenuItem
-                  onClick={(e) => {
-                    if (isLogged) {
-                      logout(e)
-                    } else if (
-                      window.location.pathname.includes('hassio_ingress')
-                    ) {
-                      window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
-                    } else {
-                      window.open(
-                        `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`,
-                        '_blank',
-                        'noopener,noreferrer'
-                      )
-                    }
-                  }}
-                >
+                <MenuItem onClick={changeGraphs}>
                   <ListItemIcon>
-                    {isLogged ? <Logout /> : <Login />}
+                    <BarChart color={graphs ? 'inherit' : 'secondary'} />
                   </ListItemIcon>
-                  {isLogged ? 'Logout' : 'Login with Github'}
+                  {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
                 </MenuItem>
-              )}
-            </Menu>
-          )}
-        </Toolbar>
-      </AppBar>
+                {pathname.split('/')[1] === 'device' ? (
+                  <TourDevice cally={() => setAnchorEl(null)} />
+                ) : pathname.split('/')[1] === 'Scenes' ? (
+                  <TourScenes cally={() => setAnchorEl(null)} />
+                ) : pathname.split('/')[1] === 'Settings' ? (
+                  <TourSettings cally={() => setAnchorEl(null)} />
+                ) : pathname.split('/')[1] === 'Devices' ? (
+                  <TourDevices cally={() => setAnchorEl(null)} />
+                ) : pathname.split('/')[1] === 'Integrations' ? (
+                  <TourIntegrations cally={() => setAnchorEl(null)} />
+                ) : (
+                  <TourHome
+                    variant="menuitem"
+                    cally={() => setAnchorEl(null)}
+                  />
+                )}
+                {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
+
+                {features.cloud && (
+                  <MenuItem
+                    onClick={(e) => {
+                      if (isLogged) {
+                        logout(e)
+                      } else if (
+                        window.location.pathname.includes('hassio_ingress')
+                      ) {
+                        window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
+                      } else {
+                        window.open(
+                          `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`,
+                          '_blank',
+                          'noopener,noreferrer'
+                        )
+                      }
+                    }}
+                  >
+                    <ListItemIcon>
+                      {isLogged ? <Logout /> : <Login />}
+                    </ListItemIcon>
+                    {isLogged ? 'Logout' : 'Login with Github'}
+                  </MenuItem>
+                )}
+              </Menu>
+            )}
+          </Toolbar>
+        </AppBar>
+      )}
     </>
   )
 }

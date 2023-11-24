@@ -172,24 +172,25 @@ export default function BarBottom() {
           // }}
         />
 
-        {features.integrations && (
-          <BottomNavigationAction
-            label="Integrations"
-            value="/Integrations"
-            component={Link}
-            to="/Integrations"
-            icon={<ElectricalServices />}
-            style={
-              bottomBarOpen.indexOf('Integrations') > -1
-                ? { color: theme.palette.primary.main }
-                : {}
-            }
-            // onContextMenu={(e: any) => {
-            //   e.preventDefault();
-            //   setBottomBarOpen('Integrations');
-            // }}
-          />
-        )}
+        {features.integrations &&
+          !(window.localStorage.getItem('guestmode') === 'activated') && (
+            <BottomNavigationAction
+              label="Integrations"
+              value="/Integrations"
+              component={Link}
+              to="/Integrations"
+              icon={<ElectricalServices />}
+              style={
+                bottomBarOpen.indexOf('Integrations') > -1
+                  ? { color: theme.palette.primary.main }
+                  : {}
+              }
+              // onContextMenu={(e: any) => {
+              //   e.preventDefault();
+              //   setBottomBarOpen('Integrations');
+              // }}
+            />
+          )}
 
         {!(window.localStorage.getItem('guestmode') === 'activated') && (
           <BottomNavigationAction
