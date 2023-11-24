@@ -28,9 +28,11 @@ import useStore from '../store/useStore'
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
 import { drawerWidth, ios } from '../utils/helpers'
 import User from './User/User'
+import Lock from './Lock'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
+  const isElect = isElectron()
   const smartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.smartBar.open
   )
@@ -42,7 +44,7 @@ const Routings = ({ handleWs }: any) => {
   )
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
-  useHotkeys(['ctrl+alt+l'], () => {
+  useHotkeys(['ctrl+alt+g'], () => {
     if (window.localStorage.getItem('guestmode') === 'activated') {
       window.localStorage.removeItem('guestmode')
     } else {
@@ -50,6 +52,12 @@ const Routings = ({ handleWs }: any) => {
     }
     window.location.reload()
   })
+  if (isElect) {
+    useHotkeys(['ctrl+alt+l'], () => {
+      window.localStorage.setItem('lock', 'activated')
+      window.location.reload()
+    })
+  }
 
   return (
     <>
@@ -87,31 +95,34 @@ const Routings = ({ handleWs }: any) => {
           }}
         />
         <Routes>
-          <Route
-            path="/connect/:providerName/redirect"
-            element={<LoginRedirect />}
-          />
-          <Route path="/" element={<Home />} />
-          <Route path="/devices" element={<Devices />} />
-          <Route path="/device/:virtId" element={<Device />} />
-          <Route path="/scenes" element={<Scenes />} />
-          {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <Route path="/integrations" element={<Integrations />} />
+          {window.localStorage.getItem('lock') === 'activated' && isElect ? (
+            <Route path="*" element={<Lock />} />
+          ) : (
+            <>
+              <Route
+                path="/connect/:providerName/redirect"
+                element={<LoginRedirect />}
+              />
+              <Route path="/" element={<Home />} />
+              <Route path="/devices" element={<Devices />} />
+              <Route path="/device/:virtId" element={<Device />} />
+              <Route path="/scenes" element={<Scenes />} />
+              {!(window.localStorage.getItem('guestmode') === 'activated') && (
+                <Route path="/integrations" element={<Integrations />} />
+              )}
+              {!(window.localStorage.getItem('guestmode') === 'activated') && (
+                <Route path="/settings" element={<Settings />} />
+              )}
+              <Route path="/user" element={<User />} />
+              <Route
+                path="*"
+                element={
+                  // eslint-disable-next-line prettier/prettier
+                  !(window.localStorage.getItem('guestmode') === 'activated') ? <Home /> : <Scenes />
+                }
+              />
+            </>
           )}
-          {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <Route path="/settings" element={<Settings />} />
-          )}
-          <Route path="/user" element={<User />} />
-          <Route
-            path="*"
-            element={
-              !(window.localStorage.getItem('guestmode') === 'activated') ? (
-                <Home />
-              ) : (
-                <Scenes />
-              )
-            }
-          />
         </Routes>
         <NoHostDialog />
         <SmartBar
@@ -120,7 +131,9 @@ const Routings = ({ handleWs }: any) => {
           direct={false}
         />
       </Box>
-      <BottomBar />
+      {!(isElect && window.localStorage.getItem('lock') === 'activated') && (
+        <BottomBar />
+      )}
     </>
   )
 }
