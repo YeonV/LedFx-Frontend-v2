@@ -69,7 +69,8 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
                   backgroundColor: '#000',
                   color: '#fff',
                   fontWeight: 'bold',
-                  fontSize: '40px'
+                  fontSize: '40px',
+                  textAlign: 'center'
                 }}
               />
               {index !== 5 && <span style={{ marginRight: 20 }} />}
