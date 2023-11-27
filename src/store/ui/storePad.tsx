@@ -3,9 +3,9 @@ import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
 interface IButtonMapping {
-  mode: 'scene' | 'command'
   scene?: string
   command?: string
+  payload?: any
 }
 
 interface IDefaultMapping {
@@ -42,6 +42,13 @@ const storePad = (set: any) => ({
     2: defaultMapping,
     3: defaultMapping
   } as IMapping,
+  analogBrightness: {
+    0: false,
+    1: false,
+    2: false,
+    3: false
+  },
+  blocked: false,
   setMapping: (mapping: IMapping): void =>
     set(
       produce((state: IStore) => {
@@ -49,6 +56,22 @@ const storePad = (set: any) => ({
       }),
       false,
       'setMapping'
+    ),
+  setAnalogBrightness: (analogBrightness: any): void =>
+    set(
+      produce((state: IStore) => {
+        state.analogBrightness = analogBrightness
+      }),
+      false,
+      'setAnalogBrightness'
+    ),
+  setBlocked: (blocked: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.blocked = blocked
+      }),
+      false,
+      'setBlocked'
     )
 })
 
