@@ -108,6 +108,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
     ;[pad0, pad1, pad2, pad3].map(
       (pad: any) =>
         pad?.buttons.map((b: any, i: number) => {
+          if (b.pressed) console.log(pad)
           if (
             b.pressed &&
             mapping[pad.index][i] &&
@@ -170,7 +171,13 @@ const Gamepad = ({ setScene, bottom }: any) => {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{ sx: { maxWidth: 750, minWidth: 750 } }}
+        PaperProps={{
+          sx: {
+            maxWidth: 'min(95vw, 800px)',
+            minWidth: 'min(95vw, 750px)',
+            width: '100%'
+          }
+        }}
       >
         <DialogTitle display="flex" alignItems="center">
           <SportsEsports sx={{ mr: 2 }} /> Gamepad detected
@@ -203,7 +210,11 @@ const Gamepad = ({ setScene, bottom }: any) => {
           {[pad0, pad1, pad2, pad3].map((pad: any, pi: number) => (
             <PN value={currentPad} index={pi} key={pi} minHeight={gp ? 875 : 0}>
               {pad?.id ? (
-                <Stack direction="row" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  flexWrap="wrap"
+                >
                   <Stack direction="column">
                     <PT label={pad.id} />
                     <Stack direction="row" justifyContent="space-between">

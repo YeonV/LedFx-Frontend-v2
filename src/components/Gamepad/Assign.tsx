@@ -118,7 +118,7 @@ const Assign = ({
           labelId="scene-select-label"
           label="Scene"
           value={
-            (mapping[padIndex][index]?.mode === 'scene'
+            (mapping[padIndex][index]?.mode !== 'command'
               ? mapping[padIndex][index]?.scene
               : mapping[padIndex][index]?.command) || 'none'
           }
@@ -128,7 +128,7 @@ const Assign = ({
               [padIndex]: {
                 ...mapping[padIndex],
                 [index]:
-                  mapping[padIndex][index]?.mode === 'scene'
+                  mapping[padIndex][index]?.mode !== 'command'
                     ? { scene: e.target.value, mode: 'scene' }
                     : { command: e.target.value, mode: 'command' }
               }
