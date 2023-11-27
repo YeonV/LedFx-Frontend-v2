@@ -2,6 +2,7 @@ import { SportsEsports, SportsEsportsOutlined } from '@mui/icons-material'
 import {
   Alert,
   Box,
+  Button,
   // Button,
   CircularProgress,
   Collapse,
@@ -28,6 +29,7 @@ import GamepadSvgPs3 from './GamepadSvgPs3'
 import GamepadSvgPs4 from './GamepadSvgPs4'
 import GamepadSvgPs5 from './GamepadSvgPs5'
 import { sleep } from '../../utils/helpers'
+import MuiSwitch from '../MuiSwitch'
 
 const Gamepad = ({ setScene, bottom }: any) => {
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
@@ -47,10 +49,15 @@ const Gamepad = ({ setScene, bottom }: any) => {
 
   const mapping = useStore((state) => state.mapping)
   const setMapping = useStore((state) => state.setMapping)
+  const analogBrightness = useStore((state) => state.analogBrightness)
+  const setAnalogBrightness = useStore((state) => state.setAnalogBrightness)
+
   const padTypes = ['generic', 'ps3', 'ps4', 'ps5']
   // const padTypes = ['generic', 'ps3', 'ps4', 'ps5', 'xbox']
   const [padType, setPadType] = useState('generic')
 
+  const blocked = useStore((state) => state.blocked)
+  const setBlocked = useStore((state) => state.setBlocked)
   const handleChange = (_e: ev, v: number) => setCurrentPad(v)
   const togglePause = useStore((state) => state.togglePause)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -101,64 +108,118 @@ const Gamepad = ({ setScene, bottom }: any) => {
       // eslint-disable-next-line no-alert
       alert('DevMode activated!')
       setFeatures('dev', true)
+    } else if (
+      Object.keys(g).some(
+        (k: any) =>
+          g[k]?.buttons
+            .map(
+              (b: any, i: number) =>
+                b.pressed && mapping[g[k].index][i]?.command === 'scene'
+            )
+            .filter((bu: any) => !!bu).length === 2
+      )
+    ) {
+      setBlocked(true)
+      setOpen(true)
     }
   })
 
   useEffect(() => {
-    ;[pad0, pad1, pad2, pad3].map(
-      (pad: any) =>
-        pad?.buttons.map((b: any, i: number) => {
-          if (b.pressed) console.log(pad)
-          if (
-            b.pressed &&
-            mapping[pad.index][i] &&
-            mapping[pad.index][i].mode &&
-            mapping[pad.index][i].scene &&
-            mapping[pad.index][i].mode === 'scene' &&
-            mapping[pad.index][i].scene !== 'none'
-          ) {
-            setScene(mapping[pad.index][i].scene)
-          } else if (
-            b.pressed &&
-            mapping[pad.index][i] &&
-            mapping[pad.index][i].mode &&
-            mapping[pad.index][i].command &&
-            mapping[pad.index][i].mode === 'command' &&
-            mapping[pad.index][i].command !== 'none'
-          ) {
-            if (mapping[pad.index][i].command === 'padscreen') {
-              setOpen(!open)
-            } else if (mapping[pad.index][i].command === 'smartbar') {
-              setSmartBarPadOpen(!smartBarPadOpen)
-            } else if (mapping[pad.index][i].command === 'play/pause') {
-              togglePause()
-            } else if (mapping[pad.index][i].command === 'brightness-up') {
+    if (!blocked) {
+      ;[pad0, pad1, pad2, pad3].map(
+        (pad: any) =>
+          pad?.buttons.map((b: any, i: number) => {
+            if (
+              b.pressed &&
+              b.value === 1 &&
+              mapping[pad.index][i] &&
+              mapping[pad.index][i].command &&
+              mapping[pad.index][i].command !== 'none'
+            ) {
+              if (
+                mapping[pad.index][i].command === 'scene' &&
+                mapping[pad.index][i].payload?.scene
+              ) {
+                setScene(mapping[pad.index][i].payload.scene)
+              } else if (mapping[pad.index][i].command === 'padscreen') {
+                setOpen(!open)
+              } else if (mapping[pad.index][i].command === 'smartbar') {
+                setSmartBarPadOpen(!smartBarPadOpen)
+              } else if (mapping[pad.index][i].command === 'play/pause') {
+                togglePause()
+              } else if (mapping[pad.index][i].command === 'brightness-up') {
+                setSystemSetting(
+                  'global_brightness',
+                  Math.min(brightness + 0.1, 1).toFixed(2)
+                )
+              } else if (mapping[pad.index][i].command === 'brightness-down') {
+                setSystemSetting(
+                  'global_brightness',
+                  Math.max(brightness - 0.1, 0).toFixed(2)
+                )
+              } else if (mapping[pad.index][i].command === 'scan-wled') {
+                handleScan()
+              } else if (mapping[pad.index][i].command === 'copy-to') {
+                setFeatures('streamto', !features.streamto)
+              } else if (mapping[pad.index][i].command === 'transitions') {
+                setFeatures('transitions', !features.transitions)
+              } else if (mapping[pad.index][i].command === 'frequencies') {
+                setFeatures('frequencies', !features.frequencies)
+              } else if (mapping[pad.index][i].command === 'scene-playlist') {
+                toggleScenePLplay()
+              } else if (mapping[pad.index][i].command === 'one-shot') {
+                oneShotAll(
+                  mapping[pad.index][i].payload?.color || '#0dbedc',
+                  mapping[pad.index][i].payload?.ramp || 10,
+                  mapping[pad.index][i].payload?.hold || 200,
+                  mapping[pad.index][i].payload?.fade || 2000
+                )
+              }
+            } else if (pad.axes[0] === 1 && analogBrightness[0]) {
               setSystemSetting(
                 'global_brightness',
                 Math.min(brightness + 0.1, 1).toFixed(2)
               )
-            } else if (mapping[pad.index][i].command === 'brightness-down') {
+            } else if (pad.axes[0] === -1 && analogBrightness[0]) {
               setSystemSetting(
                 'global_brightness',
                 Math.max(brightness - 0.1, 0).toFixed(2)
               )
-            } else if (mapping[pad.index][i].command === 'scan-wled') {
-              handleScan()
-            } else if (mapping[pad.index][i].command === 'copy-to') {
-              setFeatures('streamto', !features.streamto)
-            } else if (mapping[pad.index][i].command === 'transitions') {
-              setFeatures('transitions', !features.transitions)
-            } else if (mapping[pad.index][i].command === 'frequencies') {
-              setFeatures('frequencies', !features.frequencies)
-            } else if (mapping[pad.index][i].command === 'scene-playlist') {
-              toggleScenePLplay()
-            } else if (mapping[pad.index][i].command === 'one-shot') {
-              oneShotAll('#0dbedc', 10, 200, 2000)
+            } else if (pad.axes[1] === -1 && analogBrightness[1]) {
+              setSystemSetting(
+                'global_brightness',
+                Math.min(brightness + 0.1, 1).toFixed(2)
+              )
+            } else if (pad.axes[1] === 1 && analogBrightness[1]) {
+              setSystemSetting(
+                'global_brightness',
+                Math.max(brightness - 0.1, 0).toFixed(2)
+              )
+            } else if (pad.axes[2] === 1 && analogBrightness[2]) {
+              setSystemSetting(
+                'global_brightness',
+                Math.min(brightness + 0.1, 1).toFixed(2)
+              )
+            } else if (pad.axes[2] === -1 && analogBrightness[2]) {
+              setSystemSetting(
+                'global_brightness',
+                Math.max(brightness - 0.1, 0).toFixed(2)
+              )
+            } else if (pad.axes[3] === -1 && analogBrightness[3]) {
+              setSystemSetting(
+                'global_brightness',
+                Math.min(brightness + 0.1, 1).toFixed(2)
+              )
+            } else if (pad.axes[3] === 1 && analogBrightness[3]) {
+              setSystemSetting(
+                'global_brightness',
+                Math.max(brightness - 0.1, 0).toFixed(2)
+              )
             }
-          }
-          return null
-        })
-    )
+            return null
+          })
+      )
+    }
   }, [pad0, pad1, pad2, pad3])
 
   return gp ? (
@@ -195,6 +256,29 @@ const Gamepad = ({ setScene, bottom }: any) => {
               2&#41; Button 16 & 17 might conflict with OS
             </Alert>
           </Collapse>
+          <Collapse in={blocked} unmountOnExit sx={{ mb: 2 }}>
+            <Alert
+              severity="error"
+              sx={{
+                '& .MuiAlert-message': {
+                  flexGrow: 1
+                }
+              }}
+            >
+              <Stack direction="row" justifyContent="space-between">
+                Gamepad blocked !!!
+                <br />
+                Do not activate 2 scenes at once
+                <Button
+                  onClick={() => {
+                    setBlocked(false)
+                  }}
+                >
+                  Un-block
+                </Button>
+              </Stack>
+            </Alert>
+          </Collapse>
           <Tabs value={currentPad} onChange={handleChange} variant="fullWidth">
             {[pad0, pad1, pad2, pad3].map((pad: any, padIndex: number) => (
               <Tab
@@ -229,10 +313,23 @@ const Gamepad = ({ setScene, bottom }: any) => {
                       marginTop={2}
                       marginBottom={2}
                     >
-                      <PD label="axes 0" value={pad.axes[0].toFixed(5)} />
-                      <PD label="axes 1" value={pad.axes[1].toFixed(5)} />
-                      <PD label="axes 2" value={pad.axes[2].toFixed(5)} />
-                      <PD label="axes 3" value={pad.axes[3].toFixed(5)} />
+                      {[0, 1, 2, 3].map((inde) => (
+                        <Stack direction="column" key={`axes${inde}`}>
+                          <PD
+                            label={`axes${inde}`}
+                            value={pad.axes[inde].toFixed(5)}
+                          />
+                          <MuiSwitch
+                            checked={analogBrightness[inde as 0 | 1 | 2 | 3]}
+                            onChange={() =>
+                              setAnalogBrightness({
+                                ...analogBrightness,
+                                [inde]: !analogBrightness[inde as 0 | 1 | 2 | 3]
+                              })
+                            }
+                          />
+                        </Stack>
+                      ))}
                     </Stack>
                     <Stack
                       direction="row"
@@ -287,7 +384,11 @@ const Gamepad = ({ setScene, bottom }: any) => {
                       <GamepadSvgPs3 pad={pad} type="generic" />
                     )}
                   </Stack>
-                  <Stack direction="column" spacing={1} sx={{ mt: 2 }}>
+                  <Stack
+                    direction="column"
+                    spacing={1}
+                    sx={{ mt: 2, minWidth: 300 }}
+                  >
                     {pad?.buttons.map((b: any, i: number) => {
                       return (
                         <Assign

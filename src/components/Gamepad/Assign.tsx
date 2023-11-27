@@ -6,8 +6,21 @@ import {
   Stack,
   useTheme
 } from '@mui/material'
-import { Terminal, Wallpaper } from '@mui/icons-material'
+import {
+  BrightnessHigh,
+  BrightnessLow,
+  Collections,
+  CopyAll,
+  GraphicEq,
+  LocalPlay,
+  PlayArrow,
+  QuestionMark,
+  SportsEsports,
+  Wallpaper
+} from '@mui/icons-material'
 import useStore from '../../store/useStore'
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import OneShot from './OneShot'
 
 const Assign = ({
   mapping,
@@ -19,20 +32,20 @@ const Assign = ({
 }: any) => {
   const theme = useTheme()
   const scenes = useStore((state) => state.scenes)
-  const modes = ['scene', 'command']
-  const commands = [
-    'smartbar',
-    'play/pause',
-    'brightness-up',
-    'brightness-down',
-    'scan-wled',
-    'copy-to',
-    'transitions',
-    'frequencies',
-    'scene-playlist',
-    'padscreen',
-    'one-shot'
-  ]
+  const commands = {
+    scene: <Wallpaper />,
+    smartbar: <LocalPlay />,
+    'play/pause': <PlayArrow />,
+    'brightness-up': <BrightnessHigh />,
+    'brightness-down': <BrightnessLow />,
+    'copy-to': <CopyAll />,
+    transitions: <GraphicEq />,
+    frequencies: <BladeIcon name="mdi:sine-wave" />,
+    'scene-playlist': <Collections />,
+    padscreen: <SportsEsports />,
+    'one-shot': <BladeIcon name="mdi:pistol" />,
+    'scan-wled': <BladeIcon name="wled" />
+  }
 
   return (
     <Stack key={index} direction="row" alignItems="center" spacing={1}>
@@ -51,109 +64,123 @@ const Assign = ({
       >
         {index}
       </Fab>
-      <FormControl
-        sx={{
-          maxWidth: 30,
-          minWidth: 30,
-          width: 30
-        }}
-      >
+      <FormControl fullWidth>
         <Select
+          fullWidth
           disableUnderline
-          IconComponent={() => null}
           disabled={disabled}
+          // IconComponent={() => null}
           style={{
             color:
-              mapping[padIndex][index]?.mode &&
-              (mapping[padIndex][index]?.scene ||
-                mapping[padIndex][index]?.command)
+              mapping[padIndex][index]?.command &&
+              mapping[padIndex][index]?.command !== 'none'
                 ? 'white'
                 : 'grey'
           }}
           sx={{
             '& .MuiSelect-select': {
-              paddingRight: '0 !important',
-              marginTop: '10px'
-            }
-          }}
-          labelId="scene-select-label"
-          label="Scene"
-          value={mapping[padIndex][index]?.mode || 'scene'}
-          onChange={(e) =>
-            setMapping({
-              ...mapping,
-              [padIndex]: {
-                ...mapping[padIndex],
-                [index]: { mode: e.target.value }
-              }
-            })
-          }
-        >
-          {modes.map((s: string) => (
-            <MenuItem key={s} value={s}>
-              {s === 'scene' ? <Wallpaper /> : <Terminal />}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl fullWidth sx={{ maxWidth: 150 }}>
-        <Select
-          disableUnderline
-          disabled={disabled}
-          IconComponent={() => null}
-          style={{
-            color:
-              mapping[padIndex][index]?.mode &&
-              (mapping[padIndex][index]?.scene ||
-                mapping[padIndex][index]?.command)
-                ? 'white'
-                : 'grey'
-          }}
-          sx={{
-            '& .MuiSelect-select': {
-              paddingRight: '0 !important',
               marginTop: '3px'
             }
           }}
-          labelId="scene-select-label"
-          label="Scene"
-          value={
-            (mapping[padIndex][index]?.mode !== 'command'
-              ? mapping[padIndex][index]?.scene
-              : mapping[padIndex][index]?.command) || 'none'
-          }
+          labelId="command-select-label"
+          label="command"
+          // renderValue={(v) =>
+          //   v === 'scene' ? <Wallpaper sx={{ pr: 4 }} /> : v
+          // }
+          value={mapping[padIndex][index]?.command || 'none'}
           onChange={(e) =>
             setMapping({
               ...mapping,
               [padIndex]: {
                 ...mapping[padIndex],
-                [index]:
-                  mapping[padIndex][index]?.mode !== 'command'
-                    ? { scene: e.target.value, mode: 'scene' }
-                    : { command: e.target.value, mode: 'command' }
+                [index]: { command: e.target.value }
               }
             })
           }
         >
           <MenuItem value="none" key="none">
-            {disabled
-              ? 'used by LedFx'
-              : mapping[padIndex][index]?.mode !== 'command'
-                ? 'choose scene'
-                : 'choose command'}
+            <Stack direction="row" spacing={1}>
+              <QuestionMark />
+              <span>{disabled ? 'used by LedFx' : 'choose command'}</span>
+            </Stack>
           </MenuItem>
-          {(mapping[padIndex][index]?.mode !== 'command'
-            ? Object.keys(scenes)
-            : commands
-          ).map((s: string) => (
+          {Object.keys(commands).map((s) => (
             <MenuItem key={s} value={s}>
-              {mapping[padIndex][index]?.mode !== 'command'
-                ? scenes[s]?.name || s || 'none'
-                : s || 'none'}
+              <Stack direction="row" spacing={1}>
+                {commands[s as keyof typeof commands] || ''}
+                <span>{s || 'none'}</span>
+              </Stack>
             </MenuItem>
           ))}
         </Select>
       </FormControl>
+      {mapping[padIndex][index]?.command === 'scene' && (
+        <FormControl sx={{ maxWidth: 150 }} fullWidth>
+          <Select
+            fullWidth
+            disableUnderline
+            disabled={disabled}
+            // IconComponent={() => null}
+            style={{
+              color:
+                mapping[padIndex][index]?.payload &&
+                mapping[padIndex][index]?.payload !== 'choose scene'
+                  ? 'white'
+                  : 'grey'
+            }}
+            sx={{
+              '& .MuiSelect-select': {
+                // paddingRight: '0 !important',
+                marginTop: '3px'
+              }
+            }}
+            labelId="scene-select-label"
+            label="Scene"
+            value={mapping[padIndex][index]?.payload?.scene || 'none'}
+            onChange={(e) =>
+              setMapping({
+                ...mapping,
+                [padIndex]: {
+                  ...mapping[padIndex],
+                  [index]: {
+                    ...mapping[padIndex][index],
+                    payload: { scene: e.target.value }
+                  }
+                }
+              })
+            }
+          >
+            <MenuItem value="none" key="none">
+              {disabled ? 'used by LedFx' : 'choose scene'}
+            </MenuItem>
+            {Object.keys(scenes).map((s: string) => (
+              <MenuItem key={s} value={s}>
+                {scenes[s]?.name || s || 'none'}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+      {mapping[padIndex][index]?.command === 'one-shot' && (
+        <OneShot
+          defaultColor={mapping[padIndex][index]?.payload?.color}
+          defaultRamp={mapping[padIndex][index]?.payload?.ramp}
+          defaultFate={mapping[padIndex][index]?.payload?.fade}
+          defaultHold={mapping[padIndex][index]?.payload?.hold}
+          setPayload={(v: any) =>
+            setMapping({
+              ...mapping,
+              [padIndex]: {
+                ...mapping[padIndex],
+                [index]: {
+                  ...mapping[padIndex][index],
+                  payload: v
+                }
+              }
+            })
+          }
+        />
+      )}
     </Stack>
   )
 }
