@@ -141,7 +141,7 @@ const OneShot = ({
               margin: '1rem 0',
               padding: '1rem',
               background: '#333',
-              color: '#fff'
+              color: '#ffffff'
             }}
           >
             {`{"color":"${color}","ramp":${ramp},"hold":${hold},"fade":${fade}}`}
