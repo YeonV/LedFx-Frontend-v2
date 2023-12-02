@@ -39,7 +39,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
     // if (noAuto) {
     large.map((v) => {
       setEffect(v, 'melt', {}, true)
-      return activatePreset(v, 'default_presets', 'melt', 'bladesmooth')
+      return activatePreset(v, 'default_presets', 'melt', 'purple-red')
     })
     medium.map((v, _i) => {
       setEffect(v, 'blade_power_plus', {}, true)
@@ -49,7 +49,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
         v,
         'default_presets',
         'blade_power_plus',
-        'ocean-bass'
+        'purplered-bass'
       )
     })
 
@@ -76,7 +76,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
         (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
       )[Object.keys(medium).length - 1]
       setEffect(v, 'melt', {}, true)
-      activatePreset(v, 'default_presets', 'melt', 'bladesmooth')
+      activatePreset(v, 'default_presets', 'melt', 'purple-red')
     }
 
     // Use large as smalls
@@ -93,7 +93,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
         (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
       )[1]
       setEffect(v, 'blade_power_plus', {}, true)
-      activatePreset(v, 'default_presets', 'blade_power_plus', 'ocean-bass')
+      activatePreset(v, 'default_presets', 'blade_power_plus', 'purplered-bass')
     }
     if (Object.keys(matrix).length > 0) {
       matrix.map((v) => {
