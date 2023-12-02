@@ -27,7 +27,12 @@ const storeActions = (set: any) => ({
               icon_name:
                 d.type === 0 ? 'mdi:chip'
               : d.type === 2 ? 'mdi:expansion-card-variant'
+              : d.type === 5 ? 'mdi:keyboard'
               : d.type === 6 ? (d.name.includes('Razer') ? 'razer:mouse' : 'mouse')
+              : d.type === 8 ? 'mdi:headphones'
+              : d.type === 9 ? 'mdi:headphones-bluetooth'
+              : d.type === 10 ? 'sportsEsports'
+              : d.type === 12 ? 'mdi:speaker-wireless'
               : 'mdi:led-strip',
               center_offset: 0,
               refresh_rate: 64,
