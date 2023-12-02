@@ -15,12 +15,13 @@ import {
   PlaylistRemove,
   Repeat,
   RepeatOn,
+  // Save,
   Stop
 } from '@mui/icons-material'
 
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
-import Popover from '../../components/Popover/Popover'
+import ScenesPlaylistMenu from './ScenesPlaylistMenu'
 
 export default function ScenesPlaylist({
   scenes,
@@ -31,7 +32,6 @@ export default function ScenesPlaylist({
   const theme = useTheme()
   const [theScenes, setTheScenes] = useState([])
   const scenePL = useStore((state) => state.scenePL)
-  const setScenePL = useStore((state) => state.setScenePL)
   const scenePLplay = useStore((state) => state.scenePLplay)
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
   const scenePLrepeat = useStore((state) => state.scenePLrepeat)
@@ -76,7 +76,7 @@ export default function ScenesPlaylist({
     }
   }, [scenePLplay, scenePLactiveIndex])
 
-  const sceneImage = (iconName: string) =>
+  const sceneImage = (iconName: string, table?: boolean) =>
     iconName && iconName.startsWith('image:') ? (
       <CardMedia
         image={iconName.split('image:')[1]}
@@ -84,7 +84,7 @@ export default function ScenesPlaylist({
         sx={{ width: '100%', height: '100%' }}
       />
     ) : (
-      <BladeIcon scene name={iconName} />
+      <BladeIcon scene={!table} name={iconName} />
     )
 
   const columns: GridColDef[] = [
@@ -94,12 +94,12 @@ export default function ScenesPlaylist({
       headerName: 'Image',
       width: db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) =>
-        sceneImage(params.value || 'Wallpaper')
+        sceneImage(params.value || 'Wallpaper', true)
     },
     {
       field: 'name',
       headerName: 'Name',
-      width: db ? 136 : 220,
+      width: db ? 136 : 200,
       renderCell: (params: GridRenderCellParams) => (
         <Typography
           variant="body2"
@@ -115,8 +115,8 @@ export default function ScenesPlaylist({
     },
     {
       field: 'scene_id',
-      headerName: 'Scene ID',
-      width: 100,
+      headerName: 'Remove',
+      width: 120,
       renderCell: (params: GridRenderCellParams) => {
         const removeScene2PL = useStore((state) => state.removeScene2PL)
         return (
@@ -163,6 +163,9 @@ export default function ScenesPlaylist({
           }}
         >
           {title}
+          {!(window.localStorage.getItem('guestmode') === 'activated') && (
+            <ScenesPlaylistMenu />
+          )}
           <div
             style={{
               display: 'flex',
@@ -170,15 +173,6 @@ export default function ScenesPlaylist({
               color: db ? theme.palette.text.primary : ''
             }}
           >
-            {!(window.localStorage.getItem('guestmode') === 'activated') && (
-              <Popover
-                onConfirm={() => setScenePL([])}
-                variant="outlined"
-                color="inherit"
-                style={{ marginRight: '0.5rem' }}
-                type="iconbutton"
-              />
-            )}
             {db ? (
               <IconButton
                 sx={{ mr: 1 }}

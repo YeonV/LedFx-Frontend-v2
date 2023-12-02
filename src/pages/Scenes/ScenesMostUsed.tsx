@@ -31,7 +31,7 @@ export default function ScenesMostUsed({
     Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]))
   }, [scenes, count])
 
-  const sceneImage = (iconName: string) =>
+  const sceneImage = (iconName: string, table?: boolean) =>
     iconName && iconName.startsWith('image:') ? (
       <CardMedia
         image={iconName.split('image:')[1]}
@@ -39,9 +39,8 @@ export default function ScenesMostUsed({
         sx={{ width: '100%', height: '100%' }}
       />
     ) : (
-      <BladeIcon scene name={iconName} />
+      <BladeIcon scene={!table} name={iconName} />
     )
-
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
@@ -49,7 +48,7 @@ export default function ScenesMostUsed({
       headerName: 'Image',
       width: db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) =>
-        sceneImage(params.value || 'Wallpaper')
+        sceneImage(params.value || 'Wallpaper', true)
     },
     {
       field: 'name',

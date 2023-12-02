@@ -10,7 +10,7 @@ import { Card, CardMedia, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 
-const sceneImage = (iconName: string) =>
+const sceneImage = (iconName: string, table?: boolean) =>
   iconName && iconName.startsWith('image:') ? (
     <CardMedia
       image={iconName.split('image:')[1]}
@@ -18,7 +18,7 @@ const sceneImage = (iconName: string) =>
       sx={{ width: '100%', height: '100%' }}
     />
   ) : (
-    <BladeIcon scene name={iconName} />
+    <BladeIcon scene={!table} name={iconName} />
   )
 
 const columns: GridColDef[] = [
@@ -28,7 +28,7 @@ const columns: GridColDef[] = [
     headerName: 'Image',
     width: 150,
     renderCell: (params: GridRenderCellParams) =>
-      sceneImage(params.value || 'Wallpaper')
+      sceneImage(params.value || 'Wallpaper', true)
   },
   {
     field: 'name',
@@ -39,7 +39,7 @@ const columns: GridColDef[] = [
     field: 'used',
     type: 'number',
     headerName: 'Order',
-    width: 10
+    width: 20
   }
 ]
 
