@@ -16,18 +16,18 @@ import { Delete, Edit, GitHub, Save, UploadFile } from '@mui/icons-material'
 import { getCroppedImg } from './canvasUtils'
 
 function readFile(file: any) {
-  return new Promise((_resolve) => {
+  return new Promise((resolve) => {
     const reader = new FileReader()
-    // reader.addEventListener(
-    //   'load',
-    //   (event) => {
-    //     if (event.target?.result && typeof event.target.result === 'string') {
-    //       localStorage.setItem('ledfx-cloud-avatar', event.target.result) // THIS IS WRONG IT SAVES THE NON-CROPPED IMAGE
-    //     }
-    //     return resolve(reader.result)
-    //   },
-    //   false
-    // )
+    reader.addEventListener(
+      'load',
+      (event) => {
+        if (event.target?.result && typeof event.target.result === 'string') {
+          // localStorage.setItem('ledfx-cloud-avatar', event.target.result) // THIS IS WRONG IT SAVES THE NON-CROPPED IMAGE
+        }
+        return resolve(reader.result)
+      },
+      false
+    )
     reader.readAsDataURL(file)
   })
 }
@@ -279,7 +279,24 @@ const AvatarPicker = ({
 AvatarPicker.defaultProps = {
   size: 150,
   defaultIcon: <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
-  editIcon: <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
+  editIcon: (
+    <Edit
+      sx={{
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        padding: '3rem',
+        opacity: 0,
+        borderRadius: '50%',
+        background: '#0009',
+        '&:hover': { opacity: 1 }
+      }}
+    />
+  ),
   avatarSrc: localStorage.getItem('ledfx-cloud-avatar')?.toString() || '',
   initialZoom: 1,
   minZoom: 0.01,
