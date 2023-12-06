@@ -16,31 +16,73 @@ import { Delete, Edit, GitHub, Save, UploadFile } from '@mui/icons-material'
 import { getCroppedImg } from './canvasUtils'
 
 function readFile(file: any) {
-  return new Promise((resolve) => {
+  return new Promise((_resolve) => {
     const reader = new FileReader()
-    reader.addEventListener(
-      'load',
-      (event) => {
-        if (event.target?.result && typeof event.target.result === 'string') {
-          //   localStorage.setItem('ledfx-cloud-avatar', event.target.result) // THIS IS WRONG IT SAVES THE NON-CROPPED IMAGE
-        }
-        return resolve(reader.result)
-      },
-      false
-    )
-
+    // reader.addEventListener(
+    //   'load',
+    //   (event) => {
+    //     if (event.target?.result && typeof event.target.result === 'string') {
+    //       localStorage.setItem('ledfx-cloud-avatar', event.target.result) // THIS IS WRONG IT SAVES THE NON-CROPPED IMAGE
+    //     }
+    //     return resolve(reader.result)
+    //   },
+    //   false
+    // )
     reader.readAsDataURL(file)
   })
 }
 
-const AvatarPicker = () => {
+const AvatarPicker = ({
+  defaultIcon = <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
+  editIcon = (
+    <Edit
+      sx={{
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        padding: '3rem',
+        opacity: 0,
+        borderRadius: '50%',
+        background: '#0009',
+        '&:hover': { opacity: 1 }
+      }}
+    />
+  ),
+  avatarSrc = localStorage.getItem('ledfx-cloud-avatar')?.toString() || '',
+  size = 150,
+  initialZoom = 1,
+  minZoom = 0.01,
+  maxZoom = 3,
+  stepZoom = 0.01,
+  minRotation = 0,
+  maxRotation = 360,
+  stepRotation = 0.01,
+  ...props
+}: {
+  defaultIcon?: any
+  editIcon?: any
+  avatarSrc?: string
+  size?: number
+  initialZoom?: number
+  minZoom?: number
+  maxZoom?: number
+  stepZoom?: number
+  minRotation?: number
+  maxRotation?: number
+  stepRotation?: number
+  props?: any
+}) => {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [imageSrc, setImageSrc] = useState<any>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [rotation, setRotation] = useState(0)
-  const [zoom, setZoom] = useState(1)
+  const [zoom, setZoom] = useState(initialZoom)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
 
   const onCropComplete = (_croppedArea: Area, newcroppedAreaPixels: Area) => {
@@ -100,38 +142,24 @@ const AvatarPicker = () => {
           setOpen(true)
         }}
         sx={{ borderRadius: '50%', padding: 0 }}
+        {...props}
       >
         {localStorage.getItem('ledfx-cloud-avatar') ? (
           <>
             <Avatar
-              src={localStorage.getItem('ledfx-cloud-avatar')?.toString()}
-              sx={{ width: 150, height: 150, '&:hover': { opacity: 0.4 } }}
+              src={avatarSrc}
+              sx={{ width: size, height: size, '&:hover': { opacity: 0.4 } }}
             />
-            <Edit
-              sx={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                left: 0,
-                top: 0,
-                width: '100%',
-                height: '100%',
-                padding: '3rem',
-                opacity: 0,
-                borderRadius: '50%',
-                background: '#0009',
-                '&:hover': { opacity: 1 }
-              }}
-            />
+            {editIcon}
           </>
         ) : (
-          <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />
+          defaultIcon
         )}
       </Button>
       <Dialog
         fullWidth
         open={open}
-        sx={{ '.MuiPaper-root': { height: 'min(80vh, 720px)' } }}
+        sx={{ '.MuiPaper-root': { height: 'min(80vh, 700px)' } }}
         onClose={() => setOpen(false)}
       >
         <DialogTitle>Choose Avatar</DialogTitle>
@@ -143,9 +171,9 @@ const AvatarPicker = () => {
                   <Typography variant="overline">Zoom</Typography>
                   <Slider
                     value={zoom}
-                    min={0}
-                    max={3}
-                    step={0.1}
+                    min={minZoom} //  0.01
+                    max={maxZoom} // 3
+                    step={stepZoom} // 0.01
                     aria-labelledby="Zoom"
                     onChange={(e, newzoom) =>
                       typeof newzoom === 'number' && setZoom(newzoom)
@@ -156,9 +184,9 @@ const AvatarPicker = () => {
                   <Typography variant="overline">Rotation</Typography>
                   <Slider
                     value={rotation}
-                    min={0}
-                    max={360}
-                    step={0.1}
+                    min={minRotation} // 0
+                    max={maxRotation} // 360
+                    step={stepRotation} // 0.1
                     aria-labelledby="Rotation"
                     onChange={(e, newrotation) =>
                       typeof newrotation === 'number' &&
@@ -190,7 +218,7 @@ const AvatarPicker = () => {
               <div>
                 <Cropper
                   cropShape="round"
-                  cropSize={{ width: 150, height: 150 }}
+                  cropSize={{ width: size, height: size }}
                   style={{
                     containerStyle: {
                       width: '100%',
@@ -202,7 +230,7 @@ const AvatarPicker = () => {
                   crop={crop}
                   rotation={rotation}
                   zoom={zoom}
-                  minZoom={0.01}
+                  minZoom={minZoom}
                   aspect={1 / 1}
                   onCropChange={setCrop}
                   onRotationChange={setRotation}
@@ -228,7 +256,7 @@ const AvatarPicker = () => {
               >
                 <UploadFile
                   sx={{
-                    fontSize: 'min(25vw, 25vh, 150px)'
+                    fontSize: `min(25vw, 25vh, ${size}px)`
                   }}
                 />
               </IconButton>
@@ -246,6 +274,21 @@ const AvatarPicker = () => {
       </Dialog>
     </div>
   )
+}
+
+AvatarPicker.defaultProps = {
+  size: 150,
+  defaultIcon: <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
+  editIcon: <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
+  avatarSrc: localStorage.getItem('ledfx-cloud-avatar')?.toString() || '',
+  initialZoom: 1,
+  minZoom: 0.01,
+  maxZoom: 3,
+  stepZoom: 0.01,
+  minRotation: 0,
+  maxRotation: 360,
+  stepRotation: 0.01,
+  props: {}
 }
 
 export default AvatarPicker
