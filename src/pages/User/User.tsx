@@ -230,9 +230,11 @@ const User = () => {
   }, [starred, cloudEffects, setTrophies])
 
   useEffect(() => {
-    getCloudPresets()
-    getCloudPlaylists()
-    getCloudConfigs()
+    if (isLogged && localStorage.getItem('ledfx-cloud-role') === 'creator') {
+      getCloudPresets()
+      getCloudPlaylists()
+      getCloudConfigs()
+    }
     hasStarred()
   }, [])
 
@@ -274,8 +276,8 @@ const User = () => {
                 setInfoAlerts('user', false)
             }}
           >
-            LedFx Cloud is a proof of concept and is running on a cheap six bugs
-            a month server.
+            LedFx Cloud is a proof of concept and is running on a cheap six
+            bucks a month server.
             <br />
             Dont expect anything in alpha-state. like if the server crashes the
             data is gone!
