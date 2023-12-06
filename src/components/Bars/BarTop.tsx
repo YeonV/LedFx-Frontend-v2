@@ -139,7 +139,9 @@ const Title = (pathname: string, latestTag: string, virtuals: any) => {
     return virtuals[pathname.split('/')[2]]?.config.name
   }
   if (pathname === '/User') {
-    return 'LedFx Cloud User'
+    return `LedFx Cloud ${
+      localStorage.getItem('username') !== 'YeonV' ? 'Free' : ''
+    } User`
   }
   return pathname.split('/').pop()
 }
