@@ -22,6 +22,7 @@ import {
   CloudDownload,
   CloudUpload,
   EmojiEventsOutlined,
+  GitHub,
   Star,
   StarOutline,
   Tune
@@ -297,7 +298,11 @@ const User = () => {
             minWidth: 350
           }}
         >
-          <AvatarPicker />
+          {localStorage.getItem('ledfx-cloud-role') === 'creator' ? (
+            <AvatarPicker />
+          ) : (
+            <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />
+          )}
           <Stack
             alignItems="center"
             direction="column"
