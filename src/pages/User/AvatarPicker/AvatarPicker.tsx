@@ -1,3 +1,7 @@
+import { useEffect, useRef, useState } from 'react'
+import Cropper, { Area } from 'react-easy-crop'
+import { Delete, Save, UploadFile } from '@mui/icons-material'
+import setupIndexedDB, { useIndexedDBStore } from 'use-indexeddb'
 import {
   Avatar,
   Box,
@@ -10,49 +14,17 @@ import {
   Stack,
   Typography
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
-import Cropper, { Area } from 'react-easy-crop'
-import { Delete, Edit, GitHub, Save, UploadFile } from '@mui/icons-material'
-import { getCroppedImg } from './canvasUtils'
-
-function readFile(file: any) {
-  return new Promise((resolve) => {
-    const reader = new FileReader()
-    reader.addEventListener(
-      'load',
-      (event) => {
-        if (event.target?.result && typeof event.target.result === 'string') {
-          // localStorage.setItem('ledfx-cloud-avatar', event.target.result) // THIS IS WRONG IT SAVES THE NON-CROPPED IMAGE
-        }
-        return resolve(reader.result)
-      },
-      false
-    )
-    reader.readAsDataURL(file)
-  })
-}
+import { getCroppedImg, idbConfig, readFile } from './avatarUtils'
+import {
+  AvatarPickerDefaults,
+  AvatarPickerProps
+} from './AvatarPicker.interface'
 
 const AvatarPicker = ({
-  defaultIcon = <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
-  editIcon = (
-    <Edit
-      sx={{
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        padding: '3rem',
-        opacity: 0,
-        borderRadius: '50%',
-        background: '#0009',
-        '&:hover': { opacity: 1 }
-      }}
-    />
-  ),
-  avatarSrc = localStorage.getItem('ledfx-cloud-avatar')?.toString() || '',
+  defaultIcon,
+  editIcon,
+  avatar,
+  setAvatar,
   size = 150,
   initialZoom = 1,
   minZoom = 0.01,
@@ -61,24 +33,12 @@ const AvatarPicker = ({
   minRotation = 0,
   maxRotation = 360,
   stepRotation = 0.01,
+  useLocalStorage,
+  storageKey = 'avatar',
   ...props
-}: {
-  defaultIcon?: any
-  editIcon?: any
-  avatarSrc?: string
-  size?: number
-  initialZoom?: number
-  minZoom?: number
-  maxZoom?: number
-  stepZoom?: number
-  minRotation?: number
-  maxRotation?: number
-  stepRotation?: number
-  props?: any
-}) => {
-  const [open, setOpen] = useState(false)
+}: AvatarPickerProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
-
+  const [open, setOpen] = useState(false)
   const [imageSrc, setImageSrc] = useState<any>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [rotation, setRotation] = useState(0)
@@ -89,7 +49,43 @@ const AvatarPicker = ({
     setCroppedAreaPixels(newcroppedAreaPixels)
   }
 
+  useEffect(() => {
+    if (!useLocalStorage && !setAvatar) {
+      setupIndexedDB(idbConfig)
+        .then(() => console.log('indexedDB setup complete'))
+        .catch((e) => console.error('indexedDb error:', e))
+    }
+  }, [])
+
+  const { getByID, update } =
+    !useLocalStorage && !setAvatar
+      ? useIndexedDBStore('avatars')
+      : { getByID: null, update: null }
+
+  const setAvatarIndexedDb = (a: string) => {
+    if (!useLocalStorage && !setAvatar && update) {
+      update({ id: 1, [storageKey]: a }).then(() =>
+        console.log('avatar updated')
+      )
+    }
+  }
+  const [avatarSrc, setAvatarSrc] = useState<null | string>(null)
+
+  if (!useLocalStorage && !setAvatar && getByID) {
+    getByID(1).then(
+      (avatarFromDB: any) => {
+        if (avatarFromDB && avatarFromDB[storageKey])
+          setAvatarSrc(avatarFromDB[storageKey])
+      },
+      (error) => {
+        console.log('Error: ', error)
+      }
+    )
+  }
   const showCroppedImage = async () => {
+    if (!imageSrc || !croppedAreaPixels) {
+      return
+    }
     try {
       const newcroppedImage = await getCroppedImg(
         imageSrc,
@@ -97,17 +93,19 @@ const AvatarPicker = ({
         rotation
       )
 
-      fetch(newcroppedImage)
+      fetch(newcroppedImage as any)
         .then((res) => res.blob())
         .then((blob) => {
           const reader = new FileReader()
-          // eslint-disable-next-line func-names
           reader.onloadend = function () {
             if (reader.result) {
-              localStorage.setItem(
-                'ledfx-cloud-avatar',
-                reader.result.toString()
-              )
+              if (setAvatar) {
+                setAvatar(reader.result.toString())
+              } else if (useLocalStorage) {
+                localStorage.setItem(storageKey, reader.result.toString())
+              } else {
+                setAvatarIndexedDb(reader.result.toString())
+              }
             }
           }
           reader.readAsDataURL(blob)
@@ -144,10 +142,10 @@ const AvatarPicker = ({
         sx={{ borderRadius: '50%', padding: 0 }}
         {...props}
       >
-        {localStorage.getItem('ledfx-cloud-avatar') ? (
+        {avatarSrc || avatar ? (
           <>
             <Avatar
-              src={avatarSrc}
+              src={avatarSrc || avatar}
               sx={{ width: size, height: size, '&:hover': { opacity: 0.4 } }}
             />
             {editIcon}
@@ -171,9 +169,9 @@ const AvatarPicker = ({
                   <Typography variant="overline">Zoom</Typography>
                   <Slider
                     value={zoom}
-                    min={minZoom} //  0.01
-                    max={maxZoom} // 3
-                    step={stepZoom} // 0.01
+                    min={minZoom}
+                    max={maxZoom}
+                    step={stepZoom}
                     aria-labelledby="Zoom"
                     onChange={(e, newzoom) =>
                       typeof newzoom === 'number' && setZoom(newzoom)
@@ -184,9 +182,9 @@ const AvatarPicker = ({
                   <Typography variant="overline">Rotation</Typography>
                   <Slider
                     value={rotation}
-                    min={minRotation} // 0
-                    max={maxRotation} // 360
-                    step={stepRotation} // 0.1
+                    min={minRotation}
+                    max={maxRotation}
+                    step={stepRotation}
                     aria-labelledby="Rotation"
                     onChange={(e, newrotation) =>
                       typeof newrotation === 'number' &&
@@ -205,7 +203,7 @@ const AvatarPicker = ({
                 <Button
                   startIcon={<Delete />}
                   onClick={() => {
-                    localStorage.removeItem('ledfx-cloud-avatar')
+                    localStorage.removeItem(storageKey)
                     setOpen(false)
                   }}
                   variant="contained"
@@ -276,36 +274,6 @@ const AvatarPicker = ({
   )
 }
 
-AvatarPicker.defaultProps = {
-  size: 150,
-  defaultIcon: <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
-  editIcon: (
-    <Edit
-      sx={{
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        padding: '3rem',
-        opacity: 0,
-        borderRadius: '50%',
-        background: '#0009',
-        '&:hover': { opacity: 1 }
-      }}
-    />
-  ),
-  avatarSrc: localStorage.getItem('ledfx-cloud-avatar')?.toString() || '',
-  initialZoom: 1,
-  minZoom: 0.01,
-  maxZoom: 3,
-  stepZoom: 0.01,
-  minRotation: 0,
-  maxRotation: 360,
-  stepRotation: 0.01,
-  props: {}
-}
+AvatarPicker.defaultProps = AvatarPickerDefaults
 
 export default AvatarPicker

@@ -36,7 +36,7 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
-import AvatarPicker from './AvatarPicker'
+import AvatarPicker from './AvatarPicker/AvatarPicker'
 
 const User = () => {
   const theme = useTheme()
@@ -76,6 +76,7 @@ const User = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenePL = useStore((state) => state.scenePL)
   const setScenePL = useStore((state) => state.setScenePL)
+  // const [avatar, setAvatar] = useState<undefined | string>(undefined)
 
   const userName = localStorage.getItem('username')
 
@@ -254,6 +255,23 @@ const User = () => {
     setAvailableThemes(t())
   }, [trophies])
 
+  // useEffect(() => {
+  //   if (isLogged && localStorage.getItem('ledfx-cloud-role') === 'creator') {
+  //     cloud
+  //       .get(`user-details?user.username=${userName}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem('jwt')}`
+  //         }
+  //       })
+  //       .then((res: any) => {
+  //         if (res.data.length > 0 && res.data[0].Avatar) {
+  //           setAvatar(res.data[0].Avatar)
+  //         }
+  //       })
+  //   }
+  // }, [])
+  // console.log(avatar)
+
   return (
     <Box
       alignItems="center"
@@ -301,7 +319,31 @@ const User = () => {
           }}
         >
           {localStorage.getItem('ledfx-cloud-role') === 'creator' ? (
-            <AvatarPicker />
+            <AvatarPicker
+            // avatar={avatar}
+            // setAvatar={(_newAvatar) =>
+            //   cloud
+            //     .post(
+            //       'user-details',
+            //       {
+            //         Avatar: _newAvatar,
+            //         user: localStorage.getItem('ledfx-cloud-userid'),
+            //         users_permissions_user:
+            //           localStorage.getItem('ledfx-cloud-userid')
+            //       },
+            //       {
+            //         headers: {
+            //           Authorization: `Bearer ${localStorage.getItem('jwt')}`
+            //         }
+            //       }
+            //     )
+            //     .then((res: any) => {
+            //       if (res.data.length > 0 && res.data[0].Avatar) {
+            //         setAvatar(res.data[0].Avatar)
+            //       }
+            //     })
+            // }
+            />
           ) : (
             <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />
           )}

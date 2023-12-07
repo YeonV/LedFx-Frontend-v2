@@ -1,42 +1,57 @@
-export const createImage = (url) =>
+export const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const image = new Image()
     image.addEventListener('load', () => resolve(image))
-    image.addEventListener('error', (error) => reject(error))
-    image.setAttribute('crossOrigin', 'anonymous') // needed to avoid cross-origin issues on CodeSandbox
+    image.addEventListener('error', (error: Event | string) => reject(error))
+    image.setAttribute('crossOrigin', 'anonymous')
     image.src = url
   })
 
-export function getRadianAngle(degreeValue) {
+export function getRadianAngle(degreeValue: number): number {
   return (degreeValue * Math.PI) / 180
 }
 
-/**
- * Returns the new bounding area of a rotated rectangle.
- */
-export function rotateSize(width, height, rotation) {
+interface Size {
+  width: number
+  height: number
+}
+
+export function rotateSize(
+  width: number,
+  height: number,
+  rotation: number
+): Size {
   const rotRad = getRadianAngle(rotation)
 
   return {
     width:
       Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
     height:
-      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height)
   }
 }
 
+interface Crop {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+interface Flip {
+  horizontal: boolean
+  vertical: boolean
+}
+
 /**
- * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
- */
-/**
- * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
+ * from one of https://github.com/DominicTobias/react-image-crop
  */
 export async function getCroppedImg(
-  imageSrc,
-  pixelCrop,
+  imageSrc: string,
+  pixelCrop: Crop,
   rotation = 0,
-  flip = { horizontal: false, vertical: false }
-) {
+  flip: Flip = { horizontal: false, vertical: false }
+): Promise<string | null> {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -98,12 +113,19 @@ export async function getCroppedImg(
   // As a blob
   return new Promise((resolve, reject) => {
     croppedCanvas.toBlob((file) => {
-      resolve(URL.createObjectURL(file))
+      if (file) {
+        resolve(URL.createObjectURL(file))
+      } else {
+        reject(new Error('Failed to create blob from canvas'))
+      }
     }, 'image/jpeg')
   })
 }
 
-export async function getRotatedImage(imageSrc, rotation = 0) {
+export async function getRotatedImage(
+  imageSrc: string,
+  rotation = 0
+): Promise<string> {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -118,54 +140,46 @@ export async function getRotatedImage(imageSrc, rotation = 0) {
     canvas.height = image.height
   }
 
-  ctx.translate(canvas.width / 2, canvas.height / 2)
-  ctx.rotate((rotation * Math.PI) / 180)
-  ctx.drawImage(image, -image.width / 2, -image.height / 2)
+  ctx?.translate(canvas.width / 2, canvas.height / 2)
+  ctx?.rotate((rotation * Math.PI) / 180)
+  ctx?.drawImage(image, -image.width / 2, -image.height / 2)
 
   return new Promise((resolve) => {
     canvas.toBlob((file) => {
-      resolve(URL.createObjectURL(file))
+      if (file) {
+        resolve(URL.createObjectURL(file))
+      } else {
+        throw new Error('Failed to create blob from canvas')
+      }
     }, 'image/png')
   })
 }
 
-// export function dataURItoBlob(dataURI) {
+export function readFile(file: any) {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.addEventListener(
+      'load',
+      (event) => {
+        if (event.target?.result && typeof event.target.result === 'string') {
+          // we need to add the event listener for load
+        }
+        return resolve(reader.result)
+      },
+      false
+    )
+    reader.readAsDataURL(file)
+  })
+}
 
-//     // convert base64 to raw binary data held in a string
-//     // doesn't handle URLEncoded DataURIs
-//     var byteString = atob(dataURI.split(',')[1]);
-
-//     // separate out the mime component
-//     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-//     // write the bytes of the string to an ArrayBuffer
-//     var ab = new ArrayBuffer(byteString.length);
-//     var ia = new Uint8Array(ab);
-//     for (var i = 0; i < byteString.length; i++) {
-//         ia[i] = byteString.charCodeAt(i);
-//     }
-
-
-//     try {
-//         // 新版本浏览器
-//         return new window.Blob([ia], {type: mimeString});
-//     } catch (e) {
-
-//         // TypeError old chrome and FF
-//         // Android 中该方式无效
-//         window.BlobBuilder = window.BlobBuilder ||
-//             window.WebKitBlobBuilder ||
-//             window.MozBlobBuilder ||
-//             window.MSBlobBuilder;
-
-//         if (e.name == 'TypeError' && window.BlobBuilder) {
-
-//             var bb = new window.BlobBuilder();
-//             bb.append(ab);
-//             return bb.getBlob(mimeString);
-
-//         } else {
-//             return null;
-//         }
-//     }
-// }
+export const idbConfig = {
+  databaseName: 'avatars',
+  version: 1,
+  stores: [
+    {
+      name: 'avatars',
+      id: { keyPath: 'id', autoIncrement: true },
+      indices: [{ name: 'avatar', keyPath: 'avatar' }]
+    }
+  ]
+}
