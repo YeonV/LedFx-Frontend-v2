@@ -422,9 +422,10 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
               <Popover
                 onConfirm={() =>
-                  setSystemConfig({ user_presets: {} }).then(() =>
+                  setSystemConfig({ user_presets: {} }).then(() => {
+                    getPresets(effectType)
                     getSystemConfig()
-                  )
+                  })
                 }
                 startIcon={<Delete />}
                 color="inherit"
