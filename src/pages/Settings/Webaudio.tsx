@@ -1,7 +1,16 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 /* eslint-disable func-names */
-import { Button, Fab, TextField, Popover } from '@mui/material'
+import {
+  Button,
+  Fab,
+  TextField,
+  Popover,
+  Select,
+  MenuItem,
+  Stack
+} from '@mui/material'
 import { Check, Close } from '@mui/icons-material'
 import { useState, useEffect, CSSProperties } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -33,6 +42,37 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
   const [wsReady, setWsReady] = useState(false)
   const webAudName = useStore((state) => state.webAudName)
   const setWebAudName = useStore((state) => state.setWebAudName)
+  const webAudTypes = [
+    {
+      label: 'ws-v1',
+      value: 'audio_stream_data'
+    },
+    {
+      label: 'ws-v2',
+      value: 'audio_stream_data_v2'
+    },
+    {
+      label: 'udp',
+      value: 'audio_stream_data_udp'
+    }
+  ]
+  const [webAudType, setWebAudType] = useState(webAudTypes[1].value)
+  const [webAudConfig, setWebAudConfig] = useState({
+    sampleRate: 44100,
+    bufferSize: 1024,
+    udpPort: 8000
+  })
+  const [bit, setBit] = useState(16)
+
+  useEffect(() => {
+    if (webAudType === 'audio_stream_data_udp') {
+      setBit(8)
+    } else if (webAudType === 'audio_stream_data_v1') {
+      setBit(32)
+    } else {
+      setBit(16)
+    }
+  }, [webAudType])
 
   const audioContext =
     webAud && new (window.AudioContext || (window as any).webkitAudioContext)()
@@ -76,7 +116,13 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                 const request = {
                   data: {
                     sampleRate: scriptNode?.context?.sampleRate,
-                    bufferSize: scriptNode?.bufferSize
+                    bufferSize: scriptNode?.bufferSize,
+                    ...(webAudType === 'audio_stream_data_udp'
+                      ? {
+                          udpPort: webAudConfig.udpPort,
+                          bit
+                        }
+                      : {})
                   },
                   client: webAudName,
                   id: i,
@@ -90,7 +136,29 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
           scriptNode.onaudioprocess = (e) => {
             if (wsReady) {
               if (webAud) {
-                const sendWs = async () => {
+                const sendWsV2 = async () => {
+                  const i = 0
+                  const floatData = e.inputBuffer.getChannelData(0)
+                  const int16Array = new Int16Array(floatData.length)
+                  for (let j = 0; j < floatData.length; j++) {
+                    int16Array[j] = floatData[j] * 32767
+                  }
+                  const uint8Array = new Uint8Array(int16Array.buffer)
+                  const numberArray = Array.from(uint8Array)
+                  const binaryString = String.fromCharCode.apply(
+                    null,
+                    numberArray
+                  )
+                  const base64String = btoa(binaryString)
+                  const request = {
+                    data: base64String,
+                    client: webAudName,
+                    id: i,
+                    type: 'audio_stream_data_v2'
+                  }
+                  ;(ws as any).ws.send(JSON.stringify(++request.id && request))
+                }
+                const sendWsV1 = async () => {
                   const i = 0
                   const request = {
                     data: e.inputBuffer.getChannelData(0),
@@ -100,7 +168,11 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                   }
                   ;(ws as any).ws.send(JSON.stringify(++request.id && request))
                 }
-                sendWs()
+                if (webAudType === 'audio_stream_data_v2') {
+                  sendWsV2()
+                } else {
+                  sendWsV1()
+                }
               }
             }
           }
@@ -188,7 +260,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
           horizontal: 'right'
         }}
       >
-        <div style={{ display: 'flex', margin: 20 }}>
+        <Stack spacing={2} sx={{ p: 2 }}>
           <TextField
             id="client-name"
             label="Client Name"
@@ -196,56 +268,119 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
             onChange={(e) => setWebAudName(e.target.value)}
             variant="outlined"
           />
-          <Button
-            aria-describedby={id}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              if (!webAud) {
-                if (wsReady) {
-                  navigator.mediaDevices
-                    .enumerateDevices()
-                    .then(function (devices) {
-                      setClientDevices(devices)
-                    })
-                    .catch(function (err) {
-                      console.log(`${err.name}: ${err.message}`)
-                    })
-                  const sendWs = async () => {
-                    const request = {
-                      data: {},
-                      client: webAudName,
-                      id: 1,
-                      type: 'audio_stream_start'
-                    }
-                    ;(ws as any).ws.send(
-                      JSON.stringify(++request.id && request)
-                    )
-                  }
-                  sendWs()
-                  setTimeout(() => {
-                    getSchemas()
-                  }, 1000)
-                }
+          <Select
+            value={webAudType}
+            variant="outlined"
+            onChange={(e) => setWebAudType(e.target.value)}
+          >
+            {webAudTypes.map((type) => (
+              <MenuItem key={type.value} value={type.value}>
+                {type.label}
+              </MenuItem>
+            ))}
+          </Select>
+          <TextField
+            disabled
+            id="sample-rate"
+            label="Sample Rate"
+            value={webAudConfig.sampleRate}
+            type="number"
+            onChange={(e) =>
+              setWebAudConfig({
+                ...webAudConfig,
+                sampleRate: parseInt(e.target.value, 10)
+              })
+            }
+            variant="outlined"
+          />
+          <TextField
+            disabled
+            id="buffer-size"
+            label="Buffer Size"
+            value={webAudConfig.bufferSize}
+            onChange={(e) =>
+              setWebAudConfig({
+                ...webAudConfig,
+                bufferSize: parseInt(e.target.value, 10)
+              })
+            }
+            variant="outlined"
+          />
+          {webAudType === 'audio_stream_data_udp' && (
+            <TextField
+              id="udp-port"
+              label="UDP Port"
+              value={webAudConfig.udpPort}
+              onChange={(e) =>
+                setWebAudConfig({
+                  ...webAudConfig,
+                  udpPort: parseInt(e.target.value, 10)
+                })
               }
+              variant="outlined"
+            />
+          )}
 
-              setAnchorEl(null)
-              setWebAud(true)
-            }}
-          >
-            <Check />
-          </Button>
-          <Button
-            aria-describedby={id}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setAnchorEl(null)
-            }}
-          >
-            <Close />
-          </Button>
-        </div>
+          <TextField
+            id="bit"
+            disabled
+            label="Bit"
+            value={bit}
+            onChange={(e) => setBit(parseInt(e.target.value, 10))}
+            variant="outlined"
+          />
+          <Stack direction="row" spacing={2} justifyContent="space-between">
+            <Button
+              aria-describedby={id}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setAnchorEl(null)
+              }}
+            >
+              <Close />
+            </Button>
+            <Button
+              aria-describedby={id}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                if (!webAud) {
+                  if (wsReady) {
+                    navigator.mediaDevices
+                      .enumerateDevices()
+                      .then(function (devices) {
+                        setClientDevices(devices)
+                      })
+                      .catch(function (err) {
+                        console.log(`${err.name}: ${err.message}`)
+                      })
+                    const sendWs = async () => {
+                      const request = {
+                        data: {},
+                        client: webAudName,
+                        id: 1,
+                        type: 'audio_stream_start'
+                      }
+                      ;(ws as any).ws.send(
+                        JSON.stringify(++request.id && request)
+                      )
+                    }
+                    sendWs()
+                    setTimeout(() => {
+                      getSchemas()
+                    }, 1000)
+                  }
+                }
+
+                setAnchorEl(null)
+                setWebAud(true)
+              }}
+            >
+              <Check />
+            </Button>
+          </Stack>
+        </Stack>
       </Popover>
       {/* <canvas width={dw} height={dh} style={style} ref={canvas} /> */}
     </>

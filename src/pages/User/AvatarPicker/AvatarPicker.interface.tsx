@@ -1,10 +1,17 @@
 import { Edit, GitHub } from '@mui/icons-material'
 
+const IStorage = ['localStorage', 'indexedDb', 'cloud', 'custom'] as const
+export const storageOptions = [
+  'localStorage',
+  'indexedDb',
+  'cloud',
+  'custom'
+] as typeof IStorage
 export interface AvatarPickerProps {
   /**
-   * Use local storage instead of indexedDb to save the avatar
+   * Where to store the avatar
    */
-  useLocalStorage?: boolean
+  storage?: (typeof IStorage)[number]
   /**
    * Custom storage setter (if provided, localStorage and indexedDb are ignored)
    */
@@ -93,7 +100,7 @@ export const AvatarPickerDefaults: AvatarPickerProps = {
   maxRotation: 360,
   stepRotation: 0.01,
   setAvatar: null,
-  useLocalStorage: false,
+  storage: 'indexedDb',
   storageKey: 'avatar',
   props: {}
 }
