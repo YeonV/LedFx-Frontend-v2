@@ -320,29 +320,7 @@ const User = () => {
         >
           {localStorage.getItem('ledfx-cloud-role') === 'creator' ? (
             <AvatarPicker
-            // avatar={avatar}
-            // setAvatar={(_newAvatar) =>
-            //   cloud
-            //     .post(
-            //       'user-details',
-            //       {
-            //         Avatar: _newAvatar,
-            //         user: localStorage.getItem('ledfx-cloud-userid'),
-            //         users_permissions_user:
-            //           localStorage.getItem('ledfx-cloud-userid')
-            //       },
-            //       {
-            //         headers: {
-            //           Authorization: `Bearer ${localStorage.getItem('jwt')}`
-            //         }
-            //       }
-            //     )
-            //     .then((res: any) => {
-            //       if (res.data.length > 0 && res.data[0].Avatar) {
-            //         setAvatar(res.data[0].Avatar)
-            //       }
-            //     })
-            // }
+            // storage="cloud"
             />
           ) : (
             <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />

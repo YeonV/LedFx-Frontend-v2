@@ -96,6 +96,12 @@ const DeviceCardWrapper = ({
 
   const order = () => {
     if (showActiveDevicesFirst) {
+      if (virtuals[virtual]?.config.rows > 1 && !virtuals[virtual]?.effect.name && showMatrix) {
+        return -1
+      }
+      if (virtuals[virtual]?.config.rows > 1 && showMatrix) {
+        return -2
+      }
       if (
         !(
           devices[Object.keys(devices).find((d) => d === virtual) || '']

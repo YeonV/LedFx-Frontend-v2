@@ -10,14 +10,17 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Select,
   Slider,
   Stack,
   Typography
 } from '@mui/material'
+// import axios from 'axios'
 import { getCroppedImg, idbConfig, readFile } from './avatarUtils'
 import {
   AvatarPickerDefaults,
-  AvatarPickerProps
+  AvatarPickerProps,
+  storageOptions
 } from './AvatarPicker.interface'
 
 const AvatarPicker = ({
@@ -33,24 +36,30 @@ const AvatarPicker = ({
   minRotation = 0,
   maxRotation = 360,
   stepRotation = 0.01,
-  useLocalStorage,
+  storage = 'indexedDb',
   storageKey = 'avatar',
   ...props
 }: AvatarPickerProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
+  const [newStorage, setNewStorage] = useState(storage)
   const [imageSrc, setImageSrc] = useState<any>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [rotation, setRotation] = useState(0)
   const [zoom, setZoom] = useState(initialZoom)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
+  const userName = localStorage.getItem('username')
+
+  // const cloud = axios.create({
+  //   baseURL: 'https://strapi.yeonv.com'
+  // })
 
   const onCropComplete = (_croppedArea: Area, newcroppedAreaPixels: Area) => {
     setCroppedAreaPixels(newcroppedAreaPixels)
   }
 
   useEffect(() => {
-    if (!useLocalStorage && !setAvatar) {
+    if (newStorage === 'indexedDb' && !setAvatar) {
       setupIndexedDB(idbConfig)
         .then(() => console.log('indexedDB setup complete'))
         .catch((e) => console.error('indexedDb error:', e))
@@ -58,12 +67,12 @@ const AvatarPicker = ({
   }, [])
 
   const { getByID, update } =
-    !useLocalStorage && !setAvatar
+    newStorage === 'indexedDb' && !setAvatar
       ? useIndexedDBStore('avatars')
       : { getByID: null, update: null }
 
   const setAvatarIndexedDb = (a: string) => {
-    if (!useLocalStorage && !setAvatar && update) {
+    if (newStorage === 'indexedDb' && !setAvatar && update) {
       update({ id: 1, [storageKey]: a }).then(() =>
         console.log('avatar updated')
       )
@@ -71,7 +80,7 @@ const AvatarPicker = ({
   }
   const [avatarSrc, setAvatarSrc] = useState<null | string>(null)
 
-  if (!useLocalStorage && !setAvatar && getByID) {
+  if (newStorage === 'indexedDb' && !setAvatar && getByID) {
     getByID(1).then(
       (avatarFromDB: any) => {
         if (avatarFromDB && avatarFromDB[storageKey])
@@ -97,14 +106,74 @@ const AvatarPicker = ({
         .then((res) => res.blob())
         .then((blob) => {
           const reader = new FileReader()
-          reader.onloadend = function () {
+          reader.onloadend = async function () {
             if (reader.result) {
-              if (setAvatar) {
+              if (newStorage === 'custom' && setAvatar) {
                 setAvatar(reader.result.toString())
-              } else if (useLocalStorage) {
+              } else if (newStorage === 'localStorage') {
                 localStorage.setItem(storageKey, reader.result.toString())
-              } else {
+              } else if (newStorage === 'indexedDb' && !setAvatar) {
                 setAvatarIndexedDb(reader.result.toString())
+              } else if (newStorage === 'cloud') {
+                const formData = new FormData()
+                // resize blob to 150x150
+                // const resizedBlob = new Promise((resolve) => {
+                //   const img = new Image()
+                //   img.src = URL.createObjectURL(blob)
+                //   img.onload = () => {
+                //     const elem = document.createElement('canvas')
+                //     const ctx = elem.getContext('2d')
+                //     if (ctx) {
+                //       ctx.drawImage(img, 0, 0, 150, 150)
+                //       ctx.canvas.toBlob(
+                //         (blobb) => {
+                //           resolve(blobb)
+                //         },
+                //         'image/png',
+                //         1
+                //       )
+                //     }
+                //   }
+                // })
+
+                // const resizedBlob2 = await resizedBlob
+                formData.append('files', blob, `${userName}.png`)
+                formData.append('ref', 'application::user-details.user-details')
+                formData.append('refId', '10')
+                formData.append('field', 'avatarUrl')
+                const imageUploaded = await fetch(
+                  'https://strapi.yeonv.com/upload',
+                  {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem('jwt')}`
+                    }
+                  }
+                )
+
+                const imageUploadedJson = await imageUploaded.json()
+                console.log(imageUploadedJson)
+                // cloud
+                //   .post(
+                //     'user-details',
+                //     {
+                //       avatarUrl: blob,
+                //       user: localStorage.getItem('ledfx-cloud-userid'),
+                //       users_permissions_user:
+                //         localStorage.getItem('ledfx-cloud-userid')
+                //     },
+                //     {
+                //       headers: {
+                //         Authorization: `Bearer ${localStorage.getItem('jwt')}`
+                //       }
+                //     }
+                //   )
+                //   .then((res: any) => {
+                //     if (res.data.length > 0 && res.data[0]) {
+                //       console.log(res.data[0])
+                //     }
+                //   })
               }
             }
           }
@@ -114,7 +183,7 @@ const AvatarPicker = ({
       console.error(e)
     }
     setOpen(false)
-    window.location.reload()
+    // window.location.reload()
   }
 
   const onFileChange = async (e: any) => {
@@ -192,6 +261,17 @@ const AvatarPicker = ({
                     }
                   />
                 </div>
+                <Select>
+                  {storageOptions.map((option) => (
+                    <option
+                      key={option}
+                      value={option}
+                      onClick={() => setNewStorage(option)}
+                    >
+                      {option}
+                    </option>
+                  ))}
+                </Select>
                 <Button
                   startIcon={<Save />}
                   onClick={showCroppedImage}
