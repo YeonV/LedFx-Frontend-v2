@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useRef, useState } from 'react'
 import Cropper, { Area } from 'react-easy-crop'
 import { Delete, Save, UploadFile } from '@mui/icons-material'
@@ -106,6 +107,7 @@ const AvatarPicker = ({
         .then((res) => res.blob())
         .then((blob) => {
           const reader = new FileReader()
+          // eslint-disable-next-line func-names
           reader.onloadend = async function () {
             if (reader.result) {
               if (newStorage === 'custom' && setAvatar) {
@@ -152,28 +154,7 @@ const AvatarPicker = ({
                   }
                 )
 
-                const imageUploadedJson = await imageUploaded.json()
-                console.log(imageUploadedJson)
-                // cloud
-                //   .post(
-                //     'user-details',
-                //     {
-                //       avatarUrl: blob,
-                //       user: localStorage.getItem('ledfx-cloud-userid'),
-                //       users_permissions_user:
-                //         localStorage.getItem('ledfx-cloud-userid')
-                //     },
-                //     {
-                //       headers: {
-                //         Authorization: `Bearer ${localStorage.getItem('jwt')}`
-                //       }
-                //     }
-                //   )
-                //   .then((res: any) => {
-                //     if (res.data.length > 0 && res.data[0]) {
-                //       console.log(res.data[0])
-                //     }
-                //   })
+                await imageUploaded.json()
               }
             }
           }
