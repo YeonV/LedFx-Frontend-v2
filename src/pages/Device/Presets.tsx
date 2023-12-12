@@ -52,6 +52,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       }
     )
     if (response.status !== 200) {
+      // eslint-disable-next-line no-alert
       alert('No Access')
       return
     }
@@ -138,6 +139,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
     })
     if (response.status !== 200) {
+      // eslint-disable-next-line no-alert
       alert('No Access')
       return
     }
