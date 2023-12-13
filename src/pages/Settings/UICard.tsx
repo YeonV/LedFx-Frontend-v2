@@ -87,7 +87,8 @@ const UICard = () => {
           step={1}
           valueLabelDisplay="auto"
           min={1}
-          max={300}
+          max={4096}
+          marks={[{ value: 300, label: null }]}
           onChangeCommitted={(_e: any, val: any) =>
             setSystemSetting('visualisation_maxlen', val)
           }
@@ -115,7 +116,7 @@ const UICard = () => {
           }}
           inputProps={{
             min: 1,
-            max: 300,
+            max: 4096,
             type: 'number',
             'aria-labelledby': 'input-slider'
           }}
