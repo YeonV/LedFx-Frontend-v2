@@ -49,13 +49,13 @@ const UICard = () => {
         <Select
           disableUnderline
           variant="standard"
-          defaultValue={config.transmission_mode || 0}
+          defaultValue={config.transmission_mode || 'uncompressed'}
           onChange={(e) =>
             setSystemSetting('transmission_mode', e.target.value)
           }
         >
-          <MenuItem value={0}>original</MenuItem>
-          <MenuItem value={1}>alternate</MenuItem>
+          <MenuItem value="uncompressed">original</MenuItem>
+          <MenuItem value="compressed">alternate</MenuItem>
         </Select>
       </SettingsRow>
       <SettingsRow title="Frontend FPS" step="two" value={fps}>

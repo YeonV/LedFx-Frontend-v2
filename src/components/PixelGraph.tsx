@@ -30,7 +30,7 @@ const PixelGraph = ({
   const config = useStore((state) => state.config)
 
   function hexColor(encodedString: string) {
-    if (config.transmission_mode === 0 || !encodedString) {
+    if (config.transmission_mode === 'uncompressed' || !encodedString) {
       return []
     }
     const decodedString = atob(encodedString)
@@ -45,7 +45,7 @@ const PixelGraph = ({
     return colors
   }
 
-  const decodedPixels = config.transmission_mode === 1 ? pixels && pixels.length && hexColor(pixels) : pixels
+  const decodedPixels = config.transmission_mode === 'compressed' ? pixels && pixels.length && hexColor(pixels) : pixels
   
   useEffect(() => {
     const handleWebsockets = (e: any) => {
@@ -109,7 +109,7 @@ const PixelGraph = ({
         }}
         className={`${className}  ${active ? 'active' : ''}`}
       >
-        { (config.transmission_mode === 1
+        { (config.transmission_mode === 'compressed'
           ? decodedPixels.slice(row * decodedPixels.length / rows, (row + 1) * decodedPixels.length / rows)
           : pixels[0].slice(row * pixels[0].length / rows, (row + 1) * pixels[0].length / rows))
           .map((_p: any, i: number) => (
@@ -122,7 +122,7 @@ const PixelGraph = ({
                 margin: '2px',
                 borderRadius: '5px',
                 backgroundColor: active
-                  ? config.transmission_mode === 1  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
+                  ? config.transmission_mode === 'compressed'  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
                   : '#0002',
               }}
             />
@@ -140,7 +140,7 @@ const PixelGraph = ({
       }}
       className={`${className}  ${active ? 'active' : ''}`}
     >
-      {(config.transmission_mode === 1
+      {(config.transmission_mode === 'compressed'
         ? decodedPixels
         : pixels[0]
       ).map((p: any, i: number) => (
@@ -151,7 +151,7 @@ const PixelGraph = ({
             flex: 1,
             borderRadius: '0',
             backgroundColor: active
-              ? config.transmission_mode === 1  ? `rgb(${Object.values(p)})` : `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})`
+              ? config.transmission_mode === 'compressed'  ? `rgb(${Object.values(p)})` : `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})`
               : '#0002',
           }}
         />
