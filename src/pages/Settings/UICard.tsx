@@ -43,19 +43,30 @@ const UICard = () => {
     getSystemConfig()
   }, [])
 
+  const schemaTransmissionMode = useStore(
+    (state) => state?.schemas?.core?.schema.properties.transmission_mode
+  )
+
   return (
     <>
-      <SettingsRow title="Transmission Mode" step="zero" value={fps}>
+      <SettingsRow title={schemaTransmissionMode.title} step="zero" value={fps}>
         <Select
           disableUnderline
           variant="standard"
-          defaultValue={config.transmission_mode || 'uncompressed'}
+          defaultValue={
+            config.transmission_mode ||
+            schemaTransmissionMode.default ||
+            'uncompressed'
+          }
           onChange={(e) =>
             setSystemSetting('transmission_mode', e.target.value)
           }
         >
-          <MenuItem value="uncompressed">original</MenuItem>
-          <MenuItem value="compressed">alternate</MenuItem>
+          {schemaTransmissionMode.enum.map((item: any) => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
         </Select>
       </SettingsRow>
       <SettingsRow title="Frontend FPS" step="two" value={fps}>
