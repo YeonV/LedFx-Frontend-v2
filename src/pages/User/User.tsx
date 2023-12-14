@@ -255,23 +255,6 @@ const User = () => {
     setAvailableThemes(t())
   }, [trophies])
 
-  // useEffect(() => {
-  //   if (isLogged && localStorage.getItem('ledfx-cloud-role') === 'creator') {
-  //     cloud
-  //       .get(`user-details?user.username=${userName}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem('jwt')}`
-  //         }
-  //       })
-  //       .then((res: any) => {
-  //         if (res.data.length > 0 && res.data[0].Avatar) {
-  //           setAvatar(res.data[0].Avatar)
-  //         }
-  //       })
-  //   }
-  // }, [])
-  // console.log(avatar)
-
   return (
     <Box
       alignItems="center"
@@ -319,9 +302,7 @@ const User = () => {
           }}
         >
           {localStorage.getItem('ledfx-cloud-role') === 'creator' ? (
-            <AvatarPicker
-            // storage="cloud"
-            />
+            <AvatarPicker storage="cloud" />
           ) : (
             <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />
           )}

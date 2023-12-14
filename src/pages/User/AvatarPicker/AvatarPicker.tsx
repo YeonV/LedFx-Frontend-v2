@@ -11,17 +11,17 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Select,
+  // Select,
   Slider,
   Stack,
   Typography
 } from '@mui/material'
-// import axios from 'axios'
+import axios from 'axios'
 import { getCroppedImg, idbConfig, readFile } from './avatarUtils'
 import {
   AvatarPickerDefaults,
-  AvatarPickerProps,
-  storageOptions
+  AvatarPickerProps
+  // storageOptions
 } from './AvatarPicker.interface'
 
 const AvatarPicker = ({
@@ -37,12 +37,13 @@ const AvatarPicker = ({
   minRotation = 0,
   maxRotation = 360,
   stepRotation = 0.01,
-  storage = 'indexedDb',
+  storage = 'cloud',
   storageKey = 'avatar',
   ...props
 }: AvatarPickerProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [newStorage, setNewStorage] = useState(storage)
   const [imageSrc, setImageSrc] = useState<any>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
@@ -50,14 +51,52 @@ const AvatarPicker = ({
   const [zoom, setZoom] = useState(initialZoom)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const userName = localStorage.getItem('username')
+  const isLogged = !!localStorage.getItem('jwt')
+  const [avatarSrc, setAvatarSrc] = useState<null | string>(null)
 
-  // const cloud = axios.create({
-  //   baseURL: 'https://strapi.yeonv.com'
-  // })
+  const baseURL = 'https://strapi.yeonv.com'
+  const cloud = axios.create({
+    baseURL
+  })
 
   const onCropComplete = (_croppedArea: Area, newcroppedAreaPixels: Area) => {
     setCroppedAreaPixels(newcroppedAreaPixels)
   }
+  const getUserDetails = async () => {
+    const response = await cloud.get(
+      `user-details?user.username=${localStorage.getItem('username')}`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
+      }
+    )
+    if (response.status !== 200) {
+      // eslint-disable-next-line no-alert
+      alert('No Access')
+      return
+    }
+    const res = await response.data
+    // eslint-disable-next-line consistent-return
+    return res
+  }
+  useEffect(() => {
+    if (
+      isLogged &&
+      localStorage.getItem('ledfx-cloud-role') === 'creator' &&
+      newStorage === 'cloud'
+    ) {
+      cloud
+        .get(`user-details?user.username=${userName}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+          }
+        })
+        .then((res: any) => {
+          if (res.data.length > 0 && res.data[0].avatarUrl) {
+            setAvatarSrc(`${baseURL}${res.data[0].avatarUrl.url}`)
+          }
+        })
+    }
+  }, [])
 
   useEffect(() => {
     if (newStorage === 'indexedDb' && !setAvatar) {
@@ -79,7 +118,6 @@ const AvatarPicker = ({
       )
     }
   }
-  const [avatarSrc, setAvatarSrc] = useState<null | string>(null)
 
   if (newStorage === 'indexedDb' && !setAvatar && getByID) {
     getByID(1).then(
@@ -117,6 +155,33 @@ const AvatarPicker = ({
               } else if (newStorage === 'indexedDb' && !setAvatar) {
                 setAvatarIndexedDb(reader.result.toString())
               } else if (newStorage === 'cloud') {
+                const userDetails = await getUserDetails()
+                const hasAvatar = !!userDetails?.[0]?.avatarUrl?.url
+                let newUserDetail
+                if (hasAvatar) {
+                  await cloud.delete(
+                    `upload/files/${userDetails?.[0]?.avatarUrl?.id}`,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwt')}`
+                      }
+                    }
+                  )
+                }
+                if (!userDetails?.[0]?.id) {
+                  const getNewUserDetail = cloud.post(
+                    'user-details',
+                    {
+                      user: localStorage.getItem('ledfx-cloud-userid')
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwt')}`
+                      }
+                    }
+                  )
+                  newUserDetail = await getNewUserDetail
+                }
                 const formData = new FormData()
                 // resize blob to 150x150
                 // const resizedBlob = new Promise((resolve) => {
@@ -141,7 +206,10 @@ const AvatarPicker = ({
                 // const resizedBlob2 = await resizedBlob
                 formData.append('files', blob, `${userName}.png`)
                 formData.append('ref', 'application::user-details.user-details')
-                formData.append('refId', '10')
+                formData.append(
+                  'refId',
+                  `${userDetails?.[0]?.id || newUserDetail!.data.id}`
+                )
                 formData.append('field', 'avatarUrl')
                 const imageUploaded = await fetch(
                   'https://strapi.yeonv.com/upload',
@@ -154,7 +222,9 @@ const AvatarPicker = ({
                   }
                 )
 
-                await imageUploaded.json()
+                const uploaded = await imageUploaded.json()
+
+                setAvatarSrc(`${baseURL}${uploaded[0].url}`)
               }
             }
           }
@@ -242,7 +312,7 @@ const AvatarPicker = ({
                     }
                   />
                 </div>
-                <Select>
+                {/* <Select value={newStorage}>
                   {storageOptions.map((option) => (
                     <option
                       key={option}
@@ -252,7 +322,7 @@ const AvatarPicker = ({
                       {option}
                     </option>
                   ))}
-                </Select>
+                </Select> */}
                 <Button
                   startIcon={<Save />}
                   onClick={showCroppedImage}
@@ -263,8 +333,32 @@ const AvatarPicker = ({
                 </Button>
                 <Button
                   startIcon={<Delete />}
-                  onClick={() => {
+                  onClick={async () => {
                     localStorage.removeItem(storageKey)
+                    if (storage === 'indexedDb' && !setAvatar && update) {
+                      update({ id: 1, [storageKey]: null }).then(() =>
+                        console.log('avatar updated')
+                      )
+                    } else if (storage === 'cloud') {
+                      const userDetails = await getUserDetails()
+                      cloud
+                        .delete(
+                          `upload/files/${userDetails?.[0]?.avatarUrl?.id}`,
+                          {
+                            headers: {
+                              Authorization: `Bearer ${localStorage.getItem(
+                                'jwt'
+                              )}`
+                            }
+                          }
+                        )
+                        .then(() => {
+                          setAvatarSrc(null)
+                        })
+                    } else if (setAvatar) {
+                      setAvatar('')
+                    }
+                    setImageSrc(null)
                     setOpen(false)
                   }}
                   variant="contained"
