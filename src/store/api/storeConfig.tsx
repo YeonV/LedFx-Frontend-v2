@@ -48,6 +48,7 @@ export interface ISystemConfig {
   user_gradients: Record<string, string>
   global_brightness: number
   visualisation_fps: number
+  transmission_mode?: number
   dev_mode: boolean
   // ledfx_presets: Record<string, Record<string, IPreset>>
   ledfx_presets: undefined
