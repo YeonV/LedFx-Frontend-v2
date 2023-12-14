@@ -109,26 +109,26 @@ const PixelGraph = ({
         }}
         className={`${className}  ${active ? 'active' : ''}`}
       >
-        { config.transmission_mode === 1
+        { (config.transmission_mode === 1
           ? decodedPixels.slice(row * decodedPixels.length / rows, (row + 1) * decodedPixels.length / rows)
-          : pixels[0].slice(row * pixels[0].length / rows, (row + 1) * pixels[0].length / rows)
-            .map((_p: any, i: number) => (
-              <div
-                key={i}
-                style={{
-                  height: '38px',
-                  flex: 1,
-                  border: '1px solid black',
-                  margin: '2px',
-                  borderRadius: '5px',
-                  backgroundColor: active
-                    ? config.transmission_mode === 1  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
-                    : '#0002',
-                }}
-              />
-            ))}
+          : pixels[0].slice(row * pixels[0].length / rows, (row + 1) * pixels[0].length / rows))
+          .map((_p: any, i: number) => (
+            <div
+              key={i}
+              style={{
+                height: '38px',
+                flex: 1,
+                border: '1px solid black',
+                margin: '2px',
+                borderRadius: '5px',
+                backgroundColor: active
+                  ? config.transmission_mode === 1  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
+                  : '#0002',
+              }}
+            />
+          ))}
       </div>
-    ))}</div> : decodedPixels.length ? (
+    ))}</div> : (pixels[0] || decodedPixels).length ? (
     <div
       style={{
         maxWidth: '520px',
