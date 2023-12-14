@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Input, Divider } from '@mui/material'
+import { Input, Divider, Select, MenuItem } from '@mui/material'
 import { SettingsSlider, SettingsRow } from './SettingsComponents'
 import useStore from '../../store/useStore'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
@@ -45,6 +45,19 @@ const UICard = () => {
 
   return (
     <>
+      <SettingsRow title="Transmission Mode" step="zero" value={fps}>
+        <Select
+          disableUnderline
+          variant="standard"
+          defaultValue={config.transmission_mode || 0}
+          onChange={(e) =>
+            setSystemSetting('transmission_mode', e.target.value)
+          }
+        >
+          <MenuItem value={0}>original</MenuItem>
+          <MenuItem value={1}>alternate</MenuItem>
+        </Select>
+      </SettingsRow>
       <SettingsRow title="Frontend FPS" step="two" value={fps}>
         <SettingsSlider
           value={fps}
