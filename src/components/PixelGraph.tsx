@@ -89,7 +89,7 @@ const PixelGraph = ({
     style={{
       maxWidth: '520px',
       display: 'flex',
-      flexDirection: 'column-reverse',
+      flexDirection: 'column',
       width: '100%',
       borderRadius: '10px',
       overflow: 'hidden',
@@ -120,7 +120,7 @@ const PixelGraph = ({
                   ? `min(min(${520 / ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) / rows)}px, ${520 /rows}px), 38px)`
                   : '38px',
                 flex: 1,
-                border: `${((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? 0 : 1}px solid black`,
+                border: '1px solid black',
                 margin: `${((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? 1 : 2}px`,
                 borderRadius: ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? '50%' : '5px',
                 backgroundColor: active
