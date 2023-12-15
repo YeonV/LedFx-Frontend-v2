@@ -91,7 +91,7 @@ const PixelGraph = ({
       display: 'flex',
       flexDirection: 'column-reverse',
       width: '100%',
-      borderRadius: '10px 10px 0 0',
+      borderRadius: '10px',
       overflow: 'hidden',
       margin: '0.5rem 0 0 0',
     }}
@@ -116,11 +116,13 @@ const PixelGraph = ({
             <div
               key={i}
               style={{
-                height: '38px',
+                height: ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 
+                  ? `min(min(${520 / ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) / rows)}px, ${520 /rows}px), 38px)`
+                  : '38px',
                 flex: 1,
-                border: '1px solid black',
-                margin: '2px',
-                borderRadius: '5px',
+                border: `${((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? 0 : 1}px solid black`,
+                margin: `${((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? 1 : 2}px`,
+                borderRadius: ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? '50%' : '5px',
                 backgroundColor: active
                   ? config.transmission_mode === 'compressed'  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
                   : '#0002',
