@@ -5,6 +5,15 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
+  mp: false,
+  setMp: (mp: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.mp = mp
+      }),
+      false,
+      'ui/mp'
+    ),
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
     set(

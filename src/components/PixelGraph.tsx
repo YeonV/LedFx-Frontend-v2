@@ -85,11 +85,11 @@ const PixelGraph = ({
         }}
       />
     </div>
-  ) : pixels && pixels.length && rows > 1 && showMatrix ? <div
+  ) : (pixels.length || decodedPixels.length) && rows > 1 && showMatrix ? <div
     style={{
       maxWidth: '520px',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: virtuals[virtId].id==='launchpad-x' || virtuals[virtId].id === 'launchpad-x-matrix' ? 'column-reverse' : 'column',
       width: '100%',
       borderRadius: '10px',
       overflow: 'hidden',
