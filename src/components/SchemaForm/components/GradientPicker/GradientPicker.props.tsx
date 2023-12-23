@@ -9,6 +9,7 @@ export interface GradientPickerProps {
   colors?: any
   handleAddGradient?: any
   sendColorToVirtuals?: any
+  showHex?: boolean
 }
 
 export const GradientPickerDefaultProps = {
@@ -19,5 +20,6 @@ export const GradientPickerDefaultProps = {
   wrapperStyle: undefined,
   colors: undefined,
   handleAddGradient: undefined,
-  sendColorToVirtuals: undefined
+  sendColorToVirtuals: undefined,
+  showHex: false
 }

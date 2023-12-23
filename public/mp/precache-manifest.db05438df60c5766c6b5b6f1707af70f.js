@@ -8,24 +8,24 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/mp/click.wav"
   },
   {
-    "revision": "cdf610363755e145c584",
+    "revision": "872148e845e8dfd4e477",
     "url": "/mp/css/app.0fcac9f2.css"
   },
   {
-    "revision": "9f3c25bd325a907d860b",
+    "revision": "73563c4b8a9438137bb9",
     "url": "/mp/css/chunk-vendors.9371d481.css"
   },
   {
-    "revision": "aaa196cb3cf4c95277ab0f89c9563ec5",
+    "revision": "44427ebc38d0935bd18b331fe9a2be29",
     "url": "/mp/index.html"
   },
   {
-    "revision": "cdf610363755e145c584",
-    "url": "/mp/js/app.17cee47f.js"
+    "revision": "872148e845e8dfd4e477",
+    "url": "/mp/js/app.c89aa9d6.js"
   },
   {
-    "revision": "9f3c25bd325a907d860b",
-    "url": "/mp/js/chunk-vendors.ae3ad927.js"
+    "revision": "73563c4b8a9438137bb9",
+    "url": "/mp/js/chunk-vendors.a1deb49b.js"
   },
   {
     "revision": "8060f4f2285f64440895ff1ae5390911",

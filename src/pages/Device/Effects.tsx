@@ -149,7 +149,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   useEffect(() => {
     if (virtuals && virtual?.effect?.config) setTheModel(virtual.effect.config)
-  }, [virtuals, virtual, virtual?.effect, virtual?.effect.config])
+  }, [virtuals, virtual, virtual?.effect, virtual?.effect.config, effectType])
 
   return (
     <>

@@ -20,7 +20,7 @@ const Mp = () => {
         </Box>
         <iframe
           title="multitrack"
-          src="/mp"
+          src="/mp/index.html"
           style={{
             width: '960px',
             border: 0,
