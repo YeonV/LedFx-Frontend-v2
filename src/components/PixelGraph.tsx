@@ -4,6 +4,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
+import { Box } from '@mui/material'
 import useStore from '../store/useStore';
 
 const PixelGraph = ({
@@ -59,11 +60,14 @@ const PixelGraph = ({
     };
   }, [virtuals, pixelGraphs]);
 
+  const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
+
+
   if (!(graphs || intGraphs)) {
     return null;
   }
 
-  return dummy ? (
+  return (dummy || tooLessPixels) ? (
     <div
       style={{
         maxWidth: '520px',
@@ -109,28 +113,37 @@ const PixelGraph = ({
         }}
         className={`${className}  ${active ? 'active' : ''}`}
       >
-        { (config.transmission_mode === 'compressed'
+        { (config.transmission_mode === 'compressed' && decodedPixels.length > 0
           ? decodedPixels.slice(row * decodedPixels.length / rows, (row + 1) * decodedPixels.length / rows)
           : pixels[0].slice(row * pixels[0].length / rows, (row + 1) * pixels[0].length / rows))
           .map((_p: any, i: number) => (
             <div
               key={i}
               style={{
-                height: ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 
-                  ? `min(min(${520 / ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) / rows)}px, ${520 /rows}px), 38px)`
-                  : '38px',
                 flex: 1,
                 border: '1px solid black',
-                margin: `${((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? 1 : 2}px`,
-                borderRadius: ((config.transmission_mode === 'compressed' ? decodedPixels.length : pixels[0].length ) > 100) && rows > 9 ? '50%' : '5px',
-                backgroundColor: active
-                  ? config.transmission_mode === 'compressed'  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
-                  : '#0002',
+                margin: `${((config.transmission_mode === 'compressed' && decodedPixels.length > 0 ? decodedPixels.length : pixels[0].length ) > 100) && rows > 7 ? 1 : 2}px`,
+                borderRadius: ((config.transmission_mode === 'compressed' && decodedPixels.length > 0 ? decodedPixels.length : pixels[0].length ) > 100) && rows > 7 ? '50%' : '5px',
+                position: 'relative',
+                overflow: 'hidden',
+                maxWidth: `${100 / Math.max(rows, Math.ceil(pixels[0].length / rows))}%`,
+                maxHeight: `${100 / Math.max(rows, Math.ceil(pixels[0].length / rows))}%`,
               }}
-            />
+            >
+              <div
+                style={{
+                  width: '100%',
+                  paddingBottom: '100%',
+                  backgroundColor: active
+                    ? config.transmission_mode === 'compressed' && decodedPixels.length > 0 && decodedPixels[row * decodedPixels.length / rows + i]  ? `rgb(${Object.values(decodedPixels[row * decodedPixels.length / rows + i])})` : `rgb(${pixels[0][row * pixels[0].length / rows + i]},${pixels[1][row * pixels[0].length / rows + i]},${pixels[2][row * pixels[0].length / rows + i]})`
+                    : '#0002',
+                }}
+              />
+            </div>
           ))}
       </div>
-    ))}</div> : (pixels[0] || decodedPixels).length ? (
+    ))
+    }</div> : (pixels[0] || decodedPixels).length ? (
     <div
       style={{
         maxWidth: '520px',

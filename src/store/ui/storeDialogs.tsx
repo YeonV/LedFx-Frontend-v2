@@ -32,6 +32,10 @@ const storeDialogs = (set: any) => ({
     },
     addWled: {
       open: [] as { name: string; ip_address: string }[]
+    },
+    lessPixels: {
+      open: false,
+      edit: {} as any
     }
   },
   assistant: {
@@ -133,6 +137,17 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/AddIntegration'
+    ),
+  setDialogOpenLessPixels: (open: boolean, edit?: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.lessPixels = {
+          open,
+          edit
+        }
+      }),
+      false,
+      'api/dialog/LessPixels'
     )
 })
 

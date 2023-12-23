@@ -18,6 +18,7 @@ const GradientPickerWrapper = ({
   const colors = useStore((state) => state.colors)
   const getColors = useStore((state) => state.getColors)
   const addColor = useStore((state) => state.addColor)
+  const showHex = useStore((state) => state.ui.showHex)
 
   const getV = () => {
     for (const prop in virtuals) {
@@ -59,6 +60,7 @@ const GradientPickerWrapper = ({
       colors={colors}
       handleAddGradient={handleAddGradient}
       sendColorToVirtuals={sendColorToVirtuals}
+      showHex={showHex}
     />
   )
 }

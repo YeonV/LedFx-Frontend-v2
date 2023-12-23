@@ -5,6 +5,15 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
+  showHex: false,
+  setShowHex: (show: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.showHex = show
+      }),
+      false,
+      'ui/showHex'
+    ),
   mp: false,
   setMp: (mp: boolean): void =>
     set(

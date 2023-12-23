@@ -11,6 +11,8 @@ const DevicesSection = () => {
   const features = useStore((state) => state.features)
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const showHex = useStore((state) => state.ui.showHex)
+  const setShowHex = useStore((state) => state.ui.setShowHex)
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
   )
@@ -48,7 +50,12 @@ const DevicesSection = () => {
           direct
         />
       )}
-
+      <SettingsRow
+        title="Show Hex-Input in GradientPicker"
+        checked={showHex}
+        onChange={() => setShowHex(!showHex)}
+        direct
+      />
       <SettingsRow
         title="Sort active devices first"
         checked={showActiveDevicesFirst}

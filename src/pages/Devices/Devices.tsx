@@ -38,6 +38,8 @@ const Devices = () => {
   const graphsMulti = useStore((state) => state.graphsMulti)
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const fPixels = useStore((state) => state.config.visualisation_maxlen)
+
   useEffect(() => {
     getDevices()
     getVirtuals()
@@ -69,7 +71,7 @@ const Devices = () => {
     return () => {
       document.removeEventListener('YZold', handleWebsockets)
     }
-  }, [])
+  }, [fPixels])
 
   useEffect(() => {
     if (graphs && graphsMulti) {

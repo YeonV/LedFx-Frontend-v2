@@ -168,3 +168,21 @@ export const getTime = (milliseconds: any) => {
     seconds
   )}`
 }
+
+export const logScale = (value: number) => {
+  const minp = 0; // Adjusted from 1 to 0
+  const maxp = 14; // Log2(16384) = 14
+  const minv = Math.log2(50); // Adjusted from 1 to 50
+  const maxv = Math.log2(16384);
+  const scale = (maxv-minv) / (maxp-minp);
+  return Math.pow(2, minv + scale*(value-minp));
+}
+
+export const inverseLogScale = (value: number) => {
+  const minp = 0; // Adjusted from 1 to 0
+  const maxp = 14; // Log2(16384) = 14
+  const minv = Math.log2(50); // Adjusted from 1 to 50
+  const maxv = Math.log2(16384);
+  const scale = (maxv-minv) / (maxp-minp);
+  return (Math.log2(value)-minv) / scale + minp;
+}

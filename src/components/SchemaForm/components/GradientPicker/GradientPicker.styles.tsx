@@ -14,6 +14,20 @@ const useStyles = makeStyles(() => ({
     '& .input_rgba': {
       display: 'none'
     },
+    '&.show_hex .input_rgba': {
+      display: 'block'
+    },
+    '&.show_hex .input_rgba .input_rgba-wrap .input_rgba-hex .input_rgba-hex-label':
+      {
+        color: '#eee',
+        paddingTop: '1px'
+      },
+    '&.show_hex .input_rgba .input_rgba-wrap .input_rgba-hex input': {
+      backgroundColor: '#333',
+      color: '#eee',
+      boxShadow: 'none',
+      border: '1px solid #999'
+    },
     '& .gradient-interaction': {
       order: -1,
       marginBottom: '1rem'

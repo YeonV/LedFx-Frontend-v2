@@ -20,7 +20,8 @@ const GradientPicker = ({
   wrapperStyle,
   colors,
   handleAddGradient,
-  sendColorToVirtuals
+  sendColorToVirtuals,
+  showHex = false
 }: GradientPickerProps) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -104,7 +105,9 @@ const GradientPicker = ({
 
       <Popper id={id} open={open} anchorEl={anchorEl} ref={popover && popover}>
         <div
-          className={`${classes.paper} gradient-picker`}
+          className={`${classes.paper} gradient-picker ${
+            showHex ? 'show_hex' : ''
+          }`}
           style={{
             padding: theme.spacing(1),
             backgroundColor: theme.palette.background.paper
