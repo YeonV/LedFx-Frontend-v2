@@ -104,7 +104,7 @@
     "compile-electron:win32": "copy app\\*.ts build\\*.js",
     "compile-electron:default": "cp ./app/electron.ts ./build/electron.js && cp ./app/preload.ts ./build/preload.js && cp ./app/renderer.ts ./build/renderer.js && cp ./app/serviceWorker.ts ./build/serviceWorker.js",
     "electron": "wait-on http://127.0.0.1:3000 && electron .",
-    "postinstall": "echo skipping electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "storybook": "storybook dev -p 6006 -s public",
     "build-storybook": "storybook build -s public",
     "prebuild-storybook": "run-script-os",
