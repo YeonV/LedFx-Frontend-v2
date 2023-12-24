@@ -152,7 +152,7 @@ export default function App() {
             height={height}
           />
         )}
-        {new Date().getFullYear() === 2022 && (
+        {new Date().getFullYear() === 2023 && (
           <div
             style={{
               margin: 'auto',
@@ -171,7 +171,7 @@ export default function App() {
             }}
           />
         )}
-        {new Date().getFullYear() === 2023 &&
+        {new Date().getFullYear() === 2024 &&
           new Date().getMonth() === 0 &&
           new Date().getDate() === 1 && (
             <div
