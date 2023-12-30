@@ -222,6 +222,7 @@ const EditSceneDialog = () => {
             JSON.stringify(ordered((ledfx_presets[k] as any).config)) ===
             JSON.stringify(
               ordered(
+                // Question: We should already have the preset_id, do we need to remake it here?
                 scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals[
                   dev
                 ].config
@@ -238,6 +239,7 @@ const EditSceneDialog = () => {
               ) ===
                 JSON.stringify(
                   ordered(
+                    // Question: We should already have the preset_id, do we need to remake it here?
                     scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
                       .virtuals[dev].config
                   )
@@ -254,7 +256,9 @@ const EditSceneDialog = () => {
             e.target.value &&
             activatePreset(
               dev,
-              'default_presets',
+              // TODO: Change this from default_presets to either ledfx_presets or user_presets based on the preset that was selected
+              'user_presets',
+              // // Question: We should already have the preset_id, do we need to remake it here?
               scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals[
                 dev
               ].type,
