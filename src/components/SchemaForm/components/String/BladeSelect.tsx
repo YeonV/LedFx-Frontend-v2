@@ -12,6 +12,8 @@ import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
 import BladeFrame from '../BladeFrame'
 import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
+import GifPicker from '../Gif/GifPicker'
+// import GifFrameSelector from '../Gif/GifFrameSelector'
 
 /**
  * ## String
@@ -42,6 +44,7 @@ const BladeSelect = ({
           (schema.enum && schema.enum[0])
       : ''
   )
+  console.log(schema, model)
   return (
     <BladeFrame
       title={schema.title}
@@ -179,6 +182,25 @@ const BladeSelect = ({
             }}
             style={textStyle as any}
           />
+          {schema.id === 'gif at' && (
+            <GifPicker
+              onChange={(gif: string) => {
+                onChange(model_id, gif)
+                inputRef.current.value = gif
+              }}
+            />
+          )}
+          {/* {schema.id === 'beat frames' &&
+            model['gif at'] &&
+            model['gif at'] !== '' && (
+              <GifFrameSelector
+                url={model['gif at']}
+                onChange={(gif: string) => {
+                  onChange(model_id, gif)
+                  inputRef.current.value = gif
+                }}
+              />
+            )} */}
           {model_id === 'auth_token' && type === 'nanoleaf' && (
             <Tooltip
               title={
