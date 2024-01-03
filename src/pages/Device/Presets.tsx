@@ -43,6 +43,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const features = useStore((state) => state.features)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const getFullConfig = useStore((state) => state.getFullConfig)
 
   const getCloudConfigs = async () => {
     const response = await cloud.get(
@@ -162,7 +163,9 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
   const handleAddPreset = () => {
     addPreset(virtual.id, name).then(() => {
-      getPresets(effectType)
+      getPresets(effectType).then(() => {
+        getFullConfig()
+      })
     })
     setName('')
   }
