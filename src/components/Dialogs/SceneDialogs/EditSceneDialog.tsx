@@ -149,7 +149,7 @@ const EditSceneDialog = () => {
   }
 
   const sVirtuals =
-    scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals
+    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]?.virtuals || {}
 
   const handleAddSceneWithVirtuals = () => {
     addScene(
