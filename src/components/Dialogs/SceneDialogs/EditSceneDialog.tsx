@@ -70,6 +70,7 @@ const EditSceneDialog = () => {
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
+  const getFullConfig = useStore((state) => state.getFullConfig)
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -175,6 +176,7 @@ const EditSceneDialog = () => {
   }
 
   useEffect(() => {
+    getFullConfig()
     getLedFxPresets().then((ledfx_presets) => {
       setLp(ledfx_presets)
     })
@@ -245,15 +247,29 @@ const EditSceneDialog = () => {
       return ledfxPreset || userPreset ? (
         <Select
           defaultValue={ledfxPreset || userPreset}
-          onChange={(e) =>
-            e.target.value &&
-            activatePreset(
-              dev,
-              ledfxPreset ? 'default_presets' : 'user_presets',
-              sVirtuals[dev].type,
-              e.target.value
-            ).then(() => getVirtuals())
-          }
+          onChange={(e) => {
+            let category = 'default_presets'
+            if (
+              user_presets &&
+              user_presets[effectId] &&
+              Object.prototype.hasOwnProperty.call(
+                user_presets[effectId],
+                e.target.value
+              )
+            ) {
+              category = 'user_presets'
+            }
+
+            return (
+              e.target.value &&
+              activatePreset(
+                dev,
+                category,
+                sVirtuals[dev].type,
+                e.target.value
+              ).then(() => getVirtuals())
+            )
+          }}
           disabled={
             scVirtualsToIgnore.indexOf(dev) > -1 ||
             disabledPSelector.indexOf(dev) > -1
