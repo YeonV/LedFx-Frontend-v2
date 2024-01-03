@@ -239,29 +239,15 @@ const EditSceneDialog = () => {
       return ledfxPreset || userPreset ? (
         <Select
           defaultValue={ledfxPreset || userPreset}
-          onChange={(e) => {
-            let category = 'ledfx_presets'
-            if (
-              user_presets &&
-              user_presets[effectId] &&
-              Object.prototype.hasOwnProperty.call(
-                user_presets[effectId],
-                e.target.value
-              )
-            ) {
-              category = 'user_presets'
-            }
-
-            return (
-              e.target.value &&
-              activatePreset(
-                dev,
-                category,
-                sVirtuals[dev].type,
-                e.target.value
-              ).then(() => getVirtuals())
-            )
-          }}
+          onChange={(e) =>
+            e.target.value &&
+            activatePreset(
+              dev,
+              ledfxPreset ? 'ledfx_presets' : 'user_presets',
+              sVirtuals[dev].type,
+              e.target.value
+            ).then(() => getVirtuals())
+          }
           disabled={
             scVirtualsToIgnore.indexOf(dev) > -1 ||
             disabledPSelector.indexOf(dev) > -1
