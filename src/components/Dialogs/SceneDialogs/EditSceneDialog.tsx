@@ -245,11 +245,7 @@ const EditSceneDialog = () => {
           .filter((n) => !!n)
       const userPreset =
         userPresets && userPresets.length === 1 && userPresets[0]
-      console.log(ledfxPreset, sVirtuals[dev].config)
-      Object.keys(ledfx_presets).map((k) => {
-        console.log(k, (ledfx_presets[k] as any).config)
-        return k
-      })
+
       return ledfxPreset || userPreset ? (
         <Select
           defaultValue={ledfxPreset || userPreset}
