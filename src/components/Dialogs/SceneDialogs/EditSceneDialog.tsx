@@ -70,6 +70,7 @@ const EditSceneDialog = () => {
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
+  const getFullConfig = useStore((state) => state.getFullConfig)
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -175,6 +176,7 @@ const EditSceneDialog = () => {
   }
 
   useEffect(() => {
+    getFullConfig()
     getLedFxPresets().then((ledfx_presets) => {
       setLp(ledfx_presets)
     })
