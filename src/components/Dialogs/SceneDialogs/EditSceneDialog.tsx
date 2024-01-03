@@ -147,6 +147,10 @@ const EditSceneDialog = () => {
     setScVirtualsToIgnore([])
     setDialogOpenAddScene(false, false)
   }
+
+  const sVirtuals =
+    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]?.virtuals || {}
+
   const handleAddSceneWithVirtuals = () => {
     addScene(
       name,
@@ -155,10 +159,7 @@ const EditSceneDialog = () => {
       url,
       payload,
       midiActivate,
-      filterKeys(
-        scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals,
-        scVirtualsToIgnore
-      )
+      filterKeys(sVirtuals, scVirtualsToIgnore)
     ).then(() => {
       getScenes()
     })
@@ -220,13 +221,7 @@ const EditSceneDialog = () => {
         Object.keys(ledfx_presets).find(
           (k) =>
             JSON.stringify(ordered((ledfx_presets[k] as any).config)) ===
-            JSON.stringify(
-              ordered(
-                scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals[
-                  dev
-                ].config
-              )
-            )
+            JSON.stringify(ordered(sVirtuals[dev].config))
         )
       const userPresets =
         user_presets[effectId] &&
@@ -254,10 +249,8 @@ const EditSceneDialog = () => {
             e.target.value &&
             activatePreset(
               dev,
-              'default_presets',
-              scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals[
-                dev
-              ].type,
+              ledfxPreset ? 'default_presets' : 'user_presets',
+              sVirtuals[dev].type,
               e.target.value
             ).then(() => getVirtuals())
           }
@@ -741,9 +734,7 @@ const EditSceneDialog = () => {
           scenes &&
           data.name?.toLowerCase().replaceAll(' ', '-') &&
           scenes[data.name?.toLowerCase().replaceAll(' ', '-')] &&
-          Object.keys(
-            scenes[data.name?.toLowerCase().replaceAll(' ', '-')].virtuals
-          )
+          Object.keys(sVirtuals)
             .filter(
               (d) =>
                 !!scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
