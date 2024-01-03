@@ -48,13 +48,13 @@ const EditSceneDialog = () => {
   const [midiActivate, setMIDIActivate] = useState('')
   const [invalid, setInvalid] = useState(false)
   const [lp, setLp] = useState(undefined as any)
+  // const [user_presets, setUp] = useState(undefined as any)
   const [disabledPSelector, setDisabledPSelector] = useState([] as string[])
   const [scVirtualsToIgnore, setScVirtualsToIgnore] = useState<string[]>([])
   const medium = useMediaQuery('(max-width: 920px )')
   const small = useMediaQuery('(max-width: 580px )')
   const xsmall = useMediaQuery('(max-width: 480px )')
 
-  const { user_presets } = useStore((state) => state.config)
   const { effects } = useStore((state) => state.schemas)
   const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.edit || false)
@@ -70,7 +70,8 @@ const EditSceneDialog = () => {
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
-  const getFullConfig = useStore((state) => state.getFullConfig)
+  const getUserPresets = useStore((state) => state.getUserPresets)
+  // const getFullConfig = useStore((state) => state.getFullConfig)
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -176,12 +177,17 @@ const EditSceneDialog = () => {
   }
 
   useEffect(() => {
-    getFullConfig()
-    getLedFxPresets().then((ledfx_presets) => {
-      setLp(ledfx_presets)
-    })
-  }, [])
+    // if (open) getFullConfig()
 
+    if (open)
+      getLedFxPresets().then((ledfx_presets) => {
+        setLp(ledfx_presets)
+      })
+    if (open) getUserPresets()
+    // .then((u_presets) => {
+    //     // setUp(u_presets)
+    //   })
+  }, [open])
   useEffect(() => {
     if (open) activateScene(data.name?.toLowerCase().replaceAll(' ', '-'))
   }, [open])
@@ -215,6 +221,8 @@ const EditSceneDialog = () => {
     }
   }, [])
 
+  const { user_presets } = useStore((state) => state.config)
+
   const renderPresets = (ledfx_presets: any, dev: string, effectId: string) => {
     if (ledfx_presets) {
       const ledfxPreset =
@@ -237,7 +245,11 @@ const EditSceneDialog = () => {
           .filter((n) => !!n)
       const userPreset =
         userPresets && userPresets.length === 1 && userPresets[0]
-
+      console.log(ledfxPreset, sVirtuals[dev].config)
+      Object.keys(ledfx_presets).map((k) => {
+        console.log(k, (ledfx_presets[k] as any).config)
+        return k
+      })
       return ledfxPreset || userPreset ? (
         <Select
           defaultValue={ledfxPreset || userPreset}
@@ -279,8 +291,51 @@ const EditSceneDialog = () => {
             ))}
         </Select>
       ) : (
-        <Select value="Not saved as Preset" disableUnderline>
+        <Select
+          defaultValue="Not saved as Preset"
+          onChange={(e) => {
+            let category = 'default_presets'
+            if (
+              user_presets &&
+              user_presets[effectId] &&
+              Object.prototype.hasOwnProperty.call(
+                user_presets[effectId],
+                e.target.value
+              )
+            ) {
+              category = 'custom_presets'
+            }
+
+            return (
+              e.target.value &&
+              activatePreset(
+                dev,
+                category,
+                sVirtuals[dev].type,
+                e.target.value
+              ).then(() => getVirtuals())
+            )
+          }}
+          disableUnderline
+        >
           <MenuItem value="Not saved as Preset">Not saved as Preset</MenuItem>
+          {ledfx_presets && <ListSubheader>LedFx Presets</ListSubheader>}
+          {ledfx_presets &&
+            Object.keys(ledfx_presets)
+              .sort((k) => (k === 'reset' ? -1 : 1))
+              .map((ke, i) => (
+                <MenuItem key={ke + i} value={ke}>
+                  {ke === 'reset' ? 'Default' : ke}
+                </MenuItem>
+              ))}
+          {user_presets && <ListSubheader>User Presets</ListSubheader>}
+          {user_presets &&
+            user_presets[effectId] &&
+            Object.keys(user_presets[effectId]).map((ke, i) => (
+              <MenuItem key={ke + i} value={ke}>
+                {ke}
+              </MenuItem>
+            ))}
         </Select>
       )
     }

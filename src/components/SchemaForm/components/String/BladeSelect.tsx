@@ -44,7 +44,7 @@ const BladeSelect = ({
           (schema.enum && schema.enum[0])
       : ''
   )
-  console.log(schema, model)
+  // console.log(schema, model)
   return (
     <BladeFrame
       title={schema.title}

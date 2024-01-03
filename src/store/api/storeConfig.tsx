@@ -151,6 +151,26 @@ const storeConfig = (set: any) => ({
       'api/getLedFxPresets'
     )
   },
+  getUserPresets: async () => {
+    const resp = await Ledfx('/api/config')
+    if (resp && resp.host) {
+      set(
+        produce((state: IStore) => {
+          state.config.user_presets = resp.user_presets
+        }),
+        false,
+        'api/getUserPresets'
+      )
+      return resp.user_presets
+    }
+    return set(
+      produce((state: IStore) => {
+        state.dialogs.nohost.open = true
+      }),
+      false,
+      'api/getUserPresets'
+    )
+  },
   setSystemConfig: async (config: any) =>
     await Ledfx('/api/config', 'PUT', config),
   deleteSystemConfig: async () => await Ledfx('/api/config', 'DELETE'),
