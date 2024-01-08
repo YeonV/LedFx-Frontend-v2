@@ -206,7 +206,8 @@
       "artifactName": "LedFx_CC-v${version}--${os}-setup.${ext}"
     },
     "linux": {
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "LedFx_client-v${version}--${os}.${ext}"
     },
     "mac": {
       "icon": "build/icon.png",
