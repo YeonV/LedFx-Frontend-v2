@@ -176,7 +176,7 @@ const ready = () => (
     const integratedCore = (process.platform === 'darwin')
       ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))
       : (process.platform === 'linux') 
-        ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx'))
+        ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : process.resourcesPath,'LedFx'))
         : fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx/LedFx.exe'))
 
     const currentDir = fs.readdirSync(thePath)
