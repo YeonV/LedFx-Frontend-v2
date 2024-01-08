@@ -90,7 +90,8 @@ jobs:
       - name: Trigger Build
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: LedFx BuildPipeline
+          workflow: Release Test 2
+          # workflow: LedFx BuildPipeline
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
           inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
