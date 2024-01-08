@@ -207,7 +207,13 @@
     },
     "linux": {
       "icon": "build/icon.png",
-      "artifactName": "LedFx_client-v${version}--${os}.${ext}"
+      "artifactName": "LedFx_CC-v${version}--${os}-linux.${ext}"
+    },
+    "appImage": {
+      "artifactName": "LedFx_CC-v${version}--${os}-linux.${ext}"
+    },
+    "snap": {
+      "artifactName": "LedFx_CC-v${version}--${os}-linux.${ext}"
     },
     "mac": {
       "icon": "build/icon.png",
