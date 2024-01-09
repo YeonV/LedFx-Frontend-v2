@@ -176,7 +176,7 @@ const ready = () => (
     const integratedCore = (process.platform === 'darwin')
       ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app'))
       : (process.platform === 'linux') 
-        ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : process.resourcesPath || '../extraResources','LedFx'))
+        ? fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx'))
         : fs.existsSync(path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx/LedFx.exe'))
 
     const currentDir = fs.readdirSync(thePath)
@@ -186,7 +186,7 @@ const ready = () => (
       if (process.platform === 'darwin') {
         subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, []);
       } else if (process.platform === 'linux') {
-        subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : process.resourcesPath || '../extraResources','LedFx')}`, ['-p', '8888', '--no-tray']);
+        subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx')}`, ['-p', '8888', '--no-tray']);
       } else {
         subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx/LedFx.exe')}`, ['-p', '8888', '--no-tray']);
       }
@@ -229,7 +229,7 @@ const ready = () => (
           click: () => (process.platform === 'darwin')
             ? subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx_core.app/Contents/MacOS/LedFx_v2')}`, [])
             : (process.platform === 'linux') 
-              ? subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : process.resourcesPath || '../extraResources','LedFx')}`, ['-p', '8888', '--no-tray'])
+              ? subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx')}`, ['-p', '8888', '--no-tray'])
               : subpy = require('child_process').spawn(`${path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources','LedFx/LedFx.exe')}`, ['-p', '8888', '--no-tray'])
         },
         {
