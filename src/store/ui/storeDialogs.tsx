@@ -36,6 +36,10 @@ const storeDialogs = (set: any) => ({
     lessPixels: {
       open: false,
       edit: {} as any
+    },
+    effectType: {
+      open: false,
+      edit: false
     }
   },
   assistant: {
@@ -148,6 +152,17 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/LessPixels'
+    ),
+  setDialogOpenEffectType: (open: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.effectType = {
+          open,
+          edit: false
+        }
+      }),
+      false,
+      'api/dialog/EffectType'
     )
 })
 

@@ -17,6 +17,11 @@ const BetaFeatures = () => {
           onChange={() => setFeatures('gamepad', !features.gamepad)}
         />
       </Tooltip>
+      <SettingsRow
+        title="Effect Filter"
+        checked={features.effectfilter}
+        onChange={() => setFeatures('effectfilter', !features.effectfilter)}
+      />
       {showFeatures.integrations ? (
         <SettingsRow
           title="Integrations"
