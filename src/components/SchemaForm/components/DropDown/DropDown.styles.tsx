@@ -43,6 +43,7 @@ const useStyles = makeStyles(() => ({
   },
 
   FormToggle: {
+    fontSize: '0.64rem',
     '@media (max-width: 580px)': {
       flexGrow: 1
     }
