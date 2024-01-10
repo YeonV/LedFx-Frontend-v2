@@ -1,18 +1,19 @@
-import { useState } from 'react'
-
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import ListSubheader from '@mui/material/ListSubheader'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import { useTheme } from '@mui/material'
-import useStyles from './DropDown.styles'
+import {
+  Autocomplete,
+  Checkbox,
+  ListItemText,
+  MenuItem,
+  Select,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup
+} from '@mui/material'
+import { useMemo, useState } from 'react'
 import {
   EffectDropDownDefaultProps,
   EffectDropDownProps
 } from './DropDown.props'
+import useStyles from './DropDown.styles'
 
 const EffectDropDown = ({
   value,
@@ -22,59 +23,61 @@ const EffectDropDown = ({
   title
 }: EffectDropDownProps) => {
   const classes = useStyles()
-  const theme = useTheme()
   const [formats, setFormats] = useState(
     () => groups && Object.keys(groups).map((c) => c || [])
   )
-
   const handleFormat = (_: any, newFormats: any) => {
     setFormats(newFormats)
   }
+  const handleFormatb = (e: any) => {
+    setFormats(e.target.value)
+  }
+  const yopt = useMemo(
+    () => [
+      ...Object.keys(groups || {})
+        .flatMap(
+          (c) =>
+            formats &&
+            formats.indexOf(c) !== -1 &&
+            groups[c].flatMap((e: any) => [
+              { value: e.id, label: e.name, group: c }
+            ])
+        )
+        .filter((e: any) => !!e?.value)
+    ],
+    [groups, formats]
+  )
 
   return (
-    <FormControl
-      className={`${classes.FormRow} step-device-one`}
-      style={{ borderColor: theme.palette.divider }}
-    >
-      <InputLabel
-        htmlFor="groupsed-select"
-        sx={{
-          p: '0 10px !important',
-          background: theme.palette.background.paper
-        }}
-      >
-        {title}
-      </InputLabel>
-      <Select
+    <>
+      <Autocomplete
+        fullWidth
+        blurOnSelect
         value={value}
-        onChange={onChange}
-        id="groupsed-select"
-        className={classes.FormSelect}
-        sx={{ pb: '5px', pt: '0 !important' }}
-      >
-        <MenuItem value="" disabled>
-          <em>None</em>
-        </MenuItem>
-        {groups &&
-          Object.keys(groups).map(
-            (c) =>
-              formats &&
-              formats.indexOf(c) !== -1 && [
-                <ListSubheader
-                  className={classes.FormListHeaders}
-                  color="primary"
-                  sx={{ background: theme.palette.secondary.main }}
-                >
-                  {c}
-                </ListSubheader>,
-                groups[c].map((e: any) => (
-                  <MenuItem className={classes.FormListItem} value={e.id}>
-                    {e.name}
-                  </MenuItem>
-                ))
-              ]
-          )}
-      </Select>
+        onChange={(e: any, b: any) => {
+          const ne = { ...e, target: { ...e.target, value: b.value } }
+          if (onChange) return onChange(ne)
+          return null
+        }}
+        sx={{ pb: '0px', pt: '5px !important', width: '100%' }}
+        groupBy={(option) => option.group}
+        options={yopt}
+        isOptionEqualToValue={(option, nvalue) => option.value === nvalue}
+        disableClearable
+        getOptionLabel={(option) => {
+          if (typeof option !== 'string') return option.label
+          return yopt.find((o) => o.value === option)?.label || ''
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            value={yopt.find((o) => o.value === value)?.label || ''}
+            label={title}
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      />
       {showFilter && (
         <ToggleButtonGroup
           value={formats}
@@ -95,7 +98,26 @@ const EffectDropDown = ({
             ))}
         </ToggleButtonGroup>
       )}
-    </FormControl>
+      {showFilter && (
+        <Select
+          fullWidth
+          value={formats}
+          onChange={handleFormatb}
+          multiple
+          sx={{ pb: '5px', pt: '0 !important', width: '100%' }}
+          variant="outlined"
+          renderValue={(selected) => selected.join(', ')}
+        >
+          {groups &&
+            Object.keys(groups).map((c, i) => (
+              <MenuItem key={i} value={c}>
+                <Checkbox checked={formats.indexOf(c) > -1} />
+                <ListItemText primary={c} />
+              </MenuItem>
+            ))}
+        </Select>
+      )}
+    </>
   )
 }
 EffectDropDown.defaultProps = EffectDropDownDefaultProps
