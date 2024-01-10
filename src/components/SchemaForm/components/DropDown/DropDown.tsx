@@ -1,19 +1,20 @@
-import {
-  Autocomplete,
-  Checkbox,
-  ListItemText,
-  MenuItem,
-  Select,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup
-} from '@mui/material'
-import { useMemo, useState } from 'react'
+// import {
+//   Autocomplete,
+//   Checkbox,
+//   ListItemText,
+//   MenuItem,
+//   Select,
+//   TextField,
+//   ToggleButton,
+//   ToggleButtonGroup
+// } from '@mui/material'
+// import { useMemo, useState } from 'react'
 import {
   EffectDropDownDefaultProps,
   EffectDropDownProps
 } from './DropDown.props'
-import useStyles from './DropDown.styles'
+// import useStyles from './DropDown.styles'
+import EffectTypeDialog from '../../../Dialogs/EffectTypeDialog'
 
 const EffectDropDown = ({
   value,
@@ -22,35 +23,35 @@ const EffectDropDown = ({
   showFilter,
   title
 }: EffectDropDownProps) => {
-  const classes = useStyles()
-  const [formats, setFormats] = useState(
-    () => groups && Object.keys(groups).map((c) => c || [])
-  )
-  const handleFormat = (_: any, newFormats: any) => {
-    setFormats(newFormats)
-  }
-  const handleFormatb = (e: any) => {
-    setFormats(e.target.value)
-  }
-  const yopt = useMemo(
-    () => [
-      ...Object.keys(groups || {})
-        .flatMap(
-          (c) =>
-            formats &&
-            formats.indexOf(c) !== -1 &&
-            groups[c].flatMap((e: any) => [
-              { value: e.id, label: e.name, group: c }
-            ])
-        )
-        .filter((e: any) => !!e?.value)
-    ],
-    [groups, formats]
-  )
+  // const classes = useStyles()
+  // const [formats, setFormats] = useState(
+  //   () => groups && Object.keys(groups).map((c) => c || [])
+  // )
+  // const handleFormat = (_: any, newFormats: any) => {
+  //   setFormats(newFormats)
+  // }
+  // const handleFormatb = (e: any) => {
+  //   setFormats(e.target.value)
+  // }
+  // const yopt = useMemo(
+  //   () => [
+  //     ...Object.keys(groups || {})
+  //       .flatMap(
+  //         (c) =>
+  //           formats &&
+  //           formats.indexOf(c) !== -1 &&
+  //           groups[c].flatMap((e: any) => [
+  //             { value: e.id, label: e.name, group: c }
+  //           ])
+  //       )
+  //       .filter((e: any) => !!e?.value)
+  //   ],
+  //   [groups, formats]
+  // )
 
   return (
     <>
-      <Autocomplete
+      {/* <Autocomplete
         fullWidth
         blurOnSelect
         value={value}
@@ -116,7 +117,14 @@ const EffectDropDown = ({
               </MenuItem>
             ))}
         </Select>
-      )}
+      )} */}
+      <EffectTypeDialog
+        title={title}
+        value={value}
+        onChange={onChange}
+        groups={groups}
+        showFilter={showFilter}
+      />
     </>
   )
 }

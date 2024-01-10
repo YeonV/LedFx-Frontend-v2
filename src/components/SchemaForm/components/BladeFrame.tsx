@@ -43,6 +43,7 @@ interface BladeFrameProps {
   className?: string | undefined
   disabled?: boolean
   labelStyle?: any
+  onClick?: any | undefined
 }
 
 const BladeFrame = ({
@@ -55,7 +56,8 @@ const BladeFrame = ({
   variant = 'outlined',
   className,
   disabled,
-  labelStyle = {}
+  labelStyle = {},
+  onClick
 }: BladeFrameProps): ReactElement<any, any> => {
   return variant === 'outlined' ? (
     <Root
@@ -64,6 +66,7 @@ const BladeFrame = ({
         ...style,
         width: full ? '100%' : style.width
       }}
+      onClick={onClick}
     >
       <label
         style={{ ...labelStyle }}
@@ -94,7 +97,8 @@ BladeFrame.defaultProps = {
   variant: 'outlined',
   className: undefined,
   disabled: undefined,
-  labelStyle: undefined
+  labelStyle: undefined,
+  onClick: undefined
 }
 
 export default BladeFrame

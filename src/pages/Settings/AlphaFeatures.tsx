@@ -44,14 +44,6 @@ const AlphaFeatures = () => {
           onChange={() => setFeatures('wled', !features.wled)}
         />
       )}
-
-      {showFeatures.effectfilter && (
-        <SettingsRow
-          title="Effect Filter"
-          checked={features.effectfilter}
-          onChange={() => setFeatures('effectfilter', !features.effectfilter)}
-        />
-      )}
     </>
   )
 }
