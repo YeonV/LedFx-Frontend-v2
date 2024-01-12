@@ -52,6 +52,18 @@ export interface EffectConfig {
   fake_beat?: boolean
   rotate?: number
   test?: string
+  speed_x?: number
+  size_x?: number
+  pulse_period?: number
+  pulse_ratio?: number
+  flash_color?: string
+  capture?: boolean
+  cpu_secs?: number
+  v_density?: number
+  twist?: number
+  radius?: number
+  density?: number
+  lower?: number
 }
 
 export interface Effect {

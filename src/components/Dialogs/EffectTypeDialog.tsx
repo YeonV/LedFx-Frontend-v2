@@ -6,9 +6,10 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography
+  // useTheme
 } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { Search } from '@mui/icons-material'
+import { ArrowDropDown, Search } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import { EffectDropDownProps } from '../SchemaForm/components/DropDown/DropDown.props'
 import useStyles from '../SchemaForm/components/DropDown/DropDown.styles'
@@ -30,6 +31,7 @@ const EffectTypeDialog = ({
   }
 
   const classes = useStyles()
+  // const theme = useTheme()
   const [formats, setFormats] = useState(
     () => groups && Object.keys(groups).map((c) => c || [])
   )
@@ -74,14 +76,37 @@ const EffectTypeDialog = ({
         onClick={() => setDialogOpen(true)}
         style={{
           cursor: 'pointer',
-          marginBottom: 0
+          marginBottom: 0,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 0
         }}
       >
         <Typography
           variant="body1"
-          sx={{ color: 'text.secondary', paddingBottom: 1 }}
+          sx={{
+            flexGrow: 1,
+            padding: '16px 1.2rem 14px 1.2rem',
+            borderRadius: '10px',
+            border: '1px solid #666666',
+            '&:hover': {
+              border: '1px solid #f9f9fb'
+            }
+          }}
         >
           {yoptAll.find((o) => o.value === value)?.label || ''}
+          <ArrowDropDown
+            sx={{
+              position: 'absolute',
+              right: 10,
+              top: 16,
+              paddingBottom: 1,
+              fontSize: 30,
+              zIndex: 0
+            }}
+          />
         </Typography>
       </BladeFrame>
       <Dialog

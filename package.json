@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.87",
+  "version": "2.0.88",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -28,6 +28,7 @@
     "chart.js": "4.4.1",
     "color": "^4.2.3",
     "crypto": "^1.0.1",
+    "deep-object-diff": "^1.1.9",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
