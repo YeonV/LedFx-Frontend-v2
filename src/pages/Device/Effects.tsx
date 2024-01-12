@@ -27,7 +27,7 @@ import PixelGraph from '../../components/PixelGraph'
 import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
-import { EffectConfig } from '../../store/api/storeVirtuals'
+import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -87,6 +87,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const viewMode = useStore((state) => state.viewMode)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const features = useStore((state) => state.features)
+  const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
 
   const graphs = useStore((state) => state.graphs)
   const getV = () => {
@@ -96,7 +97,11 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       }
     }
   }
-  const virtual = getV()
+
+  useEffect(() => {
+    const v = getV()
+    if (v) setVirtual(v)
+  }, [JSON.stringify(virtuals[virtId])])
 
   const effectType = virtual && virtual.effect.type
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
@@ -148,9 +153,32 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType])
 
   useEffect(() => {
-    if (virtuals && virtual?.effect?.config) setTheModel(virtual.effect.config)
-  }, [virtuals, virtual, virtual?.effect, virtual?.effect.config, effectType])
+    // if (virtuals && virtual?.effect?.config) {
+    //   setTheModel(virtual.effect.config)
+    // } else
 
+    if (
+      virtuals &&
+      virtuals[virtId]?.effect?.config &&
+      JSON.stringify(theModel) !==
+        JSON.stringify(virtuals[virtId].effect.config)
+    ) {
+      // console.log('virtuals[virtId]', virtuals[virtId].effect?.config)
+
+      setTheModel(virtual?.effect.config)
+    }
+  }, [
+    virtuals,
+    virtuals[virtId],
+    virtuals[virtId]?.effect,
+    JSON.stringify(virtuals[virtId]?.effect?.config),
+    virtual,
+    virtual?.effect,
+    virtual?.effect.config,
+    effectType
+  ])
+
+  // console.log('virtual', virtual?.effect?.config)
   return (
     <>
       <Card
@@ -230,7 +258,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   }
             }
             style={{
-              transitionDuration: `${virtual!.config.transition_time * 1000}`
+              transitionDuration: `${
+                (virtual?.config?.transition_time || 1) * 1000
+              }`
             }}
           >
             <PixelGraph

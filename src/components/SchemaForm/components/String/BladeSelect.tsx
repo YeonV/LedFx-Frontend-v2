@@ -7,7 +7,7 @@ import {
   Button,
   Tooltip
 } from '@mui/material'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
 import BladeFrame from '../BladeFrame'
 import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
@@ -44,6 +44,11 @@ const BladeSelect = ({
           (schema.enum && schema.enum[0])
       : ''
   )
+  useEffect(() => {
+    if (model && model_id && model[model_id] && inputRef.current) {
+      inputRef.current.value = model[model_id]
+    }
+  }, [model, model_id])
   // console.log(schema, model)
   return (
     <BladeFrame
@@ -179,10 +184,11 @@ const BladeSelect = ({
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
+              inputRef.current.value = e.target.value
             }}
             style={textStyle as any}
           />
-          {schema.id === 'gif at' && (
+          {schema.id === 'gif_at' && (
             <GifPicker
               onChange={(gif: string) => {
                 onChange(model_id, gif)
@@ -191,10 +197,10 @@ const BladeSelect = ({
             />
           )}
           {/* {schema.id === 'beat frames' &&
-            model['gif at'] &&
-            model['gif at'] !== '' && (
+            model['gif_at'] &&
+            model['gif_at'] !== '' && (
               <GifFrameSelector
-                url={model['gif at']}
+                url={model['gif_at']}
                 onChange={(gif: string) => {
                   onChange(model_id, gif)
                   inputRef.current.value = gif
