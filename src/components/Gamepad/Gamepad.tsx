@@ -126,7 +126,8 @@ const Gamepad = ({ setScene, bottom }: any) => {
 
   useEffect(() => {
     if (!blocked) {
-      ;[pad0, pad1, pad2, pad3].map(
+      // eslint-disable-next-line prettier/prettier
+      ([pad0, pad1, pad2, pad3]).map(
         (pad: any) =>
           pad?.buttons.map((b: any, i: number) => {
             if (

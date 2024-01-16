@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import {
@@ -91,6 +90,11 @@ const Scenes = () => {
   useEffect(() => {
     getScenes()
   }, [getScenes])
+
+  const sceneFilter = (sc: string) =>
+    scenes[sc].scene_tags
+      ?.split(',')
+      .some((sce: string) => sceneActiveTags.includes(sce))
 
   return (
     <>
@@ -207,12 +211,7 @@ const Scenes = () => {
       >
         {scenes && Object.keys(scenes).length ? (
           (sceneActiveTags.length
-            ? Object.keys(scenes).filter(
-                (sc) =>
-                  scenes[sc].scene_tags
-                    ?.split(',')
-                    .some((sce: string) => sceneActiveTags.includes(sce))
-              )
+            ? Object.keys(scenes).filter(sceneFilter)
             : Object.keys(scenes)
           ).map((s, i) => {
             return (
