@@ -6,7 +6,7 @@ name: Create LedFx-Frontend Release
 jobs:
   build:
     name: Build & Release
-    if: "startsWith(github.event.head_commit.message, 'Release')"
+    if: "startsWith(github.event.head_commit.message, 'Release') || startsWith(github.event.head_commit.message, 'Beta')"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -94,7 +94,7 @@ jobs:
           # workflow: LedFx BuildPipeline
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}" }'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{startsWith(github.event.head_commit.message, `Beta`)}}"}'
       - name: 📂 Sync files
         continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@2.0.0
