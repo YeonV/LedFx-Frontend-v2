@@ -126,100 +126,99 @@ const Gamepad = ({ setScene, bottom }: any) => {
 
   useEffect(() => {
     if (!blocked) {
-      // eslint-disable-next-line prettier/prettier
-      ([pad0, pad1, pad2, pad3]).map(
-        (pad: any) =>
-          pad?.buttons.map((b: any, i: number) => {
+      const m = [pad0, pad1, pad2, pad3]
+      m.map((pad: any) => {
+        return pad?.buttons.map((b: any, i: number) => {
+          const test =
+            b.pressed &&
+            b.value === 1 &&
+            mapping[pad.index][i] &&
+            mapping[pad.index][i].command &&
+            mapping[pad.index][i].command !== 'none'
+          if (test) {
             if (
-              b.pressed &&
-              b.value === 1 &&
-              mapping[pad.index][i] &&
-              mapping[pad.index][i].command &&
-              mapping[pad.index][i].command !== 'none'
+              mapping[pad.index][i].command === 'scene' &&
+              mapping[pad.index][i].payload?.scene
             ) {
-              if (
-                mapping[pad.index][i].command === 'scene' &&
-                mapping[pad.index][i].payload?.scene
-              ) {
-                setScene(mapping[pad.index][i].payload.scene)
-              } else if (mapping[pad.index][i].command === 'padscreen') {
-                setOpen(!open)
-              } else if (mapping[pad.index][i].command === 'smartbar') {
-                setSmartBarPadOpen(!smartBarPadOpen)
-              } else if (mapping[pad.index][i].command === 'play/pause') {
-                togglePause()
-              } else if (mapping[pad.index][i].command === 'brightness-up') {
-                setSystemSetting(
-                  'global_brightness',
-                  Math.min(brightness + 0.1, 1).toFixed(2)
-                )
-              } else if (mapping[pad.index][i].command === 'brightness-down') {
-                setSystemSetting(
-                  'global_brightness',
-                  Math.max(brightness - 0.1, 0).toFixed(2)
-                )
-              } else if (mapping[pad.index][i].command === 'scan-wled') {
-                handleScan()
-              } else if (mapping[pad.index][i].command === 'copy-to') {
-                setFeatures('streamto', !features.streamto)
-              } else if (mapping[pad.index][i].command === 'transitions') {
-                setFeatures('transitions', !features.transitions)
-              } else if (mapping[pad.index][i].command === 'frequencies') {
-                setFeatures('frequencies', !features.frequencies)
-              } else if (mapping[pad.index][i].command === 'scene-playlist') {
-                toggleScenePLplay()
-              } else if (mapping[pad.index][i].command === 'one-shot') {
-                oneShotAll(
-                  mapping[pad.index][i].payload?.color || '#0dbedc',
-                  mapping[pad.index][i].payload?.ramp || 10,
-                  mapping[pad.index][i].payload?.hold || 200,
-                  mapping[pad.index][i].payload?.fade || 2000
-                )
-              }
-            } else if (pad.axes[0] === 1 && analogBrightness[0]) {
+              setScene(mapping[pad.index][i].payload.scene)
+            } else if (mapping[pad.index][i].command === 'padscreen') {
+              setOpen(!open)
+            } else if (mapping[pad.index][i].command === 'smartbar') {
+              setSmartBarPadOpen(!smartBarPadOpen)
+            } else if (mapping[pad.index][i].command === 'play/pause') {
+              togglePause()
+            } else if (mapping[pad.index][i].command === 'brightness-up') {
               setSystemSetting(
                 'global_brightness',
                 Math.min(brightness + 0.1, 1).toFixed(2)
               )
-            } else if (pad.axes[0] === -1 && analogBrightness[0]) {
+            } else if (mapping[pad.index][i].command === 'brightness-down') {
               setSystemSetting(
                 'global_brightness',
                 Math.max(brightness - 0.1, 0).toFixed(2)
               )
-            } else if (pad.axes[1] === -1 && analogBrightness[1]) {
-              setSystemSetting(
-                'global_brightness',
-                Math.min(brightness + 0.1, 1).toFixed(2)
-              )
-            } else if (pad.axes[1] === 1 && analogBrightness[1]) {
-              setSystemSetting(
-                'global_brightness',
-                Math.max(brightness - 0.1, 0).toFixed(2)
-              )
-            } else if (pad.axes[2] === 1 && analogBrightness[2]) {
-              setSystemSetting(
-                'global_brightness',
-                Math.min(brightness + 0.1, 1).toFixed(2)
-              )
-            } else if (pad.axes[2] === -1 && analogBrightness[2]) {
-              setSystemSetting(
-                'global_brightness',
-                Math.max(brightness - 0.1, 0).toFixed(2)
-              )
-            } else if (pad.axes[3] === -1 && analogBrightness[3]) {
-              setSystemSetting(
-                'global_brightness',
-                Math.min(brightness + 0.1, 1).toFixed(2)
-              )
-            } else if (pad.axes[3] === 1 && analogBrightness[3]) {
-              setSystemSetting(
-                'global_brightness',
-                Math.max(brightness - 0.1, 0).toFixed(2)
+            } else if (mapping[pad.index][i].command === 'scan-wled') {
+              handleScan()
+            } else if (mapping[pad.index][i].command === 'copy-to') {
+              setFeatures('streamto', !features.streamto)
+            } else if (mapping[pad.index][i].command === 'transitions') {
+              setFeatures('transitions', !features.transitions)
+            } else if (mapping[pad.index][i].command === 'frequencies') {
+              setFeatures('frequencies', !features.frequencies)
+            } else if (mapping[pad.index][i].command === 'scene-playlist') {
+              toggleScenePLplay()
+            } else if (mapping[pad.index][i].command === 'one-shot') {
+              oneShotAll(
+                mapping[pad.index][i].payload?.color || '#0dbedc',
+                mapping[pad.index][i].payload?.ramp || 10,
+                mapping[pad.index][i].payload?.hold || 200,
+                mapping[pad.index][i].payload?.fade || 2000
               )
             }
-            return null
-          })
-      )
+          } else if (pad.axes[0] === 1 && analogBrightness[0]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.min(brightness + 0.1, 1).toFixed(2)
+            )
+          } else if (pad.axes[0] === -1 && analogBrightness[0]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.max(brightness - 0.1, 0).toFixed(2)
+            )
+          } else if (pad.axes[1] === -1 && analogBrightness[1]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.min(brightness + 0.1, 1).toFixed(2)
+            )
+          } else if (pad.axes[1] === 1 && analogBrightness[1]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.max(brightness - 0.1, 0).toFixed(2)
+            )
+          } else if (pad.axes[2] === 1 && analogBrightness[2]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.min(brightness + 0.1, 1).toFixed(2)
+            )
+          } else if (pad.axes[2] === -1 && analogBrightness[2]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.max(brightness - 0.1, 0).toFixed(2)
+            )
+          } else if (pad.axes[3] === -1 && analogBrightness[3]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.min(brightness + 0.1, 1).toFixed(2)
+            )
+          } else if (pad.axes[3] === 1 && analogBrightness[3]) {
+            setSystemSetting(
+              'global_brightness',
+              Math.max(brightness - 0.1, 0).toFixed(2)
+            )
+          }
+          return null
+        })
+      })
     }
   }, [pad0, pad1, pad2, pad3])
 
