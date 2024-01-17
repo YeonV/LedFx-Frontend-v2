@@ -94,7 +94,8 @@ jobs:
           # workflow: LedFx BuildPipeline
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{startsWith(github.event.head_commit.message, `Beta`)}}"}'
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, `Beta`) && `No` || `Yes` }}" }'
+
       - name: 📂 Sync files
         continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@2.0.0
