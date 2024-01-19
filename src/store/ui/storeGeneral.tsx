@@ -54,7 +54,16 @@ const storeGeneral = (set: any) => ({
       'general/setStreamingToDevices'
     )
   },
-
+  streaming: false,
+  setStreaming: (streaming: boolean) => {
+    set(
+      produce((state: IStore) => {
+        state.streaming = streaming
+      }),
+      false,
+      'general/setStreaming'
+    )
+  },
   // graphs: !!isElectron(),
   showActiveDevicesFirst: true,
   setShowActiveDevicesFirst: (val: boolean) => {

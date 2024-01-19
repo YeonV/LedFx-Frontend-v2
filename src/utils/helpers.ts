@@ -1,7 +1,7 @@
 /* eslint-disable */
 /* eslint-disable @typescript-eslint/indent */
 export const drawerWidth = 240
-export const frontendConfig = 11
+export const frontendConfig = 12
 
 export const formatTime = (dura: number) => {
   let seconds: string | number
@@ -185,4 +185,29 @@ export const inverseLogScale = (value: number) => {
   const maxv = Math.log2(16384);
   const scale = (maxv-minv) / (maxp-minp);
   return (Math.log2(value)-minv) / scale + minp;
+}
+
+export function deepEqual(obj1: any, obj2: any) {
+  if (obj1 === obj2) {
+    return true;
+  }
+
+  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+    return false;
+  }
+
+  let keys1 = Object.keys(obj1).sort();
+  let keys2 = Object.keys(obj2).sort();
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < keys1.length; i++) {
+    if (keys1[i] !== keys2[i] || !deepEqual(obj1[keys1[i]], obj2[keys2[i]])) {
+      return false;
+    }
+  }
+
+  return true;
 }

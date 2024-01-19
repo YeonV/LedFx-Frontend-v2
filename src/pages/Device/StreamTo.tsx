@@ -1,6 +1,4 @@
 /* eslint-disable react/require-default-props */
-import * as React from 'react'
-
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -8,7 +6,9 @@ import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import { Button, Chip, OutlinedInput, Select, Box } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import useStore from '../../store/useStore'
+import { deepEqual } from '../../utils/helpers'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -32,47 +32,39 @@ const StreamToCard = ({
   virtuals: any
   style?: any
 }) => {
+  const cref = useRef<any>(null)
   const streamingToDevices = useStore((state) => state.streamingToDevices)
   const setStreamingToDevices = useStore((state) => state.setStreamingToDevices)
-
-  const [streamingTo, setStreamingTo] = React.useState(
-    streamingToDevices.indexOf(virtual.id) === -1
-      ? [virtual.id]
-      : streamingToDevices
-  )
-  const setEffect = useStore((state) => state.setEffect)
+  const streaming = useStore((state) => state.streaming)
+  const setStreaming = useStore((state) => state.setStreaming)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
-  const handleEffectConfig = (
-    virtual_id: string,
-    config: any,
-    selectedType: string
-  ) =>
-    setEffect(virtual_id, selectedType, config, true).then(() => getVirtuals())
+  const [streamingTo, setStreamingTo] = useState(streamingToDevices)
+  const copyTo = useStore((state) => state.copyTo)
 
   const handleToggle = (value: string) => {
     const currentIndex = streamingTo.indexOf(value)
     const newStreamingDevices = [...streamingTo]
-
     if (currentIndex === -1) {
       newStreamingDevices.push(value)
     } else {
       newStreamingDevices.splice(currentIndex, 1)
     }
-
     setStreamingTo(newStreamingDevices)
     setStreamingToDevices(newStreamingDevices)
   }
 
-  const handleCopy = () => {
-    streamingTo.map((e: string) =>
-      handleEffectConfig(
-        e,
-        virtuals[virtual.id]?.effect.config,
-        virtuals[virtual.id]?.effect.type
-      )
-    )
-  }
+  const handleCopy = () =>
+    copyTo(virtual.id, streamingTo).then(() => getVirtuals())
+
+  useEffect(() => {
+    if (streaming) {
+      if (!deepEqual(cref.current, virtuals[virtual.id]?.effect)) {
+        if (cref.current !== null) handleCopy()
+        cref.current = virtuals[virtual.id]?.effect
+      }
+    }
+  }, [virtuals[virtual.id]?.effect])
 
   return (
     <Card variant="outlined" className="step-device-twob" style={style}>
@@ -122,13 +114,18 @@ const StreamToCard = ({
             ))}
           </Select>
         </FormControl>
-        <Button
-          size="medium"
-          onClick={() => handleCopy()}
-          style={{ alignSelf: 'flex-start', margin: '10px 0' }}
-        >
-          Copy
-        </Button>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Button size="medium" onClick={() => handleCopy()}>
+            Copy
+          </Button>
+          <Button
+            size="medium"
+            onClick={() => setStreaming(!streaming)}
+            color={streaming ? 'primary' : 'inherit'}
+          >
+            Sync
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
