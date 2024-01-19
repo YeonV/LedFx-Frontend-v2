@@ -197,6 +197,16 @@ const storeVirtuals = (set: any) => ({
       }
     }
   },
+  copyTo: async (virtId: string, target: string[]) => {
+    const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
+      tool: 'copy',
+      target
+    })
+    if (resp && resp.status && resp.status === 'success') {
+      return true
+    }
+    return false
+  },
   updateSegments: async (virtId: string, segments: Segment[]) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}`, 'POST', {
       segments: [...segments]
