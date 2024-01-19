@@ -85,6 +85,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const effects = useStore((state) => state.schemas.effects)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const viewMode = useStore((state) => state.viewMode)
+  const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const features = useStore((state) => state.features)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
@@ -323,6 +324,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                         schemaProperties={orderedProperties}
                         model={theModel as Record<string, unknown>}
                         selectedType={effectType}
+                        descriptions={effectDescriptions}
                       />
                     </div>
                   )}
