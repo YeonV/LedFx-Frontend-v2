@@ -5,6 +5,15 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
+  effectDescriptions: 'Hide' as 'Auto' | 'Show' | 'Hide',
+  setEffectDescriptions: (mode: 'Auto' | 'Show' | 'Hide'): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.effectDescriptions = mode
+      }),
+      false,
+      'ui/effectDescriptions'
+    ),
   showHex: false,
   setShowHex: (show: boolean): void =>
     set(

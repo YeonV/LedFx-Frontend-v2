@@ -29,7 +29,8 @@ const EffectSchemaForm = ({
   schemaProperties,
   model,
   virtId,
-  handleEffectConfig
+  handleEffectConfig,
+  descriptions
 }: EffectSchemaFormProps) => {
   return (
     <Root className={classes.bladeSchemaForm}>
@@ -45,7 +46,7 @@ const EffectSchemaForm = ({
                   model={model}
                   model_id={s.id}
                   schema={s}
-                  hideDesc
+                  hideDesc={descriptions !== 'Show'}
                   onClick={(model_id: string, value: any) => {
                     const c: Record<string, unknown> = {}
                     c[model_id] = value
@@ -62,6 +63,7 @@ const EffectSchemaForm = ({
                   model_id={s.id}
                   key={i}
                   index={i}
+                  hideDesc={descriptions === 'Hide'}
                   onChange={(model_id: string, value: any) => {
                     const c: Record<string, unknown> = {}
                     c[model_id] = value
@@ -75,7 +77,7 @@ const EffectSchemaForm = ({
                 <BladeSlider
                   key={i}
                   index={i}
-                  hideDesc
+                  hideDesc={descriptions !== 'Show'}
                   model_id={s.id}
                   model={model}
                   schema={s}
@@ -93,7 +95,7 @@ const EffectSchemaForm = ({
                   step={1}
                   key={i}
                   index={i}
-                  hideDesc
+                  hideDesc={descriptions !== 'Show'}
                   model_id={s.id}
                   model={model}
                   schema={s}
@@ -112,6 +114,7 @@ const EffectSchemaForm = ({
                   key={i}
                   index={i}
                   title={s.id}
+                  hideDesc={descriptions === 'Hide'}
                   // selectedType={selectedType}
                   // model={model}
                   virtId={virtId}

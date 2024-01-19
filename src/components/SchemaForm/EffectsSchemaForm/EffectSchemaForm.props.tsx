@@ -22,10 +22,15 @@ export interface EffectSchemaFormProps {
    * updateEffect function for the given model
    */
   selectedType?: any
+  /**
+   * How to display the descriptions
+   */
+  descriptions?: 'Auto' | 'Show' | 'Hide'
   getVirtuals?: () => true
 }
 
 export const EffectSchemaFormDefaultProps = {
   onModelChange: undefined,
-  selectedType: undefined
+  selectedType: undefined,
+  descriptions: 'Auto'
 }
