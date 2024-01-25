@@ -17,6 +17,24 @@ const storeGeneral = (set: any) => ({
       'general/host'
     )
   },
+  coreStatus: {} as Record<string, string>,
+  setCoreStatus: (status: Record<string, string>) =>
+    set(
+      produce((state: IStore) => {
+        state.coreStatus = status
+      }),
+      false,
+      'general/setCoreStatus'
+    ),
+  coreParams: {} as Record<string, string[]>,
+  setCoreParams: (params: Record<string, string[]>) =>
+    set(
+      produce((state: IStore) => {
+        state.coreParams = params
+      }),
+      false,
+      'general/setCoreParams'
+    ),
   platform: 'yz',
   setPlatform: (platform: string) =>
     set(

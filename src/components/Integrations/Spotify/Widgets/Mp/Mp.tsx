@@ -18,7 +18,7 @@ const Mp = () => {
         >
           Player
         </Box>
-        <iframe
+        {/* <iframe
           title="multitrack"
           src="/mp/index.html"
           style={{
@@ -27,7 +27,7 @@ const Mp = () => {
             height: 620,
             overflowY: 'auto'
           }}
-        />
+        /> */}
       </div>
     </Box>
   )
