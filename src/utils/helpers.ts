@@ -136,10 +136,10 @@ export const ordered = (unordered: Record<string, any>) =>
       return obj
     }, {})
 
-export function transpose(matrix: any[][]) {
-  const res = []
+export function transpose<T>(matrix: T[][]): T[][] {
+  const res: T[][] = []
   for (let i = 0; i < matrix[0].length; i++) {
-    res[i] = [] as any
+    res[i] = [] as T[]
     for (let j = 0; j < matrix.length; j++) {
       res[i][j] = matrix[j][i]
     }
