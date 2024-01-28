@@ -14,7 +14,7 @@ const poll = async (wind, subprocesses, name, p) => {
   }
 }
 
-function stopInstance(name, subprocesses) {
+function stopInstance(wind, name, subprocesses) {
   if (subprocesses[name]) {
     subprocesses[name].running = false
     sendStatus(wind, subprocesses, false, name)

@@ -42,7 +42,7 @@ const handlers = async (wind, subprocesses, event, parameters) => {
         break
       case 'stop-core-instance':
         if (isCC) {
-          stopInstance(parameters.instance, subprocesses)
+          stopInstance(wind, parameters.instance, subprocesses)
         }
         break
       case 'delete-core-instance':
@@ -78,9 +78,34 @@ const handlers = async (wind, subprocesses, event, parameters) => {
       case 'open-config':
         console.log('Open Config')
         // wind.webContents.send('fromMain', ['currentdir', path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources')]);
-        shell.showItemInFolder(
-          path.join(app.getPath('appData'), '/.ledfx/config.json')
-        )
+
+        // Windows:
+        // shell.showItemInFolder(
+        //   path.join(app.getPath('appData'), '.ledfx', 'config.json')
+        // )
+
+        if (parameters.instance && parameters.instance !== 'instance1') {          
+          shell.showItemInFolder(
+            path.join(app.getPath("userData"), '.ledfx-cc', parameters.instance, 'config.json')
+          )
+          shell.showItemInFolder(
+            path.join(app.getPath("appData"), '.ledfx-cc', parameters.instance, 'config.json')
+          )
+          shell.showItemInFolder(
+            path.join(app.getPath("home"), '.ledfx-cc', parameters.instance, 'config.json')
+          )
+        } else {
+          shell.showItemInFolder(
+            path.join(app.getPath("userData"), '.ledfx', 'config.json')
+          )
+          shell.showItemInFolder(
+            path.join(app.getPath("appData"), '.ledfx', 'config.json')
+          )
+          shell.showItemInFolder(
+            path.join(app.getPath('home'), '.ledfx', 'config.json')
+          )
+        }
+      
         break
       case 'restart-client':
         app.relaunch()

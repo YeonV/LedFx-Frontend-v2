@@ -9,22 +9,22 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
-  Switch,
+  // Switch,
   Divider,
-  // Box,
+  Box,
 } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
 import isElectron from 'is-electron';
 import useStore from '../../store/useStore';
-// import Instances from './Instances';
+import Instances from './Instances';
 
-export default function NoHostDialog() {
-  const [instanceVariant, setInstanceVariant] = useState<'buttons' | 'line'>('buttons');
-  const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false);
+export default function HostManager() {
+  const [instanceVariant] = useState<'buttons' | 'line'>('line');
+  const dialogOpen = useStore((state) => state.hostManager || false);
   const edit = useStore((state) => state.dialogs.nohost?.edit || false);
-  const setDialogOpen = useStore((state) => state.setDialogOpen);
+  const setDialogOpen = useStore((state) => state.setHostManager);
   const setDisconnected = useStore((state) => state.setDisconnected);
-  // const coreParams = useStore((state) => state.coreParams);
+  const coreParams = useStore((state) => state.coreParams);
   const setHost = useStore((state) => state.setHost);
   const storedURL = window.localStorage.getItem('ledfx-host');
   const storedURLs = JSON.parse(
@@ -38,17 +38,18 @@ export default function NoHostDialog() {
     setDialogOpen(false);
   };
  
-  const handleSave = (ho:string) => {
-    setHost(ho);
+  const handleSave = (ho:string, connect?:boolean) => {
+    if (connect) setHost(ho);
     if (!hosts.some((h) => h === ho)) {
       window.localStorage.setItem(
         'ledfx-hosts',
         JSON.stringify([...hosts, ho])
       );
+      setHosts([...hosts, ho]);
     } else {
       window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]));
+      setHosts([...hosts]);
     }
-    setDialogOpen(false);
     setDisconnected(false);
     window.location.reload();
   };
@@ -94,11 +95,7 @@ export default function NoHostDialog() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          {edit
-            ? 'LedFx-Core Host'
-            : window.process?.argv.indexOf('integratedCore') === -1
-              ? 'No LedFx-Core found'
-              : 'LedFx-Core not ready'}
+          LedFx HostManager
         </DialogTitle>
         <DialogContent>
           {!edit && (
@@ -134,27 +131,29 @@ export default function NoHostDialog() {
               <Typography variant='caption' sx={{ marginBottom: '1rem' }}>Core Instances</Typography>
               <Divider sx={{ marginBottom: '1rem' }} />
             </div>
-            {/* {instanceVariant === 'line' && <><Box display="flex">
-              <Box sx={{width: '90px', marginRight: '0.5rem'}}>Port</Box>
-              <Box sx={{width: '110px', marginRight: '0.5rem'}}>Status</Box>
-              <Box sx={{width: '110px', marginRight: '0.5rem'}}>Instance</Box>
-              <Box sx={{width: '110px', marginRight: '0.5rem'}}>Config</Box>
-              <Box sx={{flexGrow: 1, marginRight: '0.5rem', textAlign: 'center'}}>Actions</Box>
+            {instanceVariant === 'line' && <><Box display="flex">
+              <Box sx={{width: '60px', margin: '0 1rem'}}>Port</Box>
+              <Box sx={{width: '90px', marginRight: '0.5rem'}}>Status</Box>
+              <Box sx={{width: '90px', marginRight: '0.5rem'}}>Instance</Box>
+              {/* <Box sx={{width: '110px', marginRight: '0.5rem'}}>Config</Box> */}
+              <Box sx={{flexGrow: 1, marginRight: '0.5rem', textAlign: 'left', paddingLeft: '0.5rem'}}>Actions</Box>
             </Box>
             <Divider sx={{ marginBottom: '1rem' }} />
-            </>} */}
+            <Divider/>
+            </>}
 
-            {/* {Object.keys(coreParams).map((h, i)=><Instances instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)} variant={instanceVariant} i={i} instance={h} port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} />)}
-            <Instances instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)}variant={instanceVariant} instance={false} i={Object.keys(coreParams).length + 1} port={`${parseInt(coreParams[`instance${  Object.keys(coreParams).length }`]?.[1] || '8888', 10) + 1}`} /> */}
+            {Object.keys(coreParams).map((h, i)=><Instances handleDeleteHost={handleDelete}  handleSave={handleSave} instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)} variant={instanceVariant} i={i} instance={h} port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} />)}
+            <Instances handleSave={handleSave} handleDeleteHost={handleDelete} instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)}variant={instanceVariant} instance={false} i={Object.keys(coreParams).length + 1} port={`${parseInt(coreParams[`instance${  Object.keys(coreParams).length }`]?.[1] || '8888', 10) + 1}`} />
           </div>)}
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between'}}>
+        <DialogActions>
+          {/* <DialogActions sx={{ justifyContent: 'space-between'}}>
           <div>
             <Switch sx={{ml: 1}} checked={instanceVariant === 'line'} onChange={() => setInstanceVariant(instanceVariant === 'line' ? 'buttons' : 'line')} />
             <Typography variant='caption' sx={{ marginTop: '1rem' }}>Show as list</Typography>
-          </div>
+          </div> */}
           <Button onClick={handleClose} color="primary">
-            Cancel
+            Close
           </Button>
         </DialogActions>
       </Dialog>

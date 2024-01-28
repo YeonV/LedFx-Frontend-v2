@@ -1,5 +1,20 @@
-import { Add, Delete, DeleteSweep, PlayArrow, Stop } from '@mui/icons-material'
-import { Button, Divider, TextField } from '@mui/material'
+import {
+  Add,
+  Cable,
+  Delete,
+  // DeleteSweep,
+  PlayArrow,
+  SettingsApplications,
+  Stop
+} from '@mui/icons-material'
+import {
+  Avatar,
+  Button,
+  Chip,
+  Divider,
+  IconButton,
+  TextField
+} from '@mui/material'
 import { useRef, useState } from 'react'
 import useStore from '../../store/useStore'
 import Popover from '../Popover/Popover'
@@ -9,17 +24,25 @@ const Instances = ({
   i,
   instance,
   instances,
-  variant
+  variant,
+  handleSave,
+  handleDeleteHost
 }: {
   port: string
   i: number
   instance: string | false
   instances: number[]
   variant: 'buttons' | 'line'
+  handleSave: any
+  handleDeleteHost: any
 }) => {
   const [newPort, setNewPort] = useState<number>(port ? parseInt(port, 10) : 0)
   const coreStatus = useStore((state) => state.coreStatus)
   const portRef = useRef<HTMLInputElement>(null)
+  const active =
+    window.localStorage.getItem('ledfx-host')?.includes(`localhost:${port}`) ||
+    false
+
   const handleStartCore = (e: any, p: number) => {
     e.stopPropagation()
     ;(window as any).api.send('toMain', {
@@ -50,162 +73,280 @@ const Instances = ({
         instance: 'all'
       })
     }
+    handleDeleteHost(e, `http://localhost:${p}`)
   }
 
   return instance ? (
-    <div key={port} style={{ marginBottom: '0.75rem' }}>
-      <div style={{ display: 'flex' }}>
-        <TextField
-          disabled
-          inputRef={portRef}
-          onChange={(e) => {
-            setNewPort(parseInt(e.target.value, 10))
+    <>
+      <div
+        onDoubleClick={() => {
+          handleSave(
+            `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
+            true
+          )
+        }}
+        key={port}
+        style={{
+          backgroundColor: active ? 'rgba(255,255,255,0.1)' : 'unset',
+          marginTop: '0.25rem',
+          marginBottom: '0.25rem'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            paddingRight: '0.5rem'
           }}
-          size="small"
-          type="number"
-          label={variant === 'line' ? '' : 'port'}
-          variant={variant === 'line' ? 'standard' : 'outlined'}
-          value={newPort}
-          sx={{
-            minWidth: '90px',
-            width: '90px',
-            marginRight: '0.5rem'
-          }}
-          InputProps={{
-            disableUnderline: variant === 'line',
-            sx: {
-              color:
-                variant === 'line' && !instance && instances.includes(newPort)
-                  ? 'error.main'
-                  : 'inherit'
+        >
+          <TextField
+            inputRef={portRef}
+            onChange={(e) => {
+              setNewPort(parseInt(e.target.value, 10))
+            }}
+            size="small"
+            type={instance && variant === 'line' ? 'text' : 'number'}
+            label={variant === 'line' ? '' : 'port'}
+            variant={variant === 'line' ? 'standard' : 'outlined'}
+            value={newPort}
+            sx={{
+              minWidth: '60px',
+              width: '60px',
+              margin: '0 1rem',
+              pointerEvents: 'none'
+            }}
+            InputProps={{
+              inputProps: { tabIndex: -1, style: { padding: 0 } },
+              disableUnderline: variant === 'line',
+              sx: {
+                color:
+                  variant === 'line' && !instance && instances.includes(newPort)
+                    ? 'error.main'
+                    : coreStatus[instance] === 'running'
+                      ? '#ddd'
+                      : 'text.disabled'
+              }
+            }}
+          />
+          <TextField
+            label={variant === 'line' ? '' : 'status'}
+            variant={variant === 'line' ? 'standard' : 'outlined'}
+            value={coreStatus[instance] || 'stopped'}
+            InputProps={{
+              disableUnderline: variant === 'line',
+              inputProps: { tabIndex: -1, style: { padding: 0 } },
+              sx: {
+                color:
+                  coreStatus[instance] === 'starting'
+                    ? 'warning.main'
+                    : coreStatus[instance] === 'running'
+                      ? 'success.main'
+                      : 'text.disabled'
+              }
+            }}
+            InputLabelProps={{
+              shrink: true
+            }}
+            size="small"
+            sx={{
+              minWidth: '90px',
+              width: '90px',
+              marginRight: '0.5rem',
+              pointerEvents: 'none'
+            }}
+          />
+          {variant === 'line' && (
+            <>
+              <TextField
+                label={variant === 'line' ? '' : 'status'}
+                variant={variant === 'line' ? 'standard' : 'outlined'}
+                value={instance}
+                InputProps={{
+                  disableUnderline: variant === 'line',
+                  inputProps: { tabIndex: -1, style: { padding: 0 } },
+                  sx: {
+                    color:
+                      coreStatus[instance] === 'running'
+                        ? '#ddd'
+                        : 'text.disabled'
+                  }
+                }}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                size="small"
+                sx={{
+                  minWidth: '90px',
+                  width: '90px',
+                  marginRight: '0.5rem',
+                  pointerEvents: 'none'
+                }}
+              />
+              {/* <TextField
+              label={variant === 'line' ? '' : 'status'}
+              variant={variant === 'line' ? 'standard' : 'outlined'}
+              value={instance}
+              InputProps={{
+                disableUnderline: variant === 'line',
+                inputProps: { tabIndex: -1 },
+                sx: {
+                  color: 'text.disabled'
+                }
+              }}
+              InputLabelProps={{
+                shrink: true
+              }}
+              size="small"
+              sx={{
+                minWidth: '110px',
+                width: '110px',
+                marginRight: '0.5rem',
+                pointerEvents: 'none'
+              }}
+            /> */}
+            </>
+          )}
+          <Button
+            disabled={
+              coreStatus[instance] === 'starting' ||
+              coreStatus[instance] === 'running'
             }
-          }}
-        />
-        <TextField
-          label={variant === 'line' ? '' : 'status'}
-          variant={variant === 'line' ? 'standard' : 'outlined'}
-          value={coreStatus[instance] || 'stopped'}
-          InputProps={{
-            disableUnderline: variant === 'line',
-            inputProps: { tabIndex: -1 },
-            sx: {
-              color:
+            variant={variant === 'line' ? 'text' : 'outlined'}
+            sx={
+              variant === 'line'
+                ? { minWidth: '32px', width: '32px' }
+                : { height: 40 }
+            }
+            aria-label="delete"
+            onClick={(e) => {
+              handleStartCore(e, newPort || parseInt(port, 10) || 8889)
+            }}
+          >
+            <PlayArrow />
+          </Button>
+
+          <Button
+            disabled={coreStatus[instance] !== 'running'}
+            variant={variant === 'line' ? 'text' : 'outlined'}
+            sx={
+              variant === 'line'
+                ? { minWidth: '32px', width: '32px' }
+                : { height: 40 }
+            }
+            aria-label="stop"
+            onClick={(e) => {
+              handleStopCore(e, newPort || parseInt(port, 10) || 8889)
+            }}
+          >
+            <Stop />
+          </Button>
+          <Button
+            disabled={coreStatus[instance] !== 'running'}
+            variant={variant === 'line' ? 'text' : 'outlined'}
+            color={active ? 'success' : 'inherit'}
+            sx={
+              variant === 'line'
+                ? { minWidth: '32px', width: '32px' }
+                : { height: 40 }
+            }
+            aria-label="connect"
+            onClick={() => {
+              handleSave(
+                `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
+                true
+              )
+            }}
+          >
+            <Cable />
+          </Button>
+          <Button
+            variant={variant === 'line' ? 'text' : 'outlined'}
+            sx={
+              variant === 'line'
+                ? { minWidth: '32px', width: '32px' }
+                : { height: 40 }
+            }
+            aria-label="open-config"
+            onClick={() => {
+              ;(window as any).api.send('toMain', {
+                command: 'open-config',
+                instance
+              })
+            }}
+          >
+            <SettingsApplications />
+          </Button>
+
+          <Popover
+            color="inherit"
+            disabled={
+              coreStatus[instance] === 'starting' ||
+              coreStatus[instance] === 'running' ||
+              instance === 'instance1'
+            }
+            icon={<Delete />}
+            style={
+              variant === 'line'
+                ? { minWidth: '32px', width: '32px' }
+                : { height: 40 }
+            }
+            variant={variant === 'line' ? 'text' : 'outlined'}
+            onConfirm={(e) =>
+              handleDelete(
+                e,
+                parseInt(`${port}` || portRef.current?.value || '', 10) || 8889
+              )
+            }
+          />
+
+          {false && (
+            <Chip
+              label={instance}
+              avatar={<Avatar>Y</Avatar>}
+              // onClick={handleClick}
+              onDelete={() => console.log('delete')}
+              deleteIcon={<Delete />}
+              variant="outlined"
+            />
+          )}
+          <Avatar
+            sx={{
+              // border: '5px solid',
+              bgcolor:
                 coreStatus[instance] === 'starting'
                   ? 'warning.main'
                   : coreStatus[instance] === 'running'
                     ? 'success.main'
-                    : 'text.disabled'
-            }
-          }}
-          InputLabelProps={{
-            shrink: true
-          }}
-          size="small"
-          sx={{
-            minWidth: '110px',
-            width: '110px',
-            marginRight: '0.5rem',
-            pointerEvents: 'none'
-          }}
-        />
-        {variant === 'line' && (
-          <>
-            <TextField
-              label={variant === 'line' ? '' : 'status'}
-              variant={variant === 'line' ? 'standard' : 'outlined'}
-              value={instance}
-              InputProps={{
-                disableUnderline: variant === 'line',
-                inputProps: { tabIndex: -1 },
-                sx: {
-                  color: 'text.disabled'
-                }
-              }}
-              InputLabelProps={{
-                shrink: true
-              }}
-              size="small"
-              sx={{
-                minWidth: '110px',
-                width: '110px',
-                marginRight: '0.5rem',
-                pointerEvents: 'none'
-              }}
-            />
-            <TextField
-              label={variant === 'line' ? '' : 'status'}
-              variant={variant === 'line' ? 'standard' : 'outlined'}
-              value={instance}
-              InputProps={{
-                disableUnderline: variant === 'line',
-                inputProps: { tabIndex: -1 },
-                sx: {
-                  color: 'text.disabled'
-                }
-              }}
-              InputLabelProps={{
-                shrink: true
-              }}
-              size="small"
-              sx={{
-                minWidth: '110px',
-                width: '110px',
-                marginRight: '0.5rem',
-                pointerEvents: 'none'
-              }}
-            />
-          </>
-        )}
-        <Button
-          disabled={
-            coreStatus[instance] === 'starting' ||
-            coreStatus[instance] === 'running'
-          }
-          variant={variant === 'line' ? 'text' : 'outlined'}
-          sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : {}}
-          aria-label="delete"
-          onClick={(e) => {
-            handleStartCore(e, newPort || parseInt(port, 10) || 8889)
-          }}
-        >
-          <PlayArrow />
-        </Button>
-
-        <Button
-          disabled={coreStatus[instance] !== 'running'}
-          variant={variant === 'line' ? 'text' : 'outlined'}
-          sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : {}}
-          aria-label="stop"
-          onClick={(e) => {
-            handleStopCore(e, newPort || parseInt(port, 10) || 8889)
-          }}
-        >
-          <Stop />
-        </Button>
-
-        <Popover
-          color="inherit"
-          disabled={
-            coreStatus[instance] === 'starting' ||
-            coreStatus[instance] === 'running'
-          }
-          icon={<Delete />}
-          style={
-            variant === 'line'
-              ? { minWidth: '32px', width: '32px' }
-              : { height: 40 }
-          }
-          variant={variant === 'line' ? 'text' : 'outlined'}
-          onConfirm={(e) =>
-            handleDelete(
-              e,
-              parseInt(`${port}` || portRef.current?.value || '', 10) || 8889
-            )
-          }
-        />
+                    : 'text.disabled',
+              boxSizing: 'content-box'
+            }}
+          >
+            {coreStatus[instance] !== 'running' ? (
+              <IconButton
+                size="small"
+                aria-label="delete"
+                onClick={(e) => {
+                  handleStartCore(e, newPort || parseInt(port, 10) || 8889)
+                }}
+              >
+                <PlayArrow />
+              </IconButton>
+            ) : (
+              <IconButton
+                size="small"
+                aria-label="stop"
+                onClick={(e) => {
+                  handleStopCore(e, newPort || parseInt(port, 10) || 8889)
+                }}
+              >
+                <Stop />
+              </IconButton>
+            )}
+          </Avatar>
+        </div>
       </div>
       {variant === 'line' && <Divider />}
-    </div>
+    </>
   ) : (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
       <Popover
@@ -288,9 +429,15 @@ const Instances = ({
             portRef.current.value = `${parseInt(portRef.current.value, 10) + 1}`
             setNewPort(parseInt(portRef.current?.value, 10))
           }
+          handleSave(
+            `http://localhost:${
+              (parseInt(portRef.current!.value, 10) || newPort) - 1
+            }`,
+            false
+          )
         }}
       />
-      <Popover
+      {/* <Popover
         color="inherit"
         icon={<DeleteSweep />}
         style={
@@ -307,7 +454,7 @@ const Instances = ({
             parseInt(`${port}` || portRef.current?.value || '', 10) || 8889
           )
         }
-      />
+      /> */}
     </div>
   )
 }

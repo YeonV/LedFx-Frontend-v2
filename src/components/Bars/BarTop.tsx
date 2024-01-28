@@ -9,7 +9,8 @@ import {
   GitHub,
   ChevronLeft,
   Login,
-  Logout
+  Logout,
+  Lan
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import {
@@ -160,6 +161,7 @@ const TopBar = () => {
   // const setDarkMode = useStore((state) => state.ui.setDarkMode);
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
+  const setHostManager = useStore((state) => state.setHostManager)
   const toggleGraphs = useStore((state) => state.toggleGraphs)
   const graphs = useStore((state) => state.graphs)
   // const config = useStore((state) => state.config);
@@ -204,6 +206,10 @@ const TopBar = () => {
   }
   const changeHost = () => {
     setDialogOpen(true, true)
+    setAnchorEl(null)
+  }
+  const changeHostManager = () => {
+    setHostManager(true)
     setAnchorEl(null)
   }
   // const toggleDarkMode = () => {
@@ -422,6 +428,12 @@ const TopBar = () => {
                     <Language />
                   </ListItemIcon>
                   Change Host
+                </MenuItem>
+                <MenuItem onClick={changeHostManager}>
+                  <ListItemIcon>
+                    <Lan />
+                  </ListItemIcon>
+                  Host Manager
                 </MenuItem>
                 {/* <MenuItem onClick={toggleDarkMode}>
               <ListItemIcon>
