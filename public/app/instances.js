@@ -34,7 +34,13 @@ function startInstance(wind, name, subprocesses, port) {
         if (subprocesses[name]) {
           subprocesses[name].running = false
         }
-        sendStatus(wind, subprocesses, false, name)
+        if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
+          // `subprocesses` is defined, proceed with calling `sendStatus`
+          sendStatus(wind, subprocesses, false, name);
+        } else {
+          // `subprocesses` is not defined, handle this case as needed
+          console.error('subprocesses is not defined');
+        }
       })
       subpy.on('error', () => {
         if (subprocesses[name]) {
@@ -51,9 +57,26 @@ function startInstance(wind, name, subprocesses, port) {
 function sendStatus(wind, subprocesses, connected = false, n) {
   let status = {}
   let platformParams = coreParams[process.platform]
+  // Check if `wind` is an instance of `BrowserWindow`
+  if (!(wind instanceof require('electron').BrowserWindow)) {
+    console.error('wind is not an instance of BrowserWindow');
+    return;
+  }
+
+  // Check if `subprocesses` is defined
+  if (!subprocesses) {
+    console.error('subprocesses is not defined');
+    return;
+  }
+
+  // Check if `n` is defined
+  if (!n) {
+    console.error('n is not defined');
+    return;
+  }
 
   for (let name in platformParams) {
-    if (subprocesses[name]) {
+    if (subprocesses && subprocesses[name]) {
       if (name === n) {
         status[name] = connected
           ? 'running'
@@ -67,7 +90,7 @@ function sendStatus(wind, subprocesses, connected = false, n) {
       status[name] = 'stopped'
     }
   }
-  wind.webContents.send('fromMain', ['status', status])
+  if (wind && wind.webContents  && !wind.isDestroyed() && status) wind.webContents.send('fromMain', ['status', status])
 }
 
 function kills(subprocess) {
@@ -77,14 +100,13 @@ function kills(subprocess) {
 }
 
 function closeAllSubs(wind, subpy, subprocesses) {
+  if (wind && wind.webContents && !wind.isDestroyed()) wind.webContents.send('fromMain', 'shutdown')
   if (subpy !== null) kills(subpy)
-  if (Object.keys(subprocesses).length > 0) {
+  if (subprocesses && Object.keys(subprocesses).length > 0) {
     Object.values(subprocesses).forEach((sub) => {
-      kills(sub)
+      if (sub) kills(sub)
     })
-  }
-  console.log(5)
-  wind.webContents.send('fromMain', 'shutdown')
+  }  
 }
 
 module.exports = {

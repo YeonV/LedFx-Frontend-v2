@@ -54,7 +54,10 @@ const ready = () =>
     ipcMain.on('toMain', async (event, parameters) =>
       handlers(wind, subprocesses, event, parameters)
     )
-    wind.on('close', () => closeAllSubs(wind, subpy, subprocesses))
+    wind.on('close', () => {
+      closeAllSubs(wind, subpy, subprocesses)    
+      wind = null;
+    })
   })
 
 handleProtocol(wind, gotTheLock, ready)

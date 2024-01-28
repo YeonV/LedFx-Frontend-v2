@@ -99,11 +99,11 @@ export default function App() {
       showSnackbar('info', parameters[1])
     }
     if (parameters[0] === 'coreParams') {
-      console.log('coreParams', parameters[1])
+      // console.log('coreParams', parameters[1])
       setCoreParams(parameters[1])
     }
     if (parameters[0] === 'status') {
-      console.log('status', parameters[1])
+      // console.log('status', parameters[1])
       setCoreStatus(parameters[1])
     }
     if (parameters === 'clear-frontend') {

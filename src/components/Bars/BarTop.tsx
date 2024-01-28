@@ -180,6 +180,8 @@ const TopBar = () => {
   const invIntegrations = useStore((state) => state.tours.integrations)
   const invDevices = useStore((state) => state.tours.devices)
   const invScenes = useStore((state) => state.tours.scenes)
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
   )
@@ -429,12 +431,14 @@ const TopBar = () => {
                   </ListItemIcon>
                   Change Host
                 </MenuItem>
-                <MenuItem onClick={changeHostManager}>
-                  <ListItemIcon>
-                    <Lan />
-                  </ListItemIcon>
-                  Host Manager
-                </MenuItem>
+                {isCC && (
+                  <MenuItem onClick={changeHostManager}>
+                    <ListItemIcon>
+                      <Lan />
+                    </ListItemIcon>
+                    Host Manager
+                  </MenuItem>
+                )}
                 {/* <MenuItem onClick={toggleDarkMode}>
               <ListItemIcon>
                 <Language />

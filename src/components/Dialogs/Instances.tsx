@@ -8,12 +8,12 @@ import {
   Stop
 } from '@mui/icons-material'
 import {
-  Avatar,
+  // Avatar,
   Button,
-  Chip,
   Divider,
-  IconButton,
-  TextField
+  // IconButton,
+  TextField,
+  Tooltip
 } from '@mui/material'
 import { useRef, useState } from 'react'
 import useStore from '../../store/useStore'
@@ -80,10 +80,11 @@ const Instances = ({
     <>
       <div
         onDoubleClick={() => {
-          handleSave(
-            `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
-            true
-          )
+          if (coreStatus[instance] === 'running')
+            handleSave(
+              `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
+              true
+            )
         }}
         key={port}
         style={{
@@ -206,109 +207,119 @@ const Instances = ({
             /> */}
             </>
           )}
-          <Button
-            disabled={
-              coreStatus[instance] === 'starting' ||
-              coreStatus[instance] === 'running'
-            }
-            variant={variant === 'line' ? 'text' : 'outlined'}
-            sx={
-              variant === 'line'
-                ? { minWidth: '32px', width: '32px' }
-                : { height: 40 }
-            }
-            aria-label="delete"
-            onClick={(e) => {
-              handleStartCore(e, newPort || parseInt(port, 10) || 8889)
-            }}
-          >
-            <PlayArrow />
-          </Button>
+          <Tooltip title={`Start ${instance} on ${newPort}`}>
+            <span>
+              <Button
+                disabled={
+                  coreStatus[instance] === 'starting' ||
+                  coreStatus[instance] === 'running'
+                }
+                variant={variant === 'line' ? 'text' : 'outlined'}
+                sx={
+                  variant === 'line'
+                    ? { minWidth: '32px', width: '32px' }
+                    : { height: 40 }
+                }
+                aria-label="delete"
+                onClick={(e) => {
+                  handleStartCore(e, newPort || parseInt(port, 10) || 8889)
+                }}
+              >
+                <PlayArrow />
+              </Button>
+            </span>
+          </Tooltip>
 
-          <Button
-            disabled={coreStatus[instance] !== 'running'}
-            variant={variant === 'line' ? 'text' : 'outlined'}
-            sx={
-              variant === 'line'
-                ? { minWidth: '32px', width: '32px' }
-                : { height: 40 }
-            }
-            aria-label="stop"
-            onClick={(e) => {
-              handleStopCore(e, newPort || parseInt(port, 10) || 8889)
-            }}
-          >
-            <Stop />
-          </Button>
-          <Button
-            disabled={coreStatus[instance] !== 'running'}
-            variant={variant === 'line' ? 'text' : 'outlined'}
-            color={active ? 'success' : 'inherit'}
-            sx={
-              variant === 'line'
-                ? { minWidth: '32px', width: '32px' }
-                : { height: 40 }
-            }
-            aria-label="connect"
-            onClick={() => {
-              handleSave(
-                `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
-                true
-              )
-            }}
-          >
-            <Cable />
-          </Button>
-          <Button
-            variant={variant === 'line' ? 'text' : 'outlined'}
-            sx={
-              variant === 'line'
-                ? { minWidth: '32px', width: '32px' }
-                : { height: 40 }
-            }
-            aria-label="open-config"
-            onClick={() => {
-              ;(window as any).api.send('toMain', {
-                command: 'open-config',
-                instance
-              })
-            }}
-          >
-            <SettingsApplications />
-          </Button>
-
-          <Popover
-            color="inherit"
-            disabled={
-              coreStatus[instance] === 'starting' ||
-              coreStatus[instance] === 'running' ||
-              instance === 'instance1'
-            }
-            icon={<Delete />}
-            style={
-              variant === 'line'
-                ? { minWidth: '32px', width: '32px' }
-                : { height: 40 }
-            }
-            variant={variant === 'line' ? 'text' : 'outlined'}
-            onConfirm={(e) =>
-              handleDelete(
-                e,
-                parseInt(`${port}` || portRef.current?.value || '', 10) || 8889
-              )
-            }
-          />
-
-          {false && (
-            <Chip
-              label={instance}
-              avatar={<Avatar>Y</Avatar>}
-              // onClick={handleClick}
-              onDelete={() => console.log('delete')}
-              deleteIcon={<Delete />}
-              variant="outlined"
-            />
-          )}
+          <Tooltip title={`Stop ${instance} on ${newPort}`}>
+            <span>
+              <Button
+                disabled={coreStatus[instance] !== 'running'}
+                variant={variant === 'line' ? 'text' : 'outlined'}
+                sx={
+                  variant === 'line'
+                    ? { minWidth: '32px', width: '32px' }
+                    : { height: 40 }
+                }
+                aria-label="stop"
+                onClick={(e) => {
+                  handleStopCore(e, newPort || parseInt(port, 10) || 8889)
+                }}
+              >
+                <Stop />
+              </Button>
+            </span>
+          </Tooltip>
+          <Tooltip title={`Connect to ${instance} on ${newPort}`}>
+            <span>
+              <Button
+                disabled={coreStatus[instance] !== 'running'}
+                variant={variant === 'line' ? 'text' : 'outlined'}
+                color={active ? 'success' : 'inherit'}
+                sx={
+                  variant === 'line'
+                    ? { minWidth: '32px', width: '32px' }
+                    : { height: 40 }
+                }
+                aria-label="connect"
+                onClick={() => {
+                  handleSave(
+                    `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
+                    true
+                  )
+                }}
+              >
+                <Cable />
+              </Button>
+            </span>
+          </Tooltip>
+          <Tooltip title={`Open config of ${instance}`}>
+            <span>
+              <Button
+                variant={variant === 'line' ? 'text' : 'outlined'}
+                sx={
+                  variant === 'line'
+                    ? { minWidth: '32px', width: '32px' }
+                    : { height: 40 }
+                }
+                aria-label="open-config"
+                onClick={() => {
+                  ;(window as any).api.send('toMain', {
+                    command: 'open-config',
+                    instance
+                  })
+                }}
+              >
+                <SettingsApplications />
+              </Button>
+            </span>
+          </Tooltip>
+          <Tooltip title={`Delete ${instance}`}>
+            <span>
+              <Popover
+                color="inherit"
+                disabled={
+                  coreStatus[instance] === 'starting' ||
+                  coreStatus[instance] === 'running' ||
+                  instance === 'instance1'
+                }
+                icon={<Delete />}
+                style={
+                  variant === 'line'
+                    ? { minWidth: '32px', width: '32px' }
+                    : { height: 40 }
+                }
+                variant={variant === 'line' ? 'text' : 'outlined'}
+                onConfirm={(e) =>
+                  handleDelete(
+                    e,
+                    parseInt(`${port}` || portRef.current?.value || '', 10) ||
+                      8889
+                  )
+                }
+              />
+            </span>
+          </Tooltip>
+          {/* 
           <Avatar
             sx={{
               // border: '5px solid',
@@ -342,7 +353,7 @@ const Instances = ({
                 <Stop />
               </IconButton>
             )}
-          </Avatar>
+          </Avatar> */}
         </div>
       </div>
       {variant === 'line' && <Divider />}

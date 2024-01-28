@@ -19,11 +19,13 @@ const handlers = async (wind, subprocesses, event, parameters) => {
         wind.webContents.send('fromMain', ['platform', process.platform])
         break
       case 'get-core-params':
-        wind.webContents.send('fromMain', [
-          'coreParams',
-          coreParams[process.platform]
-        ])
-        sendStatus(wind, subprocesses)
+        if (isCC) {
+          wind.webContents.send('fromMain', [
+            'coreParams',
+            coreParams[process.platform]
+          ])
+          sendStatus(wind, subprocesses)
+        }
         break
       case 'start-core':
         if (isCC) {

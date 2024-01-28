@@ -12,6 +12,7 @@ import {
   // Switch,
   Divider,
   Box,
+  useTheme,
 } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
 import isElectron from 'is-electron';
@@ -19,6 +20,7 @@ import useStore from '../../store/useStore';
 import Instances from './Instances';
 
 export default function HostManager() {
+  const theme = useTheme()
   const [instanceVariant] = useState<'buttons' | 'line'>('line');
   const dialogOpen = useStore((state) => state.hostManager || false);
   const edit = useStore((state) => state.dialogs.nohost?.edit || false);
@@ -95,7 +97,7 @@ export default function HostManager() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          LedFx HostManager
+          LedFx HostManager <span style={{ background: theme.palette.success.dark, padding: '0 1rem', borderRadius: 3, marginLeft: 8 }}>beta</span>
         </DialogTitle>
         <DialogContent>
           {!edit && (
