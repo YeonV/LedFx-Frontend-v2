@@ -54,7 +54,7 @@ export const Ledfx = async (
       )
       // console.log('2:', response);
       if (response.data.status) {
-        return response.data.status
+        return response.data
       }
     }
     // console.log('3:', response);
@@ -71,6 +71,9 @@ export const Ledfx = async (
           }
         })
       )
+      if (response.data.status) {
+        return response.data
+      }
     }
     // console.log('4:', response);
     if (response.status === 200) {
