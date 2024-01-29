@@ -1,4 +1,7 @@
 /* eslint-disable */
+
+import { IMCell } from '../pages/Devices/EditVirtuals/EditMatrix/M.utils'
+
 /* eslint-disable @typescript-eslint/indent */
 export const drawerWidth = 240
 export const frontendConfig = 12
@@ -136,10 +139,10 @@ export const ordered = (unordered: Record<string, any>) =>
       return obj
     }, {})
 
-export function transpose<T>(matrix: T[][]): T[][] {
-  const res: T[][] = []
+export function transpose(matrix: IMCell[][]) {
+  const res = [] as IMCell[][]
   for (let i = 0; i < matrix[0].length; i++) {
-    res[i] = [] as T[]
+    res[i] = [] as IMCell[]
     for (let j = 0; j < matrix.length; j++) {
       res[i][j] = matrix[j][i]
     }
