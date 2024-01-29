@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
-import { makeStyles } from '@mui/styles'
+import { useEffect } from 'react'
+
 import {
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   Typography,
   Grid,
   Chip,
@@ -12,49 +11,15 @@ import {
   Alert,
   Collapse
 } from '@mui/material'
-import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 // import ScenesTable from './ScenesTable';
 import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
 import ScenesMenu from './ScenesMenu'
-
-const useStyles = makeStyles({
-  root: {
-    width: 'min(92vw, 345px)'
-  },
-  sceneTitle: {
-    fontSize: '1.1rem',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis'
-  },
-  '@media (max-width: 580px)': {
-    root: {
-      width: '95vw'
-    },
-    sceneTitle: {
-      fontSize: '1rem',
-      cursor: 'default'
-    }
-  },
-  media: {
-    height: 140
-  },
-  iconMedia: {
-    height: 140,
-    display: 'flex',
-    alignItems: 'center',
-    margin: '0 auto',
-    fontSize: 100,
-    '& > span:before': {
-      position: 'relative'
-    }
-  }
-})
+import useStyles from './Scenes.styles'
+import SceneImage from './ScenesImage'
 
 const Scenes = () => {
   const classes = useStyles()
@@ -66,7 +31,6 @@ const Scenes = () => {
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
-  const getImage = useStore((state) => state.getImage)
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -77,44 +41,6 @@ const Scenes = () => {
     activateScene(e)
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
-  }
-
-  const sceneImage = (iconName: string) => {
-    const [imageData, setImageData] = useState(null)
-    const fetchImage = useCallback(async (ic: string) => {
-      const result = await getImage(
-        ic.split('image:')[1]?.replaceAll('file:///', '')
-      )
-      setImageData(result.image)
-    }, [])
-    useEffect(() => {
-      if (iconName?.startsWith('image:')) {
-        fetchImage(iconName)
-      }
-    }, [iconName, fetchImage])
-
-    return iconName && iconName.startsWith('image:') ? (
-      isElectron() ? (
-        <CardMedia
-          className={classes.media}
-          image={iconName.split('image:')[1]}
-          title="Contemplative Reptile"
-        />
-      ) : (
-        <div
-          className={classes.media}
-          style={{
-            height: 140,
-            maxWidth: 'calc(100% - 2px)',
-            backgroundSize: 'cover',
-            backgroundImage: `url("data:image/png;base64,${imageData}")`
-          }}
-          title="SceneImage"
-        />
-      )
-    ) : (
-      <BladeIcon scene className={classes.iconMedia} name={iconName} />
-    )
   }
 
   useEffect(() => {
@@ -262,7 +188,9 @@ const Scenes = () => {
                     style={{ background: theme.palette.background.default }}
                     onClick={() => handleActivateScene(s)}
                   >
-                    {sceneImage(scenes[s].scene_image || 'Wallpaper')}
+                    <SceneImage
+                      iconName={scenes[s].scene_image || 'Wallpaper'}
+                    />
                     <div style={{ position: 'absolute', top: 0, right: 0 }}>
                       {scenes[s].scene_tags?.split(',').map(
                         (t: string) =>
