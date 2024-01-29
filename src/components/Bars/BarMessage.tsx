@@ -43,9 +43,22 @@ const MessageBar = () => {
       <Alert
         elevation={6}
         variant="filled"
-        severity={messageType as AlertColor}
+        severity={
+          message.includes('[ERROR') ? 'error' : (messageType as AlertColor)
+        }
+        sx={{
+          whiteSpace: 'pre-line',
+          width: message.includes('[ERROR') ? 'min(80vw, 720px)' : 'auto'
+        }}
       >
-        {message}
+        {message.replace(/\[ERROR|\[Errno/g, (match, offset) =>
+          offset > 0 ? `\n${match}` : match
+        )}
+        {/* <div
+          dangerouslySetInnerHTML={{
+            __html: message.split('[ERROR').join('<br />[ERROR')
+          }}
+        /> */}
       </Alert>
     </Snackbar>
   )

@@ -31,6 +31,7 @@ import User from './User/User'
 import Lock from './Lock'
 import Mp from '../components/Integrations/Spotify/Widgets/Mp/Mp'
 import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
+import HostManager from '../components/Dialogs/HostManager'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
@@ -131,6 +132,7 @@ const Routings = ({ handleWs }: any) => {
         </Routes>
         {mp && <Mp />}
         <NoHostDialog />
+        <HostManager />
         <FrontendPixelsTooSmall />
         <SmartBar
           open={smartBarOpen}
