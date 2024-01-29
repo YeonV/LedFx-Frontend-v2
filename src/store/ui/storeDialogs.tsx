@@ -3,6 +3,15 @@ import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
 const storeDialogs = (set: any) => ({
+  hostManager: false,
+  setHostManager: (open: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.hostManager = open
+      }),
+      false,
+      'api/dialog/nohost'
+    ),
   dialogs: {
     nohost: {
       open: false,

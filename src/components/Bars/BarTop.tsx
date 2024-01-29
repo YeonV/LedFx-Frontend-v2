@@ -9,7 +9,8 @@ import {
   GitHub,
   ChevronLeft,
   Login,
-  Logout
+  Logout,
+  Lan
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import {
@@ -160,6 +161,7 @@ const TopBar = () => {
   // const setDarkMode = useStore((state) => state.ui.setDarkMode);
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
+  const setHostManager = useStore((state) => state.setHostManager)
   const toggleGraphs = useStore((state) => state.toggleGraphs)
   const graphs = useStore((state) => state.graphs)
   // const config = useStore((state) => state.config);
@@ -178,6 +180,8 @@ const TopBar = () => {
   const invIntegrations = useStore((state) => state.tours.integrations)
   const invDevices = useStore((state) => state.tours.devices)
   const invScenes = useStore((state) => state.tours.scenes)
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
   )
@@ -204,6 +208,10 @@ const TopBar = () => {
   }
   const changeHost = () => {
     setDialogOpen(true, true)
+    setAnchorEl(null)
+  }
+  const changeHostManager = () => {
+    setHostManager(true)
     setAnchorEl(null)
   }
   // const toggleDarkMode = () => {
@@ -423,6 +431,14 @@ const TopBar = () => {
                   </ListItemIcon>
                   Change Host
                 </MenuItem>
+                {isCC && (
+                  <MenuItem onClick={changeHostManager}>
+                    <ListItemIcon>
+                      <Lan />
+                    </ListItemIcon>
+                    Host Manager
+                  </MenuItem>
+                )}
                 {/* <MenuItem onClick={toggleDarkMode}>
               <ListItemIcon>
                 <Language />

@@ -102,7 +102,7 @@ const GeneralCard = () => {
               <SettingsButton
                 startIcon={<CloudUpload />}
                 onClick={() =>
-                  (window as any).api.send('toMain', 'open-config')
+                  (window as any).api.send('toMain', { command: 'open-config' })
                 }
               >
                 Config Location
@@ -139,7 +139,7 @@ const GeneralCard = () => {
               <SettingsButton
                 startIcon={<PowerSettingsNew />}
                 onClick={() => {
-                  ;(window as any).api.send('toMain', 'start-core')
+                  ;(window as any).api.send('toMain', { command: 'start-core' })
                 }}
               >
                 Start Core
