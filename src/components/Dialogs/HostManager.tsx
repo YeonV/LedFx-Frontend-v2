@@ -146,8 +146,8 @@ export default function HostManager() {
         });
     
         return finalScenes;
-      } catch (e) {
-        console.log(e);
+      } catch (_e) {
+        // console.log(_e);
         return {};
       }
     }
@@ -157,7 +157,7 @@ export default function HostManager() {
     
     
   }, [coreStatus, coreParams]);
-  console.log(commonScenes)
+  // console.log(commonScenes)
   const activateCommon = async (scene: string) => {
     try {
       await Promise.all(
@@ -172,8 +172,8 @@ export default function HostManager() {
         })
       );
     }
-    catch (e) {
-      console.log(e);
+    catch (_e) {
+      // console.log(_e);
     }
   }
     
