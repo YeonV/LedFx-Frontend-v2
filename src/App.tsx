@@ -77,8 +77,8 @@ export default function App() {
         'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
       )
     if (isElectron()) {
-      ;(window as any).api.send('toMain', { command: 'get-platform' })
-      ;(window as any).api.send('toMain', { command: 'get-core-params' })
+      ;(window as any)?.api?.send('toMain', { command: 'get-platform' })
+      ;(window as any)?.api?.send('toMain', { command: 'get-core-params' })
     }
   }, [])
   ;(window as any).api?.receive('fromMain', (parameters: any) => {
@@ -108,6 +108,9 @@ export default function App() {
     }
     if (parameters === 'clear-frontend') {
       deleteFrontendConfig()
+    }
+    if (parameters === 'all-windows') {
+      console.log('all-windows', parameters[1])
     }
   })
 

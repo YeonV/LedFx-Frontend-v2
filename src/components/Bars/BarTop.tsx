@@ -185,7 +185,7 @@ const TopBar = () => {
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
   )
-
+  const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
     switch (pathname.split('/')[1]) {
       case 'device':
@@ -431,7 +431,7 @@ const TopBar = () => {
                   </ListItemIcon>
                   Change Host
                 </MenuItem>
-                {isCC && (
+                {isCC && isCreator && (
                   <MenuItem onClick={changeHostManager}>
                     <ListItemIcon>
                       <Lan />
@@ -484,6 +484,9 @@ const TopBar = () => {
                           '_blank',
                           'noopener,noreferrer'
                         )
+                        setTimeout(() => {
+                          window.location.reload()
+                        }, 5000)
                       }
                     }}
                   >

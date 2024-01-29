@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import axios from 'axios'
+import isElectron from 'is-electron'
 
 const cloud = axios.create({
   baseURL: 'https://strapi.yeonv.com'
@@ -46,7 +47,9 @@ const LoginRedirect = () => {
             'username'
           )}. You will be redirected in a few seconds...`
         )
-        setTimeout(() => history('/devices'), 2000) // Redirect to homepage after 3 sec
+        setTimeout(() => {
+          return isElectron() ? window.close() : history('/devices')
+        }, 2000)
       })
       .catch((err) => {
         // eslint-disable-next-line no-console
