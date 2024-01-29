@@ -384,7 +384,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
             />
           </Stack>
           <Stack direction="row" alignItems="center"> 
-            <img width={32} height="auto" src={openrgbLogo} alt="wled" />
+            <img width={32} height="auto" src={openrgbLogo} alt="openrgb" />
              <SettingsRow
               title="OpenRGB"
               checked={assistant.openRgb}

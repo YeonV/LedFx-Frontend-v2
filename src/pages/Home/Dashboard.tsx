@@ -25,12 +25,17 @@ import Popover from '../../components/Popover/Popover'
 import TourHome from '../../components/Tours/TourHome'
 import SmartBar from '../../components/Dialogs/SmartBar'
 import MGraph from '../../components/MGraph'
+import openrgbLogo from '../../icons/png/openrgb.png'
+import fx from '../../components/Icons/FX.svg'
 
 const Dashboard = () => {
   const theme = useTheme()
   const db = true
   const navigate = useNavigate()
   const scanForDevices = useStore((state) => state.scanForDevices)
+  const scanForOpenRgbDevices = useStore((state) => state.scanForOpenRgbDevices)
+  const setIntro = useStore((state) => state.setIntro)
+
   const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
@@ -177,8 +182,44 @@ const Dashboard = () => {
         {db ? <SmartBar direct /> : <SmartBar direct />}
         <Stack spacing={2} direction={smallHeight ? 'row' : 'column'}>
           <Stack spacing={2} direction="row">
-            <Tooltip title="Scan for WLED Devices">
-              <Box sx={{ m: 0, position: 'relative', zIndex: 0 }}>
+            <Tooltip title="Startup Assistant">
+              <Fab
+                aria-label="scan"
+                onClick={() => {
+                  setIntro(true)
+                }}
+                style={{
+                  margin: '8px 0',
+                  zIndex: 0
+                }}
+                sx={{
+                  bgcolor: theme.palette.primary.main,
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.light
+                  }
+                }}
+              >
+                <img
+                  width={60}
+                  height="auto"
+                  src={fx}
+                  alt="wled"
+                  style={{ filter: 'grayscale(100%) brightness(0)' }}
+                />
+              </Fab>
+            </Tooltip>
+            <Tooltip
+              title="Scan for WLED Devices"
+              sx={{ '&': { marginLeft: '0 !important' } }}
+            >
+              <Box
+                sx={{
+                  m: 0,
+                  position: 'relative',
+                  zIndex: 0,
+                  marginLeft: '8px !important'
+                }}
+              >
                 <Popover
                   type="fab"
                   text="Create Segments?"
@@ -218,7 +259,32 @@ const Dashboard = () => {
                 </Popover>
               </Box>
             </Tooltip>
-
+            <Tooltip title="Scan for OpenRGB Devices">
+              <Fab
+                aria-label="scan"
+                onClick={() => {
+                  scanForOpenRgbDevices()
+                }}
+                style={{
+                  margin: '8px',
+                  zIndex: 0
+                }}
+                sx={{
+                  bgcolor: theme.palette.primary.main,
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.light
+                  }
+                }}
+              >
+                <img
+                  width={23}
+                  height="auto"
+                  src={openrgbLogo}
+                  alt="wled"
+                  style={{ filter: 'grayscale(100%) brightness(0)' }}
+                />
+              </Fab>
+            </Tooltip>
             {/* <Tooltip title="Play / Pause LedFx Effect-streaming">
             <Fab
               aria-label="play-pause"
@@ -275,7 +341,7 @@ const Dashboard = () => {
               </span>
             </Tooltip>
           </Stack>
-          <Stack spacing={2} direction="row">
+          <Stack spacing={2} direction="row" justifyContent="center">
             <Tooltip title="Github Core (python)">
               <Fab
                 aria-label="github"
