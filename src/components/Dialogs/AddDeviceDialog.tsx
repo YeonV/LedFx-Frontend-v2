@@ -18,7 +18,6 @@ import {
 } from '@mui/material';
 import useStore from '../../store/useStore';
 import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
-import { Ledfx } from '../../api/ledfx'
 
 const PREFIX = 'AddDeviceDialog';
 
@@ -110,15 +109,15 @@ const AddDeviceDialog = () => {
       Object.keys(initial.config).length === 0 &&
       initial.config?.constructor === Object
     ) {
-      if (deviceType === 'wled') {
-        if (cleanedModel.ip_address) {
-          Ledfx(`/api/fetch/${encodeURIComponent(
-              `http://${(cleanedModel.ip_address as string)
-                .replace('https://', '').replace('http://', '').replaceAll('/', '')}/json/nodes`
-            )}`, 'GET', {}).then((data: any) => {
+      addDevice({
+        type: deviceType,
+        config: { ...defaultModel, ...cleanedModel },
+      }).then((res: any) => {
+        if (res !== 'failed') {
+          if (deviceType === 'wled') {      
             const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
             const newDevices = [] as { name: string, ip_address: string}[]
-            data.nodes.forEach((node: any) => {
+            res.nodes && res.nodes.forEach((node: any) => {
               if (node.ip && !deviceIps.includes(node.ip)) {                  
                 newDevices.push({ name: node.name, ip_address: node.ip})
               }                
@@ -126,14 +125,7 @@ const AddDeviceDialog = () => {
             if (newDevices.length > 0) {
               setAddWled(newDevices)
             }
-          })
-        }
-      }
-      addDevice({
-        type: deviceType,
-        config: { ...defaultModel, ...cleanedModel },
-      }).then((res) => {
-        if (res !== 'failed') {
+          }
           setDialogOpenAddDevice(false);
           getDevices();
           getVirtuals();
