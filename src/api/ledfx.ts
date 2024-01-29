@@ -38,7 +38,6 @@ export const Ledfx = async (
         response = await api.get(path)
         break
     }
-    // console.log('1:', response);
     if (response.data && response.data.payload) {
       setState(
         produce((state: IStore) => {
@@ -52,12 +51,10 @@ export const Ledfx = async (
           }
         })
       )
-      // console.log('2:', response);
       if (response.data.status) {
         return response.data
       }
     }
-    // console.log('3:', response);
     if (response.payload) {
       setState(
         produce((state: IStore) => {
@@ -75,9 +72,7 @@ export const Ledfx = async (
         return response.data
       }
     }
-    // console.log('4:', response);
     if (response.status === 200) {
-      // console.log('4eyyy:', response);
       setState(
         produce((state: IStore) => {
           state.disconnected = false
@@ -85,7 +80,6 @@ export const Ledfx = async (
       )
       return response.data || response
     }
-    // console.log('5:', response);
     return setState(
       produce((state: IStore) => {
         state.ui.snackbar = {
