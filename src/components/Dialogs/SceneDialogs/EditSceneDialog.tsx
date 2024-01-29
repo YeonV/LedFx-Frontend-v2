@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react/jsx-no-useless-fragment */
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   AppBar,
   Box,
@@ -31,6 +31,8 @@ import {
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
+import { useDropzone } from 'react-dropzone'
+import isElectron from 'is-electron'
 import { filterKeys, ordered } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
@@ -71,26 +73,62 @@ const EditSceneDialog = () => {
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
   const getUserPresets = useStore((state) => state.getUserPresets)
+  const getImage = useStore((state) => state.getImage)
+  const [imageData, setImageData] = useState(null)
+
   // const getFullConfig = useStore((state) => state.getFullConfig)
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
   )
+  const fetchImage = useCallback(async (ic: string) => {
+    const result = await getImage(
+      ic.split('image:')[1]?.replaceAll('file:///', '')
+    )
+    setImageData(result.image)
+  }, [])
 
-  const sceneImage = (iconName: string) =>
-    iconName && iconName.startsWith('image:') ? (
-      <div>
-        <CardMedia
+  useEffect(() => {
+    if (image?.startsWith('image:')) {
+      fetchImage(image)
+    }
+  }, [image, fetchImage])
+
+  const onDrop = useCallback((acceptedFiles: any) => {
+    acceptedFiles.forEach((file: any) => {
+      setImage(`image:file:///${file.path.replaceAll('\\', '/')}`)
+    })
+  }, [])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+  const sceneImage = (iconName: string) => {
+    return iconName && iconName.startsWith('image:') ? (
+      isElectron() ? (
+        <div>
+          <CardMedia
+            style={{
+              height: tags?.split(',')[0].length > 0 ? 140 : 125,
+              maxWidth: 334,
+              width: small ? '100%' : 334,
+              marginTop: '1rem'
+            }}
+            image={iconName?.split('image:')[1]}
+            title="SceneImage"
+          />
+        </div>
+      ) : (
+        <div
           style={{
             height: tags?.split(',')[0].length > 0 ? 140 : 125,
             maxWidth: 334,
             width: small ? '100%' : 334,
-            marginTop: '1rem'
+            marginTop: '1rem',
+            backgroundSize: 'cover',
+            backgroundImage: `url("data:image/png;base64,${imageData}")`
           }}
-          image={iconName?.split('image:')[1]}
-          title="Contemplative Reptile"
+          title="SceneImage"
         />
-      </div>
+      )
     ) : (
       <div>
         <BladeIcon
@@ -112,6 +150,7 @@ const EditSceneDialog = () => {
         />
       </div>
     )
+  }
 
   function isValidURL(string: string) {
     const res = string.match(
@@ -452,7 +491,7 @@ const EditSceneDialog = () => {
                   style={{ wordBreak: 'break-all' }}
                 >
                   <em>
-                    eg.
+                    eg. image:file:///C:/Users/username/Pictures/scene.png or
                     image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
                   </em>
                 </Typography>
@@ -498,6 +537,53 @@ const EditSceneDialog = () => {
               onChange={(e) => setImage(e.target.value)}
               fullWidth
             />
+            <Stack direction="row" gap={1}>
+              <FormControl sx={{ mt: 1, minWidth: 120 }} disabled>
+                <InputLabel id="scene_image">Image Type</InputLabel>
+                <Select
+                  labelId="scene_image"
+                  label="Image Type"
+                  variant="outlined"
+                  value={
+                    image.startsWith('image:file:///')
+                      ? 'image:file:///'
+                      : image.startsWith('image:https://')
+                        ? 'image:https://'
+                        : image.startsWith('mdi:')
+                          ? 'mdi:'
+                          : ''
+                  }
+                  onChange={(e) => {
+                    setImage(e.target.value)
+                  }}
+                >
+                  <MenuItem value="">MUI-Icon</MenuItem>
+                  <MenuItem value="mdi:">MDI-Icon</MenuItem>
+                  <MenuItem value="image:https://">External</MenuItem>
+                  <MenuItem value="image:file:///">Local</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                disabled
+                margin="dense"
+                id="scene_image"
+                label="Image"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <TooltipImage />
+                    </InputAdornment>
+                  )
+                }}
+                type="text"
+                value={image
+                  .replace('image:file:///', '')
+                  .replace('image:https://', '')
+                  .replace('mdi:', '')}
+                onChange={(e) => setImage(e.target.value)}
+                fullWidth
+              />
+            </Stack>
 
             <Autocomplete
               onChange={(e, a) => setTags(a.join(','))}
@@ -739,7 +825,25 @@ const EditSceneDialog = () => {
               alignmentBaseline: 'central'
             }}
           >
-            {sceneImage(image || 'Wallpaper')}
+            {isElectron() ? (
+              <div
+                {...getRootProps()}
+                style={{
+                  width: '100%',
+                  textAlign: 'center'
+                }}
+              >
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                  <p>Drop image here ...</p>
+                ) : (
+                  <p>Drop image here, or click to select files</p>
+                )}
+                {sceneImage(image || 'Wallpaper')}
+              </div>
+            ) : (
+              sceneImage(image || 'Wallpaper')
+            )}
             {scenes &&
             Object.keys(scenes).length &&
             features.scenechips &&

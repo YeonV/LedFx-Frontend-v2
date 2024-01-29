@@ -112,6 +112,9 @@ const storeActions = (set: any) => ({
     }),
   getInfo: async () => await Ledfx('/api/info'),
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),
+  getImage: async (path_url: string) => await Ledfx('/api/get_image', 'POST', {
+    path_url
+  }),
 })
 
 export default storeActions
