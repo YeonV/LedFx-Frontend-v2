@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import {
   Card,
@@ -12,6 +12,7 @@ import {
   Alert,
   Collapse
 } from '@mui/material'
+import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -65,6 +66,8 @@ const Scenes = () => {
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
+  const getImage = useStore((state) => state.getImage)
+
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
   )
@@ -76,16 +79,43 @@ const Scenes = () => {
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
   }
 
-  const sceneImage = (iconName: string) =>
-    iconName && iconName.startsWith('image:') ? (
-      <CardMedia
-        className={classes.media}
-        image={iconName.split('image:')[1]}
-        title="Contemplative Reptile"
-      />
+  const sceneImage = (iconName: string) => {
+    const [imageData, setImageData] = useState(null)
+    const fetchImage = useCallback(async (ic: string) => {
+      const result = await getImage(
+        ic.split('image:')[1]?.replaceAll('file:///', '')
+      )
+      setImageData(result.image)
+    }, [])
+    useEffect(() => {
+      if (iconName?.startsWith('image:')) {
+        fetchImage(iconName)
+      }
+    }, [iconName, fetchImage])
+
+    return iconName && iconName.startsWith('image:') ? (
+      isElectron() ? (
+        <CardMedia
+          className={classes.media}
+          image={iconName.split('image:')[1]}
+          title="Contemplative Reptile"
+        />
+      ) : (
+        <div
+          className={classes.media}
+          style={{
+            height: 140,
+            maxWidth: 'calc(100% - 2px)',
+            backgroundSize: 'cover',
+            backgroundImage: `url("data:image/png;base64,${imageData}")`
+          }}
+          title="SceneImage"
+        />
+      )
     ) : (
       <BladeIcon scene className={classes.iconMedia} name={iconName} />
     )
+  }
 
   useEffect(() => {
     getScenes()

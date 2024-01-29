@@ -37,8 +37,10 @@ const TooltipImage = () => (
               variant="subtitle1"
               style={{ wordBreak: 'break-all' }}
             >
+              <em>eg. image:file:///C:/Users/username/Pictures/scene.png</em> or
+              <br />
               <em>
-                eg. image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
+                image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
               </em>
             </Typography>
           </li>
