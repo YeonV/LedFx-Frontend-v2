@@ -115,6 +115,9 @@ const storeActions = (set: any) => ({
   getImage: async (path_url: string) => await Ledfx('/api/get_image', 'POST', {
     path_url
   }),
+  getGifFrames: async (path_url: string) => await Ledfx('/api/get_gif_frames', 'POST', {
+    path_url
+  }),
 })
 
 export default storeActions

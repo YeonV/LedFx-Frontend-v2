@@ -4,7 +4,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 import { Button, DialogActions, useTheme } from '@mui/material'
-import { Search } from '@mui/icons-material'
+import fx from '../../../Icons/FX.svg'
 
 interface Gif {
   name: string
@@ -85,8 +85,17 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
 
   return (
     <>
-      <Button onClick={handleClickOpen} sx={{ alignSelf: 'flex-start' }}>
-        <Search />
+      <Button onClick={handleClickOpen} sx={{ alignSelf: 'center' }}>
+        <img
+          width={50}
+          height="24px"
+          src={fx}
+          alt="wled"
+          style={{
+            filter: 'invert(1) brightness(2)',
+            objectFit: 'cover'
+          }}
+        />
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>GIF Picker</DialogTitle>

@@ -13,7 +13,7 @@ import BladeFrame from '../BladeFrame'
 import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
-// import GifFrameSelector from '../Gif/GifFrameSelector'
+import GifFramePicker from '../Gif/GifFramePicker'
 
 /**
  * ## String
@@ -188,7 +188,7 @@ const BladeSelect = ({
             }}
             style={textStyle as any}
           />
-          {schema.id === 'gif_at' && (
+          {schema.id === 'image_location' && (
             <GifPicker
               onChange={(gif: string) => {
                 onChange(model_id, gif)
@@ -196,17 +196,17 @@ const BladeSelect = ({
               }}
             />
           )}
-          {/* {schema.id === 'beat frames' &&
-            model['gif_at'] &&
-            model['gif_at'] !== '' && (
-              <GifFrameSelector
-                url={model['gif_at']}
+          {schema.id === 'beat_frames' &&
+            model.image_location &&
+            model.image_location !== '' && (
+              <GifFramePicker
+                model={model}
                 onChange={(gif: string) => {
                   onChange(model_id, gif)
                   inputRef.current.value = gif
                 }}
               />
-            )} */}
+            )}
           {model_id === 'auth_token' && type === 'nanoleaf' && (
             <Tooltip
               title={
