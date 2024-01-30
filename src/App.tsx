@@ -94,7 +94,7 @@ export default function App() {
       console.log(parameters[1])
     }
     if (parameters[0] === 'protocol') {
-      console.log('protocol', parameters[1])
+      // console.log('protocol', parameters[1])
       setProtoCall(JSON.parse(parameters[1]).commandLine.pop())
     }
     if (parameters[0] === 'snackbar') {
