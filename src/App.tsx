@@ -110,7 +110,7 @@ export default function App() {
       deleteFrontendConfig()
     }
     if (parameters === 'all-windows') {
-      console.log('all-windows', parameters[1])
+      // console.log('all-windows', parameters[1])
     }
   })
 
