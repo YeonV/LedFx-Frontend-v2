@@ -1,4 +1,4 @@
-const { app, shell } = require('electron')
+const { app, shell, BrowserWindow } = require('electron')
 const path = require('path')
 const { generateMfaQr, handleVerifyOTP } = require('./otp.js')
 const { coreParams, isCC, defaultCoreParams, store } = require('./core.js')
@@ -11,6 +11,11 @@ const handlers = async (wind, subprocesses, event, parameters) => {
     switch (parameters.command) {
       case 'verify_otp':
         handleVerifyOTP(event, parameters)
+        break
+      case 'get-all-windows':
+        const allWIndows = BrowserWindow.getAllWindows()
+        console.log('allWIndows', allWIndows)
+        wind.webContents.send('fromMain', ['all-windows', allWIndows])
         break
       case 'generate-mfa-qr':
         generateMfaQr(event, parameters)
