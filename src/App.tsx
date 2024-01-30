@@ -16,6 +16,7 @@ import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider'
 import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes'
 import xmas from './assets/xmas.png'
 import newyear from './assets/fireworks.jpg'
+import login from './utils/login'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -93,6 +94,7 @@ export default function App() {
       console.log(parameters[1])
     }
     if (parameters[0] === 'protocol') {
+      console.log('protocol', parameters[1])
       setProtoCall(JSON.parse(parameters[1]).commandLine.pop())
     }
     if (parameters[0] === 'snackbar') {
@@ -126,7 +128,7 @@ export default function App() {
 
   useEffect(() => {
     if (protoCall !== '') {
-      showSnackbar('info', `External call: ${protoCall}`)
+      // showSnackbar('info', `External call: ${protoCall}`)
       const proto = protoCall.split('/').filter((n) => n)
       // eslint-disable-next-line no-console
       console.table({
@@ -144,6 +146,12 @@ export default function App() {
           proto[2].replace('?code=', '').replace('#%2FIntegrations%3F', ''),
           { expires: expDate }
         )
+      } else if (proto[1] === 'auth') {
+        login(proto.join().split('redirect?')[1]).then(() => {
+          window.location.reload()
+        })
+      } else {
+        showSnackbar('info', `External call: ${protoCall}`)
       }
       setProtoCall('')
     }
