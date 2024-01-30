@@ -16,7 +16,7 @@
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
     "@mui/styles": "^5.14.20",
-    "@mui/x-data-grid": "^6.18.3",
+    "@mui/x-data-grid": "^6.19.2",
     "@storybook/react": "^7.6.3",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
@@ -40,6 +40,7 @@
     "oauth-pkce": "0.0.6",
     "prop-types": "^15.8.1",
     "qrcode": "^1.5.3",
+    "qs": "^6.11.2",
     "react": "^18.1.0",
     "react-chartjs-2": "5.2.0",
     "react-dom": "^18.1.0",
@@ -245,5 +246,5 @@
       }
     }
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@1.22.1"
 }

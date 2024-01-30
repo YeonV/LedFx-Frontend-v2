@@ -162,6 +162,8 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             setShowFeatures('spotify', true)
             setShowFeatures('youtube', true)
             setShowFeatures('webaudio', true)
+            setShowFeatures('alpha', true)
+            setShowFeatures('beta', true)
             setFeatures('streamto', true)
             setFeatures('waves', true)
             setFeatures('cloud', true)
