@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Typography, Button } from '@mui/material'
+import { Typography, Button, Stack } from '@mui/material'
 import { ExpandLess, ExpandMore, SwapHoriz } from '@mui/icons-material'
 import { swap } from '../../../utils/helpers'
 import PopoverSure from '../../../components/Popover/Popover'
@@ -102,39 +102,45 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
       }}
     >
       <div className={classes.segmentsWrapper}>
-        <div className={classes.segmentsColOrder}>
-          <div style={{ display: 'flex' }}>
-            <div>
-              <Button
-                disabled={i === 0}
-                color="inherit"
-                onClick={() => reorder('UP')}
-                size="small"
-                className={classes.segmentsButtonUp}
-              >
-                <ExpandLess />
-              </Button>
-            </div>
-            <div>
-              <Button
-                disabled={i === virtual.segments.length - 1}
-                color="inherit"
-                onClick={() => reorder('DOWN')}
-                size="small"
-                className={classes.segmentsButtonDown}
-              >
-                <ExpandMore />
-              </Button>
+        <Stack direction="column" spacing={1} alignItems="flex-start">
+          <Typography color="textSecondary" marginTop={1} marginBottom={-1}>
+            {title}
+          </Typography>
+          <div className={classes.segmentsColOrder}>
+            <div style={{ display: 'flex' }}>
+              <div>
+                <Button
+                  disabled={i === 0}
+                  color="inherit"
+                  onClick={() => reorder('UP')}
+                  size="small"
+                  className={classes.segmentsButtonUp}
+                >
+                  <ExpandLess />
+                </Button>
+              </div>
+              <div>
+                <Button
+                  disabled={i === virtual.segments.length - 1}
+                  color="inherit"
+                  onClick={() => reorder('DOWN')}
+                  size="small"
+                  className={classes.segmentsButtonDown}
+                >
+                  <ExpandMore />
+                </Button>
+              </div>
             </div>
           </div>
-          <div style={{ minWidth: '120px' }}>
-            <Typography color="textSecondary">{title}</Typography>
-            <Typography color="textSecondary">
-              {s[1] === s[2] ? s[1] + 1 : `[ ${s[1] + 1} - ${s[2] + 1} ]`}
-            </Typography>
-          </div>
-        </div>
-        <div className={classes.segmentsColPixelSlider}>
+        </Stack>
+        <div
+          className={classes.segmentsColPixelSlider}
+          style={{
+            alignSelf: 'stretch',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
           <PixelSlider s={s} handleRangeSegment={handleRangeSegment} />
         </div>
         <div className={classes.segmentsColActions}>
