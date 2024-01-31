@@ -119,8 +119,7 @@ export default function HostManager() {
         const sceneKeys = allScenes.map((scenes) => Object.keys(scenes));
     
         // Find the common keys
-        const commonKeys = sceneKeys.reduce((a, b) => a.filter(c => b.includes(c)));
-    
+        const commonKeys = sceneKeys.reduce((a, b) => a.filter(c => b.includes(c) && c !== 'blade-scene'));
         // Prepare an empty object for the final scenes
         const finalScenes: Record<string, any> = {};
     
