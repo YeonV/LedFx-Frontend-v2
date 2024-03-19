@@ -36,7 +36,11 @@ function startInstance(wind, name, subprocesses, port) {
         }
         if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
           // `subprocesses` is defined, proceed with calling `sendStatus`
-          sendStatus(wind, subprocesses, false, name);
+          try {            
+            sendStatus(wind, subprocesses, false, name);
+          } catch (error) {
+            console.error(error);  
+          }
         } else {
           // `subprocesses` is not defined, handle this case as needed
           console.error('subprocesses is not defined');

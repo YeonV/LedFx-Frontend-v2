@@ -51,7 +51,7 @@ export default function HostManager() {
   const handleClose = () => {
     setDialogOpen(false);
   };
- 
+
   const handleSave = (ho:string, connect?:boolean) => {
     if (connect) setHost(ho);
     if (!hosts.some((h) => h === ho)) {
@@ -101,7 +101,7 @@ export default function HostManager() {
     }
   }, []);
   const runningCores = Object.keys(coreStatus).filter((h)=>coreStatus[h] === 'running').map((h)=>parseInt(coreParams[h][1], 10) || 8888)
-  
+
 
   useEffect(() => {
     async function getCommonScenes(rcores: number[]) {
@@ -114,15 +114,15 @@ export default function HostManager() {
             return json.scenes;
           })
         );
-    
+
         // Get the keys of the scenes from each core
         const sceneKeys = allScenes.map((scenes) => Object.keys(scenes));
-    
+
         // Find the common keys
         const commonKeys = sceneKeys.reduce((a, b) => a.filter(c => b.includes(c) && c !== 'blade-scene'));
         // Prepare an empty object for the final scenes
         const finalScenes: Record<string, any> = {};
-    
+
         // Iterate over the common keys
         commonKeys.forEach((key) => {
           // Iterate over each scene from all cores
@@ -143,18 +143,18 @@ export default function HostManager() {
             }
           });
         });
-    
+
         return finalScenes;
       } catch (_e) {
         // console.log(_e);
         return {};
       }
     }
-    
+
     getCommonScenes(runningCores).then((res)=>setCommonScenes(res));
-    
-    
-    
+
+
+
   }, [coreStatus, coreParams]);
   // console.log(commonScenes)
   const activateCommon = async (scene: string) => {
@@ -175,7 +175,7 @@ export default function HostManager() {
       // console.log(_e);
     }
   }
-    
+
   const [alignment, setAlignment] = useState('cards');
 
   const handleChange = (
@@ -220,12 +220,12 @@ export default function HostManager() {
                 <Button aria-label="delete" onClick={(e) => h && handleDelete(e, h)}>
                   <Delete />
                 </Button>
-              </div>             
-            </div>)}              
+              </div>
+            </div>)}
           </div>
           {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1 && (<div style={{ marginTop: '1rem'}}>
             <div style={{ marginBottom: '1rem'}}>
-            
+
               <Typography variant='caption' sx={{ marginBottom: '1rem' }}>Core Instances</Typography>
               <Divider sx={{ marginBottom: '1rem' }} />
             </div>
@@ -243,7 +243,7 @@ export default function HostManager() {
             {Object.keys(coreParams).map((h, i)=><Instances handleDeleteHost={handleDelete}  handleSave={handleSave} instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)} variant={instanceVariant} i={i} instance={h} port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} />)}
             <Instances handleSave={handleSave} handleDeleteHost={handleDelete} instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)}variant={instanceVariant} instance={false} i={Object.keys(coreParams).length + 1} port={`${parseInt(coreParams[`instance${  Object.keys(coreParams).length }`]?.[1] || '8888', 10) + 1}`} />
           </div>)}
-          
+
           <div style={{ marginTop: '1rem'}}>
             <div style={{ marginBottom: '1rem'}}>
               <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center">
@@ -266,7 +266,7 @@ export default function HostManager() {
                     </ToggleButton>
                   </ToggleButtonGroup>
                 )}
-              </Stack>              
+              </Stack>
               <Divider sx={{ marginBottom: '1rem' }} />
             </div>
             {Object.keys(commonScenes).length > 0 && (
@@ -278,14 +278,14 @@ export default function HostManager() {
                 <Divider sx={{ marginBottom: '1rem' }} />
                 <Divider/></>}
                 {Object.keys(commonScenes).map((sc: string) => alignment === 'cards' ? (
-                  <Card key={sc} 
+                  <Card key={sc}
                     className={classes.root}
                     sx={{
                       border: '1px solid',
                       borderColor: theme.palette.divider,
                       margin: '0.5rem'
                     }}>
-                    <CardActionArea 
+                    <CardActionArea
                       style={{ background: theme.palette.background.default }}
                       onClick={() => activateCommon(sc)}>
                       <SceneImage
@@ -300,7 +300,7 @@ export default function HostManager() {
                       >
                         {commonScenes[sc].name}
                       </Typography>
-                    </CardActions>                              
+                    </CardActions>
                   </Card>
                 ) : (
                   <>
@@ -335,7 +335,7 @@ export default function HostManager() {
               </>
             )}
           </div>
-          
+
         </DialogContent>
         <DialogActions>
           {/* <DialogActions sx={{ justifyContent: 'space-between'}}>

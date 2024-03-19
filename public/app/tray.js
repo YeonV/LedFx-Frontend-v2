@@ -1,7 +1,6 @@
 const path = require('path');
-const { Menu, shell, Tray } = require('electron');
+const { app, Menu, shell, Tray } = require('electron');
 const { startCore } = require('./core');
-const { app } = require('electron');
 const isDev = require('electron-is-dev');
 // const { download } = require('electron-dl')
 

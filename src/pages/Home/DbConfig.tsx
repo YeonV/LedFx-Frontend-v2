@@ -25,7 +25,7 @@ const DbConfig = () => {
     >
       <Stack width="100%">
         <DbRow left='Host:' right={config.host} />
-        <DbRow left='Port:' right={config.port} />        
+        <DbRow left='Port:' right={config.port} />
         {config.port_s && (
           <DbRow left='Port (SSL):' right={config.port_s} />
         )}

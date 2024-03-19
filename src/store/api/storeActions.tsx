@@ -11,7 +11,7 @@ import nameToIcon from '../../utils/nameToIcon'
 const storeActions = (set: any) => ({
   scanForOpenRgbDevices: async () => {
     const resp = await Ledfx('/api/find_openrgb', 'GET', {})
-    if (resp && resp.status === 'success') {
+    if (resp && resp.status === 'success' && resp.devices) {
       set(
         produce((state: IStore) => {
           state.openRgbDevices = resp.devices as IOpenRgbDevice[]
@@ -111,6 +111,7 @@ const storeActions = (set: any) => ({
       action: 'restart',
     }),
   getInfo: async () => await Ledfx('/api/info'),
+  getUpdateInfo: async (snackbar: boolean) => await Ledfx('/api/check_for_updates', 'GET', {}, snackbar),
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),
   getImage: async (path_url: string) => await Ledfx('/api/get_image', 'POST', {
     path_url

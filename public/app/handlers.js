@@ -10,7 +10,7 @@ const handlers = async (wind, subprocesses, event, parameters) => {
   try {
     switch (parameters.command) {
       case 'verify_otp':
-        handleVerifyOTP(event, parameters)
+        handleVerifyOTP(wind, event, parameters)
         break
       case 'get-all-windows':
         const allWIndows = BrowserWindow.getAllWindows()

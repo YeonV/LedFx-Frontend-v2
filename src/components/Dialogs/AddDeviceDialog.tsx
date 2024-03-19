@@ -114,13 +114,13 @@ const AddDeviceDialog = () => {
         config: { ...defaultModel, ...cleanedModel },
       }).then((res: any) => {
         if (res !== 'failed') {
-          if (deviceType === 'wled') {      
+          if (deviceType === 'wled') {
             const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
             const newDevices = [] as { name: string, ip_address: string}[]
             res.nodes && res.nodes.forEach((node: any) => {
-              if (node.ip && !deviceIps.includes(node.ip)) {                  
+              if (node.ip && !deviceIps.includes(node.ip)) {
                 newDevices.push({ name: node.name, ip_address: node.ip})
-              }                
+              }
             })
             if (newDevices.length > 0) {
               setAddWled(newDevices)
@@ -157,7 +157,7 @@ const AddDeviceDialog = () => {
   useEffect(() => {
     handleTypeChange(initial.type, initial.config);
   }, [initial.type]);
-  
+
   return (
     <StyledDialog
       open={open}

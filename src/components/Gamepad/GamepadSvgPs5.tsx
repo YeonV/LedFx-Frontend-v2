@@ -24,7 +24,7 @@ const GamepadSvgPs5 = ({
         <g id="POLYLINE_45_">
           <path fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" d="M322.31,375.584c0.029-12.239-6.26-23.86-16.522-30.53c-18.752-12.196-43.854-4.9-53.148,15.446    c-4.344,9.485-4.344,20.682,0,30.167c9.294,20.347,34.397,27.642,53.148,15.446C316.05,399.444,322.339,387.823,322.31,375.584z"/>
         </g>
-        <g id="POLYLINE_56_">		
+        <g id="POLYLINE_56_">
           <rect x="370.421" y="429.232" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" width="9.157" height="2.331"/>
         </g>
         <g id="POLYLINE_58_">
@@ -70,7 +70,7 @@ const GamepadSvgPs5 = ({
       <g id="_x32_D_x24_AG-DIGITAL">
         <g id="STICK-L">
           <path fill={
-            Math.abs(pad.axes[0]) > 0.05 ||              
+            Math.abs(pad.axes[0]) > 0.05 ||
               Math.abs(pad.axes[1]) > 0.05
               ? `${Color(theme.palette.primary.main).alpha(
                 Math.abs(pad.axes[0]) + Math.abs(pad.axes[1])
@@ -110,7 +110,7 @@ const GamepadSvgPs5 = ({
         </g>
         <g id="Stick-R">
           <path fill={
-            Math.abs(pad.axes[2]) > 0.05 ||              
+            Math.abs(pad.axes[2]) > 0.05 ||
               Math.abs(pad.axes[3]) > 0.05
               ? `${Color(theme.palette.primary.main).alpha(
                 Math.abs(pad.axes[2]) + Math.abs(pad.axes[3])
@@ -141,7 +141,7 @@ const GamepadSvgPs5 = ({
           <path fill="none" stroke={pad.buttons[1].pressed ? theme.palette.primary.main : stroke} strokeWidth={strokeWidth2} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" d="M607.247,299.848c0.022-6.169-3.175-12.077-8.352-15.433c-9.466-6.166-22.18-2.471-26.866,7.808    c-2.194,4.772-2.194,10.478,0,15.249c4.687,10.279,17.4,13.974,26.866,7.808C604.072,311.925,607.269,306.017,607.247,299.848z"/>
         </g>
         <g id="BTN-X">
-          <path fill="none" 
+          <path fill="none"
             stroke={
               pad.buttons[0].pressed ? theme.palette.primary.main : stroke
             } strokeWidth={strokeWidth2} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" d="M547.917,322.309c-6.169-0.022-12.077,3.175-15.433,8.352c-6.166,9.466-2.471,22.18,7.808,26.866    c4.772,2.194,10.478,2.194,15.249,0c10.279-4.687,13.974-17.4,7.808-26.866C559.994,325.485,554.086,322.287,547.917,322.309z"/>

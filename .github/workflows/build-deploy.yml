@@ -12,59 +12,58 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.x
-    - name: Install NPM packages
-      run: yarn install
-    
-    - name: Build project
-      run: |
-        yarn buildgh
-        sed -i 's/ <!\-\- <base href\=\"\%PUBLIC_URL\%\/\"> \-\->/ <base href\=\"\%PUBLIC_URL\%\/\">/g' ./build/index.html
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Build storybook
-      continue-on-error: true
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        yarn build-storybookgh -o ./build/docs
-        cp ./build/docs/*.woff ./build/docs/static/css
-        cp ./build/docs/*.woff2 ./build/docs/static/css
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - name: Install NPM packages
+        run: |
+          yarn global add pnpm      
+          pnpm install
 
-    #- name: Run tests
-    #  run: yarn test
+      - name: Build project
+        run: |
+          pnpm buildgh
+          sed -i 's/ <!\-\- <base href\=\"\%PUBLIC_URL\%\/\"> \-\->/ <base href\=\"\%PUBLIC_URL\%\/\">/g' ./build/index.html
 
-    - name: Upload production-ready build files
-      uses: actions/upload-artifact@v2
-      with:
-        name: production-files
-        path: ./build
-        
+      - name: Build storybook
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm build-storybookgh -o ./build/docs
+          cp ./build/docs/*.woff ./build/docs/static/css
+          cp ./build/docs/*.woff2 ./build/docs/static/css
 
-    
-  
+      #- name: Run tests
+      #  run: pnpm test
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: production-files
+          path: ./build
+
   deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: production-files
-        path: ./build
 
-    - name: Deploy to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: production-files
+          path: ./build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build

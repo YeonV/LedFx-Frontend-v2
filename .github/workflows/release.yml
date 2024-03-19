@@ -29,7 +29,6 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
 
-
       # - name: Dispatch Build
       # run: |
       #   curl -XPOST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{secrets.FRONTEND_TOKEN}}" https://api.github.com/repos/YeonV/LedFx-Builds/actions/workflows/build-ledfx.yml/dispatches --data '{"fversion": "${{ steps.package-version.outputs.current-version}}"}'
@@ -39,13 +38,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Node Modules
-        run: yarn
+        run: |
+          yarn add global pnpm
+          pnpm install
 
       - name: Build project
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
           REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
-        run: yarn build
+        run: pnpm build
       - name: Preparing Archive
         run: |
           mv build ledfx_frontend_v2
@@ -81,7 +82,7 @@ jobs:
           asset_path: ./ledfx_frontend_v2.zip
           asset_name: ledfx_frontend_v2.zip
           asset_content_type: application/zip
-          
+
       - name: Prepare Trigger
         id: get-id
         run: |
@@ -94,7 +95,7 @@ jobs:
           # workflow: LedFx BuildPipeline
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: "{ \"fversion\": \"${{ steps.get-id.outputs.id}}\", \"release\": \"${{ startsWith(github.event.head_commit.message, 'Beta') && 'No' || 'Yes' }}\" }"
+          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}" }'
 
       - name: 📂 Sync files
         continue-on-error: true
@@ -107,13 +108,12 @@ jobs:
           METHOD: sftp
           LOCAL_DIR: ./ledfx_frontend_v2/
           REMOTE_DIR: ./preview.ledfx.app/
-          
-          
+
       - name: Build project Hass
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
           REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
-        run: yarn buildhass
+        run: pnpm buildhass
       - name: Preparing Archive
         run: |
           mv build ledfx_frontend_hass
@@ -134,7 +134,7 @@ jobs:
           asset_path: ./ledfx_frontend_hass.zip
           asset_name: ledfx_frontend_hass.zip
           asset_content_type: application/zip
-          
+
       # - name: Prepare Trigger Hass
       #   id: hass
       #   run: |
@@ -148,4 +148,3 @@ jobs:
       #     ref: refs/heads/master
       #     token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
       #     inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
-
