@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.5624c565.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.98a95ce5.js",
-    "static/js/522.ac59355a.chunk.js": "/LedFx-Frontend-v2/static/js/522.ac59355a.chunk.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.7d22363d.js",
+    "static/js/421.73626a42.chunk.js": "/LedFx-Frontend-v2/static/js/421.73626a42.chunk.js",
     "static/media/xmas.png": "/LedFx-Frontend-v2/static/media/xmas.3e4e83405d14fb81488b.png",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
     "static/media/fireworks.jpg": "/LedFx-Frontend-v2/static/media/fireworks.b0378f4b56783c9e58d1.jpg",
@@ -34,6 +34,6 @@
   },
   "entrypoints": [
     "static/css/main.5624c565.css",
-    "static/js/main.98a95ce5.js"
+    "static/js/main.7d22363d.js"
   ]
 }
