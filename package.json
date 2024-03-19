@@ -76,7 +76,6 @@
     "zustand": "^4.5.1"
   },
   "scripts": {
-    "preinstall": "ECHO npx only-allow pnpm",
     "start": "react-scripts start",
     "build": "run-script-os",
     "build:win32": "set GENERATE_SOURCEMAP=false && react-scripts build",
