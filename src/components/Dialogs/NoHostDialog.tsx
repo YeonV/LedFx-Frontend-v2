@@ -37,7 +37,7 @@ export default function NoHostDialog() {
   const handleClose = () => {
     setDialogOpen(false);
   };
- 
+
   const handleSave = (ho:string) => {
     setHost(ho);
     if (!hosts.some((h) => h === ho)) {
@@ -125,12 +125,12 @@ export default function NoHostDialog() {
                 <Button aria-label="delete" onClick={(e) => h && handleDelete(e, h)}>
                   <Delete />
                 </Button>
-              </div>             
-            </div>)}              
+              </div>
+            </div>)}
           </div>
           {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1 && (<div style={{ marginTop: '1rem'}}>
             <div style={{ marginBottom: '1rem'}}>
-            
+
               <Typography variant='caption' sx={{ marginBottom: '1rem' }}>Core Instances</Typography>
               <Divider sx={{ marginBottom: '1rem' }} />
             </div>

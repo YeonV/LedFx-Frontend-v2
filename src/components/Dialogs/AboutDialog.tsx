@@ -17,11 +17,15 @@ import fversion from '../../../package.json'
 export default function AboutDialog({ className, children, startIcon }: any) {
   const config = useStore((state) => state.config)
   const getInfo = useStore((state) => state.getInfo)
-  const gitInfo = GitInfo()
+  const getUpdateInfo = useStore((state) => state.getUpdateInfo)
 
   const [open, setOpen] = useState(false)
-  const [bcommit, setBcommit] = useState('')
+  const [bcommit, setLedFxSHA] = useState('')
   const [bversion, setBversion] = useState('')
+  const [buildType, setBuildType] = useState('')
+  const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [releaseUrl, setReleaseUrl] = useState('')
+  const fgitInfo = GitInfo()
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -31,12 +35,28 @@ export default function AboutDialog({ className, children, startIcon }: any) {
     setOpen(false)
   }
 
+  const handleCheckForUpdate = async () => {
+    const updateInfo = await getUpdateInfo(true)
+    if (
+      updateInfo.status === 'success' &&
+      updateInfo.payload.type === 'warning'
+    ) {
+      setUpdateAvailable(true)
+      setReleaseUrl(updateInfo.data.release_url)
+    }
+  }
+
+  const handleDownloadNewVersion = () => {
+    window.open(releaseUrl, '_blank')
+  }
+
   useEffect(() => {
     async function fetchData() {
       const info = await getInfo()
-      if (info && info.git_build_commit) {
-        setBcommit(info.git_build_commit)
+      if (info) {
+        setLedFxSHA(info.github_sha)
         setBversion(info.version)
+        setBuildType(info.is_release === 'true' ? 'release' : 'development')
       }
     }
 
@@ -73,23 +93,32 @@ export default function AboutDialog({ className, children, startIcon }: any) {
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  version: <span>{bversion}</span>{' '}
+                  version: <span>{bversion}</span>
                 </div>
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  commit:{' '}
-                  <Link
-                    href={`https://github.com/LedFx/LedFx/commit/${bcommit}`}
-                    target="_blank"
-                  >
-                    {bcommit.substring(0, 6)}
-                  </Link>
+                  commit:
+                  {bcommit !== 'unknown' ? (
+                    <Link
+                      href={`https://github.com/LedFx/LedFx/commit/${bcommit}`}
+                      target="_blank"
+                    >
+                      {bcommit?.substring(0, 8)}
+                    </Link>
+                  ) : (
+                    <span>{bcommit}</span>
+                  )}
                 </div>
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  config_version: <span>{config.configuration_version}</span>{' '}
+                  config_version: <span>{config.configuration_version}</span>
+                </div>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  build type: <span>{buildType}</span>
                 </div>
               </CardContent>
             </Card>
@@ -104,18 +133,18 @@ export default function AboutDialog({ className, children, startIcon }: any) {
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  commit:{' '}
+                  commit:
                   <Link
-                    href={`https://github.com/YeonV/LedFx-Frontend-v2/commit/${gitInfo.commit.hash}`}
+                    href={`https://github.com/YeonV/LedFx-Frontend-v2/commit/${fgitInfo.commit.hash}`}
                     target="_blank"
                   >
-                    {gitInfo.commit.shortHash}
+                    {fgitInfo.commit.shortHash}
                   </Link>
                 </div>
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  config_version:{' '}
+                  config_version:
                   <span>{localStorage.getItem('ledfx-frontend')}</span>
                 </div>
               </CardContent>
@@ -123,6 +152,12 @@ export default function AboutDialog({ className, children, startIcon }: any) {
           </div>
         </DialogContent>
         <DialogActions>
+          {updateAvailable && (
+            <Button onClick={handleDownloadNewVersion}>
+              Download New Version
+            </Button>
+          )}
+          <Button onClick={handleCheckForUpdate}>Check for Update</Button>
           <Button onClick={handleClose} autoFocus>
             OK
           </Button>

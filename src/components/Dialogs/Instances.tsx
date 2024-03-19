@@ -319,7 +319,7 @@ const Instances = ({
               />
             </span>
           </Tooltip>
-          {/* 
+          {/*
           <Avatar
             sx={{
               // border: '5px solid',

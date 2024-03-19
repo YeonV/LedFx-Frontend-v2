@@ -1,4 +1,4 @@
-.fxSvg {    
+.fxSvg {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -8,10 +8,10 @@
     stroke-dasharray: 5000;
     stroke-dashoffset: 5000;
     fill: transparent;
-    animation: dash 3s linear forwards;    
+    animation: dash 3s linear forwards;
 }
 @media (max-width: 580px) {
-    .fxSvg {    
+    .fxSvg {
         width: 120px;
     }
 }

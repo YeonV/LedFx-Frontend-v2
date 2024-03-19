@@ -40,7 +40,7 @@ const DbLinks = () => {
             }
           }}
         >
-          Core (python)
+          Core
         </Button>
         <Button
           onClick={() =>
@@ -61,12 +61,12 @@ const DbLinks = () => {
             }
           }}
         >
-          Client (react)
+          Client
         </Button>
         <Button
           onClick={() =>
             window.open(
-              'https://github.com/Yeonv/LedFx-Frontend-v2',
+              'https://discord.gg/Wpy7aUSBNp',
               '_blank',
               'noopener,noreferrer'
             )

@@ -342,7 +342,7 @@ const Dashboard = () => {
             </Tooltip>
           </Stack>
           <Stack spacing={2} direction="row" justifyContent="center">
-            <Tooltip title="Github Core (python)">
+            <Tooltip title="Github Core">
               <Fab
                 aria-label="github"
                 onClick={() =>
@@ -366,7 +366,7 @@ const Dashboard = () => {
                 <GitHub />
               </Fab>
             </Tooltip>
-            <Tooltip title="Github Client (react)">
+            <Tooltip title="Github Client">
               <Fab
                 aria-label="github"
                 onClick={() =>

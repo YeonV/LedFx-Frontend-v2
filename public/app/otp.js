@@ -77,7 +77,7 @@ function generateMfaQr(event, parameters) {
 
   return;
 }
-function handleVerifyOTP(event, parameters) {
+function handleVerifyOTP(wind, event, parameters) {
   const user = store.get('user') || {
     username: 'FreeUser',
     mfaEnabled: false,

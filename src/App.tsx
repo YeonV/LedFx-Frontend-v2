@@ -120,9 +120,9 @@ export default function App() {
     const handleWebsockets = (e: any) => {
       showSnackbar(e.detail.type, e.detail.message)
     }
-    document.addEventListener('YZNEW', handleWebsockets)
+    document.addEventListener('show_message', handleWebsockets)
     return () => {
-      document.removeEventListener('YZNEW', handleWebsockets)
+      document.removeEventListener('show_message', handleWebsockets)
     }
   }, [])
 

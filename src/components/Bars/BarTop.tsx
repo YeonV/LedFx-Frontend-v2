@@ -115,7 +115,12 @@ const LeftButtons = (
   return null
 }
 
-const Title = (pathname: string, latestTag: string, virtuals: any) => {
+const Title = (
+  pathname: string,
+  latestTag: string,
+  updateAvailable: boolean,
+  virtuals: any
+) => {
   if (pathname === '/') {
     return (
       <>
@@ -132,6 +137,18 @@ const Title = (pathname: string, latestTag: string, virtuals: any) => {
             sx={{ ml: 2 }}
           >
             New Update
+          </Button>
+        ) : null}
+        {updateAvailable ? (
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() =>
+              window.open('https://github.com/LedFx/LedFx/releases/latest')
+            }
+            sx={{ ml: 2 }}
+          >
+            New Core Update
           </Button>
         ) : null}
       </>
@@ -152,6 +169,7 @@ const TopBar = () => {
   // const classes = useStyles();
   const navigate = useNavigate()
   const theme = useTheme()
+  const [updateAvailable, setUpdateAvailable] = useState(false)
 
   const [loggingIn, setLogginIn] = useState(false)
 
@@ -241,23 +259,38 @@ const TopBar = () => {
     setIsLogged(!!localStorage.getItem('jwt'))
   }, [pathname])
 
+  const getUpdateInfo = useStore((state) => state.getUpdateInfo)
+
   useEffect(() => {
-    if (latestTag !== `v${pkg.version}`) {
+    const checkForUpdates = async () => {
+      const updateInfo = await getUpdateInfo(false)
       if (
-        Date.now() -
-          parseInt(
-            window.localStorage.getItem('last-update-notification') || '0',
-            10
-          ) >
-        updateNotificationInterval * 1000 * 60
+        updateInfo?.status === 'success' &&
+        updateInfo?.payload?.type === 'warning'
       ) {
-        Ledfx('/api/notify', 'PUT', {
-          title: 'Update available',
-          text: 'A new version of LedFx has been released'
-        })
-        window.localStorage.setItem('last-update-notification', `${Date.now()}`)
+        setUpdateAvailable(true)
+        if (
+          latestTag !== `v${pkg.version}` &&
+          Date.now() -
+            parseInt(
+              window.localStorage.getItem('last-update-notification') || '0',
+              10
+            ) >
+            updateNotificationInterval * 1000 * 60
+        ) {
+          Ledfx('/api/notify', 'PUT', {
+            title: 'Update available',
+            text: 'A new version of LedFx has been released'
+          })
+          window.localStorage.setItem(
+            'last-update-notification',
+            `${Date.now()}`
+          )
+        }
       }
     }
+
+    checkForUpdates()
   }, [updateNotificationInterval])
 
   useEffect(() => {
@@ -336,7 +369,7 @@ const TopBar = () => {
               {LeftButtons(pathname, history, open, handleLeftBarOpen)}
             </div>
             <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
-              {Title(pathname, latestTag, virtuals)}
+              {Title(pathname, latestTag, updateAvailable, virtuals)}
             </Typography>
             <div
               style={{

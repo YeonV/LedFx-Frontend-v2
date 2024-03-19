@@ -95,8 +95,8 @@ const GamepadSvgPs3 = ({
             strokeWidth={type === 'ps3' ? 0 :strokeWidth2}
           />
 
-          
-          
+
+
           <polygon
             points="465.824,185.529 455.824,204.529 475.824,204.529"
             fill={type === 'ps3' ? (pad.buttons[3].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
@@ -180,7 +180,7 @@ const GamepadSvgPs3 = ({
               pad.buttons[9].pressed ? theme.palette.primary.main : stroke
             }
             strokeWidth="2"
-          />          
+          />
           <rect
             id="L1"
             fill={type === 'ps3' ? (pad.buttons[4].pressed ? theme.palette.primary.main : stroke2) : 'transparent'}
@@ -253,7 +253,7 @@ const GamepadSvgPs3 = ({
           <circle
             id="Stick-L"
             fill={
-              Math.abs(pad.axes[0]) > 0.05 ||              
+              Math.abs(pad.axes[0]) > 0.05 ||
               Math.abs(pad.axes[1]) > 0.05
                 ? `${Color(theme.palette.primary.main).alpha(
                   Math.abs(pad.axes[0]) + Math.abs(pad.axes[1])
@@ -271,7 +271,7 @@ const GamepadSvgPs3 = ({
           <circle
             id="Stick-R"
             fill={
-              Math.abs(pad.axes[2]) > 0.05 ||              
+              Math.abs(pad.axes[2]) > 0.05 ||
               Math.abs(pad.axes[3]) > 0.05
                 ? `${Color(theme.palette.primary.main).alpha(
                   Math.abs(pad.axes[2]) + Math.abs(pad.axes[3])

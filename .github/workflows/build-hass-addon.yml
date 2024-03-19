@@ -33,12 +33,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Node Modules
-        run: yarn
+        run: |
+          yarn add global pnpm
+          pnpm install
       - name: Build project Hass
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
           REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
-        run: yarn buildhass
+        run: pnpm buildhass
       - name: Preparing Archive
         run: |
           mv build ledfx_frontend_hass_dev
@@ -54,11 +56,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "./ledfx_frontend_hass_dev.zip"
+          file: './ledfx_frontend_hass_dev.zip'
           overwrite: true
           update_latest_release: true
 
-          
       # - name: Prepare Trigger Hass
       #   id: hass
       #   run: |
@@ -72,4 +73,3 @@ jobs:
       #     ref: refs/heads/master
       #     token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
       #     inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
-

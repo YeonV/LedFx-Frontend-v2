@@ -42,14 +42,14 @@ const SpotifyLoginRedirect = () => {
       <Stack direction="row" spacing={2} marginBottom={5} alignItems="center">
         <Avatar sx={{ width: 120, height: 120, backgroundColor: 'transparent', border:'6px solid #fff', padding: '1rem' }} src={logoAsset} />
         <Circle />
-        <Circle />        
+        <Circle />
         <Avatar sx={{ width: 80, height: 80, backgroundColor: 'transparent', border:'6px solid #fff' }} >
           {ready ? (
             <CheckCircle color="success" sx={{ fontSize: '3rem' }} />
           ) : (
             <CircularProgress color="success" />
           )}
-        </Avatar>       
+        </Avatar>
         <Circle />
         <Circle />
         <Avatar sx={{ width: 120, height: 120, backgroundColor: 'transparent', border:'6px solid #fff' }} >

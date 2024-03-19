@@ -56,7 +56,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
 
-  
+
   const graphsMulti = useStore((state) => state.graphsMulti)
   const assistant = useStore((state) => state.assistant)
   const setAssistant= useStore((state) => state.setAssistant)
@@ -139,7 +139,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       },
     },
   ] as any)
-  
+
   useEffect(() => {
     const ste = [
       {
@@ -246,7 +246,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
 
     setSteps(ste)
   }, [s, graphsMulti, assistant])
-  
+
 
 
   return (
@@ -268,7 +268,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
             }}
           >
             {!steps[activeStep].icon ||
-            steps[activeStep].icon === 'wled'            
+            steps[activeStep].icon === 'wled'
               ? <Stack direction="row">
                   <img
                     width={activeStep === 0 ? small ? 128 : 300 : 128}
@@ -282,10 +282,10 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                   intro
                   style={{ fontSize: 128 }}
                   name={steps[activeStep].icon}
-                  
+
                 />
             }
-            
+
             <div>
               <Typography
                 marginLeft={0}
@@ -297,11 +297,11 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                 {steps[activeStep].key === 'wledScanning'
                 ? <>New Devices found:<br />
                 </>
-                  
-                :steps[activeStep].title}                
+
+                :steps[activeStep].title}
               </Typography>
               {steps[activeStep].key === 'wledScanning'
-                && 
+                &&
               <Typography
                 marginLeft={0}
                 marginTop={1}
@@ -363,7 +363,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         {steps[activeStep].key === 'gotWled' && <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', flexWrap: small ? 'wrap' : 'nowrap'}}>
         <Box sx={{ flexBasis: small ? '100%' : '48%' }} />
         <Box sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%', pl: '1rem' }}>
-          <Stack direction="row" alignItems="center"> 
+          <Stack direction="row" alignItems="center">
             <img width={32} height="auto" src={wledLogo} alt="wled" />
             <SettingsRow
               title="WLED"
@@ -373,7 +373,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               direct
             />
           </Stack>
-          <Stack direction="row" alignItems="center"> 
+          <Stack direction="row" alignItems="center">
             <img width={32} height="auto" src={wledLogo} alt="wled" />
             <SettingsRow
               title="WLED Segments"
@@ -383,7 +383,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               direct
             />
           </Stack>
-          <Stack direction="row" alignItems="center"> 
+          <Stack direction="row" alignItems="center">
             <img width={32} height="auto" src={openrgbLogo} alt="openrgb" />
              <SettingsRow
               title="OpenRGB"
@@ -393,7 +393,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               direct
             />
           </Stack>
-          <Stack direction="row" alignItems="center"> 
+          <Stack direction="row" alignItems="center">
             <img width={32} height="auto" src={launchpadLogo} alt="wled" />
             <SettingsRow
               title="Launchpad"
@@ -403,9 +403,9 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               direct
             />
           </Stack>
-        
-       
-       
+
+
+
         </Box>
           </div>}
           <Stack direction={small ? 'column' : 'row'} gap={3} justifyContent="center" marginTop={3} marginBottom={3}>

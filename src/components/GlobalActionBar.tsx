@@ -33,7 +33,7 @@ const GlobalActionBar = ({
     setBrightness(globalBrightness * 100);
   }, [globalBrightness]);
 
-  
+
   return (
     <Stack
       className={className}
@@ -48,7 +48,7 @@ const GlobalActionBar = ({
             togglePause();
           }}
           style={{
-            margin: '0 8px 0 8px', color: '#fff'  
+            margin: '0 8px 0 8px', color: '#fff'
           }}
         >
           {paused ? <PlayArrow sx={{ fontSize: 32 }} /> : <PauseOutlined sx={{ fontSize: 32 }} />}
@@ -63,7 +63,7 @@ const GlobalActionBar = ({
             togglePause();
           }}
           style={{
-            margin: '0 16px 0 0', color: '#fff'            
+            margin: '0 16px 0 0', color: '#fff'
           }}
         >
           {paused ? <PlayArrow  sx={{ fontSize: 32 }} /> : <PauseOutlined  sx={{ fontSize: 32 }} />}
