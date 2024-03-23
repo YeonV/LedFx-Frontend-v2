@@ -125,7 +125,7 @@ const Title = (
     return (
       <>
         {`LedFx v${pkg.version}`}
-        {latestTag !== `v${pkg.version}` ? (
+        {!process.env.MS_STORE && latestTag !== `v${pkg.version}` ? (
           <Button
             color="error"
             variant="contained"
@@ -139,7 +139,7 @@ const Title = (
             New Update
           </Button>
         ) : null}
-        {updateAvailable ? (
+        {!process.env.MS_STORE && updateAvailable ? (
           <Button
             color="error"
             variant="contained"
