@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Autocomplete,
   Dialog,
@@ -8,7 +9,7 @@ import {
   Typography
   // useTheme
 } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect} from 'react'
 import { ArrowDropDown, Search } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import { EffectDropDownProps } from '../SchemaForm/components/DropDown/DropDown.props'
@@ -24,50 +25,49 @@ const EffectTypeDialog = ({
 }: EffectDropDownProps) => {
   const dialogOpen = useStore(
     (state) => state.dialogs.effectType?.open || false
-  )
-  const setDialogOpen = useStore((state) => state.setDialogOpenEffectType)
+  );
+  const setDialogOpen = useStore((state) => state.setDialogOpenEffectType);
   const handleClose = () => {
-    setDialogOpen(false)
-  }
+    setDialogOpen(false);
+  };
 
-  const classes = useStyles()
-  // const theme = useTheme()
-  const [formats, setFormats] = useState(
-    () => groups && Object.keys(groups).map((c) => c || [])
-  )
-  const handleFormat = (_: any, newFormats: any) => {
-    setFormats(newFormats)
-  }
-  //   const handleFormatb = (e: any) => {
-  //     setFormats(e.target.value)
-  //   }
+  const classes = useStyles();  // Make sure you import and define useStyles
+
+  const [formats, setFormats] = useState<string[]>(() => (groups ? Object.keys(groups) : []));
+
+  
+  useEffect(() => {
+    if (groups) {
+      setFormats(Object.keys(groups));
+    }
+  }, [groups]);
+
   const yopt = useMemo(
     () => [
-      ...Object.keys(groups || {})
-        .flatMap(
-          (c) =>
-            formats &&
-            formats.indexOf(c) !== -1 &&
-            groups[c].flatMap((e: any) => [
-              { value: e.id, label: e.name, group: c }
-            ])
+      ...(groups
+        ? Object.keys(groups).flatMap((c) =>
+          formats && formats.indexOf(c) !== -1
+            ? groups[c].flatMap((e: any) => [{ value: e.id, label: e.name, group: c }])
+            : []
         )
-        .filter((e: any) => !!e?.value)
+        : []),
     ],
     [groups, formats]
-  )
+  );
+
   const yoptAll = useMemo(
     () => [
-      ...Object.keys(groups || {})
-        .flatMap((c) =>
-          groups[c].flatMap((e: any) => [
-            { value: e.id, label: e.name, group: c }
-          ])
+      ...(groups
+        ? Object.keys(groups).flatMap((c) =>
+          groups[c].flatMap((e: any) => [{ value: e.id, label: e.name, group: c }])
         )
-        .filter((e: any) => !!e?.value)
+        : []),
     ],
     [groups, formats]
-  )
+  );
+  const handleFormat = (_: any, newFormats: any) => {
+    setFormats(newFormats);
+  };
 
   return (
     <div key="effectTypeSelector">

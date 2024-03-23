@@ -20,6 +20,7 @@ import {
   GridOn,
   GridOff
 } from '@mui/icons-material'
+
 import useStore from '../../store/useStore'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
@@ -77,6 +78,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false)
   const [matrix, setMatrix] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals)
+  // const getDevice = useStore((state) => state.getDevice)
   const getSchemas = useStore((state) => state.getSchemas)
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)

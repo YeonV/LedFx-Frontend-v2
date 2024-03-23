@@ -181,10 +181,12 @@ function waitForAccessToken(timeout: number) {
     const interval = setInterval(() => {
       const cookies = new Cookies()
       const access_token = cookies.get('access_token')
+      console.log(startTime)
       if (access_token) {
         clearInterval(interval)
         resolve()
       } else if (Date.now() - startTime >= timeout) {
+        refreshAuth()
         clearInterval(interval)
         window.location.reload()
         reject(new Error('Access Token not defined after waiting timeout'))
