@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   const devicesOnline = Object.keys(devices).filter((d) => devices[d].online)
   const virtualsReal = Object.keys(virtuals).filter(
-    (d) => !virtuals[d].is_device
+    (d) => !virtuals[d]?.is_device
   )
 
   const pixelTotalOnline = Object.keys(devices)

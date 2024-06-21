@@ -13,7 +13,7 @@ const SceneImage = ({ iconName }: { iconName: string }) => {
     const result = await getImage(
       ic.split('image:')[1]?.replaceAll('file:///', '')
     )
-    setImageData(result.image)
+    if (result?.image) setImageData(result.image)
   }, [])
   useEffect(() => {
     if (iconName?.startsWith('image:')) {
@@ -27,12 +27,14 @@ const SceneImage = ({ iconName }: { iconName: string }) => {
         className={classes.media}
         image={iconName.split('image:')[1]}
         title="Contemplative Reptile"
+        sx={{ width: '100%', height: '100%' }}
       />
     ) : (
       <div
         className={classes.media}
         style={{
           height: 140,
+          width: '100%',
           maxWidth: 'calc(100% - 2px)',
           backgroundSize: 'cover',
           backgroundImage: `url("data:image/png;base64,${imageData}")`

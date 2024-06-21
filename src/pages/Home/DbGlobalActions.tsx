@@ -61,7 +61,7 @@ const DbGlobalActions = () => {
         <DbButton
           onClick={() => togglePause()}
           icon={paused ? 'PlayArrow' : 'PauseOutlined'}
-          text="Play"
+          text={paused ? 'Paused' : 'Playing'}
         />
         <Button
           color="inherit"
