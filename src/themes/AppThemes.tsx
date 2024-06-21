@@ -3,9 +3,6 @@ import { PaletteMode } from '@mui/material'
 import { createTheme, Theme } from '@mui/material/styles'
 import isElectron from 'is-electron'
 
-declare module '@mui/styles' {
-  type DefaultTheme = Theme
-}
 declare module '@mui/material/styles' {
   interface Palette {
     accent: Palette['primary']
