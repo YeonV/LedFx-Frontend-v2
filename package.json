@@ -92,7 +92,7 @@
     "postbuildgh": "rm -rf build/app && rm -rf build/preload.js && rm -rf build/renderer.js && rm -rf build/electron.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "pnpm buildgh",
+    "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "packs": "electron-builder --dir",

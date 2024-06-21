@@ -39,14 +39,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Node Modules
         run: |
-          yarn add global pnpm
-          pnpm install
+          yarn install
 
       - name: Build project
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
           REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
-        run: pnpm build
+        run: yarn build
       - name: Preparing Archive
         run: |
           mv build ledfx_frontend_v2
@@ -113,7 +112,7 @@ jobs:
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
           REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
-        run: pnpm buildhass
+        run: yarn buildhass
       - name: Preparing Archive
         run: |
           mv build ledfx_frontend_hass
