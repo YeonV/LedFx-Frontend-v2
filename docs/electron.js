@@ -41,7 +41,7 @@ const ready = () =>
 
     wind.webContents.setWindowOpenHandler(({ url }) => {
       if (url.includes(' https://accounts.spotify.com/authorize') 
-      // || url.includes('https://strapi.yeonv.com/connect/github?callback')
+      // || url.includes(`${backendUrl}/connect/github?callback`)
       ) {
         shell.openExternal(url)
         // return { action: 'deny' }
