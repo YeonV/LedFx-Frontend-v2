@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.94",
+  "version": "2.0.99",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -26,6 +26,7 @@
     "base32-encode": "1",
     "chart.js": "4.4.2",
     "color": "^4.2.3",
+    "compare-versions": "^6.1.0",
     "conf": "^12.0.0",
     "crypto": "^1.0.1",
     "deep-object-diff": "^1.1.9",
@@ -36,6 +37,7 @@
     "eslint-config-react-app": "7.0.1",
     "immer": "10.0.4",
     "is-electron": "^2.2.2",
+    "jwt-decode": "^4.0.0",
     "notistack": "^3.0.1",
     "oauth-pkce": "0.0.6",
     "prop-types": "^15.8.1",

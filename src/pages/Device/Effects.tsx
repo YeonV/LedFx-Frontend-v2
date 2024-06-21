@@ -18,8 +18,10 @@ import {
   Pause,
   PlayArrow,
   GridOn,
-  GridOff
+  GridOff,
+  Fullscreen
 } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
@@ -75,7 +77,8 @@ const orderEffectProperties = (
 
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false)
-  const [matrix, setMatrix] = useState(false)
+  const showMatrix = useStore((state) => state.showMatrix)
+  const [matrix, setMatrix] = useState(showMatrix)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
   const clearEffect = useStore((state) => state.clearEffect)
@@ -89,6 +92,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const updateVirtual = useStore((state) => state.updateVirtual)
   const features = useStore((state) => state.features)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
+  const navigate = useNavigate()
 
   const graphs = useStore((state) => state.graphs)
   const getV = () => {
@@ -226,6 +230,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                       onClick={() => setMatrix(!matrix)}
                     >
                       {matrix ? <GridOff /> : <GridOn />}
+                    </Button>
+                  )}
+                  {virtual.config.rows > 1 && (
+                    <Button
+                      style={{ marginRight: '.5rem' }}
+                      className="step-device-seven"
+                      onClick={() => navigate(`/graph/${virtId}`)}
+                    >
+                      <Fullscreen />
                     </Button>
                   )}
                   <Button

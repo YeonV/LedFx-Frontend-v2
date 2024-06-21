@@ -6,20 +6,9 @@ import {
   GridEventListener,
   GridRenderCellParams
 } from '@mui/x-data-grid'
-import { Card, CardMedia, Typography, useTheme } from '@mui/material'
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import { Card, Typography, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
-
-const sceneImage = (iconName: string, table?: boolean) =>
-  iconName && iconName.startsWith('image:') ? (
-    <CardMedia
-      image={iconName.split('image:')[1]}
-      title="Contemplative Reptile"
-      sx={{ width: '100%', height: '100%' }}
-    />
-  ) : (
-    <BladeIcon scene={!table} name={iconName} />
-  )
+import SceneImage from './ScenesImage'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -27,8 +16,9 @@ const columns: GridColDef[] = [
     field: 'scene_image',
     headerName: 'Image',
     width: 150,
-    renderCell: (params: GridRenderCellParams) =>
-      sceneImage(params.value || 'Wallpaper', true)
+    renderCell: (params: GridRenderCellParams) => (
+      <SceneImage iconName={params.value || 'Wallpaper'} />
+    )
   },
   {
     field: 'name',

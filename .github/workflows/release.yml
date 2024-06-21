@@ -97,17 +97,17 @@ jobs:
           token: ${{ secrets.FRONTEND_TOKEN }}
           inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}" }'
 
-      - name: 📂 Sync files
-        continue-on-error: true
-        uses: SamKirkland/FTP-Deploy-Action@2.0.0
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          PORT: 22
-          METHOD: sftp
-          LOCAL_DIR: ./ledfx_frontend_v2/
-          REMOTE_DIR: ./preview.ledfx.app/
+      # - name: 📂 Sync files
+      #   continue-on-error: true
+      #   uses: SamKirkland/FTP-Deploy-Action@2.0.0
+      #   env:
+      #     FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      #     FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      #     FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      #     PORT: 22
+      #     METHOD: sftp
+      #     LOCAL_DIR: ./ledfx_frontend_v2/
+      #     REMOTE_DIR: ./preview.ledfx.app/
 
       - name: Build project Hass
         env:

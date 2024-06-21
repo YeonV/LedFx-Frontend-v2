@@ -216,13 +216,9 @@ const EditSceneDialog = () => {
   }
 
   useEffect(() => {
-    if (open) {
-      getFullConfig()
-      getLedFxPresets().then(setLedFxPresets)
-      getUserPresets().then(setUserPresets)
-    }
-  }, [open])
-  useEffect(() => {
+    getFullConfig()
+    getLedFxPresets().then(setLedFxPresets)
+    getUserPresets().then(setUserPresets)
     if (open) activateScene(data.name?.toLowerCase().replaceAll(' ', '-'))
   }, [open])
 

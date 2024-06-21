@@ -4,7 +4,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material'
 import useStore from '../store/useStore';
 
 const PixelGraph = ({
@@ -14,6 +13,7 @@ const PixelGraph = ({
   active = false,
   intGraphs = false,
   showMatrix = false,
+  fullScreen = false,
 }: {
   virtId: string;
   dummy?: boolean;
@@ -21,6 +21,7 @@ const PixelGraph = ({
   active?: boolean;
   intGraphs?: boolean;
   showMatrix?: boolean;
+  fullScreen?: boolean;
 }) => {
   const [pixels, setPixels] = useState<any>([]);
 
@@ -75,7 +76,8 @@ const PixelGraph = ({
   return (dummy || tooLessPixels) ? (
     <div
       style={{
-        maxWidth: '520px',
+        maxWidth: fullScreen ? '100vw' : '520px',
+        maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
         display: 'flex',
         width: '100%',
         borderRadius: '10px',
@@ -96,20 +98,23 @@ const PixelGraph = ({
     </div>
   ) : (pixels.length || decodedPixels.length) && rows > 1 && showMatrix ? <div
     style={{
-      maxWidth: '520px',
+      maxWidth: fullScreen ? '100vw' : '520px',
+      maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
       display: 'flex',
       flexDirection: virtuals[virtId].id==='launchpad-x' || virtuals[virtId].id === 'launchpad-x-matrix' ? 'column-reverse' : 'column',
       width: '100%',
       borderRadius: '10px',
       overflow: 'hidden',
-      margin: '0.5rem 0 0 0',
+      margin: '0.5rem 0 0 0'
     }}
     className={`${className}  ${active ? 'active' : ''}`}
-  >{Array.from(Array(rows).keys()).map((row) => (
+  >
+    {Array.from(Array(rows).keys()).map((row) => (
       <div
         key={`row-${row}`}
         style={{
-          maxWidth: '520px',
+          maxWidth: fullScreen ? '100vw' : '520px',
+          maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
           display: 'flex',
           width: '100%',
           borderRadius: '0',
@@ -126,7 +131,7 @@ const PixelGraph = ({
               key={i}
               style={{
                 flex: 1,
-                border: '1px solid black',
+                // border: '1px solid black',
                 margin: `${((config.transmission_mode === 'compressed' && decodedPixels.length > 0 ? decodedPixels.length : pixels[0].length ) > 100) && rows > 7 ? 1 : 2}px`,
                 borderRadius: ((config.transmission_mode === 'compressed' && decodedPixels.length > 0 ? decodedPixels.length : pixels[0].length ) > 100) && rows > 7 ? '50%' : '5px',
                 position: 'relative',
@@ -151,7 +156,8 @@ const PixelGraph = ({
     }</div> : (pixels[0] || decodedPixels).length ? (
     <div
       style={{
-        maxWidth: '520px',
+        maxWidth: fullScreen ? '100vw' : '520px',
+        maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
         display: 'flex',
         width: '100%',
         borderRadius: '10px',
@@ -180,7 +186,8 @@ const PixelGraph = ({
   ) : (
     <div
       style={{
-        maxWidth: '520px',
+        maxWidth: fullScreen ? '100vw' : '520px',
+        maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
         display: 'flex',
         width: '100%',
         borderRadius: '10px',

@@ -27,7 +27,6 @@ import {
   StarOutline,
   Tune
 } from '@mui/icons-material'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
@@ -37,6 +36,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
 import AvatarPicker from './AvatarPicker/AvatarPicker'
+import { cloud } from '../Device/Cloud/CloudComponents'
 
 const User = () => {
   const theme = useTheme()
@@ -63,11 +63,6 @@ const User = () => {
     enthusiast: 0,
     contributor: 0
   })
-  // const trophies = useStore((state) => state.user.trophies)
-  // const setTrophies = useStore((state) => state.user.setTrophies)
-  // const starred = useStore((state) => state.user.starred)
-  // const setStarred = useStore((state) => state.user.setStarred)
-
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const getFullConfig = useStore((state) => state.getFullConfig)
@@ -76,13 +71,8 @@ const User = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenePL = useStore((state) => state.scenePL)
   const setScenePL = useStore((state) => state.setScenePL)
-  // const [avatar, setAvatar] = useState<undefined | string>(undefined)
 
   const userName = localStorage.getItem('username')
-
-  const cloud = axios.create({
-    baseURL: 'https://strapi.yeonv.com'
-  })
 
   const filteredCloudEffects = {} as any
   Object.keys(cloudEffects).forEach((effectGroup) => {
@@ -104,28 +94,27 @@ const User = () => {
       setSubExpanded(isExpanded ? panel : false)
     }
   const getCloudPresets = async () => {
-    const response = await cloud.get('presets', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
-    })
-    if (response.status !== 200) {
-      alert('No Access')
-      return
+    try {
+      const response = await cloud.get('presets')
+      if (response.status !== 200) {
+        alert('No Access')
+        return
+      }
+      const res = await response.data
+      const cEffects = {} as any
+      res.forEach((p: { effect: { Name: string } }) => {
+        if (!cEffects[p.effect.Name]) cEffects[p.effect.Name] = []
+        cEffects[p.effect.Name].push(p)
+      })
+      setCloudEffects(cEffects)
+    } catch (error) {
+      console.error(error)
     }
-    const res = await response.data
-    const cEffects = {} as any
-    res.forEach((p: { effect: { Name: string } }) => {
-      if (!cEffects[p.effect.Name]) cEffects[p.effect.Name] = []
-      cEffects[p.effect.Name].push(p)
-    })
-    setCloudEffects(cEffects)
   }
 
   const getCloudConfigs = async () => {
     const response = await cloud.get(
-      `configs?user.username=${localStorage.getItem('username')}`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
-      }
+      `configs?user.username=${localStorage.getItem('username')}`
     )
     if (response.status !== 200) {
       alert('No Access')
@@ -136,18 +125,19 @@ const User = () => {
   }
 
   const getCloudPlaylists = async () => {
-    const response = await cloud.get(
-      `playlists?user.username=${localStorage.getItem('username')}`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
+    try {
+      const response = await cloud.get(
+        `playlists?user.username=${localStorage.getItem('username')}`
+      )
+      if (response.status !== 200) {
+        alert('No Access')
+        return
       }
-    )
-    if (response.status !== 200) {
-      alert('No Access')
-      return
+      const res = await response.data
+      setCloudPlaylists(res)
+    } catch (error) {
+      console.error(error)
     }
-    const res = await response.data
-    setCloudPlaylists(res)
   }
 
   const hasStarred = async () => {
@@ -165,44 +155,32 @@ const User = () => {
     })
   }
   const deleteCloudConfig = async (name: string, date: any) => {
-    const existing = await cloud.get(
-      `configs?user.username=${localStorage.getItem(
-        'username'
-      )}&Name=${name}&Date=${date}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
+    try {
+      const existing = await cloud.get(
+        `configs?user.username=${localStorage.getItem(
+          'username'
+        )}&Name=${name}&Date=${date}`
+      )
+      const exists = await existing.data
+      if (exists.length && exists.length > 0) {
+        cloud.delete(`configs/${exists[0].id}`)
       }
-    )
-    const exists = await existing.data
-    if (exists.length && exists.length > 0) {
-      cloud.delete(`configs/${exists[0].id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
-      })
+    } catch (error) {
+      console.error(error)
     }
   }
 
   const deleteCloudPlaylist = async (name: string, date: any) => {
-    const existing = await cloud.get(
-      `configs?user.username=${localStorage.getItem(
-        'username'
-      )}&Name=${name}&Date=${date}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
+    try {
+      const existing = await cloud.get(
+        `playlists?user.username=${localStorage.getItem('username')}&Name=${name}&Date=${date}`
+      )
+      const exists = await existing.data
+      if (exists.length && exists.length > 0) {
+        cloud.delete(`playlists/${exists[0].id}`)
       }
-    )
-    const exists = await existing.data
-    if (exists.length && exists.length > 0) {
-      cloud.delete(`configs/${exists[0].id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
-      })
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -790,22 +768,12 @@ const User = () => {
                   onConfirm={() => {
                     getFullConfig().then((c: any) =>
                       cloud
-                        .post(
-                          'configs',
-                          {
-                            Name: configName,
-                            Date: +new Date(),
-                            config: c,
-                            user: localStorage.getItem('ledfx-cloud-userid')
-                          },
-                          {
-                            headers: {
-                              Authorization: `Bearer ${localStorage.getItem(
-                                'jwt'
-                              )}`
-                            }
-                          }
-                        )
+                        .post('configs', {
+                          Name: configName,
+                          Date: +new Date(),
+                          config: c,
+                          user: localStorage.getItem('ledfx-cloud-userid')
+                        })
                         .then(() => getCloudConfigs())
                     )
                   }}
@@ -962,22 +930,12 @@ const User = () => {
                   confirmDisabled={playlistName === ''}
                   onConfirm={() => {
                     cloud
-                      .post(
-                        'playlists',
-                        {
-                          Name: playlistName,
-                          Date: +new Date(),
-                          playlist: scenePL,
-                          user: localStorage.getItem('ledfx-cloud-userid')
-                        },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${localStorage.getItem(
-                              'jwt'
-                            )}`
-                          }
-                        }
-                      )
+                      .post('playlists', {
+                        Name: playlistName,
+                        Date: +new Date(),
+                        playlist: scenePL,
+                        user: localStorage.getItem('ledfx-cloud-userid')
+                      })
                       .then(() => getCloudPlaylists())
                   }}
                   content={

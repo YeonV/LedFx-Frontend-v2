@@ -144,7 +144,8 @@ const storeConfig = (set: any) => ({
   getLedFxPresets: async () => {
     const resp = await Ledfx('/api/config')
     if (resp && resp.host) {
-      return resp.ledfx_presets
+      if (resp.ledfx_presets) return resp.ledfx_presets
+      if (resp.default_presets) return resp.default_presets
     }
     return set(
       produce((state: IStore) => {
@@ -159,7 +160,7 @@ const storeConfig = (set: any) => ({
     if (resp && resp.host) {
       set(
         produce((state: IStore) => {
-          state.config.user_presets = resp.user_presets
+          state.config.user_presets = resp.user_presets || resp.custom_presets
         }),
         false,
         'api/getUserPresets'

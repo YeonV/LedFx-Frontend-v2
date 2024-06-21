@@ -16,13 +16,13 @@ import {
   Stack,
   Typography
 } from '@mui/material'
-import axios from 'axios'
 import { getCroppedImg, idbConfig, readFile } from './avatarUtils'
 import {
   AvatarPickerDefaults,
   AvatarPickerProps
   // storageOptions
 } from './AvatarPicker.interface'
+import { backendUrl, cloud } from '../../Device/Cloud/CloudComponents'
 
 const AvatarPicker = ({
   defaultIcon,
@@ -54,29 +54,25 @@ const AvatarPicker = ({
   const isLogged = !!localStorage.getItem('jwt')
   const [avatarSrc, setAvatarSrc] = useState<null | string>(null)
 
-  const baseURL = 'https://strapi.yeonv.com'
-  const cloud = axios.create({
-    baseURL
-  })
-
   const onCropComplete = (_croppedArea: Area, newcroppedAreaPixels: Area) => {
     setCroppedAreaPixels(newcroppedAreaPixels)
   }
   const getUserDetails = async () => {
-    const response = await cloud.get(
-      `user-details?user.username=${localStorage.getItem('username')}`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
+    try {
+      const response = await cloud.get(
+        `user-details?user.username=${localStorage.getItem('username')}`
+      )
+      if (response.status !== 200) {
+        // eslint-disable-next-line no-alert
+        alert('No Access')
+        return
       }
-    )
-    if (response.status !== 200) {
-      // eslint-disable-next-line no-alert
-      alert('No Access')
-      return
+      const res = await response.data
+      // eslint-disable-next-line consistent-return
+      return res
+    } catch (e) {
+      console.error(e)
     }
-    const res = await response.data
-    // eslint-disable-next-line consistent-return
-    return res
   }
   useEffect(() => {
     if (
@@ -84,17 +80,15 @@ const AvatarPicker = ({
       localStorage.getItem('ledfx-cloud-role') === 'creator' &&
       newStorage === 'cloud'
     ) {
-      cloud
-        .get(`user-details?user.username=${userName}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`
-          }
-        })
-        .then((res: any) => {
+      try {
+        cloud.get(`user-details?user.username=${userName}`).then((res: any) => {
           if (res.data.length > 0 && res.data[0].avatarUrl) {
-            setAvatarSrc(`${baseURL}${res.data[0].avatarUrl.url}`)
+            setAvatarSrc(`${backendUrl}${res.data[0].avatarUrl.url}`)
           }
         })
+      } catch (e) {
+        console.error(e)
+      }
     }
   }, [])
 
@@ -160,26 +154,13 @@ const AvatarPicker = ({
                 let newUserDetail
                 if (hasAvatar) {
                   await cloud.delete(
-                    `upload/files/${userDetails?.[0]?.avatarUrl?.id}`,
-                    {
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-                      }
-                    }
+                    `upload/files/${userDetails?.[0]?.avatarUrl?.id}`
                   )
                 }
                 if (!userDetails?.[0]?.id) {
-                  const getNewUserDetail = cloud.post(
-                    'user-details',
-                    {
-                      user: localStorage.getItem('ledfx-cloud-userid')
-                    },
-                    {
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-                      }
-                    }
-                  )
+                  const getNewUserDetail = cloud.post('user-details', {
+                    user: localStorage.getItem('ledfx-cloud-userid')
+                  })
                   newUserDetail = await getNewUserDetail
                 }
                 const formData = new FormData()
@@ -211,20 +192,14 @@ const AvatarPicker = ({
                   `${userDetails?.[0]?.id || newUserDetail!.data.id}`
                 )
                 formData.append('field', 'avatarUrl')
-                const imageUploaded = await fetch(
-                  'https://strapi.yeonv.com/upload',
-                  {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem('jwt')}`
-                    }
-                  }
-                )
+                const imageUploaded = await fetch(`${backendUrl}/upload`, {
+                  method: 'POST',
+                  body: formData
+                })
 
                 const uploaded = await imageUploaded.json()
 
-                setAvatarSrc(`${baseURL}${uploaded[0].url}`)
+                setAvatarSrc(`${backendUrl}${uploaded[0].url}`)
               }
             }
           }
@@ -343,14 +318,7 @@ const AvatarPicker = ({
                       const userDetails = await getUserDetails()
                       cloud
                         .delete(
-                          `upload/files/${userDetails?.[0]?.avatarUrl?.id}`,
-                          {
-                            headers: {
-                              Authorization: `Bearer ${localStorage.getItem(
-                                'jwt'
-                              )}`
-                            }
-                          }
+                          `upload/files/${userDetails?.[0]?.avatarUrl?.id}`
                         )
                         .then(() => {
                           setAvatarSrc(null)

@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import axios from 'axios'
 import isElectron from 'is-electron'
-
-const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com'
-})
-// const backendUrl = process.env.REACT_APP_BACKEND_URL;
-const backendUrl = 'https://strapi.yeonv.com'
+import { jwtDecode } from 'jwt-decode'
+import { backendUrl, cloud } from '../Device/Cloud/CloudComponents'
 
 const LoginRedirect = () => {
   const [text, setText] = useState('Loading...')
@@ -33,11 +28,15 @@ const LoginRedirect = () => {
         // Now saving the jwt to use it for future authenticated requests to Strapi
         localStorage.setItem('jwt', res.jwt)
         localStorage.setItem('username', res.user.username)
-        const me = await cloud.get('users/me', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`
-          }
-        })
+
+        // Decode the JWT and get the expiry time
+        const decodedJwt = jwtDecode(res.jwt)
+        const expiryTime = decodedJwt.exp || 0
+
+        // Store the expiry time
+        localStorage.setItem('jwtExpiry', expiryTime.toString())
+
+        const me = await cloud.get('users/me')
         const user = await me.data
         // console.log(user)
         localStorage.setItem('ledfx-cloud-userid', user.id)

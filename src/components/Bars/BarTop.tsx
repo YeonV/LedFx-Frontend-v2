@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { compareVersions } from 'compare-versions'
 import {
   Menu as MenuIcon,
   MoreVert,
@@ -41,6 +42,7 @@ import GlobalActionBar from '../GlobalActionBar'
 import pkg from '../../../package.json'
 import { Ledfx } from '../../api/ledfx'
 import TourHome from '../Tours/TourHome'
+import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
 
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -63,6 +65,7 @@ const LeftButtons = (
 
   if (
     (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') ||
+    (pathname.split('/').length === 3 && pathname.split('/')[1] === 'graph') ||
     pathname === '/Settings'
   ) {
     if (ios) {
@@ -121,11 +124,13 @@ const Title = (
   updateAvailable: boolean,
   virtuals: any
 ) => {
+  const newVerOnline =
+    compareVersions(latestTag.replace('v', ''), pkg.version) === 1
   if (pathname === '/') {
     return (
       <>
         {`LedFx v${pkg.version}`}
-        {!process.env.MS_STORE && latestTag !== `v${pkg.version}` ? (
+        {!process.env.MS_STORE && newVerOnline ? (
           <Button
             color="error"
             variant="contained"
@@ -270,7 +275,7 @@ const TopBar = () => {
       ) {
         setUpdateAvailable(true)
         if (
-          latestTag !== `v${pkg.version}` &&
+          compareVersions(latestTag.replace('v', ''), pkg.version) === 1 &&
           Date.now() -
             parseInt(
               window.localStorage.getItem('last-update-notification') || '0',
@@ -515,16 +520,16 @@ const TopBar = () => {
                       } else if (
                         window.location.pathname.includes('hassio_ingress')
                       ) {
-                        window.location.href = `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`
+                        window.location.href = `${backendUrl}/connect/github?callback=${window.location.origin}`
                       } else if (isElectron()) {
                         window.open(
-                          'https://strapi.yeonv.com/connect/github?callback=ledfx://auth/github/',
+                          `${backendUrl}/connect/github?callback=ledfx://auth/github/`,
                           '_blank',
                           'noopener,noreferrer'
                         )
                       } else {
                         window.open(
-                          `https://strapi.yeonv.com/connect/github?callback=${window.location.origin}`,
+                          `${backendUrl}/connect/github?callback=${window.location.origin}`,
                           '_blank',
                           'noopener,noreferrer'
                         )

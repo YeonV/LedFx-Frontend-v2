@@ -5,8 +5,16 @@ import axios from 'axios'
 import { Slide, MenuItem } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
 
+export const backendUrl = 'https://strapi.yeonv.com'
+
 export const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com'
+  baseURL: backendUrl
+})
+
+cloud.interceptors.request.use((config) => {
+  // eslint-disable-next-line no-param-reassign
+  config.headers.Authorization = `Bearer ${localStorage.getItem('jwt')}`
+  return config
 })
 
 export const Transition = React.forwardRef<unknown, TransitionProps>(

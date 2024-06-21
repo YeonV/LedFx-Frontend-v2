@@ -4,7 +4,6 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import {
   Button,
   Card,
-  CardMedia,
   IconButton,
   TextField,
   Typography,
@@ -18,10 +17,9 @@ import {
   // Save,
   Stop
 } from '@mui/icons-material'
-
-import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import ScenesPlaylistMenu from './ScenesPlaylistMenu'
+import SceneImage from './ScenesImage'
 
 export default function ScenesPlaylist({
   scenes,
@@ -76,25 +74,15 @@ export default function ScenesPlaylist({
     }
   }, [scenePLplay, scenePLactiveIndex])
 
-  const sceneImage = (iconName: string, table?: boolean) =>
-    iconName && iconName.startsWith('image:') ? (
-      <CardMedia
-        image={iconName.split('image:')[1]}
-        title="Contemplative Reptile"
-        sx={{ width: '100%', height: '100%' }}
-      />
-    ) : (
-      <BladeIcon scene={!table} name={iconName} />
-    )
-
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 0 },
     {
       field: 'scene_image',
       headerName: 'Image',
       width: db ? 100 : 150,
-      renderCell: (params: GridRenderCellParams) =>
-        sceneImage(params.value || 'Wallpaper', true)
+      renderCell: (params: GridRenderCellParams) => (
+        <SceneImage iconName={params.value || 'Wallpaper'} />
+      )
     },
     {
       field: 'name',

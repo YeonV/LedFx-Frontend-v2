@@ -64,9 +64,7 @@ export default function CloudScreen({
   }
 
   const refreshPresets = async () => {
-    const response = await cloud.get('presets', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
-    })
+    const response = await cloud.get('presets')
     if (response.status !== 200) {
       alert('No Access')
       return

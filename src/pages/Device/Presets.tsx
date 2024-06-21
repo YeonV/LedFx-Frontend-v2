@@ -15,16 +15,12 @@ import {
   CircularProgress
 } from '@mui/material'
 import { Add, Cloud, Delete, Sync } from '@mui/icons-material'
-import axios from 'axios'
 // import { diff } from 'deep-object-diff'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
 import CloudScreen from './Cloud/Cloud'
 import PresetButton from './PresetButton'
-
-const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com'
-})
+import { cloud } from './Cloud/CloudComponents'
 
 const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const [name, setName] = useState('')
@@ -45,73 +41,49 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const getFullConfig = useStore((state) => state.getFullConfig)
-
   const getCloudConfigs = async () => {
-    const response = await cloud.get(
-      `configs?user.username=${localStorage.getItem('username')}`,
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
+    try {
+      const response = await cloud.get(
+        `configs?user.username=${localStorage.getItem('username')}`
+      )
+      if (response.status !== 200) {
+        // eslint-disable-next-line no-alert
+        alert('No Access')
+        return
       }
-    )
-    if (response.status !== 200) {
-      // eslint-disable-next-line no-alert
-      alert('No Access')
-      return
+      const res = await response.data
+      setCloudConfigs(res)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error)
     }
-    const res = await response.data
-    setCloudConfigs(res)
   }
 
   const uploadPresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
       `presets?user.username=${localStorage.getItem('username')}&Name=${
         list[preset].name
-      }`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
-      }
+      }`
     )
     const exists = await existing.data
-    const eff = await cloud.get(`effects?ledfx_id=${effectType}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-      }
-    })
+    const eff = await cloud.get(`effects?ledfx_id=${effectType}`)
 
     const effId = await eff.data[0].id
     // console.log(exists, existing)
     if (exists.length && exists.length > 0) {
-      cloud.put(
-        `presets/${exists[0].id}`,
-        {
-          Name: list[preset].name,
-          config: virtual.effect.config,
-          effect: effId,
-          user: localStorage.getItem('ledfx-cloud-userid')
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`
-          }
-        }
-      )
+      cloud.put(`presets/${exists[0].id}`, {
+        Name: list[preset].name,
+        config: virtual.effect.config,
+        effect: effId,
+        user: localStorage.getItem('ledfx-cloud-userid')
+      })
     } else {
-      cloud.post(
-        'presets',
-        {
-          Name: list[preset].name,
-          config: virtual.effect.config,
-          effect: effId,
-          user: localStorage.getItem('ledfx-cloud-userid')
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`
-          }
-        }
-      )
+      cloud.post('presets', {
+        Name: list[preset].name,
+        config: virtual.effect.config,
+        effect: effId,
+        user: localStorage.getItem('ledfx-cloud-userid')
+      })
     }
   }
 
@@ -119,27 +91,16 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
     const existing = await cloud.get(
       `presets?user.username=${localStorage.getItem('username')}&Name=${
         list[preset].name
-      }`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
-      }
+      }`
     )
     const exists = await existing.data
     if (exists.length && exists.length > 0) {
-      cloud.delete(`presets/${exists[0].id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
-      })
+      cloud.delete(`presets/${exists[0].id}`)
     }
   }
 
   const getCloudPresets = async () => {
-    const response = await cloud.get(`presets?effect.ledfx_id=${effectType}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
-    })
+    const response = await cloud.get(`presets?effect.ledfx_id=${effectType}`)
     if (response.status !== 200) {
       // eslint-disable-next-line no-alert
       alert('No Access')
@@ -290,11 +251,17 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       />
       <CardContent>
         <Grid spacing={2} container>
-          {renderPresetsButton(presets?.ledfx_presets, 'ledfx_presets')}
+          {renderPresetsButton(
+            presets?.ledfx_presets || presets?.default_presets,
+            'ledfx_presets'
+          )}
         </Grid>
         <Divider style={{ margin: '1rem 0' }} />
         <Grid spacing={2} container>
-          {renderPresetsButton(presets?.user_presets, 'user_presets')}
+          {renderPresetsButton(
+            presets?.user_presets || presets?.custom_presets,
+            'user_presets'
+          )}
           <Grid item>
             <Popover
               popoverStyle={{ padding: '0.5rem' }}

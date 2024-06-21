@@ -9,13 +9,20 @@ const handlers = async (wind, subprocesses, event, parameters) => {
 
   try {
     switch (parameters.command) {
-      case 'verify_otp':
-        handleVerifyOTP(wind, event, parameters)
-        break
+      case 'close-others':
+        BrowserWindow.getAllWindows().forEach(win => {
+          if (win !== wind) {
+            win.close();
+          }
+        });
+        break;
       case 'get-all-windows':
         const allWIndows = BrowserWindow.getAllWindows()
         console.log('allWIndows', allWIndows)
         wind.webContents.send('fromMain', ['all-windows', allWIndows])
+        break
+      case 'verify_otp':
+        handleVerifyOTP(wind, event, parameters)
         break
       case 'generate-mfa-qr':
         generateMfaQr(event, parameters)

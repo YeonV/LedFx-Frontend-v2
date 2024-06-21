@@ -1,11 +1,8 @@
-import axios from 'axios'
-
-const cloud = axios.create({
-  baseURL: 'https://strapi.yeonv.com'
-})
+import { jwtDecode } from 'jwt-decode'
+import { backendUrl, cloud } from '../pages/Device/Cloud/CloudComponents'
 
 const login = async (search: string) => {
-  await fetch(`https://strapi.yeonv.com/auth/github/callback?${search}`)
+  await fetch(`${backendUrl}/auth/github/callback?${search}`)
     .then((res) => {
       if (res.status !== 200) {
         throw new Error(`Couldn't login to Strapi. Status: ${res.status}`)
@@ -16,11 +13,15 @@ const login = async (search: string) => {
     .then(async (res) => {
       localStorage.setItem('jwt', res.jwt)
       localStorage.setItem('username', res.user.username)
-      const me = await cloud.get('users/me', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`
-        }
-      })
+
+      // Decode the JWT and get the expiry time
+      const decodedJwt = jwtDecode(res.jwt)
+      const expiryTime = decodedJwt.exp || 0
+
+      // Store the expiry time
+      localStorage.setItem('jwtExpiry', expiryTime.toString())
+
+      const me = await cloud.get('users/me')
       const user = await me.data
       localStorage.setItem('ledfx-cloud-userid', user.id)
       localStorage.setItem('ledfx-cloud-role', user.role.type)
