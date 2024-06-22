@@ -135,7 +135,6 @@ export default function EditVirtuals({
   //   window.addEventListener('beforeunload', unloadCallback)
   //   return () => window.removeEventListener('beforeunload', unloadCallback)
   // }, [])
-
   return virtual && virtual.config ? (
     <>
       {type === 'menuItem' ? (
