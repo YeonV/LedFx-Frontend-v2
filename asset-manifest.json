@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.5624c565.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.d31429d8.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.fd757657.js",
     "static/js/685.2a857349.chunk.js": "/LedFx-Frontend-v2/static/js/685.2a857349.chunk.js",
     "static/media/xmas.png": "/LedFx-Frontend-v2/static/media/xmas.3e4e83405d14fb81488b.png",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
@@ -34,6 +34,6 @@
   },
   "entrypoints": [
     "static/css/main.5624c565.css",
-    "static/js/main.d31429d8.js"
+    "static/js/main.fd757657.js"
   ]
 }
