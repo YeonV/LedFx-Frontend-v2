@@ -32,16 +32,34 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [pixels, setPixels] = useState<any>([]);
   const pixelGraphs = useStore((state) => state.pixelGraphs);
   const virtuals = useStore((state) => state.virtuals);
+  const mode = useStore((state) => state.config).transmission_mode
 
+  function hexColor(encodedString: string) {
+    if (mode === 'uncompressed' || !encodedString) {
+      return []
+    }
+    const decodedString = atob(encodedString)
+    const charCodes = Array.from(decodedString).map(char => char.charCodeAt(0))
+    const colors = Array.from({length: charCodes.length / 3}, (_, i) => {
+      const r = charCodes[i * 3]
+      const g = charCodes[i * 3 + 1]
+      const b = charCodes[i * 3 + 2]
+      return {r, g, b}
+    })
+    return colors
+  }
+
+  const decodedPixels = mode === 'compressed' ? pixels && pixels.length && hexColor(pixels) : pixels
+  
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtual.id) {
         setPixels(e.detail.pixels);
       }
     };
-    document.addEventListener('YZ', handleWebsockets);
+    document.addEventListener('visualisation_update', handleWebsockets);
     return () => {
-      document.removeEventListener('YZ', handleWebsockets);
+      document.removeEventListener('visualisation_update', handleWebsockets);
     };
   }, [virtuals, pixelGraphs]);
 
@@ -219,7 +237,11 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
             {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
               {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
                 <Box key={`col-${currentColIndex}`} className={classes.gridCell} sx={{
-                  backgroundColor: pixels && pixels[0] && pixels[0].length ? `rgb(${pixels[0][currentRowIndex*colN + currentColIndex]},${pixels[1][currentRowIndex*colN + currentColIndex]},${pixels[2][currentRowIndex*colN + currentColIndex]})` : '#222',
+                  backgroundColor: mode === 'compressed' && decodedPixels ? 
+                    decodedPixels[currentRowIndex * colN + currentColIndex] ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})` : '#222' 
+                    : pixels && pixels[0] && pixels[0].length ? 
+                      `rgb(${(pixels[0])[currentRowIndex * colN + currentColIndex]},${(pixels[1])[currentRowIndex * colN + currentColIndex]},${(pixels[2])[currentRowIndex * colN + currentColIndex]})` : '#222',
+
                   opacity: yzcolumn.deviceId !== '' ? 1 : 0.3,
                 }} onContextMenu={(e) => {
                   e.preventDefault()
