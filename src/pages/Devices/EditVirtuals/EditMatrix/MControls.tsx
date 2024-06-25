@@ -20,7 +20,11 @@ const MControls = ({
   setM
 }: any) => {
   return (
-    <>
+    <Stack
+      direction="column"
+      justifyContent="flex-start"
+      alignItems="flex-start"
+    >
       <Stack direction="row" width={500} justifyContent="space-between">
         Rows:
         <Box width={400}>
@@ -108,7 +112,7 @@ const MControls = ({
           </Button>
         </Stack>
       </Stack>
-    </>
+    </Stack>
   )
 }
 

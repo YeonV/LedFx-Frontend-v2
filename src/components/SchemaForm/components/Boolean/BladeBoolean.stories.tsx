@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeBoolean from "./BladeBoolean";
 
@@ -19,10 +19,10 @@ export default {
       panelPosition: 'bottom'
     }
   }
-} as ComponentMeta<typeof BladeBoolean>
+} as Meta<typeof BladeBoolean>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof BladeBoolean> = (args) => <BladeBoolean {...args} />;
+const Template: StoryFn<typeof BladeBoolean> = (args) => <BladeBoolean {...args} />;
 
 export const Boolean = Template.bind({})
 Boolean.args = {

@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSchemaForm from "./SchemaForm";
 
@@ -28,10 +28,10 @@ export default {
       </Card>
     )
   ]
-} as ComponentMeta<typeof BladeSchemaForm>
+} as Meta<typeof BladeSchemaForm>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
+const Template: StoryFn<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
 
 export const AddDeviceAdaLight = Template.bind({})
 AddDeviceAdaLight.args = {

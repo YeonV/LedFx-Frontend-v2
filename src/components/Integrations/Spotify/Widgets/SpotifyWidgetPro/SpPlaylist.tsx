@@ -4,7 +4,7 @@ import * as React from 'react';
 import {
   DataGrid,
   GridColDef,
-  GridValueGetterParams,
+  GridValueGetter,
   GridRowParams,
 } from '@mui/x-data-grid';
 
@@ -78,10 +78,10 @@ export default function SpPlaylist() {
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params?.row?.track?.artists?.[0]?.name || ''} - ${
-          params?.row?.track?.name || ''
-        }`,
+      valueGetter: ((value, row) =>
+        `${row?.track?.artists?.[0]?.name || ''} - ${
+          row?.track?.name || ''
+        }`) as GridValueGetter,
     },
   ];
   const rows = playlist.map((item: any, index: number) => ({

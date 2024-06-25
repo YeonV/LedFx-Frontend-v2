@@ -19,9 +19,10 @@ export type IDir =
 export type IMCell = {
   deviceId: string
   pixel: number
+  group?: string
 }
 
-export const MCell: IMCell = { deviceId: '', pixel: 0 }
+export const MCell: IMCell = { deviceId: '', pixel: 0, group: '0-0' }
 
 /**
  * Calculates the maximum available pixel given the input data

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import Cookies from 'universal-cookie/es6'
+import Cookies from 'universal-cookie'
 import axios from 'axios'
 import isElectron from 'is-electron'
 import qs from 'qs'
