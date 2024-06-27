@@ -181,17 +181,17 @@ export const SettingsButton = (props: any) => {
 }
 
 export const SettingsRow = ({
-  step,
-  title,
-  checked,
+  title = '',
+  step =  'x',
+  children =  null,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  value =  null,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  checked =  false,
+  direct =  false,
   onChange,
-  children,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  direct,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  value,
-  style,
-  disabled
+  style =  null,
+  disabled =  false
 }: {
   step?: string
   title: string
@@ -254,17 +254,6 @@ export const SettingsRow = ({
       </div>
     </div>
   )
-}
-
-SettingsRow.defaultProps = {
-  step: 'x',
-  children: null,
-  value: null,
-  checked: false,
-  direct: false,
-  onChange: null,
-  style: null,
-  disabled: false
 }
 
 export const SettingsAccordion = ({

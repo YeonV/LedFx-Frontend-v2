@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { useEffect, useRef, useState } from 'react'
 import Cropper, { Area } from 'react-easy-crop'
-import { Delete, Save, UploadFile } from '@mui/icons-material'
+import { Delete, Edit, GitHub, Save, UploadFile } from '@mui/icons-material'
 import setupIndexedDB, { useIndexedDBStore } from 'use-indexeddb'
 import {
   Avatar,
@@ -17,19 +17,31 @@ import {
   Typography
 } from '@mui/material'
 import { getCroppedImg, idbConfig, readFile } from './avatarUtils'
-import {
-  AvatarPickerDefaults,
-  AvatarPickerProps
-  // storageOptions
-} from './AvatarPicker.interface'
+import { AvatarPickerProps } from './AvatarPicker.interface'
 import { backendUrl, cloud } from '../../Device/Cloud/CloudComponents'
 
-const AvatarPicker = ({
-  defaultIcon,
-  editIcon,
-  avatar,
-  setAvatar,
+const AvatarPicker = ({  
   size = 150,
+  defaultIcon = <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
+  editIcon = (
+    <Edit
+      sx={{
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        padding: '3rem',
+        opacity: 0,
+        borderRadius: '50%',
+        background: '#0009',
+        '&:hover': { opacity: 1 }
+      }}
+    />
+  ),
+  avatar = undefined,
   initialZoom = 1,
   minZoom = 0.01,
   maxZoom = 3,
@@ -37,7 +49,8 @@ const AvatarPicker = ({
   minRotation = 0,
   maxRotation = 360,
   stepRotation = 0.01,
-  storage = 'cloud',
+  setAvatar = null,
+  storage = 'indexedDb',
   storageKey = 'avatar',
   ...props
 }: AvatarPickerProps) => {
@@ -396,7 +409,5 @@ const AvatarPicker = ({
     </div>
   )
 }
-
-AvatarPicker.defaultProps = AvatarPickerDefaults
 
 export default AvatarPicker

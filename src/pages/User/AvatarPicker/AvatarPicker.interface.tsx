@@ -70,37 +70,3 @@ export interface AvatarPickerProps {
   props?: any
 }
 
-export const AvatarPickerDefaults: AvatarPickerProps = {
-  size: 150,
-  defaultIcon: <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
-  editIcon: (
-    <Edit
-      sx={{
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        padding: '3rem',
-        opacity: 0,
-        borderRadius: '50%',
-        background: '#0009',
-        '&:hover': { opacity: 1 }
-      }}
-    />
-  ),
-  avatar: undefined,
-  initialZoom: 1,
-  minZoom: 0.01,
-  maxZoom: 3,
-  stepZoom: 0.01,
-  minRotation: 0,
-  maxRotation: 360,
-  stepRotation: 0.01,
-  setAvatar: null,
-  storage: 'indexedDb',
-  storageKey: 'avatar',
-  props: {}
-}

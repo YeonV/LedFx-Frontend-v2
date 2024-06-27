@@ -7,20 +7,17 @@ import useClickOutside from '../../../../utils/useClickOutside'
 import Popover from '../../../Popover/Popover'
 import DeleteColorsDialog from '../../../Dialogs/DeleteColors'
 import useStyles from './GradientPicker.styles'
-import {
-  GradientPickerDefaultProps,
-  GradientPickerProps
-} from './GradientPicker.props'
+import { GradientPickerProps } from './GradientPicker.props'
 
 const GradientPicker = ({
-  pickerBgColor,
-  title,
-  index,
+  pickerBgColor = '#800000',
+  title = 'Color',
+  index = 1,
   isGradient = false,
-  wrapperStyle,
-  colors,
-  handleAddGradient,
-  sendColorToVirtuals,
+  wrapperStyle = undefined,
+  colors = undefined,
+  handleAddGradient = undefined,
+  sendColorToVirtuals = undefined,
   showHex = false
 }: GradientPickerProps) => {
   const classes = useStyles()
@@ -221,7 +218,5 @@ const GradientPicker = ({
     </div>
   )
 }
-
-GradientPicker.defaultProps = GradientPickerDefaultProps
 
 export default GradientPicker

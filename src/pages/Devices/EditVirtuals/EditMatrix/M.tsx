@@ -250,7 +250,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   }, [rowN, colN])
 
   useEffect(() => {    
-    console.log(reverseProcessArray(virtual.segments, colN))
     setM(reverseProcessArray(virtual.segments, colN))
   }, [])
 

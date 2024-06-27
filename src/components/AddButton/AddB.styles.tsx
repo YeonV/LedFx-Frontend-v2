@@ -60,10 +60,7 @@ export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>(
     )
   }
 )
-MenuLine.defaultProps = {
-  icon: <Send fontSize="small" />,
-  name: 'MenuItem'
-}
+
 
 export const StyledMenu = ({ open, ...props }: StyledMenuProps) => (
   <Menu

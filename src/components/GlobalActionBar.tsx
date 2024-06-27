@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react'
 import useStore from '../store/useStore';
 
 const GlobalActionBar = ({
-  className,
-  sx,
-  height,
-  type,
+  className = undefined,
+  sx = undefined,
+  height = 15,
+  type = 'icon',
 }: {
   className?: string | undefined;
   sx?: SxProps<Theme> | undefined;
@@ -127,13 +127,6 @@ const GlobalActionBar = ({
       />
     </Stack>
   );
-};
-
-GlobalActionBar.defaultProps = {
-  className: undefined,
-  sx: undefined,
-  height: 15,
-  type: 'icon',
 };
 
 export default GlobalActionBar;

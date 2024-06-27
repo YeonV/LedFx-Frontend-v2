@@ -47,17 +47,20 @@ interface BladeFrameProps {
 }
 
 const BladeFrame = ({
-  index,
-  title,
-  children,
+  index = undefined,
+  title = undefined,
+  children = undefined,
   full = false,
-  style = { width: 'unset', order: 0 },
+  style = {
+    width: 'unset',
+    order: 0
+  },
   required = false,
   variant = 'outlined',
-  className,
-  disabled,
-  labelStyle = {},
-  onClick
+  className = undefined,
+  disabled = undefined,
+  labelStyle = undefined,
+  onClick = undefined
 }: BladeFrameProps): ReactElement<any, any> => {
   return variant === 'outlined' ? (
     <Root
@@ -84,21 +87,6 @@ const BladeFrame = ({
   )
 }
 
-BladeFrame.defaultProps = {
-  index: undefined,
-  title: undefined,
-  children: undefined,
-  full: false,
-  style: {
-    width: 'unset',
-    order: 0
-  },
-  required: false,
-  variant: 'outlined',
-  className: undefined,
-  disabled: undefined,
-  labelStyle: undefined,
-  onClick: undefined
-}
+
 
 export default BladeFrame

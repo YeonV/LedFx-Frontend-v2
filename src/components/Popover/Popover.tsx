@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { Delete, Close, Check } from '@mui/icons-material'
 import { useLongPress } from 'use-long-press'
-import { PopoverProps, PopoverDefaults } from './Popover.interface'
+import { PopoverProps } from './Popover.interface'
 
 const Popover = ({
   onConfirm,
@@ -229,7 +229,5 @@ const Popover = ({
     </div>
   )
 }
-
-Popover.defaultProps = PopoverDefaults
 
 export default Popover

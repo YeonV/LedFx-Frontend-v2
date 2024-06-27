@@ -18,19 +18,3 @@ export interface BladeSelectProps {
   children?: JsxElement
   type?: string
 }
-
-export const BladeSelectDefaultProps = {
-  disabled: false,
-  schema: {},
-  model: {},
-  model_id: '',
-  onChange: undefined,
-  index: 0,
-  required: false,
-  wrapperStyle: undefined,
-  selectStyle: undefined,
-  textStyle: undefined,
-  menuItemStyle: undefined,
-  hideDesc: false,
-  children: undefined
-}

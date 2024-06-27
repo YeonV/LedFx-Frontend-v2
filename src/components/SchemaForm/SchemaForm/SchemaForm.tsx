@@ -16,7 +16,7 @@ import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
 import BladeFrame from '../components/BladeFrame'
-import { SchemaFormDefaultProps, SchemaFormProps } from './SchemaForm.props'
+import { SchemaFormProps } from './SchemaForm.props'
 
 const PREFIX = 'SchemaForm'
 
@@ -344,7 +344,5 @@ const SchemaForm = ({
     </Root>
   )
 }
-
-SchemaForm.defaultProps = SchemaFormDefaultProps
 
 export default SchemaForm

@@ -10,7 +10,7 @@ import {
 import { useEffect, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
 import BladeFrame from '../BladeFrame'
-import { BladeSelectDefaultProps, BladeSelectProps } from './BladeSelect.props'
+import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
@@ -27,13 +27,13 @@ const BladeSelect = ({
   model,
   model_id,
   onChange,
-  index,
+  index = 0,
   required = false,
   wrapperStyle = { margin: '0.5rem', flexBasis: '49%', width: 'unset' },
   selectStyle = {},
   textStyle = {},
   menuItemStyle = {},
-  hideDesc,
+  hideDesc = false,
   children,
   type
 }: BladeSelectProps) => {
@@ -248,7 +248,5 @@ const BladeSelect = ({
     </BladeFrame>
   )
 }
-
-BladeSelect.defaultProps = BladeSelectDefaultProps
 
 export default BladeSelect

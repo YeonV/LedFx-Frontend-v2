@@ -29,11 +29,4 @@ export interface BladeIconProps {
   style?: Record<string, unknown>
 }
 
-export const BladeIconDefaultProps = {
-  colorIndicator: false,
-  name: 'MusicNote',
-  className: '',
-  style: {},
-  scene: false,
-  card: false
-}
+

@@ -21,7 +21,7 @@ import {
 import { camelToSnake } from '../../../utils/helpers'
 import '../../../assets/materialdesignicons.css'
 import '../../../index.css'
-import { BladeIconDefaultProps, BladeIconProps } from './BladeIcon.interface'
+import { BladeIconProps } from './BladeIcon.interface'
 import HomeAssistantLogo from '../HomeAssistant'
 import NovationLogo from '../Novation'
 
@@ -216,6 +216,5 @@ function BladeIcon({
   )
 }
 
-BladeIcon.defaultProps = BladeIconDefaultProps
 
 export default BladeIcon

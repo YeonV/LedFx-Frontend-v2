@@ -9,7 +9,7 @@ import useStore from '../../../../../store/useStore'
 import SpLayoutButtons from './SpLayoutButtons'
 import SpFloating from './SpFloating'
 
-const SpotifyWidgetPro = ({ drag }: { drag?: boolean }) => {
+const SpotifyWidgetPro = ({ drag = false }: { drag?: boolean }) => {
   const classes = useStyle()
   const swSize = useStore((state) => state.spotify.swSize)
 
@@ -32,7 +32,5 @@ const SpotifyWidgetPro = ({ drag }: { drag?: boolean }) => {
   )
 }
 
-SpotifyWidgetPro.defaultProps = {
-  drag: false
-}
+
 export default SpotifyWidgetPro

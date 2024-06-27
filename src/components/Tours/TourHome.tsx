@@ -95,7 +95,7 @@ const steps = [
 ]
 
 const TourHome = ({
-  className,
+  className = '',
   cally,
   variant = 'button'
 }: {
@@ -166,12 +166,6 @@ const TourHome = ({
       />
     </>
   )
-}
-
-TourHome.defaultProps = {
-  className: '',
-  variant: 'button',
-  cally: null
 }
 
 export default TourHome

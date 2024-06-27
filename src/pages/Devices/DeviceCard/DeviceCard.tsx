@@ -24,37 +24,37 @@ import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import useStyle from './DeviceCard.styles'
-import { DeviceCardDefaults, DeviceCardProps } from './DeviceCard.interface'
+import { DeviceCardProps } from './DeviceCard.interface'
 
 /**
  * Pixelgraphs will not connect via Websocket in Storybook
  *
  */
 const DeviceCard = ({
-  deviceName,
-  online,
-  virtId,
-  index,
-  handleDeleteDevice,
-  handleEditVirtual,
-  handleEditDevice,
-  handleClearEffect,
-  handlePlayPause,
-  linkTo,
-  additionalStyle,
-  iconName,
-  graphsActive,
-  colorIndicator,
-  effectName,
-  isPlaying,
-  isStreaming,
-  previewOnly,
-  isEffectSet,
-  transitionTime,
-  isDevice,
   graphsMulti,
-  showMatrix,
-  activateDevice
+  activateDevice,  
+  deviceName = 'My Wled',
+  online = true,
+  effectName = undefined,
+  virtId = 'yz-quad',
+  index = 1,
+  handleDeleteDevice = () => console.log('DELETING DEVICE'), // eslint-disable-line no-console
+  handleEditVirtual = () => console.log('EDITING VIRTUAL'), // eslint-disable-line no-console
+  handleEditDevice = () => console.log('EDITING DEVICE'), // eslint-disable-line no-console
+  handleClearEffect = () => console.log('CLEARING EFFECT'), // eslint-disable-line no-console
+  handlePlayPause = () => console.log('PLAY/PAUSE'), // eslint-disable-line no-console
+  linkTo = '/',
+  additionalStyle = {},
+  iconName = 'wled',
+  colorIndicator = true,
+  isPlaying = true,
+  isStreaming = false,
+  previewOnly = true,
+  isEffectSet = true,
+  transitionTime = 5,
+  isDevice = 'yz-quad',
+  graphsActive = true,
+  showMatrix = false
 }: DeviceCardProps) => {
   const classes = useStyle()
   const theme = useTheme()
@@ -376,6 +376,5 @@ const DeviceCard = ({
   )
 }
 
-DeviceCard.defaultProps = DeviceCardDefaults
 
 export default DeviceCard

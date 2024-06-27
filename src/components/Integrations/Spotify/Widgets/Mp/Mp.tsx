@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import useStyle from './Mp.styles'
 import MpFloating from './MpFloating'
 
-const Mp = () => {
+const Mp = ({ drag = false}) => {
   const classes = useStyle()
 
   return (
@@ -33,7 +33,5 @@ const Mp = () => {
   )
 }
 
-Mp.defaultProps = {
-  drag: false
-}
+
 export default Mp

@@ -6,7 +6,7 @@ interface NoYetProps {
   type?: string
 }
 
-const NoYet: React.FC<NoYetProps> = ({ type }): JSX.Element => (
+const NoYet: React.FC<NoYetProps> = ({ type = 'Thing' }): JSX.Element => (
   <Card>
     <CardHeader
       avatar={<Info />}
@@ -20,8 +20,5 @@ NoYet.propTypes = {
   type: PropTypes.string
 }
 
-NoYet.defaultProps = {
-  type: 'Thing'
-}
 
 export default NoYet

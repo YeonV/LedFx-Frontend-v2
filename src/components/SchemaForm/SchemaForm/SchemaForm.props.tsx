@@ -29,9 +29,3 @@ export interface SchemaFormProps {
    */
   type?: string
 }
-
-export const SchemaFormDefaultProps = {
-  hideToggle: undefined,
-  onModelChange: undefined,
-  type: undefined
-}

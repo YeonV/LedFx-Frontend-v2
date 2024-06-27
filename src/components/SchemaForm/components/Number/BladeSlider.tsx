@@ -3,23 +3,22 @@ import { useState, useEffect } from 'react';
 import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material';
 import useStyles from './BladeSlider.styles';
 import {
-  BladeSliderDefaultProps,
-  BladeSliderInnerDefaultProps,
   BladeSliderInnerProps,
   BladeSliderProps,
 } from './BladeSlider.props';
 
 const BladeSliderInner = ({
-  schema,
-  model,
-  model_id,
-  step,
-  onChange,
-  textfield,
-  style,
-  disabled,
-  marks,
-  hideDesc,
+  schema = undefined,
+  model = undefined,
+  model_id = '',
+  step = undefined,
+  onChange = undefined,
+  textfield = undefined,
+  style = undefined,
+  disabled = undefined,
+  marks = undefined,
+  hideDesc = undefined,
+  full = undefined
 }: BladeSliderInnerProps) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -150,7 +149,6 @@ const BladeSliderInner = ({
   );
 };
 
-BladeSliderInner.defaultProps = BladeSliderInnerDefaultProps;
 
 /**
  * ## Number
@@ -162,19 +160,21 @@ BladeSliderInner.defaultProps = BladeSliderInnerDefaultProps;
  */
 const BladeSlider = ({
   variant = 'outlined',
-  schema,
-  model,
-  model_id,
-  step,
-  onChange,
+  schema = {
+    title: 'Slide me'
+  },
+  model = undefined,
+  model_id = '',
+  step = undefined,
+  onChange = undefined,
   marks = undefined,
   index = undefined,
   required = false,
   textfield = false,
   disabled = false,
   hideDesc = false,
-  full = false,
   style = {},
+  full = false
 }: BladeSliderProps) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -234,6 +234,5 @@ const BladeSlider = ({
   );
 };
 
-BladeSlider.defaultProps = BladeSliderDefaultProps;
 
 export default BladeSlider;
