@@ -9,6 +9,7 @@ import { Ledfx } from '../../../../api/ledfx'
 import Popover from '../../../../components/Popover/Popover'
 import { transpose } from '../../../../utils/helpers'
 import { MCell } from './M.utils'
+import { processArray } from './processMatrix'
 
 const MControls = ({
   rowN,
@@ -96,16 +97,20 @@ const MControls = ({
           />
 
           <Button
-            onClick={() =>
-              Ledfx('/api/virtuals', 'POST', {
-                config: {
-                  ...virtual.config,
-                  rows: rowN
-                },
-                matrix: m,
-                id: virtual.id
-              })
-            }
+            onClick={() => {
+              // Ledfx('/api/virtuals', 'POST', {
+              //   config: {
+              //     ...virtual.config,
+              //     rows: rowN
+              //   },
+              //   matrix: m,
+              //   // m_segments: processArray(m.flat()),
+              //   id: virtual.id
+              // })            
+            Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+              segments: processArray(m.flat())
+            })
+          }}
             startIcon={<Save />}
           >
             Save

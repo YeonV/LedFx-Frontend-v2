@@ -14,9 +14,10 @@ import MFillSelector from './MFillSelector'
 import MDialogTitle from './MDialogTitle'
 import MSwitch from './MSwitch'
 import MSlider from './MSlider'
-import Droppable from './Droppable'
-import Draggable from './Draggable'
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
+// import Droppable from './Droppable'
+// import Draggable from './Draggable'
+// import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { reverseProcessArray } from './processMatrix'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
@@ -248,10 +249,15 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     setM(Array(rowN).fill(Array(colN).fill(MCell)))
   }, [rowN, colN])
 
-  const [isDropped, setIsDropped] = useState(false);
-  const draggableMarkup = (
-    <Draggable>Drag me</Draggable>
-  );
+  useEffect(() => {    
+    console.log(reverseProcessArray(virtual.segments, colN))
+    setM(reverseProcessArray(virtual.segments, colN))
+  }, [])
+
+  // const [isDropped, setIsDropped] = useState(false);
+  // const draggableMarkup = (
+  //   <Draggable>Drag me</Draggable>
+  // );
 
   return (<MWrapper>
     <Stack width={500} direction="row" spacing={2} style={{ marginBottom: '1rem' }}>
@@ -265,12 +271,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
       <TransformComponent>
         <div className={classes.gridCellContainer} style={{ width: colN * 100, height: rowN * 100 }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <DndContext onDragEnd={handleDragEnd}>
-          {!isDropped ? draggableMarkup : null}
+          {/* <DndContext onDragEnd={handleDragEnd}> */}
+          {/* {!isDropped ? draggableMarkup : null} */}
             {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
               {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
-                <Droppable key={`col-${currentColIndex}`} className={classes.gridCell}>
-                  {isDropped ? draggableMarkup : 'Drop here'}
+                // <Droppable key={`col-${currentColIndex}`} className={classes.gridCell}>
+                //   {isDropped ? draggableMarkup : 'Drop here'}
                 <Box key={`col-${currentColIndex}`} className={classes.gridCell} sx={{
                   backgroundColor: mode === 'compressed' && decodedPixels ? 
                     decodedPixels[currentRowIndex * colN + currentColIndex] ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})` : '#222' 
@@ -298,11 +304,11 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                     </div>
                   )}
                 </Box>
-                </Droppable>
+                // </Droppable>
               ))}
             </div>
             )}
-          </DndContext>
+          {/* </DndContext> */}
           </div>
           <Menu
             id="basic-menu"
@@ -354,12 +360,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
       </TransformComponent>
     </TransformWrapper>
   </MWrapper>)
-    function handleDragEnd(event: DragEndEvent) {
-      console.log(event)
-      if (event.over && event.over.id === 'droppable') {
-        setIsDropped(true);
-      }
-    }
+    // function handleDragEnd(event: DragEndEvent) {
+    //   console.log(event)
+    //   // if (event.over && event.over.id === 'droppable') {
+    //   //   setIsDropped(true);
+    //   // }
+    // }
   }
 
 export default EditMatrix
