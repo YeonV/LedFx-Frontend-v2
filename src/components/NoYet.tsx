@@ -20,5 +20,4 @@ NoYet.propTypes = {
   type: PropTypes.string
 }
 
-
 export default NoYet

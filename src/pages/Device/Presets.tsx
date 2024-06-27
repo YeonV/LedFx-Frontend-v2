@@ -267,9 +267,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               popoverStyle={{ padding: '0.5rem' }}
               color="primary"
               variant="outlined"
-              onSingleClick={() => {
-                // eslint-disable-next-line no-console
-              }}
+              onSingleClick={() => {}}
               content={
                 <TextField
                   onKeyDown={(e: any) => e.key === 'Enter' && handleAddPreset()}

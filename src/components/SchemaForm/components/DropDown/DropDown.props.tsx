@@ -5,4 +5,3 @@ export interface EffectDropDownProps {
   showFilter?: boolean
   title: string
 }
-

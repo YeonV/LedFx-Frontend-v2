@@ -28,7 +28,6 @@ const EffectSchemaForm = ({
   virtId,
   handleEffectConfig,
   descriptions
-  
 }: EffectSchemaFormProps) => {
   return (
     <Root className={classes.bladeSchemaForm}>

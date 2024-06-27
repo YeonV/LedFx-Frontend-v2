@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
+ 
 import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 // import axios from 'axios'
@@ -17,7 +17,7 @@ import {
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
 // import { log } from '../../../utils/helpers'
 
-// eslint-disable-next-line prettier/prettier
+ 
 const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 // const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host')

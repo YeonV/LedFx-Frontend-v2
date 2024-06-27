@@ -32,5 +32,4 @@ const SpotifyWidgetPro = ({ drag = false }: { drag?: boolean }) => {
   )
 }
 
-
 export default SpotifyWidgetPro

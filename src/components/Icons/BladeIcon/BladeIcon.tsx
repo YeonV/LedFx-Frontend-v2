@@ -216,5 +216,4 @@ function BladeIcon({
   )
 }
 
-
 export default BladeIcon

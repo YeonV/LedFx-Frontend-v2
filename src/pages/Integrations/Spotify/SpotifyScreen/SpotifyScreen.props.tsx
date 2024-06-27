@@ -1,5 +1,4 @@
 import React from 'react'
-import { Settings } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
 import { MenuItem, Slide } from '@mui/material'
 
@@ -16,7 +15,6 @@ export interface SpotifyScreenProps {
   disabled: boolean
   size?: 'small' | 'medium' | 'large' | undefined
 }
-
 
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },

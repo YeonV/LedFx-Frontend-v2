@@ -270,8 +270,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
       <TransformComponent>
         <div className={classes.gridCellContainer} style={{ width: colN * 100, height: rowN * 100 }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {/* <DndContext onDragEnd={handleDragEnd}> */}
-          {/* {!isDropped ? draggableMarkup : null} */}
+            {/* <DndContext onDragEnd={handleDragEnd}> */}
+            {/* {!isDropped ? draggableMarkup : null} */}
             {m.map((yzrow, currentRowIndex) => <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
               {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
                 // <Droppable key={`col-${currentColIndex}`} className={classes.gridCell}>
@@ -307,7 +307,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
               ))}
             </div>
             )}
-          {/* </DndContext> */}
+            {/* </DndContext> */}
           </div>
           <Menu
             id="basic-menu"
@@ -325,12 +325,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
             <MenuItem onClick={()=>{
               setOpen(true)
             }}>Edit</MenuItem>
-            <MenuItem onClick={()=>{
+            {/* <MenuItem onClick={()=>{
               console.log('move', move, m[currentCell[1]][currentCell[0]].group, selectedGroup)
               setSelectedGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
               setMove(true)
               closeContextMenu()
-            }}>Move</MenuItem>
+            }}>Move</MenuItem> */}
             <MenuItem onClick={closeContextMenu}>Clear</MenuItem>
           </Menu>
           <Dialog onClose={() => closeClear()} open={open} PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
@@ -359,12 +359,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
       </TransformComponent>
     </TransformWrapper>
   </MWrapper>)
-    // function handleDragEnd(event: DragEndEvent) {
-    //   console.log(event)
-    //   // if (event.over && event.over.id === 'droppable') {
-    //   //   setIsDropped(true);
-    //   // }
-    // }
-  }
+  // function handleDragEnd(event: DragEndEvent) {
+  //   console.log(event)
+  //   // if (event.over && event.over.id === 'droppable') {
+  //   //   setIsDropped(true);
+  //   // }
+  // }
+}
 
 export default EditMatrix

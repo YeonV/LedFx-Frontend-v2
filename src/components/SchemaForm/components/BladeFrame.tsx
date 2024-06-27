@@ -87,6 +87,4 @@ const BladeFrame = ({
   )
 }
 
-
-
 export default BladeFrame

@@ -1,9 +1,14 @@
 module.exports = {
-  "stories": ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  "addons": ["@storybook/addon-links", "@storybook/addon-essentials", "@storybook/preset-create-react-app", "@storybook/addon-mdx-gfm"],
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/preset-create-react-app',
+    '@storybook/addon-mdx-gfm'
+  ],
 
-  "framework": {
-    name: "@storybook/react-webpack5",
+  framework: {
+    name: '@storybook/react-webpack5',
     options: {}
   },
 
@@ -14,6 +19,6 @@ module.exports = {
   docs: {},
 
   typescript: {
-    reactDocgen: "react-docgen-typescript"
+    reactDocgen: 'react-docgen-typescript'
   }
-};
+}

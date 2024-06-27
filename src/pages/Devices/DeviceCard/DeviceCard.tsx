@@ -32,7 +32,7 @@ import { DeviceCardProps } from './DeviceCard.interface'
  */
 const DeviceCard = ({
   graphsMulti,
-  activateDevice,  
+  activateDevice,
   deviceName = 'My Wled',
   online = true,
   effectName = undefined,
@@ -375,6 +375,5 @@ const DeviceCard = ({
     </NavLink>
   )
 }
-
 
 export default DeviceCard

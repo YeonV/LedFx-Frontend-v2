@@ -1,8 +1,6 @@
 import { Switch, Checkbox, Button, Typography } from '@mui/material'
 import BladeFrame from '../BladeFrame'
-import {
-  BladeBooleanProps
-} from './BladeBoolean.props'
+import { BladeBooleanProps } from './BladeBoolean.props'
 
 /**
  * ## Boolean

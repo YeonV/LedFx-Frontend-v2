@@ -2,7 +2,6 @@ import { Box } from '@mui/material'
 import type { ReactNode } from 'react'
 
 export interface TabPanelProps {
-  // eslint-disable-next-line react/require-default-props
   children?: ReactNode
   index: number
   value: number

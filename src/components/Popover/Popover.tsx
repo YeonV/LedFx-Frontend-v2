@@ -48,7 +48,6 @@ const Popover = ({
   const theme = useTheme()
   const [anchorEl, setAnchorEl] = useState(null)
   const openPopover = (event: any) => {
-    // eslint-disable-next-line
     setAnchorEl(() => event.currentTarget || event.target)
   }
   const handleClose = () => {

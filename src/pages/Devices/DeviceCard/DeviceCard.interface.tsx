@@ -99,4 +99,3 @@ export interface DeviceCardProps {
    * JSX styles
    */
 }
-

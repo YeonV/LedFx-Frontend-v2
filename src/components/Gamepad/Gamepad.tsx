@@ -79,7 +79,6 @@ const Gamepad = ({ setScene, bottom }: any) => {
     setScanning(0)
     scanForDevices()
       .then(async () => {
-        // eslint-disable-next-line no-plusplus
         for (let sec = 1; sec <= 30; sec++) {
           if (scanning === -1) break
           sleep(1000).then(() => {

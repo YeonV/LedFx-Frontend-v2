@@ -20,7 +20,7 @@ import { getCroppedImg, idbConfig, readFile } from './avatarUtils'
 import { AvatarPickerProps } from './AvatarPicker.interface'
 import { backendUrl, cloud } from '../../Device/Cloud/CloudComponents'
 
-const AvatarPicker = ({  
+const AvatarPicker = ({
   size = 150,
   defaultIcon = <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />,
   editIcon = (
@@ -56,7 +56,7 @@ const AvatarPicker = ({
 }: AvatarPickerProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+
   const [newStorage, setNewStorage] = useState(storage)
   const [imageSrc, setImageSrc] = useState<any>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })

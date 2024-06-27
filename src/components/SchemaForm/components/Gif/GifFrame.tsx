@@ -37,5 +37,4 @@ const GifFrame: FC<GifFrameProps> = ({
   )
 }
 
-
 export default GifFrame

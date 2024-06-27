@@ -106,11 +106,11 @@ const MControls = ({
               //   matrix: m,
               //   // m_segments: processArray(m.flat()),
               //   id: virtual.id
-              // })            
-            Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-              segments: processArray(m.flat())
-            })
-          }}
+              // })
+              Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+                segments: processArray(m.flat())
+              })
+            }}
             startIcon={<Save />}
           >
             Save

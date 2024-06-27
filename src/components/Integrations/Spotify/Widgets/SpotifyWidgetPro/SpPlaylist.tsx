@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/indent */
+ 
 import * as React from 'react';
 import {
   DataGrid,

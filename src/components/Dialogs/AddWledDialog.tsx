@@ -74,7 +74,6 @@ const AddWledDialog = () => {
       icon_name: 'wled'
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     // let icon = 'wled'
     const promises: any = apiRef.current.getSelectedRows().forEach((row) => {
       // if row.name is part of a key of nametoicon then return the value else 'wled'

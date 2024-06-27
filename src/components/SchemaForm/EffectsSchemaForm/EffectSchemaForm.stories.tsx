@@ -30,7 +30,6 @@ export default {
   }
 } as Meta<typeof EffectSchemaForm>
 
-// eslint-disable-next-line
 const Template: StoryFn<typeof EffectSchemaForm> = (args) => (
   <EffectSchemaForm {...args} />
 )

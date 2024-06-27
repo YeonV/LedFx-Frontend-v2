@@ -299,6 +299,4 @@ const SmartBar = ({
   )
 }
 
-
-
 export default SmartBar

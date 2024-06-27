@@ -34,7 +34,7 @@ export default function SpotifyScreen({
   color = 'primary',
   variant = 'contained',
   disabled = false,
-  size = 'small'  
+  size = 'small'
 }: SpotifyScreenProps) {
   const classes = useEditVirtualsStyles()
   const theme = useTheme()
@@ -124,4 +124,3 @@ export default function SpotifyScreen({
     </>
   )
 }
-

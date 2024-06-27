@@ -69,4 +69,3 @@ export interface AvatarPickerProps {
    */
   props?: any
 }
-

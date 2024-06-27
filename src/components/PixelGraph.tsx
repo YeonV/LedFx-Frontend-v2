@@ -1,8 +1,5 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-bitwise */
 /* eslint-disable prettier/prettier */
-/* eslint-disable react/require-default-props */
+ 
 import { useEffect, useState } from 'react';
 import useStore from '../store/useStore';
 
@@ -25,13 +22,12 @@ const PixelGraph = ({
 }) => {
   const [pixels, setPixels] = useState<any>([]);
 
-  const { pixelGraphs, virtuals, devices, graphs, config, dialogs } = useStore((state) => ({
+  const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
     pixelGraphs: state.pixelGraphs,
     virtuals: state.virtuals,
     devices: state.devices,
     graphs: state.graphs,
     config: state.config,
-    dialogs: state.dialogs,
   }));
 
 

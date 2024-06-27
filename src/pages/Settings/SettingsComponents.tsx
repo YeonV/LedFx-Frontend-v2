@@ -182,16 +182,14 @@ export const SettingsButton = (props: any) => {
 
 export const SettingsRow = ({
   title = '',
-  step =  'x',
-  children =  null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  value =  null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  checked =  false,
-  direct =  false,
+  step = 'x',
+  children = null,
+  value = null,
+  checked = false,
+  direct = false,
   onChange,
-  style =  null,
-  disabled =  false
+  style = null,
+  disabled = false
 }: {
   step?: string
   title: string
@@ -225,32 +223,22 @@ export const SettingsRow = ({
           textAlign: 'right'
         }}
       >
-        {
-          // ios ? (
-          //   children ? (
-          //     value
-          //   ) : direct ? (
-          //     <SettingsSwitch checked={checked} onChange={onChange} />
-          //   ) : null
-          // ) :
-          children ||
-            (title === 'Beta Mode' ? (
-              <Tooltip title="AlphaMode: Smartbar -> HackedByBlade! -> OK -> BladeAlpha">
-                <SettingsSwitch
-                  disabled={disabled}
-                  checked={checked}
-                  onChange={onChange}
-                />
-              </Tooltip>
-            ) : (
+        {children ||
+          (title === 'Beta Mode' ? (
+            <Tooltip title="AlphaMode: Smartbar -> HackedByBlade! -> OK -> BladeAlpha">
               <SettingsSwitch
                 disabled={disabled}
                 checked={checked}
                 onChange={onChange}
               />
-            ))
-        }
-        {/* {ios && !direct && <ChevronRight sx={{ ml: 1, color: '#57565a' }} />} */}
+            </Tooltip>
+          ) : (
+            <SettingsSwitch
+              disabled={disabled}
+              checked={checked}
+              onChange={onChange}
+            />
+          ))}
       </div>
     </div>
   )
@@ -265,7 +253,7 @@ export const SettingsAccordion = ({
   title: string
   accId: string
   children: any
-  // eslint-disable-next-line react/require-default-props
+
   icon?: string
 }) => {
   const settingsExpanded = useStore((state) => state.ui.settingsExpanded)

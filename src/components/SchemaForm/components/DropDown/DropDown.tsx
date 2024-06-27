@@ -9,9 +9,7 @@
 //   ToggleButtonGroup
 // } from '@mui/material'
 // import { useMemo, useState } from 'react'
-import {
-  EffectDropDownProps
-} from './DropDown.props'
+import { EffectDropDownProps } from './DropDown.props'
 // import useStyles from './DropDown.styles'
 import EffectTypeDialog from '../../../Dialogs/EffectTypeDialog'
 
@@ -147,6 +145,5 @@ const EffectDropDown = ({
     </>
   )
 }
-
 
 export default EffectDropDown

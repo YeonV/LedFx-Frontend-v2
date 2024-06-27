@@ -28,5 +28,3 @@ export interface BladeIconProps {
    */
   style?: Record<string, unknown>
 }
-
-

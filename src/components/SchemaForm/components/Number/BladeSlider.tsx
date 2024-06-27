@@ -22,7 +22,7 @@ const BladeSliderInner = ({
 }: BladeSliderInnerProps) => {
   const classes = useStyles();
   const theme = useTheme();
-  // eslint-disable-next-line
+   
   const [value, setValue] = useState((model_id && typeof model[model_id]) === 'number' ? model_id && model[model_id] : typeof schema.default === 'number' ? schema.default : 1 );
   const handleSliderChange = (_event: any, newValue: any) => {
     if (newValue !== value) {
@@ -58,7 +58,7 @@ const BladeSliderInner = ({
   };
 
   useEffect(() => {
-    // eslint-disable-next-line
+     
     setValue(model_id && typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1);
   }, [model, model_id]);
 
