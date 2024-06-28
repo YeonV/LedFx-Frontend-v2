@@ -33,7 +33,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [direction, setDirection] = useState<IDir>('right')
   const [m, setM] = useState<IMCell[][]>(Array(rowN).fill(Array(colN).fill(MCell)))
   const [pixelGroups, setPixelGroups] = useState<number>(0)
-  const [selectedGroup, setSelectedGroup] = useState<string>('0-0')
+  const [selectedGroup] = useState<string>('0-0')
+  // const [selectedGroup, setSelectedGroup] = useState<string>('0-0')
 
   const [pixels, setPixels] = useState<any>([]);
   const pixelGraphs = useStore((state) => state.pixelGraphs);
@@ -289,7 +290,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                   setSelectedPixel(yzcolumn.pixel || 0)
 
                   if (currentCell[1] > -1 && currentCell[0] > -1 && m[currentCell[1]][currentCell[0]]?.deviceId !== '')  {
-                    console.log(m[currentCell[1]][currentCell[0]].group)
+                    // console.log(m[currentCell[1]][currentCell[0]].group)
                     
                     openContextMenu(e)
                     return

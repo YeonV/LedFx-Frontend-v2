@@ -79,6 +79,7 @@ const BladeSliderInner = ({
           max={schema.maximum}
           value={typeof value === 'number' ? value : 0}
           onChange={handleSliderChange}
+          className={`slider-${full ? 'full' : 'half'}`}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
           style={{ color: '#aaa', ...style, width: '100%' }}
         />
