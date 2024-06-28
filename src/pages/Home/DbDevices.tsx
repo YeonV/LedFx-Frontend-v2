@@ -1,4 +1,4 @@
-import { useTheme, Stack, Chip } from '@mui/material'
+import { useTheme, Stack, Chip, Button } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
@@ -8,23 +8,61 @@ import {
 } from '@mui/x-data-grid'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { Clear, SyncProblem } from '@mui/icons-material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import useStore from '../../store/useStore'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import PixelGraph from '../../components/PixelGraph'
 
-// import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon';
+const DeviceActions = () => (
+  <>
+    <Button
+      variant="text"
+      size="small"
+      onClick={(e) => {
+        e.preventDefault()
+        // handlePlayPause()
+      }}
+    >
+      {/* {isPlaying ? <Pause /> : <PlayArrow />} */}
+    </Button>
+    <Button
+      size="small"
+      variant="text"
+      onClick={(e) => {
+        e.preventDefault()
+        // handleClearEffect(virtId)
+      }}
+    >
+      <Clear />
+    </Button>
+  </>
+)
+
+const ReconnectButton = ({ onClick }: { onClick: () => void }) => (
+  <Button
+    variant="text"
+    size="small"
+    onClick={(e) => {
+      e.preventDefault()
+      onClick()
+    }}
+  >
+    <SyncProblem />
+  </Button>
+)
 
 const DbDevices = () => {
   const theme = useTheme()
   const navigate = useNavigate()
+  const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const graphs = useStore((state) => state.graphs)
   const graphsMulti = useStore((state) => state.graphsMulti)
   const [fade] = useState(false)
   const showMatrix = useStore((state) => state.showMatrix)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
-  // const activateDevice = useStore((state) => state.activateDevice)
+  const activateDevice = useStore((state) => state.activateDevice)
   useEffect(() => {
     if (graphs && graphsMulti) {
       setPixelGraphs(Object.keys(virtuals))
@@ -93,67 +131,30 @@ const DbDevices = () => {
       renderCell: (params: GridRenderCellParams) => (
         <Chip label={params.row.is_device ? 'Device' : 'Virtual'} />
       )
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 200,
+      renderCell: (params: GridRenderCellParams) =>
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']
+          ?.online
+          ? virtuals[params.row.id]?.effect.name
+            ? `Effect: ${virtuals[params.row.id]?.effect.name}`
+            : 'Online'
+          : 'Offline'
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 300,
+      renderCell: (params: GridRenderCellParams) =>
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online 
+          ? virtuals[params.row.id]?.effect.name 
+            ? <DeviceActions /> 
+            : ('Online') 
+          : (<ReconnectButton onClick={() => activateDevice(params.row.id)} />)
     }
-    // {
-    //   field: 'status',
-    //   headerName: 'Status',
-    //   width: 200,
-    //   renderCell: (params: GridRenderCellParams) =>
-    //     devices[Object.keys(devices).find((d) => d === params.row.id) || '']
-    //       ?.online
-    //       ? virtuals[params.row.id]?.effect.name
-    //         ? `Effect: ${virtuals[params.row.id]?.effect.name}`
-    //         : 'Online'
-    //       : 'Offline'
-    // },
-    // {
-    //   field: 'actions',
-    //   headerName: 'Actions',
-    //   width: 300,
-    //   renderCell: (params: GridRenderCellParams) =>
-    //     devices[Object.keys(devices).find((d) => d === params.row.id) || '']
-    //       ?.online ? (
-    //       virtuals[params.row.id]?.effect.name ? (
-    //         <>
-    //           <Button
-    //             variant="text"
-    //             size="small"
-    //             onClick={(e) => {
-    //               e.preventDefault()
-    //               // handlePlayPause()
-    //             }}
-    //           >
-    //             {/* {isPlaying ? <Pause /> : <PlayArrow />} */}
-    //           </Button>
-    //           <Button
-    //             size="small"
-    //             variant="text"
-    //             onClick={(e) => {
-    //               e.preventDefault()
-    //               // handleClearEffect(virtId)
-    //             }}
-    //           >
-    //             <Clear />
-    //           </Button>
-    //         </>
-    //       ) : (
-    //         'Online'
-    //       )
-    //     ) : (
-    //       <Button
-    //         variant="text"
-    //         size="small"
-    //         onClick={(e) => {
-    //           e.preventDefault()
-    //           if (params.row.is_device) {
-    //             activateDevice(params.row.id)
-    //           }
-    //         }}
-    //       >
-    //         <SyncProblem />
-    //       </Button>
-    //     )
-    // }
   ]
 
   const rows: any = Object.values(virtuals).map((v: any) => ({

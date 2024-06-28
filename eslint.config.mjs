@@ -22,7 +22,7 @@ export default [
   ...compat.extends(
     'airbnb',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    // 'plugin:prettier/recommended'
   ),
   {
     plugins: {
@@ -95,6 +95,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 0,
       '@prettier/trailing-comma': 0,
       'no-unused-vars': 0,
+      '@typescript-eslint/indent': 0,
       // "no-unused-vars": ["error", {
       //     argsIgnorePattern: "^_",
       // }],
@@ -103,7 +104,8 @@ export default [
       // "@typescript-eslint/no-unused-vars": ["error", {
       //     argsIgnorePattern: "^_",
       // }],
-      'jsx-a11y/label-has-associated-control': 0
+      'jsx-a11y/label-has-associated-control': 0,
+      "no-plusplus": 0
     }
   }
 ]

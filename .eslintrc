@@ -7,7 +7,6 @@
    "parser": "@typescript-eslint/parser",
    "plugins": [
       "@typescript-eslint",
-      "prettier"
    ],
    "settings": {
       "import/parsers": {
@@ -41,12 +40,6 @@
          "single"
       ],
       "comma-dangle": "off",
-      "prettier/prettier": [
-         "error",
-         {
-            "endOfLine": "auto"
-         }
-      ],
       "react/jsx-filename-extension": [
          2,
          {
@@ -67,10 +60,7 @@
       ],
       "no-nested-ternary": 0,
       "import/extensions": 0,
-      "@typescript-eslint/indent": [
-         2,
-         2
-      ],
+      "@typescript-eslint/indent": 0,
       "react/react-in-jsx-scope": "off",
       "react/function-component-definition": [
          0
@@ -81,6 +71,7 @@
       "@typescript-eslint/no-explicit-any": 0,
       "@prettier/trailing-comma": 0,
       "react/require-default-props": 0,
+      "no-plusplus": 0,
       "no-unused-vars": [
          "error",
          {
