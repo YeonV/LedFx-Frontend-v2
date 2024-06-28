@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Button,
   TextField,
@@ -20,68 +20,68 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   Tooltip,
-} from '@mui/material';
-import { Add, CalendarViewDay, Delete, FormatListBulleted, PlayArrow } from '@mui/icons-material';
-import isElectron from 'is-electron';
-import useStore from '../../store/useStore';
-import Instances from './Instances';
-import SceneImage from '../../pages/Scenes/ScenesImage';
+} from '@mui/material'
+import { Add, CalendarViewDay, Delete, FormatListBulleted, PlayArrow } from '@mui/icons-material'
+import isElectron from 'is-electron'
+import useStore from '../../store/useStore'
+import Instances from './Instances'
+import SceneImage from '../../pages/Scenes/ScenesImage'
 import useStyles from '../../pages/Scenes/Scenes.styles'
 
 export default function HostManager() {
   const theme = useTheme()
   const classes = useStyles()
-  const [instanceVariant] = useState<'buttons' | 'line'>('line');
-  const [commonScenes, setCommonScenes] = useState<Record<string, any>>({});
-  const dialogOpen = useStore((state) => state.hostManager || false);
-  const edit = useStore((state) => state.dialogs.nohost?.edit || false);
-  const setDialogOpen = useStore((state) => state.setHostManager);
-  const setDisconnected = useStore((state) => state.setDisconnected);
-  const coreParams = useStore((state) => state.coreParams);
-  const coreStatus = useStore((state) => state.coreStatus);
-  const setHost = useStore((state) => state.setHost);
-  const storedURL = window.localStorage.getItem('ledfx-host');
+  const [instanceVariant] = useState<'buttons' | 'line'>('line')
+  const [commonScenes, setCommonScenes] = useState<Record<string, any>>({})
+  const dialogOpen = useStore((state) => state.hostManager || false)
+  const edit = useStore((state) => state.dialogs.nohost?.edit || false)
+  const setDialogOpen = useStore((state) => state.setHostManager)
+  const setDisconnected = useStore((state) => state.setDisconnected)
+  const coreParams = useStore((state) => state.coreParams)
+  const coreStatus = useStore((state) => state.coreStatus)
+  const setHost = useStore((state) => state.setHost)
+  const storedURL = window.localStorage.getItem('ledfx-host')
   const storedURLs = JSON.parse(
     window.localStorage.getItem('ledfx-hosts') ||
       JSON.stringify(['http://localhost:8888'])
-  );
-  const [hosts, setHosts] = useState(['http://localhost:8888']);
-  const [hostvalue, setHostvalue] = useState('http://localhost:8888');
+  )
+  const [hosts, setHosts] = useState(['http://localhost:8888'])
+  const [hostvalue, setHostvalue] = useState('http://localhost:8888')
 
   const handleClose = () => {
-    setDialogOpen(false);
-  };
+    setDialogOpen(false)
+  }
 
   const handleSave = (ho:string, connect?:boolean) => {
-    if (connect) setHost(ho);
+    if (connect) setHost(ho)
     if (!hosts.some((h) => h === ho)) {
       window.localStorage.setItem(
         'ledfx-hosts',
         JSON.stringify([...hosts, ho])
-      );
-      setHosts([...hosts, ho]);
+      )
+      setHosts([...hosts, ho])
     } else {
-      window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]));
-      setHosts([...hosts]);
+      window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]))
+      setHosts([...hosts])
     }
-    setDisconnected(false);
-    window.location.reload();
-  };
+    setDisconnected(false)
+    window.location.reload()
+  }
 
   const handleDelete = (e: any, title: string) => {
-    e.stopPropagation();
+    e.stopPropagation()
     window.localStorage.setItem(
       'ledfx-hosts',
       JSON.stringify(hosts.filter((h) => h !== title))
-    );
-    setHosts(hosts.filter((h) => h !== title));
-  };
+    )
+    setHosts(hosts.filter((h) => h !== title))
+  }
 
 
   useEffect(() => {
-    if (storedURL) setHostvalue(storedURL);
-    if (storedURLs) setHosts(storedURLs);
-  }, [storedURL, setHosts]);
+    if (storedURL) setHostvalue(storedURL)
+    if (storedURLs) setHosts(storedURLs)
+  }, [storedURL, setHosts])
 
   useEffect(() => {
     if (!storedURL) {
@@ -89,17 +89,17 @@ export default function HostManager() {
         isElectron()
           ? 'http://localhost:8888'
           : window.location.href.split('/#')[0].replace(/\/+$/, '')
-      );
+      )
       window.localStorage.setItem(
         'ledfx-host',
         isElectron()
           ? 'http://localhost:8888'
           : window.location.href.split('/#')[0].replace(/\/+$/, '')
-      );
+      )
       // eslint-disable-next-line no-self-assign
-      window.location.href = window.location.href;
+      window.location.href = window.location.href
     }
-  }, []);
+  }, [])
   const runningCores = Object.keys(coreStatus).filter((h)=>coreStatus[h] === 'running').map((h)=>parseInt(coreParams[h][1], 10) || 8888)
 
 
@@ -109,19 +109,19 @@ export default function HostManager() {
         // Fetch all scenes from each core
         const allScenes = await Promise.all(
           rcores.map(async (h:number) => {
-            const res = await fetch(`http://localhost:${h}/api/scenes`);
-            const json = await res.json();
-            return json.scenes;
+            const res = await fetch(`http://localhost:${h}/api/scenes`)
+            const json = await res.json()
+            return json.scenes
           })
-        );
+        )
 
         // Get the keys of the scenes from each core
-        const sceneKeys = allScenes.map((scenes) => Object.keys(scenes));
+        const sceneKeys = allScenes.map((scenes) => Object.keys(scenes))
 
         // Find the common keys
-        const commonKeys = sceneKeys.reduce((a, b) => a.filter(c => b.includes(c) && c !== 'blade-scene'));
+        const commonKeys = sceneKeys.reduce((a, b) => a.filter(c => b.includes(c) && c !== 'blade-scene'))
         // Prepare an empty object for the final scenes
-        const finalScenes: Record<string, any> = {};
+        const finalScenes: Record<string, any> = {}
 
         // Iterate over the common keys
         commonKeys.forEach((key) => {
@@ -132,30 +132,30 @@ export default function HostManager() {
               finalScenes[key] = {
                 name: scenes[key]?.name,
                 scene_image: scenes[key]?.scene_image
-              };
+              }
             }
             // If the current scene's image is not "Wallpaper", update it in finalScenes
             else if (scenes[key]?.scene_image !== 'Wallpaper') {
               finalScenes[key] = {
                 name: scenes[key]?.name,
                 scene_image: scenes[key]?.scene_image
-              };
+              }
             }
-          });
-        });
+          })
+        })
 
-        return finalScenes;
+        return finalScenes
       } catch (_e) {
         // console.log(_e);
-        return {};
+        return {}
       }
     }
 
-    getCommonScenes(runningCores).then((res)=>setCommonScenes(res));
+    getCommonScenes(runningCores).then((res)=>setCommonScenes(res))
 
 
 
-  }, [coreStatus, coreParams]);
+  }, [coreStatus, coreParams])
   // console.log(commonScenes)
   const activateCommon = async (scene: string) => {
     try {
@@ -165,25 +165,25 @@ export default function HostManager() {
             id: scene,
             action: 'activate_in',
             ms: 0
-          })});
-          const json = await res.json();
-          return json.scenes;
+          })})
+          const json = await res.json()
+          return json.scenes
         })
-      );
+      )
     }
     catch (_e) {
       // console.log(_e);
     }
   }
 
-  const [alignment, setAlignment] = useState('cards');
+  const [alignment, setAlignment] = useState('cards')
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
     newAlignment: string,
   ) => {
-    setAlignment(newAlignment);
-  };
+    setAlignment(newAlignment)
+  }
 
   return (
     <div key="nohost-dialog">
@@ -349,5 +349,5 @@ export default function HostManager() {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

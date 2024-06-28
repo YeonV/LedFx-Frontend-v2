@@ -18,7 +18,7 @@ import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCar
 // import { log } from '../../../utils/helpers'
 
  
-const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
+const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888'
 // const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host')
 const redirectUrl = `${

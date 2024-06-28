@@ -27,7 +27,8 @@
          }
       },
       "typescript.format.semicolons": "remove",
-      "javascriptscript.format.semicolons": "remove"
+      "javascriptscript.format.semicolons": "remove",
+      "semi": ["error", "never"],
    },
    "ignorePatterns": [
       "**/build/*",
@@ -39,6 +40,13 @@
          2,
          "single"
       ],
+      "max-len": [
+         2,
+         {
+            "code": 900
+         }
+      ],
+      "object-curly-newline":"off",
       "comma-dangle": "off",
       "react/jsx-filename-extension": [
          2,

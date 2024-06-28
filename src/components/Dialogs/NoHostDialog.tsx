@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
   Button,
   TextField,
@@ -12,61 +12,61 @@ import {
   Switch,
   Divider,
   // Box,
-} from '@mui/material';
-import { Add, Delete } from '@mui/icons-material';
-import isElectron from 'is-electron';
-import useStore from '../../store/useStore';
+} from '@mui/material'
+import { Add, Delete } from '@mui/icons-material'
+import isElectron from 'is-electron'
+import useStore from '../../store/useStore'
 // import Instances from './Instances';
 
 export default function NoHostDialog() {
-  const [instanceVariant, setInstanceVariant] = useState<'buttons' | 'line'>('buttons');
-  const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false);
-  const edit = useStore((state) => state.dialogs.nohost?.edit || false);
-  const setDialogOpen = useStore((state) => state.setDialogOpen);
-  const setDisconnected = useStore((state) => state.setDisconnected);
+  const [instanceVariant, setInstanceVariant] = useState<'buttons' | 'line'>('buttons')
+  const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false)
+  const edit = useStore((state) => state.dialogs.nohost?.edit || false)
+  const setDialogOpen = useStore((state) => state.setDialogOpen)
+  const setDisconnected = useStore((state) => state.setDisconnected)
   // const coreParams = useStore((state) => state.coreParams);
-  const setHost = useStore((state) => state.setHost);
-  const storedURL = window.localStorage.getItem('ledfx-host');
+  const setHost = useStore((state) => state.setHost)
+  const storedURL = window.localStorage.getItem('ledfx-host')
   const storedURLs = JSON.parse(
     window.localStorage.getItem('ledfx-hosts') ||
       JSON.stringify(['http://localhost:8888'])
-  );
-  const [hosts, setHosts] = useState(['http://localhost:8888']);
-  const [hostvalue, setHostvalue] = useState('http://localhost:8888');
+  )
+  const [hosts, setHosts] = useState(['http://localhost:8888'])
+  const [hostvalue, setHostvalue] = useState('http://localhost:8888')
 
   const handleClose = () => {
-    setDialogOpen(false);
-  };
+    setDialogOpen(false)
+  }
 
   const handleSave = (ho:string) => {
-    setHost(ho);
+    setHost(ho)
     if (!hosts.some((h) => h === ho)) {
       window.localStorage.setItem(
         'ledfx-hosts',
         JSON.stringify([...hosts, ho])
-      );
+      )
     } else {
-      window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]));
+      window.localStorage.setItem('ledfx-hosts', JSON.stringify([...hosts]))
     }
-    setDialogOpen(false);
-    setDisconnected(false);
-    window.location.reload();
-  };
+    setDialogOpen(false)
+    setDisconnected(false)
+    window.location.reload()
+  }
 
   const handleDelete = (e: any, title: string) => {
-    e.stopPropagation();
+    e.stopPropagation()
     window.localStorage.setItem(
       'ledfx-hosts',
       JSON.stringify(hosts.filter((h) => h !== title))
-    );
-    setHosts(hosts.filter((h) => h !== title));
-  };
+    )
+    setHosts(hosts.filter((h) => h !== title))
+  }
 
 
   useEffect(() => {
-    if (storedURL) setHostvalue(storedURL);
-    if (storedURLs) setHosts(storedURLs);
-  }, [storedURL, setHosts]);
+    if (storedURL) setHostvalue(storedURL)
+    if (storedURLs) setHosts(storedURLs)
+  }, [storedURL, setHosts])
 
   useEffect(() => {
     if (!storedURL) {
@@ -74,17 +74,17 @@ export default function NoHostDialog() {
         isElectron()
           ? 'http://localhost:8888'
           : window.location.href.split('/#')[0].replace(/\/+$/, '')
-      );
+      )
       window.localStorage.setItem(
         'ledfx-host',
         isElectron()
           ? 'http://localhost:8888'
           : window.location.href.split('/#')[0].replace(/\/+$/, '')
-      );
+      )
       // eslint-disable-next-line no-self-assign
-      window.location.href = window.location.href;
+      window.location.href = window.location.href
     }
-  }, []);
+  }, [])
 
   return (
     <div key="nohost-dialog">
@@ -145,7 +145,10 @@ export default function NoHostDialog() {
             </>} */}
 
             {/* {Object.keys(coreParams).map((h, i)=><Instances instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)} variant={instanceVariant} i={i} instance={h} port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} />)}
-            <Instances instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)}variant={instanceVariant} instance={false} i={Object.keys(coreParams).length + 1} port={`${parseInt(coreParams[`instance${  Object.keys(coreParams).length }`]?.[1] || '8888', 10) + 1}`} /> */}
+            <Instances 
+              instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)}
+              variant={instanceVariant} instance={false} i={Object.keys(coreParams).length + 1}
+              port={`${parseInt(coreParams[`instance${  Object.keys(coreParams).length }`]?.[1] || '8888', 10) + 1}`} /> */}
           </div>)}
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between'}}>
@@ -159,5 +162,5 @@ export default function NoHostDialog() {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

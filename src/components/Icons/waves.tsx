@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { ios } from '../../utils/helpers'
 
 const WaveLines = ({

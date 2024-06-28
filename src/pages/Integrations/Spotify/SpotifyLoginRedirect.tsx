@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
-import isElectron from 'is-electron';
+import isElectron from 'is-electron'
 import { Avatar, Dialog, Stack , CircularProgress } from '@mui/material'
 import { CheckCircle } from '@mui/icons-material'
 import {
@@ -12,8 +12,8 @@ import logoAsset from '../../../assets/logo.png'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 
 
-const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
-const storedURL = window.localStorage.getItem('ledfx-host');
+const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888'
+const storedURL = window.localStorage.getItem('ledfx-host')
 
 const Circle = () => <div style={{ width: 32, height: 32, backgroundColor: 'transparent', border:'3px solid #fff', borderRadius: '50%' }}  />
 
@@ -65,7 +65,7 @@ const SpotifyLoginRedirect = () => {
       {ready ? 'Successfully logged in with Spotify...' : 'Logging in with Spotify...'}
     </div>
   </Dialog>
-  );
+  )
 }
 
-export default SpotifyLoginRedirect;
+export default SpotifyLoginRedirect

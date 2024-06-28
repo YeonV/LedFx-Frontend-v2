@@ -55,10 +55,11 @@ const storeUI = (set: any) => ({
     scenes: true,
     devices: true,
     user: true,
-    gamepad: true
+    gamepad: true,
+    matrix: true
   },
   setInfoAlerts: (
-    key: 'scenes' | 'devices' | 'user' | 'gamepad',
+    key: 'scenes' | 'devices' | 'user' | 'gamepad' | 'matrix',
     val: boolean
   ): void =>
     set(

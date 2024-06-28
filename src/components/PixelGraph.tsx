@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
  
-import { useEffect, useState } from 'react';
-import useStore from '../store/useStore';
+import { useEffect, useState } from 'react'
+import useStore from '../store/useStore'
 
 const PixelGraph = ({
   virtId,
@@ -20,7 +20,7 @@ const PixelGraph = ({
   showMatrix?: boolean;
   fullScreen?: boolean;
 }) => {
-  const [pixels, setPixels] = useState<any>([]);
+  const [pixels, setPixels] = useState<any>([])
 
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
     pixelGraphs: state.pixelGraphs,
@@ -28,10 +28,12 @@ const PixelGraph = ({
     devices: state.devices,
     graphs: state.graphs,
     config: state.config,
-  }));
+  }))
 
 
-  const rows = virtuals[virtId].is_device ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1 : virtuals[virtId].config.rows || 1;
+  const rows = virtuals[virtId].is_device
+    ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1
+    : virtuals[virtId].config.rows || 1
 
   function hexColor(encodedString: string) {
     if (config.transmission_mode === 'uncompressed' || !encodedString) {
@@ -53,20 +55,20 @@ const PixelGraph = ({
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
-        setPixels(e.detail.pixels);
+        setPixels(e.detail.pixels)
       }
-    };
-    document.addEventListener('visualisation_update', handleWebsockets);
+    }
+    document.addEventListener('visualisation_update', handleWebsockets)
     return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets);
-    };
-  }, [virtuals, pixelGraphs]);
+      document.removeEventListener('visualisation_update', handleWebsockets)
+    }
+  }, [virtuals, pixelGraphs])
 
   const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
 
 
   if (!(graphs || intGraphs)) {
-    return null;
+    return null
   }
 
   return (dummy || tooLessPixels) ? (
@@ -202,7 +204,7 @@ const PixelGraph = ({
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default PixelGraph;
+export default PixelGraph

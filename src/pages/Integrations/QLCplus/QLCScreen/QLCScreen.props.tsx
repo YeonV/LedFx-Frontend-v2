@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import { Settings } from '@mui/icons-material';
-import { TransitionProps } from '@mui/material/transitions';
-import { MenuItem, Slide } from '@mui/material';
+import React from 'react'
+import { Settings } from '@mui/icons-material'
+import { TransitionProps } from '@mui/material/transitions'
+import { MenuItem, Slide } from '@mui/material'
 
 export interface QLCScreenProps {
   icon: React.ReactElement;
@@ -28,21 +28,21 @@ export const QLCScreenDefaultProps = {
   innerKey: undefined,
   disabled: false,
   size: 'small',
-};
+}
 
 export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...(props as any)} />;
-});
+  return <Slide direction="up" ref={ref} {...(props as any)} />
+})
 
 Transition.defaultProps = {
   children: <div>loading</div>,
-};
+}
 
 export const MuiMenuItem = React.forwardRef(
   (props: any, ref: React.Ref<unknown>) => {
-    return <MenuItem ref={ref} {...props} />;
+    return <MenuItem ref={ref} {...props} />
   }
-);
+)

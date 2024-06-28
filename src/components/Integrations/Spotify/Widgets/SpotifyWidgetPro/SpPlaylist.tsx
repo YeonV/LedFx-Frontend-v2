@@ -1,19 +1,19 @@
 /* eslint-disable prettier/prettier */
  
-import * as React from 'react';
+import * as React from 'react'
 import {
   DataGrid,
   GridColDef,
   GridValueGetter,
   GridRowParams,
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid'
 
-import { Card, Grid, IconButton , Stack, useTheme } from '@mui/material';
-import { PlayCircleFilled } from '@mui/icons-material';
-import useStore from '../../../../../store/useStore';
-import { spotifyPlaySong } from '../../../../../utils/spotifyProxies';
-import { classes } from './SpTriggerTable';
-import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider';
+import { Card, Grid, IconButton , Stack, useTheme } from '@mui/material'
+import { PlayCircleFilled } from '@mui/icons-material'
+import useStore from '../../../../../store/useStore'
+import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'
+import { classes } from './SpTriggerTable'
+import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider'
 
 // function isScrolledIntoView(el: any) {
 //   const rect = el.getBoundingClientRect();
@@ -29,11 +29,11 @@ import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider';
 
 export default function SpPlaylist() {
   const theme = useTheme()
-  const playlist = useStore((state) => state.spotify.playlist);
-  const playerState = React.useContext(SpotifyStateContext);
-  const spCtx = React.useContext(SpStateContext);
-  const playlistUri = playerState?.context?.metadata?.uri;
-  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice);
+  const playlist = useStore((state) => state.spotify.playlist)
+  const playerState = React.useContext(SpotifyStateContext)
+  const spCtx = React.useContext(SpStateContext)
+  const playlistUri = playerState?.context?.metadata?.uri
+  const spotifyDevice = useStore((state) => state.spotify.spotifyDevice)
   const premium = !!playerState?.track_window?.current_track?.album?.name
   const columns: GridColDef[] = [
     {
@@ -63,7 +63,7 @@ export default function SpPlaylist() {
                 params.row.track.id,
                 undefined,
                 playlistUri
-              );
+              )
             }}
           >
             <PlayCircleFilled fontSize="inherit" />
@@ -83,20 +83,20 @@ export default function SpPlaylist() {
           row?.track?.name || ''
         }`) as GridValueGetter,
     },
-  ];
+  ]
   const rows = playlist.map((item: any, index: number) => ({
     ...item,
     id: index,
-  })) || [{ id: 1 }];
+  })) || [{ id: 1 }]
 
   React.useEffect(() => {
     const playing = document.querySelector(
       '.MuiDataGrid-root.playlist .MuiDataGrid-row.currently_playing'
-    );
+    )
     if (playing) {
-      playing.scrollIntoView();
+      playing.scrollIntoView()
     }
-  }, [playerState?.track_window?.current_track?.name]);
+  }, [playerState?.track_window?.current_track?.name])
   // console.log(playerState?.context.metadata?.current_item, rows.map((r: any)=>r.track))
   return (
     <Grid xl={premium ? 7 : 12} lg={premium ? 5 : 12} md={12} xs={12} item>
@@ -120,7 +120,7 @@ export default function SpPlaylist() {
               params.row.track.id,
               undefined,
               playlistUri
-            );
+            )
           }}
           sx={{
             boxShadow: 2,
@@ -151,5 +151,5 @@ export default function SpPlaylist() {
         />
       </Card>
     </Grid>
-  );
+  )
 }

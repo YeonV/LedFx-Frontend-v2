@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useTheme, Stack, Chip, Button } from '@mui/material'
 import {
   DataGrid,
@@ -149,11 +150,13 @@ const DbDevices = () => {
       headerName: 'Actions',
       width: 300,
       renderCell: (params: GridRenderCellParams) =>
-        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online 
-          ? virtuals[params.row.id]?.effect.name 
-            ? <DeviceActions /> 
-            : ('Online') 
-          : (<ReconnectButton onClick={() => activateDevice(params.row.id)} />)
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']
+          ?.online ? (
+            virtuals[params.row.id]?.effect.name 
+              ? <DeviceActions />
+              : 'Online'
+          )
+          : <ReconnectButton onClick={() => activateDevice(params.row.id)} />
     }
   ]
 
