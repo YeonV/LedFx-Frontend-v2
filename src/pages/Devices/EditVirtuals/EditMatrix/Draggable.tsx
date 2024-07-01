@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useDraggable } from '@dnd-kit/core'
 
-function Draggable({ children, ...props }: any) {
+function Draggable({ children, id, ...props }: any) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: 'draggable'
+    id
   })
   const style = transform
     ? {
@@ -13,15 +13,16 @@ function Draggable({ children, ...props }: any) {
     : undefined
 
   return (
-    <button
+    <div
       type="button"
       ref={setNodeRef}
       style={style}
+      {...props}
       {...listeners}
       {...attributes}
     >
       {children}
-    </button>
+    </div>
   )
 }
 

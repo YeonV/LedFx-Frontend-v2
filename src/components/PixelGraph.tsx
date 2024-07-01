@@ -2,6 +2,7 @@
  
 import { useEffect, useState } from 'react'
 import useStore from '../store/useStore'
+import hexColor from '../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
 
 const PixelGraph = ({
   virtId,
@@ -35,22 +36,9 @@ const PixelGraph = ({
     ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1
     : virtuals[virtId].config.rows || 1
 
-  function hexColor(encodedString: string) {
-    if (config.transmission_mode === 'uncompressed' || !encodedString) {
-      return []
-    }
-    const decodedString = atob(encodedString)
-    const charCodes = Array.from(decodedString).map(char => char.charCodeAt(0))
-    const colors = Array.from({length: charCodes.length / 3}, (_, i) => {
-      const r = charCodes[i * 3]
-      const g = charCodes[i * 3 + 1]
-      const b = charCodes[i * 3 + 2]
-      return {r, g, b}
-    })
-    return colors
-  }
 
-  const decodedPixels = config.transmission_mode === 'compressed' ? pixels && pixels.length && hexColor(pixels) : pixels
+
+  const decodedPixels = config.transmission_mode === 'compressed' ? pixels && pixels.length && hexColor(pixels, config.transmission_mode) : pixels
 
   useEffect(() => {
     const handleWebsockets = (e: any) => {

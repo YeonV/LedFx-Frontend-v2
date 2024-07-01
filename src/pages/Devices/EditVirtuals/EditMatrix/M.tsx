@@ -1,36 +1,31 @@
 /* eslint-disable prettier/prettier */
-import {
-  useEffect, useRef, useState, FC
-} from 'react'
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box, Button, Dialog, DialogActions, DialogContent, IconButton, Menu, MenuItem, Select, Stack, Typography
-} from '@mui/material'
+import { useEffect, useRef, useState, FC } from 'react'
+import { Box } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
-import { ArrowBack, ArrowDownward, ArrowForward, ArrowUpward, Cancel, ExpandMore } from '@mui/icons-material'
-import { transpose } from '../../../../utils/helpers'
+import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
+import { MCell, clone, getMaxRange } from './M.utils'
+import { reverseProcessArray } from './processMatrix'
+import type { IMCell, IDir } from './M.utils'
 import useStore from '../../../../store/useStore'
 import useStyles from './M.styles'
-import { MCell, clone, getMaxRange } from './M.utils'
-import type { IMCell, IDir } from './M.utils'
-import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
 import MWrapper from './MWrapper'
 import MControls from './MControls'
-import MFillSelector from './MFillSelector'
-import MDialogTitle from './MDialogTitle'
-import MSwitch from './MSwitch'
-import MSlider from './MSlider'
-// import Droppable from './Droppable'
-// import Draggable from './Draggable'
-// import { DndContext, DragEndEvent } from '@dnd-kit/core'
-import { reverseProcessArray } from './processMatrix'
+import Droppable from './Droppable'
+import Draggable from './Draggable'
+import Pixel from './Pixel'
+import hexColor from './Actions/hexColor'
+import MContextMenu from './MContextMenu'
+import AssignPixelDialog from './AssignPixelDialog'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
   const deviceRef = useRef<HTMLInputElement | null>(null)
-  const devices = useStore((state) => state.devices)
+
+  const pixelGraphs = useStore((state) => state.pixelGraphs)
+  const virtuals = useStore((state) => state.virtuals)
+  const mode = useStore((state) => state.config).transmission_mode
+
   const [error, setError] = useState<{row: number, col: number}[]>([])
   const [currentDevice, setCurrentDevice] = useState<string>('')
   const [rowN, setRowNumber] = useState<number>(virtual.config.rows || 4)
@@ -42,53 +37,31 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [direction, setDirection] = useState<IDir>('right')
   const [m, setM] = useState<IMCell[][]>(Array(rowN).fill(Array(colN).fill(MCell)))
   const [pixelGroups, setPixelGroups] = useState<number>(0)
-  // const [selectedGroup] = useState<string>('0-0')
   const [selectedGroup, setSelectedGroup] = useState<string>('0-0')
-
-  const [pixels, setPixels] = useState<any>([])
-  const pixelGraphs = useStore((state) => state.pixelGraphs)
-  const virtuals = useStore((state) => state.virtuals)
-  const mode = useStore((state) => state.config).transmission_mode
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const contextMenuOpen = Boolean(anchorEl)
-  const openContextMenu = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const closeContextMenu = () => {
-    setAnchorEl(null)
-  }
-
+  const [pixels, setPixels] = useState<any>([])  
   const [move, setMove] = useState<boolean>(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [isDropped, setIsDropped] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [parent, setParent] = useState<string | number | null>(null)
+  const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
+  
+  const decodedPixels = mode === 'compressed' ? pixels && pixels.length && hexColor(pixels, mode) : pixels
 
-  function hexColor(encodedString: string) {
-    if (mode === 'uncompressed' || !encodedString) {
-      return []
-    }
-    const decodedString = atob(encodedString)
-    const charCodes = Array.from(decodedString).map((char) => char.charCodeAt(0))
-    const colors = Array.from({ length: charCodes.length / 3 }, (_, i) => {
-      const r = charCodes[i * 3]
-      const g = charCodes[i * 3 + 1]
-      const b = charCodes[i * 3 + 2]
-      return { r, g, b }
-    })
-    return colors
-  }
-
-  const decodedPixels = mode === 'compressed' ? pixels && pixels.length && hexColor(pixels) : pixels
-
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtual.id) {
-        setPixels(e.detail.pixels)
+  const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, currentColIndex: number, currentRowIndex: number, yzcolumn: IMCell) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setCurrentCell([currentColIndex, currentRowIndex])
+    setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
+    setSelectedPixel(yzcolumn.pixel || 0)    
+    if (currentRowIndex > -1 && currentColIndex > -1) {
+      if (m[currentRowIndex][currentColIndex]?.deviceId !== '') {
+        setAnchorEl(e.currentTarget) 
+      } else {
+        setOpen(true)
       }
     }
-    document.addEventListener('visualisation_update', handleWebsockets)
-    return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-    }
-  }, [virtuals, pixelGraphs])
+  }
 
   const closeClear = () => {
     setOpen(false)
@@ -107,111 +80,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         setSelectedPixel([selectedPixel[0], selectedPixel[0] + maxRange])
       }
     }
-  }
-
-  const assignPixels = () => {
-    let updatedM: IMCell[][] = clone(m)
-    const [col, row] = currentCell
-    if (typeof selectedPixel === 'number') {
-      updatedM[row][col] = { deviceId: currentDevice, pixel: selectedPixel, group: `${row}-${col}` }
-    } else {
-      for (let index = 0; index < Math.abs(selectedPixel[1] - selectedPixel[0]); index += 1) {
-        const newM = { deviceId: currentDevice, pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index, group: `${row}-${col}` }
-        if (direction.includes('right')) {
-          if (direction.includes('flip')) {
-            updatedM[row - Math.floor((index + col) / colN)][(index + col) % colN] = newM
-          } else {
-            updatedM[row + Math.floor((index + col) / colN)][(index + col) % colN] = newM
-          }
-        } else if (direction.includes('bottom')) {
-          if (direction.includes('flip')) {
-            updatedM[(index + row) % rowN][col - Math.floor((index + row) / rowN)] = newM
-          } else {
-            updatedM[(index + row) % rowN][col + Math.floor((index + row) / rowN)] = newM
-          }
-        } else if (direction.includes('left')) {
-          if (direction.includes('flip')) {
-            updatedM[row + Math.abs(Math.floor((col - index) / colN))][(colN + ((col - index) % colN)) % colN] = newM
-          } else {
-            updatedM[row - Math.abs(Math.floor((col - index) / colN))][(colN + ((col - index) % colN)) % colN] = newM
-          }
-        } else if (direction.includes('top')) {
-          if (direction.includes('flip')) {
-            updatedM[(rowN + ((row - index) % rowN)) % rowN][col + Math.abs(Math.floor((row - index) / rowN))] = newM
-          } else {
-            updatedM[(rowN + ((row - index) % rowN)) % rowN][col - Math.abs(Math.floor((row - index) / rowN))] = newM
-          }
-        }
-      }
-    }
-    if (direction.includes('right-snake')) {
-      if (direction.includes('flip')) {
-        for (let i = row; i >= 0; i -= 1) {
-          const currentRow = [...updatedM[i]]
-          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
-        }
-      } else {
-        for (let i = row; i < rowN; i += 1) {
-          const currentRow = [...updatedM[i]]
-          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
-        }
-      }
-    }
-    if (direction.includes('bottom-snake')) {
-      if (direction.includes('flip')) {
-        const mat = clone(updatedM)
-        const temp = transpose(mat)
-        for (let i = col; i >= 0; i -= 1) {
-          const currentCol = [...temp[i]]
-          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        }
-        updatedM = transpose(temp)
-      } else {
-        const mat = clone(updatedM)
-        const temp = transpose(mat)
-        for (let i = col; i < colN; i += 1) {
-          const currentCol = [...temp[i]]
-          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        }
-        updatedM = transpose(temp)
-      }
-    }
-    if (direction.includes('left-snake')) {
-      if (direction.includes('flip')) {
-        for (let i = row; i < rowN; i += 1) {
-          const currentRow = [...updatedM[i]]
-          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
-        }
-      } else {
-        for (let i = row; i >= 0; i -= 1) {
-          const currentRow = [...updatedM[i]]
-          if ((i + row) % 2 === 1) updatedM[i] = currentRow.reverse()
-        }
-      }
-    }
-    if (direction.includes('top-snake')) {
-      if (direction.includes('flip')) {
-        const mat = clone(updatedM)
-        const temp = transpose(mat)
-        for (let i = col; i < colN; i += 1) {
-          const currentCol = [...temp[i]]
-          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        }
-        updatedM = transpose(temp)
-      } else {
-        const mat = clone(updatedM)
-        const temp = transpose(mat)
-        for (let i = col; i >= 0; i -= 1) {
-          const currentCol = [...temp[i]]
-          if ((i + col) % 2 === 1) temp[i] = currentCol.reverse()
-        }
-        updatedM = transpose(temp)
-      }
-    }
-    setPixelGroups(pixelGroups + 1)
-    setM(updatedM)
-    closeClear()
-  }
+  }  
 
   const handleSliderChange = (e: Event, newPixelRange: number | [number, number], activeThumb: number) => {
     if (typeof newPixelRange !== 'number') {
@@ -242,6 +111,27 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     closeClear()
   }
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    console.log(parent, event.over?.id || null, event.active?.id || null)
+    if (event.over && event.over.id === 'droppable') {
+      setIsDropped(true)
+    }
+    setParent(event.over ? event.over.id : null)
+    setIsDragging(false)
+  }
+
+  useEffect(() => {
+    const handleWebsockets = (e: any) => {
+      if (e.detail.id === virtual.id) {
+        setPixels(e.detail.pixels)
+      }
+    }
+    document.addEventListener('visualisation_update', handleWebsockets)
+    return () => {
+      document.removeEventListener('visualisation_update', handleWebsockets)
+    }
+  }, [virtuals, pixelGraphs])
+
   useEffect(() => {
     if (group) {
       if (typeof selectedPixel === 'number') {
@@ -259,263 +149,55 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   useEffect(() => {
     setM(reverseProcessArray(virtual.segments, colN))
   }, [])
+  
 
-  // const [isDropped, setIsDropped] = useState(false);
-  // const draggableMarkup = (
-  //   <Draggable>Drag me</Draggable>
-  // );
 
-  const moveSelectedGroupDown = () => {
-    const updatedM = clone(m)
-    const conflictingCells = [] // Array to store conflicting cells
-  
-    for (let i = rowN - 1; i >= 0; i--) {
-      for (let j = 0; j < colN; j += 1) {
-        if (m[i][j].group === selectedGroup) {
-          const targetRow = i + 1
-          if (targetRow < rowN) {
-            if (updatedM[targetRow][j].deviceId !== '') {
-              // Conflict detected, add cell to conflictingCells
-              conflictingCells.push({ row: targetRow, col: j })
-            } else {
-              updatedM[targetRow][j] = m[i][j]
-              updatedM[i][j] = { deviceId: '', pixel: 0, group: '' }            
-            }
-          }
-        }
-      }
-    }
-  
-    if (conflictingCells.length > 0) {
-      setError(conflictingCells) // Set error with conflicting cells
-    } else {
-      setM(updatedM) // Update matrix if no conflicts
-    }
-  }
-  
-  const moveSelectedGroupUp = () => {
-    const updatedM = clone(m)
-    const conflictingCells = []
-  
-    for (let i = 0; i < rowN; i++) {
-      for (let j = 0; j < colN; j += 1) {
-        if (m[i][j].group === selectedGroup) {
-          const targetRow = i - 1 // Calculate target row above
-          if (targetRow >= 0) { // Check if within matrix bounds
-            if (updatedM[targetRow][j].deviceId !== '') {
-              // Conflict detected, add cell to conflictingCells
-              conflictingCells.push({ row: targetRow, col: j })
-            } else {
-              updatedM[targetRow][j] = m[i][j]
-              updatedM[i][j] = { deviceId: '', pixel: 0, group: '' }
-            }
-          }
-        }
-      }
-    }
-  
-    if (conflictingCells.length > 0) {
-      setError(conflictingCells) // Set error with conflicting cells
-    } else {
-      setM(updatedM) // Update matrix if no conflicts
-    }
-  }
-  
-  const moveSelectedGroupLeft = () => {
-    const updatedM = clone(m)
-    for (let i = 0; i < rowN; i++) {
-      for (let j = 0; j < colN; j++) {
-        if (m[i][j].group === selectedGroup) {
-          const targetCol = j - 1 
-          if (targetCol >= 0 && m[i][0].deviceId === '') {
-            updatedM[i][targetCol] = m[i][j]
-            updatedM[i][j] = { deviceId: '', pixel: 0, group: '' }
-          }
-        }
-      }
-    }
-    setM(updatedM)
-  }
-  const moveSelectedGroupRight = () => {  
-    const updatedM = clone(m)
-    for (let i = 0; i < rowN; i++) {
-      for (let j = colN - 1; j >= 0; j--) {
-        if (m[i][j].group === selectedGroup) {
-          const targetCol = j + 1
-          if (targetCol < colN && m[i][colN - 1].deviceId === '') {
-            updatedM[i][targetCol] = m[i][j]
-            updatedM[i][j] = { deviceId: '', pixel: 0, group: '' }
-          }
-        }
-      }
-    }
-    setM(updatedM)
-  }
-  
-  
   return (
-    <MWrapper>
-      <Stack width={500} direction="row" spacing={2} style={{ marginBottom: '1rem' }}>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            Controls
-          </AccordionSummary>
-          <AccordionDetails>
-            <MControls
-              rowN={rowN}
-              colN={colN}
-              setRowNumber={setRowNumber}
-              setColNumber={setColNumber}
-              virtual={virtual}
-              m={m}
-              setM={setM}
-            />
-            {move && (
-              <Box>
-                <Stack direction="column" spacing={0} justifyContent="center">
-                  <IconButton onClick={() => moveSelectedGroupUp()}><ArrowUpward /></IconButton>
-                  <Stack direction="row" spacing={0} justifyContent="center">
-                    <IconButton onClick={() => moveSelectedGroupLeft()}><ArrowBack /></IconButton>
-                    <IconButton onClick={() => setMove(false)}><Cancel /></IconButton>
-                    <IconButton onClick={() => moveSelectedGroupRight()}><ArrowForward /></IconButton>
-                  </Stack>
-                  <IconButton onClick={() => moveSelectedGroupDown()}><ArrowDownward /></IconButton>
-                </Stack>
-              </Box>
-            )}
-          </AccordionDetails>
-        </Accordion>
-
-      </Stack>
-      <TransformWrapper
-        // disabled={move}
-        centerZoomedOut
-        minScale={0.1}
-        initialScale={colN * 100 < window.innerWidth || rowN * 100 < window.innerHeight * 0.8
-          ? 1
-          : 0.1}
-      >
+    <MWrapper move={move}>      
+      <MControls rowN={rowN} colN={colN} setRowNumber={setRowNumber} setColNumber={setColNumber} virtual={virtual} m={m} setM={setM} move={move} setMove={setMove} selectedGroup={selectedGroup} setError={setError}/>    
+      <TransformWrapper disabled={move} centerZoomedOut minScale={0.1} initialScale={colN * 100 < window.innerWidth || rowN * 100 < window.innerHeight * 0.8 ? 1 : 0.1}>
         <TransformComponent>
           <div className={classes.gridCellContainer} style={{ width: colN * 100, height: rowN * 100 }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {/* <DndContext onDragEnd={handleDragEnd}> */}
-              {/* {!isDropped ? draggableMarkup : null} */}
-              {m.map((yzrow, currentRowIndex) => (
-                <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
-                  {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
-                    // <Droppable key={`col-${currentColIndex}`} className={classes.gridCell}>
-                    //   {isDropped ? draggableMarkup : 'Drop here'}
-                    <Box
-                      key={`col-${currentColIndex}`}
-                      className={classes.gridCell}
-                      sx={{
-                        border: error.find((e) => e.row === currentRowIndex && e.col === currentColIndex) ? '1px solid red' : '1px solid #000',
-                        backgroundColor: mode === 'compressed' && decodedPixels
-                          ? decodedPixels[currentRowIndex * colN + currentColIndex] ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})` : '#222'
-                          : pixels && pixels[0] && pixels[0].length
-                            ? `rgb(${(pixels[0])[currentRowIndex * colN + currentColIndex]},${(pixels[1])[currentRowIndex * colN + currentColIndex]},${(pixels[2])[currentRowIndex * colN + currentColIndex]})` : '#222',
-                        opacity: (move && (yzcolumn?.group === selectedGroup)) ? 1 : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === '' ? 0.1 : yzcolumn.deviceId !== '' ? 1 : 0.3,
-                      }}
-                      onContextMenu={(e) => {
-                        e.preventDefault()
-                        setCurrentCell([currentColIndex, currentRowIndex])
-                        setCurrentDevice(yzcolumn.deviceId !== '' ? yzcolumn.deviceId : '')
-                        setSelectedPixel(yzcolumn.pixel || 0)
-
-                        if (currentCell[1] > -1 && currentCell[0] > -1 && m[currentCell[1]][currentCell[0]]?.deviceId !== '') {
-                          // console.log(m[currentCell[1]][currentCell[0]].group)
-
-                          openContextMenu(e)
-                          return
-                        }
-                        setOpen(true)
-                      }}
-                    >
-                      {yzcolumn.deviceId !== '' && (
-                        <div className={classes.pixel}>
-                          <Typography variant="caption">{devices[yzcolumn.deviceId].config.name}</Typography>
-                          <Typography variant="caption">{yzcolumn.pixel}</Typography>
-                        </div>
-                      )}
-                    </Box>
-                    // </Droppable>
-                  ))}
-                </div>
-              ))}
-              {/* </DndContext> */}
-            </div>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={contextMenuOpen}
-              onClose={closeContextMenu}
-              onContextMenu={(e) => {
-                e.preventDefault()
-                closeContextMenu()
-              }}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={() => {
-                setOpen(true)
-              }}
+              <DndContext 
+                modifiers={[restrictToFirstScrollableAncestor]}
+                onDragEnd={(e) => handleDragEnd(e)} 
+                onDragOver={(e) => setHoveringCell((e.over?.id as any)?.split('-').map(Number) || [-1, -1])}
+                onDragStart={(e) => {
+                  console.log('zy', e.active?.id, hoveringCell, selectedGroup)
+                  setIsDragging(true)
+                }}
               >
-                Edit
-              </MenuItem>
-              <MenuItem onClick={()=>{
-                console.log('move', move, m[currentCell[1]][currentCell[0]].group, selectedGroup)
-                setSelectedGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
-                setMove(true)
-                closeContextMenu()
-              }}>Move</MenuItem>
-              <MenuItem onClick={closeContextMenu}>Clear</MenuItem>
-            </Menu>
-            <Dialog onClose={() => closeClear()} open={open} PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}>
-              <MDialogTitle currentCell={currentCell} m={m} />
-              <DialogContent>
-                <BladeFrame title="Device" style={{ marginBottom: '1rem' }}>
-                  <Select value={currentDevice} onChange={(e) => setCurrentDevice(e.target.value || '')} inputRef={deviceRef} variant="standard" fullWidth>
-                    {devices
-                    && Object.keys(devices).map((d: any, i: number) => (
-                      <MenuItem value={devices[d].id} key={i}>{devices[d].config.name}</MenuItem>
+                {m.map((yzrow, currentRowIndex) => (
+                  <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
+                    {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
+                      <Droppable cell={(hoveringCell[0] > -1 && hoveringCell[1] > -1) ? m[hoveringCell[1]][hoveringCell[0]] : undefined}
+                        id={`${currentColIndex}-${currentRowIndex}`} key={`col-${currentColIndex}`}>
+                        <Box
+                          key={`col-${currentColIndex}`}
+                          sx={{
+                            opacity: (move && (yzcolumn?.group === selectedGroup)) ? 1 : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === '' ? 0.1 : yzcolumn.deviceId !== '' ? 1 : 0.3,
+                          }}
+                          onContextMenu={(e)=>handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)}
+                        >
+                          {!isDropped && m[currentRowIndex][currentColIndex].deviceId !== '' ? <Draggable id={`${m[currentRowIndex][currentColIndex].group}`}>
+                            <Pixel m={m} currentColIndex={currentColIndex} classes={classes} currentRowIndex={currentRowIndex} move={move} decodedPixels={decodedPixels} colN={colN} pixels={pixels} yzcolumn={yzcolumn} selectedGroup={selectedGroup} error={error} setCurrentCell={setCurrentCell} setCurrentDevice={setCurrentDevice} setSelectedPixel={setSelectedPixel} openContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setAnchorEl(e.currentTarget)} isDragging={isDragging} />
+                          </Draggable> : null}
+                        </Box>                        
+                      </Droppable>
                     ))}
-                  </Select>
-                </BladeFrame>
-                {currentDevice && (
-                  <>
-                    <MSwitch group={group} setGroup={setGroup} />
-                    {group && <MFillSelector direction={direction} onChange={handleDirectionChange} />}
-                    <MSlider
-                      group={group}
-                      devices={devices}
-                      currentDevice={currentDevice}
-                      selectedPixel={selectedPixel}
-                      handleSliderChange={handleSliderChange}
-                    />
-                  </>
-                )}
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => clearPixel()}>Clear</Button>
-                <Button onClick={() => assignPixels()}>Save</Button>
-              </DialogActions>
-            </Dialog>
+                  </div>
+                ))}
+              </DndContext>
+            </div>
+            <MContextMenu setSelectedGroup={setSelectedGroup} anchorEl={anchorEl} closeContextMenu={()=>setAnchorEl(null)} currentCell={currentCell} m={m} setOpen={setOpen} setMove={setMove} />
+            <AssignPixelDialog open={open} closeClear={closeClear} currentCell={currentCell} m={m} setCurrentDevice={setCurrentDevice} deviceRef={deviceRef} group={group} setGroup={setGroup} direction={direction} handleDirectionChange={handleDirectionChange} selectedPixel={selectedPixel} handleSliderChange={handleSliderChange} clearPixel={clearPixel} setM={setM} currentDevice={currentDevice} pixelGroups={pixelGroups} setPixelGroups={setPixelGroups}  rowN={rowN} colN={colN} />
           </div>
         </TransformComponent>
       </TransformWrapper>
     </MWrapper>
   )
-  // function handleDragEnd(event: DragEndEvent) {
-  //   console.log(event)
-  //   // if (event.over && event.over.id === 'droppable') {
-  //   //   setIsDropped(true);
-  //   // }
-  // }
+
 }
 
 export default EditMatrix
