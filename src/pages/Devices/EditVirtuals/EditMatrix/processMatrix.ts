@@ -1,7 +1,10 @@
 type InputType = { deviceId: string; pixel: number; group?: string }
 type OutputType = [string, number, number, boolean]
 
-export function processArray(inputArray: InputType[]): OutputType[] {
+export function processArray(
+  inputArray: InputType[],
+  gapname = ''
+): OutputType[] {
   const outputArray: OutputType[] = []
   let startPixel: number | null = null
   let endPixel: number | null = null
@@ -13,7 +16,7 @@ export function processArray(inputArray: InputType[]): OutputType[] {
     if (inputArray[i].deviceId !== '') {
       if (deviceId === '') {
         if (gapStart !== null) {
-          outputArray.push(['gap', gapStart, i - 1, false])
+          outputArray.push([`gap-${gapname}`, gapStart, i - 1, false])
           gapStart = null
         }
         deviceId = inputArray[i].deviceId
@@ -58,7 +61,7 @@ export function processArray(inputArray: InputType[]): OutputType[] {
     outputArray.push([deviceId, startPixel as number, endPixel as number, flip])
   }
   if (gapStart !== null) {
-    outputArray.push(['gap', gapStart, inputArray.length - 1, false])
+    outputArray.push([`gap-${gapname}`, gapStart, inputArray.length - 1, false])
   }
 
   return outputArray
@@ -74,7 +77,7 @@ export function reverseProcessArray(
 
   for (let i = 0; i < outputArray.length; i += 1) {
     const [deviceId, startPixel, endPixel, flip] = outputArray[i]
-    if (deviceId === 'gap' || deviceId === 'GAP') {
+    if (deviceId.startsWith('gap-')) {
       for (let j = startPixel; j <= endPixel; j += 1) {
         inputArray.push({ deviceId: '', pixel: j, group: '0-0' })
       }

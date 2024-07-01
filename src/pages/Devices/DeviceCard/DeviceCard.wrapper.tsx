@@ -31,8 +31,8 @@ const DeviceCardWrapper = ({
   const activateDevice = useStore((state) => state.activateDevice)
   const showMatrix = useStore((state) => state.showMatrix)
 
-  const [_fade, setFade] = useState(false)
-  const [_isActive, setIsActive] = useState<boolean>(
+  const [fade, setFade] = useState(false)
+  const [isActive, setIsActive] = useState<boolean>(
     (virtuals &&
       virtual &&
       virtuals[virtual] &&
@@ -42,7 +42,7 @@ const DeviceCardWrapper = ({
         devices[Object.keys(devices).find((d) => d === virtual) || '']
           ?.active_virtuals!.length > 0)
   )
-
+  console.log(fade, isActive)
   const handleDeleteDevice = () => {
     deleteVirtual(virtuals[virtual]?.id).then(() => {
       getVirtuals()
@@ -115,7 +115,7 @@ const DeviceCardWrapper = ({
     }
     return 'unset'
   }
-
+  
   return virtual && virtuals[virtual] ? (
     <DeviceCard
       deviceName={
@@ -154,6 +154,9 @@ const DeviceCardWrapper = ({
         virtual &&
         virtuals[virtual]?.config &&
         virtuals[virtual]?.config.preview_only
+      }
+      dummy={
+        devices[Object.keys(devices).find((d) => d === virtual) || '']?.type === 'dummy'
       }
       isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
       additionalStyle={{

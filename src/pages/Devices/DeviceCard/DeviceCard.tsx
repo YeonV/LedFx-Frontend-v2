@@ -15,6 +15,7 @@ import {
   Clear,
   Delete,
   Pause,
+  PestControl,
   PlayArrow,
   SyncProblem
 } from '@mui/icons-material'
@@ -50,6 +51,7 @@ const DeviceCard = ({
   isPlaying = true,
   isStreaming = false,
   previewOnly = true,
+  dummy = false,
   isEffectSet = true,
   transitionTime = 5,
   isDevice = 'yz-quad',
@@ -224,6 +226,11 @@ const DeviceCard = ({
             {previewOnly && (
               <Button variant="text" disabled size="small">
                 <VisibilityIcon />
+              </Button>
+            )}
+            {dummy && (
+              <Button variant="text" disabled size="small">
+                <PestControl />
               </Button>
             )}
           </div>

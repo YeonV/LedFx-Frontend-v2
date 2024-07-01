@@ -32,6 +32,10 @@ export interface DeviceCardProps {
    */
   previewOnly?: boolean
   /**
+   * Dummy Device
+   */
+  dummy?: boolean
+  /**
    * TransitionTime of the Device
    */
   transitionTime?: number

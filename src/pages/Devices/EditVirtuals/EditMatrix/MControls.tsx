@@ -194,7 +194,7 @@ const MControls = ({
                 //   id: virtual.id
                 // })
                 Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-                  segments: processArray(m.flat())
+                  segments: processArray(m.flat(), virtual.id)
                 })
               }}
               startIcon={<Save />}

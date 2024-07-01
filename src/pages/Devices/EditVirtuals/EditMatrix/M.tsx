@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable prettier/prettier */
 import { useEffect, useRef, useState, FC } from 'react'
 import { Box } from '@mui/material'
@@ -17,19 +18,26 @@ import Pixel from './Pixel'
 import hexColor from './Actions/hexColor'
 import MContextMenu from './MContextMenu'
 import AssignPixelDialog from './AssignPixelDialog'
+import { Ledfx } from '../../../../api/ledfx'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
   const deviceRef = useRef<HTMLInputElement | null>(null)
 
   const pixelGraphs = useStore((state) => state.pixelGraphs)
+  const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const mode = useStore((state) => state.config).transmission_mode
+  const addDevice = useStore((state) => state.addDevice)
+  const getDevices = useStore((state) => state.getDevices)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const updateVirtual = useStore((state) => state.updateVirtual)
+  const setEffect = useStore((state) => state.setEffect)
 
   const [error, setError] = useState<{row: number, col: number}[]>([])
   const [currentDevice, setCurrentDevice] = useState<string>('')
-  const [rowN, setRowNumber] = useState<number>(virtual.config.rows || 4)
-  const [colN, setColNumber] = useState<number>(Math.ceil(virtual.pixel_count / (virtual.config.rows || 1)) || 6)
+  const [rowN, setRowNumber] = useState<number>(virtual.config.rows || 8)
+  const [colN, setColNumber] = useState<number>(Math.ceil(virtual.pixel_count / (virtual.config.rows || 1)) || 8)
   const [currentCell, setCurrentCell] = useState<[number, number]>([-1, -1])
   const [open, setOpen] = useState<boolean>(false)
   const [group, setGroup] = useState<boolean>(false)
@@ -148,9 +156,43 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
 
   useEffect(() => {
     setM(reverseProcessArray(virtual.segments, colN))
+  }, [virtual.segments])
+
+  useEffect(() => {
+    if(virtual.segments.length === 0) {
+      if (!Object.values(devices).some((d) => d.id === `gap-${virtual.id}`)) {
+        // add new device          
+        addDevice({
+          type: 'dummy',
+          config: {center_offset: 0,
+            icon_name: 'mdi:eye-off',
+            name: `gap-${virtual.id}`,
+            pixel_count: 4096,
+            refresh_rate: 64
+          }
+        }).then(() => {
+          Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+            segments: [[`gap-${virtual.id}`, 0, virtual.config.rows * virtual.config.rows - 1, false]]
+          }).then(() => {
+            getDevices()
+            getVirtuals().then(() => {
+              setEffect(virtual.id, 'equalizer2d', {bands: virtual.config.rows}, true).then(() => {
+                updateVirtual(virtual.id, true)
+              })
+            })
+
+          })          
+        })
+      }
+      
+    
+    }
   }, [])
   
-
+  useEffect(() => {
+    setRowNumber(virtual.config.rows || 8)
+    setColNumber(Math.ceil(virtual.pixel_count / (virtual.config.rows || 1)) || 8)
+  }, [virtual])
 
   return (
     <MWrapper move={move}>      
@@ -170,22 +212,36 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
               >
                 {m.map((yzrow, currentRowIndex) => (
                   <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
-                    {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => (
+                    {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => {
+                      const bg = mode === 'compressed' && decodedPixels
+                        ? decodedPixels[currentRowIndex * colN + currentColIndex]
+                          ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
+                          : '#222'
+                        : pixels && pixels[0] && pixels[0].length
+                          ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
+                          : '#222'
+                      const op = (move && (yzcolumn?.group === selectedGroup)) ? 1 : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === '' ? 0.1 : yzcolumn.deviceId !== '' ? 1 : 0.3
+                      return (
                       <Droppable cell={(hoveringCell[0] > -1 && hoveringCell[1] > -1) ? m[hoveringCell[1]][hoveringCell[0]] : undefined}
-                        id={`${currentColIndex}-${currentRowIndex}`} key={`col-${currentColIndex}`}>
+                        id={`${currentColIndex}-${currentRowIndex}`} key={`col-${currentColIndex}`} bg={bg} opacity={op} onContextMenu={(e)=>handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)} >
                         <Box
                           key={`col-${currentColIndex}`}
-                          sx={{
-                            opacity: (move && (yzcolumn?.group === selectedGroup)) ? 1 : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === '' ? 0.1 : yzcolumn.deviceId !== '' ? 1 : 0.3,
-                          }}
                           onContextMenu={(e)=>handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)}
+                          sx={{
+                            backgroundColor: bg,
+                            opacity: op,
+                          }}
                         >
-                          {!isDropped && m[currentRowIndex][currentColIndex].deviceId !== '' ? <Draggable id={`${m[currentRowIndex][currentColIndex].group}`}>
-                            <Pixel m={m} currentColIndex={currentColIndex} classes={classes} currentRowIndex={currentRowIndex} move={move} decodedPixels={decodedPixels} colN={colN} pixels={pixels} yzcolumn={yzcolumn} selectedGroup={selectedGroup} error={error} setCurrentCell={setCurrentCell} setCurrentDevice={setCurrentDevice} setSelectedPixel={setSelectedPixel} openContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setAnchorEl(e.currentTarget)} isDragging={isDragging} />
-                          </Draggable> : null}
+                          {move 
+                            ? !isDropped && m[currentRowIndex][currentColIndex].deviceId !== ''
+                              ? <Draggable id={`${m[currentRowIndex][currentColIndex].group}`}>
+                                  <Pixel m={m} currentColIndex={currentColIndex} classes={classes} currentRowIndex={currentRowIndex} move={move} decodedPixels={decodedPixels} colN={colN} pixels={pixels} yzcolumn={yzcolumn} selectedGroup={selectedGroup} error={error} setCurrentCell={setCurrentCell} setCurrentDevice={setCurrentDevice} setSelectedPixel={setSelectedPixel} openContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setAnchorEl(e.currentTarget)} isDragging={isDragging} />
+                                </Draggable>
+                              : null
+                            : <Pixel m={m} currentColIndex={currentColIndex} classes={classes} currentRowIndex={currentRowIndex} move={move} decodedPixels={decodedPixels} colN={colN} pixels={pixels} yzcolumn={yzcolumn} selectedGroup={selectedGroup} error={error} setCurrentCell={setCurrentCell} setCurrentDevice={setCurrentDevice} setSelectedPixel={setSelectedPixel} openContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setAnchorEl(e.currentTarget)} isDragging={isDragging} />}
                         </Box>                        
                       </Droppable>
-                    ))}
+                    )})}
                   </div>
                 ))}
               </DndContext>
