@@ -64,6 +64,14 @@ export function processArray(
     outputArray.push([`gap-${gapname}`, gapStart, inputArray.length - 1, false])
   }
 
+  for (let i = 0; i < outputArray.length; i++) {
+    const item = outputArray[i]
+    if (item[1] > item[2]) {
+      item[3] = item[1] > item[2]
+      ;[item[1], item[2]] = [item[2], item[1]]
+    }
+  }
+
   return outputArray
 }
 
