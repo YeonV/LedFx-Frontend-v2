@@ -35,6 +35,7 @@ import moveSelectedGroupUp from './Actions/moveSelectedGroupUp'
 import moveSelectedGroupLeft from './Actions/moveSelectedGroupLeft'
 import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
+import useStore from '../../../../store/useStore'
 // import useStore from '../../../../store/useStore'
 
 const MControls = ({
@@ -69,6 +70,8 @@ const MControls = ({
   // const infoAlerts = useStore((state) => state.ui.infoAlerts)
   // const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const [tab, setTab] = useState('1')
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getDevices = useStore((state) => state.getDevices)
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') setDnd(false)
@@ -193,6 +196,9 @@ const MControls = ({
               onClick={() => {
                 Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
                   segments: processArray(m.flat(), virtual.id)
+                }).then(() => {
+                  getVirtuals()
+                  getDevices()
                 })
               }}
               onContextMenu={(e) => {

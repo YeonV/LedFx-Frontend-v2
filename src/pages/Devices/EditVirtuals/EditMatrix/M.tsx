@@ -51,7 +51,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [dnd, setDnd] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [isDragging, setIsDragging] = useState(false)
-  const [parent, setParent] = useState<string | number | null>(null)
   const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
   
   const decodedPixels = mode === 'compressed' ? pixels && pixels.length && hexColor(pixels, mode) : pixels
@@ -120,7 +119,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log(parent, event)
+    // console.log(parent, event)
     if (event.over && event.over.id) {
       const updatedM = clone(m)
       const [xOver, yOver] = (event.over.id as string).split('-').map(Number)
@@ -132,7 +131,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
       }
     }
   
-    setParent(event.over ? event.over.id : null)
     setIsDragging(false)
   }
 
@@ -213,8 +211,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                 modifiers={[restrictToFirstScrollableAncestor]}
                 onDragEnd={(e) => handleDragEnd(e)} 
                 onDragOver={(e) => setHoveringCell((e.over?.id as any)?.split('-').map(Number) || [-1, -1])}
-                onDragStart={(e) => {
-                  console.log('zy', e.active?.id, hoveringCell, selectedGroup)
+                onDragStart={() => {
+                  // console.log('zy', e.active?.id, hoveringCell, selectedGroup)
                   setIsDragging(true)                  
                 }}
               >
