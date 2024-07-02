@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useTheme, Stack, Chip, Button } from '@mui/material'
+import { useTheme, Stack, Chip, IconButton } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
@@ -9,40 +9,106 @@ import {
 } from '@mui/x-data-grid'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Clear, SyncProblem } from '@mui/icons-material'
+import { Clear, DeleteForever, Edit, Fullscreen, Pause, PlayArrow, Settings, SyncProblem } from '@mui/icons-material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import useStore from '../../store/useStore'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import PixelGraph from '../../components/PixelGraph'
 
-const DeviceActions = () => (
-  <>
-    <Button
-      variant="text"
-      size="small"
-      onClick={(e) => {
-        e.preventDefault()
-        // handlePlayPause()
-      }}
-    >
-      {/* {isPlaying ? <Pause /> : <PlayArrow />} */}
-    </Button>
-    <Button
-      size="small"
-      variant="text"
-      onClick={(e) => {
-        e.preventDefault()
-        // handleClearEffect(virtId)
-      }}
-    >
-      <Clear />
-    </Button>
-  </>
-)
+const DeviceActions = ({ virtId, effect }: {virtId: string, effect?: boolean}) => {
+  const navigate = useNavigate()
+
+  const virtuals = useStore((state) => state.virtuals)
+  const updateVirtual = useStore((state) => state.updateVirtual)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const getDevices = useStore((state) => state.getDevices)
+  const clearEffect = useStore((state) => state.clearEffect)
+
+  const handlePlayPause = () => {
+    if (virtId && virtuals[virtId])
+      updateVirtual(virtId, !virtuals[virtId].active).then(() => getVirtuals())
+  }
+  const handleClearEffect = () => {
+    clearEffect(virtId).then(() => {
+      setTimeout(() => {
+        getVirtuals()
+        getDevices()
+      }, virtuals[virtId].config.transition_time * 1000)
+    })
+  }
+
+  return (
+    <>
+      {effect && <>
+        <IconButton
+          size="small"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handlePlayPause()
+          }}
+        >
+          {virtuals[virtId]?.active ? <Pause /> : <PlayArrow />}
+        </IconButton>
+        <IconButton
+          size="small"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handleClearEffect()
+          }}
+        >
+          <Clear />
+        </IconButton>
+        {virtuals[virtId]?.config.rows > 1 && <IconButton
+          size="small"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            navigate(`/graph/${virtId}`)
+          }}
+        >
+          <Fullscreen />
+        </IconButton>}
+      </>}
+      <IconButton
+        sx={{ ml: (effect ? 3.2 : 11.8) + (virtuals[virtId]?.config.rows > 1 ? 0 : 4.2) }}
+        size="small"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          handlePlayPause()
+        }}
+      >
+        <Edit />
+      </IconButton>
+      <IconButton
+        size="small"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          handlePlayPause()
+        }}
+      >
+        <Settings />
+      </IconButton>
+      <IconButton
+        size="small"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          handlePlayPause()
+        }}
+      >
+        <DeleteForever />
+      </IconButton>
+      
+   
+    </>
+  )}
 
 const ReconnectButton = ({ onClick }: { onClick: () => void }) => (
-  <Button
-    variant="text"
+  <IconButton
     size="small"
     onClick={(e) => {
       e.preventDefault()
@@ -50,7 +116,7 @@ const ReconnectButton = ({ onClick }: { onClick: () => void }) => (
     }}
   >
     <SyncProblem />
-  </Button>
+  </IconButton>
 )
 
 const DbDevices = () => {
@@ -137,13 +203,14 @@ const DbDevices = () => {
       field: 'status',
       headerName: 'Status',
       width: 200,
+      align: 'left',
       renderCell: (params: GridRenderCellParams) =>
         devices[Object.keys(devices).find((d) => d === params.row.id) || '']
           ?.online
-          ? virtuals[params.row.id]?.effect.name
-            ? `Effect: ${virtuals[params.row.id]?.effect.name}`
+          ? virtuals[params.row.id]?.effect?.name
+            ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
             : 'Online'
-          : 'Offline'
+          : virtuals[params.row.id]?.effect?.name ? `Effect: ${virtuals[params.row.id]?.effect?.name}` : 'Offline'
     },
     {
       field: 'actions',
@@ -153,10 +220,12 @@ const DbDevices = () => {
         devices[Object.keys(devices).find((d) => d === params.row.id) || '']
           ?.online ? (
             virtuals[params.row.id]?.effect.name 
-              ? <DeviceActions />
-              : 'Online'
+              ? <DeviceActions virtId={params.row.id} effect />
+              : <DeviceActions virtId={params.row.id} />
           )
-          : <ReconnectButton onClick={() => activateDevice(params.row.id)} />
+          : virtuals[params.row.id]?.effect.name 
+            ? <DeviceActions virtId={params.row.id} effect />
+            : <ReconnectButton onClick={() => activateDevice(params.row.id)} />
     }
   ]
 

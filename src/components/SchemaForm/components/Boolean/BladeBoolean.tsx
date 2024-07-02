@@ -11,7 +11,7 @@ const BladeBoolean = ({
   index,
   required,
   style,
-  type,
+  type = 'switch',
   schema,
   model,
   hideDesc = false,
