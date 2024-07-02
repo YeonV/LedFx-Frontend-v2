@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable react/require-default-props */
-/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable import/no-unresolved */
 import React from 'react'
 import Button from '@mui/material/Button'

@@ -142,16 +142,16 @@ function ConfirmationDialogRaw(props: any) {
       }
       setformData(newSwitchState)
     } else if (event.target.name === 'scene_id' || event.target.name === 'effect_name') {
-      value = JSON.parse(value);
-      const filterKey = value?.event_type === 'scene_activated' ? 'scene_id' : 'effect_name';
+      value = JSON.parse(value)
+      const filterKey = value?.event_type === 'scene_activated' ? 'scene_id' : 'effect_name'
       const newFormState = {
         ...formData,
         event_filter: {
           [filterKey]: value?.event_name,
         },
         event_type: value?.event_type,
-      };
-      setformData(newFormState);
+      }
+      setformData(newFormState)
     } else {
       const qlcDatanewArr: any = qlcData.slice()
       qlcDatanewArr[0][event.target.value[0]] = value

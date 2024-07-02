@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
-/* eslint-disable no-plusplus */
+
 /* eslint-disable func-names */
 import {
   Button,

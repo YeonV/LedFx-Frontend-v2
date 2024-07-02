@@ -260,11 +260,11 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
 }
 
 const SmartBar = ({
-  open,
-  setOpen,
-  direct,
-  maxWidth,
-  inputRef
+  open = false,
+  setOpen = undefined,
+  direct = false,
+  maxWidth = 500,
+  inputRef = undefined
 }: {
   open?: boolean
   setOpen?: any
@@ -297,14 +297,6 @@ const SmartBar = ({
   ) : (
     <>Failed</>
   )
-}
-
-SmartBar.defaultProps = {
-  open: false,
-  setOpen: undefined,
-  direct: false,
-  maxWidth: 500,
-  inputRef: undefined
 }
 
 export default SmartBar

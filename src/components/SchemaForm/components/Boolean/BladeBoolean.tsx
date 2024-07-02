@@ -1,9 +1,6 @@
 import { Switch, Checkbox, Button, Typography } from '@mui/material'
 import BladeFrame from '../BladeFrame'
-import {
-  BladeBooleanDefaultProps,
-  BladeBooleanProps
-} from './BladeBoolean.props'
+import { BladeBooleanProps } from './BladeBoolean.props'
 
 /**
  * ## Boolean
@@ -14,7 +11,7 @@ const BladeBoolean = ({
   index,
   required,
   style,
-  type,
+  type = 'switch',
   schema,
   model,
   hideDesc = false,
@@ -73,7 +70,5 @@ const BladeBoolean = ({
       return <div>unset</div>
   }
 }
-
-BladeBoolean.defaultProps = BladeBooleanDefaultProps
 
 export default BladeBoolean

@@ -21,7 +21,7 @@ export const common = {
   components: {
     MuiButton: {
       defaultProps: {
-        // eslint-disable-next-line prettier/prettier
+         
         color: 'inherit' as 'error' | 'success' | 'warning' | 'info' | 'inherit' | 'primary' | 'secondary' | undefined,
         variant: 'outlined' as 'contained' | 'outlined' | 'text' | undefined,
         size: 'small' as 'small' | 'medium' | 'large'

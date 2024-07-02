@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSlider from "./BladeSlider";
 
@@ -24,10 +24,10 @@ export default {
       panelPosition: 'bottom'
     }
   }
-} as ComponentMeta<typeof BladeSlider>
+} as Meta<typeof BladeSlider>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof BladeSlider> = (args) => <BladeSlider {...args} />;
+const Template: StoryFn<typeof BladeSlider> = (args) => <BladeSlider {...args} />;
 
 export const Number = Template.bind({})
 Number.args = {

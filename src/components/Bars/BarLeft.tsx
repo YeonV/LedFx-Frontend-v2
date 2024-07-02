@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
+
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'

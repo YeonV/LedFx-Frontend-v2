@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
 import { Box, CssBaseline } from '@mui/material'
-import Cookies from 'universal-cookie/es6'
+import Cookies from 'universal-cookie'
 import ws, { WsContext, HandleWs } from './utils/Websocket'
 import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
@@ -73,7 +73,6 @@ export default function App() {
     if (window.location.pathname.includes('hassio_ingress'))
       // eslint-disable-next-line no-console
       console.info(
-        // eslint-disable-next-line no-useless-concat
         '%c HomeAssistant detected ',
         'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
       )

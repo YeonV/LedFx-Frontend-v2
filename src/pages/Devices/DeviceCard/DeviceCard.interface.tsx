@@ -32,6 +32,10 @@ export interface DeviceCardProps {
    */
   previewOnly?: boolean
   /**
+   * Dummy Device
+   */
+  dummy?: boolean
+  /**
    * TransitionTime of the Device
    */
   transitionTime?: number
@@ -98,28 +102,4 @@ export interface DeviceCardProps {
   /**
    * JSX styles
    */
-}
-export const DeviceCardDefaults: DeviceCardProps = {
-  deviceName: 'My Wled',
-  online: true,
-  effectName: undefined,
-  virtId: 'yz-quad',
-  index: 1,
-  handleDeleteDevice: () => console.log('DELETING DEVICE'), // eslint-disable-line no-console
-  handleEditVirtual: () => console.log('EDITING VIRTUAL'), // eslint-disable-line no-console
-  handleEditDevice: () => console.log('EDITING DEVICE'), // eslint-disable-line no-console
-  handleClearEffect: () => console.log('CLEARING EFFECT'), // eslint-disable-line no-console
-  handlePlayPause: () => console.log('PLAY/PAUSE'), // eslint-disable-line no-console
-  linkTo: '/',
-  additionalStyle: {},
-  iconName: 'wled',
-  colorIndicator: true,
-  isPlaying: true,
-  isStreaming: false,
-  previewOnly: true,
-  isEffectSet: true,
-  transitionTime: 5,
-  isDevice: 'yz-quad',
-  graphsActive: true,
-  showMatrix: false
 }

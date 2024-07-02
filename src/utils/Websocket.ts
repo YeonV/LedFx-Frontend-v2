@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable array-callback-return */
-/* eslint-disable no-plusplus */
+
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 
 import { useLocation } from 'react-router-dom'

@@ -1,67 +1,66 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from 'react';
-import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material';
-import useStyles from './BladeSlider.styles';
+import { useState, useEffect } from 'react'
+import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material'
+import useStyles from './BladeSlider.styles'
 import {
-  BladeSliderDefaultProps,
-  BladeSliderInnerDefaultProps,
   BladeSliderInnerProps,
   BladeSliderProps,
-} from './BladeSlider.props';
+} from './BladeSlider.props'
 
 const BladeSliderInner = ({
-  schema,
-  model,
-  model_id,
-  step,
-  onChange,
-  textfield,
-  style,
-  disabled,
-  marks,
-  hideDesc,
+  schema = undefined,
+  model = undefined,
+  model_id = '',
+  step = undefined,
+  onChange = undefined,
+  textfield = undefined,
+  style = undefined,
+  disabled = undefined,
+  marks = undefined,
+  hideDesc = undefined,
+  full = undefined
 }: BladeSliderInnerProps) => {
-  const classes = useStyles();
-  const theme = useTheme();
-  // eslint-disable-next-line
-  const [value, setValue] = useState((model_id && typeof model[model_id]) === 'number' ? model_id && model[model_id] : typeof schema.default === 'number' ? schema.default : 1 );
+  const classes = useStyles()
+  const theme = useTheme()
+   
+  const [value, setValue] = useState((model_id && typeof model[model_id]) === 'number' ? model_id && model[model_id] : typeof schema.default === 'number' ? schema.default : 1 )
   const handleSliderChange = (_event: any, newValue: any) => {
     if (newValue !== value) {
-      setValue(newValue);
+      setValue(newValue)
     }
-  };
+  }
 
   const handleInputChange = (event: any) => {
     if (value !== event.target.value) {
-      setValue(event.target.value === '' ? '' : Number(event.target.value));
+      setValue(event.target.value === '' ? '' : Number(event.target.value))
       if (event.target.value < schema.minimum) {
-        setValue(schema.minimum);
+        setValue(schema.minimum)
       } else if (event.target.value > schema.maximum) {
-        setValue(schema.maximum);
+        setValue(schema.maximum)
       }
-      onChange(model_id, Number(event.target.value));
+      onChange(model_id, Number(event.target.value))
     }
-  };
+  }
   const handleBlur = () => {
     if (value < schema.minimum) {
-      setValue(schema.minimum);
+      setValue(schema.minimum)
     } else if (value > schema.maximum) {
-      setValue(schema.maximum);
+      setValue(schema.maximum)
     }
-  };
+  }
   const handleTextChange = (event: any) => {
     if (value < schema.minimum) {
-      setValue(schema.minimum);
+      setValue(schema.minimum)
     } else if (value > schema.maximum) {
-      setValue(schema.maximum);
+      setValue(schema.maximum)
     }
-    onChange(model_id, Number(event.target.value));
-  };
+    onChange(model_id, Number(event.target.value))
+  }
 
   useEffect(() => {
-    // eslint-disable-next-line
-    setValue(model_id && typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1);
-  }, [model, model_id]);
+     
+    setValue(model_id && typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1)
+  }, [model, model_id])
 
   return schema.maximum && !textfield ? (
     <>
@@ -80,6 +79,7 @@ const BladeSliderInner = ({
           max={schema.maximum}
           value={typeof value === 'number' ? value : 0}
           onChange={handleSliderChange}
+          className={`slider-${full ? 'full' : 'half'}`}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
           style={{ color: '#aaa', ...style, width: '100%' }}
         />
@@ -147,10 +147,9 @@ const BladeSliderInner = ({
       helperText={!hideDesc && schema.description}
       style={{ ...style, width: '100%', backgroundColor: theme.palette.background.paper }}
     />
-  );
-};
+  )
+}
 
-BladeSliderInner.defaultProps = BladeSliderInnerDefaultProps;
 
 /**
  * ## Number
@@ -162,22 +161,24 @@ BladeSliderInner.defaultProps = BladeSliderInnerDefaultProps;
  */
 const BladeSlider = ({
   variant = 'outlined',
-  schema,
-  model,
-  model_id,
-  step,
-  onChange,
+  schema = {
+    title: 'Slide me'
+  },
+  model = undefined,
+  model_id = '',
+  step = undefined,
+  onChange = undefined,
   marks = undefined,
   index = undefined,
   required = false,
   textfield = false,
   disabled = false,
   hideDesc = false,
-  full = false,
   style = {},
+  full = false
 }: BladeSliderProps) => {
-  const classes = useStyles();
-  const theme = useTheme();
+  const classes = useStyles()
+  const theme = useTheme()
   return variant === 'outlined' ? (
     <Box
       className={`${classes.wrapper} step-effect-${index}`}
@@ -231,9 +232,8 @@ const BladeSlider = ({
       marks={marks}
       hideDesc={hideDesc}
     />
-  );
-};
+  )
+}
 
-BladeSlider.defaultProps = BladeSliderDefaultProps;
 
-export default BladeSlider;
+export default BladeSlider

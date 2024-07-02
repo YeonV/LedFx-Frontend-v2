@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 import { MemoryRouter } from 'react-router-dom'
 
 // eslint-disable-next-line
@@ -17,10 +17,10 @@ export default {
       showPanel: true
     }
   }
-} as ComponentMeta<typeof DeviceCard>
+} as Meta<typeof DeviceCard>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof DeviceCard> = (args) => (
+const Template: StoryFn<typeof DeviceCard> = (args) => (
   <DeviceCard {...args} />
 )
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import type { Theme } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
@@ -60,10 +59,6 @@ export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>(
     )
   }
 )
-MenuLine.defaultProps = {
-  icon: <Send fontSize="small" />,
-  name: 'MenuItem'
-}
 
 export const StyledMenu = ({ open, ...props }: StyledMenuProps) => (
   <Menu

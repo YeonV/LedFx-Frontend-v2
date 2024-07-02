@@ -10,9 +10,9 @@ interface GifFrameProps {
 }
 
 const GifFrame: FC<GifFrameProps> = ({
-  onClick,
   image,
-  selected
+  onClick = undefined,
+  selected = undefined
 }: GifFrameProps) => {
   const theme = useTheme()
 
@@ -35,11 +35,6 @@ const GifFrame: FC<GifFrameProps> = ({
       onClick={onClick}
     />
   )
-}
-
-GifFrame.defaultProps = {
-  onClick: undefined,
-  selected: undefined
 }
 
 export default GifFrame

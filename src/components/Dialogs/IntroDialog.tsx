@@ -14,7 +14,7 @@ import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
 import Button from '@mui/material/Button'
 import { CheckCircleOutlineOutlined, ChevronLeft, ChevronRight } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import banner from '../../icons/png/banner.png'

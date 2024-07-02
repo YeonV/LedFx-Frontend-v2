@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { ReactElement } from 'react'
 import type { MenuProps } from '@mui/material'
 

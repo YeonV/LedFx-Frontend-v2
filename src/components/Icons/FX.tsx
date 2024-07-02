@@ -36,9 +36,4 @@ const FX = ({ stroke = '#ffffff', currentColor = 'transparent' }: FXProps) => (
   </svg>
 )
 
-FX.defaultProps = {
-  stroke: '#ffffff',
-  currentColor: 'transparent'
-}
-
 export default FX

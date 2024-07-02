@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { styled } from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 

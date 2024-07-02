@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import Popover from './Popover';
 
@@ -20,10 +20,10 @@ export default {
       showPanel: true
     }
   }
-} as ComponentMeta<typeof Popover>
+} as Meta<typeof Popover>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof Popover> = (args) => <Popover {...args} />;
+const Template: StoryFn<typeof Popover> = (args) => <Popover {...args} />;
 
 export const Default = Template.bind({})
 Default.args = {}

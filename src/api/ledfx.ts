@@ -7,7 +7,7 @@ import isElectron from 'is-electron'
 import useStore from '../store/useStore'
 import type { IStore } from '../store/useStore'
 // eslint-disable-next-line prettier/prettier
-const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
+const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888'
 const storedURL = window.localStorage.getItem('ledfx-host')
 
 const api = axios.create({

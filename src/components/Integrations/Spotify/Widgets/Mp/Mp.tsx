@@ -33,7 +33,4 @@ const Mp = () => {
   )
 }
 
-Mp.defaultProps = {
-  drag: false
-}
 export default Mp

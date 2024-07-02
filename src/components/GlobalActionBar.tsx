@@ -1,37 +1,37 @@
 /* eslint-disable prettier/prettier */
-import { Button, IconButton, Slider, Stack, useTheme } from '@mui/material';
-import type { SxProps, Theme } from '@mui/material';
-import { Brightness7, PauseOutlined, PlayArrow } from '@mui/icons-material';
+import { Button, IconButton, Slider, Stack, useTheme } from '@mui/material'
+import type { SxProps, Theme } from '@mui/material'
+import { Brightness7, PauseOutlined, PlayArrow } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
-import useStore from '../store/useStore';
+import useStore from '../store/useStore'
 
 const GlobalActionBar = ({
-  className,
-  sx,
-  height,
-  type,
+  className = undefined,
+  sx = undefined,
+  height = 15,
+  type = 'icon',
 }: {
   className?: string | undefined;
   sx?: SxProps<Theme> | undefined;
   height?: number;
   type?: 'button' | 'icon' | 'indicator';
 }) => {
-  const theme = useTheme();
+  const theme = useTheme()
 
-  const getSystemConfig = useStore((state) => state.getSystemConfig);
-  const setSystemConfig = useStore((state) => state.setSystemConfig);
-  const globalBrightness = useStore((state) => state.config.global_brightness);
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const globalBrightness = useStore((state) => state.config.global_brightness)
   const setSystemSetting = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value }).then(() => getSystemConfig());
-  };
+    setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
+  }
 
-  const [brightness, setBrightness] = useState(globalBrightness * 100);
-  const paused = useStore((state) => state.paused);
-  const togglePause = useStore((state) => state.togglePause);
+  const [brightness, setBrightness] = useState(globalBrightness * 100)
+  const paused = useStore((state) => state.paused)
+  const togglePause = useStore((state) => state.togglePause)
 
   useEffect(() => {
-    setBrightness(globalBrightness * 100);
-  }, [globalBrightness]);
+    setBrightness(globalBrightness * 100)
+  }, [globalBrightness])
 
 
   return (
@@ -45,7 +45,7 @@ const GlobalActionBar = ({
           color="inherit"
           aria-label="play-pause"
           onClick={() => {
-            togglePause();
+            togglePause()
           }}
           style={{
             margin: '0 8px 0 8px', color: '#fff'
@@ -60,7 +60,7 @@ const GlobalActionBar = ({
           aria-label="play-pause"
           sx={{ borderRadius: 3 }}
           onClick={() => {
-            togglePause();
+            togglePause()
           }}
           style={{
             margin: '0 16px 0 0', color: '#fff'
@@ -126,14 +126,7 @@ const GlobalActionBar = ({
         }
       />
     </Stack>
-  );
-};
+  )
+}
 
-GlobalActionBar.defaultProps = {
-  className: undefined,
-  sx: undefined,
-  height: 15,
-  type: 'icon',
-};
-
-export default GlobalActionBar;
+export default GlobalActionBar

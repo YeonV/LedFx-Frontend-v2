@@ -3,8 +3,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-unused-expressions */
-import { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
+import { useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import {
   Dialog,
   DialogActions,
@@ -15,15 +15,15 @@ import {
   MenuItem,
   Button,
   Divider,
-} from '@mui/material';
-import useStore from '../../store/useStore';
-import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm';
+} from '@mui/material'
+import useStore from '../../store/useStore'
+import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 
-const PREFIX = 'AddDeviceDialog';
+const PREFIX = 'AddDeviceDialog'
 
 const classes = {
   wrapper: `${PREFIX}-wrapper`
-};
+}
 
 const StyledDialog = styled(Dialog)((
   {
@@ -57,53 +57,53 @@ const StyledDialog = styled(Dialog)((
       boxSizing: 'border-box',
     },
   }
-}));
+}))
 
 const AddDeviceDialog = () => {
 
 
-  const getDevices = useStore((state) => state.getDevices);
-  const getVirtuals = useStore((state) => state.getVirtuals);
-  const addDevice = useStore((state) => state.addDevice);
-  const updateDevice = useStore((state) => state.updateDevice);
-  const setAddWled = useStore((state) => state.setAddWLed);
-  const devices = useStore((state) => state.devices);
-  const open = useStore((state) => state.dialogs.addDevice?.open || false);
-  const deviceId = useStore((state) => state.dialogs.addDevice?.edit || false);
-  const initial = devices[deviceId] || { type: '', config: {} };
+  const getDevices = useStore((state) => state.getDevices)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const addDevice = useStore((state) => state.addDevice)
+  const updateDevice = useStore((state) => state.updateDevice)
+  const setAddWled = useStore((state) => state.setAddWLed)
+  const devices = useStore((state) => state.devices)
+  const open = useStore((state) => state.dialogs.addDevice?.open || false)
+  const deviceId = useStore((state) => state.dialogs.addDevice?.edit || false)
+  const initial = devices[deviceId] || { type: '', config: {} }
 
   const setDialogOpenAddDevice = useStore(
     (state) => state.setDialogOpenAddDevice
-  );
+  )
 
-  const deviceTypes = useStore((state) => state.schemas?.devices);
-  const showSnackbar = useStore((state) => state.ui.showSnackbar);
-  const [deviceType, setDeviceType] = useState('');
-  const [model, setModel] = useState<any>({});
+  const deviceTypes = useStore((state) => state.schemas?.devices)
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
+  const [deviceType, setDeviceType] = useState('')
+  const [model, setModel] = useState<any>({})
 
-  const currentSchema = deviceType ? deviceTypes[deviceType].schema : {};
+  const currentSchema = deviceType ? deviceTypes[deviceType].schema : {}
 
   const handleClose = () => {
-    setDialogOpenAddDevice(false);
-  };
+    setDialogOpenAddDevice(false)
+  }
   const handleAddDevice = () => {
     const cleanedModel = Object.fromEntries(
       Object.entries(model).filter(([_, v]) => v !== '')
-    );
-    const defaultModel = {} as any;
+    )
+    const defaultModel = {} as any
 
     for (const key in currentSchema.properties) {
       currentSchema.properties[key].default !== undefined
         ? (defaultModel[key] = currentSchema.properties[key].default)
-        : undefined;
+        : undefined
     }
 
     const valid = currentSchema.required.every((val: string) =>
       Object.keys({ ...defaultModel, ...cleanedModel }).includes(val)
-    );
+    )
 
     if (!valid) {
-      showSnackbar('warning', 'Please fill in all required fields.');
+      showSnackbar('warning', 'Please fill in all required fields.')
     } else if (
       initial.config &&
       Object.keys(initial.config).length === 0 &&
@@ -126,37 +126,37 @@ const AddDeviceDialog = () => {
               setAddWled(newDevices)
             }
           }
-          setDialogOpenAddDevice(false);
-          getDevices();
-          getVirtuals();
+          setDialogOpenAddDevice(false)
+          getDevices()
+          getVirtuals()
         }
-      });
+      })
     } else {
       // console.log("EDITING");
       updateDevice(deviceId, { config: model }).then((res) => {
         if (res !== 'failed') {
-          setDialogOpenAddDevice(false);
-          getDevices();
-          getVirtuals();
+          setDialogOpenAddDevice(false)
+          getDevices()
+          getVirtuals()
         }
-      });
+      })
     }
-  };
+  }
   const handleTypeChange = (value: string, init = {}) => {
-    setDeviceType(value);
-    setModel(init);
-  };
+    setDeviceType(value)
+    setModel(init)
+  }
   const handleModelChange = (config: any) => {
-    setModel({ ...model, ...config });
-  };
+    setModel({ ...model, ...config })
+  }
 
   function filterObject(obj: any, callback: any) {
     return Object.fromEntries(Object.entries(obj).
-      filter(([key, val]) => callback(key, val)));
+      filter(([key, val]) => callback(key, val)))
   }
   useEffect(() => {
-    handleTypeChange(initial.type, initial.config);
-  }, [initial.type]);
+    handleTypeChange(initial.type, initial.config)
+  }, [initial.type])
 
   return (
     <StyledDialog
@@ -233,7 +233,7 @@ const AddDeviceDialog = () => {
         </Button>
       </DialogActions>
     </StyledDialog>
-  );
-};
+  )
+}
 
-export default AddDeviceDialog;
+export default AddDeviceDialog

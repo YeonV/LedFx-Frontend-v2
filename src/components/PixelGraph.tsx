@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-bitwise */
 /* eslint-disable prettier/prettier */
-/* eslint-disable react/require-default-props */
-import { useEffect, useState } from 'react';
-import useStore from '../store/useStore';
+ 
+import { useEffect, useState } from 'react'
+import useStore from '../store/useStore'
+import hexColor from '../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
 
 const PixelGraph = ({
   virtId,
@@ -23,54 +21,42 @@ const PixelGraph = ({
   showMatrix?: boolean;
   fullScreen?: boolean;
 }) => {
-  const [pixels, setPixels] = useState<any>([]);
+  const [pixels, setPixels] = useState<any>([])
 
-  const { pixelGraphs, virtuals, devices, graphs, config, dialogs } = useStore((state) => ({
+  const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
     pixelGraphs: state.pixelGraphs,
     virtuals: state.virtuals,
     devices: state.devices,
     graphs: state.graphs,
     config: state.config,
-    dialogs: state.dialogs,
-  }));
+  }))
 
 
-  const rows = virtuals[virtId].is_device ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1 : virtuals[virtId].config.rows || 1;
+  const rows = virtuals[virtId].is_device
+    ? devices[virtuals[virtId].is_device]?.config?.rows || virtuals[virtId].config.rows || 1
+    : virtuals[virtId].config.rows || 1
 
-  function hexColor(encodedString: string) {
-    if (config.transmission_mode === 'uncompressed' || !encodedString) {
-      return []
-    }
-    const decodedString = atob(encodedString)
-    const charCodes = Array.from(decodedString).map(char => char.charCodeAt(0))
-    const colors = Array.from({length: charCodes.length / 3}, (_, i) => {
-      const r = charCodes[i * 3]
-      const g = charCodes[i * 3 + 1]
-      const b = charCodes[i * 3 + 2]
-      return {r, g, b}
-    })
-    return colors
-  }
 
-  const decodedPixels = config.transmission_mode === 'compressed' ? pixels && pixels.length && hexColor(pixels) : pixels
+
+  const decodedPixels = config.transmission_mode === 'compressed' ? pixels && pixels.length && hexColor(pixels, config.transmission_mode) : pixels
 
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
-        setPixels(e.detail.pixels);
+        setPixels(e.detail.pixels)
       }
-    };
-    document.addEventListener('visualisation_update', handleWebsockets);
+    }
+    document.addEventListener('visualisation_update', handleWebsockets)
     return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets);
-    };
-  }, [virtuals, pixelGraphs]);
+      document.removeEventListener('visualisation_update', handleWebsockets)
+    }
+  }, [virtuals, pixelGraphs])
 
   const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
 
 
   if (!(graphs || intGraphs)) {
-    return null;
+    return null
   }
 
   return (dummy || tooLessPixels) ? (
@@ -206,7 +192,7 @@ const PixelGraph = ({
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default PixelGraph;
+export default PixelGraph

@@ -37,3 +37,4 @@ extraResources/*
 .yarn_cache/*
 
 BladeTools.pfx
+storybook.log

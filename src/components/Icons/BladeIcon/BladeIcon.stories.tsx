@@ -1,4 +1,4 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeIcon from './BladeIcon';
 
@@ -14,10 +14,10 @@ export default {
       showPanel: true
     }
   }
-} as ComponentMeta<typeof BladeIcon>
+} as Meta<typeof BladeIcon>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof BladeIcon> = (args) => <BladeIcon {...args} />;
+const Template: StoryFn<typeof BladeIcon> = (args) => <BladeIcon {...args} />;
 
 export const Default = Template.bind({})
 Default.args = {}

@@ -28,9 +28,3 @@ export interface EffectSchemaFormProps {
   descriptions?: 'Auto' | 'Show' | 'Hide'
   getVirtuals?: () => true
 }
-
-export const EffectSchemaFormDefaultProps = {
-  onModelChange: undefined,
-  selectedType: undefined,
-  descriptions: 'Auto'
-}

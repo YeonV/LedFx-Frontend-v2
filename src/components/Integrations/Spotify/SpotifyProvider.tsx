@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-console */
 import { createContext, useEffect, useMemo, useState } from 'react'
 
@@ -15,12 +14,12 @@ import { SpState } from '../../../store/ui/SpState'
 export interface ControlSpotify {
   togglePlay: () => void
   stop: () => void
-  // eslint-disable-next-line no-unused-vars
-  setPos: (pos: number) => void
+
+  setPos: (_pos: number) => void
   next: () => void
   prev: () => void
-  // eslint-disable-next-line no-unused-vars
-  setVol: (vol: number) => void
+
+  setVol: (_vol: number) => void
 }
 
 interface SpotifyTrigger {

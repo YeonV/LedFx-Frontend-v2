@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 
 // eslint-disable-next-line
 import GradientPicker from "./GradientPicker";
@@ -28,10 +28,10 @@ export default {
       panelPosition: 'right'
     }
   }
-} as ComponentMeta<typeof GradientPicker>
+} as Meta<typeof GradientPicker>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof GradientPicker> = (args) => <GradientPicker {...args} />;
+const Template: StoryFn<typeof GradientPicker> = (args) => <GradientPicker {...args} />;
 
 export const Color = Template.bind({})
 Color.args = {

@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { useTheme, Stack } from '@mui/material';
-import BladeFrame from '../../components/SchemaForm/components/BladeFrame';
-import DbRow from './DbRow';
-import useStore from '../../store/useStore';
+import { useTheme, Stack } from '@mui/material'
+import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
+import DbRow from './DbRow'
+import useStore from '../../store/useStore'
 
 const DbConfig = () => {
-  const theme = useTheme();
-  const config = useStore((state) => state.config);
+  const theme = useTheme()
+  const config = useStore((state) => state.config)
 
 
   return (
@@ -31,7 +31,7 @@ const DbConfig = () => {
         )}
       </Stack>
     </BladeFrame>
-  );
-};
+  )
+}
 
-export default DbConfig;
+export default DbConfig
