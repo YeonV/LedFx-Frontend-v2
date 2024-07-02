@@ -48,8 +48,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [selectedGroup, setSelectedGroup] = useState<string>('0-0')
   const [pixels, setPixels] = useState<any>([])  
   const [move, setMove] = useState<boolean>(false)
+  const [dnd, setDnd] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [isDropped, setIsDropped] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [parent, setParent] = useState<string | number | null>(null)
   const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
@@ -120,10 +120,18 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log(parent, event.over?.id || null, event.active?.id || null)
-    if (event.over && event.over.id === 'droppable') {
-      setIsDropped(true)
+    console.log(parent, event)
+    if (event.over && event.over.id) {
+      const updatedM = clone(m)
+      const [xOver, yOver] = (event.over.id as string).split('-').map(Number)
+      if (updatedM[yOver][xOver].deviceId === '') {
+        const [xActive, yActive] = (event.active.id as string).split('-').map(Number)
+        updatedM[yOver][xOver] = updatedM[yActive][xActive]
+        updatedM[yActive][xActive] = { deviceId: '', pixel: 0, group: 0 }
+        setM(updatedM)
+      }
     }
+  
     setParent(event.over ? event.over.id : null)
     setIsDragging(false)
   }
@@ -195,9 +203,9 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   }, [virtual])
 
   return (
-    <MWrapper move={move}>      
-      <MControls rowN={rowN} colN={colN} setRowNumber={setRowNumber} setColNumber={setColNumber} virtual={virtual} m={m} setM={setM} move={move} setMove={setMove} selectedGroup={selectedGroup} setError={setError}/>    
-      <TransformWrapper disabled={move} centerZoomedOut minScale={0.1} initialScale={colN * 100 < window.innerWidth || rowN * 100 < window.innerHeight * 0.8 ? 1 : 0.1}>
+    <MWrapper move={dnd}>      
+      <MControls dnd={dnd} setDnd={setDnd} rowN={rowN} colN={colN} setRowNumber={setRowNumber} setColNumber={setColNumber} virtual={virtual} m={m} setM={setM} move={move} setMove={setMove} selectedGroup={selectedGroup} setError={setError}/>    
+      <TransformWrapper disabled={dnd} centerZoomedOut minScale={0.1} initialScale={colN * 100 < window.innerWidth || rowN * 100 < window.innerHeight * 0.8 ? 1 : 0.1}>
         <TransformComponent>
           <div className={classes.gridCellContainer} style={{ width: colN * 100, height: rowN * 100 }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -207,7 +215,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                 onDragOver={(e) => setHoveringCell((e.over?.id as any)?.split('-').map(Number) || [-1, -1])}
                 onDragStart={(e) => {
                   console.log('zy', e.active?.id, hoveringCell, selectedGroup)
-                  setIsDragging(true)
+                  setIsDragging(true)                  
                 }}
               >
                 {m.map((yzrow, currentRowIndex) => (
@@ -220,7 +228,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                         : pixels && pixels[0] && pixels[0].length
                           ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
                           : '#222'
-                      const op = (move && (yzcolumn?.group === selectedGroup)) ? 1 : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === '' ? 0.1 : yzcolumn.deviceId !== '' ? 1 : 0.3
+                      const op = (move && (yzcolumn?.group === selectedGroup)) ? 1 : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === '' ? 0.3 : yzcolumn.deviceId !== '' ? 1 : 0.3
                       return (
                       <Droppable cell={(hoveringCell[0] > -1 && hoveringCell[1] > -1) ? m[hoveringCell[1]][hoveringCell[0]] : undefined}
                         id={`${currentColIndex}-${currentRowIndex}`} key={`col-${currentColIndex}`} bg={bg} opacity={op} onContextMenu={(e)=>handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)} >
@@ -232,9 +240,10 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                             opacity: op,
                           }}
                         >
-                          {move 
-                            ? !isDropped && m[currentRowIndex][currentColIndex].deviceId !== ''
-                              ? <Draggable id={`${m[currentRowIndex][currentColIndex].group}`}>
+                          {dnd 
+                            ? m[currentRowIndex][currentColIndex].deviceId !== ''
+                              // ? <Draggable id={`${m[currentRowIndex][currentColIndex].group}`}>
+                              ? <Draggable m={m} id={`${currentRowIndex}-${currentColIndex}`}>
                                   <Pixel m={m} currentColIndex={currentColIndex} classes={classes} currentRowIndex={currentRowIndex} move={move} decodedPixels={decodedPixels} colN={colN} pixels={pixels} yzcolumn={yzcolumn} selectedGroup={selectedGroup} error={error} setCurrentCell={setCurrentCell} setCurrentDevice={setCurrentDevice} setSelectedPixel={setSelectedPixel} openContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setAnchorEl(e.currentTarget)} isDragging={isDragging} />
                                 </Draggable>
                               : null
@@ -246,7 +255,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                 ))}
               </DndContext>
             </div>
-            <MContextMenu setSelectedGroup={setSelectedGroup} anchorEl={anchorEl} closeContextMenu={()=>setAnchorEl(null)} currentCell={currentCell} m={m} setOpen={setOpen} setMove={setMove} />
+            <MContextMenu setDnd={setDnd} setSelectedGroup={setSelectedGroup} anchorEl={anchorEl} closeContextMenu={()=>setAnchorEl(null)} currentCell={currentCell} m={m} setOpen={setOpen} setMove={setMove} />
             <AssignPixelDialog open={open} closeClear={closeClear} currentCell={currentCell} m={m} setCurrentDevice={setCurrentDevice} deviceRef={deviceRef} group={group} setGroup={setGroup} direction={direction} handleDirectionChange={handleDirectionChange} selectedPixel={selectedPixel} handleSliderChange={handleSliderChange} clearPixel={clearPixel} setM={setM} currentDevice={currentDevice} pixelGroups={pixelGroups} setPixelGroups={setPixelGroups}  rowN={rowN} colN={colN} />
           </div>
         </TransformComponent>

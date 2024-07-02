@@ -12,6 +12,28 @@ function Draggable({ children, id, ...props }: any) {
       }
     : undefined
 
+  // useDndMonitor({
+  //   onDragStart(event) {
+  //     const x = (event.active.id as string).split('-')[0]
+  //     const y = (event.active.id as string).split('-')[1]
+  //     const cell = m[x][y]
+  //     const cellsOfGroup = m.flat().filter((c: any) => c.group === cell.group)
+
+  //     console.log('onDragStart', cellsOfGroup, event)
+  //   },
+  //   onDragMove(event) {
+  //     console.log('onDragMove', event)
+  //   },
+  //   onDragOver(event) {
+  //     console.log('onDragOver', event)
+  //   },
+  //   onDragEnd(event) {
+  //     console.log('onDragEnd', event)
+  //   },
+  //   onDragCancel(event) {
+  //     console.log('onDragCancel', event)
+  //   }
+  // })
   return (
     <div
       type="button"

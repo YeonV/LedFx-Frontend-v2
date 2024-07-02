@@ -15,7 +15,7 @@ import {
   Alert,
   Box,
   Button,
-  Collapse,
+  // Collapse,
   IconButton,
   Slider,
   Stack,
@@ -35,7 +35,7 @@ import moveSelectedGroupUp from './Actions/moveSelectedGroupUp'
 import moveSelectedGroupLeft from './Actions/moveSelectedGroupLeft'
 import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
-import useStore from '../../../../store/useStore'
+// import useStore from '../../../../store/useStore'
 
 const MControls = ({
   rowN,
@@ -46,7 +46,9 @@ const MControls = ({
   m,
   setM,
   move,
+  dnd,
   setMove,
+  setDnd,
   selectedGroup,
   setError
 }: {
@@ -58,22 +60,27 @@ const MControls = ({
   m: any
   setM: any
   move: boolean
+  dnd: boolean
   setMove: any
+  setDnd: any
   selectedGroup: string
   setError: any
 }) => {
-  const infoAlerts = useStore((state) => state.ui.infoAlerts)
-  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  // const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  // const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const [tab, setTab] = useState('1')
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    if (newValue === '1') setMove(false)
+    if (newValue === '1') setDnd(false)
+    if (newValue === '2') setDnd(true)
     setTab(newValue)
   }
 
   useEffect(() => {
-    if (move) setTab('2')
-  }, [move])
+    if (dnd && tab !== '2') setTab('2')
+    if (!dnd && tab !== '1') setTab('1')
+  }, [dnd])
+
   return (
     <Stack
       minWidth={400}
@@ -82,7 +89,7 @@ const MControls = ({
       style={{ marginBottom: '1rem', marginRight: '1rem' }}
       p={2}
     >
-      {infoAlerts.matrix && (
+      {/* {infoAlerts.matrix && (
         <Collapse in={infoAlerts.matrix}>
           <Alert
             severity="info"
@@ -99,7 +106,7 @@ const MControls = ({
             </ul>
           </Alert>
         </Collapse>
-      )}
+      )} */}
       <Stack
         direction="column"
         justifyContent="flex-start"
@@ -202,114 +209,133 @@ const MControls = ({
           </Stack>
         </Stack>
       </Stack>
+      <Box>
+        <Tab
+          icon={<ControlCamera />}
+          iconPosition="start"
+          label="Move Group"
+          value
+        />
+      </Box>
+      {move ? (
+        <Box>
+          <Stack
+            direction="column"
+            spacing={0}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <IconButton
+              onClick={() =>
+                moveSelectedGroupUp({
+                  m,
+                  rowN,
+                  colN,
+                  selectedGroup,
+                  setError,
+                  setM
+                })
+              }
+            >
+              <ArrowUpward />
+            </IconButton>
+            <Stack direction="row" spacing={0} justifyContent="center">
+              <IconButton
+                onClick={() =>
+                  moveSelectedGroupLeft({
+                    m,
+                    rowN,
+                    colN,
+                    selectedGroup,
+                    setM
+                  })
+                }
+              >
+                <ArrowBack />
+              </IconButton>
+              <IconButton onClick={() => setMove(false)}>
+                <Cancel />
+              </IconButton>
+              <IconButton
+                onClick={() =>
+                  moveSelectedGroupRight({
+                    m,
+                    rowN,
+                    colN,
+                    selectedGroup,
+                    setM
+                  })
+                }
+              >
+                <ArrowForward />
+              </IconButton>
+            </Stack>
+            <IconButton
+              onClick={() =>
+                moveSelectedGroupDown({
+                  m,
+                  rowN,
+                  colN,
+                  selectedGroup,
+                  setError,
+                  setM
+                })
+              }
+            >
+              <ArrowDownward />
+            </IconButton>
+          </Stack>
+        </Box>
+      ) : (
+        <Alert severity="info" sx={{ width: 400, marginBottom: 2 }}>
+          <strong>
+            Right-Click an element to move a group.
+            <br />
+            Groups can only be moved with the UI buttons
+          </strong>
+        </Alert>
+      )}
       <TabContext value={tab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab
               icon={<PanTool />}
               iconPosition="start"
-              label="Drag Canvas"
+              label="Canvas"
               value="1"
             />
             <Tab
               icon={<ControlCamera />}
               iconPosition="start"
-              label="Drag Element"
+              label="DND"
               value="2"
             />
           </TabList>
         </Box>
         <TabPanel value="1">
-          <Alert
-            severity="info"
-            sx={{ width: 400, marginBottom: 2 }}
-            onClose={() => {
-              setInfoAlerts('matrix', false)
-            }}
-          >
-            <strong>Concept Draft</strong>
+          <Alert severity="info" sx={{ width: 340, marginBottom: 2 }}>
+            <strong>Canvas Mode</strong>
             <ul style={{ padding: '0 1rem' }}>
               <li>Use Mousewheel to Zoom</li>
               <li>Use left-click with drag&drop to move around</li>
-              <li>Use right-click to assign, move or clear Pixels</li>
+              <li>Use right-click to:</li>
+              <ul>
+                <li>assign pixel or pixel-group</li>
+                <li>edit a pixel</li>
+                <li>clear a pixel</li>
+                <li>move a pixel-group</li>
+              </ul>
+              <li>Enter DND mode to move pixels individually</li>
             </ul>
           </Alert>
         </TabPanel>
         <TabPanel value="2">
-          {move ? (
-            <Box>
-              <Stack
-                direction="column"
-                spacing={0}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <IconButton
-                  onClick={() =>
-                    moveSelectedGroupUp({
-                      m,
-                      rowN,
-                      colN,
-                      selectedGroup,
-                      setError,
-                      setM
-                    })
-                  }
-                >
-                  <ArrowUpward />
-                </IconButton>
-                <Stack direction="row" spacing={0} justifyContent="center">
-                  <IconButton
-                    onClick={() =>
-                      moveSelectedGroupLeft({
-                        m,
-                        rowN,
-                        colN,
-                        selectedGroup,
-                        setM
-                      })
-                    }
-                  >
-                    <ArrowBack />
-                  </IconButton>
-                  <IconButton onClick={() => setMove(false)}>
-                    <Cancel />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      moveSelectedGroupRight({
-                        m,
-                        rowN,
-                        colN,
-                        selectedGroup,
-                        setM
-                      })
-                    }
-                  >
-                    <ArrowForward />
-                  </IconButton>
-                </Stack>
-                <IconButton
-                  onClick={() =>
-                    moveSelectedGroupDown({
-                      m,
-                      rowN,
-                      colN,
-                      selectedGroup,
-                      setError,
-                      setM
-                    })
-                  }
-                >
-                  <ArrowDownward />
-                </IconButton>
-              </Stack>
-            </Box>
-          ) : (
-            <Alert severity="info" sx={{ width: 400, marginBottom: 2 }}>
-              <strong>Right-Click an element to move</strong>
-            </Alert>
-          )}
+          <Alert severity="info" sx={{ width: 340, marginBottom: 2 }}>
+            <strong>DND Mode</strong>
+            <ul style={{ padding: '0 1rem' }}>
+              <li>move pixels individually with your mouse</li>
+            </ul>
+          </Alert>
         </TabPanel>
       </TabContext>
     </Stack>

@@ -7,7 +7,8 @@ const MContextMenu = ({
   setSelectedGroup,
   setMove,
   currentCell,
-  m
+  m,
+  setDnd
 }: {
   anchorEl: any
   closeContextMenu: any
@@ -16,6 +17,7 @@ const MContextMenu = ({
   setMove: any
   currentCell: [number, number]
   m: any
+  setDnd: any
 }) => {
   const contextMenuOpen = Boolean(anchorEl)
   return (
@@ -42,11 +44,20 @@ const MContextMenu = ({
       <MenuItem
         onClick={() => {
           setSelectedGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
+          setDnd(true)
+          closeContextMenu()
+        }}
+      >
+        Move Pixel in DND
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          setSelectedGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
           setMove(true)
           closeContextMenu()
         }}
       >
-        Move
+        Move Group
       </MenuItem>
       <MenuItem onClick={closeContextMenu}>Clear</MenuItem>
     </Menu>

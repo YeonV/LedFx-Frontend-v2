@@ -180,7 +180,7 @@ export default function EditVirtuals({
             >
               back
             </Button>
-            {features.matrix && (
+            {features.matrix && virtual.config.rows > 1 && (
               <ToggleButtonGroup
                 value={matrix}
                 style={{ marginRight: '1rem' }}
