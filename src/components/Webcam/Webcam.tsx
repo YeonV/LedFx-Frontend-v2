@@ -146,7 +146,20 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         setIsCalibrating(false)
       })
     }
-  }, [isCalibrating])
+  }, [
+    isCalibrating,
+    wledIp,
+    ignoreTop,
+    ignoreLeft,
+    ignoreBottom,
+    ignoreRight,
+    wledDeviceId,
+    colN,
+    rowN,
+    setPoints,
+    addPoint,
+    setIsCalibrating
+  ])
 
   return (
     <Stack

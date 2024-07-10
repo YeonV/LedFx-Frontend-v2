@@ -191,7 +191,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     } else if (typeof selectedPixel !== 'number') {
       setSelectedPixel(selectedPixel[0])
     }
-  }, [group])
+  }, [group, selectedPixel])
 
   /**
    * Set the matrix when the row or column numbers change
@@ -242,6 +242,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         })
       }
     }
+    // eslint-disable-next-line
   }, [])
 
   /**
@@ -277,6 +278,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         setM(updatedM)
       }
     }
+    // eslint-disable-next-line
   }, [points])
 
   return (

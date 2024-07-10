@@ -84,6 +84,8 @@ const MControls = ({
   useEffect(() => {
     if (dnd && tab !== '2') setTab('2')
     if (!dnd && tab !== '1') setTab('1')
+
+    // eslint-disable-next-line
   }, [dnd])
 
   return (
