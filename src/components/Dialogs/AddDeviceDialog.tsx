@@ -1,8 +1,5 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
- 
- 
-/* eslint-disable no-unused-expressions */
+
 import { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import {
@@ -14,7 +11,7 @@ import {
   Select,
   MenuItem,
   Button,
-  Divider,
+  Divider
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
@@ -25,11 +22,7 @@ const classes = {
   wrapper: `${PREFIX}-wrapper`
 }
 
-const StyledDialog = styled(Dialog)((
-  {
-    theme
-  }
-) => ({
+const StyledDialog = styled(Dialog)(({ theme }) => ({
   [`& .${classes.wrapper}`]: {
     minWidth: '200px',
     padding: '16px 1.2rem 6px 1.2rem',
@@ -41,7 +34,7 @@ const StyledDialog = styled(Dialog)((
     alignItems: 'center',
     '@media (max-width: 580px)': {
       width: '100%',
-      margin: '0.5rem 0',
+      margin: '0.5rem 0'
     },
     '& > label': {
       top: '-0.7rem',
@@ -54,14 +47,12 @@ const StyledDialog = styled(Dialog)((
       fontSize: '0.9rem',
       letterSpacing: '0.1rem',
       backgroundColor: theme.palette.background.paper,
-      boxSizing: 'border-box',
-    },
+      boxSizing: 'border-box'
+    }
   }
 }))
 
 const AddDeviceDialog = () => {
-
-
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const addDevice = useStore((state) => state.addDevice)
@@ -93,9 +84,9 @@ const AddDeviceDialog = () => {
     const defaultModel = {} as any
 
     for (const key in currentSchema.properties) {
-      currentSchema.properties[key].default !== undefined
-        ? (defaultModel[key] = currentSchema.properties[key].default)
-        : undefined
+      if (currentSchema.properties[key].default !== undefined) {
+        defaultModel[key] = currentSchema.properties[key].default
+      }
     }
 
     const valid = currentSchema.required.every((val: string) =>
@@ -111,17 +102,20 @@ const AddDeviceDialog = () => {
     ) {
       addDevice({
         type: deviceType,
-        config: { ...defaultModel, ...cleanedModel },
+        config: { ...defaultModel, ...cleanedModel }
       }).then((res: any) => {
         if (res !== 'failed') {
           if (deviceType === 'wled') {
-            const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
-            const newDevices = [] as { name: string, ip_address: string}[]
-            res.nodes && res.nodes.forEach((node: any) => {
-              if (node.ip && !deviceIps.includes(node.ip)) {
-                newDevices.push({ name: node.name, ip_address: node.ip})
-              }
-            })
+            const deviceIps = Object.values(devices).map(
+              (device: any) => device.config.ip_address
+            )
+            const newDevices = [] as { name: string; ip_address: string }[]
+            res.nodes &&
+              res.nodes.forEach((node: any) => {
+                if (node.ip && !deviceIps.includes(node.ip)) {
+                  newDevices.push({ name: node.name, ip_address: node.ip })
+                }
+              })
             if (newDevices.length > 0) {
               setAddWled(newDevices)
             }
@@ -151,12 +145,13 @@ const AddDeviceDialog = () => {
   }
 
   function filterObject(obj: any, callback: any) {
-    return Object.fromEntries(Object.entries(obj).
-      filter(([key, val]) => callback(key, val)))
+    return Object.fromEntries(
+      Object.entries(obj).filter(([key, val]) => callback(key, val))
+    )
   }
   useEffect(() => {
     handleTypeChange(initial.type, initial.config)
-  }, [initial.type])
+  }, [initial.type, initial.config])
 
   return (
     <StyledDialog
@@ -203,18 +198,36 @@ const AddDeviceDialog = () => {
         {model && (
           <SchemaForm
             type={deviceType}
-            schema={initial.config &&
+            schema={
+              initial.config &&
               Object.keys(initial.config).length === 0 &&
               initial.config?.constructor === Object
                 ? currentSchema
-                : { ...currentSchema, properties: currentSchema.properties && Object.keys(currentSchema.properties).filter(p => p !== 'icon_name' && p !== 'name')
-                  .reduce((cur, key) => Object.assign(cur, { [key]: currentSchema.properties[key] }), {})
-                }}
-            model={initial.config &&
+                : {
+                    ...currentSchema,
+                    properties:
+                      currentSchema.properties &&
+                      Object.keys(currentSchema.properties)
+                        .filter((p) => p !== 'icon_name' && p !== 'name')
+                        .reduce(
+                          (cur, key) =>
+                            Object.assign(cur, {
+                              [key]: currentSchema.properties[key]
+                            }),
+                          {}
+                        )
+                  }
+            }
+            model={
+              initial.config &&
               Object.keys(initial.config).length === 0 &&
               initial.config?.constructor === Object
                 ? model
-                : filterObject(model, (p:string,_v: any) => p !== 'icon_name' && p !== 'name')}
+                : filterObject(
+                    model,
+                    (p: string, _v: any) => p !== 'icon_name' && p !== 'name'
+                  )
+            }
             onModelChange={handleModelChange}
             hideToggle={!deviceType}
           />

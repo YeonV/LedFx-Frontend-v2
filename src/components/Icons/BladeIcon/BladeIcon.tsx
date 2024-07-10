@@ -97,7 +97,7 @@ function BladeIcon({
       ) : name.startsWith('yz:logo2') ? (
         <YZLogo2
           style={{
-            // eslint-disable-next-line prettier/prettier
+            // eslint-disable-next-line
             transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
             marginTop: '3px'
           }}

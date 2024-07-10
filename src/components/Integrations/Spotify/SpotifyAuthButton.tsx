@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
- 
- 
 import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 // import axios from 'axios'
@@ -17,8 +14,10 @@ import {
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
 // import { log } from '../../../utils/helpers'
 
- 
-const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888'
+const baseURL = isElectron()
+  ? 'http://localhost:8888'
+  : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
+    'http://localhost:8888'
 // const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
 const storedURL = window.localStorage.getItem('ledfx-host')
 const redirectUrl = `${
@@ -110,7 +109,6 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       try {
         finishAuth()
       } catch (err) {
-         
         console.warn(err)
       }
     }

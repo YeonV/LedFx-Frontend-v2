@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import useStore from '../../../store/useStore'
 import DeviceCard from './DeviceCard'
@@ -92,11 +91,15 @@ const DeviceCardWrapper = ({
         devices[Object.keys(devices).find((d) => d === virtual) || '']
           ?.active_virtuals!.length > 0
     )
-  }, [virtuals, devices])
+  }, [virtuals, devices, virtual])
 
   const order = () => {
     if (showActiveDevicesFirst) {
-      if (virtuals[virtual]?.config.rows > 1 && !virtuals[virtual]?.effect.name && showMatrix) {
+      if (
+        virtuals[virtual]?.config.rows > 1 &&
+        !virtuals[virtual]?.effect.name &&
+        showMatrix
+      ) {
         return -1
       }
       if (virtuals[virtual]?.config.rows > 1 && showMatrix) {
@@ -117,7 +120,7 @@ const DeviceCardWrapper = ({
     }
     return 'unset'
   }
-  
+
   return virtual && virtuals[virtual] ? (
     <DeviceCard
       deviceName={
@@ -158,7 +161,8 @@ const DeviceCardWrapper = ({
         virtuals[virtual]?.config.preview_only
       }
       dummy={
-        devices[Object.keys(devices).find((d) => d === virtual) || '']?.type === 'dummy'
+        devices[Object.keys(devices).find((d) => d === virtual) || '']?.type ===
+        'dummy'
       }
       isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
       additionalStyle={{

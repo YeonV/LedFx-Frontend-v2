@@ -1,19 +1,17 @@
-/* eslint-disable prettier/prettier */
- 
-import * as React from 'react'
 import {
   DataGrid,
   GridColDef,
   GridValueGetter,
-  GridRowParams,
+  GridRowParams
 } from '@mui/x-data-grid'
 
-import { Card, Grid, IconButton , Stack, useTheme } from '@mui/material'
+import { Card, Grid, IconButton, Stack, useTheme } from '@mui/material'
 import { PlayCircleFilled } from '@mui/icons-material'
 import useStore from '../../../../../store/useStore'
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'
 import { classes } from './SpTriggerTable'
 import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider'
+import { useContext, useEffect } from 'react'
 
 // function isScrolledIntoView(el: any) {
 //   const rect = el.getBoundingClientRect();
@@ -30,8 +28,8 @@ import { SpStateContext, SpotifyStateContext } from '../../SpotifyProvider'
 export default function SpPlaylist() {
   const theme = useTheme()
   const playlist = useStore((state) => state.spotify.playlist)
-  const playerState = React.useContext(SpotifyStateContext)
-  const spCtx = React.useContext(SpStateContext)
+  const playerState = useContext(SpotifyStateContext)
+  const spCtx = useContext(SpStateContext)
   const playlistUri = playerState?.context?.metadata?.uri
   const spotifyDevice = useStore((state) => state.spotify.spotifyDevice)
   const premium = !!playerState?.track_window?.current_track?.album?.name
@@ -69,7 +67,7 @@ export default function SpPlaylist() {
             <PlayCircleFilled fontSize="inherit" />
           </IconButton>
         </Stack>
-      ),
+      )
     },
     {
       field: 'songName',
@@ -81,15 +79,15 @@ export default function SpPlaylist() {
       valueGetter: ((value, row) =>
         `${row?.track?.artists?.[0]?.name || ''} - ${
           row?.track?.name || ''
-        }`) as GridValueGetter,
-    },
+        }`) as GridValueGetter
+    }
   ]
   const rows = playlist.map((item: any, index: number) => ({
     ...item,
-    id: index,
+    id: index
   })) || [{ id: 1 }]
 
-  React.useEffect(() => {
+  useEffect(() => {
     const playing = document.querySelector(
       '.MuiDataGrid-root.playlist .MuiDataGrid-row.currently_playing'
     )
@@ -112,7 +110,7 @@ export default function SpPlaylist() {
           // showColumnRightBorder={false}
           columnVisibilityModel={{
             id: !premium,
-            actions: premium,
+            actions: premium
           }}
           onRowDoubleClick={(params: any) => {
             spotifyPlaySong(
@@ -128,26 +126,27 @@ export default function SpPlaylist() {
             border: 1,
             borderColor: '#666',
             '& .MuiDataGrid-columnHeaders': {
-              borderBottom: 0,
+              borderBottom: 0
             },
 
             '& .currently_playing': {
               backgroundColor: `${theme.palette.primary.main}20`,
               color: theme.palette.text.primary
-            },
+            }
           }}
           // pageSize={rows.length}
           // rowsPerPageOptions={[rows.length]}
-          getRowClassName={(params: GridRowParams<any>) =>{
-            return ((params.row.track?.name ===
-            playerState?.context.metadata?.current_item?.name) && (
+          getRowClassName={(params: GridRowParams<any>) => {
+            return (params.row.track?.name ===
+              playerState?.context.metadata?.current_item?.name &&
               params.row.track.artists?.[0].uri ===
-              playerState?.context.metadata?.current_item.artists?.[0].uri
-            ) || (params.row.track?.name ===
-              spCtx?.item?.name && params.row.track.artists?.[0]?.name === spCtx?.item?.artists?.[0]?.name) )
+                playerState?.context.metadata?.current_item.artists?.[0].uri) ||
+              (params.row.track?.name === spCtx?.item?.name &&
+                params.row.track.artists?.[0]?.name ===
+                  spCtx?.item?.artists?.[0]?.name)
               ? 'currently_playing'
-              : ''}
-          }
+              : ''
+          }}
         />
       </Card>
     </Grid>

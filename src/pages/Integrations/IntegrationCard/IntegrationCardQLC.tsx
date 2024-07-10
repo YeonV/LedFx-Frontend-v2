@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
@@ -66,12 +64,12 @@ const IntegrationCardQLC = ({ integration }: any) => {
           integrations[integration].status === 3
             ? 'Connecting...'
             : integrations[integration].status === 2
-            ? 'Disconnecting'
-            : integrations[integration].status === 1
-            ? 'Connected'
-            : integrations[integration].status === 0
-            ? 'Disconnected'
-            : 'Unknown'
+              ? 'Disconnecting'
+              : integrations[integration].status === 1
+                ? 'Connected'
+                : integrations[integration].status === 0
+                  ? 'Disconnected'
+                  : 'Unknown'
         }`}
         action={
           <Switch

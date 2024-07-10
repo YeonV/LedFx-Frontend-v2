@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-expressions */
 import { SportsEsports, SportsEsportsOutlined } from '@mui/icons-material'
 import {
   Alert,
@@ -107,16 +104,17 @@ const Gamepad = ({ setScene, bottom }: any) => {
         (k: any) => g[k]?.buttons[8].pressed && g[k]?.buttons[9].pressed
       )
     ) {
-       
       alert('DevMode activated!')
       setFeatures('dev', true)
     } else if (
       Object.keys(g).some(
-        (k: any) => g[k]?.buttons
-          .map(
-            (b: any, i: number) => b.pressed && mapping[g[k].index][i]?.command === 'scene'
-          )
-          .filter((bu: any) => !!bu).length === 2
+        (k: any) =>
+          g[k]?.buttons
+            .map(
+              (b: any, i: number) =>
+                b.pressed && mapping[g[k].index][i]?.command === 'scene'
+            )
+            .filter((bu: any) => !!bu).length === 2
       )
     ) {
       setBlocked(true)
@@ -127,15 +125,18 @@ const Gamepad = ({ setScene, bottom }: any) => {
   useEffect(() => {
     if (!blocked) {
       const m = [pad0, pad1, pad2, pad3]
-      m.map((pad: any) => pad?.buttons.map((b: any, i: number) => {
-          const test = b.pressed
-          b.value === 1 && mapping[pad.index][i]
-          mapping[pad.index][i].command
-          mapping[pad.index][i].command !== 'none'
+      m.map((pad: any) =>
+        pad?.buttons.map((b: any, i: number) => {
+          const test =
+            b.pressed &&
+            b.value === 1 &&
+            mapping[pad.index][i] &&
+            mapping[pad.index][i].command &&
+            mapping[pad.index][i].command !== 'none'
           if (test) {
             if (
-              mapping[pad.index][i].command === 'scene'
-              && mapping[pad.index][i].payload?.scene
+              mapping[pad.index][i].command === 'scene' &&
+              mapping[pad.index][i].payload?.scene
             ) {
               setScene(mapping[pad.index][i].payload.scene)
             } else if (mapping[pad.index][i].command === 'padscreen') {
@@ -214,7 +215,8 @@ const Gamepad = ({ setScene, bottom }: any) => {
             )
           }
           return null
-        }))
+        })
+      )
     }
   }, [pad0, pad1, pad2, pad3])
 
@@ -237,9 +239,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
         }}
       >
         <DialogTitle display="flex" alignItems="center">
-          <SportsEsports sx={{ mr: 2 }} />
-          {' '}
-          Gamepad detected
+          <SportsEsports sx={{ mr: 2 }} /> Gamepad detected
         </DialogTitle>
         <DialogContent>
           <Collapse in={infoAlerts.gamepad} unmountOnExit sx={{ mb: 2 }}>
@@ -319,10 +319,12 @@ const Gamepad = ({ setScene, bottom }: any) => {
                           />
                           <MuiSwitch
                             checked={analogBrightness[inde as 0 | 1 | 2 | 3]}
-                            onChange={() => setAnalogBrightness({
-                              ...analogBrightness,
-                              [inde]: !analogBrightness[inde as 0 | 1 | 2 | 3]
-                            })}
+                            onChange={() =>
+                              setAnalogBrightness({
+                                ...analogBrightness,
+                                [inde]: !analogBrightness[inde as 0 | 1 | 2 | 3]
+                              })
+                            }
                           />
                         </Stack>
                       ))}

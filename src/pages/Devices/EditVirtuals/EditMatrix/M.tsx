@@ -242,7 +242,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         })
       }
     }
-    // eslint-disable-next-line
   }, [])
 
   /**
@@ -278,7 +277,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         setM(updatedM)
       }
     }
-    // eslint-disable-next-line
   }, [points])
 
   return (

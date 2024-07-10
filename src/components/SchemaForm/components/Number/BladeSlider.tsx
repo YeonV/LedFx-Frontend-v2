@@ -1,11 +1,14 @@
-/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
-import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material'
-import useStyles from './BladeSlider.styles'
 import {
-  BladeSliderInnerProps,
-  BladeSliderProps,
-} from './BladeSlider.props'
+  Slider,
+  Input,
+  TextField,
+  Typography,
+  useTheme,
+  Box
+} from '@mui/material'
+import useStyles from './BladeSlider.styles'
+import { BladeSliderInnerProps, BladeSliderProps } from './BladeSlider.props'
 
 const BladeSliderInner = ({
   schema = undefined,
@@ -22,8 +25,14 @@ const BladeSliderInner = ({
 }: BladeSliderInnerProps) => {
   const classes = useStyles()
   const theme = useTheme()
-   
-  const [value, setValue] = useState((model_id && typeof model[model_id]) === 'number' ? model_id && model[model_id] : typeof schema.default === 'number' ? schema.default : 1 )
+
+  const [value, setValue] = useState(
+    (model_id && typeof model[model_id]) === 'number'
+      ? model_id && model[model_id]
+      : typeof schema.default === 'number'
+        ? schema.default
+        : 1
+  )
   const handleSliderChange = (_event: any, newValue: any) => {
     if (newValue !== value) {
       setValue(newValue)
@@ -58,9 +67,14 @@ const BladeSliderInner = ({
   }
 
   useEffect(() => {
-     
-    setValue(model_id && typeof model[model_id] === 'number' ? model[model_id] : typeof schema.default === 'number' ? schema.default : 1)
-  }, [model, model_id])
+    setValue(
+      model_id && typeof model[model_id] === 'number'
+        ? model[model_id]
+        : typeof schema.default === 'number'
+          ? schema.default
+          : 1
+    )
+  }, [model, model_id, schema.default])
 
   return schema.maximum && !textfield ? (
     <>
@@ -94,13 +108,8 @@ const BladeSliderInner = ({
         disabled={disabled}
         className={classes.input}
         style={
-          model_id === 'delay_ms'
-            ? {
-              minWidth: 90,
-              textAlign: 'right',
-              paddingTop: 0,
-              backgroundColor: theme.palette.divider,
-            }
+          model_id === 'delay_ms' // eslint-disable-next-line
+            ? { minWidth: 90, textAlign: 'right', paddingTop: 0, backgroundColor: theme.palette.divider }
             : { backgroundColor: theme.palette.divider }
         }
         value={value}
@@ -113,7 +122,7 @@ const BladeSliderInner = ({
           min: schema.minimum || 0,
           max: schema.maximum,
           type: 'number',
-          'aria-labelledby': 'input-slider',
+          'aria-labelledby': 'input-slider'
         }}
       />
     </>
@@ -124,7 +133,7 @@ const BladeSliderInner = ({
       disabled={disabled}
       marks={marks.map((m: any, i: number) => ({
         value: m,
-        label: i === 0 || i === marks.length - 1 ? m : '',
+        label: i === 0 || i === marks.length - 1 ? m : ''
       }))}
       step={null}
       min={marks[0]}
@@ -139,17 +148,20 @@ const BladeSliderInner = ({
       disabled={disabled}
       InputProps={{
         // disableUnderline,
-        endAdornment: model_id === 'delay_ms' ? 'ms' : null,
+        endAdornment: model_id === 'delay_ms' ? 'ms' : null
       }}
       type="number"
       value={value}
       onChange={handleTextChange}
       helperText={!hideDesc && schema.description}
-      style={{ ...style, width: '100%', backgroundColor: theme.palette.background.paper }}
+      style={{
+        ...style,
+        width: '100%',
+        backgroundColor: theme.palette.background.paper
+      }}
     />
   )
 }
-
 
 /**
  * ## Number
@@ -188,18 +200,18 @@ const BladeSlider = ({
         borderColor: theme.palette.divider,
         width: full ? '100%' : style.width,
         '& > label': {
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: theme.palette.background.paper
         },
         '& .MuiSliderValueLabel > span': {
-          backgroundColor: theme.palette.background.paper,
-        },
+          backgroundColor: theme.palette.background.paper
+        }
       }}
     >
       <label
         style={{
           color: disabled
             ? theme.palette.text.disabled
-            : theme.palette.text.primary,
+            : theme.palette.text.primary
         }}
         className="MuiFormLabel-root"
       >
@@ -234,6 +246,5 @@ const BladeSlider = ({
     />
   )
 }
-
 
 export default BladeSlider

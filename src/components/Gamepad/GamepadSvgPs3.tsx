@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useTheme } from '@mui/material'
 
 import Color from 'color'
@@ -49,7 +48,13 @@ const GamepadSvgPs3 = ({
           />
           <path
             id="D-Down"
-            fill={type === 'ps3' ? (pad.buttons[13].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[13].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             stroke={
               pad.buttons[13].pressed ? theme.palette.primary.main : stroke
             }
@@ -58,7 +63,13 @@ const GamepadSvgPs3 = ({
           />
           <path
             id="D-Up"
-            fill={type === 'ps3' ? (pad.buttons[12].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[12].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             stroke={
               pad.buttons[12].pressed ? theme.palette.primary.main : stroke
             }
@@ -67,7 +78,13 @@ const GamepadSvgPs3 = ({
           />
           <path
             id="D-Left"
-            fill={type === 'ps3' ? (pad.buttons[14].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[14].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             stroke={
               pad.buttons[14].pressed ? theme.palette.primary.main : stroke
             }
@@ -76,7 +93,13 @@ const GamepadSvgPs3 = ({
           />
           <path
             id="D-Right"
-            fill={type === 'ps3' ? (pad.buttons[15].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[15].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             stroke={
               pad.buttons[15].pressed ? theme.palette.primary.main : stroke
             }
@@ -85,21 +108,31 @@ const GamepadSvgPs3 = ({
           />
           <circle
             id="BTN-Triangle"
-            fill={type === 'ps3' ? (pad.buttons[3].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[3].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             cx="465.824"
             cy="194.529"
             r="19"
             stroke={
               pad.buttons[3].pressed ? theme.palette.primary.main : stroke
             }
-            strokeWidth={type === 'ps3' ? 0 :strokeWidth2}
+            strokeWidth={type === 'ps3' ? 0 : strokeWidth2}
           />
-
-
 
           <polygon
             points="465.824,185.529 455.824,204.529 475.824,204.529"
-            fill={type === 'ps3' ? (pad.buttons[3].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[3].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             stroke={cover}
             strokeWidth={strokeWidth2}
           />
@@ -116,65 +149,103 @@ const GamepadSvgPs3 = ({
           />
           <circle
             id="Inner-Circle"
-            fill={type === 'ps3' ? (pad.buttons[1].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[1].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             cx="512.446"
             cy="241.152"
             r="13"
             stroke={cover}
-            strokeWidth={strokeWidth/2}
+            strokeWidth={strokeWidth / 2}
           />
           <circle
             id="BTN-X"
             cx="465.824"
             cy="287.774"
             r="19"
-            fill={type === 'ps3' ? (pad.buttons[0].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[0].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             strokeWidth={strokeWidth2}
             stroke={
-              type === 'ps3' ? 'transparent' : pad.buttons[0].pressed ? theme.palette.primary.main : stroke
+              type === 'ps3'
+                ? 'transparent'
+                : pad.buttons[0].pressed
+                  ? theme.palette.primary.main
+                  : stroke
             }
           />
-          {type === 'ps3' && <><line
-            x1="455.824"
-            y1="277.774"
-            x2="475.824"
-            y2="297.774"
-            stroke={cover}
-            strokeWidth={strokeWidth2}
-          />
-          <line
-            x1="475.824"
-            y1="277.774"
-            x2="455.824"
-            y2="297.774"
-            stroke={cover}
-            strokeWidth={strokeWidth2}
-          /></>}
+          {type === 'ps3' && (
+            <>
+              <line
+                x1="455.824"
+                y1="277.774"
+                x2="475.824"
+                y2="297.774"
+                stroke={cover}
+                strokeWidth={strokeWidth2}
+              />
+              <line
+                x1="475.824"
+                y1="277.774"
+                x2="455.824"
+                y2="297.774"
+                stroke={cover}
+                strokeWidth={strokeWidth2}
+              />
+            </>
+          )}
           <circle
             id="BTN-Square"
-            fill={type === 'ps3' ? (pad.buttons[2].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[2].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             cx="419.202"
             cy="241.152"
             r="19"
             stroke={
-              type === 'ps3' ? 'transparent' : pad.buttons[2].pressed ? theme.palette.primary.main : stroke
+              type === 'ps3'
+                ? 'transparent'
+                : pad.buttons[2].pressed
+                  ? theme.palette.primary.main
+                  : stroke
             }
             strokeWidth={strokeWidth2}
           />
-          {type === 'ps3' && <rect
-            x="409.202"
-            y="231.152"
-            width="20"
-            height="20"
-            stroke={cover}
-            fill={
-              pad.buttons[2].pressed ? theme.palette.primary.main : stroke
-            }
-            strokeWidth={strokeWidth2}
-          />}
+          {type === 'ps3' && (
+            <rect
+              x="409.202"
+              y="231.152"
+              width="20"
+              height="20"
+              stroke={cover}
+              fill={
+                pad.buttons[2].pressed ? theme.palette.primary.main : stroke
+              }
+              strokeWidth={strokeWidth2}
+            />
+          )}
           <polygon
             id="BTN-Start"
-            fill={type === 'ps3' ? (pad.buttons[9].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[9].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             points="333.062,246.586 349.171,241.751 333.062,237.381"
             stroke={
               pad.buttons[9].pressed ? theme.palette.primary.main : stroke
@@ -183,13 +254,23 @@ const GamepadSvgPs3 = ({
           />
           <rect
             id="L1"
-            fill={type === 'ps3' ? (pad.buttons[4].pressed ? theme.palette.primary.main : stroke2) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[4].pressed
+                  ? theme.palette.primary.main
+                  : stroke2
+                : 'transparent'
+            }
             x="85"
             y="142"
             width="65"
             height="18"
             stroke={
-              type === 'ps3' ? 'transparent' : pad.buttons[4].pressed ? theme.palette.primary.main : stroke
+              type === 'ps3'
+                ? 'transparent'
+                : pad.buttons[4].pressed
+                  ? theme.palette.primary.main
+                  : stroke
             }
             strokeWidth="2"
             rx="10"
@@ -197,13 +278,23 @@ const GamepadSvgPs3 = ({
           />
           <rect
             id="L2"
-            fill={type === 'ps3' ? (pad.buttons[6].pressed ? theme.palette.primary.main : stroke2) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[6].pressed
+                  ? theme.palette.primary.main
+                  : stroke2
+                : 'transparent'
+            }
             x="90"
             y="120"
             width="55"
             height="13"
             stroke={
-              type === 'ps3' ? 'transparent' : pad.buttons[6].pressed ? theme.palette.primary.main : stroke
+              type === 'ps3'
+                ? 'transparent'
+                : pad.buttons[6].pressed
+                  ? theme.palette.primary.main
+                  : stroke
             }
             strokeWidth="2"
             rx="10"
@@ -211,13 +302,23 @@ const GamepadSvgPs3 = ({
           />
           <rect
             id="R1"
-            fill={type === 'ps3' ? (pad.buttons[5].pressed ? theme.palette.primary.main : stroke2) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[5].pressed
+                  ? theme.palette.primary.main
+                  : stroke2
+                : 'transparent'
+            }
             x="433"
             y="142"
             width="65"
             height="18"
             stroke={
-              type === 'ps3' ? 'transparent' : pad.buttons[5].pressed ? theme.palette.primary.main : stroke
+              type === 'ps3'
+                ? 'transparent'
+                : pad.buttons[5].pressed
+                  ? theme.palette.primary.main
+                  : stroke
             }
             strokeWidth="2"
             rx="10"
@@ -225,13 +326,23 @@ const GamepadSvgPs3 = ({
           />
           <rect
             id="R2"
-            fill={type === 'ps3' ? (pad.buttons[7].pressed ? theme.palette.primary.main : stroke2) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[7].pressed
+                  ? theme.palette.primary.main
+                  : stroke2
+                : 'transparent'
+            }
             x="437"
             y="120"
             width="55"
             height="13"
             stroke={
-              type === 'ps3' ? 'transparent' : pad.buttons[7].pressed ? theme.palette.primary.main : stroke
+              type === 'ps3'
+                ? 'transparent'
+                : pad.buttons[7].pressed
+                  ? theme.palette.primary.main
+                  : stroke
             }
             strokeWidth="2"
             rx="10"
@@ -240,7 +351,13 @@ const GamepadSvgPs3 = ({
 
           <rect
             id="BTN-Select"
-            fill={type === 'ps3' ? (pad.buttons[8].pressed ? theme.palette.primary.main : stroke) : 'transparent'}
+            fill={
+              type === 'ps3'
+                ? pad.buttons[8].pressed
+                  ? theme.palette.primary.main
+                  : stroke
+                : 'transparent'
+            }
             x="226.5"
             y="239"
             width="21"
@@ -253,12 +370,13 @@ const GamepadSvgPs3 = ({
           <circle
             id="Stick-L"
             fill={
-              Math.abs(pad.axes[0]) > 0.05 ||
-              Math.abs(pad.axes[1]) > 0.05
-                ? `${Color(theme.palette.primary.main).alpha(
-                  Math.abs(pad.axes[0]) + Math.abs(pad.axes[1])
-                )}`
-                : type === 'ps3' ? (pad.buttons[10].pressed ? theme.palette.primary.main : stroke) : 'transparent'
+              Math.abs(pad.axes[0]) > 0.05 || Math.abs(pad.axes[1]) > 0.05
+                ? `${Color(theme.palette.primary.main).alpha(Math.abs(pad.axes[0]) + Math.abs(pad.axes[1]))}`
+                : type === 'ps3'
+                  ? pad.buttons[10].pressed
+                    ? theme.palette.primary.main
+                    : stroke
+                  : 'transparent'
             }
             cx={200 + pad.axes[0] * 20}
             cy={324 + pad.axes[1] * 20}
@@ -271,12 +389,13 @@ const GamepadSvgPs3 = ({
           <circle
             id="Stick-R"
             fill={
-              Math.abs(pad.axes[2]) > 0.05 ||
-              Math.abs(pad.axes[3]) > 0.05
-                ? `${Color(theme.palette.primary.main).alpha(
-                  Math.abs(pad.axes[2]) + Math.abs(pad.axes[3])
-                )}`
-                : type === 'ps3' ? (pad.buttons[11].pressed ? theme.palette.primary.main : stroke) : 'transparent'
+              Math.abs(pad.axes[2]) > 0.05 || Math.abs(pad.axes[3]) > 0.05
+                ? `${Color(theme.palette.primary.main).alpha(Math.abs(pad.axes[2]) + Math.abs(pad.axes[3]))}`
+                : type === 'ps3'
+                  ? pad.buttons[11].pressed
+                    ? theme.palette.primary.main
+                    : stroke
+                  : 'transparent'
             }
             cx={381 + pad.axes[2] * 20}
             cy={324 + pad.axes[3] * 20}
@@ -308,14 +427,16 @@ const GamepadSvgPs3 = ({
             stroke={cover}
             strokeWidth={strokeWidth2}
           />
-          {type !== 'ps3' && <rect
-            id="SONY-COVER"
-            fill={cover}
-            x="235"
-            y="185"
-            width="115"
-            height="25"
-          />}
+          {type !== 'ps3' && (
+            <rect
+              id="SONY-COVER"
+              fill={cover}
+              x="235"
+              y="185"
+              width="115"
+              height="25"
+            />
+          )}
           <circle
             id="BTN-PS-RING"
             fill="transparent"

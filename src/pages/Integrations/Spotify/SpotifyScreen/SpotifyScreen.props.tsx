@@ -8,7 +8,7 @@ export interface SpotifyScreenProps {
   label?: string
   type?: string
   className: string
-  // eslint-disable-next-line prettier/prettier
+  // eslint-disable-next-line
   color: 'primary' | 'inherit' | 'error' | 'success' | 'warning' | 'info' | 'secondary' | undefined;
   variant: 'outlined' | 'text' | 'contained' | undefined
   innerKey?: string

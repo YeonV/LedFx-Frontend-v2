@@ -111,7 +111,6 @@ export default function EditVirtuals({
     if (currentVirtual && type === 'hidden') {
       setOpen(true)
     }
-    // eslint-disable-next-line
   }, [currentVirtual])
 
   useEffect(() => {
@@ -120,7 +119,6 @@ export default function EditVirtuals({
     return () => {
       if (virtual?.id && open) calibrationMode(virtual?.id, 'off')
     }
-    // eslint-disable-next-line
   }, [virtual?.id, open])
 
   // useEffect(() => {
