@@ -57,6 +57,7 @@ export default [
           argsIgnorePattern: '^_'
         }
       ],
+      'react-hooks/rules-of-hooks': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
