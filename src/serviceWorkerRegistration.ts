@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -14,8 +11,8 @@
 // opt-in, read https://cra.link/PWA
 
 type Config = {
-  onSuccess?: (registration: ServiceWorkerRegistration) => void
-  onUpdate?: (registration: ServiceWorkerRegistration) => void
+  onSuccess?: (_registration: ServiceWorkerRegistration) => void
+  onUpdate?: (_registration: ServiceWorkerRegistration) => void
 }
 
 const isLocalhost = Boolean(

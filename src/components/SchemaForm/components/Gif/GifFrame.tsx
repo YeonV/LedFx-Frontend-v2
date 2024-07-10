@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import type { FC } from 'react'
 import { useTheme } from '@mui/material'
 
@@ -10,9 +8,9 @@ interface GifFrameProps {
 }
 
 const GifFrame: FC<GifFrameProps> = ({
-  onClick,
   image,
-  selected
+  onClick = undefined,
+  selected = undefined
 }: GifFrameProps) => {
   const theme = useTheme()
 
@@ -35,11 +33,6 @@ const GifFrame: FC<GifFrameProps> = ({
       onClick={onClick}
     />
   )
-}
-
-GifFrame.defaultProps = {
-  onClick: undefined,
-  selected: undefined
 }
 
 export default GifFrame

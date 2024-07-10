@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import { create } from 'zustand'
 import { devtools, combine, persist } from 'zustand/middleware'
 
@@ -26,6 +25,7 @@ import storeSpotifyActions from './ui/storeSpotifyActions'
 import storeQLCActions from './ui/storeQLCActions'
 import storeNotifications from './ui/storeNotifications'
 import storePad from './ui/storePad'
+import storeVideo from './ui/storeVideo'
 
 const useStore = create(
   devtools(
@@ -40,6 +40,7 @@ const useStore = create(
           qlc: storeQLC(),
           user: storeUser(set),
           ...storePad(set),
+          ...storeVideo(set),
           ...storeNotifications(set),
           ...storeTours(set),
           ...storeSpotifyActions(set),

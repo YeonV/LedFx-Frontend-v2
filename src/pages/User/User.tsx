@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-self-assign */
-/* eslint-disable no-alert */
+
 import {
   Badge,
   Box,

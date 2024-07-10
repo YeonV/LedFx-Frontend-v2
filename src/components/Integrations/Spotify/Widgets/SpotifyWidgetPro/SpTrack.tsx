@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useContext, useEffect } from 'react'

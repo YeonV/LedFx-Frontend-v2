@@ -10,6 +10,14 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
 
   const [range, setRange] = useState([s[1], s[2]])
 
+  const handleChange = (_event: any, newValue: any) => {
+    if (newValue !== pixelRange) {
+      handleRangeSegment(newValue[0], newValue[1])
+    }
+  }
+
+  const throttled = useThrottledCallback(handleChange, 100)
+
   useEffect(() => {
     getDevices()
   }, [getDevices])
@@ -23,13 +31,6 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
   }
 
   const pixelRange = [s[1], s[2]]
-
-  const handleChange = (_event: any, newValue: any) => {
-    if (newValue !== pixelRange) {
-      handleRangeSegment(newValue[0], newValue[1])
-    }
-  }
-  const throttled = useThrottledCallback(handleChange, 100)
 
   const marks = [
     { value: 0, label: 1 },

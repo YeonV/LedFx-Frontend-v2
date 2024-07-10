@@ -96,7 +96,7 @@ export const initFrontendConfig = () => {
 
 export const log = (...props: any[]) => {
   if (typeof props[0] === 'string') {
-    // eslint-disable-next-line no-console
+     
     console.log(
       `%c ${props[0]
         .replace('success', '')
@@ -117,7 +117,7 @@ export const log = (...props: any[]) => {
 }
 
 export const sleep = (ms: number) => {
-  // eslint-disable-next-line no-promise-executor-return
+   
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
@@ -134,7 +134,7 @@ export const ordered = (unordered: Record<string, any>) =>
   Object.keys(unordered)
     .sort()
     .reduce((obj: any, key) => {
-      // eslint-disable-next-line no-param-reassign
+       
       obj[key] = unordered[key]
       return obj
     }, {})

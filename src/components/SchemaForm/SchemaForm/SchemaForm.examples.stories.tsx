@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import BladeSchemaForm from "./SchemaForm";
 
@@ -28,10 +28,10 @@ export default {
       </Card>
     )
   ]
-} as ComponentMeta<typeof BladeSchemaForm>
+} as Meta<typeof BladeSchemaForm>
 
 // eslint-disable-next-line
-const Template: ComponentStory<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
+const Template: StoryFn<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
 
 export const AddDeviceAdaLight = Template.bind({})
 AddDeviceAdaLight.args = {
@@ -102,7 +102,7 @@ AddDeviceAdaLight.args = {
     required: ['name', 'com_port', 'baudrate', 'pixel_count', 'color_order']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -169,7 +169,7 @@ AddDeviceWLED.args = {
     required: ['name', 'ip_address']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -261,7 +261,7 @@ AddDeviceUDP.args = {
     required: ['name', 'ip_address', 'pixel_count', 'port', 'udp_packet_type']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -365,7 +365,7 @@ AddVirtual.args = {
     required: ['name', 'mapping']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -426,7 +426,7 @@ AudioCard.args = {
     required: []
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }

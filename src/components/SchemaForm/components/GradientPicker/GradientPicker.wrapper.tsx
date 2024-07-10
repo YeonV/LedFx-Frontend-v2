@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-restricted-syntax */
 import { useEffect } from 'react'
 import useStore from '../../../../store/useStore'
 import GradientPicker from './GradientPicker'

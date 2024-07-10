@@ -167,7 +167,6 @@ export default function QLCTriggerTable() {
             aria-label="Edit"
             color="inherit"
             disabled
-            // eslint-disable-next-line no-console
             onClick={() => console.error('coming soon...')}
           >
             <Edit fontSize="inherit" />

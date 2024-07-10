@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import {
   Repeat,
   RepeatOne,

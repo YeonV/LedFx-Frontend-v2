@@ -1,4 +1,3 @@
-/* eslint-disable react/require-default-props */
 import React from 'react'
 
 import axios from 'axios'
@@ -12,7 +11,6 @@ export const cloud = axios.create({
 })
 
 cloud.interceptors.request.use((config) => {
-  // eslint-disable-next-line no-param-reassign
   config.headers.Authorization = `Bearer ${localStorage.getItem('jwt')}`
   return config
 })

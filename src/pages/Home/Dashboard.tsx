@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-promise-executor-return */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-await-in-loop */
+
 import { useEffect, useState } from 'react'
 import {
   Box,

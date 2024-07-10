@@ -9,17 +9,3 @@ export interface BladeBooleanProps {
   hideDesc?: boolean
   model_id: string
 }
-
-export const BladeBooleanDefaultProps = {
-  index: undefined,
-  style: undefined,
-  required: false,
-  onClick: undefined,
-  type: 'switch',
-  schema: {
-    title: 'Check me'
-  },
-  model: undefined,
-  hideDesc: undefined,
-  model_id: undefined
-}

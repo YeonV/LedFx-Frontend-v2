@@ -1,6 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/require-default-props */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -68,7 +65,6 @@ export default function EditVirtuals({
   innerKey
 }: any) {
   const [matrix, setMatrix] = useState(false)
-  const features = useStore((state) => state.features)
   const currentVirtual = useStore((state) => state.currentVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
   const calibrationMode = useStore((state) => state.calibrationMode)
@@ -183,7 +179,7 @@ export default function EditVirtuals({
             >
               back
             </Button>
-            {features.matrix && (
+            {virtual.config.rows > 1 && (
               <ToggleButtonGroup
                 value={matrix}
                 style={{ marginRight: '1rem' }}

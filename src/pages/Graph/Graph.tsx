@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable consistent-return */
-/* eslint-disable no-restricted-syntax */
+
 import { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { useParams } from 'react-router-dom'

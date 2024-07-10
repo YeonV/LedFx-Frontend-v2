@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
 

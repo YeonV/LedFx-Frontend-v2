@@ -9,7 +9,6 @@ export default function LinearProgressWithLabel(props: any) {
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="textSecondary">{`${Math.round(
-          // eslint-disable-next-line react/destructuring-assignment
           props.value
         )}%`}</Typography>
       </Box>

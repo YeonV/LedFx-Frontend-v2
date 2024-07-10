@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 // eslint-disable-next-line
 import EffectSchemaForm from './EffectSchemaForm';
 
@@ -28,10 +28,9 @@ export default {
       panelPosition: 'bottom'
     }
   }
-} as ComponentMeta<typeof EffectSchemaForm>
+} as Meta<typeof EffectSchemaForm>
 
-// eslint-disable-next-line
-const Template: ComponentStory<typeof EffectSchemaForm> = (args) => (
+const Template: StoryFn<typeof EffectSchemaForm> = (args) => (
   <EffectSchemaForm {...args} />
 )
 
@@ -155,7 +154,6 @@ EffectForm.args = {
     flip: false
   },
   handleEffectConfig: (e: any) => {
-    // eslint-disable-next-line no-console
     console.log('Update Effect', e)
     return true
   }

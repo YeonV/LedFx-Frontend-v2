@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/indent */
 import Dialog from '@mui/material/Dialog'
 import { useEffect, useState } from 'react'
 import {
@@ -7,14 +5,18 @@ import {
   DialogContent,
   Stack,
   Typography,
-  useMediaQuery,
+  useMediaQuery
   // useTheme,
 } from '@mui/material'
 import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
 import Button from '@mui/material/Button'
-import { CheckCircleOutlineOutlined, ChevronLeft, ChevronRight } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom';
+import {
+  CheckCircleOutlineOutlined,
+  ChevronLeft,
+  ChevronRight
+} from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import banner from '../../icons/png/banner.png'
@@ -26,7 +28,11 @@ import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { SettingsRow } from '../../pages/Settings/SettingsComponents'
 
-export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
+export default function IntroDialog({
+  handleScan,
+  scanning,
+  setScanning
+}: any) {
   const navigate = useNavigate()
   const intro = useStore((state) => state.intro)
   const devices = useStore((state) => state.devices)
@@ -56,10 +62,9 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
   }
 
-
   const graphsMulti = useStore((state) => state.graphsMulti)
   const assistant = useStore((state) => state.assistant)
-  const setAssistant= useStore((state) => state.setAssistant)
+  const setAssistant = useStore((state) => state.setAssistant)
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
@@ -75,8 +80,8 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     properties: {
       audio_device: schem?.properties?.audio_device || {},
       delay_ms: schem?.properties?.delay_ms || {},
-      min_volume: schem?.properties?.min_volume || {},
-    },
+      min_volume: schem?.properties?.min_volume || {}
+    }
   }
   const model = useStore((state) => state?.config?.audio)
 
@@ -95,7 +100,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       action_left: () => {
         handleClose()
       },
-      action_right: handleNext,
+      action_right: handleNext
     },
     {
       key: 'gotWled',
@@ -104,7 +109,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       label_left: 'No',
       label_right: 'Yes',
       action_left: handleNext,
-      action_right: handleNext,
+      action_right: handleNext
     },
     {
       key: 'bladeScene',
@@ -113,7 +118,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       label_left: 'Skip Blade Scene',
       label_right: <BladeScene onClick={() => handleNext()} />,
       action_left: handleNext,
-      action_right: handleNext,
+      action_right: handleNext
     },
     {
       key: 'audio',
@@ -122,7 +127,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       label_left: 'Apply',
       label_right: 'Apply',
       action_left: (): any => false,
-      action_right: handleNext,
+      action_right: handleNext
     },
     {
       key: 'tour',
@@ -136,8 +141,8 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
       action_right: () => {
         setTourOpen('home', true)
         handleClose()
-      },
-    },
+      }
+    }
   ] as any)
 
   useEffect(() => {
@@ -150,7 +155,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         action_left: () => {
           handleClose()
         },
-        action_right: handleNext,
+        action_right: handleNext
       },
       {
         key: 'gotWled',
@@ -174,7 +179,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           if (assistant.wled) setScanning(0)
           if (assistant.wled) handleScan()
           handleNext()
-        },
+        }
       },
       // s.gotWled === 'right' && {
       //   key: 'wledSegs',
@@ -199,10 +204,10 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         label_left: 'Re-Scan',
         label_right: 'Continue',
         action_left: handleBack,
-        action_right: ()=> {
+        action_right: () => {
           setScanning(-1)
           handleNext()
-        },
+        }
       },
       {
         key: 'bladeScene',
@@ -211,7 +216,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         label_left: 'Skip Blade Scene',
         label_right: <BladeScene onClick={() => handleNext()} />,
         action_left: handleNext,
-        action_right: handleNext,
+        action_right: handleNext
       },
       {
         key: 'audio',
@@ -225,7 +230,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
             navigate('/Devices')
           }
           handleNext()
-        },
+        }
       },
       {
         key: 'tour',
@@ -240,21 +245,19 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         action_right: () => {
           setTourOpen('home', true)
           handleClose()
-        },
-      },
+        }
+      }
     ].filter((n: any) => n !== false)
 
     setSteps(ste)
   }, [s, graphsMulti, assistant])
-
-
 
   return (
     <Dialog
       onClose={handleClose}
       open={intro || Object.keys(devices).length === 0}
       PaperProps={{
-        style: { maxWidth: 'calc(100vw - 64px)' },
+        style: { maxWidth: 'calc(100vw - 64px)' }
       }}
     >
       <DialogContent>
@@ -264,27 +267,67 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-around',
-              flexDirection: 'column',
+              flexDirection: 'column'
             }}
           >
-            {!steps[activeStep].icon ||
-            steps[activeStep].icon === 'wled'
-              ? <Stack direction="row">
-                  <img
-                    width={activeStep === 0 ? small ? 128 : 300 : 128}
-                    height="auto"
-                    src={activeStep === 0 ? small ? logoCircle : banner : !steps[activeStep].icon ? logoCircle : wledLogo}
-                    alt="logo-circle"
-                  />
-                  {activeStep === 0 ? <Stack marginLeft={3}><Chip sx={{justifyContent: 'flex-start', padding: '0 0.5rem', margin: '5px'}} icon={<CheckCircleOutlineOutlined />} label="Free" variant='filled' /><Chip sx={{justifyContent: 'flex-start', padding: '0 0.5rem', margin: '5px'}} avatar={<CheckCircleOutlineOutlined />} label="OpenSource" variant='filled' /><Chip sx={{justifyContent: 'flex-start', padding: '0 0.5rem', margin: '5px'}} avatar={<CheckCircleOutlineOutlined />} label="CrossPlatform" variant='filled' /></Stack> : null}
-                </Stack>
-              : <BladeIcon
-                  intro
-                  style={{ fontSize: 128 }}
-                  name={steps[activeStep].icon}
-
+            {!steps[activeStep].icon || steps[activeStep].icon === 'wled' ? (
+              <Stack direction="row">
+                <img
+                  width={activeStep === 0 ? (small ? 128 : 300) : 128}
+                  height="auto"
+                  src={
+                    activeStep === 0
+                      ? small
+                        ? logoCircle
+                        : banner
+                      : !steps[activeStep].icon
+                        ? logoCircle
+                        : wledLogo
+                  }
+                  alt="logo-circle"
                 />
-            }
+                {activeStep === 0 ? (
+                  <Stack marginLeft={3}>
+                    <Chip
+                      sx={{
+                        justifyContent: 'flex-start',
+                        padding: '0 0.5rem',
+                        margin: '5px'
+                      }}
+                      icon={<CheckCircleOutlineOutlined />}
+                      label="Free"
+                      variant="filled"
+                    />
+                    <Chip
+                      sx={{
+                        justifyContent: 'flex-start',
+                        padding: '0 0.5rem',
+                        margin: '5px'
+                      }}
+                      avatar={<CheckCircleOutlineOutlined />}
+                      label="OpenSource"
+                      variant="filled"
+                    />
+                    <Chip
+                      sx={{
+                        justifyContent: 'flex-start',
+                        padding: '0 0.5rem',
+                        margin: '5px'
+                      }}
+                      avatar={<CheckCircleOutlineOutlined />}
+                      label="CrossPlatform"
+                      variant="filled"
+                    />
+                  </Stack>
+                ) : null}
+              </Stack>
+            ) : (
+              <BladeIcon
+                intro
+                style={{ fontSize: 128 }}
+                name={steps[activeStep].icon}
+              />
+            )}
 
             <div>
               <Typography
@@ -294,141 +337,238 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                 variant={xsmall ? 'h4' : 'h3'}
                 textAlign={small ? 'center' : 'left'}
               >
-                {steps[activeStep].key === 'wledScanning'
-                ? <>New Devices found:<br />
-                </>
-
-                :steps[activeStep].title}
+                {steps[activeStep].key === 'wledScanning' ? (
+                  <>
+                    New Devices found:
+                    <br />
+                  </>
+                ) : (
+                  steps[activeStep].title
+                )}
               </Typography>
-              {steps[activeStep].key === 'wledScanning'
-                &&
-              <Typography
-                marginLeft={0}
-                marginTop={1}
-                marginBottom={3}
-                variant="h5"
-                textAlign={small ? 'center' : 'left'}
-              >
-                <span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{devices && Object.keys(devices)?.length}</span><span>WLEDs</span>
-                {openRgbDevices.length > 1 && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>{openRgbDevices.length}</span>OpenRGB Devices</>}
-                {launchpadDevice !== '' && <><br /><span style={{ textAlign: 'right',marginRight: '0.5rem', width: 30, display: 'inline-block'}}>1</span>Launchpad</>}
-              </Typography>}
+              {steps[activeStep].key === 'wledScanning' && (
+                <Typography
+                  marginLeft={0}
+                  marginTop={1}
+                  marginBottom={3}
+                  variant="h5"
+                  textAlign={small ? 'center' : 'left'}
+                >
+                  <span
+                    style={{
+                      textAlign: 'right',
+                      marginRight: '0.5rem',
+                      width: 30,
+                      display: 'inline-block'
+                    }}
+                  >
+                    {devices && Object.keys(devices)?.length}
+                  </span>
+                  <span>WLEDs</span>
+                  {openRgbDevices.length > 1 && (
+                    <>
+                      <br />
+                      <span
+                        style={{
+                          textAlign: 'right',
+                          marginRight: '0.5rem',
+                          width: 30,
+                          display: 'inline-block'
+                        }}
+                      >
+                        {openRgbDevices.length}
+                      </span>
+                      OpenRGB Devices
+                    </>
+                  )}
+                  {launchpadDevice !== '' && (
+                    <>
+                      <br />
+                      <span
+                        style={{
+                          textAlign: 'right',
+                          marginRight: '0.5rem',
+                          width: 30,
+                          display: 'inline-block'
+                        }}
+                      >
+                        1
+                      </span>
+                      Launchpad
+                    </>
+                  )}
+                </Typography>
+              )}
             </div>
           </Box>
-          {steps[activeStep].key === 'audio' && <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', flexWrap: small ? 'wrap' : 'nowrap'}}>
-          <Box sx={{ flexBasis: small ? '100%' : '48%' }}>{schema && (
-          <BladeSchemaForm
-            hideToggle
-            schema={schema}
-            model={model}
-            onModelChange={(e) => {
-              setSystemConfig({
-                audio: e,
-              }).then(() => getSystemConfig())
-            }}
-          />
-        )}
-        </Box>
-        <Box sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%' }}>
-          <SettingsRow
-            title="Graphs (overkill)"
-            checked={graphsMulti}
-            onChange={() => toggleGraphsMulti()}
-            style={{ fontSize: 16, paddingLeft: '0.25rem'}}
-            direct
-          />
-          <SettingsRow
-            title="BG Waves (eats performance)"
-            checked={features.waves}
-            onChange={() => setFeatures('waves', !features.waves)}
-            style={{ fontSize: 16, paddingLeft: '0.25rem'}}
-            direct
-          />
-          <SettingsRow
-            title="SceneTables (Recent+Most)"
-            checked={features.scenetables}
-            onChange={() => setFeatures('scenetables', !features.scenetables)}
-            style={{ fontSize: 16, paddingLeft: '0.25rem'}}
-            direct
-          />
-          <SettingsRow
-            title="SceneChips (Filter Tags)"
-            checked={features.scenechips}
-            onChange={() => setFeatures('scenechips', !features.scenechips)}
-            style={{ fontSize: 16, paddingLeft: '0.25rem'}}
-            direct
-          />
-        </Box>
-        </div>}
-        {steps[activeStep].key === 'gotWled' && <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', flexWrap: small ? 'wrap' : 'nowrap'}}>
-        <Box sx={{ flexBasis: small ? '100%' : '48%' }} />
-        <Box sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%', pl: '1rem' }}>
-          <Stack direction="row" alignItems="center">
-            <img width={32} height="auto" src={wledLogo} alt="wled" />
-            <SettingsRow
-              title="WLED"
-              checked={assistant.wled}
-              onChange={() => setAssistant('wled', !assistant.wled)}
-              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
-              direct
-            />
-          </Stack>
-          <Stack direction="row" alignItems="center">
-            <img width={32} height="auto" src={wledLogo} alt="wled" />
-            <SettingsRow
-              title="WLED Segments"
-              checked={assistant.wledSegments}
-              onChange={() => setAssistant('wledSegments', !assistant.wledSegments)}
-              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
-              direct
-            />
-          </Stack>
-          <Stack direction="row" alignItems="center">
-            <img width={32} height="auto" src={openrgbLogo} alt="openrgb" />
-             <SettingsRow
-              title="OpenRGB"
-              checked={assistant.openRgb}
-              onChange={() => setAssistant('openRgb', !assistant.openRgb)}
-              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
-              direct
-            />
-          </Stack>
-          <Stack direction="row" alignItems="center">
-            <img width={32} height="auto" src={launchpadLogo} alt="wled" />
-            <SettingsRow
-              title="Launchpad"
-              checked={assistant.launchpad}
-              onChange={() => setAssistant('launchpad', !assistant.launchpad)}
-              style={{ fontSize: 16, paddingLeft: '0.75rem'}}
-              direct
-            />
-          </Stack>
-
-
-
-        </Box>
-          </div>}
-          <Stack direction={small ? 'column' : 'row'} gap={3} justifyContent="center" marginTop={3} marginBottom={3}>
-            {steps[activeStep].label_left && <Button
-              size="small"
-              onClick={(_e) => {
-                steps[activeStep].action_left()
-                setS((p: any) => ({
-                  ...p,
-                  [steps[activeStep].key]: 'left',
-                }))
-              }}
-              sx={{
-                borderRadius: '2rem',
-                textTransform: 'none',
-                marginRight: small ? 0 : '1rem',
-                minWidth: small ? '60vw' : 'min(30vw, 350px)',
-                // minHeight: 'min(15vh, 120px)',
-                fontSize: '2rem',
+          {steps[activeStep].key === 'audio' && (
+            <div
+              style={{
+                padding: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexWrap: small ? 'wrap' : 'nowrap'
               }}
             >
-              {(steps[activeStep].key === 'wledScanning' && scanning && scanning > -1) ? `Scanning...${scanning}%` : steps[activeStep].label_left}
-            </Button>}
+              <Box sx={{ flexBasis: small ? '100%' : '48%' }}>
+                {schema && (
+                  <BladeSchemaForm
+                    hideToggle
+                    schema={schema}
+                    model={model}
+                    onModelChange={(e) => {
+                      setSystemConfig({
+                        audio: e
+                      }).then(() => getSystemConfig())
+                    }}
+                  />
+                )}
+              </Box>
+              <Box
+                sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%' }}
+              >
+                <SettingsRow
+                  title="Graphs (overkill)"
+                  checked={graphsMulti}
+                  onChange={() => toggleGraphsMulti()}
+                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
+                  direct
+                />
+                <SettingsRow
+                  title="BG Waves (eats performance)"
+                  checked={features.waves}
+                  onChange={() => setFeatures('waves', !features.waves)}
+                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
+                  direct
+                />
+                <SettingsRow
+                  title="SceneTables (Recent+Most)"
+                  checked={features.scenetables}
+                  onChange={() =>
+                    setFeatures('scenetables', !features.scenetables)
+                  }
+                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
+                  direct
+                />
+                <SettingsRow
+                  title="SceneChips (Filter Tags)"
+                  checked={features.scenechips}
+                  onChange={() =>
+                    setFeatures('scenechips', !features.scenechips)
+                  }
+                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
+                  direct
+                />
+              </Box>
+            </div>
+          )}
+          {steps[activeStep].key === 'gotWled' && (
+            <div
+              style={{
+                padding: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexWrap: small ? 'wrap' : 'nowrap'
+              }}
+            >
+              <Box sx={{ flexBasis: small ? '100%' : '48%' }} />
+              <Box
+                sx={{
+                  mt: small ? 2 : 0,
+                  flexBasis: small ? '100%' : '48%',
+                  pl: '1rem'
+                }}
+              >
+                <Stack direction="row" alignItems="center">
+                  <img width={32} height="auto" src={wledLogo} alt="wled" />
+                  <SettingsRow
+                    title="WLED"
+                    checked={assistant.wled}
+                    onChange={() => setAssistant('wled', !assistant.wled)}
+                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    direct
+                  />
+                </Stack>
+                <Stack direction="row" alignItems="center">
+                  <img width={32} height="auto" src={wledLogo} alt="wled" />
+                  <SettingsRow
+                    title="WLED Segments"
+                    checked={assistant.wledSegments}
+                    onChange={() =>
+                      setAssistant('wledSegments', !assistant.wledSegments)
+                    }
+                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    direct
+                  />
+                </Stack>
+                <Stack direction="row" alignItems="center">
+                  <img
+                    width={32}
+                    height="auto"
+                    src={openrgbLogo}
+                    alt="openrgb"
+                  />
+                  <SettingsRow
+                    title="OpenRGB"
+                    checked={assistant.openRgb}
+                    onChange={() => setAssistant('openRgb', !assistant.openRgb)}
+                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    direct
+                  />
+                </Stack>
+                <Stack direction="row" alignItems="center">
+                  <img
+                    width={32}
+                    height="auto"
+                    src={launchpadLogo}
+                    alt="wled"
+                  />
+                  <SettingsRow
+                    title="Launchpad"
+                    checked={assistant.launchpad}
+                    onChange={() =>
+                      setAssistant('launchpad', !assistant.launchpad)
+                    }
+                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    direct
+                  />
+                </Stack>
+              </Box>
+            </div>
+          )}
+          <Stack
+            direction={small ? 'column' : 'row'}
+            gap={3}
+            justifyContent="center"
+            marginTop={3}
+            marginBottom={3}
+          >
+            {steps[activeStep].label_left && (
+              <Button
+                size="small"
+                onClick={(_e) => {
+                  steps[activeStep].action_left()
+                  setS((p: any) => ({
+                    ...p,
+                    [steps[activeStep].key]: 'left'
+                  }))
+                }}
+                sx={{
+                  borderRadius: '2rem',
+                  textTransform: 'none',
+                  marginRight: small ? 0 : '1rem',
+                  minWidth: small ? '60vw' : 'min(30vw, 350px)',
+                  // minHeight: 'min(15vh, 120px)',
+                  fontSize: '2rem'
+                }}
+              >
+                {steps[activeStep].key === 'wledScanning' &&
+                scanning &&
+                scanning > -1
+                  ? `Scanning...${scanning}%`
+                  : steps[activeStep].label_left}
+              </Button>
+            )}
             {typeof steps[activeStep].label_right === 'string' ? (
               <Button
                 size="small"
@@ -438,7 +578,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                   steps[activeStep].action_right()
                   setS((p: any) => ({
                     ...p,
-                    [steps[activeStep].key]: 'right',
+                    [steps[activeStep].key]: 'right'
                   }))
                 }}
                 sx={{
@@ -450,7 +590,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                   marginTop: 0,
                   minWidth: small ? '60vw' : 'min(30vw, 350px)',
                   // minHeight: 'min(15vh, 120px)',
-                  fontSize: '2rem',
+                  fontSize: '2rem'
                 }}
               >
                 {steps[activeStep].label_right}
@@ -469,8 +609,8 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
               justifyContent: 'center',
               background: 'transparent',
               '& .MuiMobileStepper-dots': {
-                display: activeStep > 0 ? 'flex' : 'none',
-              },
+                display: activeStep > 0 ? 'flex' : 'none'
+              }
             }}
             nextButton={
               <Button

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { Fab, IconButton } from '@mui/material'
 import { AddSharp as Add, ElectricalServices } from '@mui/icons-material'
 import { useState } from 'react'

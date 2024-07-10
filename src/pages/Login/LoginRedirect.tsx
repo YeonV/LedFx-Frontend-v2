@@ -51,7 +51,6 @@ const LoginRedirect = () => {
         }, 2000)
       })
       .catch((err) => {
-        // eslint-disable-next-line no-console
         console.log(err)
         setText('An error occurred, please see the developer console.')
       })

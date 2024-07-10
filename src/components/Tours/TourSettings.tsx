@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 import { useLayoutEffect, useState } from 'react'
 import { MenuItem, ListItemIcon, Badge } from '@mui/material'
 import Tour from 'reactour'
