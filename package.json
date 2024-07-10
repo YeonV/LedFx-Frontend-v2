@@ -92,7 +92,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "run-script-os",
+    "build": "CI=false run-script-os",
     "build:win32": "set GENERATE_SOURCEMAP=false && react-scripts build",
     "build:default": "GENERATE_SOURCEMAP=false react-scripts build",
     "prebuild": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
