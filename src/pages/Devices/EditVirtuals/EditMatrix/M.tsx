@@ -283,6 +283,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     <MWrapper move={dnd}>
       <Stack direction="column" spacing={2}>
         <Button
+          disabled
           onClick={() => {
             setShowPixelGraph(!showPixelGraph)
           }}
