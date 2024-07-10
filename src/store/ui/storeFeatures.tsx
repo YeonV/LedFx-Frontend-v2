@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-param-reassign */
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
@@ -27,6 +25,7 @@ export type IFeatures =
   | 'scenechips'
   | 'alpha'
   | 'matrix'
+  | 'matrix_cam'
   | 'mqtt'
   | 'mqtt_hass'
   | 'gamepad'
@@ -57,7 +56,8 @@ const storeFeatures = (set: any) => ({
     matrix: false,
     mqtt: false,
     mqtt_hass: false,
-    gamepad: false
+    gamepad: false,
+    matrix_cam: false
   },
   showFeatures: {
     dev: false,
@@ -85,7 +85,8 @@ const storeFeatures = (set: any) => ({
     matrix: false,
     mqtt: false,
     mqtt_hass: false,
-    gamepad: false
+    gamepad: false,
+    matrix_cam: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

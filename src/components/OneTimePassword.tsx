@@ -3,7 +3,6 @@ import OtpInput from 'react-otp-input'
 import isElectron from 'is-electron'
 
 const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
-  if (!isElectron()) return null
   const [otp, setOtp] = useState('')
   const [invalidCode, setInvalidCode] = useState(false)
   const [qrCodePng, setQrCodePng] = useState(null)
@@ -43,6 +42,8 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
       }
     })
   }, [])
+
+  if (!isElectron()) return null
 
   return (
     <div>

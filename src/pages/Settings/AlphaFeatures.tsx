@@ -23,6 +23,11 @@ const AlphaFeatures = () => {
         checked={features.matrix}
         onChange={() => setFeatures('matrix', !features.matrix)}
       />
+      <SettingsRow
+        title="Matrix Cam"
+        checked={features.matrix_cam}
+        onChange={() => setFeatures('matrix_cam', !features.matrix_cam)}
+      />
       {features.integrations && (
         <>
           <SettingsRow

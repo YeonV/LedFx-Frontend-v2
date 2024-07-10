@@ -79,8 +79,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
     setScanning(0)
     scanForDevices()
       .then(async () => {
-        // eslint-disable-next-line no-plusplus
-        for (let sec = 1; sec <= 30; sec++) {
+        for (let sec = 1; sec <= 30; sec += 1) {
           if (scanning === -1) break
           sleep(1000).then(() => {
             getDevices()
@@ -105,7 +104,6 @@ const Gamepad = ({ setScene, bottom }: any) => {
         (k: any) => g[k]?.buttons[8].pressed && g[k]?.buttons[9].pressed
       )
     ) {
-      // eslint-disable-next-line no-alert
       alert('DevMode activated!')
       setFeatures('dev', true)
     } else if (
@@ -127,8 +125,8 @@ const Gamepad = ({ setScene, bottom }: any) => {
   useEffect(() => {
     if (!blocked) {
       const m = [pad0, pad1, pad2, pad3]
-      m.map((pad: any) => {
-        return pad?.buttons.map((b: any, i: number) => {
+      m.map((pad: any) =>
+        pad?.buttons.map((b: any, i: number) => {
           const test =
             b.pressed &&
             b.value === 1 &&
@@ -218,7 +216,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
           }
           return null
         })
-      })
+      )
     }
   }, [pad0, pad1, pad2, pad3])
 
@@ -389,19 +387,17 @@ const Gamepad = ({ setScene, bottom }: any) => {
                     spacing={1}
                     sx={{ mt: 2, minWidth: 300 }}
                   >
-                    {pad?.buttons.map((b: any, i: number) => {
-                      return (
-                        <Assign
-                          // disabled={i === 16}
-                          padIndex={pad.index}
-                          mapping={mapping}
-                          setMapping={setMapping}
-                          pressed={b.pressed}
-                          index={i}
-                          key={i}
-                        />
-                      )
-                    })}
+                    {pad?.buttons.map((b: any, i: number) => (
+                      <Assign
+                        // disabled={i === 16}
+                        padIndex={pad.index}
+                        mapping={mapping}
+                        setMapping={setMapping}
+                        pressed={b.pressed}
+                        index={i}
+                        key={i}
+                      />
+                    ))}
                   </Stack>
                 </Stack>
               ) : (

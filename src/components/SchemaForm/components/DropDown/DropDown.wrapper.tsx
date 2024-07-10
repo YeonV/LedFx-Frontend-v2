@@ -26,7 +26,6 @@ const EffectDropDown = ({
   const groups =
     effectNames &&
     effectNames.reduce((r: any, a: any) => {
-      // eslint-disable-next-line no-param-reassign
       r[a.category] = [...(r[a.category] || []), a]
       return r
     }, {})

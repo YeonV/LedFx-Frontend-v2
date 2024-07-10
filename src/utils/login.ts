@@ -30,7 +30,6 @@ const login = async (search: string) => {
       // }, 2000)
     })
     .catch((err) => {
-      // eslint-disable-next-line no-console
       console.log(err)
     })
 }

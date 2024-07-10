@@ -47,14 +47,12 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
         `configs?user.username=${localStorage.getItem('username')}`
       )
       if (response.status !== 200) {
-        // eslint-disable-next-line no-alert
         alert('No Access')
         return
       }
       const res = await response.data
       setCloudConfigs(res)
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.log(error)
     }
   }
@@ -102,7 +100,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const getCloudPresets = async () => {
     const response = await cloud.get(`presets?effect.ledfx_id=${effectType}`)
     if (response.status !== 200) {
-      // eslint-disable-next-line no-alert
       alert('No Access')
       return
     }
@@ -267,9 +264,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               popoverStyle={{ padding: '0.5rem' }}
               color="primary"
               variant="outlined"
-              onSingleClick={() => {
-                // eslint-disable-next-line no-console
-              }}
+              onSingleClick={() => {}}
               content={
                 <TextField
                   onKeyDown={(e: any) => e.key === 'Enter' && handleAddPreset()}

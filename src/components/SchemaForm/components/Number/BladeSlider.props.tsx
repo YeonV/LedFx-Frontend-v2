@@ -13,20 +13,6 @@ export interface BladeSliderInnerProps {
   full?: boolean
 }
 
-export const BladeSliderInnerDefaultProps = {
-  schema: undefined,
-  model: undefined,
-  model_id: '',
-  step: undefined,
-  onChange: undefined,
-  textfield: undefined,
-  style: undefined,
-  disabled: undefined,
-  marks: undefined,
-  hideDesc: undefined,
-  full: undefined
-}
-
 export interface BladeSliderProps {
   /**
    * `outlined` or not. More might come
@@ -64,24 +50,4 @@ export interface BladeSliderProps {
   hideDesc?: boolean
   style?: any
   full?: boolean
-}
-
-export const BladeSliderDefaultProps = {
-  variant: 'outlined',
-  disableUnderline: undefined,
-  schema: {
-    title: 'Slide me'
-  },
-  model: undefined,
-  model_id: '',
-  step: undefined,
-  onChange: undefined,
-  marks: undefined,
-  index: undefined,
-  required: false,
-  textfield: false,
-  disabled: false,
-  hideDesc: false,
-  style: {},
-  full: false
 }

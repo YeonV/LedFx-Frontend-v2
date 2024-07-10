@@ -1,6 +1,4 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable react/destructuring-assignment */
-import React, { Component, ErrorInfo, ReactNode } from 'react'
+import { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
   children?: ReactNode
@@ -21,7 +19,6 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // eslint-disable-next-line no-console
     console.warn(error, errorInfo)
   }
 

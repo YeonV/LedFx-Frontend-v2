@@ -38,7 +38,6 @@ const SpotifyWidgetFree = ({
         height={spotifyEnabled ? (spotifyExpanded ? 300 : 80) : 0}
         style={{ position: 'fixed', bottom: 0, left: 0 }}
         frameBorder="0"
-        /* eslint-disable-next-line react/no-unknown-property */
         allowTransparency
         allow="encrypted-media"
       />

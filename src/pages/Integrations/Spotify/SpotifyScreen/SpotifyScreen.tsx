@@ -13,7 +13,6 @@ import { Settings, NavigateBefore } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import {
   MuiMenuItem,
-  SpotifyScreenDefaultProps,
   SpotifyScreenProps,
   Transition
 } from './SpotifyScreen.props'
@@ -26,14 +25,14 @@ import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/Spot
 import { SpotifyStateContext } from '../../../../components/Integrations/Spotify/SpotifyProvider'
 
 export default function SpotifyScreen({
+  className,
+  innerKey,
   icon = <Settings />,
   startIcon,
   label = '',
-  type,
-  className,
+  type = 'button',
   color = 'primary',
   variant = 'contained',
-  innerKey,
   disabled = false,
   size = 'small'
 }: SpotifyScreenProps) {
@@ -125,5 +124,3 @@ export default function SpotifyScreen({
     </>
   )
 }
-
-SpotifyScreen.defaultProps = SpotifyScreenDefaultProps

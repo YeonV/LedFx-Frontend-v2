@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import {
   HashRouter as Router,
   BrowserRouter,
@@ -62,7 +61,7 @@ const Routings = ({ handleWs }: any) => {
     window.location.reload()
   })
   if (isElect) {
-    useHotkeys(['ctrl+alt+l'], () => {
+    useHotkeys(['ctrl+alt+l'], () => { // eslint-disable-line
       window.localStorage.setItem('lock', 'activated')
       window.location.reload()
     })
@@ -133,7 +132,7 @@ const Routings = ({ handleWs }: any) => {
               <Route
                 path="*"
                 element={
-                  // eslint-disable-next-line prettier/prettier
+                  // eslint-disable-next-line
                   !(window.localStorage.getItem('guestmode') === 'activated') ? <Home /> : <Scenes />
                 }
               />

@@ -1,26 +1,25 @@
-import { Alert } from '@mui/material'
+import { Box } from '@mui/material'
 
-const MWrapper = ({ children }: any) => {
+const MWrapper = ({ children, move }: any) => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        maxHeight: '80vh'
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        flexDirection:
+          window.screen.orientation.type.split('-')[0] === 'landscape'
+            ? 'row'
+            : 'column',
+        maxHeight: '90vh',
+        '& .react-transform-wrapper': {
+          // flexGrow: 1,
+          overflow: move ? 'auto' : 'hidden'
+        }
       }}
     >
-      <Alert severity="info" sx={{ width: 500, marginBottom: 2 }}>
-        <strong>Concept Draft</strong>
-        <ul style={{ padding: '0 1rem' }}>
-          <li>Use Mousewheel to Zoom</li>
-          <li>Use left-click with drag&drop to move around</li>
-          <li>Use right-click to assign Pixels</li>
-        </ul>
-      </Alert>
       {children}
-    </div>
+    </Box>
   )
 }
 

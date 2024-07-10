@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import {
@@ -11,7 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler,
+  Filler
 } from 'chart.js'
 import {
   Card,
@@ -20,7 +19,7 @@ import {
   Slider,
   Switch,
   TextField,
-  useTheme,
+  useTheme
 } from '@mui/material'
 import BladeFrame from './SchemaForm/components/BladeFrame'
 
@@ -97,9 +96,9 @@ const MGraph = () => {
             fill: true,
             borderColor: theme.palette.primary.main,
             pointRadius: 0,
-            data: messageData.melbank,
-          },
-        ],
+            data: messageData.melbank
+          }
+        ]
       }
 
       // Adjust the axes based on the max
@@ -109,35 +108,35 @@ const MGraph = () => {
         tooltips: { enabled: false },
         hover: {
           animationDuration: 0,
-          mode: null,
+          mode: null
         },
         animation: {
-          duration: animationDuration,
+          duration: animationDuration
         },
         responsiveAnimationDuration: 0,
         scales: {
           xAxis: {
             display: false,
-            maxTicksLimit: 3,
+            maxTicksLimit: 3
           },
           x: {
             display: true,
             title: {
               display: true,
-              text: 'Frequency',
+              text: 'Frequency'
             },
             ticks: {
               borderColor: '#fff',
               maxTicksLimit: 12,
               callback(value: any, _index: any, _values: any) {
                 return `${value} Hz`
-              },
+              }
             },
             grid: {
-              color: 'rgba(255, 255, 255, 0)',
+              color: 'rgba(255, 255, 255, 0)'
               // borderColor: 'rgba(255, 255, 255, 0.15)',
             },
-            ...(scaleType && { type: 'logarithmic' }),
+            ...(scaleType && { type: 'logarithmic' })
           },
           yAxis: {
             min: 0,
@@ -146,26 +145,26 @@ const MGraph = () => {
           y: {
             title: {
               display: true,
-              text: 'Melbank',
+              text: 'Melbank'
             },
             ticks: {
               display: false,
               maxTicksLimit: 7,
               callback(value: any, _index: any, _values: any) {
                 return `${parseFloat(value).toFixed(2)}`
-              },
-            },
+              }
+            }
             // grid: {
             //   color: 'rgba(255, 255, 255, 0)',
             //   // borderColor: 'rgba(255, 255, 255, 0.15)',
             // },
-          },
+          }
         },
         plugins: {
           legend: {
-            display: false,
-          },
-        },
+            display: false
+          }
+        }
       }
       setData({ chartData, chartOptions })
     }
@@ -175,7 +174,6 @@ const MGraph = () => {
     }
   }, [animationDuration, fillOpacity, scaleType])
 
-
   return (
     <div>
       <Card
@@ -183,7 +181,7 @@ const MGraph = () => {
           maxWidth: 720,
           width: '100%',
           margin: '3rem',
-          background: '#1c1c1e',
+          background: '#1c1c1e'
         }}
       >
         <CardHeader title="Melbank Graph Settings" />
@@ -203,7 +201,7 @@ const MGraph = () => {
             />
             <TextField
               InputProps={{
-                endAdornment: 'ms',
+                endAdornment: 'ms'
               }}
               type="number"
               value={
@@ -213,7 +211,7 @@ const MGraph = () => {
               style={{
                 marginLeft: '2rem',
                 width: '130px',
-                backgroundColor: theme.palette.background.paper,
+                backgroundColor: theme.palette.background.paper
               }}
             />
           </BladeFrame>
@@ -230,7 +228,7 @@ const MGraph = () => {
             />
             <TextField
               InputProps={{
-                endAdornment: '%',
+                endAdornment: '%'
               }}
               type="number"
               value={typeof fillOpacity === 'number' ? fillOpacity : 0}
@@ -238,7 +236,7 @@ const MGraph = () => {
               style={{
                 marginLeft: '2rem',
                 width: '130px',
-                backgroundColor: theme.palette.background.paper,
+                backgroundColor: theme.palette.background.paper
               }}
             />
           </BladeFrame>
@@ -257,7 +255,7 @@ const MGraph = () => {
             />
             <TextField
               InputProps={{
-                endAdornment: '',
+                endAdornment: ''
               }}
               type="number"
               value={typeof lineTension === 'number' ? lineTension : 0}
@@ -265,7 +263,7 @@ const MGraph = () => {
               style={{
                 marginLeft: '2rem',
                 width: '130px',
-                backgroundColor: theme.palette.background.paper,
+                backgroundColor: theme.palette.background.paper
               }}
             />
           </BladeFrame>

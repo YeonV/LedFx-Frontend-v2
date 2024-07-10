@@ -3,10 +3,7 @@ import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
 import GradientPickerWrapper from '../components/GradientPicker/GradientPicker.wrapper'
-import {
-  EffectSchemaFormDefaultProps,
-  EffectSchemaFormProps
-} from './EffectSchemaForm.props'
+import { EffectSchemaFormProps } from './EffectSchemaForm.props'
 
 const PREFIX = 'EffectSchemaForm'
 
@@ -134,7 +131,5 @@ const EffectSchemaForm = ({
     </Root>
   )
 }
-
-EffectSchemaForm.defaultProps = EffectSchemaFormDefaultProps
 
 export default EffectSchemaForm

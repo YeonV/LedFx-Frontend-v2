@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable react/jsx-no-useless-fragment */
 import { useCallback, useEffect, useState } from 'react'
 import {
   AppBar,
@@ -232,7 +231,6 @@ const EditSceneDialog = () => {
       WebMidi.enable({
         callback(err: Error) {
           if (err) {
-            // eslint-disable-next-line no-console
             console.error('WebMidi could not be enabled:', err)
           } else {
             // Get all input devices
@@ -543,11 +541,11 @@ const EditSceneDialog = () => {
                   label="Image Type"
                   variant="outlined"
                   value={
-                    image.startsWith('image:file:///')
+                    image?.startsWith('image:file:///')
                       ? 'image:file:///'
-                      : image.startsWith('image:https://')
+                      : image?.startsWith('image:https://')
                         ? 'image:https://'
-                        : image.startsWith('mdi:')
+                        : image?.startsWith('mdi:')
                           ? 'mdi:'
                           : ''
                   }
@@ -575,9 +573,9 @@ const EditSceneDialog = () => {
                 }}
                 type="text"
                 value={image
-                  .replace('image:file:///', '')
-                  .replace('image:https://', '')
-                  .replace('mdi:', '')}
+                  ?.replace('image:file:///', '')
+                  ?.replace('image:https://', '')
+                  ?.replace('mdi:', '')}
                 onChange={(e) => setImage(e.target.value)}
                 fullWidth
               />

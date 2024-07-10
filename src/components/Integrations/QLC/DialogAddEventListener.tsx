@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import PropTypes from 'prop-types'
@@ -23,29 +22,24 @@ const PREFIX = 'DialogAddEventListener'
 
 const classes = {
   root: `${PREFIX}-root`,
-  paper: `${PREFIX}-paper`,
+  paper: `${PREFIX}-paper`
 }
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.root}`]: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
 
   [`& .${classes.paper}`]: {
     width: '80%',
-    maxHeight: 535,
-  },
+    maxHeight: 535
+  }
 }))
 
 function ConfirmationDialogRaw(props: any) {
-  const {
-    onClose,
-    value: valueProp,
-    open,
-    ...other
-  } = props
+  const { onClose, value: valueProp, open, ...other } = props
   const [valueState, setValue] = React.useState(valueProp)
   const [checkButtonType, setButtonType] = React.useState(false)
   const [checkSliderType, setSliderType] = React.useState(false)
@@ -56,7 +50,7 @@ function ConfirmationDialogRaw(props: any) {
   const [formData, setformData] = React.useState({
     event_type: null,
     event_filter: {},
-    qlc_payload: null,
+    qlc_payload: null
   })
   const [qlcData, setqlcData] = React.useState([])
   const radioGroupRef = React.useRef(null)
@@ -78,10 +72,8 @@ function ConfirmationDialogRaw(props: any) {
   const temp = (qlcInfo && qlcInfo?.qlc_widgets) || []
 
   const QLCWidgets =
-    temp.length > 0
-      ? [...temp].sort(
-        (a: string[], b: string[]) => parseInt(a[0], 10) - parseInt(b[0], 10)
-      )
+    temp.length > 0 // eslint-disable-next-line
+      ? [...temp].sort((a: string[], b: string[]) => parseInt(a[0], 10) - parseInt(b[0], 10))
       : []
 
   React.useEffect(() => {
@@ -91,7 +83,9 @@ function ConfirmationDialogRaw(props: any) {
   }, [valueProp, open])
 
   const handleEntering = () => {
-    if (radioGroupRef.current != null) { /* empty */ }
+    if (radioGroupRef.current != null) {
+      /* empty */
+    }
   }
 
   const handleCancel = () => {
@@ -101,7 +95,7 @@ function ConfirmationDialogRaw(props: any) {
   const handleOk = () => {
     onClose(valueState)
     const data = JSON.stringify(formData)
-    // eslint-disable-next-line no-console
+
     console.error('QLCFormEventTest1', data)
     createQlcListener(formData).then(() => {
       getIntegrations()
@@ -118,8 +112,8 @@ function ConfirmationDialogRaw(props: any) {
       const newSwitchState = {
         ...formData,
         qlc_payload: {
-          ...newqlcPayload,
-        },
+          ...newqlcPayload
+        }
       }
       setSwitchValue(event.target.checked)
       setqlcData(qlcDatanewArr)
@@ -127,7 +121,7 @@ function ConfirmationDialogRaw(props: any) {
     } else if (event.target.name === 'qlc_payload') {
       const qlcDatanewArr: any = qlcData.slice()
       const qlcDataObj: any = {
-        [event.target.value[0]]: 0,
+        [event.target.value[0]]: 0
       }
       qlcDatanewArr[0] = qlcDataObj
       setSwitchValue(false)
@@ -137,21 +131,25 @@ function ConfirmationDialogRaw(props: any) {
       const newSwitchState = {
         ...formData,
         qlc_payload: {
-          ...newqlcPayload,
-        },
+          ...newqlcPayload
+        }
       }
       setformData(newSwitchState)
-    } else if (event.target.name === 'scene_id' || event.target.name === 'effect_name') {
-      value = JSON.parse(value);
-      const filterKey = value?.event_type === 'scene_activated' ? 'scene_id' : 'effect_name';
+    } else if (
+      event.target.name === 'scene_id' ||
+      event.target.name === 'effect_name'
+    ) {
+      value = JSON.parse(value)
+      const filterKey =
+        value?.event_type === 'scene_activated' ? 'scene_id' : 'effect_name'
       const newFormState = {
         ...formData,
         event_filter: {
-          [filterKey]: value?.event_name,
+          [filterKey]: value?.event_name
         },
-        event_type: value?.event_type,
-      };
-      setformData(newFormState);
+        event_type: value?.event_type
+      }
+      setformData(newFormState)
     } else {
       const qlcDatanewArr: any = qlcData.slice()
       qlcDatanewArr[0][event.target.value[0]] = value
@@ -159,8 +157,8 @@ function ConfirmationDialogRaw(props: any) {
       const newSliderState = {
         ...formData,
         qlc_payload: {
-          ...newqlcPayload,
-        },
+          ...newqlcPayload
+        }
       }
       setSliderValue(value)
       setformData(newSliderState)
@@ -216,8 +214,8 @@ function ConfirmationDialogRaw(props: any) {
       const newSwitchState = {
         ...formData,
         qlc_payload: {
-          ...newqlcPayload,
-        },
+          ...newqlcPayload
+        }
       }
 
       setqlcData(qlcDatanewArr)
@@ -227,7 +225,7 @@ function ConfirmationDialogRaw(props: any) {
       newArr[index].value = target
       const qlcDatanewArr: any = qlcData.slice()
       const qlcDataObj = {
-        [event.target.value[0]]: 0,
+        [event.target.value[0]]: 0
       }
       if (qlcDatanewArr[index + 1] === undefined) {
         qlcDatanewArr.push(qlcDataObj)
@@ -243,8 +241,8 @@ function ConfirmationDialogRaw(props: any) {
       const newSwitchState = {
         ...formData,
         qlc_payload: {
-          ...newqlcPayload,
-        },
+          ...newqlcPayload
+        }
       }
       setformData(newSwitchState)
     } else {
@@ -254,8 +252,8 @@ function ConfirmationDialogRaw(props: any) {
       const newSliderState = {
         ...formData,
         qlc_payload: {
-          ...newqlcPayload,
-        },
+          ...newqlcPayload
+        }
       }
 
       setqlcData(qlcDatanewArr)
@@ -271,7 +269,7 @@ function ConfirmationDialogRaw(props: any) {
       value: '',
       switchValue: false,
       showSwitch: false,
-      showSlider: false,
+      showSlider: false
     }
 
     const newArr: any = dropDownRenderList.slice()
@@ -289,8 +287,8 @@ function ConfirmationDialogRaw(props: any) {
     const newSwitchState = {
       ...formData,
       qlc_payload: {
-        ...newqlcPayload,
-      },
+        ...newqlcPayload
+      }
     }
     setformData(newSwitchState)
     return setdropDownRenderList(newArr)
@@ -298,7 +296,7 @@ function ConfirmationDialogRaw(props: any) {
 
   const marks = [
     { value: 1, label: '1' },
-    { value: 255, label: '255' },
+    { value: 255, label: '255' }
   ]
 
   delete other.deviceList
@@ -320,15 +318,15 @@ function ConfirmationDialogRaw(props: any) {
         <DialogContentText>
           Trigger <b>Actions</b> based on <b>Events</b>.
         </DialogContentText>
-        <FormControl className={classes.root} style={{ margin: '1rem 0'}}>
-          <InputLabel htmlFor="grouped-select">
-            Event
-          </InputLabel>
+        <FormControl className={classes.root} style={{ margin: '1rem 0' }}>
+          <InputLabel htmlFor="grouped-select">Event</InputLabel>
           <Select
-            variant='outlined'
+            variant="outlined"
             id="grouped-select"
-            placeholder='If THIS'
-            name={formData?.event_type === 'effect_set' ? 'effect_name' : 'scene_id'}
+            placeholder="If THIS"
+            name={
+              formData?.event_type === 'effect_set' ? 'effect_name' : 'scene_id'
+            }
             onChange={handleEventChange}
             sx={{ minWidth: 250 }}
           >
@@ -343,7 +341,7 @@ function ConfirmationDialogRaw(props: any) {
                   key={idx}
                   value={JSON.stringify({
                     event_type: 'scene_activated',
-                    event_name: val,
+                    event_name: val
                   })}
                 >
                   <option>{val}</option>
@@ -351,17 +349,18 @@ function ConfirmationDialogRaw(props: any) {
               ))}
             <ListSubheader color="primary">Effect Set</ListSubheader>
 
-            {EffectSet && EffectSet.map((effect_name: string, idx: number) => (
-              <MenuItem
-                key={idx}
-                value={JSON.stringify({
-                  event_type: 'effect_set',
-                  event_name: effect_name,
-                })}
-              >
-                <option>{effect_name}</option>
-              </MenuItem>
-            ))}
+            {EffectSet &&
+              EffectSet.map((effect_name: string, idx: number) => (
+                <MenuItem
+                  key={idx}
+                  value={JSON.stringify({
+                    event_type: 'effect_set',
+                    event_name: effect_name
+                  })}
+                >
+                  <option>{effect_name}</option>
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
         <FormHelperText>
@@ -374,8 +373,8 @@ function ConfirmationDialogRaw(props: any) {
           <Select
             labelId="demo-simple-select-helper-label"
             id="demo-simple-select-helper"
-            placeholder='Then Do THIS'
-            variant='outlined'
+            placeholder="Then Do THIS"
+            variant="outlined"
             // value={formData.qlc_payload}
             name="qlc_payload"
             onChange={handleTypeChange}
@@ -441,7 +440,7 @@ function ConfirmationDialogRaw(props: any) {
         ))}
         {/* If Below button pressed, then show additional 'Then do this' dropdown field. */}
         <Button
-          sx={{ mt: 2, mb: 3}}
+          sx={{ mt: 2, mb: 3 }}
           fullWidth
           color="primary"
           aria-label="Add"
@@ -456,7 +455,7 @@ function ConfirmationDialogRaw(props: any) {
         <Button autoFocus onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleOk} color="primary" sx={{ mr: 2}}>
+        <Button onClick={handleOk} color="primary" sx={{ mr: 2 }}>
           Ok
         </Button>
       </DialogActions>
@@ -467,7 +466,7 @@ function ConfirmationDialogRaw(props: any) {
 ConfirmationDialogRaw.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired
 }
 
 export default function ConfirmationDialog({ integration }: any) {

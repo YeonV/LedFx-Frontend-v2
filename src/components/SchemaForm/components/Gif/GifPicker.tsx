@@ -109,7 +109,6 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
           {gifs
             .filter((gif) => gif.name.includes(filter))
             .map((gif, i) => (
-              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
               <img
                 key={gif.name}
                 src={gif.url}
