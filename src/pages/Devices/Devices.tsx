@@ -76,6 +76,7 @@ const Devices = () => {
     if (graphs && graphsMulti) {
       setPixelGraphs(Object.keys(virtuals))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti, setPixelGraphs])
 
   return (

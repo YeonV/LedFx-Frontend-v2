@@ -29,6 +29,7 @@ export default function ScenesMostUsed({
 
   useEffect(() => {
     Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, count])
 
   const columns: GridColDef[] = [

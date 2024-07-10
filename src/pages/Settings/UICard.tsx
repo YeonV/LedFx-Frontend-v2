@@ -41,6 +41,7 @@ const UICard = () => {
 
   useEffect(() => {
     getSystemConfig()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const schemaTransmissionMode = useStore(

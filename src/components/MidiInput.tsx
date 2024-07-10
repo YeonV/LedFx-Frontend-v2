@@ -83,6 +83,7 @@ const MIDIListener = () => {
       // webSocket.removeEventListener('open', handleOpen)
       webSocket.removeEventListener('message', handleMessage)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, sceneDialogOpen])
 
   return null

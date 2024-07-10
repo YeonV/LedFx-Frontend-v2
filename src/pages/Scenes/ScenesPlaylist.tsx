@@ -51,6 +51,7 @@ export default function ScenesPlaylist({
   let timer = null as any
   useEffect(() => {
     if (scenePLplay && timer === null) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       timer = setTimeout(() => {
         if (scenePL[scenePLactiveIndex + 1])
           activateScene(scenePL[scenePLactiveIndex + 1])
@@ -72,6 +73,7 @@ export default function ScenesPlaylist({
         setScenePLactiveIndex(-1)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenePLplay, scenePLactiveIndex])
 
   const columns: GridColDef[] = [

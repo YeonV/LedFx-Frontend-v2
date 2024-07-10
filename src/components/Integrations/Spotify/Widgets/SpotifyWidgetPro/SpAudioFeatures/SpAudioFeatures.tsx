@@ -54,6 +54,7 @@ export default function SpAudioFeatures() {
         setSpotifyData('Artist', res)
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta])
 
   const audioFeaturesKey = () => {

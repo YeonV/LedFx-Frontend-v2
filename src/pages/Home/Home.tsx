@@ -60,6 +60,7 @@ export default function Home() {
     return () => {
       document.removeEventListener('device_created', handleWebsockets)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

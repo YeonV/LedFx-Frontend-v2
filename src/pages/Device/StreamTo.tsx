@@ -63,6 +63,7 @@ const StreamToCard = ({
         cref.current = virtuals[virtual.id]?.effect
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals[virtual.id]?.effect])
 
   return (

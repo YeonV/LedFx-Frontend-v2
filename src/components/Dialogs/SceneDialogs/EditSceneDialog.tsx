@@ -85,6 +85,7 @@ const EditSceneDialog = () => {
       ic.split('image:')[1]?.replaceAll('file:///', '')
     )
     setImageData(result.image)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -219,6 +220,7 @@ const EditSceneDialog = () => {
     getLedFxPresets().then(setLedFxPresets)
     getUserPresets().then(setUserPresets)
     if (open) activateScene(data.name?.toLowerCase().replaceAll(' ', '-'))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
   useEffect(() => {
@@ -247,6 +249,7 @@ const EditSceneDialog = () => {
         }
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const renderPresets = (

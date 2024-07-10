@@ -70,6 +70,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
       }
     }
     if (spAuthenticated && integrations[integration].status === 1) getMe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [integrations[integration].status, spAuthenticated])
 
   return integrations[integration]?.config ? (

@@ -66,7 +66,7 @@ const EffectTypeDialog = ({
         )
         .filter((e: any) => !!e?.value)
     ],
-    [groups, formats]
+    [groups]
   )
 
   return (

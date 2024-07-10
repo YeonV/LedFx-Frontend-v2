@@ -29,7 +29,7 @@ export default function App() {
   const getSchemas = useStore((state) => state.getSchemas)
   const shutdown = useStore((state) => state.shutdown)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
-  const darkMode = useStore((state) => state.ui.darkMode)
+  // const darkMode = useStore((state) => state.ui.darkMode)
   const setCoreParams = useStore((state) => state.setCoreParams)
   const setCoreStatus = useStore((state) => state.setCoreStatus)
 
@@ -52,7 +52,7 @@ export default function App() {
           //     },
         }
       }),
-    [darkMode]
+    []
   )
 
   useEffect(() => {
@@ -65,6 +65,7 @@ export default function App() {
     initFrontendConfig()
 
     console.info(
+      // eslint-disable-next-line no-useless-concat
       '%c Ledfx ' + '%c\n ReactApp by Blade ',
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
@@ -121,7 +122,7 @@ export default function App() {
     return () => {
       document.removeEventListener('show_message', handleWebsockets)
     }
-  }, [])
+  }, [showSnackbar])
 
   useEffect(() => {
     if (protoCall !== '') {
@@ -152,7 +153,7 @@ export default function App() {
       }
       setProtoCall('')
     }
-  }, [protoCall, showSnackbar])
+  }, [protoCall, showSnackbar, setProtoCall])
 
   return (
     <ThemeProvider theme={theme}>

@@ -84,6 +84,7 @@ export default function NoHostDialog() {
       // eslint-disable-next-line no-self-assign
       window.location.href = window.location.href
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

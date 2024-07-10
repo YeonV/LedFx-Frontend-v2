@@ -135,11 +135,8 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     }
     triggersNew.sort((a, b) => a.position_ms - b.position_ms)
     setCurrentTriggers(triggersNew)
-  }, [
-    spotifyState?.track_window?.current_track?.id,
-    sceneTriggers.length,
-    spState?.item?.id
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spotifyState?.track_window?.current_track?.id,sceneTriggers.length,spState?.item?.id])
 
   useEffect(() => {
     if (
@@ -166,7 +163,9 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     const update = setInterval(updateState, 1000)
 
     return () => clearInterval(update)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, spotifyState?.paused, integrations])
+
   useEffect(() => {
     if (integrations.spotify?.status === 0 || !integrations.spotify?.active)
       return
@@ -233,6 +232,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     if (!spotifyAuthToken && player) {
       setPlayer(undefined)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spotifyAuthToken, integrations.spotify?.active])
 
   if (currentSceneTriggers.length > 0) {

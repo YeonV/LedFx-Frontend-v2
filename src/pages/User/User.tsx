@@ -205,6 +205,7 @@ const User = () => {
         setTrophies((s) => ({ ...s, contributor: 0 }))
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [starred, cloudEffects, setTrophies])
 
   useEffect(() => {
@@ -214,6 +215,7 @@ const User = () => {
       getCloudConfigs()
     }
     hasStarred()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

@@ -242,6 +242,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         })
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /**
@@ -277,13 +278,14 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         setM(updatedM)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [points])
 
   return (
     <MWrapper move={dnd}>
       <Stack direction="column" spacing={2}>
         <Button
-          disabled
+          // disabled={features.matrix_cam}
           onClick={() => {
             setShowPixelGraph(!showPixelGraph)
           }}
