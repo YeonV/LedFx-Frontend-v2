@@ -17,7 +17,7 @@ const MessageBar = () => {
     if (typeof message === 'string' && message.startsWith('Created Virtual ')) {
       setCurrentVirtual(message.replace('Created Virtual ', ''))
     }
-  }, [message])
+  }, [message, setCurrentVirtual])
 
   return (
     <Snackbar

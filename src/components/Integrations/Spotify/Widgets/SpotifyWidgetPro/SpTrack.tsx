@@ -32,6 +32,7 @@ export default function SpTrack({ className }: any) {
         setPlaylist(r.items)
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spotifyCtx?.context?.metadata?.uri, spCtx?.context?.uri])
 
   const album =

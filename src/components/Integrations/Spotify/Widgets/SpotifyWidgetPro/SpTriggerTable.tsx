@@ -97,6 +97,7 @@ export default function SpotifyTriggerTable() {
   useEffect(() => {
     getSpTriggers()
     getScenes()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Here we get the current triggers from list and set to global state
@@ -130,6 +131,7 @@ export default function SpotifyTriggerTable() {
       })
       addToSpTriggerList(triggersNew, 'create')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [integrations])
 
   const updateSpTrigger = (rowData: any, val: any) => {

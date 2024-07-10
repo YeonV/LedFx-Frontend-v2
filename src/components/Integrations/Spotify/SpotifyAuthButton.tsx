@@ -73,6 +73,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     if (cookies.get('access_token')) {
       setspAuthenticated(true)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const beginAuth = () => {
     cookies.set('verifier', (codes as any).verifier)
@@ -112,6 +113,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
         console.warn(err)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -121,6 +123,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     } else {
       setspAuthenticated(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cookies])
 
   return !spAuthenticated ? (

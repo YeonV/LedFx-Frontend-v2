@@ -172,6 +172,7 @@ const MGraph = () => {
     return () => {
       document.removeEventListener('graph_update', handleWebsockets)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [animationDuration, fillOpacity, scaleType])
 
   return (

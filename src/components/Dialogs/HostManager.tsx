@@ -83,6 +83,7 @@ export default function HostManager() {
   useEffect(() => {
     if (storedURL) setHostvalue(storedURL)
     if (storedURLs) setHosts(storedURLs)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storedURL, setHosts])
 
   useEffect(() => {
@@ -101,6 +102,7 @@ export default function HostManager() {
       // eslint-disable-next-line no-self-assign
       window.location.href = window.location.href
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const runningCores = Object.keys(coreStatus)
     .filter((h) => coreStatus[h] === 'running')
@@ -158,6 +160,7 @@ export default function HostManager() {
     }
 
     getCommonScenes(runningCores).then((res) => setCommonScenes(res))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coreStatus, coreParams])
   // console.log(commonScenes)
   const activateCommon = async (scene: string) => {

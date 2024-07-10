@@ -29,6 +29,7 @@ const Graph = () => {
   useEffect(() => {
     const v = getV()
     if (v) setVirtual(v)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId])
 
   const effectType = virtual && virtual.effect.type
@@ -39,6 +40,7 @@ const Graph = () => {
     if (graphs && virtId) {
       setPixelGraphs([virtId])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType])
 
   // console.log('virtual', virtual?.effect?.config)

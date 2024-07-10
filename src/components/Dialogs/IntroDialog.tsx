@@ -87,6 +87,7 @@ export default function IntroDialog({
 
   useEffect(() => {
     getSystemConfig()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [s, setS] = useState({} as Record<string, 'left' | 'right'>)
@@ -250,6 +251,7 @@ export default function IntroDialog({
     ].filter((n: any) => n !== false)
 
     setSteps(ste)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [s, graphsMulti, assistant])
 
   return (

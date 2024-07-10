@@ -218,6 +218,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
         })
       )
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pad0, pad1, pad2, pad3])
 
   return gp ? (

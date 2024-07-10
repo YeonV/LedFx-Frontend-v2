@@ -22,6 +22,7 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
 
   useEffect(() => {
     if (otp.length === 6) handleSubmit()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otp])
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
         }
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!isElectron()) return null

@@ -115,7 +115,7 @@ const steps = [
         <h2>Transitions</h2>
         <p>Finetune how LedFx change from one effect to another</p>
         <div style={{ display: 'flex' }}>
-          <img src={gif} />
+          <img src={gif} alt="gif" />
         </div>
       </div>
     ),
@@ -138,6 +138,7 @@ const TourSettings = ({ cally }: any) => {
     if (isTourOpen && settingsExpanded !== 'all') {
       setSettingsExpanded('all')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTourOpen])
 
   return (

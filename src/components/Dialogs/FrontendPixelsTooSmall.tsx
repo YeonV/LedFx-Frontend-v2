@@ -62,11 +62,13 @@ export default function FrontendPixelsTooSmall() {
 
   useEffect(() => {
     getSystemConfig()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     getSystemConfig()
     setPixelLength(fPixels)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fPixels])
 
   return (

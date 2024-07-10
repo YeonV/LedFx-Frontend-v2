@@ -36,6 +36,7 @@ export default function QLCTriggerTable() {
 
   useEffect(() => {
     getQLCWidgets()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Here we get the current triggers from list and set to global state
@@ -96,6 +97,7 @@ export default function QLCTriggerTable() {
       })
       addToQLCTriggerList(triggersNew, 'create')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [integrations])
 
   const deleteTriggerHandler = (paramsTemp: any) => {

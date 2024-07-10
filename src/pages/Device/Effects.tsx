@@ -105,6 +105,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   useEffect(() => {
     const v = getV()
     if (v) setVirtual(v)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(virtuals[virtId])])
 
   const effectType = virtual && virtual.effect.type
@@ -154,6 +155,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (graphs) {
       setPixelGraphs([virtId])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType])
 
   useEffect(() => {
@@ -171,16 +173,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
       setTheModel(virtual?.effect.config)
     }
-  }, [
-    virtuals,
-    virtuals[virtId],
-    virtuals[virtId]?.effect,
-    JSON.stringify(virtuals[virtId]?.effect?.config),
-    virtual,
-    virtual?.effect,
-    virtual?.effect.config,
-    effectType
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [virtuals,virtuals[virtId],virtuals[virtId]?.effect,JSON.stringify(virtuals[virtId]?.effect?.config),virtual,virtual?.effect,virtual?.effect.config,effectType])
 
   // console.log('virtual', virtual?.effect?.config)
   return (

@@ -46,10 +46,12 @@ const GifFramePicker: FC<GifFramePickerProps> = ({
   const fetchImage = useCallback(async (ic: string) => {
     const result = await getGifFrames(ic)
     setImageData(result.frames)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     fetchImage(model.image_location)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

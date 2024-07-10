@@ -101,6 +101,7 @@ const AvatarPicker = ({
         console.error(e)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -109,6 +110,7 @@ const AvatarPicker = ({
         .then(() => console.log('indexedDB setup complete'))
         .catch((e) => console.error('indexedDb error:', e))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { getByID, update } =

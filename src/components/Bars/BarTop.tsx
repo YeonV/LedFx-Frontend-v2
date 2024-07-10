@@ -261,7 +261,7 @@ const TopBar = () => {
 
   useEffect(() => {
     setIsLogged(!!localStorage.getItem('jwt'))
-  }, [pathname])
+  }, [pathname, setIsLogged])
 
   const getUpdateInfo = useStore((state) => state.getUpdateInfo)
 
@@ -295,7 +295,7 @@ const TopBar = () => {
     }
 
     checkForUpdates()
-  }, [updateNotificationInterval])
+  }, [updateNotificationInterval, getUpdateInfo, latestTag])
 
   useEffect(() => {
     const latest = async () => {
@@ -306,6 +306,7 @@ const TopBar = () => {
       return resp.tag_name as string
     }
     latest().then((r) => r !== latestTag && setLatestTag(r))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -326,6 +327,7 @@ const TopBar = () => {
     return () => {
       document.removeEventListener('disconnected', handleDisconnect)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

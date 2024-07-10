@@ -129,12 +129,14 @@ export const HandleWs = () => {
     if (!(pathname.startsWith('/Devices') || pathname.startsWith('/device'))) {
       setPixelGraphs([])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
   useLayoutEffect(() => {
     if (!graphs || !graphsMulti) {
       setPixelGraphs([])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti])
 
   useEffect(() => {
@@ -171,6 +173,7 @@ export const HandleWs = () => {
         })
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsReady, pixelGraphs])
 
   if (!wsReady) {

@@ -94,6 +94,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
     if (webAud) {
       getMedia(clientDevice).then((stream) => {
         if (stream) {
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           s = stream
           if (!audioContext || audioContext.state === 'closed') {
             return

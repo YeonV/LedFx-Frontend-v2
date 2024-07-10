@@ -30,6 +30,7 @@ const Settings = () => {
     if (loc.search.indexOf('ui') > -1) {
       setSettingsExpanded('panel2')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc])
 
   return (

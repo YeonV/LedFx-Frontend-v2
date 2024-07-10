@@ -10,6 +10,7 @@ const AudioCard = ({ className }: any) => {
 
   useEffect(() => {
     getSystemConfig()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

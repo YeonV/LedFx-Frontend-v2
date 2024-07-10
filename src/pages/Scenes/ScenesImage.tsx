@@ -14,6 +14,7 @@ const SceneImage = ({ iconName }: { iconName: string }) => {
       ic.split('image:')[1]?.replaceAll('file:///', '')
     )
     if (result?.image) setImageData(result.image)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
     if (iconName?.startsWith('image:')) {
