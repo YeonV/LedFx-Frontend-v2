@@ -29,7 +29,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
       handleRangeSegment(newValue[0], newValue[1])
     }
   }
-  // eslint-disable-next-line
+
   const throttled = useThrottledCallback(handleChange, 100)
 
   const marks = [

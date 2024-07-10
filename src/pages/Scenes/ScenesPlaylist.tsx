@@ -106,7 +106,7 @@ export default function ScenesPlaylist({
       headerName: 'Remove',
       width: 120,
       renderCell: (params: GridRenderCellParams) => {
-        const removeScene2PL = useStore((state) => state.removeScene2PL) // eslint-disable-line
+        const removeScene2PL = useStore((state) => state.removeScene2PL)
         return (
           <Button
             onClick={() => removeScene2PL(params.id as number)}

@@ -112,7 +112,7 @@ const AvatarPicker = ({
   }, [])
 
   const { getByID, update } =
-    newStorage === 'indexedDb' && !setAvatar // eslint-disable-next-line
+    newStorage === 'indexedDb' && !setAvatar
       ? useIndexedDBStore('avatars')
       : { getByID: null, update: null }
 
