@@ -102,7 +102,7 @@ AddDeviceAdaLight.args = {
     required: ['name', 'com_port', 'baudrate', 'pixel_count', 'color_order']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -169,7 +169,7 @@ AddDeviceWLED.args = {
     required: ['name', 'ip_address']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -261,7 +261,7 @@ AddDeviceUDP.args = {
     required: ['name', 'ip_address', 'pixel_count', 'port', 'udp_packet_type']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -365,7 +365,7 @@ AddVirtual.args = {
     required: ['name', 'mapping']
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }
@@ -426,7 +426,7 @@ AudioCard.args = {
     required: []
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }

@@ -36,6 +36,7 @@ import moveSelectedGroupLeft from './Actions/moveSelectedGroupLeft'
 import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
 import useStore from '../../../../store/useStore'
+import Webcam from '../../../../components/Webcam/Webcam'
 // import useStore from '../../../../store/useStore'
 
 const MControls = ({
@@ -72,6 +73,7 @@ const MControls = ({
   const [tab, setTab] = useState('1')
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
+  const features = useStore((state) => state.features)
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') setDnd(false)
@@ -344,6 +346,7 @@ const MControls = ({
           </Alert>
         </TabPanel>
       </TabContext>
+      {features.matrix_cam && <Webcam rowN={rowN} colN={colN} />}
     </Stack>
   )
 }

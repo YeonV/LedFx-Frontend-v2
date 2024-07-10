@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { createContext, useEffect, useMemo, useState } from 'react'
 
 import { SpotifyState } from '../../../store/ui/SpotifyState'

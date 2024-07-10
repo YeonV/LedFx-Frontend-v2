@@ -42,7 +42,7 @@ Default.args = {
     required: []
   },
   model: {},
-  // eslint-disable-next-line
+
   onModelChange: (e) => console.log(e),
   hideToggle: false
 }

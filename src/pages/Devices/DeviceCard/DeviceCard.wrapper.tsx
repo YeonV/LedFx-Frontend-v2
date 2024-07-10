@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import useStore from '../../../store/useStore'
@@ -31,8 +33,8 @@ const DeviceCardWrapper = ({
   const activateDevice = useStore((state) => state.activateDevice)
   const showMatrix = useStore((state) => state.showMatrix)
 
-  const [fade, setFade] = useState(false)
-  const [isActive, setIsActive] = useState<boolean>(
+  const [_fade, setFade] = useState(false)
+  const [_isActive, setIsActive] = useState<boolean>(
     (virtuals &&
       virtual &&
       virtuals[virtual] &&
@@ -42,7 +44,7 @@ const DeviceCardWrapper = ({
         devices[Object.keys(devices).find((d) => d === virtual) || '']
           ?.active_virtuals!.length > 0)
   )
-  console.log(fade, isActive)
+  // console.log(fade, isActive)
   const handleDeleteDevice = () => {
     deleteVirtual(virtuals[virtual]?.id).then(() => {
       getVirtuals()

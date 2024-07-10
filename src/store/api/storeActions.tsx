@@ -1,8 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-return-await */
-/* eslint-disable no-param-reassign */
-/* eslint-disable import/no-cycle */
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore, IOpenRgbDevice } from '../useStore'
@@ -25,23 +20,33 @@ const storeActions = (set: any) => ({
             type: 'openrgb',
             config: {
               icon_name:
-                d.type === 0 ? 'mdi:chip'
-              : d.type === 2 ? 'mdi:expansion-card-variant'
-              : d.type === 5 ? 'mdi:keyboard'
-              : d.type === 6 ? (d.name.includes('Razer') ? 'razer:mouse' : 'mouse')
-              : d.type === 8 ? 'mdi:headphones'
-              : d.type === 9 ? 'mdi:headphones-bluetooth'
-              : d.type === 10 ? 'sportsEsports'
-              : d.type === 12 ? 'mdi:speaker-wireless'
-              : 'mdi:led-strip',
+                d.type === 0
+                  ? 'mdi:chip'
+                  : d.type === 2
+                    ? 'mdi:expansion-card-variant'
+                    : d.type === 5
+                      ? 'mdi:keyboard'
+                      : d.type === 6
+                        ? d.name.includes('Razer')
+                          ? 'razer:mouse'
+                          : 'mouse'
+                        : d.type === 8
+                          ? 'mdi:headphones'
+                          : d.type === 9
+                            ? 'mdi:headphones-bluetooth'
+                            : d.type === 10
+                              ? 'sportsEsports'
+                              : d.type === 12
+                                ? 'mdi:speaker-wireless'
+                                : 'mdi:led-strip',
               center_offset: 0,
               refresh_rate: 64,
               openrgb_id: d.id,
               pixel_count: d.leds,
               port: 6742,
               name: d.name,
-              ip_address: '127.0.0.1',
-            },
+              ip_address: '127.0.0.1'
+            }
           })
       )
     }
@@ -65,8 +70,8 @@ const storeActions = (set: any) => ({
           rows: resp.device.rows,
           icon_name: 'launchpad',
           create_segments: resp.device.name === 'Launchpad X',
-          name: resp.device.name,
-        },
+          name: resp.device.name
+        }
       })
     }
     return false
@@ -103,22 +108,25 @@ const storeActions = (set: any) => ({
   shutdown: async () =>
     await Ledfx('/api/power', 'POST', {
       timeout: 0,
-      action: 'shutdown',
+      action: 'shutdown'
     }),
   restart: async () =>
     await Ledfx('/api/power', 'POST', {
       timeout: 0,
-      action: 'restart',
+      action: 'restart'
     }),
   getInfo: async () => await Ledfx('/api/info'),
-  getUpdateInfo: async (snackbar: boolean) => await Ledfx('/api/check_for_updates', 'GET', {}, snackbar),
+  getUpdateInfo: async (snackbar: boolean) =>
+    await Ledfx('/api/check_for_updates', 'GET', {}, snackbar),
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),
-  getImage: async (path_url: string) => await Ledfx('/api/get_image', 'POST', {
-    path_url
-  }),
-  getGifFrames: async (path_url: string) => await Ledfx('/api/get_gif_frames', 'POST', {
-    path_url
-  }),
+  getImage: async (path_url: string) =>
+    await Ledfx('/api/get_image', 'POST', {
+      path_url
+    }),
+  getGifFrames: async (path_url: string) =>
+    await Ledfx('/api/get_gif_frames', 'POST', {
+      path_url
+    })
 })
 
 export default storeActions

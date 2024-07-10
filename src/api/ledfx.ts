@@ -1,9 +1,8 @@
-/* eslint-disable no-param-reassign */
 import axios from 'axios'
 import { produce } from 'immer'
 import isElectron from 'is-electron'
 // import { useStore } from '@/store/useStore';
-// eslint-disable-next-line import/no-cycle
+
 import useStore from '../store/useStore'
 import type { IStore } from '../store/useStore'
 // eslint-disable-next-line prettier/prettier
@@ -14,7 +13,6 @@ const api = axios.create({
   baseURL: storedURL || baseURL
 })
 
-// eslint-disable-next-line import/prefer-default-export
 export const Ledfx = async (
   path: string,
   method?: 'GET' | 'PUT' | 'POST' | 'DELETE',

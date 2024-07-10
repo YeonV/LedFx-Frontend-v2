@@ -11,7 +11,6 @@ export const cloud = axios.create({
 })
 
 cloud.interceptors.request.use((config) => {
-  // eslint-disable-next-line no-param-reassign
   config.headers.Authorization = `Bearer ${localStorage.getItem('jwt')}`
   return config
 })

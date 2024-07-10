@@ -39,11 +39,11 @@ const DeviceCard = ({
   effectName = undefined,
   virtId = 'yz-quad',
   index = 1,
-  handleDeleteDevice = () => console.log('DELETING DEVICE'), // eslint-disable-line no-console
-  handleEditVirtual = () => console.log('EDITING VIRTUAL'), // eslint-disable-line no-console
-  handleEditDevice = () => console.log('EDITING DEVICE'), // eslint-disable-line no-console
-  handleClearEffect = () => console.log('CLEARING EFFECT'), // eslint-disable-line no-console
-  handlePlayPause = () => console.log('PLAY/PAUSE'), // eslint-disable-line no-console
+  handleDeleteDevice = () => console.log('DELETING DEVICE'),
+  handleEditVirtual = () => console.log('EDITING VIRTUAL'),
+  handleEditDevice = () => console.log('EDITING DEVICE'),
+  handleClearEffect = () => console.log('CLEARING EFFECT'),
+  handlePlayPause = () => console.log('PLAY/PAUSE'),
   linkTo = '/',
   additionalStyle = {},
   iconName = 'wled',
@@ -302,7 +302,7 @@ const DeviceCard = ({
             unmountOnExit
             className={classes.buttonBarMobile}
           >
-            {/* eslint-disable-next-line */}
+            {}
             <div
               className={`${classes.buttonBarMobileWrapper} ${
                 !graphsActive ? 'graphs' : ''

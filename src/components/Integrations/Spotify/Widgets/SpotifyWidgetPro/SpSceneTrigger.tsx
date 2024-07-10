@@ -45,7 +45,6 @@ export default function SpSceneTrigger() {
   const onConfirmHandler = (spotifyTriggerDataTemp: any) => {
     player.getCurrentState().then((state: any) => {
       if (!state) {
-        // eslint-disable-next-line no-console
         console.error('User is not playing music through the Web Playback SDK')
 
         // return

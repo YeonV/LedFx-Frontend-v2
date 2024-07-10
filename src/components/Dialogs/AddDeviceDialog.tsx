@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable guard-for-in */
+ 
+ 
 /* eslint-disable no-unused-expressions */
 import { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'

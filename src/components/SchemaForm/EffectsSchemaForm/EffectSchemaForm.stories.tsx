@@ -154,7 +154,6 @@ EffectForm.args = {
     flip: false
   },
   handleEffectConfig: (e: any) => {
-    // eslint-disable-next-line no-console
     console.log('Update Effect', e)
     return true
   }

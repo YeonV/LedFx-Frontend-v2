@@ -1,6 +1,3 @@
-/* eslint-disable no-promise-executor-return */
-
-/* eslint-disable no-await-in-loop */
 import { useEffect, useState } from 'react'
 
 import { useSnackbar } from 'notistack'

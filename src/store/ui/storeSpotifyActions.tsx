@@ -1,5 +1,3 @@
-/* eslint-disable default-case */
-/* eslint-disable no-param-reassign */
 import { produce } from 'immer'
 import { SpotifyState } from './SpotifyState'
 import type { IStore } from '../useStore'

@@ -1,4 +1,5 @@
-/* eslint-disable react/jsx-no-useless-fragment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import { makeStyles, styled } from '@mui/styles'
 import {
   Accordion,

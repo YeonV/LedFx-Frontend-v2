@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-console */
 
-/* eslint-disable func-names */
 import {
   Button,
   Fab,

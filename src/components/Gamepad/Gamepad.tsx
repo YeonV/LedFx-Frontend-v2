@@ -107,7 +107,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
         (k: any) => g[k]?.buttons[8].pressed && g[k]?.buttons[9].pressed
       )
     ) {
-      // eslint-disable-next-line no-alert
+       
       alert('DevMode activated!')
       setFeatures('dev', true)
     } else if (

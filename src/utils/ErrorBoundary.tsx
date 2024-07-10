@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
@@ -20,7 +19,6 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // eslint-disable-next-line no-console
     console.warn(error, errorInfo)
   }
 

@@ -1,5 +1,3 @@
-import { Edit, GitHub } from '@mui/icons-material'
-
 const IStorage = ['localStorage', 'indexedDb', 'cloud', 'custom'] as const
 export const storageOptions = [
   'localStorage',

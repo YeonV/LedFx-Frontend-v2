@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import isElectron from 'is-electron'

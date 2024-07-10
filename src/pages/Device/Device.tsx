@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import { useEffect } from 'react'
 import { Grid, Typography } from '@mui/material'
 import { Link, useParams } from 'react-router-dom'

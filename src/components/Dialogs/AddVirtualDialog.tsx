@@ -1,6 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable guard-for-in */
 /* eslint-disable no-unused-expressions */
 import { useState, useEffect } from 'react'
 import {

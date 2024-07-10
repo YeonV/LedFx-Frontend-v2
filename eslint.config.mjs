@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import prettier from 'eslint-plugin-prettier'
 import tsParser from '@typescript-eslint/parser'
@@ -20,14 +19,14 @@ export default [
     ignores: ['**/build/*', '**/*.js', '**/*.jsx', 'extraResources/**']
   },
   ...compat.extends(
-    'airbnb',
+    'standard',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended'
   ),
   {
     plugins: {
       '@typescript-eslint': typescriptEslint,
-      prettier
+      'prettier/prettier': prettier
     },
 
     languageOptions: {
@@ -50,8 +49,20 @@ export default [
       'typescript.format.semicolons': 'remove',
       'javascriptscript.format.semicolons': 'remove'
     },
-
+    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
     rules: {
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_'
+        }
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_'
+        }
+      ],
       quotes: [2, 'single'],
       'max-len': [
         'error',
@@ -64,27 +75,6 @@ export default [
       ],
       'object-curly-newline': 'off',
       'comma-dangle': 'off',
-
-      'prettier/prettier': [
-        'error',
-        {
-          endOfLine: 'auto'
-        }
-      ],
-
-      'react/jsx-filename-extension': [
-        2,
-        {
-          extensions: ['.ts', '.tsx']
-        }
-      ],
-
-      // 'import/no-extraneous-dependencies': [
-      //   2,
-      //   {
-      //     devDependencies: ['**/test.tsx', '**/test.ts']
-      //   }
-      // ],
       'import/no-named-as-default': 0,
       'import/no-named-as-default-member': 0,
       'import/no-amd': 0,
@@ -105,15 +95,6 @@ export default [
       'react/no-array-index-key': 0,
       '@typescript-eslint/no-explicit-any': 0,
       '@prettier/trailing-comma': 0,
-      'no-unused-vars': 0,
-      // "no-unused-vars": ["error", {
-      //     argsIgnorePattern: "^_",
-      // }],
-
-      '@typescript-eslint/no-unused-vars': 0,
-      // "@typescript-eslint/no-unused-vars": ["error", {
-      //     argsIgnorePattern: "^_",
-      // }],
       'jsx-a11y/label-has-associated-control': 0
     }
   }

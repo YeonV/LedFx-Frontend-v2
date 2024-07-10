@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useEffect } from 'react'
 import { WebMidi, Input } from 'webmidi'
 import useStore from '../store/useStore'

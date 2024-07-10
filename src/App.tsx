@@ -63,15 +63,13 @@ export default function App() {
 
   useEffect(() => {
     initFrontendConfig()
-    // eslint-disable-next-line no-console
+
     console.info(
-      // eslint-disable-next-line no-useless-concat
       '%c Ledfx ' + '%c\n ReactApp by Blade ',
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
     )
     if (window.location.pathname.includes('hassio_ingress'))
-      // eslint-disable-next-line no-console
       console.info(
         '%c HomeAssistant detected ',
         'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
@@ -90,7 +88,6 @@ export default function App() {
       setPlatform(parameters[1])
     }
     if (parameters[0] === 'currentdir') {
-      // eslint-disable-next-line no-console
       console.log(parameters[1])
     }
     if (parameters[0] === 'protocol') {
@@ -130,7 +127,7 @@ export default function App() {
     if (protoCall !== '') {
       // showSnackbar('info', `External call: ${protoCall}`)
       const proto = protoCall.split('/').filter((n) => n)
-      // eslint-disable-next-line no-console
+
       console.table({
         Domain: proto[1],
         Action: proto[2],

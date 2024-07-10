@@ -179,7 +179,6 @@ const SchemaForm = ({
                     (type === 'mqtt_hass' && s.id === 'description')
                   ) && (
                     <BladeSelect
-                      // eslint-disable-next-line
                       children={undefined}
                       hideDesc={hideDesc}
                       type={type}

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { PaletteMode } from '@mui/material'
 import { createTheme, Theme } from '@mui/material/styles'
 import isElectron from 'is-electron'
@@ -21,8 +20,15 @@ export const common = {
   components: {
     MuiButton: {
       defaultProps: {
-         
-        color: 'inherit' as 'error' | 'success' | 'warning' | 'info' | 'inherit' | 'primary' | 'secondary' | undefined,
+        color: 'inherit' as
+          | 'error'
+          | 'success'
+          | 'warning'
+          | 'info'
+          | 'inherit'
+          | 'primary'
+          | 'secondary'
+          | undefined,
         variant: 'outlined' as 'contained' | 'outlined' | 'text' | undefined,
         size: 'small' as 'small' | 'medium' | 'large'
       },
@@ -240,15 +246,13 @@ export const ledfxThemes = {
   DarkPink: BladeDarkPinkTheme
 } as any
 
-/* eslint-disable @typescript-eslint/indent */
 export const ledfxTheme =
   (window.localStorage.getItem('ledfx-theme')
     ? window.localStorage.getItem('ledfx-theme')
     : window.localStorage.getItem('hassTokens')
-    ? 'DarkBlue'
-    : window.location.origin === 'https://my.ledfx.app'
-    ? 'DarkGreen'
-    : isElectron()
-    ? 'DarkOrange'
-    : 'DarkBlue') || 'DarkBlue'
-/* eslint-enable @typescript-eslint/indent */
+      ? 'DarkBlue'
+      : window.location.origin === 'https://my.ledfx.app'
+        ? 'DarkGreen'
+        : isElectron()
+          ? 'DarkOrange'
+          : 'DarkBlue') || 'DarkBlue'

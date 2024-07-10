@@ -92,7 +92,7 @@ const GradientPicker = ({
             .replaceAll('background', 'bg')
             .replaceAll('name', '')}
       </label>
-      {/* eslint-disable-next-line */}
+      {}
       <div
         className={classes.picker}
         style={{ background: pickerBgColorInt }}

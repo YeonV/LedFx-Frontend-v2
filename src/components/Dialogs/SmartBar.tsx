@@ -68,7 +68,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
         }}
         onInputChange={(event, value) => {
           if (value === 'HackedByBlade!') {
-            // eslint-disable-next-line no-alert
             alert('DevMode activated!')
             setFeatures('dev', true)
           }
@@ -216,7 +215,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             </div>
           </Box>
         )}
-        // eslint-disable-next-line react/no-unstable-nested-components
         PaperComponent={({ children }) => (
           <Paper
             style={{
@@ -247,7 +245,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             style={{ borderRadius: '50%' }}
             label="SmartBar"
             placeholder="Jump to device / Activate scene"
-            // eslint-disable-next-line react/jsx-no-duplicate-props
             inputProps={{
               ...params.inputProps,
               autoComplete: 'off' // disable autocomplete and autofill

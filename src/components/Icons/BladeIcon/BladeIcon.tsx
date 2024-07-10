@@ -1,4 +1,3 @@
-/* eslint-disable react/no-danger */
 import { Icon } from '@mui/material'
 import Wled from '../Wled'
 import RazerMouse from '../RzrMouse'

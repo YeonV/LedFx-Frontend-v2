@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useEffect, useRef, useState } from 'react'
 import Cropper, { Area } from 'react-easy-crop'
 import { Delete, Edit, GitHub, Save, UploadFile } from '@mui/icons-material'
@@ -57,7 +56,7 @@ const AvatarPicker = ({
   const inputRef = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
 
-  const [newStorage, setNewStorage] = useState(storage)
+  const [newStorage] = useState(storage)
   const [imageSrc, setImageSrc] = useState<any>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [rotation, setRotation] = useState(0)
@@ -76,12 +75,11 @@ const AvatarPicker = ({
         `user-details?user.username=${localStorage.getItem('username')}`
       )
       if (response.status !== 200) {
-        // eslint-disable-next-line no-alert
         alert('No Access')
         return
       }
       const res = await response.data
-      // eslint-disable-next-line consistent-return
+
       return res
     } catch (e) {
       console.error(e)
@@ -152,7 +150,7 @@ const AvatarPicker = ({
         .then((res) => res.blob())
         .then((blob) => {
           const reader = new FileReader()
-          // eslint-disable-next-line func-names
+
           reader.onloadend = async function () {
             if (reader.result) {
               if (newStorage === 'custom' && setAvatar) {

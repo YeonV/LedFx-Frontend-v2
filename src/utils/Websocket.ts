@@ -1,6 +1,3 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable array-callback-return */
 
 import React, { useEffect, useLayoutEffect, useState } from 'react'

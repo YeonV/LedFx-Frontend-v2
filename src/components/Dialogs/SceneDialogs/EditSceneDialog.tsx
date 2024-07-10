@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable react/jsx-no-useless-fragment */
 import { useCallback, useEffect, useState } from 'react'
 import {
   AppBar,
@@ -232,7 +231,6 @@ const EditSceneDialog = () => {
       WebMidi.enable({
         callback(err: Error) {
           if (err) {
-            // eslint-disable-next-line no-console
             console.error('WebMidi could not be enabled:', err)
           } else {
             // Get all input devices

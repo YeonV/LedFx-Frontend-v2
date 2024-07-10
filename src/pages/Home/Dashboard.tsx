@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
 
-/* eslint-disable no-await-in-loop */
 import { useEffect, useState } from 'react'
 import {
   Box,
