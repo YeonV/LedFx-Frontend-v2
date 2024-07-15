@@ -13,6 +13,10 @@ import leftSnake from '../../../../assets/left-snake.svg'
 import leftFlip from '../../../../assets/left-flip.svg'
 import leftSnakeFlip from '../../../../assets/left-snake-flip.svg'
 import top from '../../../../assets/top.svg'
+import topRight from '../../../../assets/top-right.svg'
+import bottomRight from '../../../../assets/bottom-right.svg'
+import bottomLeft from '../../../../assets/bottom-left.svg'
+import topLeft from '../../../../assets/top-left.svg'
 import topSnake from '../../../../assets/top-snake.svg'
 import topFlip from '../../../../assets/top-flip.svg'
 import topSnakeFlip from '../../../../assets/top-snake-flip.svg'
@@ -331,6 +335,76 @@ const MFillSelector = ({
             <img width="30px" src={topSnakeFlip} alt="topSnakeFlip" />
           </div>
         </MenuItem>
+        <Divider />
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-top-right">
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >              
+            <div>
+              Diagonal
+              <Chip size="small" label="Up" variant="outlined" />
+              <Chip size="small" label="Right" variant="outlined" />
+            </div>
+            <img width="30px" src={topRight} alt="topRight" />
+          </div>
+        </MenuItem>
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-bottom-right">
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <div>
+              Diagonal
+              <Chip size="small" label="Down" variant="outlined" />
+              <Chip size="small" label="Right" variant="outlined" />
+            </div>
+            <img width="30px" src={bottomRight} alt="bottomRight" />
+          </div>
+        </MenuItem>
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-bottom-left">
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <div>
+              Diagonal
+              <Chip size="small" label="Down" variant="outlined" />
+              <Chip size="small" label="Left" variant="outlined" />
+            </div>
+            <img width="30px" src={bottomLeft} alt="bottomLeft" />
+          </div>
+        </MenuItem>
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-top-left">
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <div>
+              Diagonal
+              <Chip size="small" label="Up" variant="outlined" />
+              <Chip size="small" label="Left" variant="outlined" />
+            </div>
+            <img width="30px" src={topLeft} alt="topLeft" />
+          </div>
+        </MenuItem>
+
       </Select>
     </BladeFrame>
   )
