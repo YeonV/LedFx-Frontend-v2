@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.5624c565.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.ac4b9bb5.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.4126e580.js",
     "static/js/685.ebda9c6b.chunk.js": "/LedFx-Frontend-v2/static/js/685.ebda9c6b.chunk.js",
     "static/media/xmas.png": "/LedFx-Frontend-v2/static/media/xmas.3e4e83405d14fb81488b.png",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
@@ -15,25 +15,29 @@
     "static/media/blademod.svg": "/LedFx-Frontend-v2/static/media/blademod.f939f478785a84b3edcc820eef654556.svg",
     "index.html": "/LedFx-Frontend-v2/index.html",
     "static/media/FX.svg": "/LedFx-Frontend-v2/static/media/FX.2e579a36c78155284df077b2f54cc84b.svg",
-    "static/media/right-flip.svg": "/LedFx-Frontend-v2/static/media/right-flip.ee0c2c4f7beeb1dcafbae79eaa805136.svg",
-    "static/media/bottom.svg": "/LedFx-Frontend-v2/static/media/bottom.a21e0d9f6acb05338a47156a20180f84.svg",
-    "static/media/right.svg": "/LedFx-Frontend-v2/static/media/right.8775cfd22ed2818e1b16f081069c2923.svg",
-    "static/media/left-flip.svg": "/LedFx-Frontend-v2/static/media/left-flip.808e4757266de216d8a82803b30d9edb.svg",
-    "static/media/top-flip.svg": "/LedFx-Frontend-v2/static/media/top-flip.0b9db35d6f95c25e7514433a48e7532b.svg",
-    "static/media/left.svg": "/LedFx-Frontend-v2/static/media/left.6c63e1c7ab3b6eb5b529b2615d0b42b6.svg",
-    "static/media/bottom-flip.svg": "/LedFx-Frontend-v2/static/media/bottom-flip.3f4daf4d6d88070442ddb922d8960a2f.svg",
-    "static/media/top.svg": "/LedFx-Frontend-v2/static/media/top.536d9db34ef3c838ecc2aeffa8888c06.svg",
-    "static/media/right-snake-flip.svg": "/LedFx-Frontend-v2/static/media/right-snake-flip.f96ec7bde3c5a4cf0c2eca7baef5c9de.svg",
-    "static/media/bottom-snake-flip.svg": "/LedFx-Frontend-v2/static/media/bottom-snake-flip.06492dd29f4a94e351cdee23b75c0b65.svg",
-    "static/media/top-snake-flip.svg": "/LedFx-Frontend-v2/static/media/top-snake-flip.137043ab44b03dd6cc1169a753ca8b29.svg",
-    "static/media/top-snake.svg": "/LedFx-Frontend-v2/static/media/top-snake.ce42f1179932f64a49fefceb2d82e532.svg",
-    "static/media/left-snake.svg": "/LedFx-Frontend-v2/static/media/left-snake.d8ae12ecf500a501893152586ada57c5.svg",
-    "static/media/right-snake.svg": "/LedFx-Frontend-v2/static/media/right-snake.6983b692e38db714bf79b160724c257d.svg",
-    "static/media/bottom-snake.svg": "/LedFx-Frontend-v2/static/media/bottom-snake.edf71a8cc42801fc8b4a3434004bb8f6.svg",
-    "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.b0583a65e4b60342e3cdad0f6b0287f6.svg"
+    "static/media/right-flip.svg": "/LedFx-Frontend-v2/static/media/right-flip.333ebf75f0fd0acb954b88d922e3ac19.svg",
+    "static/media/bottom.svg": "/LedFx-Frontend-v2/static/media/bottom.79f0473144db3f40a3b90b0889337363.svg",
+    "static/media/right.svg": "/LedFx-Frontend-v2/static/media/right.4437fb1e43fe564bd36af3f80b309a8c.svg",
+    "static/media/left-flip.svg": "/LedFx-Frontend-v2/static/media/left-flip.e480ec339cb34df32d7412153a07216e.svg",
+    "static/media/top-flip.svg": "/LedFx-Frontend-v2/static/media/top-flip.16c423f83594173bc5d78a0345983929.svg",
+    "static/media/left.svg": "/LedFx-Frontend-v2/static/media/left.6fc7083f4cd641bf654b08a26f944457.svg",
+    "static/media/bottom-flip.svg": "/LedFx-Frontend-v2/static/media/bottom-flip.ca351932435166e77b4f79d8f60bc19e.svg",
+    "static/media/top.svg": "/LedFx-Frontend-v2/static/media/top.6afc5413907a8835fb28c65c2927530e.svg",
+    "static/media/bottom-left.svg": "/LedFx-Frontend-v2/static/media/bottom-left.c848fedc2cf975a03639f873c701251d.svg",
+    "static/media/bottom-right.svg": "/LedFx-Frontend-v2/static/media/bottom-right.4dce284267cee3a5fd26be79e2f0150f.svg",
+    "static/media/top-right.svg": "/LedFx-Frontend-v2/static/media/top-right.743c4f79f4eccef25cf772c7665c2cf7.svg",
+    "static/media/top-left.svg": "/LedFx-Frontend-v2/static/media/top-left.aa14327ce1c00dde7d5e0e2556542ebf.svg",
+    "static/media/right-snake-flip.svg": "/LedFx-Frontend-v2/static/media/right-snake-flip.b3333c6771d73adb6415dfe752af3c80.svg",
+    "static/media/bottom-snake-flip.svg": "/LedFx-Frontend-v2/static/media/bottom-snake-flip.31c9ebc7594a96a686cf410bc65371dd.svg",
+    "static/media/top-snake-flip.svg": "/LedFx-Frontend-v2/static/media/top-snake-flip.4ac4f4730616467aeaf4461771bfa2cc.svg",
+    "static/media/top-snake.svg": "/LedFx-Frontend-v2/static/media/top-snake.855c837598a62a68d139910f0e0b9ba4.svg",
+    "static/media/left-snake.svg": "/LedFx-Frontend-v2/static/media/left-snake.77e313afd0b58fc57bc1b98df60eacfd.svg",
+    "static/media/right-snake.svg": "/LedFx-Frontend-v2/static/media/right-snake.48646339a693661b2cbfb01036d4347d.svg",
+    "static/media/bottom-snake.svg": "/LedFx-Frontend-v2/static/media/bottom-snake.9b9a83d44ad5de6f52df46864a7815b8.svg",
+    "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.866a1a9f220801e888735cdfa6f22698.svg"
   },
   "entrypoints": [
     "static/css/main.5624c565.css",
-    "static/js/main.ac4b9bb5.js"
+    "static/js/main.4126e580.js"
   ]
 }
