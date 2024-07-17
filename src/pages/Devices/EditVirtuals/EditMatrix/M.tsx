@@ -24,6 +24,7 @@ import hexColor from './Actions/hexColor'
 import MContextMenu from './MContextMenu'
 import AssignPixelDialog from './AssignPixelDialog'
 import { Ledfx } from '../../../../api/ledfx'
+import Tour2dVirtual from '../../../../components/Tours/Tour2dVirtual'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
@@ -284,21 +285,24 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   return (
     <MWrapper move={dnd}>
       <Stack direction="column" spacing={2}>
-        <Button
-          // disabled={features.matrix_cam}
-          onClick={() => {
-            setShowPixelGraph(!showPixelGraph)
-          }}
-        >
-          {showPixelGraph ? 'Hide' : 'Show'} Pixel Graph
-        </Button>
-        <Button
-          onClick={() => {
-            setM(reverseProcessArray(virtual.segments, colN))
-          }}
-        >
-          Import From Segments
-        </Button>
+        <Tour2dVirtual />
+        <Stack direction="column" spacing={2} className='step-2d-virtual-two'>
+          <Button
+            // disabled={features.matrix_cam}
+            onClick={() => {
+              setShowPixelGraph(!showPixelGraph)
+            }}
+          >
+            {showPixelGraph ? 'Hide' : 'Show'} Pixel Graph
+          </Button>
+          <Button
+            onClick={() => {
+              setM(reverseProcessArray(virtual.segments, colN))
+            }}
+          >
+            Import From Segments
+          </Button>
+        </Stack>
         <MControls
           dnd={dnd}
           setDnd={setDnd}
