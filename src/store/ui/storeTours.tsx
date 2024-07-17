@@ -8,6 +8,7 @@ type ITours =
   | 'integrations'
   | 'scenes'
   | 'settings'
+  | '2d-virtual'
 
 const storeTours = (set: any) => ({
   tours: {
@@ -17,7 +18,8 @@ const storeTours = (set: any) => ({
     effect: false,
     integrations: false,
     scenes: false,
-    settings: false
+    settings: false,
+    '2d-virtual': false
   },
   setTour: (tour: ITours): void =>
     set(

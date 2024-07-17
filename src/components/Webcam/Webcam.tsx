@@ -33,8 +33,6 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
     (d) => devices[d].config.ip_address === wledIp
   )
   const setWledIp = useStore((state) => state.setWledIp)
-  // const [imageSrc, setImageSrc] = useState('')
-  // const [imageSrcs, setImageSrcs] = useState<string[]>([])
   const [threshold, setThreshold] = useState(128)
   const [singleLed, setSingleLed] = useState(0)
   const [baseImage, setBaseImage] = useState('')
@@ -79,18 +77,9 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
       }
     }
     getCount()
-    // return () => {
-    //   setIp('')
-    //   setWledIp('')
-    //   setMaxLed(0)
-    // }
   }, [wledIp])
 
-  // useEffect(() => {
-  //   setIp('')
-  //   setWledIp('')
-  //   setMaxLed(0)
-  // }, [])
+
 
   useEffect(() => {
     let animationFrameId: number | null = null
@@ -170,7 +159,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         width: 400
       }}
     >
-      <FormControl fullWidth>
+      <FormControl fullWidth className='step-2d-virtual-seven'>
         <InputLabel id="wled">WLED Devices</InputLabel>
         {wledIps.length > 0 && (
           <Select
@@ -198,7 +187,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         value={ip}
         onChange={(e) => setIp(e.target.value)}
       />
-      <FormControl fullWidth>
+      <FormControl fullWidth  className='step-2d-virtual-eight'>
         <InputLabel id="camera">Camera</InputLabel>
         <Select
           label="Camera"
@@ -220,15 +209,17 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
             const img = await initialize(capture)
             setBaseImage(img)
           }}
+           className='step-2d-virtual-nine'
         >
           Initialize
         </Button>
-        <Button onClick={() => setIsAdjusting(!isAdjusting)}>
+        <Button onClick={() => setIsAdjusting(!isAdjusting)} className='step-2d-virtual-ten'>
           {isAdjusting ? 'Stop Adjust' : 'Adjust'}
         </Button>
         <Button
           disabled={isCalibrating || !isAdjusting}
           onClick={() => setIsCalibrating(true)}
+           className='step-2d-virtual-eleven'
         >
           {isCalibrating ? 'Calibrating' : 'Calibrate'}
         </Button>
@@ -240,23 +231,9 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         audio={false}
         videoConstraints={{ deviceId }}
       />
-      {/* <Button
-        onClick={async () => {
-          const img = await capture()
-          setImageSrc(img)
-        }}
-      >
-        Capture
-      </Button>
-      Capture:
-      {imageSrc && <img src={imageSrc} alt="webcam" />} */}
-      {/* Test Images
-      {imageSrcs.map((img, key) => (
-        <img key={key} src={img} alt="webcam" />
-      ))} */}
       <br />
       {!isCalibrating && !isAdjusting && (
-        <>
+        <Stack direction="column" className='step-2d-virtual-twelve'>
           <Stack direction="row" spacing={2}>
             <Typography width={120}>Cut Top</Typography>
             <Slider
@@ -293,10 +270,10 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
               onChange={(_, v) => setIgnoreRight(v as number)}
             />
           </Stack>
-        </>
+        </Stack>
       )}
       {!isCalibrating && isAdjusting && (
-        <>
+        <Stack direction={'column'} className='step-2d-virtual-thirteen'>
           <Stack direction="row" spacing={2}>
             <Typography width={120}>Led</Typography>
             <Slider
@@ -331,7 +308,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
               onChange={(_, v) => setThreshold(v as number)}
             />
           </Stack>
-        </>
+        </Stack>
       )}
 
       {!isAdjusting && (

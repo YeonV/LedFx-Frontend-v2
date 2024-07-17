@@ -118,43 +118,51 @@ const MControls = ({
         justifyContent="flex-start"
         alignItems="flex-start"
       >
-        <Stack direction="row" width={400} justifyContent="space-between">
-          <Typography width={100} variant="body1">
-            Rows:
-          </Typography>
-          <Box width={250}>
-            <Slider
-              min={1}
-              max={50}
-              value={rowN}
-              onChange={(e, newRowNumber) =>
-                typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
-              }
-            />
-          </Box>
-          {rowN}
-        </Stack>
-        <Stack direction="row" width={400} justifyContent="space-between">
-          <Typography width={100} variant="body1">
-            Columns:
-          </Typography>
-          <Box width={250}>
-            <Slider
-              min={1}
-              max={50}
-              value={colN}
-              onChange={(e, newColNumber) =>
-                typeof newColNumber === 'number' && setColNumber(newColNumber)
-              }
-            />
-          </Box>
-          {colN}
+        <Stack
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="flex-start"
+          className='step-2d-virtual-three'
+        >
+          <Stack direction="row" width={400} justifyContent="space-between">
+            <Typography width={100} variant="body1">
+              Rows:
+            </Typography>
+            <Box width={250}>
+              <Slider
+                min={1}
+                max={50}
+                value={rowN}
+                onChange={(e, newRowNumber) =>
+                  typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
+                }
+              />
+            </Box>
+            {rowN}
+          </Stack>
+          <Stack direction="row" width={400} justifyContent="space-between">
+            <Typography width={100} variant="body1">
+              Columns:
+            </Typography>
+            <Box width={250}>
+              <Slider
+                min={1}
+                max={50}
+                value={colN}
+                onChange={(e, newColNumber) =>
+                  typeof newColNumber === 'number' && setColNumber(newColNumber)
+                }
+              />
+            </Box>
+            {colN}
+          </Stack>
         </Stack>
         <Stack
           direction="row"
           width={400}
           justifyContent="space-between"
           margin="1rem 0"
+          className='step-2d-virtual-four'
         >
           <Stack direction="row" justifyContent="flex-start">
             <Button
@@ -218,7 +226,7 @@ const MControls = ({
           </Stack>
         </Stack>
       </Stack>
-      <Box>
+      <Box className='step-2d-virtual-five'>
         <Tab
           icon={<ControlCamera />}
           iconPosition="start"
@@ -305,7 +313,7 @@ const MControls = ({
         </Alert>
       )}
       <TabContext value={tab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='step-2d-virtual-six'>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab
               icon={<PanTool />}
