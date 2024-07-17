@@ -13,7 +13,7 @@ import Webc from 'react-webcam'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useStore from '../../store/useStore'
 import { adjust, calibrate, initialize, preadjust } from './pixelMapper'
-import { getLedCount, oneLed } from './pixelUtils'
+import { getLedCount, oneLed, setWledBrightness } from './pixelUtils'
 
 const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
   const webcamRef = useRef<any>(null)
@@ -44,6 +44,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
   const [ignoreLeft, setIgnoreLeft] = useState(0)
   const [ignoreBottom, setIgnoreBottom] = useState(0)
   const [ignoreRight, setIgnoreRight] = useState(0)
+  const [brightness, setBrightness] = useState(255)
 
   const isCalibrating = useStore((state) => state.videoMapper.calibrating)
   const setIsCalibrating = useStore((state) => state.setCalibrating)
@@ -297,15 +298,6 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
       {!isCalibrating && isAdjusting && (
         <>
           <Stack direction="row" spacing={2}>
-            <Typography width={120}>Threshold</Typography>
-            <Slider
-              min={0}
-              max={255}
-              value={threshold}
-              onChange={(_, v) => setThreshold(v as number)}
-            />
-          </Stack>
-          <Stack direction="row" spacing={2}>
             <Typography width={120}>Led</Typography>
             <Slider
               min={0}
@@ -316,6 +308,27 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
                 setSingleLed(v as number)
                 oneLed(v as number)
               }}
+            />
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <Typography width={120}>Brightness</Typography>
+            <Slider
+              min={0}
+              max={255}
+              value={brightness}
+              onChange={(_, v) => {
+                setBrightness(v as number)
+                setWledBrightness(v as number)
+              }}
+            />
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <Typography width={120}>Threshold</Typography>
+            <Slider
+              min={0}
+              max={255}
+              value={threshold}
+              onChange={(_, v) => setThreshold(v as number)}
             />
           </Stack>
         </>
