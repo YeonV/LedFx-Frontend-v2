@@ -77,6 +77,9 @@ export const oneLed = async (led) => {
   }
 }
 
+export const setWledBrightness = async (brightness = 255) => {
+  await wled({ bri: brightness })
+}
 
 export function decodeBase64ToImageData(base64String) {
   const base64Data = base64String.split(',')[1]

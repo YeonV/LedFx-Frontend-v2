@@ -36,11 +36,9 @@ const assignPixels = ({
       group: `${row}-${col}`
     }
   } else {
-    let startCol = col;
-    let currentRow = row;
     for (
       let index = 0;
-      index < Math.abs(selectedPixel[1] - selectedPixel[0]);
+      index <= Math.abs(selectedPixel[1] - selectedPixel[0]);
       index += 1
     ) {
       const newM = {
