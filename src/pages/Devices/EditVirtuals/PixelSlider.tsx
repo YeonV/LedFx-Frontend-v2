@@ -23,7 +23,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
   }, [s])
 
   useEffect(() => {
-    getDevices()
+    getDevices() // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!devices[s[0]]) {
