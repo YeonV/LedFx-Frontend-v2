@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Typography, Button, Stack } from '@mui/material'
 import { ExpandLess, ExpandMore, SwapHoriz } from '@mui/icons-material'
 import { swap } from '../../../utils/helpers'
@@ -8,7 +7,6 @@ import useStore from '../../../store/useStore'
 import useSegmentStyles from './Segment.styles'
 
 const Segment = ({ s, i, virtual, segments, calib }: any) => {
-  const getDevices = useStore((state) => state.getDevices)
   const devices = useStore((state) => state.devices)
 
   const title =
@@ -90,9 +88,6 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     })
   }
 
-  useEffect(() => {
-    getDevices()
-  }, [getDevices])
 
   return (
     <div
