@@ -84,6 +84,7 @@ const MControls = ({
   const virtuals = useStore((state) => state.virtuals)
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const features = useStore((state) => state.features)
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') setDnd(false)
@@ -399,12 +400,12 @@ const MControls = ({
           </Collapse>
         )}
       </Collapse>
-      <Button sx={{ alignItems: 'center', textTransform: 'none'}} onClick={()=> {
+      {features.matrix_cam && <Button sx={{ alignItems: 'center', textTransform: 'none'}} onClick={()=> {
         getDevices()
         setCamMapper(!camMapper)}
         }>
         <EmergencyRecording sx={{ marginRight: 1}} />{camMapper ? 'Exit CameraMapper' : 'Map Pixels via Camera'}
-      </Button>
+      </Button>}
       <Collapse in={camMapper}>
        <Webcam rowN={rowN} colN={colN} />
       </Collapse>
