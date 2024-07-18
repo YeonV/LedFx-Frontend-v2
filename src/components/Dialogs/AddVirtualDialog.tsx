@@ -113,7 +113,7 @@ const AddVirtualDialog = () => {
   useEffect(() => {
     handleModelChange(initial.config)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtId, initial.config])
+  }, [virtId, JSON.stringify(initial.config)])
 
   return (
     <>

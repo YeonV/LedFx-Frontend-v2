@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useEffect, useRef, useState, FC } from 'react'
-import { Box, Button, Stack } from '@mui/material'
+import { Box, Stack, useTheme } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import { DndContext, DragEndEvent } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
@@ -11,7 +11,6 @@ import {
   getMaxRange,
   getOpacity
 } from './M.utils'
-import { reverseProcessArray } from './processMatrix'
 import type { IMCell, IDir } from './M.utils'
 import useStore from '../../../../store/useStore'
 import useStyles from './M.styles'
@@ -28,12 +27,11 @@ import Tour2dVirtual from '../../../../components/Tours/Tour2dVirtual'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
+  const theme = useTheme()
   const deviceRef = useRef<HTMLInputElement | null>(null)
 
-  const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
-  const pixelGraphs = useStore((state) => state.pixelGraphs)
+
   const devices = useStore((state) => state.devices)
-  const virtuals = useStore((state) => state.virtuals)
   const mode = useStore((state) => state.config).transmission_mode
   const addDevice = useStore((state) => state.addDevice)
   const getDevices = useStore((state) => state.getDevices)
@@ -162,24 +160,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     setIsDragging(false)
   }
 
-  /**
-   * Update the pixel-graphs when the virtual changes
-   */
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtual.id) {
-        setPixels(e.detail.pixels)
-      }
-    }
-    if (showPixelGraph && virtual.id) {
-      document.addEventListener('visualisation_update', handleWebsockets)
-    } else {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-    }
-    return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-    }
-  }, [virtuals, pixelGraphs, showPixelGraph, virtual])
+
 
   /**
    * Set the selected pixel when the group changes
@@ -284,25 +265,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
 
   return (
     <MWrapper move={dnd}>
-      <Stack direction="column" spacing={2}>
-        <Tour2dVirtual />
-        <Stack direction="column" spacing={2} className='step-2d-virtual-two'>
-          <Button
-            // disabled={features.matrix_cam}
-            onClick={() => {
-              setShowPixelGraph(!showPixelGraph)
-            }}
-          >
-            {showPixelGraph ? 'Hide' : 'Show'} Pixel Graph
-          </Button>
-          <Button
-            onClick={() => {
-              setM(reverseProcessArray(virtual.segments, colN))
-            }}
-          >
-            Import From Segments
-          </Button>
-        </Stack>
+      <Stack direction="column" spacing={2} bgcolor={theme.palette.action.disabledBackground} sx={{ overflowY: 'scroll', height: '100%', overflowX: 'hidden', minWidth: 440, paddingTop: '1rem'}}>        
         <MControls
           dnd={dnd}
           setDnd={setDnd}
@@ -317,75 +280,66 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           setMove={setMove}
           selectedGroup={selectedGroup}
           setError={setError}
+          setPixels={setPixels}
         />
       </Stack>
-      <TransformWrapper
-        disabled={dnd}
-        centerZoomedOut
-        minScale={0.1}
-        initialScale={
-          colN * 100 < window.innerWidth ||
-          rowN * 100 < window.innerHeight * 0.8
-            ? 1
-            : 0.1
-        }
-      >
-        <TransformComponent>
-          <div
-            className={classes.gridCellContainer}
-            style={{ width: colN * 100, height: rowN * 100 }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <DndContext
-                modifiers={[restrictToFirstScrollableAncestor]}
-                onDragEnd={(e) => handleDragEnd(e)}
-                onDragOver={(e) =>
-                  setHoveringCell(
-                    (e.over?.id as any)?.split('-').map(Number) || [-1, -1]
-                  )
-                }
-                onDragStart={() => {
-                  // console.log('zy', e.active?.id, hoveringCell, selectedGroup)
-                  setIsDragging(true)
-                }}
-              >
-                {m.map((yzrow, currentRowIndex) => (
-                  <div
-                    key={`row-${currentRowIndex}`}
-                    style={{ display: 'flex' }}
-                  >
-                    {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => {
-                      const bg = getBackgroundColor(
-                        mode,
-                        decodedPixels,
-                        pixels,
-                        currentRowIndex,
-                        colN,
-                        currentColIndex
-                      )
-                      const op = getOpacity(move, yzcolumn, selectedGroup)
-                      return (
-                        <Droppable
-                          cell={
-                            hoveringCell[0] > -1 && hoveringCell[1] > -1
-                              ? m[hoveringCell[1]][hoveringCell[0]]
-                              : undefined
-                          }
-                          id={`${currentColIndex}-${currentRowIndex}`}
-                          key={`col-${currentColIndex}`}
-                          bg={bg}
-                          opacity={op}
-                          onContextMenu={(e) =>
-                            handleContextMenu(
-                              e,
-                              currentColIndex,
-                              currentRowIndex,
-                              yzcolumn
-                            )
-                          }
-                        >
-                          <Box
+      <Box sx={{ flexGrow: 1, overflow: 'hidden', height: '100%' }}>
+        <TransformWrapper
+          disabled={dnd}
+          centerZoomedOut
+          minScale={0.1}
+          initialScale={
+            colN * 100 < window.innerWidth ||
+            rowN * 100 < window.innerHeight * 0.8
+              ? 1
+              : 0.1
+          }
+        >
+          <TransformComponent>
+            <div
+              className={classes.gridCellContainer}
+              style={{ width: colN * 100, height: rowN * 100 }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <DndContext
+                  modifiers={[restrictToFirstScrollableAncestor]}
+                  onDragEnd={(e) => handleDragEnd(e)}
+                  onDragOver={(e) =>
+                    setHoveringCell(
+                      (e.over?.id as any)?.split('-').map(Number) || [-1, -1]
+                    )
+                  }
+                  onDragStart={() => {
+                    // console.log('zy', e.active?.id, hoveringCell, selectedGroup)
+                    setIsDragging(true)
+                  }}
+                >
+                  {m.map((yzrow, currentRowIndex) => (
+                    <div
+                      key={`row-${currentRowIndex}`}
+                      style={{ display: 'flex' }}
+                    >
+                      {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => {
+                        const bg = getBackgroundColor(
+                          mode,
+                          decodedPixels,
+                          pixels,
+                          currentRowIndex,
+                          colN,
+                          currentColIndex
+                        )
+                        const op = getOpacity(move, yzcolumn, selectedGroup)
+                        return (
+                          <Droppable
+                            cell={
+                              hoveringCell[0] > -1 && hoveringCell[1] > -1
+                                ? m[hoveringCell[1]][hoveringCell[0]]
+                                : undefined
+                            }
+                            id={`${currentColIndex}-${currentRowIndex}`}
                             key={`col-${currentColIndex}`}
+                            bg={bg}
+                            opacity={op}
                             onContextMenu={(e) =>
                               handleContextMenu(
                                 e,
@@ -394,110 +348,122 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                                 yzcolumn
                               )
                             }
-                            sx={{
-                              backgroundColor: bg,
-                              opacity: op
-                            }}
                           >
-                            {dnd ? (
-                              m[currentRowIndex][currentColIndex].deviceId !==
-                              '' ? (
-                                <Draggable
-                                  m={m}
-                                  id={`${currentRowIndex}-${currentColIndex}`}
-                                >
-                                  <Pixel
+                            <Box
+                              key={`col-${currentColIndex}`}
+                              onContextMenu={(e) =>
+                                handleContextMenu(
+                                  e,
+                                  currentColIndex,
+                                  currentRowIndex,
+                                  yzcolumn
+                                )
+                              }
+                              sx={{
+                                backgroundColor: bg,
+                                opacity: op
+                              }}
+                            >
+                              {dnd ? (
+                                m[currentRowIndex][currentColIndex].deviceId !==
+                                '' ? (
+                                  <Draggable
                                     m={m}
-                                    currentColIndex={currentColIndex}
-                                    classes={classes}
-                                    currentRowIndex={currentRowIndex}
-                                    move={move}
-                                    decodedPixels={decodedPixels}
-                                    colN={colN}
-                                    pixels={pixels}
-                                    yzcolumn={yzcolumn}
-                                    selectedGroup={selectedGroup}
-                                    error={error}
-                                    setCurrentCell={setCurrentCell}
-                                    setCurrentDevice={setCurrentDevice}
-                                    setSelectedPixel={setSelectedPixel}
-                                    openContextMenu={(
-                                      e: React.MouseEvent<
-                                        HTMLDivElement,
-                                        MouseEvent
-                                      >
-                                    ) => setAnchorEl(e.currentTarget)}
-                                    isDragging={isDragging}
-                                  />
-                                </Draggable>
-                              ) : null
-                            ) : (
-                              <Pixel
-                                m={m}
-                                currentColIndex={currentColIndex}
-                                classes={classes}
-                                currentRowIndex={currentRowIndex}
-                                move={move}
-                                decodedPixels={decodedPixels}
-                                colN={colN}
-                                pixels={pixels}
-                                yzcolumn={yzcolumn}
-                                selectedGroup={selectedGroup}
-                                error={error}
-                                setCurrentCell={setCurrentCell}
-                                setCurrentDevice={setCurrentDevice}
-                                setSelectedPixel={setSelectedPixel}
-                                openContextMenu={(
-                                  e: React.MouseEvent<
-                                    HTMLDivElement,
-                                    MouseEvent
+                                    id={`${currentRowIndex}-${currentColIndex}`}
                                   >
-                                ) => setAnchorEl(e.currentTarget)}
-                                isDragging={isDragging}
-                              />
-                            )}
-                          </Box>
-                        </Droppable>
-                      )
-                    })}
-                  </div>
-                ))}
-              </DndContext>
+                                    <Pixel
+                                      m={m}
+                                      currentColIndex={currentColIndex}
+                                      classes={classes}
+                                      currentRowIndex={currentRowIndex}
+                                      move={move}
+                                      decodedPixels={decodedPixels}
+                                      colN={colN}
+                                      pixels={pixels}
+                                      yzcolumn={yzcolumn}
+                                      selectedGroup={selectedGroup}
+                                      error={error}
+                                      setCurrentCell={setCurrentCell}
+                                      setCurrentDevice={setCurrentDevice}
+                                      setSelectedPixel={setSelectedPixel}
+                                      openContextMenu={(
+                                        e: React.MouseEvent<
+                                          HTMLDivElement,
+                                          MouseEvent
+                                        >
+                                      ) => setAnchorEl(e.currentTarget)}
+                                      isDragging={isDragging}
+                                    />
+                                  </Draggable>
+                                ) : null
+                              ) : (
+                                <Pixel
+                                  m={m}
+                                  currentColIndex={currentColIndex}
+                                  classes={classes}
+                                  currentRowIndex={currentRowIndex}
+                                  move={move}
+                                  decodedPixels={decodedPixels}
+                                  colN={colN}
+                                  pixels={pixels}
+                                  yzcolumn={yzcolumn}
+                                  selectedGroup={selectedGroup}
+                                  error={error}
+                                  setCurrentCell={setCurrentCell}
+                                  setCurrentDevice={setCurrentDevice}
+                                  setSelectedPixel={setSelectedPixel}
+                                  openContextMenu={(
+                                    e: React.MouseEvent<
+                                      HTMLDivElement,
+                                      MouseEvent
+                                    >
+                                  ) => setAnchorEl(e.currentTarget)}
+                                  isDragging={isDragging}
+                                />
+                              )}
+                            </Box>
+                          </Droppable>
+                        )
+                      })}
+                    </div>
+                  ))}
+                </DndContext>
+              </div>
+              <MContextMenu
+                setDnd={setDnd}
+                setSelectedGroup={setSelectedGroup}
+                anchorEl={anchorEl}
+                closeContextMenu={() => setAnchorEl(null)}
+                currentCell={currentCell}
+                m={m}
+                setOpen={setOpen}
+                setMove={setMove}
+              />
+              <AssignPixelDialog
+                open={open}
+                closeClear={closeClear}
+                currentCell={currentCell}
+                m={m}
+                setCurrentDevice={setCurrentDevice}
+                deviceRef={deviceRef}
+                group={group}
+                setGroup={setGroup}
+                direction={direction}
+                handleDirectionChange={handleDirectionChange}
+                selectedPixel={selectedPixel}
+                handleSliderChange={handleSliderChange}
+                clearPixel={clearPixel}
+                setM={setM}
+                currentDevice={currentDevice}
+                pixelGroups={pixelGroups}
+                setPixelGroups={setPixelGroups}
+                rowN={rowN}
+                colN={colN}
+              />
             </div>
-            <MContextMenu
-              setDnd={setDnd}
-              setSelectedGroup={setSelectedGroup}
-              anchorEl={anchorEl}
-              closeContextMenu={() => setAnchorEl(null)}
-              currentCell={currentCell}
-              m={m}
-              setOpen={setOpen}
-              setMove={setMove}
-            />
-            <AssignPixelDialog
-              open={open}
-              closeClear={closeClear}
-              currentCell={currentCell}
-              m={m}
-              setCurrentDevice={setCurrentDevice}
-              deviceRef={deviceRef}
-              group={group}
-              setGroup={setGroup}
-              direction={direction}
-              handleDirectionChange={handleDirectionChange}
-              selectedPixel={selectedPixel}
-              handleSliderChange={handleSliderChange}
-              clearPixel={clearPixel}
-              setM={setM}
-              currentDevice={currentDevice}
-              pixelGroups={pixelGroups}
-              setPixelGroups={setPixelGroups}
-              rowN={rowN}
-              colN={colN}
-            />
-          </div>
-        </TransformComponent>
-      </TransformWrapper>
+          </TransformComponent>
+        </TransformWrapper>
+      </Box>
     </MWrapper>
   )
 }

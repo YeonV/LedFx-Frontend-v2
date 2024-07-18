@@ -66,7 +66,7 @@ export default function NoHostDialog() {
   useEffect(() => {
     if (storedURL) setHostvalue(storedURL)
     if (storedURLs) setHosts(storedURLs)
-  }, [storedURL, setHosts, storedURLs])
+  }, [storedURL, setHosts, JSON.stringify(storedURLs)])
 
   useEffect(() => {
     if (!storedURL) {

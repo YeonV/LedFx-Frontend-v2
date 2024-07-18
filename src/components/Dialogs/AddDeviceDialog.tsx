@@ -151,7 +151,7 @@ const AddDeviceDialog = () => {
   }
   useEffect(() => {
     handleTypeChange(initial.type, initial.config)
-  }, [initial.type, initial.config])
+  }, [initial.type, JSON.stringify(initial.config)])
 
   return (
     <StyledDialog

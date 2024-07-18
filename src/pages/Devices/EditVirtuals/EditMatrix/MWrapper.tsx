@@ -11,7 +11,7 @@ const MWrapper = ({ children, move }: any) => {
           window.screen.orientation.type.split('-')[0] === 'landscape'
             ? 'row'
             : 'column',
-        maxHeight: '90vh',
+        maxHeight: 'calc(100vh - 64px)',
         '& .react-transform-wrapper': {
           // flexGrow: 1,
           overflow: move ? 'auto' : 'hidden'

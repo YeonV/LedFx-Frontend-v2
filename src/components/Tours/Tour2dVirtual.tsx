@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Button, useTheme } from '@mui/material'
+import { Button, IconButton, Tooltip, useTheme } from '@mui/material'
 import Tour from 'reactour'
-import { Info } from '@mui/icons-material'
+import { Help, Info, QuestionMark, QuestionMarkOutlined, QuestionMarkRounded } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
 const steps = [
@@ -170,14 +170,15 @@ const Tour2dVirtual = () => {
   const theme = useTheme()
   return (
     <>
-      <Button
-        onClick={() => {
+    <Tooltip title="How to use 2D Virtuals">
+      <IconButton onClick={() => {
           setIsTourOpen(true)
           setTour('2d-virtual')
         }}
       >
-        <Info sx={{mr: 2}} /> How to use 2D Virtuals
-      </Button>
+        <Help />
+      </IconButton>
+      </Tooltip>
       <Tour
         steps={steps.slice(0, features['matrix_cam'] ? steps.length : 5)}
         accentColor={theme.palette.primary.main}

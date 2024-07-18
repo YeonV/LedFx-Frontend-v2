@@ -39,8 +39,8 @@ const MSlider = ({
           typeof selectedPixel === 'number' 
           ? <TextField type='number' variant='outlined' value={selectedPixel} onChange={(e) => handleSliderChange(e, parseInt(e.target.value))} />
           : <Stack direction={'row'} spacing={2}>
-              <TextField type='number' variant='outlined' value={selectedPixel[0]} onChange={(e) => handleSliderChange(e,[parseInt(e.target.value), selectedPixel[1]], 0)} />
-              <TextField type='number' variant='outlined' value={selectedPixel[1]} onChange={(e) => handleSliderChange(e,[selectedPixel[0], parseInt(e.target.value)], 1)} />
+              <TextField type='number' variant='outlined' value={selectedPixel[0]} onBlur={(e) => handleSliderChange(e,[parseInt(e.target.value), selectedPixel[1]], 0)} />
+              <TextField type='number' variant='outlined' value={selectedPixel[1]} onBlur={(e) => handleSliderChange(e,[selectedPixel[0], parseInt(e.target.value)], 1)} />
             </Stack>          
         }
       </Stack>
