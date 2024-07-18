@@ -23,7 +23,6 @@ import hexColor from './Actions/hexColor'
 import MContextMenu from './MContextMenu'
 import AssignPixelDialog from './AssignPixelDialog'
 import { Ledfx } from '../../../../api/ledfx'
-import Tour2dVirtual from '../../../../components/Tours/Tour2dVirtual'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()

@@ -114,7 +114,7 @@ const MControls = ({
       }
       return () => {
         document.removeEventListener('visualisation_update', handleWebsockets)
-      }
+      } // eslint-disable-next-line react-hooks/exhaustive-deps      
     }, [virtuals, pixelGraphs, showPixelGraph, virtual])
 
   return (

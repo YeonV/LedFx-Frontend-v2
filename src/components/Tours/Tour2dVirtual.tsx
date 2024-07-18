@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Button, IconButton, Tooltip, useTheme } from '@mui/material'
+import { IconButton, Tooltip, useTheme } from '@mui/material'
 import Tour from 'reactour'
-import { Help, Info, QuestionMark, QuestionMarkOutlined, QuestionMarkRounded } from '@mui/icons-material'
+import { Help } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
 const steps = [

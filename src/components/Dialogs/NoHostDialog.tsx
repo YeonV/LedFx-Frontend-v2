@@ -65,7 +65,7 @@ export default function NoHostDialog() {
 
   useEffect(() => {
     if (storedURL) setHostvalue(storedURL)
-    if (storedURLs) setHosts(storedURLs)
+    if (storedURLs) setHosts(storedURLs) // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storedURL, setHosts, JSON.stringify(storedURLs)])
 
   useEffect(() => {

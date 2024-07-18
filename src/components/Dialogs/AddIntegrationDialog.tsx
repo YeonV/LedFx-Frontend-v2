@@ -144,7 +144,7 @@ const AddIntegrationDialog = () => {
   }
 
   useEffect(() => {
-    handleTypeChange(initial.type, initial.config)
+    handleTypeChange(initial.type, initial.config) // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initial.type, JSON.stringify(initial.config)])
 
   return (
