@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles'
 const useEditVirtualsStyles = makeStyles(() => ({
   appBar: {
     position: 'relative',
-    marginBottom: '1rem'
+    // marginBottom: '1rem'
     // background: theme.palette.background.default,
     // color: theme.palette.text.primary,
   },

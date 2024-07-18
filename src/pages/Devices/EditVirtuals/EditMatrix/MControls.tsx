@@ -5,20 +5,25 @@ import {
   ArrowUpward,
   Cancel,
   ControlCamera,
+  EmergencyRecording,
+  Loop,
   PanTool,
+  PlayArrow,
   Rotate90DegreesCw,
   Save,
+  Stop,
   SwapHoriz,
-  SwapVert
+  SwapVert,
 } from '@mui/icons-material'
 import {
   Alert,
   Box,
   Button,
-  // Collapse,
+  Collapse,
   IconButton,
   Slider,
   Stack,
+  Tooltip,
   Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -37,7 +42,7 @@ import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
 import useStore from '../../../../store/useStore'
 import Webcam from '../../../../components/Webcam/Webcam'
-// import useStore from '../../../../store/useStore'
+import { reverseProcessArray } from './processMatrix'
 
 const MControls = ({
   rowN,
@@ -52,7 +57,8 @@ const MControls = ({
   setMove,
   setDnd,
   selectedGroup,
-  setError
+  setError,
+  setPixels
 }: {
   rowN: number
   colN: number
@@ -67,13 +73,18 @@ const MControls = ({
   setDnd: any
   selectedGroup: string
   setError: any
+  setPixels: any
 }) => {
-  // const infoAlerts = useStore((state) => state.ui.infoAlerts)
-  // const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const [tab, setTab] = useState('1')
+  const [camMapper, setCamMapper] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
   const features = useStore((state) => state.features)
+  const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
+  const pixelGraphs = useStore((state) => state.pixelGraphs)
+  const virtuals = useStore((state) => state.virtuals)
+  const infoAlerts = useStore((state) => state.ui.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') setDnd(false)
@@ -87,275 +98,316 @@ const MControls = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dnd])
 
+    /**
+   * Update the pixel-graphs when the virtual changes
+   */
+    useEffect(() => {
+      const handleWebsockets = (e: any) => {
+        if (e.detail.id === virtual.id) {
+          setPixels(e.detail.pixels)
+        }
+      }
+      if (showPixelGraph && virtual.id) {
+        document.addEventListener('visualisation_update', handleWebsockets)
+      } else {
+        document.removeEventListener('visualisation_update', handleWebsockets)
+      }
+      return () => {
+        document.removeEventListener('visualisation_update', handleWebsockets)
+      }
+    }, [virtuals, pixelGraphs, showPixelGraph, virtual])
+
   return (
     <Stack
       minWidth={400}
       direction="column"
       spacing={2}
-      style={{ marginBottom: '1rem', marginRight: '1rem' }}
+      style={{ marginBottom: '1rem' }}
       p={2}
     >
-      {/* {infoAlerts.matrix && (
-        <Collapse in={infoAlerts.matrix}>
-          <Alert
-            severity="info"
-            sx={{ width: 400, marginBottom: 2 }}
-            onClose={() => {
-              setInfoAlerts('matrix', false)
-            }}
-          >
-            <strong>Concept Draft</strong>
-            <ul style={{ padding: '0 1rem' }}>
-              <li>Use Mousewheel to Zoom</li>
-              <li>Use left-click with drag&drop to move around</li>
-              <li>Use right-click to assign Pixels</li>
-            </ul>
-          </Alert>
-        </Collapse>
-      )} */}
-      <Stack
-        direction="column"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-      >
+      {!camMapper && <>
         <Stack
           direction="column"
           justifyContent="flex-start"
           alignItems="flex-start"
-          className='step-2d-virtual-three'
+          sx={{ '& .MuiButton-root': { minWidth: 0 }}}
         >
-          <Stack direction="row" width={400} justifyContent="space-between">
-            <Typography width={100} variant="body1">
-              Rows:
-            </Typography>
-            <Box width={250}>
-              <Slider
-                min={1}
-                max={50}
-                value={rowN}
-                onChange={(e, newRowNumber) =>
-                  typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
-                }
-              />
-            </Box>
-            {rowN}
-          </Stack>
-          <Stack direction="row" width={400} justifyContent="space-between">
-            <Typography width={100} variant="body1">
-              Columns:
-            </Typography>
-            <Box width={250}>
-              <Slider
-                min={1}
-                max={50}
-                value={colN}
-                onChange={(e, newColNumber) =>
-                  typeof newColNumber === 'number' && setColNumber(newColNumber)
-                }
-              />
-            </Box>
-            {colN}
-          </Stack>
-        </Stack>
-        <Stack
-          direction="row"
-          width={400}
-          justifyContent="space-between"
-          margin="1rem 0"
-          className='step-2d-virtual-four'
-        >
-          <Stack direction="row" justifyContent="flex-start">
-            <Button
-              style={{ marginRight: 8 }}
-              onClick={() => setM(transpose(m))}
-            >
-              <Rotate90DegreesCw />
-            </Button>
-            <Button
-              style={{ marginRight: 8 }}
-              onClick={() => {
-                const toReverse = JSON.parse(JSON.stringify(m))
-                setM(toReverse.reverse())
-              }}
-            >
-              <SwapVert />
-            </Button>
-            <Button
-              style={{ marginRight: 32 }}
-              onClick={() => {
-                const toReverse = JSON.parse(JSON.stringify(m))
-                for (let index = 0; index < toReverse.length; index += 1) {
-                  toReverse[index] = toReverse[index].reverse()
-                }
-                setM(toReverse)
-              }}
-            >
-              <SwapHoriz />
-            </Button>
-          </Stack>
-          <Stack direction="row" justifyContent="flex-start">
-            <Popover
-              style={{ marginRight: 8 }}
-              color="inherit"
-              variant="outlined"
-              onConfirm={() => {
-                setM(Array(rowN).fill(Array(colN).fill(MCell)))
-              }}
-            />
-
-            <Button
-              onClick={() => {
-                Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-                  segments: processArray(m.flat(), virtual.id)
-                }).then(() => {
-                  getVirtuals()
-                  getDevices()
-                })
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault()
-                Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-                  segments: processArray(m.flat(), virtual.id),
-                  matrix: m
-                })
-              }}
-              startIcon={<Save />}
-            >
-              Save
-            </Button>
-          </Stack>
-        </Stack>
-      </Stack>
-      <Box className='step-2d-virtual-five'>
-        <Tab
-          icon={<ControlCamera />}
-          iconPosition="start"
-          label="Move Group"
-          value
-        />
-      </Box>
-      {move ? (
-        <Box>
           <Stack
             direction="column"
-            spacing={0}
-            alignItems="center"
-            justifyContent="center"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+            className='step-2d-virtual-three'
           >
-            <IconButton
-              onClick={() =>
-                moveSelectedGroupUp({
-                  m,
-                  rowN,
-                  colN,
-                  selectedGroup,
-                  setError,
-                  setM
-                })
-              }
+            <Stack direction="row" width={400} justifyContent="space-between">
+              <Typography width={100} variant="body1">
+                Rows:
+              </Typography>
+              <Box width={250}>
+                <Slider
+                  min={1}
+                  max={50}
+                  value={rowN}
+                  onChange={(e, newRowNumber) =>
+                    typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
+                  }
+                />
+              </Box>
+              {rowN}
+            </Stack>
+            <Stack direction="row" width={400} justifyContent="space-between">
+              <Typography width={100} variant="body1">
+                Columns:
+              </Typography>
+              <Box width={250}>
+                <Slider
+                  min={1}
+                  max={50}
+                  value={colN}
+                  onChange={(e, newColNumber) =>
+                    typeof newColNumber === 'number' && setColNumber(newColNumber)
+                  }
+                />
+              </Box>
+              {colN}
+            </Stack>
+          </Stack>
+          <Stack
+            direction="row"
+            width={400}
+            justifyContent="space-between"
+            margin="1rem 0"
+            className='step-2d-virtual-four'
+            spacing={1}
+          >
+            <Stack direction="row" justifyContent="flex-start" spacing={0.5}>
+              <Tooltip title={'Rotate 90°'}>
+                <Button onClick={() => setM(transpose(m))}>
+                  <Rotate90DegreesCw />
+                </Button>
+              </Tooltip>
+              <Tooltip title={'Swap Vertically'}>
+                <Button
+                  onClick={() => {
+                    const toReverse = JSON.parse(JSON.stringify(m))
+                    setM(toReverse.reverse())
+                  }}
+                >
+                  <SwapVert />
+                </Button>
+              </Tooltip>
+              <Tooltip title={'Swap Horizontally'}>
+                <Button
+                  onClick={() => {
+                    const toReverse = JSON.parse(JSON.stringify(m))
+                    for (let index = 0; index < toReverse.length; index += 1) {
+                      toReverse[index] = toReverse[index].reverse()
+                    }
+                    setM(toReverse)
+                  }}
+                >
+                  <SwapHoriz />
+                </Button>
+              </Tooltip>
+            </Stack>
+            <Stack direction="row" justifyContent="flex-start" spacing={0.5}>
+              <Tooltip title={`${showPixelGraph ? 'Hide' : 'Show'} Pixel Graph`} className='step-2d-virtual-two'>
+                <Button
+                  // disabled={features.matrix_cam}            
+                  onClick={() => {
+                    setShowPixelGraph(!showPixelGraph)
+                  }}
+                >{showPixelGraph ? <Stop /> : <PlayArrow />}
+                </Button>
+              </Tooltip>
+              <Tooltip title={'Load / Reset'} >
+                <Button onClick={() => { setM(reverseProcessArray(virtual.segments, colN)) }}>
+                  <Loop />
+                </Button>
+              </Tooltip>
+              <Tooltip title={'Clear'}>
+                <Box>
+                <Popover
+                  color="inherit"
+                  variant="outlined"
+                  onConfirm={() => {
+                    setM(Array(rowN).fill(Array(colN).fill(MCell)))
+                  }}
+                />
+                </Box>
+              </Tooltip>
+              <Tooltip title={'Save'}>
+                <Button
+                  onClick={() => {
+                    Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+                      segments: processArray(m.flat(), virtual.id)
+                    }).then(() => {
+                      getVirtuals()
+                      getDevices()
+                    })
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault()
+                    Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+                      segments: processArray(m.flat(), virtual.id),
+                      matrix: m
+                    })
+                  }}
+                >
+                  <Save />
+                </Button>
+              </Tooltip>
+            </Stack>
+          </Stack>
+        </Stack>
+
+        {move ? (
+          <Box>
+            <Box className='step-2d-virtual-five'>
+              <Tab
+                icon={<ControlCamera />}
+                iconPosition="start"
+                label="Move Group"
+                value
+              />
+            </Box>
+            <Stack
+              direction="column"
+              spacing={0}
+              alignItems="center"
+              justifyContent="center"
             >
-              <ArrowUpward />
-            </IconButton>
-            <Stack direction="row" spacing={0} justifyContent="center">
               <IconButton
                 onClick={() =>
-                  moveSelectedGroupLeft({
+                  moveSelectedGroupUp({
                     m,
                     rowN,
                     colN,
                     selectedGroup,
+                    setError,
                     setM
                   })
                 }
               >
-                <ArrowBack />
+                <ArrowUpward />
               </IconButton>
-              <IconButton onClick={() => setMove(false)}>
-                <Cancel />
-              </IconButton>
+              <Stack direction="row" spacing={0} justifyContent="center">
+                <IconButton
+                  onClick={() =>
+                    moveSelectedGroupLeft({
+                      m,
+                      rowN,
+                      colN,
+                      selectedGroup,
+                      setM
+                    })
+                  }
+                >
+                  <ArrowBack />
+                </IconButton>
+                <IconButton onClick={() => setMove(false)}>
+                  <Cancel />
+                </IconButton>
+                <IconButton
+                  onClick={() =>
+                    moveSelectedGroupRight({
+                      m,
+                      rowN,
+                      colN,
+                      selectedGroup,
+                      setM
+                    })
+                  }
+                >
+                  <ArrowForward />
+                </IconButton>
+              </Stack>
               <IconButton
                 onClick={() =>
-                  moveSelectedGroupRight({
+                  moveSelectedGroupDown({
                     m,
                     rowN,
                     colN,
                     selectedGroup,
+                    setError,
                     setM
                   })
                 }
               >
-                <ArrowForward />
+                <ArrowDownward />
               </IconButton>
             </Stack>
-            <IconButton
-              onClick={() =>
-                moveSelectedGroupDown({
-                  m,
-                  rowN,
-                  colN,
-                  selectedGroup,
-                  setError,
-                  setM
-                })
-              }
-            >
-              <ArrowDownward />
-            </IconButton>
-          </Stack>
-        </Box>
-      ) : (
-        <Alert severity="info" sx={{ width: 400, marginBottom: 2 }}>
-          <strong>
-            Right-Click an element to move a group.
-            <br />
-            Groups can only be moved with the UI buttons
-          </strong>
-        </Alert>
-      )}
-      <TabContext value={tab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='step-2d-virtual-six'>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab
-              icon={<PanTool />}
-              iconPosition="start"
-              label="Canvas"
-              value="1"
-            />
-            <Tab
-              icon={<ControlCamera />}
-              iconPosition="start"
-              label="DND"
-              value="2"
-            />
-          </TabList>
-        </Box>
-        <TabPanel value="1">
-          <Alert severity="info" sx={{ width: 340, marginBottom: 2 }}>
-            <strong>Canvas Mode</strong>
-            <ul style={{ padding: '0 1rem' }}>
-              <li>Use Mousewheel to Zoom</li>
-              <li>Use left-click with drag&drop to move around</li>
-              <li>Use right-click to:</li>
-              <ul>
-                <li>assign pixel or pixel-group</li>
-                <li>edit a pixel</li>
-                <li>clear a pixel</li>
-                <li>move a pixel-group</li>
-              </ul>
-              <li>Enter DND mode to move pixels individually</li>
-            </ul>
-          </Alert>
-        </TabPanel>
-        <TabPanel value="2">
-          <Alert severity="info" sx={{ width: 340, marginBottom: 2 }}>
-            <strong>DND Mode</strong>
-            <ul style={{ padding: '0 1rem' }}>
-              <li>move pixels individually with your mouse</li>
-            </ul>
-          </Alert>
-        </TabPanel>
-      </TabContext>
-      {features.matrix_cam && <Webcam rowN={rowN} colN={colN} />}
+          </Box>
+        ) : (
+          <Collapse in={infoAlerts.matrixGroups} sx={{ marginTop: '0 !important' }}>
+            <Alert severity="info" sx={{ width: 400, marginBottom: 2 }} onClose={() => {
+              setInfoAlerts('matrixGroups', false)
+            }}>
+              <strong>
+                Right-Click an element to move a group.
+                <br />
+                Groups can only be moved with the UI buttons
+              </strong>
+            </Alert>
+          </Collapse>
+        )}
+        <TabContext value={tab}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '0 !important' }} className='step-2d-virtual-six'>
+            <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <Tab
+                icon={<PanTool />}
+                iconPosition="start"
+                label="DND-Canvas"
+                value="1"
+              />
+              <Tab
+                icon={<ControlCamera />}
+                iconPosition="start"
+                label="DND-Pixels"
+                value="2"
+              />
+            </TabList>
+          </Box>
+          <TabPanel value="1" sx={{ padding: 0 }}>
+            <Collapse in={infoAlerts.camera}>
+              <Alert severity="info" sx={{ width: '100%' }} onClose={() => {
+              setInfoAlerts('camera', false)
+            }}>
+                <strong>DND-Canvas Mode</strong>
+                <ul style={{ padding: '0 1rem' }}>
+                  <li>Use Mousewheel to Zoom</li>
+                  <li>Use left-click with drag&drop to move around</li>
+                  <li>Use right-click to:</li>
+                  <ul>
+                    <li>assign pixel or pixel-group</li>
+                    <li>edit a pixel</li>
+                    <li>clear a pixel</li>
+                    <li>move a pixel-group</li>
+                  </ul>
+                  <li>Enter DND-Pixels mode to move pixels individually</li>
+                </ul>
+              </Alert>
+            </Collapse>
+          </TabPanel>
+          <TabPanel value="2">
+            <Collapse in={infoAlerts.pixelMode} sx={{ marginTop: '0 !important' }}>
+              <Alert severity="info" sx={{ width: '100%' }} onClose={()=> setInfoAlerts('pixelMode', false)}>
+                <strong>DND-Pixels Mode</strong>
+                <ul style={{ padding: '0 1rem' }}>
+                  <li>move pixels individually with your mouse</li>
+                </ul>
+              </Alert>
+            </Collapse>
+          </TabPanel>
+        </TabContext>
+        </>
+      }
+      {features.matrix_cam && 
+      <>
+        <Button sx={{ alignItems: 'center'}} onClick={()=> setCamMapper(!camMapper)}>
+          <EmergencyRecording sx={{ marginRight: 1}} /> Map Pixels via Camera
+        </Button>
+        {camMapper && <Webcam rowN={rowN} colN={colN} />}
+      </>}
     </Stack>
   )
 }

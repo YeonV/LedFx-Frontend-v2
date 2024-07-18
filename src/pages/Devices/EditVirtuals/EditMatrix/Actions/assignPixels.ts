@@ -28,7 +28,6 @@ const assignPixels = ({
 }) => {
   let updatedM: IMCell[][] = clone(m)
   const [col, row] = currentCell
-  console.log('direction', direction)
   if (typeof selectedPixel === 'number') {
     updatedM[row][col] = {
       deviceId: currentDevice,
@@ -47,7 +46,7 @@ const assignPixels = ({
         group: `${row}-${col}`
       }
       if (direction.includes('diagonal-top-right')) {
-        for (let index = 0; index < Math.abs(selectedPixel[1] - selectedPixel[0]) && row - index >= 0 && col + index < colN; index++) {
+        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row - index >= 0 && col + index < colN; index++) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
@@ -58,7 +57,7 @@ const assignPixels = ({
       }
       
       else if (direction.includes('diagonal-bottom-right')) {
-        for (let index = 0; index < Math.abs(selectedPixel[1] - selectedPixel[0]) && row + index < rowN && col + index < colN; index++) {
+        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row + index < rowN && col + index < colN; index++) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
@@ -69,7 +68,7 @@ const assignPixels = ({
       }
       
       else if (direction.includes('diagonal-bottom-left')) {
-        for (let index = 0; index < Math.abs(selectedPixel[1] - selectedPixel[0]) && row + index < rowN && col - index >= 0; index++) {
+        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row + index < rowN && col - index >= 0; index++) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
@@ -80,7 +79,7 @@ const assignPixels = ({
       }
       
       else if (direction.includes('diagonal-top-left')) {
-        for (let index = 0; index < Math.abs(selectedPixel[1] - selectedPixel[0]) && row - index >= 0 && col - index >= 0; index++) {
+        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row - index >= 0 && col - index >= 0; index++) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,

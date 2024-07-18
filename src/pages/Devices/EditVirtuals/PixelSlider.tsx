@@ -19,12 +19,12 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
   const throttled = useThrottledCallback(handleChange, 100)
 
   useEffect(() => {
-    getDevices()
-  }, [getDevices])
-
-  useEffect(() => {
     setRange([s[1], s[2]])
   }, [s])
+
+  useEffect(() => {
+    getDevices()
+  }, [])
 
   if (!devices[s[0]]) {
     return null

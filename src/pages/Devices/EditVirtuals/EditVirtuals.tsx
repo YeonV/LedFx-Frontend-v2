@@ -12,7 +12,8 @@ import {
   Slide,
   IconButton,
   ToggleButtonGroup,
-  ToggleButton
+  ToggleButton,
+  Tooltip
 } from '@mui/material'
 import {
   GridOn,
@@ -30,6 +31,7 @@ import Segment from './Segment'
 import useEditVirtualsStyles from './EditVirtuals.styles'
 import EditMatrix from './EditMatrix/M'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
+import Tour2dVirtual from '../../../components/Tours/Tour2dVirtual'
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -206,22 +208,25 @@ export default function EditVirtuals({
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>
-            <IconButton
-              onClick={() => {
-                calibrationMode(virtual?.id, calib ? 'off' : 'on')
-                if (!calib && virtual.segments[activeSegment])
-                  highlightSegment(
-                    virtual.id,
-                    virtual.segments[activeSegment][0],
-                    virtual.segments[activeSegment][1],
-                    virtual.segments[activeSegment][2],
-                    virtual.segments[activeSegment][3]
-                  )
-                setCalib(!calib)
-              }}
-            >
-              {calib ? <Visibility /> : <VisibilityOff />}
-            </IconButton>
+            <Tour2dVirtual />
+            <Tooltip title="Preview Effect">
+              <IconButton
+                onClick={() => {
+                  calibrationMode(virtual?.id, calib ? 'off' : 'on')
+                  if (!calib && virtual.segments[activeSegment])
+                    highlightSegment(
+                      virtual.id,
+                      virtual.segments[activeSegment][0],
+                      virtual.segments[activeSegment][1],
+                      virtual.segments[activeSegment][2],
+                      virtual.segments[activeSegment][3]
+                    )
+                  setCalib(!calib)
+                }}
+              >
+                {calib ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
         {matrix ? (
