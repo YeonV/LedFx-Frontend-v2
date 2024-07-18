@@ -5,7 +5,6 @@ import { Stack, TextField } from '@mui/material'
 import useStore from '../../../store/useStore'
 
 const PixelSlider = ({ s, handleRangeSegment }: any) => {
-  const getDevices = useStore((state) => state.getDevices)
   const devices = useStore((state) => state.devices)
 
   const [range, setRange] = useState([s[1], s[2]])
@@ -22,9 +21,6 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
     setRange([s[1], s[2]])
   }, [s])
 
-  useEffect(() => {
-    getDevices() // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   if (!devices[s[0]]) {
     return null

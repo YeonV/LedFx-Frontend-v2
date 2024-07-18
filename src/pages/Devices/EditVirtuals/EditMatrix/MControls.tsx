@@ -79,7 +79,6 @@ const MControls = ({
   const [camMapper, setCamMapper] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
-  const features = useStore((state) => state.features)
   const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
   const pixelGraphs = useStore((state) => state.pixelGraphs)
   const virtuals = useStore((state) => state.virtuals)
@@ -125,7 +124,7 @@ const MControls = ({
       style={{ marginBottom: '1rem' }}
       p={2}
     >
-      {!camMapper && <>
+      <Collapse in={!camMapper}>
         <Stack
           direction="column"
           justifyContent="flex-start"
@@ -260,6 +259,55 @@ const MControls = ({
           </Stack>
         </Stack>
 
+        <TabContext value={tab}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '0 !important' }} className='step-2d-virtual-six'>
+            <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <Tab
+                icon={<PanTool />}
+                iconPosition="start"
+                label="DND-Canvas"
+                value="1"
+              />
+              <Tab
+                icon={<ControlCamera />}
+                iconPosition="start"
+                label="DND-Pixels"
+                value="2"
+              />
+            </TabList>
+          </Box>
+          <TabPanel value="1" sx={{ padding: 0 }}>
+            <Collapse in={infoAlerts.camera}>
+              <Alert severity="info" sx={{ width: '100%' }} onClose={() => {
+              setInfoAlerts('camera', false)
+            }}>
+                <strong>DND-Canvas Mode</strong>
+                <ul style={{ padding: '0 1rem' }}>
+                  <li>Use Mousewheel to Zoom</li>
+                  <li>Use left-click with drag&drop to move around</li>
+                  <li>Use right-click to:</li>
+                  <ul>
+                    <li>assign pixel or pixel-group</li>
+                    <li>edit a pixel</li>
+                    <li>clear a pixel</li>
+                    <li>move a pixel-group</li>
+                  </ul>
+                  <li>Enter DND-Pixels mode to move pixels individually</li>
+                </ul>
+              </Alert>
+            </Collapse>
+          </TabPanel>
+          <TabPanel value="2">
+            <Collapse in={infoAlerts.pixelMode} sx={{ marginTop: '0 !important' }}>
+              <Alert severity="info" sx={{ width: '100%' }} onClose={()=> setInfoAlerts('pixelMode', false)}>
+                <strong>DND-Pixels Mode</strong>
+                <ul style={{ padding: '0 1rem' }}>
+                  <li>move pixels individually with your mouse</li>
+                </ul>
+              </Alert>
+            </Collapse>
+          </TabPanel>
+        </TabContext>
         {move ? (
           <Box>
             <Box className='step-2d-virtual-five'>
@@ -338,8 +386,8 @@ const MControls = ({
             </Stack>
           </Box>
         ) : (
-          <Collapse in={infoAlerts.matrixGroups} sx={{ marginTop: '0 !important' }}>
-            <Alert severity="info" sx={{ width: 400, marginBottom: 2 }} onClose={() => {
+          <Collapse in={infoAlerts.matrixGroups}>
+            <Alert severity="info" sx={{ width: 400, marginTop: 2 }} onClose={() => {
               setInfoAlerts('matrixGroups', false)
             }}>
               <strong>
@@ -350,64 +398,16 @@ const MControls = ({
             </Alert>
           </Collapse>
         )}
-        <TabContext value={tab}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '0 !important' }} className='step-2d-virtual-six'>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab
-                icon={<PanTool />}
-                iconPosition="start"
-                label="DND-Canvas"
-                value="1"
-              />
-              <Tab
-                icon={<ControlCamera />}
-                iconPosition="start"
-                label="DND-Pixels"
-                value="2"
-              />
-            </TabList>
-          </Box>
-          <TabPanel value="1" sx={{ padding: 0 }}>
-            <Collapse in={infoAlerts.camera}>
-              <Alert severity="info" sx={{ width: '100%' }} onClose={() => {
-              setInfoAlerts('camera', false)
-            }}>
-                <strong>DND-Canvas Mode</strong>
-                <ul style={{ padding: '0 1rem' }}>
-                  <li>Use Mousewheel to Zoom</li>
-                  <li>Use left-click with drag&drop to move around</li>
-                  <li>Use right-click to:</li>
-                  <ul>
-                    <li>assign pixel or pixel-group</li>
-                    <li>edit a pixel</li>
-                    <li>clear a pixel</li>
-                    <li>move a pixel-group</li>
-                  </ul>
-                  <li>Enter DND-Pixels mode to move pixels individually</li>
-                </ul>
-              </Alert>
-            </Collapse>
-          </TabPanel>
-          <TabPanel value="2">
-            <Collapse in={infoAlerts.pixelMode} sx={{ marginTop: '0 !important' }}>
-              <Alert severity="info" sx={{ width: '100%' }} onClose={()=> setInfoAlerts('pixelMode', false)}>
-                <strong>DND-Pixels Mode</strong>
-                <ul style={{ padding: '0 1rem' }}>
-                  <li>move pixels individually with your mouse</li>
-                </ul>
-              </Alert>
-            </Collapse>
-          </TabPanel>
-        </TabContext>
-        </>
-      }
-      {features.matrix_cam && 
-      <>
-        <Button sx={{ alignItems: 'center'}} onClick={()=> setCamMapper(!camMapper)}>
-          <EmergencyRecording sx={{ marginRight: 1}} /> Map Pixels via Camera
-        </Button>
-        {camMapper && <Webcam rowN={rowN} colN={colN} />}
-      </>}
+      </Collapse>
+      <Button sx={{ alignItems: 'center', textTransform: 'none'}} onClick={()=> {
+        getDevices()
+        setCamMapper(!camMapper)}
+        }>
+        <EmergencyRecording sx={{ marginRight: 1}} />{camMapper ? 'Exit CameraMapper' : 'Map Pixels via Camera'}
+      </Button>
+      <Collapse in={camMapper}>
+       <Webcam rowN={rowN} colN={colN} />
+      </Collapse>
     </Stack>
   )
 }
