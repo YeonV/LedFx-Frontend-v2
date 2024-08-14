@@ -1,4 +1,3 @@
-@import url(https://fonts.googleapis.com/css2?family=Nunito&display=swap);
 .mdi:before,
 .mdi-set {
     display: inline-block;
@@ -28219,6 +28218,13 @@
     }
   }
 
+@font-face {
+  font-family: "Nunito";
+  src: url(9d7a6e03c6e3ed49c7ac.ttf) format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
 html,
 body {
   font-family: "Nunito", "Roboto", "Helvetica", sans-serif;
@@ -28333,4 +28339,4 @@ body {
   }
 }
 
-/*# sourceMappingURL=117.c3c4263b.chunk.css.map*/
+/*# sourceMappingURL=117.786a37c2.chunk.css.map*/
