@@ -142,6 +142,18 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     closeClear()
   }
 
+  const clearPixelGroup = (group: string | number) => {
+    const updatedM = clone(m)
+    m.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        if (cell.group === group) {
+          updatedM[rowIndex][colIndex] = { deviceId: '', pixel: 0, group: 0 }
+        }
+      })
+    })
+    setM(updatedM)
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
     // console.log(parent, event)
     if (event.over && event.over.id) {
@@ -437,6 +449,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                 m={m}
                 setOpen={setOpen}
                 setMove={setMove}
+                clearPixel={clearPixel}
+                clearPixelGroup={clearPixelGroup}
               />
               <AssignPixelDialog
                 open={open}
