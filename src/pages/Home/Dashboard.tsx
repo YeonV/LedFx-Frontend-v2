@@ -48,16 +48,16 @@ const Dashboard = () => {
   const [scanning, setScanning] = useState(-1)
 
   const pixelTotal = Object.keys(devices)
-    .map((d) => devices[d].config.pixel_count)
+    .map((d) => !d.startsWith('gap-') && devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0)
 
-  const devicesOnline = Object.keys(devices).filter((d) => devices[d].online)
+  const devicesOnline = Object.keys(devices).filter((d) => devices[d].online && !devices[d].id.startsWith('gap-'))
   const virtualsReal = Object.keys(virtuals).filter(
-    (d) => !virtuals[d]?.is_device
+    (d) => !virtuals[d]?.is_device && !virtuals[d]?.id.startsWith('gap-')
   )
 
   const pixelTotalOnline = Object.keys(devices)
-    .map((d) => devices[d].online && devices[d].config.pixel_count)
+    .map((d) => devices[d].online && !devices[d].id.startsWith('gap-') && devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0)
 
   const getSystemConfig = useStore((state) => state.getSystemConfig)
