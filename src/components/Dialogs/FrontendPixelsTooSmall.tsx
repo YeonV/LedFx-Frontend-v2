@@ -14,13 +14,16 @@ import {
   // SettingsSlider
 } from '../../pages/Settings/SettingsComponents'
 import useSliderStyles from '../SchemaForm/components/Number/BladeSlider.styles'
+import { useLocation } from 'react-router-dom'
 // import { inverseLogScale, logScale } from '../../utils/helpers'
 
 export default function FrontendPixelsTooSmall() {
-  const sliderClasses = useSliderStyles()
+  const sliderClasses = useSliderStyles()  
+  const location = useLocation()
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const showMatrix = useStore((state) => state.showMatrix)
   const virtuals = useStore((state) => state.virtuals)
+  const alphaMatrix = useStore((state) => state.features.matrix)
   const open = useStore((state) => state.dialogs.lessPixels?.open || false)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -51,14 +54,14 @@ export default function FrontendPixelsTooSmall() {
         virtuals[a]?.pixel_count > virtuals[b]?.pixel_count ? a : b,
       0
     )
-    if (fPixels && showMatrix && tooBig.length > 0) {
+    if (fPixels && (showMatrix || alphaMatrix) && tooBig.length > 0) {
       setBiggestDevice({ id: biggest, pixels: virtuals[biggest]?.pixel_count })
       setDialogOpenLessPixels(true)
     }
     if (fPixels && showMatrix && tooBig.length === 0) {
       setDialogOpenLessPixels(false)
     }
-  }, [showMatrix, fPixels, virtuals, setDialogOpenLessPixels])
+  }, [showMatrix, fPixels, virtuals, setDialogOpenLessPixels, location, alphaMatrix])
 
   useEffect(() => {
     getSystemConfig()
@@ -88,7 +91,7 @@ export default function FrontendPixelsTooSmall() {
             ? 'All good now'
             : `${biggestDevice.id} has ${biggestDevice.pixels} pixels, but the Frontend
           is configured to show only ${fPixels} pixels. Please increase the
-          number of pixels or disable the Matrix-Visualisation:`}
+          number of pixels`}
         </DialogContentText>
         <SettingsRow
           title="Show Matrix on Devices page (beta)"
