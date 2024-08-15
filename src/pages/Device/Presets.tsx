@@ -238,7 +238,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   // }, [cloudEffects, presets])
 
   useEffect(() => {
-    if (isLogged) getCloudConfigs()
+    if (isLogged && features.cloud) getCloudConfigs()
   }, [isLogged])
 
   return (

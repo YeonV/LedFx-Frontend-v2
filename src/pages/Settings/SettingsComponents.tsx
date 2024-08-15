@@ -233,6 +233,14 @@ export const SettingsRow = ({
                 onChange={onChange}
               />
             </Tooltip>
+          ) : title === 'Gamepad' ? (
+            <Tooltip title="Press Start button on your gamepad. Else try other buttons :)">
+              <SettingsSwitch
+                disabled={disabled}
+                checked={checked}
+                onChange={onChange}
+              />
+            </Tooltip>
           ) : (
             <SettingsSwitch
               disabled={disabled}
