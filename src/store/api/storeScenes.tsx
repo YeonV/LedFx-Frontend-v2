@@ -10,10 +10,21 @@ const storeScenes = (set: any) => ({
   recentScenes: [] as string[],
   count: {} as any,
   scenePL: [] as any,
+  sceneUseIntervals: false,
+  scenePLintervals: [0],
   scenePLplay: false,
   scenePLrepeat: false,
   scenePLactiveIndex: -1,
   scenePLinterval: 2,
+  toggleSceneUseIntervals: () => {
+    set(
+      produce((s: IStore) => {
+        s.sceneUseIntervals = !s.sceneUseIntervals
+      }),
+      false,
+      'toggleSceneUseIntervals'
+    )
+  },
   toggleScenePLplay: () => {
     set(
       produce((s: IStore) => {
@@ -39,6 +50,15 @@ const storeScenes = (set: any) => ({
       }),
       false,
       'setScenePLinterval'
+    )
+  },
+  setScenePLintervals: (intervals: number[]) => {
+    set(
+      produce((s: IStore) => {
+        s.scenePLintervals = intervals
+      }),
+      false,
+      'setScenePlIntervals'
     )
   },
   setMostUsedScenes: (key: string, count: number) => {
