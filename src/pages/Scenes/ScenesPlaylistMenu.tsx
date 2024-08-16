@@ -9,6 +9,9 @@ import { download } from '../../utils/helpers'
 const ScenesPlaylistMenu = () => {
   const scenePL = useStore((state) => state.scenePL)
   const setScenePL = useStore((state) => state.setScenePL)
+  const scenePLintervals = useStore((state) => state.scenePLintervals)
+  const setScenePLintervals = useStore((state) => state.setScenePLintervals)
+
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -26,6 +29,8 @@ const ScenesPlaylistMenu = () => {
     fileReader.onload = (ev: any) => {
       if (ev.target.result && JSON.parse(ev.target.result).scenePL)
         setScenePL(JSON.parse(ev.target.result).scenePL)
+      if (ev.target.result && JSON.parse(ev.target.result).scenePLintervals)
+        setScenePLintervals(JSON.parse(ev.target.result).scenePLintervals)
     }
   }
 
@@ -37,7 +42,7 @@ const ScenesPlaylistMenu = () => {
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
-            download({ scenePL }, 'ScenePlaylist.json', 'application/json')
+            download({ scenePL, scenePLintervals }, 'ScenePlaylist.json', 'application/json')
             handleClose()
           }}
         >
