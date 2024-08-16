@@ -83,7 +83,7 @@ export default function ScenesPlaylist({
       headerName: 'Image',
       width: db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) => (
-        <SceneImage iconName={params.value || 'Wallpaper'} />
+        <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
     },
     {
@@ -96,7 +96,10 @@ export default function ScenesPlaylist({
           sx={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            textOverflow: 'ellipsis',
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%'
           }}
         >
           {params.value}

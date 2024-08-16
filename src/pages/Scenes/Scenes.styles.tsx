@@ -31,6 +31,16 @@ const useStyles = makeStyles({
     '& > span:before': {
       position: 'relative'
     }
+  },
+  iconMediaList: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    margin: '0 auto',
+    fontSize: 50,
+    '& > span:before': {
+      position: 'relative'
+    }
   }
 })
 

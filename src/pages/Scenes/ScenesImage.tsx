@@ -5,7 +5,7 @@ import useStore from '../../store/useStore'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
-const SceneImage = ({ iconName }: { iconName: string }) => {
+const SceneImage = ({ iconName, list }: { iconName: string, list?: boolean }) => {
   const classes = useStyles()
   const [imageData, setImageData] = useState(null)
   const getImage = useStore((state) => state.getImage)
@@ -44,7 +44,7 @@ const SceneImage = ({ iconName }: { iconName: string }) => {
       />
     )
   ) : (
-    <BladeIcon scene className={classes.iconMedia} name={iconName} />
+    <BladeIcon scene className={list ? classes.iconMediaList : classes.iconMedia} name={iconName} list={list} />
   )
 }
 
