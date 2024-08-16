@@ -40,7 +40,8 @@ function BladeIcon({
   style,
   scene = false,
   card = false,
-  intro = false
+  intro = false,
+  list = false
 }: BladeIconProps): JSX.Element {
   return (
     <Icon
@@ -52,14 +53,16 @@ function BladeIcon({
         <YZLogo2Y
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('<svg') ? (
         <div
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
           dangerouslySetInnerHTML={{ __html: name }}
         />
@@ -70,28 +73,32 @@ function BladeIcon({
           alt="icon"
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo2z') ? (
         <YZLogo2Z
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo2top') ? (
         <YZLogo2Top
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo2bot') ? (
         <YZLogo2Bottom
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo2') ? (
@@ -99,49 +106,56 @@ function BladeIcon({
           style={{
             // eslint-disable-next-line
             transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo3y') ? (
         <YZLogo3Y
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo3z') ? (
         <YZLogo3Z
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo3top') ? (
         <YZLogo3Top
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo3left') ? (
         <YZLogo3Left
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo3right') ? (
         <YZLogo3Right
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('yz:logo3') ? (
         <YZLogo3
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
-            marginTop: '3px'
+            marginTop: '3px',
+            height: list ? '100%' : 'unset'
           }}
         />
       ) : name.startsWith('wled') ? (
@@ -167,6 +181,7 @@ function BladeIcon({
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px',
+            height: list ? '100%' : 'unset',
           }}
         />
       ) : name.startsWith('yz:logo2z') ? (
@@ -174,6 +189,7 @@ function BladeIcon({
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px',
+            height: list ? '100%' : 'unset',
           }}
         />
       ) : name.startsWith('yz:logo2top') ? (
@@ -181,6 +197,7 @@ function BladeIcon({
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px',
+            height: list ? '100%' : 'unset',
           }}
         />
       ) : name.startsWith('yz:logo2bot') ? (
@@ -188,6 +205,7 @@ function BladeIcon({
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px',
+            height: list ? '100%' : 'unset',
           }}
         />
       ) : name.startsWith('yz:logo2') ? (
@@ -195,6 +213,7 @@ function BladeIcon({
           style={{
             transform: card ? 'unset' : scene ? 'scale(1)' : 'scale(0.012)',
             marginTop: '3px',
+            height: list ? '100%' : 'unset',
           }}
         />
       ) : name.startsWith('wled') ? (

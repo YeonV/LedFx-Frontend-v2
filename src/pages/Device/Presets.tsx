@@ -239,7 +239,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
   useEffect(() => {
     if (isLogged && features.cloud) getCloudConfigs()
-  }, [isLogged])
+  }, [isLogged, features.cloud])
 
   return (
     <Card variant="outlined" className="step-device-three" style={style}>

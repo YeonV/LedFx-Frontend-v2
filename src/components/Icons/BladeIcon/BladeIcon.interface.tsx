@@ -16,6 +16,11 @@ export interface BladeIconProps {
    */
   intro?: boolean
   /**
+   * Icon is rendered in SceneList
+   * examples: `true`, `false`
+   */
+  list?: boolean
+  /**
    * examples: `wled`, `Light`, `mdi:led-strip`
    */
   name?: string

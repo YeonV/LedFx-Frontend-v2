@@ -39,7 +39,7 @@ export default function ScenesMostUsed({
       headerName: 'Image',
       width: db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) => (
-        <SceneImage iconName={params.value || 'Wallpaper'} />
+        <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
     },
     {
