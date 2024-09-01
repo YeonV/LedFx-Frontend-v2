@@ -53,7 +53,7 @@ const LaunchpadButtonMap = () => {
     {matrix.map((row, rowIndex) => {
         return (
             <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
-            {row.map((button, buttonIndex) => {
+            {row.map((_button, buttonIndex) => {
                 const row = 9 - rowIndex;
                 const column = buttonIndex + 1;
                 
@@ -67,9 +67,9 @@ const LaunchpadButtonMap = () => {
                         midiMapping[0][parseInt(`${(row)}${column}`)]?.command === 'scene' 
                             ? 'red' 
                             : midiMapping[0][parseInt(`${(row)}${column}`)]?.command && 
-                                midiMapping[0][parseInt(`${(row)}${column}`)]?.command !== 'none' 
-                                ? 'yellow' 
-                                : rowIndex === 0 || buttonIndex === 8
+                                midiMapping[0][parseInt(`${(row)}${column}`)]?.command !== 'none'  && rowIndex !== 0
+                                ? 'orange' 
+                            : rowIndex === 0 || buttonIndex === 8
                                     ? 'black' 
                                 : '#ccc'
                 return (
@@ -77,31 +77,16 @@ const LaunchpadButtonMap = () => {
                     width: 70,
                     height: 70,
                     borderRadius: 1,
-                    borderColor: '#ccc',
+                    borderColor: rowIndex === 0 && midiMapping[0][parseInt(`${(row)}${column}`)]?.command && midiMapping[0][parseInt(`${(row)}${column}`)]?.command !== 'none' ? 'orange' : '#ccc',
                     borderStyle: 'solid',
                     borderWidth: (rowIndex === 0 && buttonIndex === 8) ? 0 : 1,
-                    color: 'red',
+                    color: rowIndex === 0 && midiMapping[0][parseInt(`${(row)}${column}`)]?.command && midiMapping[0][parseInt(`${(row)}${column}`)]?.command !== 'none' ? 'orange' : '#ccc',
                     bgcolor: bgColor,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    {labels(rowIndex, buttonIndex)}
-                    {/* <Fab
-        size="small"
-        color={'inherit'}
-        sx={{
-          background: '#333',
-          m: 1,
-          color: 'inherit',
-          width: 40,
-          height: 40,
-          flexShrink: 0,
-          pointerEvents: 'none'
-        }}
-      >
-        {`${(rowIndex + 1)}${buttonIndex + 1}`}
-      </Fab> */}
+                    {labels(rowIndex, buttonIndex)}                   
                 </Button>
                 )
             })}
@@ -110,24 +95,18 @@ const LaunchpadButtonMap = () => {
     })}
 </Stack>
 <Stack direction={'column'} spacing={1} maxHeight={694} width={300} sx={{ overflowY: 'scroll'}}>
-{matrix.map((row, rowIndex) => {
-        return (
-            
-            row.map((button, buttonIndex) => {
-                return (
-                    <Assign
-                    // disabled={buttonIndex === 8 || rowIndex === 8}
-                    padIndex={0}
-                    mapping={midiMapping}
-                    setMapping={setMidiMapping}
-                    pressed={midiEvent.button === parseInt(`${(rowIndex + 1)}${buttonIndex + 1}`)}
-                    index={`${(rowIndex + 1)}${buttonIndex + 1}`}
-                    key={`${(rowIndex + 1)}${buttonIndex + 1}`}
-                />)})
-            
-            
-        )
-    })}
+{matrix.map((row, rowIndex) => row.map((button, buttonIndex) => {
+    return (
+        <Assign
+            padIndex={0}
+            mapping={midiMapping}
+            setMapping={setMidiMapping}
+            pressed={midiEvent.button === parseInt(`${(rowIndex + 1)}${buttonIndex + 1}`)}
+            index={`${(rowIndex + 1)}${buttonIndex + 1}`}
+            key={`${(rowIndex + 1)}${buttonIndex + 1}`}
+        />
+    )
+}))}
     </Stack>
 
 
