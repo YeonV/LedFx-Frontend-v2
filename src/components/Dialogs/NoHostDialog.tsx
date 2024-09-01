@@ -177,21 +177,7 @@ export default function NoHostDialog() {
             </div>
           )}
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between' }}>
-          <div>
-            <Switch
-              sx={{ ml: 1 }}
-              checked={instanceVariant === 'line'}
-              onChange={() =>
-                setInstanceVariant(
-                  instanceVariant === 'line' ? 'buttons' : 'line'
-                )
-              }
-            />
-            <Typography variant="caption" sx={{ marginTop: '1rem' }}>
-              Show as list
-            </Typography>
-          </div>
+        <DialogActions sx={{ justifyContent: 'flex-end' }}>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
