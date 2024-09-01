@@ -67,6 +67,7 @@ export interface ISystemConfig {
   melbanks: {
     max_frequencies: number[]
     min_frequency: number
+    coeffs_type: string
   }
   global_transitions: boolean
   virtuals: undefined

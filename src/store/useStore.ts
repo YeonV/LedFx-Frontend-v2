@@ -25,6 +25,7 @@ import storeSpotifyActions from './ui/storeSpotifyActions'
 import storeQLCActions from './ui/storeQLCActions'
 import storeNotifications from './ui/storeNotifications'
 import storePad from './ui/storePad'
+import storeMidi from './ui/storeMidi'
 import storeVideo from './ui/storeVideo'
 
 const useStore = create(
@@ -40,6 +41,7 @@ const useStore = create(
           qlc: storeQLC(),
           user: storeUser(set),
           ...storePad(set),
+          ...storeMidi(set),
           ...storeVideo(set),
           ...storeNotifications(set),
           ...storeTours(set),

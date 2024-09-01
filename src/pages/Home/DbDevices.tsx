@@ -166,6 +166,8 @@ const DbDevices = () => {
       field: 'icon_name',
       headerName: '',
       width: 50,
+      display: 'flex',
+      align: 'center',
       renderCell: (params: GridRenderCellParams) => (
         <BladeIcon name={params.value} />
       )

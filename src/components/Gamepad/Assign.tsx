@@ -30,6 +30,7 @@ const Assign = ({
   padIndex,
   disabled
 }: any) => {
+  // console.log('mapping', mapping)
   const theme = useTheme()
   const scenes = useStore((state) => state.scenes)
   const commands = {
@@ -72,8 +73,8 @@ const Assign = ({
           // IconComponent={() => null}
           style={{
             color:
-              mapping[padIndex][index]?.command &&
-              mapping[padIndex][index]?.command !== 'none'
+              mapping[padIndex]?.[index]?.command &&
+              mapping[padIndex]?.[index]?.command !== 'none'
                 ? 'white'
                 : 'grey'
           }}
@@ -84,10 +85,10 @@ const Assign = ({
           }}
           labelId="command-select-label"
           label="command"
-          // renderValue={(v) =>
-          //   v === 'scene' ? <Wallpaper sx={{ pr: 4 }} /> : v
-          // }
-          value={mapping[padIndex][index]?.command || 'none'}
+          renderValue={(v) =>
+            v === 'scene' ? <Wallpaper sx={{ pr: 4 }} /> : v
+          }
+          value={mapping[padIndex]?.[index]?.command || 'none'}
           onChange={(e) =>
             setMapping({
               ...mapping,
@@ -114,8 +115,8 @@ const Assign = ({
           ))}
         </Select>
       </FormControl>
-      {mapping[padIndex][index]?.command === 'scene' && (
-        <FormControl sx={{ maxWidth: 150 }} fullWidth>
+      {mapping[padIndex]?.[index]?.command === 'scene' && (
+        <FormControl sx={{ maxWidth: 150, minWidth:150 }} fullWidth>
           <Select
             fullWidth
             disableUnderline
@@ -123,8 +124,8 @@ const Assign = ({
             // IconComponent={() => null}
             style={{
               color:
-                mapping[padIndex][index]?.payload &&
-                mapping[padIndex][index]?.payload !== 'choose scene'
+                mapping[padIndex]?.[index]?.payload &&
+                mapping[padIndex]?.[index]?.payload !== 'choose scene'
                   ? 'white'
                   : 'grey'
             }}
@@ -136,14 +137,14 @@ const Assign = ({
             }}
             labelId="scene-select-label"
             label="Scene"
-            value={mapping[padIndex][index]?.payload?.scene || 'none'}
+            value={mapping[padIndex]?.[index]?.payload?.scene || 'none'}
             onChange={(e) =>
               setMapping({
                 ...mapping,
                 [padIndex]: {
                   ...mapping[padIndex],
                   [index]: {
-                    ...mapping[padIndex][index],
+                    ...mapping[padIndex]?.[index],
                     payload: { scene: e.target.value }
                   }
                 }
@@ -161,19 +162,19 @@ const Assign = ({
           </Select>
         </FormControl>
       )}
-      {mapping[padIndex][index]?.command === 'one-shot' && (
+      {mapping[padIndex]?.[index]?.command === 'one-shot' && (
         <OneShot
-          defaultColor={mapping[padIndex][index]?.payload?.color}
-          defaultRamp={mapping[padIndex][index]?.payload?.ramp}
-          defaultFate={mapping[padIndex][index]?.payload?.fade}
-          defaultHold={mapping[padIndex][index]?.payload?.hold}
+          defaultColor={mapping[padIndex]?.[index]?.payload?.color}
+          defaultRamp={mapping[padIndex]?.[index]?.payload?.ramp}
+          defaultFate={mapping[padIndex]?.[index]?.payload?.fade}
+          defaultHold={mapping[padIndex]?.[index]?.payload?.hold}
           setPayload={(v: any) =>
             setMapping({
               ...mapping,
               [padIndex]: {
                 ...mapping[padIndex],
                 [index]: {
-                  ...mapping[padIndex][index],
+                  ...mapping[padIndex]?.[index],
                   payload: v
                 }
               }

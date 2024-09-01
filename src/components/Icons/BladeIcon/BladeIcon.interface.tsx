@@ -1,3 +1,5 @@
+import { SxProps, Theme } from '@mui/material'
+
 export interface BladeIconProps {
   /**
    * flag indicator
@@ -32,4 +34,9 @@ export interface BladeIconProps {
    * JSX style
    */
   style?: Record<string, unknown>
+  /**
+   * JSX sx
+   * 
+   */
+  sx?: SxProps<Theme>
 }

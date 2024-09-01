@@ -53,10 +53,10 @@ const storeActions = (set: any) => ({
   },
   scanForLaunchpadDevices: async () => {
     const resp = await Ledfx('/api/find_launchpad', 'GET', {})
-    if (resp && resp.status === 'success' && resp.device) {
+    if (resp && resp.status === 'success' && resp.data) {
       set(
         produce((state: IStore) => {
-          state.launchpadDevice = resp.device
+          state.launchpadDevice = resp.data
         }),
         false,
         'api/scanForDevices'
@@ -66,11 +66,11 @@ const storeActions = (set: any) => ({
         config: {
           center_offset: 0,
           refresh_rate: 64,
-          pixel_count: resp.device.pixels,
-          rows: resp.device.rows,
+          pixel_count: resp.data.pixels,
+          rows: resp.data.rows,
           icon_name: 'launchpad',
-          create_segments: resp.device.name === 'Launchpad X',
-          name: resp.device.name
+          create_segments: resp.data.name === 'Launchpad X',
+          name: resp.data.name
         }
       })
     }

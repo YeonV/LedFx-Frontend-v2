@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.99-b9",
+  "version": "2.0.100-b1",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -51,6 +51,7 @@
     "immer": "10.1.1",
     "is-electron": "^2.2.2",
     "jwt-decode": "^4.0.0",
+    "launchpad-webmidi": "https://github.com/LostInBrittany/launchpad-webmidi.git",
     "notistack": "^3.0.1",
     "oauth-pkce": "0.0.7",
     "prop-types": "^15.8.1",

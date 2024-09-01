@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { CSSProperties } from 'react'
+
 export const Left = () => <path fill="currentColor" strokeLinejoin="bevel" strokeMiterlimit="22.9256" d="M16971.57 19422.03l-2446.6 -4231.85c-1545.08,4465.83 -1071.72,9382.81 1296.93,13471.86 2368.67,4089.04 6371.42,6940.74 11014.04,7822.24l-2446.6 -4231.84c-4914.56,-2298.3 -7874.95,-7424.3 -7417.77,-12830.41z"/>
 export const Right = () => <path fill="currentColor" strokeLinejoin="bevel" strokeMiterlimit="22.9256" d="M35420.18 32230.54l-2447.49 4244.95c4629.19,-900.76 8639.59,-3766.27 10991.75,-7853.83 2352.16,-4087.56 2823.45,-8968.95 1276.18,-13423.91l-2447.47 4244.95c449.61,5380.26 -2492.86,10478.34 -7372.97,12787.84z"/>
 export const Top = () => <path fill="currentColor" strokeLinejoin="bevel" strokeMiterlimit="22.9256" d="M23076.46 9492.39l-5138.48 0c3072.48,-3333.29 7398.13,-5230.96 11931.43,-5234.32 4533.32,-3.37 8878.16,1905.6 11955.58,5234.32l-5138.48 0c-4173.65,-2574.63 -9437.65,-2576.65 -13610.05,0z"/>
@@ -8,7 +10,7 @@ export const Y = () => <polygon fill="currentColor" strokeLinejoin="bevel" strok
 export const Z = () => <polygon fill="currentColor" strokeLinejoin="bevel" strokeMiterlimit="22.9256" points="40070.3,14357.03 26995.85,14357.03 25136.78,11141.42 45636.09,11141.42 40977.33,19221.67 33522.63,19221.67 35396.64,22463.14 36314.77,20870.7 40026.57,20870.7 35400.44,28894.36 27949.22,16006.06 39119.54,16006.06 "/>
 
 interface YZLogo3Props {
-  style?: Record<string, unknown>,
+  style?: Record<string, unknown> | CSSProperties,
  }
 
 export const YZLogo3Left = ({ style }:YZLogo3Props) => (
