@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.100-b1",
+  "version": "2.0.100-b2",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -192,7 +192,7 @@
     "cross-env": "^7.0.3",
     "electron": "^27.1.2",
     "electron-builder": "^24.9.1",
-    "eslint": "9.6.0",
+    "eslint": "8.57",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-flowtype": "^8.0.3",

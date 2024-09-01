@@ -5,6 +5,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
+// import reactHooks from 'eslint-plugin-react-hooks'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -22,11 +23,13 @@ export default [
     'standard',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended'
+    // 'plugin:react-hooks/recommended'
   ),
   {
     plugins: {
       '@typescript-eslint': typescriptEslint,
       'prettier/prettier': prettier
+      // 'react-hooks': reactHooks
     },
 
     languageOptions: {

@@ -1,6 +1,5 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
-import { Input, Output } from 'webmidi'
 
 interface IMidiMapping {
   command?: string
