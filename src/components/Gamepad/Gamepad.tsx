@@ -122,6 +122,45 @@ const Gamepad = ({ setScene, bottom }: any) => {
     }
   })
 
+  function handleButtonPress(command: string, payload?: any) {
+    if (command === 'scene' && payload?.scene) {
+      setScene(payload.scene);
+    } else if (command === 'padscreen') {
+      setOpen(!open);
+    } else if (command === 'smartbar') {
+      setSmartBarPadOpen(!smartBarPadOpen);
+    } else if (command === 'play/pause') {
+      togglePause();
+    } else if (command === 'brightness-up') {
+      setSystemSetting(
+        'global_brightness',
+        Math.min(brightness + 0.1, 1).toFixed(2)
+      );
+    } else if (command === 'brightness-down') {
+      setSystemSetting(
+        'global_brightness',
+        Math.max(brightness - 0.1, 0).toFixed(2)
+      );
+    } else if (command === 'scan-wled') {
+      handleScan();
+    } else if (command === 'copy-to') {
+      setFeatures('streamto', !features.streamto);
+    } else if (command === 'transitions') {
+      setFeatures('transitions', !features.transitions);
+    } else if (command === 'frequencies') {
+      setFeatures('frequencies', !features.frequencies);
+    } else if (command === 'scene-playlist') {
+      toggleScenePLplay();
+    } else if (command === 'one-shot') {
+      oneShotAll(
+        payload?.color || '#0dbedc',
+        payload?.ramp || 10,
+        payload?.hold || 200,
+        payload?.fade || 2000
+      );
+    }
+  }
+
   useEffect(() => {
     if (!blocked) {
       const m = [pad0, pad1, pad2, pad3]
@@ -133,47 +172,9 @@ const Gamepad = ({ setScene, bottom }: any) => {
             mapping[pad.index][i] &&
             mapping[pad.index][i].command &&
             mapping[pad.index][i].command !== 'none'
-          if (test) {
-            if (
-              mapping[pad.index][i].command === 'scene' &&
-              mapping[pad.index][i].payload?.scene
-            ) {
-              setScene(mapping[pad.index][i].payload.scene)
-            } else if (mapping[pad.index][i].command === 'padscreen') {
-              setOpen(!open)
-            } else if (mapping[pad.index][i].command === 'smartbar') {
-              setSmartBarPadOpen(!smartBarPadOpen)
-            } else if (mapping[pad.index][i].command === 'play/pause') {
-              togglePause()
-            } else if (mapping[pad.index][i].command === 'brightness-up') {
-              setSystemSetting(
-                'global_brightness',
-                Math.min(brightness + 0.1, 1).toFixed(2)
-              )
-            } else if (mapping[pad.index][i].command === 'brightness-down') {
-              setSystemSetting(
-                'global_brightness',
-                Math.max(brightness - 0.1, 0).toFixed(2)
-              )
-            } else if (mapping[pad.index][i].command === 'scan-wled') {
-              handleScan()
-            } else if (mapping[pad.index][i].command === 'copy-to') {
-              setFeatures('streamto', !features.streamto)
-            } else if (mapping[pad.index][i].command === 'transitions') {
-              setFeatures('transitions', !features.transitions)
-            } else if (mapping[pad.index][i].command === 'frequencies') {
-              setFeatures('frequencies', !features.frequencies)
-            } else if (mapping[pad.index][i].command === 'scene-playlist') {
-              toggleScenePLplay()
-            } else if (mapping[pad.index][i].command === 'one-shot') {
-              oneShotAll(
-                mapping[pad.index][i].payload?.color || '#0dbedc',
-                mapping[pad.index][i].payload?.ramp || 10,
-                mapping[pad.index][i].payload?.hold || 200,
-                mapping[pad.index][i].payload?.fade || 2000
-              )
-            }
-          } else if (pad.axes[0] === 1 && analogBrightness[0]) {
+            if (test) {
+              handleButtonPress(mapping[pad.index][i].command!, mapping[pad.index][i].payload);
+            } else if (pad.axes[0] === 1 && analogBrightness[0]) {
             setSystemSetting(
               'global_brightness',
               Math.min(brightness + 0.1, 1).toFixed(2)

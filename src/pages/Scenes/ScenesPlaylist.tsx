@@ -64,7 +64,7 @@ export default function ScenesPlaylist({
           activateScene(scenePL[scenePLactiveIndex + 1]);
           setScenePLactiveIndex(scenePLactiveIndex + 1);
         }
-      }, (sceneUseIntervals ? scenePLinterval : scenePLintervals[scenePLactiveIndex]) * 1000);
+      }, (sceneUseIntervals ? scenePLinterval : (scenePLintervals[scenePLactiveIndex] || 2)) * 1000);
     }
   } else if (timer.current) {
     clearTimeout(timer.current);

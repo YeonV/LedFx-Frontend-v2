@@ -11,7 +11,8 @@ import {
   Select,
   MenuItem,
   Button,
-  Divider
+  Divider,
+  Alert
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
@@ -171,6 +172,10 @@ const AddDeviceDialog = () => {
           To add a device to LedFx, please first select the type of device you
           wish to add then provide the necessary configuration.
         </DialogContentText>
+        {deviceType === 'launchpad' && <Alert severity='info'>
+          When adding a Lunchpad as a led-output device, 
+          you cannot use it as a MIDI input device at the same time (atm).
+        </Alert>}
         <div className={classes.wrapper}>
           <label>Device Type</label>
           <Select

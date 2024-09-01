@@ -26,7 +26,8 @@ import {
   FormControl,
   Avatar,
   useMediaQuery,
-  Autocomplete
+  Autocomplete,
+  IconButton
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
@@ -38,6 +39,7 @@ import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
 import TooltipImage from './TooltipImage'
 import TooltipTags from './TooltipTags'
 import TooltipMidi from './TooltipMidi'
+import MidiInputDialog from '../../Midi/MidiInputDialog'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -56,6 +58,7 @@ const EditSceneDialog = () => {
   const small = useMediaQuery('(max-width: 580px )')
   const xsmall = useMediaQuery('(max-width: 480px )')
 
+  
   const { effects } = useStore((state) => state.schemas)
   const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.edit || false)
@@ -799,9 +802,7 @@ const EditSceneDialog = () => {
                               />
                               <Chip
                                 onDelete={() => setMIDIActivate('')}
-                                label={/\((.*?)\)/
-                                  .exec(midiActivate)?.[1]
-                                  .replace('MIDI', '')}
+                                label={/\((.*?)\)/.exec(midiActivate)?.[1].replace(' MIDI', '').trim()}
                                 icon={<BladeIcon name="mdi:midi" />}
                               />
                             </>
@@ -810,6 +811,9 @@ const EditSceneDialog = () => {
                       )
                     }}
                   />
+                  {/\((.*?)\)/.exec(midiActivate)?.[1].replace(' MIDI', '').trim() === 'LPX' && (
+                      <MidiInputDialog />
+                  )}
                 </Stack>
               </>
             ) : (

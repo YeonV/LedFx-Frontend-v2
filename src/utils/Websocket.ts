@@ -41,22 +41,25 @@ function createSocket() {
           id: 1,
           type: 'subscribe_event'
         }
-        // console.log("Send");
         ;(ws as any).send(JSON.stringify(++req.id && req))
         const requ = {
           event_type: 'device_created',
           id: 1,
           type: 'subscribe_event'
         }
-        // console.log("Send");
         ;(ws as any).send(JSON.stringify(++requ.id && requ))
         const reque = {
           event_type: 'graph_update',
           id: 1,
           type: 'subscribe_event'
         }
-        // console.log("Send");
         ;(ws as any).send(JSON.stringify(++reque.id && reque))
+        const reqs = {
+          event_type: 'scene_activated',
+          id: 1,
+          type: 'subscribe_event'
+        }
+        ;(ws as any).send(JSON.stringify(++reqs.id && reqs))
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === 'visualisation_update') {
@@ -90,6 +93,17 @@ function createSocket() {
           document.dispatchEvent(
             new CustomEvent('graph_update', {
               detail: JSON.parse(event.data)
+            })
+          )
+        }
+        if (JSON.parse(event.data).event_type === 'scene_activated') {
+          // console.log('scene_activated', JSON.parse(event.data))
+          document.dispatchEvent(
+            new CustomEvent('scene_activated', {
+              detail: {
+                id: 'scene_activated',
+                scene_id: JSON.parse(event.data).scene_id
+              }
             })
           )
         }
