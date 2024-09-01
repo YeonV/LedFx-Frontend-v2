@@ -76,7 +76,8 @@ export default function ScenesPlaylist({
       clearTimeout(timer.current);
       timer.current = null;
     }
-  };
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [scenePLplay, scenePLactiveIndex, scenePLintervals, scenePLinterval]);
 
 useEffect(() => {
@@ -89,6 +90,7 @@ useEffect(() => {
       setScenePLactiveIndex(-1);
     }
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [scenePLplay, scenePLactiveIndex]);
 
   const columns: GridColDef[] = [

@@ -1,11 +1,11 @@
-import { ArrowForwardIos,  BrightnessHigh, Collections, MusicNote, Numbers, Pause, PermMedia, PlayArrow } from '@mui/icons-material'
-import { Avatar, Box, Button, Chip, Fab, FormControlLabel, Stack, Switch, Typography, useTheme } from '@mui/material'
+import { ArrowForwardIos,  BrightnessHigh, Collections, MusicNote, Numbers, Pause, PlayArrow } from '@mui/icons-material'
+import { Avatar, Box, Button, Chip, FormControlLabel, Stack, Switch, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
 import { useState } from 'react'
 
-const LaunchpadButtonMap = ({}) => {
+const LaunchpadButtonMap = () => {
     const theme = useTheme()
     const [showMapping, setShowMapping] = useState(false)
     const midiEvent = useStore((state) => state.midiEvent)

@@ -26,8 +26,7 @@ import {
   FormControl,
   Avatar,
   useMediaQuery,
-  Autocomplete,
-  IconButton
+  Autocomplete
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
 import { WebMidi, Input, NoteMessageEvent } from 'webmidi'

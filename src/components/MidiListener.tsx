@@ -2,24 +2,6 @@ import { useEffect, useState } from 'react'
 import { WebMidi, Input } from 'webmidi'
 import useStore from '../store/useStore'
 
-
-
-function sendHexColorToLaunchpad(output: WebMidi.MIDIOutput, buttonNumber: number, hexColor: string) {
-  const red = parseInt(hexColor.slice(1, 3), 16);
-  const green = parseInt(hexColor.slice(3, 5), 16);
-  const blue = parseInt(hexColor.slice(5, 7), 16);
-
-  // Calculate the MIDI velocity for each color channel
-  const velocityRed = Math.floor((red / 255) * 127);
-  const velocityGreen = Math.floor((green / 255) * 127);
-  const velocityBlue = Math.floor((blue / 255) * 127);
-
-  // Send MIDI messages for each color channel
-  output?.send([0x90, buttonNumber, velocityRed]);
-  output?.send([0x90, buttonNumber + 1, velocityGreen]);
-  output?.send([0x90, buttonNumber + 2, velocityBlue]);
-}
-
 function setAllButtonsToBlack(output: WebMidi.MIDIOutput) {
   for (let i = 0; i < 81; i++) {
     output?.send([0x90, i, 0]);
@@ -28,14 +10,12 @@ function setAllButtonsToBlack(output: WebMidi.MIDIOutput) {
 
 const MIDIListener = () => {
   const togglePause = useStore((state) => state.togglePause)
-  const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value })
   }
   const oneShotAll = useStore((state) => state.oneShotAll)
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
-  const brightness = useStore((state) => state.config.global_brightness)
   const [bright, setBright] = useState(1)
   const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
