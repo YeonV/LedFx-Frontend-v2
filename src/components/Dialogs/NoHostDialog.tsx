@@ -8,7 +8,6 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
-  Switch,
   Divider
   // Box,
 } from '@mui/material'
@@ -18,9 +17,6 @@ import useStore from '../../store/useStore'
 // import Instances from './Instances';
 
 export default function NoHostDialog() {
-  const [instanceVariant, setInstanceVariant] = useState<'buttons' | 'line'>(
-    'buttons'
-  )
   const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false)
   const edit = useStore((state) => state.dialogs.nohost?.edit || false)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
