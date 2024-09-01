@@ -124,7 +124,12 @@ const Title = (
   virtuals: any
 ) => {
   const newVerOnline =
-    compareVersions(latestTag.replace('v', ''), pkg.version) === 1
+  latestTag.replace('v', '').includes('b')
+      ? compareVersions(
+            latestTag.replace('v', '').split('-')[1],
+            pkg.version.split('-')[1]
+        ) === 1
+      : compareVersions(latestTag.replace('v', ''), pkg.version) === 1;
   if (pathname === '/') {
     return (
       <>
