@@ -1,19 +1,22 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
-interface IMidiMapping {
+export interface IMidiMapping {
   command?: string
   payload?: any
+  colorSceneInactive?: string
+  colorSceneActive?: string
+  colorCommand?: string
 }
 
-interface IDefaultMapping {
+export interface IDefaultMapping {
   [key: number]: IMidiMapping
 }
 
-interface IMapping {
+export interface IMapping {
   [key: number]: IDefaultMapping
 }
-const defaultMapping = {
+export const defaultMapping = {
   0: {
     mode: 'command',
     command: 'play/pause'
@@ -28,6 +31,7 @@ const defaultMapping = {
     command: 'play/pause',
   },
 } as IDefaultMapping
+
 const storeMidi = (set: any) => ({
   midiInputs: [] as string[],
   setMidiInputs: (inputs: string[]) =>
@@ -64,6 +68,44 @@ const storeMidi = (set: any) => ({
       }),
       false,
       'setMidiOutput'
+    ),
+  midiInitialized: false,
+  initMidi: () =>
+    set(
+      produce((state: IStore) => {
+        state.midiInitialized = !state.midiInitialized
+      }),
+      false,
+      'setMidiInitialized'
+    ),
+  midiColors: {
+    commandColor: '63',
+    sceneActiveColor: '1E',
+    sceneInactiveColor: '3C',
+  },
+  setMidiCommandColor: (color: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.commandColor = color
+      }),
+      false,
+      'setMidiCommandColor'
+    ),
+  setMidiSceneActiveColor: (color: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.sceneActiveColor = color
+      }),
+      false,
+      'setMidiSceneActiveColor'
+    ),
+  setMidiSceneInactiveColor: (color: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.sceneInactiveColor = color
+      }),
+      false,
+      'setMidiSceneInactiveColor'
     ),
   midiMapping: {
     0: defaultMapping,

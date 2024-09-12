@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { WebMidi, Input } from 'webmidi'
-import useStore from '../store/useStore'
+import useStore from '../../store/useStore'
 
-function setAllButtonsToBlack(output: WebMidi.MIDIOutput) {
-  for (let i = 0; i < 81; i++) {
-    output?.send([0x90, i, 0]);
-  }
-}
+// function setAllButtonsToBlack(output: WebMidi.MIDIOutput) {
+//   for (let i = 0; i < 81; i++) {
+//     output?.send([0x90, i, 0]);
+//   }
+// }
 
 const MIDIListener = () => {
   const togglePause = useStore((state) => state.togglePause)
+  const midiInitialized = useStore((state) => state.midiInitialized)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value })
@@ -34,6 +35,8 @@ const MIDIListener = () => {
   const setMidiEvent = useStore((state) => state.setMidiEvent)
   const setMidiInputs = useStore((state) => state.setMidiInputs)
   const setMidiOutputs = useStore((state) => state.setMidiOutputs)
+  const setMidiInput = useStore((state) => state.setMidiInput)
+  const setMidiOutput = useStore((state) => state.setMidiOutput)
   const midiInput = useStore((state) => state.midiInput)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
@@ -77,35 +80,14 @@ const MIDIListener = () => {
   }
 
   useEffect(() => {
-    // const handleMidiEvent = (input: Input, event: any) => {
-    //   const midiInput = `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
-    //   setMidiEvent({
-    //     name: input.name,
-    //     note: event.note.identifier,
-    //     button: event.note.number
-    //   })
-
-    //   // console.log(input, event)
-    //   const output = WebMidi.getOutputByName(input.name)
-    //   Object.keys(scenes).forEach((key) => {
-    //     const scene = scenes[key]
-    //     if (midiInput === String(scene.scene_midiactivate)) {
-    //       if (!sceneDialogOpen) activateScene(key)
-    //       localStorage.setItem('midiDeviceName', input.name) // Store MIDI device name
-    //     } else if (!sceneDialogOpen) output?.send([0xb0, 0x00, 0x00])
-    //   })
-    // }
-
     const handleMidiInput = (input: Input) => {
       input.addListener('noteon', (event: any) => {
         if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier) || midiInput !== input.name) return
-        // console.log('Note On:', event)
         setMidiEvent({
           name: input.name,
           note: event.note.identifier,
           button: event.note.number
         })
-        // console.log('MIDI Mapping:', midiMapping, event.note.number)
         if (midiMapping[0][event.note.number]?.command !== undefined) {
           handleButtonPress(midiMapping[0][event.note.number]?.command!, midiMapping[0][event.note.number].payload)
         }
@@ -113,7 +95,6 @@ const MIDIListener = () => {
 
       input.addListener('noteoff', (event: any) => {
         if (midiInput !== input.name) return
-        // console.log('Note Off:', event)
         setMidiEvent({
           name: '',
           note: '',
@@ -121,7 +102,7 @@ const MIDIListener = () => {
         })
       })
       input.addListener('controlchange', (event: any) => {
-        console.log('Control Change:', event.controller.number)
+        // console.log('Control Change:', event.controller.number)
         if (event.controller.number === midiEvent.button && midiEvent.name === input.name) return
         if (event.value === 1) {
           setMidiEvent({
@@ -143,14 +124,29 @@ const MIDIListener = () => {
     }
 
     WebMidi.enable({
+      sysex: true,
       callback: (err: any) => {
         if (err) {
           console.error('WebMidi could not be enabled:', err)
         } else {
           const { inputs, outputs } = WebMidi
           setMidiInputs(inputs.map((input) => input.name))
-          setMidiOutputs(outputs.map((output) => output.name))          
-          // console.log('WebMidi enabled:', inputs, outputs)
+          setMidiOutputs(outputs.map((output) => output.name))
+          setMidiInput(inputs[inputs.length - 1]?.name)
+          setMidiOutput(outputs[inputs.length - 1]?.name)
+          const output = WebMidi.getOutputByName(outputs[inputs.length - 1]?.name)
+
+          Object.entries(midiMapping[0]).forEach(([key, value]) => {
+            if (value.command !== 'scene' && value.command !== 'none') {
+              if (output) {
+                output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
+              }
+            } else if (value.command === 'scene') {
+              if (output) {
+                output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
+              }
+            }
+          })
           if (inputs.length > 0) {
             inputs.forEach((input) => {
               handleMidiInput(input)
@@ -162,25 +158,18 @@ const MIDIListener = () => {
 
 
     const handleWebsockets = (event: any) => {
-      // console.log('Websocket Event:', event)
       const output = WebMidi.getOutputByName(midiOutput)
-      // output?.send([0x90, 31, 30])
-      if (output) setAllButtonsToBlack(output as any)
-      // if (output) sendHexColorToLaunchpad(output as any, 91, "255")
-      // if (output) {
-      //   output.send([0x90, 91, 0])
-      //   output.send([0x90, 92, 0])
-      //   output.send([0x90, 94, 0])
-      // }
-      console.log(midiMapping)
+
+      // if (output) setAllButtonsToBlack(output as any)
+
       Object.entries(midiMapping[0]).forEach(([key, value]) => {
         if (value.command !== 'scene' && value.command !== 'none') {
           if (output) {
-            output.send([0x90, parseInt(key), 99])
+            output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
           }
         } else if (value.command === 'scene') {
           if (output) {
-            output.send([0x90, parseInt(key), 60])
+            output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
           }
         }
       })
@@ -190,28 +179,24 @@ const MIDIListener = () => {
           const { scene_id } = event.detail
           Object.keys(scenes).forEach((key) => {
             const scene = scenes[key]
-            // console.log('Scene:', scene)
             const buttonNumber = parseInt(
               scene.scene_midiactivate.split('buttonNumber: ')[1],
               10
             )
             if (key === scene_id) {
-              // console.log('Output:', output)
               if (output) {
-                output?.send([0xb0, 0x00, 0x00])
-                // console.log('Button Number:', buttonNumber)
+                // output?.send([0xb0, 0x00, 0x00])
                 if (!Number.isNaN(buttonNumber)) {
-                  output?.send([0x90, buttonNumber, 30])
+                  output?.send([0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || '1E', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
               }
             } else {
               if (output) {
-                output?.send([0xb0, 0x00, 0x00])
-                // console.log('Button Number:', buttonNumber)
+                // output?.send([0xb0, 0x00, 0x00])
                 if (!Number.isNaN(buttonNumber)) {
-                  output?.send([0x90, buttonNumber, 60])
+                  output?.send([0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || '3C', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
@@ -223,13 +208,12 @@ const MIDIListener = () => {
         console.error('Error parsing websocket message:', error)
       }
     }
-    // webSocket.addEventListener('open', handleOpen)
     document.addEventListener('scene_activated', handleWebsockets)
     return () => {
       document.removeEventListener('scene_activated', handleWebsockets)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scenes, sceneDialogOpen])
+  }, [scenes, sceneDialogOpen, midiInitialized])
 
   // init midiMapping from scenes
   useEffect(() => {
@@ -245,12 +229,12 @@ const MIDIListener = () => {
       mapping[0] = {
         ...mapping[0],
         [buttonNumber]: {
+          ...mapping[0][buttonNumber],
           command: 'scene',
           payload: { scene: key }
         }
       }
     })
-    // console.log('MIDI Mapping:', mapping)
     setMidiMapping(mapping)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes])
