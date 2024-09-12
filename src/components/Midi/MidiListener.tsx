@@ -102,7 +102,6 @@ const MIDIListener = () => {
         })
       })
       input.addListener('controlchange', (event: any) => {
-        // console.log('Control Change:', event.controller.number)
         if (event.controller.number === midiEvent.button && midiEvent.name === input.name) return
         if (event.value === 1) {
           setMidiEvent({
