@@ -83,19 +83,19 @@ const LaunchpadButton = ({
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Scene inactive</Typography>
                     <LpColorPicker defaultColor={getColorFromValue(`${midiMapping[0][buttonNumber]?.colorSceneInactive}` || midiSceneInactiveColor)} onColorSelect={(color: string) => {
-                        setMidiMapping({...midiMapping, [0]: {...midiMapping[0], [buttonNumber]: {...midiMapping[0][buttonNumber], colorSceneInactive: color}}})
+                        setMidiMapping({...midiMapping, 0: {...midiMapping[0], [buttonNumber]: {...midiMapping[0][buttonNumber], colorSceneInactive: color}}})
                     }} />
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Scene active</Typography>
                     <LpColorPicker defaultColor={getColorFromValue(`${midiMapping[0][buttonNumber]?.colorSceneActive}` || midiSceneActiveColor)} onColorSelect={(color: string) => {
-                        setMidiMapping({...midiMapping, [0]: {...midiMapping[0], [buttonNumber]: {...midiMapping[0][buttonNumber], colorSceneActive: color}}})
+                        setMidiMapping({...midiMapping, 0: {...midiMapping[0], [buttonNumber]: {...midiMapping[0][buttonNumber], colorSceneActive: color}}})
                     }} />
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Command</Typography>
                     <LpColorPicker defaultColor={getColorFromValue(`${midiMapping[0][buttonNumber]?.colorCommand}` || midiCommandColor)} onColorSelect={(color: string) => {
-                        setMidiMapping({...midiMapping, [0]: {...midiMapping[0], [buttonNumber]: {...midiMapping[0][buttonNumber], colorCommand: color}}})
+                        setMidiMapping({...midiMapping, 0: {...midiMapping[0], [buttonNumber]: {...midiMapping[0][buttonNumber], colorCommand: color}}})
                     }} />
                 </Stack>
             </Stack>
