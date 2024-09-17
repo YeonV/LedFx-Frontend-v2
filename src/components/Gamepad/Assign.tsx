@@ -71,59 +71,80 @@ const Assign = ({
           </Fab>}
         {!compact 
           ? <Stack direction="row" justifyContent={'space-between'} alignItems={'center'}>
-            <Typography>
-              Command
-            </Typography>
-            <FormControl>
-              <Select
-                disableUnderline
-                disabled={disabled || mapping[padIndex][index]?.command === 'scene'}
-                // IconComponent={() => null}
-                style={{
-                  textAlign: 'right',
-                  color:
-                    mapping[padIndex]?.[index]?.command &&
-                    mapping[padIndex]?.[index]?.command !== 'none'
-                      ? 'white'
-                      : 'grey'
-                }}
-                sx={{
-                  '& .MuiSelect-select': {
-                    marginTop: '3px'
-                  }
-                }}
-                labelId="command-select-label"
-                label="command"
-                // renderValue={(v) =>
-                //   v === 'scene' ? <Wallpaper sx={{ pr: 0 }} /> : v
-                // }
-                value={mapping[padIndex]?.[index]?.command || 'none'}
-                onChange={(e) =>
-                  setMapping({
-                    ...mapping,
-                    [padIndex]: {
-                      ...mapping[padIndex],
-                      [index]: { command: e.target.value }
+              <Typography>
+                Command
+              </Typography>
+              <FormControl>
+                <Select
+                  disableUnderline
+                  disabled={disabled || mapping[padIndex][index]?.command === 'scene'}
+                  // IconComponent={() => null}
+                  style={{
+                    textAlign: 'right',
+                    color:
+                      mapping[padIndex]?.[index]?.command &&
+                      mapping[padIndex]?.[index]?.command !== 'none'
+                        ? 'white'
+                        : 'grey'
+                  }}
+                  sx={{
+                    '& .MuiSelect-select': {
+                      marginTop: '3px'
                     }
-                  })
-                }
-              >
-                <MenuItem value="none" key="none">
-                  <Stack direction="row" spacing={1}>
-                    <QuestionMark />
-                    <span>{disabled ? 'used by LedFx' : 'choose command'}</span>
-                  </Stack>
-                </MenuItem>
-                {Object.keys(commands).map((s) => (
-                  <MenuItem key={s} value={s} disabled={type === 'midi' && s === 'scene'}>
+                  }}
+                  labelId="command-select-label"
+                  label="command"
+                  // renderValue={(v) =>
+                  //   v === 'scene' ? <Wallpaper sx={{ pr: 0 }} /> : v
+                  // }
+                  value={mapping[padIndex]?.[index]?.command || 'none'}
+                  onChange={(e) =>
+                    setMapping({
+                      ...mapping,
+                      [padIndex]: {
+                        ...mapping[padIndex],
+                        [index]: { command: e.target.value }
+                      }
+                    })
+                  }
+                >
+                  <MenuItem value="none" key="none">
                     <Stack direction="row" spacing={1}>
-                      {commands[s as keyof typeof commands] || ''}
-                      <span>{s || 'none'}</span>
+                      <QuestionMark />
+                      <span>{disabled ? 'used by LedFx' : 'choose command'}</span>
                     </Stack>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  {Object.keys(commands).map((s) => (
+                    <MenuItem key={s} value={s} disabled={type === 'midi' && s === 'scene'}>
+                      <Stack direction="row" spacing={1}>
+                        {commands[s as keyof typeof commands] || ''}
+                        <span>{s || 'none'}</span>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {mapping[padIndex]?.[index]?.command === 'one-shot' && (
+                <OneShot
+                size={compact ? 'small' : 'large'}
+                  defaultColor={mapping[padIndex]?.[index]?.payload?.color}
+                  defaultRamp={mapping[padIndex]?.[index]?.payload?.ramp}
+                  defaultFate={mapping[padIndex]?.[index]?.payload?.fade}
+                  defaultHold={mapping[padIndex]?.[index]?.payload?.hold}
+                  setPayload={(v: any) =>
+                    setMapping({
+                      ...mapping,
+                      [padIndex]: {
+                        ...mapping[padIndex],
+                        [index]: {
+                          ...mapping[padIndex]?.[index],
+                          payload: v
+                        }
+                      }
+                    })
+                  }
+                />
+              )}
           </Stack> 
         : <FormControl fullWidth>
         <Select
@@ -272,7 +293,7 @@ const Assign = ({
           </Select>
         </FormControl>
       )}
-      {mapping[padIndex]?.[index]?.command === 'one-shot' && (
+      {compact && mapping[padIndex]?.[index]?.command === 'one-shot' && (
         <OneShot
           defaultColor={mapping[padIndex]?.[index]?.payload?.color}
           defaultRamp={mapping[padIndex]?.[index]?.payload?.ramp}

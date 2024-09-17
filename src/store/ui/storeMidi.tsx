@@ -7,6 +7,9 @@ export interface IMidiMapping {
   colorSceneInactive?: string
   colorSceneActive?: string
   colorCommand?: string
+  typeSceneInactive?: string
+  typeSceneActive?: string
+  typeCommand?: string
 }
 
 export interface IDefaultMapping {
@@ -82,6 +85,9 @@ const storeMidi = (set: any) => ({
     commandColor: '63',
     sceneActiveColor: '1E',
     sceneInactiveColor: '3C',
+    commandType: '90',
+    sceneActiveType: '90',
+    sceneInactiveType: '90',
   },
   setMidiCommandColor: (color: string) =>
     set(
