@@ -7,6 +7,8 @@ import LaunchpadButtonMap from './LaunchpadButtonMap'
 const MidiInputDialog = () => {
   const midiEvent = useStore((state) => state.midiEvent)
   const [open, setOpen] = useState<boolean>(false)
+  const [sideBarOpen, setSideBarOpen] = useState(false)
+  const toggleSidebar = () => setSideBarOpen(!sideBarOpen)
 
   return (
     <div style={{ alignSelf: 'center' }}>
@@ -20,8 +22,8 @@ const MidiInputDialog = () => {
         onClose={() => setOpen(false)}
         PaperProps={{
           sx: {
-            maxWidth: 'min(95vw, 1200px)',
-            minWidth: 'min(95vw, 750px)',
+            maxWidth: sideBarOpen ? 'min(95vw, 1060px)' : 'min(95vw, 742px)',
+            minWidth: sideBarOpen ? 'min(95vw, 750px)': 'min(95vw, 542px)',
             width: '100%'
           }
         }}
@@ -30,8 +32,7 @@ const MidiInputDialog = () => {
             <BladeIcon name="mdi:midi" style={{ marginRight: '1rem'}} /> {/\((.*?)\)/.exec(midiEvent.name)?.[1]} Input Configuration
         </DialogTitle>
         <DialogContent>
-            <LaunchpadButtonMap />
-        
+            <LaunchpadButtonMap sideBarOpen={sideBarOpen} toggleSidebar={toggleSidebar} />        
         </DialogContent>
       </Dialog>
     </div>

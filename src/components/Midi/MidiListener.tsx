@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WebMidi, Input } from 'webmidi'
 import useStore from '../../store/useStore'
 
@@ -9,6 +9,7 @@ import useStore from '../../store/useStore'
 // }
 
 const MIDIListener = () => {
+  const setFeatures = useStore((state) => state.setFeatures)
   const togglePause = useStore((state) => state.togglePause)
   const midiInitialized = useStore((state) => state.midiInitialized)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
@@ -21,11 +22,8 @@ const MIDIListener = () => {
   const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
   const captivateScene = useStore((state) => state.captivateScene)
-  const smartBarPadOpen = useStore(
-    (state) => state.ui.bars && state.ui.bars.smartBarPad.open
-  )
-  const setSmartBarPadOpen = useStore(
-    (state) => state.ui.bars && state.ui.setSmartBarPadOpen
+  const setSmartBarOpen = useStore(
+    (state) => state.ui.bars && state.ui.setSmartBarOpen
   )
   const setScene = (e: string) => {
     activateScene(e)
@@ -41,7 +39,9 @@ const MIDIListener = () => {
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
   const midiEvent = useStore((state) => state.midiEvent)
-  
+  const global_brightness = useStore((state) => state.config.global_brightness)
+  const glBrightness = useRef(global_brightness)
+
   const setMidiMapping = useStore((state) => state.setMidiMapping)
 
   const sceneDialogOpen = useStore(
@@ -52,21 +52,23 @@ const MIDIListener = () => {
     if (command === 'scene' && payload?.scene) {
       setScene(payload.scene);
     } else if (command === 'smartbar') {
-      setSmartBarPadOpen(!smartBarPadOpen);
+      setSmartBarOpen(!useStore.getState().ui.bars.smartBar.open);
     } else if (command === 'play/pause') {
       togglePause();
     } else if (command === 'brightness-up') {
       setSystemSetting(
         'global_brightness',
-        1
+        Math.min(glBrightness.current + 0.1, 1).toFixed(2)
       );
+      glBrightness.current = Math.min(glBrightness.current + 0.1, 1)
       setBright(Math.min(bright + 0.1, 1))
     } else if (command === 'brightness-down') {
       setSystemSetting(
         'global_brightness',
-        0.3
+        Math.max(glBrightness.current - 0.1, 0).toFixed(2)
       )
-      setBright(Math.max(bright - 0.2, 0))
+      glBrightness.current = Math.min(glBrightness.current - 0.1, 1)
+      setBright(Math.max(bright - 0.1, 0))
     } else if (command === 'scene-playlist') {
       toggleScenePLplay();
     } else if (command === 'one-shot') {
@@ -76,13 +78,20 @@ const MIDIListener = () => {
         payload?.hold || 200,
         payload?.fade || 2000
       );
+    } else if (command === 'copy-to') {
+      setFeatures('streamto', !useStore.getState().features.streamto);
+    } else if (command === 'transitions') {
+      setFeatures('transitions', !useStore.getState().features.transitions);
+    } else if (command === 'frequencies') {
+      setFeatures('frequencies', !useStore.getState().features.frequencies);
     }
   }
 
   useEffect(() => {
     const handleMidiInput = (input: Input) => {
+      if (!input) return  
       input.addListener('noteon', (event: any) => {
-        if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier) || midiInput !== input.name) return
+        if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier)) return
         setMidiEvent({
           name: input.name,
           note: event.note.identifier,
@@ -122,39 +131,52 @@ const MIDIListener = () => {
       })
     }
 
-    WebMidi.enable({
-      sysex: true,
-      callback: (err: any) => {
-        if (err) {
-          console.error('WebMidi could not be enabled:', err)
-        } else {
-          const { inputs, outputs } = WebMidi
-          setMidiInputs(inputs.map((input) => input.name))
-          setMidiOutputs(outputs.map((output) => output.name))
-          setMidiInput(inputs[inputs.length - 1]?.name)
-          setMidiOutput(outputs[inputs.length - 1]?.name)
-          const output = WebMidi.getOutputByName(outputs[inputs.length - 1]?.name)
 
-          Object.entries(midiMapping[0]).forEach(([key, value]) => {
-            if (value.command !== 'scene' && value.command !== 'none') {
-              if (output) {
-                output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
+    const enableWebMidi = () => {
+      WebMidi.enable({
+        sysex: true,
+        callback: (err: any) => {
+          if (err) {
+            console.error('WebMidi could not be enabled:', err);
+            alert('Please re-grant MIDI permissions to use this feature.');
+          } else {
+            const { inputs, outputs } = WebMidi;
+            setMidiInputs(inputs.map((input) => input.name));
+            setMidiOutputs(outputs.map((output) => output.name));
+            if (midiInput === '') setMidiInput(inputs[inputs.length - 1]?.name);
+            if (midiOutput === '') setMidiOutput(outputs[inputs.length - 1]?.name);
+            const output = outputs[inputs.length - 1];
+  
+            Object.entries(midiMapping[0]).forEach(([key, value]) => {
+              if (value.command !== 'scene' && value.command !== 'none') {
+                if (output) {
+                  try {
+                    output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99]);
+                  } catch (error) {
+                    console.error('Error sending MIDI message:', error);
+                  }                  
+                }
+              } else if (value.command === 'scene') {
+                if (output) {
+                  try {
+                    output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60]);
+                  } catch (error) {
+                    console.error('Error sending MIDI message:', error);
+                  }                  
+                }
               }
-            } else if (value.command === 'scene') {
-              if (output) {
-                output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
-              }
+            });
+            if (inputs.length > 0) {
+              inputs.forEach((input) => {
+                handleMidiInput(input);
+              });
             }
-          })
-          if (inputs.length > 0) {
-            inputs.forEach((input) => {
-              handleMidiInput(input)
-            })
           }
         }
-      }
-    })
-
+      });
+    };
+  
+    enableWebMidi();
 
     const handleWebsockets = (event: any) => {
       const output = WebMidi.getOutputByName(midiOutput)
@@ -164,11 +186,19 @@ const MIDIListener = () => {
       Object.entries(midiMapping[0]).forEach(([key, value]) => {
         if (value.command !== 'scene' && value.command !== 'none') {
           if (output) {
-            output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
+            try {
+              output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
+            } catch (error) {
+              console.error('Error sending MIDI message:', error)
+            }
           }
         } else if (value.command === 'scene') {
           if (output) {
-            output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
+            try {
+              output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
+            } catch (error) {
+              console.error('Error sending MIDI message:', error)
+            }
           }
         }
       })
@@ -186,7 +216,7 @@ const MIDIListener = () => {
               if (output) {
                 // output?.send([0xb0, 0x00, 0x00])
                 if (!Number.isNaN(buttonNumber)) {
-                  output?.send([0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || '1E', 16)])
+                  output?.send([ parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneActive}`) || 0x91, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || '1E', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
@@ -213,6 +243,12 @@ const MIDIListener = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, sceneDialogOpen, midiInitialized])
+
+  useEffect(() => {
+    return () => {
+      WebMidi.disable();
+    }
+  }, [])
 
   // init midiMapping from scenes
   useEffect(() => {

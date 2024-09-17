@@ -20,7 +20,8 @@ const OneShot = ({
   defaultColor,
   defaultRamp,
   defaultHold,
-  defaultFate
+  defaultFate,
+  size
 }: any) => {
   const [color, setColor] = useState(defaultColor || '#fff')
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -57,8 +58,8 @@ const OneShot = ({
           sx={{
             display: 'block',
             borderRadius: '4px',
-            width: '2rem',
-            height: '1rem',
+            width: size === 'large' ? '64px' : '2rem',
+            height: size === 'large' ? '32px' : '1rem',
             justifyContent: 'space-between',
             backgroundColor: defaultColor,
             cursor: 'pointer'

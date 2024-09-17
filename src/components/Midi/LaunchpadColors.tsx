@@ -3,11 +3,12 @@ import Button from '@mui/material/Button'
 import useStore from '../../store/useStore'
 import DialogTitle from '@mui/material/DialogTitle'
 import LpColorPicker from './LpColorPicker'
-import { DialogContent, Stack, Typography } from '@mui/material'
+import { DialogContent, ListItemIcon, ListItemText, MenuItem, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { getColorFromValue } from './lpColors'
+import { ColorLens } from '@mui/icons-material'
 
-const LaunchpadColors = () => {
+const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuItem'}) => {
   const [open, setOpen] = useState(false)
 
   const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
@@ -27,9 +28,14 @@ const LaunchpadColors = () => {
 
   return (
     <div>
-      <Button onClick={handleClickOpen}>
-        Global Colors
-      </Button>
+      {component === 'Button' 
+        ? <Button onClick={handleClickOpen}>
+            Global Colors
+          </Button>
+        : <MenuItem onClick={handleClickOpen}>
+            <ListItemIcon><ColorLens /></ListItemIcon>
+            <ListItemText primary="Global Colors" />
+          </MenuItem>}
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>Edit Launchpad Global Colors</DialogTitle>
         <DialogContent>

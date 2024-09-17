@@ -174,6 +174,7 @@ export const lpColors = {
 }
 
 export const getColorFromValue = (value: string) => {
+  if (value === 'undefined') return undefined;
   const numericValue = parseInt(value, 16);
   return Object.keys(lpColors).find(key => lpColors[key as IColor] === numericValue) || undefined;
 }
