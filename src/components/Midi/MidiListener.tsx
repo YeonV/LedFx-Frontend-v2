@@ -187,7 +187,7 @@ const MIDIListener = () => {
         if (value.command !== 'scene' && value.command !== 'none') {
           if (output) {
             try {
-              output.send([0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
+              output.send([parseInt(`0x${value.typeCommand}`) || 0x90, parseInt(key), parseInt(value.colorCommand, 16) || 99])
             } catch (error) {
               console.error('Error sending MIDI message:', error)
             }
@@ -195,7 +195,7 @@ const MIDIListener = () => {
         } else if (value.command === 'scene') {
           if (output) {
             try {
-              output.send([0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
+              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, parseInt(key), parseInt(value.colorSceneInactive, 16) || 60])
             } catch (error) {
               console.error('Error sending MIDI message:', error)
             }
@@ -216,7 +216,7 @@ const MIDIListener = () => {
               if (output) {
                 // output?.send([0xb0, 0x00, 0x00])
                 if (!Number.isNaN(buttonNumber)) {
-                  output?.send([ parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneActive}`) || 0x91, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || '1E', 16)])
+                  output?.send([ parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneActive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || '1E', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
@@ -225,7 +225,7 @@ const MIDIListener = () => {
               if (output) {
                 // output?.send([0xb0, 0x00, 0x00])
                 if (!Number.isNaN(buttonNumber)) {
-                  output?.send([0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || '3C', 16)])
+                  output?.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || '3C', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
