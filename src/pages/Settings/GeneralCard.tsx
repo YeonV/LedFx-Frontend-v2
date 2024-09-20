@@ -9,7 +9,7 @@ import {
   Info
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
-import { Divider } from '@mui/material'
+import { Divider, Tooltip } from '@mui/material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, download } from '../../utils/helpers'
 import PopoverSure from '../../components/Popover/Popover'
@@ -186,6 +186,34 @@ const GeneralCard = () => {
             onSystemSettingsChange('create_segments', !settings.create_segments)
           }
         />
+      </div>
+      {/* <div
+        className={`${classes.settingsRow} step-settings-nine `}
+        style={{ flexBasis: '100%' }}
+      >
+        <label>Fallback to WLED effects</label>
+        <Tooltip title="On deactivation, WLED device will fallback to the currently configured effect on the WLED device itself. This is the original LedFX behavior. If off, WLED devices will be held in a solid black effect at a low update rate">
+          <SettingsSwitch
+            checked={settings.wled_on_deactivate}
+            onChange={() =>
+              onSystemSettingsChange('wled_on_deactivate', !settings.wled_on_deactivate)
+            }
+          />
+        </Tooltip>
+      </div> */}
+      <div
+        className={`${classes.settingsRow} step-settings-ten `}
+        style={{ flexBasis: '100%' }}
+      >
+        <label>Deactivate to black</label>
+        <Tooltip title="On deactivation, virtuals and devices will fill pixels with black. If off pixels will be left with the last rendered color from before deactivation, this is the original LedFX behaviour">
+          <SettingsSwitch
+            checked={settings.flush_on_deactivate}
+            onChange={() =>
+              onSystemSettingsChange('flush_on_deactivate', !settings.flush_on_deactivate)
+            }
+          />
+        </Tooltip>
       </div>
     </div>
   )

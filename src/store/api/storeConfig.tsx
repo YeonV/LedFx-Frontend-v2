@@ -79,6 +79,8 @@ export interface ISystemConfig {
   configuration_version: string
   scenes: undefined
   scan_on_startup: boolean
+  // wled_on_deactivate: boolean
+  flush_on_deactivate: boolean
 }
 
 const storeConfig = (set: any) => ({
