@@ -187,20 +187,6 @@ const GeneralCard = () => {
           }
         />
       </div>
-      {/* <div
-        className={`${classes.settingsRow} step-settings-nine `}
-        style={{ flexBasis: '100%' }}
-      >
-        <label>Fallback to WLED effects</label>
-        <Tooltip title="On deactivation, WLED device will fallback to the currently configured effect on the WLED device itself. This is the original LedFX behavior. If off, WLED devices will be held in a solid black effect at a low update rate">
-          <SettingsSwitch
-            checked={settings.wled_on_deactivate}
-            onChange={() =>
-              onSystemSettingsChange('wled_on_deactivate', !settings.wled_on_deactivate)
-            }
-          />
-        </Tooltip>
-      </div> */}
       <div
         className={`${classes.settingsRow} step-settings-ten `}
         style={{ flexBasis: '100%' }}
