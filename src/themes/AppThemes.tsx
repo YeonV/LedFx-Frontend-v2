@@ -88,7 +88,7 @@ export const BladeDarkGreenTheme = {
       main: '#2BDE6A'
     },
     secondary: {
-      main: '#1db94'
+      main: '#1db94d'
     },
     accent: {
       main: '#20173c'
