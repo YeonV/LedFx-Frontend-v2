@@ -149,8 +149,17 @@ const DbDevices = () => {
   const graphsMulti = useStore((state) => state.graphsMulti)
   const [fade] = useState(false)
   const showMatrix = useStore((state) => state.showMatrix)
+  const paused = useStore((state) => state.paused)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const activateDevice = useStore((state) => state.activateDevice)
+  const clearEffect = useStore((state) => state.clearEffect)
+  const togglePause = useStore((state) => state.togglePause)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+
+  const clearAllEffects = async () => {
+    await Promise.all(Object.keys(virtuals).map((v) => clearEffect(v)))
+  }
+
   useEffect(() => {
     if (graphs && graphsMulti) {
       setPixelGraphs(Object.keys(virtuals))
@@ -196,6 +205,7 @@ const DbDevices = () => {
         graphsMulti && (
           <div
             style={{
+              paddingTop: '7px',
               opacity: fade ? 0.2 : 1,
               transitionDuration: fade
                 ? `${virtuals[params.row.id].config.transition_time * 1000 || 1}s`
@@ -235,11 +245,38 @@ const DbDevices = () => {
             : 'Online'
           : virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
-            : 'Offline'
+            : params.row.is_device ? 'Offline' : virtuals[params.row.id]?.active ? 'Active' : 'Inactive'
     },
     {
       field: 'actions',
       headerName: 'Actions',
+      renderHeader: () => <Stack direction={'row'} alignItems={'center'} style={{ width: 300 }}>
+          <Stack direction={'row'} alignItems={'center'} style={{ width: 135 }}>
+          <IconButton
+            size="small"
+            onClick={async(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              await togglePause()
+              getVirtuals()
+            }}
+          >
+            {paused ? <PlayArrow /> : <Pause /> }
+          </IconButton>
+          <IconButton
+            size="small"
+            onClick={async(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              await clearAllEffects()
+              getVirtuals()
+            }}
+          >
+            <Clear />
+          </IconButton>
+          </Stack>
+          Actions
+        </Stack>,
       width: 300, // eslint-disable-next-line
       renderCell: (params: GridRenderCellParams) => // eslint-disable-next-line
         devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online  // eslint-disable-next-line
@@ -248,7 +285,7 @@ const DbDevices = () => {
             : (<DeviceActions virtId={params.row.id} />))  // eslint-disable-next-line
           : virtuals[params.row.id]?.effect.name  // eslint-disable-next-line
             ? (<DeviceActions virtId={params.row.id} effect />) 
-            : (<ReconnectButton onClick={() => activateDevice(params.row.id)} />)
+            : params.row.is_device ? (<ReconnectButton onClick={() => activateDevice(params.row.id)} />) : null
     }
   ]
 
@@ -295,8 +332,14 @@ const DbDevices = () => {
           }}
           sx={{
             borderColor: 'transparent',
+            '& .MuiDataGrid-row': {
+              backgroundColor: theme.palette.mode === 'light' ? theme.palette.background.default + '90' : ''
+            },
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important'
+            },
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer'
             }
           }}
         />

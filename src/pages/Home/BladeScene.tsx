@@ -17,6 +17,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
     }, {})
 
   const setEffect = useStore((state) => state.setEffect)
+  const clearEffect = useStore((state) => state.clearEffect)
   // const updateEffect = useStore((state) => state.updateEffect)
   const activatePreset = useStore((state) => state.activatePreset)
   const addScene = useStore((state) => state.addScene)
@@ -34,7 +35,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
   const large = Object.keys(virtuals).filter(
     (v: string) => virtuals[v].pixel_count >= 100
   )
-
+   
   const addBladeScene = () => {
     // if (noAuto) {
     large.map((v) => {
@@ -112,6 +113,7 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
   return (
     <Button
       onClick={() => {
+        // await addOffScene()
         addBladeScene()
         onClick()
       }}

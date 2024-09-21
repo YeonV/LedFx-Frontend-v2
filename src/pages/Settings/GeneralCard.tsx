@@ -36,10 +36,14 @@ const GeneralCard = () => {
   }
 
   const configDelete = async () => {
-    deleteFrontendConfig()
+    deleteFrontendConfig(true)
     deleteSystemConfig().then(() => {
-      window.location.href = window.location.href
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
+      window.location.href = window.location.href.split('/#/')[0] + '/#/'
     })
+    
   }
 
   const fileChanged = async (e: any) => {
