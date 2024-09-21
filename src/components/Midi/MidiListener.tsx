@@ -75,7 +75,7 @@ const MIDIListener = () => {
       oneShotAll(
         payload?.color || '#0dbedc',
         payload?.ramp || 10,
-        payload?.hold || 200,
+        payload?.holdType !== 'release' ? (payload?.hold || 200) : 10000,
         payload?.fade || 2000
       );
     } else if (command === 'copy-to') {
@@ -89,7 +89,9 @@ const MIDIListener = () => {
 
   useEffect(() => {
     const handleMidiInput = (input: Input) => {
-      if (!input) return  
+      if (!input || input.name !== midiInput) return  
+      input.removeListener('noteon')
+      input.removeListener('noteoff')
       input.addListener('noteon', (event: any) => {
         if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier)) return
         setMidiEvent({
@@ -103,6 +105,14 @@ const MIDIListener = () => {
       })
 
       input.addListener('noteoff', (event: any) => {
+        if (midiMapping[0][event.note.number]?.command === 'one-shot' && midiMapping[0][event.note.number]?.payload?.holdType === 'release') {
+          oneShotAll(
+            midiMapping[0][event.note.number]?.payload?.color || '#0dbedc',
+            midiMapping[0][event.note.number]?.payload?.ramp || 10,
+            1,
+            midiMapping[0][event.note.number]?.payload?.fade || 220
+          )
+        }
         if (midiInput !== input.name) return
         setMidiEvent({
           name: '',
