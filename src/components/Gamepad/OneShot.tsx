@@ -6,10 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  Slider,
   Stack,
-  Switch,
-  TextField,
   ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
