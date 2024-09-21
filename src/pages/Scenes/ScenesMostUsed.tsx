@@ -21,12 +21,14 @@ export default function ScenesMostUsed({
   // const [mostUsedScenes, setMostUsedScenes] = useState({});
   const mostUsedScenes = useStore((state) => state.mostUsedScenes)
   const setMostUsedScenes = useStore((state) => state.setMostUsedScenes)
+  const getVirtuals = useStore((state) => state.getVirtuals)
 
-  const handleEvent: GridEventListener<'rowClick'> = (params) =>
-    activateScene(
+  const handleEvent: GridEventListener<'rowClick'> = async (params) => {
+    await activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
     )
-
+    getVirtuals()
+}
   useEffect(() => {
     Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +88,7 @@ export default function ScenesMostUsed({
             {title}
           </Typography>
         )}
-        <DataGrid
+        <DataGrid        
           onRowClick={handleEvent}
           rowHeight={50}
           columns={db ? columns.filter((c) => c.field !== 'used') : columns}
@@ -116,6 +118,9 @@ export default function ScenesMostUsed({
             borderColor: db ? 'transparent' : theme.palette.divider,
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important'
+            },
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer'
             }
           }}
         />

@@ -9,8 +9,8 @@ const DbScenes = () => {
   const captivateScene = useStore((state) => state.captivateScene)
   const activateScene = useStore((state) => state.activateScene)
 
-  const handleActivateScene = (e: string) => {
-    activateScene(e)
+  const handleActivateScene = async (e: string) => {
+    await activateScene(e)
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
   }
