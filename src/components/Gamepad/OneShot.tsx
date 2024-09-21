@@ -7,13 +7,18 @@ import {
   DialogTitle,
   FormControl,
   Slider,
-  Stack
+  Stack,
+  Switch,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material'
 import { useState } from 'react'
 import ReactGPicker from 'react-gcolor-picker'
 import { Edit } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
+import SliderInput from '../SchemaForm/components/Number/SliderInput'
 
 const OneShot = ({
   setPayload,
@@ -28,12 +33,20 @@ const OneShot = ({
   const [ramp, setRamp] = useState(defaultRamp || 10)
   const [hold, setHold] = useState(defaultHold || 200)
   const [fade, setFade] = useState(defaultFate || 2000)
+  const [holdType, setHoldType] = useState('press');
+
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newHoldType: string,
+  ) => {
+    setHoldType(newHoldType);
+  };
   const colors = useStore((state) => state.colors)
   const handleClose = () => {
     setDialogOpen(false)
   }
   const handleSave = () => {
-    setPayload({ color, ramp, hold, fade })
+    setPayload({ color, ramp, hold, fade, holdType })
     setDialogOpen(false)
   }
 
@@ -80,9 +93,10 @@ const OneShot = ({
             alignItems="flex-start"
             justifyContent="space-between"
             spacing={1}
+            mb={3}
           >
             <FormControl>
-              <ReactGPicker
+              <ReactGPicker              
                 colorBoardHeight={150}
                 debounce
                 debounceMS={300}
@@ -98,35 +112,11 @@ const OneShot = ({
                 defaultColors={Object.values(defaultColors)}
               />
             </FormControl>
-            <Box sx={{ width: '40%' }}>
-              <Slider
-                value={ramp}
-                onChange={(e, v) => setRamp(v as number)}
-                valueLabelDisplay="auto"
-                min={0}
-                max={10000}
-                step={10}
-              />
-              <Slider
-                value={hold}
-                onChange={(e, v) => setHold(v as number)}
-                valueLabelDisplay="auto"
-                min={0}
-                max={10000}
-                step={10}
-              />
-              <Slider
-                value={fade}
-                onChange={(e, v) => setFade(v as number)}
-                valueLabelDisplay="auto"
-                min={0}
-                max={10000}
-                step={10}
-              />
+            <Stack sx={{ width: '40%', alignSelf: 'stretch' }} justifyContent={'space-between'}>          
               <Box
                 sx={{
                   display: 'block',
-                  marginTop: '2rem',
+                  marginTop: '1rem',
                   borderRadius: '0.5rem',
                   width: '100%',
                   height: '5rem',
@@ -134,9 +124,26 @@ const OneShot = ({
                   backgroundColor: color
                 }}
               />
-            </Box>
+              <Stack direction={'column'} alignItems={'center'} justifyContent={'space-between'}>
+                <label>Hold after</label>
+                <ToggleButtonGroup
+                fullWidth
+                  color="primary"
+                  value={holdType}
+                  exclusive
+                  onChange={handleChange}
+                  aria-label="Platform"
+                >
+                  <ToggleButton value="press">Press</ToggleButton>
+                  <ToggleButton value="release">Release</ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
+            </Stack>
           </Stack>
-          <code
+        <SliderInput title="Ramp" value={ramp} setValue={setRamp} />
+        <SliderInput title="Hold" value={hold} setValue={setHold} />
+        <SliderInput title="Fade" value={fade} setValue={setFade} />
+          {/* <code
             style={{
               display: 'block',
               margin: '1rem 0',
@@ -146,7 +153,7 @@ const OneShot = ({
             }}
           >
             {`{"color":"${color}","ramp":${ramp},"hold":${hold},"fade":${fade}}`}
-          </code>
+          </code> */}
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
             <Button onClick={handleSave}>Save</Button>
