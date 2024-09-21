@@ -17,7 +17,6 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
     }, {})
 
   const setEffect = useStore((state) => state.setEffect)
-  const clearEffect = useStore((state) => state.clearEffect)
   // const updateEffect = useStore((state) => state.updateEffect)
   const activatePreset = useStore((state) => state.activatePreset)
   const addScene = useStore((state) => state.addScene)
