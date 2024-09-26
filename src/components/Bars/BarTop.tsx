@@ -330,6 +330,7 @@ const TopBar = () => {
       };
       latest().then((r) => r !== latestTag && setLatestTag(r));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frConfig]);
 
   useEffect(() => {
@@ -358,6 +359,7 @@ const TopBar = () => {
     if (t && t !== currentTheme) {
       setCurrentTheme(t)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   return (
