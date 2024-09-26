@@ -25,7 +25,11 @@ import {
   MenuItem,
   ListItemIcon,
   Button,
-  useTheme
+  useTheme,
+  Select,
+  Stack,
+  ListItemText,
+  Divider
 } from '@mui/material'
 import { styled } from '@mui/styles'
 
@@ -42,6 +46,7 @@ import pkg from '../../../package.json'
 import { Ledfx } from '../../api/ledfx'
 import TourHome from '../Tours/TourHome'
 import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
+import { ledfxThemes } from '../../themes/AppThemes'
 
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -81,6 +86,7 @@ const LeftButtons = (
         color="inherit"
         startIcon={<ChevronLeft />}
         onClick={() => history(-1)}
+        sx={{ mt: .9 }}
       >
         Back
       </Button>
@@ -121,7 +127,8 @@ const Title = (
   pathname: string,
   latestTag: string,
   updateAvailable: boolean,
-  virtuals: any
+  virtuals: any,
+  frConfig: Record<string, any>
 ) => {
   const newVerOnline =
   latestTag.replace('v', '').includes('-b')
@@ -134,13 +141,13 @@ const Title = (
     return (
       <>
         {`LedFx v${pkg.version}`}
-        {!process.env.MS_STORE && newVerOnline ? (
+        {!process.env.MS_STORE && newVerOnline && frConfig.updateUrl ? (
           <Button
             color="error"
             variant="contained"
             onClick={() =>
               window.open(
-                'https://github.com/YeonV/LedFx-Builds/releases/latest'
+                frConfig.updateUrl
               )
             }
             sx={{ ml: 2 }}
@@ -175,7 +182,7 @@ const Title = (
 }
 
 const TopBar = () => {
-  // const classes = useStyles();
+  // const classes = useStyles()
   const navigate = useNavigate()
   const theme = useTheme()
   const [updateAvailable, setUpdateAvailable] = useState(false)
@@ -183,17 +190,20 @@ const TopBar = () => {
   const [loggingIn, setLogginIn] = useState(false)
 
   const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open)
+  const [frConfig, setFrConfig] = useState({ updateUrl: '' })
   const latestTag = useStore((state) => state.ui.latestTag)
+  const currentTheme = useStore((state) => state.ui.currentTheme)
+  const setCurrentTheme = useStore((state) => state.ui.setCurrentTheme)
   const setLatestTag = useStore((state) => state.ui.setLatestTag)
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen)
-  // const darkMode = useStore((state) => state.ui.darkMode);
-  // const setDarkMode = useStore((state) => state.ui.setDarkMode);
+  // const darkMode = useStore((state) => state.ui.darkMode)
+  // const setDarkMode = useStore((state) => state.ui.setDarkMode)
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setHostManager = useStore((state) => state.setHostManager)
   const toggleGraphs = useStore((state) => state.toggleGraphs)
   const graphs = useStore((state) => state.graphs)
-  // const config = useStore((state) => state.config);
+  // const config = useStore((state) => state.config)
   const isLogged = useStore((state) => state.isLogged)
   const setIsLogged = useStore((state) => state.setIsLogged)
   const disconnected = useStore((state) => state.disconnected)
@@ -244,8 +254,8 @@ const TopBar = () => {
     setAnchorEl(null)
   }
   // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode);
-  // };
+  //   setDarkMode(!darkMode)
+  // }
 
   const changeGraphs = () => {
     toggleGraphs()
@@ -263,6 +273,15 @@ const TopBar = () => {
     localStorage.removeItem('ledfx-cloud-role')
     setIsLogged(false)
   }
+  useEffect(() => {
+    const fetchConfig = async () => {
+      const res = await fetch('/frontend_config.json')
+      const configData = await res.json()
+      setFrConfig(configData)
+    }
+
+    fetchConfig()
+  }, [])
 
   useEffect(() => {
     setIsLogged(!!localStorage.getItem('jwt'))
@@ -303,16 +322,15 @@ const TopBar = () => {
   }, [updateNotificationInterval, getUpdateInfo, latestTag])
 
   useEffect(() => {
-    const latest = async () => {
-      const res = await fetch(
-        'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
-      )
-      const resp = await res.json()
-      return resp.tag_name as string
+    if (frConfig.updateUrl) {
+      const latest = async () => {
+        const res = await fetch(frConfig.updateUrl);
+        const resp = await res.json();
+        return resp.tag_name as string;
+      };
+      latest().then((r) => r !== latestTag && setLatestTag(r));
     }
-    latest().then((r) => r !== latestTag && setLatestTag(r))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [frConfig]);
 
   useEffect(() => {
     const handleDisconnect = (e: any) => {
@@ -335,6 +353,13 @@ const TopBar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    const t = window.localStorage.getItem('ledfx-theme')
+    if (t && t !== currentTheme) {
+      setCurrentTheme(t)
+    }
+  }, [])
+  
   return (
     <>
       {isElectron() && platform !== 'darwin' && (
@@ -380,7 +405,7 @@ const TopBar = () => {
               {LeftButtons(pathname, history, open, handleLeftBarOpen)}
             </div>
             <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
-              {Title(pathname, latestTag, updateAvailable, virtuals)}
+              {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
             </Typography>
             <div
               style={{
@@ -556,6 +581,33 @@ const TopBar = () => {
                     {isLogged ? 'Logout' : 'Login with Github'}
                   </MenuItem>
                 )}
+                {localStorage.getItem('username') === 'YeonV' && <>
+                    <Divider />
+                    <Select
+                    IconComponent={()=>null}
+                    fullWidth
+                    sx={{ pl: 2}}
+                      disableUnderline
+                      value={currentTheme} onChange={(e) => {
+                        setCurrentTheme(e.target.value)
+                        window.localStorage.setItem('ledfx-theme', e.target.value)
+                        window.location.reload()
+                      }}
+                    >
+                      {Object.keys(ledfxThemes).map((t) => (
+                        <MenuItem key={t} value={t}>
+                          <Stack direction={'row'}>
+                            <ListItemIcon sx={{ alignItems: 'center',  minWidth: 38}}>
+                              <BladeIcon name={t.startsWith('Dark') ? 'DarkMode' : 'LightMode'} />
+                            </ListItemIcon>
+                            <ListItemText>
+                            {t}
+                            </ListItemText>
+                          </Stack>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </>}
               </Menu>
             )}
           </Toolbar>

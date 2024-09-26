@@ -1,4 +1,4 @@
-import { Fab, IconButton } from '@mui/material'
+import { Fab, IconButton, useTheme } from '@mui/material'
 import { AddSharp as Add, ElectricalServices } from '@mui/icons-material'
 import { useState } from 'react'
 import useStore from '../../store/useStore'
@@ -16,7 +16,7 @@ import {
 
 const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
   const classes = useStyles()
-
+  const theme = useTheme()
   const features = useStore((state) => state.features)
   const openAddScene = useStore((state) => state.setDialogOpenAddScene)
   const openAddDevice = useStore((state) => state.setDialogOpenAddDevice)
@@ -80,12 +80,12 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
         sx={sx}
       >
         <Fab
-          color="primary"
           variant="circular"
           aria-label="add"
           onClick={handleClick}
+          sx={{ bgcolor: theme.palette.primary.main }}
         >
-          <Add />
+          <Add sx={{color: theme.palette.primary.contrastText }} />
         </Fab>
         <StyledMenu
           id="customized-menu"

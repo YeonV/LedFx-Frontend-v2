@@ -4,6 +4,15 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
+  currentTheme: '',
+  setCurrentTheme: (theme: string): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.currentTheme = theme
+      }),
+      false,
+      'ui/currentTheme'
+    ),
   effectDescriptions: 'Hide' as 'Auto' | 'Show' | 'Hide',
   setEffectDescriptions: (mode: 'Auto' | 'Show' | 'Hide'): void =>
     set(
