@@ -102,10 +102,14 @@ export const BladeDarkWhiteTheme = {
       main: '#FFFFFF'
     },
     secondary: {
-      main: '#FFFFFF'
+      main: '#000000'
     },
     accent: {
-      main: '#FF0000'
+      main: '#000000'
+    },
+    background: {
+      default: '#000',
+      paper: '#090909'
     }
   }
 }
@@ -116,10 +120,10 @@ export const BladeLightBlackTheme = {
       main: '#000000'
     },
     secondary: {
-      main: '#000000'
+      main: '#FFFFFF'
     },
     accent: {
-      main: '#FF0000'
+      main: '#FFFFFF'
     }
   }
 }
