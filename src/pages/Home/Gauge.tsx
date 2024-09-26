@@ -47,7 +47,7 @@ export default function Gauge(props: any) {
       >
         <Typography
           variant="h2"
-          color="secondary"
+          color="primary"
           fontSize={`${size / 4}em`}
           style={{ lineHeight: 1 }}
         >
@@ -55,7 +55,7 @@ export default function Gauge(props: any) {
         </Typography>
         <Typography
           variant="caption"
-          color="secondary"
+          color="GrayText"
           fontSize={`${size / 12}em`}
           style={{ lineHeight: 1 }}
         >
