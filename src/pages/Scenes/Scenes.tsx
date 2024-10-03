@@ -20,12 +20,16 @@ import ScenesPlaylist from './ScenesPlaylist'
 import ScenesMenu from './ScenesMenu'
 import useStyles from './Scenes.styles'
 import SceneImage from './ScenesImage'
+import { ISceneOrder } from '../../store/api/storeScenes'
 
 const Scenes = () => {
   const classes = useStyles()
   const theme = useTheme()
+  
   const getScenes = useStore((state) => state.getScenes)
   const scenes = useStore((state) => state.scenes)
+  const sceneOrder = useStore((state) => state.sceneOrder)
+  const setSceneOrder = useStore((state) => state.setSceneOrder)
   const features = useStore((state) => state.features)
   const activateScene = useStore((state) => state.activateScene)
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
@@ -46,6 +50,19 @@ const Scenes = () => {
   useEffect(() => {
     getScenes()
   }, [getScenes])
+
+  useEffect(() => {
+    // initial scene order if not set
+    const sc = JSON.parse(JSON.stringify(sceneOrder)) as ISceneOrder[]
+    Object.keys(scenes).map((s, i) => {
+      if (!(sc.some(o => o.sceneId === s))) {
+        return sc.push({sceneId: s, order: i})
+      }
+      return null
+    })
+    setSceneOrder(sc)
+    // eslint-disable-next-line
+  }, [scenes])
 
   const sceneFilter = (sc: string) =>
     scenes[sc].scene_tags
@@ -176,6 +193,7 @@ const Scenes = () => {
                 key={i}
                 mt={['0.5rem', '0.5rem', 0, 0, 0]}
                 p="8px !important"
+                order={sceneOrder.find(o => o.sceneId === s)?.order || 0}
               >
                 <Card
                   className={classes.root}
