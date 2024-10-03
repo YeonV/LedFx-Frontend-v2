@@ -76,6 +76,7 @@ const EditSceneDialog = () => {
   const getUserPresets = useStore((state) => state.getUserPresets)
   const getImage = useStore((state) => state.getImage)
   const [imageData, setImageData] = useState(null)
+  const midiInput = useStore((state) => state.midiInput)
 
   const getFullConfig = useStore((state) => state.getFullConfig)
 
@@ -237,14 +238,15 @@ const EditSceneDialog = () => {
           if (err) {
             console.error('WebMidi could not be enabled:', err)
           } else {
-            // Get all input devices
             const { inputs } = WebMidi
             if (inputs.length > 0) {
-              // Listen for MIDI messages on all channels and all input devices
-              inputs.forEach((input: Input) =>
-                input.addListener('noteon', (event: NoteMessageEvent) => {
-                  handleMidiEvent(input, event)
-                })
+              inputs.forEach((input: Input) => {
+                if (midiInput === input.name) {
+                  return input.addListener('noteon', (event: NoteMessageEvent) => {
+                    handleMidiEvent(input, event)
+                  })
+                }
+              }
               )
             }
           }
