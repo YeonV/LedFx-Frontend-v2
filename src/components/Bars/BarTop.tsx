@@ -29,7 +29,8 @@ import {
   Select,
   Stack,
   ListItemText,
-  Divider
+  Divider,
+  Tooltip
 } from '@mui/material'
 import { styled } from '@mui/styles'
 
@@ -139,15 +140,19 @@ const Title = (
       : compareVersions(latestTag.replace('v', ''), pkg.version) === 1;
   if (pathname === '/') {
     return (
-      <>
-        {`LedFx v${pkg.version}`}
-        {!process.env.MS_STORE && newVerOnline && frConfig.updateUrl ? (
+      <Stack direction={'row'}>
+        <Tooltip title={`LedFx v${pkg.version}`} placement="bottom">
+          <Typography variant="h6" noWrap>
+            LedFx
+          </Typography>
+        </Tooltip>
+        {!process.env.MS_STORE && newVerOnline && frConfig.updateUrl && frConfig.releaseUrl ? (
           <Button
             color="error"
             variant="contained"
             onClick={() =>
               window.open(
-                frConfig.updateUrl
+                frConfig.releaseUrl
               )
             }
             sx={{ ml: 2 }}
@@ -167,7 +172,7 @@ const Title = (
             New Core Update
           </Button>
         ) : null}
-      </>
+        </Stack>
     )
   }
   if (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') {
@@ -406,6 +411,7 @@ const TopBar = () => {
             <div style={{ position: 'absolute', top: 0, left: 16 }}>
               {LeftButtons(pathname, history, open, handleLeftBarOpen)}
             </div>
+            
             <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
             </Typography>
