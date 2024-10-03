@@ -90,10 +90,13 @@ const MIDIListener = () => {
   useEffect(() => {
     const handleMidiInput = (input: Input) => {
       if (!input || input.name !== midiInput) return  
+      // console.log('Input Name:', input.name)
       input.removeListener('noteon')
       input.removeListener('noteoff')
       input.addListener('noteon', (event: any) => {
         if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier)) return
+        // console.log('Input Name:', input.name)
+        // console.log('MIDI Event:', event)
         setMidiEvent({
           name: input.name,
           note: event.note.identifier,
@@ -105,6 +108,7 @@ const MIDIListener = () => {
       })
 
       input.addListener('noteoff', (event: any) => {
+        // console.log('MIDI Event:', event)
         if (midiMapping[0][event.note.number]?.command === 'one-shot' && midiMapping[0][event.note.number]?.payload?.holdType === 'release') {
           oneShotAll(
             midiMapping[0][event.note.number]?.payload?.color || '#0dbedc',
@@ -121,6 +125,7 @@ const MIDIListener = () => {
         })
       })
       input.addListener('controlchange', (event: any) => {
+        // console.log('MIDI Event:', event)
         if (event.controller.number === midiEvent.button && midiEvent.name === input.name) return
         if (event.value === 1) {
           setMidiEvent({
