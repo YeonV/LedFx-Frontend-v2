@@ -589,8 +589,8 @@ const TopBar = () => {
                     {isLogged ? 'Logout' : 'Login with Github'}
                   </MenuItem>
                 )}
-                {localStorage.getItem('username') === 'YeonV' && <>
-                    <Divider />
+                {localStorage.getItem('username') === 'YeonV' && <Divider />}
+                {localStorage.getItem('username') === 'YeonV' && 
                     <Select
                     IconComponent={()=>null}
                     fullWidth
@@ -615,7 +615,7 @@ const TopBar = () => {
                         </MenuItem>
                       ))}
                     </Select>
-                  </>}
+                  }
               </Menu>
             )}
           </Toolbar>
