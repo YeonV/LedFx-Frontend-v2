@@ -16,7 +16,9 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Grid,
   Slider,
+  Stack,
   Switch,
   TextField,
   useTheme
@@ -36,7 +38,11 @@ ChartJS.register(
 )
 
 const MGraph = () => {
-  const [data, setData] = useState({} as any)
+  // const [data, setData] = useState({} as any)
+  const [data1, setData1] = useState({} as any)
+  const [data2, setData2] = useState({} as any)
+  const [data3, setData3] = useState({} as any)
+  const [showSettings, setShowSettings] = useState(false)
   const theme = useTheme()
 
   const [scaleType, setScaleType] = useState(false)
@@ -80,6 +86,7 @@ const MGraph = () => {
   interface MessageData {
     frequencies: any[]
     melbank: [number[], number[], number[]]
+    graph_id?: string
   }
 
   useEffect(() => {
@@ -92,7 +99,7 @@ const MGraph = () => {
             label: '',
             id: 1,
             lineTension,
-            backgroundColor: `#0dbedc${fillOpacity.toString(16)}`,
+            backgroundColor: `${theme.palette.primary.main}${fillOpacity.toString(16)}`,
             fill: true,
             borderColor: theme.palette.primary.main,
             pointRadius: 0,
@@ -128,13 +135,14 @@ const MGraph = () => {
             ticks: {
               borderColor: '#fff',
               maxTicksLimit: 12,
-              callback(value: any, _index: any, _values: any) {
-                return `${value} Hz`
+              callback: (value: any, _index: number) => {
+                console.log('frequencies', messageData.frequencies)
+                const frequency = messageData.frequencies[_index];
+                return `${JSON.stringify(frequency)} Hz`;
               }
             },
             grid: {
               color: 'rgba(255, 255, 255, 0)'
-              // borderColor: 'rgba(255, 255, 255, 0.15)',
             },
             ...(scaleType && { type: 'logarithmic' })
           },
@@ -145,7 +153,7 @@ const MGraph = () => {
           y: {
             title: {
               display: true,
-              text: 'Melbank'
+              text: 'Melbank ' + messageData.graph_id?.split('_')[1]
             },
             ticks: {
               display: false,
@@ -154,10 +162,6 @@ const MGraph = () => {
                 return `${parseFloat(value).toFixed(2)}`
               }
             }
-            // grid: {
-            //   color: 'rgba(255, 255, 255, 0)',
-            //   // borderColor: 'rgba(255, 255, 255, 0.15)',
-            // },
           }
         },
         plugins: {
@@ -166,7 +170,20 @@ const MGraph = () => {
           }
         }
       }
-      setData({ chartData, chartOptions })
+      // setData({ chartData, chartOptions })
+      switch (messageData.graph_id) {
+        case 'melbank_0':
+          setData1({ chartData, chartOptions});
+          break
+        case 'melbank_1':
+          setData2({ chartData, chartOptions})
+          break
+        case 'melbank_2':
+          setData3({ chartData, chartOptions})
+          break
+        default:
+          break
+      }
     }
     document.addEventListener('graph_update', handleWebsockets)
     return () => {
@@ -176,13 +193,16 @@ const MGraph = () => {
   }, [animationDuration, fillOpacity, scaleType])
 
   return (
-    <div>
+    <Stack alignItems={'center'}>
       <Card
         style={{
+          display: !showSettings ? 'none' : '',
           maxWidth: 720,
           width: '100%',
           margin: '3rem',
-          background: '#1c1c1e'
+          // background: theme.palette.mode === 'dark' ? '#1c1c1e' : ''
+          background: theme.palette.background.paper,
+          // border: theme.palette.background.paper === '#000000' ? '1px solid #333' : ''
         }}
       >
         <CardHeader title="Melbank Graph Settings" />
@@ -280,14 +300,24 @@ const MGraph = () => {
           </BladeFrame>
         </CardContent>
       </Card>
-      <div
-        style={{ maxWidth: 720, width: '100%', height: 500, margin: '3rem' }}
-      >
-        {data?.chartData && data?.chartOptions && data?.chartData?.labels && (
-          <Line data={data.chartData} options={data.chartOptions} />
+      <Grid container spacing={2} justifyContent={'center'}>
+       <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
+        {data1?.chartData && data1?.chartOptions && data1?.chartData?.labels && (
+          <Line data={data1.chartData} options={data1.chartOptions} />
         )}
       </div>
-    </div>
+      <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
+        {data2?.chartData && data2?.chartOptions && data2?.chartData?.labels && (
+          <Line data={data2.chartData} options={data2.chartOptions} />
+        )}
+      </div>
+      <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
+        {data3?.chartData && data3?.chartOptions && data3?.chartData?.labels && (
+          <Line data={data3.chartData} options={data3.chartOptions} />
+        )}
+      </div>
+      </Grid>
+    </Stack>
   )
 }
 export default MGraph
