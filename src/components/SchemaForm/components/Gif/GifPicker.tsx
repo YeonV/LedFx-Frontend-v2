@@ -47,40 +47,6 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
             }))
           setGifs(files)
         })
-    // setGifs([
-    //   {
-    //     name: 'bruces1',
-    //     url: 'https://assets.ledfx.app/gifs/bruces1.gif'
-    //   },
-    //   {
-    //     name: 'cat-space',
-    //     url: 'https://assets.ledfx.app/gifs/cat-space.gif'
-    //   },
-    //   {
-    //     name: 'catfixed',
-    //     url: 'https://assets.ledfx.app/gifs/catfixed.gif'
-    //   },
-    //   {
-    //     name: 'dancing',
-    //     url: 'https://assets.ledfx.app/gifs/dancing.gif'
-    //   },
-    //   {
-    //     name: 'phoebe',
-    //     url: 'https://assets.ledfx.app/gifs/phoebe.gif'
-    //   },
-    //   {
-    //     name: 'snoopy',
-    //     url: 'https://assets.ledfx.app/gifs/snoopy.gif'
-    //   },
-    //   {
-    //     name: 'sponge',
-    //     url: 'https://assets.ledfx.app/gifs/sponge.gif'
-    //   },
-    //   {
-    //     name: 'zilla1',
-    //     url: 'https://assets.ledfx.app/gifs/zilla1.gif'
-    //   }
-    // ])
   }, [open])
 
   return (
@@ -92,7 +58,7 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
           src={fx}
           alt="wled"
           style={{
-            filter: 'invert(1) brightness(2)',
+            filter: `invert(${theme.palette.mode === 'dark' ? 1 : 0}) brightness(2)`,
             objectFit: 'cover'
           }}
         />
