@@ -47,7 +47,7 @@ const GlobalActionBar = ({
           }}
           style={{
             margin: '0 8px 0 8px',
-            color: '#fff'
+            color: theme.palette.primary.main === '#000000' ? '#000' : '#fff'
           }}
         >
           {paused ? (
@@ -67,7 +67,7 @@ const GlobalActionBar = ({
           }}
           style={{
             margin: '0 16px 0 0',
-            color: '#fff'
+            color: theme.palette.primary.main === '#000000' ? '#000' : '#fff'
           }}
         >
           {paused ? (

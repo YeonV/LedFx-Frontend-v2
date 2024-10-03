@@ -43,16 +43,19 @@ const LeftBar = () => {
         <>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <div className={classes.logoImage}>
-              <img src={logoAsset} alt="logo" />
+              <img src={logoAsset} alt="logo" style={{
+                filter: theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)',
+              }} />
             </div>
             <Box
               className={classes.devbadge}
               onClick={() => window.localStorage.setItem('BladeMod', '0')}
               sx={{
-                border: theme.palette.primary.main,
+                filter: theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)',
+                border: theme.palette.secondary.main,
                 backgroundColor: isElectron()
                   ? 'transparent'
-                  : theme.palette.secondary.main
+                  : theme.palette.mode === 'light' ? 'transparent' : theme.palette.primary.main
               }}
             />
           </Box>
@@ -80,7 +83,7 @@ const LeftBar = () => {
         className={classes.drawerHeader}
         sx={{
           padding: theme.spacing(0, 1),
-          background: theme.palette.primary.main,
+          background: theme.palette.secondary.main,
           ...theme.mixins.toolbar
         }}
         onClick={handleDrawerClose}

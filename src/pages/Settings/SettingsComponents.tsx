@@ -137,7 +137,7 @@ export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
     transitionDuration: '300ms',
     '&.Mui-checked': {
       transform: 'translateX(24px)',
-      color: '#fff',
+      color: theme.palette.primary.main === '#FFFFFF' ? '#000' : '#fff',
       '& + .MuiSwitch-track': {
         backgroundColor: theme.palette.primary,
         opacity: 1,
