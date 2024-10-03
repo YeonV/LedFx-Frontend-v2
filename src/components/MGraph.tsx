@@ -16,6 +16,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Fab,
   Grid,
   Slider,
   Stack,
@@ -24,6 +25,7 @@ import {
   useTheme
 } from '@mui/material'
 import BladeFrame from './SchemaForm/components/BladeFrame'
+import { Tune } from '@mui/icons-material'
 
 ChartJS.register(
   CategoryScale,
@@ -193,7 +195,10 @@ const MGraph = () => {
   }, [animationDuration, fillOpacity, scaleType])
 
   return (
-    <Stack alignItems={'center'}>
+    <Stack alignItems={'center'} sx={{ position: 'relative' }}>
+      <Fab color='primary' sx={{ position: 'absolute', top: '24px'}} onClick={() => setShowSettings(!showSettings)}>
+        <Tune />
+      </Fab>    
       <Card
         style={{
           display: !showSettings ? 'none' : '',
