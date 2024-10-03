@@ -3,6 +3,12 @@
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
+import useStore from '../useStore'
+
+export interface ISceneOrder {
+  sceneId: string,
+  order: number
+}
 
 const storeScenes = (set: any) => ({
   scenes: {} as Record<string, Record<string, any>>,
@@ -16,6 +22,72 @@ const storeScenes = (set: any) => ({
   scenePLrepeat: false,
   scenePLactiveIndex: -1,
   scenePLinterval: 2,
+  sceneOrder: [] as ISceneOrder[],
+  setSceneOrder: (order: ISceneOrder[]) => {
+    set(
+      produce((s: IStore) => {
+        s.sceneOrder = order
+      }),
+      false,
+      'setSceneOrder'
+    )
+  },
+  setSceneOrderUp: (sceneId: string) => {
+    let current, target = null
+    const sceneOrder = useStore.getState().sceneOrder
+    current = sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
+    if (!current || current.order < 1) return
+    target = sceneOrder.find((s: ISceneOrder) => s.order === current?.order - 1) || null
+    if (!target) return
+    // console.log('Move up', sceneId, current, target)
+
+    const newSceneOrder = sceneOrder.map((o: ISceneOrder) => {
+        if (o.sceneId === sceneId) {
+            return { ...o, order: target.order }
+        }
+        if (o.sceneId === target.sceneId) {
+            return { ...o, order: current.order }
+        }
+        return o
+    })
+
+    // console.log('changing from ', sceneOrder, 'to',  newSceneOrder)
+    set(
+      produce((s: IStore) => {
+        s.sceneOrder = newSceneOrder
+      }),
+      false,
+      'setSceneOrderUp'
+    )
+  },
+  setSceneOrderDown: (sceneId: string) => {
+    let current, target = null
+    const sceneOrder = useStore.getState().sceneOrder
+    current = sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
+    if (!current || current.order >= sceneOrder.length - 1) return
+    target = sceneOrder.find((s: ISceneOrder) => s.order === current?.order + 1) || null
+    if (!target) return
+    // console.log('Move down', sceneId, current, target)
+
+    const newSceneOrder = sceneOrder.map((o: ISceneOrder) => {
+        if (o.sceneId === sceneId) {
+            return { ...o, order: target.order }
+        }
+        if (o.sceneId === target.sceneId) {
+            return { ...o, order: current.order }
+        }
+        return o
+    })
+
+    // console.log('changing from ', sceneOrder, 'to',  newSceneOrder)
+    set(
+      produce((s: IStore) => {
+        s.sceneOrder = newSceneOrder
+      }),
+      false,
+      'setSceneOrderDown'
+    )
+  },
   toggleSceneUseIntervals: () => {
     set(
       produce((s: IStore) => {
