@@ -51,6 +51,7 @@ const LaunchpadButton = ({
     if (midiRecord && midiEvent.button > -1) {
         setMidiButtonNumber(midiEvent.button)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [midiEvent.button])
 
   return (
