@@ -103,7 +103,10 @@ const Assign = ({
                       ...mapping,
                       [padIndex]: {
                         ...mapping[padIndex],
-                        [index]: { command: e.target.value }
+                        [index]: { 
+                          ...mapping[padIndex]?.[index],
+                          command: e.target.value 
+                        }
                       }
                     })
                   }
