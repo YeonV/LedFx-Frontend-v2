@@ -34,7 +34,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn build-storybookgh -o ./build/docs
+          yarn build-storybookgh -- -o ./build/docs
           cp ./build/docs/*.woff ./build/docs/static/css
           cp ./build/docs/*.woff2 ./build/docs/static/css
 
