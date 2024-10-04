@@ -224,7 +224,7 @@ const MIDIListener = () => {
     
       Object.entries(midiMapping[0]).forEach(([key, value]) => {
         const buttonNumber = value.buttonNumber
-        if (value.command !== 'scene' && value.command && value.command !== 'none') {
+        if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
           if (output) {
             try {
               output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand, 16) || 99])
@@ -233,7 +233,7 @@ const MIDIListener = () => {
             }
           }
         } else if (value.command === 'scene') {
-          if (output) {
+          if (output && buttonNumber !== -1) {
             try {
               output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
             } catch (error) {
@@ -250,7 +250,7 @@ const MIDIListener = () => {
             const scene = scenes[key]
             const buttonNumber = parseInt(scene.scene_midiactivate.split('buttonNumber: ')[1], 10)
             if (key === scene_id) {
-              if (output) {
+              if (output && buttonNumber !== -1) {
                 if (!Number.isNaN(buttonNumber)) {
                   output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneActive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || '1E', 16)])
                 }
@@ -258,7 +258,7 @@ const MIDIListener = () => {
                 console.error('No MIDI output devices found')
               }
             } else {
-              if (output) {
+              if (output && buttonNumber !== -1) {
                 if (!Number.isNaN(buttonNumber)) {
                   output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || '3C', 16)])
                 }
