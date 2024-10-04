@@ -20,12 +20,16 @@ export interface IDefaultMapping {
 export interface IMapping {
   [key: number]: IDefaultMapping
 }
-export const defaultMapping = {
-  0: {
-    mode: 'command',
-    command: 'play/pause',
-    buttonNumber: 0,
-  },
+const baseMapping = {} as IDefaultMapping;
+
+for (let row = 1; row <= 9; row++) {
+  for (let col = 1; col <= 9; col++) {
+    const key = parseInt(`${row}${col}`);
+    baseMapping[key] = { buttonNumber: key };
+  }
+}
+
+const presetMapping = {
   91: {
     command: 'brightness-up',
     buttonNumber: 91,
@@ -39,6 +43,34 @@ export const defaultMapping = {
     buttonNumber: 94,
   },
 } as IDefaultMapping
+
+export const defaultMapping = { ...baseMapping, ...presetMapping }
+
+export const LpMapping = {
+  LaunchpadX: [
+    [11, 12, 13, 14, 15, 16, 17, 18, 19],
+    [21, 22, 23, 24, 25, 26, 27, 28, 29],
+    [31, 32, 33, 34, 35, 36, 37, 38, 39],
+    [41, 42, 43, 44, 45, 46, 47, 48, 49],
+    [51, 52, 53, 54, 55, 56, 57, 58, 59],
+    [61, 62, 63, 64, 65, 66, 67, 68, 69],
+    [71, 72, 73, 74, 75, 76, 77, 78, 79],
+    [81, 82, 83, 84, 85, 86, 87, 88, 89],
+    [91, 92, 93, 94, 95, 96, 97, 98, 99],
+  ],
+  LaunchpadS: [
+    [112, 113, 114, 115, 116, 117, 118, 119, 120],  
+    [96, 97, 98, 99, 100, 101, 102, 103, 104],
+    [80, 81, 82, 83, 84, 85, 86, 87, 88],
+    [64, 65, 66, 67, 68, 69, 70, 71, 72],
+    [48, 49, 50, 51, 52, 53, 54, 55, 56],
+    [32, 33, 34, 35, 36, 37, 38, 39, 40],
+    [16, 17, 18, 19, 20, 21, 22, 23, 24],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+  ]
+}
+
 
 const storeMidi = (set: any) => ({
   midiInputs: [] as string[],
@@ -138,6 +170,30 @@ const storeMidi = (set: any) => ({
       false,
       'setMidiMapping'
     ),
+  setMidiMappingButtonNumbers: (inputArray: number[][]): void =>
+    set(
+      produce((state: IStore) => {
+        if (inputArray.length !== 9 || !inputArray.every(row => row.length === 9)) {
+          throw new Error('Input must be a 9x9 array')
+        }
+        const updatedMapping = { ...state.midiMapping }
+
+        for (let row = 0; row < 9; row++) {
+          for (let col = 0; col < 9; col++) {
+            const key = (row + 1) * 10 + (col + 1)
+            if (updatedMapping[0][key]) {
+              updatedMapping[0][key] = { ...updatedMapping[0][key], buttonNumber: inputArray[row][col] }
+            } else {
+              updatedMapping[0][key] = { buttonNumber: inputArray[row][col] }
+            }
+          }
+        }
+        state.midiMapping = updatedMapping
+      }),
+      false,
+      'updateMidiMapping'
+    ),
+  
   midiEvent: {
     name: '',
     note: '',

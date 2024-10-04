@@ -1,4 +1,4 @@
-import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility } from '@mui/icons-material'
+import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew } from '@mui/icons-material'
 import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
@@ -7,13 +7,14 @@ import { useEffect, useState } from 'react'
 import { WebMidi } from 'webmidi'
 import LaunchpadButton from './LaunchpadButton'
 import { getColorFromValue } from './lpColors'
-import { defaultMapping, IMapping } from '../../store/ui/storeMidi'
+import { defaultMapping, IMapping, LpMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
 
 const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => void, sideBarOpen: boolean}) => {
     const theme = useTheme()
     const [showMapping, setShowMapping] = useState(false)
+    const setMidiMappingButtonNumbers = useStore((state) => state.setMidiMappingButtonNumbers)
     const initMidi = useStore((state) => state.initMidi)
     const midiEvent = useStore((state) => state.midiEvent)
     const midiOutput = useStore((state) => state.midiOutput)
@@ -119,6 +120,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
             </Stack>
         </Stack>
         <Stack direction={'row'} alignItems={'center'} spacing={0}>
+            <Button onClick={() => initMidi()}><Autorenew /></Button>
             <Button
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}
@@ -185,6 +187,21 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={() => {
+                    setMidiMappingButtonNumbers(LpMapping.LaunchpadX)
+                    initMidi()
+                }}>
+                    <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
+                    <ListItemText primary="Launchpad X" />
+                </MenuItem>
+                <MenuItem onClick={() => {
+                    setMidiMappingButtonNumbers(LpMapping.LaunchpadS)
+                    initMidi()
+                }}>
+                    <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
+                    <ListItemText primary="Launchpad S" />
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={() => {
                     const m = JSON.parse(JSON.stringify(midiMapping));
                     Object.keys(m).forEach(mappingKey => {
                         const nestedMapping = m[parseInt(mappingKey) as keyof typeof m];
@@ -219,12 +236,11 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
 
           // Use the buttonNumber from the mapping for functional logic
           const functionalButtonNumber = btn?.buttonNumber
-
-          const bgColor = midiEvent.button === (functionalButtonNumber || btnNumberInt)
-            ? pressedButtonColor || theme.palette.primary.main 
+          const bgColor = functionalButtonNumber === -1 ? '#000' : (midiEvent.button === functionalButtonNumber)
+            ? ( pressedButtonColor || theme.palette.primary.main )
             : btn?.command && 
               btn?.command === 'scene' &&
-              btn?.payload.scene === recentScenes[0]
+              btn?.payload?.scene === recentScenes[0]
               ? getColorFromValue(btn?.colorSceneActive || '1E') || '#0f0'
               : btn?.command && 
                 btn?.command === 'scene' 
@@ -238,6 +254,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
 
           return (
             <LaunchpadButton
+              hidden={functionalButtonNumber === -1}
               buttonNumber={btnNumberInt}
               active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
               bgColor={bgColor}

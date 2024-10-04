@@ -5,7 +5,7 @@ import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import LaunchpadButtonMap from './LaunchpadButtonMap'
 
 const MidiInputDialog = () => {
-  const midiEvent = useStore((state) => state.midiEvent)
+  const midiInput = useStore((state) => state.midiInput)
   const [open, setOpen] = useState<boolean>(false)
   const [sideBarOpen, setSideBarOpen] = useState(false)
   const toggleSidebar = () => setSideBarOpen(!sideBarOpen)
@@ -29,7 +29,7 @@ const MidiInputDialog = () => {
         }}
       >
         <DialogTitle display="flex" alignItems="center">
-            <BladeIcon name="mdi:midi" style={{ marginRight: '1rem'}} /> {/\((.*?)\)/.exec(midiEvent.name)?.[1]} Input Configuration
+            <BladeIcon name="mdi:midi" style={{ marginRight: '1rem'}} /> {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
         </DialogTitle>
         <DialogContent>
             <LaunchpadButtonMap sideBarOpen={sideBarOpen} toggleSidebar={toggleSidebar} />        
