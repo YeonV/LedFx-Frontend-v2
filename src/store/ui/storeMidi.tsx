@@ -10,6 +10,7 @@ export interface IMidiMapping {
   typeSceneInactive?: string
   typeSceneActive?: string
   typeCommand?: string
+  buttonNumber?: number
 }
 
 export interface IDefaultMapping {
@@ -22,16 +23,20 @@ export interface IMapping {
 export const defaultMapping = {
   0: {
     mode: 'command',
-    command: 'play/pause'
+    command: 'play/pause',
+    buttonNumber: 0,
   },
   91: {
     command: 'brightness-up',
+    buttonNumber: 91,
   },
   92: {
     command: 'brightness-down',
+    buttonNumber: 92,
   },
   94: {
     command: 'play/pause',
+    buttonNumber: 94,
   },
 } as IDefaultMapping
 
