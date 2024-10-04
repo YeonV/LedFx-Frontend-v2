@@ -231,7 +231,7 @@ const EditSceneDialog = () => {
           `${midiEvent.name} Note: ${midiEvent.note} buttonNumber: ${midiEvent.button}`
         )
     }
-  }, [midiEvent])
+  }, [midiEvent, features.scenemidi])
 
   const renderPresets = (
     current_ledfx_presets: any,

@@ -20,6 +20,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
     const recentScenes = useStore((state) => state.recentScenes)
     const midiMapping = useStore((state) => state.midiMapping)
     const setMidiMapping = useStore((state) => state.setMidiMapping)
+    const pressedButtonColor = useStore((state) => state.midiColors.pressedButtonColor)
     const paused = useStore((state) => state.paused)
     const matrix = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0))
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -220,7 +221,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
           const functionalButtonNumber = btn?.buttonNumber
 
           const bgColor = midiEvent.button === (functionalButtonNumber || btnNumberInt)
-            ? theme.palette.primary.main 
+            ? pressedButtonColor || theme.palette.primary.main 
             : btn?.command && 
               btn?.command === 'scene' &&
               btn?.payload.scene === recentScenes[0]

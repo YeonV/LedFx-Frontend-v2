@@ -93,6 +93,7 @@ const storeMidi = (set: any) => ({
     commandType: '90',
     sceneActiveType: '90',
     sceneInactiveType: '90',
+    pressedButtonColor: null as string | null,
   },
   setMidiCommandColor: (color: string) =>
     set(
@@ -117,6 +118,14 @@ const storeMidi = (set: any) => ({
       }),
       false,
       'setMidiSceneInactiveColor'
+    ),
+  setPressedButtonColor: (color: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.pressedButtonColor = color
+      }),
+      false,
+      'setPressedButtonColor'
     ),
   midiMapping: {
     0: defaultMapping,
