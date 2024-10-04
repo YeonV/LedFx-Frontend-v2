@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.104",
+  "version": "2.0.104-b1",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -137,11 +137,11 @@
     "electron": "wait-on http://127.0.0.1:3000 && electron .",
     "postinstall": "electron-builder install-app-deps",
     "storybook": "storybook dev",
-    "build-storybook": "storybook build -s public",
+    "build-storybook": "storybook build -- -s public",
     "prebuild-storybook": "run-script-os",
     "prebuild-storybook:win32": "set PUBLIC_URL=/LedFx-Frontend-v2/docs",
     "prebuild-storybook:default": "PUBLIC_URL=/LedFx-Frontend-v2/docs",
-    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/docs storybook build -s public",
+    "build-storybookgh": "PUBLIC_URL=/LedFx-Frontend-v2/docs storybook build -- -s public",
     "prebuild-storybookgh": "node -e \"let pkg=require('./package.json'); pkg.homepage='/LedFx-Frontend-v2/docs'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\""
   },
   "eslintConfig": {
