@@ -22,8 +22,8 @@ const coreFile = {
       'instance1': ['-p', '8888', '--no-tray']
     }
   };
- 
-const coreParams = store.get('coreParams', defaultCoreParams); 
+
+const coreParams = store.get('coreParams', defaultCoreParams);
 
 const corePath = (file) => path.join(path.dirname(__dirname), isDev ? '../extraResources' : '../../extraResources', file)
 const runCore = (file, options) => require('child_process').spawn(`${corePath(file)}`, options).on('error', (err) => { console.error(`Failed to start subprocess. ${err}`); });
@@ -32,13 +32,13 @@ if (!fs.existsSync(path.join(app.getPath("userData"), '.ledfx-cc'))) {
   console.log('Creating .ledfx-cc folder')
   fs.mkdirSync(path.join(app.getPath("userData"), '.ledfx-cc'));
 }
-function startCore(wind, platform, instance = 'instance1', port = '8889') {  
+function startCore(wind, platform, instance = 'instance1', port = '8889') {
     let subpy;
-    
+
     if (fs.existsSync(corePath(coreFile[platform]))) {
       if (coreParams[platform] && instance && coreParams[platform][instance]) {
         if (instance !== 'instance1') {
-      
+
           coreParams[platform][instance] = ['-p', port, '-c', path.join(app.getPath("userData"), '.ledfx-cc', instance)];
         }
         console.log('Starting core with params', platform, instance, coreParams[platform][instance])
@@ -60,7 +60,7 @@ function startCore(wind, platform, instance = 'instance1', port = '8889') {
         subpy.stderr.on('data', (data) => {
           console.log(`stderr: ${data}`);
           wind.webContents.send('fromMain', ['snackbar', data.toString()]);
-        });        
+        });
         subpy.on('exit', (code, signal) => {
           console.log(`Child process exited with code ${code} and signal ${signal}`);
         });
@@ -68,9 +68,9 @@ function startCore(wind, platform, instance = 'instance1', port = '8889') {
           console.error(`Failed to start subprocess. ${err}`);
         });
       }
-    }    
+    }
     return subpy;
-  }  
+  }
 
 const isCC = fs.existsSync(corePath(coreFile[process.platform]))
 

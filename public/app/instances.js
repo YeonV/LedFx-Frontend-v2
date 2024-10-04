@@ -36,10 +36,10 @@ function startInstance(wind, name, subprocesses, port) {
         }
         if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
           // `subprocesses` is defined, proceed with calling `sendStatus`
-          try {            
+          try {
             sendStatus(wind, subprocesses, false, name);
           } catch (error) {
-            console.error(error);  
+            console.error(error);
           }
         } else {
           // `subprocesses` is not defined, handle this case as needed
@@ -110,7 +110,7 @@ function closeAllSubs(wind, subpy, subprocesses) {
     Object.values(subprocesses).forEach((sub) => {
       if (sub) kills(sub)
     })
-  }  
+  }
 }
 
 module.exports = {

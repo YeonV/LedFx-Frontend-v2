@@ -91,7 +91,7 @@ function handleVerifyOTP(wind, event, parameters) {
     user.mfaEnabled = true;
     store.set('user', user);
   }
-  
+
   // console.log('verified_otp:', verified ,user)
   wind.webContents.send('fromMain', ['mfa-verified', verified]);
   return;

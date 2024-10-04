@@ -15,8 +15,10 @@ const LaunchpadButton = ({
     borderless,
     bgColor,
     children,
+    hidden,
     ...props
 }: {
+    hidden?: boolean
     buttonNumber: number
     children: React.ReactNode
     active?: boolean
@@ -55,7 +57,7 @@ const LaunchpadButton = ({
   }, [midiEvent.button])
 
   return (
-    <div>
+    <div style={{ visibility: hidden ? 'hidden' : 'visible'}}>
         <Button
             variant="outlined"
             onContextMenu={(e) => {

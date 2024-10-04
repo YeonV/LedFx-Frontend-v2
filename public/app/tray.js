@@ -6,7 +6,7 @@ const isDev = require('electron-is-dev');
 
 function createMenu(isCC, wind, thePath) {
   let contextMenu;
-  
+
   if (isCC) {
     contextMenu = Menu.buildFromTemplate([
       { label: 'Show', click: () => {
@@ -73,7 +73,7 @@ function createMenu(isCC, wind, thePath) {
       { label: 'Exit', click: () => app.quit() },
     ]);
   }
-  
+
   return contextMenu;
 }
 
@@ -83,7 +83,7 @@ function createTray(isCC, wind, thePath, dir) {
   let tray = new Tray(icon);
 
   let contextMenu = createMenu(isCC, wind, thePath);
-  
+
   tray.setToolTip(`LedFx Client${isDev ? ' DEV' : ''}`);
   tray.setContextMenu(contextMenu);
   tray.setIgnoreDoubleClickEvents(true);

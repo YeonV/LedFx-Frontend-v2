@@ -98,7 +98,7 @@ const handlers = async (wind, subprocesses, event, parameters) => {
         //   path.join(app.getPath('appData'), '.ledfx', 'config.json')
         // )
 
-        if (parameters.instance && parameters.instance !== 'instance1') {          
+        if (parameters.instance && parameters.instance !== 'instance1') {
           shell.showItemInFolder(
             path.join(app.getPath("userData"), '.ledfx-cc', parameters.instance, 'config.json')
           )
@@ -119,7 +119,7 @@ const handlers = async (wind, subprocesses, event, parameters) => {
             path.join(app.getPath('home'), '.ledfx', 'config.json')
           )
         }
-      
+
         break
       case 'restart-client':
         app.relaunch()
