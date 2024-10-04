@@ -29,7 +29,6 @@ import {
   Autocomplete
 } from '@mui/material'
 import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
-import { WebMidi, Input, NoteMessageEvent } from 'webmidi'
 import { useDropzone } from 'react-dropzone'
 import isElectron from 'is-electron'
 import { filterKeys, ordered } from '../../../utils/helpers'
@@ -76,7 +75,7 @@ const EditSceneDialog = () => {
   const getUserPresets = useStore((state) => state.getUserPresets)
   const getImage = useStore((state) => state.getImage)
   const [imageData, setImageData] = useState(null)
-  const midiInput = useStore((state) => state.midiInput)
+  const midiEvent = useStore((state) => state.midiEvent)
 
   const getFullConfig = useStore((state) => state.getFullConfig)
 
@@ -227,34 +226,12 @@ const EditSceneDialog = () => {
   }, [open])
 
   useEffect(() => {
-    if (features.scenemidi) {
-      const handleMidiEvent = (input: Input, event: NoteMessageEvent) => {
+    if (features.scenemidi && midiEvent.button > -1) {
         setMIDIActivate(
-          `${input.name} Note: ${event.note.identifier} buttonNumber: ${event.note.number}`
+          `${midiEvent.name} Note: ${midiEvent.note} buttonNumber: ${midiEvent.button}`
         )
-      }
-      WebMidi.enable({
-        callback(err: Error) {
-          if (err) {
-            console.error('WebMidi could not be enabled:', err)
-          } else {
-            const { inputs } = WebMidi
-            if (inputs.length > 0) {
-              inputs.forEach((input: Input) => {
-                if (midiInput === input.name) {
-                  return input.addListener('noteon', (event: NoteMessageEvent) => {
-                    handleMidiEvent(input, event)
-                  })
-                }
-              }
-              )
-            }
-          }
-        }
-      })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [midiEvent])
 
   const renderPresets = (
     current_ledfx_presets: any,
@@ -665,7 +642,7 @@ const EditSceneDialog = () => {
             ) : (
               <></>
             )}
-            {features && features.scenemidi && WebMidi.inputs.length > 0 ? (
+            {features && features.scenemidi ? (
               <>
                 <Stack direction={small ? 'column' : 'row'} gap={1}>
                   <FormControl sx={{ mt: 1, width: small ? '100%' : '130px' }}>
@@ -771,15 +748,6 @@ const EditSceneDialog = () => {
                                   </Avatar>
                                 }
                               />
-                              {/* <Chip
-                            label={/\((.*?)\)/.exec(midiActivate)?.[1]}
-                            onDelete={() => setMIDIActivate('')}
-                            avatar={
-                              <Avatar>
-                                {/\((.*?)\)/.exec(midiActivate)?.[1]}
-                              </Avatar>
-                            }
-                          /> */}
                               <Chip
                                 label={
                                   midiActivate
@@ -793,7 +761,6 @@ const EditSceneDialog = () => {
                                 }
                               />
                               <Chip
-                                // onDelete={() => setMIDIActivate('')}
                                 label={
                                   midiActivate
                                     ?.split('buttonNumber: ')[1]

@@ -205,48 +205,53 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
         </Stack>
     </Stack>
     <Stack direction={'row'} spacing={2} mb={2}>
-    <Stack direction={'column'} spacing={1}>
-    {matrix.map((row, rowIndex) => {
-        return (
-            <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
-            {row.map((_button, buttonIndex) => {
-                const row = 9 - rowIndex
-                const column = buttonIndex + 1
-                const buttonNumber = `${(row)}${column}`
-                const btnNumberInt = parseInt(buttonNumber)
-                const btn = midiMapping[0][btnNumberInt]
-                
-                const bgColor = midiEvent.button === btnNumberInt
-                    ? theme.palette.primary.main 
-                    : btn?.command && 
-                        btn?.command === 'scene' &&
-                        btn?.payload.scene === recentScenes[0]
-                        ? getColorFromValue(btn?.colorSceneActive || '1E') || '#0f0'
-                        : btn?.command && 
-                        btn?.command === 'scene' 
-                            ? getColorFromValue(btn?.colorSceneInactive || '07') || '#f00'
-                            : btn?.command && 
-                                btn?.command !== 'none'  && rowIndex !== 0
-                                ? getColorFromValue(btn?.colorCommand || '63') || '#ff0'
-                            : rowIndex === 0 || buttonIndex === 8
-                                    ? '#000' 
-                                : '#ccc'
-                return (
-                    <LaunchpadButton
-                        buttonNumber={btnNumberInt}
-                        active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
-                        bgColor={bgColor}
-                        key={'button' + buttonIndex}
-                        borderless={rowIndex === 0 && buttonIndex === 8}
-                    >
-                        {labels(rowIndex, buttonIndex)}
-                    </LaunchpadButton>
-                )
-            })}
-            </Stack>
-        )
-    })}
+<Stack direction={'column'} spacing={1}>
+  {matrix.map((row, rowIndex) => {
+    return (
+      <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
+        {row.map((_button, buttonIndex) => {
+          const row = 9 - rowIndex
+          const column = buttonIndex + 1
+          const buttonNumber = `${row}${column}`
+          const btnNumberInt = parseInt(buttonNumber)
+          const btn = midiMapping[0][btnNumberInt]
+
+          // Use the buttonNumber from the mapping for functional logic
+          const functionalButtonNumber = btn?.buttonNumber
+
+          const bgColor = midiEvent.button === (functionalButtonNumber || btnNumberInt)
+            ? theme.palette.primary.main 
+            : btn?.command && 
+              btn?.command === 'scene' &&
+              btn?.payload.scene === recentScenes[0]
+              ? getColorFromValue(btn?.colorSceneActive || '1E') || '#0f0'
+              : btn?.command && 
+                btn?.command === 'scene' 
+                ? getColorFromValue(btn?.colorSceneInactive || '07') || '#f00'
+                : btn?.command && 
+                  btn?.command !== 'none'  && rowIndex !== 0
+                  ? getColorFromValue(btn?.colorCommand || '63') || '#ff0'
+                  : rowIndex === 0 || buttonIndex === 8
+                    ? '#000' 
+                    : '#ccc'
+
+          return (
+            <LaunchpadButton
+              buttonNumber={btnNumberInt}
+              active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
+              bgColor={bgColor}
+              key={'button' + buttonIndex}
+              borderless={rowIndex === 0 && buttonIndex === 8}
+            >
+              {labels(rowIndex, buttonIndex)}
+            </LaunchpadButton>
+          )
+        })}
+      </Stack>
+    )
+  })}
 </Stack>
+
     {sideBarOpen && <Stack direction={'column'} spacing={1} maxHeight={694} width={300} sx={{ overflowY: 'scroll'}}>
         {matrix.map((row, rowIndex) => row.map((button, buttonIndex) => {
             return (
