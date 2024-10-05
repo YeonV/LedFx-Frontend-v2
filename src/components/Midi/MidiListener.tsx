@@ -3,12 +3,6 @@ import { WebMidi, Input, Output } from 'webmidi'
 import useStore from '../../store/useStore'
 import { getUiBtnNo } from '../../store/ui/storeMidi'
 
-// function setAllButtonsToBlack(output: WebMidi.MIDIOutput) {
-//   for (let i = 0 i < 81 i++) {
-//     output?.send([0x90, i, 0])
-//   }
-// }
-
 const MIDIListener = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const togglePause = useStore((state) => state.togglePause)
@@ -95,6 +89,31 @@ const MIDIListener = () => {
   const getMappingByButtonNumber = (buttonNumber: number) => {
     return Object.values(midiMapping[0]).find(mapping => mapping.buttonNumber === buttonNumber)
   }
+
+  const initLeds = (output: Output) => {
+    if (output)  {
+      Object.entries(midiMapping[0]).forEach(([key, value]) => {
+        const buttonNumber = value.buttonNumber
+        if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
+          if (output && buttonNumber !== -1) {
+            try {
+              output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
+            } catch (error) {
+              console.error('Error sending MIDI message:', error)
+            }
+          }
+        } else if (value.command === 'scene') {
+          if (output && buttonNumber !== -1) {
+            try {
+              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
+            } catch (error) {
+              console.error('Error sending MIDI message:', error)
+            }
+          }
+        }
+      })
+    }
+  }
   
   useEffect(() => {
     const handleMidiInput = (input: Input) => {
@@ -116,9 +135,9 @@ const MIDIListener = () => {
         })
   
         const mapping = getMappingByButtonNumber(event.note.number)
-        console.log('MIDI Mapping:', mapping, event.note.number)
+        // console.log('MIDI Mapping:', mapping, event.note.number)
         if (mapping?.command !== undefined) {
-          console.log('MIDI Command:', mapping.command)
+          // console.log('MIDI Command:', mapping.command)
           handleButtonPress(mapping.command, mapping.payload)
         }
       })
@@ -163,30 +182,7 @@ const MIDIListener = () => {
         }
       })
     }
-    const initLeds = (output: Output) => {
-      if (output)  {
-        Object.entries(midiMapping[0]).forEach(([key, value]) => {
-          const buttonNumber = value.buttonNumber
-          if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
-            if (output && buttonNumber !== -1) {
-              try {
-                output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
-              } catch (error) {
-                console.error('Error sending MIDI message:', error)
-              }
-            }
-          } else if (value.command === 'scene') {
-            if (output && buttonNumber !== -1) {
-              try {
-                output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
-              } catch (error) {
-                console.error('Error sending MIDI message:', error)
-              }
-            }
-          }
-        })
-      }
-    }
+ 
   
     const enableWebMidi = () => {
       WebMidi.enable({
