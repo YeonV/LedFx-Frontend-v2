@@ -249,7 +249,6 @@ const MIDIListener = () => {
 
     const handleWebsockets = (event: any) => {
       const output = WebMidi.getOutputByName(midiOutput)
-      if (output) initLeds(output)
       try {
         if (event.type === 'scene_activated') {
           const { scene_id } = event.detail
@@ -288,11 +287,6 @@ const MIDIListener = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, sceneDialogOpen, midiInitialized])
 
-  // useEffect(() => {
-  //   return () => {
-  //     WebMidi.disable()
-  //   }
-  // }, [])
 
   // init midiMapping from scenes
   useEffect(() => {
