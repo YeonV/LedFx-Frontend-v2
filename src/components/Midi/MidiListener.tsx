@@ -219,7 +219,7 @@ const MIDIListener = () => {
                 if (output && buttonNumber !== -1) {
                   try {
                     // output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
-                    output.send([parseInt(`0x${midiMapping[0][parseInt(key)]?.typeCommand}`) || 0x90, buttonNumber, parseInt(midiMapping[0][parseInt(key)]?.colorCommand || commandColor || '3C', 16)])
+                    output.send([parseInt(`0x${midiMapping[0][(getUiBtnNo(buttonNumber) || buttonNumber)]?.typeCommand}`) || 0x90, buttonNumber, parseInt(midiMapping[0][(getUiBtnNo(buttonNumber) || buttonNumber)]?.colorCommand || commandColor || '3C', 16)])
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
@@ -228,7 +228,7 @@ const MIDIListener = () => {
                 if (output && buttonNumber !== -1) {
                   try {
                     // output.send([0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
-                    output.send([parseInt(`0x${midiMapping[0][parseInt(key)]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][parseInt(key)]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
+                    output.send([parseInt(`0x${midiMapping[0][(getUiBtnNo(buttonNumber) || buttonNumber)]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][(getUiBtnNo(buttonNumber) || buttonNumber)]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
@@ -263,7 +263,7 @@ const MIDIListener = () => {
             if (key === scene_id) {
               if (output && buttonNumber !== -1) {
                 if (!Number.isNaN(buttonNumber)) {
-                  output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneActive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneActive || midiSceneActiveColor || '1E', 16)])
+                  output.send([parseInt(`0x${midiMapping[0][getUiBtnNo(buttonNumber) || buttonNumber]?.typeSceneActive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][getUiBtnNo(buttonNumber) || buttonNumber]?.colorSceneActive || midiSceneActiveColor || '1E', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
@@ -271,7 +271,7 @@ const MIDIListener = () => {
             } else {
               if (output && buttonNumber !== -1) {
                 if (!Number.isNaN(buttonNumber)) {
-                  output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
+                  output.send([parseInt(`0x${midiMapping[0][getUiBtnNo(buttonNumber) || buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][getUiBtnNo(buttonNumber) || buttonNumber]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
                 }
               } else {
                 console.error('No MIDI output devices found')
