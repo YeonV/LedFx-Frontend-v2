@@ -164,31 +164,20 @@ const MIDIListener = () => {
       })
     }
     const initLeds = (output: Output) => {
-      console.log(1)
       if (output)  {
-        console.log(2)
         Object.entries(midiMapping[0]).forEach(([key, value]) => {
-          console.log(3)
           const buttonNumber = value.buttonNumber
-          console.log(4, buttonNumber)
           if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
-            console.log(5)
-            if (output) {
-              console.log(6)
+            if (output && buttonNumber !== -1) {
               try {
-                console.log(7)
                 output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
               } catch (error) {
-                console.log(8)
                 console.error('Error sending MIDI message:', error)
               }
             }
           } else if (value.command === 'scene') {
-            console.log(9)
             if (output && buttonNumber !== -1) {
-              console.log(10)
               try {
-                console.log(11)
                 output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
               } catch (error) {
                 console.error('Error sending MIDI message:', error)
@@ -219,7 +208,7 @@ const MIDIListener = () => {
               if (!value.command || value.command === 'none' || buttonNumber === -1) {
                 if (output) {
                   try {
-                    output.send([0x90, buttonNumber, 0])
+                    output.send([0x90, buttonNumber, lpType === 'LPX' ? 0x00 : 0x0C])
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
@@ -227,7 +216,7 @@ const MIDIListener = () => {
                 return
               }
               if (value.command && value.command !== 'scene' && value.command !== 'none') {
-                if (output) {
+                if (output && buttonNumber !== -1) {
                   try {
                     // output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
                     output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeCommand}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorCommand || commandColor || '3C', 16)])
@@ -236,7 +225,7 @@ const MIDIListener = () => {
                   }
                 }
               } else if (value.command === 'scene') {
-                if (output) {
+                if (output && buttonNumber !== -1) {
                   try {
                     // output.send([0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
                     output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
