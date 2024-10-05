@@ -62,7 +62,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor }: LpColorPickerProps) => {
           },
         }}
       >
-        {selectedColor ? zeroPadHex(lpType === 'LPX' ? lpColors[selectedColor] : (lpsColors as any)[selectedColor]) : ''}
+        {selectedColor ? zeroPadHex(lpType === 'LPX' ? lpColors[selectedColor] : (lpsColors as any)[selectedColor]) : defaultColor || ''}
       </Button>
       <Popover
         id={id}
