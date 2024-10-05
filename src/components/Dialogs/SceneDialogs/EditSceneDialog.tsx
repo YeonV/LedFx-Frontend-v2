@@ -38,6 +38,7 @@ import TooltipImage from './TooltipImage'
 import TooltipTags from './TooltipTags'
 import TooltipMidi from './TooltipMidi'
 import MidiInputDialog from '../../Midi/MidiInputDialog'
+import { IMapping } from '../../../store/ui/storeMidi'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -55,12 +56,16 @@ const EditSceneDialog = () => {
   const medium = useMediaQuery('(max-width: 920px )')
   const small = useMediaQuery('(max-width: 580px )')
   const xsmall = useMediaQuery('(max-width: 480px )')
+  const midiMapping = useStore((state) => state.midiMapping)
+  const setMidiMapping = useStore((state) => state.setMidiMapping)
+  const initMidi = useStore((state) => state.initMidi)
 
   
   const { effects } = useStore((state) => state.schemas)
   const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.edit || false)
   const data = useStore((state: any) => state.dialogs.addScene?.editData)
+  const sceneId = useStore((state: any) => state.dialogs.addScene?.sceneKey)
   const features = useStore((state) => state.features)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
 
@@ -973,11 +978,26 @@ const EditSceneDialog = () => {
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button
-          onClick={() =>
-            scVirtualsToIgnore.length > 0
+          onClick={() => {
+            const deepCopy = (obj: any) =>  JSON.parse(JSON.stringify(obj))  
+            const newMapping = deepCopy(midiMapping) as IMapping;
+            const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
+            const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
+            const item = parseInt(Object.keys(newMapping[0]).find((k) => newMapping[0][parseInt(k)].buttonNumber === currentBtnNumber) || '');
+            
+            if (currentBtnNumber && newBtnNumber && currentBtnNumber !== newBtnNumber) {        
+                if (item) {
+                    newMapping[0][item] = { buttonNumber: currentBtnNumber };
+                    console.log('mapping after', newMapping);
+                    setMidiMapping(newMapping);
+                    initMidi();
+                }              
+            }
+                      
+            return scVirtualsToIgnore.length > 0
               ? handleAddSceneWithVirtuals()
               : handleAddScene()
-          }
+          }}
         >
           Save
         </Button>
