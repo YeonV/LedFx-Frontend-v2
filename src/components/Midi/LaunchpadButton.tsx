@@ -26,6 +26,7 @@ const LaunchpadButton = ({
     bgColor?: string
 }) => {
   const [open, setOpen] = useState(false)
+  const lpType = useStore((state) => state.lpType)
   const midiMapping = useStore((state) => state.midiMapping)
   const midiEvent = useStore((state) => state.midiEvent)
   const setMidiMapping = useStore((state) => state.setMidiMapping)
@@ -126,7 +127,7 @@ const LaunchpadButton = ({
                             <MenuItem value={'91'}>Flash</MenuItem>
                             <MenuItem value={'92'}>Pulse</MenuItem>
                             </Select>
-                        <LpColorPicker defaultColor={getColorFromValue(currentMapping.colorSceneInactive || midiSceneInactiveColor)} onColorSelect={(color: string) => {
+                        <LpColorPicker defaultColor={getColorFromValue((currentMapping.colorSceneInactive || midiSceneInactiveColor), lpType)} onColorSelect={(color: string) => {
                             setMidiMapping({...midiMapping, 0: {...midiMapping[0], [buttonNumber]: {...currentMapping, colorSceneInactive: color}}})
                         }} />
                         </Stack>
@@ -141,7 +142,7 @@ const LaunchpadButton = ({
                             <MenuItem value={'91'}>Flash</MenuItem>
                             <MenuItem value={'92'}>Pulse</MenuItem>
                             </Select>
-                        <LpColorPicker defaultColor={getColorFromValue(currentMapping.colorSceneActive || midiSceneActiveColor)} onColorSelect={(color: string) => {
+                        <LpColorPicker defaultColor={getColorFromValue((currentMapping.colorSceneActive || midiSceneActiveColor), lpType)} onColorSelect={(color: string) => {
                             setMidiMapping({...midiMapping, 0: {...midiMapping[0], [buttonNumber]: {...currentMapping, colorSceneActive: color}}})
                         }} />
                         </Stack>
@@ -155,7 +156,7 @@ const LaunchpadButton = ({
                         <MenuItem value={'91'}>Flash</MenuItem>
                         <MenuItem value={'92'}>Pulse</MenuItem>
                         </Select>
-                        <LpColorPicker defaultColor={getColorFromValue(currentMapping.colorCommand || midiCommandColor)} onColorSelect={(color: string) => {
+                        <LpColorPicker defaultColor={getColorFromValue((currentMapping.colorCommand || midiCommandColor), lpType)} onColorSelect={(color: string) => {
                             setMidiMapping({...midiMapping, 0: {...midiMapping[0], [buttonNumber]: {...currentMapping, colorCommand: color}}})
                         }} />
                 </Stack>}

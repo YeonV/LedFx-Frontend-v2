@@ -42,6 +42,16 @@ export const sortColorsByHSL = (colors: IColor[]) => {
   })
 }
 
+export const lpsColors = {
+  '#FF0000': 0x0F, // full red
+  '#FFA500': 0x2F, // full orange
+  '#00FF00': 0x3C, // full green
+  '#8B0000': 0x0D, // dim red
+  '#526F50': 0x1C, // dim green
+  '#FFFF00': 0x3E, // full yellow
+  '#000000': 0x0C, // off
+  '#FF7F00': 0x3F, // full amber
+}
 export const lpColors = {
     '#616161': 0x00,
     '#b3b3b3': 0x01,
@@ -173,10 +183,11 @@ export const lpColors = {
     '#c27661': 0x7f,
 }
 
-export const getColorFromValue = (value: string) => {
+export const getColorFromValue = (value: string, mode: 'LPX' | 'LPS' = 'LPX' ) => {
   if (value === 'undefined') return undefined;
+  const colors = mode === 'LPX' ? lpColors : lpsColors;
   const numericValue = parseInt(value, 16);
-  return Object.keys(lpColors).find(key => lpColors[key as IColor] === numericValue) || undefined;
+  return Object.keys(colors).find(key => colors[key as keyof typeof colors] === numericValue) || undefined;
 }
 
 export type IColor = keyof typeof lpColors

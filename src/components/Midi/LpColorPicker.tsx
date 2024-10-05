@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Box, Grid, Paper, Typography, Popover, Button, useTheme } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { darken } from '@mui/material/styles'
-import { IColor, lpColors, sortColorsByHSL, zeroPadHex } from './lpColors'
+import { IColor, lpColors, lpsColors, sortColorsByHSL, zeroPadHex } from './lpColors'
+import useStore from '../../store/useStore'
 
 interface LpColorPickerProps {
   onColorSelect?: (color: string) => void
@@ -13,6 +14,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor }: LpColorPickerProps) => {
   const [selectedColor, setSelectedColor] = useState<IColor | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
+  const lpType = useStore((state) => state.lpType)
 
   useEffect(() => {
     if (defaultColor && lpColors[defaultColor as IColor]) {
@@ -23,7 +25,11 @@ const LpColorPicker = ({ onColorSelect, defaultColor }: LpColorPickerProps) => {
   const handleColorClick = (color: IColor) => {
     setSelectedColor(color)
     if (onColorSelect) {
-      onColorSelect(zeroPadHex(lpColors[color]))
+      if (lpType === 'LPX') {
+        onColorSelect(zeroPadHex(lpColors[color]))
+      } else {
+        onColorSelect(zeroPadHex((lpsColors as any)[color]))
+      }
     }
     setAnchorEl(null)
   }
@@ -35,8 +41,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor }: LpColorPickerProps) => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-
-  const sortedColors = sortColorsByHSL(Object.keys(lpColors) as IColor[])
+  const sortedColors = sortColorsByHSL(Object.keys(lpType === 'LPX' ? lpColors : lpsColors ) as IColor[])
   const open = Boolean(anchorEl)
   const id = open ? 'color-popover' : undefined
 
@@ -57,7 +62,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor }: LpColorPickerProps) => {
           },
         }}
       >
-        {selectedColor ? zeroPadHex(lpColors[selectedColor]) : ''}
+        {selectedColor ? zeroPadHex(lpType === 'LPX' ? lpColors[selectedColor] : (lpsColors as any)[selectedColor]) : ''}
       </Button>
       <Popover
         id={id}
@@ -86,7 +91,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor }: LpColorPickerProps) => {
                   onClick={() => handleColorClick(color)}
                 >
                   <Typography variant="caption" sx={{ color: theme.palette.getContrastText(color as string) }}>
-                    {zeroPadHex(lpColors[color])}
+                    {zeroPadHex(lpType === 'LPX' ? lpColors[color] : (lpsColors as any)[color])}
                   </Typography>
                 </Paper>
               </Grid>
