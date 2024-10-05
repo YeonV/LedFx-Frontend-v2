@@ -164,20 +164,31 @@ const MIDIListener = () => {
       })
     }
     const initLeds = (output: Output) => {
+      console.log(1)
       if (output)  {
+        console.log(2)
         Object.entries(midiMapping[0]).forEach(([key, value]) => {
+          console.log(3)
           const buttonNumber = value.buttonNumber
+          console.log(4, buttonNumber)
           if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
+            console.log(5)
             if (output) {
+              console.log(6)
               try {
+                console.log(7)
                 output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
               } catch (error) {
+                console.log(8)
                 console.error('Error sending MIDI message:', error)
               }
             }
           } else if (value.command === 'scene') {
+            console.log(9)
             if (output && buttonNumber !== -1) {
+              console.log(10)
               try {
+                console.log(11)
                 output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
               } catch (error) {
                 console.error('Error sending MIDI message:', error)
