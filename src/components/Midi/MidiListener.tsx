@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { WebMidi, Input } from 'webmidi'
 import useStore from '../../store/useStore'
+import { getUiBtnNo } from '../../store/ui/storeMidi'
 
 // function setAllButtonsToBlack(output: WebMidi.MIDIOutput) {
 //   for (let i = 0 i < 81 i++) {
@@ -41,6 +42,7 @@ const MIDIListener = () => {
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
   const midiEvent = useStore((state) => state.midiEvent)
+  const lpType = useStore((state) => state.lpType)
   const global_brightness = useStore((state) => state.config.global_brightness)
   const glBrightness = useRef(global_brightness)
 
@@ -299,11 +301,12 @@ const MIDIListener = () => {
         scene.scene_midiactivate.split('buttonNumber: ')[1],
         10
       )
+      const uiButtonNumber = lpType === 'LPX' ? buttonNumber : getUiBtnNo(buttonNumber) || -1
       // console.log('Button Number:', buttonNumber) 
       mapping[0] = {
         ...mapping[0],
-        [buttonNumber]: {
-          ...mapping[0][buttonNumber],
+        [uiButtonNumber]: {
+          ...mapping[0][uiButtonNumber],
           command: 'scene',
           payload: { scene: key },
           buttonNumber: buttonNumber

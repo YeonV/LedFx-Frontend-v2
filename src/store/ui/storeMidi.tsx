@@ -71,7 +71,16 @@ export const LpMapping = {
   ]
 }
 
-
+export function getUiBtnNo(inputInt: number): number | null {
+  for (let i = 0; i < LpMapping.LaunchpadS.length; i++) {
+    for (let j = 0; j < LpMapping.LaunchpadS[i].length; j++) {
+      if (LpMapping.LaunchpadS[i][j] === inputInt) {
+        return LpMapping.LaunchpadX[i][j];
+      }
+    }
+  }
+  return null;
+}
 const storeMidi = (set: any) => ({
   lpType: 'LPX' as 'LPX' | 'LPS',
   setLpType: (type: 'LPX' | 'LPS') =>
