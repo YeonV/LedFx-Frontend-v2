@@ -55,7 +55,7 @@ const LeftBar = () => {
                 border: theme.palette.secondary.main,
                 backgroundColor: isElectron()
                   ? 'transparent'
-                  : theme.palette.mode === 'light' ? 'transparent' : theme.palette.primary.main
+                  : (theme.palette.mode === 'light' || theme.palette.primary.main === '#FFFFFF') ? 'transparent' : theme.palette.primary.main
               }}
             />
           </Box>
