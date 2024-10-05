@@ -33,6 +33,7 @@ const MIDIListener = () => {
   const setMidiOutputs = useStore((state) => state.setMidiOutputs)
   const setMidiInput = useStore((state) => state.setMidiInput)
   const setMidiOutput = useStore((state) => state.setMidiOutput)
+  const recentScenes = useStore((state) => state.recentScenes)
   const midiInput = useStore((state) => state.midiInput)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
@@ -105,7 +106,7 @@ const MIDIListener = () => {
         } else if (value.command === 'scene') {
           if (output && buttonNumber !== -1) {
             try {
-              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
+              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.payload?.scene === recentScenes[0] ? (value.colorSceneActive || midiSceneActiveColor) : (value.colorSceneInactive || midiSceneInactiveColor), 16) || 60])
             } catch (error) {
               console.error('Error sending MIDI message:', error)
             }
