@@ -990,7 +990,9 @@ const EditSceneDialog = () => {
                     newMapping[0][item] = { buttonNumber: currentBtnNumber };
                     console.log('mapping after', newMapping);
                     setMidiMapping(newMapping);
-                    initMidi();
+                    setTimeout(() => {
+                      initMidi();
+                    }, 100);
                 }              
             }
                       
