@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   AppBar,
   Box,
@@ -39,6 +39,7 @@ import TooltipTags from './TooltipTags'
 import TooltipMidi from './TooltipMidi'
 import MidiInputDialog from '../../Midi/MidiInputDialog'
 import { IMapping } from '../../../store/ui/storeMidi'
+import { WebMidi } from 'webmidi'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -81,7 +82,11 @@ const EditSceneDialog = () => {
   const getImage = useStore((state) => state.getImage)
   const [imageData, setImageData] = useState(null)
   const midiEvent = useStore((state) => state.midiEvent)
+  const midiOutput = useStore((state) => state.midiOutput)
+  const lpType = useStore((state) => state.lpType)
+  const lastButton = useRef(-1)
 
+  const setBlockMidiHandler = useStore((state) => state.setBlockMidiHandler)
   const getFullConfig = useStore((state) => state.getFullConfig)
 
   const toggletSceneActiveTag = useStore(
@@ -237,6 +242,42 @@ const EditSceneDialog = () => {
         )
     }
   }, [midiEvent, features.scenemidi])
+  
+  useEffect(() => {
+    if (features.scenemidi && open) {
+      initMidi()
+      const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+      const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
+      setTimeout(() => {
+        output.send([0x92, currentBtnNumber, 99])
+      }, 100)
+    }
+  }, [open, features.scenemidi])
+  
+  useEffect(() => {
+    if (features.scenemidi && open) {
+      setBlockMidiHandler(true)
+      const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+      const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
+      const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
+      if (newBtnNumber > -1) {
+        setTimeout(() => {
+          if (newBtnNumber !== currentBtnNumber) {
+            output.send([0x92, currentBtnNumber, 99])
+            output.send([0x92, newBtnNumber, 57])
+          }
+          if (lastButton.current > -1 && lastButton.current !== newBtnNumber && lastButton.current !== currentBtnNumber) {
+            output.send([0x90, lastButton.current, lpType === 'LPS' ? 0x0C : 0])
+          }
+          lastButton.current = newBtnNumber
+        }, 100)
+      }
+    }
+    if (!open) {
+      lastButton.current = -1
+      setBlockMidiHandler(false)
+    }
+  }, [open, features.scenemidi, midiEvent])
 
   const renderPresets = (
     current_ledfx_presets: any,
