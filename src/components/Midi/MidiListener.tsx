@@ -37,6 +37,7 @@ const MIDIListener = () => {
   const midiInput = useStore((state) => state.midiInput)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
+  const blockMidiHandler = useStore((state) => state.blockMidiHandler)
   const midiEvent = useStore((state) => state.midiEvent)
   const lpType = useStore((state) => state.lpType)
   const global_brightness = useStore((state) => state.config.global_brightness)
@@ -49,6 +50,7 @@ const MIDIListener = () => {
   )
 
   function handleButtonPress(command: string, payload?: any) {
+    if (blockMidiHandler) return
     if (command === 'scene' && payload?.scene) {
       setScene(payload.scene)
     } else if (command === 'smartbar') {
