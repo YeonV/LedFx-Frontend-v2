@@ -6,7 +6,7 @@ import Assign from '../Gamepad/Assign'
 import { useEffect, useState } from 'react'
 import { WebMidi } from 'webmidi'
 import LaunchpadButton from './LaunchpadButton'
-import { getColorFromValue } from './lpColors'
+import { getColorFromValue, lpsColors } from './lpColors'
 import { defaultMapping, IMapping, LpMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
@@ -23,6 +23,9 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
     const recentScenes = useStore((state) => state.recentScenes)
     const midiMapping = useStore((state) => state.midiMapping)
     const setMidiMapping = useStore((state) => state.setMidiMapping)
+    const setMidiSceneActiveColor = useStore((state) => state.setMidiSceneActiveColor)
+    const setMidiSceneInactiveColor = useStore((state) => state.setMidiSceneInactiveColor)
+    const setMidiCommandColor = useStore((state) => state.setMidiCommandColor)
     const pressedButtonColor = useStore((state) => state.midiColors.pressedButtonColor)
     const paused = useStore((state) => state.paused)
     const matrix = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0))
@@ -190,16 +193,22 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
                 <Divider />
                 <MenuItem onClick={() => {
                     setMidiMappingButtonNumbers(LpMapping.LaunchpadX)
-                    initMidi()
                     setLpType('LPX')
+                    setMidiSceneActiveColor('1E')
+                    setMidiSceneInactiveColor('3C')
+                    setMidiCommandColor('63')
+                    initMidi()
                 }}>
                     <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
                     <ListItemText primary="Launchpad X" />
                 </MenuItem>
                 <MenuItem onClick={() => {
                     setMidiMappingButtonNumbers(LpMapping.LaunchpadS)
-                    initMidi()
                     setLpType('LPS')
+                    setMidiSceneActiveColor('3C')
+                    setMidiSceneInactiveColor('0F')
+                    setMidiCommandColor('3E')
+                    initMidi()
                 }}>
                     <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
                     <ListItemText primary="Launchpad S" />
