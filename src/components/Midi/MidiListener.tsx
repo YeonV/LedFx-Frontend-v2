@@ -39,6 +39,7 @@ const MIDIListener = () => {
   const setMidiInput = useStore((state) => state.setMidiInput)
   const setMidiOutput = useStore((state) => state.setMidiOutput)
   const midiInput = useStore((state) => state.midiInput)
+  const commandColor = useStore((state) => state.midiColors.commandColor)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
   const midiEvent = useStore((state) => state.midiEvent)
@@ -193,7 +194,7 @@ const MIDIListener = () => {
               if (value.command && value.command !== 'scene' && value.command !== 'none') {
                 if (output) {
                   try {
-                    output.send([0x90, buttonNumber, parseInt(value.colorCommand, 16) || 99])
+                    output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
@@ -221,32 +222,30 @@ const MIDIListener = () => {
     
     enableWebMidi()
     
-  
-
-    const handleWebsockets = (event: any) => {
-      const output = WebMidi.getOutputByName(midiOutput)
+    const output = WebMidi.getOutputByName(midiOutput)
     
-      Object.entries(midiMapping[0]).forEach(([key, value]) => {
-        const buttonNumber = value.buttonNumber
-        if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
-          if (output) {
-            try {
-              output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand, 16) || 99])
-            } catch (error) {
-              console.error('Error sending MIDI message:', error)
-            }
-          }
-        } else if (value.command === 'scene') {
-          if (output && buttonNumber !== -1) {
-            try {
-              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
-            } catch (error) {
-              console.error('Error sending MIDI message:', error)
-            }
+    Object.entries(midiMapping[0]).forEach(([key, value]) => {
+      const buttonNumber = value.buttonNumber
+      if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
+        if (output) {
+          try {
+            output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
+          } catch (error) {
+            console.error('Error sending MIDI message:', error)
           }
         }
-      })
-    
+      } else if (value.command === 'scene') {
+        if (output && buttonNumber !== -1) {
+          try {
+            output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
+          } catch (error) {
+            console.error('Error sending MIDI message:', error)
+          }
+        }
+      }
+    })
+
+    const handleWebsockets = (event: any) => {
       try {
         if (event.type === 'scene_activated') {
           const { scene_id } = event.detail
