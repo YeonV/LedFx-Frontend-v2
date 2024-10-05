@@ -73,6 +73,15 @@ export const LpMapping = {
 
 
 const storeMidi = (set: any) => ({
+  lpType: 'LPX' as 'LPX' | 'LPS',
+  setLpType: (type: 'LPX' | 'LPS') =>
+    set(
+      produce((state: IStore) => {
+        state.lpType = type
+      }),
+      false,
+      'setLpType'
+    ),
   midiInputs: [] as string[],
   setMidiInputs: (inputs: string[]) =>
     set(

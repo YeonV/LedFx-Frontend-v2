@@ -15,6 +15,7 @@ const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuIte
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const theme = useTheme()
+  const lpType = useStore((state) => state.lpType)
   const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
   const midiSceneActiveColor = useStore((state) => state.midiColors.sceneActiveColor)
   const midiCommandColor = useStore((state) => state.midiColors.commandColor)
@@ -62,19 +63,19 @@ const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuIte
             <Stack direction={'column'} spacing={1} mt={1}>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Scene inactive</Typography>
-                    <LpColorPicker defaultColor={getColorFromValue(midiSceneInactiveColor)} onColorSelect={(color: string) => {
+                    <LpColorPicker defaultColor={getColorFromValue(midiSceneInactiveColor, lpType)} onColorSelect={(color: string) => {
                         setMidiSceneInactiveColor(color)
                     }} />
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Scene active</Typography>
-                    <LpColorPicker defaultColor={getColorFromValue(midiSceneActiveColor)} onColorSelect={(color: string) => {
+                    <LpColorPicker defaultColor={getColorFromValue(midiSceneActiveColor, lpType)} onColorSelect={(color: string) => {
                         setMidiSceneActiveColor(color)
                     }} />
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Command</Typography>
-                    <LpColorPicker defaultColor={getColorFromValue(midiCommandColor)} onColorSelect={(color: string) => {
+                    <LpColorPicker defaultColor={getColorFromValue(midiCommandColor, lpType)} onColorSelect={(color: string) => {
                         setMidiCommandColor(color)
                     }} />
                 </Stack>

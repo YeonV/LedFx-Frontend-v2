@@ -16,6 +16,8 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
     const [showMapping, setShowMapping] = useState(false)
     const setMidiMappingButtonNumbers = useStore((state) => state.setMidiMappingButtonNumbers)
     const initMidi = useStore((state) => state.initMidi)
+    const lpType = useStore((state) => state.lpType)
+    const setLpType = useStore((state) => state.setLpType)
     const midiEvent = useStore((state) => state.midiEvent)
     const midiOutput = useStore((state) => state.midiOutput)
     const recentScenes = useStore((state) => state.recentScenes)
@@ -189,6 +191,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
                 <MenuItem onClick={() => {
                     setMidiMappingButtonNumbers(LpMapping.LaunchpadX)
                     initMidi()
+                    setLpType('LPX')
                 }}>
                     <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
                     <ListItemText primary="Launchpad X" />
@@ -196,6 +199,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
                 <MenuItem onClick={() => {
                     setMidiMappingButtonNumbers(LpMapping.LaunchpadS)
                     initMidi()
+                    setLpType('LPS')
                 }}>
                     <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
                     <ListItemText primary="Launchpad S" />
@@ -241,13 +245,13 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
             : btn?.command && 
               btn?.command === 'scene' &&
               btn?.payload?.scene === recentScenes[0]
-              ? getColorFromValue(btn?.colorSceneActive || '1E') || '#0f0'
+              ? getColorFromValue((btn?.colorSceneActive || '1E'), lpType) || '#0f0'
               : btn?.command && 
                 btn?.command === 'scene' 
-                ? getColorFromValue(btn?.colorSceneInactive || '07') || '#f00'
+                ? getColorFromValue((btn?.colorSceneInactive || '07'), lpType) || '#f00'
                 : btn?.command && 
                   btn?.command !== 'none'  && rowIndex !== 0
-                  ? getColorFromValue(btn?.colorCommand || '63') || '#ff0'
+                  ? getColorFromValue((btn?.colorCommand || '63'), lpType) || '#ff0'
                   : rowIndex === 0 || buttonIndex === 8
                     ? '#000' 
                     : '#ccc'
