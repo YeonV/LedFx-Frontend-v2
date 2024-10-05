@@ -6,6 +6,7 @@ import LaunchpadButtonMap from './LaunchpadButtonMap'
 
 const MidiInputDialog = () => {
   const midiInput = useStore((state) => state.midiInput)
+  const [fullScreen, setFullScreen] = useState(false)
   const [open, setOpen] = useState<boolean>(false)
   const [sideBarOpen, setSideBarOpen] = useState(false)
   const toggleSidebar = () => setSideBarOpen(!sideBarOpen)
@@ -18,21 +19,22 @@ const MidiInputDialog = () => {
         </IconButton>
       </Tooltip>
       <Dialog
+        fullScreen={fullScreen}
         open={open}
         onClose={() => setOpen(false)}
         PaperProps={{
           sx: {
-            maxWidth: sideBarOpen ? 'min(95vw, 1060px)' : 'min(95vw, 742px)',
+            maxWidth: fullScreen ? 'unset' : sideBarOpen ? 'min(95vw, 1060px)' : 'min(95vw, 742px)',
             minWidth: sideBarOpen ? 'min(95vw, 750px)': 'min(95vw, 542px)',
             width: '100%'
           }
         }}
       >
-        <DialogTitle display="flex" alignItems="center">
+        {!fullScreen && <DialogTitle display="flex" alignItems="center">
             <BladeIcon name="mdi:midi" style={{ marginRight: '1rem'}} /> {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
-        </DialogTitle>
-        <DialogContent>
-            <LaunchpadButtonMap sideBarOpen={sideBarOpen} toggleSidebar={toggleSidebar} />        
+        </DialogTitle>}
+        <DialogContent sx={{ padding: fullScreen ? 0 : ''}}>
+            <LaunchpadButtonMap fullScreen={fullScreen} setFullScreen={setFullScreen} sideBarOpen={sideBarOpen} toggleSidebar={toggleSidebar} />        
         </DialogContent>
       </Dialog>
     </div>

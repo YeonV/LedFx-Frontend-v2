@@ -1,9 +1,9 @@
-import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew } from '@mui/icons-material'
+import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WebMidi } from 'webmidi'
 import LaunchpadButton from './LaunchpadButton'
 import { getColorFromValue } from './lpColors'
@@ -11,8 +11,11 @@ import { defaultMapping, IMapping, LpMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
 
-const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => void, sideBarOpen: boolean}) => {
+const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScreen}:{toggleSidebar: () => void, sideBarOpen: boolean, fullScreen?: boolean, setFullScreen: (f:boolean) => void}) => {
     const theme = useTheme()
+    const parentRef = useRef<HTMLDivElement>(null);
+    const childRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
     const [showMapping, setShowMapping] = useState(false)
     const setMidiMappingButtonNumbers = useStore((state) => state.setMidiMappingButtonNumbers)
     const initMidi = useStore((state) => state.initMidi)
@@ -109,6 +112,17 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
         }
     }
     
+    useEffect(() => {
+        const parent = parentRef.current;
+        const child = childRef.current;
+
+        if (parent && child) {
+            const scaleX = parent.clientWidth / child.clientWidth;
+            const scaleY = parent.clientHeight / child.clientHeight;
+            const scale = Math.min(scaleX, scaleY);
+            setScale(scale);
+        }
+    }, [matrix]);
 
     useEffect(() => {        
         initMidi()
@@ -117,14 +131,15 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
 
   return (
     <>
-    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} mb={2}>
+    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} mb={fullScreen ? '5px' : 2}>
         <Stack direction={'row'} alignItems={'center'} spacing={2}>            
             <Stack direction={'row'} alignItems={'center'} spacing={0}>
                 <Button onClick={() => setMode('programmer')}>Programmer</Button>
                 <Button onClick={() => setMode('live')}>Live</Button>        
             </Stack>
         </Stack>
-        <Stack direction={'row'} alignItems={'center'} spacing={0}>
+        <Stack direction={'row'} alignItems={'center'} spacing={0}> 
+            <Button onClick={() => setFullScreen(!fullScreen)}>{fullScreen ? <FullscreenExit/> :<Fullscreen />}</Button>
             <Button onClick={() => initMidi()}><Autorenew /></Button>
             <Button
                 id="basic-button"
@@ -235,53 +250,58 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen}:{toggleSidebar: () => v
             <Button onClick={() => toggleSidebar()}><ViewSidebar /></Button>            
         </Stack>
     </Stack>
-    <Stack direction={'row'} spacing={2} mb={2}>
-<Stack direction={'column'} spacing={1}>
-  {matrix.map((row, rowIndex) => {
-    return (
-      <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
-        {row.map((_button, buttonIndex) => {
-          const row = 9 - rowIndex
-          const column = buttonIndex + 1
-          const buttonNumber = `${row}${column}`
-          const btnNumberInt = parseInt(buttonNumber)
-          const btn = midiMapping[0][btnNumberInt]
+    <Stack direction={'row'} spacing={2} mb={fullScreen ? 0 : 2} ref={parentRef} sx={fullScreen ? {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 'calc(100% - 40px)',
+    } : {}}>
+        <Stack direction={'column'} spacing={1} ref={childRef} sx={{transform: `scale(${scale})`}}>
+            {matrix.map((row, rowIndex) => {
+                return (
+                <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
+                    {row.map((_button, buttonIndex) => {
+                    const row = 9 - rowIndex
+                    const column = buttonIndex + 1
+                    const buttonNumber = `${row}${column}`
+                    const btnNumberInt = parseInt(buttonNumber)
+                    const btn = midiMapping[0][btnNumberInt]
 
-          // Use the buttonNumber from the mapping for functional logic
-          const functionalButtonNumber = btn?.buttonNumber
-          const bgColor = functionalButtonNumber === -1 ? '#000' : (midiEvent.button === functionalButtonNumber)
-            ? ( pressedButtonColor || theme.palette.primary.main )
-            : btn?.command && 
-              btn?.command === 'scene' &&
-              btn?.payload?.scene === recentScenes[0]
-              ? getColorFromValue((btn?.colorSceneActive || '1E'), lpType) || '#0f0'
-              : btn?.command && 
-                btn?.command === 'scene' 
-                ? getColorFromValue((btn?.colorSceneInactive || '07'), lpType) || '#f00'
-                : btn?.command && 
-                  btn?.command !== 'none'  && rowIndex !== 0
-                  ? getColorFromValue((btn?.colorCommand || '63'), lpType) || '#ff0'
-                  : rowIndex === 0 || buttonIndex === 8
-                    ? '#000' 
-                    : '#ccc'
+                    // Use the buttonNumber from the mapping for functional logic
+                    const functionalButtonNumber = btn?.buttonNumber
+                    const bgColor = functionalButtonNumber === -1 ? '#000' : (midiEvent.button === functionalButtonNumber)
+                        ? ( pressedButtonColor || theme.palette.primary.main )
+                        : btn?.command && 
+                        btn?.command === 'scene' &&
+                        btn?.payload?.scene === recentScenes[0]
+                        ? getColorFromValue((btn?.colorSceneActive || '1E'), lpType) || '#0f0'
+                        : btn?.command && 
+                            btn?.command === 'scene' 
+                            ? getColorFromValue((btn?.colorSceneInactive || '07'), lpType) || '#f00'
+                            : btn?.command && 
+                            btn?.command !== 'none'  && rowIndex !== 0
+                            ? getColorFromValue((btn?.colorCommand || '63'), lpType) || '#ff0'
+                            : rowIndex === 0 || buttonIndex === 8
+                                ? '#000' 
+                                : '#ccc'
 
-          return (
-            <LaunchpadButton
-              hidden={functionalButtonNumber === -1}
-              buttonNumber={btnNumberInt}
-              active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
-              bgColor={bgColor}
-              key={'button' + buttonIndex}
-              borderless={rowIndex === 0 && buttonIndex === 8}
-            >
-              {labels(rowIndex, buttonIndex)}
-            </LaunchpadButton>
-          )
-        })}
-      </Stack>
-    )
-  })}
-</Stack>
+                    return (
+                        <LaunchpadButton
+                            hidden={functionalButtonNumber === -1}
+                            buttonNumber={btnNumberInt}
+                            active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
+                            bgColor={bgColor}
+                            key={'button' + buttonIndex}
+                            borderless={rowIndex === 0 && buttonIndex === 8}
+                        >
+                        {labels(rowIndex, buttonIndex)}
+                        </LaunchpadButton>
+                    )
+                    })}
+                </Stack>
+                )
+            })}
+        </Stack>
 
     {sideBarOpen && <Stack direction={'column'} spacing={1} maxHeight={694} width={300} sx={{ overflowY: 'scroll'}}>
         {matrix.map((row, rowIndex) => row.map((button, buttonIndex) => {
