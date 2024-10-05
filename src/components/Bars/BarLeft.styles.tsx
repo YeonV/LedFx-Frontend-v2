@@ -35,7 +35,8 @@ const useStyles = makeStyles(() => ({
   drawerHeader: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    minHeight: '55px',
   },
   logo: {
     position: 'relative',

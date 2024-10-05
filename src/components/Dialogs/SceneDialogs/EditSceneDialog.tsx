@@ -252,6 +252,7 @@ const EditSceneDialog = () => {
         output.send([0x92, currentBtnNumber, 99])
       }, 100)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, features.scenemidi])
   
   useEffect(() => {
@@ -277,6 +278,7 @@ const EditSceneDialog = () => {
       lastButton.current = -1
       setBlockMidiHandler(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, features.scenemidi, midiEvent])
 
   const renderPresets = (
@@ -457,6 +459,7 @@ const EditSceneDialog = () => {
     >
       <AppBar
         enableColorOnDark
+        color="secondary"
         // className={classes.appBar}
       >
         <Toolbar>
