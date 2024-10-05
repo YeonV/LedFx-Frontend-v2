@@ -223,33 +223,36 @@ const MIDIListener = () => {
     
     enableWebMidi()
     
-    
-
-
-    const handleWebsockets = (event: any) => {
+    const initLeds = () => {
       const output = WebMidi.getOutputByName(midiOutput)
       if (output)  {
         Object.entries(midiMapping[0]).forEach(([key, value]) => {
-        const buttonNumber = value.buttonNumber
-        if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
-          if (output) {
-            try {
-              output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
-            } catch (error) {
-              console.error('Error sending MIDI message:', error)
+          const buttonNumber = value.buttonNumber
+          if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
+            if (output) {
+              try {
+                output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
+              } catch (error) {
+                console.error('Error sending MIDI message:', error)
+              }
+            }
+          } else if (value.command === 'scene') {
+            if (output && buttonNumber !== -1) {
+              try {
+                output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
+              } catch (error) {
+                console.error('Error sending MIDI message:', error)
+              }
             }
           }
-        } else if (value.command === 'scene') {
-          if (output && buttonNumber !== -1) {
-            try {
-              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor, 16) || 60])
-            } catch (error) {
-              console.error('Error sending MIDI message:', error)
-            }
-          }
-        }
-      })
+        })
+      }
     }
+    initLeds()
+
+    const handleWebsockets = (event: any) => {
+      initLeds()
+      const output = WebMidi.getOutputByName(midiOutput)
       try {
         if (event.type === 'scene_activated') {
           const { scene_id } = event.detail
