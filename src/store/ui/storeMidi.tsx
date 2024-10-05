@@ -82,6 +82,15 @@ export function getUiBtnNo(inputInt: number): number | null {
   return null;
 }
 const storeMidi = (set: any) => ({
+  blockMidiHandler: false,
+  setBlockMidiHandler: (block: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.blockMidiHandler = block
+      }),
+      false,
+      'setBlockMidiHandler'
+    ),
   lpType: 'LPX' as 'LPX' | 'LPS',
   setLpType: (type: 'LPX' | 'LPS') =>
     set(
