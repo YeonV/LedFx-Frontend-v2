@@ -206,7 +206,7 @@ const MIDIListener = () => {
             Object.entries(midiMapping[0]).forEach(([_key, value]) => {
               const buttonNumber = value.buttonNumber
               if (!value.command || value.command === 'none' || buttonNumber === -1) {
-                if (output) {
+                if (output && buttonNumber !== -1) {
                   try {
                     output.send([0x90, buttonNumber, lpType === 'LPX' ? 0x00 : 0x0C])
                   } catch (error) {
