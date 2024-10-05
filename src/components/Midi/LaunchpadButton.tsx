@@ -29,6 +29,7 @@ const LaunchpadButton = ({
   const lpType = useStore((state) => state.lpType)
   const midiMapping = useStore((state) => state.midiMapping)
   const midiEvent = useStore((state) => state.midiEvent)
+  const initMidi = useStore((state) => state.initMidi)
   const setMidiMapping = useStore((state) => state.setMidiMapping)
   const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
   const midiSceneActiveColor = useStore((state) => state.midiColors.sceneActiveColor)
@@ -165,7 +166,10 @@ const LaunchpadButton = ({
                 <Button onClick={() => handleClose()}>
                     Cancel
                 </Button>
-                <Button onClick={() => handleClose()}>
+                <Button onClick={() => {
+                    initMidi()
+                    handleClose()
+                }}>
                     Save
                 </Button>
             </Stack>
