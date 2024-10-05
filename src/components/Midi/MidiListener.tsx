@@ -101,9 +101,9 @@ const MIDIListener = () => {
       if (!input || input.name !== midiInput) return
   
       if (input) {
-        input.removeListener('noteon')
-        input.removeListener('noteoff')
-        input.removeListener('controlchange')
+        input?.removeListener('noteon')
+        input?.removeListener('noteoff')
+        input?.removeListener('controlchange')
       }
   
       input.addListener('noteon', (event: any) => {
@@ -218,7 +218,8 @@ const MIDIListener = () => {
               if (value.command && value.command !== 'scene' && value.command !== 'none') {
                 if (output) {
                   try {
-                    output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
+                    // output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
+                    output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeCommand}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorCommand || commandColor || '3C', 16)])
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
@@ -226,7 +227,8 @@ const MIDIListener = () => {
               } else if (value.command === 'scene') {
                 if (output) {
                   try {
-                    output.send([0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
+                    // output.send([0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
+                    output.send([parseInt(`0x${midiMapping[0][buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][buttonNumber]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
@@ -290,11 +292,11 @@ const MIDIListener = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, sceneDialogOpen, midiInitialized])
 
-  useEffect(() => {
-    return () => {
-      WebMidi.disable()
-    }
-  }, [])
+  // useEffect(() => {
+  //   return () => {
+  //     WebMidi.disable()
+  //   }
+  // }, [])
 
   // init midiMapping from scenes
   useEffect(() => {
