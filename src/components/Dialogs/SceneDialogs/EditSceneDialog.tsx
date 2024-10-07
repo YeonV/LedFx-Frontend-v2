@@ -248,9 +248,11 @@ const EditSceneDialog = () => {
       initMidi()
       const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
-      setTimeout(() => {
-        output.send([0x92, currentBtnNumber, 99])
-      }, 100)
+      if (currentBtnNumber > -1) {
+        setTimeout(() => {
+          output.send([0x92, currentBtnNumber, 99])
+        }, 100)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, features.scenemidi])
@@ -263,11 +265,11 @@ const EditSceneDialog = () => {
       const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
       if (newBtnNumber > -1) {
         setTimeout(() => {
-          if (newBtnNumber !== currentBtnNumber) {
+          if (currentBtnNumber > -1 && newBtnNumber !== currentBtnNumber) {
             output.send([0x92, currentBtnNumber, 99])
             output.send([0x92, newBtnNumber, 57])
           }
-          if (lastButton.current > -1 && lastButton.current !== newBtnNumber && lastButton.current !== currentBtnNumber) {
+          if (currentBtnNumber > -1 && lastButton.current > -1 && lastButton.current !== newBtnNumber && lastButton.current !== currentBtnNumber) {
             output.send([0x90, lastButton.current, lpType === 'LPS' ? 0x0C : 0])
           }
           lastButton.current = newBtnNumber
