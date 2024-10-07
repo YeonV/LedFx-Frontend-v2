@@ -1,5 +1,5 @@
-import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit } from '@mui/icons-material'
-import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport } from '@mui/icons-material'
+import { Box, Button, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
@@ -16,6 +16,12 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const parentRef = useRef<HTMLDivElement>(null);
     const childRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
+    const [midiLogs, setMidiLogs] = useState<{
+        name: string;
+        note: string;
+        button: number;
+    }[]>([])
+    const [showMidiLogs, setShowMidiLogs] = useState(false)
     const [showMapping, setShowMapping] = useState(false)
     const setMidiMappingButtonNumbers = useStore((state) => state.setMidiMappingButtonNumbers)
     const initMidi = useStore((state) => state.initMidi)
@@ -129,198 +135,239 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        if (midiEvent.button === -1) return
+        setMidiLogs((prev) => [...prev, midiEvent])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [midiEvent])
+
   return (
     <>
-    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} mb={fullScreen ? '5px' : 2}>
-        <Stack direction={'row'} alignItems={'center'} spacing={2}>            
-            <Stack direction={'row'} alignItems={'center'} spacing={0}>
-                <Button onClick={() => setMode('programmer')}>Programmer</Button>
-                <Button onClick={() => setMode('live')}>Live</Button>        
+        <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} mb={fullScreen ? '5px' : 2}>
+            <Stack direction={'row'} alignItems={'center'} spacing={2}>            
+                <Stack direction={'row'} alignItems={'center'} spacing={0}>
+                    <Button onClick={() => setMode('programmer')}>Programmer</Button>
+                    <Button onClick={() => setMode('live')}>Live</Button>        
+                </Stack>
+            </Stack>
+            <Stack direction={'row'} alignItems={'center'} spacing={0}> 
+                <Button onClick={() => initMidi()}><Autorenew /></Button>
+                <Button
+                    id="basic-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                >
+                    <MenuIcon />
+                </Button>
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <LaunchpadColors component='MenuItem' />
+                    <MenuItem onClick={() => {
+                        setFullScreen(!fullScreen)
+                        handleClose()
+                    }}>
+                        <ListItemIcon>{fullScreen ? <FullscreenExit /> : <Fullscreen />}</ListItemIcon>
+                        <ListItemText primary="Fullscreen" />
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        toggleSidebar()
+                        handleClose()
+                    }}>
+                        <ListItemIcon><ViewSidebar /></ListItemIcon>
+                        <ListItemText primary="Show Sidebar" />
+                    </MenuItem>
+                    
+                    <MenuItem onClick={() => setShowMapping(!showMapping)}>
+                        <ListItemIcon><Visibility /></ListItemIcon>
+                        <ListItemText primary="Show Mapping" />
+                    </MenuItem>     
+                    <Divider />
+                    <MenuItem onClick={() => {
+                        download({ midiMapping }, 'midiMapping.json', 'application/json')
+                        handleClose()
+                    }}>
+                        <ListItemIcon><Save /></ListItemIcon>
+                        <ListItemText primary="Save Mapping" />
+                    </MenuItem>
+                    <MenuItem>
+                        <input
+                            hidden
+                            accept="application/json"
+                            id="get-midi-mapping"
+                            type="file"
+                            onChange={(e) => {
+                                gotMidiMapping(e)
+                            }}
+                        />
+                        <label
+                            htmlFor="get-midi-mapping"
+                            style={{ width: '100%', display: 'flex' }}
+                        >
+                            <ListItemIcon><BladeIcon name="mdi:folder-open" /></ListItemIcon>
+                            <ListItemText primary="Load Mapping" />
+                        </label>
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        setMidiMapping({ 0: defaultMapping } as IMapping)            
+                        handleClose()
+                    }}>
+                        <ListItemIcon><DeleteForever /></ListItemIcon>
+                        <ListItemText primary="Reset Mapping" />
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={() => {
+                        setMidiMappingButtonNumbers(LpMapping.LaunchpadX)
+                        setLpType('LPX')
+                        setMidiSceneActiveColor('1E')
+                        setMidiSceneInactiveColor('3C')
+                        setMidiCommandColor('63')
+                        initMidi()
+                    }}>
+                        <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
+                        <ListItemText primary="Launchpad X" />
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        setMidiMappingButtonNumbers(LpMapping.LaunchpadS)
+                        setLpType('LPS')
+                        setMidiSceneActiveColor('3C')
+                        setMidiSceneInactiveColor('0F')
+                        setMidiCommandColor('3E')
+                        initMidi()
+                    }}>
+                        <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
+                        <ListItemText primary="Launchpad S" />
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={() => {
+                        setShowMidiLogs(!showMidiLogs)
+                        handleClose()
+                    }}>
+                        <ListItemIcon><BugReport /></ListItemIcon>
+                        <ListItemText primary={`${ showMidiLogs ? 'Hide' : 'Show'} MIDI Logs`} />
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        const m = JSON.parse(JSON.stringify(midiMapping));
+                        Object.keys(m).forEach(mappingKey => {
+                            const nestedMapping = m[parseInt(mappingKey) as keyof typeof m];
+                            Object.keys(nestedMapping).forEach(key => {
+                                const b = nestedMapping[parseInt(key) as keyof typeof nestedMapping];
+                                delete b.colorCommand;
+                                delete b.colorSceneActive;
+                                delete b.colorSceneInactive;
+                            });
+                        });
+                        setMidiMapping(m);
+                        handleClose()
+                    }}>
+                        <ListItemIcon><Delete /></ListItemIcon>
+                        <ListItemText primary="Reset Colors" />
+                    </MenuItem>
+                </Menu>        
             </Stack>
         </Stack>
-        <Stack direction={'row'} alignItems={'center'} spacing={0}> 
-            <Button onClick={() => setFullScreen(!fullScreen)}>{fullScreen ? <FullscreenExit/> :<Fullscreen />}</Button>
-            <Button onClick={() => initMidi()}><Autorenew /></Button>
-            <Button
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-            >
-                <MenuIcon />
-            </Button>
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                MenuListProps={{
-                'aria-labelledby': 'basic-button',
-                }}
-            >
-                <MenuItem onClick={() => setShowMapping(!showMapping)}>
-                    <ListItemIcon><Visibility /></ListItemIcon>
-                    <ListItemText primary="Show Mapping" />
-                </MenuItem>                
-                <LaunchpadColors component='MenuItem' />
-                <Divider />
-                <MenuItem onClick={() => {
-                    download({ midiMapping }, 'midiMapping.json', 'application/json')
-                    handleClose()
-                }}>
-                    <ListItemIcon><Save /></ListItemIcon>
-                    <ListItemText primary="Save Mapping" />
-                </MenuItem>
-                <MenuItem>
-                    <input
-                        hidden
-                        accept="application/json"
-                        id="get-midi-mapping"
-                        type="file"
-                        onChange={(e) => {
-                            gotMidiMapping(e)
-                        }}
-                    />
-                    <label
-                        htmlFor="get-midi-mapping"
-                        style={{ width: '100%', display: 'flex' }}
-                    >
-                        <ListItemIcon><BladeIcon name="mdi:folder-open" /></ListItemIcon>
-                        <ListItemText primary="Load Mapping" />
-                    </label>
-                </MenuItem>
-                <MenuItem onClick={() => {
-                    setMidiMapping({ 0: defaultMapping } as IMapping)            
-                    handleClose()
-                }}>
-                    <ListItemIcon><DeleteForever /></ListItemIcon>
-                    <ListItemText primary="Reset Mapping" />
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={() => {
-                    setMidiMappingButtonNumbers(LpMapping.LaunchpadX)
-                    setLpType('LPX')
-                    setMidiSceneActiveColor('1E')
-                    setMidiSceneInactiveColor('3C')
-                    setMidiCommandColor('63')
-                    initMidi()
-                }}>
-                    <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
-                    <ListItemText primary="Launchpad X" />
-                </MenuItem>
-                <MenuItem onClick={() => {
-                    setMidiMappingButtonNumbers(LpMapping.LaunchpadS)
-                    setLpType('LPS')
-                    setMidiSceneActiveColor('3C')
-                    setMidiSceneInactiveColor('0F')
-                    setMidiCommandColor('3E')
-                    initMidi()
-                }}>
-                    <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
-                    <ListItemText primary="Launchpad S" />
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={() => {
-                    const m = JSON.parse(JSON.stringify(midiMapping));
-                    Object.keys(m).forEach(mappingKey => {
-                        const nestedMapping = m[parseInt(mappingKey) as keyof typeof m];
-                        Object.keys(nestedMapping).forEach(key => {
-                            const b = nestedMapping[parseInt(key) as keyof typeof nestedMapping];
-                            delete b.colorCommand;
-                            delete b.colorSceneActive;
-                            delete b.colorSceneInactive;
-                        });
-                    });
-                    setMidiMapping(m);
-                    handleClose()
-                }}>
-                    <ListItemIcon><Delete /></ListItemIcon>
-                    <ListItemText primary="Reset Colors" />
-                </MenuItem>
-            </Menu>
-            <Button onClick={() => toggleSidebar()}><ViewSidebar /></Button>            
-        </Stack>
-    </Stack>
-    <Stack direction={'row'} spacing={2} mb={fullScreen ? 0 : 2} ref={parentRef} sx={fullScreen ? {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 'calc(100% - 40px)',
-    } : {}}>
-        <Stack direction={'column'} spacing={1} ref={childRef} sx={{transform: `scale(${scale})`}}>
-            {matrix.map((row, rowIndex) => {
-                return (
-                <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
-                    {row.map((_button, buttonIndex) => {
-                    const row = 9 - rowIndex
-                    const column = buttonIndex + 1
-                    const buttonNumber = `${row}${column}`
-                    const btnNumberInt = parseInt(buttonNumber)
-                    const btn = midiMapping[0][btnNumberInt]
-
-                    // Use the buttonNumber from the mapping for functional logic
-                    const functionalButtonNumber = btn?.buttonNumber
-                    const bgColor = functionalButtonNumber === -1 ? '#000' : (midiEvent.button === functionalButtonNumber)
-                        ? ( pressedButtonColor || theme.palette.primary.main )
-                        : btn?.command && 
-                        btn?.command === 'scene' &&
-                        btn?.payload?.scene === recentScenes[0]
-                        ? getColorFromValue((btn?.colorSceneActive || '1E'), lpType) || '#0f0'
-                        : btn?.command && 
-                            btn?.command === 'scene' 
-                            ? getColorFromValue((btn?.colorSceneInactive || '07'), lpType) || '#f00'
-                            : btn?.command && 
-                            btn?.command !== 'none'  && rowIndex !== 0
-                            ? getColorFromValue((btn?.colorCommand || '63'), lpType) || '#ff0'
-                            : rowIndex === 0 || buttonIndex === 8
-                                ? '#000' 
-                                : '#ccc'
-
+        <Stack direction={'row'} spacing={2} mb={fullScreen ? 0 : 2} ref={parentRef} sx={fullScreen ? {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 'calc(100% - 40px)',
+        } : {}}>
+            <Stack direction={'column'} spacing={1} ref={childRef} sx={{transform: `scale(${scale})`}}>
+                {matrix.map((row, rowIndex) => {
                     return (
-                        <LaunchpadButton
-                            hidden={functionalButtonNumber === -1}
-                            buttonNumber={btnNumberInt}
-                            active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
-                            bgColor={bgColor}
-                            key={'button' + buttonIndex}
-                            borderless={rowIndex === 0 && buttonIndex === 8}
-                        >
-                        {labels(rowIndex, buttonIndex)}
-                        </LaunchpadButton>
+                    <Stack key={'row' + rowIndex} direction={'row'} spacing={1}>
+                        {row.map((_button, buttonIndex) => {
+                        const row = 9 - rowIndex
+                        const column = buttonIndex + 1
+                        const buttonNumber = `${row}${column}`
+                        const btnNumberInt = parseInt(buttonNumber)
+                        const btn = midiMapping[0][btnNumberInt]
+
+                        // Use the buttonNumber from the mapping for functional logic
+                        const functionalButtonNumber = btn?.buttonNumber
+                        const bgColor = functionalButtonNumber === -1 ? '#000' : (midiEvent.button === functionalButtonNumber)
+                            ? ( pressedButtonColor || theme.palette.primary.main )
+                            : btn?.command && 
+                            btn?.command === 'scene' &&
+                            btn?.payload?.scene === recentScenes[0]
+                            ? getColorFromValue((btn?.colorSceneActive || '1E'), lpType) || '#0f0'
+                            : btn?.command && 
+                                btn?.command === 'scene' 
+                                ? getColorFromValue((btn?.colorSceneInactive || '07'), lpType) || '#f00'
+                                : btn?.command && 
+                                btn?.command !== 'none'  && rowIndex !== 0
+                                ? getColorFromValue((btn?.colorCommand || '63'), lpType) || '#ff0'
+                                : rowIndex === 0 || buttonIndex === 8
+                                    ? '#000' 
+                                    : '#ccc'
+
+                        return (
+                            <LaunchpadButton
+                                hidden={functionalButtonNumber === -1}
+                                buttonNumber={btnNumberInt}
+                                active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
+                                bgColor={bgColor}
+                                key={'button' + buttonIndex}
+                                borderless={rowIndex === 0 && buttonIndex === 8}
+                            >
+                            {labels(rowIndex, buttonIndex)}
+                            </LaunchpadButton>
+                        )
+                        })}
+                    </Stack>
                     )
-                    })}
-                </Stack>
+                })}
+            </Stack>
+
+        {sideBarOpen && <Stack direction={'column'} spacing={1} maxHeight={694} width={300} sx={{ overflowY: 'scroll'}}>
+            {matrix.map((row, rowIndex) => row.map((button, buttonIndex) => {
+                return (
+                    <Assign
+                        type={'midi'}
+                        padIndex={0}
+                        mapping={midiMapping}
+                        setMapping={setMidiMapping}
+                        pressed={midiEvent.button === parseInt(`${(rowIndex + 1)}${buttonIndex + 1}`)}
+                        index={`${(rowIndex + 1)}${buttonIndex + 1}`}
+                        key={`${(rowIndex + 1)}${buttonIndex + 1}`}
+                    />
                 )
-            })}
-        </Stack>
+            }))}
+        </Stack>}
+    </Stack>
+        {showMidiLogs && <Box>
+            <Stack direction={'row'}>
+                <Typography width={200} textAlign={'left'} variant='caption'>Name</Typography>
+                <Typography width={50} variant='caption'>Note</Typography>
+                <Typography width={50} variant='caption'>Button</Typography>
+                <Typography variant='caption' sx={{ cursor: 'pointer'}} onClick={() => setMidiLogs([])}>Clear Logs</Typography>
+            </Stack>
+            <Divider sx={{ mb: 0.5 }} />
+            <Box sx={{overflowY: 'auto', height: 120}}>
+                {midiLogs.map((log, index) => <Stack key={index} direction={'row'}>
+                    <Typography width={200} variant='caption'>{log.name}</Typography>
+                    <Typography width={50} variant='caption'>{log.note}</Typography>
+                    <Typography width={50} variant='caption'>{log.button}</Typography>
+                </Stack>)}
+            </Box>
+        </Box>}
 
-    {sideBarOpen && <Stack direction={'column'} spacing={1} maxHeight={694} width={300} sx={{ overflowY: 'scroll'}}>
-        {matrix.map((row, rowIndex) => row.map((button, buttonIndex) => {
-            return (
-                <Assign
-                    type={'midi'}
-                    padIndex={0}
-                    mapping={midiMapping}
-                    setMapping={setMidiMapping}
-                    pressed={midiEvent.button === parseInt(`${(rowIndex + 1)}${buttonIndex + 1}`)}
-                    index={`${(rowIndex + 1)}${buttonIndex + 1}`}
-                    key={`${(rowIndex + 1)}${buttonIndex + 1}`}
-                />
-            )
-        }))}
-    </Stack>}
-
-
-</Stack>
 </>)
 }
 
