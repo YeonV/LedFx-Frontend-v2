@@ -30,18 +30,18 @@ for (let row = 1; row <= 9; row++) {
 }
 
 const presetMapping = {
-  91: {
-    command: 'brightness-up',
-    buttonNumber: 91,
-  },
-  92: {
-    command: 'brightness-down',
-    buttonNumber: 92,
-  },
-  94: {
-    command: 'play/pause',
-    buttonNumber: 94,
-  },
+  // 91: {
+  //   command: 'brightness-up',
+  //   buttonNumber: 91,
+  // },
+  // 92: {
+  //   command: 'brightness-down',
+  //   buttonNumber: 92,
+  // },
+  // 94: {
+  //   command: 'play/pause',
+  //   buttonNumber: 94,
+  // },
 } as IDefaultMapping
 
 export const defaultMapping = { ...baseMapping, ...presetMapping }
