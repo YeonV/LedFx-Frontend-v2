@@ -1031,20 +1031,24 @@ const EditSceneDialog = () => {
             const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
             const item = parseInt(Object.keys(newMapping[0]).find((k) => newMapping[0][parseInt(k)].buttonNumber === currentBtnNumber) || '');
             
-            if (currentBtnNumber && newBtnNumber && currentBtnNumber !== newBtnNumber) {        
-                if (item) {
-                    newMapping[0][item] = { buttonNumber: currentBtnNumber };
-                    console.log('mapping after', newMapping);
-                    setMidiMapping(newMapping);
-                    setTimeout(() => {
-                      initMidi();
-                    }, 100);
-                }              
-            }
+       
                       
-            return scVirtualsToIgnore.length > 0
+            scVirtualsToIgnore.length > 0
               ? handleAddSceneWithVirtuals()
               : handleAddScene()
+            if (currentBtnNumber && newBtnNumber && currentBtnNumber !== newBtnNumber) {        
+              if (item) {
+                  newMapping[0][item] = { buttonNumber: currentBtnNumber };
+                  setMidiMapping(newMapping)                  
+                  
+              }              
+            }
+            if (features.scenemidi) {
+              setTimeout(() => {
+                getScenes()
+                initMidi()
+              }, 100);
+            }
           }}
         >
           Save
