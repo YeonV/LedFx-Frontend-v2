@@ -1,5 +1,5 @@
 import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport } from '@mui/icons-material'
-import { Box, Button, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
@@ -224,12 +224,35 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                             <ListItemText primary="Load Mapping" />
                         </label>
                     </MenuItem>
+                    <Divider />
                     <MenuItem onClick={() => {
-                        setMidiMapping({ 0: defaultMapping } as IMapping)            
-                        handleClose()
+                        setMidiMapping({ 0: defaultMapping } as IMapping)
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 100)
                     }}>
                         <ListItemIcon><DeleteForever /></ListItemIcon>
                         <ListItemText primary="Reset Mapping" />
+                    </MenuItem>                    
+                    <MenuItem onClick={() => {
+                        const m = JSON.parse(JSON.stringify(midiMapping));
+                        Object.keys(m).forEach(mappingKey => {
+                            const nestedMapping = m[parseInt(mappingKey) as keyof typeof m];
+                            Object.keys(nestedMapping).forEach(key => {
+                                const b = nestedMapping[parseInt(key) as keyof typeof nestedMapping];
+                                delete b.colorCommand;
+                                delete b.colorSceneActive;
+                                delete b.colorSceneInactive;
+                            });
+                        });
+                        setMidiMapping(m);
+                        setTimeout(() => {
+                            initMidi()
+                        }, 100)
+                        handleClose()
+                    }}>
+                        <ListItemIcon><Delete /></ListItemIcon>
+                        <ListItemText primary="Reset Colors" />
                     </MenuItem>
                     <Divider />
                     <MenuItem onClick={() => {
@@ -261,23 +284,6 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                     }}>
                         <ListItemIcon><BugReport /></ListItemIcon>
                         <ListItemText primary={`${ showMidiLogs ? 'Hide' : 'Show'} MIDI Logs`} />
-                    </MenuItem>
-                    <MenuItem onClick={() => {
-                        const m = JSON.parse(JSON.stringify(midiMapping));
-                        Object.keys(m).forEach(mappingKey => {
-                            const nestedMapping = m[parseInt(mappingKey) as keyof typeof m];
-                            Object.keys(nestedMapping).forEach(key => {
-                                const b = nestedMapping[parseInt(key) as keyof typeof nestedMapping];
-                                delete b.colorCommand;
-                                delete b.colorSceneActive;
-                                delete b.colorSceneInactive;
-                            });
-                        });
-                        setMidiMapping(m);
-                        handleClose()
-                    }}>
-                        <ListItemIcon><Delete /></ListItemIcon>
-                        <ListItemText primary="Reset Colors" />
                     </MenuItem>
                 </Menu>        
             </Stack>
