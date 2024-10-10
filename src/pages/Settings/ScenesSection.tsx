@@ -30,11 +30,6 @@ const ScenesSection = () => {
         checked={features.sceneexternal}
         onChange={() => setFeatures('sceneexternal', !features.sceneexternal)}
       />
-      <SettingsRow
-        title="Assign MIDI & Activate Scene"
-        checked={features.scenemidi}
-        onChange={() => setFeatures('scenemidi', !features.scenemidi)}
-      />
     </>
   )
 }

@@ -14,6 +14,11 @@ const BetaFeatures = () => {
         onChange={() => setFeatures('gamepad', !features.gamepad)}
       />
       <SettingsRow
+        title="MIDI"
+        checked={features.scenemidi}
+        onChange={() => setFeatures('scenemidi', !features.scenemidi)}
+      />
+      <SettingsRow
         title="Effect Filter"
         checked={features.effectfilter}
         onChange={() => setFeatures('effectfilter', !features.effectfilter)}

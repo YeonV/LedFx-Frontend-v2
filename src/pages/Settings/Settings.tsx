@@ -87,7 +87,7 @@ const Settings = () => {
         </SettingsAccordion>
       )} */}
 
-      {features.beta && <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
+      {features.scenemidi && <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
         <MidiCard />
       </SettingsAccordion>}
       <SettingsAccordion title="UI" accId="2a" icon="Widgets">
