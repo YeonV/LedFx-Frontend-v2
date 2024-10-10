@@ -265,6 +265,12 @@ const EditSceneDialog = () => {
       const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
       if (newBtnNumber > -1) {
         setTimeout(() => {
+          if (!currentBtnNumber) {
+            output.send([0x92, newBtnNumber, 57])
+            if (lastButton.current !== newBtnNumber) {
+              output.send([0x90, lastButton.current, lpType === 'LPS' ? 0x0C : 0])
+            }       
+          }
           if (currentBtnNumber > -1 && newBtnNumber !== currentBtnNumber) {
             output.send([0x92, currentBtnNumber, 99])
             output.send([0x92, newBtnNumber, 57])
