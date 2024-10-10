@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
+import { lpColors, lpsColors } from '../../components/Midi/lpColors'
 
 export interface IMidiMapping {
   command?: string
@@ -69,6 +70,54 @@ export const LpMapping = {
     [0, 1, 2, 3, 4, 5, 6, 7, 8],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1],
   ]
+}
+export const Launchpad = {
+  X: {
+    buttonNumbers: [
+      [11, 12, 13, 14, 15, 16, 17, 18, 19],
+      [21, 22, 23, 24, 25, 26, 27, 28, 29],
+      [31, 32, 33, 34, 35, 36, 37, 38, 39],
+      [41, 42, 43, 44, 45, 46, 47, 48, 49],
+      [51, 52, 53, 54, 55, 56, 57, 58, 59],
+      [61, 62, 63, 64, 65, 66, 67, 68, 69],
+      [71, 72, 73, 74, 75, 76, 77, 78, 79],
+      [81, 82, 83, 84, 85, 86, 87, 88, 89],
+      [91, 92, 93, 94, 95, 96, 97, 98, 99],
+    ],
+    colors: lpColors,
+    command: {
+      'programmer': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x01, 0xF7],
+      'live': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x00, 0xF7],
+      'standalone': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x10, 0x00, 0xF7],
+      'daw': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x10, 0x01, 0xF7],
+      'ledOn': [0x90, "buttonNumber", "color"],
+      'ledFlash': [0x91, "buttonNumber", "color"],
+      'ledPulse': [0x92, "buttonNumber", "color"],
+    },
+    sendCommand: {
+      'ledOff': (buttonNumber: number) => [0x90, buttonNumber, 0x00],
+      'ledOn': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x90, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
+      'ledFlash': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x91, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
+      'ledPulse': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x92, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
+    }
+  },
+  S: {
+    buttonNumbers: [
+      [112, 113, 114, 115, 116, 117, 118, 119, 120],  
+      [96, 97, 98, 99, 100, 101, 102, 103, 104],
+      [80, 81, 82, 83, 84, 85, 86, 87, 88],
+      [64, 65, 66, 67, 68, 69, 70, 71, 72],
+      [48, 49, 50, 51, 52, 53, 54, 55, 56],
+      [32, 33, 34, 35, 36, 37, 38, 39, 40],
+      [16, 17, 18, 19, 20, 21, 22, 23, 24],
+      [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    ],
+    colors: lpsColors,
+    sendCommand: {
+      'ledOff': (buttonNumber: number) => [0x90, buttonNumber, 0x0C],
+    }
+  }
 }
 
 export function getUiBtnNo(inputInt: number): number | null {
