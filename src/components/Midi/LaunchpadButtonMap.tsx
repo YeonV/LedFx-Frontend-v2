@@ -1,5 +1,5 @@
-import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport } from '@mui/icons-material'
-import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography, useTheme } from '@mui/material'
+import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport, Send } from '@mui/icons-material'
+import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, TextFieldProps, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { WebMidi } from 'webmidi'
 import LaunchpadButton from './LaunchpadButton'
 import { getColorFromValue } from './lpColors'
-import { defaultMapping, IMapping, LpMapping } from '../../store/ui/storeMidi'
+import { defaultMapping, IMapping, Launchpad, LpMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
 
@@ -15,6 +15,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const theme = useTheme()
     const parentRef = useRef<HTMLDivElement>(null);
     const childRef = useRef<HTMLDivElement>(null);
+    const [midiMessageToSend, setMidiMessageToSend] = useState<string>('')
     const [scale, setScale] = useState(1);
     const [midiLogs, setMidiLogs] = useState<{
         name: string;
@@ -365,13 +366,31 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                 <Typography variant='caption' sx={{ cursor: 'pointer'}} onClick={() => setMidiLogs([])}>Clear Logs</Typography>
             </Stack>
             <Divider sx={{ mb: 0.5 }} />
-            <Box sx={{overflowY: 'auto', height: 120}}>
-                {midiLogs.map((log, index) => <Stack key={index} direction={'row'}>
-                    <Typography width={200} variant='caption'>{log.name}</Typography>
-                    <Typography width={50} variant='caption'>{log.note}</Typography>
-                    <Typography width={50} variant='caption'>{log.button}</Typography>
-                </Stack>)}
-            </Box>
+            <Stack>
+                <Box sx={{overflowY: 'auto', height: 120}}>
+                    {midiLogs.map((log, index) => <Stack key={index} direction={'row'}>
+                        <Typography width={200} variant='caption'>{log.name}</Typography>
+                        <Typography width={50} variant='caption'>{log.note}</Typography>
+                        <Typography width={50} variant='caption'>{log.button}</Typography>
+                    </Stack>)}
+                </Box>
+                <Stack direction={'row'}>
+                    {Object.keys(Launchpad.X.command).length && <Select variant='outlined' size='small' sx={{ width: 200 }} onChange={(e: SelectChangeEvent) => {
+                        setMidiMessageToSend(Launchpad.X.command[e.target.value as keyof typeof Launchpad.X.command].map((v: any) => `0x${v.toString(16)}`).join(', '))
+                    }}>
+                    {Object.entries(Launchpad.X.command).map(([key, value]) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                    </Select>}
+                    <TextField label='Send raw MIDI message' variant='outlined' size='small' fullWidth value={midiMessageToSend} onChange={(e) => setMidiMessageToSend(e.target.value)} />
+                    <Button onClick={()=>{
+                        const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+                        if (!output) return
+                        console.log(midiMessageToSend)
+                        output.send(midiMessageToSend.replaceAll(', ',' ').split(' ').map((v: any) => parseInt(v)) || [])
+                    }}>
+                        <Send />
+                    </Button>
+                </Stack>
+            </Stack>
         </Box>}
 
 </>)
