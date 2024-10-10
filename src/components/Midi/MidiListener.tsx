@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { WebMidi, Input, Output } from 'webmidi'
+import { WebMidi, Input, Output, NoteMessageEvent } from 'webmidi'
 import useStore from '../../store/useStore'
 import { getUiBtnNo } from '../../store/ui/storeMidi'
 
@@ -42,6 +42,7 @@ const MIDIListener = () => {
   const lpType = useStore((state) => state.lpType)
   const global_brightness = useStore((state) => state.config.global_brightness)
   const glBrightness = useRef(global_brightness)
+  const [midiNotes, setMidiNotes] = useState<NoteMessageEvent[]>([])
 
   const setMidiMapping = useStore((state) => state.setMidiMapping)
 
@@ -118,50 +119,50 @@ const MIDIListener = () => {
     }
   }
   
-  useEffect(() => {
-    const handleMidiInput = (input: Input) => {
-      if (!input || input.name !== midiInput) return
-  
-      if (input) {
-        input?.removeListener('noteon')
-        input?.removeListener('noteoff')
-        input?.removeListener('controlchange')
+useEffect(() => {
+  const handleMidiInput = (input: Input) => {
+    if (!input || input.name !== midiInput) return
+    // console.log('Setting up listeners for:', input.name);
+
+    input.removeListener('noteon');
+    input.removeListener('noteoff');
+    input.removeListener('controlchange');
+
+    input.addListener('noteon', (event: NoteMessageEvent) => {
+      // console.log('MIDI NoteOn received:', event);
+      setMidiNotes(prevNotes => [...prevNotes, event]);
+
+      if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier)) return;
+
+      setMidiEvent({
+        name: input.name,
+        note: event.note.identifier,
+        button: event.note.number
+      });
+
+      const mapping = getMappingByButtonNumber(event.note.number);
+      if (mapping?.command !== undefined) {
+        handleButtonPress(mapping.command, mapping.payload);
       }
-  
-      input.addListener('noteon', (event: any) => {
-        if (!event.note || (midiEvent.button === event.note.number && midiEvent.name === input.name && midiEvent.note === event.note.identifier)) return
-  
-        setMidiEvent({
-          name: input.name,
-          note: event.note.identifier,
-          button: event.note.number
-        })
-  
-        const mapping = getMappingByButtonNumber(event.note.number)
-        // console.log('MIDI Mapping:', mapping, event.note.number)
-        if (mapping?.command !== undefined) {
-          // console.log('MIDI Command:', mapping.command)
-          handleButtonPress(mapping.command, mapping.payload)
-        }
-      })
-  
-      input.addListener('noteoff', (event: any) => {
-        const mapping = getMappingByButtonNumber(event.note.number)
-        if (mapping?.command === 'one-shot' && mapping?.payload?.holdType === 'release') {
-          oneShotAll(
-            mapping.payload?.color || '#0dbedc',
-            mapping.payload?.ramp || 10,
-            1,
-            mapping.payload?.fade || 220
-          )
-        }
-        if (midiInput !== input.name) return
-        setMidiEvent({
-          name: '',
-          note: '',
-          button: -1
-        })
-      })
+    });
+
+    input.addListener('noteoff', (event: NoteMessageEvent) => {
+      const mapping = getMappingByButtonNumber(event.note.number);
+      if (mapping?.command === 'one-shot' && mapping?.payload?.holdType === 'release') {
+        oneShotAll(
+          mapping.payload?.color || '#0dbedc',
+          mapping.payload?.ramp || 10,
+          1,
+          mapping.payload?.fade || 220
+        );
+      }
+      if (midiInput !== input.name) return;
+      setMidiEvent({
+        name: '',
+        note: '',
+        button: -1
+      });
+    });
   
       input.addListener('controlchange', (event: any) => {
         if (event.controller.number === midiEvent.button && midiEvent.name === input.name) return
@@ -214,25 +215,6 @@ const MIDIListener = () => {
                 }
                 return
               }
-              // if (value.command && value.command !== 'scene' && value.command !== 'none') {
-              //   if (output && buttonNumber !== -1) {
-              //     try {
-              //       // output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
-              //       output.send([parseInt(`0x${midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.typeCommand}`) || 0x90, buttonNumber, parseInt(midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.colorCommand || commandColor || '3C', 16)])
-              //     } catch (error) {
-              //       console.error('Error sending MIDI message:', error)
-              //     }
-              //   }
-              // } else if (value.command === 'scene') {
-              //   if (output && buttonNumber !== -1) {
-              //     try {
-              //       // output.send([0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
-              //       output.send([parseInt(`0x${midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
-              //     } catch (error) {
-              //       console.error('Error sending MIDI message:', error)
-              //     }
-              //   }
-              // }
             })
     
             if (inputs.length > 0) {
