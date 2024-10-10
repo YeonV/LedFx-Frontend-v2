@@ -1,5 +1,5 @@
 import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport, Send } from '@mui/icons-material'
-import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, TextFieldProps, Typography, useTheme } from '@mui/material'
+import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
