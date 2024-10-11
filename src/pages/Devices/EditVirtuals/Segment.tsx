@@ -8,10 +8,11 @@ import useSegmentStyles from './Segment.styles'
 
 const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const devices = useStore((state) => state.devices)
+  const virtuals = useStore((state) => state.virtuals)
 
   const title =
-    devices &&
-    devices[devices && Object.keys(devices).find((d) => d === s[0])!].config!
+    devices && virtuals &&
+    virtuals[devices && Object.keys(devices).find((d) => d === s[0])!].config!
       .name
   const classes = useSegmentStyles()
   const updateSegments = useStore((state) => state.updateSegments)
