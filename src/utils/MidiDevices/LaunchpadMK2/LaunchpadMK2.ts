@@ -15,6 +15,14 @@ export const LaunchpadMK2: LaunchpadMK2Device = {
     ],
     colors: lpColors,
     commonColors: lpCommonColors,
+    globalColors: {
+      sceneActiveType: '90',
+      sceneActiveColor: '1E',
+      sceneInactiveType: '90',
+      sceneInactiveColor: '3C',
+      commandType: '90',
+      commandColor: '63',
+    },
     command: {
       'programmer': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x01, 0xF7],
       'live': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x00, 0xF7],

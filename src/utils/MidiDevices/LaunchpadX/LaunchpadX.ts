@@ -17,6 +17,14 @@ export const LaunchpadX: LaunchpadXDevice = {
     ],
     colors: lpColors,
     commonColors: lpCommonColors,
+    globalColors: {
+      sceneActiveType: 'rgb',
+      sceneActiveColor: 'rgb(0, 255, 0)',
+      sceneInactiveType: 'rgb',
+      sceneInactiveColor: 'rgb(255, 0, 0)',
+      commandType: 'rgb',
+      commandColor: 'rgb(255, 255, 0)',
+    },
     command: {
       'programmer': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x01, 0xF7],
       'live': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x00, 0xF7],

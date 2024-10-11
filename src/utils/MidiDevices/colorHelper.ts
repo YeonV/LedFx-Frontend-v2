@@ -56,3 +56,27 @@ export const sortColorsByHSL = (colors: IColor[]) => {
 export type IColor = keyof typeof MidiDevices['Launchpad']['X']['colors']
 
 export const rgbValues = (rgbString: string) => rgbString.match(/\d+/g)?.map(Number);
+
+export const sendMidiMessageHelper = (
+  fn: typeof MidiDevices[keyof typeof MidiDevices][keyof typeof MidiDevices[keyof typeof MidiDevices]]['fn'],
+  output: any, buttonNumber: number, color: string, typeCommand: string, defaultColor: string, isActive: boolean) => {  
+  if (!output || buttonNumber === -1 || Number.isNaN(buttonNumber)) {
+    console.error('No MIDI output devices found')
+    return
+  }
+
+  const colorValue = parseInt(color || defaultColor || (isActive ? '1E' : '3C'), 16)
+
+  if ('rgb' in fn && fn.rgb && color?.startsWith('rgb') && typeCommand === 'rgb') {
+    const [r, g, b] = rgbValues(color) || (isActive ? [0, 255, 0] : [255, 0, 0])
+    output.send(fn.rgb(buttonNumber, r, g, b))
+  } else {
+    if (typeCommand === '91' && 'ledFlash' in fn) {
+      output.send(fn.ledFlash(buttonNumber, colorValue))
+    } else if (typeCommand === '92' && 'ledPulse' in fn) {
+      output.send(fn.ledPulse(buttonNumber, colorValue))
+    } else {
+      output.send(fn.ledOn(buttonNumber, colorValue))
+    }
+  }
+}

@@ -147,6 +147,30 @@ const storeMidi = (set: any, get: any) => ({
     sceneInactiveType: '90',
     pressedButtonColor: null as string | null,
   },
+  setMidiCommandType: (type: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.commandType = type
+      }),
+      false,
+      'setMidiCommandType'
+    ),
+  setMidiSceneActiveType: (type: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.sceneActiveType = type
+      }),
+      false,
+      'setMidiSceneActiveType'
+    ),
+  setMidiSceneInactiveType: (type: string) =>
+    set(
+      produce((state: IStore) => {
+        state.midiColors.sceneInactiveType = type
+      }),
+      false,
+      'setMidiSceneInactiveType'
+    ),
   setMidiCommandColor: (color: string) =>
     set(
       produce((state: IStore) => {
