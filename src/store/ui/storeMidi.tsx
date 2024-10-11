@@ -221,6 +221,7 @@ const storeMidi = (set: any, get: any) => ({
           throw new Error('Input must be a 9x9 array')
         }
         const updatedMapping = { ...state.midiMapping }
+        updatedMapping[0] = { ...state.midiMapping[0] }
 
         for (let row = 0; row < 9; row++) {
           for (let col = 0; col < 9; col++) {

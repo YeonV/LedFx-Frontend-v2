@@ -59,18 +59,24 @@ export const rgbValues = (rgbString: string) => rgbString.match(/\d+/g)?.map(Num
 
 export const sendMidiMessageHelper = (
   fn: typeof MidiDevices[keyof typeof MidiDevices][keyof typeof MidiDevices[keyof typeof MidiDevices]]['fn'],
-  output: any, buttonNumber: number, color: string, typeCommand: string, defaultColor: string, isActive: boolean) => {  
+  output: any,
+  buttonNumber: number,
+  color: string,
+  typeCommand: string,
+  isActive: boolean
+) => {  
   if (!output || buttonNumber === -1 || Number.isNaN(buttonNumber)) {
     console.error('No MIDI output devices found')
     return
   }
-
-  const colorValue = parseInt(color || defaultColor || (isActive ? '1E' : '3C'), 16)
-
+  // console.log(1,'rgb' in fn , color?.startsWith('rgb') , typeCommand === 'rgb')  
   if ('rgb' in fn && fn.rgb && color?.startsWith('rgb') && typeCommand === 'rgb') {
     const [r, g, b] = rgbValues(color) || (isActive ? [0, 255, 0] : [255, 0, 0])
     output.send(fn.rgb(buttonNumber, r, g, b))
-  } else {
+    // console.log('rgb', buttonNumber, r, g, b)
+  } else {    
+    const colorValue = parseInt(color || (isActive ? '1E' : '3C'), 16)
+    // console.log(2, colorValue, color)
     if (typeCommand === '91' && 'ledFlash' in fn) {
       output.send(fn.ledFlash(buttonNumber, colorValue))
     } else if (typeCommand === '92' && 'ledPulse' in fn) {
