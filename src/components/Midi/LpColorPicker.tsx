@@ -12,9 +12,10 @@ interface LpColorPickerProps {
   onColorSelect: (color: string) => void
   defaultColor?: IColor | string
   midiButtonNumber?: number
+  type: string
 }
 
-const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber }: LpColorPickerProps) => {
+const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '90' }: LpColorPickerProps) => {
   const [selectedColor, setSelectedColor] = useState<IColor | string | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
@@ -96,7 +97,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber }: LpColo
       >
         <Box sx={{ maxHeight: isRgb ? 700 : 300, overflowY: 'auto', p: 1, width: isRgb ? 283 : 200 }}>
         
-          {isRgb
+          {isRgb && type === 'rgb'
             ? <ReactGPicker                  
                 format='rgb'
                 showAlpha={false}

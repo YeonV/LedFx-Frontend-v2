@@ -15,6 +15,14 @@ export const LaunchpadS: LaunchpadSDevice = {
   ],
   colors: lpsColors,
   commonColors: lpsCommonColors,
+  globalColors: {
+    sceneActiveType: '90',
+    sceneActiveColor: '3C',
+    sceneInactiveType: '90',
+    sceneInactiveColor: '0F',
+    commandType: '90',
+    commandColor: '3E',
+  },
   fn: {
     'ledOff': (buttonNumber: number) => [0x90, buttonNumber, 0x0C],
     'ledOn': (buttonNumber: number, color: keyof typeof lpsColors | number ) => [0x90, buttonNumber, typeof color === 'number' ? color : lpsColors[color]],

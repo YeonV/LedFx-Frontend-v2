@@ -5,6 +5,14 @@ export interface LaunchpadXDevice {
     buttonNumbers: number[][];
     colors: Record<string, number>;
     commonColors: Record<string, number>;
+    globalColors: {
+        sceneActiveType: string;
+        sceneActiveColor: string;
+        sceneInactiveType: string;
+        sceneInactiveColor: string;
+        commandType: string;
+        commandColor: string;
+    };
     command: {
         programmer: number[];
         live: number[];
@@ -29,6 +37,14 @@ export interface LaunchpadSDevice {
     buttonNumbers: number[][];
     colors: Record<string, number>;
     commonColors: Record<string, number>;
+    globalColors: {
+        sceneActiveType: string;
+        sceneActiveColor: string;
+        sceneInactiveType: string;
+        sceneInactiveColor: string;
+        commandType: string;
+        commandColor: string;
+    };
     fn: {
         ledOff: (buttonNumber: number) => number[];
         ledOn: (buttonNumber: number, color: keyof typeof lpsColors | number) => number[];
@@ -39,6 +55,14 @@ export interface LaunchpadMK2Device {
     buttonNumbers: number[][];
     colors: Record<string, number>;
     commonColors: Record<string, number>;
+    globalColors: {
+        sceneActiveType: string;
+        sceneActiveColor: string;
+        sceneInactiveType: string;
+        sceneInactiveColor: string;
+        commandType: string;
+        commandColor: string;
+    };
     command: {
         programmer: number[];
         live: number[];

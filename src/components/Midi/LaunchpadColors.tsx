@@ -10,6 +10,7 @@ import ReactGPicker from 'react-gcolor-picker'
 import useStyles from '../SchemaForm/components/GradientPicker/GradientPicker.styles'
 import useClickOutside from '../../utils/useClickOutside'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import ColorTypePicker from './ColorTypePicker'
 
 const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuItem'}) => {
   const classes = useStyles()
@@ -17,6 +18,9 @@ const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuIte
   const theme = useTheme()
   const midiType = useStore((state) => state.midiType)
   const midiModel = useStore((state) => state.midiModel)
+  const sceneInactiveType = useStore((state) => state.midiColors.sceneInactiveType)
+  const sceneActiveType = useStore((state) => state.midiColors.sceneActiveType)
+  const commandType = useStore((state) => state.midiColors.commandType)
   const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
   const midiSceneActiveColor = useStore((state) => state.midiColors.sceneActiveColor)
   const midiCommandColor = useStore((state) => state.midiColors.commandColor)
@@ -26,6 +30,10 @@ const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuIte
   const setMidiSceneInactiveColor = useStore((state) => state.setMidiSceneInactiveColor)
   const setMidiSceneActiveColor = useStore((state) => state.setMidiSceneActiveColor)
   const setMidiCommandColor = useStore((state) => state.setMidiCommandColor)
+  const setMidiCommandType = useStore((state) => state.setMidiCommandType)
+  const setMidiSceneActiveType = useStore((state) => state.setMidiSceneActiveType)
+  const setMidiSceneInactiveType = useStore((state) => state.setMidiSceneInactiveType)
+
   const lp= MidiDevices[midiType][midiModel]
   const isRgb = 'rgb' in lp.fn
 
@@ -68,21 +76,42 @@ const LaunchpadColors = ({component = 'Button'}:{component?: 'Button' | 'MenuIte
             <Stack direction={'column'} spacing={1} mt={1}>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Scene inactive</Typography>
-                    <LpColorPicker defaultColor={isRgb && midiSceneInactiveColor.startsWith('rgb') ? midiSceneInactiveColor : getColorFromValue(midiSceneInactiveColor)} onColorSelect={(color: string) => {
-                        setMidiSceneInactiveColor(color)
-                    }} />
+                    <Stack direction={'row'}>
+                      <ColorTypePicker
+                        value={sceneInactiveType}
+                        onChange={(e) => setMidiSceneInactiveType(e.target.value)}
+                        isRgb={isRgb}
+                      />
+                      <LpColorPicker type={sceneInactiveType || lp.globalColors.sceneInactiveType} defaultColor={isRgb && midiSceneInactiveColor.startsWith('rgb') ? midiSceneInactiveColor : getColorFromValue(midiSceneInactiveColor)} onColorSelect={(color: string) => {
+                          setMidiSceneInactiveColor(color)
+                      }} />
+                    </Stack>
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Scene active</Typography>
-                    <LpColorPicker defaultColor={isRgb && midiSceneActiveColor.startsWith('rgb') ? midiSceneActiveColor : getColorFromValue(midiSceneActiveColor)} onColorSelect={(color: string) => {
-                        setMidiSceneActiveColor(color)
-                    }} />
+                    <Stack direction={'row'}>
+                      <ColorTypePicker
+                        value={sceneActiveType}
+                        onChange={(e) => setMidiSceneActiveType(e.target.value)}
+                        isRgb={isRgb}
+                      />
+                      <LpColorPicker type={sceneActiveType || lp.globalColors.sceneActiveType} defaultColor={isRgb && midiSceneActiveColor.startsWith('rgb') ? midiSceneActiveColor : getColorFromValue(midiSceneActiveColor)} onColorSelect={(color: string) => {
+                          setMidiSceneActiveColor(color)
+                      }} />
+                  </Stack>
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Command</Typography>
-                    <LpColorPicker defaultColor={isRgb && midiCommandColor.startsWith('rgb') ? midiCommandColor : getColorFromValue(midiCommandColor)} onColorSelect={(color: string) => {
-                        setMidiCommandColor(color)
-                    }} />
+                    <Stack direction={'row'}>
+                      <ColorTypePicker
+                        value={commandType}
+                        onChange={(e) => setMidiCommandType(e.target.value)}
+                        isRgb={isRgb}
+                      />
+                      <LpColorPicker type={commandType || lp.globalColors.commandType} defaultColor={isRgb && midiCommandColor.startsWith('rgb') ? midiCommandColor : getColorFromValue((midiCommandColor || lp.globalColors.commandColor))} onColorSelect={(color: string) => {
+                          setMidiCommandColor(color)
+                      }} />                        
+                    </Stack>
                 </Stack>
                 <Stack direction={'row'} spacing={2} justifyContent={'space-between'} alignItems={'center'}>
                     <Typography>Pressed button</Typography>                    

@@ -274,12 +274,13 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                                     {Object.keys(MidiDevices[mType as keyof typeof MidiDevices]).map((model) => 
                                         <MenuItem key={model} 
                                             onClick={() => {
-                                                setMidiMappingButtonNumbers(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].buttonNumbers)
+                                                const lp = MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]]
+                                                setMidiMappingButtonNumbers(lp.buttonNumbers)
                                                 setMidiType(mType as keyof typeof MidiDevices)
                                                 setMidiModel(model as keyof typeof MidiDevices[keyof typeof MidiDevices])
-                                                setMidiSceneActiveColor(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].commonColors.darkolivegreen.toString(16) || '3C')
-                                                setMidiSceneInactiveColor(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].commonColors.red.toString(16) || '0F')
-                                                setMidiCommandColor(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].commonColors.yellow.toString(16) || '3E')
+                                                setMidiSceneActiveColor(lp.globalColors.sceneActiveColor)
+                                                setMidiSceneInactiveColor(lp.globalColors.sceneInactiveColor)
+                                                setMidiCommandColor(lp.globalColors.commandColor)
                                                 initMidi()
                                             }} 
                                             value={model}>
@@ -398,7 +399,6 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                     <Button onClick={()=>{
                         const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
                         if (!output) return
-                        console.log(midiMessageToSend)
                         output.send(midiMessageToSend.replaceAll(', ',' ').split(' ').map((v: any) => parseInt(v)) || [])
                     }}>
                         <Send />
