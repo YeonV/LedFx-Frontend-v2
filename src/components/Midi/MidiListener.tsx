@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { WebMidi, Input, Output } from 'webmidi'
 import useStore from '../../store/useStore'
-import { getUiBtnNo } from '../../store/ui/storeMidi'
+import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { rgbValues } from '../../utils/MidiDevices/colorHelper'
 
 const MIDIListener = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const togglePause = useStore((state) => state.togglePause)
+  const getUiBtnNo = useStore((state) => state.getUiBtnNo)
   const midiInitialized = useStore((state) => state.midiInitialized)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const setSystemSetting = (setting: string, value: any) => {
@@ -33,16 +35,17 @@ const MIDIListener = () => {
   const setMidiOutputs = useStore((state) => state.setMidiOutputs)
   const setMidiInput = useStore((state) => state.setMidiInput)
   const setMidiOutput = useStore((state) => state.setMidiOutput)
+  const midiType = useStore((state) => state.midiType)
+  const midiModel = useStore((state) => state.midiModel)
   const recentScenes = useStore((state) => state.recentScenes)
   const midiInput = useStore((state) => state.midiInput)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
   const blockMidiHandler = useStore((state) => state.blockMidiHandler)
   const midiEvent = useStore((state) => state.midiEvent)
-  const lpType = useStore((state) => state.lpType)
   const global_brightness = useStore((state) => state.config.global_brightness)
   const glBrightness = useRef(global_brightness)
-
+  const lp = MidiDevices[midiType][midiModel]
   const setMidiMapping = useStore((state) => state.setMidiMapping)
 
   const sceneDialogOpen = useStore(
@@ -94,28 +97,71 @@ const MIDIListener = () => {
   }
 
   const initLeds = (output: Output) => {
-    if (output)  {
-      Object.entries(midiMapping[0]).forEach(([key, value]) => {
-        const buttonNumber = value.buttonNumber
-        if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
-          if (output && buttonNumber !== -1) {
-            try {
-              output.send([parseInt(`0x${value.typeCommand}`) || 0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
-            } catch (error) {
-              console.error('Error sending MIDI message:', error)
+    if (!output) return
+    
+    Object.entries(midiMapping[0]).forEach(([key, value]) => {
+      const buttonNumber = value.buttonNumber
+      if (buttonNumber === -1) return
+
+      if (value.command !== 'scene' && value.command && value.command !== 'none' && buttonNumber !== -1) {
+        if (output && buttonNumber !== -1) {
+          try {
+            const color = value.colorCommand || commandColor              
+            if ('rgb' in lp.fn && lp.fn.rgb && buttonNumber && color.startsWith('rgb') && value.typeCommand === 'rgb') {
+              const [r,g,b] = rgbValues(color) || [255,0,0]
+              output.send(lp.fn.rgb(buttonNumber,r,g,b));
+            } else {
+              if (value.typeCommand === '91' && 'ledFlash' in lp.fn) {
+                output.send(lp.fn.ledFlash(buttonNumber, parseInt(color, 16)))
+              } else if (value.typeCommand === '92' && 'ledPulse' in lp.fn) {
+                output.send(lp.fn.ledPulse(buttonNumber, parseInt(color, 16)))
+              } else {
+                output.send(lp.fn.ledOn(buttonNumber, parseInt(color, 16)))
+              }
             }
-          }
-        } else if (value.command === 'scene') {
-          if (output && buttonNumber !== -1) {
-            try {
-              output.send([parseInt(`0x${value.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(value.payload?.scene === recentScenes[0] ? (value.colorSceneActive || midiSceneActiveColor) : (value.colorSceneInactive || midiSceneInactiveColor), 16) || 60])
-            } catch (error) {
-              console.error('Error sending MIDI message:', error)
-            }
+          } catch (error) {
+            console.error('Error sending MIDI message:', error)
           }
         }
-      })
-    }
+      } else if (value.command === 'scene') {
+        if (output && buttonNumber !== -1) {
+          try {
+            const colorActive = value.colorSceneActive || midiSceneActiveColor
+            const colorInactive = value.colorSceneInactive || midiSceneInactiveColor
+            if (value.payload?.scene === recentScenes[0]) {
+              if ('rgb' in lp.fn && buttonNumber && colorActive.startsWith('rgb') && value.typeSceneActive === 'rgb') {
+                const [r,g,b] = rgbValues(colorActive) || [0,255,0]
+                output.send(lp.fn.rgb(buttonNumber,r,g,b));
+              } else {
+                if (value.typeSceneActive === '91' && 'ledFlash' in lp.fn) {
+                  output.send(lp.fn.ledFlash(buttonNumber, parseInt(colorActive, 16)))
+                } else if (value.typeSceneActive === '92' && 'ledPulse' in lp.fn) {
+                  output.send(lp.fn.ledPulse(buttonNumber, parseInt(colorActive, 16)))
+                } else {
+                  output.send(lp.fn.ledOn(buttonNumber, parseInt(colorActive, 16)))
+                }
+              }
+            } else {
+              if ('rgb' in lp.fn && lp.fn.rgb && buttonNumber && colorInactive.startsWith('rgb') && value.typeSceneInactive === 'rgb') {
+                const [r,g,b] = rgbValues(colorInactive) || [255,0,0]
+                output.send(lp.fn.rgb(buttonNumber,r,g,b));
+              } else {
+                if (value.typeSceneInactive === '91' && 'ledFlash' in lp.fn) {
+                  output.send(lp.fn.ledFlash(buttonNumber, parseInt(colorInactive, 16)))
+                } else if (value.typeSceneInactive === '92' && 'ledPulse' in lp.fn) {
+                  output.send(lp.fn.ledPulse(buttonNumber, parseInt(colorInactive, 16)))
+                } else {
+                  output.send(lp.fn.ledOn(buttonNumber, parseInt(colorInactive, 16)))
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error sending MIDI message:', error)
+          }
+        }
+      }
+    })
+    
   }
   
   useEffect(() => {
@@ -201,38 +247,19 @@ const MIDIListener = () => {
             if (midiInput === '') setMidiInput(inputs[inputs.length - 1]?.name)
             if (midiOutput === '') setMidiOutput(outputs[inputs.length - 1]?.name)
             const output = outputs[inputs.length - 1]
-    
+            const lp = MidiDevices[midiType][midiModel].fn
             Object.entries(midiMapping[0]).forEach(([key, value]) => {
               const buttonNumber = value.buttonNumber
               if (!value.command || value.command === 'none' || buttonNumber === -1) {
                 if (output && buttonNumber !== -1) {
-                  try {
-                    output.send([0x90, buttonNumber, lpType === 'LPX' ? 0x00 : 0x0C])
+                  try {                   
+                    output.send(lp.ledOff(buttonNumber))                    
                   } catch (error) {
                     console.error('Error sending MIDI message:', error)
                   }
                 }
                 return
               }
-              // if (value.command && value.command !== 'scene' && value.command !== 'none') {
-              //   if (output && buttonNumber !== -1) {
-              //     try {
-              //       // output.send([0x90, buttonNumber, parseInt(value.colorCommand || commandColor, 16) || 99])
-              //       output.send([parseInt(`0x${midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.typeCommand}`) || 0x90, buttonNumber, parseInt(midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.colorCommand || commandColor || '3C', 16)])
-              //     } catch (error) {
-              //       console.error('Error sending MIDI message:', error)
-              //     }
-              //   }
-              // } else if (value.command === 'scene') {
-              //   if (output && buttonNumber !== -1) {
-              //     try {
-              //       // output.send([0x90, buttonNumber, parseInt(value.colorSceneInactive, 16) || 60])
-              //       output.send([parseInt(`0x${midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][(lpType !== 'LPX' ? getUiBtnNo(buttonNumber) : buttonNumber)]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
-              //     } catch (error) {
-              //       console.error('Error sending MIDI message:', error)
-              //     }
-              //   }
-              // }
             })
     
             if (inputs.length > 0) {
@@ -252,26 +279,48 @@ const MIDIListener = () => {
 
     const handleWebsockets = (event: any) => {
       const output = WebMidi.getOutputByName(midiOutput)
-      // if (output) initLeds(output)
       try {
         if (event.type === 'scene_activated') {
           const { scene_id } = event.detail
           Object.keys(scenes).forEach((key) => {
             const scene = scenes[key]
             const buttonNumber = parseInt(scene.scene_midiactivate.split('buttonNumber: ')[1], 10)
+            const uiButtonNumber = getUiBtnNo(buttonNumber)
+            const value = uiButtonNumber && midiMapping[0][uiButtonNumber]
             if (key === scene_id) {
-              if (output && buttonNumber !== -1) {
-                if (!Number.isNaN(buttonNumber)) {
-                  // console.log('Scene Active:', key, buttonNumber)
-                  output.send([parseInt(`0x${midiMapping[0][lpType !== 'LPX' ? (getUiBtnNo(buttonNumber) || -1) : buttonNumber]?.typeSceneActive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][lpType !== 'LPX' ? (getUiBtnNo(buttonNumber) || -1) : buttonNumber]?.colorSceneActive || midiSceneActiveColor || '1E', 16)])
+              if (output && buttonNumber !== -1 && value) {
+                if (!Number.isNaN(buttonNumber) && uiButtonNumber ) {
+                  if ('rgb' in lp.fn && lp.fn.rgb && value.colorSceneActive?.startsWith('rgb') && value.typeSceneActive === 'rgb') {
+                    const [r,g,b] = rgbValues(value.colorSceneActive) || [0,255,0]
+                    output.send(lp.fn.rgb(buttonNumber,r,g,b));
+                  } else {
+                    if (value.typeSceneActive === '91' && 'ledFlash' in lp.fn) {
+                      output.send(lp.fn.ledFlash(buttonNumber, parseInt(value.colorSceneActive || midiSceneActiveColor || '1E', 16)))
+                    } else if (value.typeSceneActive === '92' && 'ledPulse' in lp.fn) {
+                      output.send(lp.fn.ledPulse(buttonNumber, parseInt(value.colorSceneActive || midiSceneActiveColor || '1E', 16)))
+                    } else {
+                      output.send(lp.fn.ledOn(buttonNumber, parseInt(value.colorSceneActive || midiSceneActiveColor || '1E', 16)))
+                    }
+                  }
                 }
               } else {
                 console.error('No MIDI output devices found')
               }
             } else {
-              if (output && buttonNumber !== -1) {
-                if (!Number.isNaN(buttonNumber)) {
-                  output.send([parseInt(`0x${midiMapping[0][lpType !== 'LPX' ? (getUiBtnNo(buttonNumber) || -1) : buttonNumber]?.typeSceneInactive}`) || 0x90, buttonNumber, parseInt(midiMapping[0][lpType !== 'LPX' ? (getUiBtnNo(buttonNumber) || -1) : buttonNumber]?.colorSceneInactive || midiSceneInactiveColor || '3C', 16)])
+              if (output && buttonNumber !== -1 && value) {
+                if (!Number.isNaN(buttonNumber) && uiButtonNumber) {
+                  if ('rgb' in lp.fn && lp.fn.rgb && value.colorSceneInactive?.startsWith('rgb') && value.typeSceneInactive === 'rgb') {
+                    const [r,g,b] = rgbValues(value.colorSceneInactive) || [255,0,0]
+                    output.send(lp.fn.rgb(buttonNumber,r,g,b));
+                  } else {
+                    if (value.typeSceneInactive === '91' && 'ledFlash' in lp.fn) {
+                      output.send(lp.fn.ledFlash(buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor || '3C', 16)))
+                    } else if (value.typeSceneInactive === '92' && 'ledPulse' in lp.fn) {
+                      output.send(lp.fn.ledPulse(buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor || '3C', 16)))
+                    } else {
+                      output.send(lp.fn.ledOn(buttonNumber, parseInt(value.colorSceneInactive || midiSceneInactiveColor || '3C', 16)))
+                    }
+                  }
                 }
               } else {
                 console.error('No MIDI output devices found')
@@ -303,7 +352,7 @@ const MIDIListener = () => {
         scene.scene_midiactivate.split('buttonNumber: ')[1],
         10
       )
-      const uiButtonNumber = lpType === 'LPX' ? buttonNumber : getUiBtnNo(buttonNumber) || -1
+      const uiButtonNumber = getUiBtnNo(buttonNumber) || -1
       // console.log('Button Number:', buttonNumber) 
       mapping[0] = {
         ...mapping[0],

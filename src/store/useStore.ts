@@ -35,13 +35,13 @@ const useStore = create(
         {
           hackedBy: 'Blade'
         },
-        (set: any) => ({
+        (set, get) => ({
           ui: storeUI(set),
           spotify: storeSpotify(),
           qlc: storeQLC(),
           user: storeUser(set),
           ...storePad(set),
-          ...storeMidi(set),
+          ...storeMidi(set, get),
           ...storeVideo(set),
           ...storeNotifications(set),
           ...storeTours(set),

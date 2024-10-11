@@ -40,6 +40,7 @@ import TooltipMidi from './TooltipMidi'
 import MidiInputDialog from '../../Midi/MidiInputDialog'
 import { IMapping } from '../../../store/ui/storeMidi'
 import { WebMidi } from 'webmidi'
+import { MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -83,7 +84,8 @@ const EditSceneDialog = () => {
   const [imageData, setImageData] = useState(null)
   const midiEvent = useStore((state) => state.midiEvent)
   const midiOutput = useStore((state) => state.midiOutput)
-  const lpType = useStore((state) => state.lpType)
+  const midiType = useStore((state) => state.midiType)
+  const midiModel = useStore((state) => state.midiModel)
   const lastButton = useRef(-1)
 
   const setBlockMidiHandler = useStore((state) => state.setBlockMidiHandler)
@@ -248,9 +250,14 @@ const EditSceneDialog = () => {
       initMidi()
       const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
+      const lp = MidiDevices[midiType][midiModel].fn
       if (currentBtnNumber > -1) {
         setTimeout(() => {
-          output.send([0x92, currentBtnNumber, 99])
+          if ('ledPulse' in lp) {
+            output.send(lp.ledPulse(currentBtnNumber, 99))
+          } else {
+            output.send(lp.ledOn(currentBtnNumber, 99))
+          }
         }, 100)
       }
     }
@@ -263,20 +270,30 @@ const EditSceneDialog = () => {
       const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
       const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
+      const lp = MidiDevices[midiType][midiModel].fn
       if (newBtnNumber > -1) {
         setTimeout(() => {
           if (!currentBtnNumber) {
-            output.send([0x92, newBtnNumber, 57])
+            if ('ledPulse' in lp) {
+              output.send(lp.ledPulse(newBtnNumber, 57))
+            } else {
+              output.send(lp.ledOn(newBtnNumber, 57))
+            }
             if (lastButton.current !== newBtnNumber) {
-              output.send([0x90, lastButton.current, lpType === 'LPS' ? 0x0C : 0])
+              output.send(lp.ledOff(lastButton.current))
             }       
           }
           if (currentBtnNumber > -1 && newBtnNumber !== currentBtnNumber) {
-            output.send([0x92, currentBtnNumber, 99])
-            output.send([0x92, newBtnNumber, 57])
+            if ('ledPulse' in lp) {
+              output.send(lp.ledPulse(currentBtnNumber, 99))
+              output.send(lp.ledPulse(newBtnNumber, 57))
+            } else {
+              output.send(lp.ledOn(currentBtnNumber, 99))
+              output.send(lp.ledOn(newBtnNumber, 57))
+            }
           }
           if (currentBtnNumber > -1 && lastButton.current > -1 && lastButton.current !== newBtnNumber && lastButton.current !== currentBtnNumber) {
-            output.send([0x90, lastButton.current, lpType === 'LPS' ? 0x0C : 0])
+            output.send(lp.ledOff(lastButton.current))
           }
           lastButton.current = newBtnNumber
         }, 100)
