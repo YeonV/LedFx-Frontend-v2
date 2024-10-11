@@ -1,15 +1,15 @@
 import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport, Send } from '@mui/icons-material'
-import { Box, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography, useTheme } from '@mui/material'
+import { Box, Button, Divider, ListItemIcon, ListItemText, ListSubheader, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
 import { useEffect, useRef, useState } from 'react'
 import { WebMidi } from 'webmidi'
 import LaunchpadButton from './LaunchpadButton'
-import { getColorFromValue } from './lpColors'
-import { defaultMapping, IMapping, Launchpad, LpMapping } from '../../store/ui/storeMidi'
+import { defaultMapping, IMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
+import { Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 
 const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScreen}:{toggleSidebar: () => void, sideBarOpen: boolean, fullScreen?: boolean, setFullScreen: (f:boolean) => void}) => {
     const theme = useTheme()
@@ -25,9 +25,12 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const [showMidiLogs, setShowMidiLogs] = useState(false)
     const [showMapping, setShowMapping] = useState(false)
     const setMidiMappingButtonNumbers = useStore((state) => state.setMidiMappingButtonNumbers)
+    const getColorFromValue = useStore((state) => state.getColorFromValue)
     const initMidi = useStore((state) => state.initMidi)
-    const lpType = useStore((state) => state.lpType)
-    const setLpType = useStore((state) => state.setLpType)
+    const setMidiType = useStore((state) => state.setMidiType)
+    const setMidiModel = useStore((state) => state.setMidiModel)
+    const midiModel = useStore((state) => state.midiModel)
+    const midiType = useStore((state) => state.midiType)
     const midiEvent = useStore((state) => state.midiEvent)
     const midiOutput = useStore((state) => state.midiOutput)
     const recentScenes = useStore((state) => state.recentScenes)
@@ -41,6 +44,9 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const matrix = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0))
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const lp= MidiDevices[midiType][midiModel]
+    const isRgb = 'rgb' in lp.fn 
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
     }
@@ -256,28 +262,34 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                         <ListItemText primary="Reset Colors" />
                     </MenuItem>
                     <Divider />
-                    <MenuItem onClick={() => {
-                        setMidiMappingButtonNumbers(LpMapping.LaunchpadX)
-                        setLpType('LPX')
-                        setMidiSceneActiveColor('1E')
-                        setMidiSceneInactiveColor('3C')
-                        setMidiCommandColor('63')
-                        initMidi()
-                    }}>
-                        <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
-                        <ListItemText primary="Launchpad X" />
+                    <MenuItem sx={{ position: 'absolute', pointerEvents: 'none' }}>
+                        <ListItemIcon><BladeIcon name={midiType === 'Launchpad' ? 'launchpad' : 'midi'} /></ListItemIcon>
+                        <ListItemText primary={midiType + ' ' + midiModel} />
                     </MenuItem>
-                    <MenuItem onClick={() => {
-                        setMidiMappingButtonNumbers(LpMapping.LaunchpadS)
-                        setLpType('LPS')
-                        setMidiSceneActiveColor('3C')
-                        setMidiSceneInactiveColor('0F')
-                        setMidiCommandColor('3E')
-                        initMidi()
-                    }}>
-                        <ListItemIcon><BladeIcon name='launchpad' /></ListItemIcon>
-                        <ListItemText primary="Launchpad S" />
-                    </MenuItem>
+                    <Stack sx={{ pl: 2, pr: 1, mb:1 }}>
+                        <Select fullWidth disableUnderline defaultValue={'Preconfigured'}>
+                            {Object.keys(MidiDevices).map((mType) =>
+                                <>
+                                    <ListSubheader>{mType}</ListSubheader>
+                                    {Object.keys(MidiDevices[mType as keyof typeof MidiDevices]).map((model) => 
+                                        <MenuItem key={model} 
+                                            onClick={() => {
+                                                setMidiMappingButtonNumbers(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].buttonNumbers)
+                                                setMidiType(mType as keyof typeof MidiDevices)
+                                                setMidiModel(model as keyof typeof MidiDevices[keyof typeof MidiDevices])
+                                                setMidiSceneActiveColor(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].commonColors.darkolivegreen.toString(16) || '3C')
+                                                setMidiSceneInactiveColor(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].commonColors.red.toString(16) || '0F')
+                                                setMidiCommandColor(MidiDevices[mType as keyof typeof MidiDevices][model as keyof typeof MidiDevices[keyof typeof MidiDevices]].commonColors.yellow.toString(16) || '3E')
+                                                initMidi()
+                                            }} 
+                                            value={model}>
+                                                {model}
+                                        </MenuItem>
+                                    )}
+                                </>
+                            )}
+                        </Select>
+                    </Stack>
                     <Divider />
                     <MenuItem onClick={() => {
                         setShowMidiLogs(!showMidiLogs)
@@ -313,21 +325,22 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                             : btn?.command && 
                             btn?.command === 'scene' &&
                             btn?.payload?.scene === recentScenes[0]
-                            ? getColorFromValue((btn?.colorSceneActive || '1E'), lpType) || '#0f0'
+                            ? (isRgb && btn?.colorSceneActive?.startsWith('rgb') ? btn?.colorSceneActive : getColorFromValue((btn?.colorSceneActive || '1E')) || '#0f0')
                             : btn?.command && 
                                 btn?.command === 'scene' 
-                                ? getColorFromValue((btn?.colorSceneInactive || '07'), lpType) || '#f00'
+                                ? (isRgb && btn?.colorSceneInactive?.startsWith('rgb') ? btn?.colorSceneInactive : getColorFromValue((btn?.colorSceneInactive || '07')) || '#f00')
                                 : btn?.command && 
                                 btn?.command !== 'none'  && rowIndex !== 0
-                                ? getColorFromValue((btn?.colorCommand || '63'), lpType) || '#ff0'
+                                ? (isRgb && btn?.colorCommand?.startsWith('rgb') ? btn?.colorCommand : getColorFromValue((btn?.colorCommand || '63')) || '#ff0')
                                 : rowIndex === 0 || buttonIndex === 8
                                     ? '#000' 
                                     : '#ccc'
 
                         return (
                             <LaunchpadButton
+                                showMidiLogs={showMidiLogs}
                                 hidden={functionalButtonNumber === -1}
-                                buttonNumber={btnNumberInt}
+                                uiButtonNumber={btnNumberInt}
                                 active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
                                 bgColor={bgColor}
                                 key={'button' + buttonIndex}
@@ -378,6 +391,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                     {Object.keys(Launchpad.X.command).length && <Select variant='outlined' size='small' sx={{ width: 200 }} onChange={(e: SelectChangeEvent) => {
                         setMidiMessageToSend(Launchpad.X.command[e.target.value as keyof typeof Launchpad.X.command].map((v: any) => `0x${v.toString(16)}`).join(', '))
                     }}>
+                    <MenuItem key={'none'} value={''}>{''}</MenuItem>
                     {Object.entries(Launchpad.X.command).map(([key, value]) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
                     </Select>}
                     <TextField label='Send raw MIDI message' variant='outlined' size='small' fullWidth value={midiMessageToSend} onChange={(e) => setMidiMessageToSend(e.target.value)} />

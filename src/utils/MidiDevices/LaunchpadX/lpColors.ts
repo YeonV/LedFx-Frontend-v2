@@ -1,74 +1,14 @@
-// Helper function to zero-pad hex values
-export const zeroPadHex = (value: number) => value.toString(16).toUpperCase().padStart(2, '0')
-
-// Helper function to convert hex to HSL
-export const hexToHSL = (hex: string) => {
-  let r = 0, g = 0, b = 0
-  if (hex.length === 4) {
-    r = parseInt(hex[1] + hex[1], 16)
-    g = parseInt(hex[2] + hex[2], 16)
-    b = parseInt(hex[3] + hex[3], 16)
-  } else if (hex.length === 7) {
-    r = parseInt(hex[1] + hex[2], 16)
-    g = parseInt(hex[3] + hex[4], 16)
-    b = parseInt(hex[5] + hex[6], 16)
-  }
-  r /= 255
-  g /= 255
-  b /= 255
-  const max = Math.max(r, g, b), min = Math.min(r, g, b)
-  let h = 0, s = 0, l = (max + min) / 2
-  if (max !== min) {
-    const d = max - min
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break
-      case g: h = (b - r) / d + 2; break
-      case b: h = (r - g) / d + 4; break
-    }
-    h /= 6
-  }
-  return [h, s, l]
-}
-
-// Helper function to sort colors by HSL values, prioritizing hue and saturation, then lightness
-export const sortColorsByHSL = (colors: IColor[]) => {
-  return colors.sort((a, b) => {
-    const [hA, sA, lA] = hexToHSL(a)
-    const [hB, sB, lB] = hexToHSL(b)
-    if (hA !== hB) return hA - hB
-    if (sA !== sB) return sA - sB
-    return lA - lB
-  })
-}
-
-export const lpsColors = {
-  // 'red': 0x0F,
-  // 'orange': 0x2F,
-  // 'lime': 0x3C,
-  // 'darkred': 0x0D,
-  // 'darkolivegreen': 0x1C,
-  // 'yellow': 0x3E,
-  // 'black': 0x0C,
-  // 'darkorange': 0x3F,
-  '#FF0000': 0x0F,
-  '#FFA500': 0x2F,
-  '#00FF00': 0x3C,
-  '#8B0000': 0x0D,
-  '#526F50': 0x1C,
-  '#FFFF00': 0x3E,
-  '#000000': 0x0C,
-  '#FF7F00': 0x3F,
+export const lpCommonColors = {
+    'red': 0x05,
+    'orange': 0x09,
+    'lime': 0x15,
+    'darkred': 0x07,
+    'darkolivegreen': 0x17,
+    'yellow': 0x0d,
+    'black': 0x00,
+    'darkorange': 0x3c,
 }
 export const lpColors = {
-    // 'red': 0x05,
-    // 'orange': 0x09,
-    // 'lime': 0x15,
-    // 'darkred': 0x07,
-    // 'darkolivegreen': 0x17,
-    // 'yellow': 0x0d,
-    // 'black': 0x00,
-    // 'darkorange': 0x3c,
     '#616161': 0x00,
     '#b3b3b3': 0x01,
     '#dddddd': 0x02,
@@ -198,12 +138,3 @@ export const lpColors = {
     '#eec261': 0x7e,
     '#c27661': 0x7f,
 }
-
-export const getColorFromValue = (value: string, mode: 'LPX' | 'LPS' = 'LPX' ) => {
-  if (value === 'undefined') return undefined;
-  const colors = mode === 'LPX' ? lpColors : lpsColors;
-  const numericValue = parseInt(value, 16);
-  return Object.keys(colors).find(key => colors[key as keyof typeof colors] === numericValue) || undefined;
-}
-
-export type IColor = keyof typeof lpColors

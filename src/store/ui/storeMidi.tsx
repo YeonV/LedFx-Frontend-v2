@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
-import { lpColors, lpsColors } from '../../components/Midi/lpColors'
+import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 
 export interface IMidiMapping {
   command?: string
@@ -47,90 +47,25 @@ const presetMapping = {
 
 export const defaultMapping = { ...baseMapping, ...presetMapping }
 
-export const LpMapping = {
-  LaunchpadX: [
-    [11, 12, 13, 14, 15, 16, 17, 18, 19],
-    [21, 22, 23, 24, 25, 26, 27, 28, 29],
-    [31, 32, 33, 34, 35, 36, 37, 38, 39],
-    [41, 42, 43, 44, 45, 46, 47, 48, 49],
-    [51, 52, 53, 54, 55, 56, 57, 58, 59],
-    [61, 62, 63, 64, 65, 66, 67, 68, 69],
-    [71, 72, 73, 74, 75, 76, 77, 78, 79],
-    [81, 82, 83, 84, 85, 86, 87, 88, 89],
-    [91, 92, 93, 94, 95, 96, 97, 98, 99],
-  ],
-  LaunchpadS: [
-    [112, 113, 114, 115, 116, 117, 118, 119, 120],  
-    [96, 97, 98, 99, 100, 101, 102, 103, 104],
-    [80, 81, 82, 83, 84, 85, 86, 87, 88],
-    [64, 65, 66, 67, 68, 69, 70, 71, 72],
-    [48, 49, 50, 51, 52, 53, 54, 55, 56],
-    [32, 33, 34, 35, 36, 37, 38, 39, 40],
-    [16, 17, 18, 19, 20, 21, 22, 23, 24],
-    [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-  ]
-}
-export const Launchpad = {
-  X: {
-    buttonNumbers: [
-      [11, 12, 13, 14, 15, 16, 17, 18, 19],
-      [21, 22, 23, 24, 25, 26, 27, 28, 29],
-      [31, 32, 33, 34, 35, 36, 37, 38, 39],
-      [41, 42, 43, 44, 45, 46, 47, 48, 49],
-      [51, 52, 53, 54, 55, 56, 57, 58, 59],
-      [61, 62, 63, 64, 65, 66, 67, 68, 69],
-      [71, 72, 73, 74, 75, 76, 77, 78, 79],
-      [81, 82, 83, 84, 85, 86, 87, 88, 89],
-      [91, 92, 93, 94, 95, 96, 97, 98, 99],
-    ],
-    colors: lpColors,
-    command: {
-      'programmer': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x01, 0xF7],
-      'live': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x0E, 0x00, 0xF7],
-      'standalone': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x10, 0x00, 0xF7],
-      'daw': [0xF0, 0x00, 0x20, 0x29, 0x02, 0x0C, 0x10, 0x01, 0xF7],
-      'ledOn': [0x90, "buttonNumber", "color"],
-      'ledFlash': [0x91, "buttonNumber", "color"],
-      'ledPulse': [0x92, "buttonNumber", "color"],
-    },
-    sendCommand: {
-      'ledOff': (buttonNumber: number) => [0x90, buttonNumber, 0x00],
-      'ledOn': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x90, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
-      'ledFlash': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x91, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
-      'ledPulse': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x92, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
-    }
+const storeMidi = (set: any, get: any) => ({
+  getColorFromValue: (value: string ) => {
+    if (value === 'undefined') return undefined;
+    const state = get() as IStore;
+    const colors = MidiDevices[state.midiType][state.midiModel].colors;
+    const numericValue = parseInt(value, 16);
+    return Object.keys(colors).find(key => colors[key as keyof typeof colors] === numericValue) || undefined;
   },
-  S: {
-    buttonNumbers: [
-      [112, 113, 114, 115, 116, 117, 118, 119, 120],  
-      [96, 97, 98, 99, 100, 101, 102, 103, 104],
-      [80, 81, 82, 83, 84, 85, 86, 87, 88],
-      [64, 65, 66, 67, 68, 69, 70, 71, 72],
-      [48, 49, 50, 51, 52, 53, 54, 55, 56],
-      [32, 33, 34, 35, 36, 37, 38, 39, 40],
-      [16, 17, 18, 19, 20, 21, 22, 23, 24],
-      [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    ],
-    colors: lpsColors,
-    sendCommand: {
-      'ledOff': (buttonNumber: number) => [0x90, buttonNumber, 0x0C],
-    }
-  }
-}
-
-export function getUiBtnNo(inputInt: number): number | null {
-  for (let i = 0; i < LpMapping.LaunchpadS.length; i++) {
-    for (let j = 0; j < LpMapping.LaunchpadS[i].length; j++) {
-      if (LpMapping.LaunchpadS[i][j] === inputInt) {
-        return LpMapping.LaunchpadX[i][j];
+  getUiBtnNo: (inputInt: number): number | null => {
+    const state = get() as IStore;
+    for (let i = 0; i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length; i++) {
+      for (let j = 0; j < MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length; j++) {
+        if (MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] === inputInt) {
+          return MidiDevices.Launchpad.X.buttonNumbers[i][j];
+        }
       }
     }
-  }
-  return null;
-}
-const storeMidi = (set: any) => ({
+    return null;
+  },
   blockMidiHandler: false,
   setBlockMidiHandler: (block: boolean) =>
     set(
@@ -140,14 +75,23 @@ const storeMidi = (set: any) => ({
       false,
       'setBlockMidiHandler'
     ),
-  lpType: 'LPX' as 'LPX' | 'LPS',
-  setLpType: (type: 'LPX' | 'LPS') =>
+  midiType: 'Launchpad' as keyof typeof MidiDevices,
+  setMidiType: (type: keyof typeof MidiDevices) =>
     set(
       produce((state: IStore) => {
-        state.lpType = type
+        state.midiType = type
       }),
       false,
-      'setLpType'
+      'setMidiType'
+    ),
+  midiModel: 'X' as keyof typeof MidiDevices[keyof typeof MidiDevices],
+  setMidiModel: (model: keyof typeof MidiDevices[keyof typeof MidiDevices]) =>
+    set(
+      produce((state: IStore) => {
+        state.midiModel = model
+      }),
+      false,
+      'setMidiModel'
     ),
   midiInputs: [] as string[],
   setMidiInputs: (inputs: string[]) =>
