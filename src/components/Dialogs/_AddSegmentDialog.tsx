@@ -36,6 +36,7 @@ const Root = styled('div')(({ theme }) => ({
 function ConfirmationDialogRaw(props: any) {
   const { onClose, value: valueProp, open, ...other } = props
   const [value, setValue] = React.useState(valueProp)
+  const virtuals = useStore((state) => state.virtuals) || {}
 
   const handleCancel = () => {
     onClose()
@@ -71,7 +72,7 @@ function ConfirmationDialogRaw(props: any) {
                 value={props.deviceList[device].id}
                 key={props.deviceList[device].id}
               >
-                {props.deviceList[device].config.name}
+                {virtuals[props.deviceList[device].id].config.name || props.deviceList[device].config.name}
               </MenuItem>
             ))}
           </Select>
