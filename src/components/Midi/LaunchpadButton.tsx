@@ -125,7 +125,7 @@ const LaunchpadButton = ({
     setMidiMapping({
       ...midiMapping,
       0: {
-        ...midiMapping,
+        ...midiMapping[0],
         [uiButtonNumber]: {
           ...currentMapping,
           [type]: color,

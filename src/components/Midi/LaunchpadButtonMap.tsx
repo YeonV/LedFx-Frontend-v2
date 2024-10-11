@@ -39,6 +39,12 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const setMidiSceneActiveColor = useStore((state) => state.setMidiSceneActiveColor)
     const setMidiSceneInactiveColor = useStore((state) => state.setMidiSceneInactiveColor)
     const setMidiCommandColor = useStore((state) => state.setMidiCommandColor)
+    const midiSceneActiveColor = useStore((state) => state.midiColors.sceneActiveColor)
+    const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
+    const midiCommandColor = useStore((state) => state.midiColors.commandColor)
+    const setMidiSceneActiveType = useStore((state) => state.setMidiSceneActiveType)
+    const setMidiSceneInactiveType = useStore((state) => state.setMidiSceneInactiveType)
+    const setMidiCommandType = useStore((state) => state.setMidiCommandType)
     const pressedButtonColor = useStore((state) => state.midiColors.pressedButtonColor)
     const paused = useStore((state) => state.paused)
     const matrix = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0))
@@ -281,6 +287,9 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                                                 setMidiSceneActiveColor(lp.globalColors.sceneActiveColor)
                                                 setMidiSceneInactiveColor(lp.globalColors.sceneInactiveColor)
                                                 setMidiCommandColor(lp.globalColors.commandColor)
+                                                setMidiSceneActiveType(lp.globalColors.sceneActiveType)
+                                                setMidiSceneInactiveType(lp.globalColors.sceneInactiveType)
+                                                setMidiCommandType(lp.globalColors.commandType)
                                                 initMidi()
                                             }} 
                                             value={model}>
@@ -315,33 +324,36 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                         {row.map((_button, buttonIndex) => {
                         const row = 9 - rowIndex
                         const column = buttonIndex + 1
-                        const buttonNumber = `${row}${column}`
-                        const btnNumberInt = parseInt(buttonNumber)
-                        const btn = midiMapping[0][btnNumberInt]
+                        const uiButtonNumber = `${row}${column}`
+                        const uiBtnNumberInt = parseInt(uiButtonNumber)
+                        const btn = midiMapping[0][uiBtnNumberInt]
+                        const buttonNumber = btn?.buttonNumber
 
-                        // Use the buttonNumber from the mapping for functional logic
-                        const functionalButtonNumber = btn?.buttonNumber
-                        const bgColor = functionalButtonNumber === -1 ? '#000' : (midiEvent.button === functionalButtonNumber)
+                        const sceneActiveColor = btn?.colorSceneActive || midiSceneActiveColor || lp.globalColors.sceneActiveColor
+                        const sceneInactiveColor = btn?.colorSceneInactive || midiSceneInactiveColor || lp.globalColors.sceneInactiveColor
+                        const commandColor = btn?.colorCommand || midiCommandColor || lp.globalColors.commandColor
+                        const command = btn?.command
+                        const sceneActive = btn?.payload?.scene === recentScenes[0]
+
+                        const clr = (color: string) => isRgb && color.startsWith('rgb') ? color : getColorFromValue(color) || '#000'                        
+
+                        const bgColor = buttonNumber === -1 ? '#000' : (midiEvent.button === buttonNumber)
                             ? ( pressedButtonColor || theme.palette.primary.main )
-                            : btn?.command && 
-                            btn?.command === 'scene' &&
-                            btn?.payload?.scene === recentScenes[0]
-                            ? (isRgb && btn?.colorSceneActive?.startsWith('rgb') ? btn?.colorSceneActive : getColorFromValue((btn?.colorSceneActive || '1E')) || '#0f0')
-                            : btn?.command && 
-                                btn?.command === 'scene' 
-                                ? (isRgb && btn?.colorSceneInactive?.startsWith('rgb') ? btn?.colorSceneInactive : getColorFromValue((btn?.colorSceneInactive || '07')) || '#f00')
-                                : btn?.command && 
-                                btn?.command !== 'none'  && rowIndex !== 0
-                                ? (isRgb && btn?.colorCommand?.startsWith('rgb') ? btn?.colorCommand : getColorFromValue((btn?.colorCommand || '63')) || '#ff0')
-                                : rowIndex === 0 || buttonIndex === 8
-                                    ? '#000' 
-                                    : '#ccc'
+                            : command && command === 'scene' && sceneActive
+                                ? clr(sceneActiveColor)
+                                : command && command === 'scene' 
+                                    ? clr(sceneInactiveColor)
+                                    : command && command !== 'none'  && rowIndex !== 0
+                                        ? clr(commandColor)
+                                        : rowIndex === 0 || buttonIndex === 8
+                                            ? '#000' 
+                                            : '#ccc'
 
                         return (
                             <LaunchpadButton
                                 showMidiLogs={showMidiLogs}
-                                hidden={functionalButtonNumber === -1}
-                                uiButtonNumber={btnNumberInt}
+                                hidden={buttonNumber === -1}
+                                uiButtonNumber={uiBtnNumberInt}
                                 active={!!(rowIndex === 0 && btn?.command && btn?.command !== 'none')}
                                 bgColor={bgColor}
                                 key={'button' + buttonIndex}

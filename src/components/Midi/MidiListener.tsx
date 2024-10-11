@@ -38,7 +38,8 @@ const MIDIListener = () => {
   const setMidiMapping = useStore((state) => state.setMidiMapping)  
 
   const sceneDialogOpen = useStore((state) => state.dialogs.addScene.sceneKey !== '')
-  const fn = MidiDevices[midiType][midiModel].fn
+  const lp = MidiDevices[midiType][midiModel]
+  const fn = lp.fn
   
   const setSystemSetting = (setting: string, value: any) => { setSystemConfig({ [setting]: value }) }
 
@@ -101,20 +102,22 @@ const MIDIListener = () => {
       if (buttonNumber === -1) return
   
       const sendMidiMessage = (color: string, typeCommand: string) => {
-        sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, '', false)
+        // console.log(1,'color',color, typeCommand, lp.globalColors.commandType)
+        sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, false)
       }
   
       try {
         if (value.command !== 'scene' && value.command && value.command !== 'none') {
           const color = value.colorCommand || commandColor
-          sendMidiMessage(color, value.typeCommand)
+          // console.log(1,'color',color, value.typeCommand, lp.globalColors.commandType)
+          sendMidiMessage(color, color.startsWith('rgb') ? 'rgb': value.typeCommand || lp.globalColors.commandType)
         } else if (value.command === 'scene') {
           const colorActive = value.colorSceneActive || midiSceneActiveColor
           const colorInactive = value.colorSceneInactive || midiSceneInactiveColor
           const isActiveScene = value.payload?.scene === recentScenes
           const color = isActiveScene ? colorActive : colorInactive
           const typeCommand = isActiveScene ? value.typeSceneActive : value.typeSceneInactive
-          sendMidiMessage(color, typeCommand)
+          sendMidiMessage(color, typeCommand || lp.globalColors.commandType)
         }
       } catch (error) {
         console.error('Error sending MIDI message:', error)
@@ -255,10 +258,9 @@ const MIDIListener = () => {
     }
   
     const sendSceneMidiMessage = (output: any, buttonNumber: number, value: any, isActive: boolean) => {
-      const color = isActive ? value.colorSceneActive : value.colorSceneInactive
-      const typeCommand = isActive ? value.typeSceneActive : value.typeSceneInactive
-      const defaultColor = isActive ? midiSceneActiveColor : midiSceneInactiveColor
-      sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, defaultColor, isActive)
+      const color = isActive ? (value.colorSceneActive || midiSceneActiveColor || lp.globalColors.sceneActiveColor) : (value.colorSceneInactive || midiSceneInactiveColor || lp.globalColors.sceneInactiveColor)
+      const typeCommand = isActive ? (value.typeSceneActive || lp.globalColors.sceneActiveType) : (value.typeSceneInactive || lp.globalColors.sceneInactiveType)
+      sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, isActive)
     }      
   
     enableWebMidi()
