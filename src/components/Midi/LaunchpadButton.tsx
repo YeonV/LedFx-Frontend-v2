@@ -1,14 +1,13 @@
 import Button from '@mui/material/Button'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
-import { darken, DialogContent, Divider, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
+import { darken, DialogContent, Divider, IconButton, Stack, TextField, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import LpColorPicker from './LpColorPicker'
 import Assign from '../Gamepad/Assign'
 import useStore from '../../store/useStore'
 import { Autorenew, Save } from '@mui/icons-material'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
-import { WebMidi } from 'webmidi'
 import ColorTypePicker from './ColorTypePicker'
 
 const LaunchpadButton = ({
@@ -31,7 +30,6 @@ const LaunchpadButton = ({
 }) => {
   // console.log(bgColor)
   const [open, setOpen] = useState(false)
-  const midiOutput = useStore((state) => state.midiOutput)
   const midiMapping = useStore((state) => state.midiMapping)
   const midiEvent = useStore((state) => state.midiEvent)
   const midiType = useStore((state) => state.midiType)
@@ -82,7 +80,6 @@ const LaunchpadButton = ({
   const [midiButtonNumber, setMidiButtonNumber] = useState(currentMapping.buttonNumber || 0)
   const [midiRecord, setMidiRecord] = useState(false)
   
-  const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
   const lp = MidiDevices[midiType][midiModel]
   const isRgb = 'rgb' in lp.fn
   function handleButtonPress(command: string, payload?: any) {
