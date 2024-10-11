@@ -36,6 +36,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '
         setSelectedColor(defaultColor as IColor)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultColor])
 
   const handleColorClick = (color: IColor) => {
