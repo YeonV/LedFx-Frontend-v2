@@ -13,9 +13,10 @@ interface LpColorPickerProps {
   defaultColor?: IColor | string
   midiButtonNumber?: number
   type: string
+  height?: number
 }
 
-const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '90' }: LpColorPickerProps) => {
+const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '90', height = 32 }: LpColorPickerProps) => {
   const [selectedColor, setSelectedColor] = useState<IColor | string | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
@@ -69,7 +70,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '
         sx={{
           display: 'flex',
           pr: 0,
-          height: 32,
+          height: height,
           alignItems: 'center',
           backgroundColor: selectedColor || defaultColor,
           color: theme.palette.getContrastText((selectedColor || defaultColor || '#000000') as string),

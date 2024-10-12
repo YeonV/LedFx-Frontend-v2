@@ -33,7 +33,9 @@ export const LaunchpadX: LaunchpadXDevice = {
       'ledOn': [0x90, "buttonNumber", "color"],
       'ledFlash': [0x91, "buttonNumber", "color"],
       'ledPulse': [0x92, "buttonNumber", "color"],
-      'rgb': [240, 0, 32, 41, 2, 12, 3, 3, "buttonNumber", "r", "g", "b", 247]
+      'rgb': [240, 0, 32, 41, 2, 12, 3, 3, "buttonNumber", "r", "g", "b", 247],
+      'text': [240, 0, 32, 41, 2, 12, 7, 1, 7, 0, 37, 72, 97, 99, 107, 101, 100, 32, 98, 121, 32, 66, 108, 97, 100, 101, 33, 247],
+      'stopText': [240, 0, 32, 41, 2, 12, 7, 247]
     },
     fn: {
       'ledOff': (buttonNumber: number) => [0x90, buttonNumber, 0x00],
@@ -41,6 +43,8 @@ export const LaunchpadX: LaunchpadXDevice = {
       'ledSolid': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x90, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
       'ledFlash': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x91, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
       'ledPulse': (buttonNumber: number, color: keyof typeof lpColors | number ) => [0x92, buttonNumber, typeof color === 'number' ? color : lpColors[color]],
-      'rgb': (buttonNumber: number, r: number, g: number, b: number) => [240, 0, 32, 41, 2, 12, 3, 3, buttonNumber, Math.floor(r/2), Math.floor(g/2), Math.floor(b/2), 247]
+      'rgb': (buttonNumber: number, r: number, g: number, b: number) => [240, 0, 32, 41, 2, 12, 3, 3, buttonNumber, Math.floor(r/2), Math.floor(g/2), Math.floor(b/2), 247],
+      'text': (text: string, r: number, g: number, b: number, loop?: boolean, speed: number = 7) => [240, 0, 32, 41, 2, 12, 7, loop ? 1 : 0, speed, 1, Math.floor(r/2), Math.floor(g/2), Math.floor(b/2), ...text.split('').map(char => char.charCodeAt(0)), 247],
+        
     }
   }
