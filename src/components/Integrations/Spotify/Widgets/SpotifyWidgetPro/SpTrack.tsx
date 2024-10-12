@@ -13,6 +13,7 @@ export default function SpTrack({ className }: any) {
   const spCtx = useContext(SpStateContext)
   const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken)
   const setPlaylist = useStore((state) => state.setPlaylist)
+  const setCurrentTrack = useStore((state) => state.setCurrentTrack)
   const title =
     spotifyCtx?.track_window?.current_track?.name ||
     spCtx?.item?.name ||
@@ -39,6 +40,10 @@ export default function SpTrack({ className }: any) {
     spotifyCtx?.track_window?.current_track?.album?.name ||
     spCtx?.item?.album?.name ||
     ''
+
+  setCurrentTrack(`${artist.length > 1
+            ? artist.map((art: any) => art.name).join(',')
+            : artist[0].name} - ${title}`)
   return (
     <Box className={className}>
       <CoverImage className={classes.albumImg}>

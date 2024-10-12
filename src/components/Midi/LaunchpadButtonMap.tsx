@@ -11,6 +11,7 @@ import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
 import { Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import LaunchpadSettings from './LaunchpadSettings'
+import { rgbValues } from '../../utils/MidiDevices/colorHelper'
 
 const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScreen}:{toggleSidebar: () => void, sideBarOpen: boolean, fullScreen?: boolean, setFullScreen: (f:boolean) => void}) => {
     const theme = useTheme()
@@ -47,12 +48,19 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const setMidiSceneInactiveType = useStore((state) => state.setMidiSceneInactiveType)
     const setMidiCommandType = useStore((state) => state.setMidiCommandType)
     const pressedButtonColor = useStore((state) => state.midiColors.pressedButtonColor)
+    const integrations = useStore((state) => state.integrations)
+    const currentTrack = useStore((state) => state.spotify.currentTrack)
+    const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
+    const sendSpotifyTrack = useStore((state) => state.spotify.sendSpotifyTrack)
+    const setSendSpotifyTrack = useStore((state) => state.setSendSpotifyTrack)
     const paused = useStore((state) => state.paused)
     const matrix = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0))
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const lp= MidiDevices[midiType][midiModel]
     const isRgb = 'rgb' in lp.fn && lp.fn.rgb
+    
+    const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
@@ -155,6 +163,12 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [midiEvent])
 
+    useEffect(() => {
+        if (sendSpotifyTrack && currentTrack !== '' && 'text' in lp.fn && lp.fn.text) {
+            output.send(lp.fn.text(currentTrack, 128, 0, 0, false, 10));
+        }
+    }, [currentTrack, sendSpotifyTrack])
+    
   return (
     <>
         <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} mb={fullScreen ? '5px' : 2}>
@@ -165,6 +179,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                 </Stack>
             </Stack>
             <Stack direction={'row'} alignItems={'center'} spacing={0}> 
+                {integrations.spotify?.active && spAuthenticated && 'text' in lp.fn && <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}><BladeIcon name='mdi:spotify' sx={{ color: sendSpotifyTrack ? theme.palette.primary.main : 'GrayText'}} /></Button>}
                 <Button onClick={() => initMidi()}><Autorenew /></Button>
                 <Button
                     id="basic-button"
