@@ -61,7 +61,7 @@ const LaunchpadSettings = ({onClick}: {onClick: () => void}) => {
         const [r, g, b] = rgbValues(color) || [128, 0, 0]
         output.send(lp.fn.text(currentTrack, r, g, b, loop, speed));
     }
-  }, [currentTrack, sendSpotifyTrack])
+  }, [currentTrack, sendSpotifyTrack, output, lp, color, loop, speed])
 
   return (
     <>

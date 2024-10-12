@@ -1,5 +1,5 @@
 import { ArrowForwardIos,  BrightnessHigh, Collections, Pause, PlayArrow, ViewSidebar, Menu as MenuIcon, Save, Delete, DeleteForever, Visibility, Autorenew, Fullscreen, FullscreenExit, BugReport, Send } from '@mui/icons-material'
-import { Box, Button, Divider, ListItemIcon, ListItemText, ListSubheader, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography, useTheme } from '@mui/material'
+import { Box, Button, Divider, ListItemIcon, ListItemText, ListSubheader, Menu, MenuItem, Select, SelectChangeEvent, Stack, TextField, Tooltip, Typography, useTheme } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
@@ -11,7 +11,6 @@ import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
 import { Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import LaunchpadSettings from './LaunchpadSettings'
-import { rgbValues } from '../../utils/MidiDevices/colorHelper'
 
 const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScreen}:{toggleSidebar: () => void, sideBarOpen: boolean, fullScreen?: boolean, setFullScreen: (f:boolean) => void}) => {
     const theme = useTheme()
@@ -167,6 +166,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
         if (sendSpotifyTrack && currentTrack !== '' && 'text' in lp.fn && lp.fn.text) {
             output.send(lp.fn.text(currentTrack, 128, 0, 0, false, 10));
         }
+        // eslint-disable-next-line react-hooks/exhaust
     }, [currentTrack, sendSpotifyTrack])
     
   return (
@@ -179,7 +179,9 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                 </Stack>
             </Stack>
             <Stack direction={'row'} alignItems={'center'} spacing={0}> 
-                {integrations.spotify?.active && spAuthenticated && 'text' in lp.fn && <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}><BladeIcon name='mdi:spotify' sx={{ color: sendSpotifyTrack ? theme.palette.primary.main : 'GrayText'}} /></Button>}
+                {integrations.spotify?.active && spAuthenticated && 'text' in lp.fn && <Tooltip title='Automagically show artist & title on spotify song change'>
+                    <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}><BladeIcon name='mdi:spotify' sx={{ color: sendSpotifyTrack ? theme.palette.primary.main : 'GrayText'}} /></Button>
+                </Tooltip>}
                 <Button onClick={() => initMidi()}><Autorenew /></Button>
                 <Button
                     id="basic-button"
