@@ -23,6 +23,11 @@ const BetaFeatures = () => {
         checked={features.effectfilter}
         onChange={() => setFeatures('effectfilter', !features.effectfilter)}
       />
+      <SettingsRow
+        title="Wakelock"
+        checked={features.wakelock}
+        onChange={() => setFeatures('wakelock', !features.wakelock)}
+      />
       {showFeatures.integrations ? (
         <SettingsRow
           title="Integrations"

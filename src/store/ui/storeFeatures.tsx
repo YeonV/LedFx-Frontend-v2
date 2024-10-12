@@ -29,6 +29,7 @@ export type IFeatures =
   | 'mqtt'
   | 'mqtt_hass'
   | 'gamepad'
+  | 'wakelock'
 const storeFeatures = (set: any) => ({
   features: {
     dev: false,
@@ -57,7 +58,8 @@ const storeFeatures = (set: any) => ({
     mqtt: false,
     mqtt_hass: false,
     gamepad: false,
-    matrix_cam: false
+    matrix_cam: false,
+    wakelock: false
   },
   showFeatures: {
     dev: false,
@@ -86,7 +88,8 @@ const storeFeatures = (set: any) => ({
     mqtt: false,
     mqtt_hass: false,
     gamepad: false,
-    matrix_cam: false
+    matrix_cam: false,
+    wakelock: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(
