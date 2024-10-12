@@ -35,6 +35,7 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
         setInvalidCode(!args[1])
         if (args[1]) {
           window.localStorage.removeItem('lock')
+          window.localStorage.removeItem('guestmode')
           window.location.reload()
         }
         if (args[0] === 'mfa-qr-code') {

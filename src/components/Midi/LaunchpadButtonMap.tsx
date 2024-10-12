@@ -166,7 +166,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
         if (sendSpotifyTrack && currentTrack !== '' && 'text' in lp.fn && lp.fn.text) {
             output.send(lp.fn.text(currentTrack, 128, 0, 0, false, 10));
         }
-        // eslint-disable-next-line react-hooks/exhaust
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentTrack, sendSpotifyTrack])
     
   return (
