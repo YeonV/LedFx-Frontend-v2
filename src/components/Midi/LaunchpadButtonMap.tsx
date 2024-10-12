@@ -10,6 +10,7 @@ import { defaultMapping, IMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
 import { Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import LaunchpadSettings from './LaunchpadSettings'
 
 const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScreen}:{toggleSidebar: () => void, sideBarOpen: boolean, fullScreen?: boolean, setFullScreen: (f:boolean) => void}) => {
     const theme = useTheme()
@@ -51,7 +52,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const lp= MidiDevices[midiType][midiModel]
-    const isRgb = 'rgb' in lp.fn 
+    const isRgb = 'rgb' in lp.fn && lp.fn.rgb
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
@@ -300,6 +301,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                             )}
                         </Select>
                     </Stack>
+                    {localStorage.getItem('ledfx-cloud-role') === 'creator' && <LaunchpadSettings onClick={()=>{}} />}
                     <Divider />
                     <MenuItem onClick={() => {
                         setShowMidiLogs(!showMidiLogs)
@@ -408,11 +410,18 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                     {Object.entries(Launchpad.X.command).map(([key, value]) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
                     </Select>}
                     <TextField label='Send raw MIDI message' variant='outlined' size='small' fullWidth value={midiMessageToSend} onChange={(e) => setMidiMessageToSend(e.target.value)} />
-                    <Button onClick={()=>{
-                        const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
-                        if (!output) return
-                        output.send(midiMessageToSend.replaceAll(', ',' ').split(' ').map((v: any) => parseInt(v)) || [])
-                    }}>
+                    <Button 
+                        onClick={()=>{
+                            const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+                            if (!output) return
+                            output.send(midiMessageToSend.replaceAll(', ',' ').split(' ').map((v: any) => parseInt(v)) || [])
+                        }}
+                        onContextMenu={() => {
+                            const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+                            if (!output) return
+                            if ('text' in lp.fn && lp.fn.text) output.send(lp.fn.text('Hacked by Blade!', 128, 0, 0))
+                        }}
+                    >
                         <Send />
                     </Button>
                 </Stack>
