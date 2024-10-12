@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Box, DialogContent, Divider, ListItemIcon, MenuItem, Popover, Select, SelectChangeEvent, Stack, TextField, Typography } from '@mui/material'
+import { Box, DialogContent, Divider, ListItemIcon, MenuItem, Popover, Select, Stack, TextField, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import ListItemText from '@mui/material/ListItemText'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -13,7 +13,7 @@ import useStore from '../../store/useStore'
 import { WebMidi } from 'webmidi'
 import LpColorPicker from './LpColorPicker'
 import ColorTypePicker from './ColorTypePicker'
-                    
+               
 const LaunchpadSettings = ({onClick}: {onClick: () => void}) => {
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState('')
@@ -25,9 +25,15 @@ const LaunchpadSettings = ({onClick}: {onClick: () => void}) => {
   const [buttonNumber, setButtonNumber] = useState(-1)
   const [midiMessageToSend, setMidiMessageToSend] = useState<string>('')
   const [midiLogs, setMidiLogs] = useState<{ name: string; note: string; button: number; }[]>([])
+  
 
   const midiOutput = useStore((state) => state.midiOutput)
   const midiEvent = useStore((state) => state.midiEvent)
+  const integrations = useStore((state) => state.integrations)
+  const currentTrack = useStore((state) => state.spotify.currentTrack)
+  const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
+  const sendSpotifyTrack = useStore((state) => state.spotify.sendSpotifyTrack)
+  const setSendSpotifyTrack = useStore((state) => state.setSendSpotifyTrack)
 
   const lp = LaunchpadX
   const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
@@ -47,7 +53,15 @@ const LaunchpadSettings = ({onClick}: {onClick: () => void}) => {
     if (midiEvent.button === -1) return
     setMidiLogs((prev) => [...prev, midiEvent])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [midiEvent])
+  }, [midiEvent])
+
+
+  useEffect(() => {
+    if (sendSpotifyTrack && currentTrack !== '') {
+        const [r, g, b] = rgbValues(color) || [128, 0, 0]
+        output.send(lp.fn.text(currentTrack, r, g, b, loop, speed));
+    }
+  }, [currentTrack, sendSpotifyTrack])
 
   return (
     <>
@@ -146,6 +160,7 @@ const LaunchpadSettings = ({onClick}: {onClick: () => void}) => {
                             </Box>
                         </Popover>
                         <Button onClick={()=>setLoop(!loop)}><Loop sx={{ color: loop ? 'inherit' : 'GrayText'}} /></Button>
+                        {integrations.spotify?.active && spAuthenticated && <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}><BladeIcon name='mdi:spotify' sx={{ color: sendSpotifyTrack ? 'inherit' : 'GrayText'}} /></Button>}
                         <Button onClick={()=>output.send(lp.command.stopText)}><Stop /></Button>
                         <Button onClick={()=>{
                             const [r, g, b] = rgbValues(color) || [128, 0, 0]
@@ -204,4 +219,3 @@ const LaunchpadSettings = ({onClick}: {onClick: () => void}) => {
 }
 
 export default LaunchpadSettings
-{/* <Button onClick={() => output.send(lp.command['programmer'])}>programmer</Button> */}

@@ -23,7 +23,9 @@ const storeSpotify = () => ({
   spotifyState: {} as SpotifyState,
   spotifyVol: 0,
   spotifyPos: null as any,
-  spotify: null as any
+  spotify: null as any,
+  currentTrack: '',
+  sendSpotifyTrack: false,
 })
 
 export default storeSpotify
