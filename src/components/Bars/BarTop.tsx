@@ -35,7 +35,7 @@ import {
 import { styled } from '@mui/styles'
 
 import useStore from '../../store/useStore'
-import { drawerWidth, ios } from '../../utils/helpers'
+import { drawerWidth, ios, log } from '../../utils/helpers'
 import TourDevice from '../Tours/TourDevice'
 import TourScenes from '../Tours/TourScenes'
 import TourSettings from '../Tours/TourSettings'
@@ -48,6 +48,7 @@ import { Ledfx } from '../../api/ledfx'
 import TourHome from '../Tours/TourHome'
 import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
 import { ledfxThemes } from '../../themes/AppThemes'
+import { useWakeLock } from 'react-screen-wake-lock';
 
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -131,6 +132,7 @@ const Title = (
   virtuals: any,
   frConfig: Record<string, any>
 ) => {
+  const t = window.localStorage.getItem('ledfx-theme')
   const newVerOnline =
   latestTag.replace('v', '').includes('-b')
       ? compareVersions(
@@ -148,7 +150,7 @@ const Title = (
         </Tooltip>
         {!process.env.MS_STORE && newVerOnline && frConfig.updateUrl && frConfig.releaseUrl ? (
           <Button
-            color="error"
+            color={t && ['DarkWhite', 'LightBlack'].includes(t) ? "primary" : "error"}
             variant="contained"
             onClick={() =>
               window.open(
@@ -226,9 +228,12 @@ const TopBar = () => {
   const invScenes = useStore((state) => state.tours.scenes)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
-  const updateNotificationInterval = useStore(
-    (state) => state.updateNotificationInterval
-  )
+  const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
+  const { isSupported, request, release } = useWakeLock({
+    onRequest: () => log('successWakeLock on'),
+    onError: () => log('WakeLock error'),
+    onRelease: () => log('successWakeLock off'),
+  });
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
     switch (pathname.split('/')[1]) {
@@ -366,6 +371,19 @@ const TopBar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!isSupported) return
+
+    if (features.wakelock) {
+      request()
+    } else {
+      release()
+    }
+    return () => {
+      release()
+    }
+  }, [features.wakelock])
   
   return (
     <>
