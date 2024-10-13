@@ -35,7 +35,7 @@ import {
 import { styled } from '@mui/styles'
 
 import useStore from '../../store/useStore'
-import { drawerWidth, ios, log } from '../../utils/helpers'
+import { drawerWidth, ios } from '../../utils/helpers'
 import TourDevice from '../Tours/TourDevice'
 import TourScenes from '../Tours/TourScenes'
 import TourSettings from '../Tours/TourSettings'
@@ -48,7 +48,7 @@ import { Ledfx } from '../../api/ledfx'
 import TourHome from '../Tours/TourHome'
 import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
 import { ledfxThemes } from '../../themes/AppThemes'
-import { useWakeLock } from 'react-screen-wake-lock';
+import useWakeLock from '../../utils/useWakeLook'
 
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -229,11 +229,8 @@ const TopBar = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
-  const { isSupported, request, release } = useWakeLock({
-    onRequest: () => log('successWakeLock on'),
-    onError: () => log('WakeLock error'),
-    onRelease: () => log('successWakeLock off'),
-  });
+  const { requestWakeLock, releaseWakeLock } = useWakeLock();
+
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
     switch (pathname.split('/')[1]) {
@@ -373,16 +370,16 @@ const TopBar = () => {
   }, [])
 
   useEffect(() => {
-    if (!isSupported) return
 
     if (features.wakelock) {
-      request()
+      requestWakeLock()
     } else {
-      release()
+      releaseWakeLock()
     }
     return () => {
-      release()
+      releaseWakeLock()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [features.wakelock])
   
   return (
