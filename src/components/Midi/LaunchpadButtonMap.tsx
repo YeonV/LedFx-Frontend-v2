@@ -293,7 +293,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                     <Stack sx={{ pl: 2, pr: 1, mb:1 }}>
                         <Select fullWidth disableUnderline defaultValue={'Preconfigured'}>
                             {Object.keys(MidiDevices).map((mType) =>
-                                <>
+                                <Box key={mType}>
                                     <ListSubheader>{mType}</ListSubheader>
                                     {Object.keys(MidiDevices[mType as keyof typeof MidiDevices]).map((model) => 
                                         <MenuItem key={model} 
@@ -314,7 +314,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
                                                 {model}
                                         </MenuItem>
                                     )}
-                                </>
+                                </Box>
                             )}
                         </Select>
                     </Stack>
@@ -414,9 +414,9 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
             <Stack>
                 <Box sx={{overflowY: 'auto', height: 120}}>
                     {midiLogs.map((log, index) => <Stack key={index} direction={'row'}>
-                        <Typography width={200} variant='caption'>{log.name}</Typography>
-                        <Typography width={50} variant='caption'>{log.note}</Typography>
-                        <Typography width={50} variant='caption'>{log.button}</Typography>
+                        <Typography key={'name' + index} width={200} variant='caption'>{log.name}</Typography>
+                        <Typography key={'note' + index} width={50} variant='caption'>{log.note}</Typography>
+                        <Typography key={'button' + index} width={50} variant='caption'>{log.button}</Typography>
                     </Stack>)}
                 </Box>
                 <Stack direction={'row'}>

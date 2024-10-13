@@ -242,9 +242,10 @@ const MIDIListener = () => {
           const { scene_id } = event.detail
           Object.keys(scenes).forEach((key) => {
             const scene = scenes[key]
-            const buttonNumber = parseInt(scene.scene_midiactivate.split('buttonNumber: ')[1], 10)
+            const buttonNumber = parseInt(scene.scene_midiactivate?.split('buttonNumber: ')[1], 10)
             const uiButtonNumber = getUiBtnNo(buttonNumber)
             const value = uiButtonNumber && midiMapping[0][uiButtonNumber]
+            if (!value || value.command !== 'scene') return
             if (key === scene_id) {
               sendSceneMidiMessage(output, buttonNumber, value, true)
             } else {

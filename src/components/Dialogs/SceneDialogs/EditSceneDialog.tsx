@@ -279,7 +279,7 @@ const EditSceneDialog = () => {
             } else {
               output.send(lp.ledOn(newBtnNumber, 57))
             }
-            if (lastButton.current !== newBtnNumber) {
+            if (lastButton.current !== newBtnNumber && lastButton.current > -1) {
               output.send(lp.ledOff(lastButton.current))
             }       
           }

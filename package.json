@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.105-b2",
+  "version": "2.0.105-b3",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -54,6 +54,7 @@
     "jwt-decode": "^4.0.0",
     "notistack": "^3.0.1",
     "oauth-pkce": "0.0.7",
+    "postcss": "^8.4.47",
     "prop-types": "^15.8.1",
     "qrcode": "^1.5.4",
     "qs": "^6.13.0",
@@ -69,7 +70,6 @@
     "react-otp-input": "^3.1.1",
     "react-rnd": "^10.4.12",
     "react-router-dom": "^6.26.1",
-    "react-screen-wake-lock": "^3.0.2",
     "react-scripts": "5.0.1",
     "react-webcam": "^7.2.0",
     "react-zoom-pan-pinch": "^3.6.1",
