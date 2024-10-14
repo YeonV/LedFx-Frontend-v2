@@ -6,6 +6,7 @@ import useStore from '../../store/useStore'
 
 const MIDIListener = () => {
   const [bright, setBright] = useState(1)
+  const features = useStore((state) => state.features)
   const midiInitialized = useStore((state) => state.midiInitialized)
   const scenes = useStore((state) => state.scenes)
   const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
@@ -35,7 +36,8 @@ const MIDIListener = () => {
   const setMidiOutputs = useStore((state) => state.setMidiOutputs)
   const setMidiInput = useStore((state) => state.setMidiInput)
   const setMidiOutput = useStore((state) => state.setMidiOutput)
-  const setMidiMapping = useStore((state) => state.setMidiMapping)  
+  const setMidiMapping = useStore((state) => state.setMidiMapping)
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
   const sceneDialogOpen = useStore((state) => state.dialogs.addScene.sceneKey !== '')
   const lp = MidiDevices[midiType][midiModel]
@@ -198,42 +200,48 @@ const MIDIListener = () => {
         sysex: true,
         callback: (err: any) => {
           if (err) {
-            console.error('WebMidi could not be enabled:', err)
-            alert('Please re-grant MIDI permissions to use this feature.')
-          } else {
-            const { inputs, outputs } = WebMidi
-            setMidiInputs(inputs.map((input) => input.name))
-            setMidiOutputs(outputs.map((output) => output.name))
-            if (midiInput === '') setMidiInput(inputs[inputs.length - 1]?.name)
-            if (midiOutput === '') setMidiOutput(outputs[inputs.length - 1]?.name)
-            const output = outputs[inputs.length - 1]
-            const lp = MidiDevices[midiType][midiModel].fn
-  
-            Object.entries(midiMapping[0]).forEach(([key, value]) => {
-              const buttonNumber = value.buttonNumber
-              if (!value.command || value.command === 'none' || buttonNumber === -1) {
-                if (output && buttonNumber !== -1) {
-                  try {
-                    output.send(lp.ledOff(buttonNumber))
-                  } catch (error) {
-                    console.error('Error sending MIDI message:', error)
-                  }
-                }
-                return
-              }
-            })
-  
-            if (inputs.length > 0) {
-              inputs.forEach((input) => {
-                handleMidiInput(input)
-              })
-            }
-  
-            initLeds(output)
+            setFeatures('scenemidi', false);
+            return;
           }
+    
+          const { inputs, outputs } = WebMidi;
+          setMidiInputs(inputs.map((input) => input.name));
+          setMidiOutputs(outputs.map((output) => output.name));
+    
+          if (midiInput === '') setMidiInput(inputs[inputs.length - 1]?.name);
+          if (midiOutput === '') setMidiOutput(outputs[outputs.length - 1]?.name);
+    
+          const output = outputs[outputs.length - 1];
+          const lp = MidiDevices[midiType][midiModel].fn;
+    
+          Object.entries(midiMapping).forEach(([key, value]) => {
+            const buttonNumber = value.buttonNumber;
+            if (!value.command || value.command === 'none' || buttonNumber === -1) {
+              if (output && buttonNumber !== -1) {
+                try {
+                  output.send(lp.ledOff(buttonNumber));
+                } catch (error) {
+                  console.log('Error sending MIDI message:', error);
+                }
+              }
+              return;
+            }
+          });
+    
+          if (inputs.length > 0) {
+            inputs.forEach((input) => {
+              handleMidiInput(input);
+            });
+          }
+    
+          initLeds(output);
         }
-      })
-    }
+      }).catch((_error) => {
+        setFeatures('scenemidi', false);
+        showSnackbar('error', 'Could not get MIDI permissions, please check your browser settings');
+      });
+    };
+    
   
     const handleWebsockets = (event: any) => {
       const output = WebMidi.getOutputByName(midiOutput)
@@ -264,7 +272,10 @@ const MIDIListener = () => {
       sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, isActive)
     }      
   
-    enableWebMidi()
+    if (features.scenemidi) {
+      enableWebMidi()
+    }
+    
     document.addEventListener('scene_activated', handleWebsockets)
   
     return () => {
@@ -272,7 +283,7 @@ const MIDIListener = () => {
     }
   
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scenes, sceneDialogOpen, midiInitialized])  
+  }, [scenes, sceneDialogOpen, midiInitialized, features.scenemidi])  
 
 
   // init midiMapping from scenes

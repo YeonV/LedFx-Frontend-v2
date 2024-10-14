@@ -407,7 +407,7 @@ const MControls = ({
         <EmergencyRecording sx={{ marginRight: 1}} />{camMapper ? 'Exit CameraMapper' : 'Map Pixels via Camera'}
       </Button>}
       <Collapse in={camMapper}>
-       <Webcam rowN={rowN} colN={colN} />
+       {camMapper && <Webcam rowN={rowN} colN={colN} />}
       </Collapse>
     </Stack>
   )
