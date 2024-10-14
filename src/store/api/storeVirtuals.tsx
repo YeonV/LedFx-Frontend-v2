@@ -61,6 +61,9 @@ export interface EffectConfig {
   radius?: number
   density?: number
   lower?: number
+  text?: string
+  speed_option_1?: number
+  text_color?: string
 }
 
 export interface Effect {

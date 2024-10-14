@@ -8,6 +8,7 @@ import SpSceneTrigger from './SpSceneTrigger'
 import useStore from '../../../../../store/useStore'
 import SpLayoutButtons from './SpLayoutButtons'
 import SpFloating from './SpFloating'
+import SpTexter from './SpTexter'
 
 const SpotifyWidgetPro = ({ drag = false }: { drag?: boolean }) => {
   const classes = useStyle()
@@ -20,9 +21,10 @@ const SpotifyWidgetPro = ({ drag = false }: { drag?: boolean }) => {
           <SpTrack className={`${classes.spTrack} ${drag ? swSize : ''}`} />
           <SpControls className={drag ? swSize : ''} />
           <Stack className={`${classes.spDeskVol} ${drag ? swSize : ''}`}>
-            <Stack direction="row">
+            <Stack direction="row" alignItems={'center'}>
               {drag && <SpLayoutButtons />}
               <SpSceneTrigger />
+              <SpTexter />
             </Stack>
             <SpVolume />
           </Stack>
