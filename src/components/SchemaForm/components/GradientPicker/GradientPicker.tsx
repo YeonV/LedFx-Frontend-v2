@@ -100,7 +100,7 @@ const GradientPicker = ({
         onClick={handleClick}
       />
 
-      <Popper id={id} open={open} anchorEl={anchorEl} ref={popover && popover}>
+      <Popper id={id} open={open} anchorEl={anchorEl} ref={popover && popover} sx={{ zIndex: 1300 }}>
         <div
           className={`${classes.paper} gradient-picker ${
             showHex ? 'show_hex' : ''

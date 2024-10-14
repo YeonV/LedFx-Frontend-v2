@@ -48,7 +48,7 @@ export interface EffectConfig {
   dump?: boolean
   fake_beat?: boolean
   rotate?: number
-  test?: string
+  test?: string | boolean
   speed_x?: number
   size_x?: number
   pulse_period?: number
@@ -64,6 +64,7 @@ export interface EffectConfig {
   text?: string
   speed_option_1?: number
   text_color?: string
+  font?: string
 }
 
 export interface Effect {
@@ -148,12 +149,14 @@ const storeVirtuals = (set: any) => ({
     virtId: string,
     type: string,
     config: any,
-    active: boolean
+    active: boolean,
+    fallback?: boolean
   ) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}/effects`, 'POST', {
       type,
       config,
-      active
+      active,
+      fallback
     })
 
     if (resp && resp.effect) {
@@ -174,12 +177,14 @@ const storeVirtuals = (set: any) => ({
     virtId: string,
     type: string,
     config: EffectConfig,
-    active: boolean
+    active: boolean,
+    fallback?: boolean
   ) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}/effects`, 'PUT', {
       type,
       config,
-      active
+      active,
+      fallback
     })
     if (resp && resp.status && resp.status === 'success') {
       if (resp && resp.effect) {

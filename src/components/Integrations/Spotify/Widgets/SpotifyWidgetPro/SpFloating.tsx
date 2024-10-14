@@ -11,6 +11,7 @@ const SpFloating = ({ children, width }: any) => {
 
   return (
     <Rnd
+      cancel=".nodrag"
       size={{ width: width || swWidth, height: 'auto' }}
       position={{ x: swX, y: swY }}
       onDragStop={(e, d) => {
