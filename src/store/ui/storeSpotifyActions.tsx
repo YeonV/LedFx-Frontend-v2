@@ -215,6 +215,134 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSendSpotifyTrack'
     ),
+  setSpTexter: (texter: any) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter = {...state.spotify.spotifyTexter, ...texter}
+      }),
+      false,
+      'spotify/setSpTexter'
+    ),
+  setSpTexterTextColor: (value: string) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.text_color = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+  setSpTexterBackground: (value: string) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.background_color = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+  setSpTexterFlipVertical: (value: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.flip_vertical = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+  setSpTexterFlipHorizontal: (value: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.flip_horizontal = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+  setSpTexterGradient: (value: string) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.gradient = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+  setSpTexterUseGradient: (value: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.use_gradient = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+  setSpTexterAlpha: (value: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.alpha = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterGradientRoll: (value: number) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.gradient_roll = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterRotate: (value: number) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.rotate = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterHeightPercent: (value: number) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.height_percent = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterBrightness: (value: number) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.brightness = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterBackgroundBrightness: (value: number) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.background_brightness = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterSpeed: (value: number) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.speed_option_1 = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterFont: (value: string) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.font = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
+    setSpTexterTextEffect: (value: string) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.text_effect = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
 })
 
 export default storeSpotifyActions
