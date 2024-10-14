@@ -141,6 +141,8 @@ const LaunchpadButton = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [midiEvent.button])
 
+  //  const [row, col] = uiButtonNumber.toString().split('').map(Number)
+
   return (
     <div style={{ visibility: hidden ? 'hidden' : 'visible'}}>
         <Button
@@ -152,7 +154,10 @@ const LaunchpadButton = ({
             }} 
             sx={{ 
                 width: 70,
-                height: 70,
+                height: 70,                
+                // height: (row === 8 || ((row === 2 || row === 3) && col < 5 ))  ? 35 : 70,
+                // marginRight: col === 4 && row !== 8 ? 2 : 0,
+                // marginTop: row === 3 && col < 5 ? '34px' : 0,
                 borderRadius: 1,
                 borderColor: active ? 'orange' : '#ccc',
                 borderStyle: 'solid',
