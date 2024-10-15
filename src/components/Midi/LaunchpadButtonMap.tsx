@@ -59,7 +59,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     const lp= MidiDevices[midiType][midiModel]
     const isRgb = 'rgb' in lp.fn && lp.fn.rgb
     
-    const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+    const output = WebMidi.enabled && (midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1])
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
@@ -163,7 +163,7 @@ const LaunchpadButtonMap = ({toggleSidebar, sideBarOpen, fullScreen, setFullScre
     }, [midiEvent])
 
     useEffect(() => {
-        if (sendSpotifyTrack && currentTrack !== '' && 'text' in lp.fn && lp.fn.text) {
+        if (output && sendSpotifyTrack && currentTrack !== '' && 'text' in lp.fn && lp.fn.text) {
             output.send(lp.fn.text(currentTrack, 128, 0, 0, false, 10));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -244,7 +244,7 @@ const MIDIListener = () => {
     
   
     const handleWebsockets = (event: any) => {
-      const output = WebMidi.getOutputByName(midiOutput)
+      const output = WebMidi.enabled && WebMidi.getOutputByName(midiOutput)
       try {
         if (event.type === 'scene_activated') {
           const { scene_id } = event.detail
@@ -253,7 +253,7 @@ const MIDIListener = () => {
             const buttonNumber = parseInt(scene.scene_midiactivate?.split('buttonNumber: ')[1], 10)
             const uiButtonNumber = getUiBtnNo(buttonNumber)
             const value = uiButtonNumber && midiMapping[0][uiButtonNumber]
-            if (!value || value.command !== 'scene') return
+            if (!value || value.command !== 'scene' || !output) return
             if (key === scene_id) {
               sendSceneMidiMessage(output, buttonNumber, value, true)
             } else {
