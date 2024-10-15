@@ -25,7 +25,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '
   const midiModel = useStore((state) => state.midiModel)
   const colors = MidiDevices[midiType][midiModel].colors
   const getColorFromValue = useStore((state) => state.getColorFromValue)
-  const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+  const output = WebMidi.enabled && (midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1])
   const lp = MidiDevices[midiType][midiModel]
   const isRgb = 'rgb' in lp.fn 
 
@@ -109,7 +109,7 @@ const LpColorPicker = ({ onColorSelect, defaultColor, midiButtonNumber, type = '
                 onChange={(color: string) => {
                   setSelectedColor(color)
                   const [r,g,b] = rgbValues(color) || [255,0,0]
-                  if ('rgb' in lp.fn && lp.fn.rgb && midiButtonNumber) {
+                  if (output && 'rgb' in lp.fn && lp.fn.rgb && midiButtonNumber) {
                     output.send(lp.fn.rgb(midiButtonNumber,r,g,b));
                   }
                 }}
