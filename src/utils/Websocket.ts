@@ -60,6 +60,12 @@ function createSocket() {
           type: 'subscribe_event'
         }
         ;(ws as any).send(JSON.stringify(++reqs.id && reqs))
+        const reqst = {
+          event_type: 'effect_set',
+          id: 1,
+          type: 'subscribe_event'
+        }
+        ;(ws as any).send(JSON.stringify(++reqst.id && reqst))
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === 'visualisation_update') {
@@ -92,6 +98,13 @@ function createSocket() {
         if (JSON.parse(event.data).event_type === 'graph_update') {
           document.dispatchEvent(
             new CustomEvent('graph_update', {
+              detail: JSON.parse(event.data)
+            })
+          )
+        }
+        if (JSON.parse(event.data).event_type === 'effect_set') {
+          document.dispatchEvent(
+            new CustomEvent('effect_set', {
               detail: JSON.parse(event.data)
             })
           )

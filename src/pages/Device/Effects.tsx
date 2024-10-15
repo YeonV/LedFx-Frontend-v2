@@ -176,6 +176,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals,virtuals[virtId],virtuals[virtId]?.effect,JSON.stringify(virtuals[virtId]?.effect?.config),virtual,virtual?.effect,virtual?.effect.config,effectType])
 
+  useEffect(() => {
+    const handleWebsockets = (_e: any) => {
+      getVirtuals()
+    }
+    document.addEventListener('effect_set', handleWebsockets)
+    return () => {
+      document.removeEventListener('effect_set', handleWebsockets)
+    }
+  }, [])
   // console.log('virtual', virtual?.effect?.config)
   return (
     <>
