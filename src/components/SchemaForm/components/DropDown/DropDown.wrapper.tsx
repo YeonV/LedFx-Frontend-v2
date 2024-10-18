@@ -7,6 +7,7 @@ export interface EffectDropDownProps {
   setEffect: any
   getVirtuals: any
   ommit?: string[]
+  title?: string
 }
 
 const EffectDropDown = ({
@@ -15,7 +16,8 @@ const EffectDropDown = ({
   features,
   setEffect,
   getVirtuals,
-  ommit
+  ommit,
+  title = "Effect Type"
 }: EffectDropDownProps) => {
   const effectNames =
     effects &&
@@ -45,7 +47,7 @@ const EffectDropDown = ({
       onChange={(e: any) => onEffectTypeChange(e)}
       groups={groups}
       showFilter={features.effectfilter}
-      title="Effect Type"
+      title={title}
     />
   )
 }

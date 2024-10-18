@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Grid, Stack, Typography } from '@mui/material'
+import { Card, CardContent, Grid, Stack, Typography } from '@mui/material'
 import { Link, useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import EffectsCard from './Effects'
@@ -92,16 +92,51 @@ const Device = () => {
     }))
     promises.push(setEffect(
       `${virtId}-foreground`,
-      'texter2d',
-      { text: 'LedFx', speed_option_1: Math.floor(1 + ((virtual?.pixel_count || 1) / 6)) <= 5 ? 0 : 2 },
+      'blade_power_plus',
+      {
+        "blur": 2,
+        "background_color": "#000080",
+        "multiplier": 0.5,
+        "decay": 0.7,
+        "frequency_range": "Lows (beat+bass)",
+        "gradient": "linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)",
+        "mirror": false,
+        "flip": true,
+        "gradient_roll": 0,
+        "fix_hues": true,
+        "brightness": 1,
+        "background_brightness": 0.63
+      },
       true
     ).then(() => {
       updateVirtual(`${virtId}-foreground`, true)
     }))
     promises.push(setEffect(
       `${virtId}-background`,
-      'digitalrain2d',
-      {},
+      'plasma2d',
+      {
+        "flip_horizontal": false,
+        "test": false,
+        "diag": false,
+        "gradient": "linear-gradient(90deg, #ff00b2 0.00%,#ff2800 50.00%,#ffc800 100.00%)",
+        "gradient_roll": 0,
+        "background_brightness": 1,
+        "density": 0.5,
+        "flip_vertical": false,
+        "lower": 0.01,
+        "mirror": false,
+        "flip": false,
+        "rotate": 0,
+        "radius": 0.2,
+        "frequency_range": "Lows (beat+bass)",
+        "advanced": false,
+        "dump": false,
+        "twist": 0.07,
+        "blur": 0,
+        "background_color": "#000000",
+        "density_vertical": 0.1,
+        "brightness": 0.37
+        },
       true
     ).then(() => {
       updateVirtual(`${virtId}-background`, true)
@@ -200,6 +235,11 @@ const Device = () => {
                 <EffectsComplex virtId={`${virtId}-mask`} key={`${virtId}-mask`} initMatix={matrixOpen} />
                 <EffectsComplex virtId={`${virtId}-foreground`} key={`${virtId}-foreground`} initMatix={matrixOpen} />
                 <EffectsComplex virtId={`${virtId}-background`} key={`${virtId}-background`} initMatix={matrixOpen} />
+                <Card sx={{ padding: '16px'}} variant="outlined">
+                  <Typography variant="body2" color="textSecondary">
+                    No presets available for complex effects. Please use scenes to save your configuration.
+                  </Typography> 
+                </Card>
               </Stack>
           </Grid>}
 
