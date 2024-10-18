@@ -20,7 +20,6 @@ import {
   GridOff,
   Fullscreen as FullScreenIcon
 } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
@@ -78,25 +77,22 @@ const orderEffectProperties = (
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false)
   const showMatrix = useStore((state) => state.showMatrix)
-  const [matrix, setMatrix] = useState(showMatrix)
+  
   const getVirtuals = useStore((state) => state.getVirtuals)
-  const getSchemas = useStore((state) => state.getSchemas)
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
   const virtuals = useStore((state) => state.virtuals)
   const effects = useStore((state) => state.schemas.effects)
-  const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const viewMode = useStore((state) => state.viewMode)
   const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const features = useStore((state) => state.features)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
-  
+  const [matrix, setMatrix] = useState(showMatrix || (virtuals[virtId]?.config?.rows > 7 && virtuals[virtId]?.pixel_count > 100 && virtuals[virtId].effect.type === 'blender') )
   const handle = useFullScreenHandle();
   const [fullScreen, setFullScreen] = useState(false)
 
-  const graphs = useStore((state) => state.graphs)
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
@@ -179,6 +175,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     return () => {
       document.removeEventListener('effect_set', handleWebsockets)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // console.log('virtual', virtual?.effect?.config)
   return (
@@ -288,13 +285,13 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             }}
           >
             <FullScreen handle={handle} onChange={setFullScreen}>
-            <PixelGraph
-              fullScreen={fullScreen}
-              showMatrix={matrix}
-              virtId={virtId}
-              active={true}
-              dummy={false}
-            />
+              <PixelGraph
+                fullScreen={fullScreen}
+                showMatrix={matrix}
+                virtId={virtId}
+                active={true}
+                dummy={false}
+              />
             </FullScreen>
           </Box>
           <div style={{ height: '1rem' }} />
