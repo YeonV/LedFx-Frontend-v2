@@ -92,6 +92,26 @@ const storeGeneral = (set: any) => ({
       'general/setShowActiveDevicesFirst'
     )
   },
+  showComplex: false,
+  setShowComplex: (val: boolean) => {
+    set(
+      produce((state: IStore) => {
+        state.showComplex = val
+      }),
+      false,
+      'general/setShowComplex'
+    )
+  },
+  showGaps: false,
+  setShowGaps: (val: boolean) => {
+    set(
+      produce((state: IStore) => {
+        state.showGaps = val
+      }),
+      false,
+      'general/setShowGaps'
+    )
+  },
   graphs: true,
   toggleGraphs: () => {
     set(

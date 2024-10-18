@@ -35,6 +35,8 @@ const Devices = () => {
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const graphs = useStore((state) => state.graphsMulti)
   const graphsMulti = useStore((state) => state.graphsMulti)
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
@@ -103,9 +105,12 @@ const Devices = () => {
       </Collapse>
       <div className={classes.cardWrapper}>
         {virtuals && Object.keys(virtuals).length ? (
-          Object.keys(virtuals).map((virtual, i) => (
-            <DeviceCard virtual={virtual} key={i} index={i} />
-          ))
+          Object.keys(virtuals)
+            .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
+            .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
+            .map((virtual, i) => (
+              <DeviceCard virtual={virtual} key={i} index={i} />
+            ))
         ) : (
           <NoYet type="Device" />
         )}
