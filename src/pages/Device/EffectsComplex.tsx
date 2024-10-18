@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-
 import { useEffect, useState } from 'react'
 import {
   Card,
@@ -18,7 +16,7 @@ import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 import PixelGraph from '../../components/PixelGraph'
-import ComplexType from './ComplexType'
+import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -68,7 +66,9 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
   const updateEffect = useStore((state) => state.updateEffect)
+  const setEffect = useStore((state) => state.setEffect)
   const virtuals = useStore((state) => state.virtuals)
+  const features = useStore((state) => state.features)
   const effects = useStore((state) => state.schemas.effects)
   const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
   const [fade] = useState(false)
@@ -143,7 +143,16 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
           />
         </Box>
         <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', paddingTop: '1rem' }}>
-          <ComplexType virtId={virtId} value={(virtual && virtual.effect && virtual.effect.type) || ''} />
+          <Box sx={{ flexGrow: 1 }}>
+            <EffectDropDown 
+              effects={effects}
+              virtual={virtual}
+              features={features}
+              setEffect={setEffect}
+              getVirtuals={getVirtuals}
+              ommit={['Blender']}
+              />
+            </Box>
           <IconButton onClick={() => setShowSettings(!showSettings)}>
             <Settings />
           </IconButton>
