@@ -18,7 +18,7 @@ import {
   PlayArrow,
   GridOn,
   GridOff,
-  Fullscreen
+  Fullscreen as FullScreenIcon
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
@@ -29,6 +29,7 @@ import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -91,7 +92,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const updateVirtual = useStore((state) => state.updateVirtual)
   const features = useStore((state) => state.features)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
-  const navigate = useNavigate()
+  
+  const handle = useFullScreenHandle();
+  const [fullScreen, setFullScreen] = useState(false)
 
   const graphs = useStore((state) => state.graphs)
   const getV = () => {
@@ -149,14 +152,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
   }
 
-  useEffect(() => {
-    getVirtuals()
-    getSchemas()
-    if (graphs) {
-      setPixelGraphs([virtId])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType])
 
   useEffect(() => {
     // if (virtuals && virtual?.effect?.config) {
@@ -212,6 +207,19 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 justifyContent: 'flex-end'
               }}
             >
+              {!(virtuals &&
+                virtual &&
+                effects &&
+                virtual.effect &&
+                virtual.effect.config) && virtual?.config?.rows && virtual?.config?.rows > 1 && (
+                  <Button
+                    style={{ marginRight: '.5rem' }}
+                    className="step-device-seven"
+                    onClick={handle.enter}
+                  >
+                    <FullScreenIcon />
+                  </Button>
+                )}
               {effects && effectType && (
                 <>
                   {viewMode !== 'user' && (
@@ -238,9 +246,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                     <Button
                       style={{ marginRight: '.5rem' }}
                       className="step-device-seven"
-                      onClick={() => navigate(`/graph/${virtId}`)}
+                      onClick={handle.enter}
                     >
-                      <Fullscreen />
+                      <FullScreenIcon />
                     </Button>
                   )}
                   <Button
@@ -279,35 +287,24 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
               }`
             }}
           >
+            <FullScreen handle={handle} onChange={setFullScreen}>
             <PixelGraph
+              fullScreen={fullScreen}
               showMatrix={matrix}
               virtId={virtId}
-              active={
-                virtuals &&
-                virtual &&
-                effects &&
-                virtual.effect &&
-                virtual.effect.config
-              }
-              dummy={
-                !(
-                  virtuals &&
-                  virtual &&
-                  effects &&
-                  virtual.effect &&
-                  virtual.effect.config
-                )
-              }
+              active={true}
+              dummy={false}
             />
+            </FullScreen>
           </Box>
           <div style={{ height: '1rem' }} />
-          <EffectDropDown
+          {virtual && <EffectDropDown
             effects={effects}
             virtual={virtual}
             features={features}
             getVirtuals={getVirtuals}
             setEffect={setEffect}
-          />
+          />}
         </CardContent>
       </Card>
       {virtuals &&

@@ -13,7 +13,6 @@ const Graph = () => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
   const virtuals = useStore((state) => state.virtuals)
-  const effects = useStore((state) => state.schemas.effects)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
 
@@ -43,7 +42,6 @@ const Graph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType])
 
-  // console.log('virtual', virtual?.effect?.config)
   return (
     <Box
       sx={
@@ -67,22 +65,8 @@ const Graph = () => {
           showMatrix
           fullScreen
           virtId={virtId}
-          active={
-            virtuals &&
-            virtual &&
-            effects &&
-            virtual.effect &&
-            virtual.effect.config
-          }
-          dummy={
-            !(
-              virtuals &&
-              virtual &&
-              effects &&
-              virtual.effect &&
-              virtual.effect.config
-            )
-          }
+          active={true}
+          dummy={false}
         />
       )}
     </Box>
