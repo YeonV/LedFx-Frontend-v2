@@ -22,10 +22,7 @@ const EffectTypeDialog = ({
   showFilter,
   title
 }: EffectDropDownProps) => {
-  const dialogOpen = useStore(
-    (state) => state.dialogs.effectType?.open || false
-  )
-  const setDialogOpen = useStore((state) => state.setDialogOpenEffectType)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const handleClose = () => {
     setDialogOpen(false)
   }
