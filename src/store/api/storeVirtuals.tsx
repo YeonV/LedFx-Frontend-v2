@@ -65,6 +65,9 @@ export interface EffectConfig {
   speed_option_1?: number
   text_color?: string
   font?: string
+  mask?: string
+  foreground?: string
+  background?: string
 }
 
 export interface Effect {
