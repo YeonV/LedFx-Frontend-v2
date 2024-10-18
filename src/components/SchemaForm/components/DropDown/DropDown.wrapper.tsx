@@ -6,6 +6,7 @@ export interface EffectDropDownProps {
   features: any
   setEffect: any
   getVirtuals: any
+  ommit?: string[]
 }
 
 const EffectDropDown = ({
@@ -13,11 +14,14 @@ const EffectDropDown = ({
   virtual,
   features,
   setEffect,
-  getVirtuals
+  getVirtuals,
+  ommit
 }: EffectDropDownProps) => {
   const effectNames =
     effects &&
-    Object.keys(effects).map((eid) => ({
+    Object.keys(effects)
+      .filter(e => !ommit?.includes(effects[e].name))
+      .map((eid) => ({
       name: effects[eid].name,
       id: effects[eid].id,
       category: effects[eid].category
