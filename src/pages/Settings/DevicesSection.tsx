@@ -13,6 +13,10 @@ const DevicesSection = () => {
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const showHex = useStore((state) => state.ui.showHex)
   const setShowHex = useStore((state) => state.ui.setShowHex)
+  const showComplex = useStore((state) => state.showComplex)
+  const setShowComplex = useStore((state) => state.setShowComplex)
+  const showGaps = useStore((state) => state.showGaps)
+  const setShowGaps = useStore((state) => state.setShowGaps)
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
   )
@@ -60,6 +64,16 @@ const DevicesSection = () => {
         title="Sort active devices first"
         checked={showActiveDevicesFirst}
         onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
+      />
+      <SettingsRow
+        title="Show complex devices"
+        checked={showComplex}
+        onChange={() => setShowComplex(!showComplex)}
+      />
+      <SettingsRow
+        title="Show gaps"
+        checked={showGaps}
+        onChange={() => setShowGaps(!showGaps)}
       />
     </>
   )
