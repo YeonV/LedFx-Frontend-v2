@@ -5,6 +5,7 @@ import {
   Box,
   IconButton,
   Stack,
+  capitalize,
 } from '@mui/material'
 import {
   GridOn,
@@ -130,7 +131,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
 
   return (
     <Card variant="outlined">
-      <CardContent style={{ padding: '10px 16px 16px 16px' }}>
+      <CardContent style={{ padding: '10px 16px 0px 16px' }}>
         <Box
           sx={fade ? { opacity: 0.2, transition: 'opacity', transitionDuration: '1000' } : { opacity: 1, transitionDuration: '0'}}
           style={{ transitionDuration: `${(virtual?.config?.transition_time || 1) * 1000}`}}
@@ -142,7 +143,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
             dummy={false}
           />
         </Box>
-        <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', paddingTop: '1rem' }}>
+        <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', paddingTop: '1rem', mb: 2 }}>
           <Box sx={{ flexGrow: 1 }}>
             <EffectDropDown 
               effects={effects}
@@ -151,6 +152,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
               setEffect={setEffect}
               getVirtuals={getVirtuals}
               ommit={['Blender']}
+              title={`${capitalize(virtId.split('-').slice(-1)[0])} Effect`}
               />
             </Box>
           <IconButton onClick={() => setShowSettings(!showSettings)}>
