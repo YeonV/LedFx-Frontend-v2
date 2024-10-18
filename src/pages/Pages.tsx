@@ -38,6 +38,7 @@ const Routings = ({ handleWs }: any) => {
   const isElect = isElectron()
   const mp = useStore((state) => state.ui.mp)
   const setMp = useStore((state) => state.ui.setMp)
+  const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
   const smartBarOpen = useStore(
@@ -67,10 +68,10 @@ const Routings = ({ handleWs }: any) => {
     })
   }
   useHotkeys(['ctrl+alt+a'], () => {
-    setFeatures('beta', true)
-    setFeatures('alpha', true)
-    setShowFeatures('alpha', true)
-    setShowFeatures('beta', true)
+    setFeatures('beta', !features.beta)
+    setFeatures('alpha', !features.alpha)
+    setShowFeatures('alpha', !features.beta)
+    setShowFeatures('beta', !features.alpha)
   })
 
   return (
