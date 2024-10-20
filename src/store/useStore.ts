@@ -72,7 +72,7 @@ const useStore = create(
           Object.fromEntries(
             Object.entries(state).filter(
               ([key]) =>
-                !['dialogs', 'disconnected', 'ui', 'spotify'].includes(key)
+                !['dialogs', 'disconnected', 'ui', 'spotify', 'pixelGraphs'].includes(key)
             )
           )
       }
