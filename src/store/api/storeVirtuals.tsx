@@ -100,6 +100,15 @@ export interface Virtual {
 }
 
 const storeVirtuals = (set: any) => ({
+  newBlender: '',
+  setNewBlender: (v: string) =>
+    set(
+      produce((state: IStore) => {
+        state.newBlender = v
+      }),
+      false,
+      'api/setNewBlender'
+    ),
   virtuals: {} as Record<string, Virtual>,
   activeSegment: -1,
   setActiveSegment: (v: number) =>

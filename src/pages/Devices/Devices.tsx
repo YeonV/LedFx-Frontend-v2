@@ -5,6 +5,7 @@ import useStore from '../../store/useStore'
 import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
 import ws from '../../utils/Websocket'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -37,9 +38,20 @@ const Devices = () => {
   const graphsMulti = useStore((state) => state.graphsMulti)
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
+  const newBlender = useStore((state) => state.newBlender)
+  const setNewBlender = useStore((state) => state.setNewBlender)
   const infoAlerts = useStore((state) => state.ui.infoAlerts)
   const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (newBlender !== '') {
+      setNewBlender('')
+      navigate(`/device/${newBlender}`)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newBlender])
 
   useEffect(() => {
     getDevices()

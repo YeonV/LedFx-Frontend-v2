@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Card, CardContent, Grid, Stack, Typography } from '@mui/material'
-import { Link, useParams } from 'react-router-dom'
+import { Card, Grid, Stack, Typography } from '@mui/material'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import EffectsCard from './Effects'
 import PresetsCard from './Presets'
@@ -11,6 +11,7 @@ import EffectsComplex from './EffectsComplex'
 import { Virtual } from '../../store/api/storeVirtuals'
 
 const Device = () => {
+  const navigate = useNavigate()
   const { virtId } = useParams()
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getPresets = useStore((state) => state.getPresets)
@@ -21,6 +22,7 @@ const Device = () => {
   const updateEffect = useStore((state) => state.updateEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
+  const setNewBlender = useStore((state) => state.setNewBlender)
   const graphs = useStore((state) => state.graphs)
   const features = useStore((state) => state.features)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
@@ -45,8 +47,8 @@ const Device = () => {
 
   const effectType = virtual && virtual.effect.type
 
-  const addComlexDummy = (virtual: Virtual, complex: 'mask' | 'foreground' | 'background', icon: string) => {
-    return addDevice({
+  const addComlexDummy = async (virtual: Virtual, complex: 'mask' | 'foreground' | 'background', icon: string) => {
+    return await addDevice({
       type: 'dummy',
       config: {
         center_offset: 0,
@@ -210,6 +212,8 @@ const Device = () => {
           true
         ).then(() => {
           updateVirtual(virtId, true)
+          setNewBlender(virtId)
+          navigate(`/Devices`)
         })
       })
     }
@@ -227,7 +231,7 @@ const Device = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graphs, setPixelGraphs, getVirtuals, getSchemas, effectType, virtId && virtuals[virtId].effect.type === 'blender'])
+  }, [graphs, effectType, virtId && virtuals[virtId].effect.type])
 
   const matrixOpen = !!(virtId && virtuals[virtId].pixel_count > 100 && virtuals[virtId].config.rows > 7)
   return (
