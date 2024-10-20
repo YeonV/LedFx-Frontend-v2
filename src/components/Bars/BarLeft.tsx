@@ -28,6 +28,8 @@ const LeftBar = () => {
   const classes = useStyles()
   const theme = useTheme()
   const { pathname } = useLocation()
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
   const virtuals = useStore((state) => state.virtuals)
   const open = useStore((state) => state.ui.bars?.leftBar.open)
   const setOpen = useStore((state) => state.ui.setLeftBarOpen)
@@ -95,7 +97,10 @@ const LeftBar = () => {
       </Box>
       <Divider />
       <List>
-        {Object.keys(virtuals).map((d, i) => (
+        {Object.keys(virtuals)
+            .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
+            .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
+            .map((d, i) => (
           <Link
             style={{ textDecoration: 'none' }}
             key={i}
@@ -120,7 +125,6 @@ const LeftBar = () => {
                     }
                   : {}
               }
-              button
               key={virtuals[d].config.name}
             >
               <ListItemIcon>
