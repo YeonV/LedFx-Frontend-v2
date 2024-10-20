@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, MenuItem, Select, Slider, Stack, Switch, Tooltip, useTheme } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, MenuItem, Select, Slider, Stack, Switch, useTheme } from '@mui/material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon'

@@ -10,7 +10,6 @@ import {
 } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { ArrowDropDown, Search } from '@mui/icons-material'
-import useStore from '../../store/useStore'
 import { EffectDropDownProps } from '../SchemaForm/components/DropDown/DropDown.props'
 import useStyles from '../SchemaForm/components/DropDown/DropDown.styles'
 import BladeFrame from '../SchemaForm/components/BladeFrame'
