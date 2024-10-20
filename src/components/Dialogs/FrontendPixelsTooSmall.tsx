@@ -54,7 +54,7 @@ export default function FrontendPixelsTooSmall() {
         virtuals[a]?.pixel_count > virtuals[b]?.pixel_count ? a : b,
       0
     )
-    if (fPixels && (showMatrix || alphaMatrix) && tooBig.length > 0) {
+    if (fPixels && (showMatrix || alphaMatrix) && tooBig.length > 0 && fPixels < 4096) {
       setBiggestDevice({ id: biggest, pixels: virtuals[biggest]?.pixel_count })
       setDialogOpenLessPixels(true)
     }
