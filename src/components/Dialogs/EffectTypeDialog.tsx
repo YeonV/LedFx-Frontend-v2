@@ -166,7 +166,7 @@ const EffectTypeDialog = ({
             open
             fullWidth
             disablePortal
-            value={value}
+            value={typeof value === 'string' && value !== '' ? value : null}
             onChange={(e: any, b: any) => {
               const ne = { ...e, target: { ...e.target, value: b.value } }
               if (onChange) {
