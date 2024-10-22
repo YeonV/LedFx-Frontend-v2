@@ -2,6 +2,12 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 
+
+export interface IVirtualOrder {
+  virtId: string,
+  order: number
+}
+
 export type Segment = [
   device: string,
   start: number,
@@ -100,6 +106,16 @@ export interface Virtual {
 }
 
 const storeVirtuals = (set: any) => ({
+  virtualOrder: [] as IVirtualOrder[],
+  setVirtualOrder: (order: IVirtualOrder[]) => {
+    set(
+      produce((s: IStore) => {
+        s.virtualOrder = order
+      }),
+      false,
+      'setVirtualOrder'
+    )
+  },
   newBlender: '',
   setNewBlender: (v: string) =>
     set(

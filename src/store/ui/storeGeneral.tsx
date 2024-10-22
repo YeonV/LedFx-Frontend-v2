@@ -82,11 +82,23 @@ const storeGeneral = (set: any) => ({
     )
   },
   // graphs: !!isElectron(),
+  sortByUser: false,
+  setSortByUser: (val: boolean) => {
+    set(
+      produce((state: IStore) => {
+        state.sortByUser = val
+        state.showActiveDevicesFirst = false
+      }),
+      false,
+      'general/setSortByUser'
+    )
+  },
   showActiveDevicesFirst: true,
   setShowActiveDevicesFirst: (val: boolean) => {
     set(
       produce((state: IStore) => {
         state.showActiveDevicesFirst = val
+        state.sortByUser = false
       }),
       false,
       'general/setShowActiveDevicesFirst'

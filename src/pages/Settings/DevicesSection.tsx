@@ -17,6 +17,8 @@ const DevicesSection = () => {
   const setShowComplex = useStore((state) => state.setShowComplex)
   const showGaps = useStore((state) => state.showGaps)
   const setShowGaps = useStore((state) => state.setShowGaps)
+  const sortByUser = useStore((state) => state.sortByUser)
+  const setSortByUser = useStore((state) => state.setSortByUser)
   const showActiveDevicesFirst = useStore(
     (state) => state.showActiveDevicesFirst
   )
@@ -64,6 +66,11 @@ const DevicesSection = () => {
         title="Sort active devices first"
         checked={showActiveDevicesFirst}
         onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
+      />
+      <SettingsRow
+        title="Sort devices by user"
+        checked={sortByUser}
+        onChange={() => setSortByUser(!sortByUser)}
       />
       <SettingsRow
         title="Show complex devices"

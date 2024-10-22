@@ -5,7 +5,9 @@ import {
   TextField,
   InputAdornment,
   Button,
-  Tooltip
+  Tooltip,
+  Typography,
+  Alert
 } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
@@ -38,6 +40,7 @@ const BladeSelect = ({
   type
 }: BladeSelectProps) => {
   const inputRef = useRef<any>(null)
+  const [showReserved, setShowReserved] = useState(false)
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
       ? (model && model_id && model[model_id]) ||
@@ -91,7 +94,7 @@ const BladeSelect = ({
                 </MenuItem>
               ))}
           </Select>
-        ) : (
+        ) : (<>
           <TextField
             helperText={!hideDesc && schema.description}
             defaultValue={
@@ -103,6 +106,7 @@ const BladeSelect = ({
             onBlur={(e) => onChange(model_id, e.target.value)}
             style={textStyle as any}
           />
+          </>
         )
       ) : schema.enum && Array.isArray(schema.enum) ? (
         <Select
@@ -184,10 +188,26 @@ const BladeSelect = ({
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
-              inputRef.current.value = e.target.value
+              const reservedParts = ['gap-', '-background', '-foreground', '-mask']
+              if (schema.title === 'Name' && reservedParts.some((part) => e.target.value.startsWith(part) || e.target.value.endsWith(part))) {
+                setShowReserved(true)
+                inputRef.current.value = e.target.value.replace(/(gap-|-background|-foreground|-mask)/g, '')
+              } else {
+                setShowReserved(false)
+                inputRef.current.value = e.target.value
+              }
             }}
             style={textStyle as any}
           />
+          {showReserved && (
+            <Alert severity="warning" onClick={() => setShowReserved(!showReserved)} sx={{ marginTop: 1, width: '400px' }}>
+            <Typography
+              variant="caption"
+              >
+                Reserved word removed
+              </Typography>
+            </Alert>
+          )}
           {schema.id === 'image_location' && (
             <GifPicker
               onChange={(gif: string) => {
