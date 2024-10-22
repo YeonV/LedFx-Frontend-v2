@@ -102,4 +102,8 @@ export interface DeviceCardProps {
   /**
    * JSX styles
    */
+  onContextMenu?: any
+  /**
+   * On Context Menu
+   */
 }

@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react'
 import useStore from '../../../store/useStore'
 import DeviceCard from './DeviceCard'
+import { IVirtualOrder } from '../../../store/api/storeVirtuals'
+import { Button, Popover, Typography } from '@mui/material'
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
 
 const DeviceCardWrapper = ({
   virtual,
@@ -26,11 +29,27 @@ const DeviceCardWrapper = ({
     (state) => state.showActiveDevicesFirst
   )
   const graphs = useStore((state) => state.graphs)
+  const virtualOrder = useStore((state) => state.virtualOrder)
+  const setVirtualOrder = useStore((state) => state.setVirtualOrder)
   const graphsMulti = useStore((state) => state.graphsMulti)
   const clearEffect = useStore((state) => state.clearEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const activateDevice = useStore((state) => state.activateDevice)
   const showMatrix = useStore((state) => state.showMatrix)
+  const sortByUser = useStore((state) => state.sortByUser)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [order, setOrder] = useState<number | 'unset'>(0)
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'device-popover' : undefined;
 
   const [_fade, setFade] = useState(false)
   const [_isActive, setIsActive] = useState<boolean>(
@@ -93,36 +112,100 @@ const DeviceCardWrapper = ({
     )
   }, [virtuals, devices, virtual])
 
-  const order = () => {
-    if (showActiveDevicesFirst) {
-      if (
-        virtuals[virtual]?.config.rows > 1 &&
-        !virtuals[virtual]?.effect.name &&
-        showMatrix
-      ) {
-        return -1
+  useEffect(() => {
+    // initial device order if not set
+    if (!sortByUser) return
+    const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]
+    Object.keys(virtuals).map((s, i) => {
+      if (!(v.some(o => o.virtId === s))) {
+        return v.push({virtId: s, order: i})
       }
-      if (virtuals[virtual]?.config.rows > 1 && showMatrix) {
-        return -2
+      return null
+    })
+    setVirtualOrder(v)
+    // eslint-disable-next-line
+  }, [virtuals])
+
+  const moveLeft = () => {
+    const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[];
+    const index = v.findIndex(o => o.virtId === virtual);
+    if (index === 0) return;
+  
+    // Swap the order values
+    const tempOrder = v[index].order;
+    v[index].order = v[index - 1].order;
+    v[index - 1].order = tempOrder;
+  
+    // Ensure the order values are unique and sequential
+    v.sort((a, b) => a.order - b.order).forEach((item, idx) => {
+      item.order = idx;
+    });
+  
+    setVirtualOrder(v);
+    handleClose();
+  };
+  
+  const moveRight = () => {
+    const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[];
+    const index = v.findIndex(o => o.virtId === virtual);
+    if (index === v.length - 1) return;
+  
+    // Swap the order values
+    const tempOrder = v[index].order;
+    v[index].order = v[index + 1].order;
+    v[index + 1].order = tempOrder;
+  
+    // Ensure the order values are unique and sequential
+    v.sort((a, b) => a.order - b.order).forEach((item, idx) => {
+      item.order = idx;
+    });
+  
+    setVirtualOrder(v);
+    handleClose();
+  };
+
+  useEffect(() => {
+    const preOrder = () => {
+      const customOrder = virtualOrder.find(o => o.virtId === virtual)?.order
+      if (customOrder !== undefined) {
+        return customOrder
       }
-      if (
-        !(
-          devices[Object.keys(devices).find((d) => d === virtual) || '']
-            ?.active_virtuals!.length > 0 || virtuals[virtual]?.effect.name
-        )
-      ) {
-        return 100
-      }
-      if (!virtuals[virtual]?.effect.name) {
-        return 50
+      if (showActiveDevicesFirst) {
+        if (
+          virtuals[virtual]?.config.rows > 1 &&
+          !virtuals[virtual]?.effect.name &&
+          showMatrix
+        ) {
+          return -1
+        }
+        if (virtuals[virtual]?.config.rows > 1 && showMatrix) {
+          return -2
+        }
+        if (
+          !(
+            devices[Object.keys(devices).find((d) => d === virtual) || '']
+              ?.active_virtuals!.length > 0 || virtuals[virtual]?.effect.name
+          )
+        ) {
+          return 100
+        }
+        if (!virtuals[virtual]?.effect.name) {
+          return 50
+        }
+        return 'unset'
       }
       return 'unset'
     }
-    return 'unset'
-  }
+    setOrder(preOrder())
+  }, [virtualOrder])
 
-  return virtual && virtuals[virtual] ? (
+  return virtual && virtuals[virtual] ? (<>
     <DeviceCard
+      onContextMenu={(e: any) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (sortByUser) handleClick(e)
+      }}
       deviceName={
         virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name
       }
@@ -166,9 +249,23 @@ const DeviceCardWrapper = ({
       }
       isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
       additionalStyle={{
-        order: order()
+        order: order
       }}
     />
+     <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <Button variant='text' onClick={moveLeft}><ArrowBackIos /></Button>
+        <Button variant='text' onClick={moveRight}><ArrowForwardIos /></Button>
+      </Popover>
+    </>
   ) : null
 }
 

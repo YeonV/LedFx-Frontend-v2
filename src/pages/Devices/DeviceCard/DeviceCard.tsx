@@ -56,7 +56,8 @@ const DeviceCard = ({
   transitionTime = 5,
   isDevice = 'yz-quad',
   graphsActive = true,
-  showMatrix = false
+  showMatrix = false,
+  onContextMenu
 }: DeviceCardProps) => {
   const classes = useStyle()
   const theme = useTheme()
@@ -77,6 +78,7 @@ const DeviceCard = ({
 
   return (
     <NavLink
+      onContextMenu={onContextMenu}
       to={linkTo}
       className={`${classes.virtualCardPortraitW} ${
         isEffectSet ? 'active' : ''
