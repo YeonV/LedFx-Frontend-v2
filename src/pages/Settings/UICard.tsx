@@ -25,6 +25,7 @@ const UICard = () => {
   const [fps, setFps] = useState(30)
   const [globalBrightness, setGlobalBrightness] = useState(100)
   const [pixelLength, setPixelLength] = useState(50)
+  const [uiBrightnessBoost, setUiBrightnessBoost] = useState(0)
 
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
@@ -36,6 +37,9 @@ const UICard = () => {
     }
     if (typeof config.visualisation_maxlen === 'number') {
       setPixelLength(config.visualisation_maxlen)
+    }
+    if (typeof config.ui_brightness_boost === 'number') {
+      setUiBrightnessBoost(config.ui_brightness_boost)
     }
   }, [config])
 
@@ -146,6 +150,47 @@ const UICard = () => {
           inputProps={{
             min: 1,
             max: 4096,
+            type: 'number',
+            'aria-labelledby': 'input-slider'
+          }}
+        />
+      </SettingsRow>
+      <SettingsRow title="Frontend Brightness Boost" value={uiBrightnessBoost}>
+        <SettingsSlider
+          value={uiBrightnessBoost}
+          step={0.01}
+          valueLabelDisplay="auto"
+          min={0}
+          max={1}
+          marks={[{ value: 300, label: null }]}
+          onChangeCommitted={(_e: any, val: any) =>
+            setSystemSetting('ui_brightness_boost', val)
+          }
+          onChange={(_e: any, val: any) => {
+            setUiBrightnessBoost(val)
+          }}
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          value={uiBrightnessBoost}
+          style={{ width: 70 }}
+          margin="dense"
+          onChange={(e) => {
+            setUiBrightnessBoost(parseInt(e.target.value, 10))
+          }}
+          onBlur={(e) =>
+            setSystemSetting(
+              'ui_brightness_boost',
+              parseInt(e.target.value, 10)
+            )
+          }
+          sx={{
+            '& input': { textAlign: 'right' }
+          }}
+          inputProps={{
+            min: 0,
+            max: 1,
             type: 'number',
             'aria-labelledby': 'input-slider'
           }}
