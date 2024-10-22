@@ -80,6 +80,7 @@ export interface ISystemConfig {
   scenes: undefined
   scan_on_startup: boolean
   flush_on_deactivate: boolean
+  ui_brightness_boost: number
 }
 
 const storeConfig = (set: any) => ({
