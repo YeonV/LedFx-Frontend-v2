@@ -21,15 +21,13 @@ const PixelGraph = ({
 }) => {
   const [pixels, setPixels] = useState<any>([])
 
-  const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
-    (state) => ({
-      pixelGraphs: state.pixelGraphs,
-      virtuals: state.virtuals,
-      devices: state.devices,
-      graphs: state.graphs,
-      config: state.config
-    })
-  )
+  const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
+    pixelGraphs: state.pixelGraphs,
+    virtuals: state.virtuals,
+    devices: state.devices,
+    graphs: state.graphs,
+    config: state.config
+  }))
 
   const rows = virtuals[virtId].is_device
     ? devices[virtuals[virtId].is_device]?.config?.rows ||
@@ -54,13 +52,19 @@ const PixelGraph = ({
     }
   }, [virtuals, pixelGraphs, virtId])
 
-  const tooLessPixels = useStore(
-    (state) => state.dialogs.lessPixels?.open || false
-  )
+  const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
 
   if (!(graphs || intGraphs)) {
     return null
   }
+
+  const totalPixels = decodedPixels.length > 0 ? decodedPixels.length : pixels[0]?.length
+  const realPixelCount = virtuals[virtId].pixel_count
+  const realCols = Math.ceil(realPixelCount / rows)
+  const aspectRatio = realCols / rows
+
+  const displayRows = realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows
+  const displayCols = realPixelCount > 4096 ? 4096 / displayRows : realCols
 
   return dummy || tooLessPixels ? (
     <div
@@ -101,9 +105,9 @@ const PixelGraph = ({
         overflow: 'hidden',
         margin: '0.5rem 0 0 0'
       }}
-      className={`${className}  ${active ? 'active' : ''}`}
+      className={`${className} ${active ? 'active' : ''}`}
     >
-      {Array.from(Array(rows).keys()).map((row) => (
+      {Array.from(Array(displayRows).keys()).map((row) => (
         <div
           key={`row-${row}`}
           style={{
@@ -115,30 +119,22 @@ const PixelGraph = ({
             overflow: 'hidden',
             margin: '0'
           }}
-          className={`${className}  ${active ? 'active' : ''}`}
+          className={`${className} ${active ? 'active' : ''}`}
         >
-          {(config.transmission_mode === 'compressed' &&
-          decodedPixels.length > 0 // eslint-disable-next-line
-            ? decodedPixels.slice((row * decodedPixels.length) / rows,((row + 1) * decodedPixels.length) / rows) // eslint-disable-next-line
-            : pixels[0].slice((row * pixels[0].length) / rows,((row + 1) * pixels[0].length) / rows)
+          {(config.transmission_mode === 'compressed' && decodedPixels.length > 0
+            ? decodedPixels.slice(row * displayCols, (row + 1) * displayCols)
+            : pixels[0]?.slice(row * displayCols, (row + 1) * displayCols)
           ).map((_p: any, i: number) => (
             <div
               key={i}
               style={{
                 flex: 1,
-                // border: '1px solid black',
-                margin: `${(config.transmission_mode === 'compressed' && decodedPixels.length > 0 ? decodedPixels.length : pixels[0].length) > 100 && rows > 7 ? 1 : 2}px`,
-                borderRadius:
-                  (config.transmission_mode === 'compressed' &&
-                  decodedPixels.length > 0
-                    ? decodedPixels.length
-                    : pixels[0].length) > 100 && rows > 7
-                    ? '50%'
-                    : '5px',
+                margin: `${totalPixels > 100 && displayRows > 7 ? 1 : 2}px`,
+                borderRadius: totalPixels > 100 && displayRows > 7 ? '50%' : '5px',
                 position: 'relative',
                 overflow: 'hidden',
-                maxWidth: `${100 / Math.max(rows, Math.ceil(pixels[0].length / rows))}%`,
-                maxHeight: `${100 / Math.max(rows, Math.ceil(pixels[0].length / rows))}%`
+                maxWidth: `${100 / displayCols}%`,
+                maxHeight: `${100 / displayCols}%`
               }}
             >
               <div
@@ -148,9 +144,9 @@ const PixelGraph = ({
                   backgroundColor: active
                     ? config.transmission_mode === 'compressed' &&
                       decodedPixels.length > 0 &&
-                      decodedPixels[(row * decodedPixels.length) / rows + i]
-                      ? `rgb(${Object.values(decodedPixels[(row * decodedPixels.length) / rows + i])})`
-                      : `rgb(${pixels[0][(row * pixels[0].length) / rows + i]},${pixels[1][(row * pixels[0].length) / rows + i]},${pixels[2][(row * pixels[0].length) / rows + i]})`
+                      decodedPixels[row * displayCols + i]
+                      ? `rgb(${Object.values(decodedPixels[row * displayCols + i])})`
+                      : `rgb(${pixels[0][row * displayCols + i]},${pixels[1][row * displayCols + i]},${pixels[2][row * displayCols + i]})`
                     : '#0002'
                 }}
               />
@@ -170,7 +166,7 @@ const PixelGraph = ({
         overflow: 'hidden',
         margin: '0.5rem 0 0 0'
       }}
-      className={`${className}  ${active ? 'active' : ''}`}
+      className={`${className} ${active ? 'active' : ''}`}
     >
       {(config.transmission_mode === 'compressed'
         ? decodedPixels
