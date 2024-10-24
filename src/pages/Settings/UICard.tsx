@@ -26,7 +26,16 @@ const UICard = () => {
   const [globalBrightness, setGlobalBrightness] = useState(100)
   const [pixelLength, setPixelLength] = useState(50)
   const [uiBrightnessBoost, setUiBrightnessBoost] = useState(0)
-
+  const marks = [
+    { value: 'select', label: 'select' },
+    { value: 50, label: '50' },
+    { value: 128, label: '128' },
+    { value: 256, label: '256' },
+    { value: 512, label: '512' },
+    { value: 1024, label: '1K' },
+    { value: 2048, label: '2K' },
+    { value: 4096, label: '4K' },
+  ]
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
   }
@@ -115,20 +124,20 @@ const UICard = () => {
         />
       </SettingsRow>
       <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
-        <SettingsSlider
-          value={pixelLength}
-          step={1}
-          valueLabelDisplay="auto"
-          min={1}
-          max={4096}
-          marks={[{ value: 300, label: null }]}
-          onChangeCommitted={(_e: any, val: any) =>
-            setSystemSetting('visualisation_maxlen', val)
+        <Select
+          disableUnderline
+          variant="standard"
+          value={'select'}
+          onChange={(e) =>
+            e.target.value !== 'select' && setSystemSetting('visualisation_maxlen', e.target.value)
           }
-          onChange={(_e: any, val: any) => {
-            setPixelLength(val)
-          }}
-        />
+        >
+          {(marks).map((item: any) => (
+            <MenuItem disabled={item.value === 'select'} key={item.value} value={item.value}>
+              {item.label}
+            </MenuItem>
+          ))}
+        </Select>
         <Input
           disableUnderline
           className={sliderClasses.input}
