@@ -30,6 +30,7 @@ const reorder = (list: Order[], startIndex: number, endIndex: number): Order[] =
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any, theme: Theme) => ({
   ...draggableStyle,
+  borderRadius: 4,
   ...(isDragging && {
     background: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
@@ -64,14 +65,15 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, theme)}
+                    style={{...getItemStyle(snapshot.isDragging, provided.draggableProps.style, theme), cursor: 'grab'}}
                   >
                     <ListItemIcon>
-                      <BladeIcon name={item.icon || 'DragHandle'} sx={{ filter: snapshot.isDragging ? 'invert(1)' : ''}} />
+                      <BladeIcon name={item.icon || 'wled'} sx={{ filter: snapshot.isDragging ? 'invert(1)' : '', mr: 2}} />
                     </ListItemIcon>
                     <ListItemText
                       primary={item.name || item.virtId}
                     />
+                      <BladeIcon name={snapshot.isDragging ? 'DragHandle' : 'DragIndicator'} sx={{}} />
                   </ListItem>
                 )}
               </Draggable>
