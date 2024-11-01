@@ -9,6 +9,7 @@ import MelbankCard from './Frequencies'
 import StreamToCard from './StreamTo'
 import EffectsComplex from './EffectsComplex'
 import { Virtual } from '../../store/api/storeVirtuals'
+import OrderList from '../../components/DnD/OrderList'
 
 const Device = () => {
   const navigate = useNavigate()
@@ -316,6 +317,7 @@ const Device = () => {
             {features.frequencies && (
               <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />
             )}
+            <OrderList />
           </Grid>
         </>
       )}

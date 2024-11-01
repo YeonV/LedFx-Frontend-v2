@@ -29,16 +29,16 @@ const GradientPicker = ({
   const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor)
 
   const defaultColors: any = {}
-  Object.entries(colors?.gradients?.builtin)?.forEach(([k, g]) => {
+  if (colors?.gradients?.builtin) Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
     defaultColors[k] = g
   })
-  Object.entries(colors?.gradients?.user)?.forEach(([k, g]) => {
+  if (colors?.gradients?.user) Object.entries(colors.gradients.user)?.forEach(([k, g]) => {
     defaultColors[k] = g
   })
-  Object.entries(colors?.colors?.builtin)?.forEach(([k, g]) => {
+  if (colors?.colors?.builtin) Object.entries(colors.colors.builtin)?.forEach(([k, g]) => {
     defaultColors[k] = g
   })
-  Object.entries(colors.colors.user)?.forEach(([k, g]) => {
+  if (colors?.colors?.user) Object.entries(colors.colors.user)?.forEach(([k, g]) => {
     defaultColors[k] = g
   })
 
@@ -162,8 +162,8 @@ const GradientPicker = ({
                 colors.length &&
                 colors.colors?.length &&
                 colors.gradients?.length &&
-                !(Object.keys(colors.colors.user)?.length > 0) &&
-                !(Object.keys(colors.gradients.user)?.length > 0)
+                !(Object.keys(colors?.colors?.user)?.length > 0) &&
+                !(Object.keys(colors?.gradients?.user)?.length > 0)
               }
             >
               -

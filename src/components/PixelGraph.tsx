@@ -9,7 +9,8 @@ const PixelGraph = ({
   active = false,
   intGraphs = false,
   showMatrix = false,
-  fullScreen = false
+  fullScreen = false,
+  db = false
 }: {
   virtId: string
   dummy?: boolean
@@ -18,6 +19,7 @@ const PixelGraph = ({
   intGraphs?: boolean
   showMatrix?: boolean
   fullScreen?: boolean
+  db?: boolean
 }) => {
   const [pixels, setPixels] = useState<any>([])
 
@@ -103,7 +105,7 @@ const PixelGraph = ({
         width: '100%',
         borderRadius: '10px',
         overflow: 'hidden',
-        margin: '0.5rem 0 0 0'
+        margin: db ? 0 : '0.5rem 0 0 0'
       }}
       className={`${className} ${active ? 'active' : ''}`}
     >
@@ -129,12 +131,12 @@ const PixelGraph = ({
               key={i}
               style={{
                 flex: 1,
-                margin: `${totalPixels > 100 && displayRows > 7 ? 1 : 2}px`,
-                borderRadius: totalPixels > 100 && displayRows > 7 ? '50%' : '5px',
+                margin: `${db || (totalPixels > 100 && displayRows > 7) ? 1 : 2}px`,
+                borderRadius: db || (totalPixels > 100 && displayRows > 7) ? '50%' : '5px',
                 position: 'relative',
                 overflow: 'hidden',
-                maxWidth: `${100 / displayCols}%`,
-                maxHeight: `${100 / displayCols}%`
+                maxWidth: db ? 3.6 : `${100 / displayCols}%`,
+                maxHeight: db ? 3.6 : `${100 / displayCols}%`
               }}
             >
               <div
