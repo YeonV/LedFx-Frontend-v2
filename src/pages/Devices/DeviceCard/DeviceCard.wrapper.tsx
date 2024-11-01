@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import useStore from '../../../store/useStore'
 import DeviceCard from './DeviceCard'
 import { IVirtualOrder } from '../../../store/api/storeVirtuals'
-import { Button, Popover, Typography } from '@mui/material'
+import { Button, Popover } from '@mui/material'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
 
 const DeviceCardWrapper = ({
@@ -202,11 +202,11 @@ const DeviceCardWrapper = ({
 
   return virtual && virtuals[virtual] ? (<>
     <DeviceCard
-      // onContextMenu={(e: any) => {
-      //   e.preventDefault()
-      //   e.stopPropagation()
-      //   if (sortByUser) handleClick(e)
-      // }}
+      onContextMenu={(e: any) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (sortByUser) handleClick(e)
+      }}
       deviceName={
         virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name
       }
