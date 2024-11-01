@@ -24,6 +24,7 @@ const PixelGraph = ({
   const [pixels, setPixels] = useState<any>([])
   const [shape, setShape] = useState<[null | number, null |number]>([null, null])
 
+  const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
     pixelGraphs: state.pixelGraphs,
     virtuals: state.virtuals,
@@ -56,6 +57,7 @@ const PixelGraph = ({
     return () => {
       document.removeEventListener('visualisation_update', handleWebsockets)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals, pixelGraphs, virtId])
 
   const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
@@ -72,7 +74,7 @@ const PixelGraph = ({
   const displayRows = (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
   const displayCols = (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
 
-  return dummy || tooLessPixels ? (
+  return dummy || (tooLessPixels && showWarning) ? (
     <div
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',

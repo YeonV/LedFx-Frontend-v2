@@ -59,27 +59,27 @@ const storeUI = (set: any) => ({
       false,
       'ui/darkmode'
     ),
-  infoAlerts: {
-    scenes: true,
-    devices: true,
-    user: true,
-    gamepad: true,
-    matrix: true,
-    camera: true,
-    matrixGroups: true,
-    pixelMode: true
-  },
-  setInfoAlerts: (
-    key: 'scenes' | 'devices' | 'user' | 'gamepad' | 'matrix' | 'camera' | 'matrixGroups' | 'pixelMode',
-    val: boolean
-  ): void =>
-    set(
-      produce((state: IStore) => {
-        state.ui.infoAlerts[key] = val
-      }),
-      false,
-      'ui/setInfoAlerts'
-    ),
+  // infoAlerts: {
+  //   scenes: true,
+  //   devices: true,
+  //   user: true,
+  //   gamepad: true,
+  //   matrix: true,
+  //   camera: true,
+  //   matrixGroups: true,
+  //   pixelMode: true
+  // },
+  // setInfoAlerts: (
+  //   key: 'scenes' | 'devices' | 'user' | 'gamepad' | 'matrix' | 'camera' | 'matrixGroups' | 'pixelMode',
+  //   val: boolean
+  // ): void =>
+  //   set(
+  //     produce((state: IStore) => {
+  //       state.ui.infoAlerts[key] = val
+  //     }),
+  //     false,
+  //     'ui/setInfoAlerts'
+  //   ),
   snackbar: {
     isOpen: false,
     messageType: 'error' as VariantType,

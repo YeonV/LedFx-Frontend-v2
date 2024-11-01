@@ -82,8 +82,8 @@ const MControls = ({
   const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
   const pixelGraphs = useStore((state) => state.pixelGraphs)
   const virtuals = useStore((state) => state.virtuals)
-  const infoAlerts = useStore((state) => state.ui.infoAlerts)
-  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const features = useStore((state) => state.features)
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {

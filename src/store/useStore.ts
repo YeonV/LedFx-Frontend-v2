@@ -27,6 +27,8 @@ import storeNotifications from './ui/storeNotifications'
 import storePad from './ui/storePad'
 import storeMidi from './ui/storeMidi'
 import storeVideo from './ui/storeVideo'
+import storeUIPersist from './ui-persist/storeUIpersist'
+import storeUIPersistActions from './ui-persist/storeUIpersistActions'
 
 const useStore = create(
   devtools(
@@ -37,9 +39,11 @@ const useStore = create(
         },
         (set, get) => ({
           ui: storeUI(set),
+          uiPersist: storeUIPersist(set),
           spotify: storeSpotify(),
           qlc: storeQLC(),
           user: storeUser(set),
+          ...storeUIPersistActions(set),
           ...storePad(set),
           ...storeMidi(set, get),
           ...storeVideo(set),
