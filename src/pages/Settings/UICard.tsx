@@ -14,6 +14,8 @@ const UICard = () => {
   const setViewMode = useStore((state) => state.setViewMode)
   const setFeatures = useStore((state) => state.setFeatures)
   const showFeatures = useStore((state) => state.showFeatures)
+  const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
+  const setShowWarning = useStore((state) => state.setWarnings)
   const features = useStore((state) => state.features)
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
@@ -63,11 +65,7 @@ const UICard = () => {
 
   return (
     <>
-      <SettingsRow
-        title={schemaTransmissionMode?.title}
-        step="zero"
-        value={fps}
-      >
+      <SettingsRow title={schemaTransmissionMode?.title} step="zero" value={fps}>
         <Select
           disableUnderline
           variant="standard"
@@ -86,42 +84,6 @@ const UICard = () => {
             </MenuItem>
           ))}
         </Select>
-      </SettingsRow>
-      <SettingsRow title="Frontend FPS" step="two" value={fps}>
-        <SettingsSlider
-          value={fps}
-          step={1}
-          min={1}
-          max={60}
-          onChangeCommitted={(_e: any, val: any) =>
-            setSystemSetting('visualisation_fps', val)
-          }
-          onChange={(_e: any, val: any) => {
-            setFps(val)
-          }}
-        />
-        <Input
-          disableUnderline
-          className={sliderClasses.input}
-          style={{ width: 70 }}
-          value={fps}
-          margin="dense"
-          onChange={(e) => {
-            setFps(parseInt(e.target.value, 10))
-          }}
-          onBlur={(e) => {
-            setSystemSetting('visualisation_fps', parseInt(e.target.value, 10))
-          }}
-          sx={{
-            '& input': { textAlign: 'right' }
-          }}
-          inputProps={{
-            min: 1,
-            max: 60,
-            type: 'number',
-            'aria-labelledby': 'input-slider'
-          }}
-        />
       </SettingsRow>
       <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
         <Select
@@ -159,6 +121,42 @@ const UICard = () => {
           inputProps={{
             min: 1,
             max: 4096,
+            type: 'number',
+            'aria-labelledby': 'input-slider'
+          }}
+        />
+      </SettingsRow>
+      <SettingsRow title="Frontend FPS" step="two" value={fps}>
+        <SettingsSlider
+          value={fps}
+          step={1}
+          min={1}
+          max={60}
+          onChangeCommitted={(_e: any, val: any) =>
+            setSystemSetting('visualisation_fps', val)
+          }
+          onChange={(_e: any, val: any) => {
+            setFps(val)
+          }}
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          style={{ width: 70 }}
+          value={fps}
+          margin="dense"
+          onChange={(e) => {
+            setFps(parseInt(e.target.value, 10))
+          }}
+          onBlur={(e) => {
+            setSystemSetting('visualisation_fps', parseInt(e.target.value, 10))
+          }}
+          sx={{
+            '& input': { textAlign: 'right' }
+          }}
+          inputProps={{
+            min: 1,
+            max: 60,
             type: 'number',
             'aria-labelledby': 'input-slider'
           }}
@@ -205,11 +203,9 @@ const UICard = () => {
           }}
         />
       </SettingsRow>
-      <SettingsRow
-        title="Global Brightness"
-        step="two"
-        value={globalBrightness}
-      >
+      <SettingsRow title="Show too-less-pixels Warning" checked={showWarning} onChange={() => setShowWarning('lessPixels', !showWarning)}/>
+      <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
+      <SettingsRow title="Global Brightness" step="two" value={globalBrightness}>
         <SettingsSlider
           value={globalBrightness}
           step={1}
@@ -245,10 +241,7 @@ const UICard = () => {
           }}
         />
       </SettingsRow>
-      <SettingsRow
-        title="Update Notification: wait min"
-        value={updateNotificationInterval}
-      >
+      <SettingsRow title="Update Notification: wait min" value={updateNotificationInterval}>
         <SettingsSlider
           value={updateNotificationInterval}
           step={1}
@@ -279,27 +272,12 @@ const UICard = () => {
         />
       </SettingsRow>
       <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
-      <SettingsRow
-        title="Expert Mode"
-        direct
-        checked={viewMode !== 'user'}
-        onChange={() =>
-          viewMode === 'user' ? setViewMode('expert') : setViewMode('user')
-        }
-      />
+      <SettingsRow title="Expert Mode" checked={viewMode !== 'user'} onChange={() => viewMode === 'user' ? setViewMode('expert') : setViewMode('user')}/>
       {viewMode !== 'user' && (
-        <SettingsRow
-          title="Beta Mode"
-          checked={features.beta}
-          onChange={() => setFeatures('beta', !features.beta)}
-        />
+        <SettingsRow title="Beta Mode" checked={features.beta} onChange={() => setFeatures('beta', !features.beta)} />
       )}
       {showFeatures.alpha && viewMode !== 'user' && (
-        <SettingsRow
-          title="Alpha Mode"
-          checked={features.alpha}
-          onChange={() => setFeatures('alpha', !features.alpha)}
-        />
+        <SettingsRow title="Alpha Mode" checked={features.alpha} onChange={() => setFeatures('alpha', !features.alpha)} />
       )}
     </>
   )

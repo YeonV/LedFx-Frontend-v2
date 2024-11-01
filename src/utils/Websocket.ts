@@ -73,7 +73,8 @@ function createSocket() {
             new CustomEvent('visualisation_update', {
               detail: {
                 id: JSON.parse(event.data).vis_id,
-                pixels: JSON.parse(event.data).pixels
+                pixels: JSON.parse(event.data).pixels,
+                shape: JSON.parse(event.data).shape
               }
             })
           )
