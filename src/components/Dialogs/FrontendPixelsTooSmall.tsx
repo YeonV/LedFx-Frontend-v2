@@ -20,6 +20,7 @@ import { useLocation } from 'react-router-dom'
 export default function FrontendPixelsTooSmall() {
   const sliderClasses = useSliderStyles()  
   const location = useLocation()
+  const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const showMatrix = useStore((state) => state.showMatrix)
   const virtuals = useStore((state) => state.virtuals)
@@ -76,7 +77,7 @@ export default function FrontendPixelsTooSmall() {
 
   return (
     <Dialog
-      open={open}
+      open={showWarning && open}
       onClose={handleClose}
       aria-labelledby="about-dialog-title"
       aria-describedby="about-dialog-description"

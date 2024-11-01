@@ -62,8 +62,8 @@ const User = () => {
     enthusiast: 0,
     contributor: 0
   })
-  const infoAlerts = useStore((state) => state.ui.infoAlerts)
-  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const getFullConfig = useStore((state) => state.getFullConfig)
   const isLogged = useStore((state) => state.isLogged)
   const importSystemConfig = useStore((state) => state.importSystemConfig)

@@ -22,7 +22,9 @@ const PixelGraph = ({
   db?: boolean
 }) => {
   const [pixels, setPixels] = useState<any>([])
+  const [shape, setShape] = useState<[null | number, null |number]>([null, null])
 
+  const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
     pixelGraphs: state.pixelGraphs,
     virtuals: state.virtuals,
@@ -37,21 +39,25 @@ const PixelGraph = ({
       1
     : virtuals[virtId].config.rows || 1
 
+  // console.time('hexColor');
+  // console.log('timestamp', new Date().getTime())
   const decodedPixels =
     config.transmission_mode === 'compressed'
       ? pixels && pixels.length && hexColor(pixels, config.transmission_mode)
       : pixels
-
+  // console.timeEnd('hexColor');
   useEffect(() => {
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
         setPixels(e.detail.pixels)
+        if (e.detail.shape[0] !== shape[0] && e.detail.shape[1] !== shape[1]) setShape(e.detail.shape)
       }
     }
     document.addEventListener('visualisation_update', handleWebsockets)
     return () => {
       document.removeEventListener('visualisation_update', handleWebsockets)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals, pixelGraphs, virtId])
 
   const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
@@ -64,11 +70,11 @@ const PixelGraph = ({
   const realPixelCount = virtuals[virtId].pixel_count
   const realCols = Math.ceil(realPixelCount / rows)
   const aspectRatio = realCols / rows
+  // console.log(shape)
+  const displayRows = (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
+  const displayCols = (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
 
-  const displayRows = realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows
-  const displayCols = realPixelCount > 4096 ? 4096 / displayRows : realCols
-
-  return dummy || tooLessPixels ? (
+  return dummy || (tooLessPixels && showWarning) ? (
     <div
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',

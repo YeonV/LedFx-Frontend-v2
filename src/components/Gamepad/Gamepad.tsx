@@ -32,8 +32,8 @@ import { sleep } from '../../utils/helpers'
 import MuiSwitch from '../MuiSwitch'
 
 const Gamepad = ({ setScene, bottom }: any) => {
-  const infoAlerts = useStore((state) => state.ui.infoAlerts)
-  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const setFeatures = useStore((state) => state.setFeatures)
   const smartBarPadOpen = useStore((state) => state.ui.bars.smartBarPad.open)
   const setSmartBarPadOpen = useStore(

@@ -32,8 +32,8 @@ const Scenes = () => {
   const setSceneOrder = useStore((state) => state.setSceneOrder)
   const features = useStore((state) => state.features)
   const activateScene = useStore((state) => state.activateScene)
-  const infoAlerts = useStore((state) => state.ui.infoAlerts)
-  const setInfoAlerts = useStore((state) => state.ui.setInfoAlerts)
+  const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
+  const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
 
   const toggletSceneActiveTag = useStore(
