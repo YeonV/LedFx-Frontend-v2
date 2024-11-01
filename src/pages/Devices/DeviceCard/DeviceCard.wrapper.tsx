@@ -197,6 +197,7 @@ const DeviceCardWrapper = ({
       return 'unset'
     }
     setOrder(preOrder())
+    // eslint-disable-next-line
   }, [virtualOrder])
 
   return virtual && virtuals[virtual] ? (<>

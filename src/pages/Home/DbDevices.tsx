@@ -34,7 +34,6 @@ const DeviceActions = ({
 }) => {
   const navigate = useNavigate()
   const virtuals = useStore((state) => state.virtuals)
-  const devices = useStore((state) => state.devices)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
