@@ -1,4 +1,4 @@
-import { useTheme, Stack, Chip, IconButton } from '@mui/material'
+import { useTheme, Stack, Chip, IconButton, Typography } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
@@ -13,6 +13,8 @@ import {
   DeleteForever,
   Edit,
   Fullscreen,
+  GridOff,
+  GridOn,
   Pause,
   PlayArrow,
   Settings,
@@ -31,8 +33,8 @@ const DeviceActions = ({
   effect?: boolean
 }) => {
   const navigate = useNavigate()
-
   const virtuals = useStore((state) => state.virtuals)
+  const devices = useStore((state) => state.devices)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
@@ -53,7 +55,7 @@ const DeviceActions = ({
 
   return (
     <>
-      {effect && (
+      {effect ? (
         <>
           <IconButton
             size="small"
@@ -88,12 +90,13 @@ const DeviceActions = ({
             </IconButton>
           )}
         </>
-      )}
+      ) : <span style={{ width: 24, flex: '0 0 24px' }}/>}
       <IconButton
         sx={{
-          ml:
+          ml:            
             (effect ? 3.2 : 11.8) +
-            (virtuals[virtId]?.config.rows > 1 ? 0 : 4.2)
+            (virtuals[virtId]?.config.rows > 1 ? 0 : 4.2) +
+            (!effect && virtuals[virtId]?.config.rows > 1  ? 4.2 : 0)            
         }}
         size="small"
         onClick={(e) => {
@@ -149,7 +152,10 @@ const DbDevices = () => {
   const graphsMulti = useStore((state) => state.graphsMulti)
   const [fade] = useState(false)
   const showMatrix = useStore((state) => state.showMatrix)
+  const [matrix, setMatrix] = useState(showMatrix)
   const paused = useStore((state) => state.paused)
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const activateDevice = useStore((state) => state.activateDevice)
   const clearEffect = useStore((state) => state.clearEffect)
@@ -200,12 +206,27 @@ const DbDevices = () => {
     {
       field: 'PixelGraph',
       headerName: 'Graph',
+      renderHeader: () => <Stack direction={'row'} spacing={2} alignItems={'center'} style={{ width: 200 }}>
+        <Typography>
+        Graph
+        </Typography>
+        {Object.keys(virtuals).some((v) => virtuals[v].config.rows > 1) && <IconButton
+          size="small"
+          onClick={async(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setMatrix(!matrix)
+          }}
+        >
+           {matrix ? <GridOff /> : <GridOn />}
+        </IconButton>}
+        </Stack>,
       width: 200,
       renderCell: (params: GridRenderCellParams) =>
         graphsMulti && (
           <div
             style={{
-              paddingTop: '7px',
+              paddingTop: virtuals[params.row.id].config.rows > 1 ? 0 : '7px',
               opacity: fade ? 0.2 : 1,
               transitionDuration: fade
                 ? `${virtuals[params.row.id].config.transition_time * 1000 || 1}s`
@@ -215,7 +236,8 @@ const DbDevices = () => {
             }}
           >
             <PixelGraph
-              showMatrix={showMatrix}
+              db
+              showMatrix={matrix && showMatrix}
               intGraphs={graphs && graphsMulti}
               active
               virtId={params.row.id || ''}
@@ -289,10 +311,20 @@ const DbDevices = () => {
     }
   ]
 
-  const rows: any = Object.values(virtuals).map((v: any) => ({
+  const rows: any = Object.values(virtuals)
+  .filter(v => {
+    const vs = Object.keys(virtuals);
+    const virt = vs
+      .filter(v => showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
+      .filter(v => showGaps ? v : !(v.startsWith('gap-')))
+      .find(key => virtuals[key].id === v.id);
+    return virt !== undefined;
+  })
+  .map((v: any) => ({
     ...v,
     ...v.config
-  }))
+  }));
+
 
   return (
     <BladeFrame

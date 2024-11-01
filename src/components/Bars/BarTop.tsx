@@ -49,12 +49,12 @@ import TourHome from '../Tours/TourHome'
 import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
 import { ledfxThemes } from '../../themes/AppThemes'
 import useWakeLock from '../../utils/useWakeLook'
+import OrderListDialog from '../DnD/OrderListDialog'
 
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
     right: '45%',
     top: '115%',
-    // border: `1px solid ${theme.palette.background.paper}`,
     padding: '0 4px',
     fontSize: 'x-small',
     height: '14px'
@@ -189,7 +189,6 @@ const Title = (
 }
 
 const TopBar = () => {
-  // const classes = useStyles()
   const navigate = useNavigate()
   const theme = useTheme()
   const [updateAvailable, setUpdateAvailable] = useState(false)
@@ -203,14 +202,11 @@ const TopBar = () => {
   const setCurrentTheme = useStore((state) => state.ui.setCurrentTheme)
   const setLatestTag = useStore((state) => state.ui.setLatestTag)
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen)
-  // const darkMode = useStore((state) => state.ui.darkMode)
-  // const setDarkMode = useStore((state) => state.ui.setDarkMode)
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setHostManager = useStore((state) => state.setHostManager)
   const toggleGraphs = useStore((state) => state.toggleGraphs)
   const graphs = useStore((state) => state.graphs)
-  // const config = useStore((state) => state.config)
   const isLogged = useStore((state) => state.isLogged)
   const setIsLogged = useStore((state) => state.setIsLogged)
   const disconnected = useStore((state) => state.disconnected)
@@ -229,6 +225,7 @@ const TopBar = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
+  const sortByUser = useStore((state) => state.sortByUser)
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
 
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
@@ -260,9 +257,6 @@ const TopBar = () => {
     setHostManager(true)
     setAnchorEl(null)
   }
-  // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode)
-  // }
 
   const changeGraphs = () => {
     toggleGraphs()
@@ -533,12 +527,6 @@ const TopBar = () => {
                     Host Manager
                   </MenuItem>
                 )}
-                {/* <MenuItem onClick={toggleDarkMode}>
-              <ListItemIcon>
-                <Language />
-              </ListItemIcon>
-              Darkmode
-            </MenuItem> */}
                 <MenuItem onClick={changeGraphs}>
                   <ListItemIcon>
                     <BarChart color={graphs ? 'inherit' : 'secondary'} />
@@ -551,8 +539,10 @@ const TopBar = () => {
                   <TourScenes cally={() => setAnchorEl(null)} />
                 ) : pathname.split('/')[1] === 'Settings' ? (
                   <TourSettings cally={() => setAnchorEl(null)} />
-                ) : pathname.split('/')[1] === 'Devices' ? (
-                  <TourDevices cally={() => setAnchorEl(null)} />
+                ) : pathname.split('/')[1] === 'Devices' ? ([
+                  sortByUser && <OrderListDialog key={'order'} mode='drawer' onOpen={() => setAnchorEl(null)} />,
+                  <TourDevices key={'device-tour'} cally={() => setAnchorEl(null)} />
+                ]
                 ) : pathname.split('/')[1] === 'Integrations' ? (
                   <TourIntegrations cally={() => setAnchorEl(null)} />
                 ) : (
@@ -561,7 +551,6 @@ const TopBar = () => {
                     cally={() => setAnchorEl(null)}
                   />
                 )}
-                {/* <Doc type={'menuItem'} label={'Docs'} onClick={() => setAnchorEl(null)} /> */}
 
                 {features.cloud && (
                   <MenuItem

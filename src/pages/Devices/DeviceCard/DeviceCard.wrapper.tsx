@@ -201,11 +201,11 @@ const DeviceCardWrapper = ({
 
   return virtual && virtuals[virtual] ? (<>
     <DeviceCard
-      onContextMenu={(e: any) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (sortByUser) handleClick(e)
-      }}
+      // onContextMenu={(e: any) => {
+      //   e.preventDefault()
+      //   e.stopPropagation()
+      //   if (sortByUser) handleClick(e)
+      // }}
       deviceName={
         virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name
       }
