@@ -134,7 +134,7 @@ const Title = (
 ) => {
   const t = window.localStorage.getItem('ledfx-theme')
   const newVerOnline =
-  latestTag.replace('v', '').includes('-b')
+  latestTag.replace('v', '').includes('-b') && pkg.version.includes('-b')
       ? compareVersions(
             latestTag.replace('v', '').split('-b')[1],
             pkg.version.split('-b')[1]
