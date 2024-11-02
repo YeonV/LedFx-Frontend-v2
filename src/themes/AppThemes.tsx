@@ -288,5 +288,5 @@ export const ledfxTheme =
       : window.location.origin === 'https://my.ledfx.app'
         ? 'DarkGreen'
         : isElectron()
-          ? 'DarkOrange'
+          ? 'DarkWhite'
           : 'DarkBlue') || 'DarkBlue'
