@@ -56,7 +56,7 @@ export const getMaxRange = (
       maxRange = colN * rowN - (rowN * col + (rowN - row - 1))
     }
   }
-  return maxRange
+  return maxRange - 1
 }
 
 /**
