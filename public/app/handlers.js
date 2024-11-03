@@ -1,4 +1,4 @@
-const { app, shell, BrowserWindow } = require('electron')
+const { app, shell, BrowserWindow, nativeTheme } = require('electron')
 const path = require('path')
 const { generateMfaQr, handleVerifyOTP } = require('./otp.js')
 const { coreParams, isCC, defaultCoreParams, store } = require('./core.js')
@@ -125,6 +125,13 @@ const handlers = async (wind, subprocesses, event, parameters) => {
         app.relaunch()
         app.exit()
         break
+      case 'toggle-darkmode':
+        if (nativeTheme.shouldUseDarkColors) {
+          nativeTheme.themeSource = 'light'
+        } else {
+          nativeTheme.themeSource = 'dark'
+        }
+        return nativeTheme.shouldUseDarkColors
       default:
         console.log('Command not recognized')
         break

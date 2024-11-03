@@ -64,7 +64,10 @@ const Popover = ({
   const id = open ? 'simple-popover' : undefined
 
   return (
-    <div style={{ display: 'initial', margin: 0, ...wrapperStyle }}>
+    <div style={{ display: 'initial', margin: 0, ...wrapperStyle }} onClick={(e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    }}>
       {type === 'menuItem' ? (
         <MenuItem
           className={className}
