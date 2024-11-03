@@ -57,6 +57,8 @@ const AssignPixelDialog = ({
   clearPixel: any
 }) => {
   const devices = useStore((state) => state.devices)
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
 
   return (
     <Dialog
@@ -75,11 +77,14 @@ const AssignPixelDialog = ({
             fullWidth
           >
             {devices &&
-              Object.keys(devices).map((d: any, i: number) => (
-                <MenuItem value={devices[d].id} key={i}>
-                  {devices[d].config.name}
-                </MenuItem>
-              ))}
+              Object.keys(devices)
+                .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
+                .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
+                .map((d: any, i: number) => (
+                  <MenuItem value={devices[d].id} key={i}>
+                    {devices[d].config.name}
+                  </MenuItem>
+                ))}
           </Select>
         </BladeFrame>
         {currentDevice && (
