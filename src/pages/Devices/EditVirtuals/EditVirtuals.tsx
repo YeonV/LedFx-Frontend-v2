@@ -171,7 +171,7 @@ export default function EditVirtuals({
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar enableColorOnDark className={classes.appBar}>
+        <AppBar enableColorOnDark color="secondary" className={classes.appBar}>
           <Toolbar>
             <Button
               autoFocus
