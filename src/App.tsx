@@ -20,8 +20,10 @@ import login from './utils/login'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
+  const virtuals = useStore((state) => state.virtuals)
   const features = useStore((state) => state.features)
   const protoCall = useStore((state) => state.protoCall)
+  const setEffect = useStore((state) => state.setEffect)
   const setProtoCall = useStore((state) => state.setProtoCall)
   const setPlatform = useStore((state) => state.setPlatform)
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -148,8 +150,58 @@ export default function App() {
         login(proto.join().split('redirect?')[1]).then(() => {
           window.location.reload()
         })
+      } else if (proto[1] === 'command') {
+        if (proto[2] === 'theme') {
+          if (proto[3] === 'light') {
+            window.localStorage.setItem('ledfx-theme', 'LightBlack')
+            window.location.reload()
+          }
+          if (proto[3] === 'dark') {
+            window.localStorage.setItem('ledfx-theme', 'DarkWhite')
+            window.location.reload()
+          }
+          if (proto[3] === 'reset') {
+            window.localStorage.setItem('ledfx-theme', 'DarkOrange')
+            window.location.reload()
+          }
+        }
+      } else if (proto[1] === 'song') {
+        const v = proto[2]
+        const virtual = (Object.keys(virtuals).find((virt) => virtuals[virt].id === v))
+        if (virtual && proto[3].length > 3) {
+          setEffect(v, 'texter2d', {
+            "gradient": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)",
+            "option_2": false,
+            "flip": false,
+            "blur": 0,
+            "flip_horizontal": false,
+            "speed_option_1": 2,
+            "resize_method": "Fast",
+            "gradient_roll": 0,
+            "alpha": false,
+            "value_option_1": 0.5,
+            "font": "Blade-5x8",
+            "use_gradient": false,
+            "diag": false,
+            "test": false,
+            "impulse_decay": 0.1,
+            "mirror": false,
+            "flip_vertical": false,
+            "text_effect": "Side Scroll",
+            "multiplier": 1,
+            "brightness": 1,
+            "text_color": "#ff0000",
+            "background_brightness": 1,
+            "rotate": 0,
+            "dump": false,
+            "option_1": false,
+            "height_percent": 100,
+            "background_color": "#000000",
+            "text": proto[3]
+      }, true, true)
+        }
       } else {
-        showSnackbar('info', `External call: ${protoCall}`)
+        showSnackbar('info', `External call: ${protoCall.replace('ledfx://', '')}`)
       }
       setProtoCall('')
     }
