@@ -205,6 +205,7 @@ export default function App() {
       }
       setProtoCall('')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protoCall, showSnackbar, setProtoCall])
 
   return (

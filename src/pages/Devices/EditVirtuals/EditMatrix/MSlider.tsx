@@ -1,4 +1,4 @@
-import { Slider, Stack, TextField } from '@mui/material'
+import { Slider, Stack } from '@mui/material'
 import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
 import Number from '../../../../components/Number'
 
