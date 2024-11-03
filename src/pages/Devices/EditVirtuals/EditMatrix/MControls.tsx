@@ -145,7 +145,7 @@ const MControls = ({
               <Box width={250}>
                 <Slider
                   min={1}
-                  max={50}
+                  max={1000}
                   value={rowN}
                   onChange={(e, newRowNumber) =>
                     typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
@@ -161,7 +161,7 @@ const MControls = ({
               <Box width={250}>
                 <Slider
                   min={1}
-                  max={50}
+                  max={1000}
                   value={colN}
                   onChange={(e, newColNumber) =>
                     typeof newColNumber === 'number' && setColNumber(newColNumber)
