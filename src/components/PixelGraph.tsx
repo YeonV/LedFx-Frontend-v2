@@ -33,11 +33,11 @@ const PixelGraph = ({
     config: state.config
   }))
 
-  const rows = virtuals[virtId].is_device
-    ? devices[virtuals[virtId].is_device]?.config?.rows ||
-      virtuals[virtId].config.rows ||
+  const rows = virtuals[virtId]?.is_device
+    ? devices[virtuals[virtId]?.is_device]?.config?.rows ||
+      virtuals[virtId]?.config?.rows ||
       1
-    : virtuals[virtId].config.rows || 1
+    : virtuals[virtId]?.config?.rows || 1
 
   // console.time('hexColor');
   // console.log('timestamp', new Date().getTime())
@@ -67,7 +67,7 @@ const PixelGraph = ({
   }
 
   const totalPixels = decodedPixels.length > 0 ? decodedPixels.length : pixels[0]?.length
-  const realPixelCount = virtuals[virtId].pixel_count
+  const realPixelCount = virtuals[virtId]?.pixel_count || totalPixels
   const realCols = Math.ceil(realPixelCount / rows)
   const aspectRatio = realCols / rows
   // console.log(shape)
