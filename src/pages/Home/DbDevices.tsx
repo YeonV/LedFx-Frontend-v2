@@ -24,6 +24,7 @@ import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import useStore from '../../store/useStore'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import PixelGraph from '../../components/PixelGraph'
+import Popover from '../../components/Popover/Popover'
 
 const DeviceActions = ({
   virtId,
@@ -35,10 +36,16 @@ const DeviceActions = ({
   const navigate = useNavigate()
   const virtuals = useStore((state) => state.virtuals)
   const updateVirtual = useStore((state) => state.updateVirtual)
+  const deleteVirtual = useStore((state) => state.deleteVirtual)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
   const clearEffect = useStore((state) => state.clearEffect)
+  const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual)
+  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice)
 
+  const handleEditVirtual = () => {
+    setDialogOpenAddVirtual(true, virtId)
+  }
   const handlePlayPause = () => {
     if (virtId && virtuals[virtId])
       updateVirtual(virtId, !virtuals[virtId].active).then(() => getVirtuals())
@@ -101,7 +108,7 @@ const DeviceActions = ({
         onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          handlePlayPause()
+          setDialogOpenAddDevice(true, virtuals[virtId]?.is_device)
         }}
       >
         <Edit />
@@ -111,21 +118,23 @@ const DeviceActions = ({
         onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          handlePlayPause()
+          handleEditVirtual()
         }}
       >
         <Settings />
       </IconButton>
-      <IconButton
-        size="small"
-        onClick={(e) => {
+      <Popover
+        type='iconbutton'
+        icon={<DeleteForever />}
+        color={'inherit'}
+        onConfirm={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          handlePlayPause()
+          deleteVirtual(virtId).then(() => {
+            getVirtuals()
+          })
         }}
-      >
-        <DeleteForever />
-      </IconButton>
+      />
     </>
   )
 }
@@ -271,7 +280,7 @@ const DbDevices = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      renderHeader: () => <Stack direction={'row'} alignItems={'center'} style={{ width: 300 }}>
+      renderHeader: () => <Stack direction={'row'} alignItems={'center'} style={{ width: 400 }}>
           <Stack direction={'row'} alignItems={'center'} style={{ width: 135 }}>
           <IconButton
             size="small"
@@ -298,7 +307,7 @@ const DbDevices = () => {
           </Stack>
           Actions
         </Stack>,
-      width: 300, // eslint-disable-next-line
+      width: 400, // eslint-disable-next-line
       renderCell: (params: GridRenderCellParams) => // eslint-disable-next-line
         devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online  // eslint-disable-next-line
           ? (virtuals[params.row.id]?.effect.name  // eslint-disable-next-line

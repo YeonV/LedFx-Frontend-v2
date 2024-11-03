@@ -106,7 +106,7 @@ const storeDialogs = (set: any) => ({
       false,
       'api/dialog/AddScene'
     ),
-  setDialogOpenAddDevice: (open: boolean, edit?: boolean) =>
+  setDialogOpenAddDevice: (open: boolean, edit?: boolean | string) =>
     set(
       produce((state: IStore) => {
         state.dialogs.addDevice = {
@@ -117,7 +117,7 @@ const storeDialogs = (set: any) => ({
       false,
       'api/dialog/AddDevice'
     ),
-  setDialogOpenAddVirtual: (open: boolean, edit?: boolean) =>
+  setDialogOpenAddVirtual: (open: boolean, edit?: boolean | string) =>
     set(
       produce((state: IStore) => {
         state.dialogs.addVirtual = {
