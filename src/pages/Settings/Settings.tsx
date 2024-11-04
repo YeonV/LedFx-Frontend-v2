@@ -17,6 +17,8 @@ import DevicesSection from './DevicesSection'
 import SmartBar from '../../components/Dialogs/SmartBar'
 import ScenesSection from './ScenesSection'
 import MidiCard from './MidiCard'
+import EffectsSettingsCard from './EffectsCard'
+import PixelGraphsSettingsCard from './PixelGraphsSettingsCard'
 // import IntegrationsSection from './IntegrationsSection'
 
 const Settings = () => {
@@ -28,9 +30,13 @@ const Settings = () => {
   const loc = useLocation()
 
   useEffect(() => {
-    if (loc.search.indexOf('ui') > -1) {
-      setSettingsExpanded('panel2')
-    }
+    console.log('loc', loc, loc.search.indexOf('ui') > -1)
+    const quick = ['devices', 'scenes', 'uimode', 'effects', 'pixelgraphs']
+    quick.forEach((q) => {
+      if (loc.search.indexOf(q) > -1) {
+        setSettingsExpanded(`panel${q}`)
+      }
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc])
 
@@ -69,12 +75,12 @@ const Settings = () => {
       </SettingsAccordion>
       <SettingsAccordion
         title="Devices"
-        accId="devicesSection"
+        accId="devices"
         icon="mdi:led-strip-variant"
       >
         <DevicesSection />
       </SettingsAccordion>
-      <SettingsAccordion title="Scenes" accId="scenesSection" icon="Image">
+      <SettingsAccordion title="Scenes" accId="scenes" icon="Image">
         <ScenesSection />
       </SettingsAccordion>
       {/* {viewMode !== 'user' && features.integrations && (
@@ -90,7 +96,13 @@ const Settings = () => {
       {features.scenemidi && <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
         <MidiCard />
       </SettingsAccordion>}
-      <SettingsAccordion title="UI" accId="2a" icon="Widgets">
+      <SettingsAccordion title="Effects" accId="effects" icon="LensBlur">
+        <EffectsSettingsCard />
+      </SettingsAccordion>
+      <SettingsAccordion title="Pixel Graphs" accId="2aaa" icon="BarChart">
+        <PixelGraphsSettingsCard />
+      </SettingsAccordion>
+      <SettingsAccordion title="UI Mode" accId="uimode" icon="Widgets">
         <UICard />
       </SettingsAccordion>
 

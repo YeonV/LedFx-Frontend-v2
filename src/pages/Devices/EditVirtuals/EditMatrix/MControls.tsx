@@ -85,6 +85,7 @@ const MControls = ({
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const features = useStore((state) => state.features)
+  const virtual2dLimit = useStore((state) => state.ui.virtual2dLimit)
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') setDnd(false)
@@ -145,7 +146,7 @@ const MControls = ({
               <Box width={250}>
                 <Slider
                   min={1}
-                  max={1000}
+                  max={virtual2dLimit}
                   value={rowN}
                   onChange={(e, newRowNumber) =>
                     typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
@@ -161,7 +162,7 @@ const MControls = ({
               <Box width={250}>
                 <Slider
                   min={1}
-                  max={1000}
+                  max={virtual2dLimit}
                   value={colN}
                   onChange={(e, newColNumber) =>
                     typeof newColNumber === 'number' && setColNumber(newColNumber)

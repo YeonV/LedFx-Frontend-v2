@@ -13,7 +13,6 @@ const ScenesSection = () => {
         title="Show Infobox on Scenes page"
         checked={infoAlerts.scenes}
         onChange={() => setInfoAlerts('scenes', !infoAlerts.scenes)}
-        direct
       />
       <SettingsRow
         title="SceneTables (Recent+Most)"

@@ -40,18 +40,19 @@ const Devices = () => {
   const showGaps = useStore((state) => state.showGaps)
   const newBlender = useStore((state) => state.newBlender)
   const setNewBlender = useStore((state) => state.setNewBlender)
+  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (newBlender !== '') {
+    if (blenderAutomagic && newBlender !== '') {
       setNewBlender('')
       navigate(`/device/${newBlender}`)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newBlender])
+  }, [newBlender, blenderAutomagic])
 
   useEffect(() => {
     getDevices()

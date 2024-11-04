@@ -33,7 +33,6 @@ const DeviceCardWrapper = ({
   const updateVirtual = useStore((state) => state.updateVirtual)
   const activateDevice = useStore((state) => state.activateDevice)
   const showMatrix = useStore((state) => state.showMatrix)
-  const sortByUser = useStore((state) => state.sortByUser)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [order, setOrder] = useState<number | 'unset'>(0)
 
@@ -111,7 +110,6 @@ const DeviceCardWrapper = ({
 
   useEffect(() => {
     // initial device order if not set
-    if (!sortByUser) return
     const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]
     Object.keys(virtuals).map((s, i) => {
       if (!(v.some(o => o.virtId === s))) {
@@ -178,7 +176,7 @@ const DeviceCardWrapper = ({
       onContextMenu={(e: any) => {
         e.preventDefault()
         e.stopPropagation()
-        if (sortByUser) handleClick(e)
+        handleClick(e)
       }}
       deviceName={
         virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name

@@ -19,11 +19,6 @@ const BetaFeatures = () => {
         onChange={() => setFeatures('scenemidi', !features.scenemidi)}
       />
       <SettingsRow
-        title="Effect Filter"
-        checked={features.effectfilter}
-        onChange={() => setFeatures('effectfilter', !features.effectfilter)}
-      />
-      <SettingsRow
         title="Wakelock"
         checked={features.wakelock}
         onChange={() => setFeatures('wakelock', !features.wakelock)}

@@ -1,15 +1,21 @@
-import { Divider, MenuItem, Select } from '@mui/material'
-import { SettingsRow } from './SettingsComponents'
+import { Input } from '@mui/material'
+import { SettingsRow, SettingsSlider } from './SettingsComponents'
 import useStore from '../../store/useStore'
+import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 
 const ExpertFeatures = () => {
+  
+  const sliderClasses = useSliderStyles()
+
   const setFeatures = useStore((state) => state.setFeatures)
   const showFeatures = useStore((state) => state.showFeatures)
   const features = useStore((state) => state.features)
 
-  const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
-  const setEffectDescriptions = useStore(
-    (state) => state.ui.setEffectDescriptions
+  const updateNotificationInterval = useStore(
+    (state) => state.updateNotificationInterval
+  )
+  const setUpdateNotificationInterval = useStore(
+    (state) => state.setUpdateNotificationInterval
   )
   return (
     <>
@@ -27,36 +33,36 @@ const ExpertFeatures = () => {
           onChange={() => setFeatures('webaudio', !features.webaudio)}
         />
       )}
-      <SettingsRow
-        title="Copy To"
-        checked={features.streamto}
-        onChange={() => setFeatures('streamto', !features.streamto)}
-      />
-      <SettingsRow
-        title="Transitions"
-        checked={features.transitions}
-        onChange={() => setFeatures('transitions', !features.transitions)}
-        step="eight"
-      />
-      <SettingsRow title="Show Effect Descriptions">
-        <Select
-          disableUnderline
-          value={effectDescriptions}
-          onChange={(e) =>
-            setEffectDescriptions(e.target.value as 'Auto' | 'Show' | 'Hide')
+      <SettingsRow title="Update Notification: wait min">
+        <SettingsSlider
+          value={updateNotificationInterval}
+          step={1}
+          min={1}
+          max={4320}
+          onChange={(_e: any, val: number) =>
+            setUpdateNotificationInterval(val)
           }
-        >
-          <MenuItem value="Auto">Auto</MenuItem>
-          <MenuItem value="Show">Show</MenuItem>
-          <MenuItem value="Hide">Hide</MenuItem>
-        </Select>
+        />
+        <Input
+          disableUnderline
+          className={sliderClasses.input}
+          style={{ width: 70 }}
+          value={updateNotificationInterval}
+          margin="dense"
+          onChange={(e) => {
+            setUpdateNotificationInterval(parseInt(e.target.value, 10))
+          }}
+          sx={{
+            '& input': { textAlign: 'right' }
+          }}
+          inputProps={{
+            min: 1,
+            max: 4320,
+            type: 'number',
+            'aria-labelledby': 'input-slider'
+          }}
+        />
       </SettingsRow>
-      <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
-      <SettingsRow
-        title="Frequencies"
-        checked={features.frequencies}
-        onChange={() => setFeatures('frequencies', !features.frequencies)}
-      />
       <SettingsRow
         title="Spotify Embedded Player (old)"
         checked={features.spotify}
