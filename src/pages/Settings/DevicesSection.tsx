@@ -19,12 +19,6 @@ const DevicesSection = () => {
   const setShowGaps = useStore((state) => state.setShowGaps)
   const sortByUser = useStore((state) => state.sortByUser)
   const setSortByUser = useStore((state) => state.setSortByUser)
-  const showActiveDevicesFirst = useStore(
-    (state) => state.showActiveDevicesFirst
-  )
-  const setShowActiveDevicesFirst = useStore(
-    (state) => state.setShowActiveDevicesFirst
-  )
 
   return (
     <>
@@ -61,11 +55,6 @@ const DevicesSection = () => {
         checked={showHex}
         onChange={() => setShowHex(!showHex)}
         direct
-      />
-      <SettingsRow
-        title="Sort active devices first"
-        checked={showActiveDevicesFirst}
-        onChange={() => setShowActiveDevicesFirst(!showActiveDevicesFirst)}
       />
       <SettingsRow
         title="Sort devices by user"

@@ -25,9 +25,6 @@ const DeviceCardWrapper = ({
   const setDialogOpenAddVirtual = useStore(
     (state) => state.setDialogOpenAddVirtual
   )
-  const showActiveDevicesFirst = useStore(
-    (state) => state.showActiveDevicesFirst
-  )
   const graphs = useStore((state) => state.graphs)
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
@@ -169,30 +166,6 @@ const DeviceCardWrapper = ({
       const customOrder = virtualOrder.find(o => o.virtId === virtual)?.order
       if (customOrder !== undefined) {
         return customOrder
-      }
-      if (showActiveDevicesFirst) {
-        if (
-          virtuals[virtual]?.config.rows > 1 &&
-          !virtuals[virtual]?.effect.name &&
-          showMatrix
-        ) {
-          return -1
-        }
-        if (virtuals[virtual]?.config.rows > 1 && showMatrix) {
-          return -2
-        }
-        if (
-          !(
-            devices[Object.keys(devices).find((d) => d === virtual) || '']
-              ?.active_virtuals!.length > 0 || virtuals[virtual]?.effect.name
-          )
-        ) {
-          return 100
-        }
-        if (!virtuals[virtual]?.effect.name) {
-          return 50
-        }
-        return 'unset'
       }
       return 'unset'
     }
