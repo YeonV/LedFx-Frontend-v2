@@ -87,21 +87,9 @@ const storeGeneral = (set: any) => ({
     set(
       produce((state: IStore) => {
         state.sortByUser = val
-        state.showActiveDevicesFirst = false
       }),
       false,
       'general/setSortByUser'
-    )
-  },
-  showActiveDevicesFirst: true,
-  setShowActiveDevicesFirst: (val: boolean) => {
-    set(
-      produce((state: IStore) => {
-        state.showActiveDevicesFirst = val
-        state.sortByUser = false
-      }),
-      false,
-      'general/setShowActiveDevicesFirst'
     )
   },
   showComplex: false,
