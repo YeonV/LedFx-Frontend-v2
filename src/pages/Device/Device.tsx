@@ -23,6 +23,7 @@ const Device = () => {
   const updateVirtual = useStore((state) => state.updateVirtual)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const setNewBlender = useStore((state) => state.setNewBlender)
+  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
   const graphs = useStore((state) => state.graphs)
   const features = useStore((state) => state.features)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
@@ -187,7 +188,7 @@ const Device = () => {
   }, [effectType])
 
   useEffect(() => {
-    if (virtId && virtuals[virtId].effect.type === 'blender' && !(virtId.endsWith('-mask') || virtId.endsWith('-foreground') || virtId.endsWith('-background')) && (!devices[`${virtId}-mask`] || !devices[`${virtId}-foreground`] || !devices[`${virtId}-background`])) {        
+    if (blenderAutomagic && (virtId && virtuals[virtId].effect.type === 'blender' && !(virtId.endsWith('-mask') || virtId.endsWith('-foreground') || virtId.endsWith('-background')) && (!devices[`${virtId}-mask`] || !devices[`${virtId}-foreground`] || !devices[`${virtId}-background`]))) {
       addDevices().then(() => {
         getDevices()
         getVirtuals()
@@ -196,10 +197,10 @@ const Device = () => {
       });      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [virtId && virtuals[virtId]?.effect?.type])
+}, [virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
 
   useEffect(() => {
-    if (virtId && devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtuals[virtId].effect.type === 'blender' && (!virtuals[virtId].effect.config.mask || !virtuals[virtId].effect.config.foreground || !virtuals[virtId].effect.config.background)) {
+    if (blenderAutomagic && (virtId && devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtuals[virtId].effect.type === 'blender' && (!virtuals[virtId].effect.config.mask || !virtuals[virtId].effect.config.foreground || !virtuals[virtId].effect.config.background))) {
       setEffects().then(() => { 
         updateEffect(
           virtId,
@@ -218,20 +219,20 @@ const Device = () => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [devices, virtId && virtuals[virtId]?.effect?.type])
+}, [devices, virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
 
   useEffect(() => {
     getVirtuals()
     getSchemas()
     if (graphs && virtId) {
-      if (virtId && virtuals[virtId].effect.type === 'blender') {
+      if (blenderAutomagic && virtId && virtuals[virtId].effect.type === 'blender') {
         setPixelGraphs([virtId, `${virtId}-mask`, `${virtId}-foreground`, `${virtId}-background`])
       } else {
         setPixelGraphs([virtId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graphs, effectType, virtId && virtuals[virtId].effect.type])
+  }, [graphs, effectType, virtId && virtuals[virtId].effect.type, blenderAutomagic])
 
   const matrixOpen = !!(virtId && virtuals[virtId].pixel_count > 100 && virtuals[virtId].config.rows > 7)
   return (
@@ -254,7 +255,7 @@ const Device = () => {
           >
             <EffectsCard virtId={virtId || ''} />
           </Grid>
-          {!!(devices[`${virtId}-mask`], devices[`${virtId}-foreground`], devices[`${virtId}-background`]) && virtId && virtuals[virtId].effect.type === 'blender' &&
+          {!!(devices[`${virtId}-mask`], devices[`${virtId}-foreground`], devices[`${virtId}-background`]) && virtId && virtuals[virtId].effect.type === 'blender' && blenderAutomagic &&
             <Grid
               item
               sx={{
@@ -285,7 +286,7 @@ const Device = () => {
               width: '100%'
             }}
           >
-            {effectType && presets && !(devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtId && virtuals[virtId].effect.type === 'blender') && (
+            {effectType && presets && !(devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtId && virtuals[virtId].effect.type === 'blender' && blenderAutomagic) && (
               <PresetsCard
                 virtual={virtual}
                 presets={presets}

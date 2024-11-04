@@ -277,6 +277,12 @@
       "window": {
         "height": 380
       }
+    },
+    "protocols": {
+      "name": "LedFx",
+      "schemes": [
+        "ledfx"
+      ]
     }
   }
 }

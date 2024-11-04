@@ -81,17 +81,6 @@ const storeGeneral = (set: any) => ({
       'general/setStreaming'
     )
   },
-  // graphs: !!isElectron(),
-  sortByUser: false,
-  setSortByUser: (val: boolean) => {
-    set(
-      produce((state: IStore) => {
-        state.sortByUser = val
-      }),
-      false,
-      'general/setSortByUser'
-    )
-  },
   showComplex: false,
   setShowComplex: (val: boolean) => {
     set(

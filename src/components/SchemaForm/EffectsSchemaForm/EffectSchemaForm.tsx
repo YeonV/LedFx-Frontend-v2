@@ -34,7 +34,7 @@ const EffectSchemaForm = ({
   selectedType
 }: EffectSchemaFormProps) => {
   const virtuals = useStore((state) => state.virtuals)
-  const features = useStore((state) => state.features)
+  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
   return (
     <Root className={classes.bladeSchemaForm}>
       {schemaProperties &&
@@ -60,7 +60,7 @@ const EffectSchemaForm = ({
             case 'string':
               const complex = ['mask', 'foreground', 'background']
               if (selectedType === 'blender' && complex.includes(s.id)) return (
-                features.alpha ?
+                !blenderAutomagic ?
                   <BladeFrame
                     title={s.title}
                     key={s.id}

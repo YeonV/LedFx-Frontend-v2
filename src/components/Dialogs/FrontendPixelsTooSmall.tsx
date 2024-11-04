@@ -29,6 +29,8 @@ export default function FrontendPixelsTooSmall() {
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const setShowWarning = useStore((state) => state.setWarnings)
+
   const [pixelLength, setPixelLength] = useState(fPixels || 50)
   const [biggestDevice, setBiggestDevice] = useState({ id: '', pixels: 0 })
 
@@ -94,56 +96,9 @@ export default function FrontendPixelsTooSmall() {
           is configured to show only ${fPixels} pixels. Please increase the
           number of pixels`}
         </DialogContentText>
-        <SettingsRow
-          title="Show Matrix on Devices page (beta)"
-          checked={showMatrix}
-          onChange={() => toggleShowMatrix()}
-          direct
-        />
-        <SettingsRow title="Frontend Pixels" step="three" value={pixelLength}>
-          {/* <SettingsSlider
-            value={Math.round(inverseLogScale(pixelLength))}
-            step={1}
-            valueLabelDisplay="auto"
-            min={0} // Adjusted from 1 to 0
-            max={14} // Log2(16384) = 14
-            scale={(x: number) => logScale(x)}
-            marks={[
-              {
-                value: Math.round(inverseLogScale(81)),
-                label: Math.round(81).toString()
-              },
-              {
-                value: Math.round(inverseLogScale(256)),
-                label: Math.round(256).toString()
-              },
-              {
-                value: Math.round(inverseLogScale(1024)),
-                label: Math.round(1024).toString()
-              },
-              {
-                value: Math.round(inverseLogScale(4096)),
-                label: Math.round(4096).toString()
-              },
-              {
-                value: Math.round(inverseLogScale(16384)),
-                label: Math.round(16384).toString()
-              }
-            ]}
-            onChangeCommitted={(_e: any, val: any) =>
-              setSystemSetting(
-                'visualisation_maxlen',
-                Math.round(logScale(val))
-              )
-            }
-            onChange={(_e: any, val: any) => {
-              setPixelLength(Math.round(logScale(val)))
-            }}
-            valueLabelFormat={(val: number) => Math.round(val).toString()}
-            sx={{
-              marginTop: '28px'
-            }}
-          /> */}
+        <SettingsRow title="Show too-less-pixels Warning" checked={showWarning} onChange={() => setShowWarning('lessPixels', !showWarning)}/>
+        <SettingsRow title="Show Matrix on Devices page (beta)" checked={showMatrix} onChange={() => toggleShowMatrix()} />
+        <SettingsRow title="Frontend Pixels" step="three">
           <Input
             disableUnderline
             className={sliderClasses.input}

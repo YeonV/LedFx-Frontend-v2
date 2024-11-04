@@ -434,14 +434,12 @@ export default function IntroDialog({
                   checked={graphsMulti}
                   onChange={() => toggleGraphsMulti()}
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
-                  direct
                 />
                 <SettingsRow
                   title="BG Waves (eats performance)"
                   checked={features.waves}
                   onChange={() => setFeatures('waves', !features.waves)}
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
-                  direct
                 />
                 <SettingsRow
                   title="SceneTables (Recent+Most)"
@@ -450,7 +448,6 @@ export default function IntroDialog({
                     setFeatures('scenetables', !features.scenetables)
                   }
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
-                  direct
                 />
                 <SettingsRow
                   title="SceneChips (Filter Tags)"
@@ -459,7 +456,6 @@ export default function IntroDialog({
                     setFeatures('scenechips', !features.scenechips)
                   }
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
-                  direct
                 />
               </Box>
             </div>
@@ -488,7 +484,6 @@ export default function IntroDialog({
                     checked={assistant.wled}
                     onChange={() => setAssistant('wled', !assistant.wled)}
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
-                    direct
                   />
                 </Stack>
                 <Stack direction="row" alignItems="center">
@@ -500,7 +495,6 @@ export default function IntroDialog({
                       setAssistant('wledSegments', !assistant.wledSegments)
                     }
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
-                    direct
                   />
                 </Stack>
                 <Stack direction="row" alignItems="center">
@@ -515,7 +509,6 @@ export default function IntroDialog({
                     checked={assistant.openRgb}
                     onChange={() => setAssistant('openRgb', !assistant.openRgb)}
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
-                    direct
                   />
                 </Stack>
                 <Stack direction="row" alignItems="center">
@@ -532,7 +525,6 @@ export default function IntroDialog({
                       setAssistant('launchpad', !assistant.launchpad)
                     }
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
-                    direct
                   />
                 </Stack>
               </Box>

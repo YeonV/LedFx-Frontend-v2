@@ -70,8 +70,8 @@ const Routings = ({ handleWs }: any) => {
   useHotkeys(['ctrl+alt+a'], () => {
     setFeatures('beta', !features.beta)
     setFeatures('alpha', !features.alpha)
-    setShowFeatures('alpha', !features.beta)
-    setShowFeatures('beta', !features.alpha)
+    setShowFeatures('alpha', !features.alpha)
+    setShowFeatures('beta', !features.beta)
   })
 
   return (

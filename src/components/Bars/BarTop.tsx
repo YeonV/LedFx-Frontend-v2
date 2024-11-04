@@ -10,7 +10,8 @@ import {
   ChevronLeft,
   Login,
   Logout,
-  Lan
+  Lan,
+  Settings
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import {
@@ -225,7 +226,6 @@ const TopBar = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
-  const sortByUser = useStore((state) => state.sortByUser)
   const { requestWakeLock, releaseWakeLock } = useWakeLock();
 
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
@@ -376,6 +376,8 @@ const TopBar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [features.wakelock])
   
+  const slug = pathname.split('/')[1]
+
   return (
     <>
       {isElectron() && platform !== 'darwin' && (
@@ -489,6 +491,7 @@ const TopBar = () => {
               >
                 {features.cloud && isLogged && (
                   <MenuItem
+                    sx={{ pb: 2 }}
                     divider
                     onClick={() => {
                       setAnchorEl(null)
@@ -513,45 +516,6 @@ const TopBar = () => {
                     </div>
                   </MenuItem>
                 )}
-                <MenuItem onClick={changeHost}>
-                  <ListItemIcon>
-                    <Language />
-                  </ListItemIcon>
-                  Change Host
-                </MenuItem>
-                {isCC && isCreator && (
-                  <MenuItem onClick={changeHostManager}>
-                    <ListItemIcon>
-                      <Lan />
-                    </ListItemIcon>
-                    Host Manager
-                  </MenuItem>
-                )}
-                <MenuItem onClick={changeGraphs}>
-                  <ListItemIcon>
-                    <BarChart color={graphs ? 'inherit' : 'secondary'} />
-                  </ListItemIcon>
-                  {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
-                </MenuItem>
-                {pathname.split('/')[1] === 'device' ? (
-                  <TourDevice cally={() => setAnchorEl(null)} />
-                ) : pathname.split('/')[1] === 'Scenes' ? (
-                  <TourScenes cally={() => setAnchorEl(null)} />
-                ) : pathname.split('/')[1] === 'Settings' ? (
-                  <TourSettings cally={() => setAnchorEl(null)} />
-                ) : pathname.split('/')[1] === 'Devices' ? ([
-                  sortByUser && <OrderListDialog key={'order'} mode='drawer' onOpen={() => setAnchorEl(null)} />,
-                  <TourDevices key={'device-tour'} cally={() => setAnchorEl(null)} />
-                ]
-                ) : pathname.split('/')[1] === 'Integrations' ? (
-                  <TourIntegrations cally={() => setAnchorEl(null)} />
-                ) : (
-                  <TourHome
-                    variant="menuitem"
-                    cally={() => setAnchorEl(null)}
-                  />
-                )}
-
                 {features.cloud && (
                   <MenuItem
                     onClick={(e: any) => {
@@ -593,6 +557,65 @@ const TopBar = () => {
                     {isLogged ? 'Logout' : 'Login with Github'}
                   </MenuItem>
                 )}
+                <MenuItem onClick={changeHost}>
+                  <ListItemIcon>
+                    <Language />
+                  </ListItemIcon>
+                  Change Host
+                </MenuItem>
+                {/* <MenuItem onClick={()=>{
+                  ;(window as any).api.send('toMain', {
+                    command: 'toggle-darkmode'
+                  })
+                }}>
+                  <ListItemIcon>
+                    <Language />
+                  </ListItemIcon>
+                  Darkmode
+                </MenuItem> */}
+                {isCC && isCreator && (
+                  <MenuItem onClick={changeHostManager}>
+                    <ListItemIcon>
+                      <Lan />
+                    </ListItemIcon>
+                    Host Manager
+                  </MenuItem>
+                )}
+                <MenuItem onClick={changeGraphs}>
+                  <ListItemIcon>
+                    <BarChart color={graphs ? 'inherit' : 'secondary'} />
+                  </ListItemIcon>
+                  {!graphs ? 'Enable Graphs' : 'Disable Graphs'}
+                </MenuItem>
+                {slug === 'device' ? (
+                  <TourDevice cally={() => setAnchorEl(null)} />
+                ) : slug === 'Scenes' ? (
+                  <TourScenes cally={() => setAnchorEl(null)} />
+                ) : slug === 'Settings' ? (
+                  <TourSettings cally={() => setAnchorEl(null)} />
+                ) : slug === 'Devices' ? ([
+                  <OrderListDialog key={'order'} mode='drawer' onOpen={() => setAnchorEl(null)} />,
+                  <TourDevices key={'device-tour'} cally={() => setAnchorEl(null)} />
+                ]
+                ) : slug === 'Integrations' ? (
+                  <TourIntegrations cally={() => setAnchorEl(null)} />
+                ) : (
+                  <TourHome
+                    variant="menuitem"
+                    cally={() => setAnchorEl(null)}
+                  />
+                )}
+                {slug !== 'Settings' && <>
+                  <Divider />
+                  <MenuItem onClick={()=> {
+                    navigate(`/Settings?${slug === 'device' ? 'effects' : slug === 'Scenes' ? 'scenes' : slug === 'Devices' ? 'devices' : ''}`)                  
+                    setAnchorEl(null)}}>
+                    <ListItemIcon>
+                      <Settings />
+                    </ListItemIcon>
+                    Settings
+                  </MenuItem>
+                </>}
                 {localStorage.getItem('username') === 'YeonV' && <Divider />}
                 {localStorage.getItem('username') === 'YeonV' && 
                     <Select

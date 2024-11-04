@@ -6,6 +6,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
+  Chip,
   Slider,
   Switch,
   Tooltip,
@@ -185,25 +186,35 @@ export const SettingsRow = ({
   title = '',
   step = 'x',
   children = null,
-  value = null,
   checked = false,
-  direct = false,
   onChange,
   style = null,
-  disabled = false
+  disabled = false,
+  expert = false,
+  beta = false,
+  alpha = false
 }: {
   step?: string
   title: string
-  value?: any
   checked?: boolean
-  direct?: boolean
   onChange?: () => void
   children?: any
   style?: any
   disabled?: boolean
+  expert?: boolean
+  beta?: boolean
+  alpha?: boolean
 }) => {
   const classes = useStyles()
   const theme = useTheme()
+  const alphaMode = useStore((state) => state.features.alpha)
+  const betaMode = useStore((state) => state.features.beta)
+  const expertMode = useStore((state) => state.viewMode) === 'expert'
+  
+  if (beta && !betaMode) return null
+  if (alpha && !alphaMode) return null
+  if (expert && !expertMode) return null
+
   return (
     <div
       className={`${classes.settingsRow} step-settings-${step} `}
@@ -215,6 +226,9 @@ export const SettingsRow = ({
       }}
     >
       <label>{title}</label>
+      {alpha && <Chip label='alpha' />}
+      {beta && <Chip label='beta' />}
+      {expert && <Chip label='expert' />}
       <div
         style={{
           display: 'flex',
