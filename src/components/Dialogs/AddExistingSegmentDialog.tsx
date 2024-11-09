@@ -13,6 +13,7 @@ import {
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import useStore from '../../store/useStore'
 import BladeFrame from '../SchemaForm/components/BladeFrame'
+import { SubdirectoryArrowRight } from '@mui/icons-material'
 
 const PREFIX = '_AddSegmentDialog'
 
@@ -52,11 +53,17 @@ function ConfirmationDialogRaw(props: any) {
     setValue(event.target.value)
   }
 
-  delete other.deviceList
-  const deviceKeys = Object.keys(props.deviceList)
-    .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-    .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
-  
+  const virtualKeys = Object.keys(virtuals)
+    .filter(v => showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
+    .filter(v => showGaps ? v : !(v.startsWith('gap-')))
+    .filter(v => virtuals[v].segments.length === 1)
+
+  const segments = virtualKeys.reduce((acc: any, v) => {
+    acc[virtuals[v].config.name] = virtuals[v].segments.flat();
+    return acc;
+  }, {});
+
+  // console.log(segments)
   return (
     <Dialog
       disableEscapeKeyDown
@@ -65,7 +72,7 @@ function ConfirmationDialogRaw(props: any) {
       open={open}
       {...other}
     >
-      <DialogTitle id="confirmation-dialog-title">Select a device</DialogTitle>
+      <DialogTitle id="confirmation-dialog-title">Select a segment</DialogTitle>
       <DialogContent dividers>
         <BladeFrame full>
           <Select
@@ -73,15 +80,17 @@ function ConfirmationDialogRaw(props: any) {
             style={{ width: '100%' }}
             onChange={handleChange}
           >
-            {deviceKeys
-              .map((device) => (
+            {Object.keys(segments)
+              .map((v) => { 
+                const k = virtualKeys.find(vi => virtuals[vi].config.name === v)
+                return (
                 <MenuItem
-                  value={props.deviceList[device].id}
-                  key={props.deviceList[device].id}
+                  value={JSON.stringify({[v]: segments[v]})}
+                  key={v}
                 >
-                  {virtuals[props.deviceList[device].id].config.name || props.deviceList[device].config.name}
+                  {k && virtuals[k].is_device ? '' : <SubdirectoryArrowRight color='disabled' sx={{ mr: 1 }} />}{v}
                 </MenuItem>
-              ))}
+              )})}
           </Select>
         </BladeFrame>
       </DialogContent>
@@ -108,7 +117,7 @@ ConfirmationDialogRaw.propTypes = {
   deviceList: PropTypes.any
 }
 
-export default function ConfirmationDialog({
+function AddExistingSegmentDialog({
   virtual,
   config = {}
 }: {
@@ -129,23 +138,25 @@ export default function ConfirmationDialog({
 
   const handleClose = (newValue: string) => {
     setOpen(false)
-    if (newValue) {
-      const device = {
-        ...deviceList[
-          Object.keys(deviceList).find((d) => deviceList[d].id === newValue) ||
-            0
-        ]
-      }
-      if (device && device.config) {
+    if (!newValue) {
+      return
+    }
+    const [name, segments] = Object.entries(JSON.parse(newValue))[0] as [string, [string, number, number, boolean]]
+    // console.log(name)
+    // console.log(segments)
+    if (name && segments) {
+      const deviceKey = Object.keys(deviceList).find((d) => deviceList[d].id === segments[0])
+      const device = deviceKey ? deviceList[deviceKey] : undefined
+      // console.log(device)
         const temp = [
           ...virtual.segments,
-          [device.id, 0, device.config.pixel_count - 1, false]
+          segments
         ]
         const test = temp.filter((t) => t.length === 4)
 
         updateSegments(virtual.id, test).then(() => {
           getVirtuals()
-          if (virtual.active === false && virtual.segments.length === 0) {
+          if (device && virtual.active === false && virtual.segments.length === 0) {
             if (
               device.active_virtuals &&
               device.active_virtuals[0] &&
@@ -163,15 +174,16 @@ export default function ConfirmationDialog({
               setEffect(virtual.id, 'rainbow', {}, true)
             }
           }
-          highlightSegment(
-            virtual.id,
-            device.id,
-            0,
-            device.config.pixel_count - 1,
-            false
-          )
+          if (device) {
+            highlightSegment(
+              virtual.id,
+              device.id,
+              segments[1],
+              segments[2],
+              false
+            )
+          }
         })
-      }
     }
   }
 
@@ -187,7 +199,7 @@ export default function ConfirmationDialog({
             onClick={handleClickListItem}
             role="listitem"
           >
-            ADD NEW SEGMENT
+            ADD EXISTING SEGMENT
           </Button>
 
           <ConfirmationDialogRaw
@@ -208,3 +220,5 @@ export default function ConfirmationDialog({
     </Root>
   )
 }
+
+export default AddExistingSegmentDialog

@@ -24,7 +24,7 @@ const useEditVirtualsStyles = makeStyles(() => ({
   },
   segmentButtonWrapper: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: '0.5rem 0',
     margin: '0 1rem'

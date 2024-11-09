@@ -605,9 +605,9 @@ const TopBar = () => {
                     cally={() => setAnchorEl(null)}
                   />
                 )}
-                {slug !== 'Settings' && <>
-                  <Divider />
-                  <MenuItem onClick={()=> {
+                {slug !== 'Settings' && [
+                  <Divider key={'divider1'} />,
+                  <MenuItem key={'settings'} onClick={()=> {
                     navigate(`/Settings?${slug === 'device' ? 'effects' : slug === 'Scenes' ? 'scenes' : slug === 'Devices' ? 'devices' : ''}`)                  
                     setAnchorEl(null)}}>
                     <ListItemIcon>
@@ -615,8 +615,8 @@ const TopBar = () => {
                     </ListItemIcon>
                     Settings
                   </MenuItem>
-                </>}
-                {localStorage.getItem('username') === 'YeonV' && <Divider />}
+                ]}
+                {localStorage.getItem('username') === 'YeonV' && <Divider key={'divider2'} />}
                 {localStorage.getItem('username') === 'YeonV' && 
                     <Select
                     IconComponent={()=>null}

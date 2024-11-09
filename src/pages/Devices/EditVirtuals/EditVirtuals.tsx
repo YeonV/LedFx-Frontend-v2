@@ -32,6 +32,7 @@ import useEditVirtualsStyles from './EditVirtuals.styles'
 import EditMatrix from './EditMatrix/M'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import Tour2dVirtual from '../../../components/Tours/Tour2dVirtual'
+import AddExistingSegmentDialog from '../../../components/Dialogs/AddExistingSegmentDialog'
 
 const Transition = React.forwardRef<unknown, TransitionProps>(
   function Transition(props, ref) {
@@ -249,6 +250,7 @@ export default function EditVirtuals({
               ))}
             <div className={classes.segmentButtonWrapper}>
               <AddSegmentDialog virtual={virtual} />
+              <AddExistingSegmentDialog virtual={virtual} />
             </div>
           </>
         )}
