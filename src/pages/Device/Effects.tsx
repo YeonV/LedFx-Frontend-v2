@@ -168,6 +168,10 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }, [virtuals,virtuals[virtId],virtuals[virtId]?.effect,JSON.stringify(virtuals[virtId]?.effect?.config),virtual,virtual?.effect,virtual?.effect.config,effectType])
 
   useEffect(() => {
+    setMatrix(showMatrix || (virtuals[virtId]?.config?.rows > 7 && virtuals[virtId]?.pixel_count > 100 && virtuals[virtId].effect.type === 'blender'))
+  }, [virtuals[virtId].effect.type])
+
+  useEffect(() => {
     const handleWebsockets = (_e: any) => {
       getVirtuals()
     }
