@@ -18,6 +18,7 @@ import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 import PixelGraph from '../../components/PixelGraph'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
+import { Ledfx } from '../../api/ledfx'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -64,6 +65,7 @@ const orderEffectProperties = (
 }
 
 const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boolean }) => {
+  const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
   const updateEffect = useStore((state) => state.updateEffect)
@@ -108,6 +110,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
     if (updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(vId, effectType, config, false).then(() => {
         getVirtuals()
+        getDevices()
       })
     }
   }
@@ -115,6 +118,22 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
   useEffect(() => {
     getVirtuals()
     getSchemas()
+    if (Object.keys(virtuals[virtId].effect).length === 0) {    
+      Ledfx('/api/config').then((resp) => {
+        const v = resp.virtuals.find((v: any) => v.id === virtId)
+        if (!v) return
+        if (!v.effects) return
+        const ent = Object.entries(v.effects)
+        if (!ent) return
+        const [type, config] = ent[0]
+        if (type && (config as any).config) setEffect(
+          virtId,
+          type,
+          (config as any).config,
+          true
+        )
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectType])
 
