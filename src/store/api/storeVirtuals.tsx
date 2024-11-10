@@ -103,6 +103,7 @@ export interface Virtual {
   pixel_count: number
   active: boolean
   effect: Effect
+  effects: Effect[]
 }
 
 const storeVirtuals = (set: any) => ({
@@ -200,6 +201,22 @@ const storeVirtuals = (set: any) => ({
         'api/setEffect'
       )
     }
+  },
+  removeEffectfromHistory: async (type: string, virtId: string) => {
+    await Ledfx(`/api/virtuals/${virtId}/effects/delete`, 'POST', {
+      type
+    })
+    set(
+      produce((state: IStore) => {
+        state.virtuals[virtId].effect = {
+          type: '',
+          name: '',
+          config: {}
+        }
+      }),
+      false,
+      'api/removeEffectfromHistory'
+    )
   },
   updateEffect: async (
     virtId: string,

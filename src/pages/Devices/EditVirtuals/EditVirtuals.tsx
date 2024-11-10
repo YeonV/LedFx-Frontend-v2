@@ -209,7 +209,7 @@ export default function EditVirtuals({
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>
-            <Tour2dVirtual />
+            {virtual.config.rows > 1 && <Tour2dVirtual />}
             <Tooltip title="Preview Effect">
               <IconButton
                 onClick={() => {
