@@ -169,6 +169,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   useEffect(() => {
     setMatrix(showMatrix || (virtuals[virtId]?.config?.rows > 7 && virtuals[virtId]?.pixel_count > 100 && virtuals[virtId].effect.type === 'blender'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals[virtId].effect.type])
 
   useEffect(() => {
