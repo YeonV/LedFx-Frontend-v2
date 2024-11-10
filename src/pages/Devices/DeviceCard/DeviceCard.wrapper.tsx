@@ -29,6 +29,7 @@ const DeviceCardWrapper = ({
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
   const graphsMulti = useStore((state) => state.graphsMulti)
+  const removeEffectfromHistory = useStore((state) => state.removeEffectfromHistory)
   const clearEffect = useStore((state) => state.clearEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const activateDevice = useStore((state) => state.activateDevice)
@@ -58,9 +59,29 @@ const DeviceCardWrapper = ({
         devices[Object.keys(devices).find((d) => d === virtual) || '']
           ?.active_virtuals!.length > 0)
   )
-  // console.log(fade, isActive)
+  
   const handleDeleteDevice = () => {
-    deleteVirtual(virtuals[virtual]?.id).then(() => {
+    const toDelete: string[] = []
+    let core = virtual
+    const isComplex = virtual.endsWith('-mask') || virtual.endsWith('-foreground') || virtual.endsWith('-background')
+    if (isComplex) {
+      core = virtual.replace(/-mask|-foreground|-background/g, '')
+      if (virtuals[core].effect.type === 'blender') {
+        removeEffectfromHistory('blender', core).then(() => {
+          setTimeout(() => {
+            getVirtuals()
+            getDevices()
+          }, 500)
+        })
+      }
+    }
+    Object.keys(virtuals).map((v) => {
+      if ((!isComplex && v === core) || v === `${core}-mask` || v === `${core}-foreground` || v === `${core}-background`) {
+        toDelete.push(v)
+      }
+      return null
+    })
+    Promise.all(toDelete.map(async(v) => await deleteVirtual(virtuals[v]?.id))).then(() => {
       getVirtuals()
     })
   }

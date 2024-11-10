@@ -30,7 +30,6 @@ const Settings = () => {
   const loc = useLocation()
 
   useEffect(() => {
-    console.log('loc', loc, loc.search.indexOf('ui') > -1)
     const quick = ['devices', 'scenes', 'uimode', 'effects', 'pixelgraphs']
     quick.forEach((q) => {
       if (loc.search.indexOf(q) > -1) {
