@@ -20,6 +20,7 @@ const Device = () => {
   const getDevices = useStore((state) => state.getDevices)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
+  const clearEffect = useStore((state) => state.clearEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const setNewBlender = useStore((state) => state.setNewBlender)
@@ -200,7 +201,7 @@ const Device = () => {
 }, [virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
 
   useEffect(() => {
-    if (blenderAutomagic && (virtId && devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtuals[virtId].effect.type === 'blender' && (!virtuals[virtId].effect.config.mask || !virtuals[virtId].effect.config.foreground || !virtuals[virtId].effect.config.background))) {
+    if (blenderAutomagic && (virtId && devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtuals[virtId].effect.type === 'blender' && (!virtuals[virtId].effect.config?.mask || !virtuals[virtId].effect.config?.foreground || !virtuals[virtId].effect.config?.background))) {
       setEffects().then(() => { 
         updateEffect(
           virtId,
@@ -217,6 +218,11 @@ const Device = () => {
           navigate(`/Devices`)
         })
       })
+    }
+    if (blenderAutomagic && (virtId && devices[`${virtId}-mask`] && devices[`${virtId}-foreground`] && devices[`${virtId}-background`] && virtuals[virtId].effect.type !== 'blender')) {        
+      if (virtuals[`${virtId}-mask`].effect.config) clearEffect(`${virtId}-mask`)
+      if (virtuals[`${virtId}-foreground`].effect.config) clearEffect(`${virtId}-foreground`)
+      if (virtuals[`${virtId}-background`].effect.config) clearEffect(`${virtId}-background`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [devices, virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
