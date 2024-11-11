@@ -35,6 +35,7 @@ const Dashboard = () => {
   const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
+  const features = useStore((state) => state.features)
   const smallHeight = useMediaQuery(
     '(max-height: 680px) and (min-width: 480px)'
   )
@@ -424,7 +425,7 @@ const Dashboard = () => {
           </Stack>
         </Stack>
       </Stack>
-      {config.dev_mode && <MGraph />}
+      {features.melbankGraph && <MGraph />}
     </div>
   )
 }
