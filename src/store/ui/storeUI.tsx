@@ -49,6 +49,33 @@ const storeUI = (set: any) => ({
       false,
       'ui/showHex'
     ),
+  mgX: 50,
+  setMgX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.mgX = x
+      }),
+      false,
+      'ui/mgX'
+    ),
+  mgY: 200,
+  setMgY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.mgY = y
+      }),
+      false,
+      'ui/mgY'
+    ),
+  mg: false,
+  setMg: (mg: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.mg = mg
+      }),
+      false,
+      'ui/mg'
+    ),
   mp: false,
   setMp: (mp: boolean): void =>
     set(
@@ -57,6 +84,33 @@ const storeUI = (set: any) => ({
       }),
       false,
       'ui/mp'
+    ),
+  keybindingX: 50,
+  setKeybindingX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.keybindingX = x
+      }),
+      false,
+      'ui/keybindingX'
+    ),
+  keybindingY: 200,
+  setKeybindingY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.keybindingY = y
+      }),
+      false,
+      'ui/keybindingY'
+    ),
+  keybinding: false,
+  setKeybinding: (keybinding: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.keybinding = keybinding
+      }),
+      false,
+      'ui/keybinding'
     ),
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
