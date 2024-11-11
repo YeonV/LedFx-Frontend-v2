@@ -138,7 +138,7 @@ const MGraph = () => {
               borderColor: '#fff',
               maxTicksLimit: 12,
               callback: (value: any, _index: number) => {
-                console.log('frequencies', messageData.frequencies)
+                // console.log('frequencies', messageData.frequencies)
                 const frequency = messageData.frequencies[_index];
                 return `${JSON.stringify(frequency)} Hz`;
               }
@@ -195,7 +195,7 @@ const MGraph = () => {
   }, [animationDuration, fillOpacity, scaleType])
 
   return (
-    <Stack alignItems={'center'} sx={{ position: 'relative' }}>
+    <Stack alignItems={'center'} sx={{ position: 'relative', width: '100%' }}>
       <Fab color='primary' sx={{ position: 'absolute', top: '24px'}} onClick={() => setShowSettings(!showSettings)}>
         <Tune />
       </Fab>    
@@ -306,21 +306,21 @@ const MGraph = () => {
         </CardContent>
       </Card>
       <Grid container spacing={2} justifyContent={'center'}>
-       <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
         {data1?.chartData && data1?.chartOptions && data1?.chartData?.labels && (
-          <Line data={data1.chartData} options={data1.chartOptions} />
+          <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
+            <Line data={data1.chartData} options={data1.chartOptions} />
+          </div>
         )}
-      </div>
-      <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
         {data2?.chartData && data2?.chartOptions && data2?.chartData?.labels && (
-          <Line data={data2.chartData} options={data2.chartOptions} />
+          <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
+            <Line data={data2.chartData} options={data2.chartOptions} />
+          </div>
         )}
-      </div>
-      <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
         {data3?.chartData && data3?.chartOptions && data3?.chartData?.labels && (
-          <Line data={data3.chartData} options={data3.chartOptions} />
+          <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
+            <Line data={data3.chartData} options={data3.chartOptions} />
+          </div>
         )}
-      </div>
       </Grid>
     </Stack>
   )

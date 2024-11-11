@@ -24,6 +24,15 @@ const DashboardCard = () => {
           }
         />
       </div>
+      <div className={`${classes.settingsRow} step-settings-x `}>
+        <label>Show Audio Graph</label>
+        <SettingsSwitch
+          checked={features.melbankGraph}
+          onChange={() =>
+            setFeatures('melbankGraph', !features.melbankGraph)
+          }
+        />
+      </div>
     </div>
   )
 }
