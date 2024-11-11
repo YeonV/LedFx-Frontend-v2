@@ -32,12 +32,18 @@ import Mp from '../components/Integrations/Spotify/Widgets/Mp/Mp'
 import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
 import HostManager from '../components/Dialogs/HostManager'
 import Graph from './Graph/Graph'
+import MGraphFloating from '../components/Integrations/Spotify/Widgets/MGraphFlotaing/MGraphFloating'
+import Keybinding from '../components/Integrations/Spotify/Widgets/Keybinding/Keybinding'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
   const isElect = isElectron()
+  const keybinding = useStore((state) => state.ui.keybinding)
+  const setKeybinding = useStore((state) => state.ui.setKeybinding)
   const mp = useStore((state) => state.ui.mp)
   const setMp = useStore((state) => state.ui.setMp)
+  const mg = useStore((state) => state.ui.mg)
+  const setMg = useStore((state) => state.ui.setMg)
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
@@ -53,6 +59,8 @@ const Routings = ({ handleWs }: any) => {
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
   useHotkeys(['ctrl+alt+d'], () => setMp(!mp))
+  useHotkeys(['ctrl+alt+m'], () => setMg(!mg))
+  useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
   useHotkeys(['ctrl+alt+g'], () => {
     if (window.localStorage.getItem('guestmode') === 'activated') {
       window.localStorage.removeItem('guestmode')
@@ -141,6 +149,8 @@ const Routings = ({ handleWs }: any) => {
           )}
         </Routes>
         {mp && <Mp />}
+        {mg && <MGraphFloating />}
+        {keybinding && <Keybinding />}
         <NoHostDialog />
         <HostManager />
         <FrontendPixelsTooSmall />
