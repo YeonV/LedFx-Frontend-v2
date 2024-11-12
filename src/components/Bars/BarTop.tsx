@@ -215,6 +215,7 @@ const TopBar = () => {
   const { pathname } = useLocation()
   const history = useNavigate()
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
+  const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const features = useStore((state) => state.features)
   const platform = useStore((state) => state.platform)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -626,7 +627,7 @@ const TopBar = () => {
                       value={currentTheme} onChange={(e) => {
                         setCurrentTheme(e.target.value)
                         window.localStorage.setItem('ledfx-theme', e.target.value)
-                        window.location.reload()
+                        reloadTheme()
                       }}
                     >
                       {Object.keys(ledfxThemes).map((t) => (

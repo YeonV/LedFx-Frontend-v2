@@ -39,11 +39,6 @@ export default function FrontendPixelsTooSmall() {
   )
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
-    // .then(() => {
-    //   setTimeout(() => {
-    //     window.location.reload()
-    //   }, 3000)
-    // })
   }
   const handleClose = () => setDialogOpenLessPixels(false)
 

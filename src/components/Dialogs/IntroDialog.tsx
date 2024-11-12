@@ -46,6 +46,7 @@ export default function IntroDialog({
   const setIntro = useStore((state) => state.setIntro)
   const setTour = useStore((state) => state.setTour)
   const setTourOpen = useStore((state) => state.setTourOpen)
+  const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const small = useMediaQuery('(max-width: 720px)')
   const xsmall = useMediaQuery('(max-width: 600px)')
 
@@ -64,6 +65,8 @@ export default function IntroDialog({
 
   const graphsMulti = useStore((state) => state.graphsMulti)
   const assistant = useStore((state) => state.assistant)
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
   const setAssistant = useStore((state) => state.setAssistant)
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -158,6 +161,22 @@ export default function IntroDialog({
         },
         action_right: handleNext
       },
+      isCC ?? ({
+        key: 'theme',
+        title: 'Choose your Theme',
+        label_left: 'Lightmode',
+        label_right: 'Darkmode',
+        action_left: () => {
+          window.localStorage.setItem('ledfx-theme', 'LightBlack')
+          reloadTheme()
+          handleNext()
+        },
+        action_right: () => {
+          window.localStorage.setItem('ledfx-theme', 'DarkWhite')
+          reloadTheme()
+          handleNext()
+        } 
+      }),
       {
         key: 'gotWled',
         title: 'Scan for devices?',

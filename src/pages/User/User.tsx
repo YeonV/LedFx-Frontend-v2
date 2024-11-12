@@ -70,7 +70,7 @@ const User = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenePL = useStore((state) => state.scenePL)
   const setScenePL = useStore((state) => state.setScenePL)
-
+  const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const userName = localStorage.getItem('username')
 
   const filteredCloudEffects = {} as any
@@ -1049,16 +1049,16 @@ const User = () => {
                   onChange={(e) => {
                     if (e.target.value === 'DarkBlue') {
                       window.localStorage.setItem('ledfx-theme', 'DarkBlue')
-                      window.location.reload()
+                      reloadTheme()
                     } else if (e.target.value === 'DarkOrange') {
                       window.localStorage.setItem('ledfx-theme', 'DarkOrange')
-                      window.location.reload()
+                      reloadTheme()
                     } else if (e.target.value === 'DarkGreen') {
                       window.localStorage.setItem('ledfx-theme', 'DarkGreen')
-                      window.location.reload()
+                      reloadTheme()
                     } else if (e.target.value === 'DarkRed') {
                       window.localStorage.setItem('ledfx-theme', 'DarkRed')
-                      window.location.reload()
+                      reloadTheme()
                     }
                   }}
                 >
