@@ -9,7 +9,6 @@ const getOS = () => {
 
 const KeybindingComponent = ({ singleKey }: { singleKey: string }) => {
   const os = getOS();
-  console.log('os', os, singleKey);
   const renderKey = (singleKey: string) => {
     if (os === 'mac') {
       if (singleKey === 'alt') return 'opt';

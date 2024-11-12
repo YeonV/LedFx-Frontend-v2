@@ -1,7 +1,8 @@
-import { Box, Stack } from '@mui/material'
+import { Box, IconButton, Stack, Typography } from '@mui/material'
 import { KeysRow } from './KeybindingComponents'
 import KeybindingFloating from './KeybindingFloating'
 import useStyle from './Keybinding.styles'
+import { Close } from '@mui/icons-material'
 
 const keybindings = [
   {
@@ -40,21 +41,27 @@ const keybindings = [
 
 ]
 
-const Keybinding = () => {
+const Keybinding = ({ close }: { close?: () => void}) => {
   const classes = useStyle()
 
   return (
     <Box component={KeybindingFloating}>
       <div className={classes.Widget}>
-        <Box
+        <Stack
+          direction={'row'}
+          p={2}
           bgcolor="#111"
           height={50}
           alignItems="center"
-          justifyContent="center"
+          justifyContent={close  ? "space-between" : "center"}
           display="flex"
         >
-          Keybinding
-        </Box>
+          {close && <span />}
+          <Typography>Keybinding</Typography>
+          {close && <IconButton onClick={() => close()}>
+            <Close />
+          </IconButton>}
+        </Stack>
         <Box p={2}>
           <Stack spacing={2}>
             {keybindings.map((keybinding, index) => (

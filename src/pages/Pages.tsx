@@ -149,8 +149,8 @@ const Routings = ({ handleWs }: any) => {
           )}
         </Routes>
         {mp && <Mp />}
-        {mg && <MGraphFloating />}
-        {keybinding && <Keybinding />}
+        {mg && <MGraphFloating close={() => setMg(false)} />}
+        {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         <NoHostDialog />
         <HostManager />
         <FrontendPixelsTooSmall />

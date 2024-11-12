@@ -9,17 +9,14 @@ const MpFloating = ({ children }: any) => {
 
   return (
     <Rnd
+      enableResizing={{ bottom: false, bottomLeft: false, bottomRight: false, left: false, right: false, top: false, topLeft: false, topRight: false }}
       size={{ width: 960, height: 'auto' }}
       position={{ x: keybindingX, y: keybindingY }}
       onDragStop={(e, d) => {
         setKeybindingX(d.x)
         setKeybindingY(d.y)
       }}
-      onResizeStop={(_e, _direction, ref, _delta, position) => {
-        setKeybindingX(position.x)
-        setKeybindingY(position.y)
-      }}
-      style={{ zIndex: 10 }}
+      style={{ zIndex: 1050 }}
     >
       {children}
     </Rnd>
