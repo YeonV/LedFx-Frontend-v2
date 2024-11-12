@@ -20,6 +20,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
   const setShowFeatures = useStore((state) => state.setShowFeatures)
   const features = useStore((state) => state.features)
   const setViewMode = useStore((state) => state.setViewMode)
+  const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const filterOptions = createFilterOptions({
     stringify: (option: any) =>
       Object.keys(option).indexOf('is_device') > -1
@@ -148,7 +149,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
                 'ledfx-theme',
                 value.replace('theme:', '')
               )
-              window.location.reload()
+              reloadTheme()
             }
           }
           if (value === 'BladeIsYeon') {

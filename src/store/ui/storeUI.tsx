@@ -112,6 +112,15 @@ const storeUI = (set: any) => ({
       false,
       'ui/keybinding'
     ),
+  changeTheme: false,
+  reloadTheme: (): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.changeTheme = !state.ui.changeTheme
+      }),
+      false,
+      'ui/changeTheme'
+    ),
   latestTag: pkg.version as string,
   setLatestTag: (tag: string): void =>
     set(

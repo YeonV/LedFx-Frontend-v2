@@ -34,27 +34,18 @@ export default function App() {
   // const darkMode = useStore((state) => state.ui.darkMode)
   const setCoreParams = useStore((state) => state.setCoreParams)
   const setCoreStatus = useStore((state) => state.setCoreStatus)
+  const changeTheme = useStore((state) => state.ui.changeTheme)
+  const reloadTheme = useStore((state) => state.ui.reloadTheme)
 
   const theme = useMemo(
-    () =>
-      createTheme({
-        ...ledfxThemes[ledfxTheme],
+    () => createTheme({
+        ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme],
         ...common,
         palette: {
-          ...ledfxThemes[ledfxTheme].palette
-          // mode: darkMode ? 'dark' : 'light',
-          // background: darkMode
-          //   ? {
-          //       default: '#030303',
-          //       paper: '#151515',
-          //     }
-          //   : {
-          //       default: '#bbb',
-          //       paper: '#fefefe',
-          //     },
+          ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme].palette
         }
       }),
-    []
+    [changeTheme]
   )
 
   useEffect(() => {
@@ -154,15 +145,15 @@ export default function App() {
         if (proto[2] === 'theme') {
           if (proto[3] === 'light') {
             window.localStorage.setItem('ledfx-theme', 'LightBlack')
-            window.location.reload()
+            reloadTheme()
           }
           if (proto[3] === 'dark') {
             window.localStorage.setItem('ledfx-theme', 'DarkWhite')
-            window.location.reload()
+            reloadTheme()
           }
           if (proto[3] === 'reset') {
             window.localStorage.setItem('ledfx-theme', 'DarkOrange')
-            window.location.reload()
+            reloadTheme()
           }
         }
       } else if (proto[1] === 'song') {

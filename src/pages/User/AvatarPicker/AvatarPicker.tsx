@@ -222,7 +222,6 @@ const AvatarPicker = ({
       console.error(e)
     }
     setOpen(false)
-    // window.location.reload()
   }
 
   const onFileChange = async (e: any) => {
