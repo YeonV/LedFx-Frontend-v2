@@ -1,24 +1,32 @@
-import { Box } from '@mui/material'
+import { Box, IconButton, Stack, Typography } from '@mui/material'
 
 import useStyle from './MgFloating.styles'
 import MgFloating from './MgFloating'
 import MGraph from '../../../../MGraph'
+import { Close } from '@mui/icons-material'
 
-const MGraphFloating = () => {
+const MGraphFloating = ({ close }: { close?: () => void}) => {
   const classes = useStyle()
 
   return (
     <Box component={MgFloating}>
       <div className={classes.Widget}>
-        <Box
+        
+        <Stack
+          direction={'row'}
+          p={2}
           bgcolor="#111"
           height={50}
           alignItems="center"
-          justifyContent="center"
+          justifyContent={close  ? "space-between" : "center"}
           display="flex"
         >
-          Audio Graph
-        </Box>
+          {close && <span />}
+          <Typography>Audio Graph</Typography>
+          {close && <IconButton onClick={() => close()}>
+            <Close />
+          </IconButton>}
+        </Stack>
         <MGraph />
       </div>
     </Box>
