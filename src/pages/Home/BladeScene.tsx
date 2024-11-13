@@ -129,4 +129,135 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
   )
 }
 
+export const defaultEffects = {
+  blenderMask: {
+    type: 'blade_power_plus',
+    config: {
+      background_brightness: 1,
+      background_color: "#000000",
+      blur: 2,
+      brightness: 1,
+      decay: 0.7,
+      fix_hues: true,
+      flip: false,
+      frequency_range: "Lows (beat+bass)",
+      gradient: "#ffffff",
+      gradient_roll: 0,
+      mirror: false,
+      multiplier: 0.5
+      }
+  },
+  blenderForeground: {
+    type: "blade_power_plus",
+    config: {
+      background_brightness: 0.63,
+      background_color: "#000080",
+      blur: 2,
+      brightness: 1,
+      decay: 0.7,
+      fix_hues: true,
+      flip: false,
+      frequency_range: "Lows (beat+bass)",
+      gradient: "linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)",
+      gradient_roll: 0,
+      mirror: false,
+      multiplier: 0.5
+      },
+  },
+  blenderBackground: {
+    type: "blade_power_plus",
+    config: {
+      background_brightness: 0.09,
+      background_color: "#000080",
+      blur: 2,
+      brightness: 1,
+      decay: 0.7,
+      fix_hues: false,
+      flip: true,
+      frequency_range: "High",
+      gradient: "linear-gradient(90deg, rgb(255, 40, 0) 0%, rgb(255, 0, 0) 100%)",
+      gradient_roll: 0,
+      mirror: false,
+      multiplier: 0.5
+    }
+  },
+  blenderMask2d: {
+    type: 'texter2d',
+    config: {
+      text: "LedFx",
+      speed_option_1: 0.7,
+      dump: false,
+      background_color: "#000000",
+      font: "Blade-5x8",
+      flip: false,
+      option_2: false,
+      option_1: false,
+      multiplier: 1,
+      flip_vertical: false,
+      use_gradient: false,
+      brightness: 1,
+      value_option_1: 0.5,
+      text_color: "#ffffff",
+      advanced: false,
+      gradient_roll: 0,
+      gradient: "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)",
+      background_brightness: 1,
+      blur: 0,
+      flip_horizontal: false,
+      resize_method: "Fast",
+      diag: false,
+      height_percent: 100,
+      text_effect: "Side Scroll",
+      mirror: false,
+      test: false,
+      impulse_decay: 0.1,
+      rotate: 0,
+      deep_diag: false,
+      alpha: false
+    }
+  },
+  blenderForeground2d: {
+    type: 'blade_power_plus',
+    config: {
+      blur: 2,
+      background_color: "#000080",
+      multiplier: 0.5,
+      decay: 0.7,
+      frequency_range: "Lows (beat+bass)",
+      gradient: "linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)",
+      mirror: false,
+      flip: true,
+      gradient_roll: 0,
+      fix_hues: true,
+      brightness: 1,
+      background_brightness: 0.63
+    }
+  },
+  blenderBackground2d: {
+    type: 'plasma2d',
+    config:{
+      advanced: false,
+      background_brightness: 1,
+      background_color: "#000000",
+      blur: 0,
+      brightness: 0.03,
+      density: 0.5,
+      density_vertical: 0.1,
+      diag: false,
+      dump: false,
+      flip: false,
+      flip_horizontal: false,
+      flip_vertical: false,
+      frequency_range: "Lows (beat+bass)",
+      gradient: "linear-gradient(90deg, #ff00b2 0.00%,#ff2800 50.00%,#ffc800 100.00%)",
+      gradient_roll: 0,
+      lower: 0.01,
+      mirror: false,
+      radius: 0.2,
+      rotate: 0,
+      test: false,
+    }
+  }
+}
+
 export default BladeScene
