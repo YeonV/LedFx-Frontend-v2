@@ -179,7 +179,7 @@ const storeVirtuals = (set: any) => ({
     type: string,
     config: any,
     active: boolean,
-    fallback?: boolean
+    fallback?: boolean | number
   ) => {
     const resp = await Ledfx(`/api/virtuals/${virtId}/effects`, 'POST', {
       type,

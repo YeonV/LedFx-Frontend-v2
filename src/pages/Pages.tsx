@@ -34,6 +34,7 @@ import HostManager from '../components/Dialogs/HostManager'
 import Graph from './Graph/Graph'
 import MGraphFloating from '../components/Integrations/Spotify/Widgets/MGraphFlotaing/MGraphFloating'
 import Keybinding from '../components/Integrations/Spotify/Widgets/Keybinding/Keybinding'
+import OneEffect from '../components/Gamepad/OneEffect'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
@@ -151,6 +152,7 @@ const Routings = ({ handleWs }: any) => {
         {mp && <Mp />}
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
+        <OneEffect noButton />
         <NoHostDialog />
         <HostManager />
         <FrontendPixelsTooSmall />
