@@ -197,11 +197,11 @@ const storeScenes = (set: any) => ({
   },
   addScene: async (
     name: string,
-    scene_image?: string,
-    scene_tags?: string,
-    scene_puturl?: string,
-    scene_payload?: string,
-    scene_midiactivate?: string,
+    scene_image?: string | null,
+    scene_tags?: string | null,
+    scene_puturl?: string | null,
+    scene_payload?: string | null,
+    scene_midiactivate?: string | null,
     virtuals?: Record<string, any>
   ) =>
     virtuals

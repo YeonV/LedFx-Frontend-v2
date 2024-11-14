@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Card, Grid, Stack, Typography } from '@mui/material'
+import { Grid, Stack, Typography } from '@mui/material'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import EffectsCard from './Effects'
@@ -10,6 +10,7 @@ import StreamToCard from './StreamTo'
 import EffectsComplex from './EffectsComplex'
 import { Virtual } from '../../store/api/storeVirtuals'
 import { defaultEffects } from '../Home/BladeScene'
+import PresetsComplex from './PresetsComplex'
 
 const Device = () => {
   const navigate = useNavigate()
@@ -212,11 +213,7 @@ const Device = () => {
                 <EffectsComplex virtId={`${virtId}-mask`} key={`${virtId}-mask`} initMatix={matrixOpen} />
                 <EffectsComplex virtId={`${virtId}-foreground`} key={`${virtId}-foreground`} initMatix={matrixOpen} />
                 <EffectsComplex virtId={`${virtId}-background`} key={`${virtId}-background`} initMatix={matrixOpen} />
-                <Card sx={{ padding: '16px'}} variant="outlined">
-                  <Typography variant="body2" color="textSecondary">
-                    No presets available for complex effects. Please use scenes to save your configuration.
-                  </Typography> 
-                </Card>
+                <PresetsComplex virtId={virtId} />
               </Stack>
           </Grid>}
 
