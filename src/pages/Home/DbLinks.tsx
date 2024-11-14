@@ -66,7 +66,7 @@ const DbLinks = () => {
         <Button
           onClick={() =>
             window.open(
-              'https://discord.gg/Wpy7aUSBNp',
+              'https://discord.gg/nyMeUR8C',
               '_blank',
               'noopener,noreferrer'
             )
