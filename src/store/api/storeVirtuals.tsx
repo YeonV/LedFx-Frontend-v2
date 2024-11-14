@@ -202,6 +202,11 @@ const storeVirtuals = (set: any) => ({
       )
     }
   },
+  setEffectFallback: (
+    virtId: string
+  ) => {
+    Ledfx(`/api/virtuals/${virtId}/fallback`)
+  },
   removeEffectfromHistory: async (type: string, virtId: string) => {
     await Ledfx(`/api/virtuals/${virtId}/effects/delete`, 'POST', {
       type
