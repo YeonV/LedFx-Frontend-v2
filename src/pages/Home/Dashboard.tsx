@@ -396,7 +396,7 @@ const Dashboard = () => {
                 aria-label="discord"
                 onClick={() =>
                   window.open(
-                    'https://discord.gg/EZf8pAZ4',
+                    'https://discord.gg/nyMeUR8C',
                     '_blank',
                     'noopener,noreferrer'
                   )

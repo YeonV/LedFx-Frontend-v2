@@ -240,7 +240,7 @@ export const defaultEffects = {
       background_brightness: 1,
       background_color: "#000000",
       blur: 0,
-      brightness: 0.03,
+      brightness: 0.15,
       density: 0.5,
       density_vertical: 0.1,
       diag: false,
