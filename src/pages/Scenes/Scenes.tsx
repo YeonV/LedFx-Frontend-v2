@@ -69,6 +69,7 @@ const Scenes = () => {
       ?.split(',')
       .some((sce: string) => sceneActiveTags.includes(sce))
 
+  const sceneBlenderFilter = (sc: string) => !(scenes[sc].scene_tags?.split(',')?.includes('blender'))
   return (
     <>
       <div
@@ -186,7 +187,9 @@ const Scenes = () => {
           (sceneActiveTags.length
             ? Object.keys(scenes).filter(sceneFilter)
             : Object.keys(scenes)
-          ).map((s, i) => {
+          )
+          .filter(sceneBlenderFilter)
+          .map((s, i) => {
             return (
               <Grid
                 item
