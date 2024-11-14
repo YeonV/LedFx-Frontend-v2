@@ -32,14 +32,15 @@ const OneEffect = ({
   const [config, setConfig] = useState<any>({})
   const [active, setActive] = useState(false)
   const [fallbackBool, setFallbackBool] = useState(false)
-  const [fallbackUseNumber, setFallbackUseNumber] = useState(false)
-  const [fallbackNumber, setFallbackNumber] = useState(0)
+  const [fallbackUseNumber, setFallbackUseNumber] = useState(true)
+  const [fallbackNumber, setFallbackNumber] = useState(20)
 
   const effects = useStore((state) => state.schemas.effects)
   const virtuals = useStore((state) => state.virtuals)
   const presets = useStore((state) => state.presets)
   const setEffect = useStore((state) => state.setEffect)
   const getPresets = useStore((state) => state.getPresets)
+  const setEffectFallback = useStore((state) => state.setEffectFallback)
 
   const p = { ...presets.ledfx_presets, ...presets.user_presets }
 
@@ -51,15 +52,16 @@ const OneEffect = ({
     setDialogOpen(false)
   }
   // const handleTest = (virtId: string, type: string, config: EffectConfig, active: boolean, fallback: boolean | number) => {
-  const handleTest = () => {
-    setEffect(virtId, type, JSON.parse(config), active, fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool)
-  }
+  // const handleTest = () => {
+  //   setEffect(virtId, type, JSON.parse(config), active, fallbackUseNumber ? fallbackNumber : fallbackBool)
+  // }
   useHotkeys(['ctrl+alt+e'], () => setDialogOpen(!dialogOpen))
 
   useEffect(() => {
     if (virtId && type && virtId !== '' && type !== '') {
       getPresets(type)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId, type])
 
   return (
@@ -217,7 +219,19 @@ const OneEffect = ({
           </Accordion>
           
           <DialogActions>
-            <Button onClick={() => handleTest()}>test</Button>
+            <Button 
+              // onClick={() => handleTest()}
+              onMouseDownCapture={(e) => {
+                // console.log('onMouseDownCapture', e)
+                setEffect(virtId, type, JSON.parse(config), active, fallbackUseNumber ? fallbackNumber : fallbackBool)
+              }}
+              onMouseUpCapture={(e) => {
+                // console.log('onMouseUp', e)
+                setEffectFallback(virtId)
+              }}
+            >
+              test
+            </Button>
             <Button onClick={handleClose}>{noButton ? 'Close' : 'Cancel'}</Button>
             {!noButton && <Button onClick={handleSave}>Save</Button>}
           </DialogActions>
