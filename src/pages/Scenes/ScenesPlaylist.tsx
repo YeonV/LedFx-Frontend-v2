@@ -14,7 +14,6 @@ import {
   PlaylistRemove,
   Repeat,
   RepeatOn,
-  // Save,
   Stop,
   Timer,
   TimerOff
@@ -57,41 +56,34 @@ export default function ScenesPlaylist({
 
 
   useEffect(() => {
-  if (scenePLplay) {
-    if (timer.current === null) {
-      timer.current = setTimeout(() => {
-        if (scenePL[scenePLactiveIndex + 1]) {
-          activateScene(scenePL[scenePLactiveIndex + 1]);
-          setScenePLactiveIndex(scenePLactiveIndex + 1);
-        }
-      }, (sceneUseIntervals ? scenePLinterval : (scenePLintervals[scenePLactiveIndex] || 2)) * 1000);
-    }
-  } else if (timer.current) {
-    clearTimeout(timer.current);
-    timer.current = null;
-  }
-
-  return () => {
-    if (timer.current) {
+    if (scenePLplay) {
+      if (timer.current === null) {
+        timer.current = setTimeout(() => {
+          if (scenePL[scenePLactiveIndex + 1]) {
+            activateScene(scenePL[scenePLactiveIndex + 1]);
+            setScenePLactiveIndex(scenePLactiveIndex + 1);
+          } else if (scenePLrepeat) {
+            activateScene(scenePL[0]);
+            setScenePLactiveIndex(0);
+          } else {
+            toggleScenePLplay();
+          }
+          timer.current = null; // Reset the timer
+        }, (sceneUseIntervals ? scenePLinterval : (scenePLintervals[scenePLactiveIndex] || 2)) * 1000);
+      }
+    } else if (timer.current) {
       clearTimeout(timer.current);
       timer.current = null;
     }
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [scenePLplay, scenePLactiveIndex, scenePLintervals, scenePLinterval]);
-
-useEffect(() => {
-  if (scenePLplay && scenePLactiveIndex >= theScenes.length) {
-    if (scenePLrepeat) {
-      activateScene(scenePL[0]);
-      setScenePLactiveIndex(0);
-    } else {
-      toggleScenePLplay();
-      setScenePLactiveIndex(-1);
+  
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+        timer.current = null;
+      }
     }
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [scenePLplay, scenePLactiveIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenePLplay, scenePLactiveIndex, scenePLintervals, scenePLinterval, scenePLrepeat]);
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 0 },
@@ -150,7 +142,7 @@ useEffect(() => {
         }
         }}
         type="number"
-        value={scenePLintervals[params.id as number]}
+        value={sceneUseIntervals ? 2 : scenePLintervals[params.id as number]}
         onChange={(e: any) => {
           const newIntervals = [...scenePLintervals]
           newIntervals[params.id as number] = e.target.value
