@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import {
   Typography,
   Button,
@@ -40,13 +40,15 @@ const Popover = ({
   className,
   style = {},
   sx,
+  sxButton,
   popoverStyle,
   wrapperStyle,
   type = 'button',
+  open = false,
   children
 }: PopoverProps): ReactElement<any, any> => {
   const theme = useTheme()
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<any>(null)
   const openPopover = (event: any) => {
     setAnchorEl(() => event.currentTarget || event.target)
   }
@@ -60,8 +62,12 @@ const Popover = ({
     threshold: 1000,
     captureEvent: true
   })
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
+  const opened = Boolean(anchorEl)
+  const id = opened ? 'simple-popover' : undefined
+
+  useEffect(() => {
+    setAnchorEl(null)
+  }, [open])
 
   return (
     <div style={{ display: 'initial', margin: 0, ...wrapperStyle }} onClick={(e) => {
@@ -89,6 +95,7 @@ const Popover = ({
             size={size}
             className={className}
             style={style}
+            sx={sxButton}
             startIcon={!noIcon && startIcon}
             disabled={disabled}
             // eslint-disable-next-line
@@ -107,6 +114,7 @@ const Popover = ({
               ...style
             }}
             sx={{
+              color: theme.palette.primary.contrastText,
               bgcolor: theme.palette.primary.main,
               '&:hover': {
                 bgcolor: theme.palette.primary.light
@@ -129,6 +137,15 @@ const Popover = ({
           size={size}
           className={className}
           style={style}
+          sx={{
+            ...sxButton,
+            color: theme.palette.mode === 'light' ? '#000' : '#fff',
+            bgcolor: 'transparent',
+            '&:hover': {
+              color: theme.palette.mode === 'light' ? '#fff' : '#000',
+              bgcolor: theme.palette.primary.main      
+            }
+          }}
           startIcon={!noIcon && startIcon}
           disabled={disabled}
           onDoubleClick={(e) => {
@@ -181,7 +198,7 @@ const Popover = ({
       )}
       <PopoverOriginal
         id={id}
-        open={open}
+        open={opened}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={
@@ -201,7 +218,7 @@ const Popover = ({
           {content || (
             <Typography sx={{ padding: theme.spacing(2) }}>{text}</Typography>
           )}
-          <Button
+          <Button          
             disabled={confirmDisabled}
             aria-describedby={id}
             variant="contained"
