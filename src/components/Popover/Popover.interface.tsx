@@ -26,6 +26,10 @@ export interface PopoverProps {
    */
   openOnDoubleClick?: boolean
   /**
+   * Open state
+   */
+  open?: boolean
+  /**
    * Should the popup open on longpress? (openOnDoubleClick gets ignored if set)
    */
   openOnLongPress?: boolean
@@ -110,7 +114,11 @@ export interface PopoverProps {
    */
   className?: string
   /**
-   * JSX style
+   * JSX style for the Button
+   */
+  sxButton?: SxProps<Theme>
+  /**
+   * JSX style for the Fab
    */
   sx?: SxProps<Theme>
   /**

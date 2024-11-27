@@ -20,6 +20,7 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
   const [valid, setValid] = useState(true)
   const [anchorEl, setAnchorEl] = useState<any>(null)
   const [sceneToDelete, setSceneToDelete] = useState<string | null>(null)
+  const [open, setOpen] = useState(true)
   
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
@@ -81,22 +82,32 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
               ))}
           <Grid item key={'newPartialScene'}>
             <Popover
+              open={open}
+              variant='outlined'
+              sxButton={{ pt: '2.25px !important', pb: '2.5px' }}              
               icon={<Add />}
               content={
                 <TextField
-                  onKeyDown={(e: any) => e.key === 'Enter' && handleAddScene()}
+                  autoFocus
+                  onKeyDown={(e: any) => {
+                    console.log(name)
+                    if (e.key === 'Enter' && !(name.length === 0 || (scenes && (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 || Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`).length > 0)) || !valid)) {
+                      handleAddScene()
+                      setOpen(!open)
+                    }
+                  }}
                   error={
                     scenes &&
-                    (Object.keys(scenes).indexOf(name) > -1 ||
-                      Object.values(scenes).filter((p: any) => p.name === name)
+                    (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
+                      Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
                         .length > 0)
                   }
                   size="small"
                   id="presetNameInput"
                   label={
                     scenes &&
-                    (Object.keys(scenes).indexOf(name) > -1 ||
-                      Object.values(scenes).filter((p: any) => p.name === name)
+                    (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
+                      Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
                         .length > 0)
                       ? 'Partial Scene already exsisting'
                       : 'Add Partial Scene'
@@ -109,7 +120,7 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
                       scenes &&
                       (Object.keys(scenes).indexOf(e.target.value) > -1 ||
                         Object.values(scenes).filter(
-                          (p: any) => p.name === e.target.value
+                          (p: any) => p.name.replace(`${virtId}-`, '') === e.target.value
                         ).length > 0)
                     ) {
                       setValid(false)
@@ -133,7 +144,7 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
                 name.length === 0 ||
                 (scenes &&
                   (Object.keys(scenes).indexOf(name) > -1 ||
-                    Object.values(scenes).filter((p: any) => p.name === name)
+                    Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
                       .length > 0)) ||
                 !valid
               }
