@@ -461,7 +461,7 @@ export default function IntroDialog({
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
                 />
                 <SettingsRow
-                  title="SceneTables (Recent+Most)"
+                  title="SceneTables (Recent+Most +Playlist)"
                   checked={features.scenetables}
                   onChange={() =>
                     setFeatures('scenetables', !features.scenetables)

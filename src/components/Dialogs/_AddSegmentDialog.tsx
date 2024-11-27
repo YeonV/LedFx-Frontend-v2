@@ -79,7 +79,7 @@ function ConfirmationDialogRaw(props: any) {
                   value={props.deviceList[device].id}
                   key={props.deviceList[device].id}
                 >
-                  {virtuals[props.deviceList[device].id].config.name || props.deviceList[device].config.name}
+                  {virtuals[props.deviceList[device].id]?.config.name || props.deviceList[device]?.config.name}
                 </MenuItem>
               ))}
           </Select>
@@ -136,7 +136,7 @@ export default function ConfirmationDialog({
             0
         ]
       }
-      if (device && device.config) {
+      if (device && device?.config) {
         const temp = [
           ...virtual.segments,
           [device.id, 0, device.config.pixel_count - 1, false]
@@ -163,13 +163,15 @@ export default function ConfirmationDialog({
               setEffect(virtual.id, 'rainbow', {}, true)
             }
           }
-          highlightSegment(
-            virtual.id,
-            device.id,
-            0,
-            device.config.pixel_count - 1,
-            false
-          )
+          if (device && device.config) {
+            highlightSegment(
+              virtual.id,
+              device.id,
+              0,
+              device.config.pixel_count - 1,
+              false
+            )
+          }
         })
       }
     }

@@ -15,7 +15,7 @@ const ScenesSection = () => {
         onChange={() => setInfoAlerts('scenes', !infoAlerts.scenes)}
       />
       <SettingsRow
-        title="SceneTables (Recent+Most)"
+        title="SceneTables (Recent+Most +Playlist)"
         checked={features.scenetables}
         onChange={() => setFeatures('scenetables', !features.scenetables)}
       />
