@@ -45,6 +45,7 @@ export default function App() {
           ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme].palette
         }
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [changeTheme]
   )
 
