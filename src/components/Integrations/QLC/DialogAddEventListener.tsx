@@ -323,7 +323,6 @@ function ConfirmationDialogRaw(props: any) {
           <Select
             variant="outlined"
             id="grouped-select"
-            placeholder="If THIS"
             name={
               formData?.event_type === 'effect_set' ? 'effect_name' : 'scene_id'
             }
@@ -373,7 +372,6 @@ function ConfirmationDialogRaw(props: any) {
           <Select
             labelId="demo-simple-select-helper-label"
             id="demo-simple-select-helper"
-            placeholder="Then Do THIS"
             variant="outlined"
             // value={formData.qlc_payload}
             name="qlc_payload"
