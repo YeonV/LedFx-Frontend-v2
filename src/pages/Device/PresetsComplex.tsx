@@ -90,7 +90,7 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
                 <TextField
                   autoFocus
                   onKeyDown={(e: any) => {
-                    console.log(name)
+                    // console.log(name)
                     if (e.key === 'Enter' && !(name.length === 0 || (scenes && (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 || Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`).length > 0)) || !valid)) {
                       handleAddScene()
                       setOpen(!open)

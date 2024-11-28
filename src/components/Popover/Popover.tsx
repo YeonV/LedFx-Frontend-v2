@@ -218,7 +218,7 @@ const Popover = ({
           {content || (
             <Typography sx={{ padding: theme.spacing(2) }}>{text}</Typography>
           )}
-          <Button          
+          <Button
             disabled={confirmDisabled}
             aria-describedby={id}
             variant="contained"
