@@ -234,23 +234,24 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
         renderInput={(params) => (
           <TextField
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start" sx={{ ml: 1 }}>
-                  <LocalPlay />
-                </InputAdornment>
-              )
-            }}
             inputRef={inputRef}
             autoFocus={!direct}
             color="primary"
             style={{ borderRadius: '50%' }}
             label="SmartBar"
             placeholder="Jump to device / Activate scene"
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: 'off' // disable autocomplete and autofill
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start" sx={{ ml: 1 }}>
+                    <LocalPlay />
+                  </InputAdornment>
+                )
+              },
+              htmlInput: {
+                autoComplete: 'off' // disable autocomplete and autofill
+              }
             }}
           />
         )}
