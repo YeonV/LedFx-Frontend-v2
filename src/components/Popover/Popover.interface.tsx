@@ -116,11 +116,11 @@ export interface PopoverProps {
   /**
    * JSX style for the Button
    */
-  sxButton?: SxProps<Theme>
+  sxButton?: any
   /**
    * JSX style for the Fab
    */
-  sx?: SxProps<Theme>
+  sx?: any
   /**
    * JSX style
    */
