@@ -1,11 +1,11 @@
-const crypto = require('crypto')
-const qrcode = require('qrcode');
-const base32Decode = require('base32-decode')
-const base32Encode = require('base32-encode');
-const { store } = require('./core');
+import crypto from 'crypto'
+import qrcode from 'qrcode'
+import base32Decode from 'base32-decode'
+import base32Encode from 'base32-encode'
+import store from './utils/store.mjs'
 
 
-function generateHOTP(secret, counter) {
+export function generateHOTP(secret, counter) {
   const decodedSecret = base32Decode(secret, 'RFC4648');
 
   const buffer = Buffer.alloc(8);
@@ -31,12 +31,12 @@ function generateHOTP(secret, counter) {
   return `${code % 10 ** 6}`.padStart(6, '0');
 }
 
-function generateTOTP(secret, window = 0) {
+export function generateTOTP(secret, window = 0) {
   const counter = Math.floor(Date.now() / 30000);
   return generateHOTP(secret, counter + window);
 }
 
-function verifyTOTP(token, secret, window = 1) {
+export function verifyTOTP(token, secret, window = 1) {
   for (let errorWindow = -window; errorWindow <= +window; errorWindow++) {
     const totp = generateTOTP(secret, errorWindow);
     if (token === totp) {
@@ -46,7 +46,7 @@ function verifyTOTP(token, secret, window = 1) {
   return false;
 }
 
-function generateMfaQr(event, parameters) {
+export function generateMfaQr(event, parameters) {
   const user = store.get('user') || {
     username: 'FreeUser',
     mfaEnabled: false,
@@ -77,7 +77,7 @@ function generateMfaQr(event, parameters) {
 
   return;
 }
-function handleVerifyOTP(wind, event, parameters) {
+export function handleVerifyOTP(wind, event, parameters) {
   const user = store.get('user') || {
     username: 'FreeUser',
     mfaEnabled: false,
@@ -97,4 +97,3 @@ function handleVerifyOTP(wind, event, parameters) {
   return;
 }
 
-module.exports = { generateHOTP, generateTOTP, verifyTOTP, handleVerifyOTP, generateMfaQr };

@@ -13,6 +13,7 @@ import {
   Collections,
   CopyAll,
   GraphicEq,
+  LensBlur,
   LocalPlay,
   PlayArrow,
   QuestionMark,
@@ -22,6 +23,7 @@ import {
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import OneShot from './OneShot'
+import OneEffect from './OneEffect'
 
 const Assign = ({
   type,
@@ -48,7 +50,8 @@ const Assign = ({
     'scene-playlist': <Collections />,
     padscreen: <SportsEsports />,
     'one-shot': <BladeIcon name="mdi:pistol" />,
-    'scan-wled': <BladeIcon name="wled" />
+    'scan-wled': <BladeIcon name="wled" />,
+    'effect': <LensBlur />
   }
 
   return (
@@ -129,11 +132,28 @@ const Assign = ({
               </FormControl>
               {mapping[padIndex]?.[index]?.command === 'one-shot' && (
                 <OneShot
-                size={compact ? 'small' : 'large'}
+                  size={compact ? 'small' : 'large'}
                   defaultColor={mapping[padIndex]?.[index]?.payload?.color}
                   defaultRamp={mapping[padIndex]?.[index]?.payload?.ramp}
                   defaultFate={mapping[padIndex]?.[index]?.payload?.fade}
                   defaultHold={mapping[padIndex]?.[index]?.payload?.hold}
+                  setPayload={(v: any) =>
+                    setMapping({
+                      ...mapping,
+                      [padIndex]: {
+                        ...mapping[padIndex],
+                        [index]: {
+                          ...mapping[padIndex]?.[index],
+                          payload: v
+                        }
+                      }
+                    })
+                  }
+                />
+              )}
+              {mapping[padIndex]?.[index]?.command === 'effect' && (
+                <OneEffect
+                  size={compact ? 'small' : 'large'}
                   setPayload={(v: any) =>
                     setMapping({
                       ...mapping,

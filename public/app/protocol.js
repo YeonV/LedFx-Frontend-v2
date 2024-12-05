@@ -1,10 +1,14 @@
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
+import { app } from 'electron'
+import path from 'path'
 
-const setupProtocol = () => {
-  if (require('electron-squirrel-startup')) {
-    app.quit()
-  }
+export const setupProtocol = () => {
+  (async () => {    
+    const isSquirrelStartup = await import('electron-squirrel-startup');
+    if (isSquirrelStartup.default) {
+      app.quit()
+    }
+  })()
+
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
       app.setAsDefaultProtocolClient('ledfx', process.execPath, [
@@ -16,7 +20,7 @@ const setupProtocol = () => {
   }
 }
 
-const handleProtocol = (getWind, gotTheLock, ready) => {
+export const handleProtocol = (getWind, gotTheLock, ready) => {
   if (process.platform === 'win32') {
     if (!gotTheLock) {
       app.quit()
@@ -42,4 +46,3 @@ const handleProtocol = (getWind, gotTheLock, ready) => {
   }
 }
 
-module.exports = { setupProtocol, handleProtocol }

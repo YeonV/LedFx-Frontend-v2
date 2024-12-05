@@ -1,9 +1,14 @@
-const { BrowserWindow } = require('electron');
-const path = require('path');
-const isDev = require('electron-is-dev');
+import { BrowserWindow } from 'electron'
+import path from 'path'
+import isDev from 'electron-is-dev'
+import { initialize } from '@electron/remote/main/index.js'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 function createWindow(win, args = {}) {
-  require('@electron/remote/main').initialize();
+  initialize()
   // Create the browser window.
   win = new BrowserWindow({
     width: 1024,
@@ -23,17 +28,17 @@ function createWindow(win, args = {}) {
       nodeIntegration: true,
       contextIsolation: true,
       preload: path.join(__dirname, '../preload.js'),
-      ...args,
-    },
-  });
+      ...args
+    }
+  })
 
   win.loadURL(
     isDev
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../../build/index.html')}`
-  );
+  )
 
-  return win;
+  return win
 }
 
-module.exports = { createWindow };
+export default createWindow

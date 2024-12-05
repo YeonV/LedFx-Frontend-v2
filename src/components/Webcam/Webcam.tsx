@@ -12,8 +12,14 @@ import {
 import Webc from 'react-webcam'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useStore from '../../store/useStore'
-import { adjust, calibrate, initialize, preadjust } from './pixelMapper'
-import { getLedCount, oneLed, setWledBrightness } from './pixelUtils'
+// import getLedCount from './utils/getLedCount.cjs'
+import adjust from './utils/adjust.cjs'
+import preadjust from './utils/preadjust.cjs'
+import calibrate from './utils/calibrate.cjs'
+import initialize from './utils/initialize.cjs'
+import oneLed from './utils/oneLed.cjs'
+import setWledBrightness from './utils/setWledBrightness.cjs'
+import { getLedCount } from './utils/getLedCount'
 
 const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
   const webcamRef = useRef<any>(null)
