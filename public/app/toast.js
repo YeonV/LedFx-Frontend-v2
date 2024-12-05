@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const { Notification } = require('electron');
+import fs from 'fs'
+import path from 'path'
+import { Notification } from 'electron'
+import { fileURLToPath } from 'node:url'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const NOTIFICATION_TITLE = 'LedFx Client - by Blade';
 const NOTIFICATION_BODY = 'Testing Notification from the Main process';
 
@@ -11,7 +14,7 @@ function getConfig() {
   return JSON.parse(configData);
 }
 
-function showNotification(title = NOTIFICATION_TITLE, body = NOTIFICATION_BODY) {
+export function showNotification(title = NOTIFICATION_TITLE, body = NOTIFICATION_BODY) {
   const config = getConfig();
   const updateUrl = config.updateUrl;
 
@@ -30,4 +33,3 @@ function showNotification(title = NOTIFICATION_TITLE, body = NOTIFICATION_BODY) 
   }).show();
 }
 
-module.exports = { showNotification };

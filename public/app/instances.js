@@ -1,6 +1,7 @@
-const { startCore, coreParams } = require('./core')
+import coreParams from './utils/coreParams.mjs'
+import startCore from './utils/startCore.mjs'
 
-const poll = async (wind, subprocesses, name, p) => {
+export const poll = async (wind, subprocesses, name, p) => {
   console.log('Polling core', name, 'on port', p)
   if (!p) return
   try {
@@ -14,7 +15,7 @@ const poll = async (wind, subprocesses, name, p) => {
   }
 }
 
-function stopInstance(wind, name, subprocesses) {
+export function stopInstance(wind, name, subprocesses) {
   if (subprocesses[name]) {
     subprocesses[name].running = false
     sendStatus(wind, subprocesses, false, name)
@@ -22,7 +23,7 @@ function stopInstance(wind, name, subprocesses) {
   }
 }
 
-function startInstance(wind, name, subprocesses, port) {
+export function startInstance(wind, name, subprocesses, port) {
   try {
     let subpy = startCore(wind, process.platform, name, port)
     if (subpy !== null) {
@@ -58,7 +59,7 @@ function startInstance(wind, name, subprocesses, port) {
   }
 }
 
-function sendStatus(wind, subprocesses, connected = false, n) {
+export function sendStatus(wind, subprocesses, connected = false, n) {
   let status = {}
   let platformParams = coreParams[process.platform]
   // Check if `wind` is an instance of `BrowserWindow`
@@ -97,13 +98,13 @@ function sendStatus(wind, subprocesses, connected = false, n) {
   if (wind && wind.webContents  && !wind.isDestroyed() && status) wind.webContents.send('fromMain', ['status', status])
 }
 
-function kills(subprocess) {
+export function kills(subprocess) {
   if (subprocess !== null) {
     subprocess.kill('SIGINT')
   }
 }
 
-function closeAllSubs(wind, subpy, subprocesses) {
+export function closeAllSubs(wind, subpy, subprocesses) {
   if (wind && wind.webContents && !wind.isDestroyed()) wind.webContents.send('fromMain', 'shutdown')
   if (subpy !== null) kills(subpy)
   if (subprocesses && Object.keys(subprocesses).length > 0) {
@@ -113,11 +114,3 @@ function closeAllSubs(wind, subpy, subprocesses) {
   }
 }
 
-module.exports = {
-  poll,
-  stopInstance,
-  startInstance,
-  sendStatus,
-  kills,
-  closeAllSubs
-}

@@ -1,10 +1,13 @@
-const { app, shell, BrowserWindow, nativeTheme } = require('electron')
-const path = require('path')
-const { generateMfaQr, handleVerifyOTP } = require('./otp.js')
-const { coreParams, isCC, defaultCoreParams, store } = require('./core.js')
-const { startInstance, stopInstance, sendStatus } = require('./instances.js')
+import { app, shell, BrowserWindow, nativeTheme } from 'electron'
+import path from 'path'
+import { generateMfaQr, handleVerifyOTP } from './otp.js'
+import { startInstance, stopInstance, sendStatus } from './instances.js'
+import coreParams from './utils/coreParams.mjs'
+import defaultCoreParams from './utils/defaultCoreParams.mjs'
+import store from './utils/store.mjs'
+import isCC from './utils/isCC.mjs'
 
-const handlers = async (wind, subprocesses, event, parameters) => {
+export const handlers = async (wind, subprocesses, event, parameters) => {
   console.log('ALL PARAMS', parameters)
 
   try {
@@ -91,12 +94,6 @@ const handlers = async (wind, subprocesses, event, parameters) => {
         break
       case 'open-config':
         console.log('Open Config')
-        // wind.webContents.send('fromMain', ['currentdir', path.join(path.dirname(__dirname), isDev ? 'extraResources' : '../extraResources')]);
-
-        // Windows:
-        // shell.showItemInFolder(
-        //   path.join(app.getPath('appData'), '.ledfx', 'config.json')
-        // )
 
         if (parameters.instance && parameters.instance !== 'instance1') {
           shell.showItemInFolder(
@@ -141,4 +138,3 @@ const handlers = async (wind, subprocesses, event, parameters) => {
   }
 }
 
-module.exports = { handlers }

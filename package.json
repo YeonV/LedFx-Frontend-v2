@@ -9,6 +9,7 @@
   "engines": {
     "node": ">=20"
   },
+  "type": "module",
   "dependencies": {
     "@dnd-kit/core": "^6.2.0",
     "@dnd-kit/modifiers": "^8.0.0",
@@ -43,10 +44,9 @@
     "conf": "^13.0.1",
     "crypto": "^1.0.1",
     "deep-object-diff": "^1.1.9",
-    "electron-devtools-installer": "^3.2.0",
-    "electron-is-dev": "2",
+    "electron-is-dev": "3.0.1",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "8.2.0",
+    "electron-store": "10.0.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -201,7 +201,7 @@
     "@types/styled-components": "^5.1.34",
     "concurrently": "^9.1.0",
     "cross-env": "^7.0.3",
-    "electron": "^27.1.2",
+    "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "eslint": "8.57",
     "eslint-config-prettier": "^9.1.0",
