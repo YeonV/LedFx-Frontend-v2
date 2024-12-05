@@ -1,3 +1,4 @@
+import { BrowserWindow } from 'electron'
 import coreParams from './utils/coreParams.mjs'
 import startCore from './utils/startCore.mjs'
 
@@ -63,7 +64,7 @@ export function sendStatus(wind, subprocesses, connected = false, n) {
   let status = {}
   let platformParams = coreParams[process.platform]
   // Check if `wind` is an instance of `BrowserWindow`
-  if (!(wind instanceof require('electron').BrowserWindow)) {
+  if (!(wind instanceof BrowserWindow)) {
     console.error('wind is not an instance of BrowserWindow');
     return;
   }

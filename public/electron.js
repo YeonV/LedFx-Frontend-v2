@@ -1,6 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable global-require */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import fs from 'fs'
 import path from 'path'
 import isCC from './app/utils/isCC.mjs'

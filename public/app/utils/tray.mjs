@@ -3,7 +3,7 @@ import { app, Menu, shell, Tray } from 'electron'
 import isDev from 'electron-is-dev'
 import startCore from './startCore.mjs'
 import coreParams from './coreParams.mjs'
-// const { download } = require('electron-dl')
+// import { download } from 'electron-dl'
 
 export function createMenu(isCC, wind, thePath) {
   let contextMenu
