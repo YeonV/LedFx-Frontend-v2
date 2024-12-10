@@ -7,7 +7,7 @@ import {
   ListItemIcon,
   Badge
 } from '@mui/material'
-import Tour from 'reactour'
+import Tour from './Tour'
 import { InfoRounded, LiveHelp } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
