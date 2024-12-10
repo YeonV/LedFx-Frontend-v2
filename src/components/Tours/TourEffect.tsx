@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button } from '@mui/material'
-import Tour from 'reactour'
+import Tour from './Tour'
 import { Info } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 

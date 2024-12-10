@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { MenuItem, ListItemIcon, Badge } from '@mui/material'
-import Tour from 'reactour'
+import Tour from './Tour'
 import { InfoRounded } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
