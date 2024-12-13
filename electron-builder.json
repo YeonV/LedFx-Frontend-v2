@@ -10,7 +10,7 @@
         "output": "dist"
     },
     "files": [
-        "src/",
+        "build/",
         "node_modules/",
         "package.json"
     ],
