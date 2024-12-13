@@ -27,7 +27,9 @@ function createWindow(win, args = {}) {
       backgroundThrottling: false,
       nodeIntegration: true,
       contextIsolation: true,
-      preload: path.join(__dirname, '../preload.js'),
+      preload: isDev
+        ? path.join(__dirname, '../preload.js')
+        : path.join(__dirname, '../../preload.js'),
       ...args
     }
   })
@@ -35,7 +37,7 @@ function createWindow(win, args = {}) {
   win.loadURL(
     isDev
       ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../../build/index.html')}`
+      : `file://${path.join(__dirname, '../../index.html')}`
   )
 
   return win
