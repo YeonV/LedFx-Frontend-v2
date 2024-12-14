@@ -1,22 +1,49 @@
 import { BrowserWindow } from 'electron'
 import coreParams from './utils/coreParams.mjs'
 import startCore from './utils/startCore.mjs'
+import { ChildProcessWithoutNullStreams } from 'child_process'
 
-export const poll = async (wind, subprocesses, name, p) => {
+export interface Subprocess extends ChildProcessWithoutNullStreams {
+  running?: boolean
+}
+
+export interface Subprocesses {
+  [key: string]: Subprocess
+}
+
+export type IPlatform = 'darwin' | 'win32' | 'linux'
+
+export function kills(subprocess: Subprocess | null): void {
+  if (subprocess !== null) {
+    subprocess.kill('SIGINT')
+  }
+}
+
+export const poll = async (
+  wind: BrowserWindow,
+  subprocesses: Subprocesses,
+  name: string,
+  p: string
+) => {
   console.log('Polling core', name, 'on port', p)
   if (!p) return
   try {
     const response = await fetch(`http://127.0.0.1:${p}/api/info`)
-    const data = await response.json()
+    await response.json()
     sendStatus(wind, subprocesses, true, name)
     console.log('Polling core succeeded')
-  } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
     console.log('Polling core ...')
     setTimeout(() => poll(wind, subprocesses, name, p), 1000)
   }
 }
 
-export function stopInstance(wind, name, subprocesses) {
+export function stopInstance(
+  wind: BrowserWindow,
+  name: string,
+  subprocesses: Subprocesses
+) {
   if (subprocesses[name]) {
     subprocesses[name].running = false
     sendStatus(wind, subprocesses, false, name)
@@ -24,14 +51,23 @@ export function stopInstance(wind, name, subprocesses) {
   }
 }
 
-export function startInstance(wind, name, subprocesses, port) {
+export function startInstance(
+  wind: BrowserWindow,
+  name: string,
+  subprocesses: Subprocesses,
+  port: string = '8889'
+) {
   try {
-    let subpy = startCore(wind, process.platform, name, port)
+    const subpy = startCore(wind, process.platform as IPlatform, name, port)
     if (subpy !== null) {
       subprocesses[name] = subpy
       subprocesses[name].running = true
       sendStatus(wind, subprocesses, false, name)
       poll(wind, subprocesses, name, port)
+      if (!subpy) {
+        console.error('Error starting subprocess')
+        return
+      }
       subpy.on('exit', () => {
         if (subprocesses[name]) {
           subprocesses[name].running = false
@@ -39,13 +75,13 @@ export function startInstance(wind, name, subprocesses, port) {
         if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
           // `subprocesses` is defined, proceed with calling `sendStatus`
           try {
-            sendStatus(wind, subprocesses, false, name);
+            sendStatus(wind, subprocesses, false, name)
           } catch (error) {
-            console.error(error);
+            console.error(error)
           }
         } else {
           // `subprocesses` is not defined, handle this case as needed
-          console.error('subprocesses is not defined');
+          console.error('subprocesses is not defined')
         }
       })
       subpy.on('error', () => {
@@ -60,28 +96,33 @@ export function startInstance(wind, name, subprocesses, port) {
   }
 }
 
-export function sendStatus(wind, subprocesses, connected = false, n) {
-  let status = {}
-  let platformParams = coreParams[process.platform]
+export function sendStatus(
+  wind: BrowserWindow,
+  subprocesses: Subprocesses,
+  connected = false,
+  n: string
+) {
+  const status: { [key: string]: string } = {}
+  const platformParams = coreParams[process.platform]
   // Check if `wind` is an instance of `BrowserWindow`
   if (!(wind instanceof BrowserWindow)) {
-    console.error('wind is not an instance of BrowserWindow');
-    return;
+    console.error('wind is not an instance of BrowserWindow')
+    return
   }
 
   // Check if `subprocesses` is defined
   if (!subprocesses) {
-    console.error('subprocesses is not defined');
-    return;
+    console.error('subprocesses is not defined')
+    return
   }
 
   // Check if `n` is defined
   if (!n) {
-    console.error('n is not defined');
-    return;
+    console.error('n is not defined')
+    return
   }
 
-  for (let name in platformParams) {
+  for (const name in platformParams) {
     if (subprocesses && subprocesses[name]) {
       if (name === n) {
         status[name] = connected
@@ -96,17 +137,17 @@ export function sendStatus(wind, subprocesses, connected = false, n) {
       status[name] = 'stopped'
     }
   }
-  if (wind && wind.webContents  && !wind.isDestroyed() && status) wind.webContents.send('fromMain', ['status', status])
+  if (wind && wind.webContents && !wind.isDestroyed() && status)
+    wind.webContents.send('fromMain', ['status', status])
 }
 
-export function kills(subprocess) {
-  if (subprocess !== null) {
-    subprocess.kill('SIGINT')
-  }
-}
-
-export function closeAllSubs(wind, subpy, subprocesses) {
-  if (wind && wind.webContents && !wind.isDestroyed()) wind.webContents.send('fromMain', 'shutdown')
+export function closeAllSubs(
+  wind: BrowserWindow,
+  subpy: Subprocess,
+  subprocesses: Subprocesses
+) {
+  if (wind && wind.webContents && !wind.isDestroyed())
+    wind.webContents.send('fromMain', 'shutdown')
   if (subpy !== null) kills(subpy)
   if (subprocesses && Object.keys(subprocesses).length > 0) {
     Object.values(subprocesses).forEach((sub) => {
@@ -114,4 +155,3 @@ export function closeAllSubs(wind, subpy, subprocesses) {
     })
   }
 }
-

@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import isCC from './app/utils/isCC.mjs';
 import isDev from 'electron-is-dev';
-import createWindow from './app/utils/win.mjs';
 import { app, nativeTheme, BrowserWindow, ipcMain, shell, session } from 'electron';
-import { createTray } from './app/utils/tray.mjs';
-import { startInstance, closeAllSubs } from './app/instances.js';
-import { handlers } from './app/handlers.js';
-import { setupProtocol, handleProtocol } from './app/protocol.js';
 import { EventEmitter } from 'events';
 import { fileURLToPath } from 'node:url';
+import isCC from './app/utils/isCC.mjs';
+import createWindow from './app/utils/win.mjs';
+import { handleProtocol, setupProtocol } from './app/protocol.mjs';
+import { closeAllSubs, startInstance } from './app/instances.mjs';
+import { createTray } from './app/utils/tray.mjs'
+import { handlers } from './app/handlers.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,10 +63,10 @@ const ready = () =>
     createTray(isCC, wind, thePath, __dirname)
 
     ipcMain.on('toMain', async (event, parameters) =>
-      handlers(wind, subprocesses, event, parameters)
+      wind && handlers(wind, subprocesses, event, parameters)
     )
     wind.on('close', () => {
-      closeAllSubs(wind, subpy, subprocesses)
+      wind && closeAllSubs(wind, subpy, subprocesses)
       wind = null;
     })
   })
@@ -74,11 +74,11 @@ const ready = () =>
 handleProtocol(() => wind, gotTheLock, ready)
 
 app.on('window-all-closed', () => {
-  closeAllSubs(wind, subpy, subprocesses)
+  wind && closeAllSubs(wind, subpy, subprocesses)
   app.quit()
 })
 
-app.on('before-quit', () => closeAllSubs(wind, subpy, subprocesses))
+app.on('before-quit', () => wind && closeAllSubs(wind, subpy, subprocesses))
 
 app.on(
   'activate',

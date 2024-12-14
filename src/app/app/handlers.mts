@@ -1,34 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { app, shell, BrowserWindow, nativeTheme } from 'electron'
 import path from 'path'
 import { generateMfaQr, handleVerifyOTP } from './otp.js'
-import { startInstance, stopInstance, sendStatus } from './instances.js'
+import {
+  startInstance,
+  stopInstance,
+  sendStatus,
+  Subprocesses,
+  IPlatform
+} from './instances.mjs'
 import coreParams from './utils/coreParams.mjs'
 import defaultCoreParams from './utils/defaultCoreParams.mjs'
 import store from './utils/store.mjs'
 import isCC from './utils/isCC.mjs'
 
-export const handlers = async (wind, subprocesses, event, parameters) => {
+export const handlers = async (
+  wind: BrowserWindow,
+  subprocesses: Subprocesses,
+  event: any,
+  parameters: any
+) => {
   console.log('ALL PARAMS', parameters)
 
   try {
     switch (parameters.command) {
       case 'close-others':
-        BrowserWindow.getAllWindows().forEach(win => {
+        BrowserWindow.getAllWindows().forEach((win) => {
           if (win !== wind) {
-            win.close();
+            win.close()
           }
-        });
-        break;
-      case 'get-all-windows':
+        })
+        break
+      case 'get-all-windows': {
         const allWIndows = BrowserWindow.getAllWindows()
         console.log('allWIndows', allWIndows)
         wind.webContents.send('fromMain', ['all-windows', allWIndows])
         break
+      }
       case 'verify_otp':
-        handleVerifyOTP(wind, event, parameters)
+        handleVerifyOTP(wind, parameters)
         break
       case 'generate-mfa-qr':
-        generateMfaQr(event, parameters)
+        generateMfaQr(wind)
         break
       case 'get-platform':
         wind.webContents.send('fromMain', ['platform', process.platform])
@@ -39,7 +52,7 @@ export const handlers = async (wind, subprocesses, event, parameters) => {
             'coreParams',
             coreParams[process.platform]
           ])
-          sendStatus(wind, subprocesses)
+          sendStatus(wind, subprocesses, false, parameters.instance)
         }
         break
       case 'start-core':
@@ -81,12 +94,12 @@ export const handlers = async (wind, subprocesses, event, parameters) => {
       case 'delete-core-params':
         if (isCC) {
           store.set('coreParams', defaultCoreParams)
-          coreParams.darwin = defaultCoreParams['darwin']
-          coreParams.win32 = defaultCoreParams['win32']
-          coreParams.linux = defaultCoreParams['linux']
+          coreParams.darwin = defaultCoreParams.darwin
+          coreParams.win32 = defaultCoreParams.win32
+          coreParams.linux = defaultCoreParams.linux
           wind.webContents.send('fromMain', [
             'coreParams',
-            defaultCoreParams[process.platform]
+            defaultCoreParams[process.platform as IPlatform]
           ])
           app.relaunch()
           app.exit()
@@ -97,20 +110,35 @@ export const handlers = async (wind, subprocesses, event, parameters) => {
 
         if (parameters.instance && parameters.instance !== 'instance1') {
           shell.showItemInFolder(
-            path.join(app.getPath("userData"), '.ledfx-cc', parameters.instance, 'config.json')
+            path.join(
+              app.getPath('userData'),
+              '.ledfx-cc',
+              parameters.instance,
+              'config.json'
+            )
           )
           shell.showItemInFolder(
-            path.join(app.getPath("appData"), '.ledfx-cc', parameters.instance, 'config.json')
+            path.join(
+              app.getPath('appData'),
+              '.ledfx-cc',
+              parameters.instance,
+              'config.json'
+            )
           )
           shell.showItemInFolder(
-            path.join(app.getPath("home"), '.ledfx-cc', parameters.instance, 'config.json')
+            path.join(
+              app.getPath('home'),
+              '.ledfx-cc',
+              parameters.instance,
+              'config.json'
+            )
           )
         } else {
           shell.showItemInFolder(
-            path.join(app.getPath("userData"), '.ledfx', 'config.json')
+            path.join(app.getPath('userData'), '.ledfx', 'config.json')
           )
           shell.showItemInFolder(
-            path.join(app.getPath("appData"), '.ledfx', 'config.json')
+            path.join(app.getPath('appData'), '.ledfx', 'config.json')
           )
           shell.showItemInFolder(
             path.join(app.getPath('home'), '.ledfx', 'config.json')
@@ -137,4 +165,3 @@ export const handlers = async (wind, subprocesses, event, parameters) => {
     console.error(`Error handling command "${parameters.command}": ${error}`)
   }
 }
-
