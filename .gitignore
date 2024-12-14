@@ -44,4 +44,5 @@ doctor-storybook.log
 public/app
 public/electron.js
 public/preload.js
+public/preload.cjs
 public/renderer.js
