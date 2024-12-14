@@ -1,18 +1,18 @@
-import { wled } from '../pixelUtils.cjs'
-import getLedCount from './getLedCount.js'
-import iterativeOnOnlyOne from './iterativeOnOnlyOne.cjs'
+import { getLedCount } from './getLedCount'
+import iterativeOnOnlyOne from './iterativeOnOnlyOne'
+import wled from './wled'
 
 async function calibrate(
-  wledIp,
-  waitTime,
-  pointsRef,
+  wledIp: string,
+  waitTime: number,
+  pointsRef: any,
   inputWidth = 400,
   inputHeight = 300,
   outputWidth = 50,
   outputHeight = 50,
-  setPoints,
-  addPoint,
-  device
+  setPoints: any,
+  addPoint: any,
+  device: any
 ) {
   const flush = async () => {
     await wled({ seg: { on: true, col: [0, 0, 0] } })

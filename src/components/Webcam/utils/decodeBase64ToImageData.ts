@@ -1,4 +1,4 @@
-function decodeBase64ToImageData(base64String) {
+function decodeBase64ToImageData(base64String: string): Uint8Array {
   const base64Data = base64String.split(',')[1]
   const imageData = atob(base64Data)
   const buffer = new Uint8Array(imageData.length)

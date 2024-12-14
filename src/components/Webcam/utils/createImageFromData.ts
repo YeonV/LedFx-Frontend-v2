@@ -1,6 +1,5 @@
-import { Image } from 'canvas'
 
-async function createImageFromData(imageData) {
+async function createImageFromData(imageData: Uint8Array) {
   const blob = new Blob([imageData], { type: 'image/webp' })
   const url = URL.createObjectURL(blob)
   const img = new Image()

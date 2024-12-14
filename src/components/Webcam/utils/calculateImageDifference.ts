@@ -1,6 +1,6 @@
 function calculateImageDifference(
-  img1,
-  img2,
+  img1: HTMLImageElement,
+  img2: HTMLImageElement,
   threshold = 128,
   ignoreTop = 0,
   ignoreLeft = 0,
@@ -10,11 +10,14 @@ function calculateImageDifference(
   // console.log("BROOOOO", img1.width, img1.height, ignoreTop, ignoreLeft, ignoreBottom, ignoreRight)
   const width = img1.width - ignoreLeft - ignoreRight
   const height = img1.height - ignoreTop - ignoreBottom
-  const canvas = document.createElement('canvas', { willReadFrequently: true })
+  const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
   const context = canvas.getContext('2d', { willReadFrequently: true })
   // context.drawImage(img1, 0, 0, width, height)
+  if (!context) {
+    throw new Error('Could not get 2d context')
+  }
   context.drawImage(
     img1,
     ignoreLeft,

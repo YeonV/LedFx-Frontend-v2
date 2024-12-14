@@ -1,6 +1,6 @@
 import useStore from '../../../store/useStore'
 
-const wled = async (body) => {
+const wled = async (body: any) => {
   const wledIp = useStore.getState().videoMapper.wledIp
   try {
     const response = await fetch(`http://${wledIp}/json`, {

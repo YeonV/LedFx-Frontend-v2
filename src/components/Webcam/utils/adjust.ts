@@ -1,14 +1,14 @@
-import { processImages } from './processImages.cjs'
+import { processImages } from "./processImages"
 
 async function adjust(
-  capture,
-  initialImage,
+  capture: () => Promise<any>,
+  initialImage: any,
   threshold = 128,
   ignoreTop = 0,
   ignoreLeft = 0,
   ignoreBottom = 0,
   ignoreRight = 0,
-  pointsRef
+  pointsRef: any
 ) {
   const img = await capture()
   processImages(
