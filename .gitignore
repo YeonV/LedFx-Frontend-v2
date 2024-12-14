@@ -41,3 +41,7 @@ storybook.log
 doctor-storybook.log
 
 *storybook.log
+public/app
+public/electron.js
+public/preload.js
+public/renderer.js
