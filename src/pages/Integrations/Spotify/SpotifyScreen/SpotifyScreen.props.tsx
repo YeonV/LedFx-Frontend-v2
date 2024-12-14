@@ -3,8 +3,8 @@ import { TransitionProps } from '@mui/material/transitions'
 import { MenuItem, Slide } from '@mui/material'
 
 export interface SpotifyScreenProps {
-  icon: React.ReactElement
-  startIcon?: React.ReactElement
+  icon: React.ReactElement<any>
+  startIcon?: React.ReactElement<any>
   label?: string
   type?: string
   className: string
@@ -17,7 +17,7 @@ export interface SpotifyScreenProps {
 }
 
 export const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
+  props: TransitionProps & { children?: React.ReactElement<any> },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...(props as any)} />

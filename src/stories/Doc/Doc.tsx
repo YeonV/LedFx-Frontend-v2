@@ -36,7 +36,7 @@ const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
 })
 
 function FrameWrapper() {
-  const ref = React.useRef<any>()
+  const ref = React.useRef<any>(undefined)
   const [height, setHeight] = React.useState('0px')
   const onLoad = () => {
     setHeight(`${ref.current.contentWindow.document.body.scrollHeight}px`)

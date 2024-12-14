@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import type { MenuProps } from '@mui/material'
 
 export interface MenuLineProps {
-  icon?: ReactElement
+  icon?: ReactElement<any>
   name?: string
   action: () => void
 }
