@@ -29,8 +29,8 @@ function createWindow(win?: any, args = {}) {
       nodeIntegration: true,
       contextIsolation: true,
       preload: isDev
-        ? path.join(__dirname, '../preload.js')
-        : path.join(__dirname, '../../preload.js'),
+        ? path.join(__dirname, '../../preload.cjs')
+        : path.join(__dirname, '../../preload.cjs'),
       ...args
     }
   })

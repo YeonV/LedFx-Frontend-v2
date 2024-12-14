@@ -44,10 +44,10 @@ const ready = () =>
       : createWindow(win)
 
     const remoteMain = await import('@electron/remote/main/index.js')
-    if (!wind) return
-    remoteMain.enable(wind.webContents)
+    
+    wind && remoteMain.enable(wind.webContents)
 
-    wind.webContents.setWindowOpenHandler(({ url }) => {
+    wind && wind.webContents.setWindowOpenHandler(({ url }) => {
       if (url.includes(' https://accounts.spotify.com/authorize')
       // || url.includes(`${backendUrl}/connect/github?callback`)
       ) {
@@ -57,15 +57,15 @@ const ready = () =>
       return { action: 'allow' }
     })
 
-    if (isCC) startInstance(wind, 'instance1', subprocesses)      
+    if (isCC && wind) startInstance(wind, 'instance1', subprocesses)      
    
 
-    createTray(isCC, wind, thePath, __dirname)
+      wind && createTray(isCC, wind, thePath, __dirname)
 
     ipcMain.on('toMain', async (event, parameters) =>
       wind && handlers(wind, subprocesses, event, parameters)
     )
-    wind.on('close', () => {
+    wind && wind.on('close', () => {
       wind && closeAllSubs(wind, subpy, subprocesses)
       wind = null;
     })

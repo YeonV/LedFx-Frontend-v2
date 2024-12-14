@@ -41,6 +41,7 @@ export const handlers = async (
         handleVerifyOTP(wind, parameters)
         break
       case 'generate-mfa-qr':
+        console.log('Generate MFA QR')
         generateMfaQr(wind)
         break
       case 'get-platform':
