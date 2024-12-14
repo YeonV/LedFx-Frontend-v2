@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { contextBridge, ipcRenderer } = require('electron');
+import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('api', {
-  send: (channel, data) => {
+  send: (channel: string, data: any) => {
     // Whitelist channels
     const validChannels = ['toMain'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
-  receive: (channel, func) => {
+  receive: (channel: string, func: any) => {
     const validChannels = ['fromMain'];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
