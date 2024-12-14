@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useEffect, useMemo, useState, type JSX } from 'react';
 
 import { SpotifyState } from '../../../store/ui/SpotifyState'
 import useStore from '../../../store/useStore'

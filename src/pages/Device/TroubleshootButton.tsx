@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { useState, forwardRef, useEffect } from 'react'
+import { useState, forwardRef, useEffect, type JSX } from 'react';
 import {
   Button,
   Dialog,
@@ -233,5 +233,5 @@ export default function TroubleshootButton({
         </div>
       </Dialog>
     </>
-  ) : null
+  ) : null;
 }

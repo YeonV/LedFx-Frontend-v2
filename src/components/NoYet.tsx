@@ -1,6 +1,8 @@
 import { Card, CardHeader } from '@mui/material'
 import { Info } from '@mui/icons-material'
 
+import type { JSX } from "react";
+
 interface NoYetProps {
   type?: string
 }

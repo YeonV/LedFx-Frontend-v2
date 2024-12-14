@@ -58,7 +58,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
     qlc_payload: null
   })
   const [qlcData, setqlcData] = React.useState([])
-  const radioGroupRef = React.useRef(null)
+  // const radioGroupRef = React.useRef(null)
 
   const qlcInfo = useStore((state: any) => state.qlc?.qlcWidgets)
   const createQlcListener = useStore((state) => state.addQLCSongTrigger)
@@ -87,11 +87,6 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
     }
   }, [valueProp, open])
 
-  const handleEntering = () => {
-    if (radioGroupRef.current != null) {
-      /* empty */
-    }
-  }
 
   const handleCancel = () => {
     onClose()
@@ -304,20 +299,23 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
     { value: 255, label: '255' }
   ]
 
-  delete other.deviceList
+  delete (other as any).deviceList
 
   return (
     <Dialog
-      disableBackdropClick
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          handleCancel();
+        }
+      }}
       disableEscapeKeyDown
       maxWidth="xs"
-      onEntering={handleEntering}
       aria-labelledby="confirmation-dialog-title"
       open={open}
       {...other}
     >
       <DialogTitle id="confirmation-dialog-title">
-        Event Listener Setup: {valueProp?.id}
+        Event Listener Setup: {valueProp}
       </DialogTitle>
       <DialogContent dividers>
         <DialogContentText>

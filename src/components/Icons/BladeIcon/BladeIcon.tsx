@@ -24,6 +24,8 @@ import { BladeIconProps } from './BladeIcon.interface'
 import HomeAssistantLogo from '../HomeAssistant'
 import NovationLogo from '../Novation'
 
+import type { JSX } from "react";
+
 const getStyle = (card: boolean, scene: boolean, intro: boolean, list: boolean) => ({
   transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
   marginTop: '3px',

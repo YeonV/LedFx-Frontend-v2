@@ -4,8 +4,8 @@ import { TransitionProps } from '@mui/material/transitions'
 import { MenuItem, Slide } from '@mui/material'
 
 export interface QLCScreenProps {
-  icon: React.ReactElement
-  startIcon: React.ReactElement
+  icon: React.ReactElement<any>
+  startIcon: React.ReactElement<any>
   label: string
   type: string
   className: string
@@ -31,15 +31,11 @@ export const QLCScreenDefaultProps = {
 }
 
 export const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
+  props: TransitionProps & { children?: React.ReactElement<any> } = { children: <div>loading</div> },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...(props as any)} />
 })
-
-Transition.defaultProps = {
-  children: <div>loading</div>
-}
 
 export const MuiMenuItem = React.forwardRef(
   (props: any, ref: React.Ref<unknown>) => {
