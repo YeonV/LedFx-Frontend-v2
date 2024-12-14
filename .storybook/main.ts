@@ -5,7 +5,7 @@ const config: StorybookConfig = {
       '../src/**/*.mdx',
       '../src/components/SchemaForm/**/*.stories.tsx',
       '../src/components/Icons/BladeIcon/BladeIcon.stories.tsx',
-      '../src/components/Doc/Api.stories.tsx',
+      '../src/stories/Doc/Api.stories.tsx',
       '../src/components/Popover/Popover.stories.tsx',
       '../src/pages/Devices/DeviceCard/DeviceCard.stories.tsx',
     ],
