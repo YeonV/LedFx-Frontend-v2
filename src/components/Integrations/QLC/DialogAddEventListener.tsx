@@ -1,6 +1,5 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -38,7 +37,13 @@ const Root = styled('div')(({ theme }) => ({
   }
 }))
 
-function ConfirmationDialogRaw(props: any) {
+interface ConfirmationDialogRawProps {
+  onClose(...args: unknown[]): unknown;
+  open: boolean;
+  value: string;
+}
+
+function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   const { onClose, value: valueProp, open, ...other } = props
   const [valueState, setValue] = React.useState(valueProp)
   const [checkButtonType, setButtonType] = React.useState(false)
@@ -459,12 +464,6 @@ function ConfirmationDialogRaw(props: any) {
       </DialogActions>
     </Dialog>
   )
-}
-
-ConfirmationDialogRaw.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired
 }
 
 export default function ConfirmationDialog({ integration }: any) {

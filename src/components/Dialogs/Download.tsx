@@ -1,7 +1,14 @@
-import PropTypes from 'prop-types'
 import { Box, LinearProgress, Typography } from '@mui/material'
 
-export default function LinearProgressWithLabel(props: any) {
+interface LinearProgressWithLabelProps {
+  /**
+   * The value of the progress indicator for the determinate and buffer variants.
+   * Value between 0 and 100.
+   */
+  value: number;
+}
+
+export default function LinearProgressWithLabel(props: LinearProgressWithLabelProps) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
@@ -14,12 +21,4 @@ export default function LinearProgressWithLabel(props: any) {
       </Box>
     </Box>
   )
-}
-
-LinearProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate and buffer variants.
-   * Value between 0 and 100.
-   */
-  value: PropTypes.number.isRequired
 }
