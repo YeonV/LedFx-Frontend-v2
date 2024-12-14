@@ -1,11 +1,10 @@
 import { Card, CardContent } from '@mui/material'
 import { StoryFn, Meta } from '@storybook/react'
-// eslint-disable-next-line
-import BladeBoolean from "./BladeBoolean";
+import BBoolean from './BBolean';
 
 export default {
-  title: 'UI Components/SchemaForm/Schema Components',
-  component: BladeBoolean,
+  title: 'UI Components/SchemaForm/Base Components',
+  component: BBoolean,
   decorators: [
     (Story) => (
       <Card style={{ maxWidth: 800 }}>
@@ -19,23 +18,19 @@ export default {
       panelPosition: 'bottom'
     }
   }
-} as Meta<typeof BladeBoolean>
+} as Meta<typeof BBoolean>
 
-// eslint-disable-next-line
-const Template: StoryFn<typeof BladeBoolean> = (args) => <BladeBoolean {...args} />;
+const Template: StoryFn<typeof BBoolean> = (args) => <BBoolean {...args} />;
 
 export const Boolean = Template.bind({})
 Boolean.args = {
   type: 'switch',
+  title: 'Title',
+  description: 'description',
   required: false,
   hideDesc: undefined,
   index: 1,
   style: undefined,
-  onClick: undefined,
-  schema: {
-    title: 'Check me',
-    description: 'some nice description'
-  },
-  model: undefined,
-  model_id: undefined
+  onChange: undefined,
+  value: undefined,
 }

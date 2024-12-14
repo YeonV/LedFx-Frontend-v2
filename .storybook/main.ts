@@ -1,25 +1,26 @@
-module.exports = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/preset-create-react-app',
-    '@storybook/addon-mdx-gfm',
-    '@chromatic-com/storybook'
-  ],
+import type { StorybookConfig } from '@storybook/react-webpack5'
 
+const config: StorybookConfig = {
+  stories: [
+      '../src/**/*.mdx',
+      '../src/components/SchemaForm/**/*.stories.tsx',
+      '../src/components/Icons/BladeIcon/BladeIcon.stories.tsx',
+      '../src/stories/Doc/Api.stories.tsx',
+      '../src/components/Popover/Popover.stories.tsx',
+      '../src/pages/Devices/DeviceCard/DeviceCard.stories.tsx',
+    ],
+  addons: [
+    '@storybook/preset-create-react-app',
+    // '@storybook/addon-onboarding',
+    '@storybook/addon-essentials',
+    // '@chromatic-com/storybook',
+    // '@storybook/addon-interactions',
+    '@storybook/addon-themes'
+  ],
   framework: {
     name: '@storybook/react-webpack5',
     options: {}
   },
-
-  core: {
-    disableTelemetry: true
-  },
-
-  docs: {},
-
-  typescript: {
-    reactDocgen: 'react-docgen-typescript'
-  }
+  staticDirs: ['..\\public']
 }
+export default config

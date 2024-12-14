@@ -1,8 +1,9 @@
-import wait from './utils/wait.cjs'
-import wled from './utils/wled.cjs'
-import wledGet from './utils/wledGet.cjs'
+import wait from "./utils/wait"
+import wled from "./utils/wled"
+import wledGet from "./utils/wledGet"
 
-export const iterativeOn = async (waitingTime) => {
+
+export const iterativeOn = async (waitingTime: number) => {
   const state = await wledGet()
   const segments = state.seg
   for (const segment of segments) {

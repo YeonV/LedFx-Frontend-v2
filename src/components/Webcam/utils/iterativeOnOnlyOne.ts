@@ -1,17 +1,18 @@
 import { transpose } from '../matrixUtils'
-import { wled } from '../pixelUtils.cjs'
-import wait from './wait.cjs'
-import wledGet from './wledGet.cjs'
+import wait from './wait'
+import wled from './wled'
+import wledGet from './wledGet'
+
 
 const iterativeOnOnlyOne = async (
-  waitingTime,
-  pointsRef,
+  waitingTime: number,
+  pointsRef?: any,
   inputWidth = 400,
   inputHeight = 300,
   outputWidth = 50,
   outputHeight = 50,
-  addPoint,
-  device
+  addPoint?: any,
+  device?: any,
 ) => {
   const state = await wledGet()
   const segments = state.seg

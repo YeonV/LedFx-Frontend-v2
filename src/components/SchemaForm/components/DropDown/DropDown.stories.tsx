@@ -8,7 +8,7 @@ export default {
    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: 'UI Components/SchemaForm/Components',
+  title: 'UI Components/SchemaForm/Schema Components',
   component: DropDown,
   argTypes: {
     type: {
@@ -34,7 +34,6 @@ export default {
 const Template: StoryFn<typeof DropDown> = (args) => <DropDown {...args} />;
 
 export const GroupedDropdown = Template.bind({})
-GroupedDropdown.storyName = 'Grouped Dropdown'
 GroupedDropdown.args = {
   title: 'Grouped Dropdown',
   showFilter: false,
