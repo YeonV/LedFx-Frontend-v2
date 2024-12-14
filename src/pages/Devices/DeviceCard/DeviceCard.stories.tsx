@@ -26,7 +26,7 @@ export const Default = Template.bind({})
 Default.args = {
   deviceName: 'My Wled',
   iconName: 'wled',
-  effectName: 'Super Effect',
+  effectName: 'Cool',
   isEffectSet: true,
   isPlaying: true,
   previewOnly: true,
