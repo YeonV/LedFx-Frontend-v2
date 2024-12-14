@@ -1,12 +1,13 @@
 import { Card, CardHeader } from '@mui/material'
 import { Info } from '@mui/icons-material'
-import PropTypes from 'prop-types'
 
 interface NoYetProps {
   type?: string
 }
 
-const NoYet: React.FC<NoYetProps> = ({ type = 'Thing' }): JSX.Element => (
+const NoYet: React.FC<NoYetProps> = ({
+  type = 'Thing'
+}: NoYetProps): JSX.Element => (
   <Card>
     <CardHeader
       avatar={<Info />}
@@ -15,9 +16,5 @@ const NoYet: React.FC<NoYetProps> = ({ type = 'Thing' }): JSX.Element => (
     />
   </Card>
 )
-
-NoYet.propTypes = {
-  type: PropTypes.string
-}
 
 export default NoYet

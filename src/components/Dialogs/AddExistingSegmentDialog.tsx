@@ -1,6 +1,5 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import PropTypes from 'prop-types'
 import {
   Button,
   DialogTitle,
@@ -34,7 +33,18 @@ const Root = styled('div')(({ theme }) => ({
   }
 }))
 
-function ConfirmationDialogRaw(props: any) {
+interface ConfirmationDialogRawProps {
+  onClose(...args: unknown[]): unknown;
+  open: boolean;
+  value: string;
+  config?: any;
+  classes?: any;
+  id?: string;
+  keepMounted?: boolean;
+  deviceList?: any;
+}
+
+function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   const { onClose, value: valueProp, open, ...other } = props
   const [value, setValue] = React.useState(valueProp)
   const virtuals = useStore((state) => state.virtuals) || {}
@@ -104,17 +114,6 @@ function ConfirmationDialogRaw(props: any) {
       </DialogActions>
     </Dialog>
   )
-}
-
-ConfirmationDialogRaw.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  value: PropTypes.string.isRequired,
-  config: PropTypes.any,
-  classes: PropTypes.any,
-  id: PropTypes.string,
-  keepMounted: PropTypes.bool,
-  deviceList: PropTypes.any
 }
 
 function AddExistingSegmentDialog({
