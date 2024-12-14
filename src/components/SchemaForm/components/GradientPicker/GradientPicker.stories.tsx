@@ -5,7 +5,7 @@ import { StoryFn, Meta } from '@storybook/react'
 import GradientPicker from "./GradientPicker";
 
 export default {
-  title: 'UI Components/SchemaForm/Components',
+  title: 'UI Components/SchemaForm/Schema Components',
   component: GradientPicker,
   argTypes: {
     sendColorToVirtuals: { action: 'clicked' },

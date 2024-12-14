@@ -34,7 +34,6 @@ export default {
 const Template: StoryFn<typeof BladeSchemaForm> = (args) => <BladeSchemaForm {...args} />;
 
 export const Default = Template.bind({})
-Default.storyName = 'Default'
 Default.args = {
   schema: {
     properties: {},

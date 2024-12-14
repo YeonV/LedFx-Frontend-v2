@@ -4,7 +4,7 @@ import { StoryFn, Meta } from '@storybook/react'
 import BladeSlider from "./BladeSlider";
 
 export default {
-  title: 'UI Components/SchemaForm/Components',
+  title: 'UI Components/SchemaForm/Schema Components',
   component: BladeSlider,
   argTypes: {
     type: {

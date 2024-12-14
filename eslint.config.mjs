@@ -33,7 +33,14 @@ export default [
     },
 
     languageOptions: {
-      parser: tsParser
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
     },
 
     settings: {
