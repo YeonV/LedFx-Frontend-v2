@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename)
 
 EventEmitter.defaultMaxListeners = 15
 
-const reduxDevtoolsPath = 'C:\\Users\\49152\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\lmhkpmbekcpmknklioeibfkpmmfibljd\\3.2.7_0'
+const reduxDevtoolsPath = 'C:\\Users\\Blade\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\lmhkpmbekcpmknklioeibfkpmmfibljd\\3.2.7_0'
 
 const subpy = null
 const subprocesses = {}

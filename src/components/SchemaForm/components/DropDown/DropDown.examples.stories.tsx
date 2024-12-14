@@ -34,7 +34,6 @@ export default {
 const Template: StoryFn<typeof DropDown> = (args) => <DropDown {...args} />;
 
 export const EffectType = Template.bind({})
-EffectType.storyName = 'Effect Type'
 EffectType.args = {
   showFilter: false,
   groups: {

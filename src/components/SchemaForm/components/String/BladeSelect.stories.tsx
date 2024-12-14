@@ -4,7 +4,7 @@ import { StoryFn, Meta } from '@storybook/react'
 import BladeSelect from "./BladeSelect";
 
 export default {
-  title: 'UI Components/SchemaForm/Components',
+  title: 'UI Components/SchemaForm/Schema Components',
   component: BladeSelect,
   argTypes: {
     type: {

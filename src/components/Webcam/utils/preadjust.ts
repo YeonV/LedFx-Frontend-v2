@@ -1,4 +1,4 @@
-import { wled } from '../pixelUtils.cjs'
+import wled from "./wled"
 
 async function preadjust() {
   await wled({ on: true })

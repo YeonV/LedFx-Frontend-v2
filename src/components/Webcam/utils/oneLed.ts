@@ -1,7 +1,8 @@
-import wled from './wled.cjs'
-import wledGet from './wledGet.cjs'
+import wled from "./wled"
+import wledGet from "./wledGet"
 
-const oneLed = async (led) => {
+
+const oneLed = async (led: number) => {
   const state = await wledGet('state')
   const segments = state.seg
   let totalLedCount = 0

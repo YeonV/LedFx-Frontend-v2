@@ -1,7 +1,7 @@
-import wait from './wait.cjs'
-import wled from './wled.cjs'
+import wait from "./wait"
+import wled from "./wled"
 
-async function initialize(capture) {
+async function initialize(capture: () => Promise<any>) {
   await wled({ seg: { on: false } })
   await wait(1000)
   const img = await capture()
