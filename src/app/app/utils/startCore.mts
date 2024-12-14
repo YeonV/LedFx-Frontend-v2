@@ -1,4 +1,4 @@
-import { app } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import runCore from './runCore.mjs'
@@ -6,9 +6,15 @@ import corePath from './corePath.mjs'
 import coreFile from './coreFile.mjs'
 import coreParams from './coreParams.mjs'
 import store from './store.mjs'
+import { ChildProcessWithoutNullStreams } from 'child_process'
 
-function startCore(wind, platform, instance = 'instance1', port = '8889') {
-  let subpy
+function startCore(
+  wind: BrowserWindow,
+  platform: 'darwin' | 'linux' | 'win32',
+  instance = 'instance1',
+  port = '8889'
+) {
+  let subpy: ChildProcessWithoutNullStreams | null = null
 
   if (fs.existsSync(corePath(coreFile[platform]))) {
     if (coreParams[platform] && instance && coreParams[platform][instance]) {

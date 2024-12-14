@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const corePath = (file) =>
+const corePath = (file: string) =>
   path.join(
     path.dirname(__dirname),
     isDev ? '../extraResources' : '../../extraResources',

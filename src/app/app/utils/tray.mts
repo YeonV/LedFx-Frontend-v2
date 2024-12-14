@@ -1,11 +1,15 @@
 import path from 'path'
-import { app, Menu, shell, Tray } from 'electron'
+import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
 import isDev from 'electron-is-dev'
 import startCore from './startCore.mjs'
 import coreParams from './coreParams.mjs'
 // import { download } from 'electron-dl'
 
-export function createMenu(isCC, wind, thePath) {
+export function createMenu(
+  isCC: boolean,
+  wind: BrowserWindow,
+  thePath: string
+) {
   let contextMenu
 
   if (isCC) {
@@ -31,7 +35,12 @@ export function createMenu(isCC, wind, thePath) {
       { label: 'seperator', type: 'separator' },
       {
         label: 'Start core',
-        click: () => startCore(wind, process.platform, coreParams.instance)
+        click: () =>
+          startCore(
+            wind,
+            process.platform as 'darwin' | 'linux' | 'win32',
+            coreParams.instance
+          )
       },
       {
         label: 'Stop core',
@@ -91,7 +100,12 @@ export function createMenu(isCC, wind, thePath) {
   return contextMenu
 }
 
-export function createTray(isCC, wind, thePath, dir) {
+export function createTray(
+  isCC: boolean,
+  wind: BrowserWindow,
+  thePath: string,
+  dir: string
+) {
   const icon = path.join(dir, 'icon_16x16a.png')
   const tray = new Tray(icon)
 

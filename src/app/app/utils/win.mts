@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-function createWindow(win, args = {}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createWindow(win?: any, args = {}) {
   initialize()
   // Create the browser window.
   win = new BrowserWindow({

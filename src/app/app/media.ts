@@ -1,9 +1,20 @@
 const { execFile } = require('child_process');
 const path = require('path');
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const exePath = path.join(__dirname, 'path_to_dist_folder', 'media.exe');
 
-execFile(exePath, (error, stdout, stderr) => {
+interface MediaInfo {
+    title: string;
+    artist: string;
+    album: string;
+    error?: string;
+}
+
+execFile(exePath, (error: Error | null, stdout: string, stderr: string) => {
     if (error) {
         console.error(`Error: ${error.message}`);
         return;
@@ -13,7 +24,7 @@ execFile(exePath, (error, stdout, stderr) => {
         return;
     }
     try {
-        const mediaInfo = JSON.parse(stdout);
+        const mediaInfo: MediaInfo = JSON.parse(stdout);
         if (mediaInfo.error) {
             console.log(mediaInfo.error);
         } else {
@@ -22,6 +33,6 @@ execFile(exePath, (error, stdout, stderr) => {
             console.log(`Album: ${mediaInfo.album}`);
         }
     } catch (parseError) {
-        console.error(`JSON Parse Error: ${parseError.message}`);
+        console.error(`JSON Parse Error: ${(parseError as Error).message}`);
     }
 });

@@ -3,9 +3,10 @@ import qrcode from 'qrcode'
 import base32Decode from 'base32-decode'
 import base32Encode from 'base32-encode'
 import store from './utils/store.mjs'
+import { BrowserWindow } from 'electron'
 
 
-export function generateHOTP(secret, counter) {
+export function generateHOTP(secret: string, counter: number) {
   const decodedSecret = base32Decode(secret, 'RFC4648');
 
   const buffer = Buffer.alloc(8);
@@ -31,12 +32,12 @@ export function generateHOTP(secret, counter) {
   return `${code % 10 ** 6}`.padStart(6, '0');
 }
 
-export function generateTOTP(secret, window = 0) {
+export function generateTOTP(secret: string, window = 0) {
   const counter = Math.floor(Date.now() / 30000);
   return generateHOTP(secret, counter + window);
 }
 
-export function verifyTOTP(token, secret, window = 1) {
+export function verifyTOTP(token: string, secret: string, window = 1) {
   for (let errorWindow = -window; errorWindow <= +window; errorWindow++) {
     const totp = generateTOTP(secret, errorWindow);
     if (token === totp) {
@@ -46,7 +47,7 @@ export function verifyTOTP(token, secret, window = 1) {
   return false;
 }
 
-export function generateMfaQr(event, parameters) {
+export function generateMfaQr(wind: BrowserWindow) {
   const user = store.get('user') || {
     username: 'FreeUser',
     mfaEnabled: false,
@@ -73,11 +74,11 @@ export function generateMfaQr(event, parameters) {
 
   qrcode.toDataURL(configUri, {
     color: { dark: '#333333FF', light: '#00000000' },
-  }).then((png=>wind.webContents.send('fromMain', ['mfa-qr-code', png])));
+  }).then(((png: any) => wind.webContents.send('fromMain', ['mfa-qr-code', png])));
 
   return;
 }
-export function handleVerifyOTP(wind, event, parameters) {
+export function handleVerifyOTP(wind: BrowserWindow, parameters: any) {
   const user = store.get('user') || {
     username: 'FreeUser',
     mfaEnabled: false,
