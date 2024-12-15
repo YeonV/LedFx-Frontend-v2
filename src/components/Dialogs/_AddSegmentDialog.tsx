@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import {
@@ -65,15 +64,17 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
 
   delete other.deviceList
   const deviceKeys = Object.keys(props.deviceList)
-    .filter((v) =>
-      showComplex
-        ? v
-        : !(
+    .filter((v) => {
+      if (showComplex) {
+        return v
+      } else {
+        return !(
           v.endsWith('-mask') ||
-            v.endsWith('-foreground') ||
-            v.endsWith('-background')
+          v.endsWith('-foreground') ||
+          v.endsWith('-background')
         )
-    )
+      }
+    })
     .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
 
   return (

@@ -114,7 +114,7 @@
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
-    "lint": "eslint --fix",
+    "lint": "eslint",
     "packs": "electron-builder --dir",
     "dist": "run-script-os",
     "predist": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",

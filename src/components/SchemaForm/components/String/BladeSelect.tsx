@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import {
   Select,
   MenuItem,

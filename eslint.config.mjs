@@ -28,9 +28,10 @@ export default [
   },
   ...compat.extends(
     'standard',
-    'plugin:@typescript-eslint/recommended',
+    'plugin:storybook/recommended',
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
+    'plugin:@typescript-eslint/recommended',
   ),
   {
     languageOptions: {
@@ -95,7 +96,7 @@ export default [
       'no-nested-ternary': 0,
       'import/extensions': 0,
       'import/first': 0,
-      '@/indent': [2, 2, { SwitchCase: 1}],
+      '@/indent': [2, 2, { SwitchCase: 0 }],
       'react/react-in-jsx-scope': 'off',
       'react/function-component-definition': [0],
       'react/jsx-props-no-spreading': 0,

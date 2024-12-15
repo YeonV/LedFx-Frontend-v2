@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import {
@@ -65,15 +64,17 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   }
 
   const virtualKeys = Object.keys(virtuals)
-    .filter((v) =>
-      showComplex
-        ? v
-        : !(
-            v.endsWith('-mask') ||
-            v.endsWith('-foreground') ||
-            v.endsWith('-background')
-          )
-    )
+    .filter((v) => {
+      if (showComplex) {
+        return v
+      } else {
+        return !(
+          v.endsWith('-mask') ||
+          v.endsWith('-foreground') ||
+          v.endsWith('-background')
+        )
+      }
+    })
     .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
     .filter((v) => virtuals[v].segments.length === 1)
 
