@@ -161,7 +161,7 @@ export default function IntroDialog({
         },
         action_right: handleNext
       },
-      isCC ?? ({
+      isCC ?? {
         key: 'theme',
         title: 'Choose your Theme',
         label_left: 'Lightmode',
@@ -175,8 +175,8 @@ export default function IntroDialog({
           window.localStorage.setItem('ledfx-theme', 'DarkWhite')
           reloadTheme()
           handleNext()
-        } 
-      }),
+        }
+      },
       {
         key: 'gotWled',
         title: 'Scan for devices?',

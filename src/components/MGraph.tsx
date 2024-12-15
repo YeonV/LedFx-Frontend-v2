@@ -1,3 +1,4 @@
+/* eslint-disable @/indent */
 import { useEffect, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import {
@@ -139,8 +140,8 @@ const MGraph = () => {
               maxTicksLimit: 12,
               callback: (value: any, _index: number) => {
                 // console.log('frequencies', messageData.frequencies)
-                const frequency = messageData.frequencies[_index];
-                return `${JSON.stringify(frequency)} Hz`;
+                const frequency = messageData.frequencies[_index]
+                return `${JSON.stringify(frequency)} Hz`
               }
             },
             grid: {
@@ -175,13 +176,13 @@ const MGraph = () => {
       // setData({ chartData, chartOptions })
       switch (messageData.graph_id) {
         case 'melbank_0':
-          setData1({ chartData, chartOptions});
+          setData1({ chartData, chartOptions })
           break
         case 'melbank_1':
-          setData2({ chartData, chartOptions})
+          setData2({ chartData, chartOptions })
           break
         case 'melbank_2':
-          setData3({ chartData, chartOptions})
+          setData3({ chartData, chartOptions })
           break
         default:
           break
@@ -196,9 +197,13 @@ const MGraph = () => {
 
   return (
     <Stack alignItems={'center'} sx={{ position: 'relative', width: '100%' }}>
-      <Fab color='primary' sx={{ position: 'absolute', top: '24px'}} onClick={() => setShowSettings(!showSettings)}>
+      <Fab
+        color="primary"
+        sx={{ position: 'absolute', top: '24px' }}
+        onClick={() => setShowSettings(!showSettings)}
+      >
         <Tune />
-      </Fab>    
+      </Fab>
       <Card
         style={{
           display: !showSettings ? 'none' : '',
@@ -206,7 +211,7 @@ const MGraph = () => {
           width: '100%',
           margin: '3rem',
           // background: theme.palette.mode === 'dark' ? '#1c1c1e' : ''
-          background: theme.palette.background.paper,
+          background: theme.palette.background.paper
           // border: theme.palette.background.paper === '#000000' ? '1px solid #333' : ''
         }}
       >
@@ -306,21 +311,48 @@ const MGraph = () => {
         </CardContent>
       </Card>
       <Grid container spacing={2} justifyContent={'center'}>
-        {data1?.chartData && data1?.chartOptions && data1?.chartData?.labels && (
-          <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
-            <Line data={data1.chartData} options={data1.chartOptions} />
-          </div>
-        )}
-        {data2?.chartData && data2?.chartOptions && data2?.chartData?.labels && (
-          <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
-            <Line data={data2.chartData} options={data2.chartOptions} />
-          </div>
-        )}
-        {data3?.chartData && data3?.chartOptions && data3?.chartData?.labels && (
-          <div style={{ maxWidth: 700, width: '100%', height: 350, margin: '3rem' }}>
-            <Line data={data3.chartData} options={data3.chartOptions} />
-          </div>
-        )}
+        {data1?.chartData &&
+          data1?.chartOptions &&
+          data1?.chartData?.labels && (
+            <div
+              style={{
+                maxWidth: 700,
+                width: '100%',
+                height: 350,
+                margin: '3rem'
+              }}
+            >
+              <Line data={data1.chartData} options={data1.chartOptions} />
+            </div>
+          )}
+        {data2?.chartData &&
+          data2?.chartOptions &&
+          data2?.chartData?.labels && (
+            <div
+              style={{
+                maxWidth: 700,
+                width: '100%',
+                height: 350,
+                margin: '3rem'
+              }}
+            >
+              <Line data={data2.chartData} options={data2.chartOptions} />
+            </div>
+          )}
+        {data3?.chartData &&
+          data3?.chartOptions &&
+          data3?.chartData?.labels && (
+            <div
+              style={{
+                maxWidth: 700,
+                width: '100%',
+                height: 350,
+                margin: '3rem'
+              }}
+            >
+              <Line data={data3.chartData} options={data3.chartOptions} />
+            </div>
+          )}
       </Grid>
     </Stack>
   )

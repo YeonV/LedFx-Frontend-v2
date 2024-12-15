@@ -33,15 +33,14 @@ const keybindings = [
   {
     keys: 'ctrl+alt+g',
     description: 'Open/Close Guest Mode'
-  },
+  }
   // {
   //   keys: 'ctrl+alt+l',
   //   description: 'Lock'
   // },
-
 ]
 
-const Keybinding = ({ close }: { close?: () => void}) => {
+const Keybinding = ({ close }: { close?: () => void }) => {
   const classes = useStyle()
 
   return (
@@ -53,19 +52,25 @@ const Keybinding = ({ close }: { close?: () => void}) => {
           bgcolor="#111"
           height={50}
           alignItems="center"
-          justifyContent={close  ? "space-between" : "center"}
+          justifyContent={close ? 'space-between' : 'center'}
           display="flex"
         >
           {close && <span />}
           <Typography>Keybinding</Typography>
-          {close && <IconButton onClick={() => close()}>
-            <Close />
-          </IconButton>}
+          {close && (
+            <IconButton onClick={() => close()}>
+              <Close />
+            </IconButton>
+          )}
         </Stack>
         <Box p={2}>
           <Stack spacing={2}>
             {keybindings.map((keybinding, index) => (
-              <KeysRow key={index} keys={keybinding.keys} description={keybinding.description} />
+              <KeysRow
+                key={index}
+                keys={keybinding.keys}
+                description={keybinding.description}
+              />
             ))}
           </Stack>
         </Box>

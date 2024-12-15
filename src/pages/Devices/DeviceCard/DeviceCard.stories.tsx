@@ -1,6 +1,6 @@
 import { StoryFn, Meta } from '@storybook/react'
 import { MemoryRouter } from 'react-router-dom'
-import DeviceCard from './DeviceCard';
+import DeviceCard from './DeviceCard'
 
 export default {
   /* 👇 The title prop is optional.

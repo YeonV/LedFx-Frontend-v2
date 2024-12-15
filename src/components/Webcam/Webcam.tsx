@@ -84,8 +84,6 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
     getCount()
   }, [wledIp])
 
-
-
   useEffect(() => {
     let animationFrameId: number | null = null
     let isCancelled = false
@@ -164,7 +162,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         width: 400
       }}
     >
-      <FormControl fullWidth className='step-2d-virtual-seven'>
+      <FormControl fullWidth className="step-2d-virtual-seven">
         <InputLabel id="wled">WLED Devices</InputLabel>
         {wledIps.length > 0 && (
           <Select
@@ -192,7 +190,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         value={ip}
         onChange={(e) => setIp(e.target.value)}
       />
-      <FormControl fullWidth  className='step-2d-virtual-eight'>
+      <FormControl fullWidth className="step-2d-virtual-eight">
         <InputLabel id="camera">Camera</InputLabel>
         <Select
           label="Camera"
@@ -214,17 +212,20 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
             const img = await initialize(capture)
             setBaseImage(img)
           }}
-           className='step-2d-virtual-nine'
+          className="step-2d-virtual-nine"
         >
           Initialize
         </Button>
-        <Button onClick={() => setIsAdjusting(!isAdjusting)} className='step-2d-virtual-ten'>
+        <Button
+          onClick={() => setIsAdjusting(!isAdjusting)}
+          className="step-2d-virtual-ten"
+        >
           {isAdjusting ? 'Stop Adjust' : 'Adjust'}
         </Button>
         <Button
           disabled={isCalibrating || !isAdjusting}
           onClick={() => setIsCalibrating(true)}
-           className='step-2d-virtual-eleven'
+          className="step-2d-virtual-eleven"
         >
           {isCalibrating ? 'Calibrating' : 'Calibrate'}
         </Button>
@@ -238,7 +239,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
       />
       <br />
       {!isCalibrating && !isAdjusting && (
-        <Stack direction="column" className='step-2d-virtual-twelve'>
+        <Stack direction="column" className="step-2d-virtual-twelve">
           <Stack direction="row" spacing={2}>
             <Typography width={120}>Cut Top</Typography>
             <Slider
@@ -278,7 +279,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         </Stack>
       )}
       {!isCalibrating && isAdjusting && (
-        <Stack direction={'column'} className='step-2d-virtual-thirteen'>
+        <Stack direction={'column'} className="step-2d-virtual-thirteen">
           <Stack direction="row" spacing={2}>
             <Typography width={120}>Led</Typography>
             <Slider

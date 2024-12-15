@@ -76,7 +76,13 @@ const useStore = create(
           Object.fromEntries(
             Object.entries(state).filter(
               ([key]) =>
-                !['dialogs', 'disconnected', 'ui', 'spotify', 'pixelGraphs'].includes(key)
+                ![
+                  'dialogs',
+                  'disconnected',
+                  'ui',
+                  'spotify',
+                  'pixelGraphs'
+                ].includes(key)
             )
           )
       }
@@ -84,6 +90,7 @@ const useStore = create(
   )
 )
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const state = useStore.getState()
 export type IStore = typeof state
 

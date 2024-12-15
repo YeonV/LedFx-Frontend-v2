@@ -1,3 +1,5 @@
+/* eslint-disable @/indent */
+/* eslint-disable prettier/prettier */
 import { useTheme, Stack, Chip, IconButton, Typography } from '@mui/material'
 import {
   DataGrid,
@@ -40,8 +42,12 @@ const DeviceActions = ({
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
   const clearEffect = useStore((state) => state.clearEffect)
-  const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual)
-  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice)
+  const setDialogOpenAddVirtual = useStore(
+    (state) => state.setDialogOpenAddVirtual
+  )
+  const setDialogOpenAddDevice = useStore(
+    (state) => state.setDialogOpenAddDevice
+  )
 
   const handleEditVirtual = () => {
     setDialogOpenAddVirtual(true, virtId)
@@ -96,13 +102,15 @@ const DeviceActions = ({
             </IconButton>
           )}
         </>
-      ) : <span style={{ width: 24, flex: '0 0 24px' }}/>}
+      ) : (
+        <span style={{ width: 24, flex: '0 0 24px' }} />
+      )}
       <IconButton
         sx={{
-          ml:            
+          ml:
             (effect ? 3.2 : 11.8) +
             (virtuals[virtId]?.config.rows > 1 ? 0 : 4.2) +
-            (!effect && virtuals[virtId]?.config.rows > 1  ? 4.2 : 0)            
+            (!effect && virtuals[virtId]?.config.rows > 1 ? 4.2 : 0)
         }}
         size="small"
         onClick={(e) => {
@@ -124,7 +132,7 @@ const DeviceActions = ({
         <Settings />
       </IconButton>
       <Popover
-        type='iconbutton'
+        type="iconbutton"
         icon={<DeleteForever />}
         color={'inherit'}
         onConfirm={(e) => {
@@ -214,21 +222,28 @@ const DbDevices = () => {
     {
       field: 'PixelGraph',
       headerName: 'Graph',
-      renderHeader: () => <Stack direction={'row'} spacing={2} alignItems={'center'} style={{ width: 200 }}>
-        <Typography>
-        Graph
-        </Typography>
-        {Object.keys(virtuals).some((v) => virtuals[v].config.rows > 1) && <IconButton
-          size="small"
-          onClick={async(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setMatrix(!matrix)
-          }}
+      renderHeader: () => (
+        <Stack
+          direction={'row'}
+          spacing={2}
+          alignItems={'center'}
+          style={{ width: 200 }}
         >
-           {matrix ? <GridOff /> : <GridOn />}
-        </IconButton>}
-        </Stack>,
+          <Typography>Graph</Typography>
+          {Object.keys(virtuals).some((v) => virtuals[v].config.rows > 1) && (
+            <IconButton
+              size="small"
+              onClick={async (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setMatrix(!matrix)
+              }}
+            >
+              {matrix ? <GridOff /> : <GridOn />}
+            </IconButton>
+          )}
+        </Stack>
+      ),
       width: 200,
       renderCell: (params: GridRenderCellParams) =>
         graphsMulti && (
@@ -275,64 +290,79 @@ const DbDevices = () => {
             : 'Online'
           : virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
-            : params.row.is_device ? 'Offline' : virtuals[params.row.id]?.active ? 'Active' : 'Inactive'
+            : params.row.is_device
+              ? 'Offline'
+              : virtuals[params.row.id]?.active
+                ? 'Active'
+                : 'Inactive'
     },
     {
       field: 'actions',
       headerName: 'Actions',
-      renderHeader: () => <Stack direction={'row'} alignItems={'center'} style={{ width: 400 }}>
+      renderHeader: () => (
+        <Stack direction={'row'} alignItems={'center'} style={{ width: 400 }}>
           <Stack direction={'row'} alignItems={'center'} style={{ width: 135 }}>
-          <IconButton
-            size="small"
-            onClick={async(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              await togglePause()
-              getVirtuals()
-            }}
-          >
-            {paused ? <PlayArrow /> : <Pause /> }
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={async(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              await clearAllEffects()
-              getVirtuals()
-            }}
-          >
-            <Clear />
-          </IconButton>
+            <IconButton
+              size="small"
+              onClick={async (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                await togglePause()
+                getVirtuals()
+              }}
+            >
+              {paused ? <PlayArrow /> : <Pause />}
+            </IconButton>
+            <IconButton
+              size="small"
+              onClick={async (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                await clearAllEffects()
+                getVirtuals()
+              }}
+            >
+              <Clear />
+            </IconButton>
           </Stack>
           Actions
-        </Stack>,
-      width: 400, // eslint-disable-next-line
-      renderCell: (params: GridRenderCellParams) => // eslint-disable-next-line
-        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online  // eslint-disable-next-line
-          ? (virtuals[params.row.id]?.effect.name  // eslint-disable-next-line
-            ? (<DeviceActions virtId={params.row.id} effect />)  // eslint-disable-next-line
-            : (<DeviceActions virtId={params.row.id} />))  // eslint-disable-next-line
-          : virtuals[params.row.id]?.effect.name  // eslint-disable-next-line
+        </Stack>
+      ),
+      width: 400,  
+      renderCell: (params: GridRenderCellParams) =>  
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online   
+          ? (virtuals[params.row.id]?.effect.name   
+            ? (<DeviceActions virtId={params.row.id} effect />)   
+            : (<DeviceActions virtId={params.row.id} />))   
+          : virtuals[params.row.id]?.effect.name   
             ? (<DeviceActions virtId={params.row.id} effect />) 
-            : params.row.is_device ? (<ReconnectButton onClick={() => activateDevice(params.row.id)} />) : null
+         : params.row.is_device ? (
+          <ReconnectButton onClick={() => activateDevice(params.row.id)} />
+        ) : null
     }
   ]
 
   const rows: any = Object.values(virtuals)
-  .filter(v => {
-    const vs = Object.keys(virtuals);
-    const virt = vs
-      .filter(v => showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-      .filter(v => showGaps ? v : !(v.startsWith('gap-')))
-      .find(key => virtuals[key].id === v.id);
-    return virt !== undefined;
-  })
-  .map((v: any) => ({
-    ...v,
-    ...v.config
-  }));
-
+    .filter((v) => {
+      const vs = Object.keys(virtuals)
+      const virt = vs
+        .filter((v) =>
+          showComplex
+            ? v
+            : !(
+              v.endsWith('-mask') ||
+                v.endsWith('-foreground') ||
+                v.endsWith('-background')
+            )
+        )
+        .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+        .find((key) => virtuals[key].id === v.id)
+      return virt !== undefined
+    })
+    .map((v: any) => ({
+      ...v,
+      ...v.config
+    }))
 
   return (
     <BladeFrame
@@ -373,7 +403,10 @@ const DbDevices = () => {
           sx={{
             borderColor: 'transparent',
             '& .MuiDataGrid-row': {
-              backgroundColor: theme.palette.mode === 'light' ? theme.palette.background.default + '90' : ''
+              backgroundColor:
+                theme.palette.mode === 'light'
+                  ? theme.palette.background.default + '90'
+                  : ''
             },
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important'

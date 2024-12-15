@@ -1,23 +1,32 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from 'fs'
 import path from 'path'
 import { Notification } from 'electron'
 import { fileURLToPath } from 'node:url'
-import isDev from 'electron-is-dev';
+import isDev from 'electron-is-dev'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const NOTIFICATION_TITLE = 'LedFx Client - by Blade';
-const NOTIFICATION_BODY = 'Testing Notification from the Main process';
+const NOTIFICATION_TITLE = 'LedFx Client - by Blade'
+const NOTIFICATION_BODY = 'Testing Notification from the Main process'
 
 function getConfig() {
-  const configPath = path.join(path.dirname(__dirname), isDev ? '../' : '../../', 'frontend_config.json')
-  const configData = fs.readFileSync(configPath);
-  return JSON.parse(configData.toString());
+  const configPath = path.join(
+    path.dirname(__dirname),
+    isDev ? '../' : '../../',
+    'frontend_config.json'
+  )
+  const configData = fs.readFileSync(configPath)
+  return JSON.parse(configData.toString())
 }
 
-export function showNotification(title = NOTIFICATION_TITLE, body = NOTIFICATION_BODY) {
-  const config = getConfig();
-  const updateUrl = config.updateUrl;
+export function showNotification(
+  title = NOTIFICATION_TITLE,
+  body = NOTIFICATION_BODY
+) {
+  const config = getConfig()
+  const updateUrl = config.updateUrl
 
   new Notification({
     toastXml: `<toast>
@@ -30,7 +39,6 @@ export function showNotification(title = NOTIFICATION_TITLE, body = NOTIFICATION
        <actions>
          <action content="Goto Release" activationType="protocol" arguments="${updateUrl}" />
        </actions>
-    </toast>`,
-  }).show();
+    </toast>`
+  }).show()
 }
-

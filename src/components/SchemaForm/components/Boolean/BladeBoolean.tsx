@@ -15,7 +15,7 @@ const BladeBoolean = ({
   model,
   hideDesc = false,
   model_id
-}: BladeBooleanProps) => 
+}: BladeBooleanProps) => (
   <BBoolean
     index={index}
     required={required}
@@ -28,5 +28,6 @@ const BladeBoolean = ({
     description={schema.description}
     hideDesc={hideDesc}
   />
+)
 
 export default BladeBoolean

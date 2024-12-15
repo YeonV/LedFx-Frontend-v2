@@ -29,18 +29,22 @@ const GradientPicker = ({
   const [pickerBgColorInt, setPickerBgColorInt] = useState(pickerBgColor)
 
   const defaultColors: any = {}
-  if (colors?.gradients?.builtin) Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
-    defaultColors[k] = g
-  })
-  if (colors?.gradients?.user) Object.entries(colors.gradients.user)?.forEach(([k, g]) => {
-    defaultColors[k] = g
-  })
-  if (colors?.colors?.builtin) Object.entries(colors.colors.builtin)?.forEach(([k, g]) => {
-    defaultColors[k] = g
-  })
-  if (colors?.colors?.user) Object.entries(colors.colors.user)?.forEach(([k, g]) => {
-    defaultColors[k] = g
-  })
+  if (colors?.gradients?.builtin)
+    Object.entries(colors.gradients.builtin).forEach(([k, g]) => {
+      defaultColors[k] = g
+    })
+  if (colors?.gradients?.user)
+    Object.entries(colors.gradients.user)?.forEach(([k, g]) => {
+      defaultColors[k] = g
+    })
+  if (colors?.colors?.builtin)
+    Object.entries(colors.colors.builtin)?.forEach(([k, g]) => {
+      defaultColors[k] = g
+    })
+  if (colors?.colors?.user)
+    Object.entries(colors.colors.user)?.forEach(([k, g]) => {
+      defaultColors[k] = g
+    })
 
   const handleClick = (event: any) => {
     setAnchorEl(anchorEl ? null : event.currentTarget)
@@ -100,7 +104,13 @@ const GradientPicker = ({
         onClick={handleClick}
       />
 
-      <Popper id={id} open={open} anchorEl={anchorEl} ref={popover && popover} sx={{ zIndex: 1300 }}>
+      <Popper
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        ref={popover && popover}
+        sx={{ zIndex: 1300 }}
+      >
         <div
           className={`${classes.paper} gradient-picker ${
             showHex ? 'show_hex' : ''

@@ -29,13 +29,15 @@ export default function ScenesPlaylist({
   db
 }: any) {
   const theme = useTheme()
-  const timer = useRef<NodeJS.Timeout | null>(null);
+  const timer = useRef<NodeJS.Timeout | null>(null)
   const [theScenes, setTheScenes] = useState([])
   const scenePL = useStore((state) => state.scenePL)
   const scenePLintervals = useStore((state) => state.scenePLintervals)
   const setScenePLintervals = useStore((state) => state.setScenePLintervals)
   const sceneUseIntervals = useStore((state) => state.sceneUseIntervals)
-  const toggleSceneUseIntervals = useStore((state) => state.toggleSceneUseIntervals)
+  const toggleSceneUseIntervals = useStore(
+    (state) => state.toggleSceneUseIntervals
+  )
   const scenePLplay = useStore((state) => state.scenePLplay)
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
   const scenePLrepeat = useStore((state) => state.scenePLrepeat)
@@ -54,36 +56,46 @@ export default function ScenesPlaylist({
     return setTheScenes(current)
   }, [scenes, scenePL])
 
-
   useEffect(() => {
     if (scenePLplay) {
       if (timer.current === null) {
-        timer.current = setTimeout(() => {
-          if (scenePL[scenePLactiveIndex + 1]) {
-            activateScene(scenePL[scenePLactiveIndex + 1]);
-            setScenePLactiveIndex(scenePLactiveIndex + 1);
-          } else if (scenePLrepeat) {
-            activateScene(scenePL[0]);
-            setScenePLactiveIndex(0);
-          } else {
-            toggleScenePLplay();
-          }
-          timer.current = null; // Reset the timer
-        }, (sceneUseIntervals ? scenePLinterval : (scenePLintervals[scenePLactiveIndex] || 2)) * 1000);
+        timer.current = setTimeout(
+          () => {
+            if (scenePL[scenePLactiveIndex + 1]) {
+              activateScene(scenePL[scenePLactiveIndex + 1])
+              setScenePLactiveIndex(scenePLactiveIndex + 1)
+            } else if (scenePLrepeat) {
+              activateScene(scenePL[0])
+              setScenePLactiveIndex(0)
+            } else {
+              toggleScenePLplay()
+            }
+            timer.current = null // Reset the timer
+          },
+          (sceneUseIntervals
+            ? scenePLinterval
+            : scenePLintervals[scenePLactiveIndex] || 2) * 1000
+        )
       }
     } else if (timer.current) {
-      clearTimeout(timer.current);
-      timer.current = null;
+      clearTimeout(timer.current)
+      timer.current = null
     }
-  
+
     return () => {
       if (timer.current) {
-        clearTimeout(timer.current);
-        timer.current = null;
+        clearTimeout(timer.current)
+        timer.current = null
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scenePLplay, scenePLactiveIndex, scenePLintervals, scenePLinterval, scenePLrepeat]);
+  }, [
+    scenePLplay,
+    scenePLactiveIndex,
+    scenePLintervals,
+    scenePLinterval,
+    scenePLrepeat
+  ])
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 0 },
@@ -116,39 +128,39 @@ export default function ScenesPlaylist({
       )
     },
     {
-      field: 'interval',      
+      field: 'interval',
       headerName: 'Wait',
-      width: db  ? 70 : 0,
+      width: db ? 70 : 0,
       renderCell: (params: GridRenderCellParams) => (
         <TextField
-        variant="standard"
-        disabled={sceneUseIntervals}
-        sx={{
-          display: 'flex',
-          width: 70,
-          height: '100%',
-          '& input': {
-            textAlign: 'right',
-            padding: '5px 15px 2px',
-          },
-          '& .MuiInput-underline:before': {
-            display: 'none'
-          },
-          '& .MuiInput-underline:after': {
-            display: 'none'
-          },
-          '& .MuiInput-root': {
-            height: '100%'
-        }
-        }}
-        type="number"
-        value={sceneUseIntervals ? 2 : scenePLintervals[params.id as number]}
-        onChange={(e: any) => {
-          const newIntervals = [...scenePLintervals]
-          newIntervals[params.id as number] = e.target.value
-          setScenePLintervals(newIntervals)}
-        }
-      />
+          variant="standard"
+          disabled={sceneUseIntervals}
+          sx={{
+            display: 'flex',
+            width: 70,
+            height: '100%',
+            '& input': {
+              textAlign: 'right',
+              padding: '5px 15px 2px'
+            },
+            '& .MuiInput-underline:before': {
+              display: 'none'
+            },
+            '& .MuiInput-underline:after': {
+              display: 'none'
+            },
+            '& .MuiInput-root': {
+              height: '100%'
+            }
+          }}
+          type="number"
+          value={sceneUseIntervals ? 2 : scenePLintervals[params.id as number]}
+          onChange={(e: any) => {
+            const newIntervals = [...scenePLintervals]
+            newIntervals[params.id as number] = e.target.value
+            setScenePLintervals(newIntervals)
+          }}
+        />
       )
     },
     {
@@ -156,7 +168,8 @@ export default function ScenesPlaylist({
       headerName: 'Remove',
       width: 70,
       renderCell: (params: GridRenderCellParams) => {
-        const removeScene2PL = useStore((state) => state.removeScene2PL) // eslint-disable-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const removeScene2PL = useStore((state) => state.removeScene2PL)
         return (
           <Button
             onClick={() => removeScene2PL(params.id as number)}

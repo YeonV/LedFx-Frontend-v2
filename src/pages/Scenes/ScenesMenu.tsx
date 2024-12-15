@@ -1,6 +1,12 @@
 import { useState, MouseEvent } from 'react'
 import { Menu, MenuItem, ListItemIcon, Button } from '@mui/material'
-import { PlaylistAdd, Edit, MoreVert, ChevronLeft, ChevronRight } from '@mui/icons-material'
+import {
+  PlaylistAdd,
+  Edit,
+  MoreVert,
+  ChevronLeft,
+  ChevronRight
+} from '@mui/icons-material'
 import Popover from '../../components/Popover/Popover'
 import useStore from '../../store/useStore'
 
@@ -36,7 +42,13 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
       <Button variant="text" onClick={handleClick} sx={{ minWidth: '32px' }}>
         <MoreVert />
       </Button>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
         <MenuItem
           onClick={() => {
             setDialogOpenAddScene(false, true, sceneId, scenes[sceneId])
@@ -51,23 +63,30 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
           onClick={() => {
             addScene2PL(sceneId)
             handleClose()
-          }}>
+          }}
+        >
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
         </MenuItem>
-        <MenuItem disabled={order < 1} onClick={()=>{
-          setSceneOrderUp(sceneId)
-          handleClose()
-        }}>
+        <MenuItem
+          disabled={order < 1}
+          onClick={() => {
+            setSceneOrderUp(sceneId)
+            handleClose()
+          }}
+        >
           <ListItemIcon>
             <ChevronLeft />
           </ListItemIcon>
         </MenuItem>
-        <MenuItem disabled={order >= sceneOrder.length - 1} onClick={()=>{
-          setSceneOrderDown(sceneId)
-          handleClose()
-        }}>
+        <MenuItem
+          disabled={order >= sceneOrder.length - 1}
+          onClick={() => {
+            setSceneOrderDown(sceneId)
+            handleClose()
+          }}
+        >
           <ListItemIcon>
             <ChevronRight />
           </ListItemIcon>

@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @/indent */
 
 import { useEffect, useState } from 'react'
 import {
@@ -28,7 +29,7 @@ import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -77,7 +78,7 @@ const orderEffectProperties = (
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false)
   const showMatrix = useStore((state) => state.showMatrix)
-  
+
   const getVirtuals = useStore((state) => state.getVirtuals)
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
@@ -89,8 +90,13 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const updateVirtual = useStore((state) => state.updateVirtual)
   const features = useStore((state) => state.features)
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
-  const [matrix, setMatrix] = useState(showMatrix || (virtuals[virtId]?.config?.rows > 7 && virtuals[virtId]?.pixel_count > 100 && virtuals[virtId].effect.type === 'blender') )
-  const handle = useFullScreenHandle();
+  const [matrix, setMatrix] = useState(
+    showMatrix ||
+      (virtuals[virtId]?.config?.rows > 7 &&
+        virtuals[virtId]?.pixel_count > 100 &&
+        virtuals[virtId].effect.type === 'blender')
+  )
+  const handle = useFullScreenHandle()
   const [fullScreen, setFullScreen] = useState(false)
 
   const getV = () => {
@@ -104,7 +110,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   useEffect(() => {
     const v = getV()
     if (v) setVirtual(v)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(virtuals[virtId])])
 
   const effectType = virtual && virtual.effect.type
@@ -148,7 +153,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
   }
 
-
   useEffect(() => {
     // if (virtuals && virtual?.effect?.config) {
     //   setTheModel(virtual.effect.config)
@@ -164,12 +168,24 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
       setTheModel(virtual?.effect.config)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtuals,virtuals[virtId],virtuals[virtId]?.effect,JSON.stringify(virtuals[virtId]?.effect?.config),virtual,virtual?.effect,virtual?.effect.config,effectType])
+  }, [
+    virtuals,
+    virtuals[virtId],
+    virtuals[virtId]?.effect,
+    JSON.stringify(virtuals[virtId]?.effect?.config),
+    virtual,
+    virtual?.effect,
+    virtual?.effect.config,
+    effectType
+  ])
 
   useEffect(() => {
-    setMatrix(showMatrix || (virtuals[virtId]?.config?.rows > 7 && virtuals[virtId]?.pixel_count > 100 && virtuals[virtId].effect.type === 'blender'))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setMatrix(
+      showMatrix ||
+        (virtuals[virtId]?.config?.rows > 7 &&
+          virtuals[virtId]?.pixel_count > 100 &&
+          virtuals[virtId].effect.type === 'blender')
+    )
   }, [virtuals[virtId].effect.type])
 
   useEffect(() => {
@@ -180,7 +196,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     return () => {
       document.removeEventListener('effect_set', handleWebsockets)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // console.log('virtual', virtual?.effect?.config)
   return (
@@ -209,11 +224,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 justifyContent: 'flex-end'
               }}
             >
-              {!(virtuals &&
+              {!(
+                virtuals &&
                 virtual &&
                 effects &&
                 virtual.effect &&
-                virtual.effect.config) && virtual?.config?.rows && virtual?.config?.rows > 1 && (
+                virtual.effect.config
+              ) &&
+                virtual?.config?.rows &&
+                virtual?.config?.rows > 1 && (
                   <Button
                     style={{ marginRight: '.5rem' }}
                     className="step-device-seven"
@@ -300,13 +319,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             </FullScreen>
           </Box>
           <div style={{ height: '1rem' }} />
-          {virtual && <EffectDropDown
-            effects={effects}
-            virtual={virtual}
-            features={features}
-            getVirtuals={getVirtuals}
-            setEffect={setEffect}
-          />}
+          {virtual && (
+            <EffectDropDown
+              effects={effects}
+              virtual={virtual}
+              features={features}
+              getVirtuals={getVirtuals}
+              setEffect={setEffect}
+            />
+          )}
         </CardContent>
       </Card>
       {virtuals &&

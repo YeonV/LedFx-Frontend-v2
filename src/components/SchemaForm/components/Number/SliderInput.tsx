@@ -1,42 +1,42 @@
 import { Slider, Stack, TextField } from '@mui/material'
 
 const SliderInput = ({
-    min = 0,
-    max = 10000,
-    step = 1,
-    title,
-    value,
-    setValue,
-    titleWidth = 100
+  min = 0,
+  max = 10000,
+  step = 1,
+  title,
+  value,
+  setValue,
+  titleWidth = 100
 }: {
-    min?: number
-    max?: number
-    step?: number
-    title: string
-    value: number
-    titleWidth?: number
-    setValue: (v: number) => void
+  min?: number
+  max?: number
+  step?: number
+  title: string
+  value: number
+  titleWidth?: number
+  setValue: (_v: number) => void
 }) => {
   return (
     <Stack direction={'row'} alignItems={'center'}>
-    <label style={{ width: titleWidth, flexShrink: 0 }}>{title}</label>
-    <Slider              
-      value={value}
-      onChange={(_e, v) => setValue(v as number)}
-      valueLabelDisplay="auto"
-      min={min}
-      max={max}
-      step={step}
-    />
-    <TextField                        
-      inputProps={{ style: { textAlign: 'right', width: 130 } }}
-      InputProps={{ disableUnderline: true }}
-      variant='standard'
-      type="number"
-      value={value}
-      onChange={(e) => setValue(Number(e.target.value))}
-    />
-  </Stack>
+      <label style={{ width: titleWidth, flexShrink: 0 }}>{title}</label>
+      <Slider
+        value={value}
+        onChange={(_e, v) => setValue(v as number)}
+        valueLabelDisplay="auto"
+        min={min}
+        max={max}
+        step={step}
+      />
+      <TextField
+        inputProps={{ style: { textAlign: 'right', width: 130 } }}
+        InputProps={{ disableUnderline: true }}
+        variant="standard"
+        type="number"
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
+      />
+    </Stack>
   )
 }
 

@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @/indent */
 import { useEffect, useState } from 'react'
 import {
   Card,
@@ -5,13 +8,9 @@ import {
   Box,
   IconButton,
   Stack,
-  capitalize,
+  capitalize
 } from '@mui/material'
-import {
-  GridOn,
-  GridOff,
-  Settings
-} from '@mui/icons-material'
+import { GridOn, GridOff, Settings } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
@@ -64,12 +63,18 @@ const orderEffectProperties = (
     .sort((a) => (a.id === 'gradient' ? -1 : 1))
 }
 
-const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boolean }) => {
+const EffectsComplex = ({
+  virtId,
+  initMatix
+}: {
+  virtId: string
+  initMatix?: boolean
+}) => {
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
   const updateEffect = useStore((state) => state.updateEffect)
-  const setEffect = useStore((state) => state.setEffect)  
+  const setEffect = useStore((state) => state.setEffect)
   const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
   const virtuals = useStore((state) => state.virtuals)
   const features = useStore((state) => state.features)
@@ -79,7 +84,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
   const [matrix, setMatrix] = useState(initMatix)
   const [showSettings, setShowSettings] = useState(false)
-  
+
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
@@ -91,7 +96,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
   useEffect(() => {
     const v = getV()
     if (v) setVirtual(v)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [JSON.stringify(virtuals[virtId])])
 
   const effectType = virtual && virtual.effect.type
@@ -118,7 +123,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
   useEffect(() => {
     getVirtuals()
     getSchemas()
-    if (Object.keys(virtuals[virtId].effect).length === 0) {    
+    if (Object.keys(virtuals[virtId].effect).length === 0) {
       Ledfx('/api/config').then((resp) => {
         const v = resp.virtuals.find((v: any) => v.id === virtId)
         if (!v) return
@@ -126,15 +131,11 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
         const ent = Object.entries(v.effects)
         if (!ent) return
         const [type, config] = ent[0]
-        if (type && (config as any).config) setEffect(
-          virtId,
-          type,
-          (config as any).config,
-          true
-        )
+        if (type && (config as any).config)
+          setEffect(virtId, type, (config as any).config, true)
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [effectType])
 
   useEffect(() => {
@@ -146,15 +147,34 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
     ) {
       setTheModel(virtual?.effect.config)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtuals,virtuals[virtId],virtuals[virtId]?.effect,JSON.stringify(virtuals[virtId]?.effect?.config),virtual,virtual?.effect,virtual?.effect.config,effectType])
+     
+  }, [
+    virtuals,
+    virtuals[virtId],
+    virtuals[virtId]?.effect,
+    JSON.stringify(virtuals[virtId]?.effect?.config),
+    virtual,
+    virtual?.effect,
+    virtual?.effect.config,
+    effectType
+  ])
 
   return (
     <Card variant="outlined">
       <CardContent style={{ padding: '10px 16px 0px 16px' }}>
         <Box
-          sx={fade ? { opacity: 0.2, transition: 'opacity', transitionDuration: '1000' } : { opacity: 1, transitionDuration: '0'}}
-          style={{ transitionDuration: `${(virtual?.config?.transition_time || 1) * 1000}`}}
+          sx={
+            fade
+              ? {
+                opacity: 0.2,
+                transition: 'opacity',
+                transitionDuration: '1000'
+              }
+              : { opacity: 1, transitionDuration: '0' }
+          }
+          style={{
+            transitionDuration: `${(virtual?.config?.transition_time || 1) * 1000}`
+          }}
         >
           <PixelGraph
             showMatrix={matrix}
@@ -163,9 +183,13 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
             dummy={false}
           />
         </Box>
-        <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', paddingTop: '1rem', mb: 2 }}>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ justifyContent: 'center', paddingTop: '1rem', mb: 2 }}
+        >
           <Box sx={{ flexGrow: 1 }}>
-            <EffectDropDown 
+            <EffectDropDown
               effects={effects}
               virtual={virtual}
               features={features}
@@ -173,8 +197,8 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
               getVirtuals={getVirtuals}
               ommit={blenderAutomagic ? ['Blender'] : []}
               title={`${capitalize(virtId.split('-').slice(-1)[0])} Effect`}
-              />
-            </Box>
+            />
+          </Box>
           <IconButton onClick={() => setShowSettings(!showSettings)}>
             <Settings />
           </IconButton>
@@ -186,18 +210,25 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string, initMatix?: boo
             {matrix ? <GridOff /> : <GridOn />}
           </IconButton>
         </Stack>
-        {showSettings && virtuals && virtual && effects && virtual.effect && virtual.effect.config && theModel && effectType && (
-          <div>
-            <BladeEffectSchemaForm
-              handleEffectConfig={(e: any) => handleEffectConfig(e, virtId)}
-              virtId={virtId}
-              schemaProperties={orderedProperties}
-              model={theModel as Record<string, unknown>}
-              selectedType={effectType}
-              descriptions={effectDescriptions}
-            />
-          </div>
-        )}
+        {showSettings &&
+          virtuals &&
+          virtual &&
+          effects &&
+          virtual.effect &&
+          virtual.effect.config &&
+          theModel &&
+          effectType && (
+            <div>
+              <BladeEffectSchemaForm
+                handleEffectConfig={(e: any) => handleEffectConfig(e, virtId)}
+                virtId={virtId}
+                schemaProperties={orderedProperties}
+                model={theModel as Record<string, unknown>}
+                selectedType={effectType}
+                descriptions={effectDescriptions}
+              />
+            </div>
+          )}
       </CardContent>
     </Card>
   )

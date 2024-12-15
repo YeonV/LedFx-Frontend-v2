@@ -21,12 +21,12 @@ export interface IDefaultMapping {
 export interface IMapping {
   [key: number]: IDefaultMapping
 }
-const baseMapping = {} as IDefaultMapping;
+const baseMapping = {} as IDefaultMapping
 
 for (let row = 1; row <= 9; row++) {
   for (let col = 1; col <= 9; col++) {
-    const key = parseInt(`${row}${col}`);
-    baseMapping[key] = { buttonNumber: key };
+    const key = parseInt(`${row}${col}`)
+    baseMapping[key] = { buttonNumber: key }
   }
 }
 
@@ -48,23 +48,39 @@ const presetMapping = {
 export const defaultMapping = { ...baseMapping, ...presetMapping }
 
 const storeMidi = (set: any, get: any) => ({
-  getColorFromValue: (value: string ) => {
-    if (value === 'undefined') return undefined;
-    const state = get() as IStore;
-    const colors = MidiDevices[state.midiType][state.midiModel].colors;
-    const numericValue = parseInt(value, 16);
-    return Object.keys(colors).find(key => colors[key as keyof typeof colors] === numericValue) || undefined;
+  getColorFromValue: (value: string) => {
+    if (value === 'undefined') return undefined
+    const state = get() as IStore
+    const colors = MidiDevices[state.midiType][state.midiModel].colors
+    const numericValue = parseInt(value, 16)
+    return (
+      Object.keys(colors).find(
+        (key) => colors[key as keyof typeof colors] === numericValue
+      ) || undefined
+    )
   },
   getUiBtnNo: (inputInt: number): number | null => {
-    const state = get() as IStore;
-    for (let i = 0; i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length; i++) {
-      for (let j = 0; j < MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length; j++) {
-        if (MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] === inputInt) {
-          return MidiDevices.Launchpad.X.buttonNumbers[i][j];
+    const state = get() as IStore
+    for (
+      let i = 0;
+      i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length;
+      i++
+    ) {
+      for (
+        let j = 0;
+        j <
+        MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length;
+        j++
+      ) {
+        if (
+          MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] ===
+          inputInt
+        ) {
+          return MidiDevices.Launchpad.X.buttonNumbers[i][j]
         }
       }
     }
-    return null;
+    return null
   },
   blockMidiHandler: false,
   setBlockMidiHandler: (block: boolean) =>
@@ -84,8 +100,8 @@ const storeMidi = (set: any, get: any) => ({
       false,
       'setMidiType'
     ),
-  midiModel: 'X' as keyof typeof MidiDevices[keyof typeof MidiDevices],
-  setMidiModel: (model: keyof typeof MidiDevices[keyof typeof MidiDevices]) =>
+  midiModel: 'X' as keyof (typeof MidiDevices)[keyof typeof MidiDevices],
+  setMidiModel: (model: keyof (typeof MidiDevices)[keyof typeof MidiDevices]) =>
     set(
       produce((state: IStore) => {
         state.midiModel = model
@@ -111,7 +127,7 @@ const storeMidi = (set: any, get: any) => ({
       false,
       'setMidiOutputs'
     ),
-  midiInput:'',
+  midiInput: '',
   setMidiInput: (input: string) =>
     set(
       produce((state: IStore) => {
@@ -120,7 +136,7 @@ const storeMidi = (set: any, get: any) => ({
       false,
       'setMidiInput'
     ),
-  midiOutput:'',
+  midiOutput: '',
   setMidiOutput: (output: string) =>
     set(
       produce((state: IStore) => {
@@ -145,7 +161,7 @@ const storeMidi = (set: any, get: any) => ({
     commandType: '90',
     sceneActiveType: '90',
     sceneInactiveType: '90',
-    pressedButtonColor: null as string | null,
+    pressedButtonColor: null as string | null
   },
   setMidiCommandType: (type: string) =>
     set(
@@ -204,7 +220,7 @@ const storeMidi = (set: any, get: any) => ({
       'setPressedButtonColor'
     ),
   midiMapping: {
-    0: defaultMapping,
+    0: defaultMapping
   } as IMapping,
   setMidiMapping: (midiMapping: IMapping): void =>
     set(
@@ -217,7 +233,10 @@ const storeMidi = (set: any, get: any) => ({
   setMidiMappingButtonNumbers: (inputArray: number[][]): void =>
     set(
       produce((state: IStore) => {
-        if (inputArray.length !== 9 || !inputArray.every(row => row.length === 9)) {
+        if (
+          inputArray.length !== 9 ||
+          !inputArray.every((row) => row.length === 9)
+        ) {
           throw new Error('Input must be a 9x9 array')
         }
         const updatedMapping = { ...state.midiMapping }
@@ -227,7 +246,10 @@ const storeMidi = (set: any, get: any) => ({
           for (let col = 0; col < 9; col++) {
             const key = (row + 1) * 10 + (col + 1)
             if (updatedMapping[0][key]) {
-              updatedMapping[0][key] = { ...updatedMapping[0][key], buttonNumber: inputArray[row][col] }
+              updatedMapping[0][key] = {
+                ...updatedMapping[0][key],
+                buttonNumber: inputArray[row][col]
+              }
             } else {
               updatedMapping[0][key] = { buttonNumber: inputArray[row][col] }
             }
@@ -238,7 +260,7 @@ const storeMidi = (set: any, get: any) => ({
       false,
       'updateMidiMapping'
     ),
-  
+
   midiEvent: {
     name: '',
     note: '',

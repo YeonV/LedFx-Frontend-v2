@@ -25,7 +25,7 @@ import { ISceneOrder } from '../../store/api/storeScenes'
 const Scenes = () => {
   const classes = useStyles()
   const theme = useTheme()
-  
+
   const getScenes = useStore((state) => state.getScenes)
   const scenes = useStore((state) => state.scenes)
   const sceneOrder = useStore((state) => state.sceneOrder)
@@ -55,13 +55,13 @@ const Scenes = () => {
     // initial scene order if not set
     const sc = JSON.parse(JSON.stringify(sceneOrder)) as ISceneOrder[]
     Object.keys(scenes).map((s, i) => {
-      if (!(sc.some(o => o.sceneId === s))) {
-        return sc.push({sceneId: s, order: i})
+      if (!sc.some((o) => o.sceneId === s)) {
+        return sc.push({ sceneId: s, order: i })
       }
       return null
     })
     setSceneOrder(sc)
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes])
 
   const sceneFilter = (sc: string) =>
@@ -69,7 +69,8 @@ const Scenes = () => {
       ?.split(',')
       .some((sce: string) => sceneActiveTags.includes(sce))
 
-  const sceneBlenderFilter = (sc: string) => !(scenes[sc].scene_tags?.split(',')?.includes('blender'))
+  const sceneBlenderFilter = (sc: string) =>
+    !scenes[sc].scene_tags?.split(',')?.includes('blender')
   return (
     <>
       <div
@@ -188,72 +189,73 @@ const Scenes = () => {
             ? Object.keys(scenes).filter(sceneFilter)
             : Object.keys(scenes)
           )
-          .filter(sceneBlenderFilter)
-          .map((s, i) => {
-            return (
-              <Grid
-                item
-                key={i}
-                mt={['0.5rem', '0.5rem', 0, 0, 0]}
-                p="8px !important"
-                order={sceneOrder.find(o => o.sceneId === s)?.order || 0}
-              >
-                <Card
-                  className={classes.root}
-                  sx={{
-                    border: '1px solid',
-                    borderColor: theme.palette.divider
-                  }}
+            .filter(sceneBlenderFilter)
+            .map((s, i) => {
+              return (
+                <Grid
+                  item
+                  key={i}
+                  mt={['0.5rem', '0.5rem', 0, 0, 0]}
+                  p="8px !important"
+                  order={sceneOrder.find((o) => o.sceneId === s)?.order || 0}
                 >
-                  <CardActionArea
-                    style={{ background: theme.palette.background.default }}
-                    onClick={() => handleActivateScene(s)}
-                  >
-                    <SceneImage
-                      iconName={scenes[s].scene_image || 'Wallpaper'}
-                    />
-                    <div style={{ position: 'absolute', top: 0, right: 0 }}>
-                      {scenes[s].scene_tags?.split(',').map(
-                        (t: string) =>
-                          t.length > 0 &&
-                          features.scenechips && (
-                            <Chip
-                              variant="filled"
-                              label={t}
-                              key={t}
-                              sx={{
-                                cursor: 'pointer',
-                                backgroundColor: theme.palette.background.paper,
-                                border: '1px solid',
-                                borderColor: theme.palette.text.disabled
-                              }}
-                            />
-                          )
-                      )}
-                    </div>
-                  </CardActionArea>
-                  <CardActions
-                    style={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      width: '100%'
+                  <Card
+                    className={classes.root}
+                    sx={{
+                      border: '1px solid',
+                      borderColor: theme.palette.divider
                     }}
                   >
-                    <Typography
-                      className={classes.sceneTitle}
-                      variant="h5"
-                      component="h2"
+                    <CardActionArea
+                      style={{ background: theme.palette.background.default }}
+                      onClick={() => handleActivateScene(s)}
                     >
-                      {scenes[s].name || s}
-                    </Typography>
-                    {!(
-                      window.localStorage.getItem('guestmode') === 'activated'
-                    ) && <ScenesMenu sceneId={s} />}
-                  </CardActions>
-                </Card>
-              </Grid>
-            )
-          })
+                      <SceneImage
+                        iconName={scenes[s].scene_image || 'Wallpaper'}
+                      />
+                      <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                        {scenes[s].scene_tags?.split(',').map(
+                          (t: string) =>
+                            t.length > 0 &&
+                            features.scenechips && (
+                              <Chip
+                                variant="filled"
+                                label={t}
+                                key={t}
+                                sx={{
+                                  cursor: 'pointer',
+                                  backgroundColor:
+                                    theme.palette.background.paper,
+                                  border: '1px solid',
+                                  borderColor: theme.palette.text.disabled
+                                }}
+                              />
+                            )
+                        )}
+                      </div>
+                    </CardActionArea>
+                    <CardActions
+                      style={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%'
+                      }}
+                    >
+                      <Typography
+                        className={classes.sceneTitle}
+                        variant="h5"
+                        component="h2"
+                      >
+                        {scenes[s].name || s}
+                      </Typography>
+                      {!(
+                        window.localStorage.getItem('guestmode') === 'activated'
+                      ) && <ScenesMenu sceneId={s} />}
+                    </CardActions>
+                  </Card>
+                </Grid>
+              )
+            })
         ) : (
           <NoYet type="Scene" />
         )}

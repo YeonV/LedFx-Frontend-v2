@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState, type JSX } from 'react';
+import { createContext, useEffect, useMemo, useState, type JSX } from 'react'
 
 import { SpotifyState } from '../../../store/ui/SpotifyState'
 import useStore from '../../../store/useStore'
@@ -136,7 +136,11 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     triggersNew.sort((a, b) => a.position_ms - b.position_ms)
     setCurrentTriggers(triggersNew)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spotifyState?.track_window?.current_track?.id,sceneTriggers.length,spState?.item?.id])
+  }, [
+    spotifyState?.track_window?.current_track?.id,
+    sceneTriggers.length,
+    spState?.item?.id
+  ])
 
   useEffect(() => {
     if (

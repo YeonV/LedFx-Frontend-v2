@@ -31,7 +31,9 @@ export const QLCScreenDefaultProps = {
 }
 
 export const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement<any> } = { children: <div>loading</div> },
+  props: TransitionProps & { children?: React.ReactElement<any> } = {
+    children: <div>loading</div>
+  },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...(props as any)} />

@@ -1,6 +1,6 @@
-import calculateImageDifference from "./calculateImageDifference"
-import createImageFromData from "./createImageFromData"
-import decodeBase64ToImageData from "./decodeBase64ToImageData"
+import calculateImageDifference from './calculateImageDifference'
+import createImageFromData from './createImageFromData'
+import decodeBase64ToImageData from './decodeBase64ToImageData'
 
 export async function processImages(
   img1b64: string,
@@ -30,7 +30,8 @@ export async function processImages(
     // console.log("BROOOOO", diffData.whitePixelsCenter)
     if (pointsRef) pointsRef.current = diffData.whitePixelsCenter
     const diffImageElement = document.getElementById('diffImage')
-    if (diffImageElement && diffImageElement instanceof HTMLImageElement) diffImageElement.src = diffImageBase64
+    if (diffImageElement && diffImageElement instanceof HTMLImageElement)
+      diffImageElement.src = diffImageBase64
   } catch (error) {
     console.error('Error processing images:', error)
   }

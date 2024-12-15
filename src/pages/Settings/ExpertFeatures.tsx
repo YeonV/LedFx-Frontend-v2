@@ -4,7 +4,6 @@ import useStore from '../../store/useStore'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 
 const ExpertFeatures = () => {
-  
   const sliderClasses = useSliderStyles()
 
   const setFeatures = useStore((state) => state.setFeatures)

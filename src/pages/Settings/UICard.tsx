@@ -10,10 +10,26 @@ const UICard = () => {
 
   return (
     <>
-      <SettingsRow title="Expert Mode" checked={viewMode !== 'user'} onChange={() => viewMode === 'user' ? setViewMode('expert') : setViewMode('user')}/>
-      <SettingsRow expert title="Beta Mode" checked={features.beta} onChange={() => setFeatures('beta', !features.beta)} />
+      <SettingsRow
+        title="Expert Mode"
+        checked={viewMode !== 'user'}
+        onChange={() =>
+          viewMode === 'user' ? setViewMode('expert') : setViewMode('user')
+        }
+      />
+      <SettingsRow
+        expert
+        title="Beta Mode"
+        checked={features.beta}
+        onChange={() => setFeatures('beta', !features.beta)}
+      />
       {showFeatures.alpha && (
-        <SettingsRow expert title="Alpha Mode" checked={features.alpha} onChange={() => setFeatures('alpha', !features.alpha)} />
+        <SettingsRow
+          expert
+          title="Alpha Mode"
+          checked={features.alpha}
+          onChange={() => setFeatures('alpha', !features.alpha)}
+        />
       )}
     </>
   )

@@ -1,4 +1,4 @@
-import { processImages } from "./processImages"
+import { processImages } from './processImages'
 
 async function adjust(
   capture: () => Promise<any>,

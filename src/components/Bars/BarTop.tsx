@@ -1,3 +1,4 @@
+/* eslint-disable @/indent */
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { compareVersions } from 'compare-versions'
@@ -89,7 +90,7 @@ const LeftButtons = (
         color="inherit"
         startIcon={<ChevronLeft />}
         onClick={() => history(-1)}
-        sx={{ mt: .9 }}
+        sx={{ mt: 0.9 }}
       >
         Back
       </Button>
@@ -135,12 +136,12 @@ const Title = (
 ) => {
   const t = window.localStorage.getItem('ledfx-theme')
   const newVerOnline =
-  latestTag.replace('v', '').includes('-b') && pkg.version.includes('-b')
+    latestTag.replace('v', '').includes('-b') && pkg.version.includes('-b')
       ? compareVersions(
-            latestTag.replace('v', '').split('-b')[1],
-            pkg.version.split('-b')[1]
+          latestTag.replace('v', '').split('-b')[1],
+          pkg.version.split('-b')[1]
         ) === 1
-      : compareVersions(latestTag.replace('v', ''), pkg.version) === 1;
+      : compareVersions(latestTag.replace('v', ''), pkg.version) === 1
   if (pathname === '/') {
     return (
       <Stack direction={'row'}>
@@ -149,15 +150,16 @@ const Title = (
             LedFx
           </Typography>
         </Tooltip>
-        {!process.env.MS_STORE && newVerOnline && frConfig.updateUrl && frConfig.releaseUrl ? (
+        {!process.env.MS_STORE &&
+        newVerOnline &&
+        frConfig.updateUrl &&
+        frConfig.releaseUrl ? (
           <Button
-            color={t && ['DarkWhite', 'LightBlack'].includes(t) ? "primary" : "error"}
-            variant="contained"
-            onClick={() =>
-              window.open(
-                frConfig.releaseUrl
-              )
+            color={
+              t && ['DarkWhite', 'LightBlack'].includes(t) ? 'primary' : 'error'
             }
+            variant="contained"
+            onClick={() => window.open(frConfig.releaseUrl)}
             sx={{ ml: 2 }}
           >
             New Update
@@ -175,7 +177,7 @@ const Title = (
             New Core Update
           </Button>
         ) : null}
-        </Stack>
+      </Stack>
     )
   }
   if (pathname.split('/').length === 3 && pathname.split('/')[1] === 'device') {
@@ -226,8 +228,10 @@ const TopBar = () => {
   const invScenes = useStore((state) => state.tours.scenes)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
-  const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
-  const { requestWakeLock, releaseWakeLock } = useWakeLock();
+  const updateNotificationInterval = useStore(
+    (state) => state.updateNotificationInterval
+  )
+  const { requestWakeLock, releaseWakeLock } = useWakeLock()
 
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
@@ -326,14 +330,14 @@ const TopBar = () => {
   useEffect(() => {
     if (frConfig.updateUrl) {
       const latest = async () => {
-        const res = await fetch(frConfig.updateUrl);
-        const resp = await res.json();
-        return resp.tag_name as string;
-      };
-      latest().then((r) => r !== latestTag && setLatestTag(r));
+        const res = await fetch(frConfig.updateUrl)
+        const resp = await res.json()
+        return resp.tag_name as string
+      }
+      latest().then((r) => r !== latestTag && setLatestTag(r))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frConfig]);
+  }, [frConfig])
 
   useEffect(() => {
     const handleDisconnect = (e: any) => {
@@ -365,7 +369,6 @@ const TopBar = () => {
   }, [])
 
   useEffect(() => {
-
     if (features.wakelock) {
       requestWakeLock()
     } else {
@@ -376,7 +379,7 @@ const TopBar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [features.wakelock])
-  
+
   const slug = pathname.split('/')[1]
 
   return (
@@ -423,7 +426,7 @@ const TopBar = () => {
             <div style={{ position: 'absolute', top: 0, left: 16 }}>
               {LeftButtons(pathname, history, open, handleLeftBarOpen)}
             </div>
-            
+
             <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
             </Typography>
@@ -594,10 +597,18 @@ const TopBar = () => {
                   <TourScenes cally={() => setAnchorEl(null)} />
                 ) : slug === 'Settings' ? (
                   <TourSettings cally={() => setAnchorEl(null)} />
-                ) : slug === 'Devices' ? ([
-                  <OrderListDialog key={'order'} mode='drawer' onOpen={() => setAnchorEl(null)} />,
-                  <TourDevices key={'device-tour'} cally={() => setAnchorEl(null)} />
-                ]
+                ) : slug === 'Devices' ? (
+                  [
+                    <OrderListDialog
+                      key={'order'}
+                      mode="drawer"
+                      onOpen={() => setAnchorEl(null)}
+                    />,
+                    <TourDevices
+                      key={'device-tour'}
+                      cally={() => setAnchorEl(null)}
+                    />
+                  ]
                 ) : slug === 'Integrations' ? (
                   <TourIntegrations cally={() => setAnchorEl(null)} />
                 ) : (
@@ -608,42 +619,56 @@ const TopBar = () => {
                 )}
                 {slug !== 'Settings' && [
                   <Divider key={'divider1'} />,
-                  <MenuItem key={'settings'} onClick={()=> {
-                    navigate(`/Settings?${slug === 'device' ? 'effects' : slug === 'Scenes' ? 'scenes' : slug === 'Devices' ? 'devices' : ''}`)                  
-                    setAnchorEl(null)}}>
+                  <MenuItem
+                    key={'settings'}
+                    onClick={() => {
+                      navigate(
+                        `/Settings?${slug === 'device' ? 'effects' : slug === 'Scenes' ? 'scenes' : slug === 'Devices' ? 'devices' : ''}`
+                      )
+                      setAnchorEl(null)
+                    }}
+                  >
                     <ListItemIcon>
                       <Settings />
                     </ListItemIcon>
                     Settings
                   </MenuItem>
                 ]}
-                {localStorage.getItem('username') === 'YeonV' && <Divider key={'divider2'} />}
-                {localStorage.getItem('username') === 'YeonV' && 
-                    <Select
-                    IconComponent={()=>null}
+                {localStorage.getItem('username') === 'YeonV' && (
+                  <Divider key={'divider2'} />
+                )}
+                {localStorage.getItem('username') === 'YeonV' && (
+                  <Select
+                    IconComponent={() => null}
                     fullWidth
-                    sx={{ pl: 2}}
-                      disableUnderline
-                      value={currentTheme} onChange={(e) => {
-                        setCurrentTheme(e.target.value)
-                        window.localStorage.setItem('ledfx-theme', e.target.value)
-                        reloadTheme()
-                      }}
-                    >
-                      {Object.keys(ledfxThemes).map((t) => (
-                        <MenuItem key={t} value={t}>
-                          <Stack direction={'row'}>
-                            <ListItemIcon sx={{ alignItems: 'center',  minWidth: 38}}>
-                              <BladeIcon name={t.startsWith('Dark') ? 'DarkMode' : 'LightMode'} />
-                            </ListItemIcon>
-                            <ListItemText>
+                    sx={{ pl: 2 }}
+                    disableUnderline
+                    value={currentTheme}
+                    onChange={(e) => {
+                      setCurrentTheme(e.target.value)
+                      window.localStorage.setItem('ledfx-theme', e.target.value)
+                      reloadTheme()
+                    }}
+                  >
+                    {Object.keys(ledfxThemes).map((t) => (
+                      <MenuItem key={t} value={t}>
+                        <Stack direction={'row'}>
+                          <ListItemIcon
+                            sx={{ alignItems: 'center', minWidth: 38 }}
+                          >
+                            <BladeIcon
+                              name={
+                                t.startsWith('Dark') ? 'DarkMode' : 'LightMode'
+                              }
+                            />
                             {t}
-                            </ListItemText>
-                          </Stack>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  }
+                          </ListItemIcon>
+                          <ListItemText>{t}</ListItemText>
+                        </Stack>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
               </Menu>
             )}
           </Toolbar>

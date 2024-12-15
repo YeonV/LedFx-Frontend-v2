@@ -70,10 +70,13 @@ const Popover = ({
   }, [open])
 
   return (
-    <div style={{ display: 'initial', margin: 0, ...wrapperStyle }} onClick={(e) => {
-      e.preventDefault()
-      e.stopPropagation()
-    }}>
+    <div
+      style={{ display: 'initial', margin: 0, ...wrapperStyle }}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+    >
       {type === 'menuItem' ? (
         <MenuItem
           className={className}
@@ -143,7 +146,7 @@ const Popover = ({
             bgcolor: 'transparent',
             '&:hover': {
               color: theme.palette.mode === 'light' ? '#fff' : '#000',
-              bgcolor: theme.palette.primary.main      
+              bgcolor: theme.palette.primary.main
             }
           }}
           startIcon={!noIcon && startIcon}

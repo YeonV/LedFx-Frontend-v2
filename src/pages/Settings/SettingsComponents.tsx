@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import { makeStyles, styled } from '@mui/styles'
 import {
   Accordion,
@@ -210,7 +208,7 @@ export const SettingsRow = ({
   const alphaMode = useStore((state) => state.features.alpha)
   const betaMode = useStore((state) => state.features.beta)
   const expertMode = useStore((state) => state.viewMode) === 'expert'
-  
+
   if (beta && !betaMode) return null
   if (alpha && !alphaMode) return null
   if (expert && !expertMode) return null
@@ -226,9 +224,9 @@ export const SettingsRow = ({
       }}
     >
       <label>{title}</label>
-      {alpha && <Chip label='alpha' />}
-      {beta && <Chip label='beta' />}
-      {expert && <Chip label='expert' />}
+      {alpha && <Chip label="alpha" />}
+      {beta && <Chip label="beta" />}
+      {expert && <Chip label="expert" />}
       <div
         style={{
           display: 'flex',

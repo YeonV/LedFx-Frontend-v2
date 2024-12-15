@@ -16,7 +16,7 @@ const BBoolean = ({
   value,
   title = '',
   description = '',
-  hideDesc = false,
+  hideDesc = false
 }: BBooleanProps) => {
   switch (type) {
     case 'switch':
@@ -43,10 +43,7 @@ const BBoolean = ({
       )
     case 'checkbox':
       return (
-        <BladeFrame
-          index={index}
-          title={title}
-        >
+        <BladeFrame index={index} title={title}>
           <Checkbox
             defaultValue={defaultValue || value}
             checked={value}

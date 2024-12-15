@@ -1,5 +1,5 @@
-import wait from "./wait"
-import wled from "./wled"
+import wait from './wait'
+import wled from './wled'
 
 async function initialize(capture: () => Promise<any>) {
   await wled({ seg: { on: false } })

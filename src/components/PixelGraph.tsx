@@ -22,16 +22,21 @@ const PixelGraph = ({
   db?: boolean
 }) => {
   const [pixels, setPixels] = useState<any>([])
-  const [shape, setShape] = useState<[null | number, null |number]>([null, null])
+  const [shape, setShape] = useState<[null | number, null | number]>([
+    null,
+    null
+  ])
 
   const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
-  const { pixelGraphs, virtuals, devices, graphs, config } = useStore((state) => ({
-    pixelGraphs: state.pixelGraphs,
-    virtuals: state.virtuals,
-    devices: state.devices,
-    graphs: state.graphs,
-    config: state.config
-  }))
+  const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
+    (state) => ({
+      pixelGraphs: state.pixelGraphs,
+      virtuals: state.virtuals,
+      devices: state.devices,
+      graphs: state.graphs,
+      config: state.config
+    })
+  )
 
   const rows = virtuals[virtId]?.is_device
     ? devices[virtuals[virtId]?.is_device]?.config?.rows ||
@@ -50,7 +55,8 @@ const PixelGraph = ({
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
         setPixels(e.detail.pixels)
-        if (e.detail.shape[0] !== shape[0] && e.detail.shape[1] !== shape[1]) setShape(e.detail.shape)
+        if (e.detail.shape[0] !== shape[0] && e.detail.shape[1] !== shape[1])
+          setShape(e.detail.shape)
       }
     }
     document.addEventListener('visualisation_update', handleWebsockets)
@@ -60,19 +66,26 @@ const PixelGraph = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals, pixelGraphs, virtId])
 
-  const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
+  const tooLessPixels = useStore(
+    (state) => state.dialogs.lessPixels?.open || false
+  )
 
   if (!(graphs || intGraphs)) {
     return null
   }
 
-  const totalPixels = decodedPixels.length > 0 ? decodedPixels.length : pixels[0]?.length
+  const totalPixels =
+    decodedPixels.length > 0 ? decodedPixels.length : pixels[0]?.length
   const realPixelCount = virtuals[virtId]?.pixel_count || totalPixels
   const realCols = Math.ceil(realPixelCount / rows)
   const aspectRatio = realCols / rows
   // console.log(shape)
-  const displayRows = (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
-  const displayCols = (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
+  const displayRows =
+    (shape && shape[0]) ||
+    (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
+  const displayCols =
+    (shape && shape[1]) ||
+    (realPixelCount > 4096 ? 4096 / displayRows : realCols)
 
   return dummy || (tooLessPixels && showWarning) ? (
     <div
@@ -129,7 +142,8 @@ const PixelGraph = ({
           }}
           className={`${className} ${active ? 'active' : ''}`}
         >
-          {(config.transmission_mode === 'compressed' && decodedPixels.length > 0
+          {(config.transmission_mode === 'compressed' &&
+          decodedPixels.length > 0
             ? decodedPixels.slice(row * displayCols, (row + 1) * displayCols)
             : pixels[0]?.slice(row * displayCols, (row + 1) * displayCols)
           ).map((_p: any, i: number) => (
@@ -138,7 +152,8 @@ const PixelGraph = ({
               style={{
                 flex: 1,
                 margin: `${db || (totalPixels > 100 && displayRows > 7) ? 1 : 2}px`,
-                borderRadius: db || (totalPixels > 100 && displayRows > 7) ? '50%' : '5px',
+                borderRadius:
+                  db || (totalPixels > 100 && displayRows > 7) ? '50%' : '5px',
                 position: 'relative',
                 overflow: 'hidden',
                 maxWidth: db ? 3.6 : `${100 / displayCols}%`,

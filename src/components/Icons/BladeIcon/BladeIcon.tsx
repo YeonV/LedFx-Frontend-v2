@@ -24,15 +24,29 @@ import { BladeIconProps } from './BladeIcon.interface'
 import HomeAssistantLogo from '../HomeAssistant'
 import NovationLogo from '../Novation'
 
-import type { JSX } from "react";
+import type { JSX } from 'react'
 
-const getStyle = (card: boolean, scene: boolean, intro: boolean, list: boolean) => ({
-  transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
+const getStyle = (
+  card: boolean,
+  scene: boolean,
+  intro: boolean,
+  list: boolean
+) => ({
+  transform: card
+    ? 'unset'
+    : scene
+      ? 'scale(1)'
+      : intro
+        ? 'scale(0.05)'
+        : 'scale(0.012)',
   marginTop: '3px',
   height: list ? '100%' : 'unset'
 })
 
-const renderIcon = (name: string, style: React.CSSProperties): JSX.Element | string => {
+const renderIcon = (
+  name: string,
+  style: React.CSSProperties
+): JSX.Element | string => {
   const components: { [key: string]: JSX.Element } = {
     'yz:logo2y': <YZLogo2Y style={style} />,
     'yz:logo2z': <YZLogo2Z style={style} />,
@@ -45,11 +59,11 @@ const renderIcon = (name: string, style: React.CSSProperties): JSX.Element | str
     'yz:logo3left': <YZLogo3Left style={style} />,
     'yz:logo3right': <YZLogo3Right style={style} />,
     'yz:logo3': <YZLogo3 style={style} />,
-    'wled': <Wled />,
+    wled: <Wled />,
     'razer:mouse': <RazerMouse />,
     'razer:logo': <RazerLogo />,
-    'homeAssistant': <HomeAssistantLogo />,
-    'launchpad': <NovationLogo />
+    homeAssistant: <HomeAssistantLogo />,
+    launchpad: <NovationLogo />
   }
 
   if (name.startsWith('<svg')) {
@@ -57,11 +71,23 @@ const renderIcon = (name: string, style: React.CSSProperties): JSX.Element | str
   }
 
   if (name.startsWith('https://')) {
-    return <img src={name.replaceAll('#000000', 'currentColor')} width={50} alt="icon" style={style} />
+    return (
+      <img
+        src={name.replaceAll('#000000', 'currentColor')}
+        width={50}
+        alt="icon"
+        style={style}
+      />
+    )
   }
 
   if (name.startsWith('mdi:')) {
-    return <span style={{ position: 'relative', display: 'flex' }} className={`mdi mdi-${name.split('mdi:')[1]}`} />
+    return (
+      <span
+        style={{ position: 'relative', display: 'flex' }}
+        className={`mdi mdi-${name.split('mdi:')[1]}`}
+      />
+    )
   }
 
   for (const prefix in components) {

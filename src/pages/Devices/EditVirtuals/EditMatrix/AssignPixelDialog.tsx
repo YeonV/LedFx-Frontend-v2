@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Button,
   Dialog,
@@ -78,8 +79,16 @@ const AssignPixelDialog = ({
           >
             {devices &&
               Object.keys(devices)
-                .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-                .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
+                .filter((v) =>
+                  showComplex
+                    ? v
+                    : !(
+                      v.endsWith('-mask') ||
+                        v.endsWith('-foreground') ||
+                        v.endsWith('-background')
+                    )
+                )
+                .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
                 .map((d: any, i: number) => (
                   <MenuItem value={devices[d].id} key={i}>
                     {devices[d].config.name}

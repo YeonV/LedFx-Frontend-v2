@@ -13,7 +13,7 @@ import {
   Save,
   Stop,
   SwapHoriz,
-  SwapVert,
+  SwapVert
 } from '@mui/icons-material'
 import {
   Alert,
@@ -35,14 +35,13 @@ import { Ledfx } from '../../../../api/ledfx'
 import Popover from '../../../../components/Popover/Popover'
 import { transpose } from '../../../../utils/helpers'
 import { MCell } from './M.utils'
-import { processArray } from './processMatrix'
+import { processArray, reverseProcessArray } from './processMatrix'
 import moveSelectedGroupUp from './Actions/moveSelectedGroupUp'
 import moveSelectedGroupLeft from './Actions/moveSelectedGroupLeft'
 import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
 import useStore from '../../../../store/useStore'
 import Webcam from '../../../../components/Webcam/Webcam'
-import { reverseProcessArray } from './processMatrix'
 
 const MControls = ({
   rowN,
@@ -99,24 +98,24 @@ const MControls = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dnd])
 
-    /**
+  /**
    * Update the pixel-graphs when the virtual changes
    */
-    useEffect(() => {
-      const handleWebsockets = (e: any) => {
-        if (e.detail.id === virtual.id) {
-          setPixels(e.detail.pixels)
-        }
+  useEffect(() => {
+    const handleWebsockets = (e: any) => {
+      if (e.detail.id === virtual.id) {
+        setPixels(e.detail.pixels)
       }
-      if (showPixelGraph && virtual.id) {
-        document.addEventListener('visualisation_update', handleWebsockets)
-      } else {
-        document.removeEventListener('visualisation_update', handleWebsockets)
-      }
-      return () => {
-        document.removeEventListener('visualisation_update', handleWebsockets)
-      } // eslint-disable-next-line react-hooks/exhaustive-deps      
-    }, [virtuals, pixelGraphs, showPixelGraph, virtual])
+    }
+    if (showPixelGraph && virtual.id) {
+      document.addEventListener('visualisation_update', handleWebsockets)
+    } else {
+      document.removeEventListener('visualisation_update', handleWebsockets)
+    }
+    return () => {
+      document.removeEventListener('visualisation_update', handleWebsockets)
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [virtuals, pixelGraphs, showPixelGraph, virtual])
 
   return (
     <Stack
@@ -131,13 +130,13 @@ const MControls = ({
           direction="column"
           justifyContent="flex-start"
           alignItems="flex-start"
-          sx={{ '& .MuiButton-root': { minWidth: 0 }}}
+          sx={{ '& .MuiButton-root': { minWidth: 0 } }}
         >
           <Stack
             direction="column"
             justifyContent="flex-start"
             alignItems="flex-start"
-            className='step-2d-virtual-three'
+            className="step-2d-virtual-three"
           >
             <Stack direction="row" width={400} justifyContent="space-between">
               <Typography width={100} variant="body1">
@@ -149,7 +148,8 @@ const MControls = ({
                   max={virtual2dLimit}
                   value={rowN}
                   onChange={(e, newRowNumber) =>
-                    typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
+                    typeof newRowNumber === 'number' &&
+                    setRowNumber(newRowNumber)
                   }
                 />
               </Box>
@@ -165,7 +165,8 @@ const MControls = ({
                   max={virtual2dLimit}
                   value={colN}
                   onChange={(e, newColNumber) =>
-                    typeof newColNumber === 'number' && setColNumber(newColNumber)
+                    typeof newColNumber === 'number' &&
+                    setColNumber(newColNumber)
                   }
                 />
               </Box>
@@ -177,7 +178,7 @@ const MControls = ({
             width={400}
             justifyContent="space-between"
             margin="1rem 0"
-            className='step-2d-virtual-four'
+            className="step-2d-virtual-four"
             spacing={1}
           >
             <Stack direction="row" justifyContent="flex-start" spacing={0.5}>
@@ -211,29 +212,37 @@ const MControls = ({
               </Tooltip>
             </Stack>
             <Stack direction="row" justifyContent="flex-start" spacing={0.5}>
-              <Tooltip title={`${showPixelGraph ? 'Hide' : 'Show'} Pixel Graph`} className='step-2d-virtual-two'>
+              <Tooltip
+                title={`${showPixelGraph ? 'Hide' : 'Show'} Pixel Graph`}
+                className="step-2d-virtual-two"
+              >
                 <Button
-                  // disabled={features.matrix_cam}            
+                  // disabled={features.matrix_cam}
                   onClick={() => {
                     setShowPixelGraph(!showPixelGraph)
                   }}
-                >{showPixelGraph ? <Stop /> : <PlayArrow />}
+                >
+                  {showPixelGraph ? <Stop /> : <PlayArrow />}
                 </Button>
               </Tooltip>
-              <Tooltip title={'Load / Reset'} >
-                <Button onClick={() => { setM(reverseProcessArray(virtual.segments, colN)) }}>
+              <Tooltip title={'Load / Reset'}>
+                <Button
+                  onClick={() => {
+                    setM(reverseProcessArray(virtual.segments, colN))
+                  }}
+                >
                   <Loop />
                 </Button>
               </Tooltip>
               <Tooltip title={'Clear'}>
                 <Box>
-                <Popover
-                  color="inherit"
-                  variant="outlined"
-                  onConfirm={() => {
-                    setM(Array(rowN).fill(Array(colN).fill(MCell)))
-                  }}
-                />
+                  <Popover
+                    color="inherit"
+                    variant="outlined"
+                    onConfirm={() => {
+                      setM(Array(rowN).fill(Array(colN).fill(MCell)))
+                    }}
+                  />
                 </Box>
               </Tooltip>
               <Tooltip title={'Save'}>
@@ -262,7 +271,14 @@ const MControls = ({
         </Stack>
 
         <TabContext value={tab}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '0 !important' }} className='step-2d-virtual-six'>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: 'divider',
+              marginTop: '0 !important'
+            }}
+            className="step-2d-virtual-six"
+          >
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab
                 icon={<PanTool />}
@@ -280,9 +296,13 @@ const MControls = ({
           </Box>
           <TabPanel value="1" sx={{ padding: 0 }}>
             <Collapse in={infoAlerts.camera}>
-              <Alert severity="info" sx={{ width: '100%' }} onClose={() => {
-              setInfoAlerts('camera', false)
-            }}>
+              <Alert
+                severity="info"
+                sx={{ width: '100%' }}
+                onClose={() => {
+                  setInfoAlerts('camera', false)
+                }}
+              >
                 <strong>DND-Canvas Mode</strong>
                 <ul style={{ padding: '0 1rem' }}>
                   <li>Use Mousewheel to Zoom</li>
@@ -300,8 +320,15 @@ const MControls = ({
             </Collapse>
           </TabPanel>
           <TabPanel value="2">
-            <Collapse in={infoAlerts.pixelMode} sx={{ marginTop: '0 !important' }}>
-              <Alert severity="info" sx={{ width: '100%' }} onClose={()=> setInfoAlerts('pixelMode', false)}>
+            <Collapse
+              in={infoAlerts.pixelMode}
+              sx={{ marginTop: '0 !important' }}
+            >
+              <Alert
+                severity="info"
+                sx={{ width: '100%' }}
+                onClose={() => setInfoAlerts('pixelMode', false)}
+              >
                 <strong>DND-Pixels Mode</strong>
                 <ul style={{ padding: '0 1rem' }}>
                   <li>move pixels individually with your mouse</li>
@@ -312,7 +339,7 @@ const MControls = ({
         </TabContext>
         {move ? (
           <Box>
-            <Box className='step-2d-virtual-five'>
+            <Box className="step-2d-virtual-five">
               <Tab
                 icon={<ControlCamera />}
                 iconPosition="start"
@@ -389,9 +416,13 @@ const MControls = ({
           </Box>
         ) : (
           <Collapse in={infoAlerts.matrixGroups}>
-            <Alert severity="info" sx={{ width: 400, marginTop: 2 }} onClose={() => {
-              setInfoAlerts('matrixGroups', false)
-            }}>
+            <Alert
+              severity="info"
+              sx={{ width: 400, marginTop: 2 }}
+              onClose={() => {
+                setInfoAlerts('matrixGroups', false)
+              }}
+            >
               <strong>
                 Right-Click an element to move a group.
                 <br />
@@ -401,14 +432,20 @@ const MControls = ({
           </Collapse>
         )}
       </Collapse>
-      {features.matrix_cam && <Button sx={{ alignItems: 'center', textTransform: 'none'}} onClick={()=> {
-        getDevices()
-        setCamMapper(!camMapper)}
-        }>
-        <EmergencyRecording sx={{ marginRight: 1}} />{camMapper ? 'Exit CameraMapper' : 'Map Pixels via Camera'}
-      </Button>}
+      {features.matrix_cam && (
+        <Button
+          sx={{ alignItems: 'center', textTransform: 'none' }}
+          onClick={() => {
+            getDevices()
+            setCamMapper(!camMapper)
+          }}
+        >
+          <EmergencyRecording sx={{ marginRight: 1 }} />
+          {camMapper ? 'Exit CameraMapper' : 'Map Pixels via Camera'}
+        </Button>
+      )}
       <Collapse in={camMapper}>
-       {camMapper && <Webcam rowN={rowN} colN={colN} />}
+        {camMapper && <Webcam rowN={rowN} colN={colN} />}
       </Collapse>
     </Stack>
   )

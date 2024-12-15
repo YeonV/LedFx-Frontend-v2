@@ -2,9 +2,8 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 
-
 export interface IVirtualOrder {
-  virtId: string,
+  virtId: string
   order: number
 }
 
@@ -202,9 +201,7 @@ const storeVirtuals = (set: any) => ({
       )
     }
   },
-  setEffectFallback: (
-    virtId: string
-  ) => {
+  setEffectFallback: (virtId: string) => {
     Ledfx(`/api/virtuals/${virtId}/fallback`)
   },
   removeEffectfromHistory: async (type: string, virtId: string) => {

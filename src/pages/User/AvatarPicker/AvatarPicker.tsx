@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useRef, useState } from 'react'
 import Cropper, { Area } from 'react-easy-crop'
 import { Delete, Edit, GitHub, Save, UploadFile } from '@mui/icons-material'
@@ -114,7 +115,7 @@ const AvatarPicker = ({
   }, [])
 
   const { getByID, update } =
-    newStorage === 'indexedDb' && !setAvatar // eslint-disable-next-line
+    newStorage === 'indexedDb' && !setAvatar
       ? useIndexedDBStore('avatars')
       : { getByID: null, update: null }
 

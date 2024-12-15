@@ -46,7 +46,7 @@ const GamepadSvg = ({
         <circle
           id="LeftStick"
           cx={113.04705882352941 + pad.axes[0] * 20}
-          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+          // eslint-disable-next-line no-loss-of-precision
           cy={160.04705882352942 + pad.axes[1] * 20}
           r="28"
           fill={

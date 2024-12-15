@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 
 import { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
@@ -28,7 +28,7 @@ const Graph = () => {
   useEffect(() => {
     const v = getV()
     if (v) setVirtual(v)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId])
 
   const effectType = virtual && virtual.effect.type

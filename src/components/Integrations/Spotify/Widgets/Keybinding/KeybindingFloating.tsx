@@ -9,7 +9,16 @@ const MpFloating = ({ children }: any) => {
 
   return (
     <Rnd
-      enableResizing={{ bottom: false, bottomLeft: false, bottomRight: false, left: false, right: false, top: false, topLeft: false, topRight: false }}
+      enableResizing={{
+        bottom: false,
+        bottomLeft: false,
+        bottomRight: false,
+        left: false,
+        right: false,
+        top: false,
+        topLeft: false,
+        topRight: false
+      }}
       size={{ width: 960, height: 'auto' }}
       position={{ x: keybindingX, y: keybindingY }}
       onDragStop={(e, d) => {

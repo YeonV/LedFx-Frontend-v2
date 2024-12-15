@@ -5,10 +5,12 @@ interface LinearProgressWithLabelProps {
    * The value of the progress indicator for the determinate and buffer variants.
    * Value between 0 and 100.
    */
-  value: number;
+  value: number
 }
 
-export default function LinearProgressWithLabel(props: LinearProgressWithLabelProps) {
+export default function LinearProgressWithLabel(
+  props: LinearProgressWithLabelProps
+) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>

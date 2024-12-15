@@ -18,7 +18,7 @@ import { useLocation } from 'react-router-dom'
 // import { inverseLogScale, logScale } from '../../utils/helpers'
 
 export default function FrontendPixelsTooSmall() {
-  const sliderClasses = useSliderStyles()  
+  const sliderClasses = useSliderStyles()
   const location = useLocation()
   const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
@@ -52,14 +52,26 @@ export default function FrontendPixelsTooSmall() {
         virtuals[a]?.pixel_count > virtuals[b]?.pixel_count ? a : b,
       0
     )
-    if (fPixels && (showMatrix || alphaMatrix) && tooBig.length > 0 && fPixels < 4096) {
+    if (
+      fPixels &&
+      (showMatrix || alphaMatrix) &&
+      tooBig.length > 0 &&
+      fPixels < 4096
+    ) {
       setBiggestDevice({ id: biggest, pixels: virtuals[biggest]?.pixel_count })
       setDialogOpenLessPixels(true)
     }
     if (fPixels && showMatrix && tooBig.length === 0) {
       setDialogOpenLessPixels(false)
     }
-  }, [showMatrix, fPixels, virtuals, setDialogOpenLessPixels, location, alphaMatrix])
+  }, [
+    showMatrix,
+    fPixels,
+    virtuals,
+    setDialogOpenLessPixels,
+    location,
+    alphaMatrix
+  ])
 
   useEffect(() => {
     getSystemConfig()
@@ -91,8 +103,16 @@ export default function FrontendPixelsTooSmall() {
           is configured to show only ${fPixels} pixels. Please increase the
           number of pixels`}
         </DialogContentText>
-        <SettingsRow title="Show too-less-pixels Warning" checked={showWarning} onChange={() => setShowWarning('lessPixels', !showWarning)}/>
-        <SettingsRow title="Show Matrix on Devices page (beta)" checked={showMatrix} onChange={() => toggleShowMatrix()} />
+        <SettingsRow
+          title="Show too-less-pixels Warning"
+          checked={showWarning}
+          onChange={() => setShowWarning('lessPixels', !showWarning)}
+        />
+        <SettingsRow
+          title="Show Matrix on Devices page (beta)"
+          checked={showMatrix}
+          onChange={() => toggleShowMatrix()}
+        />
         <SettingsRow title="Frontend Pixels" step="three">
           <Input
             disableUnderline

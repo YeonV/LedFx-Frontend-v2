@@ -21,10 +21,7 @@ import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import SliderInput from '../SchemaForm/components/Number/SliderInput'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-const OneEffect = ({
-  setPayload,
-  noButton,
-}: any) => {
+const OneEffect = ({ setPayload, noButton }: any) => {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const [virtId, setVirtId] = useState('')
@@ -48,7 +45,7 @@ const OneEffect = ({
     setDialogOpen(false)
   }
   const handleSave = () => {
-    setPayload({  })
+    setPayload({})
     setDialogOpen(false)
   }
   // const handleTest = (virtId: string, type: string, config: EffectConfig, active: boolean, fallback: boolean | number) => {
@@ -66,17 +63,22 @@ const OneEffect = ({
 
   return (
     <>
-      {!noButton && <Button variant="text" onClick={() => setDialogOpen(true)}>
-        <Edit />
-      </Button>}
+      {!noButton && (
+        <Button variant="text" onClick={() => setDialogOpen(true)}>
+          <Edit />
+        </Button>
+      )}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
         <DialogTitle alignItems="center" display="flex">
-          <BladeIcon name="LensBlur" style={{ marginRight: 16 }} />One Effect
+          <BladeIcon name="LensBlur" style={{ marginRight: 16 }} />
+          One Effect
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
             <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>Virtual ID</Typography>
+              <Typography flexShrink={0} flexBasis={'150px'}>
+                Virtual ID
+              </Typography>
               <Select
                 fullWidth
                 value={virtId}
@@ -93,7 +95,9 @@ const OneEffect = ({
               </Select>
             </Stack>
             <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>Type</Typography>
+              <Typography flexShrink={0} flexBasis={'150px'}>
+                Type
+              </Typography>
               <Select
                 fullWidth
                 value={type}
@@ -111,7 +115,9 @@ const OneEffect = ({
               </Select>
             </Stack>
             <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>Preset</Typography>
+              <Typography flexShrink={0} flexBasis={'150px'}>
+                Preset
+              </Typography>
               <Select
                 fullWidth
                 value={typeof config === 'string' ? config : ''}
@@ -130,14 +136,16 @@ const OneEffect = ({
             </Stack>
 
             <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>Active</Typography>
+              <Typography flexShrink={0} flexBasis={'150px'}>
+                Active
+              </Typography>
               <ToggleButtonGroup
                 fullWidth
-                size='small'
+                size="small"
                 color="primary"
                 value={active}
                 exclusive
-                onChange={(e,v) => setActive(v)}
+                onChange={(e, v) => setActive(v)}
                 aria-label="Platform"
               >
                 <ToggleButton value={true}>True</ToggleButton>
@@ -145,50 +153,62 @@ const OneEffect = ({
               </ToggleButtonGroup>
             </Stack>
             <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>Fallback Type</Typography>
+              <Typography flexShrink={0} flexBasis={'150px'}>
+                Fallback Type
+              </Typography>
               <ToggleButtonGroup
                 fullWidth
-                size='small'
+                size="small"
                 color="primary"
                 value={fallbackUseNumber}
                 exclusive
-                onChange={(e,v) => setFallbackUseNumber(v)}
+                onChange={(e, v) => setFallbackUseNumber(v)}
                 aria-label="Platform"
               >
                 <ToggleButton value={true}>Number</ToggleButton>
                 <ToggleButton value={false}>Boolean</ToggleButton>
               </ToggleButtonGroup>
             </Stack>
-            {fallbackUseNumber 
-              ? <SliderInput title="Fallback" titleWidth={180} value={fallbackNumber} setValue={setFallbackNumber} />
-              : <Stack direction="row" spacing={2} alignItems={'center'}>
-                  <Typography flexShrink={0} flexBasis={'150px'}>Fallback</Typography>
-                  <ToggleButtonGroup
-                    fullWidth
-                    size='small'
-                    color="primary"
-                    value={fallbackBool}
-                    exclusive
-                    onChange={(e,v) => setFallbackBool(v)}
-                    aria-label="Platform"
-                  >
-                    <ToggleButton value={true}>true</ToggleButton>
-                    <ToggleButton value={false}>false</ToggleButton>
-                  </ToggleButtonGroup>
-                </Stack>}
+            {fallbackUseNumber ? (
+              <SliderInput
+                title="Fallback"
+                titleWidth={180}
+                value={fallbackNumber}
+                setValue={setFallbackNumber}
+              />
+            ) : (
+              <Stack direction="row" spacing={2} alignItems={'center'}>
+                <Typography flexShrink={0} flexBasis={'150px'}>
+                  Fallback
+                </Typography>
+                <ToggleButtonGroup
+                  fullWidth
+                  size="small"
+                  color="primary"
+                  value={fallbackBool}
+                  exclusive
+                  onChange={(e, v) => setFallbackBool(v)}
+                  aria-label="Platform"
+                >
+                  <ToggleButton value={true}>true</ToggleButton>
+                  <ToggleButton value={false}>false</ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
+            )}
           </Stack>
-          <Accordion 
-            disableGutters 
+          <Accordion
+            disableGutters
             elevation={0}
             sx={{
               marginTop: '1rem',
               '& .MuiAccordionSummary-root': {
-                padding: 0,
+                padding: 0
               },
               '&:before': {
-                  display: 'none',
+                display: 'none'
               }
-            }}>
+            }}
+          >
             <AccordionSummary
               expandIcon={<ExpandMore />}
               aria-controls="panel1-content"
@@ -197,42 +217,52 @@ const OneEffect = ({
               Output JSON
             </AccordionSummary>
             <AccordionDetails>
-            <code
+              <code
                 style={{
                   display: 'block',
                   margin: '1rem 0',
                   padding: '1rem',
                   background: '#333',
                   color: '#ffffff',
-                  overflowX: 'auto',
+                  overflowX: 'auto'
                 }}
-              ><pre>
-                {`{
+              >
+                <pre>
+                  {`{
   "virtId": "${virtId}",
   "type": "${type}",
   "config": ${typeof config === 'string' ? JSON.stringify(JSON.parse(config), null, 4) : JSON.stringify(config, null, 4)},
   "active": ${active},
-  "fallback": ${(fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool)}
+  "fallback": ${fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool}
 }`}
-              </pre></code>
+                </pre>
+              </code>
             </AccordionDetails>
           </Accordion>
-          
+
           <DialogActions>
-            <Button 
+            <Button
               // onClick={() => handleTest()}
-              onMouseDownCapture={(e) => {
+              onMouseDownCapture={() => {
                 // console.log('onMouseDownCapture', e)
-                setEffect(virtId, type, JSON.parse(config), active, fallbackUseNumber ? fallbackNumber : fallbackBool)
+                setEffect(
+                  virtId,
+                  type,
+                  JSON.parse(config),
+                  active,
+                  fallbackUseNumber ? fallbackNumber : fallbackBool
+                )
               }}
-              onMouseUpCapture={(e) => {
+              onMouseUpCapture={() => {
                 // console.log('onMouseUp', e)
                 setEffectFallback(virtId)
               }}
             >
               test
             </Button>
-            <Button onClick={handleClose}>{noButton ? 'Close' : 'Cancel'}</Button>
+            <Button onClick={handleClose}>
+              {noButton ? 'Close' : 'Cancel'}
+            </Button>
             {!noButton && <Button onClick={handleSave}>Save</Button>}
           </DialogActions>
         </DialogContent>

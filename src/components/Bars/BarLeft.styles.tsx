@@ -36,7 +36,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: '55px',
+    minHeight: '55px'
   },
   logo: {
     position: 'relative',

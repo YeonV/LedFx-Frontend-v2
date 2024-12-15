@@ -38,9 +38,9 @@ const Root = styled('div')(({ theme }) => ({
 }))
 
 interface ConfirmationDialogRawProps {
-  onClose(...args: unknown[]): unknown;
-  open: boolean;
-  value: string;
+  onClose(..._args: unknown[]): unknown
+  open: boolean
+  value: string
 }
 
 function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
@@ -86,7 +86,6 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       setValue(valueProp)
     }
   }, [valueProp, open])
-
 
   const handleCancel = () => {
     onClose()
@@ -305,7 +304,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
     <Dialog
       onClose={(event, reason) => {
         if (reason !== 'backdropClick') {
-          handleCancel();
+          handleCancel()
         }
       }}
       disableEscapeKeyDown

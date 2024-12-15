@@ -11,7 +11,8 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const virtuals = useStore((state) => state.virtuals)
 
   const title =
-    devices && virtuals &&
+    devices &&
+    virtuals &&
     virtuals[devices && Object.keys(devices).find((d) => d === s[0])!].config!
       .name
   const classes = useSegmentStyles()
@@ -88,7 +89,6 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
       }
     })
   }
-
 
   return (
     <div

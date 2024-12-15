@@ -1,4 +1,4 @@
-import wled from "./wled"
+import wled from './wled'
 
 async function preadjust() {
   await wled({ on: true })

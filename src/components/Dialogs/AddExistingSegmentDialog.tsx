@@ -1,3 +1,4 @@
+/* eslint-disable @/indent */
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import {
@@ -34,14 +35,14 @@ const Root = styled('div')(({ theme }) => ({
 }))
 
 interface ConfirmationDialogRawProps {
-  onClose(...args: unknown[]): unknown;
-  open: boolean;
-  value: string;
-  config?: any;
-  classes?: any;
-  id?: string;
-  keepMounted?: boolean;
-  deviceList?: any;
+  onClose(..._args: unknown[]): unknown
+  open: boolean
+  value: string
+  config?: any
+  classes?: any
+  id?: string
+  keepMounted?: boolean
+  deviceList?: any
 }
 
 function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
@@ -64,14 +65,22 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   }
 
   const virtualKeys = Object.keys(virtuals)
-    .filter(v => showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-    .filter(v => showGaps ? v : !(v.startsWith('gap-')))
-    .filter(v => virtuals[v].segments.length === 1)
+    .filter((v) =>
+      showComplex
+        ? v
+        : !(
+            v.endsWith('-mask') ||
+            v.endsWith('-foreground') ||
+            v.endsWith('-background')
+          )
+    )
+    .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+    .filter((v) => virtuals[v].segments.length === 1)
 
   const segments = virtualKeys.reduce((acc: any, v) => {
-    acc[virtuals[v].config.name] = virtuals[v].segments.flat();
-    return acc;
-  }, {});
+    acc[virtuals[v].config.name] = virtuals[v].segments.flat()
+    return acc
+  }, {})
 
   // console.log(segments)
   return (
@@ -90,17 +99,19 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
             style={{ width: '100%' }}
             onChange={handleChange}
           >
-            {Object.keys(segments)
-              .map((v) => { 
-                const k = virtualKeys.find(vi => virtuals[vi].config.name === v)
-                return (
-                <MenuItem
-                  value={JSON.stringify({[v]: segments[v]})}
-                  key={v}
-                >
-                  {k && virtuals[k].is_device ? '' : <SubdirectoryArrowRight color='disabled' sx={{ mr: 1 }} />}{v}
+            {Object.keys(segments).map((v) => {
+              const k = virtualKeys.find((vi) => virtuals[vi].config.name === v)
+              return (
+                <MenuItem value={JSON.stringify({ [v]: segments[v] })} key={v}>
+                  {k && virtuals[k].is_device ? (
+                    ''
+                  ) : (
+                    <SubdirectoryArrowRight color="disabled" sx={{ mr: 1 }} />
+                  )}
+                  {v}
                 </MenuItem>
-              )})}
+              )
+            })}
           </Select>
         </BladeFrame>
       </DialogContent>
@@ -140,49 +151,55 @@ function AddExistingSegmentDialog({
     if (!newValue) {
       return
     }
-    const [name, segments] = Object.entries(JSON.parse(newValue))[0] as [string, [string, number, number, boolean]]
+    const [name, segments] = Object.entries(JSON.parse(newValue))[0] as [
+      string,
+      [string, number, number, boolean]
+    ]
     // console.log(name)
     // console.log(segments)
     if (name && segments) {
-      const deviceKey = Object.keys(deviceList).find((d) => deviceList[d].id === segments[0])
+      const deviceKey = Object.keys(deviceList).find(
+        (d) => deviceList[d].id === segments[0]
+      )
       const device = deviceKey ? deviceList[deviceKey] : undefined
       // console.log(device)
-        const temp = [
-          ...virtual.segments,
-          segments
-        ]
-        const test = temp.filter((t) => t.length === 4)
+      const temp = [...virtual.segments, segments]
+      const test = temp.filter((t) => t.length === 4)
 
-        updateSegments(virtual.id, test).then(() => {
-          getVirtuals()
-          if (device && virtual.active === false && virtual.segments.length === 0) {
-            if (
-              device.active_virtuals &&
-              device.active_virtuals[0] &&
-              virtuals &&
-              virtuals[device.active_virtuals[0]] &&
-              virtuals[device.active_virtuals[0]].effect
-            ) {
-              setEffect(
-                virtual.id,
-                virtuals[device.active_virtuals[0]].effect.type,
-                virtuals[device.active_virtuals[0]].effect.config,
-                true
-              )
-            } else {
-              setEffect(virtual.id, 'rainbow', {}, true)
-            }
-          }
-          if (device) {
-            highlightSegment(
+      updateSegments(virtual.id, test).then(() => {
+        getVirtuals()
+        if (
+          device &&
+          virtual.active === false &&
+          virtual.segments.length === 0
+        ) {
+          if (
+            device.active_virtuals &&
+            device.active_virtuals[0] &&
+            virtuals &&
+            virtuals[device.active_virtuals[0]] &&
+            virtuals[device.active_virtuals[0]].effect
+          ) {
+            setEffect(
               virtual.id,
-              device.id,
-              segments[1],
-              segments[2],
-              false
+              virtuals[device.active_virtuals[0]].effect.type,
+              virtuals[device.active_virtuals[0]].effect.config,
+              true
             )
+          } else {
+            setEffect(virtual.id, 'rainbow', {}, true)
           }
-        })
+        }
+        if (device) {
+          highlightSegment(
+            virtual.id,
+            device.id,
+            segments[1],
+            segments[2],
+            false
+          )
+        }
+      })
     }
   }
 
