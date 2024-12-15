@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useEffect, useRef, useState, FC } from 'react'
 import { Box, Stack, useTheme } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'

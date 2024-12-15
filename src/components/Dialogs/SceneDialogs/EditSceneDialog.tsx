@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   AppBar,

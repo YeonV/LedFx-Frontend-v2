@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { transpose } from '../matrixUtils'
 import wait from './wait'
 import wled from './wled'

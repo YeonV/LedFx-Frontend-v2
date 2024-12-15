@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useDraggable } from '@dnd-kit/core'
 
 function Draggable({ children, id, ...props }: any) {

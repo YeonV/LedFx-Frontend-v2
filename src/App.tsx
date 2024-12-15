@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useEffect, useMemo } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
@@ -64,7 +63,7 @@ export default function App() {
     initFrontendConfig()
 
     console.info(
-      '%c Ledfx ' + '%c\n ReactApp by Blade ',
+      '%c Ledfx %c\n ReactApp by Blade ',
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
     )

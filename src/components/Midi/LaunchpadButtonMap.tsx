@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @/indent */
 import {
   ArrowForwardIos,
   BrightnessHigh,
@@ -394,7 +392,6 @@ const LaunchpadButtonMap = ({
   useEffect(() => {
     if (midiEvent.button === -1) return
     setMidiLogs((prev) => [...prev, midiEvent])
-     
   }, [midiEvent])
 
   useEffect(() => {
@@ -428,19 +425,19 @@ const LaunchpadButtonMap = ({
           {integrations.spotify?.active &&
             spAuthenticated &&
             'text' in lp.fn && (
-            <Tooltip title="Automagically show artist & title on spotify song change">
-              <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}>
-                <BladeIcon
-                  name="mdi:spotify"
-                  sx={{
-                    color: sendSpotifyTrack
-                      ? theme.palette.primary.main
-                      : 'GrayText'
-                  }}
-                />
-              </Button>
-            </Tooltip>
-          )}
+              <Tooltip title="Automagically show artist & title on spotify song change">
+                <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}>
+                  <BladeIcon
+                    name="mdi:spotify"
+                    sx={{
+                      color: sendSpotifyTrack
+                        ? theme.palette.primary.main
+                        : 'GrayText'
+                    }}
+                  />
+                </Button>
+              </Tooltip>
+            )}
           <Button onClick={() => initMidi()}>
             <Autorenew />
           </Button>
@@ -659,11 +656,11 @@ const LaunchpadButtonMap = ({
         sx={
           fullScreen
             ? {
-              display: 'flex',
-              alignItems: 'center',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'center',
-              height: 'calc(100% - 40px)'
-            }
+                height: 'calc(100% - 40px)'
+              }
             : {}
         }
       >

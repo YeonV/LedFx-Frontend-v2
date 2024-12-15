@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { compareVersions } from 'compare-versions'

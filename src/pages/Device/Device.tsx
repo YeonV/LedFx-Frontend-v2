@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @/indent */
 import { useEffect } from 'react'
 import { Grid, Stack, Typography } from '@mui/material'
 import { Link, useNavigate, useParams } from 'react-router-dom'

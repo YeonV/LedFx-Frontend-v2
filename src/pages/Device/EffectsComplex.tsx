@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @/indent */
+
 import { useEffect, useState } from 'react'
 import {
   Card,
@@ -96,7 +95,6 @@ const EffectsComplex = ({
   useEffect(() => {
     const v = getV()
     if (v) setVirtual(v)
-     
   }, [JSON.stringify(virtuals[virtId])])
 
   const effectType = virtual && virtual.effect.type
@@ -135,7 +133,6 @@ const EffectsComplex = ({
           setEffect(virtId, type, (config as any).config, true)
       })
     }
-     
   }, [effectType])
 
   useEffect(() => {
@@ -147,7 +144,6 @@ const EffectsComplex = ({
     ) {
       setTheModel(virtual?.effect.config)
     }
-     
   }, [
     virtuals,
     virtuals[virtId],
@@ -166,10 +162,10 @@ const EffectsComplex = ({
           sx={
             fade
               ? {
-                opacity: 0.2,
-                transition: 'opacity',
-                transitionDuration: '1000'
-              }
+                  opacity: 0.2,
+                  transition: 'opacity',
+                  transitionDuration: '1000'
+                }
               : { opacity: 1, transitionDuration: '0' }
           }
           style={{

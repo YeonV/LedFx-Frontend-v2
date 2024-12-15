@@ -21,23 +21,6 @@ const config: StorybookConfig = {
     name: '@storybook/react-webpack5',
     options: {}
   },
-  staticDirs: ['../public'],
-  webpackFinal: (config) => {
-    return {
-      ...config,
-      module: {
-        rules: config.module?.rules?.filter((rule) => {
-          console.log(rule)
-          return true
-          // if (!rule?.use) return true
-          // return !rule.use.find(
-          //   (useItem) =>
-          //     typeof useItem.loader === 'string' &&
-          //     useItem.loader.includes('eslint-loader')
-          // )
-        })
-      }
-    }
-  }
+  staticDirs: ['../public']
 }
 export default config
