@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-/* eslint-disable prettier/prettier */
 import { Slider, Stack } from '@mui/material'
 import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
 import Number from '../../../../components/Number'
@@ -44,9 +42,17 @@ const MSlider = ({
           value={selectedPixel}
           onChange={handleSliderChange}
         />
-        {typeof selectedPixel === 'number'
-            ? <Number min={0} max={devices[currentDevice].config.pixel_count - 1} value={selectedPixel} onChange={(e: any) => handleSliderChange(e, parseInt(e.target.value))} />
-            : <Stack direction={'row'} spacing={2}>
+        {typeof selectedPixel === 'number' ? (
+          <Number
+            min={0}
+            max={devices[currentDevice].config.pixel_count - 1}
+            value={selectedPixel}
+            onChange={(e: any) =>
+              handleSliderChange(e, parseInt(e.target.value))
+            }
+          />
+        ) : (
+          <Stack direction={'row'} spacing={2}>
             <Number
               min={0}
               max={devices[currentDevice].config.pixel_count - 1}
@@ -72,7 +78,7 @@ const MSlider = ({
               }
             />
           </Stack>
-        }
+        )}
       </Stack>
     </BladeFrame>
   )

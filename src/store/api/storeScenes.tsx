@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'

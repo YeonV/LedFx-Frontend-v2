@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import useStore from '../../store/useStore'
@@ -177,8 +176,8 @@ const LaunchpadColors = ({
                     isRgb && midiCommandColor.startsWith('rgb')
                       ? midiCommandColor
                       : getColorFromValue(
-                        midiCommandColor || lp.globalColors.commandColor
-                      )
+                          midiCommandColor || lp.globalColors.commandColor
+                        )
                   }
                   onColorSelect={(color: string) => {
                     setMidiCommandColor(color)

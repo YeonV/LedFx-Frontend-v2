@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @/indent */
 
 import { useEffect, useState } from 'react'
 import {

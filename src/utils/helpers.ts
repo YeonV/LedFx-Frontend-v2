@@ -2,7 +2,6 @@
 
 import { IMCell } from '../pages/Devices/EditVirtuals/EditMatrix/M.utils'
 
-/* eslint-disable @/indent */
 export const drawerWidth = 240
 export const frontendConfig = 14
 

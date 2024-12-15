@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-
 import {
   Button,
   Fab,

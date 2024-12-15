@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useState, forwardRef, useEffect, type JSX } from 'react'
 import {
   Button,

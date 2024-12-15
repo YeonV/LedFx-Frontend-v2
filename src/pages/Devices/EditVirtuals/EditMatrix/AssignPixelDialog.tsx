@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Button,
   Dialog,
@@ -83,10 +82,10 @@ const AssignPixelDialog = ({
                   showComplex
                     ? v
                     : !(
-                      v.endsWith('-mask') ||
+                        v.endsWith('-mask') ||
                         v.endsWith('-foreground') ||
                         v.endsWith('-background')
-                    )
+                      )
                 )
                 .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
                 .map((d: any, i: number) => (

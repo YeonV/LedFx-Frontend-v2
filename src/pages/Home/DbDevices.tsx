@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-/* eslint-disable prettier/prettier */
 import { useTheme, Stack, Chip, IconButton, Typography } from '@mui/material'
 import {
   DataGrid,
@@ -328,15 +326,18 @@ const DbDevices = () => {
           Actions
         </Stack>
       ),
-      width: 400,  
-      renderCell: (params: GridRenderCellParams) =>  
-        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online   
-          ? (virtuals[params.row.id]?.effect.name   
-            ? (<DeviceActions virtId={params.row.id} effect />)   
-            : (<DeviceActions virtId={params.row.id} />))   
-          : virtuals[params.row.id]?.effect.name   
-            ? (<DeviceActions virtId={params.row.id} effect />) 
-         : params.row.is_device ? (
+      width: 400,
+      renderCell: (params: GridRenderCellParams) =>
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']
+          ?.online ? (
+          virtuals[params.row.id]?.effect.name ? (
+            <DeviceActions virtId={params.row.id} effect />
+          ) : (
+            <DeviceActions virtId={params.row.id} />
+          )
+        ) : virtuals[params.row.id]?.effect.name ? (
+          <DeviceActions virtId={params.row.id} effect />
+        ) : params.row.is_device ? (
           <ReconnectButton onClick={() => activateDevice(params.row.id)} />
         ) : null
     }
@@ -350,10 +351,10 @@ const DbDevices = () => {
           showComplex
             ? v
             : !(
-              v.endsWith('-mask') ||
+                v.endsWith('-mask') ||
                 v.endsWith('-foreground') ||
                 v.endsWith('-background')
-            )
+              )
         )
         .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
         .find((key) => virtuals[key].id === v.id)

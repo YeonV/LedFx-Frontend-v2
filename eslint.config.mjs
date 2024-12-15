@@ -96,7 +96,7 @@ export default [
       'no-nested-ternary': 0,
       'import/extensions': 0,
       'import/first': 0,
-      '@/indent': [2, 2, { SwitchCase: 0 }],
+      '@/indent': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/function-component-definition': [0],
       'react/jsx-props-no-spreading': 0,

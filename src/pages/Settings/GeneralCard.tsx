@@ -1,5 +1,4 @@
 /* eslint-disable no-self-assign */
-/* eslint-disable @/indent */
 import {
   CloudUpload,
   CloudDownload,

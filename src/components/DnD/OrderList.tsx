@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { FC } from 'react'
 import useStore from '../../store/useStore'
 import OrderListBase, { Order } from './OrderListBase'

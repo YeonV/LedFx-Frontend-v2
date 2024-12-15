@@ -1,4 +1,3 @@
-/* eslint-disable @/indent */
 import { useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import { Alert, Collapse } from '@mui/material'

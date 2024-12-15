@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-
 import { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { useParams } from 'react-router-dom'

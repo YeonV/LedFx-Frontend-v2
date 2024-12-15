@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'

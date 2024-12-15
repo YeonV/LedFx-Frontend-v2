@@ -1,5 +1,3 @@
-/* eslint-disable @/indent */
-
 import { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import {

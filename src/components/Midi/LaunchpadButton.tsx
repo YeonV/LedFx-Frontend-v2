@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import Button from '@mui/material/Button'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
@@ -297,9 +296,9 @@ const LaunchpadButton = ({
                           ? currentMapping.colorSceneInactive ||
                             midiSceneInactiveColor
                           : getColorFromValue(
-                            currentMapping.colorSceneInactive ||
+                              currentMapping.colorSceneInactive ||
                                 midiSceneInactiveColor
-                          )
+                            )
                       }
                       onColorSelect={(color) =>
                         handleColorSelect('colorSceneInactive', color)
@@ -344,9 +343,9 @@ const LaunchpadButton = ({
                           ? currentMapping.colorSceneActive ||
                             midiSceneActiveColor
                           : getColorFromValue(
-                            currentMapping.colorSceneActive ||
+                              currentMapping.colorSceneActive ||
                                 midiSceneActiveColor
-                          )
+                            )
                       }
                       onColorSelect={(color) =>
                         handleColorSelect('colorSceneActive', color)
@@ -379,8 +378,8 @@ const LaunchpadButton = ({
                     ).startsWith('rgb')
                       ? currentMapping.colorCommand || midiCommandColor
                       : getColorFromValue(
-                        currentMapping.colorCommand || midiCommandColor
-                      )
+                          currentMapping.colorCommand || midiCommandColor
+                        )
                   }
                   onColorSelect={(color) =>
                     handleColorSelect('colorCommand', color)
