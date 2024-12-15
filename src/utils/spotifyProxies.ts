@@ -388,7 +388,7 @@ export async function spotifyPlaySong(
     return 'Error'
   } catch (error) {
     console.log(error)
-    const { showSnackbar } = useStore.getState().ui
+    const showSnackbar = useStore.getState().ui.showSnackbar
     showSnackbar('error', 'Song is not available')
     return 'Error'
   }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import useStore from '../store/useStore'
+import { useShallow } from 'zustand/shallow'
 import hexColor from '../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
 
 const PixelGraph = ({
@@ -29,13 +30,13 @@ const PixelGraph = ({
 
   const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
-    (state) => ({
+    useShallow((state) => ({
       pixelGraphs: state.pixelGraphs,
       virtuals: state.virtuals,
       devices: state.devices,
       graphs: state.graphs,
       config: state.config
-    })
+    }))
   )
 
   const rows = virtuals[virtId]?.is_device
