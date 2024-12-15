@@ -61,7 +61,7 @@ const EditSceneDialog = () => {
   const setMidiMapping = useStore((state) => state.setMidiMapping)
   const initMidi = useStore((state) => state.initMidi)
 
-  const { effects } = useStore((state) => state.schemas)
+  const effects = useStore((state) => state.schemas.effects)
   const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.edit || false)
   const data = useStore((state: any) => state.dialogs.addScene?.editData)
