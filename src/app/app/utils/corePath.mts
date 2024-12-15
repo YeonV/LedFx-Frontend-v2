@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename)
 const corePath = (file: string) =>
   path.join(
     path.dirname(__dirname),
-    isDev ? '../extraResources' : '../../extraResources',
+    isDev ? '../../extraResources' : '../../../extraResources',
     file
   )
 

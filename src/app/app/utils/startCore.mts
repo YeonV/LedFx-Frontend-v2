@@ -12,7 +12,7 @@ function startCore(
   wind: BrowserWindow,
   platform: 'darwin' | 'linux' | 'win32',
   instance = 'instance1',
-  port = '8889'
+  port = '8888'
 ) {
   let subpy: ChildProcessWithoutNullStreams | null = null
 

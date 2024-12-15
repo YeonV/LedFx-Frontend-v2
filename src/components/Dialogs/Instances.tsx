@@ -222,7 +222,7 @@ const Instances = ({
                 }
                 aria-label="delete"
                 onClick={(e) => {
-                  handleStartCore(e, newPort || parseInt(port, 10) || 8889)
+                  handleStartCore(e, newPort || parseInt(port, 10) || 8888)
                 }}
               >
                 <PlayArrow />
@@ -242,7 +242,7 @@ const Instances = ({
                 }
                 aria-label="stop"
                 onClick={(e) => {
-                  handleStopCore(e, newPort || parseInt(port, 10) || 8889)
+                  handleStopCore(e, newPort || parseInt(port, 10) || 8888)
                 }}
               >
                 <Stop />
@@ -313,7 +313,7 @@ const Instances = ({
                   handleDelete(
                     e,
                     parseInt(`${port}` || portRef.current?.value || '', 10) ||
-                      8889
+                      8888
                   )
                 }
               />
@@ -337,7 +337,7 @@ const Instances = ({
                 size="small"
                 aria-label="delete"
                 onClick={(e) => {
-                  handleStartCore(e, newPort || parseInt(port, 10) || 8889)
+                  handleStartCore(e, newPort || parseInt(port, 10) || 8888)
                 }}
               >
                 <PlayArrow />
@@ -347,7 +347,7 @@ const Instances = ({
                 size="small"
                 aria-label="stop"
                 onClick={(e) => {
-                  handleStopCore(e, newPort || parseInt(port, 10) || 8889)
+                  handleStopCore(e, newPort || parseInt(port, 10) || 8888)
                 }}
               >
                 <Stop />
@@ -434,7 +434,7 @@ const Instances = ({
               ? parseInt(portRef.current?.value, 10)
               : newPort) ||
               parseInt(port, 10) ||
-              8889
+              8888
           )
           if (portRef.current?.value) {
             portRef.current.value = `${parseInt(portRef.current.value, 10) + 1}`
@@ -462,7 +462,7 @@ const Instances = ({
         onConfirm={(e) =>
           handleDelete(
             e,
-            parseInt(`${port}` || portRef.current?.value || '', 10) || 8889
+            parseInt(`${port}` || portRef.current?.value || '', 10) || 8888
           )
         }
       /> */}
