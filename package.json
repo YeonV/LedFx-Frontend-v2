@@ -225,9 +225,6 @@
     "wait-on": "^8.0.0",
     "webpack": "^5.96.1"
   },
-  "resolutions": {
-    "string-width": "4.2.3"
-  },
   "build": {
     "extraResources": [
       {
