@@ -48,7 +48,7 @@ export const handlers = async (
         wind.webContents.send('fromMain', ['platform', process.platform])
         break
       case 'get-core-params':
-        if (isCC) {
+        if (isCC()) {
           wind.webContents.send('fromMain', [
             'coreParams',
             coreParams[process.platform]
@@ -57,12 +57,12 @@ export const handlers = async (
         }
         break
       case 'start-core':
-        if (isCC) {
+        if (isCC()) {
           startInstance(wind, parameters.instance, subprocesses)
         }
         break
       case 'start-core-instance':
-        if (isCC) {
+        if (isCC()) {
           startInstance(
             wind,
             parameters.instance,
@@ -72,12 +72,12 @@ export const handlers = async (
         }
         break
       case 'stop-core-instance':
-        if (isCC) {
+        if (isCC()) {
           stopInstance(wind, parameters.instance, subprocesses)
         }
         break
       case 'delete-core-instance':
-        if (isCC) {
+        if (isCC()) {
           Object.entries(subprocesses).forEach(([name, subpy]) => {
             if (name === parameters.instance) {
               subpy.kill()
@@ -93,7 +93,7 @@ export const handlers = async (
         }
         break
       case 'delete-core-params':
-        if (isCC) {
+        if (isCC()) {
           store.set('coreParams', defaultCoreParams)
           coreParams.darwin = defaultCoreParams.darwin
           coreParams.win32 = defaultCoreParams.win32

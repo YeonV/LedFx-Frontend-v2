@@ -46,8 +46,7 @@ const ready = () =>
     }
     nativeTheme.themeSource = 'dark'
     const thePath = process.env.PORTABLE_EXECUTABLE_DIR || path.resolve('.')
-
-    wind = isCC
+    wind = isCC()
       ? createWindow(win, { additionalArguments: ['integratedCore'] })
       : createWindow(win)
 
@@ -65,8 +64,8 @@ const ready = () =>
         }
         return { action: 'allow' }
       })
-      if (isCC) startInstance(wind, 'instance1', subprocesses)
-      createTray(isCC, wind, thePath, __dirname)
+      if (isCC()) startInstance(wind, 'instance1', subprocesses)
+      createTray(isCC(), wind, thePath, __dirname)
     }
 
     ipcMain.on(

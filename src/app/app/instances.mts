@@ -47,7 +47,11 @@ export function stopInstance(
   if (subprocesses[name]) {
     subprocesses[name].running = false
     sendStatus(wind, subprocesses, false, name)
-    subprocesses[name].kill()
+    try {
+      subprocesses[name].kill()
+    } catch (error) {
+      console.error(`Failed to kill subprocess ${name}:`, error)
+    }
   }
 }
 
@@ -55,7 +59,7 @@ export function startInstance(
   wind: BrowserWindow,
   name: string,
   subprocesses: Subprocesses,
-  port: string = '8889'
+  port: string = '8888'
 ) {
   try {
     const subpy = startCore(wind, process.platform as IPlatform, name, port)
@@ -72,16 +76,20 @@ export function startInstance(
         if (subprocesses[name]) {
           subprocesses[name].running = false
         }
-        if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
-          // `subprocesses` is defined, proceed with calling `sendStatus`
-          try {
-            sendStatus(wind, subprocesses, false, name)
-          } catch (error) {
-            console.error(error)
+        try {
+          if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
+            // `subprocesses` is defined, proceed with calling `sendStatus`
+            try {
+              sendStatus(wind, subprocesses, false, name)
+            } catch (error) {
+              console.error(error)
+            }
+          } else {
+            // `subprocesses` is not defined, handle this case as needed
+            console.error('subprocesses is not defined')
           }
-        } else {
-          // `subprocesses` is not defined, handle this case as needed
-          console.error('subprocesses is not defined')
+        } catch (error) {
+          console.error('Error accessing window or subprocesses:', error)
         }
       })
       subpy.on('error', () => {
