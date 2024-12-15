@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const IStorage = ['localStorage', 'indexedDb', 'cloud', 'custom'] as const
 export const storageOptions = [
   'localStorage',

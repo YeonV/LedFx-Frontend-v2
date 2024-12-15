@@ -27,7 +27,7 @@ const PixelGraphsSettingsCard = () => {
     { value: 512, label: '512' },
     { value: 1024, label: '1K' },
     { value: 2048, label: '2K' },
-    { value: 4096, label: '4K' },
+    { value: 4096, label: '4K' }
   ]
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
@@ -82,11 +82,16 @@ const PixelGraphsSettingsCard = () => {
           variant="standard"
           value={'select'}
           onChange={(e) =>
-            e.target.value !== 'select' && setSystemSetting('visualisation_maxlen', e.target.value)
+            e.target.value !== 'select' &&
+            setSystemSetting('visualisation_maxlen', e.target.value)
           }
         >
-          {(marks).map((item: any) => (
-            <MenuItem disabled={item.value === 'select'} key={item.value} value={item.value}>
+          {marks.map((item: any) => (
+            <MenuItem
+              disabled={item.value === 'select'}
+              key={item.value}
+              value={item.value}
+            >
               {item.label}
             </MenuItem>
           ))}
@@ -194,34 +199,40 @@ const PixelGraphsSettingsCard = () => {
           }}
         />
       </SettingsRow>
-      <SettingsRow title="Show too-less-pixels Warning" checked={showWarning} onChange={() => setShowWarning('lessPixels', !showWarning)}/>
+      <SettingsRow
+        title="Show too-less-pixels Warning"
+        checked={showWarning}
+        onChange={() => setShowWarning('lessPixels', !showWarning)}
+      />
       <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
-      
-      {showFeatures.alpha && <>
-      <SettingsRow title="2D Virtual Limit" step="three">
-        <Input
-          disableUnderline
-          className={sliderClasses.input}
-          defaultValue={virtual2dLimit}
-          style={{ width: 70 }}
-          margin="dense"
-          onChange={(e) => {
-            setPixelLength(parseInt(e.target.value, 10))
-          }}
-          onBlur={(e) => setVirtual2dLimit(parseInt(e.target.value, 10))}
-          sx={{
-            '& input': { textAlign: 'right' }
-          }}
-          inputProps={{
-            min: 1,
-            max: 4096,
-            type: 'number',
-            'aria-labelledby': 'input-slider'
-          }}
-        />
-      </SettingsRow>
-      <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
-      </>}
+
+      {showFeatures.alpha && (
+        <>
+          <SettingsRow title="2D Virtual Limit" step="three">
+            <Input
+              disableUnderline
+              className={sliderClasses.input}
+              defaultValue={virtual2dLimit}
+              style={{ width: 70 }}
+              margin="dense"
+              onChange={(e) => {
+                setPixelLength(parseInt(e.target.value, 10))
+              }}
+              onBlur={(e) => setVirtual2dLimit(parseInt(e.target.value, 10))}
+              sx={{
+                '& input': { textAlign: 'right' }
+              }}
+              inputProps={{
+                min: 1,
+                max: 4096,
+                type: 'number',
+                'aria-labelledby': 'input-slider'
+              }}
+            />
+          </SettingsRow>
+          <Divider sx={{ m: '0.5rem 0 0.25rem 0' }} />
+        </>
+      )}
     </>
   )
 }

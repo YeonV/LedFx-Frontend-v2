@@ -23,43 +23,40 @@ const MidiCard = ({ className }: any) => {
   return (
     <div className={className}>
       <Stack direction={'row'} spacing={2}>
-      <BladeFrame
-      title={'Input Device'}
-      full
-      style={{ marginBottom: '1rem' }}
-    >
-      <Select
-      fullWidth
-      disableUnderline
-        value={midiInput}
-        onChange={(e: any) => setMidiInput(e.target.value)}
-      >
-        {midiInputs.map((item: any, i: number) => (
+        <BladeFrame
+          title={'Input Device'}
+          full
+          style={{ marginBottom: '1rem' }}
+        >
+          <Select
+            fullWidth
+            disableUnderline
+            value={midiInput}
+            onChange={(e: any) => setMidiInput(e.target.value)}
+          >
+            {midiInputs.map((item: any, i: number) => (
+              <MenuItem key={`${i}-${i}`} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </BladeFrame>
+        <MidiInputDialog />
+      </Stack>
+      <BladeFrame title={'Output Device'} full>
+        <Select
+          disableUnderline
+          fullWidth
+          value={midiOutput}
+          onChange={(e: any) => setMidiOutput(e.target.value)}
+        >
+          {midiOutputs.map((item: any, i: number) => (
             <MenuItem key={`${i}-${i}`} value={item}>
               {item}
             </MenuItem>
           ))}
-      </Select>
-    </BladeFrame>
-    <MidiInputDialog />
-    </Stack>
-    <BladeFrame
-      title={'Output Device'}
-      full
-    >
-      <Select
-      disableUnderline
-      fullWidth
-        value={midiOutput}
-        onChange={(e: any) => setMidiOutput(e.target.value)}
-      >
-        {midiOutputs.map((item: any, i: number) => (
-            <MenuItem key={`${i}-${i}`} value={item}>
-              {item}
-            </MenuItem>
-          ))}
-      </Select>
-    </BladeFrame>
+        </Select>
+      </BladeFrame>
     </div>
   )
 }

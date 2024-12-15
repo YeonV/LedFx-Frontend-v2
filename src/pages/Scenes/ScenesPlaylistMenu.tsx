@@ -12,7 +12,6 @@ const ScenesPlaylistMenu = () => {
   const scenePLintervals = useStore((state) => state.scenePLintervals)
   const setScenePLintervals = useStore((state) => state.setScenePLintervals)
 
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -42,7 +41,11 @@ const ScenesPlaylistMenu = () => {
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
-            download({ scenePL, scenePLintervals }, 'ScenePlaylist.json', 'application/json')
+            download(
+              { scenePL, scenePLintervals },
+              'ScenePlaylist.json',
+              'application/json'
+            )
             handleClose()
           }}
         >

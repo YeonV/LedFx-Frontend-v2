@@ -92,9 +92,11 @@ const Settings = () => {
         </SettingsAccordion>
       )} */}
 
-      {features.scenemidi && <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
-        <MidiCard />
-      </SettingsAccordion>}
+      {features.scenemidi && (
+        <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
+          <MidiCard />
+        </SettingsAccordion>
+      )}
       <SettingsAccordion title="Effects" accId="effects" icon="LensBlur">
         <EffectsSettingsCard />
       </SettingsAccordion>

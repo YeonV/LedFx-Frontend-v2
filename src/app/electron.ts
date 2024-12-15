@@ -1,34 +1,42 @@
-import fs from 'fs';
-import path from 'path';
-import isDev from 'electron-is-dev';
-import { app, nativeTheme, BrowserWindow, ipcMain, shell, session } from 'electron';
-import { EventEmitter } from 'events';
-import { fileURLToPath } from 'node:url';
-import isCC from './app/utils/isCC.mjs';
-import createWindow from './app/utils/win.mjs';
-import { handleProtocol, setupProtocol } from './app/protocol.mjs';
-import { closeAllSubs, startInstance } from './app/instances.mjs';
+import fs from 'fs'
+import path from 'path'
+import isDev from 'electron-is-dev'
+import {
+  app,
+  nativeTheme,
+  BrowserWindow,
+  ipcMain,
+  shell,
+  session
+} from 'electron'
+import { EventEmitter } from 'events'
+import { fileURLToPath } from 'node:url'
+import isCC from './app/utils/isCC.mjs'
+import createWindow from './app/utils/win.mjs'
+import { handleProtocol, setupProtocol } from './app/protocol.mjs'
+import { closeAllSubs, startInstance } from './app/instances.mjs'
 import { createTray } from './app/utils/tray.mjs'
-import { handlers } from './app/handlers.mjs';
+import { handlers } from './app/handlers.mjs'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-EventEmitter.defaultMaxListeners = 15;
+EventEmitter.defaultMaxListeners = 15
 
-const reduxDevtoolsPath = 'C:\\Users\\Blade\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\lmhkpmbekcpmknklioeibfkpmmfibljd\\3.2.7_0';
+const reduxDevtoolsPath =
+  'C:\\Users\\Blade\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\lmhkpmbekcpmknklioeibfkpmmfibljd\\3.2.7_0'
 
-const subpy: any = null;
-const subprocesses: Record<string, any> = {};
-let wind: BrowserWindow | null = null;
-let win: BrowserWindow | null = null;
+const subpy: any = null
+const subprocesses: Record<string, any> = {}
+let wind: BrowserWindow | null = null
+const win: BrowserWindow | null = null
 
-setupProtocol();
-const gotTheLock = app.requestSingleInstanceLock();
+setupProtocol()
+const gotTheLock = app.requestSingleInstanceLock()
 
 if (!fs.existsSync(path.join(app.getPath('userData'), '.ledfx-cc'))) {
-  console.log('Creating .ledfx-cc folder');
-  fs.mkdirSync(path.join(app.getPath('userData'), '.ledfx-cc'));
+  console.log('Creating .ledfx-cc folder')
+  fs.mkdirSync(path.join(app.getPath('userData'), '.ledfx-cc'))
 }
 
 const ready = () =>
@@ -44,37 +52,42 @@ const ready = () =>
       : createWindow(win)
 
     const remoteMain = await import('@electron/remote/main/index.js')
-    
-    wind && remoteMain.enable(wind.webContents)
 
-    wind && wind.webContents.setWindowOpenHandler(({ url }) => {
-      if (url.includes(' https://accounts.spotify.com/authorize')
-      // || url.includes(`${backendUrl}/connect/github?callback`)
-      ) {
-        shell.openExternal(url)
-        // return { action: 'deny' }
-      }
-      return { action: 'allow' }
-    })
+    if (wind) {
+      remoteMain.enable(wind.webContents)
+      wind.webContents.setWindowOpenHandler(({ url }) => {
+        if (
+          url.includes(' https://accounts.spotify.com/authorize')
+          // || url.includes(`${backendUrl}/connect/github?callback`)
+        ) {
+          shell.openExternal(url)
+          // return { action: 'deny' }
+        }
+        return { action: 'allow' }
+      })
+      if (isCC) startInstance(wind, 'instance1', subprocesses)
+      createTray(isCC, wind, thePath, __dirname)
+    }
 
-    if (isCC && wind) startInstance(wind, 'instance1', subprocesses)      
-   
-
-      wind && createTray(isCC, wind, thePath, __dirname)
-
-    ipcMain.on('toMain', async (event, parameters) =>
-      wind && handlers(wind, subprocesses, event, parameters)
+    ipcMain.on(
+      'toMain',
+      async (event, parameters) =>
+        wind && handlers(wind, subprocesses, event, parameters)
     )
-    wind && wind.on('close', () => {
-      wind && closeAllSubs(wind, subpy, subprocesses)
-      wind = null;
-    })
+    if (wind) {
+      wind.on('close', () => {
+        if (wind) {
+          closeAllSubs(wind, subpy, subprocesses)
+          wind = null
+        }
+      })
+    }
   })
 
 handleProtocol(() => wind, gotTheLock, ready)
 
 app.on('window-all-closed', () => {
-  wind && closeAllSubs(wind, subpy, subprocesses)
+  if (wind) closeAllSubs(wind, subpy, subprocesses)
   app.quit()
 })
 

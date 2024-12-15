@@ -1,3 +1,4 @@
+/* eslint-disable @/indent */
 import { FC } from 'react'
 import useStore from '../../store/useStore'
 import OrderListBase, { Order } from './OrderListBase'
@@ -11,28 +12,39 @@ const OrderList: FC = () => {
   const showGaps = useStore((state) => state.showGaps)
 
   const enrichedOrders: Order[] = virtualOrder
-  .map((order) => {
-    const vs = Object.keys(virtuals)
-    const virt = vs
-      .filter(v => showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-      .filter(v => showGaps ? v : !(v.startsWith('gap-')))
-      .find((v) => virtuals[v].id === order.virtId)
-    if (virt === undefined) {
-      return null
-    } else {
-      return { ...order, name: virtuals[virt]?.config.name, icon: virtuals[virt]?.config.icon_name } as Order
-    }
-  })
-  .filter(order => order !== null)
-
+    .map((order) => {
+      const vs = Object.keys(virtuals)
+      const virt = vs
+        .filter((v) =>
+          showComplex
+            ? v
+            : !(
+                v.endsWith('-mask') ||
+                v.endsWith('-foreground') ||
+                v.endsWith('-background')
+              )
+        )
+        .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+        .find((v) => virtuals[v].id === order.virtId)
+      if (virt === undefined) {
+        return null
+      } else {
+        return {
+          ...order,
+          name: virtuals[virt]?.config.name,
+          icon: virtuals[virt]?.config.icon_name
+        } as Order
+      }
+    })
+    .filter((order) => order !== null)
 
   const setCleanedOrder = (orders: Order[]) => {
-    setVirtualOrder(orders.map((o) => ({ virtId: o.virtId, order: o.order } as IVirtualOrder)))
+    setVirtualOrder(
+      orders.map((o) => ({ virtId: o.virtId, order: o.order }) as IVirtualOrder)
+    )
   }
 
-  return (
-    <OrderListBase orders={enrichedOrders} setOrders={setCleanedOrder} />
-  )
+  return <OrderListBase orders={enrichedOrders} setOrders={setCleanedOrder} />
 }
 
 export default OrderList

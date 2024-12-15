@@ -1,1 +1,1 @@
-declare module 'electron-squirrel-startup';
+declare module 'electron-squirrel-startup'

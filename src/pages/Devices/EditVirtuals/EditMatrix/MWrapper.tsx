@@ -17,7 +17,7 @@ const MWrapper = ({ children, move }: any) => {
           // flexGrow: 1,
           overflow: move ? 'auto' : 'hidden',
           height: '100%',
-          width: '100%',
+          width: '100%'
         }
       }}
     >

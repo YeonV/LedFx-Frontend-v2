@@ -1,4 +1,5 @@
-const storeUIPersist = (set: any) => ({  
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const storeUIPersist = (set: any) => ({
   infoAlerts: {
     scenes: true,
     devices: true,
@@ -10,8 +11,8 @@ const storeUIPersist = (set: any) => ({
     pixelMode: true
   },
   warnings: {
-    lessPixels: true,
-  },
+    lessPixels: true
+  }
 })
 
 export default storeUIPersist

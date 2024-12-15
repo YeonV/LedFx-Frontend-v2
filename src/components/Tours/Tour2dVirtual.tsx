@@ -170,17 +170,18 @@ const Tour2dVirtual = () => {
   const theme = useTheme()
   return (
     <>
-    <Tooltip title="How to use 2D Virtuals">
-      <IconButton onClick={() => {
-          setIsTourOpen(true)
-          setTour('2d-virtual')
-        }}
-      >
-        <Help />
-      </IconButton>
+      <Tooltip title="How to use 2D Virtuals">
+        <IconButton
+          onClick={() => {
+            setIsTourOpen(true)
+            setTour('2d-virtual')
+          }}
+        >
+          <Help />
+        </IconButton>
       </Tooltip>
       <Tour
-        steps={steps.slice(0, features['matrix_cam'] ? steps.length : 5)}
+        steps={steps.slice(0, features.matrix_cam ? steps.length : 5)}
         accentColor={theme.palette.primary.main}
         isOpen={isTourOpen}
         showNavigation={false}

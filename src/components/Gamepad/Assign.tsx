@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @/indent */
 import {
   Fab,
   FormControl,
@@ -55,7 +57,7 @@ const Assign = ({
   }
 
   return (
-    <Stack key={index} direction={compact ? "row" : "column"} alignItems={compact ? "center" : "stretch"} spacing={compact ? 1 : 0}>
+    <Stack key={index} direction={compact ? 'row' : 'column'} alignItems={compact ? 'center' : 'stretch'} spacing={compact ? 1 : 0}>
       {compact 
         && <Fab
             size="small"

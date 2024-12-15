@@ -63,14 +63,22 @@ const MContextMenu = ({
       >
         Move Group
       </MenuItem>
-      <MenuItem onClick={(e) => {
-        clearPixel()
-        closeContextMenu(e)
-      }}>Clear Pixel</MenuItem>
-      <MenuItem onClick={(e) => {
-        clearPixelGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
-        closeContextMenu(e)
-      }}>Clear Group</MenuItem>
+      <MenuItem
+        onClick={(e) => {
+          clearPixel()
+          closeContextMenu(e)
+        }}
+      >
+        Clear Pixel
+      </MenuItem>
+      <MenuItem
+        onClick={(e) => {
+          clearPixelGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
+          closeContextMenu(e)
+        }}
+      >
+        Clear Group
+      </MenuItem>
     </Menu>
   )
 }

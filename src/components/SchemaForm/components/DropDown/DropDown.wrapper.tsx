@@ -17,17 +17,17 @@ const EffectDropDown = ({
   setEffect,
   getVirtuals,
   ommit,
-  title = "Effect Type"
+  title = 'Effect Type'
 }: EffectDropDownProps) => {
   const effectNames =
     effects &&
     Object.keys(effects)
-      .filter(e => !ommit?.includes(effects[e].name))
+      .filter((e) => !ommit?.includes(effects[e].name))
       .map((eid) => ({
-      name: effects[eid].name,
-      id: effects[eid].id,
-      category: effects[eid].category
-    }))
+        name: effects[eid].name,
+        id: effects[eid].id,
+        category: effects[eid].category
+      }))
 
   const groups =
     effectNames &&

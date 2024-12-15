@@ -1,7 +1,6 @@
-import wait from "./utils/wait"
-import wled from "./utils/wled"
-import wledGet from "./utils/wledGet"
-
+import wait from './utils/wait'
+import wled from './utils/wled'
+import wledGet from './utils/wledGet'
 
 export const iterativeOn = async (waitingTime: number) => {
   const state = await wledGet()

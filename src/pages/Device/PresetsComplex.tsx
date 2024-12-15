@@ -14,14 +14,14 @@ import Popover from '../../components/Popover/Popover'
 import useStore from '../../store/useStore'
 import { useState } from 'react'
 
-const PresetsComplex = ({virtId}: {virtId: string}) => {
+const PresetsComplex = ({ virtId }: { virtId: string }) => {
   const theme = useTheme()
   const [name, setName] = useState('')
   const [valid, setValid] = useState(true)
   const [anchorEl, setAnchorEl] = useState<any>(null)
   const [sceneToDelete, setSceneToDelete] = useState<string | null>(null)
   const [open, setOpen] = useState(true)
-  
+
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
   const addScene = useStore((state) => state.addScene)
@@ -29,24 +29,19 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
   const activateScene = useStore((state) => state.activateScene)
   const deleteScene = useStore((state) => state.deleteScene)
 
-  const sceneBlenderFilter = (sc: string) => (scenes[sc].scene_tags?.split(',')?.includes('blender') && virtId && sc.startsWith(virtId))
+  const sceneBlenderFilter = (sc: string) =>
+    scenes[sc].scene_tags?.split(',')?.includes('blender') &&
+    virtId &&
+    sc.startsWith(virtId)
 
   const handleAddScene = () => {
     if (!virtId || name.length === 0) return
-    addScene(
-      `${virtId}-${name}`,
-      'yz:logo3',
-      'blender',
-      null,
-      null,
-      null,
-      {
-        [virtId]: virtuals[virtId].effect,
-        [`${virtId}-mask`]: virtuals[`${virtId}-mask`].effect,
-        [`${virtId}-foreground`]: virtuals[`${virtId}-foreground`].effect,
-        [`${virtId}-background`]: virtuals[`${virtId}-background`].effect,
-      }
-    ).then(() => {
+    addScene(`${virtId}-${name}`, 'yz:logo3', 'blender', null, null, null, {
+      [virtId]: virtuals[virtId].effect,
+      [`${virtId}-mask`]: virtuals[`${virtId}-mask`].effect,
+      [`${virtId}-foreground`]: virtuals[`${virtId}-foreground`].effect,
+      [`${virtId}-background`]: virtuals[`${virtId}-background`].effect
+    }).then(() => {
       getScenes()
     })
     setName('')
@@ -83,15 +78,27 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
           <Grid item key={'newPartialScene'}>
             <Popover
               open={open}
-              variant='outlined'
-              sxButton={{ pt: '2.25px !important', pb: '2.5px' }}              
+              variant="outlined"
+              sxButton={{ pt: '2.25px !important', pb: '2.5px' }}
               icon={<Add />}
               content={
                 <TextField
                   autoFocus
                   onKeyDown={(e: any) => {
                     // console.log(name)
-                    if (e.key === 'Enter' && !(name.length === 0 || (scenes && (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 || Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`).length > 0)) || !valid)) {
+                    if (
+                      e.key === 'Enter' &&
+                      !(
+                        name.length === 0 ||
+                        (scenes &&
+                          (Object.keys(scenes).indexOf(`${virtId}-${name}`) >
+                            -1 ||
+                            Object.values(scenes).filter(
+                              (p: any) => p.name === `${virtId}-${name}`
+                            ).length > 0)) ||
+                        !valid
+                      )
+                    ) {
                       handleAddScene()
                       setOpen(!open)
                     }
@@ -99,16 +106,18 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
                   error={
                     scenes &&
                     (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
-                      Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
-                        .length > 0)
+                      Object.values(scenes).filter(
+                        (p: any) => p.name === `${virtId}-${name}`
+                      ).length > 0)
                   }
                   size="small"
                   id="presetNameInput"
                   label={
                     scenes &&
                     (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
-                      Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
-                        .length > 0)
+                      Object.values(scenes).filter(
+                        (p: any) => p.name === `${virtId}-${name}`
+                      ).length > 0)
                       ? 'Partial Scene already exsisting'
                       : 'Add Partial Scene'
                   }
@@ -120,7 +129,8 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
                       scenes &&
                       (Object.keys(scenes).indexOf(e.target.value) > -1 ||
                         Object.values(scenes).filter(
-                          (p: any) => p.name.replace(`${virtId}-`, '') === e.target.value
+                          (p: any) =>
+                            p.name.replace(`${virtId}-`, '') === e.target.value
                         ).length > 0)
                     ) {
                       setValid(false)
@@ -144,8 +154,9 @@ const PresetsComplex = ({virtId}: {virtId: string}) => {
                 name.length === 0 ||
                 (scenes &&
                   (Object.keys(scenes).indexOf(name) > -1 ||
-                    Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
-                      .length > 0)) ||
+                    Object.values(scenes).filter(
+                      (p: any) => p.name === `${virtId}-${name}`
+                    ).length > 0)) ||
                 !valid
               }
               onConfirm={handleAddScene}

@@ -1,9 +1,8 @@
-import { iterativeOn } from "./pixelUtils"
-import { getLedCount } from "./utils/getLedCount"
-import iterativeOnOnlyOne from "./utils/iterativeOnOnlyOne"
-import wait from "./utils/wait"
-import wled from "./utils/wled"
-
+import { iterativeOn } from './pixelUtils'
+import { getLedCount } from './utils/getLedCount'
+import iterativeOnOnlyOne from './utils/iterativeOnOnlyOne'
+import wait from './utils/wait'
+import wled from './utils/wled'
 
 export async function calibrateOld(wledIp: string, waitTime: number) {
   const flush = async () => {

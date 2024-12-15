@@ -36,7 +36,7 @@ export interface BladeIconProps {
   style?: Record<string, unknown>
   /**
    * JSX sx
-   * 
+   *
    */
   sx?: SxProps<Theme>
 }

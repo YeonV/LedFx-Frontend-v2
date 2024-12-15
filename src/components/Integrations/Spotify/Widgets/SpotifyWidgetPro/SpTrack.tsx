@@ -41,9 +41,13 @@ export default function SpTrack({ className }: any) {
     spCtx?.item?.album?.name ||
     ''
 
-  setCurrentTrack(`${artist.length > 1
-            ? artist.map((art: any) => art.name).join(',')
-            : artist[0].name} - ${title}`)
+  setCurrentTrack(
+    `${
+      artist.length > 1
+        ? artist.map((art: any) => art.name).join(',')
+        : artist[0].name
+    } - ${title}`
+  )
   return (
     <Box className={className}>
       <CoverImage className={classes.albumImg}>

@@ -28,7 +28,6 @@ const EffectDropDown = ({
   },
   showFilter = false
 }: EffectDropDownProps) => {
-
   return (
     <>
       <EffectTypeDialog

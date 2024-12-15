@@ -50,7 +50,14 @@ const EffectTypeDialog = ({
         )
         .filter((e: any) => !!e?.value)
         .sort((a, b) => {
-          const order = ['Non-Reactive', 'BPM', 'Classic', 'Atmospheric', '2D', 'Matrix']
+          const order = [
+            'Non-Reactive',
+            'BPM',
+            'Classic',
+            'Atmospheric',
+            '2D',
+            'Matrix'
+          ]
           return order.indexOf(a.group) - order.indexOf(b.group)
         })
         .sort((a, b) => {

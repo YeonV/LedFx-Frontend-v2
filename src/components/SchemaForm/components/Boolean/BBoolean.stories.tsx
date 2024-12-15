@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@mui/material'
 import { StoryFn, Meta } from '@storybook/react'
-import BBoolean from './BBolean';
+import BBoolean from './BBolean'
 
 export default {
   title: 'UI Components/SchemaForm/Base Components',
@@ -20,7 +20,7 @@ export default {
   }
 } as Meta<typeof BBoolean>
 
-const Template: StoryFn<typeof BBoolean> = (args) => <BBoolean {...args} />;
+const Template: StoryFn<typeof BBoolean> = (args) => <BBoolean {...args} />
 
 export const Boolean = Template.bind({})
 Boolean.args = {
@@ -32,5 +32,5 @@ Boolean.args = {
   index: 1,
   style: undefined,
   onChange: undefined,
-  value: undefined,
+  value: undefined
 }

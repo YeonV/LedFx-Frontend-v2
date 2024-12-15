@@ -124,40 +124,40 @@ const Gamepad = ({ setScene, bottom }: any) => {
 
   function handleButtonPress(command: string, payload?: any) {
     if (command === 'scene' && payload?.scene) {
-      setScene(payload.scene);
+      setScene(payload.scene)
     } else if (command === 'padscreen') {
-      setOpen(!open);
+      setOpen(!open)
     } else if (command === 'smartbar') {
-      setSmartBarPadOpen(!smartBarPadOpen);
+      setSmartBarPadOpen(!smartBarPadOpen)
     } else if (command === 'play/pause') {
-      togglePause();
+      togglePause()
     } else if (command === 'brightness-up') {
       setSystemSetting(
         'global_brightness',
         Math.min(brightness + 0.1, 1).toFixed(2)
-      );
+      )
     } else if (command === 'brightness-down') {
       setSystemSetting(
         'global_brightness',
         Math.max(brightness - 0.1, 0).toFixed(2)
-      );
+      )
     } else if (command === 'scan-wled') {
-      handleScan();
+      handleScan()
     } else if (command === 'copy-to') {
-      setFeatures('streamto', !features.streamto);
+      setFeatures('streamto', !features.streamto)
     } else if (command === 'transitions') {
-      setFeatures('transitions', !features.transitions);
+      setFeatures('transitions', !features.transitions)
     } else if (command === 'frequencies') {
-      setFeatures('frequencies', !features.frequencies);
+      setFeatures('frequencies', !features.frequencies)
     } else if (command === 'scene-playlist') {
-      toggleScenePLplay();
+      toggleScenePLplay()
     } else if (command === 'one-shot') {
       oneShotAll(
         payload?.color || '#0dbedc',
         payload?.ramp || 10,
         payload?.hold || 200,
         payload?.fade || 2000
-      );
+      )
     }
   }
 
@@ -172,9 +172,12 @@ const Gamepad = ({ setScene, bottom }: any) => {
             mapping[pad.index][i] &&
             mapping[pad.index][i].command &&
             mapping[pad.index][i].command !== 'none'
-            if (test) {
-              handleButtonPress(mapping[pad.index][i].command!, mapping[pad.index][i].payload);
-            } else if (pad.axes[0] === 1 && analogBrightness[0]) {
+          if (test) {
+            handleButtonPress(
+              mapping[pad.index][i].command!,
+              mapping[pad.index][i].payload
+            )
+          } else if (pad.axes[0] === 1 && analogBrightness[0]) {
             setSystemSetting(
               'global_brightness',
               Math.min(brightness + 0.1, 1).toFixed(2)

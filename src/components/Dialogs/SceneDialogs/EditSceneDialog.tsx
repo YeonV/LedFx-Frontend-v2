@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   AppBar,
@@ -62,7 +62,6 @@ const EditSceneDialog = () => {
   const setMidiMapping = useStore((state) => state.setMidiMapping)
   const initMidi = useStore((state) => state.initMidi)
 
-  
   const { effects } = useStore((state) => state.schemas)
   const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.edit || false)
@@ -234,22 +233,27 @@ const EditSceneDialog = () => {
     getLedFxPresets().then(setLedFxPresets)
     getUserPresets().then(setUserPresets)
     if (open) activateScene(data.name?.toLowerCase().replaceAll(' ', '-'))
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
   useEffect(() => {
     if (features.scenemidi && midiEvent.button > -1) {
-        setMIDIActivate(
-          `${midiEvent.name} Note: ${midiEvent.note} buttonNumber: ${midiEvent.button}`
-        )
+      setMIDIActivate(
+        `${midiEvent.name} Note: ${midiEvent.note} buttonNumber: ${midiEvent.button}`
+      )
     }
   }, [midiEvent, features.scenemidi])
-  
+
   useEffect(() => {
     if (features.scenemidi && open) {
       initMidi()
-      const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
-      const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
+      const output =
+        midiOutput !== ''
+          ? WebMidi.getOutputByName(midiOutput)
+          : WebMidi.outputs[1]
+      const currentBtnNumber = parseInt(
+        scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
+      )
       const lp = MidiDevices[midiType][midiModel].fn
       if (currentBtnNumber > -1) {
         setTimeout(() => {
@@ -263,13 +267,18 @@ const EditSceneDialog = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, features.scenemidi])
-  
+
   useEffect(() => {
     if (features.scenemidi && open) {
       setBlockMidiHandler(true)
-      const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
-      const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
-      const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
+      const output =
+        midiOutput !== ''
+          ? WebMidi.getOutputByName(midiOutput)
+          : WebMidi.outputs[1]
+      const currentBtnNumber = parseInt(
+        scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
+      )
+      const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1])
       const lp = MidiDevices[midiType][midiModel].fn
       if (newBtnNumber > -1) {
         setTimeout(() => {
@@ -279,9 +288,12 @@ const EditSceneDialog = () => {
             } else {
               output.send(lp.ledOn(newBtnNumber, 57))
             }
-            if (lastButton.current !== newBtnNumber && lastButton.current > -1) {
+            if (
+              lastButton.current !== newBtnNumber &&
+              lastButton.current > -1
+            ) {
               output.send(lp.ledOff(lastButton.current))
-            }       
+            }
           }
           if (currentBtnNumber > -1 && newBtnNumber !== currentBtnNumber) {
             if ('ledPulse' in lp) {
@@ -292,7 +304,12 @@ const EditSceneDialog = () => {
               output.send(lp.ledOn(newBtnNumber, 57))
             }
           }
-          if (currentBtnNumber > -1 && lastButton.current > -1 && lastButton.current !== newBtnNumber && lastButton.current !== currentBtnNumber) {
+          if (
+            currentBtnNumber > -1 &&
+            lastButton.current > -1 &&
+            lastButton.current !== newBtnNumber &&
+            lastButton.current !== currentBtnNumber
+          ) {
             output.send(lp.ledOff(lastButton.current))
           }
           lastButton.current = newBtnNumber
@@ -844,7 +861,10 @@ const EditSceneDialog = () => {
                               />
                               <Chip
                                 onDelete={() => setMIDIActivate('')}
-                                label={/\((.*?)\)/.exec(midiActivate)?.[1].replace(' MIDI', '').trim()}
+                                label={/\((.*?)\)/
+                                  .exec(midiActivate)?.[1]
+                                  .replace(' MIDI', '')
+                                  .trim()}
                                 icon={<BladeIcon name="mdi:midi" />}
                               />
                             </>
@@ -853,9 +873,10 @@ const EditSceneDialog = () => {
                       )
                     }}
                   />
-                  {/\((.*?)\)/.exec(midiActivate)?.[1].replace(' MIDI', '').trim() === 'LPX' && (
-                      <MidiInputDialog />
-                  )}
+                  {/\((.*?)\)/
+                    .exec(midiActivate)?.[1]
+                    .replace(' MIDI', '')
+                    .trim() === 'LPX' && <MidiInputDialog />}
                 </Stack>
               </>
             ) : (
@@ -1048,29 +1069,41 @@ const EditSceneDialog = () => {
         <Button onClick={handleClose}>Cancel</Button>
         <Button
           onClick={() => {
-            const deepCopy = (obj: any) =>  JSON.parse(JSON.stringify(obj))  
-            const newMapping = deepCopy(midiMapping) as IMapping;
-            const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1]);
-            const currentBtnNumber = parseInt(scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]);
-            const item = parseInt(Object.keys(newMapping[0]).find((k) => newMapping[0][parseInt(k)].buttonNumber === currentBtnNumber) || '');
-            
-       
-                      
-            scVirtualsToIgnore.length > 0
-              ? handleAddSceneWithVirtuals()
-              : handleAddScene()
-            if (currentBtnNumber && newBtnNumber && currentBtnNumber !== newBtnNumber) {        
+            const deepCopy = (obj: any) => JSON.parse(JSON.stringify(obj))
+            const newMapping = deepCopy(midiMapping) as IMapping
+            const newBtnNumber = parseInt(
+              midiActivate?.split('buttonNumber: ')[1]
+            )
+            const currentBtnNumber = parseInt(
+              scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
+            )
+            const item = parseInt(
+              Object.keys(newMapping[0]).find(
+                (k) =>
+                  newMapping[0][parseInt(k)].buttonNumber === currentBtnNumber
+              ) || ''
+            )
+
+            if (scVirtualsToIgnore.length > 0) {
+              handleAddSceneWithVirtuals()
+            } else {
+              handleAddScene()
+            }
+            if (
+              currentBtnNumber &&
+              newBtnNumber &&
+              currentBtnNumber !== newBtnNumber
+            ) {
               if (item) {
-                  newMapping[0][item] = { buttonNumber: currentBtnNumber };
-                  setMidiMapping(newMapping)                  
-                  
-              }              
+                newMapping[0][item] = { buttonNumber: currentBtnNumber }
+                setMidiMapping(newMapping)
+              }
             }
             if (features.scenemidi) {
               setTimeout(() => {
                 getScenes()
                 initMidi()
-              }, 100);
+              }, 100)
             }
           }}
         >

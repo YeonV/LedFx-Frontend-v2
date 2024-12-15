@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 
 import { useEffect, useState } from 'react'
 import {
@@ -52,13 +52,20 @@ const Dashboard = () => {
     .map((d) => !d.startsWith('gap-') && devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0)
 
-  const devicesOnline = Object.keys(devices).filter((d) => devices[d].online && !devices[d].id.startsWith('gap-'))
+  const devicesOnline = Object.keys(devices).filter(
+    (d) => devices[d].online && !devices[d].id.startsWith('gap-')
+  )
   const virtualsReal = Object.keys(virtuals).filter(
     (d) => !virtuals[d]?.is_device && !virtuals[d]?.id.startsWith('gap-')
   )
 
   const pixelTotalOnline = Object.keys(devices)
-    .map((d) => devices[d].online && !devices[d].id.startsWith('gap-') && devices[d].config.pixel_count)
+    .map(
+      (d) =>
+        devices[d].online &&
+        !devices[d].id.startsWith('gap-') &&
+        devices[d].config.pixel_count
+    )
     .reduce((a, b) => a + b, 0)
 
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -202,7 +209,9 @@ const Dashboard = () => {
                   height="auto"
                   src={fx}
                   alt="wled"
-                  style={{ filter: `grayscale(100%) brightness(0)${theme.palette.primary.contrastText === '#fff' ? ' invert(1)' : ''}` }}
+                  style={{
+                    filter: `grayscale(100%) brightness(0)${theme.palette.primary.contrastText === '#fff' ? ' invert(1)' : ''}`
+                  }}
                 />
               </Fab>
             </Tooltip>
@@ -240,7 +249,10 @@ const Dashboard = () => {
                       {`${Math.round((scanning / 30) * 100)}%`}
                     </Typography>
                   ) : (
-                    <BladeIcon name="wled" sx={{ color: theme.palette.primary.contrastText}} />
+                    <BladeIcon
+                      name="wled"
+                      sx={{ color: theme.palette.primary.contrastText }}
+                    />
                   )}
                   {scanning > -1 && (
                     <CircularProgress5
@@ -279,7 +291,9 @@ const Dashboard = () => {
                   height="auto"
                   src={openrgbLogo}
                   alt="wled"
-                  style={{ filter: `grayscale(100%) brightness(0)${theme.palette.primary.contrastText === '#fff' ? ' invert(1)' : ''}` }}
+                  style={{
+                    filter: `grayscale(100%) brightness(0)${theme.palette.primary.contrastText === '#fff' ? ' invert(1)' : ''}`
+                  }}
                 />
               </Fab>
             </Tooltip>
@@ -308,7 +322,7 @@ const Dashboard = () => {
                   type="fab"
                   color="primary"
                   style={{ margin: '8px' }}
-                  sx={{ color: theme.palette.primary.contrastText}}
+                  sx={{ color: theme.palette.primary.contrastText }}
                   icon={<DeleteForever />}
                   text="Delete frontend data?"
                   onConfirm={() => {
@@ -336,7 +350,11 @@ const Dashboard = () => {
           </Tooltip> */}
             <Tooltip title="Guided Tour">
               <span style={{ margin: 0, zIndex: 0 }}>
-                <TourHome className="step-one" variant="fab" sx={{ color: theme.palette.primary.contrastText}} />
+                <TourHome
+                  className="step-one"
+                  variant="fab"
+                  sx={{ color: theme.palette.primary.contrastText }}
+                />
               </span>
             </Tooltip>
           </Stack>
@@ -357,7 +375,10 @@ const Dashboard = () => {
                 }}
                 sx={{
                   color: theme.palette.primary.contrastText,
-                  bgcolor: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
+                  bgcolor:
+                    theme.palette.mode === 'dark'
+                      ? theme.palette.primary.dark
+                      : theme.palette.primary.light,
                   '&:hover': {
                     bgcolor: theme.palette.primary.main
                   }
@@ -382,7 +403,10 @@ const Dashboard = () => {
                 }}
                 sx={{
                   color: theme.palette.primary.contrastText,
-                  bgcolor: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
+                  bgcolor:
+                    theme.palette.mode === 'dark'
+                      ? theme.palette.primary.dark
+                      : theme.palette.primary.light,
                   '&:hover': {
                     bgcolor: theme.palette.primary.main
                   }
@@ -407,7 +431,10 @@ const Dashboard = () => {
                 }}
                 sx={{
                   fill: theme.palette.primary.contrastText,
-                  bgcolor: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
+                  bgcolor:
+                    theme.palette.mode === 'dark'
+                      ? theme.palette.primary.dark
+                      : theme.palette.primary.light,
                   '&:hover': {
                     bgcolor: theme.palette.primary.main
                   }

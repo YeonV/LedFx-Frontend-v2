@@ -21,7 +21,6 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
     setRange([s[1], s[2]])
   }, [s])
 
-
   if (!devices[s[0]]) {
     return null
   }

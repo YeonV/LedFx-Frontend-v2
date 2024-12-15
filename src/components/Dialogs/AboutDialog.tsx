@@ -62,7 +62,7 @@ export default function AboutDialog({ className, children, startIcon }: any) {
 
     if (open) {
       fetchData()
-    }    
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 

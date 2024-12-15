@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 
 import { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
@@ -111,12 +111,13 @@ const AddDeviceDialog = () => {
               (device: any) => device.config.ip_address
             )
             const newDevices = [] as { name: string; ip_address: string }[]
-            res.nodes &&
+            if (res.nodes) {
               res.nodes.forEach((node: any) => {
                 if (node.ip && !deviceIps.includes(node.ip)) {
                   newDevices.push({ name: node.name, ip_address: node.ip })
                 }
               })
+            }
             if (newDevices.length > 0) {
               setAddWled(newDevices)
             }
@@ -172,10 +173,12 @@ const AddDeviceDialog = () => {
           To add a device to LedFx, please first select the type of device you
           wish to add then provide the necessary configuration.
         </DialogContentText>
-        {deviceType === 'launchpad' && <Alert severity='info'>
-          When adding a Lunchpad as a led-output device, 
-          you cannot use it as a MIDI input device at the same time (atm).
-        </Alert>}
+        {deviceType === 'launchpad' && (
+          <Alert severity="info">
+            When adding a Lunchpad as a led-output device, you cannot use it as
+            a MIDI input device at the same time (atm).
+          </Alert>
+        )}
         <div className={classes.wrapper}>
           <label>Device Type</label>
           <Select

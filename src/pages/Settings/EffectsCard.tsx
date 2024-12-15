@@ -10,7 +10,9 @@ const EffectsSettingsCard = () => {
   const setShowHex = useStore((state) => state.ui.setShowHex)
   const setFeatures = useStore((state) => state.setFeatures)
   const setBlenderAutomagic = useStore((state) => state.ui.setBlenderAutomagic)
-  const setEffectDescriptions = useStore((state) => state.ui.setEffectDescriptions)
+  const setEffectDescriptions = useStore(
+    (state) => state.ui.setEffectDescriptions
+  )
 
   return (
     <>

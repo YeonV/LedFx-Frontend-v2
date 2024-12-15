@@ -1,5 +1,5 @@
 /* eslint-disable no-self-assign */
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 import {
   CloudUpload,
   CloudDownload,
@@ -43,7 +43,6 @@ const GeneralCard = () => {
       }, 500)
       window.location.href = window.location.href.split('/#/')[0] + '/#/'
     })
-    
   }
 
   const fileChanged = async (e: any) => {
@@ -200,7 +199,10 @@ const GeneralCard = () => {
           <SettingsSwitch
             checked={settings.flush_on_deactivate}
             onChange={() =>
-              onSystemSettingsChange('flush_on_deactivate', !settings.flush_on_deactivate)
+              onSystemSettingsChange(
+                'flush_on_deactivate',
+                !settings.flush_on_deactivate
+              )
             }
           />
         </Tooltip>

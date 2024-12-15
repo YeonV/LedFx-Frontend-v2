@@ -197,7 +197,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   useEffect(() => {
     getVirtuals()
     if (effectType) getPresets(effectType)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getVirtuals, effectType])
 
   useEffect(() => {

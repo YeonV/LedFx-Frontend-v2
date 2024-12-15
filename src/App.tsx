@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 import { useEffect, useMemo } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
@@ -38,11 +38,16 @@ export default function App() {
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
 
   const theme = useMemo(
-    () => createTheme({
-        ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme],
+    () =>
+      createTheme({
+        ...ledfxThemes[
+          window.localStorage.getItem('ledfx-theme') ?? ledfxTheme
+        ],
         ...common,
         palette: {
-          ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme].palette
+          ...ledfxThemes[
+            window.localStorage.getItem('ledfx-theme') ?? ledfxTheme
+          ].palette
         }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -59,7 +64,6 @@ export default function App() {
     initFrontendConfig()
 
     console.info(
-      // eslint-disable-next-line no-useless-concat
       '%c Ledfx ' + '%c\n ReactApp by Blade ',
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
@@ -159,41 +163,53 @@ export default function App() {
         }
       } else if (proto[1] === 'song') {
         const v = proto[2]
-        const virtual = (Object.keys(virtuals).find((virt) => virtuals[virt].id === v))
+        const virtual = Object.keys(virtuals).find(
+          (virt) => virtuals[virt].id === v
+        )
         if (virtual && proto[3].length > 3) {
-          setEffect(v, 'texter2d', {
-            "gradient": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)",
-            "option_2": false,
-            "flip": false,
-            "blur": 0,
-            "flip_horizontal": false,
-            "speed_option_1": 2,
-            "resize_method": "Fast",
-            "gradient_roll": 0,
-            "alpha": false,
-            "value_option_1": 0.5,
-            "font": "Blade-5x8",
-            "use_gradient": false,
-            "diag": false,
-            "test": false,
-            "impulse_decay": 0.1,
-            "mirror": false,
-            "flip_vertical": false,
-            "text_effect": "Side Scroll",
-            "multiplier": 1,
-            "brightness": 1,
-            "text_color": "#ff0000",
-            "background_brightness": 1,
-            "rotate": 0,
-            "dump": false,
-            "option_1": false,
-            "height_percent": 100,
-            "background_color": "#000000",
-            "text": proto[3]
-      }, true, true)
+          setEffect(
+            v,
+            'texter2d',
+            {
+              gradient:
+                'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)',
+              option_2: false,
+              flip: false,
+              blur: 0,
+              flip_horizontal: false,
+              speed_option_1: 2,
+              resize_method: 'Fast',
+              gradient_roll: 0,
+              alpha: false,
+              value_option_1: 0.5,
+              font: 'Blade-5x8',
+              use_gradient: false,
+              diag: false,
+              test: false,
+              impulse_decay: 0.1,
+              mirror: false,
+              flip_vertical: false,
+              text_effect: 'Side Scroll',
+              multiplier: 1,
+              brightness: 1,
+              text_color: '#ff0000',
+              background_brightness: 1,
+              rotate: 0,
+              dump: false,
+              option_1: false,
+              height_percent: 100,
+              background_color: '#000000',
+              text: proto[3]
+            },
+            true,
+            true
+          )
         }
       } else {
-        showSnackbar('info', `External call: ${protoCall.replace('ledfx://', '')}`)
+        showSnackbar(
+          'info',
+          `External call: ${protoCall.replace('ledfx://', '')}`
+        )
       }
       setProtoCall('')
     }
@@ -222,27 +238,27 @@ export default function App() {
             height={height}
           />
         )}
-        {new Date().getFullYear() === 2024 && 
-          new Date().getMonth() === 11  && 
+        {new Date().getFullYear() === 2024 &&
+          new Date().getMonth() === 11 &&
           new Date().getDate() >= 24 && (
-          <div
-            style={{
-              margin: 'auto',
-              backgroundImage: `url(${xmas})`,
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'bottom',
-              display: 'block',
-              zIndex: -1,
-              position: 'fixed',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              opacity: 0.7
-            }}
-          />
-        )}
+            <div
+              style={{
+                margin: 'auto',
+                backgroundImage: `url(${xmas})`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'bottom',
+                display: 'block',
+                zIndex: -1,
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                opacity: 0.7
+              }}
+            />
+          )}
         {new Date().getFullYear() === 2025 &&
           new Date().getMonth() === 0 &&
           new Date().getDate() === 1 && (

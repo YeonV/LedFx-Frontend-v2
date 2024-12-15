@@ -28,9 +28,7 @@ const DashboardCard = () => {
         <label>Show Audio Graph</label>
         <SettingsSwitch
           checked={features.melbankGraph}
-          onChange={() =>
-            setFeatures('melbankGraph', !features.melbankGraph)
-          }
+          onChange={() => setFeatures('melbankGraph', !features.melbankGraph)}
         />
       </div>
     </div>

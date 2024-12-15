@@ -218,7 +218,10 @@ const storeSpotifyActions = (set: any) => ({
   setSpTexter: (texter: any) =>
     set(
       produce((state: IStore) => {
-        state.spotify.spotifyTexter = {...state.spotify.spotifyTexter, ...texter}
+        state.spotify.spotifyTexter = {
+          ...state.spotify.spotifyTexter,
+          ...texter
+        }
       }),
       false,
       'spotify/setSpTexter'
@@ -279,7 +282,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterGradientRoll: (value: number) =>
+  setSpTexterGradientRoll: (value: number) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.gradient_roll = value
@@ -287,7 +290,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterRotate: (value: number) =>
+  setSpTexterRotate: (value: number) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.rotate = value
@@ -295,7 +298,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterHeightPercent: (value: number) =>
+  setSpTexterHeightPercent: (value: number) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.height_percent = value
@@ -303,7 +306,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterBrightness: (value: number) =>
+  setSpTexterBrightness: (value: number) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.brightness = value
@@ -311,7 +314,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterBackgroundBrightness: (value: number) =>
+  setSpTexterBackgroundBrightness: (value: number) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.background_brightness = value
@@ -319,7 +322,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterSpeed: (value: number) =>
+  setSpTexterSpeed: (value: number) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.speed_option_1 = value
@@ -327,7 +330,7 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterFont: (value: string) =>
+  setSpTexterFont: (value: string) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.font = value
@@ -335,14 +338,14 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
-    setSpTexterTextEffect: (value: string) =>
+  setSpTexterTextEffect: (value: string) =>
     set(
       produce((state: IStore) => {
         state.spotify.spotifyTexter.text_effect = value
       }),
       false,
       'spotify/setSpTexterValue'
-    ),
+    )
 })
 
 export default storeSpotifyActions

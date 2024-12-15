@@ -89,7 +89,10 @@ const DbGlobalActions = () => {
               src={fx}
               alt="wled"
               style={{
-                filter: theme.palette.mode=== 'dark' ? 'invert(1) brightness(2)' : '',
+                filter:
+                  theme.palette.mode === 'dark'
+                    ? 'invert(1) brightness(2)'
+                    : '',
                 objectFit: 'cover',
                 marginRight: 8,
                 marginLeft: -8
@@ -126,9 +129,10 @@ const DbGlobalActions = () => {
               src={openrgbLogo}
               alt="wled"
               style={{
-                filter: theme.palette.mode=== 'dark' 
-                  ? 'grayscale(100%) brightness(0) invert(1) brightness(2)'
-                  : 'grayscale(100%) brightness(0) invert(0) brightness(2)',
+                filter:
+                  theme.palette.mode === 'dark'
+                    ? 'grayscale(100%) brightness(0) invert(1) brightness(2)'
+                    : 'grayscale(100%) brightness(0) invert(0) brightness(2)',
                 marginRight: 22,
                 marginLeft: 4
               }}

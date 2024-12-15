@@ -336,7 +336,10 @@ const MFillSelector = ({
           </div>
         </MenuItem>
         <Divider />
-        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-top-right">
+        <MenuItem
+          sx={{ justifyContent: 'space-between' }}
+          value="diagonal-top-right"
+        >
           <div
             style={{
               width: '100%',
@@ -344,7 +347,7 @@ const MFillSelector = ({
               justifyContent: 'space-between',
               alignItems: 'center'
             }}
-          >              
+          >
             <div>
               Diagonal
               <Chip size="small" label="Up" variant="outlined" />
@@ -353,7 +356,10 @@ const MFillSelector = ({
             <img width="30px" src={topRight} alt="topRight" />
           </div>
         </MenuItem>
-        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-bottom-right">
+        <MenuItem
+          sx={{ justifyContent: 'space-between' }}
+          value="diagonal-bottom-right"
+        >
           <div
             style={{
               width: '100%',
@@ -370,7 +376,10 @@ const MFillSelector = ({
             <img width="30px" src={bottomRight} alt="bottomRight" />
           </div>
         </MenuItem>
-        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-bottom-left">
+        <MenuItem
+          sx={{ justifyContent: 'space-between' }}
+          value="diagonal-bottom-left"
+        >
           <div
             style={{
               width: '100%',
@@ -387,7 +396,10 @@ const MFillSelector = ({
             <img width="30px" src={bottomLeft} alt="bottomLeft" />
           </div>
         </MenuItem>
-        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-top-left">
+        <MenuItem
+          sx={{ justifyContent: 'space-between' }}
+          value="diagonal-top-left"
+        >
           <div
             style={{
               width: '100%',
@@ -404,7 +416,6 @@ const MFillSelector = ({
             <img width="30px" src={topLeft} alt="topLeft" />
           </div>
         </MenuItem>
-
       </Select>
     </BladeFrame>
   )

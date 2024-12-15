@@ -17,21 +17,22 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['**/build/*', '**/*.js', '**/*.jsx', 'extraResources/**']
+    ignores: [
+      '**/build/*',
+      '**/*.js',
+      '**/*.jsx',
+      '**/*.mjs',
+      '**/*.cjs',
+      'extraResources/**'
+    ]
   },
   ...compat.extends(
     'standard',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
-    // 'plugin:react-hooks/recommended'
+    'plugin:react-hooks/recommended',
+    'plugin:prettier/recommended',
   ),
   {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-      'prettier/prettier': prettier
-      // 'react-hooks': reactHooks
-    },
-
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -94,7 +95,7 @@ export default [
       'no-nested-ternary': 0,
       'import/extensions': 0,
       'import/first': 0,
-      '@typescript-eslint/indent': [2, 2],
+      '@/indent': [2, 2, { SwitchCase: 1}],
       'react/react-in-jsx-scope': 'off',
       'react/function-component-definition': [0],
       'react/jsx-props-no-spreading': 0,
@@ -107,6 +108,11 @@ export default [
       '@typescript-eslint/no-explicit-any': 0,
       '@prettier/trailing-comma': 0,
       'jsx-a11y/label-has-associated-control': 0
-    }
+    },
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+      'prettier/prettier': prettier
+      // 'react-hooks': reactHooks
+    },
   }
 ]

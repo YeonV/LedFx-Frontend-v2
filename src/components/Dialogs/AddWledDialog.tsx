@@ -110,7 +110,6 @@ const AddWledDialog = () => {
       })
   }
 
-  
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const col: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 130 },
@@ -125,7 +124,7 @@ const AddWledDialog = () => {
         width: 100
       }
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [col]
   )
   return (

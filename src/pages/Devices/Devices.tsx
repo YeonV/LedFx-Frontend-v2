@@ -1,3 +1,4 @@
+/* eslint-disable @/indent */
 import { useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import { Alert, Collapse } from '@mui/material'
@@ -51,7 +52,7 @@ const Devices = () => {
       setNewBlender('')
       navigate(`/device/${newBlender}`)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newBlender, blenderAutomagic])
 
   useEffect(() => {
@@ -119,8 +120,16 @@ const Devices = () => {
       <div className={classes.cardWrapper}>
         {virtuals && Object.keys(virtuals).length ? (
           Object.keys(virtuals)
-            .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-            .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
+            .filter((v) =>
+              showComplex
+                ? v
+                : !(
+                    v.endsWith('-mask') ||
+                    v.endsWith('-foreground') ||
+                    v.endsWith('-background')
+                  )
+            )
+            .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
             .map((virtual, i) => (
               <DeviceCard virtual={virtual} key={i} index={i} />
             ))

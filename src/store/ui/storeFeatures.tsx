@@ -31,7 +31,7 @@ export type IFeatures =
   | 'gamepad'
   | 'wakelock'
   | 'melbankGraph'
-  
+
 const storeFeatures = (set: any) => ({
   features: {
     dev: false,

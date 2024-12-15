@@ -46,50 +46,66 @@ const assignPixels = ({
         group: `${row}-${col}`
       }
       if (direction.includes('diagonal-top-right')) {
-        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row - index >= 0 && col + index < colN; index++) {
+        for (
+          let index = 0;
+          index <= Math.abs(selectedPixel[1] - selectedPixel[0]) &&
+          row - index >= 0 &&
+          col + index < colN;
+          index++
+        ) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
             group: `${row}-${col}`
           }
-          updatedM[row - index][col + index] = newM;
+          updatedM[row - index][col + index] = newM
         }
-      }
-      
-      else if (direction.includes('diagonal-bottom-right')) {
-        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row + index < rowN && col + index < colN; index++) {
+      } else if (direction.includes('diagonal-bottom-right')) {
+        for (
+          let index = 0;
+          index <= Math.abs(selectedPixel[1] - selectedPixel[0]) &&
+          row + index < rowN &&
+          col + index < colN;
+          index++
+        ) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
             group: `${row}-${col}`
           }
-          updatedM[row + index][col + index] = newM;
+          updatedM[row + index][col + index] = newM
         }
-      }
-      
-      else if (direction.includes('diagonal-bottom-left')) {
-        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row + index < rowN && col - index >= 0; index++) {
+      } else if (direction.includes('diagonal-bottom-left')) {
+        for (
+          let index = 0;
+          index <= Math.abs(selectedPixel[1] - selectedPixel[0]) &&
+          row + index < rowN &&
+          col - index >= 0;
+          index++
+        ) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
             group: `${row}-${col}`
           }
-          updatedM[row + index][col - index] = newM;
+          updatedM[row + index][col - index] = newM
         }
-      }
-      
-      else if (direction.includes('diagonal-top-left')) {
-        for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]) && row - index >= 0 && col - index >= 0; index++) {
+      } else if (direction.includes('diagonal-top-left')) {
+        for (
+          let index = 0;
+          index <= Math.abs(selectedPixel[1] - selectedPixel[0]) &&
+          row - index >= 0 &&
+          col - index >= 0;
+          index++
+        ) {
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
             group: `${row}-${col}`
           }
-          updatedM[row - index][col - index] = newM;
+          updatedM[row - index][col - index] = newM
         }
-      }
-      
-      else if (direction.includes('right')) {
+      } else if (direction.includes('right')) {
         if (direction.includes('flip')) {
           updatedM[row - Math.floor((index + col) / colN)][
             (index + col) % colN

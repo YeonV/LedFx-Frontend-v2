@@ -30,14 +30,14 @@ const OneShot = ({
   const [ramp, setRamp] = useState(defaultRamp || 10)
   const [hold, setHold] = useState(defaultHold || 200)
   const [fade, setFade] = useState(defaultFate || 2000)
-  const [holdType, setHoldType] = useState('press');
+  const [holdType, setHoldType] = useState('press')
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
-    newHoldType: string,
+    newHoldType: string
   ) => {
-    setHoldType(newHoldType);
-  };
+    setHoldType(newHoldType)
+  }
   const colors = useStore((state) => state.colors)
   const handleClose = () => {
     setDialogOpen(false)
@@ -93,7 +93,7 @@ const OneShot = ({
             mb={3}
           >
             <FormControl>
-              <ReactGPicker              
+              <ReactGPicker
                 colorBoardHeight={150}
                 debounce
                 debounceMS={300}
@@ -109,7 +109,10 @@ const OneShot = ({
                 defaultColors={Object.values(defaultColors)}
               />
             </FormControl>
-            <Stack sx={{ width: '40%', alignSelf: 'stretch' }} justifyContent={'space-between'}>          
+            <Stack
+              sx={{ width: '40%', alignSelf: 'stretch' }}
+              justifyContent={'space-between'}
+            >
               <Box
                 sx={{
                   display: 'block',
@@ -121,10 +124,14 @@ const OneShot = ({
                   backgroundColor: color
                 }}
               />
-              <Stack direction={'column'} alignItems={'center'} justifyContent={'space-between'}>
+              <Stack
+                direction={'column'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+              >
                 <label>Hold after</label>
                 <ToggleButtonGroup
-                fullWidth
+                  fullWidth
                   color="primary"
                   value={holdType}
                   exclusive
@@ -137,9 +144,9 @@ const OneShot = ({
               </Stack>
             </Stack>
           </Stack>
-        <SliderInput title="Ramp" value={ramp} setValue={setRamp} />
-        <SliderInput title="Hold" value={hold} setValue={setHold} />
-        <SliderInput title="Fade" value={fade} setValue={setFade} />
+          <SliderInput title="Ramp" value={ramp} setValue={setRamp} />
+          <SliderInput title="Hold" value={hold} setValue={setHold} />
+          <SliderInput title="Fade" value={fade} setValue={setFade} />
           {/* <code
             style={{
               display: 'block',

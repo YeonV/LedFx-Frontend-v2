@@ -1,8 +1,8 @@
+/* eslint-disable @/indent */
 import { transpose } from '../matrixUtils'
 import wait from './wait'
 import wled from './wled'
 import wledGet from './wledGet'
-
 
 const iterativeOnOnlyOne = async (
   waitingTime: number,
@@ -12,7 +12,7 @@ const iterativeOnOnlyOne = async (
   outputWidth = 50,
   outputHeight = 50,
   addPoint?: any,
-  device?: any,
+  device?: any
 ) => {
   const state = await wledGet()
   const segments = state.seg

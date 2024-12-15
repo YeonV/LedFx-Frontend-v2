@@ -28,7 +28,7 @@ export default function ScenesMostUsed({
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
     )
     getVirtuals()
-}
+  }
   useEffect(() => {
     Object.keys(count).map((key: string) => setMostUsedScenes(key, count[key]))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +88,7 @@ export default function ScenesMostUsed({
             {title}
           </Typography>
         )}
-        <DataGrid        
+        <DataGrid
           onRowClick={handleEvent}
           rowHeight={50}
           columns={db ? columns.filter((c) => c.field !== 'used') : columns}

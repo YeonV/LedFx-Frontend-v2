@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 import {
   Select,
   MenuItem,
@@ -94,18 +94,19 @@ const BladeSelect = ({
                 </MenuItem>
               ))}
           </Select>
-        ) : (<>
-          <TextField
-            helperText={!hideDesc && schema.description}
-            defaultValue={
-              (model && model_id && model[model_id]) ||
-              (schema.enum && schema.enum[0]) ||
-              schema.default ||
-              ''
-            }
-            onBlur={(e) => onChange(model_id, e.target.value)}
-            style={textStyle as any}
-          />
+        ) : (
+          <>
+            <TextField
+              helperText={!hideDesc && schema.description}
+              defaultValue={
+                (model && model_id && model[model_id]) ||
+                (schema.enum && schema.enum[0]) ||
+                schema.default ||
+                ''
+              }
+              onBlur={(e) => onChange(model_id, e.target.value)}
+              style={textStyle as any}
+            />
           </>
         )
       ) : schema.enum && Array.isArray(schema.enum) ? (
@@ -188,10 +189,25 @@ const BladeSelect = ({
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
-              const reservedParts = ['gap-', '-background', '-foreground', '-mask']
-              if (schema.title === 'Name' && reservedParts.some((part) => e.target.value.startsWith(part) || e.target.value.endsWith(part))) {
+              const reservedParts = [
+                'gap-',
+                '-background',
+                '-foreground',
+                '-mask'
+              ]
+              if (
+                schema.title === 'Name' &&
+                reservedParts.some(
+                  (part) =>
+                    e.target.value.startsWith(part) ||
+                    e.target.value.endsWith(part)
+                )
+              ) {
                 setShowReserved(true)
-                inputRef.current.value = e.target.value.replace(/(gap-|-background|-foreground|-mask)/g, '')
+                inputRef.current.value = e.target.value.replace(
+                  /(gap-|-background|-foreground|-mask)/g,
+                  ''
+                )
               } else {
                 setShowReserved(false)
                 inputRef.current.value = e.target.value
@@ -200,12 +216,12 @@ const BladeSelect = ({
             style={textStyle as any}
           />
           {showReserved && (
-            <Alert severity="warning" onClick={() => setShowReserved(!showReserved)} sx={{ marginTop: 1, width: '400px' }}>
-            <Typography
-              variant="caption"
-              >
-                Reserved word removed
-              </Typography>
+            <Alert
+              severity="warning"
+              onClick={() => setShowReserved(!showReserved)}
+              sx={{ marginTop: 1, width: '400px' }}
+            >
+              <Typography variant="caption">Reserved word removed</Typography>
             </Alert>
           )}
           {schema.id === 'image_location' && (

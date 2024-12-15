@@ -1,6 +1,5 @@
-import wled from "./wled"
-import wledGet from "./wledGet"
-
+import wled from './wled'
+import wledGet from './wledGet'
 
 const oneLed = async (led: number) => {
   const state = await wledGet('state')

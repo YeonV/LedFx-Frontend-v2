@@ -3,7 +3,7 @@ export interface BBooleanProps {
   required?: boolean
   style?: any
   type?: 'switch' | 'checkbox' | 'button'
-  onChange?: (e: any) => void
+  onChange?: (_e: any) => void
   defaultValue?: any
   value: boolean
   title?: string

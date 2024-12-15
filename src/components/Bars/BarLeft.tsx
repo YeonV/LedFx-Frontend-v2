@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -45,19 +45,28 @@ const LeftBar = () => {
         <>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <div className={classes.logoImage}>
-              <img src={logoAsset} alt="logo" style={{
-                filter: theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)',
-              }} />
+              <img
+                src={logoAsset}
+                alt="logo"
+                style={{
+                  filter:
+                    theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)'
+                }}
+              />
             </div>
             <Box
               className={classes.devbadge}
               onClick={() => window.localStorage.setItem('BladeMod', '0')}
               sx={{
-                filter: theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)',
+                filter:
+                  theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)',
                 border: theme.palette.secondary.main,
                 backgroundColor: isElectron()
                   ? 'transparent'
-                  : (theme.palette.mode === 'light' || theme.palette.primary.main === '#FFFFFF') ? 'transparent' : theme.palette.primary.main
+                  : theme.palette.mode === 'light' ||
+                      theme.palette.primary.main === '#FFFFFF'
+                    ? 'transparent'
+                    : theme.palette.primary.main
               }}
             />
           </Box>
@@ -98,70 +107,78 @@ const LeftBar = () => {
       <Divider />
       <List>
         {Object.keys(virtuals)
-            .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-            .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
-            .map((d, i) => (
-          <Link
-            style={{ textDecoration: 'none' }}
-            key={i}
-            to={`/device/${virtuals[d].id}`}
-            onClick={() => {
-              if (smallScreen) handleDrawerClose()
-            }}
-          >
-            <ListItem
-              sx={
-                pathname.split('/').length === 3 &&
-                pathname.split('/')[1] === 'device' &&
-                pathname.split('/')[2] === d
-                  ? {
-                      backgroundColor: theme.palette.secondary.main,
-                      boxShadow: theme.shadows[12],
-                      '&:hover,&:focus,&:visited,&': {
-                        backgroundColor: theme.palette.secondary.main,
-                        boxShadow: theme.shadows[12]
-                      },
-                      color: '#fff'
-                    }
-                  : {}
-              }
-              key={virtuals[d].config.name}
+          .filter((v) =>
+            showComplex
+              ? v
+              : !(
+                  v.endsWith('-mask') ||
+                  v.endsWith('-foreground') ||
+                  v.endsWith('-background')
+                )
+          )
+          .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+          .map((d, i) => (
+            <Link
+              style={{ textDecoration: 'none' }}
+              key={i}
+              to={`/device/${virtuals[d].id}`}
+              onClick={() => {
+                if (smallScreen) handleDrawerClose()
+              }}
             >
-              <ListItemIcon>
-                <BladeIcon
-                  style={{ position: 'relative' }}
-                  colorIndicator={
-                    !(
-                      pathname.split('/').length === 3 &&
-                      pathname.split('/')[1] === 'device' &&
-                      pathname.split('/')[2] === d
-                    ) && Object.keys(virtuals[d]?.effect).length > 0
-                  }
-                  name={
-                    virtuals &&
-                    virtuals[d] &&
-                    virtuals[d].config &&
-                    virtuals[d].config.icon_name &&
-                    virtuals[d].config.icon_name
-                  }
+              <ListItem
+                sx={
+                  pathname.split('/').length === 3 &&
+                  pathname.split('/')[1] === 'device' &&
+                  pathname.split('/')[2] === d
+                    ? {
+                        backgroundColor: theme.palette.secondary.main,
+                        boxShadow: theme.shadows[12],
+                        '&:hover,&:focus,&:visited,&': {
+                          backgroundColor: theme.palette.secondary.main,
+                          boxShadow: theme.shadows[12]
+                        },
+                        color: '#fff'
+                      }
+                    : {}
+                }
+                key={virtuals[d].config.name}
+              >
+                <ListItemIcon>
+                  <BladeIcon
+                    style={{ position: 'relative' }}
+                    colorIndicator={
+                      !(
+                        pathname.split('/').length === 3 &&
+                        pathname.split('/')[1] === 'device' &&
+                        pathname.split('/')[2] === d
+                      ) && Object.keys(virtuals[d]?.effect).length > 0
+                    }
+                    name={
+                      virtuals &&
+                      virtuals[d] &&
+                      virtuals[d].config &&
+                      virtuals[d].config.icon_name &&
+                      virtuals[d].config.icon_name
+                    }
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  style={{
+                    color:
+                      !(
+                        pathname.split('/').length === 3 &&
+                        pathname.split('/')[1] === 'device' &&
+                        pathname.split('/')[2] === d
+                      ) && Object.keys(virtuals[d]?.effect).length > 0
+                        ? theme.palette.primary.light
+                        : theme.palette.text.primary
+                  }}
+                  primary={virtuals[d].config.name}
                 />
-              </ListItemIcon>
-              <ListItemText
-                style={{
-                  color:
-                    !(
-                      pathname.split('/').length === 3 &&
-                      pathname.split('/')[1] === 'device' &&
-                      pathname.split('/')[2] === d
-                    ) && Object.keys(virtuals[d]?.effect).length > 0
-                      ? theme.palette.primary.light
-                      : theme.palette.text.primary
-                }}
-                primary={virtuals[d].config.name}
-              />
-            </ListItem>
-          </Link>
-        ))}
+              </ListItem>
+            </Link>
+          ))}
       </List>
       <Divider />
     </Drawer>

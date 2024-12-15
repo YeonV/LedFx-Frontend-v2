@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable @/indent */
 // import DataRow from './DataRow';
 
 const IntegrationRow = ({

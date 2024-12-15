@@ -1,1 +1,1 @@
-declare module 'launchpad-webmidi';
+declare module 'launchpad-webmidi'

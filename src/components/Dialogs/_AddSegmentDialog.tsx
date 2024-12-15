@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import {
@@ -33,14 +34,14 @@ const Root = styled('div')(({ theme }) => ({
 }))
 
 interface ConfirmationDialogRawProps {
-  onClose(...args: unknown[]): unknown;
-  open: boolean;
-  value: string;
-  config?: any;
-  classes?: any;
-  id?: string;
-  keepMounted?: boolean;
-  deviceList?: any;
+  onClose(..._args: unknown[]): unknown
+  open: boolean
+  value: string
+  config?: any
+  classes?: any
+  id?: string
+  keepMounted?: boolean
+  deviceList?: any
 }
 
 function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
@@ -64,9 +65,17 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
 
   delete other.deviceList
   const deviceKeys = Object.keys(props.deviceList)
-    .filter(v=> showComplex ? v : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background')))
-    .filter(v=> showGaps ? v : !(v.startsWith('gap-')))
-  
+    .filter((v) =>
+      showComplex
+        ? v
+        : !(
+          v.endsWith('-mask') ||
+            v.endsWith('-foreground') ||
+            v.endsWith('-background')
+        )
+    )
+    .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+
   return (
     <Dialog
       disableEscapeKeyDown
@@ -83,15 +92,15 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
             style={{ width: '100%' }}
             onChange={handleChange}
           >
-            {deviceKeys
-              .map((device) => (
-                <MenuItem
-                  value={props.deviceList[device].id}
-                  key={props.deviceList[device].id}
-                >
-                  {virtuals[props.deviceList[device].id]?.config?.name || props.deviceList[device]?.config?.name}
-                </MenuItem>
-              ))}
+            {deviceKeys.map((device) => (
+              <MenuItem
+                value={props.deviceList[device].id}
+                key={props.deviceList[device].id}
+              >
+                {virtuals[props.deviceList[device].id]?.config?.name ||
+                  props.deviceList[device]?.config?.name}
+              </MenuItem>
+            ))}
           </Select>
         </BladeFrame>
       </DialogContent>
@@ -106,7 +115,6 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
     </Dialog>
   )
 }
-
 
 export default function ConfirmationDialog({
   virtual,

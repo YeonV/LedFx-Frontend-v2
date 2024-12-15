@@ -85,7 +85,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
           onClick={handleClick}
           sx={{ bgcolor: theme.palette.primary.main }}
         >
-          <Add sx={{color: theme.palette.primary.contrastText }} />
+          <Add sx={{ color: theme.palette.primary.contrastText }} />
         </Fab>
         <StyledMenu
           id="customized-menu"
