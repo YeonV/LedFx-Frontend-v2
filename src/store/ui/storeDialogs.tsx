@@ -48,6 +48,10 @@ const storeDialogs = (set: any) => ({
     effectType: {
       open: false,
       edit: false
+    },
+    filedrop: {
+      open: false,
+      edit: false
     }
   },
   assistant: {
@@ -87,6 +91,17 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/nohost'
+    ),
+  setDialogOpenFileDrop: (open: boolean, edit?: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.filedrop = {
+          open,
+          edit: edit || false
+        }
+      }),
+      false,
+      'api/dialog/FileDrop'
     ),
   setDialogOpenAddScene: (
     open: boolean,
