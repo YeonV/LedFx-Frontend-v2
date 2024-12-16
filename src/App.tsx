@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
-import { Box, CssBaseline } from '@mui/material'
+import { CssBaseline } from '@mui/material'
 import Cookies from 'universal-cookie'
 import ws, { WsContext, HandleWs } from './utils/Websocket'
 import useStore from './store/useStore'
@@ -16,6 +16,7 @@ import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes'
 import xmas from './assets/xmas.png'
 import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
+import FiledropProvider from './utils/FiledropProvider'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -220,13 +221,10 @@ export default function App() {
       <SnackbarProvider maxSnack={15}>
         <WsContext.Provider value={ws}>
           <SpotifyProvider>
-            <Box
-              sx={{ display: 'flex' }}
-              style={{ paddingTop: isElectron() ? '30px' : 0 }}
-            >
+            <FiledropProvider>
               <CssBaseline />
               <Pages handleWs={<HandleWs />} />
-            </Box>
+            </FiledropProvider>
           </SpotifyProvider>
         </WsContext.Provider>
         {features.waves && (

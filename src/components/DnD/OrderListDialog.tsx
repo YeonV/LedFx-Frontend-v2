@@ -38,7 +38,7 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
       onOpen()
     }
   }
-  console.log('virtualOrder', virtualOrder)
+
   const handleClose = () => {
     setOpen(false)
   }
