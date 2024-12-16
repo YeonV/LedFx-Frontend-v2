@@ -12,6 +12,7 @@ import {
 } from '@hello-pangea/dnd'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material'
+import useStore from '../../store/useStore'
 
 export interface Order {
   virtId: string
@@ -57,6 +58,10 @@ const getListStyle = (_isDraggingOver: boolean) => ({
 
 const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
   const theme = useTheme() as Theme
+
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
+
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return
@@ -95,7 +100,14 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
                         provided.draggableProps.style,
                         theme
                       ),
-                      cursor: 'grab'
+                      cursor: 'grab',
+                      color:
+                        item.virtId.startsWith('gap-') ||
+                        item.virtId.endsWith('-mask') ||
+                        item.virtId.endsWith('-foreground') ||
+                        item.virtId.endsWith('-background')
+                          ? theme.palette.text.disabled
+                          : ''
                     }}
                   >
                     <ListItemIcon>
@@ -103,7 +115,15 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
                         name={item.icon || 'wled'}
                         sx={{
                           filter: snapshot.isDragging ? 'invert(1)' : '',
-                          mr: 2
+                          mr: 2,
+                          color:
+                            (!showGaps && item.virtId.startsWith('gap-')) ||
+                            (!showComplex &&
+                              (item.virtId.endsWith('-mask') ||
+                                item.virtId.endsWith('-foreground') ||
+                                item.virtId.endsWith('-background')))
+                              ? theme.palette.text.disabled
+                              : ''
                         }}
                       />
                     </ListItemIcon>
