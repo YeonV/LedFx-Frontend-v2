@@ -32,6 +32,7 @@ import useStore from '../../store/useStore'
 import Instances from './Instances'
 import SceneImage from '../../pages/Scenes/ScenesImage'
 import useStyles from '../../pages/Scenes/Scenes.styles'
+import SongDetector from '../Integrations/Spotify/Widgets/SongDetector/SongDetector'
 
 export default function HostManager() {
   const theme = useTheme()
@@ -471,6 +472,32 @@ export default function HostManager() {
                 )}
               </>
             )}
+            <div style={{ marginBottom: '1rem' }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Tooltip title="Same scene id with different scene config across all running cors. ATTENTION: You have to make sure yourself, they are not colliding!">
+                  <Typography variant="caption" sx={{ marginBottom: '1rem' }}>
+                    Song detector{' '}
+                    <span
+                      style={{
+                        background: theme.palette.success.dark,
+                        padding: '0 1rem',
+                        borderRadius: 3,
+                        marginLeft: 8
+                      }}
+                    >
+                      alpha
+                    </span>
+                  </Typography>
+                </Tooltip>
+              </Stack>
+              <Divider sx={{ marginBottom: '1rem' }} />
+              <SongDetector />
+            </div>
           </div>
         </DialogContent>
         <DialogActions>

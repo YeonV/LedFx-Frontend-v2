@@ -112,6 +112,33 @@ const storeUI = (set: any) => ({
       false,
       'ui/keybinding'
     ),
+  sdX: 50,
+  setSdX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.sdX = x
+      }),
+      false,
+      'ui/sdX'
+    ),
+  sdY: 200,
+  setSdY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.sdY = y
+      }),
+      false,
+      'ui/sdY'
+    ),
+  sd: false,
+  setSd: (sd: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.sd = sd
+      }),
+      false,
+      'ui/sd'
+    ),
   changeTheme: false,
   reloadTheme: (): void =>
     set(

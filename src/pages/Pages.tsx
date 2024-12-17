@@ -35,6 +35,7 @@ import Graph from './Graph/Graph'
 import MGraphFloating from '../components/Integrations/Spotify/Widgets/MGraphFlotaing/MGraphFloating'
 import Keybinding from '../components/Integrations/Spotify/Widgets/Keybinding/Keybinding'
 import OneEffect from '../components/Gamepad/OneEffect'
+import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
@@ -45,6 +46,8 @@ const Routings = ({ handleWs }: any) => {
   const setMp = useStore((state) => state.ui.setMp)
   const mg = useStore((state) => state.ui.mg)
   const setMg = useStore((state) => state.ui.setMg)
+  const sd = useStore((state) => state.ui.sd)
+  const setSd = useStore((state) => state.ui.setSd)
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
@@ -61,6 +64,7 @@ const Routings = ({ handleWs }: any) => {
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
   useHotkeys(['ctrl+alt+d'], () => setMp(!mp))
   useHotkeys(['ctrl+alt+m'], () => setMg(!mg))
+  useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
   useHotkeys(['ctrl+alt+g'], () => {
     if (window.localStorage.getItem('guestmode') === 'activated') {
@@ -150,6 +154,7 @@ const Routings = ({ handleWs }: any) => {
           )}
         </Routes>
         {mp && <Mp />}
+        {sd && <SongDetectorFloating />}
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         <OneEffect noButton />
