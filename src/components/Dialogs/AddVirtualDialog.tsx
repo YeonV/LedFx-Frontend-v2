@@ -12,6 +12,7 @@ import { Tune } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import EditVirtuals from '../../pages/Devices/EditVirtuals/EditVirtuals'
+import SeeDocs from '../SeeDocs/SeeDocs'
 
 const AddVirtualDialog = () => {
   const addVirtual = useStore((state) => state.addVirtual)
@@ -146,7 +147,8 @@ const AddVirtualDialog = () => {
               <Link href="https://materialdesignicons.com" target="_blank">
                 MDI
               </Link>
-              (ie: mdi:icon-name)
+              (ie: mdi:icon-name) |{' '}
+              <SeeDocs url="https://docs.ledfx.app/en/latest/howto/virtuals.html" />
             </div>
           </DialogContentText>
 

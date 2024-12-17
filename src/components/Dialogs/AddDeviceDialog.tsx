@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import SchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
+import SeeDocs from '../SeeDocs/SeeDocs'
 
 const PREFIX = 'AddDeviceDialog'
 
@@ -170,11 +171,13 @@ const AddDeviceDialog = () => {
         <DialogContentText>
           To add a device to LedFx, please first select the type of device you
           wish to add then provide the necessary configuration.
+          <SeeDocs url="https://docs.ledfx.app/en/latest/configuring.html" />
         </DialogContentText>
         {deviceType === 'launchpad' && (
           <Alert severity="info">
             When adding a Lunchpad as a led-output device, you cannot use it as
             a MIDI input device at the same time (atm).
+            <SeeDocs url="https://docs.ledfx.app/en/latest/configuring.html" />
           </Alert>
         )}
         <div className={classes.wrapper}>

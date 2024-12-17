@@ -1,6 +1,14 @@
 import type { Theme } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
+import {
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  useTheme,
+  Typography
+} from '@mui/material'
 import { Send } from '@mui/icons-material'
 import { forwardRef } from 'react'
 import { makeStyles } from '@mui/styles'
@@ -49,12 +57,26 @@ export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>(
     const {
       icon = <Send fontSize="small" />,
       name = 'MenuItem',
+      description = '',
       action
     } = props
+    const theme = useTheme()
     return (
       <MenuItem onClick={action} ref={ref}>
-        <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={name} />
+        <Stack direction="column" mt={1}>
+          <Stack direction="row" spacing={2}>
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={name} />
+          </Stack>
+          <ListItemText>
+            <Typography
+              sx={{ pl: 6.5, mt: '4px !important', mb: 1 }}
+              color={theme.palette.text.disabled}
+            >
+              {description}
+            </Typography>
+          </ListItemText>
+        </Stack>
       </MenuItem>
     )
   }

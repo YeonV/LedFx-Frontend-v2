@@ -29,6 +29,7 @@ import storeMidi from './ui/storeMidi'
 import storeVideo from './ui/storeVideo'
 import storeUIPersist from './ui-persist/storeUIpersist'
 import storeUIPersistActions from './ui-persist/storeUIpersistActions'
+import storeSongDectector from './ui/storeSongDectector'
 
 const useStore = create(
   devtools(
@@ -56,7 +57,7 @@ const useStore = create(
           ...storeFeatures(set),
           ...storeWebAudio(set),
           ...storeYoutube(set),
-
+          ...storeSongDectector(set),
           ...storeColors(set),
           ...storeDevices(set),
           ...storeVirtuals(set),

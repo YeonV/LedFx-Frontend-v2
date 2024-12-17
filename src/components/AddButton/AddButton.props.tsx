@@ -5,6 +5,7 @@ export interface MenuLineProps {
   icon?: ReactElement<any>
   name?: string
   action: () => void
+  description?: string
 }
 
 export interface StyledMenuProps extends MenuProps {

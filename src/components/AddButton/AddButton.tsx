@@ -39,6 +39,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
     {
       icon: <BladeIcon name="mdi:led-strip" />,
       name: 'Add Device',
+      description: 'New light hardware',
       action: () => {
         openAddDevice(true)
         handleClose()
@@ -47,6 +48,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
     {
       icon: <BladeIcon name="mdi:led-strip-variant" />,
       name: 'Add Virtual',
+      description: 'Segments & Groups',
       action: () => {
         openAddVirtual(true)
         handleClose()
@@ -55,6 +57,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
     {
       icon: <BladeIcon name="mdi:image-plus" />,
       name: 'Add Scene',
+      description: 'Save your current setup',
       action: () => {
         openAddScene(true)
         handleClose()
@@ -66,6 +69,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
     menuitems.push({
       icon: <ElectricalServices />,
       name: 'Add Integration',
+      description: 'Extend LedFx',
       action: () => {
         openAddInt(true)
         handleClose()
@@ -103,6 +107,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
               name={menuitem.name}
               icon={menuitem.icon}
               action={menuitem.action}
+              description={menuitem.description}
             />
           ))}
         </StyledMenu>
@@ -138,6 +143,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
                 name={menuitem.name}
                 icon={menuitem.icon}
                 action={menuitem.action}
+                description={menuitem.description}
               />
             ))}
           </StyledMenu>
