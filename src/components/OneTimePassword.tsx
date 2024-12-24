@@ -14,7 +14,7 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
   }
 
   const handleSubmit = useCallback(async () => {
-    ;(window as any).api?.send('toMain', {
+    window.api?.send('toMain', {
       command: 'verify_otp',
       token: otp
     })
@@ -26,11 +26,11 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
   }, [otp])
 
   useEffect(() => {
-    ;(window as any).api?.send('toMain', {
+    window.api?.send('toMain', {
       command: 'generate-mfa-qr',
       user
     })
-    ;(window as any).api?.receive('fromMain', (args: any) => {
+    window.api?.receive('fromMain', (args: any) => {
       if (args[0] === 'mfa-verified') {
         setInvalidCode(!args[1])
         if (args[1]) {
