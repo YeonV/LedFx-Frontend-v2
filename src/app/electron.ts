@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import isDev from 'electron-is-dev'
 import {
@@ -17,14 +16,13 @@ import { handleProtocol, setupProtocol } from './app/protocol.mjs'
 import { closeAllSubs, startInstance } from './app/instances.mjs'
 import { createTray } from './app/utils/tray.mjs'
 import { handlers } from './app/handlers.mjs'
+import getReduxPath from './app/utils/getReduxPath.mjs'
+import createLedfxFolder from './app/utils/createLedFxFolder.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 EventEmitter.defaultMaxListeners = 15
-
-const reduxDevtoolsPath =
-  'C:\\Users\\Blade\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\lmhkpmbekcpmknklioeibfkpmmfibljd\\3.2.7_0'
 
 const subpy: any = null
 const subprocesses: Record<string, any> = {}
@@ -34,14 +32,12 @@ const win: BrowserWindow | null = null
 setupProtocol()
 const gotTheLock = app.requestSingleInstanceLock()
 
-if (!fs.existsSync(path.join(app.getPath('userData'), '.ledfx-cc'))) {
-  console.log('Creating .ledfx-cc folder')
-  fs.mkdirSync(path.join(app.getPath('userData'), '.ledfx-cc'))
-}
+const reduxDevtoolsPath = getReduxPath()
+createLedfxFolder()
 
 const ready = () =>
   app.whenReady().then(async () => {
-    if (isDev) {
+    if (isDev && reduxDevtoolsPath) {
       await session.defaultSession.loadExtension(reduxDevtoolsPath)
     }
     nativeTheme.themeSource = 'dark'

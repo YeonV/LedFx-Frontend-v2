@@ -6,6 +6,16 @@ import reportWebVitals from './reportWebVitals'
 import ErrorBoundary from './utils/ErrorBoundary'
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
+declare global {
+  interface Window {
+    api: {
+      send: (_channel: string, _data: any) => void
+      receive: (_channel: string, _func: (_data: any) => void) => void
+      yz: boolean
+    }
+  }
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <ErrorBoundary>

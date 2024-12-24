@@ -75,12 +75,12 @@ export default function App() {
         'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
       )
     if (isElectron()) {
-      ;(window as any)?.api?.send('toMain', { command: 'get-platform' })
-      ;(window as any)?.api?.send('toMain', { command: 'get-core-params' })
-      ;(window as any)?.api?.send('toMain', { command: 'close-others' })
+      window.api.send('toMain', { command: 'get-platform' })
+      window.api.send('toMain', { command: 'get-core-params' })
+      window.api.send('toMain', { command: 'close-others' })
     }
   }, [])
-  ;(window as any).api?.receive('fromMain', (parameters: any) => {
+  window.api?.receive('fromMain', (parameters: any) => {
     if (parameters === 'shutdown') {
       shutdown()
     }

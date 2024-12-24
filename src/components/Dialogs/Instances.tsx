@@ -45,7 +45,7 @@ const Instances = ({
 
   const handleStartCore = (e: any, p: number) => {
     e.stopPropagation()
-    ;(window as any).api.send('toMain', {
+    window.api.send('toMain', {
       command: 'start-core-instance',
       instance: instance || `instance${i}`,
       port: p
@@ -53,7 +53,7 @@ const Instances = ({
   }
   const handleStopCore = (e: any, p: number) => {
     e.stopPropagation()
-    ;(window as any).api.send('toMain', {
+    window.api.send('toMain', {
       command: 'stop-core-instance',
       instance,
       port: p
@@ -62,13 +62,13 @@ const Instances = ({
   const handleDelete = (e: any, p: number) => {
     e.stopPropagation()
     if (instance) {
-      ;(window as any).api.send('toMain', {
+      window.api.send('toMain', {
         command: 'delete-core-instance',
         instance,
         port: p
       })
     } else {
-      ;(window as any).api.send('toMain', {
+      window.api.send('toMain', {
         command: 'delete-core-params',
         instance: 'all'
       })
@@ -283,7 +283,7 @@ const Instances = ({
                 }
                 aria-label="open-config"
                 onClick={() => {
-                  ;(window as any).api.send('toMain', {
+                  window.api.send('toMain', {
                     command: 'open-config',
                     instance
                   })

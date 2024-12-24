@@ -16,8 +16,8 @@ const Lock = () => {
   }
 
   useEffect(() => {
-    ;(window as any).api?.send('toMain', { command: 'generate-mfa-qr', user })
-    ;(window as any).api?.receive('fromMain', (args: any) => {
+    window.api?.send('toMain', { command: 'generate-mfa-qr', user })
+    window.api?.receive('fromMain', (args: any) => {
       if (args[0] === 'mfa-qr-code') {
         setQrCodePng(args[1])
       }

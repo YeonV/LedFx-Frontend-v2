@@ -567,7 +567,7 @@ const TopBar = () => {
                   Change Host
                 </MenuItem>
                 {/* <MenuItem onClick={()=>{
-                  ;(window as any).api.send('toMain', {
+                  window .api.send('toMain', {
                     command: 'toggle-darkmode'
                   })
                 }}>
