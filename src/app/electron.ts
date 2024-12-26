@@ -10,12 +10,12 @@ import {
 } from 'electron'
 import { EventEmitter } from 'events'
 import { fileURLToPath } from 'node:url'
-import isCC from './app/utils/isCC.mjs'
-import createWindow from './app/utils/win.mjs'
 import { handleProtocol, setupProtocol } from './app/protocol.mjs'
 import { closeAllSubs, startInstance } from './app/instances.mjs'
 import { createTray } from './app/utils/tray.mjs'
 import { handlers } from './app/handlers.mjs'
+import isCC from './app/utils/isCC.mjs'
+import createWindow from './app/utils/win.mjs'
 import getReduxPath from './app/utils/getReduxPath.mjs'
 import createLedfxFolder from './app/utils/createLedFxFolder.mjs'
 
@@ -26,14 +26,14 @@ EventEmitter.defaultMaxListeners = 15
 
 const subpy: any = null
 const subprocesses: Record<string, any> = {}
-let wind: BrowserWindow | null = null
 const win: BrowserWindow | null = null
+let wind: BrowserWindow | null = null
 
 setupProtocol()
 const gotTheLock = app.requestSingleInstanceLock()
 
-const reduxDevtoolsPath = getReduxPath()
 createLedfxFolder()
+const reduxDevtoolsPath = getReduxPath()
 
 const ready = () =>
   app.whenReady().then(async () => {
