@@ -10,7 +10,8 @@ import {
   AccordionSummary,
   Typography,
   Box,
-  Tooltip
+  Tooltip,
+  CircularProgress
 } from '@mui/material'
 import {
   ExpandMore,
@@ -78,6 +79,7 @@ const orderEffectProperties = (
 const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fade, setFade] = useState(false)
   const showMatrix = useStore((state) => state.showMatrix)
+  const [loading, setLoading] = useState(false)
 
   const getVirtuals = useStore((state) => state.getVirtuals)
   const clearEffect = useStore((state) => state.clearEffect)
@@ -297,12 +299,38 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   >
                     {virtual.active ? <Pause /> : <PlayArrow />}
                   </Button>
-                  <Button
-                    className="step-device-five"
-                    onClick={() => handleClearEffect()}
-                  >
-                    <Stop />
-                  </Button>
+                  <Box sx={{ position: 'relative' }}>
+                    <Button
+                      className="step-device-five"
+                      disabled={loading}
+                      onClick={(e) => {
+                        console.log(virtuals[virtId].config.transition_time)
+                        e.preventDefault()
+                        handleClearEffect()
+                        setLoading(true)
+                        setTimeout(
+                          () => {
+                            setLoading(false)
+                          },
+                          virtuals[virtId].config.transition_time * 1000 || 5000
+                        )
+                      }}
+                    >
+                      <Stop />
+                    </Button>
+                    {loading && (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          marginTop: '-12px',
+                          marginLeft: '-12px'
+                        }}
+                      />
+                    )}
+                  </Box>
                 </>
               )}
             </div>

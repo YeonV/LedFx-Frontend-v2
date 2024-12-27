@@ -1,4 +1,12 @@
-import { useTheme, Stack, Chip, IconButton, Typography } from '@mui/material'
+import {
+  useTheme,
+  Stack,
+  Chip,
+  IconButton,
+  Typography,
+  Box,
+  CircularProgress
+} from '@mui/material'
 import {
   DataGrid,
   GridColDef,
@@ -34,6 +42,7 @@ const DeviceActions = ({
   effect?: boolean
 }) => {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const virtuals = useStore((state) => state.virtuals)
   const lastEffect = virtuals[virtId]?.last_effect
   const updateVirtual = useStore((state) => state.updateVirtual)
@@ -67,7 +76,7 @@ const DeviceActions = ({
   return (
     <>
       {effect ? (
-        <>
+        <Stack direction={'row'} alignItems={'center'} spacing={1}>
           <IconButton
             sx={{ pt: 0.25 }}
             size="small"
@@ -79,17 +88,40 @@ const DeviceActions = ({
           >
             {virtuals[virtId]?.active ? <Pause /> : <PlayArrow />}
           </IconButton>
-          <IconButton
-            sx={{ pt: 0.25 }}
-            size="small"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              handleClearEffect()
-            }}
-          >
-            <Stop />
-          </IconButton>
+          <Box sx={{ position: 'relative' }}>
+            <IconButton
+              sx={{ pt: 0.25 }}
+              size="small"
+              disabled={loading}
+              onClick={(e) => {
+                console.log(virtuals[virtId].config.transition_time)
+                e.preventDefault()
+                e.stopPropagation()
+                handleClearEffect()
+                setLoading(true)
+                setTimeout(
+                  () => {
+                    setLoading(false)
+                  },
+                  virtuals[virtId].config.transition_time * 1000 || 5000
+                )
+              }}
+            >
+              <Stop />
+            </IconButton>
+            {loading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px'
+                }}
+              />
+            )}
+          </Box>
           {virtuals[virtId]?.config.rows > 1 && (
             <IconButton
               sx={{ pt: 0.25 }}
@@ -103,7 +135,7 @@ const DeviceActions = ({
               <Fullscreen />
             </IconButton>
           )}
-        </>
+        </Stack>
       ) : (
         <span style={{ width: 24, flex: '0 0 24px' }}>
           {lastEffect && (
