@@ -19,13 +19,14 @@ import {
   Stop,
   SyncProblem
 } from '@mui/icons-material'
-import { Box, Stack } from '@mui/material'
+import { Box, CircularProgress, Stack } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import useStyle from './DeviceCard.styles'
 import { DeviceCardProps } from './DeviceCard.interface'
+import useStore from '../../../store/useStore'
 
 /**
  * Pixelgraphs will not connect via Websocket in Storybook
@@ -66,8 +67,9 @@ const DeviceCard = ({
   // eslint-disable-next-line
   const [fade, _setFade] = useState(false);
   const [isActive, setIsActive] = useState(isEffectSet || isStreaming)
-
+  const [loading, setLoading] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const virtuals = useStore((state) => state.virtuals)
   const color = 'inherit'
 
   const handleExpandClick = () => {
@@ -175,7 +177,6 @@ const DeviceCard = ({
                 color="textSecondary"
                 style={{ height: 25, display: 'flex', alignItems: 'center' }}
               >
-                <span className="hideMobile">Effect:&nbsp;</span>
                 {effectName}
                 <Button
                   variant="text"
@@ -192,21 +193,44 @@ const DeviceCard = ({
                 >
                   {isPlaying ? <Pause /> : <PlayArrow />}
                 </Button>
-                <Button
-                  size="small"
-                  variant="text"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleClearEffect(virtId)
-                  }}
-                  style={{
-                    color: '#999',
-                    minWidth: 'unset',
-                    zIndex: expanded ? 1 : 3
-                  }}
-                >
-                  <Stop />
-                </Button>
+
+                <Box sx={{ m: 1, position: 'relative' }}>
+                  <Button
+                    size="small"
+                    variant="text"
+                    disabled={loading}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleClearEffect(virtId)
+                      setLoading(true)
+                      setTimeout(
+                        () => {
+                          setLoading(false)
+                        },
+                        virtuals[virtId].config.transition_time * 1000 || 5000
+                      )
+                    }}
+                    style={{
+                      color: '#999',
+                      minWidth: 'unset',
+                      zIndex: expanded ? 1 : 3
+                    }}
+                  >
+                    <Stop />
+                  </Button>
+                  {loading && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px'
+                      }}
+                    />
+                  )}
+                </Box>
               </Typography>
             ) : isStreaming ? (
               <Typography
