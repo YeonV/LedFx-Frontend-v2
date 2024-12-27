@@ -7,6 +7,10 @@ import Sockette from 'sockette'
 import isElectron from 'is-electron'
 import useStore from '../store/useStore'
 
+interface WebSockette extends Sockette {
+  ws: WebSocket
+}
+
 // const ws = new WebSocket(`${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
 // const ws = new WebSocket(`${(window.localStorage.getItem('ledfx-host') && window.localStorage.getItem('ledfx-host').startsWith('https')) ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
 // const ws = new WebSocket(`wss://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0].split(':')[0] || 'localhost:8888'}/api/websocket`);
@@ -35,37 +39,37 @@ function createSocket() {
             }
           })
         )
-        ;(_ws as any).ws = e.target
+        ws.ws = e.target as WebSocket
         const req = {
           event_type: 'devices_updated',
           id: 1,
           type: 'subscribe_event'
         }
-        ;(ws as any).send(JSON.stringify(++req.id && req))
+        ws.send(JSON.stringify(++req.id && req))
         const requ = {
           event_type: 'device_created',
           id: 1,
           type: 'subscribe_event'
         }
-        ;(ws as any).send(JSON.stringify(++requ.id && requ))
+        ws.send(JSON.stringify(++requ.id && requ))
         const reque = {
           event_type: 'graph_update',
           id: 1,
           type: 'subscribe_event'
         }
-        ;(ws as any).send(JSON.stringify(++reque.id && reque))
+        ws.send(JSON.stringify(++reque.id && reque))
         const reqs = {
           event_type: 'scene_activated',
           id: 1,
           type: 'subscribe_event'
         }
-        ;(ws as any).send(JSON.stringify(++reqs.id && reqs))
+        ws.send(JSON.stringify(++reqs.id && reqs))
         const reqst = {
           event_type: 'effect_set',
           id: 1,
           type: 'subscribe_event'
         }
-        ;(ws as any).send(JSON.stringify(++reqst.id && reqst))
+        ws.send(JSON.stringify(++reqst.id && reqst))
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === 'visualisation_update') {
@@ -137,7 +141,7 @@ function createSocket() {
       }
       // onerror: e => console.log('Error:', e)
     }
-  )
+  ) as WebSockette
   return _ws
 }
 const ws = createSocket()
@@ -181,7 +185,7 @@ export const HandleWs = () => {
             type: 'subscribe_event'
           }
           // console.log("Send");
-          ;(ws as any).send(JSON.stringify(++request.id && request))
+          ws.send(JSON.stringify(++request.id && request))
         }
         getWs()
       })
@@ -194,7 +198,7 @@ export const HandleWs = () => {
               type: 'unsubscribe_event',
               event_type: 'visualisation_update'
             }
-            ;(ws as any).send(JSON.stringify(++request.id && request))
+            ws.send(JSON.stringify(++request.id && request))
           }
           // console.log("Clean Up");
           removeGetWs()
@@ -204,11 +208,16 @@ export const HandleWs = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wsReady, pixelGraphs])
 
-  if (!wsReady) {
-    if (ws && (ws as any).ws) {
-      setWsReady(true)
-    }
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (ws.ws && ws.ws.readyState === WebSocket.OPEN) {
+        setWsReady(true)
+        clearInterval(interval)
+      }
+    }, 20)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return null
 }
