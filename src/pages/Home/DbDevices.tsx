@@ -9,7 +9,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
-  Clear,
   DeleteForever,
   Edit,
   Fullscreen,
@@ -18,6 +17,7 @@ import {
   Pause,
   PlayArrow,
   Settings,
+  Stop,
   SyncProblem
 } from '@mui/icons-material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
@@ -35,6 +35,7 @@ const DeviceActions = ({
 }) => {
   const navigate = useNavigate()
   const virtuals = useStore((state) => state.virtuals)
+  const lastEffect = virtuals[virtId]?.last_effect
   const updateVirtual = useStore((state) => state.updateVirtual)
   const deleteVirtual = useStore((state) => state.deleteVirtual)
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -68,6 +69,7 @@ const DeviceActions = ({
       {effect ? (
         <>
           <IconButton
+            sx={{ pt: 0.25 }}
             size="small"
             onClick={(e) => {
               e.preventDefault()
@@ -78,6 +80,7 @@ const DeviceActions = ({
             {virtuals[virtId]?.active ? <Pause /> : <PlayArrow />}
           </IconButton>
           <IconButton
+            sx={{ pt: 0.25 }}
             size="small"
             onClick={(e) => {
               e.preventDefault()
@@ -85,10 +88,11 @@ const DeviceActions = ({
               handleClearEffect()
             }}
           >
-            <Clear />
+            <Stop />
           </IconButton>
           {virtuals[virtId]?.config.rows > 1 && (
             <IconButton
+              sx={{ pt: 0.25 }}
               size="small"
               onClick={(e) => {
                 e.preventDefault()
@@ -101,7 +105,23 @@ const DeviceActions = ({
           )}
         </>
       ) : (
-        <span style={{ width: 24, flex: '0 0 24px' }} />
+        <span style={{ width: 24, flex: '0 0 24px' }}>
+          {lastEffect && (
+            <>
+              <IconButton
+                sx={{ pt: 0.25 }}
+                size="small"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handlePlayPause()
+                }}
+              >
+                <PlayArrow />
+              </IconButton>
+            </>
+          )}
+        </span>
       )}
       <IconButton
         sx={{
@@ -170,6 +190,7 @@ const DbDevices = () => {
   const paused = useStore((state) => state.paused)
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
+  const schemas = useStore((state) => state.schemas)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const activateDevice = useStore((state) => state.activateDevice)
   const clearEffect = useStore((state) => state.clearEffect)
@@ -285,7 +306,7 @@ const DbDevices = () => {
           ?.online
           ? virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
-            : 'Online'
+            : `${virtuals[params.row.id]?.last_effect ? `Last Effect: ${schemas.effects[virtuals[params.row.id]?.last_effect as string].name}` : 'Online'}`
           : virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
             : params.row.is_device
@@ -320,7 +341,7 @@ const DbDevices = () => {
                 getVirtuals()
               }}
             >
-              <Clear />
+              <Stop />
             </IconButton>
           </Stack>
           Actions
