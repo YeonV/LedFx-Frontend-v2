@@ -16,6 +16,7 @@ const DeviceCardWrapper = ({
 }) => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
+  const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const devices = useStore((state) => state.devices)
   const deleteVirtual = useStore((state) => state.deleteVirtual)
@@ -218,8 +219,14 @@ const DeviceCardWrapper = ({
         online={
           devices[Object.keys(devices).find((d) => d === virtual) || '']?.online
         }
+        lastEffect={
+          virtuals[virtual]?.last_effect
+            ? schemas.effects[virtuals[virtual]?.last_effect].name
+            : null
+        }
         virtId={virtual}
         index={index}
+        handlePlayLast={() => handlePlayPause()}
         handleDeleteDevice={() => handleDeleteDevice()}
         handleEditVirtual={() => handleEditVirtual()}
         handleEditDevice={() => handleEditDevice(virtuals[virtual]?.is_device)}

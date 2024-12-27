@@ -9,16 +9,17 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-  Box
+  Box,
+  Tooltip
 } from '@mui/material'
 import {
-  Clear,
   ExpandMore,
   Pause,
   PlayArrow,
   GridOn,
   GridOff,
-  Fullscreen as FullScreenIcon
+  Fullscreen as FullScreenIcon,
+  Stop
 } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
@@ -82,6 +83,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
+  const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const effects = useStore((state) => state.schemas.effects)
   const viewMode = useStore((state) => state.viewMode)
@@ -112,6 +114,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }, [JSON.stringify(virtuals[virtId])])
 
   const effectType = virtual && virtual.effect.type
+  const lastEffect = virtual && virtual.last_effect
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
   const orderedProperties =
     effects &&
@@ -223,6 +226,22 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 justifyContent: 'flex-end'
               }}
             >
+              {lastEffect && !effectType && (
+                <>
+                  <Tooltip title={schemas.effects[lastEffect].name}>
+                    <Button
+                      style={{ marginRight: '.5rem' }}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handlePlayPause()
+                      }}
+                    >
+                      <PlayArrow />
+                    </Button>
+                  </Tooltip>
+                </>
+              )}
               {!(
                 virtuals &&
                 virtual &&
@@ -282,7 +301,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                     className="step-device-five"
                     onClick={() => handleClearEffect()}
                   >
-                    <Clear />
+                    <Stop />
                   </Button>
                 </>
               )}

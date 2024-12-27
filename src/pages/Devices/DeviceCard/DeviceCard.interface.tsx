@@ -90,20 +90,25 @@ export interface DeviceCardProps {
   /**
    * Handle Function
    */
+  handlePlayLast?: any
+  /**
+   * Handle Function
+   */
   activateDevice?: any
   /**
    * Handle Function
    */
   linkTo?: any
   /**
-   * onClick Link
+   * JSX styles
    */
   additionalStyle?: any
   /**
-   * JSX styles
+   * On Context Menu
    */
   onContextMenu?: any
   /**
-   * On Context Menu
+   * last effect
    */
+  lastEffect?: null | string
 }
