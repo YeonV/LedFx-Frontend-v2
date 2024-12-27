@@ -103,6 +103,7 @@ export interface Virtual {
   active: boolean
   effect: Effect
   effects: Effect[]
+  last_effect?: null | string
 }
 
 const storeVirtuals = (set: any) => ({

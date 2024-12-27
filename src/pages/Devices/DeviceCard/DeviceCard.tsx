@@ -12,14 +12,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import {
-  Clear,
   Delete,
   Pause,
   PestControl,
   PlayArrow,
+  Stop,
   SyncProblem
 } from '@mui/icons-material'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph'
@@ -44,6 +44,7 @@ const DeviceCard = ({
   handleEditDevice = () => console.log('EDITING DEVICE'),
   handleClearEffect = () => console.log('CLEARING EFFECT'),
   handlePlayPause = () => console.log('PLAY/PAUSE'),
+  handlePlayLast = () => console.log('PLAY LAST'),
   linkTo = '/',
   additionalStyle = {},
   iconName = 'wled',
@@ -57,7 +58,8 @@ const DeviceCard = ({
   isDevice = 'yz-quad',
   graphsActive = true,
   showMatrix = false,
-  onContextMenu
+  onContextMenu,
+  lastEffect
 }: DeviceCardProps) => {
   const classes = useStyle()
   const theme = useTheme()
@@ -203,7 +205,7 @@ const DeviceCard = ({
                     zIndex: expanded ? 1 : 3
                   }}
                 >
-                  <Clear />
+                  <Stop />
                 </Button>
               </Typography>
             ) : isStreaming ? (
@@ -215,12 +217,57 @@ const DeviceCard = ({
                 Streaming...
               </Typography>
             ) : (
-              <Typography
-                variant="body1"
-                style={{ color: theme.palette.text.disabled, height: 25 }}
-              >
-                off
-              </Typography>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography
+                  variant="body1"
+                  style={{
+                    color: theme.palette.text.disabled,
+                    height: 25
+                  }}
+                >
+                  off
+                </Typography>
+                {lastEffect && (
+                  <>
+                    <Typography
+                      variant="body1"
+                      style={{
+                        color: theme.palette.text.disabled,
+                        height: 25
+                      }}
+                    >
+                      &nbsp;|&nbsp;
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      style={{
+                        color: theme.palette.text.disabled,
+                        height: 25,
+                        paddingTop: 1
+                      }}
+                    >
+                      {lastEffect}
+                    </Typography>
+                    <Button
+                      variant="text"
+                      style={{
+                        color: '#999',
+                        minWidth: 'unset',
+                        zIndex: expanded ? 1 : 3,
+                        padding: 0
+                      }}
+                      size="small"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handlePlayLast()
+                      }}
+                    >
+                      <PlayArrow />
+                    </Button>
+                  </>
+                )}
+              </Stack>
             )}
           </div>
 
