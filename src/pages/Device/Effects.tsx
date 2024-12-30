@@ -84,7 +84,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
-  const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const devices = useStore((state) => state.devices)
   const effects = useStore((state) => state.schemas.effects)
