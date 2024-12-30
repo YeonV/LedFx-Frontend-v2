@@ -43,11 +43,23 @@ const EffectDropDown = ({
 
   return (
     <DropDown
-      value={(virtual && virtual.effect && virtual.effect.type) || ''}
+      value={
+        virtual && virtual.effect && virtual.effect.type
+          ? virtual.effect.type
+          : virtual.last_effect
+            ? virtual.last_effect
+            : 'Choose Effect'
+      }
       onChange={(e: any) => onEffectTypeChange(e)}
       groups={groups}
       showFilter={features.effectfilter}
-      title={title}
+      title={
+        virtual && virtual.effect && virtual.effect.type
+          ? title
+          : virtual.last_effect
+            ? 'Last Effect'
+            : 'Currently Inactive'
+      }
     />
   )
 }

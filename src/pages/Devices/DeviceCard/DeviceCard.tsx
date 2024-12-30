@@ -26,7 +26,9 @@ import PixelGraph from '../../../components/PixelGraph'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import useStyle from './DeviceCard.styles'
 import { DeviceCardProps } from './DeviceCard.interface'
+// import PixelGraphGPU from '../../../components/PixelGraphGPU'
 import useStore from '../../../store/useStore'
+// import PixelGraphPixie from '../../../components/PixelGraphPixie'
 
 /**
  * Pixelgraphs will not connect via Websocket in Storybook
@@ -173,6 +175,7 @@ const DeviceCard = ({
               </Typography>
             ) : effectName ? (
               <Typography
+                component={'div'}
                 variant="body1"
                 color="textSecondary"
                 style={{ height: 25, display: 'flex', alignItems: 'center' }}
@@ -357,6 +360,20 @@ const DeviceCard = ({
               virtId={virtId || ''}
               className="step-devices-seven"
             />
+            {/* <PixelGraphGPU
+              showMatrix={showMatrix}
+              intGraphs={graphsActive}
+              active={isActive}
+              virtId={virtId || ''}
+              className="step-devices-seven"
+            /> */}
+            {/* <PixelGraphPixie
+              showMatrix={showMatrix}
+              intGraphs={graphsActive}
+              active={isActive}
+              virtId={virtId || ''}
+              className="step-devices-seven"
+            /> */}
           </div>
         )}
         <div

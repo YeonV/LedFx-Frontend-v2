@@ -87,6 +87,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const updateEffect = useStore((state) => state.updateEffect)
   const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
+  const devices = useStore((state) => state.devices)
   const effects = useStore((state) => state.schemas.effects)
   const viewMode = useStore((state) => state.viewMode)
   const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
@@ -201,7 +202,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       document.removeEventListener('effect_set', handleWebsockets)
     }
   }, [])
-  // console.log('virtual', virtual?.effect?.config)
+
+  const actives =
+    devices[Object.keys(devices).find((d) => d === virtId) || '']
+      ?.active_virtuals
+  const streaming =
+    actives && actives.length > 0 && actives?.some((a) => virtuals[a].active)
+
+  const running = virtual && virtual.effect && virtual.effect.type
+
   return (
     <>
       <Card
@@ -220,7 +229,14 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
               justifyContent: 'space-between'
             }}
           >
-            <h1>{virtual && virtual.config.name}</h1>
+            <Typography variant="body2" color="textDisabled" m={0} mb={1}>
+              {running
+                ? 'Running'
+                : streaming
+                  ? 'Streaming from ' + actives?.join(', ')
+                  : 'Not active'}
+            </Typography>
+            <h1 style={{ margin: 0 }}>{virtual && virtual.config.name}</h1>
             <div
               style={{
                 display: 'flex',
@@ -230,18 +246,16 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             >
               {lastEffect && !effectType && (
                 <>
-                  <Tooltip title={schemas.effects[lastEffect].name}>
-                    <Button
-                      style={{ marginRight: '.5rem' }}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        handlePlayPause()
-                      }}
-                    >
-                      <PlayArrow />
-                    </Button>
-                  </Tooltip>
+                  <Button
+                    style={{ marginRight: '.5rem' }}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      handlePlayPause()
+                    }}
+                  >
+                    <PlayArrow />
+                  </Button>
                 </>
               )}
               {!(
@@ -304,7 +318,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                       className="step-device-five"
                       disabled={loading}
                       onClick={(e) => {
-                        console.log(virtuals[virtId].config.transition_time)
                         e.preventDefault()
                         handleClearEffect()
                         setLoading(true)
@@ -356,6 +369,15 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
           >
             <FullScreen handle={handle} onChange={setFullScreen}>
               <PixelGraph
+                onDoubleClick={() => {
+                  if (fullScreen) {
+                    handle.exit()
+                    setFullScreen(!fullScreen)
+                  } else {
+                    handle.enter()
+                    setFullScreen(fullScreen)
+                  }
+                }}
                 fullScreen={fullScreen}
                 showMatrix={matrix}
                 virtId={virtId}
