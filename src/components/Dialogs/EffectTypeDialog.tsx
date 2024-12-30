@@ -107,7 +107,7 @@ const EffectTypeDialog = ({
             }
           }}
         >
-          {yoptAll.find((o) => o.value === value)?.label || ''}
+          {yoptAll.find((o) => o.value === value)?.label || 'Choose Effect'}
           <ArrowDropDown
             sx={{
               position: 'absolute',

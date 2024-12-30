@@ -11,7 +11,8 @@ const PixelGraph = ({
   intGraphs = false,
   showMatrix = false,
   fullScreen = false,
-  db = false
+  db = false,
+  onDoubleClick
 }: {
   virtId: string
   dummy?: boolean
@@ -21,6 +22,7 @@ const PixelGraph = ({
   showMatrix?: boolean
   fullScreen?: boolean
   db?: boolean
+  onDoubleClick?: any
 }) => {
   const [pixels, setPixels] = useState<any>([])
   const [shape, setShape] = useState<[null | number, null | number]>([
@@ -100,6 +102,7 @@ const PixelGraph = ({
         margin: '0.5rem 0 0 0'
       }}
       className={`${className} ${active ? 'active' : ''}`}
+      onDoubleClick={onDoubleClick}
     >
       <div
         key={1}
@@ -113,6 +116,9 @@ const PixelGraph = ({
     </div>
   ) : (pixels.length || decodedPixels.length) && rows > 1 && showMatrix ? (
     <div
+      onDoubleClick={() => {
+        onDoubleClick()
+      }}
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',
         maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
