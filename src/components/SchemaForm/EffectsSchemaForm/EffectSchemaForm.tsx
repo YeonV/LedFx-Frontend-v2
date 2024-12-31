@@ -34,7 +34,7 @@ const EffectSchemaForm = ({
   selectedType
 }: EffectSchemaFormProps) => {
   const virtuals = useStore((state) => state.virtuals)
-  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
+  const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   return (
     <Root className={classes.bladeSchemaForm}>
       {schemaProperties &&

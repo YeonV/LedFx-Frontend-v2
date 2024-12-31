@@ -28,6 +28,14 @@ const storeUIPersistActions = (set: any) => ({
       }),
       false,
       'uiPersist/setWarnings'
+    ),
+  setBlenderAutomagic: (val: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.uiPersist.blenderAutomagic = val
+      }),
+      false,
+      'ui/blenderAutomagic'
     )
 })
 

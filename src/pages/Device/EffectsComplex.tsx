@@ -74,7 +74,7 @@ const EffectsComplex = ({
   const getSchemas = useStore((state) => state.getSchemas)
   const updateEffect = useStore((state) => state.updateEffect)
   const setEffect = useStore((state) => state.setEffect)
-  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
+  const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const virtuals = useStore((state) => state.virtuals)
   const features = useStore((state) => state.features)
   const effects = useStore((state) => state.schemas.effects)

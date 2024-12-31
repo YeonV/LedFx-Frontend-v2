@@ -27,7 +27,7 @@ const Device = () => {
   const updateVirtual = useStore((state) => state.updateVirtual)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const setNewBlender = useStore((state) => state.setNewBlender)
-  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
+  const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const graphs = useStore((state) => state.graphs)
   const features = useStore((state) => state.features)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
