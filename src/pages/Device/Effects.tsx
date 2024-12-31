@@ -209,6 +209,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   const running = virtual && virtual.effect && virtual.effect.type
 
+  const paused = virtual && !virtual.active
+
   return (
     <>
       <Card
@@ -228,11 +230,13 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             }}
           >
             <Typography variant="body2" color="textDisabled" m={0} mb={1}>
-              {running
-                ? 'Running'
-                : streaming
-                  ? 'Streaming from ' + actives?.join(', ')
-                  : 'Not active'}
+              {paused
+                ? 'Paused'
+                : running
+                  ? 'Running'
+                  : streaming
+                    ? 'Streaming from ' + actives?.join(', ')
+                    : 'Not active'}
             </Typography>
             <h1 style={{ margin: 0 }}>{virtual && virtual.config.name}</h1>
             <div
