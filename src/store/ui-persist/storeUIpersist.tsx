@@ -12,7 +12,8 @@ const storeUIPersist = (set: any) => ({
   },
   warnings: {
     lessPixels: true
-  }
+  },
+  blenderAutomagic: true
 })
 
 export default storeUIPersist

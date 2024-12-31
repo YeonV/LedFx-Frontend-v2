@@ -40,7 +40,7 @@ const Devices = () => {
   const showGaps = useStore((state) => state.showGaps)
   const newBlender = useStore((state) => state.newBlender)
   const setNewBlender = useStore((state) => state.setNewBlender)
-  const blenderAutomagic = useStore((state) => state.ui.blenderAutomagic)
+  const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const fPixels = useStore((state) => state.config.visualisation_maxlen)

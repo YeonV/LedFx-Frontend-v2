@@ -31,15 +31,6 @@ const storeUI = (set: any) => ({
       false,
       'ui/virtual2dLimit'
     ),
-  blenderAutomagic: true,
-  setBlenderAutomagic: (val: boolean): void =>
-    set(
-      produce((state: IStore) => {
-        state.ui.blenderAutomagic = val
-      }),
-      false,
-      'ui/blenderAutomagic'
-    ),
   showHex: false,
   setShowHex: (show: boolean): void =>
     set(
