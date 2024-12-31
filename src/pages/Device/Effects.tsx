@@ -230,10 +230,10 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             }}
           >
             <Typography variant="body2" color="textDisabled" m={0} mb={1}>
-              {paused
-                ? 'Paused'
-                : running
-                  ? 'Running'
+              {running && !paused
+                ? 'Running'
+                : running && paused
+                  ? 'Paused'
                   : streaming
                     ? 'Streaming from ' + actives?.join(', ')
                     : 'Not active'}
@@ -260,23 +260,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   </Button>
                 </>
               )}
-              {!(
-                virtuals &&
-                virtual &&
-                effects &&
-                virtual.effect &&
-                virtual.effect.config
-              ) &&
-                virtual?.config?.rows &&
-                virtual?.config?.rows > 1 && (
-                  <Button
-                    style={{ marginRight: '.5rem' }}
-                    className="step-device-seven"
-                    onClick={handle.enter}
-                  >
-                    <FullScreenIcon />
-                  </Button>
-                )}
               {effects && effectType && (
                 <>
                   {viewMode !== 'user' && (
@@ -383,7 +366,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 fullScreen={fullScreen}
                 showMatrix={matrix}
                 virtId={virtId}
-                active={true}
+                active={streaming || !!running}
                 dummy={false}
               />
             </FullScreen>
