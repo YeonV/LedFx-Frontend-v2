@@ -121,7 +121,7 @@ const PixelGraph = ({
       }}
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',
-        maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
+        maxHeight: fullScreen ? '100vh' : 'unset',
         display: 'flex',
         flexDirection:
           virtuals[virtId].id === 'launchpad-x' ||
