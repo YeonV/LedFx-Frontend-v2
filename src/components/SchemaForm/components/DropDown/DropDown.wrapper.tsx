@@ -46,7 +46,7 @@ const EffectDropDown = ({
       value={
         virtual && virtual.effect && virtual.effect.type
           ? virtual.effect.type
-          : virtual.last_effect
+          : virtual?.last_effect
             ? virtual.last_effect
             : 'Choose Effect'
       }
@@ -56,7 +56,7 @@ const EffectDropDown = ({
       title={
         virtual && virtual.effect && virtual.effect.type
           ? title
-          : virtual.last_effect
+          : virtual?.last_effect
             ? 'Last Effect'
             : 'Currently Inactive'
       }
