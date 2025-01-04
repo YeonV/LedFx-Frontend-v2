@@ -108,7 +108,7 @@ export default function PresetButton({
             }}
           />
         </div>
-        <MenuItem
+        {/* <MenuItem
           onClick={(e) => {
             uploadPresetCloud(e)
             setAnchorEl(null)
@@ -118,7 +118,7 @@ export default function PresetButton({
             <CopyAll fontSize="small" />
           </ListItemIcon>
           <ListItemText>Copy Preset</ListItemText>
-        </MenuItem>
+        </MenuItem> */}
         {window.localStorage.getItem('ledfx-cloud-role') === 'creator' &&
           features.cloud &&
           isLogged && (

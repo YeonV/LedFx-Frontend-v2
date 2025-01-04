@@ -95,7 +95,13 @@ const BladeSliderInner = ({
           onChange={handleSliderChange}
           className={`slider-${full ? 'full' : 'half'}`}
           onChangeCommitted={(e, b) => onChange(model_id, b)}
-          style={{ color: '#aaa', ...style, width: '100%' }}
+          style={{
+            color: '#aaa',
+            ...style,
+            width: '100%',
+            marginBottom: 0.5,
+            marginTop: 0.5
+          }}
         />
         {!hideDesc && schema.description ? (
           <Typography variant="body2" className="MuiFormHelperText-root">
@@ -107,11 +113,13 @@ const BladeSliderInner = ({
         disableUnderline
         disabled={disabled}
         className={classes.input}
-        style={
-          model_id === 'delay_ms' // eslint-disable-next-line
-            ? { minWidth: 90, textAlign: 'right', paddingTop: 0, backgroundColor: theme.palette.divider }
-            : { backgroundColor: theme.palette.divider, minWidth: 75 }
-        }
+        style={{
+          minWidth: model_id === 'delay_ms' ? 90 : 75,
+          textAlign: 'right',
+          paddingTop: 0,
+          backgroundColor: theme.palette.divider,
+          height: 32
+        }}
         value={value}
         margin="dense"
         onChange={handleInputChange}
@@ -160,7 +168,8 @@ const BladeSliderInner = ({
       style={{
         ...style,
         width: '100%',
-        backgroundColor: theme.palette.background.paper
+        backgroundColor: theme.palette.background.paper,
+        margin: 0
       }}
     />
   )
