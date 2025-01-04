@@ -320,7 +320,7 @@ const DeviceCard = ({
                 transition: theme.transitions.create('transform', {
                   duration: theme.transitions.duration.shortest
                 }),
-                display: 'block'
+                display: 'flex'
               }}
               onClick={(e) => {
                 e.preventDefault()
