@@ -23,6 +23,9 @@ export default function ScenesMostUsed({
   const setMostUsedScenes = useStore((state) => state.setMostUsedScenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
+  const sceneBlenderFilter = (sc: string) =>
+    scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
+
   const handleEvent: GridEventListener<'rowClick'> = async (params) => {
     await activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
@@ -96,10 +99,12 @@ export default function ScenesMostUsed({
           // headerHeight={1}
           pageSizeOptions={[5]}
           disableRowSelectionOnClick
-          rows={Object.values(mostUsedScenes).map((v: any, i: number) => ({
-            id: i + 1,
-            ...v
-          }))}
+          rows={Object.values(mostUsedScenes)
+            .filter((scene: any) => sceneBlenderFilter(scene.name))
+            .map((v: any, i: number) => ({
+              id: i + 1,
+              ...v
+            }))}
           initialState={{
             // pagination: {
             //   pageSize: 100,
