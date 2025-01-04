@@ -48,7 +48,7 @@ import pkg from '../../../package.json'
 import { Ledfx } from '../../api/ledfx'
 import TourHome from '../Tours/TourHome'
 import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
-import { ledfxThemes } from '../../themes/AppThemes'
+import { ledfxThemes, themes } from '../../themes/AppThemes'
 import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 
@@ -154,9 +154,7 @@ const Title = (
         frConfig.updateUrl &&
         frConfig.releaseUrl ? (
           <Button
-            color={
-              t && ['DarkWhite', 'LightBlack'].includes(t) ? 'primary' : 'error'
-            }
+            color={t && ['DarkBw', 'LightBw'].includes(t) ? 'primary' : 'error'}
             variant="contained"
             onClick={() => window.open(frConfig.releaseUrl)}
             sx={{ ml: 2 }}
@@ -660,9 +658,100 @@ const TopBar = () => {
                                 t.startsWith('Dark') ? 'DarkMode' : 'LightMode'
                               }
                             />
-                            {t}
                           </ListItemIcon>
                           <ListItemText>{t}</ListItemText>
+                        </Stack>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+                {localStorage.getItem('username') === 'YeonV' && (
+                  <MenuItem
+                    onClick={() => {
+                      const t =
+                        window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
+                      const mode = t.startsWith('Dark') ? 'dark' : 'light'
+                      const color =
+                        ((mode === 'dark'
+                          ? t.split('Dark')[1]
+                          : t.split('Light')[1]
+                        )?.toLowerCase() as keyof typeof themes) || 'blue'
+                      const newTheme =
+                        (mode === 'dark' ? 'Light' : 'Dark') +
+                        color.charAt(0).toUpperCase() +
+                        color.slice(1)
+                      setCurrentTheme(newTheme)
+                      window.localStorage.setItem('ledfx-theme', newTheme)
+                      reloadTheme()
+                    }}
+                  >
+                    <Stack direction={'row'}>
+                      <ListItemIcon sx={{ alignItems: 'center', minWidth: 38 }}>
+                        <BladeIcon
+                          name={
+                            theme.palette.mode === 'dark'
+                              ? 'DarkMode'
+                              : 'LightMode'
+                          }
+                        />
+                      </ListItemIcon>
+                      <ListItemText>DarkMode</ListItemText>
+                    </Stack>
+                  </MenuItem>
+                )}
+                {localStorage.getItem('username') === 'YeonV' && (
+                  <Select
+                    IconComponent={() => null}
+                    fullWidth
+                    sx={{ pl: 2 }}
+                    disableUnderline
+                    value={
+                      ((((
+                        window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
+                      ).startsWith('Dark')
+                        ? 'dark'
+                        : 'light') === 'dark'
+                        ? (
+                            window.localStorage.getItem('ledfx-theme') ||
+                            'DarkBlue'
+                          ).split('Dark')[1]
+                        : (
+                            window.localStorage.getItem('ledfx-theme') ||
+                            'DarkBlue'
+                          ).split('Light')[1]
+                      )?.toLowerCase() as keyof typeof themes) || 'blue'
+                    }
+                    onChange={(e) => {
+                      const t =
+                        window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
+                      const mode = t.startsWith('Dark') ? 'dark' : 'light'
+                      const newTheme =
+                        (mode === 'dark' ? 'Dark' : 'Lark') +
+                        e.target.value.charAt(0).toUpperCase() +
+                        e.target.value.slice(1)
+                      setCurrentTheme(newTheme)
+                      window.localStorage.setItem('ledfx-theme', newTheme)
+                      reloadTheme()
+                    }}
+                  >
+                    {Object.keys(themes).map((t) => (
+                      <MenuItem key={t} value={t}>
+                        <Stack direction={'row'}>
+                          <ListItemIcon
+                            sx={{
+                              alignItems: 'center',
+                              minWidth: 38,
+                              color:
+                                themes[t as keyof typeof themes][
+                                  theme.palette.mode
+                                ].palette.primary.main
+                            }}
+                          >
+                            <BladeIcon name={'circle'} />
+                          </ListItemIcon>
+                          <ListItemText>
+                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                          </ListItemText>
                         </Stack>
                       </MenuItem>
                     ))}

@@ -167,12 +167,12 @@ export default function IntroDialog({
         label_left: 'Lightmode',
         label_right: 'Darkmode',
         action_left: () => {
-          window.localStorage.setItem('ledfx-theme', 'LightBlack')
+          window.localStorage.setItem('ledfx-theme', 'LightBw')
           reloadTheme()
           handleNext()
         },
         action_right: () => {
-          window.localStorage.setItem('ledfx-theme', 'DarkWhite')
+          window.localStorage.setItem('ledfx-theme', 'DarkBw')
           reloadTheme()
           handleNext()
         }

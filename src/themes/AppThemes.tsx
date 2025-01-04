@@ -95,7 +95,64 @@ export const BladeDarkGreenTheme = {
     }
   }
 }
-export const BladeDarkWhiteTheme = {
+
+export const BladeLightGreenTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#1db954'
+    },
+    secondary: {
+      main: '#14833b'
+    },
+    accent: {
+      main: '#20173c'
+    },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee'
+    }
+  }
+})
+
+export const BladeLightLegacyTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#009688'
+    },
+    secondary: {
+      main: '#009688'
+    },
+    accent: {
+      main: '#20173c'
+    },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee'
+    }
+  }
+})
+
+export const BladeDarkLegacyTheme = {
+  palette: {
+    mode: 'dark' as PaletteMode | undefined,
+    primary: {
+      main: '#009688'
+    },
+    secondary: {
+      main: '#009688'
+    },
+    accent: {
+      main: '#20173c'
+    },
+    background: {
+      default: '#000',
+      paper: '#090909'
+    }
+  }
+}
+export const BladeDarkBwTheme = {
   palette: {
     mode: 'dark' as PaletteMode | undefined,
     primary: {
@@ -113,7 +170,7 @@ export const BladeDarkWhiteTheme = {
     }
   }
 }
-export const BladeLightBlackTheme = {
+export const BladeLightBwTheme = {
   palette: {
     mode: 'light' as PaletteMode | undefined,
     primary: {
@@ -160,7 +217,7 @@ export const BladeDarkTheme = createTheme({
       main: '#b00000'
     },
     secondary: {
-      main: '#00000'
+      main: '#400000'
     },
     accent: {
       main: '#20173c'
@@ -214,7 +271,7 @@ export const BladeDarkPinkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#bf026b'
+      main: '#ff80ab'
     },
     secondary: {
       main: '#bf026b'
@@ -225,6 +282,25 @@ export const BladeDarkPinkTheme = createTheme({
     background: {
       default: '#030303',
       paper: '#111'
+    }
+  }
+})
+
+export const BladeLightPinkTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#e91e63'
+    },
+    secondary: {
+      main: '#c2185b'
+    },
+    accent: {
+      main: '#ff80ab'
+    },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee'
     }
   }
 })
@@ -240,6 +316,24 @@ export const BladeLightRedTheme = createTheme({
     },
     accent: {
       main: '#a00000'
+    },
+    background: {
+      default: '#fdfdfd',
+      paper: '#eee'
+    }
+  }
+})
+export const BladeLightOrangeTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#d48806'
+    },
+    secondary: {
+      main: '#edad2d'
+    },
+    accent: {
+      main: '#4281'
     },
     background: {
       default: '#fdfdfd',
@@ -267,18 +361,53 @@ export const BladeLightBlueTheme = createTheme({
 })
 
 export const ledfxThemes = {
-  Dark: BladeDarkTheme,
   DarkRed: BladeDarkTheme,
   DarkOrange: BladeDarkOrangeTheme,
-  LightRed: BladeLightRedTheme,
-  LightBlue: BladeLightBlueTheme,
   DarkGreen: BladeDarkGreenTheme,
   DarkBlue: BladeDarkBlueTheme,
   DarkGrey: BladeDarkGreyTheme,
   DarkPink: BladeDarkPinkTheme,
-  DarkWhite: BladeDarkWhiteTheme,
-  LightBlack: BladeLightBlackTheme
+  DarkBw: BladeDarkBwTheme,
+  LightRed: BladeLightRedTheme,
+  LightOrange: BladeLightOrangeTheme,
+  LightBlue: BladeLightBlueTheme,
+  LightPink: BladeLightPinkTheme,
+  LightGreen: BladeLightGreenTheme,
+  LightLegacy: BladeLightLegacyTheme,
+  DarkLegacy: BladeDarkLegacyTheme,
+  LightBw: BladeLightBwTheme
 } as any
+
+export const themes = {
+  blue: {
+    dark: BladeDarkBlueTheme,
+    light: BladeLightBlueTheme
+  },
+  red: {
+    dark: BladeDarkTheme,
+    light: BladeLightRedTheme
+  },
+  orange: {
+    dark: BladeDarkOrangeTheme,
+    light: BladeLightOrangeTheme
+  },
+  pink: {
+    dark: BladeDarkPinkTheme,
+    light: BladeLightPinkTheme
+  },
+  green: {
+    dark: BladeDarkGreenTheme,
+    light: BladeLightGreenTheme
+  },
+  legacy: {
+    dark: BladeDarkLegacyTheme,
+    light: BladeLightLegacyTheme
+  },
+  bw: {
+    dark: BladeDarkBwTheme,
+    light: BladeLightBwTheme
+  }
+}
 
 export const ledfxTheme =
   (window.localStorage.getItem('ledfx-theme')
@@ -288,5 +417,5 @@ export const ledfxTheme =
       : window.location.origin === 'https://my.ledfx.app'
         ? 'DarkGreen'
         : isElectron()
-          ? 'DarkWhite'
+          ? 'DarkBw'
           : 'DarkBlue') || 'DarkBlue'
