@@ -52,6 +52,7 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
       current[key] = { ...scenes[key], used: i + 1 }
       return setTheScenes(current)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, recentScenes])
 
   return (

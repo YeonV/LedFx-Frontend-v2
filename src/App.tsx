@@ -48,7 +48,7 @@ export default function App() {
         palette: {
           ...ledfxThemes[
             window.localStorage.getItem('ledfx-theme') ?? ledfxTheme
-          ].palette
+          ]?.palette
         }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,11 +150,11 @@ export default function App() {
       } else if (proto[1] === 'command') {
         if (proto[2] === 'theme') {
           if (proto[3] === 'light') {
-            window.localStorage.setItem('ledfx-theme', 'LightBlack')
+            window.localStorage.setItem('ledfx-theme', 'LightBw')
             reloadTheme()
           }
           if (proto[3] === 'dark') {
-            window.localStorage.setItem('ledfx-theme', 'DarkWhite')
+            window.localStorage.setItem('ledfx-theme', 'DarkBw')
             reloadTheme()
           }
           if (proto[3] === 'reset') {

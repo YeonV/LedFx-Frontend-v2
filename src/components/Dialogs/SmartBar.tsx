@@ -141,8 +141,8 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
                 'DarkBlue',
                 'DarkGrey',
                 'DarkPink',
-                'DarkWhite',
-                'LightBlack'
+                'DarkBw',
+                'LightBw'
               ].indexOf(value.replace('theme:', '')) > -1
             ) {
               window.localStorage.setItem(
