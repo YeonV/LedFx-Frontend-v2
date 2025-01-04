@@ -138,13 +138,16 @@ const AddVirtualDialog = () => {
               {' '}
               Icons:{' '}
               <Link
-                href="https://material-ui.com/components/material-icons/"
+                href="https://mui.com/material-ui/material-icons/"
                 target="_blank"
               >
                 MUI
               </Link>
               (ie: iconName) |{' '}
-              <Link href="https://materialdesignicons.com" target="_blank">
+              <Link
+                href="https://pictogrammers.com/library/mdi"
+                target="_blank"
+              >
                 MDI
               </Link>
               (ie: mdi:icon-name) |{' '}

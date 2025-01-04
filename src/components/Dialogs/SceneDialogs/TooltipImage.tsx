@@ -12,7 +12,7 @@ const TooltipImage = () => (
           <li>
             iconName{' '}
             <Link
-              href="https://material-ui.com/components/material-icons/"
+              href="https://mui.com/material-ui/material-icons/"
               target="_blank"
             >
               Find MUI icons here
@@ -23,7 +23,7 @@ const TooltipImage = () => (
           </li>
           <li>
             mdi:icon-name{' '}
-            <Link href="https://materialdesignicons.com" target="_blank">
+            <Link href="https://pictogrammers.com/library/mdi" target="_blank">
               Find Material Design icons here
             </Link>
             <Typography color="textSecondary" variant="subtitle1">
