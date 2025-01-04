@@ -230,8 +230,10 @@ const MGraph = () => {
               max={2000}
             />
             <TextField
-              InputProps={{
-                endAdornment: 'ms'
+              slotProps={{
+                input: {
+                  endAdornment: 'ms'
+                }
               }}
               type="number"
               value={
@@ -257,8 +259,10 @@ const MGraph = () => {
               max={100}
             />
             <TextField
-              InputProps={{
-                endAdornment: '%'
+              slotProps={{
+                input: {
+                  endAdornment: '%'
+                }
               }}
               type="number"
               value={typeof fillOpacity === 'number' ? fillOpacity : 0}
@@ -284,8 +288,10 @@ const MGraph = () => {
               step={0.1}
             />
             <TextField
-              InputProps={{
-                endAdornment: ''
+              slotProps={{
+                input: {
+                  endAdornment: ''
+                }
               }}
               type="number"
               value={typeof lineTension === 'number' ? lineTension : 0}

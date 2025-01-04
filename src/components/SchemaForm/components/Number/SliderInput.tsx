@@ -29,8 +29,12 @@ const SliderInput = ({
         step={step}
       />
       <TextField
-        inputProps={{ style: { textAlign: 'right', width: 130 } }}
-        InputProps={{ disableUnderline: true }}
+        slotProps={{
+          input: {
+            disableUnderline: true
+          },
+          htmlInput: { style: { textAlign: 'right', width: 130 } }
+        }}
         variant="standard"
         type="number"
         value={value}

@@ -183,6 +183,7 @@ const AddDeviceDialog = () => {
         <div className={classes.wrapper}>
           <label>Device Type</label>
           <Select
+            disableUnderline
             label="Type"
             disabled={
               !(

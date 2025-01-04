@@ -110,7 +110,7 @@ const BladeSliderInner = ({
         style={
           model_id === 'delay_ms' // eslint-disable-next-line
             ? { minWidth: 90, textAlign: 'right', paddingTop: 0, backgroundColor: theme.palette.divider }
-            : { backgroundColor: theme.palette.divider }
+            : { backgroundColor: theme.palette.divider, minWidth: 75 }
         }
         value={value}
         margin="dense"
@@ -146,9 +146,12 @@ const BladeSliderInner = ({
   ) : (
     <TextField
       disabled={disabled}
-      InputProps={{
-        // disableUnderline,
-        endAdornment: model_id === 'delay_ms' ? 'ms' : null
+      variant="standard"
+      slotProps={{
+        input: {
+          disableUnderline: true,
+          endAdornment: model_id === 'delay_ms' ? 'ms' : null
+        }
       }}
       type="number"
       value={value}

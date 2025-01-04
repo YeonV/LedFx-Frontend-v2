@@ -129,18 +129,18 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 id="min"
                 label="Min"
                 type="number"
-                InputLabelProps={{
-                  shrink: true
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">Hz</InputAdornment>
-                  )
-                }}
-                inputProps={{
-                  style: { textAlign: 'right' },
-                  min: 20,
-                  max: 20000
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">Hz</InputAdornment>
+                    )
+                  },
+                  htmlInput: {
+                    style: { textAlign: 'right' },
+                    min: 20,
+                    max: 20000
+                  },
+                  inputLabel: { shrink: true }
                 }}
                 value={
                   Math.round(hzIt(value[0])) < 5
@@ -165,17 +165,17 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 onChange={(e: any) => {
                   setValue([value[0], logIt(e.target.value)])
                 }}
-                inputProps={{
-                  min: 20,
-                  max: 20000
-                }}
-                InputLabelProps={{
-                  shrink: true
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">Hz</InputAdornment>
-                  )
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">Hz</InputAdornment>
+                    )
+                  },
+                  htmlInput: {
+                    min: 20,
+                    max: 20000
+                  },
+                  inputLabel: { shrink: true }
                 }}
               />
             </div>

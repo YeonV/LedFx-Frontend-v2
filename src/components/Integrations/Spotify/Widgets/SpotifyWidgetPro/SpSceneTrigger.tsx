@@ -107,8 +107,12 @@ export default function SpSceneTrigger() {
                 border: 0,
                 marginLeft: 10
               }}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">ms</InputAdornment>
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">ms</InputAdornment>
+                  )
+                }
               }}
               type="number"
               value={spNetworkTime}

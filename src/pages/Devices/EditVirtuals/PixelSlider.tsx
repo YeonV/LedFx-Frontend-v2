@@ -47,8 +47,8 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
           size="small"
           type="number"
           sx={{ minWidth: '80px' }}
-          InputProps={{
-            inputProps: {
+          slotProps={{
+            htmlInput: {
               style: { padding: '4.5px 14px' },
               min: 1,
               max: devices[s[0]].config.pixel_count
@@ -74,8 +74,8 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
           size="small"
           type="number"
           sx={{ minWidth: '80px' }}
-          InputProps={{
-            inputProps: {
+          slotProps={{
+            htmlInput: {
               style: { padding: '4.5px 14px' },
               min: range[0] + 1,
               max: devices[s[0]].config.pixel_count

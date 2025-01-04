@@ -332,7 +332,7 @@ const SchemaForm = ({
                   marginBottom: 0
                 }}
               >
-                Field-Descriptions
+                Show help text for fields
                 <Info style={{ marginLeft: '0.5rem' }} />
               </DialogContentText>
             }

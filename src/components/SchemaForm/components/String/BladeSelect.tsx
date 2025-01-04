@@ -96,7 +96,11 @@ const BladeSelect = ({
         ) : (
           <>
             <TextField
+              variant="standard"
               helperText={!hideDesc && schema.description}
+              slotProps={{
+                input: { disableUnderline: true }
+              }}
               defaultValue={
                 (model && model_id && model[model_id]) ||
                 (schema.enum && schema.enum[0]) ||
@@ -110,6 +114,8 @@ const BladeSelect = ({
         )
       ) : schema.enum && Array.isArray(schema.enum) ? (
         <Select
+          variant="standard"
+          disableUnderline
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
@@ -131,6 +137,8 @@ const BladeSelect = ({
         </Select>
       ) : schema.enum && !Array.isArray(schema.enum) ? (
         <Select
+          variant="standard"
+          disableUnderline
           disabled={disabled}
           style={{
             flexGrow: variant === 'outlined' ? 1 : 'unset',
@@ -163,22 +171,25 @@ const BladeSelect = ({
       ) : (
         <>
           <TextField
+            variant="standard"
             inputRef={inputRef}
             type={
               schema.description?.includes('password') ? 'password' : 'unset'
             }
             helperText={!hideDesc && schema.description}
-            InputProps={
-              schema.id === 'icon_name'
-                ? {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <BladeIcon name={icon} style={{ color: '#eee' }} />
-                      </InputAdornment>
-                    )
-                  }
-                : {}
-            }
+            slotProps={{
+              input:
+                schema.id === 'icon_name'
+                  ? {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BladeIcon name={icon} style={{ color: '#eee' }} />
+                        </InputAdornment>
+                      ),
+                      disableUnderline: true
+                    }
+                  : { disableUnderline: true }
+            }}
             defaultValue={
               (model && model_id && model[model_id]) ||
               (schema.enum && schema.enum[0]) ||
