@@ -6,7 +6,11 @@ import {
   Button,
   Tooltip,
   Typography,
-  Alert
+  Alert,
+  Link,
+  Stack,
+  Box,
+  Divider
 } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import BladeIcon from '../../../Icons/BladeIcon/BladeIcon'
@@ -55,6 +59,70 @@ const BladeSelect = ({
   return (
     <BladeFrame
       title={schema.title}
+      tooltip={
+        schema.title === 'Icon Name' ? (
+          <Box p={1}>
+            <Typography variant="h5">Icon Libraries:</Typography>
+            <Stack spacing={0.5} mt={1}>
+              <Stack direction={'row'} spacing={2}>
+                <Typography color="textDisabled" variant="body1">
+                  Link
+                </Typography>
+                <Typography color="textDisabled" variant="body1">
+                  Format
+                </Typography>
+              </Stack>
+              <Divider />
+              <Stack direction={'row'} spacing={1} sx={{ pt: 0.5 }}>
+                <Typography variant="body1">
+                  <Link
+                    href="https://mui.com/material-ui/material-icons/"
+                    target="_blank"
+                    sx={{ mr: 1 }}
+                  >
+                    MUI
+                  </Link>
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    background: '#222',
+                    padding: '2px 10px',
+                    borderRadius: 1,
+                    fontFamily: 'monospace'
+                  }}
+                >
+                  iconName
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1}>
+                <Typography variant="body1">
+                  <Link
+                    href="https://pictogrammers.com/library/mdi"
+                    target="_blank"
+                    sx={{ mr: 1 }}
+                  >
+                    MDI
+                  </Link>
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    background: '#222',
+                    padding: '2px 10px',
+                    borderRadius: 1,
+                    fontFamily: 'monospace'
+                  }}
+                >
+                  mdi:icon-name
+                </Typography>
+              </Stack>
+            </Stack>
+          </Box>
+        ) : (
+          ''
+        )
+      }
       className={`step-effect-${index}`}
       full={
         !(

@@ -1,5 +1,7 @@
+import { InfoRounded } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
+import Tooltip from './Tooltip'
 
 const Root = styled('div')(({ theme }) => ({
   minWidth: '23.5%',
@@ -44,6 +46,7 @@ interface BladeFrameProps {
   disabled?: boolean
   labelStyle?: any
   onClick?: any | undefined
+  tooltip?: ReactNode
 }
 
 const BladeFrame = ({
@@ -60,7 +63,8 @@ const BladeFrame = ({
   className = undefined,
   disabled = undefined,
   labelStyle = undefined,
-  onClick = undefined
+  onClick = undefined,
+  tooltip = undefined
 }: BladeFrameProps): ReactElement<any, any> => {
   return variant === 'outlined' ? (
     <Root
@@ -79,6 +83,16 @@ const BladeFrame = ({
       >
         {title}
         {required ? '*' : ''}
+        {tooltip ? (
+          <Tooltip
+            sx={{ ml: 1, mr: 0.5 }}
+            title={tooltip}
+            arrow
+            placement="top"
+          >
+            <InfoRounded fontSize="small" />
+          </Tooltip>
+        ) : null}
       </label>
       {children}
     </Root>
