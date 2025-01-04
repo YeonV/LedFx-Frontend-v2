@@ -107,7 +107,7 @@ const useStyle = makeStyles(() => ({
     textAlign: 'right'
   },
   buttonBarMobileWrapper: {
-    height: 110,
+    height: '100%',
     display: 'flex',
     margin: 0,
     padding: '0.5rem 80px 0.5rem 0.5rem',
@@ -118,7 +118,7 @@ const useStyle = makeStyles(() => ({
       flexBasis: '30%'
     },
     '&.extended.graphs': {
-      height: 'auto',
+      height: '100%',
       paddingTop: 0,
       '& button': {
         fontSize: 'smaller'

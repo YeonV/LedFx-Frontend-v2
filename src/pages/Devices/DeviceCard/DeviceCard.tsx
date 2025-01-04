@@ -391,8 +391,13 @@ const DeviceCard = ({
             timeout="auto"
             unmountOnExit
             className={classes.buttonBarMobile}
+            sx={{
+              height: '100% !important',
+              '& .MuiCollapse-wrapper': {
+                height: '100%'
+              }
+            }}
           >
-            {}
             <div
               className={`${classes.buttonBarMobileWrapper} ${
                 !graphsActive ? 'graphs' : ''
@@ -433,6 +438,14 @@ const DeviceCard = ({
                       handleEditDevice(isDevice)
                       handleExpandClick()
                     }}
+                    sx={{
+                      color: theme.palette.mode === 'light' ? '#000' : '#fff',
+                      bgcolor: 'transparent',
+                      '&:hover': {
+                        color: theme.palette.mode === 'light' ? '#fff' : '#000',
+                        bgcolor: theme.palette.primary.main
+                      }
+                    }}
                   >
                     Edit Device
                   </Button>
@@ -448,6 +461,14 @@ const DeviceCard = ({
                     type={undefined}
                     innerKey={undefined}
                     onClick={() => handleExpandClick()}
+                    sx={{
+                      color: theme.palette.mode === 'light' ? '#000' : '#fff',
+                      bgcolor: 'transparent',
+                      '&:hover': {
+                        color: theme.palette.mode === 'light' ? '#fff' : '#000',
+                        bgcolor: theme.palette.primary.main
+                      }
+                    }}
                   />
                 )}
                 <Button
@@ -460,6 +481,14 @@ const DeviceCard = ({
                     e.preventDefault()
                     handleEditVirtual(virtId)
                     handleExpandClick()
+                  }}
+                  sx={{
+                    color: theme.palette.mode === 'light' ? '#000' : '#fff',
+                    bgcolor: 'transparent',
+                    '&:hover': {
+                      color: theme.palette.mode === 'light' ? '#fff' : '#000',
+                      bgcolor: theme.palette.primary.main
+                    }
                   }}
                 >
                   Settings
