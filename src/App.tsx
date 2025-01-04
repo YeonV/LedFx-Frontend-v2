@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
-import { CssBaseline } from '@mui/material'
+import { CssBaseline, GlobalStyles } from '@mui/material'
 import Cookies from 'universal-cookie'
 import ws, { WsContext, HandleWs } from './utils/Websocket'
 import useStore from './store/useStore'
@@ -228,6 +228,13 @@ export default function App() {
           <SpotifyProvider>
             <FiledropProvider>
               <CssBaseline />
+              <GlobalStyles
+                styles={{
+                  body: {
+                    colorScheme: theme.palette.mode
+                  }
+                }}
+              />
               <Pages handleWs={<HandleWs />} />
             </FiledropProvider>
           </SpotifyProvider>
