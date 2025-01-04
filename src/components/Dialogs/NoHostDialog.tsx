@@ -8,16 +8,18 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
-  Divider
+  Divider,
+  Box
   // Box,
 } from '@mui/material'
-import { Add, Delete } from '@mui/icons-material'
+import { Add, Delete, Save } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
 // import Instances from './Instances';
 
 export default function NoHostDialog() {
   const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false)
+  const [add, setAdd] = useState(false)
   const edit = useStore((state) => state.dialogs.nohost?.edit || false)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setDisconnected = useStore((state) => state.setDisconnected)
@@ -36,6 +38,7 @@ export default function NoHostDialog() {
 
   const handleClose = () => {
     setDialogOpen(false)
+    setAdd(false)
   }
 
   const handleSave = (ho: string) => {
@@ -98,29 +101,9 @@ export default function NoHostDialog() {
               : 'LedFx-Core not ready'}
         </DialogTitle>
         <DialogContent>
-          {!edit && (
-            <DialogContentText>
-              You can change the host if you want:
-            </DialogContentText>
-          )}
-          <div style={{ display: 'flex', marginTop: '0.5rem' }}>
-            <TextField
-              label="IP:Port"
-              variant="outlined"
-              value={hostvalue}
-              onKeyDown={(e) =>
-                e.key === 'Enter' && setHosts([...hosts, hostvalue])
-              }
-              onChange={(e) => setHostvalue(e.target.value)}
-            />
-            <Button
-              aria-label="add"
-              onClick={() => setHosts([...hosts, hostvalue])}
-            >
-              <Add />
-            </Button>
-          </div>
-          <Typography variant="caption"> Known Hosts</Typography>
+          <DialogContentText mb={1}>
+            Known Hosts: (click to connect)
+          </DialogContentText>
           <div>
             {hosts.map((h) => (
               <div key={h}>
@@ -147,6 +130,47 @@ export default function NoHostDialog() {
               </div>
             ))}
           </div>
+          {add ? (
+            <>
+              {!edit ? (
+                <DialogContentText>
+                  You can change the host if you want:
+                </DialogContentText>
+              ) : (
+                <DialogContentText mt={3}>Add new host:</DialogContentText>
+              )}
+              <div style={{ display: 'flex', marginTop: '0.5rem' }}>
+                <TextField
+                  label="IP:Port"
+                  variant="outlined"
+                  value={hostvalue}
+                  onKeyDown={(e) =>
+                    e.key === 'Enter' && setHosts([...hosts, hostvalue])
+                  }
+                  onChange={(e) => setHostvalue(e.target.value)}
+                />
+                <Button
+                  aria-label="add"
+                  onClick={() => {
+                    setHosts([...hosts, hostvalue])
+                    setAdd(false)
+                  }}
+                >
+                  <Save />
+                </Button>
+              </div>
+            </>
+          ) : (
+            <Box textAlign={'center'} mt={2}>
+              <Button
+                sx={{ mt: 2, ml: 'auto', mr: 'auto' }}
+                aria-label="add"
+                onClick={() => setAdd(true)}
+              >
+                <Add />
+              </Button>
+            </Box>
+          )}
           {cc && (
             <div style={{ marginTop: '1rem' }}>
               <div style={{ marginBottom: '1rem' }}>
