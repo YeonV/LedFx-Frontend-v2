@@ -351,7 +351,7 @@ const DbDevices = () => {
       field: 'actions',
       headerName: 'Actions',
       renderHeader: () => (
-        <Stack direction={'row'} alignItems={'center'} style={{ width: 400 }}>
+        <Stack direction={'row'} alignItems={'center'} style={{ width: 260 }}>
           <Stack direction={'row'} alignItems={'center'} style={{ width: 135 }}>
             <IconButton
               size="small"
@@ -379,7 +379,7 @@ const DbDevices = () => {
           Actions
         </Stack>
       ),
-      width: 400,
+      width: 260,
       renderCell: (params: GridRenderCellParams) =>
         devices[Object.keys(devices).find((d) => d === params.row.id) || '']
           ?.online ? (
