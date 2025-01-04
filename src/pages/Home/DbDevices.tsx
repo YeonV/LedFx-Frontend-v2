@@ -162,7 +162,8 @@ const DeviceActions = ({
             (effect ? 3.2 : 11.8) +
             (effect && virtuals[virtId]?.config.rows > 1 ? -0.9 : 4.2) +
             (!effect && virtuals[virtId]?.config.rows > 1 ? 4.2 : 0) -
-            (lastEffect ? 0 : 2.1)
+            (lastEffect ? 0 : 2.1) -
+            (!effect && lastEffect ? 2.1 : 0)
         }}
         size="small"
         onClick={(e) => {
