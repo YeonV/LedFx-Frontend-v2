@@ -70,7 +70,7 @@ const Scenes = () => {
       .some((sce: string) => sceneActiveTags.includes(sce))
 
   const sceneBlenderFilter = (sc: string) =>
-    !scenes[sc].scene_tags?.split(',')?.includes('blender')
+    scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
   return (
     <>
       <div

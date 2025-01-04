@@ -37,6 +37,10 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
   const theme = useTheme()
   const recentScenes = useStore((state) => state.recentScenes)
   const [theScenes, setTheScenes] = useState({})
+
+  const sceneBlenderFilter = (sc: string) =>
+    scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
+
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     activateScene(
       Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
@@ -44,7 +48,7 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
 
   useEffect(() => {
     const current = {} as any
-    recentScenes.map((key: string, i: number) => {
+    recentScenes.filter(sceneBlenderFilter).map((key: string, i: number) => {
       current[key] = { ...scenes[key], used: i + 1 }
       return setTheScenes(current)
     })
