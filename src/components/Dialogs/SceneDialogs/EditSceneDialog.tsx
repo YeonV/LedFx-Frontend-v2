@@ -595,12 +595,14 @@ const EditSceneDialog = () => {
               margin="dense"
               id="scene_image"
               label="Image"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <TooltipImage />
-                  </InputAdornment>
-                )
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <TooltipImage />
+                    </InputAdornment>
+                  )
+                }
               }}
               type="text"
               value={image}
@@ -638,12 +640,14 @@ const EditSceneDialog = () => {
                 margin="dense"
                 id="scene_image"
                 label="Image"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <TooltipImage />
-                    </InputAdornment>
-                  )
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <TooltipImage />
+                      </InputAdornment>
+                    )
+                  }
                 }}
                 type="text"
                 value={image
@@ -690,13 +694,15 @@ const EditSceneDialog = () => {
                     mb: '0.5rem',
                     '& .MuiInputBase-root': { pr: '9px !important' }
                   }}
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <InputAdornment position="end" sx={{ mr: '5px' }}>
-                        <TooltipTags />
-                      </InputAdornment>
-                    )
+                  slotProps={{
+                    input: {
+                      ...params.InputProps,
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ mr: '5px' }}>
+                          <TooltipTags />
+                        </InputAdornment>
+                      )
+                    }
                   }}
                 />
               )}
@@ -811,65 +817,67 @@ const EditSceneDialog = () => {
                         height: xsmall ? '5rem' : ''
                       }
                     }}
-                    InputLabelProps={{ shrink: true }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <TooltipMidi />
-                        </InputAdornment>
-                      ),
-                      startAdornment: (
-                        <InputAdornment
-                          position="start"
-                          sx={{
-                            flexWrap: xsmall ? 'wrap' : '',
-                            mt: xsmall ? -8 : ''
-                          }}
-                        >
-                          {midiActivate?.split(' ')?.length > 1 && (
-                            <>
-                              <Chip
-                                label={midiActivate
-                                  ?.split(' ')[0]
-                                  .replace('MIDI', '')}
-                                avatar={
-                                  <Avatar>
-                                    <BladeIcon name="mdi:midi" />
-                                  </Avatar>
-                                }
-                              />
-                              <Chip
-                                label={
-                                  midiActivate
-                                    ?.split('Note: ')[1]
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <TooltipMidi />
+                          </InputAdornment>
+                        ),
+                        startAdornment: (
+                          <InputAdornment
+                            position="start"
+                            sx={{
+                              flexWrap: xsmall ? 'wrap' : '',
+                              mt: xsmall ? -8 : ''
+                            }}
+                          >
+                            {midiActivate?.split(' ')?.length > 1 && (
+                              <>
+                                <Chip
+                                  label={midiActivate
                                     ?.split(' ')[0]
-                                }
-                                avatar={
-                                  <Avatar>
-                                    <MusicNote />
-                                  </Avatar>
-                                }
-                              />
-                              <Chip
-                                label={
-                                  midiActivate
-                                    ?.split('buttonNumber: ')[1]
-                                    ?.split(' ')[0]
-                                }
-                                avatar={<Avatar>No</Avatar>}
-                              />
-                              <Chip
-                                onDelete={() => setMIDIActivate('')}
-                                label={/\((.*?)\)/
-                                  .exec(midiActivate)?.[1]
-                                  .replace(' MIDI', '')
-                                  .trim()}
-                                icon={<BladeIcon name="mdi:midi" />}
-                              />
-                            </>
-                          )}
-                        </InputAdornment>
-                      )
+                                    .replace('MIDI', '')}
+                                  avatar={
+                                    <Avatar>
+                                      <BladeIcon name="mdi:midi" />
+                                    </Avatar>
+                                  }
+                                />
+                                <Chip
+                                  label={
+                                    midiActivate
+                                      ?.split('Note: ')[1]
+                                      ?.split(' ')[0]
+                                  }
+                                  avatar={
+                                    <Avatar>
+                                      <MusicNote />
+                                    </Avatar>
+                                  }
+                                />
+                                <Chip
+                                  label={
+                                    midiActivate
+                                      ?.split('buttonNumber: ')[1]
+                                      ?.split(' ')[0]
+                                  }
+                                  avatar={<Avatar>No</Avatar>}
+                                />
+                                <Chip
+                                  onDelete={() => setMIDIActivate('')}
+                                  label={/\((.*?)\)/
+                                    .exec(midiActivate)?.[1]
+                                    .replace(' MIDI', '')
+                                    .trim()}
+                                  icon={<BladeIcon name="mdi:midi" />}
+                                />
+                              </>
+                            )}
+                          </InputAdornment>
+                        )
+                      },
+                      inputLabel: { shrink: true }
                     }}
                   />
                   {/\((.*?)\)/

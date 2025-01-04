@@ -116,16 +116,23 @@ const Instances = ({
               margin: '0 1rem',
               pointerEvents: 'none'
             }}
-            InputProps={{
-              inputProps: { tabIndex: -1, style: { padding: 0 } },
-              disableUnderline: variant === 'line',
-              sx: {
-                color:
-                  variant === 'line' && !instance && instances.includes(newPort)
-                    ? 'error.main'
-                    : coreStatus[instance] === 'running'
-                      ? '#ddd'
-                      : 'text.disabled'
+            slotProps={{
+              input: {
+                disableUnderline: variant === 'line',
+                sx: {
+                  color:
+                    variant === 'line' &&
+                    !instance &&
+                    instances.includes(newPort)
+                      ? 'error.main'
+                      : coreStatus[instance] === 'running'
+                        ? '#ddd'
+                        : 'text.disabled'
+                }
+              },
+              htmlInput: {
+                tabIndex: -1,
+                style: { padding: 0 }
               }
             }}
           />
@@ -133,20 +140,25 @@ const Instances = ({
             label={variant === 'line' ? '' : 'status'}
             variant={variant === 'line' ? 'standard' : 'outlined'}
             value={coreStatus[instance] || 'stopped'}
-            InputProps={{
-              disableUnderline: variant === 'line',
-              inputProps: { tabIndex: -1, style: { padding: 0 } },
-              sx: {
-                color:
-                  coreStatus[instance] === 'starting'
-                    ? 'warning.main'
-                    : coreStatus[instance] === 'running'
-                      ? 'success.main'
-                      : 'text.disabled'
+            slotProps={{
+              input: {
+                disableUnderline: variant === 'line',
+                sx: {
+                  color:
+                    coreStatus[instance] === 'starting'
+                      ? 'warning.main'
+                      : coreStatus[instance] === 'running'
+                        ? 'success.main'
+                        : 'text.disabled'
+                }
+              },
+              inputLabel: {
+                shrink: true
+              },
+              htmlInput: {
+                tabIndex: -1,
+                style: { padding: 0 }
               }
-            }}
-            InputLabelProps={{
-              shrink: true
             }}
             size="small"
             sx={{
@@ -162,18 +174,19 @@ const Instances = ({
                 label={variant === 'line' ? '' : 'status'}
                 variant={variant === 'line' ? 'standard' : 'outlined'}
                 value={instance}
-                InputProps={{
-                  disableUnderline: variant === 'line',
-                  inputProps: { tabIndex: -1, style: { padding: 0 } },
-                  sx: {
-                    color:
-                      coreStatus[instance] === 'running'
-                        ? '#ddd'
-                        : 'text.disabled'
+                slotProps={{
+                  input: {
+                    disableUnderline: variant === 'line',
+                    sx: {
+                      color:
+                        coreStatus[instance] === 'running'
+                          ? '#ddd'
+                          : 'text.disabled'
+                    }
+                  },
+                  inputLabel: {
+                    shrink: true
                   }
-                }}
-                InputLabelProps={{
-                  shrink: true
                 }}
                 size="small"
                 sx={{
@@ -368,15 +381,19 @@ const Instances = ({
               label="instance"
               variant="outlined"
               value={`instance${i}`}
-              InputProps={{
-                disableUnderline: variant === 'line',
-                inputProps: { tabIndex: -1 },
-                sx: {
-                  color: 'text.disabled'
+              slotProps={{
+                input: {
+                  disableUnderline: variant === 'line',
+                  sx: {
+                    color: 'text.disabled'
+                  }
+                },
+                inputLabel: {
+                  shrink: true
+                },
+                htmlInput: {
+                  tabIndex: -1
                 }
-              }}
-              InputLabelProps={{
-                shrink: true
               }}
               size="small"
               sx={{
@@ -404,15 +421,17 @@ const Instances = ({
                 width: '100px',
                 margin: '0.5rem 1rem 0.5rem 0.5rem'
               }}
-              InputProps={{
-                disableUnderline: variant === 'line',
-                sx: {
-                  color:
-                    variant === 'line' &&
-                    !instance &&
-                    instances.includes(newPort)
-                      ? 'error.main'
-                      : 'inherit'
+              slotProps={{
+                input: {
+                  disableUnderline: variant === 'line',
+                  sx: {
+                    color:
+                      variant === 'line' &&
+                      !instance &&
+                      instances.includes(newPort)
+                        ? 'error.main'
+                        : 'inherit'
+                  }
                 }
               }}
             />
