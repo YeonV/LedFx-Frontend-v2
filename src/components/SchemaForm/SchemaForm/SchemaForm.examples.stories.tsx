@@ -45,7 +45,7 @@ AddDeviceAdaLight.args = {
       icon_name: {
         type: 'string',
         title: 'Icon Name',
-        description: 'https://material-ui.com/components/material-icons/',
+        description: 'https://mui.com/material-ui/material-icons/',
         default: 'mdi:led-strip'
       },
       center_offset: {
@@ -119,7 +119,7 @@ AddDeviceWLED.args = {
       icon_name: {
         type: 'string',
         title: 'Icon Name',
-        description: 'https://material-ui.com/components/material-icons/',
+        description: 'https://mui.com/material-ui/material-icons/',
         default: 'mdi:led-strip'
       },
       center_offset: {
@@ -186,7 +186,7 @@ AddDeviceUDP.args = {
       icon_name: {
         type: 'string',
         title: 'Icon Name',
-        description: 'https://material-ui.com/components/material-icons/',
+        description: 'https://mui.com/material-ui/material-icons/',
         default: 'mdi:led-strip'
       },
       center_offset: {
