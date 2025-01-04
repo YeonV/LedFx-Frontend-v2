@@ -24,7 +24,11 @@ const BladeBoolean = ({
     onChange={() => onClick(model_id, model && !model[model_id])}
     defaultValue={(model && model[model_id]) || schema.default}
     value={model ? !!model[model_id] : false}
-    title={schema.title.replaceAll('_', ' ').replaceAll('Color', 'c')}
+    title={schema.title
+      .replaceAll('_', ' ')
+      .replaceAll('Color', 'c')
+      .replaceAll('Vertical', 'V ↕')
+      .replaceAll('Horizontal', 'H ↔')}
     description={schema.description}
     hideDesc={hideDesc}
   />
