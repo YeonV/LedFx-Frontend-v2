@@ -138,7 +138,7 @@ const DeviceActions = ({
         </Stack>
       ) : (
         <span style={{ width: 24, flex: '0 0 24px' }}>
-          {lastEffect && (
+          {lastEffect ? (
             <>
               <IconButton
                 sx={{ pt: 0.25 }}
@@ -152,15 +152,17 @@ const DeviceActions = ({
                 <PlayArrow />
               </IconButton>
             </>
-          )}
+          ) : null}
         </span>
       )}
       <IconButton
         sx={{
+          display: 'flex',
           ml:
             (effect ? 3.2 : 11.8) +
-            (virtuals[virtId]?.config.rows > 1 ? 0 : 4.2) +
-            (!effect && virtuals[virtId]?.config.rows > 1 ? 4.2 : 0)
+            (effect && virtuals[virtId]?.config.rows > 1 ? -0.9 : 4.2) +
+            (!effect && virtuals[virtId]?.config.rows > 1 ? 4.2 : 0) -
+            (lastEffect ? 0 : 2.1)
         }}
         size="small"
         onClick={(e) => {
@@ -456,6 +458,9 @@ const DbDevices = () => {
           }}
           sx={{
             borderColor: 'transparent',
+            '& .MuiDataGrid-cell': {
+              display: 'flex'
+            },
             '& .MuiDataGrid-row': {
               backgroundColor:
                 theme.palette.mode === 'light'
