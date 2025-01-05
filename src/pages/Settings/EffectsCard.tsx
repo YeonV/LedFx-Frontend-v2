@@ -3,11 +3,11 @@ import useStore from '../../store/useStore'
 import { SettingsRow } from './SettingsComponents'
 
 const EffectsSettingsCard = () => {
-  const showHex = useStore((state) => state.ui.showHex)
+  const showHex = useStore((state) => state.uiPersist.showHex)
   const features = useStore((state) => state.features)
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const effectDescriptions = useStore((state) => state.ui.effectDescriptions)
-  const setShowHex = useStore((state) => state.ui.setShowHex)
+  const setShowHex = useStore((state) => state.setShowHex)
   const setFeatures = useStore((state) => state.setFeatures)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
   const setEffectDescriptions = useStore(
