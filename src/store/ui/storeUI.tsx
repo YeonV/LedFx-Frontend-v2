@@ -31,15 +31,6 @@ const storeUI = (set: any) => ({
       false,
       'ui/virtual2dLimit'
     ),
-  showHex: false,
-  setShowHex: (show: boolean): void =>
-    set(
-      produce((state: IStore) => {
-        state.ui.showHex = show
-      }),
-      false,
-      'ui/showHex'
-    ),
   mgX: 50,
   setMgX: (x: number): void =>
     set(

@@ -36,6 +36,15 @@ const storeUIPersistActions = (set: any) => ({
       }),
       false,
       'ui/blenderAutomagic'
+    ),
+
+  setShowHex: (show: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.uiPersist.showHex = show
+      }),
+      false,
+      'ui/showHex'
     )
 })
 
