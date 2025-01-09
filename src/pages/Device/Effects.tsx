@@ -24,12 +24,13 @@ import {
 import useStore from '../../store/useStore'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
-import PixelGraph from '../../components/PixelGraph'
+import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
+import PixelCanvas from '../../components/PixelGraph/PixelGraphCanvas'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 

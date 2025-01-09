@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+type PixelGraphVariant = 'original' | 'canvas'
 const storeUIPersist = (set: any) => ({
   infoAlerts: {
     scenes: true,
@@ -14,7 +14,14 @@ const storeUIPersist = (set: any) => ({
     lessPixels: true
   },
   blenderAutomagic: true,
-  showHex: false
+  showHex: false,
+  pixelGraphSettings: {
+    smoothing: false,
+    round: true,
+    space: true,
+    stretch: true,
+    variants: ['original'] as PixelGraphVariant[]
+  }
 })
 
 export default storeUIPersist

@@ -31,7 +31,7 @@ import {
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import useStore from '../../store/useStore'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
-import PixelGraph from '../../components/PixelGraph'
+import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import Popover from '../../components/Popover/Popover'
 
 const DeviceActions = ({

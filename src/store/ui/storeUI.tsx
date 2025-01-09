@@ -58,6 +58,33 @@ const storeUI = (set: any) => ({
       false,
       'ui/mg'
     ),
+  pgsX: 50,
+  setPgsX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.pgsX = x
+      }),
+      false,
+      'ui/mgX'
+    ),
+  pgsY: 200,
+  setPgsY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.pgsY = y
+      }),
+      false,
+      'ui/mgY'
+    ),
+  pgs: false,
+  setPgs: (mg: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.pgs = mg
+      }),
+      false,
+      'ui/mg'
+    ),
   mp: false,
   setMp: (mp: boolean): void =>
     set(
