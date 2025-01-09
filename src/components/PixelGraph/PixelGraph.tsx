@@ -3,6 +3,7 @@ import PixelGraphBase from './PixelGraphBase'
 import PixelGraphCanvas from './PixelGraphCanvas'
 import PixelGraphCanvasOffscreen from './PixelGraphCanvasOffscreen'
 import PixelGraphCanvasOffscreenWebGL from './PixelGraphCanvasOffscreenWebGL'
+import PixelGraphCanvasOffscreenWebGLSync from './PixelGraphCanvasOffscreenWebGLSync'
 
 const PixelGraph = ({
   virtId,
@@ -71,6 +72,19 @@ const PixelGraph = ({
       )}
       {variants.includes('canvasOffscreenWebGL') && (
         <PixelGraphCanvasOffscreenWebGL
+          virtId={virtId}
+          dummy={dummy}
+          className={className}
+          active={active}
+          intGraphs={intGraphs}
+          showMatrix={showMatrix}
+          fullScreen={fullScreen}
+          db={db}
+          onDoubleClick={onDoubleClick}
+        />
+      )}
+      {variants.includes('canvasOffscreenWebGLSync') && (
+        <PixelGraphCanvasOffscreenWebGLSync
           virtId={virtId}
           dummy={dummy}
           className={className}

@@ -57,7 +57,10 @@ const PixelGraphCanvasOffscreen = ({
 
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
-        const pixels = hexColor(e.detail.pixels, config.transmission_mode)
+        const pixels =
+          config.transmission_mode === 'compressed'
+            ? hexColor(e.detail.pixels, config.transmission_mode)
+            : e.detail.pixels
         // const shape = e.detail.shape
         const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
         const cols = Math.ceil(pixels.length / rows)

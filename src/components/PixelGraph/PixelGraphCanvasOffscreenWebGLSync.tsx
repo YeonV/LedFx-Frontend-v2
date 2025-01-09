@@ -3,9 +3,9 @@ import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
 
-const PixelGraphCanvas = ({
+const PixelGraphCanvasOffscreenWebGLSync = ({
   virtId,
-  // dummy = false,
+  dummy = false,
   className = '',
   active = false,
   intGraphs = false,
@@ -25,6 +25,9 @@ const PixelGraphCanvas = ({
   onDoubleClick?: any
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const workerRef = useRef<Worker | null>(null)
+  const transferredRef = useRef(false)
+  const animationFrameRef = useRef<number | null>(null)
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
     useShallow((state) => ({
       pixelGraphs: state.pixelGraphs,
@@ -44,10 +47,16 @@ const PixelGraphCanvas = ({
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas?.getContext('2d')
-    if (!canvas || !ctx) return
+    if (!canvas || transferredRef.current) return
 
-    ctx.imageSmoothingEnabled = false
+    const offscreen = canvas.transferControlToOffscreen()
+    const worker = new Worker(
+      new URL('./pixelGraphWorkerWebGL.js', import.meta.url)
+    )
+    workerRef.current = worker
+    transferredRef.current = true
+
+    worker.postMessage({ canvas: offscreen }, [offscreen])
 
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
@@ -55,32 +64,27 @@ const PixelGraphCanvas = ({
           config.transmission_mode === 'compressed'
             ? hexColor(e.detail.pixels, config.transmission_mode)
             : e.detail.pixels
-
         // const shape = e.detail.shape
         const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
         const cols = Math.ceil(pixels.length / rows)
 
-        canvas.width = cols
-        canvas.height = rows
-
-        const imageData = ctx.createImageData(cols, rows)
-        for (let i = 0; i < pixels.length; i++) {
-          const x = i % cols
-          const y = Math.floor(i / cols)
-          const index = (y * cols + x) * 4
-          const color = pixels[i]
-          imageData.data[index] = color.r
-          imageData.data[index + 1] = color.g
-          imageData.data[index + 2] = color.b
-          imageData.data[index + 3] = 255 // Alpha channel
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current)
         }
-        ctx.putImageData(imageData, 0, 0)
+
+        animationFrameRef.current = requestAnimationFrame(() => {
+          worker.postMessage({ pixels, rows, cols })
+        })
       }
     }
 
     document.addEventListener('visualisation_update', handleWebsockets)
     return () => {
       document.removeEventListener('visualisation_update', handleWebsockets)
+      worker.terminate()
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
     }
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
@@ -115,4 +119,4 @@ const PixelGraphCanvas = ({
   )
 }
 
-export default PixelGraphCanvas
+export default PixelGraphCanvasOffscreenWebGLSync
