@@ -1,4 +1,4 @@
-type PixelGraphVariant = 'original' | 'canvas'
+type PixelGraphVariant = 'original' | 'canvas' | 'canvasOffscreen'
 const storeUIPersist = (set: any) => ({
   infoAlerts: {
     scenes: true,

@@ -1,6 +1,7 @@
 import useStore from '../../store/useStore'
 import PixelGraphBase from './PixelGraphBase'
 import PixelGraphCanvas from './PixelGraphCanvas'
+import PixelGraphCanvasOffscreen from './PixelGraphCanvasOffscreen'
 
 const PixelGraph = ({
   virtId,
@@ -43,6 +44,19 @@ const PixelGraph = ({
       )}
       {variants.includes('canvas') && (
         <PixelGraphCanvas
+          virtId={virtId}
+          dummy={dummy}
+          className={className}
+          active={active}
+          intGraphs={intGraphs}
+          showMatrix={showMatrix}
+          fullScreen={fullScreen}
+          db={db}
+          onDoubleClick={onDoubleClick}
+        />
+      )}
+      {variants.includes('canvas') && (
+        <PixelGraphCanvasOffscreen
           virtId={virtId}
           dummy={dummy}
           className={className}
