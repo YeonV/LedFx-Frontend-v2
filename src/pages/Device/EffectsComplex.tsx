@@ -14,7 +14,7 @@ import useStore from '../../store/useStore'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
-import PixelGraph from '../../components/PixelGraph'
+import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import { Ledfx } from '../../api/ledfx'
 

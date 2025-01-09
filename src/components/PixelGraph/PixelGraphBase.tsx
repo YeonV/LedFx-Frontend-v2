@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import useStore from '../store/useStore'
+import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
-import hexColor from '../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
 
-const PixelGraph = ({
+const PixelGraphBase = ({
   virtId,
   dummy = false,
   className = '',
@@ -31,6 +31,11 @@ const PixelGraph = ({
   ])
 
   const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
+  const round = useStore((state) => state.uiPersist.pixelGraphSettings?.round)
+  const space = useStore((state) => state.uiPersist.pixelGraphSettings?.space)
+  const stretch = useStore(
+    (state) => state.uiPersist.pixelGraphSettings?.stretch
+  )
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
     useShallow((state) => ({
       pixelGraphs: state.pixelGraphs,
@@ -97,7 +102,7 @@ const PixelGraph = ({
         maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
         display: 'flex',
         width: '100%',
-        borderRadius: '10px',
+        borderRadius: !round ? 0 : '10px',
         overflow: 'hidden',
         margin: '0.5rem 0 0 0'
       }}
@@ -129,9 +134,10 @@ const PixelGraph = ({
             ? 'column-reverse'
             : 'column',
         width: '100%',
-        borderRadius: '10px',
+        borderRadius: !round ? 0 : '10px',
         overflow: 'hidden',
-        margin: db ? 0 : '0.5rem 0 0 0'
+        margin: db ? 0 : '0.5rem 0 0 0',
+        objectFit: stretch ? 'fill' : 'contain'
       }}
       className={`${className} ${active ? 'active' : ''}`}
     >
@@ -158,9 +164,14 @@ const PixelGraph = ({
               key={i}
               style={{
                 flex: 1,
-                margin: `${db || (totalPixels > 100 && displayRows > 7) ? 1 : 2}px`,
-                borderRadius:
-                  db || (totalPixels > 100 && displayRows > 7) ? '50%' : '5px',
+                margin: !space
+                  ? 0
+                  : `${db || (totalPixels > 100 && displayRows > 7) ? 1 : 2}px`,
+                borderRadius: !round
+                  ? 0
+                  : db || (totalPixels > 100 && displayRows > 7)
+                    ? '50%'
+                    : '5px',
                 position: 'relative',
                 overflow: 'hidden',
                 maxWidth: db ? 3.6 : `${100 / displayCols}%`,
@@ -192,7 +203,7 @@ const PixelGraph = ({
         maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
         display: 'flex',
         width: '100%',
-        borderRadius: '10px',
+        borderRadius: !round ? 0 : '10px',
         overflow: 'hidden',
         margin: '0.5rem 0 0 0'
       }}
@@ -224,7 +235,7 @@ const PixelGraph = ({
         maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
         display: 'flex',
         width: '100%',
-        borderRadius: '10px',
+        borderRadius: !round ? 0 : '10px',
         overflow: 'hidden',
         margin: '0.5rem 0 0 0'
       }}
@@ -243,4 +254,4 @@ const PixelGraph = ({
   )
 }
 
-export default PixelGraph
+export default PixelGraphBase
