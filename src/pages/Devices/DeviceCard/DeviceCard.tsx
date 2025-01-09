@@ -22,7 +22,7 @@ import {
 import { Box, CircularProgress, Stack } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
-import PixelGraph from '../../../components/PixelGraph'
+import PixelGraph from '../../../components/PixelGraph/PixelGraph'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import useStyle from './DeviceCard.styles'
 import { DeviceCardProps } from './DeviceCard.interface'

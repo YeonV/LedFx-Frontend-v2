@@ -104,6 +104,7 @@ export interface Virtual {
   effect: Effect
   effects: Effect[]
   last_effect?: null | string
+  streaming?: boolean
 }
 
 const storeVirtuals = (set: any) => ({

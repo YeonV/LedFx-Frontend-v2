@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
-import PixelGraph from '../../components/PixelGraph'
+import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import { Virtual } from '../../store/api/storeVirtuals'
 
 const Graph = () => {
