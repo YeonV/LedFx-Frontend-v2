@@ -22,6 +22,10 @@ const keybindings = [
     keys: 'ctrl+alt+z',
     description: 'Open/Close SmartBar'
   },
+  {
+    keys: 'ctrl+alt+p',
+    description: 'Open/Close PixelGraph Settings'
+  },
   // {
   //   keys: 'ctrl+alt+d',
   //   description: 'Open/Close MP'

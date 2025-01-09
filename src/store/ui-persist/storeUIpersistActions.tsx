@@ -37,7 +37,6 @@ const storeUIPersistActions = (set: any) => ({
       false,
       'ui/blenderAutomagic'
     ),
-
   setShowHex: (show: boolean): void =>
     set(
       produce((state: IStore) => {
@@ -45,6 +44,17 @@ const storeUIPersistActions = (set: any) => ({
       }),
       false,
       'ui/showHex'
+    ),
+  setPixelGraphSettings: (
+    key: 'smoothing' | 'variants' | 'round' | 'space' | 'stretch',
+    val: any
+  ): void =>
+    set(
+      produce((state: IStore) => {
+        state.uiPersist.pixelGraphSettings[key] = val
+      }),
+      false,
+      'uiPersist/setPixelGraphSettings'
     )
 })
 

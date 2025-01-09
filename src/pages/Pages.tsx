@@ -36,6 +36,7 @@ import MGraphFloating from '../components/Integrations/Spotify/Widgets/MGraphFlo
 import Keybinding from '../components/Integrations/Spotify/Widgets/Keybinding/Keybinding'
 import OneEffect from '../components/Gamepad/OneEffect'
 import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
+import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widgets/PixelGraphSettings/PixelGraphSettingsFloating'
 
 const Routings = ({ handleWs }: any) => {
   const theme = useTheme()
@@ -46,6 +47,8 @@ const Routings = ({ handleWs }: any) => {
   const setMp = useStore((state) => state.ui.setMp)
   const mg = useStore((state) => state.ui.mg)
   const setMg = useStore((state) => state.ui.setMg)
+  const pgs = useStore((state) => state.ui.pgs)
+  const setPgs = useStore((state) => state.ui.setPgs)
   const sd = useStore((state) => state.ui.sd)
   const setSd = useStore((state) => state.ui.setSd)
   const features = useStore((state) => state.features)
@@ -63,6 +66,7 @@ const Routings = ({ handleWs }: any) => {
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
   useHotkeys(['ctrl+alt+d'], () => setMp(!mp))
+  useHotkeys(['ctrl+alt+p'], () => setPgs(!pgs))
   useHotkeys(['ctrl+alt+m'], () => setMg(!mg))
   useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
@@ -154,6 +158,7 @@ const Routings = ({ handleWs }: any) => {
           )}
         </Routes>
         {mp && <Mp />}
+        {pgs && <PixelGraphSettingsFloating />}
         {sd && <SongDetectorFloating />}
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
