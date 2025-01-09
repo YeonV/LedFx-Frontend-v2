@@ -30,7 +30,6 @@ import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import PixelCanvas from '../../components/PixelGraph/PixelGraphCanvas'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 

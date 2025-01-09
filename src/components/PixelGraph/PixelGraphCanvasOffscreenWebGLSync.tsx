@@ -5,7 +5,7 @@ import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexCol
 
 const PixelGraphCanvasOffscreenWebGLSync = ({
   virtId,
-  dummy = false,
+  // dummy = false,
   className = '',
   active = false,
   intGraphs = false,

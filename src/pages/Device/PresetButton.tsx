@@ -8,7 +8,7 @@ import {
   MenuItem
 } from '@mui/material'
 import { useLongPress } from 'use-long-press'
-import { CloudOff, CloudUpload, CopyAll } from '@mui/icons-material'
+import { CloudOff, CloudUpload } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
 
