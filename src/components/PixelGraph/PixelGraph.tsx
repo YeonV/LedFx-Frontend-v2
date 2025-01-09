@@ -2,6 +2,7 @@ import useStore from '../../store/useStore'
 import PixelGraphBase from './PixelGraphBase'
 import PixelGraphCanvas from './PixelGraphCanvas'
 import PixelGraphCanvasOffscreen from './PixelGraphCanvasOffscreen'
+import PixelGraphCanvasOffscreenWebGL from './PixelGraphCanvasOffscreenWebGL'
 
 const PixelGraph = ({
   virtId,
@@ -55,8 +56,21 @@ const PixelGraph = ({
           onDoubleClick={onDoubleClick}
         />
       )}
-      {variants.includes('canvas') && (
+      {variants.includes('canvasOffscreen') && (
         <PixelGraphCanvasOffscreen
+          virtId={virtId}
+          dummy={dummy}
+          className={className}
+          active={active}
+          intGraphs={intGraphs}
+          showMatrix={showMatrix}
+          fullScreen={fullScreen}
+          db={db}
+          onDoubleClick={onDoubleClick}
+        />
+      )}
+      {variants.includes('canvasOffscreenWebGL') && (
+        <PixelGraphCanvasOffscreenWebGL
           virtId={virtId}
           dummy={dummy}
           className={className}

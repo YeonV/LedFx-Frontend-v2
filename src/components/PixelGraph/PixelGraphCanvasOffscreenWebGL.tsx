@@ -3,7 +3,7 @@ import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
 
-const PixelGraphCanvasOffscreen = ({
+const PixelGraphCanvasOffscreenWebGL = ({
   virtId,
   // dummy = false,
   className = '',
@@ -49,7 +49,9 @@ const PixelGraphCanvasOffscreen = ({
     if (!canvas || transferredRef.current) return
 
     const offscreen = canvas.transferControlToOffscreen()
-    const worker = new Worker(new URL('./pixelGraphWorker.js', import.meta.url))
+    const worker = new Worker(
+      new URL('./pixelGraphWorkerWebGL.js', import.meta.url)
+    )
     workerRef.current = worker
     transferredRef.current = true
 
@@ -104,4 +106,4 @@ const PixelGraphCanvasOffscreen = ({
   )
 }
 
-export default PixelGraphCanvasOffscreen
+export default PixelGraphCanvasOffscreenWebGL
