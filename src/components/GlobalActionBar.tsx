@@ -23,13 +23,12 @@ const GlobalActionBar = ({
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
   }
-
-  const [brightness, setBrightness] = useState(globalBrightness * 100)
+  const [brightness, setBrightness] = useState((globalBrightness || 1) * 100)
   const paused = useStore((state) => state.paused)
   const togglePause = useStore((state) => state.togglePause)
 
   useEffect(() => {
-    setBrightness(globalBrightness * 100)
+    setBrightness((globalBrightness || 1) * 100)
   }, [globalBrightness])
 
   return (

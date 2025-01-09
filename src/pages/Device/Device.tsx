@@ -91,7 +91,7 @@ const Device = () => {
   const setEffects = async () => {
     if (!virtId) return
     const promises = []
-    const is2d = virtuals[virtId].config.rows > 1
+    const is2d = virtuals[virtId]?.config.rows > 1
     promises.push(
       setEffect(
         `${virtId}-mask`,
@@ -151,7 +151,7 @@ const Device = () => {
     if (
       blenderAutomagic &&
       virtId &&
-      virtuals[virtId].effect.type === 'blender' &&
+      virtuals[virtId]?.effect.type === 'blender' &&
       !(
         virtId.endsWith('-mask') ||
         virtId.endsWith('-foreground') ||
@@ -179,10 +179,10 @@ const Device = () => {
       devices[`${virtId}-mask`] &&
       devices[`${virtId}-foreground`] &&
       devices[`${virtId}-background`] &&
-      virtuals[virtId].effect.type === 'blender' &&
-      (!virtuals[virtId].effect.config?.mask ||
-        !virtuals[virtId].effect.config?.foreground ||
-        !virtuals[virtId].effect.config?.background)
+      virtuals[virtId]?.effect.type === 'blender' &&
+      (!virtuals[virtId]?.effect.config?.mask ||
+        !virtuals[virtId]?.effect.config?.foreground ||
+        !virtuals[virtId]?.effect.config?.background)
     ) {
       setEffects().then(() => {
         updateEffect(
@@ -207,7 +207,7 @@ const Device = () => {
       devices[`${virtId}-mask`] &&
       devices[`${virtId}-foreground`] &&
       devices[`${virtId}-background`] &&
-      virtuals[virtId].effect.type !== 'blender'
+      virtuals[virtId]?.effect?.type !== 'blender'
     ) {
       if (virtuals[`${virtId}-mask`].effect.config)
         clearEffect(`${virtId}-mask`)
@@ -225,7 +225,7 @@ const Device = () => {
       if (
         blenderAutomagic &&
         virtId &&
-        virtuals[virtId].effect.type === 'blender'
+        virtuals[virtId]?.effect?.type === 'blender'
       ) {
         setPixelGraphs([
           virtId,
@@ -240,14 +240,14 @@ const Device = () => {
   }, [
     graphs,
     effectType,
-    virtId && virtuals[virtId].effect.type,
+    virtId && virtuals[virtId]?.effect.type,
     blenderAutomagic
   ])
 
   const matrixOpen = !!(
     virtId &&
-    virtuals[virtId].pixel_count > 100 &&
-    virtuals[virtId].config.rows > 7
+    virtuals[virtId]?.pixel_count > 100 &&
+    virtuals[virtId]?.config.rows > 7
   )
   return (
     <Grid
@@ -273,7 +273,7 @@ const Device = () => {
           devices[`${virtId}-foreground`],
           devices[`${virtId}-background`]) &&
             virtId &&
-            virtuals[virtId].effect.type === 'blender' &&
+            virtuals[virtId]?.effect?.type === 'blender' &&
             blenderAutomagic && (
               <Grid
                 item
@@ -321,7 +321,7 @@ const Device = () => {
                 devices[`${virtId}-foreground`] &&
                 devices[`${virtId}-background`] &&
                 virtId &&
-                virtuals[virtId].effect.type === 'blender' &&
+                virtuals[virtId]?.effect?.type === 'blender' &&
                 blenderAutomagic
               ) && (
                 <PresetsCard
