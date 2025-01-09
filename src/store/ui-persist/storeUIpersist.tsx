@@ -1,8 +1,12 @@
-type PixelGraphVariant =
-  | 'original'
-  | 'canvas'
-  | 'canvasOffscreen'
-  | 'canvasOffscreenWebGL'
+export const PixelGraphVariants = [
+  'original',
+  'canvas',
+  'canvasOffscreen',
+  'canvasOffscreenWebGL',
+  'canvasOffscreenWebGLSync'
+]
+type PixelGraphVariant = (typeof PixelGraphVariants)[number]
+
 const storeUIPersist = (set: any) => ({
   infoAlerts: {
     scenes: true,

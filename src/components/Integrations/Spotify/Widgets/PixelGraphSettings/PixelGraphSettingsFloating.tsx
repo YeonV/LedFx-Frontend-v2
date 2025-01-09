@@ -13,6 +13,7 @@ import PixelGraphsSettingsCard from '../../../../../pages/Settings/PixelGraphsSe
 import useStore from '../../../../../store/useStore'
 import useStyle from './PgsFloating.styles'
 import PgsFloating from './PgsFloating'
+import { PixelGraphVariants } from '../../../../../store/ui-persist/storeUIpersist'
 
 const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
   const classes = useStyle()
@@ -65,18 +66,11 @@ const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
                 setPixelGraphSettings('variants', e.target.value)
               }
             >
-              <MenuItem sx={{ width: 150 }} value="original">
-                Original
-              </MenuItem>
-              <MenuItem sx={{ width: 150 }} value="canvas">
-                Canvas
-              </MenuItem>
-              <MenuItem sx={{ width: 150 }} value="canvasOffscreen">
-                Canvas Offscreen
-              </MenuItem>
-              <MenuItem sx={{ width: 150 }} value="canvasOffscreenWebGL">
-                Canvas Offscreen WebGL
-              </MenuItem>
+              {PixelGraphVariants.map((variant) => (
+                <MenuItem key={variant} value={variant}>
+                  {variant}
+                </MenuItem>
+              ))}
             </Select>
           </SettingsRow>
           <Divider />
