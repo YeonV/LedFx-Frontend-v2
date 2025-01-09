@@ -74,6 +74,9 @@ const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
               <MenuItem sx={{ width: 150 }} value="canvasOffscreen">
                 Canvas Offscreen
               </MenuItem>
+              <MenuItem sx={{ width: 150 }} value="canvasOffscreenWebGL">
+                Canvas Offscreen WebGL
+              </MenuItem>
             </Select>
           </SettingsRow>
           <Divider />

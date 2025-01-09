@@ -5,7 +5,7 @@ import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexCol
 
 const PixelGraphCanvas = ({
   virtId,
-  dummy = false,
+  // dummy = false,
   className = '',
   active = false,
   intGraphs = false,
@@ -52,7 +52,7 @@ const PixelGraphCanvas = ({
     const handleWebsockets = (e: any) => {
       if (e.detail.id === virtId) {
         const pixels = hexColor(e.detail.pixels, config.transmission_mode)
-        const shape = e.detail.shape
+        // const shape = e.detail.shape
         const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
         const cols = Math.ceil(pixels.length / rows)
 
@@ -88,7 +88,6 @@ const PixelGraphCanvas = ({
     return null
   }
 
-  console.log(stretch)
   return (
     <canvas
       ref={canvasRef}
