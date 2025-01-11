@@ -201,9 +201,11 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     }
   }, [])
 
-  const actives =
-    devices[Object.keys(devices).find((d) => d === virtId) || '']
-      ?.active_virtuals
+  const actives = devices[
+    Object.keys(devices).find((d) => d === virtId) || ''
+  ]?.active_virtuals?.filter(
+    (value, index, self) => self.indexOf(value) === index
+  )
   const streaming =
     actives && actives.length > 0 && actives?.some((a) => virtuals[a].active)
 
