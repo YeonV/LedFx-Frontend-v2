@@ -67,21 +67,21 @@ export default function Home() {
     const handleWebsockets = () => {
       const req = {
         event_type: 'graph_update',
-        id: 1337,
+        id: 9000,
         type: 'subscribe_event'
       }
       // console.log("Send");
-      ;(ws as any).send(JSON.stringify(++req.id && req))
+      ws.send(JSON.stringify(req.id && req))
     }
     document.addEventListener('subs_device_created', handleWebsockets)
     return () => {
       const removeGetWs = async () => {
         const request = {
-          id: 1337,
+          id: 9000,
           type: 'unsubscribe_event',
           event_type: 'graph_update'
         }
-        ;(ws as any).send(JSON.stringify(++request.id && request))
+        ws.send(JSON.stringify(request.id && request))
       }
       // console.log("Clean Up");
       removeGetWs()
@@ -93,21 +93,21 @@ export default function Home() {
     const handleWebsockets = () => {
       const req = {
         event_type: 'device_created',
-        id: 1337,
+        id: 9001,
         type: 'subscribe_event'
       }
       // console.log("Send");
-      ;(ws as any).send(JSON.stringify(++req.id && req))
+      ws.send(JSON.stringify(req.id && req))
     }
     document.addEventListener('subs_device_created', handleWebsockets)
     return () => {
       const removeGetWs = async () => {
         const request = {
-          id: 1337,
+          id: 9001,
           type: 'unsubscribe_event',
           event_type: 'device_created'
         }
-        ;(ws as any).send(JSON.stringify(++request.id && request))
+        ws.send(JSON.stringify(request.id && request))
       }
       // console.log("Clean Up");
       removeGetWs()
