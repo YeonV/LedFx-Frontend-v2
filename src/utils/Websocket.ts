@@ -42,34 +42,34 @@ function createSocket() {
         ws.ws = e.target as WebSocket
         const req = {
           event_type: 'devices_updated',
-          id: 1,
+          id: 9002,
           type: 'subscribe_event'
         }
-        ws.send(JSON.stringify(++req.id && req))
+        ws.send(JSON.stringify(req.id && req))
         const requ = {
           event_type: 'device_created',
-          id: 1,
+          id: 9001,
           type: 'subscribe_event'
         }
-        ws.send(JSON.stringify(++requ.id && requ))
+        ws.send(JSON.stringify(requ.id && requ))
         const reque = {
           event_type: 'graph_update',
-          id: 1,
+          id: 9000,
           type: 'subscribe_event'
         }
-        ws.send(JSON.stringify(++reque.id && reque))
+        ws.send(JSON.stringify(reque.id && reque))
         const reqs = {
           event_type: 'scene_activated',
-          id: 1,
+          id: 9003,
           type: 'subscribe_event'
         }
-        ws.send(JSON.stringify(++reqs.id && reqs))
+        ws.send(JSON.stringify(reqs.id && reqs))
         const reqst = {
           event_type: 'effect_set',
-          id: 1,
+          id: 9004,
           type: 'subscribe_event'
         }
-        ws.send(JSON.stringify(++reqst.id && reqst))
+        ws.send(JSON.stringify(reqst.id && reqst))
       },
       onmessage: (event) => {
         if (JSON.parse(event.data).event_type === 'visualisation_update') {
