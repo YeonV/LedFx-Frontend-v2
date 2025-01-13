@@ -205,9 +205,12 @@ const MGraph = () => {
       console.log('Send')
       ws.send(JSON.stringify(req.id && req))
     }
-    setTimeout(() => {
-      handleWebsockets()
-    }, 500)
+    const interval = setInterval(() => {
+      if (ws.ws && ws.ws.readyState === WebSocket.OPEN) {
+        handleWebsockets()
+        clearInterval(interval)
+      }
+    }, 20)
 
     document.addEventListener('subs_graph_update', handleWebsockets)
 
@@ -222,6 +225,7 @@ const MGraph = () => {
       }
       console.log('Clean Up')
       removeGetWs()
+      clearInterval(interval)
       document.removeEventListener('subs_graph_update', handleWebsockets)
     }
   }, [])
