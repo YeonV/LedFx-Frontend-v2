@@ -6,7 +6,7 @@ import useStore from '../../store/useStore'
 
 import Dashboard from './Dashboard'
 import DashboardDetailed from './DashboardDetailed'
-import ws from '../../utils/Websocket'
+// import ws from '../../utils/Websocket'
 import IntroDialog from '../../components/Dialogs/IntroDialog'
 
 const sleep = (ms: number) => {
@@ -57,36 +57,10 @@ export default function Home() {
 
     document.addEventListener('device_created', handleWebsockets)
 
-    return () => {
-      document.removeEventListener('device_created', handleWebsockets)
-    }
+    // return () => {
+    //   document.removeEventListener('device_created', handleWebsockets)
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    const handleWebsockets = () => {
-      const req = {
-        event_type: 'device_created',
-        id: 9001,
-        type: 'subscribe_event'
-      }
-      // console.log("Send");
-      ws.send(JSON.stringify(req.id && req))
-    }
-    document.addEventListener('subs_device_created', handleWebsockets)
-    return () => {
-      const removeGetWs = async () => {
-        const request = {
-          id: 9001,
-          type: 'unsubscribe_event',
-          event_type: 'device_created'
-        }
-        ws.send(JSON.stringify(request.id && request))
-      }
-      // console.log("Clean Up");
-      removeGetWs()
-      document.removeEventListener('subs_device_created', handleWebsockets)
-    }
   }, [])
 
   return !intro ? (
