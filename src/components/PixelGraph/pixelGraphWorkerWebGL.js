@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
 self.onmessage = (event) => {
+  self.postMessage('worker-ready');
   if (event.data.canvas) {
     self.canvas = event.data.canvas
     self.gl = self.canvas.getContext('webgl') || self.canvas.getContext('experimental-webgl')

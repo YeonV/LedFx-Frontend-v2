@@ -45,37 +45,39 @@ const PixelGraphCanvasOffscreenWebGL = ({
   )
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas || transferredRef.current) return
+    setTimeout(() => {
+      const canvas = canvasRef.current
+      if (!canvas || transferredRef.current) return
 
-    const offscreen = canvas.transferControlToOffscreen()
-    const worker = new Worker(
-      new URL('./pixelGraphWorkerWebGL.js', import.meta.url)
-    )
-    workerRef.current = worker
-    transferredRef.current = true
+      const offscreen = canvas.transferControlToOffscreen()
+      const worker = new Worker(
+        new URL('./pixelGraphWorkerWebGL.js', import.meta.url)
+      )
+      workerRef.current = worker
+      transferredRef.current = true
 
-    worker.postMessage({ canvas: offscreen }, [offscreen])
+      worker.postMessage({ canvas: offscreen }, [offscreen])
 
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtId) {
-        const pixels =
-          config.transmission_mode === 'compressed'
-            ? hexColor(e.detail.pixels, config.transmission_mode)
-            : e.detail.pixels
-        // const shape = e.detail.shape
-        const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-        const cols = Math.ceil(pixels.length / rows)
+      const handleWebsockets = (e: any) => {
+        if (e.detail.id === virtId) {
+          const pixels =
+            config.transmission_mode === 'compressed'
+              ? hexColor(e.detail.pixels, config.transmission_mode)
+              : e.detail.pixels
+          // const shape = e.detail.shape
+          const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+          const cols = Math.ceil(pixels.length / rows)
 
-        worker.postMessage({ pixels, rows, cols })
+          worker.postMessage({ pixels, rows, cols })
+        }
       }
-    }
 
-    document.addEventListener('visualisation_update', handleWebsockets)
-    return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-      worker.terminate()
-    }
+      document.addEventListener('visualisation_update', handleWebsockets)
+      return () => {
+        document.removeEventListener('visualisation_update', handleWebsockets)
+        worker.terminate()
+      }
+    }, 200)
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
   const render =
