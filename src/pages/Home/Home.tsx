@@ -63,32 +63,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // useEffect(() => {
-  //   const handleWebsockets = () => {
-  //     const req = {
-  //       event_type: 'graph_update',
-  //       id: 9000,
-  //       type: 'subscribe_event'
-  //     }
-  //     // console.log("Send");
-  //     ws.send(JSON.stringify(req.id && req))
-  //   }
-  //   document.addEventListener('subs_device_created', handleWebsockets)
-  //   return () => {
-  //     const removeGetWs = async () => {
-  //       const request = {
-  //         id: 9000,
-  //         type: 'unsubscribe_event',
-  //         event_type: 'graph_update'
-  //       }
-  //       ws.send(JSON.stringify(request.id && request))
-  //     }
-  //     // console.log("Clean Up");
-  //     removeGetWs()
-  //     document.removeEventListener('subs_device_created', handleWebsockets)
-  //   }
-  // }, [])
-
   useEffect(() => {
     const handleWebsockets = () => {
       const req = {
