@@ -202,7 +202,7 @@ const MGraph = () => {
         id: 9000,
         type: 'subscribe_event'
       }
-      console.log('Send')
+      // console.log('Send')
       ws.send(JSON.stringify(req.id && req))
     }
     const interval = setInterval(() => {
@@ -223,7 +223,7 @@ const MGraph = () => {
         }
         ws.send(JSON.stringify(request.id && request))
       }
-      console.log('Clean Up')
+      // console.log('Clean Up')
       removeGetWs()
       clearInterval(interval)
       document.removeEventListener('subs_graph_update', handleWebsockets)
