@@ -26,6 +26,7 @@ import {
 } from '@mui/material'
 import BladeFrame from './SchemaForm/components/BladeFrame'
 import { Tune } from '@mui/icons-material'
+import ws from '../utils/Websocket'
 
 ChartJS.register(
   CategoryScale,
@@ -193,6 +194,37 @@ const MGraph = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [animationDuration, fillOpacity, scaleType])
+
+  useEffect(() => {
+    const handleWebsockets = () => {
+      const req = {
+        event_type: 'graph_update',
+        id: 9000,
+        type: 'subscribe_event'
+      }
+      console.log('Send')
+      ws.send(JSON.stringify(req.id && req))
+    }
+    setTimeout(() => {
+      handleWebsockets()
+    }, 500)
+
+    document.addEventListener('subs_graph_update', handleWebsockets)
+
+    return () => {
+      const removeGetWs = async () => {
+        const request = {
+          id: 9000,
+          type: 'unsubscribe_event',
+          event_type: 'graph_update'
+        }
+        ws.send(JSON.stringify(request.id && request))
+      }
+      console.log('Clean Up')
+      removeGetWs()
+      document.removeEventListener('subs_graph_update', handleWebsockets)
+    }
+  }, [])
 
   return (
     <Stack alignItems={'center'} sx={{ position: 'relative', width: '100%' }}>

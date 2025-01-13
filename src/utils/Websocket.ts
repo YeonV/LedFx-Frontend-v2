@@ -52,12 +52,12 @@ function createSocket() {
           type: 'subscribe_event'
         }
         ws.send(JSON.stringify(requ.id && requ))
-        const reque = {
-          event_type: 'graph_update',
-          id: 9000,
-          type: 'subscribe_event'
-        }
-        ws.send(JSON.stringify(reque.id && reque))
+        // const reque = {
+        //   event_type: 'graph_update',
+        //   id: 9000,
+        //   type: 'subscribe_event'
+        // }
+        // ws.send(JSON.stringify(reque.id && reque))
         const reqs = {
           event_type: 'scene_activated',
           id: 9003,
