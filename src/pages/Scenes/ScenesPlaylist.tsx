@@ -26,10 +26,11 @@ export default function ScenesPlaylist({
   scenes,
   title,
   activateScene,
+  activateSceneUrl,
   db
 }: any) {
   const theme = useTheme()
-  const timer = useRef<NodeJS.Timeout | null>(null)
+  const workerRef = useRef<Worker | null>(null)
   const [theScenes, setTheScenes] = useState([])
   const scenePL = useStore((state) => state.scenePL)
   const scenePLintervals = useStore((state) => state.scenePLintervals)
@@ -57,44 +58,49 @@ export default function ScenesPlaylist({
   }, [scenes, scenePL])
 
   useEffect(() => {
+    if (workerRef.current === null) {
+      workerRef.current = new Worker(
+        new URL('../../workers/timerWorker.js', import.meta.url)
+      )
+      workerRef.current.onmessage = (e) => {
+        if (e.data.action === 'sceneChanged') {
+          setScenePLactiveIndex(e.data.nextIndex)
+        }
+      }
+    }
+
     if (scenePLplay) {
-      if (timer.current === null) {
-        timer.current = setTimeout(
-          () => {
-            if (scenePL[scenePLactiveIndex + 1]) {
-              activateScene(scenePL[scenePLactiveIndex + 1])
-              setScenePLactiveIndex(scenePLactiveIndex + 1)
-            } else if (scenePLrepeat) {
-              activateScene(scenePL[0])
-              setScenePLactiveIndex(0)
-            } else {
-              toggleScenePLplay()
-            }
-            timer.current = null // Reset the timer
-          },
+      workerRef.current.postMessage({
+        action: 'start',
+        interval:
           (sceneUseIntervals
             ? scenePLinterval
-            : scenePLintervals[scenePLactiveIndex] || 2) * 1000
-        )
-      }
-    } else if (timer.current) {
-      clearTimeout(timer.current)
-      timer.current = null
+            : scenePLintervals[scenePLactiveIndex] || 2) * 1000,
+        scenePL,
+        scenePLactiveIndex,
+        scenePLrepeat,
+        activateSceneUrl
+      })
+    } else {
+      workerRef.current.postMessage({ action: 'stop' })
     }
 
     return () => {
-      if (timer.current) {
-        clearTimeout(timer.current)
-        timer.current = null
+      if (workerRef.current) {
+        workerRef.current.terminate()
+        workerRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     scenePLplay,
     scenePLactiveIndex,
     scenePLintervals,
     scenePLinterval,
-    scenePLrepeat
+    scenePLrepeat,
+    setScenePLactiveIndex,
+    sceneUseIntervals,
+    scenePL,
+    activateSceneUrl
   ])
 
   const columns: GridColDef[] = [

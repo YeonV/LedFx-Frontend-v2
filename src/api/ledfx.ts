@@ -5,11 +5,15 @@ import isElectron from 'is-electron'
 
 import useStore from '../store/useStore'
 import type { IStore } from '../store/useStore'
+
+const isBrowser = typeof window !== 'undefined'
+
 const baseURL = isElectron()
   ? 'http://localhost:8888'
-  : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
+  : (isBrowser && window.location.href.split('/#')[0].replace(/\/+$/, '')) ||
     'http://localhost:8888'
-const storedURL = window.localStorage.getItem('ledfx-host')
+
+const storedURL = isBrowser ? window.localStorage.getItem('ledfx-host') : null
 
 const api = axios.create({
   baseURL: storedURL || baseURL
