@@ -2,12 +2,20 @@ import { produce } from 'immer'
 import isElectron from 'is-electron'
 import type { IStore } from '../useStore'
 
+const isBrowser = typeof window !== 'undefined'
+
 const storeGeneral = (set: any) => ({
   host: isElectron()
     ? 'http://localhost:8888'
-    : window.location.href.split('#')[0],
+    : isBrowser
+      ? window?.location?.href?.split('#')[0]
+      : 'http://localhost:8888',
   setHost: (host: any) => {
-    window.localStorage.setItem('ledfx-host', host.title ? host.title : host)
+    if (isBrowser)
+      window?.localStorage?.setItem(
+        'ledfx-host',
+        host.title ? host.title : host
+      )
     return set(
       produce((state: IStore) => {
         state.host = host
