@@ -26,7 +26,6 @@ export default function ScenesPlaylist({
   scenes,
   title,
   activateScene,
-  activateSceneUrl,
   db
 }: any) {
   const theme = useTheme()
@@ -60,7 +59,7 @@ export default function ScenesPlaylist({
   useEffect(() => {
     if (workerRef.current === null) {
       workerRef.current = new Worker(
-        new URL('../../workers/timerWorker.js', import.meta.url)
+        new URL('../../workers/timerWorker.ts', import.meta.url)
       )
       workerRef.current.onmessage = (e) => {
         if (e.data.action === 'sceneChanged') {
@@ -78,8 +77,7 @@ export default function ScenesPlaylist({
             : scenePLintervals[scenePLactiveIndex] || 2) * 1000,
         scenePL,
         scenePLactiveIndex,
-        scenePLrepeat,
-        activateSceneUrl
+        scenePLrepeat
       })
     } else {
       workerRef.current.postMessage({ action: 'stop' })
@@ -99,8 +97,7 @@ export default function ScenesPlaylist({
     scenePLrepeat,
     setScenePLactiveIndex,
     sceneUseIntervals,
-    scenePL,
-    activateSceneUrl
+    scenePL
   ])
 
   const columns: GridColDef[] = [

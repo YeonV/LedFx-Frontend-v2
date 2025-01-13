@@ -51,7 +51,7 @@ const PixelGraphCanvasOffscreenWebGL = ({
 
       const offscreen = canvas.transferControlToOffscreen()
       const worker = new Worker(
-        new URL('./pixelGraphWorkerWebGL.js', import.meta.url)
+        new URL('../../workers/pixelGraphWorkerWebGL.ts', import.meta.url)
       )
       workerRef.current = worker
       transferredRef.current = true

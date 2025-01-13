@@ -62,7 +62,13 @@ export default [
       'javascriptscript.format.semicolons': 'remove'
     },
     files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+      'prettier/prettier': prettier
+      // 'react-hooks': reactHooks
+    },
     rules: {
+      'no-unused-directive': 'off',
       'no-unused-vars': [
         'warn',
         {
@@ -109,11 +115,6 @@ export default [
       '@typescript-eslint/no-explicit-any': 0,
       '@prettier/trailing-comma': 0,
       'jsx-a11y/label-has-associated-control': 0
-    },
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-      'prettier/prettier': prettier
-      // 'react-hooks': reactHooks
     },
   }
 ]
