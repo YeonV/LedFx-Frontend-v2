@@ -1,10 +1,10 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.7b9f96b2.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.92c7e3b1.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.e088ed1d.js",
     "static/js/864.5e412a40.chunk.js": "/LedFx-Frontend-v2/static/js/864.5e412a40.chunk.js",
-    "static/js/956.31d700f0.chunk.js": "/LedFx-Frontend-v2/static/js/956.31d700f0.chunk.js",
-    "static/js/575.31d700f0.chunk.js": "/LedFx-Frontend-v2/static/js/575.31d700f0.chunk.js",
+    "static/js/956.361d0fc9.chunk.js": "/LedFx-Frontend-v2/static/js/956.361d0fc9.chunk.js",
+    "static/js/575.361d0fc9.chunk.js": "/LedFx-Frontend-v2/static/js/575.361d0fc9.chunk.js",
     "static/js/685.db35d3c0.chunk.js": "/LedFx-Frontend-v2/static/js/685.db35d3c0.chunk.js",
     "static/media/xmas.png": "/LedFx-Frontend-v2/static/media/xmas.3e4e83405d14fb81488b.png",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
@@ -42,6 +42,6 @@
   },
   "entrypoints": [
     "static/css/main.7b9f96b2.css",
-    "static/js/main.92c7e3b1.js"
+    "static/js/main.e088ed1d.js"
   ]
 }
