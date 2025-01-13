@@ -45,9 +45,9 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
     (state) => state.uiPersist.pixelGraphSettings?.stretch
   )
 
-  useEffect(() => {
+  const initializeWorker = async () => {
     const canvas = canvasRef.current
-    if (!canvas || transferredRef.current) return
+    if (!canvas) return
 
     const offscreen = canvas.transferControlToOffscreen()
     const worker = new Worker(
@@ -57,35 +57,43 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
     transferredRef.current = true
 
     worker.postMessage({ canvas: offscreen }, [offscreen])
+  }
 
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtId) {
-        const pixels =
-          config.transmission_mode === 'compressed'
-            ? hexColor(e.detail.pixels, config.transmission_mode)
-            : e.detail.pixels
-        // const shape = e.detail.shape
-        const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-        const cols = Math.ceil(pixels.length / rows)
+  useEffect(() => {
+    setTimeout(() => {
+      if (!transferredRef.current) {
+        initializeWorker()
+      }
 
+      const handleWebsockets = (e: any) => {
+        if (e.detail.id === virtId) {
+          const pixels =
+            config.transmission_mode === 'compressed'
+              ? hexColor(e.detail.pixels, config.transmission_mode)
+              : e.detail.pixels
+          // const shape = e.detail.shape
+          const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+          const cols = Math.ceil(pixels.length / rows)
+
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current)
+          }
+
+          animationFrameRef.current = requestAnimationFrame(() => {
+            workerRef.current?.postMessage({ pixels, rows, cols })
+          })
+        }
+      }
+
+      document.addEventListener('visualisation_update', handleWebsockets)
+      return () => {
+        document.removeEventListener('visualisation_update', handleWebsockets)
+        workerRef.current?.terminate()
         if (animationFrameRef.current) {
           cancelAnimationFrame(animationFrameRef.current)
         }
-
-        animationFrameRef.current = requestAnimationFrame(() => {
-          worker.postMessage({ pixels, rows, cols })
-        })
       }
-    }
-
-    document.addEventListener('visualisation_update', handleWebsockets)
-    return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-      worker.terminate()
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
-      }
-    }
+    }, 200)
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
   const render =
