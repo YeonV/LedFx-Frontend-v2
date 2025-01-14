@@ -1,19 +1,18 @@
 /* eslint-disable no-restricted-globals */
 
-import { Ledfx } from '../api/ledfx'
-
-interface WorkerMessage {
+interface WorkerMessageTimer {
   action: 'start' | 'stop'
   interval: number
   scenePL: string[]
   scenePLactiveIndex: number
   scenePLrepeat: boolean
+  url: string
 }
 
 let timer: ReturnType<typeof setInterval> | null = null
 
-self.onmessage = async function (e: MessageEvent<WorkerMessage>) {
-  const { action, interval, scenePL, scenePLactiveIndex, scenePLrepeat } =
+self.onmessage = async function (e: MessageEvent<WorkerMessageTimer>) {
+  const { action, interval, scenePL, scenePLactiveIndex, scenePLrepeat, url } =
     e.data
 
   if (action === 'start') {
@@ -31,9 +30,15 @@ self.onmessage = async function (e: MessageEvent<WorkerMessage>) {
 
         const nextSceneId = scenePL[nextIndex]
         try {
-          await Ledfx('/api/scenes', 'PUT', {
-            id: nextSceneId,
-            action: 'activate'
+          await fetch(url + '/api/scenes', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: nextSceneId,
+              action: 'activate'
+            })
           })
           self.postMessage({ action: 'sceneChanged', nextIndex })
         } catch (error) {

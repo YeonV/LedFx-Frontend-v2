@@ -77,7 +77,8 @@ export default function ScenesPlaylist({
             : scenePLintervals[scenePLactiveIndex] || 2) * 1000,
         scenePL,
         scenePLactiveIndex,
-        scenePLrepeat
+        scenePLrepeat,
+        url: window.localStorage.getItem('ledfx-host')
       })
     } else {
       workerRef.current.postMessage({ action: 'stop' })
