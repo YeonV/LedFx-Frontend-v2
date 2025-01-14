@@ -7,6 +7,7 @@ import {
   IconButton,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme
 } from '@mui/material'
 import {
@@ -46,6 +47,7 @@ export default function ScenesPlaylist({
   const scenePLinterval = useStore((state) => state.scenePLinterval)
   const setScenePLinterval = useStore((state) => state.setScenePLinterval)
   const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
+  const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
   useEffect(() => {
     const current = scenePL.map((key: string, id: number) => ({
@@ -106,7 +108,7 @@ export default function ScenesPlaylist({
     {
       field: 'scene_image',
       headerName: 'Image',
-      width: db ? 100 : 150,
+      width: xsmallScreen ? 70 : db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
@@ -114,7 +116,7 @@ export default function ScenesPlaylist({
     {
       field: 'name',
       headerName: 'Name',
-      width: db ? 136 : 200,
+      width: xsmallScreen ? 160 : db ? 136 : 200,
       renderCell: (params: GridRenderCellParams) => (
         <Typography
           variant="body2"
@@ -170,7 +172,7 @@ export default function ScenesPlaylist({
     {
       field: 'scene_id',
       headerName: 'Remove',
-      width: 70,
+      width: 80,
       renderCell: (params: GridRenderCellParams) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const removeScene2PL = useStore((state) => state.removeScene2PL)
@@ -213,7 +215,7 @@ export default function ScenesPlaylist({
             borderColor: db ? 'transparent' : theme.palette.divider,
             borderBottom: 0,
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: xsmallScreen ? 'flex-start' : 'space-between',
             alignItems: 'center'
           }}
         >
@@ -266,12 +268,12 @@ export default function ScenesPlaylist({
                 {sceneUseIntervals ? <Timer /> : <TimerOff />}
               </Button>
             )}
-            {db ? '' : 'sec'}
+            {db || xsmallScreen ? '' : 'sec'}
             <TextField
               variant="standard"
               disabled={!sceneUseIntervals}
               sx={{
-                width: 70,
+                width: 60,
                 // border: '1px solid',
                 // borderColor: theme.palette.divider,
                 marginRight: 1,
@@ -309,7 +311,7 @@ export default function ScenesPlaylist({
               </IconButton>
             ) : (
               <Button
-                sx={{ mr: 1 }}
+                // sx={{ mr: 1 }}
                 onClick={() => {
                   if (scenePLplay) {
                     setScenePLactiveIndex(-1)
@@ -330,6 +332,8 @@ export default function ScenesPlaylist({
           rowHeight={50}
           columns={columns}
           hideFooter
+          disableColumnSorting={xsmallScreen}
+          disableColumnMenu={xsmallScreen}
           // headerHeight={1}
           // pageSize={5}
           disableRowSelectionOnClick
@@ -362,6 +366,9 @@ export default function ScenesPlaylist({
             },
             '&.MuiDataGrid-root .row--active': {
               background: `${theme.palette.primary.main}30`
+            },
+            '& .MuiDataGrid-cell, & .MuiDataGrid-columnHeaderTitle': {
+              textOverflow: 'clip'
             }
           }}
         />

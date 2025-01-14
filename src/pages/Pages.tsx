@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
-import { Box, useTheme } from '@mui/material'
+import { Box, useMediaQuery, useTheme } from '@mui/material'
 import ScrollToTop from '../utils/scrollToTop'
 import '../App.css'
 
@@ -54,6 +54,8 @@ const Routings = ({ handleWs }: any) => {
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
+  const xsmallScreen = useMediaQuery('(max-width: 475px)')
+
   const smartBarOpen = useStore(
     (state) => state.ui.bars && state.ui.bars.smartBar.open
   )
@@ -102,7 +104,7 @@ const Routings = ({ handleWs }: any) => {
         sx={{
           flexGrow: 1,
           background: 'transparent',
-          padding: ios ? 0 : theme.spacing(0),
+          padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
           transition: theme.transitions.create('margin', {
             easing: leftBarOpen
               ? theme.transitions.easing.easeOut
