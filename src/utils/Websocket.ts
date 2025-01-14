@@ -16,6 +16,8 @@ interface WebSockette extends Sockette {
   ws: WebSocket
 }
 
+let YZFLAG = false
+
 function createSocket() {
   const host =
     window.localStorage.getItem('ledfx-host') ||
@@ -31,6 +33,10 @@ function createSocket() {
     console.warn(
       'Mixed content error: Cannot connect to ws:// from an https:// page.'
     )
+    return undefined
+  }
+
+  if (YZFLAG) {
     return 'mixedContent'
   }
 
@@ -150,8 +156,11 @@ function createSocket() {
             }
           })
         )
+      },
+      onerror: (e) => {
+        console.log('OMG Error:', e)
+        YZFLAG = true
       }
-      // onerror: e => console.log('Error:', e)
     }) as WebSockette
     return _ws
   } catch (error) {
