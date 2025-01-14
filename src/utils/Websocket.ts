@@ -16,7 +16,9 @@ interface WebSockette extends Sockette {
   ws: WebSocket
 }
 
-let YZFLAG = false
+// eslint-disable-next-line no-var
+var YZFLAG = false
+const YZFLAG2 = false
 
 function createSocket() {
   const host =
@@ -29,13 +31,15 @@ function createSocket() {
     host.replace('https://', 'wss://').replace('http://', 'ws://') +
     '/api/websocket'
 
-  if (YZFLAG) {
+  if (YZFLAG2) {
     return 'mixedContent'
   }
-  if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
-    console.warn(
-      'Mixed content error: Cannot connect to ws:// from an https:// page.'
-    )
+  if (
+    window.location.protocol === 'https:' &&
+    wsUrl.startsWith('ws://') &&
+    YZFLAG
+  ) {
+    console.info('BOOOM')
     // return undefined
   }
 
@@ -157,13 +161,17 @@ function createSocket() {
         )
       },
       onerror: (e) => {
-        console.log('OMG Error:', e)
+        console.log(e)
         YZFLAG = true
       }
     }) as WebSockette
     return _ws
-  } catch (error) {
-    console.log('EYYYYYYY', error)
+  } catch (error: any) {
+    if (error.name === 'SecurityError') {
+      console.info('YOOO', JSON.stringify(error))
+    } else {
+      console.error('NOOO', JSON.stringify(error))
+    }
   }
 }
 

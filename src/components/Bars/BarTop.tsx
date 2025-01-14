@@ -278,7 +278,9 @@ const TopBar = () => {
   }
   useEffect(() => {
     const fetchConfig = async () => {
-      const res = await fetch('/frontend_config.json')
+      const res = await fetch(
+        window?.location?.href?.split('#')[0] + 'frontend_config.json'
+      )
       const configData = await res.json()
       setFrConfig(configData)
     }
