@@ -203,9 +203,21 @@ const MGraph = () => {
         type: 'subscribe_event'
       }
       // console.log('Send')
+      if (ws === 'mixedContent') {
+        alert(
+          'Mixed content error in Mgraph.ts: Cannot connect to ws:// from an https:// page.'
+        )
+        return
+      }
       ws?.send(JSON.stringify(req.id && req))
     }
     const interval = setInterval(() => {
+      if (ws === 'mixedContent') {
+        alert(
+          'Mixed content error in Mgrapph interval: Cannot connect to ws:// from an https:// page.'
+        )
+        return
+      }
       if (ws?.ws && ws.ws.readyState === WebSocket.OPEN) {
         handleWebsockets()
         clearInterval(interval)
@@ -220,6 +232,12 @@ const MGraph = () => {
           id: 9000,
           type: 'unsubscribe_event',
           event_type: 'graph_update'
+        }
+        if (ws === 'mixedContent') {
+          alert(
+            'Mixed content error in Mgraph cleanup: Cannot connect to ws:// from an https:// page.'
+          )
+          return
         }
         ws?.send(JSON.stringify(request.id && request))
       }

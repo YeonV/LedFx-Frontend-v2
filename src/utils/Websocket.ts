@@ -28,10 +28,10 @@ function createSocket() {
     '/api/websocket'
 
   if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
-    console.error(
+    console.warn(
       'Mixed content error: Cannot connect to ws:// from an https:// page.'
     )
-    return null
+    return 'mixedContent'
   }
 
   try {
@@ -47,6 +47,12 @@ function createSocket() {
             }
           })
         )
+        if (ws === 'mixedContent') {
+          alert(
+            'Mixed content error in Websocket.ts onopen: Cannot connect to ws:// from an https:// page.'
+          )
+          return
+        }
         if (ws) {
           ws.ws = e.target as WebSocket
 
@@ -194,6 +200,12 @@ export const HandleWs = () => {
             type: 'subscribe_event'
           }
           // console.log("Send");
+          if (ws === 'mixedContent') {
+            alert(
+              'Mixed content error in websocket.ts: Cannot connect to ws:// from an https:// page.'
+            )
+            return
+          }
           if (ws) {
             ws.send(JSON.stringify(++request.id && request))
           }
@@ -209,6 +221,12 @@ export const HandleWs = () => {
               type: 'unsubscribe_event',
               event_type: 'visualisation_update'
             }
+            if (ws === 'mixedContent') {
+              alert(
+                'Mixed content error in Websocket.ts cleanup: Cannot connect to ws:// from an https:// page.'
+              )
+              return
+            }
             if (ws) {
               ws.send(JSON.stringify(++request.id && request))
             }
@@ -223,6 +241,12 @@ export const HandleWs = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (ws === 'mixedContent') {
+        alert(
+          'Mixed content error in Websocket.ts interval: Cannot connect to ws:// from an https:// page.'
+        )
+        return
+      }
       if (ws && ws.ws && ws.ws.readyState === WebSocket.OPEN) {
         setWsReady(true)
         clearInterval(interval)

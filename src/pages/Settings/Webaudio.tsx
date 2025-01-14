@@ -125,6 +125,12 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                   id: 8000 + i,
                   type: 'audio_stream_config'
                 }
+                if (ws === 'mixedContent') {
+                  alert(
+                    'Mixed content error in Webaudio.ts getmedia: Cannot connect to ws:// from an https:// page.'
+                  )
+                  return
+                }
                 ws?.ws.send(JSON.stringify(++request.id && request))
               }
               sendWs()
@@ -153,6 +159,12 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                     id: 8500 + i,
                     type: 'audio_stream_data_v2'
                   }
+                  if (ws === 'mixedContent') {
+                    alert(
+                      'Mixed content error in Webaudio.ts onaudioprocess v2: Cannot connect to ws:// from an https:// page.'
+                    )
+                    return
+                  }
                   ws?.ws.send(JSON.stringify(++request.id && request))
                 }
                 const sendWsV1 = async () => {
@@ -162,6 +174,12 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                     client: webAudName,
                     id: 8000 + i,
                     type: 'audio_stream_data'
+                  }
+                  if (ws === 'mixedContent') {
+                    alert(
+                      'Mixed content error in Webaudio.ts onaudioprocess v1: Cannot connect to ws:// from an https:// page.'
+                    )
+                    return
                   }
                   ws?.ws.send(JSON.stringify(++request.id && request))
                 }
@@ -202,6 +220,12 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                 client: webAudName,
                 id: 8200 + i,
                 type: 'audio_stream_stop'
+              }
+              if (ws === 'mixedContent') {
+                alert(
+                  'Mixed content error in Webaudio.ts fab: Cannot connect to ws:// from an https:// page.'
+                )
+                return
               }
               ws?.ws.send(JSON.stringify(++request.id && request))
             }
@@ -358,6 +382,12 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                         client: webAudName,
                         id: 8499,
                         type: 'audio_stream_start'
+                      }
+                      if (ws === 'mixedContent') {
+                        alert(
+                          'Mixed content error in Webaudio.ts button: Cannot connect to ws:// from an https:// page.'
+                        )
+                        return
                       }
                       ws?.ws.send(JSON.stringify(request.id && request))
                     }
