@@ -18,7 +18,7 @@ interface WebSockette extends Sockette {
 
 // eslint-disable-next-line no-var
 var YZFLAG = false
-const YZFLAG2 = false
+// const YZFLAG2 = false
 
 function createSocket() {
   const host =
@@ -31,7 +31,7 @@ function createSocket() {
     host.replace('https://', 'wss://').replace('http://', 'ws://') +
     '/api/websocket'
 
-  if (YZFLAG2) {
+  if (YZFLAG) {
     return 'mixedContent'
   }
   if (
@@ -168,9 +168,9 @@ function createSocket() {
     return _ws
   } catch (error: any) {
     if (error.name === 'SecurityError') {
-      console.info('YOOO', JSON.stringify(error))
+      YZFLAG = true
     } else {
-      console.error('NOOO', JSON.stringify(error))
+      console.error('NOOO', error)
     }
   }
 }
@@ -218,7 +218,7 @@ export const HandleWs = () => {
           // console.log("Send");
           if (ws === 'mixedContent') {
             alert(
-              'Mixed content error in websocket.ts: Cannot connect to ws:// from an https:// page.'
+              'Mixed content not allowed in your browser. visit chrome://flags/#unsafely-treat-insecure-origin-as-secure and add you ledfx host two times: i.e.: http://10.0.0.1:8888,ws://10.0.0.1:8888 and enable. then goto chrome://flags/#block-insecure-private-network-requests and disable. then restart your browser.'
             )
             return
           }
