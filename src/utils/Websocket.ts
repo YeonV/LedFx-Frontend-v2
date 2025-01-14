@@ -29,15 +29,14 @@ function createSocket() {
     host.replace('https://', 'wss://').replace('http://', 'ws://') +
     '/api/websocket'
 
+  if (YZFLAG) {
+    return 'mixedContent'
+  }
   if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
     console.warn(
       'Mixed content error: Cannot connect to ws:// from an https:// page.'
     )
-    return undefined
-  }
-
-  if (YZFLAG) {
-    return 'mixedContent'
+    // return undefined
   }
 
   try {
