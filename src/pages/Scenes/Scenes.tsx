@@ -9,7 +9,8 @@ import {
   Chip,
   useTheme,
   Alert,
-  Collapse
+  Collapse,
+  useMediaQuery
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
@@ -35,6 +36,7 @@ const Scenes = () => {
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
+  const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -99,16 +101,18 @@ const Scenes = () => {
           <Grid
             container
             spacing={[0, 0, 2, 2, 2]}
-            justifyContent="center"
+            justifyContent={xsmallScreen ? 'flex-start' : 'center'}
             m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
             sx={{ maxWidth: '100%' }}
           >
             <Grid
               item
               mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              mb={['5rem', '5rem', 0, 0, 0]}
-              p="8px !important"
-              width={450}
+              mb={['2rem', '5rem', 0, 0, 0]}
+              ml="auto"
+              mr="auto"
+              p={`${xsmallScreen ? '0' : '8'}px !important`}
+              width={xsmallScreen ? 'calc(100% - 16px)' : 450}
             >
               <ScenesRecent
                 scenes={scenes}
@@ -119,9 +123,11 @@ const Scenes = () => {
             <Grid
               item
               mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              mb={['5rem', '5rem', 0, 0, 0]}
-              p="8px !important"
-              width={450}
+              mb={['2rem', '5rem', 0, 0, 0]}
+              ml="auto"
+              mr="auto"
+              p={`${xsmallScreen ? '0' : '8'}px !important`}
+              width={xsmallScreen ? 'calc(100% - 16px)' : 450}
             >
               <ScenesMostUsed
                 scenes={scenes}
@@ -132,9 +138,11 @@ const Scenes = () => {
             <Grid
               item
               mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              mb={['5rem', '5rem', 0, 0, 0]}
-              p="8px !important"
-              width={450}
+              mb={['2rem', '5rem', 0, 0, 0]}
+              ml="auto"
+              mr="auto"
+              p={`${xsmallScreen ? '0' : '8'}px !important`}
+              width={xsmallScreen ? 'calc(100% - 16px)' : 450}
             >
               <ScenesPlaylist
                 scenes={scenes}
@@ -180,7 +188,7 @@ const Scenes = () => {
       <Grid
         container
         spacing={[0, 0, 2, 2, 2]}
-        justifyContent="center"
+        justifyContent={xsmallScreen ? 'unset' : 'center'}
         m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
         sx={{ maxWidth: '100%' }}
       >

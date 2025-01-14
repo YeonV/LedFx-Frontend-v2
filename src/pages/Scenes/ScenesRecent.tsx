@@ -6,37 +6,38 @@ import {
   GridEventListener,
   GridRenderCellParams
 } from '@mui/x-data-grid'
-import { Card, Typography, useTheme } from '@mui/material'
+import { Card, Typography, useMediaQuery, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  {
-    field: 'scene_image',
-    headerName: 'Image',
-    width: 150,
-    renderCell: (params: GridRenderCellParams) => (
-      <SceneImage iconName={params.value || 'Wallpaper'} />
-    )
-  },
-  {
-    field: 'name',
-    headerName: 'Name',
-    width: 220
-  },
-  {
-    field: 'used',
-    type: 'number',
-    headerName: 'Order',
-    width: 20
-  }
-]
 
 export default function ScenesRecent({ scenes, activateScene, title }: any) {
   const theme = useTheme()
   const recentScenes = useStore((state) => state.recentScenes)
   const [theScenes, setTheScenes] = useState({})
+  const xsmallScreen = useMediaQuery('(max-width: 475px)')
+
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    {
+      field: 'scene_image',
+      headerName: 'Image',
+      width: xsmallScreen ? 100 : 150,
+      renderCell: (params: GridRenderCellParams) => (
+        <SceneImage iconName={params.value || 'Wallpaper'} list />
+      )
+    },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: 220
+    },
+    {
+      field: 'used',
+      type: 'number',
+      headerName: 'Order',
+      width: 70
+    }
+  ]
 
   const sceneBlenderFilter = (sc: string) =>
     scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
@@ -56,7 +57,7 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
   }, [scenes, recentScenes])
 
   return (
-    <Card>
+    <Card sx={{ width: '100%', maxWidth: 'unset' }}>
       <Box sx={{ height: 293, width: '100%', maxWidth: '470px', m: '0 auto' }}>
         <Typography
           color="GrayText"
@@ -73,6 +74,8 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
           {title}
         </Typography>
         <DataGrid
+          disableColumnSorting={xsmallScreen}
+          disableColumnMenu={xsmallScreen}
           onRowClick={handleEvent}
           rowHeight={50}
           columns={columns}

@@ -6,7 +6,7 @@ import {
   GridEventListener,
   GridRenderCellParams
 } from '@mui/x-data-grid'
-import { Card, Typography, useTheme } from '@mui/material'
+import { Card, Typography, useMediaQuery, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 
@@ -22,6 +22,7 @@ export default function ScenesMostUsed({
   const mostUsedScenes = useStore((state) => state.mostUsedScenes)
   const setMostUsedScenes = useStore((state) => state.setMostUsedScenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
+  const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
   const sceneBlenderFilter = (sc: string) =>
     scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
@@ -42,7 +43,7 @@ export default function ScenesMostUsed({
     {
       field: 'scene_image',
       headerName: 'Image',
-      width: db ? 100 : 150,
+      width: xsmallScreen || db ? 100 : 150,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
@@ -56,7 +57,7 @@ export default function ScenesMostUsed({
       field: 'used',
       headerName: 'Used',
       type: 'number',
-      width: 20
+      width: 70
     }
   ]
 
@@ -64,14 +65,15 @@ export default function ScenesMostUsed({
     <Card
       sx={{
         background: db ? 'transparent' : '',
-        borderColor: db ? 'transparent' : ''
+        borderColor: db ? 'transparent' : '',
+        maxWidth: xsmallScreen ? '100%' : 'unset'
       }}
     >
       <Box
         sx={{
           height: db ? 301 : 293,
           width: '100%',
-          maxWidth: '470px',
+          maxWidth: xsmallScreen ? 'unset' : '470px',
           m: '0 auto'
         }}
       >
@@ -98,6 +100,8 @@ export default function ScenesMostUsed({
           hideFooter
           // headerHeight={1}
           pageSizeOptions={[5]}
+          disableColumnSorting={xsmallScreen}
+          disableColumnMenu={xsmallScreen}
           disableRowSelectionOnClick
           rows={Object.values(mostUsedScenes)
             .filter((scene: any) => sceneBlenderFilter(scene.name))
