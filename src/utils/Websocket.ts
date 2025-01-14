@@ -1,4 +1,9 @@
 /* eslint-disable array-callback-return */
+// const ws = new WebSocket(`${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
+// const ws = new WebSocket(`${(window.localStorage.getItem('ledfx-host') && window.localStorage.getItem('ledfx-host').startsWith('https')) ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
+// const ws = new WebSocket(`wss://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0].split(':')[0] || 'localhost:8888'}/api/websocket`);
+// const ws = new WebSocket(`${window.localStorage.getItem('ledfx-ws') ? window.localStorage.getItem('ledfx-ws') : 'ws://localhost:8888'}/api/websocket`, (window.localStorage.getItem('ledfx-ws') && window.localStorage.getItem('ledfx-ws').startsWith('wss')) ? 'https' : 'http');
+// const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
 
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 
@@ -10,12 +15,6 @@ import useStore from '../store/useStore'
 interface WebSockette extends Sockette {
   ws: WebSocket
 }
-
-// const ws = new WebSocket(`${window.location.protocol === 'https' ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
-// const ws = new WebSocket(`${(window.localStorage.getItem('ledfx-host') && window.localStorage.getItem('ledfx-host').startsWith('https')) ? 'wss' : 'ws'}://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0] || 'localhost:8888'}/api/websocket`);
-// const ws = new WebSocket(`wss://${window.localStorage.getItem('ledfx-host')?.split('https://')[0].split('http://')[0].split(':')[0] || 'localhost:8888'}/api/websocket`);
-// const ws = new WebSocket(`${window.localStorage.getItem('ledfx-ws') ? window.localStorage.getItem('ledfx-ws') : 'ws://localhost:8888'}/api/websocket`, (window.localStorage.getItem('ledfx-ws') && window.localStorage.getItem('ledfx-ws').startsWith('wss')) ? 'https' : 'http');
-// const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
 
 function createSocket() {
   const host =
@@ -35,120 +34,125 @@ function createSocket() {
     return null
   }
 
-  const _ws = new Sockette(wsUrl, {
-    timeout: 5e3,
-    maxAttempts: 10,
-    onopen: (e) => {
-      // console.log('Connected!', e)
-      document.dispatchEvent(
-        new CustomEvent('disconnected', {
-          detail: {
-            isDisconnected: false
-          }
-        })
-      )
-      if (ws) {
-        ws.ws = e.target as WebSocket
+  try {
+    const _ws = new Sockette(wsUrl, {
+      timeout: 5e3,
+      maxAttempts: 10,
+      onopen: (e) => {
+        // console.log('Connected!', e)
+        document.dispatchEvent(
+          new CustomEvent('disconnected', {
+            detail: {
+              isDisconnected: false
+            }
+          })
+        )
+        if (ws) {
+          ws.ws = e.target as WebSocket
 
-        const req = {
-          event_type: 'devices_updated',
-          id: 9002,
-          type: 'subscribe_event'
-        }
-        ws.send(JSON.stringify(req.id && req))
-        const requ = {
-          event_type: 'device_created',
-          id: 9001,
-          type: 'subscribe_event'
-        }
-        ws.send(JSON.stringify(requ.id && requ))
-        const reqs = {
-          event_type: 'scene_activated',
-          id: 9003,
-          type: 'subscribe_event'
-        }
-        ws.send(JSON.stringify(reqs.id && reqs))
-        const reqst = {
-          event_type: 'effect_set',
-          id: 9004,
-          type: 'subscribe_event'
-        }
-        ws.send(JSON.stringify(reqst.id && reqst))
-      }
-    },
-    onmessage: (event) => {
-      const data = JSON.parse(event.data)
-      if (data.event_type === 'visualisation_update') {
-        document.dispatchEvent(
-          new CustomEvent('visualisation_update', {
-            detail: {
-              id: data.vis_id,
-              pixels: data.pixels,
-              shape: data.shape
-            }
-          })
-        )
-      }
-      if (data.event_type === 'devices_updated') {
-        document.dispatchEvent(
-          new CustomEvent('devices_updated', {
-            detail: 'devices_updated'
-          })
-        )
-      }
-      if (data.event_type === 'device_created') {
-        document.dispatchEvent(
-          new CustomEvent('device_created', {
-            detail: {
-              id: 'device_created',
-              device_name: data.device_name
-            }
-          })
-        )
-      }
-      if (data.event_type === 'graph_update') {
-        document.dispatchEvent(
-          new CustomEvent('graph_update', {
-            detail: data
-          })
-        )
-      }
-      if (data.event_type === 'effect_set') {
-        document.dispatchEvent(
-          new CustomEvent('effect_set', {
-            detail: data
-          })
-        )
-      }
-      if (data.event_type === 'scene_activated') {
-        // console.log('scene_activated', data)
-        document.dispatchEvent(
-          new CustomEvent('scene_activated', {
-            detail: {
-              id: 'scene_activated',
-              scene_id: data.scene_id
-            }
-          })
-        )
-      }
-    },
-    // onreconnect: e => console.log('Reconnecting...', e),
-    // onmaximum: e => console.log('Stop Attempting!', e),
-    onclose: () => {
-      // console.log('Closed!', e)
-      window.localStorage.removeItem('core-init')
-      document.dispatchEvent(
-        new CustomEvent('disconnected', {
-          detail: {
-            isDisconnected: true
+          const req = {
+            event_type: 'devices_updated',
+            id: 9002,
+            type: 'subscribe_event'
           }
-        })
-      )
-    }
-    // onerror: e => console.log('Error:', e)
-  }) as WebSockette
-  return _ws
+          ws.send(JSON.stringify(req.id && req))
+          const requ = {
+            event_type: 'device_created',
+            id: 9001,
+            type: 'subscribe_event'
+          }
+          ws.send(JSON.stringify(requ.id && requ))
+          const reqs = {
+            event_type: 'scene_activated',
+            id: 9003,
+            type: 'subscribe_event'
+          }
+          ws.send(JSON.stringify(reqs.id && reqs))
+          const reqst = {
+            event_type: 'effect_set',
+            id: 9004,
+            type: 'subscribe_event'
+          }
+          ws.send(JSON.stringify(reqst.id && reqst))
+        }
+      },
+      onmessage: (event) => {
+        const data = JSON.parse(event.data)
+        if (data.event_type === 'visualisation_update') {
+          document.dispatchEvent(
+            new CustomEvent('visualisation_update', {
+              detail: {
+                id: data.vis_id,
+                pixels: data.pixels,
+                shape: data.shape
+              }
+            })
+          )
+        }
+        if (data.event_type === 'devices_updated') {
+          document.dispatchEvent(
+            new CustomEvent('devices_updated', {
+              detail: 'devices_updated'
+            })
+          )
+        }
+        if (data.event_type === 'device_created') {
+          document.dispatchEvent(
+            new CustomEvent('device_created', {
+              detail: {
+                id: 'device_created',
+                device_name: data.device_name
+              }
+            })
+          )
+        }
+        if (data.event_type === 'graph_update') {
+          document.dispatchEvent(
+            new CustomEvent('graph_update', {
+              detail: data
+            })
+          )
+        }
+        if (data.event_type === 'effect_set') {
+          document.dispatchEvent(
+            new CustomEvent('effect_set', {
+              detail: data
+            })
+          )
+        }
+        if (data.event_type === 'scene_activated') {
+          // console.log('scene_activated', data)
+          document.dispatchEvent(
+            new CustomEvent('scene_activated', {
+              detail: {
+                id: 'scene_activated',
+                scene_id: data.scene_id
+              }
+            })
+          )
+        }
+      },
+      // onreconnect: e => console.log('Reconnecting...', e),
+      // onmaximum: e => console.log('Stop Attempting!', e),
+      onclose: () => {
+        // console.log('Closed!', e)
+        window.localStorage.removeItem('core-init')
+        document.dispatchEvent(
+          new CustomEvent('disconnected', {
+            detail: {
+              isDisconnected: true
+            }
+          })
+        )
+      }
+      // onerror: e => console.log('Error:', e)
+    }) as WebSockette
+    return _ws
+  } catch (error) {
+    console.log('EYYYYYYY', error)
+  }
 }
+
 const ws = createSocket()
 export default ws
 export const WsContext = React.createContext(ws)
