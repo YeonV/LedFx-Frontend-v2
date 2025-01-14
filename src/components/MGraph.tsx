@@ -203,10 +203,10 @@ const MGraph = () => {
         type: 'subscribe_event'
       }
       // console.log('Send')
-      ws.send(JSON.stringify(req.id && req))
+      ws?.send(JSON.stringify(req.id && req))
     }
     const interval = setInterval(() => {
-      if (ws.ws && ws.ws.readyState === WebSocket.OPEN) {
+      if (ws?.ws && ws.ws.readyState === WebSocket.OPEN) {
         handleWebsockets()
         clearInterval(interval)
       }
@@ -221,7 +221,7 @@ const MGraph = () => {
           type: 'unsubscribe_event',
           event_type: 'graph_update'
         }
-        ws.send(JSON.stringify(request.id && request))
+        ws?.send(JSON.stringify(request.id && request))
       }
       // console.log('Clean Up')
       removeGetWs()
