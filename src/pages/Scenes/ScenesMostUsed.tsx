@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
-import Box from '@mui/material/Box'
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
   GridRenderCellParams
 } from '@mui/x-data-grid'
-import { Card, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
+import ExpanderCard from './ExpanderCard'
 
 export default function ScenesMostUsed({
   scenes,
@@ -62,78 +62,47 @@ export default function ScenesMostUsed({
   ]
 
   return (
-    <Card
-      sx={{
-        background: db ? 'transparent' : '',
-        borderColor: db ? 'transparent' : '',
-        maxWidth: xsmallScreen ? '100%' : 'unset'
-      }}
-    >
-      <Box
-        sx={{
-          height: db ? 301 : 293,
-          width: '100%',
-          maxWidth: xsmallScreen ? 'unset' : '470px',
-          m: '0 auto'
+    <ExpanderCard title={title} cardKey="scenesMostUsed">
+      <DataGrid
+        onRowClick={handleEvent}
+        rowHeight={50}
+        columns={db ? columns.filter((c) => c.field !== 'used') : columns}
+        hideFooter
+        // headerHeight={1}
+        pageSizeOptions={[5]}
+        disableColumnSorting={xsmallScreen}
+        disableColumnMenu={xsmallScreen}
+        disableRowSelectionOnClick
+        rows={Object.values(mostUsedScenes)
+          .filter((scene: any) => sceneBlenderFilter(scene.name))
+          .map((v: any, i: number) => ({
+            id: i + 1,
+            ...v
+          }))}
+        initialState={{
+          // pagination: {
+          //   pageSize: 100,
+          // },
+          sorting: {
+            sortModel: [{ field: 'used', sort: 'desc' }]
+          },
+          columns: {
+            columnVisibilityModel: {
+              id: false,
+              scene_tags: false
+            }
+          }
         }}
-      >
-        {!db && (
-          <Typography
-            color="GrayText"
-            variant="h6"
-            sx={{
-              pl: 1,
-              pt: 0.5,
-              pb: 0.5,
-              border: '1px solid',
-              borderColor: db ? 'transparent' : theme.palette.divider,
-              borderBottom: 0
-            }}
-          >
-            {title}
-          </Typography>
-        )}
-        <DataGrid
-          onRowClick={handleEvent}
-          rowHeight={50}
-          columns={db ? columns.filter((c) => c.field !== 'used') : columns}
-          hideFooter
-          // headerHeight={1}
-          pageSizeOptions={[5]}
-          disableColumnSorting={xsmallScreen}
-          disableColumnMenu={xsmallScreen}
-          disableRowSelectionOnClick
-          rows={Object.values(mostUsedScenes)
-            .filter((scene: any) => sceneBlenderFilter(scene.name))
-            .map((v: any, i: number) => ({
-              id: i + 1,
-              ...v
-            }))}
-          initialState={{
-            // pagination: {
-            //   pageSize: 100,
-            // },
-            sorting: {
-              sortModel: [{ field: 'used', sort: 'desc' }]
-            },
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                scene_tags: false
-              }
-            }
-          }}
-          sx={{
-            borderColor: db ? 'transparent' : theme.palette.divider,
-            '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-              outline: 'none !important'
-            },
-            '& .MuiDataGrid-row:hover': {
-              cursor: 'pointer'
-            }
-          }}
-        />
-      </Box>
-    </Card>
+        sx={{
+          borderColor: db ? 'transparent' : theme.palette.divider,
+          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important'
+          },
+          '& .MuiDataGrid-row:hover': {
+            cursor: 'pointer'
+          }
+        }}
+      />
+    </ExpanderCard>
   )
 }

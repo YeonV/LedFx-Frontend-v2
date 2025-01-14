@@ -18,6 +18,10 @@ const storeUIPersist = (set: any) => ({
     matrixGroups: true,
     pixelMode: true
   },
+  expander: {
+    scenesRecent: false,
+    scenesMostUsed: false
+  } as Record<string, boolean>,
   warnings: {
     lessPixels: true
   },
