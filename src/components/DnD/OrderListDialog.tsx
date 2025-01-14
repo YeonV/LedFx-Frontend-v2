@@ -117,7 +117,10 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
                   htmlFor="contained-button-file"
                   style={{ width: '100%', flexBasis: '49%' }}
                 >
-                  <BladeIcon sx={{ pt: 0.4 }} name="mdi:folder-open" />
+                  <BladeIcon
+                    sx={{ pt: 0.4, cursor: 'pointer' }}
+                    name="mdi:folder-open"
+                  />
                 </label>
               </IconButton>
             </Stack>
