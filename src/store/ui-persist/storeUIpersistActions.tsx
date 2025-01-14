@@ -55,6 +55,14 @@ const storeUIPersistActions = (set: any) => ({
       }),
       false,
       'uiPersist/setPixelGraphSettings'
+    ),
+  setExpander: (key: string, val: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.uiPersist.expander[key] = val
+      }),
+      false,
+      'uiPersist/setExpander'
     )
 })
 
