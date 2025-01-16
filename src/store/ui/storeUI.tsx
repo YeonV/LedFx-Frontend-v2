@@ -31,6 +31,15 @@ const storeUI = (set: any) => ({
       false,
       'ui/virtual2dLimit'
     ),
+  fpsViewer: false,
+  setFpsViewer: (fps: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.fpsViewer = fps
+      }),
+      false,
+      'ui/fpsViewer'
+    ),
   mgX: 50,
   setMgX: (x: number): void =>
     set(

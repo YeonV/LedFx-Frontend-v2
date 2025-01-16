@@ -13,7 +13,6 @@ const keybindings = [
     keys: 'ctrl+alt+k',
     description: 'Open/Close Keybinding Screen'
   },
-
   {
     keys: 'ctrl+alt+y',
     description: 'Open/Close SmartBar'
@@ -25,6 +24,10 @@ const keybindings = [
   {
     keys: 'ctrl+alt+p',
     description: 'Open/Close PixelGraph Settings'
+  },
+  {
+    keys: 'ctrl+alt+f',
+    description: 'Show/Hide FPS Viewer'
   },
   // {
   //   keys: 'ctrl+alt+d',

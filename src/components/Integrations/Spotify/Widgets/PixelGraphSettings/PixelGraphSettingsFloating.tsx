@@ -33,7 +33,7 @@ const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
   const showMatrix = useStore((state) => state.showMatrix)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
   const variants = useStore(
-    (state) => state.uiPersist.pixelGraphSettings.variants
+    (state) => state.uiPersist.pixelGraphSettings?.variants
   )
   return (
     <Box component={PgsFloating}>
