@@ -116,7 +116,7 @@ const PixelGraphCanvas = ({
         }}
         onDoubleClick={onDoubleClick}
       />
-      <div
+      {/* <div
         onDoubleClick={() => {
           onDoubleClick()
         }}
@@ -185,7 +185,7 @@ const PixelGraphCanvas = ({
               ))}
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }
