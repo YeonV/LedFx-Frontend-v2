@@ -3,6 +3,7 @@ import { Input, Divider, Select, MenuItem } from '@mui/material'
 import { SettingsSlider, SettingsRow } from './SettingsComponents'
 import useStore from '../../store/useStore'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
+import { PixelGraphVariants } from '../../store/ui-persist/storeUIpersist'
 
 const PixelGraphsSettingsCard = () => {
   const sliderClasses = useSliderStyles()
@@ -15,7 +16,10 @@ const PixelGraphsSettingsCard = () => {
   const virtual2dLimit = useStore((state) => state.ui.virtual2dLimit)
   const setVirtual2dLimit = useStore((state) => state.ui.setVirtual2dLimit)
   const setShowWarning = useStore((state) => state.setWarnings)
-
+  const setPixelGraphSettings = useStore((state) => state.setPixelGraphSettings)
+  const variants = useStore(
+    (state) => state.uiPersist.pixelGraphSettings?.variants
+  )
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
   const [uiBrightnessBoost, setUiBrightnessBoost] = useState(0)
@@ -56,6 +60,21 @@ const PixelGraphsSettingsCard = () => {
 
   return (
     <>
+      <SettingsRow title="Graphs" step="zero" beta>
+        <Select
+          sx={{ width: 150 }}
+          disableUnderline
+          multiple
+          value={variants}
+          onChange={(e) => setPixelGraphSettings('variants', e.target.value)}
+        >
+          {PixelGraphVariants.map((variant) => (
+            <MenuItem key={variant} value={variant}>
+              {variant}
+            </MenuItem>
+          ))}
+        </Select>
+      </SettingsRow>
       <SettingsRow title={schemaTransmissionMode?.title} step="zero">
         <Select
           disableUnderline

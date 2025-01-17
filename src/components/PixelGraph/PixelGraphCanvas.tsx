@@ -91,27 +91,102 @@ const PixelGraphCanvas = ({
   if (!(graphs || intGraphs)) {
     return null
   }
+  const totalPixels = virtuals[virtId]?.pixel_count || 1
+  const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+  const cols = totalPixels / rows || 1
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={`${className} ${active ? 'active' : ''}`}
-      style={{
-        maxWidth: fullScreen ? '100vw' : '520px',
-        maxHeight: fullScreen ? '100vh' : 'unset',
-        height:
-          !render || virtuals[virtId]?.config?.rows < 2 || !showMatrix
-            ? '20px'
-            : 'auto',
-        width: '100%',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        margin: db ? 0 : '0.5rem 0 0 0',
-        imageRendering: smoothing ? 'unset' : 'pixelated',
-        objectFit: stretch ? 'fill' : 'contain'
-      }}
-      onDoubleClick={onDoubleClick}
-    />
+    <div style={{ position: 'relative' }}>
+      <canvas
+        ref={canvasRef}
+        className={`${className} ${active ? 'active' : ''}`}
+        style={{
+          maxWidth: fullScreen ? '100vw' : '520px',
+          maxHeight: fullScreen ? '100vh' : 'unset',
+          height:
+            !render || virtuals[virtId]?.config?.rows < 2 || !showMatrix
+              ? '20px'
+              : 'auto',
+          width: '100%',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          margin: db ? 0 : '0.5rem 0 0 0',
+          imageRendering: smoothing ? 'unset' : 'pixelated',
+          objectFit: stretch ? 'fill' : 'contain'
+        }}
+        onDoubleClick={onDoubleClick}
+      />
+      <div
+        onDoubleClick={() => {
+          onDoubleClick()
+        }}
+        style={{
+          maxWidth: fullScreen ? '100vw' : '520px',
+          maxHeight: fullScreen ? '100vh' : 'unset',
+          display: 'flex',
+          flexDirection:
+            virtuals[virtId].id === 'launchpad-x' ||
+            virtuals[virtId].id === 'launchpad-x-matrix'
+              ? 'column-reverse'
+              : 'column',
+          width: '100%',
+          height: '100%',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          margin: db ? 0 : '0.5rem 0 0 0',
+          objectFit: stretch ? 'fill' : 'contain',
+          position: 'absolute',
+          top: 0,
+          left: 0
+          // right: 0,
+          // bottom: 0
+        }}
+        className={`${className} ${active ? 'active' : ''}`}
+      >
+        {Array.from(Array(rows).keys()).map((row) => (
+          <div
+            key={`row-${row}`}
+            style={{
+              maxWidth: fullScreen ? '100vw' : '520px',
+              maxHeight: fullScreen ? 'calc(100vh - 200px)' : 'unset',
+              display: 'flex',
+              width: '100%',
+              borderRadius: '0',
+              overflow: 'hidden',
+              margin: '0',
+              background: 'red'
+            }}
+            className={`${className} ${active ? 'active' : ''}`}
+          >
+            {Array.from(Array(cols).keys())
+              .slice(row * cols, (row + 1) * cols)
+              .map((_p: any, i: number) => (
+                <div
+                  key={i}
+                  style={{
+                    flex: 1,
+                    margin: `${db || (totalPixels > 100 && rows > 7) ? 1 : 2}px`,
+                    borderRadius:
+                      db || (totalPixels > 100 && rows > 7) ? '50%' : '5px',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    maxWidth: db ? 3.6 : `${100 / cols}%`,
+                    maxHeight: db ? 3.6 : `${100 / cols}%`
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      paddingBottom: '100%',
+                      backgroundColor: 'green'
+                    }}
+                  />
+                </div>
+              ))}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
