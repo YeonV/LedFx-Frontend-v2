@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   IconButton,
+  Stack,
   TextField,
   Typography,
   useMediaQuery,
@@ -22,6 +23,7 @@ import {
 import useStore from '../../store/useStore'
 import ScenesPlaylistMenu from './ScenesPlaylistMenu'
 import SceneImage from './ScenesImage'
+import ExpanderCard from './ExpanderCard'
 
 export default function ScenesPlaylist({
   scenes,
@@ -108,7 +110,7 @@ export default function ScenesPlaylist({
     {
       field: 'scene_image',
       headerName: 'Image',
-      width: xsmallScreen ? 70 : db ? 100 : 150,
+      width: xsmallScreen ? 70 : db ? 100 : 100,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
@@ -190,189 +192,192 @@ export default function ScenesPlaylist({
   ]
 
   return (
-    <Card
-      sx={{
-        background: db ? 'transparent' : '',
-        borderColor: db ? 'transparent' : ''
-      }}
-    >
-      <Box
+    <ExpanderCard title={title} cardKey="scenesPlaylist">
+      <Card
         sx={{
-          height: db ? 301 : 293,
-          width: '100%',
-          maxWidth: '470px',
-          m: '0 auto'
+          background: db ? 'transparent' : '',
+          borderColor: db ? 'transparent' : ''
         }}
       >
-        <Typography
-          color="GrayText"
-          variant="h6"
+        <Box
           sx={{
-            pl: 1,
-            pt: 0.5,
-            pb: 0.5,
-            border: '1px solid',
-            borderColor: db ? 'transparent' : theme.palette.divider,
-            borderBottom: 0,
-            display: 'flex',
-            justifyContent: xsmallScreen ? 'flex-start' : 'space-between',
-            alignItems: 'center'
+            height: db ? 301 : 293,
+            width: '100%',
+            maxWidth: '470px',
+            m: '0 auto'
           }}
         >
-          {title}
-          {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <ScenesPlaylistMenu />
-          )}
-          <div
-            style={{
+          <Typography
+            color="GrayText"
+            variant="h6"
+            sx={{
+              // pl: 1,
+              pt: 0.5,
+              pb: 0.5,
+              border: '1px solid',
+              borderColor: db ? 'transparent' : theme.palette.divider,
+              borderBottom: 0,
               display: 'flex',
-              alignItems: 'center',
-              color: db ? theme.palette.text.primary : ''
+              justifyContent: xsmallScreen ? 'flex-start' : 'space-between',
+              alignItems: 'center'
             }}
           >
-            {db ? (
-              <IconButton
-                sx={{ mr: 1 }}
-                onClick={() => {
-                  toggleScenePLrepeat()
+            <Stack flex={1} direction={'row'} justifyContent={'space-between'}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: db ? theme.palette.text.primary : ''
                 }}
               >
-                {scenePLrepeat ? <RepeatOn /> : <Repeat />}
-              </IconButton>
-            ) : (
-              <Button
-                sx={{ mr: 1 }}
-                onClick={() => {
-                  toggleScenePLrepeat()
-                }}
-              >
-                {scenePLrepeat ? <RepeatOn /> : <Repeat />}
-              </Button>
-            )}
-            {db ? (
-              <IconButton
-                sx={{ mr: 1 }}
-                onClick={() => {
-                  toggleSceneUseIntervals()
-                }}
-              >
-                {sceneUseIntervals ? <Timer /> : <TimerOff />}
-              </IconButton>
-            ) : (
-              <Button
-                sx={{ mr: 1 }}
-                onClick={() => {
-                  toggleSceneUseIntervals()
-                }}
-              >
-                {sceneUseIntervals ? <Timer /> : <TimerOff />}
-              </Button>
-            )}
-            {db || xsmallScreen ? '' : 'sec'}
-            <TextField
-              variant="standard"
-              disabled={!sceneUseIntervals}
-              sx={{
-                width: 60,
-                // border: '1px solid',
-                // borderColor: theme.palette.divider,
-                marginRight: 1,
-                marginLeft: 1,
-                // borderRadius: 1,
-                '& input': {
-                  textAlign: 'right',
-                  padding: '5px 0 2px'
-                },
-                '& .MuiInput-underline:before': {
-                  display: 'none'
-                },
-                '& .MuiInput-underline:after': {
-                  display: 'none'
-                }
-              }}
-              type="number"
-              value={scenePLinterval}
-              onChange={(e: any) => setScenePLinterval(e.target.value)}
-            />
-            {db ? (
-              <IconButton
-                sx={{ mr: 1 }}
-                onClick={() => {
-                  if (scenePLplay) {
-                    setScenePLactiveIndex(-1)
-                  } else {
-                    activateScene(scenePL[0])
-                    setScenePLactiveIndex(0)
-                  }
-                  toggleScenePLplay()
-                }}
-              >
-                {scenePLplay ? <Stop /> : <PlayArrow />}
-              </IconButton>
-            ) : (
-              <Button
-                // sx={{ mr: 1 }}
-                onClick={() => {
-                  if (scenePLplay) {
-                    setScenePLactiveIndex(-1)
-                  } else {
-                    activateScene(scenePL[0])
-                    setScenePLactiveIndex(0)
-                  }
-                  toggleScenePLplay()
-                }}
-              >
-                {scenePLplay ? <Stop /> : <PlayArrow />}
-              </Button>
-            )}
-          </div>
-        </Typography>
+                {db ? (
+                  <IconButton
+                    onClick={() => {
+                      if (scenePLplay) {
+                        setScenePLactiveIndex(-1)
+                      } else {
+                        activateScene(scenePL[0])
+                        setScenePLactiveIndex(0)
+                      }
+                      toggleScenePLplay()
+                    }}
+                  >
+                    {scenePLplay ? <Stop /> : <PlayArrow />}
+                  </IconButton>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      if (scenePLplay) {
+                        setScenePLactiveIndex(-1)
+                      } else {
+                        activateScene(scenePL[0])
+                        setScenePLactiveIndex(0)
+                      }
+                      toggleScenePLplay()
+                    }}
+                  >
+                    {scenePLplay ? <Stop /> : <PlayArrow />}
+                  </Button>
+                )}
+                {db ? (
+                  <IconButton
+                    onClick={() => {
+                      toggleScenePLrepeat()
+                    }}
+                  >
+                    {scenePLrepeat ? <RepeatOn /> : <Repeat />}
+                  </IconButton>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      toggleScenePLrepeat()
+                    }}
+                  >
+                    {scenePLrepeat ? <RepeatOn /> : <Repeat />}
+                  </Button>
+                )}
+                {db ? (
+                  <IconButton
+                    sx={{ mr: 1 }}
+                    onClick={() => {
+                      toggleSceneUseIntervals()
+                    }}
+                  >
+                    {sceneUseIntervals ? <Timer /> : <TimerOff />}
+                  </IconButton>
+                ) : (
+                  <Button
+                    sx={{ mr: 1 }}
+                    onClick={() => {
+                      toggleSceneUseIntervals()
+                    }}
+                  >
+                    {sceneUseIntervals ? <Timer /> : <TimerOff />}
+                  </Button>
+                )}
+                {db || xsmallScreen ? '' : 'sec'}
+                <TextField
+                  variant="standard"
+                  disabled={!sceneUseIntervals}
+                  sx={{
+                    width: 60,
+                    // border: '1px solid',
+                    // borderColor: theme.palette.divider,
+                    marginRight: 1,
+                    marginLeft: 1,
+                    // borderRadius: 1,
+                    '& input': {
+                      textAlign: 'right',
+                      padding: '5px 0 2px'
+                    },
+                    '& .MuiInput-underline:before': {
+                      display: 'none'
+                    },
+                    '& .MuiInput-underline:after': {
+                      display: 'none'
+                    }
+                  }}
+                  type="number"
+                  value={scenePLinterval}
+                  onChange={(e: any) => setScenePLinterval(e.target.value)}
+                />
+              </div>
+              {!(window.localStorage.getItem('guestmode') === 'activated') && (
+                <ScenesPlaylistMenu />
+              )}
+            </Stack>
+          </Typography>
 
-        <DataGrid
-          rowHeight={50}
-          columns={columns}
-          hideFooter
-          disableColumnSorting={xsmallScreen}
-          disableColumnMenu={xsmallScreen}
-          // headerHeight={1}
-          // pageSize={5}
-          disableRowSelectionOnClick
-          rows={(
-            (theScenes && theScenes.length > 0 && Object.values(theScenes)) ||
-            []
-          ).map((v: any, i: number) => ({
-            id: i + 1,
-            ...v
-          }))}
-          getRowClassName={(params) =>
-            `row${params.row.id === scenePLactiveIndex ? '--active' : ''}`
-          }
-          pageSizeOptions={[100]}
-          initialState={{
-            sorting: {
-              sortModel: [{ field: 'id', sort: 'asc' }]
-            },
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                scene_tags: false
+          <DataGrid
+            rowHeight={50}
+            columns={columns}
+            hideFooter
+            disableColumnSorting
+            disableColumnMenu
+            disableColumnFilter
+            // headerHeight={1}
+            // pageSize={5}
+            disableRowSelectionOnClick
+            rows={(
+              (theScenes && theScenes.length > 0 && Object.values(theScenes)) ||
+              []
+            ).map((v: any, i: number) => ({
+              id: i + 1,
+              ...v
+            }))}
+            getRowClassName={(params) =>
+              `row${params.row.id === scenePLactiveIndex ? '--active' : ''}`
+            }
+            pageSizeOptions={[100]}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: 'id', sort: 'asc' }]
+              },
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                  scene_tags: false
+                }
               }
-            }
-          }}
-          sx={{
-            borderColor: db ? 'transparent' : theme.palette.divider,
-            '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-              outline: 'none !important'
-            },
-            '&.MuiDataGrid-root .row--active': {
-              background: `${theme.palette.primary.main}30`
-            },
-            '& .MuiDataGrid-cell, & .MuiDataGrid-columnHeaderTitle': {
-              textOverflow: 'clip'
-            }
-          }}
-        />
-      </Box>
-    </Card>
+            }}
+            sx={{
+              '& .MuiDataGrid-row--borderBottom': {
+                background: theme.palette.background.paper + ' !important'
+              },
+              borderColor: db ? 'transparent' : theme.palette.divider,
+              '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+                outline: 'none !important'
+              },
+              '&.MuiDataGrid-root .row--active': {
+                background: `${theme.palette.primary.main}30`
+              },
+              '& .MuiDataGrid-cell, & .MuiDataGrid-columnHeaderTitle': {
+                textOverflow: 'clip'
+              }
+            }}
+          />
+        </Box>
+      </Card>
+    </ExpanderCard>
   )
 }

@@ -57,7 +57,7 @@ const ExpanderCard = ({
   }
 
   return (
-    <Card sx={{ width: '100%', maxWidth: 'unset' }}>
+    <Card sx={{ width: '100%', maxWidth: '100vw' }}>
       <Typography
         onClick={handleExpandClick}
         color="GrayText"
@@ -86,7 +86,7 @@ const ExpanderCard = ({
       </Typography>
       <Collapse in={expander[cardKey]}>
         <Box
-          sx={{ height: 208, width: '100%', maxWidth: '470px', m: '0 auto' }}
+          sx={{ height: 298, width: '100%', maxWidth: '470px', m: '0 auto' }}
         >
           {children}
         </Box>
