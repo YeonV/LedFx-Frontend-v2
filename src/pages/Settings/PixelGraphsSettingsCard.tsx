@@ -60,11 +60,10 @@ const PixelGraphsSettingsCard = () => {
 
   return (
     <>
-      <SettingsRow title="Graphs" step="zero" beta>
+      <SettingsRow title="Graphs" step="zero" alpha>
         <Select
           sx={{ width: 150 }}
           disableUnderline
-          multiple
           value={variants}
           onChange={(e) => setPixelGraphSettings('variants', e.target.value)}
         >
