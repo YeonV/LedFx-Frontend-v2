@@ -5,12 +5,14 @@ import {
   CardActionArea,
   CardActions,
   Typography,
-  Grid,
   Chip,
   useTheme,
   Alert,
   Collapse,
-  useMediaQuery
+  useMediaQuery,
+  Grid2,
+  Box,
+  Stack
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
@@ -37,6 +39,8 @@ const Scenes = () => {
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
+  const mediumScreen = useMediaQuery('(max-width: 870px)')
+  const largeScreen = useMediaQuery('(min-width: 1480px)')
 
   const toggletSceneActiveTag = useStore(
     (state) => state.ui.toggletSceneActiveTag
@@ -97,178 +101,181 @@ const Scenes = () => {
             <strong>+</strong> button
           </Alert>
         </Collapse>
-        {scenes && Object.keys(scenes).length && features.scenetables ? (
-          <Grid
-            container
-            spacing={[0, 0, 2, 2, 2]}
-            justifyContent={xsmallScreen ? 'flex-start' : 'center'}
-            m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
-            sx={{ maxWidth: '100%' }}
-          >
-            <Grid
-              item
-              mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              mb={['2rem', '5rem', 0, 0, 0]}
-              ml="auto"
-              mr="auto"
-              p={`${xsmallScreen ? '0' : '8'}px !important`}
-              width={xsmallScreen ? 'calc(100% - 16px)' : 450}
+
+        <Stack
+          direction={mediumScreen || largeScreen ? 'column' : 'row'}
+          // justifyContent={'center'}
+          alignItems={mediumScreen || largeScreen ? 'center' : 'flex-start'}
+        >
+          {scenes && Object.keys(scenes).length && features.scenetables && (
+            <Stack
+              direction={largeScreen ? 'row' : 'column'}
+              spacing={2}
+              p={!xsmallScreen && !mediumScreen && !largeScreen ? 2 : 0}
             >
-              <ScenesRecent
-                scenes={scenes}
-                activateScene={handleActivateScene}
-                title="Recent Scenes"
-              />
-            </Grid>
-            <Grid
-              item
-              mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              mb={['2rem', '5rem', 0, 0, 0]}
-              ml="auto"
-              mr="auto"
-              p={`${xsmallScreen ? '0' : '8'}px !important`}
-              width={xsmallScreen ? 'calc(100% - 16px)' : 450}
-            >
-              <ScenesMostUsed
-                scenes={scenes}
-                activateScene={handleActivateScene}
-                title="Most Used Scenes"
-              />
-            </Grid>
-            <Grid
-              item
-              mt={['0.5rem', '0.5rem', 0, 0, 0]}
-              mb={['2rem', '5rem', 0, 0, 0]}
-              ml="auto"
-              mr="auto"
-              p={`${xsmallScreen ? '0' : '8'}px !important`}
-              width={xsmallScreen ? 'calc(100% - 16px)' : 450}
-            >
-              <ScenesPlaylist
-                scenes={scenes}
-                activateScene={handleActivateScene}
-                title="Playlist"
-              />
-            </Grid>
-          </Grid>
-        ) : null}
-        {scenes && Object.keys(scenes).length && features.scenechips ? (
-          <div>
-            {Object.keys(scenes)
-              .flatMap((s) =>
-                !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
-                  ? scenes[s].scene_tags.split(',')
-                  : null
-              )
-              .filter((n: string) => !!n && n.trim())
-              .filter((v, i, a) => a.indexOf(v) === i && v)
-              .map((t: string) => {
-                return (
-                  <Chip
-                    variant={
-                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
-                    }
-                    sx={{
-                      ml: 1,
-                      mt: 1,
-                      mr: 1,
-                      cursor: sceneActiveTags.includes(t)
-                        ? 'zoom-out'
-                        : 'zoom-in'
-                    }}
-                    key={t}
-                    label={t}
-                    onClick={() => toggletSceneActiveTag(t)}
-                  />
-                )
-              })}
-          </div>
-        ) : null}
-      </div>
-      <Grid
-        container
-        spacing={[0, 0, 2, 2, 2]}
-        justifyContent={xsmallScreen ? 'unset' : 'center'}
-        m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
-        sx={{ maxWidth: '100%' }}
-      >
-        {scenes && Object.keys(scenes).length ? (
-          (sceneActiveTags.length
-            ? Object.keys(scenes).filter(sceneFilter)
-            : Object.keys(scenes)
-          )
-            .filter(sceneBlenderFilter)
-            .map((s, i) => {
-              return (
-                <Grid
-                  item
-                  key={i}
-                  mt={['0.5rem', '0.5rem', 0, 0, 0]}
-                  p="8px !important"
-                  order={sceneOrder.find((o) => o.sceneId === s)?.order || 0}
-                >
-                  <Card
-                    className={classes.root}
-                    sx={{
-                      border: '1px solid',
-                      borderColor: theme.palette.divider
-                    }}
-                  >
-                    <CardActionArea
-                      style={{ background: theme.palette.background.default }}
-                      onClick={() => handleActivateScene(s)}
-                    >
-                      <SceneImage
-                        iconName={scenes[s].scene_image || 'Wallpaper'}
+              <Box
+                maxWidth={mediumScreen ? '100%' : 450}
+                paddingBottom={0}
+                // paddingLeft={1}
+                // paddingRight={1}
+              >
+                <ScenesRecent
+                  scenes={scenes}
+                  activateScene={handleActivateScene}
+                  title="Recent Scenes"
+                />
+              </Box>
+              <Box
+                maxWidth={mediumScreen ? '100%' : 450}
+                paddingBottom={0}
+                // paddingLeft={1}
+                // paddingRight={1}
+              >
+                <ScenesMostUsed
+                  scenes={scenes}
+                  activateScene={handleActivateScene}
+                  title="Most Used Scenes"
+                />
+              </Box>
+              <Box
+                maxWidth={mediumScreen ? '100%' : 450}
+                paddingBottom={0}
+                // paddingLeft={1}
+                // paddingRight={1}
+              >
+                <ScenesPlaylist
+                  scenes={scenes}
+                  activateScene={handleActivateScene}
+                  title="Playlist"
+                />
+              </Box>
+            </Stack>
+          )}
+          <Box justifyContent={'center'} textAlign={'center'} mt={2}>
+            {scenes && Object.keys(scenes).length && features.scenechips ? (
+              <div>
+                {Object.keys(scenes)
+                  .flatMap((s) =>
+                    !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
+                      ? scenes[s].scene_tags.split(',')
+                      : null
+                  )
+                  .filter((n: string) => !!n && n.trim())
+                  .filter((v, i, a) => a.indexOf(v) === i && v)
+                  .map((t: string) => {
+                    return (
+                      <Chip
+                        variant={
+                          sceneActiveTags.includes(t) ? 'filled' : 'outlined'
+                        }
+                        sx={{
+                          ml: 1,
+                          mt: 1,
+                          mr: 1,
+                          cursor: sceneActiveTags.includes(t)
+                            ? 'zoom-out'
+                            : 'zoom-in'
+                        }}
+                        key={t}
+                        label={t}
+                        onClick={() => toggletSceneActiveTag(t)}
                       />
-                      <div style={{ position: 'absolute', top: 0, right: 0 }}>
-                        {scenes[s].scene_tags?.split(',').map(
-                          (t: string) =>
-                            t.length > 0 &&
-                            features.scenechips && (
-                              <Chip
-                                variant="filled"
-                                label={t}
-                                key={t}
-                                sx={{
-                                  cursor: 'pointer',
-                                  backgroundColor:
-                                    theme.palette.background.paper,
-                                  border: '1px solid',
-                                  borderColor: theme.palette.text.disabled
-                                }}
-                              />
-                            )
-                        )}
-                      </div>
-                    </CardActionArea>
-                    <CardActions
-                      style={{
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        width: '100%'
-                      }}
-                    >
-                      <Typography
-                        className={classes.sceneTitle}
-                        variant="h5"
-                        component="h2"
+                    )
+                  })}
+              </div>
+            ) : null}
+            <Grid2
+              container
+              spacing={[0, 0, 2, 2, 2]}
+              justifyContent={'center'}
+              m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
+              sx={{ maxWidth: '100%' }}
+            >
+              {scenes && Object.keys(scenes).length ? (
+                (sceneActiveTags.length
+                  ? Object.keys(scenes).filter(sceneFilter)
+                  : Object.keys(scenes)
+                )
+                  .filter(sceneBlenderFilter)
+                  .map((s, i) => {
+                    return (
+                      <Grid2
+                        key={i}
+                        mt={['0.5rem', '0.5rem', 0, 0, 0]}
+                        p="8px !important"
+                        order={
+                          sceneOrder.find((o) => o.sceneId === s)?.order || 0
+                        }
                       >
-                        {scenes[s].name || s}
-                      </Typography>
-                      {!(
-                        window.localStorage.getItem('guestmode') === 'activated'
-                      ) && <ScenesMenu sceneId={s} />}
-                    </CardActions>
-                  </Card>
-                </Grid>
-              )
-            })
-        ) : (
-          <NoYet type="Scene" />
-        )}
-      </Grid>
-      {/* {scenes && Object.keys(scenes).length && <ScenesTable scenes={scenes} />} */}
+                        <Card
+                          className={classes.root}
+                          sx={{
+                            border: '1px solid',
+                            borderColor: theme.palette.divider
+                          }}
+                        >
+                          <CardActionArea
+                            style={{
+                              background: theme.palette.background.default
+                            }}
+                            onClick={() => handleActivateScene(s)}
+                          >
+                            <SceneImage
+                              iconName={scenes[s].scene_image || 'Wallpaper'}
+                            />
+                            <div
+                              style={{ position: 'absolute', top: 0, right: 0 }}
+                            >
+                              {scenes[s].scene_tags?.split(',').map(
+                                (t: string) =>
+                                  t.length > 0 &&
+                                  features.scenechips && (
+                                    <Chip
+                                      variant="filled"
+                                      label={t}
+                                      key={t}
+                                      sx={{
+                                        cursor: 'pointer',
+                                        backgroundColor:
+                                          theme.palette.background.paper,
+                                        border: '1px solid',
+                                        borderColor: theme.palette.text.disabled
+                                      }}
+                                    />
+                                  )
+                              )}
+                            </div>
+                          </CardActionArea>
+                          <CardActions
+                            style={{
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              width: '100%'
+                            }}
+                          >
+                            <Typography
+                              className={classes.sceneTitle}
+                              variant="h5"
+                              component="h2"
+                            >
+                              {scenes[s].name || s}
+                            </Typography>
+                            {!(
+                              window.localStorage.getItem('guestmode') ===
+                              'activated'
+                            ) && <ScenesMenu sceneId={s} />}
+                          </CardActions>
+                        </Card>
+                      </Grid2>
+                    )
+                  })
+              ) : (
+                <NoYet type="Scene" />
+              )}
+            </Grid2>
+          </Box>
+        </Stack>
+      </div>
     </>
   )
 }

@@ -5,22 +5,24 @@ import {
   GridEventListener,
   GridRenderCellParams
 } from '@mui/x-data-grid'
-import { useMediaQuery } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
 
 export default function ScenesRecent({ scenes, activateScene, title }: any) {
   const recentScenes = useStore((state) => state.recentScenes)
+  const theme = useTheme()
   const [theScenes, setTheScenes] = useState({})
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'id', headerName: 'ID', width: 0 },
     {
       field: 'scene_image',
       headerName: 'Image',
-      width: xsmallScreen ? 100 : 150,
+      width: xsmallScreen ? 60 : 100,
+      flex: 0,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
@@ -28,13 +30,15 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
     {
       field: 'name',
       headerName: 'Name',
-      width: 220
+      width: xsmallScreen && window ? window.innerWidth - 150 : 250
+      // flex: 1
     },
     {
       field: 'used',
       type: 'number',
       headerName: 'Order',
-      width: 70
+      width: 70,
+      flex: 0
     }
   ]
 
@@ -58,8 +62,9 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
   return (
     <ExpanderCard title={title} cardKey="scenesRecent">
       <DataGrid
-        disableColumnSorting={xsmallScreen}
-        disableColumnMenu={xsmallScreen}
+        disableColumnSorting
+        disableColumnMenu
+        disableColumnFilter
         onRowClick={handleEvent}
         rowHeight={50}
         columns={columns}
@@ -86,6 +91,10 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
           }
         }}
         sx={{
+          '& .MuiDataGrid-row--borderBottom': {
+            background: theme.palette.background.paper + ' !important'
+          },
+          width: '100%',
           '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
             outline: 'none !important'
           }

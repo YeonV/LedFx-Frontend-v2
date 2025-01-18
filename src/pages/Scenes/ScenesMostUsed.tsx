@@ -43,7 +43,7 @@ export default function ScenesMostUsed({
     {
       field: 'scene_image',
       headerName: 'Image',
-      width: xsmallScreen || db ? 100 : 150,
+      width: xsmallScreen ? 60 : 100,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage iconName={params.value || 'Wallpaper'} list />
       )
@@ -51,7 +51,7 @@ export default function ScenesMostUsed({
     {
       field: 'name',
       headerName: 'Name',
-      width: db ? 136 : 220
+      width: xsmallScreen ? window.innerWidth - 150 : db ? 136 : 250
     },
     {
       field: 'used',
@@ -70,8 +70,9 @@ export default function ScenesMostUsed({
         hideFooter
         // headerHeight={1}
         pageSizeOptions={[5]}
-        disableColumnSorting={xsmallScreen}
-        disableColumnMenu={xsmallScreen}
+        disableColumnSorting
+        disableColumnMenu
+        disableColumnFilter
         disableRowSelectionOnClick
         rows={Object.values(mostUsedScenes)
           .filter((scene: any) => sceneBlenderFilter(scene.name))
@@ -94,6 +95,9 @@ export default function ScenesMostUsed({
           }
         }}
         sx={{
+          '& .MuiDataGrid-row--borderBottom': {
+            background: theme.palette.background.paper + ' !important'
+          },
           borderColor: db ? 'transparent' : theme.palette.divider,
           '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
             outline: 'none !important'

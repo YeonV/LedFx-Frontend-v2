@@ -91,9 +91,9 @@ const PixelGraphCanvas = ({
   if (!(graphs || intGraphs)) {
     return null
   }
-  const totalPixels = virtuals[virtId]?.pixel_count || 1
-  const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-  const cols = totalPixels / rows || 1
+  // const totalPixels = virtuals[virtId]?.pixel_count || 1
+  // const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+  // const cols = totalPixels / rows || 1
 
   return (
     <div style={{ position: 'relative' }}>
