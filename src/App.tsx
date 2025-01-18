@@ -126,6 +126,16 @@ export default function App() {
   }, [showSnackbar])
 
   useEffect(() => {
+    const handleWebsockets = (e: any) => {
+      showSnackbar('info', 'Scene activated: ' + e.detail.scene_id)
+    }
+    document.addEventListener('scene_activated', handleWebsockets)
+    return () => {
+      document.removeEventListener('scene_activated', handleWebsockets)
+    }
+  }, [showSnackbar])
+
+  useEffect(() => {
     if (protoCall !== '') {
       // showSnackbar('info', `External call: ${protoCall}`)
       const proto = protoCall.split('/').filter((n) => n)
