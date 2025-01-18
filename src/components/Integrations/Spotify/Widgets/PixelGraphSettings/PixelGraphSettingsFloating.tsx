@@ -56,11 +56,10 @@ const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
           )}
         </Stack>
         <Stack p={2} spacing={2}>
-          <SettingsRow title="Graphs" step="zero">
+          <SettingsRow title="Graphs" step="zero" alpha>
             <Select
               sx={{ width: 150 }}
               disableUnderline
-              multiple
               value={variants}
               onChange={(e) =>
                 setPixelGraphSettings('variants', e.target.value)
