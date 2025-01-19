@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { produce } from 'immer'
+
 export interface MigrationState {
   [key: string]: any
 }
@@ -9,14 +12,17 @@ interface Migrations {
 }
 
 export const migrations: Migrations = {
-  // Removes an existing function (deprecatedFunction)
-  13: (state) => {
-    const { deprecatedFunction, ...rest } = state
-    return {
-      ...rest
-      // Remove a deprecated function
+  // Adds a new key
+  11: produce((draft) => {
+    draft.uiPersist = draft.uiPersist || {}
+    draft.uiPersist.testZustand = { test: true }
+  }),
+  // Removes a key
+  12: produce((draft) => {
+    if (draft.uiPersist) {
+      delete draft.uiPersist.testZustand
     }
-  },
+  }),
 
   // Removes an existing value (deprecatedValue) and repositions an existing value (existingValue) based on another value (anotherValue)
   14: (state) => {
@@ -38,8 +44,5 @@ export const migrations: Migrations = {
   }),
 
   16: (state) => ({ ...state }),
-  17: (state) => ({
-    ...state
-    // Add new state properties or transform existing ones
-  })
+  17: (state) => ({ ...state })
 }
