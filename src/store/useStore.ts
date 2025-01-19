@@ -30,6 +30,8 @@ import storeVideo from './ui/storeVideo'
 import storeUIPersist from './ui-persist/storeUIpersist'
 import storeUIPersistActions from './ui-persist/storeUIpersistActions'
 import storeSongDectector from './ui/storeSongDectector'
+import { frontendConfig } from '../utils/helpers'
+import { migrations, MigrationState } from './migrate'
 
 const useStore = create(
   devtools(
@@ -73,6 +75,13 @@ const useStore = create(
       ),
       {
         name: 'ledfx-storage',
+        version: frontendConfig,
+        migrate: (persistedState, version) => {
+          if (version < frontendConfig) {
+            return migrations[frontendConfig](persistedState as MigrationState)
+          }
+          return persistedState
+        },
         partialize: (state) =>
           Object.fromEntries(
             Object.entries(state).filter(

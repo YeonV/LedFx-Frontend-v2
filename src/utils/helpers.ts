@@ -3,7 +3,7 @@
 import { IMCell } from '../pages/Devices/EditVirtuals/EditMatrix/M.utils'
 
 export const drawerWidth = 240
-export const frontendConfig = 16
+export const frontendConfig = 17
 
 export const formatTime = (dura: number) => {
   let seconds: string | number
@@ -83,13 +83,11 @@ export const deleteFrontendConfig = (skipReload?: boolean) => {
 }
 
 export const initFrontendConfig = () => {
-  if (
-    parseInt(window.localStorage.getItem('ledfx-frontend') || '0', 10) >=
-    frontendConfig
-  ) {
+  const currentVersion = parseInt(window.localStorage.getItem('ledfx-frontend') || '0', 10)
+  if (currentVersion === frontendConfig) {
     return
   }
-  deleteFrontendConfig()
+
   window.localStorage.setItem('ledfx-frontend', `${frontendConfig}`)
 }
 
