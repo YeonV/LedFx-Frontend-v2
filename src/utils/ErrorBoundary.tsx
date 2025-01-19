@@ -1,3 +1,4 @@
+import { Box, CssBaseline } from '@mui/material'
 import { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
@@ -25,70 +26,89 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div
+        <Box
           style={{
-            maxWidth: 360,
-            width: '100%',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             display: 'flex',
-            flexDirection: 'column',
             justifyContent: 'center',
-            textAlign: 'center',
-            margin: '0 auto',
-            paddingTop: '3rem'
+            alignItems: 'center',
+            backgroundColor: '#000',
+            color: '#fff'
+          }}
+          sx={{
+            '& button:hover': {
+              backgroundColor: '#0dbedc'
+            }
           }}
         >
-          <h1>Something went wrong</h1>
-          <p>
-            Deleting the browser&apos;s frontend-data might help,
+          <CssBaseline />
+          <div
+            style={{
+              maxWidth: 360,
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              textAlign: 'center',
+              margin: '0 auto'
+            }}
+          >
+            <h1>Sorry</h1>
+            <p style={{ fontSize: 18, marginBottom: '60px' }}>
+              Try refresh first. If the problem persists, clear your browser
+              data.
+            </p>
+            <button
+              type="button"
+              style={{
+                height: 50,
+                borderRadius: 10,
+                color: '#000',
+                backgroundColor: '#transparent',
+                cursor: 'pointer',
+                fontSize: 18,
+                fontWeight: 'bold'
+              }}
+              onClick={() => {
+                window.location.reload()
+              }}
+            >
+              REFRESH
+            </button>
             <br />
-            if there is old config data left.
-          </p>
-          <p> Refresh page after clearing data... </p>
-          <button
-            type="button"
-            style={{
-              height: 40,
-              borderRadius: 10,
-              border: '1px solid #999',
-              color: '#fff',
-              backgroundColor: '#600000',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              window.localStorage.removeItem('undefined')
-              window.localStorage.removeItem('ledfx-storage')
-              window.localStorage.removeItem('ledfx-host')
-              window.localStorage.removeItem('ledfx-hosts')
-              window.localStorage.removeItem('ledfx-frontend')
-              window.localStorage.removeItem('ledfx-cloud-role')
-              window.localStorage.removeItem('ledfx-cloud-userid')
-              window.localStorage.removeItem('ledfx-theme')
-              window.localStorage.removeItem('jwt')
-              window.localStorage.removeItem('username')
-              window.localStorage.removeItem('BladeMod')
-              window.location.reload()
-            }}
-          >
-            Clear Browser-Data
-          </button>
-          <br />
-          <button
-            type="button"
-            style={{
-              height: 40,
-              borderRadius: 10,
-              border: '1px solid #999',
-              color: '#fff',
-              backgroundColor: '#600000',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              window.location.reload()
-            }}
-          >
-            Just refresh
-          </button>
-        </div>
+            <button
+              type="button"
+              style={{
+                height: 50,
+                borderRadius: 10,
+                color: '#000',
+                cursor: 'pointer',
+                fontSize: 18,
+                fontWeight: 'bold'
+              }}
+              onClick={() => {
+                window.localStorage.removeItem('undefined')
+                window.localStorage.removeItem('ledfx-storage')
+                window.localStorage.removeItem('ledfx-host')
+                window.localStorage.removeItem('ledfx-hosts')
+                window.localStorage.removeItem('ledfx-frontend')
+                window.localStorage.removeItem('ledfx-cloud-role')
+                window.localStorage.removeItem('ledfx-cloud-userid')
+                window.localStorage.removeItem('ledfx-theme')
+                window.localStorage.removeItem('jwt')
+                window.localStorage.removeItem('username')
+                window.localStorage.removeItem('BladeMod')
+                window.location.reload()
+              }}
+            >
+              CLEAR BROWSER DATA
+            </button>
+          </div>
+        </Box>
       )
     }
 
