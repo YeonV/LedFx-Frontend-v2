@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
+// import ws from '../../utils/Websocket'
 
 const PixelGraphCanvas = ({
   virtId,
@@ -56,18 +57,29 @@ const PixelGraphCanvas = ({
             ? hexColor(e.detail.pixels, config.transmission_mode)
             : e.detail.pixels
 
-        // const shape = e.detail.shape
         const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
-        const cols = Math.ceil(pixels.length / rows)
 
-        canvas.width = cols
-        canvas.height = rows
+        const shape = e.detail.shape
+        const totalPixels = pixels.length
+        const realPixelCount = virtuals[virtId]?.pixel_count || totalPixels
+        const realCols = Math.ceil(realPixelCount / rows)
+        const aspectRatio = realCols / rows
+        const displayRows =
+          (shape && shape[0]) ||
+          (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
 
-        const imageData = ctx.createImageData(cols, rows)
+        const displayCols =
+          (shape && shape[1]) ||
+          (realPixelCount > 4096 ? 4096 / displayRows : realCols)
+
+        canvas.width = displayCols
+        canvas.height = displayRows
+
+        const imageData = ctx.createImageData(displayCols, displayRows)
         for (let i = 0; i < pixels.length; i++) {
-          const x = i % cols
-          const y = Math.floor(i / cols)
-          const index = (y * cols + x) * 4
+          const x = i % displayCols
+          const y = Math.floor(i / displayCols)
+          const index = (y * displayCols + x) * 4
           const color = pixels[i]
           imageData.data[index] = color.r
           imageData.data[index + 1] = color.g
@@ -75,6 +87,19 @@ const PixelGraphCanvas = ({
           imageData.data[index + 3] = 255 // Alpha channel
         }
         ctx.putImageData(imageData, 0, 0)
+
+        // if (ws && typeof ws !== 'string') {
+        //   const request = {
+        //     event_filter: {
+        //       vis_id: virtId,
+        //       is_device: !!virtuals[virtId]?.is_device
+        //     },
+        //     event_type: 'visualisation_update',
+        //     // id: i,
+        //     type: 'subscribe_event'
+        //   }
+        //   ws.send(JSON.stringify(++request.id && request))
+        // }
       }
     }
 
