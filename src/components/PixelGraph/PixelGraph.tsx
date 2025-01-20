@@ -29,7 +29,6 @@ const PixelGraph = ({
   const variants = useStore(
     (state) => state.uiPersist.pixelGraphSettings?.variants
   )
-  console.log('variants', variants, typeof variants, variants[0])
   return (
     <>
       {variants === 'original' && (
