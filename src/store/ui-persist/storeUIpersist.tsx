@@ -32,7 +32,7 @@ const storeUIPersist = (set: any) => ({
     round: true,
     space: true,
     stretch: true,
-    variants: ['canvas'] as PixelGraphVariant[]
+    variants: 'canvas' as PixelGraphVariant
   }
 })
 

@@ -120,7 +120,7 @@ const PixelGraphCanvasOffscreenWebGLSync = ({
         overflow: 'hidden',
         margin: db ? 0 : '0.5rem 0 0 0',
         imageRendering: smoothing ? 'unset' : 'pixelated',
-        objectFit: stretch ? 'fill' : 'contain'
+        objectFit: stretch && fullScreen ? 'contain' : 'fill'
       }}
       onDoubleClick={onDoubleClick}
     />

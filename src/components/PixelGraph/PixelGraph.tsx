@@ -29,9 +29,10 @@ const PixelGraph = ({
   const variants = useStore(
     (state) => state.uiPersist.pixelGraphSettings?.variants
   )
+  console.log('variants', variants, typeof variants, variants[0])
   return (
     <>
-      {variants.includes('original') && (
+      {variants === 'original' && (
         <PixelGraphBase
           virtId={virtId}
           dummy={dummy}
@@ -44,7 +45,7 @@ const PixelGraph = ({
           onDoubleClick={onDoubleClick}
         />
       )}
-      {variants.includes('canvas') && (
+      {variants === 'canvas' && (
         <PixelGraphCanvas
           virtId={virtId}
           dummy={dummy}
@@ -57,7 +58,7 @@ const PixelGraph = ({
           onDoubleClick={onDoubleClick}
         />
       )}
-      {variants.includes('canvasOffscreen') && (
+      {variants === 'canvasOffscreen' && (
         <PixelGraphCanvasOffscreen
           virtId={virtId}
           dummy={dummy}
@@ -70,7 +71,7 @@ const PixelGraph = ({
           onDoubleClick={onDoubleClick}
         />
       )}
-      {variants.includes('canvasOffscreenWebGL') && (
+      {variants === 'canvasOffscreenWebGL' && (
         <PixelGraphCanvasOffscreenWebGL
           virtId={virtId}
           dummy={dummy}
@@ -83,7 +84,7 @@ const PixelGraph = ({
           onDoubleClick={onDoubleClick}
         />
       )}
-      {variants.includes('canvasOffscreenWebGLSync') && (
+      {variants === 'canvasOffscreenWebGLSync' && (
         <PixelGraphCanvasOffscreenWebGLSync
           virtId={virtId}
           dummy={dummy}

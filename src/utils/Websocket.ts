@@ -97,17 +97,29 @@ function createSocket() {
           return
         }
         if (data.event_type === 'visualisation_update') {
-          document.dispatchEvent(
-            new CustomEvent('visualisation_update', {
-              detail: {
-                id: data.vis_id,
-                pixels: data.pixels,
-                shape: data.shape,
-                rid: data.id,
-                timestamp: data.timestamp
-              }
-            })
-          )
+          if (data.timestamp) {
+            document.dispatchEvent(
+              new CustomEvent('visualisation_update', {
+                detail: {
+                  id: data.vis_id,
+                  pixels: data.pixels,
+                  shape: data.shape,
+                  rid: data.id,
+                  timestamp: data.timestamp
+                }
+              })
+            )
+          } else {
+            document.dispatchEvent(
+              new CustomEvent('visualisation_update', {
+                detail: {
+                  id: data.vis_id,
+                  pixels: data.pixels,
+                  shape: data.shape
+                }
+              })
+            )
+          }
         }
         if (data.event_type === 'devices_updated') {
           document.dispatchEvent(
