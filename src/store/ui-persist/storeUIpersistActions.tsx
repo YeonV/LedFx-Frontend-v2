@@ -51,7 +51,7 @@ const storeUIPersistActions = (set: any) => ({
   ): void =>
     set(
       produce((state: IStore) => {
-        state.uiPersist.pixelGraphSettings[key] = val
+        ;(state.uiPersist.pixelGraphSettings as any)[key] = val
       }),
       false,
       'uiPersist/setPixelGraphSettings'
