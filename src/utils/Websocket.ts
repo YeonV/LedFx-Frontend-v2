@@ -93,13 +93,18 @@ function createSocket() {
       },
       onmessage: (event) => {
         const data = JSON.parse(event.data)
+        if (!data?.event_type) {
+          return
+        }
         if (data.event_type === 'visualisation_update') {
           document.dispatchEvent(
             new CustomEvent('visualisation_update', {
               detail: {
                 id: data.vis_id,
                 pixels: data.pixels,
-                shape: data.shape
+                shape: data.shape,
+                rid: data.id,
+                timestamp: data.timestamp
               }
             })
           )

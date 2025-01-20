@@ -23,6 +23,13 @@ const BetaFeatures = () => {
         checked={features.wakelock}
         onChange={() => setFeatures('wakelock', !features.wakelock)}
       />
+      <SettingsRow
+        title="Websocket debug"
+        checked={features.websocket_debug}
+        onChange={() =>
+          setFeatures('websocket_debug', !features.websocket_debug)
+        }
+      />
       {showFeatures.integrations ? (
         <SettingsRow
           title="Integrations"

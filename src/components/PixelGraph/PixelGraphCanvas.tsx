@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
-// import ws from '../../utils/Websocket'
+import ws from '../../utils/Websocket'
 
 const PixelGraphCanvas = ({
   virtId,
@@ -35,6 +35,7 @@ const PixelGraphCanvas = ({
       config: state.config
     }))
   )
+  const features = useStore((state) => state.features)
   const smoothing = useStore(
     (state) => state.uiPersist.pixelGraphSettings?.smoothing
   )
@@ -88,18 +89,18 @@ const PixelGraphCanvas = ({
         }
         ctx.putImageData(imageData, 0, 0)
 
-        // if (ws && typeof ws !== 'string') {
-        //   const request = {
-        //     event_filter: {
-        //       vis_id: virtId,
-        //       is_device: !!virtuals[virtId]?.is_device
-        //     },
-        //     event_type: 'visualisation_update',
-        //     // id: i,
-        //     type: 'subscribe_event'
-        //   }
-        //   ws.send(JSON.stringify(++request.id && request))
-        // }
+        if (features.websocket_debug) {
+          if (ws && typeof ws !== 'string') {
+            const request = {
+              type: 'event',
+              event_type: 'visualisation_updated',
+              id: e.detail.rid,
+              vis_id: virtId,
+              timestamp: e.detail.timestamp
+            }
+            ws.send(JSON.stringify(request))
+          }
+        }
       }
     }
 
@@ -107,7 +108,16 @@ const PixelGraphCanvas = ({
     return () => {
       document.removeEventListener('visualisation_update', handleWebsockets)
     }
-  }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
+  }, [
+    virtId,
+    virtuals,
+    pixelGraphs,
+    devices,
+    graphs,
+    config,
+    showMatrix,
+    features.websocket_debug
+  ])
 
   const render =
     (virtuals[virtId].active && virtuals[virtId].effect?.name) ||

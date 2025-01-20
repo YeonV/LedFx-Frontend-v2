@@ -31,6 +31,7 @@ export type IFeatures =
   | 'gamepad'
   | 'wakelock'
   | 'melbankGraph'
+  | 'websocket_debug'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -62,7 +63,8 @@ const storeFeatures = (set: any) => ({
     gamepad: false,
     matrix_cam: false,
     wakelock: false,
-    melbankGraph: false
+    melbankGraph: false,
+    websocket_debug: false
   },
   showFeatures: {
     dev: false,
@@ -93,7 +95,8 @@ const storeFeatures = (set: any) => ({
     gamepad: false,
     matrix_cam: false,
     wakelock: false,
-    melbankGraph: false
+    melbankGraph: false,
+    websocket_debug: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(
