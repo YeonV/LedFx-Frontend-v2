@@ -30,6 +30,10 @@ const keybindings = [
     description: 'Song Texter (needs Spotify or Song Detector)'
   },
   {
+    keys: 'ctrl+alt+e',
+    description: 'One Shoot Effect (WIP)'
+  },
+  {
     keys: 'ctrl+alt+f',
     description: 'Show/Hide FPS Viewer'
   },

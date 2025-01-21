@@ -17,7 +17,8 @@ import xmas from './assets/xmas.png'
 import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
-import FpsViewer from './components/FpsViewer'
+import FpsViewer from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer'
+// import FpsViewer from './components/FpsViewer'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -44,6 +45,7 @@ export default function App() {
   const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
   const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
   const activateScene = useStore((state) => state.activateScene)
+  const fpsViewer = useStore((state) => state.ui.fpsViewer)
 
   const handleNext = () => {
     const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
@@ -274,7 +276,12 @@ export default function App() {
           <SpotifyProvider>
             <FiledropProvider>
               <CssBaseline />
-              <FpsViewer />
+              <FpsViewer
+                open={fpsViewer}
+                bottom={60}
+                left={5}
+                color={theme.palette.primary.main}
+              />
               <GlobalStyles
                 styles={{
                   body: {
