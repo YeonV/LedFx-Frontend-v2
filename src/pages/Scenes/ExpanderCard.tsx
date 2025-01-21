@@ -60,7 +60,7 @@ const ExpanderCard = ({
     <Card sx={{ width: '100%', maxWidth: '100vw' }}>
       <Typography
         onClick={handleExpandClick}
-        color="GrayText"
+        color={'GrayText'}
         variant="h6"
         sx={{
           pl: 1,

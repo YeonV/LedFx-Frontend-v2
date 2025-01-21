@@ -39,7 +39,7 @@ const LeftBar = () => {
 
   const logo = (
     <div className={classes.logo}>
-      {!isElectron() && (
+      {
         <>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <div className={classes.logoImage}>
@@ -72,7 +72,7 @@ const LeftBar = () => {
             <img src={bannerAsset} alt="logo" style={{ maxWidth: '100%' }} />
           </Box> */}
         </>
-      )}
+      }
     </div>
   )
   useClickOutside(leftDrawer, handleDrawerClose)

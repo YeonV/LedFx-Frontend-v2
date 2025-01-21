@@ -29,6 +29,7 @@ const DbScenesPL = () => {
     >
       <Stack width="100%">
         <ScenesPlaylist
+          title="Playlist"
           scenes={scenes}
           activateScene={handleActivateScene}
           db

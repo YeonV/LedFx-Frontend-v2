@@ -30,13 +30,13 @@ const useStyles = makeStyles(() => ({
   drawerPaper: {
     width: drawerWidth,
     overflowX: 'hidden',
-    paddingTop: isElectron() ? '30px' : 0
+    marginTop: isElectron() ? '31px' : 0
   },
   drawerHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: '55px'
+    minHeight: isElectron() ? '57px' : '55px'
   },
   logo: {
     position: 'relative',
@@ -48,7 +48,7 @@ const useStyles = makeStyles(() => ({
     fontSize: '18px',
     textAlign: 'left',
     fontWeight: 400,
-    lineHeight: '30px',
+    lineHeight: '32px',
     textDecoration: 'none',
     backgroundColor: 'transparent',
     '&,&:hover': {

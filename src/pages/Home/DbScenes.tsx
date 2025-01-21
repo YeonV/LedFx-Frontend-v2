@@ -30,6 +30,7 @@ const DbScenes = () => {
       <Stack width="100%">
         <ScenesMostUsed
           db
+          title="Most used"
           scenes={scenes}
           activateScene={handleActivateScene}
         />
