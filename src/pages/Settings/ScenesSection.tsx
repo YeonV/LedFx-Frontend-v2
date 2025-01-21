@@ -15,9 +15,19 @@ const ScenesSection = () => {
         onChange={() => setInfoAlerts('scenes', !infoAlerts.scenes)}
       />
       <SettingsRow
-        title="SceneTables (Recent+Most +Playlist)"
-        checked={features.scenetables}
-        onChange={() => setFeatures('scenetables', !features.scenetables)}
+        title="Recent Scenes"
+        checked={features.sceneRecent}
+        onChange={() => setFeatures('sceneRecent', !features.sceneRecent)}
+      />
+      <SettingsRow
+        title="Most Played Scenes"
+        checked={features.sceneMostUsed}
+        onChange={() => setFeatures('sceneMostUsed', !features.sceneMostUsed)}
+      />
+      <SettingsRow
+        title="Scenes Playlist"
+        checked={features.scenePlaylist}
+        onChange={() => setFeatures('scenePlaylist', !features.scenePlaylist)}
       />
       <SettingsRow
         title="SceneChips (Filter Tags)"
@@ -25,9 +35,14 @@ const ScenesSection = () => {
         onChange={() => setFeatures('scenechips', !features.scenechips)}
       />
       <SettingsRow
-        title="Scene external call"
+        title="External call"
         checked={features.sceneexternal}
         onChange={() => setFeatures('sceneexternal', !features.sceneexternal)}
+      />
+      <SettingsRow
+        title="Seperate scrollbar"
+        checked={features.sceneScroll}
+        onChange={() => setFeatures('sceneScroll', !features.sceneScroll)}
       />
     </>
   )

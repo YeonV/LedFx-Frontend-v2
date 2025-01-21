@@ -32,6 +32,10 @@ export type IFeatures =
   | 'wakelock'
   | 'melbankGraph'
   | 'websocket_debug'
+  | 'sceneMostUsed'
+  | 'scenePlaylist'
+  | 'sceneRecent'
+  | 'sceneScroll'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -64,7 +68,11 @@ const storeFeatures = (set: any) => ({
     matrix_cam: false,
     wakelock: false,
     melbankGraph: false,
-    websocket_debug: false
+    websocket_debug: false,
+    sceneMostUsed: false,
+    scenePlaylist: false,
+    sceneRecent: false,
+    sceneScroll: false
   },
   showFeatures: {
     dev: false,
@@ -96,7 +104,11 @@ const storeFeatures = (set: any) => ({
     matrix_cam: false,
     wakelock: false,
     melbankGraph: false,
-    websocket_debug: false
+    websocket_debug: false,
+    sceneMostUsed: false,
+    scenePlaylist: false,
+    sceneRecent: false,
+    sceneScroll: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

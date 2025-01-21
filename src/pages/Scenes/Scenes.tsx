@@ -107,51 +107,42 @@ const Scenes = () => {
           // justifyContent={'center'}
           alignItems={mediumScreen || largeScreen ? 'center' : 'flex-start'}
         >
-          {scenes && Object.keys(scenes).length && features.scenetables && (
+          {scenes && Object.keys(scenes).length && (
             <Stack
               direction={largeScreen ? 'row' : 'column'}
               spacing={2}
               p={!xsmallScreen && !mediumScreen && !largeScreen ? 2 : 0}
             >
-              <Box
-                maxWidth={mediumScreen ? '100%' : 450}
-                paddingBottom={0}
-                // paddingLeft={1}
-                // paddingRight={1}
-              >
-                <ScenesRecent
-                  scenes={scenes}
-                  activateScene={handleActivateScene}
-                  title="Recent Scenes"
-                />
-              </Box>
-              <Box
-                maxWidth={mediumScreen ? '100%' : 450}
-                paddingBottom={0}
-                // paddingLeft={1}
-                // paddingRight={1}
-              >
-                <ScenesMostUsed
-                  scenes={scenes}
-                  activateScene={handleActivateScene}
-                  title="Most Used Scenes"
-                />
-              </Box>
-              <Box
-                maxWidth={mediumScreen ? '100%' : 450}
-                paddingBottom={0}
-                // paddingLeft={1}
-                // paddingRight={1}
-              >
-                <ScenesPlaylist
-                  scenes={scenes}
-                  activateScene={handleActivateScene}
-                  title="Playlist"
-                />
-              </Box>
+              {features.sceneRecent && (
+                <Box maxWidth={mediumScreen ? '100%' : 450} paddingBottom={0}>
+                  <ScenesRecent
+                    scenes={scenes}
+                    activateScene={handleActivateScene}
+                    title="Recent Scenes"
+                  />
+                </Box>
+              )}
+              {features.sceneMostUsed && (
+                <Box maxWidth={mediumScreen ? '100%' : 450} paddingBottom={0}>
+                  <ScenesMostUsed
+                    scenes={scenes}
+                    activateScene={handleActivateScene}
+                    title="Most Used Scenes"
+                  />
+                </Box>
+              )}
+              {features.scenePlaylist && (
+                <Box maxWidth={mediumScreen ? '100%' : 450} paddingBottom={0}>
+                  <ScenesPlaylist
+                    scenes={scenes}
+                    activateScene={handleActivateScene}
+                    title="Playlist"
+                  />
+                </Box>
+              )}
             </Stack>
           )}
-          <Box justifyContent={'center'} textAlign={'center'} mt={2}>
+          <Box justifyContent={'center'} textAlign={'center'}>
             {scenes && Object.keys(scenes).length && features.scenechips ? (
               <div>
                 {Object.keys(scenes)
@@ -189,7 +180,11 @@ const Scenes = () => {
               spacing={[0, 0, 2, 2, 2]}
               justifyContent={'center'}
               m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
-              sx={{ maxWidth: '100%' }}
+              sx={{
+                maxWidth: '100%',
+                overflowY: features.sceneScroll ? 'auto' : 'unset',
+                maxHeight: features.sceneScroll ? 'calc(100vh - 185px)' : 'auto'
+              }}
             >
               {scenes && Object.keys(scenes).length ? (
                 (sceneActiveTags.length
