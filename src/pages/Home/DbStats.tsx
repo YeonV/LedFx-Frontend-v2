@@ -2,6 +2,8 @@ import { useTheme, Stack } from '@mui/material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import DbRow from './DbRow'
 import useStore from '../../store/useStore'
+import { IDevice } from '../../store/api/storeConfig'
+import { Virtual } from '../../store/api/storeVirtuals'
 
 const DbStats = () => {
   const theme = useTheme()
@@ -9,27 +11,30 @@ const DbStats = () => {
   const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
-  const devicesOnline = Object.keys(devices).filter(
-    (d) => devices[d].online && !devices[d].id.startsWith('gap-')
+
+  const filterDevDevices = (obj: Record<string, IDevice | Virtual>) =>
+    Object.keys(obj).filter(
+      (key) =>
+        !key.startsWith('gap-') &&
+        !key.endsWith('-mask') &&
+        !key.endsWith('-foreground') &&
+        !key.endsWith('-background')
+    )
+  const devicesOnline = filterDevDevices(devices).filter(
+    (d) => devices[d].online
   )
-  const virtualsReal = Object.keys(virtuals).filter(
-    (d) => !virtuals[d].is_device && !virtuals[d].id.startsWith('gap-')
+  const virtualsReal = filterDevDevices(virtuals).filter(
+    (d) => !virtuals[d].is_device
   )
 
-  const pixelTotalOnline = Object.keys(devices)
-    .map(
-      (d) =>
-        devices[d].online &&
-        !devices[d].id.startsWith('gap-') &&
-        devices[d].config.pixel_count
-    )
+  const pixelTotalOnline = filterDevDevices(devices)
+    .map((d) => devices[d].online && devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0)
 
-  const pixelTotal = Object.keys(devices)
-    .map(
-      (d) => !devices[d].id.startsWith('gap-') && devices[d].config.pixel_count
-    )
+  const pixelTotal = filterDevDevices(devices)
+    .map((d) => devices[d].config.pixel_count)
     .reduce((a, b) => a + b, 0)
+
   return (
     <BladeFrame
       labelStyle={{

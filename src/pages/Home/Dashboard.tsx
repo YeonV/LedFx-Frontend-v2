@@ -21,6 +21,8 @@ import SmartBar from '../../components/Dialogs/SmartBar'
 import MGraph from '../../components/MGraph'
 import openrgbLogo from '../../icons/png/openrgb.png'
 import fx from '../../components/Icons/FX.svg'
+import { IDevice } from '../../store/api/storeConfig'
+import { Virtual } from '../../store/api/storeVirtuals'
 
 const Dashboard = () => {
   const theme = useTheme()
@@ -45,25 +47,30 @@ const Dashboard = () => {
 
   const getScenes = useStore((state) => state.getScenes)
   const [scanning, setScanning] = useState(-1)
+  const filterDevDevices = (obj: Record<string, IDevice | Virtual>) =>
+    Object.keys(obj).filter(
+      (key) =>
+        !key.startsWith('gap-') &&
+        !key.endsWith('-mask') &&
+        !key.endsWith('-foreground') &&
+        !key.endsWith('-background')
+    )
 
-  const pixelTotal = Object.keys(devices)
-    .map((d) => !d.startsWith('gap-') && devices[d].config.pixel_count)
+  const pixelTotal = filterDevDevices(devices)
+    .map((key) => devices[key].config.pixel_count)
     .reduce((a, b) => a + b, 0)
 
-  const devicesOnline = Object.keys(devices).filter(
-    (d) => devices[d].online && !devices[d].id.startsWith('gap-')
-  )
-  const virtualsReal = Object.keys(virtuals).filter(
-    (d) => !virtuals[d]?.is_device && !virtuals[d]?.id.startsWith('gap-')
+  const devicesOnline = filterDevDevices(devices).filter(
+    (key) => devices[key].online
   )
 
-  const pixelTotalOnline = Object.keys(devices)
-    .map(
-      (d) =>
-        devices[d].online &&
-        !devices[d].id.startsWith('gap-') &&
-        devices[d].config.pixel_count
-    )
+  const virtualsReal = filterDevDevices(virtuals).filter(
+    (key) => !virtuals[key]?.is_device
+  )
+
+  const pixelTotalOnline = filterDevDevices(devices)
+    .filter((key) => devices[key].online)
+    .map((key) => devices[key].config.pixel_count)
     .reduce((a, b) => a + b, 0)
 
   const getSystemConfig = useStore((state) => state.getSystemConfig)
