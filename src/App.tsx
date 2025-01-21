@@ -39,7 +39,24 @@ export default function App() {
   const changeTheme = useStore((state) => state.ui.changeTheme)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const fpsViewer = useStore((state) => state.ui.fpsViewer)
+  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
+  const toggleScenePLrepeat = useStore((state) => state.toggleScenePLrepeat)
+  const scenePL = useStore((state) => state.scenePL)
+  const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
+  const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
+  const activateScene = useStore((state) => state.activateScene)
 
+  const handleNext = () => {
+    const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
+    setScenePLactiveIndex(nextIndex)
+    activateScene(scenePL[nextIndex])
+  }
+
+  const handlePrev = () => {
+    const prevIndex = (scenePLactiveIndex - 1 + scenePL.length) % scenePL.length
+    setScenePLactiveIndex(prevIndex)
+    activateScene(scenePL[prevIndex])
+  }
   const theme = useMemo(
     () =>
       createTheme({
@@ -172,6 +189,24 @@ export default function App() {
           if (proto[3] === 'reset') {
             window.localStorage.setItem('ledfx-theme', 'DarkOrange')
             reloadTheme()
+          }
+        } else if (proto[2] === 'playlist') {
+          if (proto[3] === 'next') {
+            handleNext()
+            showSnackbar('info', 'Next playlist')
+          } else if (proto[3] === 'previous' || proto[3] === 'prev') {
+            handlePrev()
+            showSnackbar('info', 'Previous playlist')
+          } else if (
+            proto[3] === 'play' ||
+            proto[3] === 'stop' ||
+            proto[3] === 'pause'
+          ) {
+            toggleScenePLplay()
+            showSnackbar('info', 'Toggle playlist')
+          } else if (proto[3] === 'repeat') {
+            toggleScenePLrepeat()
+            showSnackbar('info', 'Pause playlist')
           }
         }
       } else if (proto[1] === 'song') {

@@ -18,7 +18,9 @@ import {
   RepeatOn,
   Stop,
   Timer,
-  TimerOff
+  TimerOff,
+  SkipNext,
+  SkipPrevious
 } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import ScenesPlaylistMenu from './ScenesPlaylistMenu'
@@ -105,6 +107,18 @@ export default function ScenesPlaylist({
     scenePL
   ])
 
+  const handleNext = () => {
+    const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
+    setScenePLactiveIndex(nextIndex)
+    activateScene(scenePL[nextIndex])
+  }
+
+  const handlePrev = () => {
+    const prevIndex = (scenePLactiveIndex - 1 + scenePL.length) % scenePL.length
+    setScenePLactiveIndex(prevIndex)
+    activateScene(scenePL[prevIndex])
+  }
+
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 0 },
     {
@@ -138,7 +152,7 @@ export default function ScenesPlaylist({
     {
       field: 'interval',
       headerName: 'Wait',
-      width: db ? 70 : 0,
+      width: 70,
       renderCell: (params: GridRenderCellParams) => (
         <TextField
           variant="standard"
@@ -230,71 +244,40 @@ export default function ScenesPlaylist({
                   color: db ? theme.palette.text.primary : ''
                 }}
               >
-                {db ? (
-                  <IconButton
-                    onClick={() => {
-                      if (scenePLplay) {
-                        setScenePLactiveIndex(-1)
-                      } else {
-                        activateScene(scenePL[0])
-                        setScenePLactiveIndex(0)
-                      }
-                      toggleScenePLplay()
-                    }}
-                  >
-                    {scenePLplay ? <Stop /> : <PlayArrow />}
-                  </IconButton>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      if (scenePLplay) {
-                        setScenePLactiveIndex(-1)
-                      } else {
-                        activateScene(scenePL[0])
-                        setScenePLactiveIndex(0)
-                      }
-                      toggleScenePLplay()
-                    }}
-                  >
-                    {scenePLplay ? <Stop /> : <PlayArrow />}
-                  </Button>
-                )}
-                {db ? (
-                  <IconButton
-                    onClick={() => {
-                      toggleScenePLrepeat()
-                    }}
-                  >
-                    {scenePLrepeat ? <RepeatOn /> : <Repeat />}
-                  </IconButton>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      toggleScenePLrepeat()
-                    }}
-                  >
-                    {scenePLrepeat ? <RepeatOn /> : <Repeat />}
-                  </Button>
-                )}
-                {db ? (
-                  <IconButton
-                    sx={{ mr: 1 }}
-                    onClick={() => {
-                      toggleSceneUseIntervals()
-                    }}
-                  >
-                    {sceneUseIntervals ? <Timer /> : <TimerOff />}
-                  </IconButton>
-                ) : (
-                  <Button
-                    sx={{ mr: 1 }}
-                    onClick={() => {
-                      toggleSceneUseIntervals()
-                    }}
-                  >
-                    {sceneUseIntervals ? <Timer /> : <TimerOff />}
-                  </Button>
-                )}
+                <IconButton onClick={handlePrev}>
+                  <SkipPrevious />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    if (scenePLplay) {
+                      setScenePLactiveIndex(-1)
+                    } else {
+                      activateScene(scenePL[0])
+                      setScenePLactiveIndex(0)
+                    }
+                    toggleScenePLplay()
+                  }}
+                >
+                  {scenePLplay ? <Stop /> : <PlayArrow />}
+                </IconButton>
+                <IconButton onClick={handleNext}>
+                  <SkipNext />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    toggleScenePLrepeat()
+                  }}
+                >
+                  {scenePLrepeat ? <RepeatOn /> : <Repeat />}
+                </IconButton>
+                <IconButton
+                  sx={{ mr: 1 }}
+                  onClick={() => {
+                    toggleSceneUseIntervals()
+                  }}
+                >
+                  {sceneUseIntervals ? <Timer /> : <TimerOff />}
+                </IconButton>
                 {db || xsmallScreen ? '' : 'sec'}
                 <TextField
                   variant="standard"
