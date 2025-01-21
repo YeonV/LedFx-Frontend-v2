@@ -9,6 +9,8 @@ const ExpertFeatures = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const showFeatures = useStore((state) => state.showFeatures)
   const features = useStore((state) => state.features)
+  const keybinding = useStore((state) => state.ui.keybinding)
+  const setKeybinding = useStore((state) => state.ui.setKeybinding)
 
   const updateNotificationInterval = useStore(
     (state) => state.updateNotificationInterval
@@ -72,6 +74,11 @@ const ExpertFeatures = () => {
         title="BG Waves (eats performance)"
         checked={features.waves}
         onChange={() => setFeatures('waves', !features.waves)}
+      />
+      <SettingsRow
+        title="Keybindings (CTRL+SPACE)"
+        checked={keybinding}
+        onChange={() => setKeybinding(!keybinding)}
       />
     </>
   )

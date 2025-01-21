@@ -163,8 +163,8 @@ const Routings = ({ handleWs }: any) => {
           )}
         </Routes>
         {mp && <Mp />}
-        {pgs && <PixelGraphSettingsFloating />}
-        {sd && <SongDetectorFloating />}
+        {pgs && <PixelGraphSettingsFloating close={() => setPgs(false)} />}
+        {sd && <SongDetectorFloating close={() => setSd(false)} />}
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         <OneEffect noButton />
