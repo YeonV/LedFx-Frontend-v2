@@ -9,6 +9,7 @@ const getOS = () => {
 
 const KeybindingComponent = ({ singleKey }: { singleKey: string }) => {
   const os = getOS()
+
   const renderKey = (singleKey: string) => {
     if (os === 'mac') {
       if (singleKey === 'alt') return 'opt'
@@ -39,13 +40,23 @@ export const KeysRow = ({
   keys: string
   description: string
 }) => {
+  const match = description.match(/(.*?)(\s*\(.*?\))/)
+  const mainText = match ? match[1] : description
+  const bracketText = match ? match[2] : ''
   return (
     <Stack
       direction={'row'}
       alignItems={'center'}
       justifyContent={'space-between'}
     >
-      <Typography>{description}</Typography>
+      <Stack direction={'row'} alignItems={'center'}>
+        <Typography>{mainText}</Typography>
+        {bracketText && (
+          <Typography variant="caption" color="textDisabled" ml={1}>
+            {bracketText}
+          </Typography>
+        )}
+      </Stack>
       {keyButtons(keys)}
     </Stack>
   )

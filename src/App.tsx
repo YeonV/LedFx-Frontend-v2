@@ -17,7 +17,7 @@ import xmas from './assets/xmas.png'
 import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
-import { FpsView } from 'react-fps'
+import FpsViewer from './components/FpsViewer'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -38,7 +38,6 @@ export default function App() {
   const setCoreStatus = useStore((state) => state.setCoreStatus)
   const changeTheme = useStore((state) => state.ui.changeTheme)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
-  const fpsViewer = useStore((state) => state.ui.fpsViewer)
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
   const toggleScenePLrepeat = useStore((state) => state.toggleScenePLrepeat)
   const scenePL = useStore((state) => state.scenePL)
@@ -275,9 +274,7 @@ export default function App() {
           <SpotifyProvider>
             <FiledropProvider>
               <CssBaseline />
-              {fpsViewer && (
-                <FpsView width={240} height={180} left={60} top={80} />
-              )}
+              <FpsViewer />
               <GlobalStyles
                 styles={{
                   body: {

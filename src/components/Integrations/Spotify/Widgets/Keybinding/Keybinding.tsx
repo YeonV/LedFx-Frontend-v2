@@ -7,23 +7,27 @@ import { Close } from '@mui/icons-material'
 const keybindings = [
   {
     keys: 'ctrl+space',
-    description: 'Open/Close Keybinding Screen'
+    description: 'Keybindings (this screen)'
   },
   {
     keys: 'ctrl+alt+k',
-    description: 'Open/Close Keybinding Screen'
+    description: 'Keybindings (this screen)'
   },
   {
     keys: 'ctrl+alt+y',
-    description: 'Open/Close SmartBar'
+    description: 'SmartBar'
   },
   {
     keys: 'ctrl+alt+z',
-    description: 'Open/Close SmartBar'
+    description: 'SmartBar'
   },
   {
     keys: 'ctrl+alt+p',
-    description: 'Open/Close PixelGraph Settings'
+    description: 'PixelGraph Settings'
+  },
+  {
+    keys: 'ctrl+alt+t',
+    description: 'Song Texter (needs Spotify or Song Detector)'
   },
   {
     keys: 'ctrl+alt+f',
@@ -31,15 +35,15 @@ const keybindings = [
   },
   // {
   //   keys: 'ctrl+alt+d',
-  //   description: 'Open/Close MP'
+  //   description: 'MP'
   // },
   {
     keys: 'ctrl+alt+m',
-    description: 'Open/Close Audio Graph'
+    description: 'Audio Graph'
   },
   {
     keys: 'ctrl+alt+g',
-    description: 'Open/Close Guest Mode'
+    description: 'Guest Mode'
   }
   // {
   //   keys: 'ctrl+alt+l',

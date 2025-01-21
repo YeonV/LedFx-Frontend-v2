@@ -208,7 +208,9 @@ export const SettingsRow = ({
   const alphaMode = useStore((state) => state.features.alpha)
   const betaMode = useStore((state) => state.features.beta)
   const expertMode = useStore((state) => state.viewMode) === 'expert'
-
+  const match = title.match(/(.*?)(\s*\(.*?\))/)
+  const mainText = match ? match[1] : title
+  const bracketText = match ? match[2] : ''
   if (beta && !betaMode) return null
   if (alpha && !alphaMode) return null
   if (expert && !expertMode) return null
@@ -223,7 +225,14 @@ export const SettingsRow = ({
           : theme.palette.text.primary
       }}
     >
-      <label>{title}</label>
+      <label>
+        {mainText}
+        {bracketText && (
+          <Typography variant="caption" color="textDisabled">
+            &nbsp;{bracketText}
+          </Typography>
+        )}
+      </label>
       {alpha && <Chip label="alpha" />}
       {beta && <Chip label="beta" />}
       {expert && <Chip label="expert" />}
