@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
-import ws from '../../utils/Websocket'
 
 const PixelGraphCanvas = ({
   virtId,
@@ -35,7 +34,6 @@ const PixelGraphCanvas = ({
       config: state.config
     }))
   )
-  const features = useStore((state) => state.features)
   const smoothing = useStore(
     (state) => state.uiPersist.pixelGraphSettings?.smoothing
   )
@@ -88,19 +86,6 @@ const PixelGraphCanvas = ({
           imageData.data[index + 3] = 255 // Alpha channel
         }
         ctx.putImageData(imageData, 0, 0)
-
-        if (features.websocket_debug) {
-          if (ws && typeof ws !== 'string' && e.detail.timestamp) {
-            const request = {
-              type: 'event',
-              event_type: 'visualisation_updated',
-              id: e.detail.rid,
-              vis_id: virtId,
-              timestamp: e.detail.timestamp
-            }
-            ws.send(JSON.stringify(request))
-          }
-        }
       }
     }
 
@@ -108,16 +93,7 @@ const PixelGraphCanvas = ({
     return () => {
       document.removeEventListener('visualisation_update', handleWebsockets)
     }
-  }, [
-    virtId,
-    virtuals,
-    pixelGraphs,
-    devices,
-    graphs,
-    config,
-    showMatrix,
-    features.websocket_debug
-  ])
+  }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
   const render =
     (virtuals[virtId].active && virtuals[virtId].effect?.name) ||
@@ -136,7 +112,7 @@ const PixelGraphCanvas = ({
       className={`${className} ${active ? 'active' : ''}`}
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',
-        maxHeight: fullScreen ? '100vh' : 'unset',
+        maxHeight: fullScreen ? '100vh' : '380px',
         height:
           !render || virtuals[virtId]?.config?.rows < 2 || !showMatrix
             ? '20px'

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 import hexColor from '../../pages/Devices/EditVirtuals/EditMatrix/Actions/hexColor'
-import ws from '../../utils/Websocket'
 
 const PixelGraphBase = ({
   virtId,
@@ -34,7 +33,6 @@ const PixelGraphBase = ({
   const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const round = useStore((state) => state.uiPersist.pixelGraphSettings?.round)
   const space = useStore((state) => state.uiPersist.pixelGraphSettings?.space)
-  const features = useStore((state) => state.features)
   const stretch = useStore(
     (state) => state.uiPersist.pixelGraphSettings?.stretch
   )
@@ -67,18 +65,6 @@ const PixelGraphBase = ({
         setPixels(e.detail.pixels)
         if (e.detail.shape[0] !== shape[0] && e.detail.shape[1] !== shape[1])
           setShape(e.detail.shape)
-        if (features.websocket_debug) {
-          if (ws && typeof ws !== 'string' && e.detail.timestamp) {
-            const request = {
-              type: 'event',
-              event_type: 'visualisation_updated',
-              id: e.detail.rid,
-              vis_id: virtId,
-              timestamp: e.detail.timestamp
-            }
-            ws.send(JSON.stringify(request))
-          }
-        }
       }
     }
     document.addEventListener('visualisation_update', handleWebsockets)

@@ -31,7 +31,6 @@ export type IFeatures =
   | 'gamepad'
   | 'wakelock'
   | 'melbankGraph'
-  | 'websocket_debug'
   | 'sceneMostUsed'
   | 'scenePlaylist'
   | 'sceneRecent'
@@ -68,7 +67,6 @@ const storeFeatures = (set: any) => ({
     matrix_cam: false,
     wakelock: false,
     melbankGraph: false,
-    websocket_debug: false,
     sceneMostUsed: false,
     scenePlaylist: false,
     sceneRecent: false,
@@ -104,7 +102,6 @@ const storeFeatures = (set: any) => ({
     matrix_cam: false,
     wakelock: false,
     melbankGraph: false,
-    websocket_debug: false,
     sceneMostUsed: false,
     scenePlaylist: false,
     sceneRecent: false,
