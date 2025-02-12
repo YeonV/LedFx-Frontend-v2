@@ -242,13 +242,7 @@ export default function IntroDialog({
         icon: 'tune',
         label_right: graphsMulti ? 'Go to Devices' : 'Confirm',
         action_left: (): any => false,
-        action_right: () => {
-          if (graphsMulti) {
-            handleClose()
-            navigate('/Devices')
-          }
-          handleNext()
-        }
+        action_right: () => handleNext()
       },
       {
         key: 'tour',
@@ -463,13 +457,6 @@ export default function IntroDialog({
                   checked={features.scenePlaylist}
                   onChange={() =>
                     setFeatures('scenePlaylist', !features.scenePlaylist)
-                  }
-                />
-                <SettingsRow
-                  title="SceneChips (Filter by Tags)"
-                  checked={features.scenechips}
-                  onChange={() =>
-                    setFeatures('scenechips', !features.scenechips)
                   }
                 />
                 <SettingsRow
