@@ -50,6 +50,9 @@ export default function IntroDialog({
   const small = useMediaQuery('(max-width: 720px)')
   const xsmall = useMediaQuery('(max-width: 600px)')
 
+  const viewMode = useStore((state) => state.viewMode)
+  const setViewMode = useStore((state) => state.setViewMode)
+
   // console.log('YZ', virtuals)
   const handleClose = () => {
     setIntro(false)
@@ -184,11 +187,6 @@ export default function IntroDialog({
         label_left: 'Skip',
         label_right: 'Yes',
         action_left: () => {
-          onSystemSettingsChange('create_segments', assistant.wledSegments)
-          if (assistant.openRgb) scanForOpenRgbDevices()
-          if (assistant.launchpad) scanForLaunchpadDevices()
-          if (assistant.wled) setScanning(0)
-          if (assistant.wled) handleScan()
           setTour('home')
           handleNext()
         },
@@ -449,32 +447,39 @@ export default function IntroDialog({
                 sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%' }}
               >
                 <SettingsRow
-                  title="Graphs (overkill)"
+                  title="Show Graphs (eats performance)"
                   checked={graphsMulti}
                   onChange={() => toggleGraphsMulti()}
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
                 />
                 <SettingsRow
-                  title="BG Waves (eats performance)"
+                  title="Background Waves (eats performance)"
                   checked={features.waves}
                   onChange={() => setFeatures('waves', !features.waves)}
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
                 />
                 <SettingsRow
-                  title="SceneTables (Recent+Most +Playlist)"
-                  checked={features.scenetables}
+                  title="Scenes Playlist"
+                  checked={features.scenePlaylist}
                   onChange={() =>
-                    setFeatures('scenetables', !features.scenetables)
+                    setFeatures('scenePlaylist', !features.scenePlaylist)
                   }
-                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
                 />
                 <SettingsRow
-                  title="SceneChips (Filter Tags)"
+                  title="SceneChips (Filter by Tags)"
                   checked={features.scenechips}
                   onChange={() =>
                     setFeatures('scenechips', !features.scenechips)
                   }
-                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
+                />
+                <SettingsRow
+                  title="Expert Mode"
+                  checked={viewMode !== 'user'}
+                  onChange={() =>
+                    viewMode === 'user'
+                      ? setViewMode('expert')
+                      : setViewMode('user')
+                  }
                 />
               </Box>
             </div>
