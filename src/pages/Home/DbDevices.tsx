@@ -205,6 +205,7 @@ const ReconnectButton = ({ onClick }: { onClick: () => void }) => (
     size="small"
     onClick={(e) => {
       e.preventDefault()
+      e.stopPropagation()
       onClick()
     }}
   >
