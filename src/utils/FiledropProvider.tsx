@@ -20,13 +20,53 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const setDialogOpenFileDrop = useStore((state) => state.setDialogOpenFileDrop)
   const setScenePL = useStore((state) => state.setScenePL)
   const setScenePLintervals = useStore((state) => state.setScenePLintervals)
+  const importSystemConfig = useStore((state) => state.importSystemConfig)
+
+  const isValidFullConfig = useCallback((data: any) => {
+    const requiredConfigKeys = [
+      'dev_mode',
+      'user_colors',
+      'user_presets',
+      'host',
+      'global_transitions',
+      'configuration_version',
+      'wled_preferences',
+      'user_gradients',
+      'visualisation_maxlen',
+      'devices',
+      'virtuals',
+      'visualisation_fps',
+      'global_brightness',
+      'transmission_mode',
+      'create_segments',
+      'ui_brightness_boost',
+      'melbank_collection',
+      'port',
+      'melbanks',
+      'port_s',
+      'integrations',
+      'scenes',
+      'scan_on_startup',
+      'audio',
+      'flush_on_deactivate'
+    ]
+    const missingKeys = requiredConfigKeys.filter((key) => !(key in data))
+    if (missingKeys.length > 0) {
+      console.log('Missing keys:', missingKeys)
+      return false
+    }
+    return true
+  }, [])
 
   const handleJsonFile = useCallback(
     async (e: any) => {
       const fileReader = new FileReader()
-      fileReader.readAsText(e.target.files[0], 'UTF-8')
+      if (e.target.files) {
+        fileReader.readAsText(e.target.files[0], 'UTF-8')
+      }
       fileReader.onload = (ev: any) => {
         const data = JSON.parse(ev.target.result)
+        console.log('data', data)
         if (!data) {
           showSnackbar('error', 'Invalid file')
           return
@@ -49,12 +89,16 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           setTitle('New Scene Playlist detected')
           setNewData({ type: 'scenePlaylist', data })
           setDialogOpenFileDrop(true)
+        } else if (isValidFullConfig(data)) {
+          setTitle('Full Configuration detected')
+          setNewData({ type: 'fullConfig', data })
+          setDialogOpenFileDrop(true)
         } else {
           showSnackbar('error', 'Invalid file')
         }
       }
     },
-    [setDialogOpenFileDrop, showSnackbar, virtualOrder]
+    [isValidFullConfig, setDialogOpenFileDrop, showSnackbar, virtualOrder]
   )
 
   const handleDrop = useCallback(
@@ -64,11 +108,9 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
       if (file && file.type === 'application/json') {
         console.log('file', file)
         handleJsonFile({ target: { files: [file] } })
-      } else {
-        showSnackbar('error', 'Please drop a valid JSON file')
       }
     },
-    [handleJsonFile, showSnackbar]
+    [handleJsonFile]
   )
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -92,6 +134,14 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           if (newData.data.scenePLintervals)
             setScenePLintervals(newData.data.scenePLintervals)
           showSnackbar('success', 'Scene Playlist updated')
+          break
+        case 'fullConfig':
+          importSystemConfig(JSON.stringify(newData.data)).then(() => {
+            showSnackbar('success', 'Configuration imported')
+            setTimeout(() => {
+              window.location.reload()
+            }, 200)
+          })
           break
         default:
           showSnackbar('error', 'Unknown data type')
