@@ -16,7 +16,6 @@ import {
   ChevronLeft,
   ChevronRight
 } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import banner from '../../icons/png/banner.png'
@@ -33,7 +32,6 @@ export default function IntroDialog({
   scanning,
   setScanning
 }: any) {
-  const navigate = useNavigate()
   const intro = useStore((state) => state.intro)
   const devices = useStore((state) => state.devices)
   const openRgbDevices = useStore((state) => state.openRgbDevices)
