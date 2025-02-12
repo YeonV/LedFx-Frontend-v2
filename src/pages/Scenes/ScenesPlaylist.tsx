@@ -142,7 +142,12 @@ export default function ScenesPlaylist({
             textOverflow: 'ellipsis',
             display: 'flex',
             alignItems: 'center',
-            height: '100%'
+            height: '100%',
+            cursor: 'pointer'
+          }}
+          onClick={() => {
+            activateScene(params.row.scene_id)
+            setScenePLactiveIndex(params.row.id)
           }}
         >
           {params.value}
@@ -312,6 +317,10 @@ export default function ScenesPlaylist({
           </Typography>
 
           <DataGrid
+            onRowDoubleClick={(params) => {
+              activateScene(params.row.scene_id)
+              setScenePLactiveIndex(params.row.id)
+            }}
             rowHeight={50}
             columns={columns}
             hideFooter
