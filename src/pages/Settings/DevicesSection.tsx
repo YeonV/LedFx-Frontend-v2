@@ -30,7 +30,7 @@ const DevicesSection = () => {
       />
       <SettingsRow
         disabled={!graphs}
-        title="Show Graphs on Devices page (crazy)"
+        title="Show Graphs on Devices page (eats even more performance)"
         checked={graphsMulti}
         onChange={() => toggleGraphsMulti()}
       />
