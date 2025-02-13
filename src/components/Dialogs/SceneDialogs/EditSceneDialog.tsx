@@ -25,9 +25,17 @@ import {
   FormControl,
   Avatar,
   useMediaQuery,
-  Autocomplete
+  Autocomplete,
+  IconButton
 } from '@mui/material'
-import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
+import {
+  Clear,
+  Undo,
+  NavigateBefore,
+  MusicNote,
+  Edit,
+  Save
+} from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
 import isElectron from 'is-electron'
 import { filterKeys, ordered } from '../../../utils/helpers'
@@ -43,6 +51,7 @@ import { MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
+  const [editName, setEditName] = useState(false)
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
   const [tags, setTags] = useState('')
@@ -74,7 +83,8 @@ const EditSceneDialog = () => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const activatePreset = useStore((state) => state.activatePreset)
   const activateScene = useStore((state) => state.activateScene)
-  const addScene = useStore((state) => state.addScene)
+  const updateScene = useStore((state) => state.updateScene)
+  const renameScene = useStore((state) => state.renameScene)
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
   const getUserPresets = useStore((state) => state.getUserPresets)
@@ -187,9 +197,11 @@ const EditSceneDialog = () => {
   }
 
   const handleAddScene = () => {
-    addScene(name, image, tags, url, payload, midiActivate).then(() => {
-      getScenes()
-    })
+    updateScene(name, sceneId, image, tags, url, payload, midiActivate).then(
+      () => {
+        getScenes()
+      }
+    )
     setName('')
     setImage('')
     setTags('')
@@ -201,12 +213,12 @@ const EditSceneDialog = () => {
     setDialogOpenAddScene(false, false)
   }
 
-  const sVirtuals =
-    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]?.virtuals || {}
+  const sVirtuals = scenes[sceneId]?.virtuals || {}
 
   const handleAddSceneWithVirtuals = () => {
-    addScene(
+    updateScene(
       name,
+      sceneId,
       image,
       tags,
       url,
@@ -231,7 +243,7 @@ const EditSceneDialog = () => {
     getFullConfig()
     getLedFxPresets().then(setLedFxPresets)
     getUserPresets().then(setUserPresets)
-    if (open) activateScene(data.name?.toLowerCase().replaceAll(' ', '-'))
+    if (open) activateScene(sceneId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
@@ -345,12 +357,8 @@ const EditSceneDialog = () => {
               JSON.stringify(
                 ordered((user_presets[effectId][k] as any).config)
               ) ===
-                JSON.stringify(
-                  ordered(
-                    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
-                      .virtuals[dev].config
-                  )
-                ) && k
+                JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) &&
+              k
           )
           .filter((n) => !!n)
       const userPreset =
@@ -546,7 +554,10 @@ const EditSceneDialog = () => {
               </li>
               <li>
                 mdi:icon-name{' '}
-                <Link href="https://pictogrammers.com/library/mdi" target="_blank">
+                <Link
+                  href="https://pictogrammers.com/library/mdi"
+                  target="_blank"
+                >
                   Find Material Design icons here
                 </Link>
                 <Typography color="textSecondary" variant="subtitle1">
@@ -579,7 +590,10 @@ const EditSceneDialog = () => {
         >
           <div style={{ flexGrow: 1, paddingRight: medium ? 0 : '2rem' }}>
             <TextField
-              sx={{ mt: data ? '2rem' : '' }}
+              sx={{
+                mt: data ? '2rem' : '',
+                '& .MuiInputBase-root': { paddingRIght: '6px' }
+              }}
               autoFocus
               margin="dense"
               id="name"
@@ -587,9 +601,29 @@ const EditSceneDialog = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled
+              disabled={!editName}
               required
               fullWidth
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => {
+                          if (editName) {
+                            renameScene(name, sceneId).then(() => {
+                              getScenes()
+                            })
+                          }
+                          setEditName(!editName)
+                        }}
+                      >
+                        {editName ? <Save /> : <Edit />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }
+              }}
             />
             <TextField
               margin="dense"
@@ -762,10 +796,7 @@ const EditSceneDialog = () => {
                       midiActivate !== null &&
                       midiActivate !== '' &&
                       Object.keys(scenes)
-                        .filter(
-                          (k) =>
-                            k !== data.name?.toLowerCase().replaceAll(' ', '-')
-                        )
+                        .filter((k) => k !== sceneId)
                         .some(
                           (sceneId: any) =>
                             scenes[sceneId]?.scene_midiactivate === midiActivate
@@ -775,10 +806,7 @@ const EditSceneDialog = () => {
                       midiActivate !== null &&
                       midiActivate !== '' &&
                       Object.keys(scenes)
-                        .filter(
-                          (k) =>
-                            k !== data.name?.toLowerCase().replaceAll(' ', '-')
-                        )
+                        .filter((k) => k !== sceneId)
                         .some(
                           (sceneId: any) =>
                             scenes[sceneId]?.scene_midiactivate === midiActivate
@@ -789,13 +817,7 @@ const EditSceneDialog = () => {
                           {
                             scenes[
                               Object.keys(scenes)
-                                .filter(
-                                  (k) =>
-                                    k !==
-                                    data.name
-                                      ?.toLowerCase()
-                                      .replaceAll(' ', '-')
-                                )
+                                .filter((k) => k !== sceneId)
                                 .find(
                                   (sceneId: any) =>
                                     scenes[sceneId]?.scene_midiactivate ===
@@ -976,14 +998,10 @@ const EditSceneDialog = () => {
         <Divider sx={{ margin: '0 auto', maxWidth: '960px' }} />
         {data &&
           scenes &&
-          data.name?.toLowerCase().replaceAll(' ', '-') &&
-          scenes[data.name?.toLowerCase().replaceAll(' ', '-')] &&
+          sceneId &&
+          scenes[sceneId] &&
           Object.keys(sVirtuals)
-            .filter(
-              (d) =>
-                !!scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
-                  .virtuals[d].type
-            )
+            .filter((d) => !!scenes[sceneId].virtuals[d].type)
             .map((dev, i) => (
               <div
                 key={i}
@@ -1010,21 +1028,13 @@ const EditSceneDialog = () => {
                     alignItems: 'center'
                   }}
                 >
-                  {renderEffects(
-                    scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
-                      .virtuals[dev].type,
-                    dev
-                  )}
+                  {renderEffects(scenes[sceneId].virtuals[dev].type, dev)}
                   <span style={{ width: 180, textAlign: 'right' }}>
                     {ledfx_presets &&
                       renderPresets(
-                        ledfx_presets[
-                          scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
-                            .virtuals[dev].type
-                        ],
+                        ledfx_presets[scenes[sceneId].virtuals[dev].type],
                         dev,
-                        scenes[data.name?.toLowerCase().replaceAll(' ', '-')]
-                          .virtuals[dev].type
+                        scenes[sceneId].virtuals[dev].type
                       )}
                   </span>
                   <Box

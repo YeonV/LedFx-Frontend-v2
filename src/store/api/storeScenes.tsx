@@ -226,6 +226,42 @@ const storeScenes = (set: any) => ({
           scene_payload,
           scene_midiactivate
         }),
+  updateScene: async (
+    name: string,
+    id: string,
+    scene_image?: string | null,
+    scene_tags?: string | null,
+    scene_puturl?: string | null,
+    scene_payload?: string | null,
+    scene_midiactivate?: string | null,
+    virtuals?: Record<string, any>
+  ) =>
+    virtuals
+      ? await Ledfx('/api/scenes', 'POST', {
+          name,
+          id,
+          scene_image,
+          scene_tags,
+          scene_puturl,
+          scene_payload,
+          scene_midiactivate,
+          virtuals
+        })
+      : await Ledfx('/api/scenes', 'POST', {
+          name,
+          id,
+          scene_image,
+          scene_tags,
+          scene_puturl,
+          scene_payload,
+          scene_midiactivate
+        }),
+  renameScene: async (name: string, id: string) =>
+    await Ledfx('/api/scenes', 'PUT', {
+      name,
+      id,
+      action: 'rename'
+    }),
   activateScene: async (id: string) => {
     set(
       produce((s: IStore) => {
