@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { produce } from 'immer'
+import { Ledfx } from '../api/ledfx'
 
 export interface MigrationState {
   [key: string]: any
@@ -44,5 +45,38 @@ export const migrations: Migrations = {
   }),
 
   16: (state) => ({ ...state }),
-  17: (state) => ({ ...state })
+  17: (state) => ({ ...state }),
+  18: (state) => ({
+    ...state,
+    updateScene: async (
+      name: string,
+      id: string,
+      scene_image?: string | null,
+      scene_tags?: string | null,
+      scene_puturl?: string | null,
+      scene_payload?: string | null,
+      scene_midiactivate?: string | null,
+      virtuals?: Record<string, any>
+    ) =>
+      virtuals
+        ? await Ledfx('/api/scenes', 'POST', {
+            name,
+            id,
+            scene_image,
+            scene_tags,
+            scene_puturl,
+            scene_payload,
+            scene_midiactivate,
+            virtuals
+          })
+        : await Ledfx('/api/scenes', 'POST', {
+            name,
+            id,
+            scene_image,
+            scene_tags,
+            scene_puturl,
+            scene_payload,
+            scene_midiactivate
+          })
+  })
 }
