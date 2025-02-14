@@ -25,17 +25,9 @@ import {
   FormControl,
   Avatar,
   useMediaQuery,
-  Autocomplete,
-  IconButton
+  Autocomplete
 } from '@mui/material'
-import {
-  Clear,
-  Undo,
-  NavigateBefore,
-  MusicNote,
-  Edit,
-  Save
-} from '@mui/icons-material'
+import { Clear, Undo, NavigateBefore, MusicNote } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
 import isElectron from 'is-electron'
 import { filterKeys, ordered } from '../../../utils/helpers'
@@ -51,7 +43,6 @@ import { MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
-  const [editName, setEditName] = useState(false)
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
   const [tags, setTags] = useState('')
@@ -84,7 +75,6 @@ const EditSceneDialog = () => {
   const activatePreset = useStore((state) => state.activatePreset)
   const activateScene = useStore((state) => state.activateScene)
   const updateScene = useStore((state) => state.updateScene)
-  const renameScene = useStore((state) => state.renameScene)
   const getScenes = useStore((state) => state.getScenes)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
   const getUserPresets = useStore((state) => state.getUserPresets)
@@ -196,7 +186,7 @@ const EditSceneDialog = () => {
     setDialogOpenAddScene(false, false)
   }
 
-  const handleAddScene = () => {
+  const handleEditScene = () => {
     updateScene(name, sceneId, image, tags, url, payload, midiActivate).then(
       () => {
         getScenes()
@@ -215,7 +205,7 @@ const EditSceneDialog = () => {
 
   const sVirtuals = scenes[sceneId]?.virtuals || {}
 
-  const handleAddSceneWithVirtuals = () => {
+  const handleEditSceneWithVirtuals = () => {
     updateScene(
       name,
       sceneId,
@@ -592,7 +582,7 @@ const EditSceneDialog = () => {
             <TextField
               sx={{
                 mt: data ? '2rem' : '',
-                '& .MuiInputBase-root': { paddingRIght: '6px' }
+                '& .MuiInputBase-root': { paddingRight: '6px' }
               }}
               autoFocus
               margin="dense"
@@ -601,29 +591,8 @@ const EditSceneDialog = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={!editName}
               required
               fullWidth
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => {
-                          if (editName) {
-                            renameScene(name, sceneId).then(() => {
-                              getScenes()
-                            })
-                          }
-                          setEditName(!editName)
-                        }}
-                      >
-                        {editName ? <Save /> : <Edit />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }
-              }}
             />
             <TextField
               margin="dense"
@@ -1085,6 +1054,7 @@ const EditSceneDialog = () => {
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button
+          disabled={name === ''}
           onClick={() => {
             const deepCopy = (obj: any) => JSON.parse(JSON.stringify(obj))
             const newMapping = deepCopy(midiMapping) as IMapping
@@ -1102,9 +1072,9 @@ const EditSceneDialog = () => {
             )
 
             if (scVirtualsToIgnore.length > 0) {
-              handleAddSceneWithVirtuals()
+              handleEditSceneWithVirtuals()
             } else {
-              handleAddScene()
+              handleEditScene()
             }
             if (
               currentBtnNumber &&
