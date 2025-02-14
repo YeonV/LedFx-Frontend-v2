@@ -112,7 +112,7 @@ const PixelGraphCanvas = ({
       className={`${className} ${active ? 'active' : ''}`}
       style={{
         maxWidth: fullScreen ? '100vw' : '520px',
-        maxHeight: fullScreen ? '100vh' : '380px',
+        maxHeight: fullScreen ? '100vh' : '520px',
         height:
           !render || virtuals[virtId]?.config?.rows < 2 || !showMatrix
             ? '20px'

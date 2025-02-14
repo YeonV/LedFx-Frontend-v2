@@ -69,11 +69,7 @@ const AddVirtualDialog = () => {
 
     if (!valid) {
       showSnackbar('warning', 'Please fill in all required fields.')
-    } else if (
-      initial.config &&
-      Object.keys(initial.config).length === 0 &&
-      initial.config?.constructor === Object
-    ) {
+    } else if (addNew) {
       // console.log("ADDING");
       addVirtual({
         config: { ...defaultModel, ...cleanedModel }
@@ -116,6 +112,11 @@ const AddVirtualDialog = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId, JSON.stringify(initial.config)])
 
+  const addNew =
+    initial.config &&
+    Object.keys(initial.config).length === 0 &&
+    initial.config?.constructor === Object
+
   return (
     <>
       <Dialog
@@ -124,11 +125,7 @@ const AddVirtualDialog = () => {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          {initial.config &&
-          Object.keys(initial.config).length === 0 &&
-          initial.config?.constructor === Object
-            ? 'Add Virtual Device'
-            : 'Settings'}
+          {addNew ? 'Add Virtual Device' : 'Settings'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText component="div">
@@ -157,13 +154,7 @@ const AddVirtualDialog = () => {
 
           <BladeSchemaForm
             schema={currentSchema}
-            model={
-              initial.config &&
-              Object.keys(initial.config).length === 0 &&
-              initial.config?.constructor === Object
-                ? model
-                : { ...initial.config, ...model }
-            }
+            model={addNew ? model : { ...initial.config, ...model }}
             onModelChange={handleModelChange}
           />
         </DialogContent>
@@ -172,11 +163,7 @@ const AddVirtualDialog = () => {
             Cancel
           </Button>
           <Button onClick={handleAddVirtual} color="primary">
-            {initial.config &&
-            Object.keys(initial.config).length === 0 &&
-            initial.config?.constructor === Object
-              ? 'Add & Setup Segments'
-              : 'Save'}
+            {addNew ? 'Add & Setup Segments' : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>
