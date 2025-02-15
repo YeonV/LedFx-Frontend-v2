@@ -30,7 +30,7 @@ import storeVideo from './ui/storeVideo'
 import storeUIPersist from './ui-persist/storeUIpersist'
 import storeUIPersistActions from './ui-persist/storeUIpersistActions'
 import storeSongDectector from './ui/storeSongDectector'
-import { frontendConfig } from '../utils/helpers'
+import { frontendConfig, log } from '../utils/helpers'
 import { migrations, MigrationState } from './migrate'
 
 const useStore = create(
@@ -42,7 +42,7 @@ const useStore = create(
         },
         (set, get) => ({
           ui: storeUI(set),
-          uiPersist: storeUIPersist(set),
+          uiPersist: storeUIPersist(),
           spotify: storeSpotify(),
           qlc: storeQLC(),
           user: storeUser(set),
@@ -77,10 +77,18 @@ const useStore = create(
         name: 'ledfx-storage',
         version: frontendConfig,
         migrate: (persistedState, version) => {
-          if (version < frontendConfig) {
-            return migrations[frontendConfig](persistedState as MigrationState)
+          log(
+            'infoConfig Migrator',
+            `Migrating from version ${version} to ${frontendConfig}`
+          )
+          let state = persistedState as MigrationState
+          for (let i = version + 1; i <= frontendConfig; i++) {
+            if (migrations[i]) {
+              state = migrations[i](state)
+            }
           }
-          return persistedState
+
+          return state
         },
         partialize: (state) =>
           Object.fromEntries(
