@@ -7,7 +7,7 @@ export const PixelGraphVariants = [
 ]
 type PixelGraphVariant = (typeof PixelGraphVariants)[number]
 
-const storeUIPersist = (set: any) => ({
+const storeUIPersist = () => ({
   infoAlerts: {
     scenes: true,
     devices: true,
