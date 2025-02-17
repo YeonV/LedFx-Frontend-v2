@@ -63,13 +63,19 @@ const PixelGraphCanvas = ({
         const realPixelCount = virtuals[virtId]?.pixel_count || totalPixels
         const realCols = Math.ceil(realPixelCount / rows)
         const aspectRatio = realCols / rows
-        const displayRows =
-          (shape && shape[0]) ||
-          (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
 
-        const displayCols =
-          (shape && shape[1]) ||
-          (realPixelCount > 4096 ? 4096 / displayRows : realCols)
+        let displayRows, displayCols
+        if (showMatrix) {
+          displayRows =
+            (shape && shape[0]) ||
+            (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
+          displayCols =
+            (shape && shape[1]) ||
+            (realPixelCount > 4096 ? 4096 / displayRows : realCols)
+        } else {
+          displayRows = 1
+          displayCols = totalPixels
+        }
 
         canvas.width = displayCols
         canvas.height = displayRows
