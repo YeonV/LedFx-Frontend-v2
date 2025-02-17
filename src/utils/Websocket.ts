@@ -215,6 +215,8 @@ export const HandleWs = () => {
   useLayoutEffect(() => {
     if (!graphs || !graphsMulti) {
       setPixelGraphs([])
+    } else {
+      setPixelGraphs(Object.keys(virtuals))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti])
