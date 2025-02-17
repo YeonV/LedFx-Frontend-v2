@@ -28,7 +28,7 @@ const GlobalActionBar = ({
   const togglePause = useStore((state) => state.togglePause)
 
   useEffect(() => {
-    setBrightness((globalBrightness || 1) * 100)
+    setBrightness((globalBrightness || 0) * 100)
   }, [globalBrightness])
 
   return (
@@ -130,8 +130,10 @@ const GlobalActionBar = ({
         min={0}
         max={100}
         onChangeCommitted={(_e, val) =>
-          typeof val === 'number' &&
-          setSystemSetting('global_brightness', val / 100)
+          setSystemSetting(
+            'global_brightness',
+            typeof val === 'number' ? val / 100 : 0
+          )
         }
       />
     </Stack>
