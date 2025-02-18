@@ -239,9 +239,21 @@ const DbDevices = () => {
 
   useEffect(() => {
     if (graphs && graphsMulti) {
-      setPixelGraphs(Object.keys(virtuals))
+      setPixelGraphs(
+        Object.keys(virtuals)
+          .filter((v) =>
+            showComplex
+              ? v
+              : !(
+                  v.endsWith('-mask') ||
+                  v.endsWith('-foreground') ||
+                  v.endsWith('-background')
+                )
+          )
+          .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+      )
     }
-  }, [graphs, graphsMulti, setPixelGraphs, virtuals])
+  }, [graphs, graphsMulti, setPixelGraphs, virtuals, showComplex, showGaps])
 
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
     navigate(`/device/${params.row.id}`)
