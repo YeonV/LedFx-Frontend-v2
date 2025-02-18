@@ -203,6 +203,8 @@ export const HandleWs = () => {
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const graphs = useStore((state) => state.graphs)
   const graphsMulti = useStore((state) => state.graphsMulti)
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
   const [wsReady, setWsReady] = useState(false)
 
   useLayoutEffect(() => {
@@ -216,7 +218,19 @@ export const HandleWs = () => {
     if (!graphs || !graphsMulti) {
       setPixelGraphs([])
     } else {
-      setPixelGraphs(Object.keys(virtuals))
+      setPixelGraphs(
+        Object.keys(virtuals)
+          .filter((v) =>
+            showComplex
+              ? v
+              : !(
+                  v.endsWith('-mask') ||
+                  v.endsWith('-foreground') ||
+                  v.endsWith('-background')
+                )
+          )
+          .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti])
