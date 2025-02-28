@@ -312,7 +312,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                           () => {
                             setLoading(false)
                           },
-                          virtuals[virtId].config.transition_time * 1000 || 5000
+                          (virtuals[virtId].config.transition_time || 0) * 1000
                         )
                       }}
                     >
