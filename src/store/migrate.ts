@@ -3,6 +3,8 @@
 
 import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
+import useStore, { IStore } from './useStore'
+import store from '../app/app/utils/store.mjs'
 
 export interface MigrationState {
   [key: string]: any
@@ -105,5 +107,28 @@ export const migrations: Migrations = {
               scene_midiactivate
             })
     }
-  }
+  },
+  22: (state) => ({
+    ...state,
+    usePerDeviceDelay: false,
+    setUsePerDeviceDelay: (newState: boolean) => {
+      useStore.setState(
+        produce((state: IStore) => {
+          state.usePerDeviceDelay = newState
+        }),
+        false,
+        'webaudio/setUsePerDeviceDelay'
+      )
+    },
+    perDeviceDelay: {} as any,
+    setPerDeviceDelay: (newState: any) => {
+      useStore.setState(
+        produce((state: IStore) => {
+          state.perDeviceDelay = newState
+        }),
+        false,
+        'webaudio/setPerDeviceDelay'
+      )
+    }
+  })
 }

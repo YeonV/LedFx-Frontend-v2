@@ -41,6 +41,26 @@ const storeWebAudio = (set: any) => ({
       false,
       'webaudio/setClientDevices'
     )
+  },
+  usePerDeviceDelay: false,
+  setUsePerDeviceDelay: (newState: boolean) => {
+    set(
+      produce((state: IStore) => {
+        state.usePerDeviceDelay = newState
+      }),
+      false,
+      'webaudio/setUsePerDeviceDelay'
+    )
+  },
+  perDeviceDelay: {} as any,
+  setPerDeviceDelay: (newState: any) => {
+    set(
+      produce((state: IStore) => {
+        state.perDeviceDelay = newState
+      }),
+      false,
+      'webaudio/setPerDeviceDelay'
+    )
   }
 })
 

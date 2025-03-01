@@ -17,6 +17,7 @@ import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
 import BladeFrame from '../components/BladeFrame'
 import { SchemaFormProps } from './SchemaForm.props'
+import useStore from '../../../store/useStore'
 
 const PREFIX = 'SchemaForm'
 
@@ -59,7 +60,9 @@ const SchemaForm = ({
   type
 }: SchemaFormProps): ReactElement<any, any> => {
   const [hideDesc, setHideDesc] = useState(true)
-
+  const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
+  const setPerDeviceDelay = useStore((state) => state.setPerDeviceDelay)
+  const usePerDeviceDelay = useStore((state) => state?.usePerDeviceDelay)
   const yzSchema =
     schema &&
     schema.properties &&
@@ -249,6 +252,24 @@ const SchemaForm = ({
                     onChange={(model_id: string, value: any) => {
                       const c: Record<string, unknown> = {}
                       c[model_id] = value
+                      if (
+                        model_id === 'delay_ms' &&
+                        usePerDeviceDelay &&
+                        model.audio_device &&
+                        value !==
+                          perDeviceDelay[
+                            schema.properties.audio_device?.enum[
+                              model.audio_device
+                            ]
+                          ]
+                      ) {
+                        setPerDeviceDelay({
+                          ...perDeviceDelay,
+                          [schema.properties.audio_device?.enum[
+                            model.audio_device
+                          ]]: value
+                        })
+                      }
                       if (onModelChange) {
                         return onModelChange(c)
                       }
