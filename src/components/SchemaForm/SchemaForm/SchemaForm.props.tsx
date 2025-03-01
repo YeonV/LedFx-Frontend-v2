@@ -15,7 +15,7 @@ export interface SchemaFormProps {
   /**
    * Model is the current value of the schema
    */
-  model: Record<string, unknown>
+  model: Record<string, any>
   /**
    * Hide Field-Description Toggle
    */
