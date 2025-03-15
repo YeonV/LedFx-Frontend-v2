@@ -6,7 +6,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Input
+  Input,
+  MenuItem,
+  Select
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import {
@@ -33,6 +35,16 @@ export default function FrontendPixelsTooSmall() {
 
   const [pixelLength, setPixelLength] = useState(fPixels || 50)
   const [biggestDevice, setBiggestDevice] = useState({ id: '', pixels: 0 })
+  const marks = [
+    { value: 'select', label: 'select' },
+    { value: 50, label: '50' },
+    { value: 128, label: '128' },
+    { value: 256, label: '256' },
+    { value: 512, label: '512' },
+    { value: 1024, label: '1K' },
+    { value: 2048, label: '2K' },
+    { value: 4096, label: '4K' }
+  ]
 
   const setDialogOpenLessPixels = useStore(
     (state) => state.setDialogOpenLessPixels
@@ -114,11 +126,30 @@ export default function FrontendPixelsTooSmall() {
           onChange={() => toggleShowMatrix()}
         />
         <SettingsRow title="Frontend Pixels" step="three">
+          <Select
+            disableUnderline
+            variant="standard"
+            value={'select'}
+            onChange={(e) =>
+              e.target.value !== 'select' &&
+              setSystemSetting('visualisation_maxlen', e.target.value)
+            }
+          >
+            {marks.map((item: any) => (
+              <MenuItem
+                disabled={item.value === 'select'}
+                key={item.value}
+                value={item.value}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
+          </Select>
           <Input
             disableUnderline
             className={sliderClasses.input}
             value={pixelLength}
-            style={{ width: 100 }}
+            style={{ width: 70 }}
             margin="dense"
             onChange={(e) => {
               setPixelLength(parseInt(e.target.value, 10))
@@ -134,7 +165,7 @@ export default function FrontendPixelsTooSmall() {
             }}
             inputProps={{
               min: 1,
-              max: 16384,
+              max: 4096,
               type: 'number',
               'aria-labelledby': 'input-slider'
             }}
