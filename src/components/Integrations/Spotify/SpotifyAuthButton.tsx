@@ -18,13 +18,11 @@ const baseURL = isElectron()
   ? 'http://localhost:8888'
   : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
     'http://localhost:8888'
-// const baseURL = isElectron() ? 'http://localhost:8888' : window.location.href.split('/#')[0].replace(/\/+$/, '') || 'http://localhost:8888';
-const storedURL = window.localStorage.getItem('ledfx-host')
+
+// const storedURL = window.localStorage.getItem('ledfx-host')
 const redirectUrl = `${
   process.env.NODE_ENV === 'production'
-    ? isElectron()
-      ? baseURL
-      : storedURL || baseURL
+    ? baseURL
     : isElectron()
       ? baseURL
       : 'http://localhost:3000'
