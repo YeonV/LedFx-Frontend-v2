@@ -41,7 +41,7 @@ const SpotifyLoginRedirect = () => {
       () =>
         (window.location.href = `${
           process.env.NODE_ENV === 'production'
-            ? storedURL || baseURL
+            ? baseURL
             : 'http://localhost:3000'
         }/#/Integrations?`),
       3000
