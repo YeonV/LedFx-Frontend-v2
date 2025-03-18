@@ -141,6 +141,7 @@ const Routings = ({ handleWs }: any) => {
                 element={<LoginRedirect />}
               />
               <Route path="/" element={<Home />} />
+              <Route path="/callback" element={<SpotifyLoginRedirect />} />
               <Route path="/devices" element={<Devices />} />
               <Route path="/device/:virtId" element={<Device />} />
               <Route path="/graph/:virtId" element={<Graph />} />
