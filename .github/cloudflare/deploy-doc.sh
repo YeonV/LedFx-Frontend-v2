@@ -1,10 +1,9 @@
 
 #!/bin/bash
 
-cd ../../ # Navigate to the root directory
-cd "$(git rev-parse --show-toplevel)"
-cd root
 ls -la
+cd ../../ # Navigate to the root directory
+
 # Define the file pattern to check (for docs.ledfx.stream)
 FILE_PATTERN="./storybook/* ./src/stories/* **/*.stories.tsx"
 
