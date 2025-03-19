@@ -9,17 +9,24 @@ import {
   DialogTitle,
   Typography,
   Divider,
-  Box
+  Box,
+  Alert,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
   // Box,
 } from '@mui/material'
-import { Add, Delete, Save } from '@mui/icons-material'
+import { Add, Delete, ExpandMore, Save } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
+import mixedContent1 from '../../assets/mixedContent1.jpeg'
+import mixedContent2 from '../../assets/mixedContent2.jpeg'
 // import Instances from './Instances';
 
 export default function NoHostDialog() {
   const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false)
   const [add, setAdd] = useState(false)
+  const [mixedContent, setMixedContent] = useState(false)
   const edit = useStore((state) => state.dialogs.nohost?.edit || false)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setDisconnected = useStore((state) => state.setDisconnected)
@@ -64,7 +71,15 @@ export default function NoHostDialog() {
 
   useEffect(() => {
     if (storedURL) setHostvalue(storedURL)
-    if (storedURLs) setHosts(storedURLs) // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (storedURLs) setHosts(storedURLs)
+    if (
+      window.location.protocol === 'https:' &&
+      (storedURLs.some((u: string) => u.split(':')[0] === 'http') ||
+        storedURL?.split(':')[0] === 'http')
+    ) {
+      setMixedContent(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storedURL, setHosts, JSON.stringify(storedURLs)])
 
   useEffect(() => {
@@ -101,6 +116,30 @@ export default function NoHostDialog() {
               : 'LedFx-Core not ready'}
         </DialogTitle>
         <DialogContent>
+          {mixedContent && (
+            <>
+              <Alert severity="warning">
+                Chrome will protect you from using insecure content.
+                <br /> You need to allow insecure content in your browser's site
+                settings.
+                <Accordion sx={{ bgcolor: 'transparent' }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel1-content"
+                    id="panel1-header"
+                  >
+                    <Typography component="span">Show How-To</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <img src={mixedContent2} alt="mixedContent2" />
+                    <br />
+                    <br />
+                    <img src={mixedContent1} alt="mixedContent1" />
+                  </AccordionDetails>
+                </Accordion>
+              </Alert>
+            </>
+          )}
           <DialogContentText mb={1}>
             Known Hosts: (click to connect)
           </DialogContentText>
