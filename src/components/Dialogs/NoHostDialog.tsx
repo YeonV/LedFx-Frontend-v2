@@ -74,8 +74,12 @@ export default function NoHostDialog() {
     if (storedURLs) setHosts(storedURLs)
     if (
       window.location.protocol === 'https:' &&
-      (storedURLs.some((u: string) => u.split(':')[0] === 'http') ||
-        storedURL?.split(':')[0] === 'http')
+      (storedURLs.some(
+        (u: string) =>
+          u.split(':')[0] === 'http' && !u.startsWith('http://localhost')
+      ) ||
+        (storedURL?.split(':')[0] === 'http' &&
+          !storedURL.startsWith('http://localhost')))
     ) {
       setMixedContent(true)
     }
