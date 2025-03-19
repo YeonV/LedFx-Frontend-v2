@@ -10,7 +10,6 @@ const baseURL = isElectron()
   ? 'http://localhost:8888'
   : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
     'http://localhost:8888'
-const storedURL = window.localStorage.getItem('ledfx-host')
 
 const Circle = () => (
   <div
