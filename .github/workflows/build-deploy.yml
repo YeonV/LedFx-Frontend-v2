@@ -27,7 +27,7 @@ jobs:
       - name: Build project
         run: |
           yarn buildgh
-        # sed -i 's/ <!\-\- <base href\=\"\%PUBLIC_URL\%\/\"> \-\->/ <base href\=\"\%PUBLIC_URL\%\/\">/g' ./build/index.html
+        sed -i 's/ <!\-\- <base href\=\"\%PUBLIC_URL\%\/\"> \-\->/ <base href\=\"\%PUBLIC_URL\%\/\">/g' ./build/index.html
 
       - name: Build storybook
         continue-on-error: true
