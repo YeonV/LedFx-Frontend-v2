@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.7b9f96b2.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.19017ce5.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.086421c4.js",
     "static/js/904.090f0346.chunk.js": "/LedFx-Frontend-v2/static/js/904.090f0346.chunk.js",
     "static/js/865.b62d6362.chunk.js": "/LedFx-Frontend-v2/static/js/865.b62d6362.chunk.js",
     "static/js/703.745a3616.chunk.js": "/LedFx-Frontend-v2/static/js/703.745a3616.chunk.js",
@@ -17,6 +17,7 @@
     "static/media/launchpad.png": "/LedFx-Frontend-v2/static/media/launchpad.4a1e671d782cbad8d71e.png",
     "static/media/MaterialIcons-Regular.woff2": "/LedFx-Frontend-v2/static/media/MaterialIcons-Regular.f71673ad689fb42ddae1.woff2",
     "service-worker.js": "/LedFx-Frontend-v2/service-worker.js",
+    "static/media/mixedContent2.jpeg": "/LedFx-Frontend-v2/static/media/mixedContent2.ba8b8fafd2d7c4618d14.jpeg",
     "static/media/blademod.svg": "/LedFx-Frontend-v2/static/media/blademod.f939f478785a84b3edcc820eef654556.svg",
     "index.html": "/LedFx-Frontend-v2/index.html",
     "static/media/FX.svg": "/LedFx-Frontend-v2/static/media/FX.2e579a36c78155284df077b2f54cc84b.svg",
@@ -43,6 +44,6 @@
   },
   "entrypoints": [
     "static/css/main.7b9f96b2.css",
-    "static/js/main.19017ce5.js"
+    "static/js/main.086421c4.js"
   ]
 }
