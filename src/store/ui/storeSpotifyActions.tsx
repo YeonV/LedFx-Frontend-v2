@@ -234,6 +234,14 @@ const storeSpotifyActions = (set: any) => ({
       false,
       'spotify/setSpTexterValue'
     ),
+  setSpTexterFallback: (value: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyTexter.fallback = value
+      }),
+      false,
+      'spotify/setSpTexterValue'
+    ),
   setSpTexterBackground: (value: string) =>
     set(
       produce((state: IStore) => {
