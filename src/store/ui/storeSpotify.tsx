@@ -27,12 +27,13 @@ const storeSpotify = () => ({
   currentTrack: '',
   sendSpotifyTrack: false,
   spotifyTexter: {
+    fallback: true,
     gradient:
       'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)',
     option_2: false,
     flip: false,
     blur: 0,
-    flip_horizontal: true,
+    flip_horizontal: false,
     speed_option_1: 2,
     resize_method: 'Fast',
     gradient_roll: 0,
@@ -50,7 +51,7 @@ const storeSpotify = () => ({
     brightness: 1,
     text_color: '#ff0000',
     background_brightness: 1,
-    rotate: 2,
+    rotate: 0,
     dump: false,
     option_1: false,
     height_percent: 100,

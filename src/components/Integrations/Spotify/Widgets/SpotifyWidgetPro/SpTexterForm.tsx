@@ -12,6 +12,7 @@ const SpTexterForm = () => {
   const sendSpotifyTrack = useStore((state) => state.spotify.sendSpotifyTrack)
   const colors = useStore((state) => state.colors)
 
+  const setSpTexterFallback = useStore((state) => state.setSpTexterFallback)
   const setSendSpotifyTrack = useStore((state) => state.setSendSpotifyTrack)
   const setSpTexterTextColor = useStore((state) => state.setSpTexterTextColor)
   const setSpTexterFlipVertical = useStore(
@@ -55,7 +56,7 @@ const SpTexterForm = () => {
         'texter2d',
         { ...spotifyTexter, text: currentTrack },
         true,
-        true
+        spotifyTexter.fallback
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,6 +77,12 @@ const SpTexterForm = () => {
             </MenuItem>
           ))}
         </Select>
+        <Button
+          color={spotifyTexter.fallback ? 'primary' : 'inherit'}
+          onClick={() => setSpTexterFallback(!spotifyTexter.fallback)}
+        >
+          Once
+        </Button>
         <Button
           color={sendSpotifyTrack ? 'primary' : 'inherit'}
           onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}
