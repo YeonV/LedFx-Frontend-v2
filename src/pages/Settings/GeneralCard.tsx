@@ -8,7 +8,7 @@ import {
   Info
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
-import { Divider, Tooltip } from '@mui/material'
+import { Divider, Menu, MenuItem, Select, Tooltip } from '@mui/material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, download } from '../../utils/helpers'
 import PopoverSure from '../../components/Popover/Popover'
@@ -27,6 +27,7 @@ const GeneralCard = () => {
   const settings = useStore((state) => state.config)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const scenes = useStore((state) => state.scenes)
 
   const configDownload = async () => {
     getFullConfig().then((newConfig) =>
@@ -176,6 +177,28 @@ const GeneralCard = () => {
             onSystemSettingsChange('scan_on_startup', !settings.scan_on_startup)
           }
         />
+      </div>
+      <div
+        className={`${classes.settingsRow} step-settings-eleven `}
+        style={{ flexBasis: '100%' }}
+      >
+        <label>Scene on startup</label>
+        <Select
+          value={settings.startup_scene_id || ''}
+          disableUnderline
+          onChange={(e) =>
+            onSystemSettingsChange('startup_scene_id', e.target.value)
+          }
+        >
+          <MenuItem key={'none'} value={''}>
+            {'None'}
+          </MenuItem>
+          {Object.keys(scenes).map((scene) => (
+            <MenuItem key={scene} value={scene}>
+              {scenes[scene].name}
+            </MenuItem>
+          ))}
+        </Select>
       </div>
       <div
         className={`${classes.settingsRow} step-settings-eight `}
