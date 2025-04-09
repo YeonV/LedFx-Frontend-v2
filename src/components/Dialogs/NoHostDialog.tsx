@@ -195,7 +195,7 @@ export default function NoHostDialog() {
                 <Button
                   aria-label="add"
                   onClick={() => {
-                    setHosts([...hosts, hostvalue])
+                    setHosts([...hosts, hostvalue.replace(/\/+$/, '')])
                     setAdd(false)
                   }}
                 >
