@@ -130,5 +130,9 @@ export const migrations: Migrations = {
         'webaudio/setPerDeviceDelay'
       )
     }
+  }),
+  23: produce((draft) => {
+    draft.config = draft.config || {}
+    draft.config.startup_scene_id = ''
   })
 }
