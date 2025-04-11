@@ -429,11 +429,15 @@ const LaunchpadButtonMap = ({
                 <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}>
                   <BladeIcon
                     name="mdi:spotify"
-                    sx={{
-                      color: sendSpotifyTrack
-                        ? theme.palette.primary.main
-                        : 'GrayText'
-                    }}
+                    sx={[
+                      sendSpotifyTrack
+                        ? {
+                            color: theme.palette.primary.main
+                          }
+                        : {
+                            color: 'GrayText'
+                          }
+                    ]}
                   />
                 </Button>
               </Tooltip>
@@ -463,8 +467,10 @@ const LaunchpadButtonMap = ({
               vertical: 'bottom',
               horizontal: 'right'
             }}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button'
+            slotProps={{
+              list: {
+                'aria-labelledby': 'basic-button'
+              }
             }}
           >
             <LaunchpadColors component="MenuItem" />

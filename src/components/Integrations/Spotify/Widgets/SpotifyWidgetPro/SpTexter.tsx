@@ -26,9 +26,15 @@ const SpTexter = () => {
       <IconButton onClick={() => setOpen(!open)}>
         <BladeIcon
           name="Title"
-          sx={{
-            color: sendSpotifyTrack ? theme.palette.primary.main : 'GrayText'
-          }}
+          sx={[
+            sendSpotifyTrack
+              ? {
+                  color: theme.palette.primary.main
+                }
+              : {
+                  color: 'GrayText'
+                }
+          ]}
         />
       </IconButton>
       <Dialog

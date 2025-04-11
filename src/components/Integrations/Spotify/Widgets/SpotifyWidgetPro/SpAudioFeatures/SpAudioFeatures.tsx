@@ -8,7 +8,7 @@ import {
   // TableHead,
   TableRow,
   Paper,
-  Grid,
+  Grid2 as Grid,
   Card,
   Stack
   // useTheme,
@@ -94,7 +94,15 @@ export default function SpAudioFeatures() {
 
   return (
     <>
-      <Grid xl={2} lg={3} md={6} sm={12} xs={12} item>
+      <Grid
+        size={{
+          xl: 2,
+          lg: 3,
+          md: 6,
+          sm: 12,
+          xs: 12
+        }}
+      >
         <Card style={{ border: '1px solid rgb(102,102,102)', height: 310 }}>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
@@ -186,7 +194,15 @@ export default function SpAudioFeatures() {
           </TableContainer>
         </Card>
       </Grid>
-      <Grid xl={3} lg={4} md={6} sm={12} xs={12} item>
+      <Grid
+        size={{
+          xl: 3,
+          lg: 4,
+          md: 6,
+          sm: 12,
+          xs: 12
+        }}
+      >
         <Card>
           <div
             style={{

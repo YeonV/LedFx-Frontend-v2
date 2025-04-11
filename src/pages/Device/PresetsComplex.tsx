@@ -3,7 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Grid,
+  Grid2 as Grid,
   Menu,
   TextField,
   Typography,
@@ -60,7 +60,7 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
             Object.keys(scenes)
               .filter(sceneBlenderFilter)
               .map((scene) => (
-                <Grid item key={scene}>
+                <Grid key={scene}>
                   <Button
                     onContextMenu={(e) => {
                       e.preventDefault()
@@ -75,7 +75,7 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
                   </Button>
                 </Grid>
               ))}
-          <Grid item key={'newPartialScene'}>
+          <Grid key={'newPartialScene'}>
             <Popover
               open={open}
               variant="outlined"

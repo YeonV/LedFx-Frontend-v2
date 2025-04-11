@@ -80,11 +80,13 @@ const GlobalActionBar = ({
         <Brightness7 sx={{ ml: 2, mr: 2 }} />
       )}
       <Slider
-        sx={{
+        sx={(theme) => ({
           height,
           display: 'flex',
+
           // color: 'inherit',
           p: 0,
+
           '& .MuiSlider-thumb': {
             height: 32,
             width: 32,
@@ -101,13 +103,16 @@ const GlobalActionBar = ({
               // content: 'hi',
             }
           },
+
           '& .MuiSlider-track': {
             height: 3
           },
+
           '& .MuiSlider-rail': {
             backgroundColor: '#666',
             height: 3
           },
+
           '& .MuiSliderValueLabel ': {
             fontSize: 12,
             fontWeight: 'normal',
@@ -119,10 +124,14 @@ const GlobalActionBar = ({
             },
             '& *': {
               background: 'transparent',
-              color: theme.palette.mode === 'dark' ? '#fff' : '#000'
+              color: '#000',
+
+              ...theme.applyStyles('dark', {
+                color: '#fff'
+              })
             }
           }
-        }}
+        })}
         // valueLabelDisplay="on"
         value={brightness}
         onChange={(_e, val) => typeof val === 'number' && setBrightness(val)}

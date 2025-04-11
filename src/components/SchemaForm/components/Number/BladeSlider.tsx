@@ -206,18 +206,28 @@ const BladeSlider = ({
   return variant === 'outlined' ? (
     <Box
       className={`${classes.wrapper} step-effect-${index}`}
-      sx={{
-        ...style,
-        border: '1px solid',
-        borderColor: theme.palette.divider,
-        width: full ? '100%' : style.width,
-        '& > label': {
-          backgroundColor: theme.palette.background.paper
+      sx={[
+        {
+          ...style,
+          border: '1px solid',
+          borderColor: theme.palette.divider,
+
+          '& > label': {
+            backgroundColor: theme.palette.background.paper
+          },
+
+          '& .MuiSliderValueLabel > span': {
+            backgroundColor: theme.palette.background.paper
+          }
         },
-        '& .MuiSliderValueLabel > span': {
-          backgroundColor: theme.palette.background.paper
-        }
-      }}
+        full
+          ? {
+              width: '100%'
+            }
+          : {
+              width: style.width
+            }
+      ]}
     >
       <label
         style={{

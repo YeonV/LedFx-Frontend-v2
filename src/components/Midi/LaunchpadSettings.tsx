@@ -173,9 +173,11 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
             <Stack direction="row">
               <TextField
                 fullWidth
-                InputLabelProps={{ shrink: true }}
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
+                slotProps={{
+                  inputLabel: { shrink: true }
+                }}
               />
               <TextField
                 type="number"
@@ -183,9 +185,11 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
                 value={speed}
                 sx={{ width: '80px', flexShrink: 0 }}
                 onChange={(e) => setSpeed(parseInt(e.target.value))}
-                inputProps={{
-                  min: 1,
-                  max: 40
+                slotProps={{
+                  htmlInput: {
+                    min: 1,
+                    max: 40
+                  }
                 }}
               />
               <Button
@@ -221,13 +225,31 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
                 </Box>
               </Popover>
               <Button onClick={() => setLoop(!loop)}>
-                <Loop sx={{ color: loop ? 'inherit' : 'GrayText' }} />
+                <Loop
+                  sx={[
+                    loop
+                      ? {
+                          color: 'inherit'
+                        }
+                      : {
+                          color: 'GrayText'
+                        }
+                  ]}
+                />
               </Button>
               {integrations.spotify?.active && spAuthenticated && (
                 <Button onClick={() => setSendSpotifyTrack(!sendSpotifyTrack)}>
                   <BladeIcon
                     name="mdi:spotify"
-                    sx={{ color: sendSpotifyTrack ? 'inherit' : 'GrayText' }}
+                    sx={[
+                      sendSpotifyTrack
+                        ? {
+                            color: 'inherit'
+                          }
+                        : {
+                            color: 'GrayText'
+                          }
+                    ]}
                   />
                 </Button>
               )}

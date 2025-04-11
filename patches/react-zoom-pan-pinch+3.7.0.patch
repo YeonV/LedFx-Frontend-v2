@@ -1,0 +1,18 @@
+diff --git a/node_modules/react-zoom-pan-pinch/dist/index.cjs.js b/node_modules/react-zoom-pan-pinch/dist/index.cjs.js
+index ad4cdba..81bb7d8 100644
+--- a/node_modules/react-zoom-pan-pinch/dist/index.cjs.js
++++ b/node_modules/react-zoom-pan-pinch/dist/index.cjs.js
+@@ -2115,4 +2115,3 @@ exports.useTransformComponent = useTransformComponent;
+ exports.useTransformContext = useTransformContext;
+ exports.useTransformEffect = useTransformEffect;
+ exports.useTransformInit = useTransformInit;
+-//# sourceMappingURL=index.cjs.js.map
+diff --git a/node_modules/react-zoom-pan-pinch/dist/index.esm.js b/node_modules/react-zoom-pan-pinch/dist/index.esm.js
+index 1a6bb08..0e63475 100644
+--- a/node_modules/react-zoom-pan-pinch/dist/index.esm.js
++++ b/node_modules/react-zoom-pan-pinch/dist/index.esm.js
+@@ -2095,4 +2095,3 @@ function useTransformComponent(callback) {
+ }
+ 
+ export { Context, KeepScale, MiniMap, TransformComponent, TransformWrapper, getCenterPosition, getMatrixTransformStyles, getTransformStyles, useControls, useTransformComponent, useTransformContext, useTransformEffect, useTransformInit };
+-//# sourceMappingURL=index.esm.js.map

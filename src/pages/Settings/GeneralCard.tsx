@@ -8,7 +8,7 @@ import {
   Info
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
-import { Divider, Menu, MenuItem, Select, Tooltip } from '@mui/material'
+import { Divider, MenuItem, Select, Tooltip } from '@mui/material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, download } from '../../utils/helpers'
 import PopoverSure from '../../components/Popover/Popover'

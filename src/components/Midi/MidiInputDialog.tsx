@@ -46,7 +46,17 @@ const MidiInputDialog = () => {
             {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
           </DialogTitle>
         )}
-        <DialogContent sx={{ padding: fullScreen ? 0 : '' }}>
+        <DialogContent
+          sx={[
+            fullScreen
+              ? {
+                  padding: 0
+                }
+              : {
+                  padding: ''
+                }
+          ]}
+        >
           <LaunchpadButtonMap
             fullScreen={fullScreen}
             setFullScreen={setFullScreen}

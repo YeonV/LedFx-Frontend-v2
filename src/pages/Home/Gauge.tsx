@@ -11,11 +11,19 @@ export default function Gauge(props: any) {
 
   return (
     <Box
-      sx={{
-        position: 'relative',
-        display: 'inline-flex',
-        cursor: onClick ? 'pointer' : 'default'
-      }}
+      sx={[
+        {
+          position: 'relative',
+          display: 'inline-flex'
+        },
+        onClick
+          ? {
+              cursor: 'pointer'
+            }
+          : {
+              cursor: 'default'
+            }
+      ]}
       onClick={onClick}
     >
       <CircularProgress

@@ -378,16 +378,19 @@ const Dashboard = () => {
                   margin: '8px',
                   zIndex: 0
                 }}
-                sx={{
+                sx={(theme) => ({
                   color: theme.palette.primary.contrastText,
-                  bgcolor:
-                    theme.palette.mode === 'dark'
-                      ? theme.palette.primary.dark
-                      : theme.palette.primary.light,
+
+                  bgcolor: theme.palette.primary.light,
+
                   '&:hover': {
                     bgcolor: theme.palette.primary.main
-                  }
-                }}
+                  },
+
+                  ...theme.applyStyles('dark', {
+                    bgcolor: theme.palette.primary.dark
+                  })
+                })}
               >
                 <GitHub />
               </Fab>
@@ -406,16 +409,19 @@ const Dashboard = () => {
                   margin: '8px',
                   zIndex: 0
                 }}
-                sx={{
+                sx={(theme) => ({
                   color: theme.palette.primary.contrastText,
-                  bgcolor:
-                    theme.palette.mode === 'dark'
-                      ? theme.palette.primary.dark
-                      : theme.palette.primary.light,
+
+                  bgcolor: theme.palette.primary.light,
+
                   '&:hover': {
                     bgcolor: theme.palette.primary.main
-                  }
-                }}
+                  },
+
+                  ...theme.applyStyles('dark', {
+                    bgcolor: theme.palette.primary.dark
+                  })
+                })}
               >
                 <GitHub />
               </Fab>
@@ -434,16 +440,19 @@ const Dashboard = () => {
                   margin: '8px',
                   zIndex: 0
                 }}
-                sx={{
+                sx={(theme) => ({
                   fill: theme.palette.primary.contrastText,
-                  bgcolor:
-                    theme.palette.mode === 'dark'
-                      ? theme.palette.primary.dark
-                      : theme.palette.primary.light,
+
+                  bgcolor: theme.palette.primary.light,
+
                   '&:hover': {
                     bgcolor: theme.palette.primary.main
-                  }
-                }}
+                  },
+
+                  ...theme.applyStyles('dark', {
+                    bgcolor: theme.palette.primary.dark
+                  })
+                })}
               >
                 <svg
                   role="img"

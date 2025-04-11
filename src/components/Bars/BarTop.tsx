@@ -396,25 +396,46 @@ const TopBar = () => {
           enableColorOnDark
           color="secondary"
           position="fixed"
-          sx={{
-            background: ios ? 'rgba(54,54,54,0.8)' : '',
-            backdropFilter: ios ? 'blur(20px)' : '',
-            color: ios ? '#fff' : '',
-            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
-            zIndex: 10,
-            transition: theme.transitions.create(['margin', 'width'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen
-            }),
-            ...(open && {
+          sx={[
+            {
+              paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0,
+              zIndex: 10,
+
+              transition: theme.transitions.create(['margin', 'width'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen
+              })
+            },
+            ios
+              ? {
+                  background: 'rgba(54,54,54,0.8)'
+                }
+              : {
+                  background: ''
+                },
+            ios
+              ? {
+                  backdropFilter: 'blur(20px)'
+                }
+              : {
+                  backdropFilter: ''
+                },
+            ios
+              ? {
+                  color: '#fff'
+                }
+              : {
+                  color: ''
+                },
+            open && {
               width: `calc(100% - ${drawerWidth}px)`,
               marginLeft: `${drawerWidth}px`,
               transition: theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen
               })
-            })
-          }}
+            }
+          ]}
         >
           <Toolbar
             style={{

@@ -470,24 +470,29 @@ const DbDevices = () => {
               }
             }
           }}
-          sx={{
+          sx={(theme) => ({
             borderColor: 'transparent',
+
             '& .MuiDataGrid-cell': {
               display: 'flex'
             },
+
             '& .MuiDataGrid-row': {
-              backgroundColor:
-                theme.palette.mode === 'light'
-                  ? theme.palette.background.default + '90'
-                  : ''
+              backgroundColor: '',
+
+              ...theme.applyStyles('light', {
+                backgroundColor: theme.palette.background.default + '90'
+              })
             },
+
             '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
               outline: 'none !important'
             },
+
             '& .MuiDataGrid-row:hover': {
               cursor: 'pointer'
             }
-          }}
+          })}
         />
       </Stack>
     </BladeFrame>

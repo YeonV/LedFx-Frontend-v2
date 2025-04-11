@@ -176,25 +176,48 @@ const LaunchpadButton = ({
           e.preventDefault()
           handleClickOpen()
         }}
-        sx={{
-          width: 70,
-          height: 70,
-          // height: (row === 8 || ((row === 2 || row === 3) && col < 5 ))  ? 35 : 70,
-          // marginRight: col === 4 && row !== 8 ? 2 : 0,
-          // marginTop: row === 3 && col < 5 ? '34px' : 0,
-          borderRadius: 1,
-          borderColor: active ? 'orange' : '#ccc',
-          borderStyle: 'solid',
-          borderWidth: borderless ? 0 : 1,
-          color: active ? 'orange' : '#ccc',
-          bgcolor: bgColor,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          '&:hover': {
-            backgroundColor: darken(bgColor || '#ffffff', 0.2)
-          }
-        }}
+        sx={[
+          {
+            width: 70,
+            height: 70,
+
+            // height: (row === 8 || ((row === 2 || row === 3) && col < 5 ))  ? 35 : 70,
+            // marginRight: col === 4 && row !== 8 ? 2 : 0,
+            // marginTop: row === 3 && col < 5 ? '34px' : 0,
+            borderRadius: 1,
+
+            borderStyle: 'solid',
+            bgcolor: bgColor,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+
+            '&:hover': {
+              backgroundColor: darken(bgColor || '#ffffff', 0.2)
+            }
+          },
+          active
+            ? {
+                borderColor: 'orange'
+              }
+            : {
+                borderColor: '#ccc'
+              },
+          borderless
+            ? {
+                borderWidth: 0
+              }
+            : {
+                borderWidth: 1
+              },
+          active
+            ? {
+                color: 'orange'
+              }
+            : {
+                color: '#ccc'
+              }
+        ]}
         {...props}
       >
         {children}

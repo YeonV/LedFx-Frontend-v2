@@ -116,13 +116,27 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
         addBladeScene()
         onClick()
       }}
-      sx={{
-        borderRadius: '3rem',
-        textTransform: 'none',
-        marginRight: small ? 0 : '1rem',
-        width: small ? '80vw' : 'min(40vw, 550px)',
-        fontSize: '2rem'
-      }}
+      sx={[
+        {
+          borderRadius: '3rem',
+          textTransform: 'none',
+          fontSize: '2rem'
+        },
+        small
+          ? {
+              marginRight: 0
+            }
+          : {
+              marginRight: '1rem'
+            },
+        small
+          ? {
+              width: '80vw'
+            }
+          : {
+              width: 'min(40vw, 550px)'
+            }
+      ]}
     >
       Add Blade Scene
     </Button>

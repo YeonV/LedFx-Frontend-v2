@@ -98,32 +98,76 @@ export default function BarBottom() {
     <>
       <BottomNavigation
         value={value}
-        sx={{
-          width: leftOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
-          marginLeft: leftOpen ? `${drawerWidth}px` : 0,
-          height: ios ? 80 : 56,
-          paddingBottom: ios ? '16px' : 0,
-          paddingTop: ios ? '8px' : 0,
-          position: 'fixed',
-          bottom: 0,
-          zIndex: 4,
-          boxShadow: ios
-            ? ''
-            : `0px -1px 6px 5px ${theme.palette.background.default}`,
-          background: ios
-            ? 'rgba(54,54,54,0.8)'
-            : theme.palette.background.paper,
-          backdropFilter: 'blur(20px)',
-          transition: leftOpen
-            ? theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen
-              })
-            : theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen
-              })
-        }}
+        sx={[
+          {
+            position: 'fixed',
+            bottom: 0,
+            zIndex: 4,
+            backdropFilter: 'blur(20px)'
+          },
+          leftOpen
+            ? {
+                width: `calc(100% - ${drawerWidth}px)`
+              }
+            : {
+                width: '100%'
+              },
+          leftOpen
+            ? {
+                marginLeft: `${drawerWidth}px`
+              }
+            : {
+                marginLeft: 0
+              },
+          ios
+            ? {
+                height: 80
+              }
+            : {
+                height: 56
+              },
+          ios
+            ? {
+                paddingBottom: '16px'
+              }
+            : {
+                paddingBottom: 0
+              },
+          ios
+            ? {
+                paddingTop: '8px'
+              }
+            : {
+                paddingTop: 0
+              },
+          ios
+            ? {
+                boxShadow: ''
+              }
+            : {
+                boxShadow: `0px -1px 6px 5px ${theme.palette.background.default}`
+              },
+          ios
+            ? {
+                background: 'rgba(54,54,54,0.8)'
+              }
+            : {
+                background: theme.palette.background.paper
+              },
+          leftOpen
+            ? {
+                transition: theme.transitions.create(['margin', 'width'], {
+                  easing: theme.transitions.easing.easeOut,
+                  duration: theme.transitions.duration.enteringScreen
+                })
+              }
+            : {
+                transition: theme.transitions.create(['margin', 'width'], {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.leavingScreen
+                })
+              }
+        ]}
         showLabels
         style={{ bottom: botHeight, color: '#a1998e' }}
       >
@@ -272,28 +316,37 @@ export default function BarBottom() {
           sx={{
             bottom: botHeight + 65,
             position: 'fixed',
-            marginLeft: leftOpen ? `${drawerWidth / 2}px` : 0,
             left: '50%',
             transform: 'translateX(-50%)',
-            transition: leftOpen
-              ? theme.transitions.create(['margin'], {
-                  easing: theme.transitions.easing.easeOut,
-                  duration: theme.transitions.duration.enteringScreen
-                })
-              : theme.transitions.create(['margin'], {
-                  easing: theme.transitions.easing.sharp,
-                  duration: theme.transitions.duration.leavingScreen
-                }),
+
             '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
               bottom: theme.spacing(2) + 25
             },
+
             '& > button.MuiFab-primary': {
               backgroundColor: theme.palette.secondary.main
             },
+
             '& .MuiSpeedDialAction-staticTooltipLabel': {
               backgroundColor: 'transparent',
               marginLeft: '-1rem'
-            }
+            },
+
+            ...(leftOpen
+              ? {
+                  marginLeft: `${drawerWidth / 2}px`,
+                  transition: theme.transitions.create(['margin'], {
+                    easing: theme.transitions.easing.easeOut,
+                    duration: theme.transitions.duration.enteringScreen
+                  })
+                }
+              : {
+                  marginLeft: 0,
+                  transition: theme.transitions.create(['margin'], {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.leavingScreen
+                  })
+                })
           }}
           className="step-four"
         />

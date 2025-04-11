@@ -65,15 +65,29 @@ const OneShot = ({
       {defaultColor ? (
         <Box
           onClick={() => setDialogOpen(true)}
-          sx={{
-            display: 'block',
-            borderRadius: '4px',
-            width: size === 'large' ? '64px' : '2rem',
-            height: size === 'large' ? '32px' : '1rem',
-            justifyContent: 'space-between',
-            backgroundColor: defaultColor,
-            cursor: 'pointer'
-          }}
+          sx={[
+            {
+              display: 'block',
+              borderRadius: '4px',
+              justifyContent: 'space-between',
+              backgroundColor: defaultColor,
+              cursor: 'pointer'
+            },
+            size === 'large'
+              ? {
+                  width: '64px'
+                }
+              : {
+                  width: '2rem'
+                },
+            size === 'large'
+              ? {
+                  height: '32px'
+                }
+              : {
+                  height: '1rem'
+                }
+          ]}
         />
       ) : (
         <Button variant="text" onClick={() => setDialogOpen(true)}>

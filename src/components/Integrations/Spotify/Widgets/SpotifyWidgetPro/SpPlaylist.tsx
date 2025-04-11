@@ -5,7 +5,7 @@ import {
   GridRowParams
 } from '@mui/x-data-grid'
 
-import { Card, Grid, IconButton, Stack, useTheme } from '@mui/material'
+import { Card, Grid2 as Grid, IconButton, Stack } from '@mui/material'
 import { PlayCircleFilled } from '@mui/icons-material'
 import useStore from '../../../../../store/useStore'
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'
@@ -26,7 +26,6 @@ import { useContext, useEffect } from 'react'
 // }
 
 export default function SpPlaylist() {
-  const theme = useTheme()
   const playlist = useStore((state) => state.spotify.playlist)
   const playerState = useContext(SpotifyStateContext)
   const spCtx = useContext(SpStateContext)
@@ -97,7 +96,14 @@ export default function SpPlaylist() {
   }, [playerState?.track_window?.current_track?.name])
   // console.log(playerState?.context.metadata?.current_item, rows.map((r: any)=>r.track))
   return (
-    <Grid xl={premium ? 7 : 12} lg={premium ? 5 : 12} md={12} xs={12} item>
+    <Grid
+      size={{
+        xl: premium ? 7 : 12,
+        lg: premium ? 5 : 12,
+        md: 12,
+        xs: 12
+      }}
+    >
       <Card sx={{ height: 250 }}>
         <DataGrid
           className={`${classes.root} playlist`}
@@ -120,11 +126,12 @@ export default function SpPlaylist() {
               playlistUri
             )
           }}
-          sx={{
+          sx={(theme) => ({
             boxShadow: 2,
             color: '#fff',
             border: 1,
             borderColor: '#666',
+
             '& .MuiDataGrid-columnHeaders': {
               borderBottom: 0
             },
@@ -133,7 +140,7 @@ export default function SpPlaylist() {
               backgroundColor: `${theme.palette.primary.main}20`,
               color: theme.palette.text.primary
             }
-          }}
+          })}
           // pageSize={rows.length}
           // rowsPerPageOptions={[rows.length]}
           getRowClassName={(params: GridRowParams<any>) => {

@@ -94,18 +94,28 @@ export default function ScenesMostUsed({
             }
           }
         }}
-        sx={{
-          '& .MuiDataGrid-row--borderBottom': {
-            background: theme.palette.background.paper + ' !important'
+        sx={[
+          {
+            '& .MuiDataGrid-row--borderBottom': {
+              background: theme.palette.background.paper + ' !important'
+            },
+
+            '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+              outline: 'none !important'
+            },
+
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer'
+            }
           },
-          borderColor: db ? 'transparent' : theme.palette.divider,
-          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-            outline: 'none !important'
-          },
-          '& .MuiDataGrid-row:hover': {
-            cursor: 'pointer'
-          }
-        }}
+          db
+            ? {
+                borderColor: 'transparent'
+              }
+            : {
+                borderColor: theme.palette.divider
+              }
+        ]}
       />
     </ExpanderCard>
   )

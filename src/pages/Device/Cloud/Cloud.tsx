@@ -6,7 +6,7 @@ import {
   Card,
   CardHeader,
   Dialog,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   ListItemIcon,
   Toolbar,
@@ -175,7 +175,7 @@ export default function CloudScreen({
               </Typography>
               <Grid style={{ padding: 20 }} container spacing={2}>
                 {cloudEffects[effect].map((p: any, ind: number) => (
-                  <Grid item key={ind}>
+                  <Grid key={ind}>
                     <Card
                       className={`${classes.cloudEffectCard} ${
                         virtual?.effect.name.toLowerCase() ===

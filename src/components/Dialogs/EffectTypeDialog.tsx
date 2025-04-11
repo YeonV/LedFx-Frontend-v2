@@ -131,20 +131,36 @@ const EffectTypeDialog = ({
         }}
       >
         <DialogContent
-          sx={{
-            height: '80vh',
-            maxHeight: '200vh',
-            overflow: 'hidden',
-            padding: '5px !important',
+          sx={[
+            {
+              height: '80vh',
+              maxHeight: '200vh',
+              overflow: 'hidden',
+              padding: '5px !important',
 
-            '& .MuiAutocomplete-listbox': {
-              maxHeight: `calc(80vh - ${showFilter ? 112 : 66}px) !important`,
-              paddingTop: '0px !important'
+              '& .MuiAutocomplete-listbox': {
+                paddingTop: '0px !important'
+              },
+              '& .MuiAutocomplete-groupLabel': {
+                backgroundColor: '#3f3f41 !important'
+              }
             },
-            '& .MuiAutocomplete-groupLabel': {
-              backgroundColor: '#3f3f41 !important'
-            }
-          }}
+            showFilter
+              ? {
+                  '& .MuiAutocomplete-listbox': {
+                    maxHeight: {
+                      maxHeight: 112
+                    }
+                  }
+                }
+              : {
+                  '& .MuiAutocomplete-listbox': {
+                    maxHeight: {
+                      maxHeight: 66
+                    }
+                  }
+                }
+          ]}
         >
           {showFilter && (
             <ToggleButtonGroup

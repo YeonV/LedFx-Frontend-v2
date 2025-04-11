@@ -385,10 +385,11 @@ const EditSceneDialog = () => {
             disabledPSelector.indexOf(dev) > -1
           }
           disableUnderline
-          sx={{
-            textDecoration:
-              scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
-          }}
+          sx={[scVirtualsToIgnore.indexOf(dev) > -1 ? {
+            textDecoration: 'line-through'
+          } : {
+            textDecoration: ''
+          }]}
         >
           {current_ledfx_presets && (
             <ListSubheader>LedFx Presets</ListSubheader>
@@ -459,34 +460,31 @@ const EditSceneDialog = () => {
               </MenuItem>
             ))}
         </Select>
-      )
+      );
     }
     return <></>
   }
   const renderEffects = (effect: string, dev: string) => {
-    return (
-      effects && (
-        <Select
-          defaultValue={effect}
-          onChange={(e) => {
-            setEffect(dev, e.target.value, {}, true)
-            setDisabledPSelector([...disabledPSelector, dev])
-          }}
-          disabled={scVirtualsToIgnore.indexOf(dev) > -1}
-          disableUnderline
-          sx={{
-            textDecoration:
-              scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
-          }}
-        >
-          {Object.keys(effects).map((ke, i) => (
-            <MenuItem key={ke + i} value={ke}>
-              {ke}
-            </MenuItem>
-          ))}
-        </Select>
-      )
-    )
+    return (effects && (<Select
+      defaultValue={effect}
+      onChange={(e) => {
+        setEffect(dev, e.target.value, {}, true)
+        setDisabledPSelector([...disabledPSelector, dev])
+      }}
+      disabled={scVirtualsToIgnore.indexOf(dev) > -1}
+      disableUnderline
+      sx={[scVirtualsToIgnore.indexOf(dev) > -1 ? {
+        textDecoration: 'line-through'
+      } : {
+        textDecoration: ''
+      }]}
+    >
+      {Object.keys(effects).map((ke, i) => (
+        <MenuItem key={ke + i} value={ke}>
+          {ke}
+        </MenuItem>
+      ))}
+    </Select>));
   }
 
   return (
@@ -580,10 +578,13 @@ const EditSceneDialog = () => {
         >
           <div style={{ flexGrow: 1, paddingRight: medium ? 0 : '2rem' }}>
             <TextField
-              sx={{
-                mt: data ? '2rem' : '',
+              sx={[{
                 '& .MuiInputBase-root': { paddingRight: '6px' }
-              }}
+              }, data ? {
+                mt: '2rem'
+              } : {
+                mt: ''
+              }]}
               autoFocus
               margin="dense"
               id="name"
@@ -744,7 +745,13 @@ const EditSceneDialog = () => {
             {features && features.scenemidi ? (
               <>
                 <Stack direction={small ? 'column' : 'row'} gap={1}>
-                  <FormControl sx={{ mt: 1, width: small ? '100%' : '130px' }}>
+                  <FormControl sx={[{
+                    mt: 1
+                  }, small ? {
+                    width: '100%'
+                  } : {
+                    width: '130px'
+                  }]}>
                     <InputLabel id="midi-label">Connected To</InputLabel>
                     <Select
                       variant="outlined"
@@ -801,13 +808,25 @@ const EditSceneDialog = () => {
                     // value={midiActivate}
                     fullWidth
                     disabled
-                    sx={{
-                      color: 'transparent',
+                    sx={[{
+                      color: 'transparent'
+                    }, xsmall ? {
                       '& input': {
-                        width: xsmall ? '5px' : '100%',
-                        height: xsmall ? '5rem' : ''
+                        width: '5px'
                       }
-                    }}
+                    } : {
+                      '& input': {
+                        width: '100%'
+                      }
+                    }, xsmall ? {
+                      '& input': {
+                        height: '5rem'
+                      }
+                    } : {
+                      '& input': {
+                        height: ''
+                      }
+                    }]}
                     slotProps={{
                       input: {
                         endAdornment: (
@@ -818,10 +837,15 @@ const EditSceneDialog = () => {
                         startAdornment: (
                           <InputAdornment
                             position="start"
-                            sx={{
-                              flexWrap: xsmall ? 'wrap' : '',
-                              mt: xsmall ? -8 : ''
-                            }}
+                            sx={[xsmall ? {
+                              flexWrap: 'wrap'
+                            } : {
+                              flexWrap: ''
+                            }, xsmall ? {
+                              mt: -8
+                            } : {
+                              mt: ''
+                            }]}
                           >
                             {midiActivate?.split(' ')?.length > 1 && (
                               <>
@@ -1098,7 +1122,7 @@ const EditSceneDialog = () => {
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
 export default EditSceneDialog

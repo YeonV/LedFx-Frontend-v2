@@ -8,7 +8,7 @@ import {
   Slide,
   Divider,
   Icon,
-  Grid,
+  Grid2 as Grid,
   CircularProgress
 } from '@mui/material'
 import { BugReport, NavigateBefore } from '@mui/icons-material'
@@ -125,7 +125,12 @@ export default function TroubleshootButton({
                 margin: '0 auto'
               }}
             >
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}
+              >
                 <Divider style={{ marginBottom: '0.25rem' }} />
                 <div
                   style={{
@@ -192,7 +197,12 @@ export default function TroubleshootButton({
                   value={`${wledData.leds?.fps} fps`}
                 />
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}
+              >
                 <Divider style={{ margin: ' 0 0 0.5rem 0' }} />
                 <Row name="Version" value={wledData.ver} />
                 <Row name="Chip" value={wledData.arch} />

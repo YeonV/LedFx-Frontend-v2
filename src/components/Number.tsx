@@ -45,13 +45,15 @@ const Number: React.FC<NumberProps> = ({
       value={value}
       name="quantity"
       type="number"
-      inputProps={{
-        min,
-        max
-      }}
       onChange={onChange}
       onInput={handleInput}
       onBlur={handleBlur}
+      slotProps={{
+        htmlInput: {
+          min,
+          max
+        }
+      }}
     />
   )
 }

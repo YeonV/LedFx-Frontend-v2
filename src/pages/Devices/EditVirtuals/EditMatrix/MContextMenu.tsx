@@ -34,8 +34,10 @@ const MContextMenu = ({
         e.preventDefault()
         closeContextMenu()
       }}
-      MenuListProps={{
-        'aria-labelledby': 'basic-button'
+      slotProps={{
+        list: {
+          'aria-labelledby': 'basic-button'
+        }
       }}
     >
       <MenuItem
