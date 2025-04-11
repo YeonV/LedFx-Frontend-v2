@@ -19,7 +19,7 @@ import {
   Stop,
   SyncProblem
 } from '@mui/icons-material'
-import { Box, CircularProgress, Stack } from '@mui/material'
+import { Box, CircularProgress, Stack, Theme } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph/PixelGraph'
@@ -313,15 +313,25 @@ const DeviceCard = ({
 
           {!(window.localStorage.getItem('guestmode') === 'activated') ? (
             <IconButton
-              sx={{
-                transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                alignSelf: 'flex-start',
-                marginLeft: 'auto',
-                transition: theme.transitions.create('transform', {
-                  duration: theme.transitions.duration.shortest
-                }),
-                display: 'flex'
-              }}
+              sx={[
+                {
+                  alignSelf: 'flex-start',
+                  marginLeft: 'auto',
+
+                  transition: theme.transitions.create('transform', {
+                    duration: theme.transitions.duration.shortest
+                  }),
+
+                  display: 'flex'
+                },
+                expanded
+                  ? {
+                      transform: 'rotate(180deg)'
+                    }
+                  : {
+                      transform: 'rotate(0deg)'
+                    }
+              ]}
               onClick={(e) => {
                 e.preventDefault()
                 handleExpandClick()
@@ -438,14 +448,23 @@ const DeviceCard = ({
                       handleEditDevice(isDevice)
                       handleExpandClick()
                     }}
-                    sx={{
-                      color: theme.palette.mode === 'light' ? '#000' : '#fff',
+                    sx={(theme) => ({
+                      color: '#fff',
                       bgcolor: 'transparent',
+
                       '&:hover': {
-                        color: theme.palette.mode === 'light' ? '#fff' : '#000',
-                        bgcolor: theme.palette.primary.main
-                      }
-                    }}
+                        color: '#000',
+                        bgcolor: theme.palette.primary.main,
+
+                        ...theme.applyStyles('light', {
+                          color: '#fff'
+                        })
+                      },
+
+                      ...theme.applyStyles('light', {
+                        color: '#000'
+                      })
+                    })}
                   >
                     Edit Device
                   </Button>
@@ -461,14 +480,23 @@ const DeviceCard = ({
                     type={undefined}
                     innerKey={undefined}
                     onClick={() => handleExpandClick()}
-                    sx={{
-                      color: theme.palette.mode === 'light' ? '#000' : '#fff',
+                    sx={(theme: Theme) => ({
+                      color: '#fff',
                       bgcolor: 'transparent',
+
                       '&:hover': {
-                        color: theme.palette.mode === 'light' ? '#fff' : '#000',
-                        bgcolor: theme.palette.primary.main
-                      }
-                    }}
+                        color: '#000',
+                        bgcolor: theme.palette.primary.main,
+
+                        ...theme.applyStyles('light', {
+                          color: '#fff'
+                        })
+                      },
+
+                      ...theme.applyStyles('light', {
+                        color: '#000'
+                      })
+                    })}
                   />
                 )}
                 <Button
@@ -482,14 +510,23 @@ const DeviceCard = ({
                     handleEditVirtual(virtId)
                     handleExpandClick()
                   }}
-                  sx={{
-                    color: theme.palette.mode === 'light' ? '#000' : '#fff',
+                  sx={(theme) => ({
+                    color: '#fff',
                     bgcolor: 'transparent',
+
                     '&:hover': {
-                      color: theme.palette.mode === 'light' ? '#fff' : '#000',
-                      bgcolor: theme.palette.primary.main
-                    }
-                  }}
+                      color: '#000',
+                      bgcolor: theme.palette.primary.main,
+
+                      ...theme.applyStyles('light', {
+                        color: '#fff'
+                      })
+                    },
+
+                    ...theme.applyStyles('light', {
+                      color: '#000'
+                    })
+                  })}
                 >
                   Settings
                 </Button>

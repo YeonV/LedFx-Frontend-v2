@@ -55,17 +55,22 @@ const LeftBar = () => {
             <Box
               className={classes.devbadge}
               onClick={() => window.localStorage.setItem('BladeMod', '0')}
-              sx={{
-                filter:
-                  theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)',
+              sx={(theme) => ({
+                filter: 'invert(0)',
+
                 border: theme.palette.secondary.main,
+
                 backgroundColor: isElectron()
                   ? 'transparent'
                   : theme.palette.mode === 'light' ||
                       theme.palette.primary.main === '#FFFFFF'
                     ? 'transparent'
-                    : theme.palette.primary.main
-              }}
+                    : theme.palette.primary.main,
+
+                ...theme.applyStyles('light', {
+                  filter: 'invert(1)'
+                })
+              })}
             />
           </Box>
           {/* <Box sx={{ display: 'flex' }}>

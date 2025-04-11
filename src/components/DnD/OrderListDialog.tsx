@@ -10,7 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Sort from '@mui/icons-material/Sort'
 import OrderList from './OrderList'
 import { ArrowBackIos, Save } from '@mui/icons-material'
-import { Divider, IconButton, Stack, Typography, useTheme } from '@mui/material'
+import { Divider, IconButton, Stack, Typography } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { download } from '../../utils/helpers'
 import useStore from '../../store/useStore'
@@ -31,7 +31,6 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
   const [open, setOpen] = useState(false)
-  const theme = useTheme()
   const handleClickOpen = () => {
     setOpen(true)
     if (onOpen) {
@@ -91,10 +90,14 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
             <Stack
               direction="row"
               alignItems="center"
-              sx={{
+              sx={(theme) => ({
                 height: 56,
-                background: theme.palette.mode === 'dark' ? '#0005' : ''
-              }}
+                background: '',
+
+                ...theme.applyStyles('dark', {
+                  background: '#0005'
+                })
+              })}
             >
               <Button onClick={handleClose} color="inherit" variant="text">
                 <ArrowBackIos />

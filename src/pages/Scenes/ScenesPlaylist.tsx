@@ -213,33 +213,68 @@ export default function ScenesPlaylist({
   return (
     <ExpanderCard title={title} cardKey="scenesPlaylist">
       <Card
-        sx={{
-          background: db ? 'transparent' : '',
-          borderColor: db ? 'transparent' : ''
-        }}
+        sx={[
+          db
+            ? {
+                background: 'transparent'
+              }
+            : {
+                background: ''
+              },
+          db
+            ? {
+                borderColor: 'transparent'
+              }
+            : {
+                borderColor: ''
+              }
+        ]}
       >
         <Box
-          sx={{
-            height: db ? 301 : 293,
-            width: '100%',
-            maxWidth: '470px',
-            m: '0 auto'
-          }}
+          sx={[
+            {
+              width: '100%',
+              maxWidth: '470px',
+              m: '0 auto'
+            },
+            db
+              ? {
+                  height: 301
+                }
+              : {
+                  height: 293
+                }
+          ]}
         >
           <Typography
             color="GrayText"
             variant="h6"
-            sx={{
-              // pl: 1,
-              pt: 0.5,
-              pb: 0.5,
-              border: '1px solid',
-              borderColor: db ? 'transparent' : theme.palette.divider,
-              borderBottom: 0,
-              display: 'flex',
-              justifyContent: xsmallScreen ? 'flex-start' : 'space-between',
-              alignItems: 'center'
-            }}
+            sx={[
+              {
+                // pl: 1,
+                pt: 0.5,
+
+                pb: 0.5,
+                border: '1px solid',
+                borderBottom: 0,
+                display: 'flex',
+                alignItems: 'center'
+              },
+              db
+                ? {
+                    borderColor: 'transparent'
+                  }
+                : {
+                    borderColor: theme.palette.divider
+                  },
+              xsmallScreen
+                ? {
+                    justifyContent: 'flex-start'
+                  }
+                : {
+                    justifyContent: 'space-between'
+                  }
+            ]}
           >
             <Stack flex={1} direction={'row'} justifyContent={'space-between'}>
               <div
@@ -352,21 +387,23 @@ export default function ScenesPlaylist({
                 }
               }
             }}
-            sx={{
+            sx={(theme) => ({
               '& .MuiDataGrid-row--borderBottom': {
                 background: theme.palette.background.paper + ' !important'
               },
-              borderColor: db ? 'transparent' : theme.palette.divider,
+
               '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
                 outline: 'none !important'
               },
+
               '&.MuiDataGrid-root .row--active': {
                 background: `${theme.palette.primary.main}30`
               },
+
               '& .MuiDataGrid-cell, & .MuiDataGrid-columnHeaderTitle': {
                 textOverflow: 'clip'
               }
-            }}
+            })}
           />
         </Box>
       </Card>

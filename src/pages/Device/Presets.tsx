@@ -6,7 +6,7 @@ import {
   CardHeader,
   Divider,
   Button,
-  Grid,
+  Grid2 as Grid,
   Typography,
   TextField,
   useTheme,
@@ -159,7 +159,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
         // )
         //   console.log(preset, diff(virtual.effect.config, list[preset].config))
         return (
-          <Grid item key={preset}>
+          <Grid key={preset}>
             {CATEGORY !== 'ledfx_presets' ? (
               <PresetButton
                 buttonColor={
@@ -261,7 +261,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
             presets?.user_presets || presets?.custom_presets,
             'user_presets'
           )}
-          <Grid item>
+          <Grid>
             <Popover
               popoverStyle={{ padding: '0.5rem' }}
               color="primary"

@@ -99,7 +99,10 @@ export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
     },
     '& *': {
       background: 'transparent',
-      color: theme.palette.mode === 'dark' ? '#fff' : '#000'
+      color: '#000',
+      ...theme.applyStyles('dark', {
+        color: '#fff'
+      })
     }
   },
   '& .MuiSlider-track': {
@@ -151,13 +154,18 @@ export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
       border: '6px solid #fff'
     },
     '&.Mui-disabled .MuiSwitch-thumb': {
-      color:
-        theme.palette.mode === 'light'
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600]
+      color: theme.palette.grey[600],
+
+      ...theme.applyStyles('light', {
+        color: theme.palette.grey[100]
+      })
     },
     '&.Mui-disabled + .MuiSwitch-track': {
-      opacity: theme.palette.mode === 'light' ? 0.7 : 0.3
+      opacity: 0.3,
+
+      ...theme.applyStyles('light', {
+        opacity: 0.7
+      })
     }
   },
   '& .MuiSwitch-thumb': {
@@ -167,10 +175,15 @@ export const SettingsSwitch = styled(Switch)(({ theme }: any) => ({
   },
   '& .MuiSwitch-track': {
     borderRadius: 26 / 2,
-    backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+    backgroundColor: '#39393D',
     opacity: 1,
+
     transition: theme.transitions.create(['background-color'], {
       duration: 500
+    }),
+
+    ...theme.applyStyles('light', {
+      backgroundColor: '#E9E9EA'
     })
   }
 }))

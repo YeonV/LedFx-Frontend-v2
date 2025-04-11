@@ -421,7 +421,17 @@ export default function IntroDialog({
                 flexWrap: small ? 'wrap' : 'nowrap'
               }}
             >
-              <Box sx={{ flexBasis: small ? '100%' : '48%' }}>
+              <Box
+                sx={[
+                  small
+                    ? {
+                        flexBasis: '100%'
+                      }
+                    : {
+                        flexBasis: '48%'
+                      }
+                ]}
+              >
                 {schema && (
                   <BladeSchemaForm
                     hideToggle
@@ -436,7 +446,22 @@ export default function IntroDialog({
                 )}
               </Box>
               <Box
-                sx={{ mt: small ? 2 : 0, flexBasis: small ? '100%' : '48%' }}
+                sx={[
+                  small
+                    ? {
+                        mt: 2
+                      }
+                    : {
+                        mt: 0
+                      },
+                  small
+                    ? {
+                        flexBasis: '100%'
+                      }
+                    : {
+                        flexBasis: '48%'
+                      }
+                ]}
               >
                 <SettingsRow
                   title="Show Graphs (eats performance)"
@@ -478,13 +503,37 @@ export default function IntroDialog({
                 flexWrap: small ? 'wrap' : 'nowrap'
               }}
             >
-              <Box sx={{ flexBasis: small ? '100%' : '48%' }} />
               <Box
-                sx={{
-                  mt: small ? 2 : 0,
-                  flexBasis: small ? '100%' : '48%',
-                  pl: '1rem'
-                }}
+                sx={[
+                  small
+                    ? {
+                        flexBasis: '100%'
+                      }
+                    : {
+                        flexBasis: '48%'
+                      }
+                ]}
+              />
+              <Box
+                sx={[
+                  {
+                    pl: '1rem'
+                  },
+                  small
+                    ? {
+                        mt: 2
+                      }
+                    : {
+                        mt: 0
+                      },
+                  small
+                    ? {
+                        flexBasis: '100%'
+                      }
+                    : {
+                        flexBasis: '48%'
+                      }
+                ]}
               >
                 <Stack direction="row" alignItems="center">
                   <img width={32} height="auto" src={wledLogo} alt="wled" />
@@ -556,14 +605,29 @@ export default function IntroDialog({
                     [steps[activeStep].key]: 'left'
                   }))
                 }}
-                sx={{
-                  borderRadius: '2rem',
-                  textTransform: 'none',
-                  marginRight: small ? 0 : '1rem',
-                  minWidth: small ? '60vw' : 'min(30vw, 350px)',
-                  // minHeight: 'min(15vh, 120px)',
-                  fontSize: '2rem'
-                }}
+                sx={[
+                  {
+                    borderRadius: '2rem',
+                    textTransform: 'none',
+
+                    // minHeight: 'min(15vh, 120px)',
+                    fontSize: '2rem'
+                  },
+                  small
+                    ? {
+                        marginRight: 0
+                      }
+                    : {
+                        marginRight: '1rem'
+                      },
+                  small
+                    ? {
+                        minWidth: '60vw'
+                      }
+                    : {
+                        minWidth: 'min(30vw, 350px)'
+                      }
+                ]}
               >
                 {steps[activeStep].key === 'wledScanning' &&
                 scanning &&
@@ -584,17 +648,34 @@ export default function IntroDialog({
                     [steps[activeStep].key]: 'right'
                   }))
                 }}
-                sx={{
-                  borderRadius: '2rem',
-                  // borderColor: 1 ? theme.palette.primary.main : 'inherit',
-                  borderColor: 'inherit',
-                  textTransform: 'none',
-                  marginLeft: small ? 0 : '1rem',
-                  marginTop: 0,
-                  minWidth: small ? '60vw' : 'min(30vw, 350px)',
-                  // minHeight: 'min(15vh, 120px)',
-                  fontSize: '2rem'
-                }}
+                sx={[
+                  {
+                    borderRadius: '2rem',
+
+                    // borderColor: 1 ? theme.palette.primary.main : 'inherit',
+                    borderColor: 'inherit',
+
+                    textTransform: 'none',
+                    marginTop: 0,
+
+                    // minHeight: 'min(15vh, 120px)',
+                    fontSize: '2rem'
+                  },
+                  small
+                    ? {
+                        marginLeft: 0
+                      }
+                    : {
+                        marginLeft: '1rem'
+                      },
+                  small
+                    ? {
+                        minWidth: '60vw'
+                      }
+                    : {
+                        minWidth: 'min(30vw, 350px)'
+                      }
+                ]}
               >
                 {steps[activeStep].label_right}
               </Button>
@@ -607,21 +688,39 @@ export default function IntroDialog({
             steps={steps.length}
             position="static"
             activeStep={activeStep}
-            sx={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              background: 'transparent',
-              '& .MuiMobileStepper-dots': {
-                display: activeStep > 0 ? 'flex' : 'none'
-              }
-            }}
+            sx={[
+              {
+                flexDirection: 'row',
+                justifyContent: 'center',
+                background: 'transparent'
+              },
+              activeStep > 0
+                ? {
+                    '& .MuiMobileStepper-dots': {
+                      display: 'flex'
+                    }
+                  }
+                : {
+                    '& .MuiMobileStepper-dots': {
+                      display: 'none'
+                    }
+                  }
+            ]}
             nextButton={
               <Button
                 size="small"
                 variant="text"
                 onClick={handleNext}
                 disabled={activeStep === steps.length - 1}
-                sx={{ display: activeStep > 0 ? 'flex' : 'none' }}
+                sx={[
+                  activeStep > 0
+                    ? {
+                        display: 'flex'
+                      }
+                    : {
+                        display: 'none'
+                      }
+                ]}
               >
                 <ChevronRight />
               </Button>
@@ -632,7 +731,15 @@ export default function IntroDialog({
                 variant="text"
                 onClick={handleBack}
                 disabled={activeStep === 0}
-                sx={{ display: activeStep > 0 ? 'flex' : 'none' }}
+                sx={[
+                  activeStep > 0
+                    ? {
+                        display: 'flex'
+                      }
+                    : {
+                        display: 'none'
+                      }
+                ]}
               >
                 <ChevronLeft />
               </Button>

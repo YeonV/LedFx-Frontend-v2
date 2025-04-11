@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react'
-import { Grid, Stack, Typography } from '@mui/material'
+import { Grid2 as Grid, Stack, Typography } from '@mui/material'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import EffectsCard from './Effects'
@@ -259,7 +259,6 @@ const Device = () => {
       {virtual && (
         <>
           <Grid
-            item
             sx={{
               flexShrink: 0,
               flexGrow: 1,
@@ -276,7 +275,6 @@ const Device = () => {
             virtuals[virtId]?.effect?.type === 'blender' &&
             blenderAutomagic && (
               <Grid
-                item
                 sx={{
                   flexShrink: 0,
                   flexGrow: 1,
@@ -306,7 +304,6 @@ const Device = () => {
             )}
 
           <Grid
-            item
             sx={{
               flexShrink: 0,
               flexGrow: 1,

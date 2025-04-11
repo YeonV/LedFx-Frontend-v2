@@ -10,7 +10,7 @@ import {
   Alert,
   Collapse,
   useMediaQuery,
-  Grid2,
+  Grid2 as Grid,
   Box,
   Stack
 } from '@mui/material'
@@ -175,7 +175,7 @@ const Scenes = () => {
                   })}
               </div>
             ) : null}
-            <Grid2
+            <Grid
               container
               spacing={[0, 0, 2, 2, 2]}
               justifyContent={'center'}
@@ -194,7 +194,7 @@ const Scenes = () => {
                   .filter(sceneBlenderFilter)
                   .map((s, i) => {
                     return (
-                      <Grid2
+                      <Grid
                         key={i}
                         mt={['0.5rem', '0.5rem', 0, 0, 0]}
                         p="8px !important"
@@ -261,13 +261,13 @@ const Scenes = () => {
                             ) && <ScenesMenu sceneId={s} />}
                           </CardActions>
                         </Card>
-                      </Grid2>
+                      </Grid>
                     )
                   })
               ) : (
                 <NoYet type="Scene" />
               )}
-            </Grid2>
+            </Grid>
           </Box>
         </Stack>
       </div>

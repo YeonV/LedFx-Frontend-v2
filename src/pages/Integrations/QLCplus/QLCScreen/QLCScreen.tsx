@@ -5,7 +5,7 @@ import {
   AppBar,
   Dialog,
   Button,
-  Grid
+  Grid2 as Grid
 } from '@mui/material'
 import { Settings, NavigateBefore, Add } from '@mui/icons-material'
 import {
@@ -110,7 +110,14 @@ export default function QLCScreen({
           >
             ADD EVENT LISTENER
           </Button> */}
-          <Grid xl={12} container item alignItems="center" spacing={1} />
+          <Grid
+            container
+            alignItems="center"
+            spacing={1}
+            size={{
+              xl: 12
+            }}
+          />
           <div style={{ marginTop: '1rem' }} />
           <QLCTriggerTable />
           <Typography>

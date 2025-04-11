@@ -46,31 +46,38 @@ const Pixel = ({
   return (
     <Box
       key={`col-${currentColIndex}`}
-      sx={{
-        // border: error.find(
-        //   (e: any) => e.row === currentRowIndex && e.col === currentColIndex
-        // )
-        //   ? '1px solid red'
-        //   : '1px solid #000',
-        backgroundColor:
-          mode === 'compressed' && decodedPixels
-            ? decodedPixels[currentRowIndex * colN + currentColIndex]
-              ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
-              : '#222'
-            : pixels && pixels[0] && pixels[0].length
-              ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
-              : '#222',
-        opacity: isDragging
-          ? 0.3
-          : move && yzcolumn?.group === selectedGroup
-            ? 1
-            : (move && yzcolumn?.group !== selectedGroup) ||
-                selectedGroup === ''
-              ? 0.9
-              : yzcolumn.deviceId !== ''
-                ? 1
-                : 0.3
-      }}
+      sx={[
+        {
+          // border: error.find(
+          //   (e: any) => e.row === currentRowIndex && e.col === currentColIndex
+          // )
+          //   ? '1px solid red'
+          //   : '1px solid #000',
+          backgroundColor:
+            mode === 'compressed' && decodedPixels
+              ? decodedPixels[currentRowIndex * colN + currentColIndex]
+                ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
+                : '#222'
+              : pixels && pixels[0] && pixels[0].length
+                ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
+                : '#222'
+        },
+        isDragging
+          ? {
+              opacity: 0.3
+            }
+          : {
+              opacity:
+                move && yzcolumn?.group === selectedGroup
+                  ? 1
+                  : (move && yzcolumn?.group !== selectedGroup) ||
+                      selectedGroup === ''
+                    ? 0.9
+                    : yzcolumn.deviceId !== ''
+                      ? 1
+                      : 0.3
+            }
+      ]}
       onContextMenu={(e) => {
         e.preventDefault()
         setCurrentCell([currentColIndex, currentRowIndex])

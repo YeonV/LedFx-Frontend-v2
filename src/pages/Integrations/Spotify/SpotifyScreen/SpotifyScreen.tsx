@@ -6,7 +6,7 @@ import {
   AppBar,
   Dialog,
   Button,
-  Grid,
+  Grid2 as Grid,
   useTheme
 } from '@mui/material'
 import { Settings, NavigateBefore } from '@mui/icons-material'
@@ -110,7 +110,14 @@ export default function SpotifyScreen({
         <div style={{ margin: '1rem' }}>
           <SpotifyWidgetPro />
           <div style={{ marginTop: '1rem' }} />
-          <Grid xl={12} container item alignItems="center" spacing={1}>
+          <Grid
+            container
+            alignItems="center"
+            spacing={1}
+            size={{
+              xl: 12
+            }}
+          >
             {premium && !isElectron() && <SpAudioFeatures />}
             <SpPlaylist />
           </Grid>

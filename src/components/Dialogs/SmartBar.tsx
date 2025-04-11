@@ -218,19 +218,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             </div>
           </Box>
         )}
-        PaperComponent={({ children }) => (
-          <Paper
-            style={{
-              width: 'calc(100% + 20px)',
-              maxWidth: direct ? maxWidth || 480 : maxWidth || 500,
-              marginLeft: 0,
-              marginRight: direct ? 0 : -10,
-              background: theme.palette.background.paper
-            }}
-          >
-            {children}
-          </Paper>
-        )}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -256,6 +243,21 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             placeholder="Jump to device / Activate scene"
           />
         )}
+        slots={{
+          paper: ({ children }) => (
+            <Paper
+              style={{
+                width: 'calc(100% + 20px)',
+                maxWidth: direct ? maxWidth || 480 : maxWidth || 500,
+                marginLeft: 0,
+                marginRight: direct ? 0 : -10,
+                background: theme.palette.background.paper
+              }}
+            >
+              {children}
+            </Paper>
+          )
+        }}
       />
     </div>
   )

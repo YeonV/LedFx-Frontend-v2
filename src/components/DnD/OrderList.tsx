@@ -26,7 +26,13 @@ const OrderList: FC = () => {
 
   const setCleanedOrder = (orders: Order[]) => {
     setVirtualOrder(
-      orders.map((o) => ({ virtId: o.virtId, order: o.order }) as IVirtualOrder)
+      orders.map(
+        (o) =>
+          ({
+            virtId: o.virtId,
+            order: o.order
+          }) as IVirtualOrder
+      )
     )
   }
 

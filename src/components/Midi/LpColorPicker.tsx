@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   Box,
-  Grid,
+  Grid2 as Grid,
   Paper,
   Typography,
   Popover,
@@ -132,12 +132,26 @@ const LpColorPicker = ({
         }}
       >
         <Box
-          sx={{
-            maxHeight: isRgb ? 700 : 300,
-            overflowY: 'auto',
-            p: 1,
-            width: isRgb ? 283 : 200
-          }}
+          sx={[
+            {
+              overflowY: 'auto',
+              p: 1
+            },
+            isRgb
+              ? {
+                  maxHeight: 700
+                }
+              : {
+                  maxHeight: 300
+                },
+            isRgb
+              ? {
+                  width: 283
+                }
+              : {
+                  width: 200
+                }
+          ]}
         >
           {isRgb && type === 'rgb' ? (
             <ReactGPicker
@@ -162,18 +176,25 @@ const LpColorPicker = ({
             <Box sx={{ maxHeight: 300, overflowY: 'auto', p: 1, width: 200 }}>
               <Grid container spacing={1}>
                 {sortedColors.map((color: IColor) => (
-                  <Grid item xs={3} key={color}>
+                  <Grid key={color} size={3}>
                     <Paper
-                      sx={{
-                        backgroundColor: color,
-                        height: 40,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        border:
-                          selectedColor === color ? '2px solid black' : 'none'
-                      }}
+                      sx={[
+                        {
+                          backgroundColor: color,
+                          height: 40,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer'
+                        },
+                        selectedColor === color
+                          ? {
+                              border: '2px solid black'
+                            }
+                          : {
+                              border: 'none'
+                            }
+                      ]}
                       onClick={() => handleColorClick(color)}
                     >
                       <Typography

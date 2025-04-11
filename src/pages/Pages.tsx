@@ -104,23 +104,33 @@ const Routings = ({ handleWs }: any) => {
       <TopBar />
       <LeftBar />
       <Box
-        sx={{
-          flexGrow: 1,
-          background: 'transparent',
-          padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
-          transition: theme.transitions.create('margin', {
-            easing: leftBarOpen
-              ? theme.transitions.easing.easeOut
-              : theme.transitions.easing.sharp,
-            duration: leftBarOpen
-              ? theme.transitions.duration.enteringScreen
-              : theme.transitions.duration.leavingScreen
-          }),
-          marginLeft: leftBarOpen ? 0 : `-${drawerWidth}px`,
-          '@media (max-width: 580px)': {
-            padding: '8px'
-          }
-        }}
+        sx={[
+          {
+            flexGrow: 1,
+            background: 'transparent',
+            padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
+
+            transition: theme.transitions.create('margin', {
+              easing: leftBarOpen
+                ? theme.transitions.easing.easeOut
+                : theme.transitions.easing.sharp,
+              duration: leftBarOpen
+                ? theme.transitions.duration.enteringScreen
+                : theme.transitions.duration.leavingScreen
+            }),
+
+            '@media (max-width: 580px)': {
+              padding: '8px'
+            }
+          },
+          leftBarOpen
+            ? {
+                marginLeft: 0
+              }
+            : {
+                marginLeft: `-${drawerWidth}px`
+              }
+        ]}
       >
         <Box
           sx={{

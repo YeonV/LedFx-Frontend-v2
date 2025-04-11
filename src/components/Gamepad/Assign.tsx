@@ -65,15 +65,29 @@ const Assign = ({
         <Fab
           size="small"
           color={pressed ? 'primary' : 'inherit'}
-          sx={{
-            background: pressed ? theme.palette.primary.main : '#333',
-            m: 1,
-            color: disabled ? '#999' : 'inherit',
-            width: 40,
-            height: 40,
-            flexShrink: 0,
-            pointerEvents: 'none'
-          }}
+          sx={[
+            {
+              m: 1,
+              width: 40,
+              height: 40,
+              flexShrink: 0,
+              pointerEvents: 'none'
+            },
+            pressed
+              ? {
+                  background: theme.palette.primary.main
+                }
+              : {
+                  background: '#333'
+                },
+            disabled
+              ? {
+                  color: '#999'
+                }
+              : {
+                  color: 'inherit'
+                }
+          ]}
         >
           {index}
         </Fab>

@@ -432,15 +432,20 @@ const User = () => {
                     star repos to earn trophy
                   </Typography>
                   <EmojiEventsOutlined
-                    sx={{
-                      fontSize: 150,
-                      width: '100%',
-                      alignSelf: 'center',
-                      color:
-                        trophies.fan > 0
-                          ? theme.palette.primary.main
-                          : 'inherit'
-                    }}
+                    sx={[
+                      {
+                        fontSize: 150,
+                        width: '100%',
+                        alignSelf: 'center'
+                      },
+                      trophies.fan > 0
+                        ? {
+                            color: theme.palette.primary.main
+                          }
+                        : {
+                            color: 'inherit'
+                          }
+                    ]}
                   />
                   <Box sx={{ width: '100%', zIndex: 1000 }}>
                     <Stepper nonLinear activeStep={1} alternativeLabel>
@@ -546,15 +551,20 @@ const User = () => {
                     star repos to earn trophy
                   </Typography>
                   <EmojiEventsOutlined
-                    sx={{
-                      fontSize: 150,
-                      width: '100%',
-                      alignSelf: 'center',
-                      color:
-                        trophies.enthusiast > 0
-                          ? theme.palette.primary.main
-                          : 'inherit'
-                    }}
+                    sx={[
+                      {
+                        fontSize: 150,
+                        width: '100%',
+                        alignSelf: 'center'
+                      },
+                      trophies.enthusiast > 0
+                        ? {
+                            color: theme.palette.primary.main
+                          }
+                        : {
+                            color: 'inherit'
+                          }
+                    ]}
                   />
                   <Box sx={{ width: '100%', zIndex: 1000 }}>
                     <Stepper nonLinear activeStep={1} orientation="vertical">
@@ -674,15 +684,20 @@ const User = () => {
                 <AccordionDetails>
                   <Typography>Create amazing presets and share them</Typography>
                   <EmojiEventsOutlined
-                    sx={{
-                      fontSize: 150,
-                      width: '100%',
-                      alignSelf: 'center',
-                      color:
-                        trophies.contributor > 0
-                          ? theme.palette.primary.main
-                          : 'inherit'
-                    }}
+                    sx={[
+                      {
+                        fontSize: 150,
+                        width: '100%',
+                        alignSelf: 'center'
+                      },
+                      trophies.contributor > 0
+                        ? {
+                            color: theme.palette.primary.main
+                          }
+                        : {
+                            color: 'inherit'
+                          }
+                    ]}
                   />
                 </AccordionDetails>
               </Accordion>
