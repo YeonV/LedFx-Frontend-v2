@@ -22,7 +22,6 @@ import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyA
 import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import { spotifyMe } from '../../../utils/spotifyProxies'
-import { useLocation, useNavigate } from 'react-router-dom'
 
 const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const classes = useIntegrationCardStyles()
@@ -64,14 +63,13 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
 
   useEffect(() => {
     const getMe = async () => {
-      console.log('IntegrationCardSpotify: Attempting spotifyMe call...')
+      // console.log('IntegrationCardSpotify: Attempting spotifyMe call...')
       const meData = await spotifyMe() // Call the modified spotifyMe
       if (meData && typeof meData !== 'string') {
-        // Check if it's not an error string
-        console.log(
-          'IntegrationCardSpotify: spotifyMe successful, received data:',
-          meData
-        )
+        // console.log(
+        //   'IntegrationCardSpotify: spotifyMe successful, received data:',
+        //   meData
+        // )
         setMe(meData)
       } else {
         console.error(
@@ -87,47 +85,23 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
       // Use .active? Assuming status===1 means active
       getMe()
     } else {
-      console.log(
-        'IntegrationCardSpotify: Skipping spotifyMe call (Not authenticated or integration inactive). Auth State:',
-        spAuthenticated,
-        'Integration Active:',
-        integrations[integration]?.active
-      )
+      // console.log(
+      //   'IntegrationCardSpotify: Skipping spotifyMe call (Not authenticated or integration inactive). Auth State:',
+      //   spAuthenticated,
+      //   'Integration Active:',
+      //   integrations[integration]?.active
+      // )
     }
     // Dependencies: Watch zustand auth state and integration status
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     spAuthenticated,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     integrations[integration]?.active,
     setMe,
     integration,
     getIntegrations
-  ]) // Added getIntegrations if needed
-
-  // ----- REMOVE THE REFRESH/RELOAD useEffect -----
-  // useEffect(() => {
-  //   // Parse query params from the hash manually
-  //   const hash = location.hash
-  //   const hashParts = hash.split('?')
-  //   const pathName = hashParts[0] // e.g., "#/Integrations"
-  //   const searchString = hashParts[1] || ''
-  //   const params = new URLSearchParams(searchString)
-  //   const needsRefresh = params.get('refresh') === 'true'
-  //   if (needsRefresh && !hasReloaded) {
-  //     setHasReloaded(true)
-  //     navigate(pathName, { replace: true })
-  //     setTimeout(() => {
-  //       window.location.reload()
-  //     }, 5000)
-  //   }
-  // }, [location.hash, navigate, hasReloaded])
-  // if (
-  //   new URLSearchParams(location.hash.split('?')[1] || '').get('refresh') ===
-  //     'true' &&
-  //   !hasReloaded
-  // ) {
-  //   return <div>Preparing integration...</div>;
-  // }
-  // ----- END REMOVAL -----
+  ])
 
   // Ensure integrations[integration] exists before accessing config
   if (!integrations || !integrations[integration]?.config) {

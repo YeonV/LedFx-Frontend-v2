@@ -3,7 +3,6 @@ import Button from '@mui/material/Button'
 // import axios from 'axios'
 import Cookies from 'universal-cookie'
 import getPkce from 'oauth-pkce'
-import isElectron from 'is-electron'
 import { Login, Logout } from '@mui/icons-material'
 import useStore from '../../../store/useStore'
 import {
@@ -12,48 +11,18 @@ import {
   logoutAuth
 } from '../../../utils/spotifyProxies'
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
+import {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_REDIRECT_URI,
+  SPOTIFY_SCOPES
+} from '../../../utils/spotifyConstants'
 // import { log } from '../../../utils/helpers'
 
-const baseURL = isElectron()
-  ? 'http://localhost:8888'
-  : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
-    'http://localhost:8888'
-
-// const storedURL = window.localStorage.getItem('ledfx-host')
-const redirectUrl = `${
-  process.env.NODE_ENV === 'production'
-    ? baseURL
-    : isElectron()
-      ? baseURL
-      : 'http://localhost:3000'
-}/callback/#/Integrations?`
-
-// const spotify = axios.create({
-//   baseURL: redirectUrl,
-// });
-
 const apiCredentials = {
-  CLIENT_ID: '7658827aea6f47f98c8de593f1491da5',
+  CLIENT_ID: SPOTIFY_CLIENT_ID,
   // CLIENT_SECRET: '',
-  REDIRECT_URL: decodeURIComponent(redirectUrl),
-  SCOPES: [
-    // Users (Review later if needed)
-    'user-top-read',
-    'user-read-email',
-    'user-read-private',
-    // Playback
-    'streaming',
-    'user-read-playback-position',
-    // Spotify Connect
-    'user-read-playback-state',
-    'user-modify-playback-state',
-    'user-read-currently-playing',
-    // Listening History (resume playback)
-    'user-read-recently-played',
-    // Library
-    'user-library-read',
-    'user-library-modify'
-  ]
+  REDIRECT_URL: SPOTIFY_REDIRECT_URI,
+  SCOPES: SPOTIFY_SCOPES
 }
 
 const SpotifyAuthButton = ({ disabled = false }: any) => {
@@ -79,7 +48,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
       'https://accounts.spotify.com/authorize/' +
       '?response_type=code' +
       `&client_id=${encodeURIComponent(
-        '7658827aea6f47f98c8de593f1491da5'
+        apiCredentials.CLIENT_ID
       )}&scope=${encodeURIComponent(
         'user-library-read user-library-modify user-read-email user-top-read streaming user-read-private user-read-playback-state user-modify-playback-state'
       )}&redirect_uri=${encodeURIComponent(
@@ -90,29 +59,10 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     if (window.location.pathname.includes('hassio_ingress')) {
       window.location.href = authURL
     } else {
-      window.open(authURL, '_blank', 'noopener,noreferrer')
+      window.open(authURL, '_self', 'noopener,noreferrer')
+      // window.open(authURL, '_blank', 'noopener,noreferrer')
     }
   }
-
-  // useEffect(() => {
-  //   const accessTest = cookies.get('logout')
-  //   const accessTest1 = cookies.get('access_token')
-  //   if ((accessTest === 'false' || !accessTest) && !accessTest1) {
-  //     refreshAuth()
-  //     cookies.set('logout', false)
-  //     setspAuthenticated(true)
-  //   }
-  //   if (localStorage.getItem('Spotify-Token')) {
-  //     setspAuthenticated(true)
-
-  //     try {
-  //       finishAuth()
-  //     } catch (err) {
-  //       console.warn(err)
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
 
   useEffect(() => {
     const token = cookies.get('access_token')
