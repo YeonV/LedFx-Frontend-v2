@@ -189,8 +189,10 @@ export default function SpotifyTriggerTable() {
       align: 'center',
       renderCell: (params: any) => {
         return (
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ height: '100%' }}>
             <Select
+              disableUnderline
+              sx={{ height: '100%' }}
               style={{
                 color: 'white'
               }}
@@ -286,8 +288,8 @@ export default function SpotifyTriggerTable() {
             border: 1,
             borderColor: '#666',
             '& .sceneStyle': {
-              border: '1px solid',
-              borderColor: '#fff !important',
+              // border: '1px solid',
+              // borderColor: '#fff !important',
               padding: '0px'
             }
           }}
