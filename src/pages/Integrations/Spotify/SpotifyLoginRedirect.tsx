@@ -44,7 +44,7 @@ const SpotifyLoginRedirect = () => {
       }
 
       try {
-        console.log('Attempting finishAuth with code:', code)
+        // console.log('Attempting finishAuth with code:', code)
         // Pass code to finishAuth, expect { success: boolean, accessToken?: string }
         const authResult = await finishAuth(code)
 
