@@ -163,8 +163,9 @@ export default function SpControls({ className }: any) {
                   disableUnderline
                   defaultValue={
                     spotifyDevices && spotifyDevices.length > 0
-                      ? spotifyDevices.find((d) => d.is_active)?.id
-                      : undefined
+                      ? spotifyDevices.find((d) => d.is_active)?.id ||
+                        'No Player detected'
+                      : 'No Player detected'
                   }
                 >
                   {spotifyDevices &&

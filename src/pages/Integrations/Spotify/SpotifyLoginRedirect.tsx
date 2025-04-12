@@ -42,7 +42,7 @@ const SpotifyLoginRedirect = () => {
           process.env.NODE_ENV === 'production'
             ? baseURL
             : 'http://localhost:3000'
-        }/#/Integrations?`),
+        }/#/Integrations?refresh=true`),
       3000
     ) // Redirect to homepage after 3 sec
   }, [])

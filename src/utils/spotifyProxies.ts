@@ -23,7 +23,7 @@ axios.create({
 const apiCredentials = {
   CLIENT_ID: '7658827aea6f47f98c8de593f1491da5',
   // CLIENT_SECRET: '',
-  REDIRECT_URL: redirectUrl,
+  REDIRECT_URL: baseURL + '/callback/#/Integrations?',
   SCOPES: [
     // Users (Review later if needed)
     'user-top-read',

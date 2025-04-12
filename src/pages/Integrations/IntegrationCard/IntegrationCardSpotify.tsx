@@ -22,6 +22,7 @@ import SpotifyAuthButton from '../../../components/Integrations/Spotify/SpotifyA
 import SpotifyScreen from '../Spotify/SpotifyScreen/SpotifyScreen'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import { spotifyMe } from '../../../utils/spotifyProxies'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const classes = useIntegrationCardStyles()
@@ -71,6 +72,38 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
     if (spAuthenticated && integrations[integration].status === 1) getMe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [integrations[integration].status, spAuthenticated])
+
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [hasReloaded, setHasReloaded] = useState(false) // Prevent loops
+
+  useEffect(() => {
+    // Parse query params from the hash manually
+    const hash = location.hash
+    const hashParts = hash.split('?')
+    const pathName = hashParts[0] // e.g., "#/Integrations"
+    const searchString = hashParts[1] || ''
+    const params = new URLSearchParams(searchString)
+
+    const needsRefresh = params.get('refresh') === 'true'
+
+    if (needsRefresh && !hasReloaded) {
+      setHasReloaded(true)
+      navigate(pathName, { replace: true })
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 50)
+    }
+  }, [location.hash, navigate, hasReloaded])
+
+  if (
+    new URLSearchParams(location.hash.split('?')[1] || '').get('refresh') ===
+      'true' &&
+    !hasReloaded
+  ) {
+    return <div>Preparing integration...</div>
+  }
 
   return integrations[integration]?.config ? (
     <Card className={classes.integrationCardPortrait}>
