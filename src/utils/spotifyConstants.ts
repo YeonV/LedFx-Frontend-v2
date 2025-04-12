@@ -1,11 +1,7 @@
 import isElectron from 'is-electron'
 
 export const getBaseURL = () =>
-  isElectron()
-    ? 'http://localhost:8888'
-    : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
-      window.localStorage.getItem('ledfx-host') ||
-      'http://localhost:8888'
+  isElectron() ? 'http://localhost:8888' : window.location.origin
 
 const calculateRedirectUrl = () => {
   const productionBase = getBaseURL()
