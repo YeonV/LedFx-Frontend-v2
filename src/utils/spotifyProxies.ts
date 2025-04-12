@@ -5,6 +5,12 @@ import qs from 'qs'
 import { log } from './helpers'
 import useStore from '../store/useStore'
 
+interface FinishAuthResult {
+  success: boolean
+  accessToken?: string
+  error?: string
+}
+
 const baseURL = isElectron()
   ? 'http://localhost:8888'
   : window.location.href.split('/#')[0].replace(/\/+$/, '') ||
@@ -44,53 +50,89 @@ const apiCredentials = {
   ]
 }
 
-export const finishAuth = async () => {
-  log('successSpotify', 'finishAuth')
-  // const search = window.location.search.substring(1);
-  const params = localStorage.getItem('Spotify-Token')
+export const finishAuth = async (
+  code: string | null
+): Promise<FinishAuthResult> => {
+  log('successSpotify', 'finishAuth with code:', code)
   const cookies = new Cookies()
+
+  if (!code) {
+    log('errorSpotify', 'finishAuth called without a code.')
+    return { success: false, error: 'Authorization code missing' }
+  }
+
+  const verifier = cookies.get('verifier')
+  if (!verifier) {
+    log('errorSpotify', 'finishAuth: PKCE verifier cookie missing.')
+    return {
+      success: false,
+      error: 'Security verifier missing. Please try logging in again.'
+    }
+  }
+
   const postData = {
     client_id: '7658827aea6f47f98c8de593f1491da5',
     grant_type: 'authorization_code',
-    code: params,
-    redirect_uri: apiCredentials.REDIRECT_URL,
-    code_verifier: cookies.get('verifier')
+    code, // Use the passed code
+    redirect_uri: redirectUrl,
+    code_verifier: verifier
   }
   const config = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   }
-  return axios
-    .post(
+
+  try {
+    const res = await axios.post(
       'https://accounts.spotify.com/api/token',
-      // encodeURI(JSON.stringify(postData)),
       qs.stringify(postData),
       config
     )
-    .then((res) => {
-      const tokens = {} as any
-      const expDate = new Date()
-      expDate.setHours(expDate.getHours() + 1)
-      cookies.remove('access_token')
-      cookies.remove('logout', { path: '/#' })
-      cookies.remove('logout', { path: '/#/integrations' })
 
-      cookies.set('access_token', res.data.access_token, { expires: expDate })
-      cookies.set('logout', false)
-      tokens.accessToken = res.data.access_token
+    // Clear existing cookies before setting new ones
+    cookies.remove('access_token', { path: '/' }) // Use root path for broader removal
+    cookies.remove('refresh_token', { path: '/' })
+    cookies.remove('logout', { path: '/' })
+    cookies.remove('verifier', { path: '/' }) // Clean up verifier
 
-      const refreshExpDate = new Date()
-      refreshExpDate.setDate(refreshExpDate.getDate() + 7)
-      cookies.remove('refresh_token')
-      cookies.set('refresh_token', res.data.refresh_token, {
-        expires: refreshExpDate
-      })
-      tokens.refreshToken = res.data.refresh_token
-      cookies.remove('verifier')
-      localStorage.removeItem('Spotify-Token')
-      window.history.replaceState({}, document.title, '/#/integrations')
-      return tokens
+    const expDate = new Date()
+    expDate.setHours(expDate.getHours() + 1)
+    cookies.set('access_token', res.data.access_token, {
+      expires: expDate,
+      path: '/'
     })
-    .catch((e) => console.log(e))
+    cookies.set('logout', false, { path: '/' }) // Explicitly set logout to false
+
+    const refreshExpDate = new Date()
+    refreshExpDate.setDate(refreshExpDate.getDate() + 30) // Extend refresh token life? (e.g., 30 days)
+    cookies.set('refresh_token', res.data.refresh_token, {
+      expires: refreshExpDate,
+      path: '/'
+    })
+
+    log('successSpotify', 'Tokens obtained and cookies set.')
+
+    // Optionally update Zustand store directly here (though redirect might make it redundant)
+    // const { setSpAuthenticated, setSpAuthToken } = useStore.getState();
+    // setSpAuthenticated(true);
+    // setSpAuthToken(res.data.access_token);
+
+    // Return success and the token
+    return { success: true, accessToken: res.data.access_token }
+  } catch (error: any) {
+    console.error(
+      'Spotify token exchange error:',
+      error.response?.data || error.message
+    )
+    // Clear potentially invalid cookies on failure
+    cookies.remove('verifier', { path: '/' })
+    return {
+      success: false,
+      error:
+        error.response?.data?.error_description ||
+        error.message ||
+        'Token exchange failed'
+    }
+  }
 }
 
 export async function refreshAuth() {
@@ -175,50 +217,65 @@ export function logoutAuth() {
 // Helper function to wait for the access_token cookie to be defined
 function waitForAccessToken(timeout: number) {
   log('successSpotify', 'starting waitForAccessToken')
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<string | null>((resolve, reject) => {
+    // Resolve with token or null
     const startTime = Date.now()
     const interval = setInterval(() => {
       const cookies = new Cookies()
       const access_token = cookies.get('access_token')
       if (access_token) {
         clearInterval(interval)
-        resolve()
+        resolve(access_token) // Resolve with the token
       } else if (Date.now() - startTime >= timeout) {
         clearInterval(interval)
-        window.location.reload()
-        reject(new Error('Access Token not defined after waiting timeout'))
+        log('errorSpotify', 'Access Token not defined after waiting timeout')
+        resolve(null) // Resolve with null instead of rejecting or reloading
       }
     }, 100)
   })
 }
 
-export async function spotifyMe() {
-  const cookies = new Cookies()
-  let access_token = cookies.get('access_token')
+export async function spotifyMe(): Promise<any | string> {
+  // Return type might need adjustment
+  const access_token = await waitForAccessToken(5000) // Reduced timeout? Wait 5s
 
   if (!access_token) {
-    // Wait for 10 seconds for the access_token cookie to be defined; otherwise, throw an error
-    await waitForAccessToken(10000)
-    access_token = cookies.get('access_token')
+    console.error('spotifyMe: Access Token is not defined after wait.')
+    // Maybe trigger logout state?
+    // const { setSpAuthenticated, setSpAuthToken } = useStore.getState();
+    // setSpAuthenticated(false);
+    // setSpAuthToken(null);
+    return 'Error: Missing Access Token' // Return an error string or specific object
   }
 
-  if (!access_token) {
-    console.error('Access Token is not defined')
-    return 'Error'
-  }
+  try {
+    const res = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    })
 
-  const res = await axios.get('https://api.spotify.com/v1/me', {
-    headers: {
-      Authorization: `Bearer ${access_token}`
+    if (res.status === 200) {
+      return res.data
+    } else {
+      // Handle non-200 responses that aren't exceptions
+      return `Error: API returned status ${res.status}`
     }
-  })
-
-  if (res.status === 200) {
-    return res.data
+  } catch (error: any) {
+    console.error(
+      'spotifyMe API call error:',
+      error.response?.data || error.message
+    )
+    // Handle specific errors like 401 Unauthorized (token expired/invalid)
+    if (error.response?.status === 401) {
+      // Attempt refresh or trigger logout?
+      // For now, just return error
+      return 'Error: Unauthorized (Token might be invalid/expired)'
+    }
+    return `Error: ${error.message || 'API call failed'}`
   }
-
-  return 'Error'
 }
+
 export async function spotifyCurrentTime() {
   const cookies = new Cookies()
   let access_token = cookies.get('access_token')

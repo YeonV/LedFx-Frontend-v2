@@ -64,48 +64,82 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
 
   useEffect(() => {
     const getMe = async () => {
-      const i = await spotifyMe()
-      if (i) {
-        setMe(i)
+      console.log('IntegrationCardSpotify: Attempting spotifyMe call...')
+      const meData = await spotifyMe() // Call the modified spotifyMe
+      if (meData && typeof meData !== 'string') {
+        // Check if it's not an error string
+        console.log(
+          'IntegrationCardSpotify: spotifyMe successful, received data:',
+          meData
+        )
+        setMe(meData)
+      } else {
+        console.error(
+          'IntegrationCardSpotify: spotifyMe failed or returned error:',
+          meData
+        )
+        // Optionally handle error: show message, trigger logout state?
+        // Example: if (meData === 'Error: Missing Access Token' || meData === 'Error: Unauthorized (Token might be invalid/expired)') { ... }
       }
     }
-    if (spAuthenticated && integrations[integration].status === 1) getMe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [integrations[integration].status, spAuthenticated])
-
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [hasReloaded, setHasReloaded] = useState(false) // Prevent loops
-
-  useEffect(() => {
-    // Parse query params from the hash manually
-    const hash = location.hash
-    const hashParts = hash.split('?')
-    const pathName = hashParts[0] // e.g., "#/Integrations"
-    const searchString = hashParts[1] || ''
-    const params = new URLSearchParams(searchString)
-
-    const needsRefresh = params.get('refresh') === 'true'
-
-    if (needsRefresh && !hasReloaded) {
-      setHasReloaded(true)
-      navigate(pathName, { replace: true })
-
-      setTimeout(() => {
-        window.location.reload()
-      }, 50)
+    // Check Zustand state and integration status
+    if (spAuthenticated && integrations[integration]?.active) {
+      // Use .active? Assuming status===1 means active
+      getMe()
+    } else {
+      console.log(
+        'IntegrationCardSpotify: Skipping spotifyMe call (Not authenticated or integration inactive). Auth State:',
+        spAuthenticated,
+        'Integration Active:',
+        integrations[integration]?.active
+      )
     }
-  }, [location.hash, navigate, hasReloaded])
+    // Dependencies: Watch zustand auth state and integration status
+  }, [
+    spAuthenticated,
+    integrations[integration]?.active,
+    setMe,
+    integration,
+    getIntegrations
+  ]) // Added getIntegrations if needed
 
-  if (
-    new URLSearchParams(location.hash.split('?')[1] || '').get('refresh') ===
-      'true' &&
-    !hasReloaded
-  ) {
-    return <div>Preparing integration...</div>
+  // ----- REMOVE THE REFRESH/RELOAD useEffect -----
+  // useEffect(() => {
+  //   // Parse query params from the hash manually
+  //   const hash = location.hash
+  //   const hashParts = hash.split('?')
+  //   const pathName = hashParts[0] // e.g., "#/Integrations"
+  //   const searchString = hashParts[1] || ''
+  //   const params = new URLSearchParams(searchString)
+  //   const needsRefresh = params.get('refresh') === 'true'
+  //   if (needsRefresh && !hasReloaded) {
+  //     setHasReloaded(true)
+  //     navigate(pathName, { replace: true })
+  //     setTimeout(() => {
+  //       window.location.reload()
+  //     }, 5000)
+  //   }
+  // }, [location.hash, navigate, hasReloaded])
+  // if (
+  //   new URLSearchParams(location.hash.split('?')[1] || '').get('refresh') ===
+  //     'true' &&
+  //   !hasReloaded
+  // ) {
+  //   return <div>Preparing integration...</div>;
+  // }
+  // ----- END REMOVAL -----
+
+  // Ensure integrations[integration] exists before accessing config
+  if (!integrations || !integrations[integration]?.config) {
+    // Optional: Render a loading state or null while integrations load
+    console.log(
+      'IntegrationCardSpotify: Waiting for integration data for ID:',
+      integration
+    )
+    return null // Or <CircularProgress />
   }
 
-  return integrations[integration]?.config ? (
+  return (
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
@@ -245,7 +279,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         </Collapse>
       </CardActions>
     </Card>
-  ) : null
+  )
 }
 
 export default IntegrationCardSpotify
