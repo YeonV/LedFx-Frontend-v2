@@ -2,6 +2,7 @@ import { Input } from '@mui/material'
 import { SettingsRow, SettingsSlider } from './SettingsComponents'
 import useStore from '../../store/useStore'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
+import LogColorFilterSelect from './LogFilterSelect'
 
 const ExpertFeatures = () => {
   const sliderClasses = useSliderStyles()
@@ -80,6 +81,9 @@ const ExpertFeatures = () => {
         checked={keybinding}
         onChange={() => setKeybinding(!keybinding)}
       />
+      <SettingsRow title="Log Filtering">
+        <LogColorFilterSelect />
+      </SettingsRow>
     </>
   )
 }
