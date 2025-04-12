@@ -26,7 +26,7 @@ const redirectUrl = `${
     : isElectron()
       ? baseURL
       : 'http://localhost:3000'
-}/#/callback/#/Integrations?`
+}/callback/#/Integrations?`
 
 // const spotify = axios.create({
 //   baseURL: redirectUrl,
