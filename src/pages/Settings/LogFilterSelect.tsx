@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
-  Box,
-  OutlinedInput,
-  InputLabel,
   MenuItem,
-  FormControl,
   Select,
-  Chip,
   Checkbox,
   ListItemText,
   SelectChangeEvent // Import correct type for event
@@ -15,7 +10,6 @@ import {
 // Import functions and colors from your helper file
 import {
   setEnabledLogColors,
-  getEnabledLogColors,
   availableColorNames, // Import the exported color names
   ColorName,
   log
