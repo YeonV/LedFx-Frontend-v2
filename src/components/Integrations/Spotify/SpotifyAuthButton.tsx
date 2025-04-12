@@ -94,32 +94,34 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     }
   }
 
-  useEffect(() => {
-    const accessTest = cookies.get('logout')
-    const accessTest1 = cookies.get('access_token')
-    if ((accessTest === 'false' || !accessTest) && !accessTest1) {
-      refreshAuth()
-      cookies.set('logout', false)
-      setspAuthenticated(true)
-    }
-    if (localStorage.getItem('Spotify-Token')) {
-      setspAuthenticated(true)
+  // useEffect(() => {
+  //   const accessTest = cookies.get('logout')
+  //   const accessTest1 = cookies.get('access_token')
+  //   if ((accessTest === 'false' || !accessTest) && !accessTest1) {
+  //     refreshAuth()
+  //     cookies.set('logout', false)
+  //     setspAuthenticated(true)
+  //   }
+  //   if (localStorage.getItem('Spotify-Token')) {
+  //     setspAuthenticated(true)
 
-      try {
-        finishAuth()
-      } catch (err) {
-        console.warn(err)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  //     try {
+  //       finishAuth()
+  //     } catch (err) {
+  //       console.warn(err)
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   useEffect(() => {
-    if (cookies.get('access_token')) {
+    const token = cookies.get('access_token')
+    if (token) {
       setspAuthenticated(true)
-      setSpotifyAuthToken(cookies.get('access_token'))
+      setSpotifyAuthToken(token)
     } else {
       setspAuthenticated(false)
+      // setSpotifyAuthToken(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cookies])
