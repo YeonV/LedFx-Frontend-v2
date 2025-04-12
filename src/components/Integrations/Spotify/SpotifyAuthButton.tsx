@@ -5,18 +5,13 @@ import Cookies from 'universal-cookie'
 import getPkce from 'oauth-pkce'
 import { Login, Logout } from '@mui/icons-material'
 import useStore from '../../../store/useStore'
-import {
-  finishAuth,
-  refreshAuth,
-  logoutAuth
-} from '../../../utils/spotifyProxies'
+import { logoutAuth } from '../../../utils/spotifyProxies'
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
 import {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_REDIRECT_URI,
   SPOTIFY_SCOPES
 } from '../../../utils/spotifyConstants'
-// import { log } from '../../../utils/helpers'
 
 const apiCredentials = {
   CLIENT_ID: SPOTIFY_CLIENT_ID,
