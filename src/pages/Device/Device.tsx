@@ -9,9 +9,9 @@ import TransitionCard from './Transition'
 import MelbankCard from './Frequencies'
 import StreamToCard from './StreamTo'
 import EffectsComplex from './EffectsComplex'
-import { Virtual } from '../../store/api/storeVirtuals'
 import { defaultEffects } from '../Home/BladeScene'
 import PresetsComplex from './PresetsComplex'
+import { Virtual } from '../../api/ledfx.types'
 
 const Device = () => {
   const navigate = useNavigate()
@@ -91,7 +91,7 @@ const Device = () => {
   const setEffects = async () => {
     if (!virtId) return
     const promises = []
-    const is2d = virtuals[virtId]?.config.rows > 1
+    const is2d = (virtuals[virtId]?.config.rows || 1) > 1
     promises.push(
       setEffect(
         `${virtId}-mask`,
@@ -247,7 +247,7 @@ const Device = () => {
   const matrixOpen = !!(
     virtId &&
     virtuals[virtId]?.pixel_count > 100 &&
-    virtuals[virtId]?.config.rows > 7
+    (virtuals[virtId]?.config.rows || 1) > 7
   )
   return (
     <Grid

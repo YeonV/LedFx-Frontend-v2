@@ -184,7 +184,7 @@ export default function EditVirtuals({
             >
               back
             </Button>
-            {virtual.config.rows > 1 && (
+            {(virtual.config.rows || 1) > 1 && (
               <ToggleButtonGroup
                 value={matrix}
                 style={{ marginRight: '1rem' }}
@@ -209,7 +209,7 @@ export default function EditVirtuals({
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>
-            {virtual.config.rows > 1 && <Tour2dVirtual />}
+            {(virtual.config.rows || 1) > 1 && <Tour2dVirtual />}
             <Tooltip title="Preview Effect">
               <IconButton
                 onClick={() => {

@@ -13,10 +13,10 @@ import { GridOn, GridOff, Settings } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
-import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 import { Ledfx } from '../../api/ledfx'
+import { EffectConfig, Virtual } from '../../api/ledfx.types'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -169,7 +169,7 @@ const EffectsComplex = ({
               : { opacity: 1, transitionDuration: '0' }
           }
           style={{
-            transitionDuration: `${(virtual?.config?.transition_time || 1) * 1000}`
+            transitionDuration: `${(virtual?.config?.transition_time || 0) * 1000}`
           }}
         >
           <PixelGraph

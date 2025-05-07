@@ -30,8 +30,8 @@ const AudioCard = ({ className }: any) => {
   useEffect(() => {
     if (
       usePerDeviceDelay &&
-      model.audio_device &&
-      schema.properties.audio_device?.enum
+      model?.audio_device &&
+      schema.properties?.audio_device?.enum
     ) {
       if (
         (perDeviceDelay[
@@ -55,7 +55,7 @@ const AudioCard = ({ className }: any) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usePerDeviceDelay, model.audio_device])
+  }, [usePerDeviceDelay, model?.audio_device])
 
   return (
     <div className={className}>

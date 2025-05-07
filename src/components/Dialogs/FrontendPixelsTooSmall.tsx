@@ -57,7 +57,7 @@ export default function FrontendPixelsTooSmall() {
   useEffect(() => {
     const tooBig = Object.keys(virtuals).filter(
       (v: any) =>
-        virtuals[v].config.rows > 1 && virtuals[v]?.pixel_count > fPixels
+        (virtuals[v].config.rows || 1) > 1 && virtuals[v]?.pixel_count > fPixels
     )
     const biggest = tooBig.reduce(
       (a: any, b: any) =>

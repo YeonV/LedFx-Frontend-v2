@@ -3,7 +3,7 @@ import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import DbRow from './DbRow'
 import useStore from '../../store/useStore'
 import { IDevice } from '../../store/api/storeConfig'
-import { Virtual } from '../../store/api/storeVirtuals'
+import { Virtual } from '../../api/ledfx.types'
 
 const DbStats = () => {
   const theme = useTheme()

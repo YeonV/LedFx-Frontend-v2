@@ -13,7 +13,8 @@ import {
   Alert,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  CircularProgress
   // Box,
 } from '@mui/material'
 import { Add, Delete, ExpandMore, Save } from '@mui/icons-material'
@@ -119,9 +120,18 @@ export default function NoHostDialog() {
         <DialogTitle id="form-dialog-title">
           {edit
             ? 'LedFx-Core Host'
-            : window.process?.argv.indexOf('integratedCore') === -1
+            : !cc
               ? 'No LedFx-Core found'
               : 'LedFx-Core not ready'}
+          {!edit && cc && (
+            <CircularProgress
+              size={20}
+              sx={{
+                marginLeft: '1rem',
+                color: 'primary.main'
+              }}
+            />
+          )}
         </DialogTitle>
         <DialogContent>
           {mixedContent && (

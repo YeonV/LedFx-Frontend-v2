@@ -28,8 +28,8 @@ import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import TourEffect from '../../components/Tours/TourEffect'
 import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
-import { EffectConfig, Virtual } from '../../store/api/storeVirtuals'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
+import { Effect, Virtual } from '../../api/ledfx.types'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -94,9 +94,12 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [virtual, setVirtual] = useState<Virtual | undefined>(undefined)
   const [matrix, setMatrix] = useState(
     showMatrix ||
-      (virtuals[virtId]?.config?.rows > 7 &&
+      !!(
+        virtuals[virtId]?.config?.rows &&
+        virtuals[virtId]?.config?.rows > 7 &&
         virtuals[virtId]?.pixel_count > 100 &&
-        virtuals[virtId].effect.type === 'blender')
+        virtuals[virtId].effect.type === 'blender'
+      )
   )
   const handle = useFullScreenHandle()
   const [fullScreen, setFullScreen] = useState(false)
@@ -130,20 +133,23 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (virtual) {
       clearEffect(virtId).then(() => {
         setFade(true)
-        setTimeout(() => {
-          getVirtuals()
-        }, virtual.config.transition_time * 1000)
+        setTimeout(
+          () => {
+            getVirtuals()
+          },
+          (virtual.config.transition_time || 0) * 1000
+        )
         setTimeout(
           () => {
             setFade(false)
           },
-          virtual.config.transition_time * 1000 + 300
+          (virtual.config.transition_time || 0) * 1000 + 300
         )
       })
     }
   }
 
-  const handleEffectConfig = (config: EffectConfig) => {
+  const handleEffectConfig = (config: Effect['config']) => {
     if (updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(virtId, effectType, config, false).then(() => {
         getVirtuals()
@@ -185,7 +191,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   useEffect(() => {
     setMatrix(
       showMatrix ||
-        (virtuals[virtId]?.config?.rows > 7 &&
+        ((virtuals[virtId]?.config?.rows || 1) > 7 &&
           virtuals[virtId]?.pixel_count > 100 &&
           virtuals[virtId].effect.type === 'blender')
     )
@@ -275,7 +281,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                     >
                     <Casino />
                   </Button> */}
-                  {virtual.config.rows > 1 && (
+                  {(virtual.config.rows || 1) > 1 && (
                     <Button
                       style={{ marginRight: '.5rem' }}
                       className="step-device-six"
@@ -284,7 +290,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                       {matrix ? <GridOff /> : <GridOn />}
                     </Button>
                   )}
-                  {virtual.config.rows > 1 && (
+                  {(virtual.config.rows || 1) > 1 && (
                     <Button
                       style={{ marginRight: '.5rem' }}
                       className="step-device-seven"
@@ -350,7 +356,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
             }
             style={{
               transitionDuration: `${
-                (virtual?.config?.transition_time || 1) * 1000
+                (virtual?.config?.transition_time || 0) * 1000
               }`
             }}
           >

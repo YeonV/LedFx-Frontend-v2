@@ -42,7 +42,7 @@ export interface DeviceCardProps {
   /**
    * DeviceId if its a device, else undefined if its a virtual
    */
-  isDevice?: string | undefined
+  isDevice?: string | boolean | undefined
   /**
    * Graphs active?
    */

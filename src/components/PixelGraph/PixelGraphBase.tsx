@@ -47,7 +47,8 @@ const PixelGraphBase = ({
   )
 
   const rows = virtuals[virtId]?.is_device
-    ? devices[virtuals[virtId]?.is_device]?.config?.rows ||
+    ? (typeof virtuals[virtId]?.is_device === 'string' &&
+        devices[virtuals[virtId]?.is_device]?.config?.rows) ||
       virtuals[virtId]?.config?.rows ||
       1
     : virtuals[virtId]?.config?.rows || 1

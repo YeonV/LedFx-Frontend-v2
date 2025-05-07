@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
-import { Virtual } from '../../store/api/storeVirtuals'
+import { Virtual } from '../../api/ledfx.types'
 
 const Graph = () => {
   const fade = false
@@ -55,7 +55,7 @@ const Graph = () => {
             }
       }
       style={{
-        transitionDuration: `${(virtual?.config?.transition_time || 1) * 1000}`
+        transitionDuration: `${(virtual?.config?.transition_time || 0) * 1000}`
       }}
     >
       {virtId && (

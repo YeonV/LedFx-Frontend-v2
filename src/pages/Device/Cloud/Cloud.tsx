@@ -156,7 +156,7 @@ export default function CloudScreen({
               key={i}
               style={{
                 order:
-                  virtual?.effect.name.toLowerCase() === effect.toLowerCase()
+                  virtual?.effect.name?.toLowerCase() === effect.toLowerCase()
                     ? -1
                     : 1
               }}
@@ -166,7 +166,7 @@ export default function CloudScreen({
                 variant="caption"
                 style={{
                   color:
-                    virtual?.effect.name.toLowerCase() === effect.toLowerCase()
+                    virtual?.effect.name?.toLowerCase() === effect.toLowerCase()
                       ? theme.palette.primary.main
                       : theme.palette.text.primary
                 }}
@@ -178,7 +178,7 @@ export default function CloudScreen({
                   <Grid key={ind}>
                     <Card
                       className={`${classes.cloudEffectCard} ${
-                        virtual?.effect.name.toLowerCase() ===
+                        virtual?.effect.name?.toLowerCase() ===
                           effect.toLowerCase() &&
                         activeCloudPreset === p.Name.toLowerCase()
                           ? ' active'

@@ -160,11 +160,12 @@ export default function ConfirmationDialog({
               device.active_virtuals[0] &&
               virtuals &&
               virtuals[device.active_virtuals[0]] &&
-              virtuals[device.active_virtuals[0]].effect
+              virtuals[device.active_virtuals[0]].effect &&
+              virtuals[device.active_virtuals[0]].effect.type
             ) {
               setEffect(
                 virtual.id,
-                virtuals[device.active_virtuals[0]].effect.type,
+                virtuals[device.active_virtuals[0]].effect.type as string,
                 virtuals[device.active_virtuals[0]].effect?.config,
                 true
               )

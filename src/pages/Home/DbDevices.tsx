@@ -66,10 +66,13 @@ const DeviceActions = ({
   }
   const handleClearEffect = () => {
     clearEffect(virtId).then(() => {
-      setTimeout(() => {
-        getVirtuals()
-        getDevices()
-      }, virtuals[virtId].config.transition_time * 1000)
+      setTimeout(
+        () => {
+          getVirtuals()
+          getDevices()
+        },
+        (virtuals[virtId].config.transition_time || 0) * 1000
+      )
     })
   }
 
@@ -103,7 +106,7 @@ const DeviceActions = ({
                   () => {
                     setLoading(false)
                   },
-                  virtuals[virtId].config.transition_time * 1000 || 5000
+                  (virtuals[virtId].config.transition_time || 0) * 1000 || 5000
                 )
               }}
             >
@@ -122,7 +125,7 @@ const DeviceActions = ({
               />
             )}
           </Box>
-          {virtuals[virtId]?.config.rows > 1 && (
+          {(virtuals[virtId]?.config.rows || 1) > 1 && (
             <IconButton
               sx={{ pt: 0.25 }}
               size="small"
@@ -160,8 +163,8 @@ const DeviceActions = ({
           display: 'flex',
           ml:
             (effect ? 3.2 : 11.8) +
-            (effect && virtuals[virtId]?.config.rows > 1 ? -0.9 : 4.2) +
-            (!effect && virtuals[virtId]?.config.rows > 1 ? 4.2 : 0) -
+            (effect && (virtuals[virtId]?.config.rows || 1) > 1 ? -0.9 : 4.2) +
+            (!effect && (virtuals[virtId]?.config.rows || 1) > 1 ? 4.2 : 0) -
             (lastEffect ? 0 : 2.1) -
             (!effect && lastEffect ? 2.1 : 0)
         }}
@@ -297,7 +300,9 @@ const DbDevices = () => {
           style={{ width: 200 }}
         >
           <Typography>Graph</Typography>
-          {Object.keys(virtuals).some((v) => virtuals[v].config.rows > 1) && (
+          {Object.keys(virtuals).some(
+            (v) => (virtuals[v].config.rows || 1) > 1
+          ) && (
             <IconButton
               size="small"
               onClick={async (e) => {
@@ -316,11 +321,12 @@ const DbDevices = () => {
         graphsMulti && (
           <div
             style={{
-              paddingTop: virtuals[params.row.id].config.rows > 1 ? 0 : '7px',
+              paddingTop:
+                (virtuals[params.row.id].config.rows || 1) > 1 ? 0 : '7px',
               opacity: fade ? 0.2 : 1,
               transitionDuration: fade
-                ? `${virtuals[params.row.id].config.transition_time * 1000 || 1}s`
-                : `${virtuals[params.row.id].config.transition_time * 1000 || 0}s`,
+                ? `${(virtuals[params.row.id].config.transition_time || 0) * 1000 || 1}s`
+                : `${(virtuals[params.row.id].config.transition_time || 0) * 1000 || 0}s`,
               width: '100%',
               transition: 'opacity'
             }}

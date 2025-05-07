@@ -109,15 +109,18 @@ const DeviceCardWrapper = ({
   const handleClearEffect = () => {
     clearEffect(virtual).then(() => {
       setFade(true)
-      setTimeout(() => {
-        getVirtuals()
-        getDevices()
-      }, virtuals[virtual].config.transition_time * 1000)
+      setTimeout(
+        () => {
+          getVirtuals()
+          getDevices()
+        },
+        (virtuals[virtual].config.transition_time || 0) * 1000
+      )
       setTimeout(
         () => {
           setFade(false)
         },
-        virtuals[virtual].config.transition_time * 1000 + 300
+        (virtuals[virtual].config.transition_time || 0) * 1000 + 300
       )
     })
   }
@@ -246,7 +249,7 @@ const DeviceCardWrapper = ({
         activateDevice={handleActivateDevice}
         colorIndicator={false}
         isPlaying={virtuals[virtual]?.active}
-        transitionTime={virtuals[virtual].config.transition_time * 1000}
+        transitionTime={(virtuals[virtual].config.transition_time || 0) * 1000}
         isStreaming={
           devices[Object.keys(devices).find((d) => d === virtual) || '']
             ?.active_virtuals!.length > 0

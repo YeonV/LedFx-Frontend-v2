@@ -46,7 +46,7 @@ const SpTexterForm = () => {
   const [selected, setSelected] = useState('')
 
   const matrix = Object.keys(virtuals).filter(
-    (v: string) => virtuals[v].config.rows > 1
+    (v: string) => (virtuals[v].config.rows || 1) > 1
   )
 
   useEffect(() => {
