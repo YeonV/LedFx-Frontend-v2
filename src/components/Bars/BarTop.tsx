@@ -161,7 +161,7 @@ const Title = (
           <Button
             color={t && ['DarkBw', 'LightBw'].includes(t) ? 'primary' : 'error'}
             variant="contained"
-            onClick={() => window.open(frConfig.releaseUrl)}
+            onClick={() => frConfig && window.open(frConfig.releaseUrl)}
             sx={{ ml: 2 }}
           >
             New Update
@@ -197,7 +197,6 @@ const TopBar = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const [updateAvailable, setUpdateAvailable] = useState(false)
-
   const [loggingIn, setLogginIn] = useState(false)
 
   const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open)
@@ -281,20 +280,28 @@ const TopBar = () => {
     localStorage.removeItem('ledfx-cloud-role')
     setIsLogged(false)
   }
+
   useEffect(() => {
     const fetchConfig = async () => {
       try {
         const configUrl = new URL('frontend_config.json', window.location.href)
           .href
         const res = await fetch(configUrl)
+
         if (!res.ok) {
-          throw new Error(/* ... */)
+          console.error(
+            `Failed to fetch frontend_config.json: ${res.status} ${res.statusText} from ${configUrl}`
+          )
+          return
         }
+
         const configData: FrontendConfig = await res.json()
         setFrConfig(configData)
       } catch (error: any) {
-        console.error('Error fetching frontend_config.json:', error)
-        // setFrConfig(null); // or some default if needed, though it's already null
+        console.error(
+          'Error fetching frontend_config.json:',
+          error.message || 'An unknown error occurred while fetching config.'
+        )
       }
     }
 
@@ -346,34 +353,28 @@ const TopBar = () => {
   useEffect(() => {
     if (frConfig?.updateUrl) {
       const latest = async () => {
-        // ... fetch logic ...
-        // Make sure to handle potential errors from this fetch as well
         try {
           const res = await fetch(frConfig.updateUrl)
           if (!res.ok) {
             console.error(
               `Failed to fetch latest tag from ${frConfig.updateUrl}: ${res.status}`
             )
-            return null // Or handle error appropriately
+            return null
           }
           const resp = await res.json()
           return resp.tag_name as string
         } catch (error) {
           console.error('Error fetching latest tag:', error)
-          return null // Or handle error
+          return null
         }
       }
       latest().then((r) => {
         if (r && r !== latestTag) {
-          // Check if r is not null
           setLatestTag(r)
         }
       })
     }
-    // The dependencies: `frConfig` is correct. `latestTag` is used in the comparison.
-    // `setLatestTag` is a setter from Zustand, which is stable and doesn't strictly need to be listed,
-    // but it's good practice.
-  }, [frConfig, latestTag, setLatestTag]) // Added latestTag and setLatestTag
+  }, [frConfig, latestTag, setLatestTag])
 
   useEffect(() => {
     const handleDisconnect = (e: any) => {
@@ -548,7 +549,6 @@ const TopBar = () => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
-                // className={classes.bladeMenu}
               >
                 {features.cloud && isLogged && (
                   <MenuItem
@@ -624,16 +624,6 @@ const TopBar = () => {
                   </ListItemIcon>
                   Change Host
                 </MenuItem>
-                {/* <MenuItem onClick={()=>{
-                  window .api.send('toMain', {
-                    command: 'toggle-darkmode'
-                  })
-                }}>
-                  <ListItemIcon>
-                    <Language />
-                  </ListItemIcon>
-                  Darkmode
-                </MenuItem> */}
                 {isCC && isCreator && (
                   <MenuItem onClick={changeHostManager}>
                     <ListItemIcon>
@@ -786,7 +776,7 @@ const TopBar = () => {
                         window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
                       const mode = t.startsWith('Dark') ? 'dark' : 'light'
                       const newTheme =
-                        (mode === 'dark' ? 'Dark' : 'Lark') +
+                        (mode === 'dark' ? 'Dark' : 'Light') +
                         e.target.value.charAt(0).toUpperCase() +
                         e.target.value.slice(1)
                       setCurrentTheme(newTheme)
