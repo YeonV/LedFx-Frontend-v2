@@ -52,6 +52,11 @@ import { ledfxThemes, themes } from '../../themes/AppThemes'
 import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 
+interface FrontendConfig {
+  updateUrl: string
+  releaseUrl: string
+}
+
 export const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
     right: '45%',
@@ -131,7 +136,7 @@ const Title = (
   latestTag: string,
   updateAvailable: boolean,
   virtuals: any,
-  frConfig: Record<string, any>
+  frConfig: FrontendConfig | null
 ) => {
   const t = window.localStorage.getItem('ledfx-theme')
   const newVerOnline =
@@ -151,7 +156,7 @@ const Title = (
         </Tooltip>
         {!process.env.MS_STORE &&
         newVerOnline &&
-        frConfig.updateUrl &&
+        frConfig?.updateUrl &&
         frConfig.releaseUrl ? (
           <Button
             color={t && ['DarkBw', 'LightBw'].includes(t) ? 'primary' : 'error'}
@@ -196,7 +201,7 @@ const TopBar = () => {
   const [loggingIn, setLogginIn] = useState(false)
 
   const open = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open)
-  const [frConfig, setFrConfig] = useState({ updateUrl: '' })
+  const [frConfig, setFrConfig] = useState<FrontendConfig | null>(null)
   const latestTag = useStore((state) => state.ui.latestTag)
   const currentTheme = useStore((state) => state.ui.currentTheme)
   const setCurrentTheme = useStore((state) => state.ui.setCurrentTheme)
@@ -278,14 +283,26 @@ const TopBar = () => {
   }
   useEffect(() => {
     const fetchConfig = async () => {
-      const res = await fetch(
-        window?.location?.href?.split('#')[0] + 'frontend_config.json'
-      )
-      const configData = await res.json()
-      setFrConfig(configData)
+      try {
+        const configUrl = new URL('frontend_config.json', window.location.href)
+          .href
+        const res = await fetch(configUrl)
+        if (!res.ok) {
+          throw new Error(/* ... */)
+        }
+        const configData: FrontendConfig = await res.json()
+        setFrConfig(configData)
+      } catch (error: any) {
+        console.error('Error fetching frontend_config.json:', error)
+        // setFrConfig(null); // or some default if needed, though it's already null
+      }
     }
 
-    fetchConfig()
+    if (typeof window !== 'undefined' && window.location) {
+      fetchConfig()
+    } else {
+      console.error('Cannot fetch config: "window.location" is not available.')
+    }
   }, [])
 
   useEffect(() => {
@@ -327,16 +344,36 @@ const TopBar = () => {
   }, [updateNotificationInterval, getUpdateInfo, latestTag])
 
   useEffect(() => {
-    if (frConfig.updateUrl) {
+    if (frConfig?.updateUrl) {
       const latest = async () => {
-        const res = await fetch(frConfig.updateUrl)
-        const resp = await res.json()
-        return resp.tag_name as string
+        // ... fetch logic ...
+        // Make sure to handle potential errors from this fetch as well
+        try {
+          const res = await fetch(frConfig.updateUrl)
+          if (!res.ok) {
+            console.error(
+              `Failed to fetch latest tag from ${frConfig.updateUrl}: ${res.status}`
+            )
+            return null // Or handle error appropriately
+          }
+          const resp = await res.json()
+          return resp.tag_name as string
+        } catch (error) {
+          console.error('Error fetching latest tag:', error)
+          return null // Or handle error
+        }
       }
-      latest().then((r) => r !== latestTag && setLatestTag(r))
+      latest().then((r) => {
+        if (r && r !== latestTag) {
+          // Check if r is not null
+          setLatestTag(r)
+        }
+      })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frConfig])
+    // The dependencies: `frConfig` is correct. `latestTag` is used in the comparison.
+    // `setLatestTag` is a setter from Zustand, which is stable and doesn't strictly need to be listed,
+    // but it's good practice.
+  }, [frConfig, latestTag, setLatestTag]) // Added latestTag and setLatestTag
 
   useEffect(() => {
     const handleDisconnect = (e: any) => {
