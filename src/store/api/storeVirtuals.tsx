@@ -1,6 +1,7 @@
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
+import { Effect, EffectConfig, Virtual } from '../../api/ledfx.types'
 
 export interface IVirtualOrder {
   virtId: string
@@ -14,98 +15,98 @@ export type Segment = [
   reverse: boolean
 ]
 
-export interface EffectConfig {
-  background_brightness?: number
-  background_color?: string
-  beat_skip?: 'none' | 'odd' | 'even'
-  blur?: number
-  brightness?: number
-  color?: string
-  color_correction?: boolean
-  color_step?: number
-  decay?: number
-  ease_method?: string
-  flip?: boolean
-  frequency_range?: string
-  gradient?: string
-  gradient_name?: string
-  gradient_repeat?: number
-  gradient_roll?: number
-  invert_roll?: boolean
-  mirror?: boolean
-  mode?: string
-  multiplier?: number
-  skip_every?: number
-  solid_color?: boolean
-  advanced?: boolean
-  beat_frames?: string
-  flip_horizontal?: boolean
-  flip_vertical?: boolean
-  force_aspect?: boolean
-  force_fit?: boolean
-  gif_at?: string
-  ping_pong?: boolean
-  skip_frames?: string
-  strech_hor?: number
-  strech_ver?: number
-  diag?: boolean
-  diag2?: boolean
-  dump?: boolean
-  fake_beat?: boolean
-  rotate?: number
-  test?: string | boolean
-  speed_x?: number
-  size_x?: number
-  pulse_period?: number
-  pulse_ratio?: number
-  flash_color?: string
-  capture?: boolean
-  cpu_secs?: number
-  v_density?: number
-  twist?: number
-  radius?: number
-  density?: number
-  lower?: number
-  text?: string
-  speed_option_1?: number
-  text_color?: string
-  font?: string
-  mask?: string
-  foreground?: string
-  background?: string
-}
+// export interface EffectConfig {
+//   background_brightness?: number
+//   background_color?: string
+//   beat_skip?: 'none' | 'odd' | 'even'
+//   blur?: number
+//   brightness?: number
+//   color?: string
+//   color_correction?: boolean
+//   color_step?: number
+//   decay?: number
+//   ease_method?: string
+//   flip?: boolean
+//   frequency_range?: string
+//   gradient?: string
+//   gradient_name?: string
+//   gradient_repeat?: number
+//   gradient_roll?: number
+//   invert_roll?: boolean
+//   mirror?: boolean
+//   mode?: string
+//   multiplier?: number
+//   skip_every?: number
+//   solid_color?: boolean
+//   advanced?: boolean
+//   beat_frames?: string
+//   flip_horizontal?: boolean
+//   flip_vertical?: boolean
+//   force_aspect?: boolean
+//   force_fit?: boolean
+//   gif_at?: string
+//   ping_pong?: boolean
+//   skip_frames?: string
+//   strech_hor?: number
+//   strech_ver?: number
+//   diag?: boolean
+//   diag2?: boolean
+//   dump?: boolean
+//   fake_beat?: boolean
+//   rotate?: number
+//   test?: string | boolean
+//   speed_x?: number
+//   size_x?: number
+//   pulse_period?: number
+//   pulse_ratio?: number
+//   flash_color?: string
+//   capture?: boolean
+//   cpu_secs?: number
+//   v_density?: number
+//   twist?: number
+//   radius?: number
+//   density?: number
+//   lower?: number
+//   text?: string
+//   speed_option_1?: number
+//   text_color?: string
+//   font?: string
+//   mask?: string
+//   foreground?: string
+//   background?: string
+// }
 
-export interface Effect {
-  config: EffectConfig
-  name: string
-  type: string
-}
+// export interface Effect {
+//   config: EffectConfig
+//   name: string
+//   type: string
+// }
 
-export interface Virtual {
-  config: {
-    center_offset: number
-    frequency_max: number
-    frequency_min: number
-    icon_name: string
-    mapping: string
-    max_brightness: number
-    name: string
-    preview_only: boolean
-    rows: number
-    transition_mode: string
-    transition_time: number
-  }
-  id: string
-  is_device: string
-  auto_generated: boolean
-  segments: Segment[]
-  pixel_count: number
-  active: boolean
-  effect: Effect
-  effects: Effect[]
-  last_effect?: null | string
-  streaming?: boolean
-}
+// export interface Virtual {
+//   config: {
+//     center_offset: number
+//     frequency_max: number
+//     frequency_min: number
+//     icon_name: string
+//     mapping: string
+//     max_brightness: number
+//     name: string
+//     preview_only: boolean
+//     rows: number
+//     transition_mode: string
+//     transition_time: number
+//   }
+//   id: string
+//   is_device: string
+//   auto_generated: boolean
+//   segments: Segment[]
+//   pixel_count: number
+//   active: boolean
+//   effect: Effect
+//   effects: Effect[]
+//   last_effect?: null | string
+//   streaming?: boolean
+// }
 
 const storeVirtuals = (set: any) => ({
   virtualOrder: [] as IVirtualOrder[],
@@ -193,9 +194,9 @@ const storeVirtuals = (set: any) => ({
       set(
         produce((state: IStore) => {
           state.virtuals[virtId].effect = {
-            type: (resp.effect as Effect).type,
-            name: (resp.effect as Effect).name,
-            config: (resp.effect as Effect).config
+            type: resp.effect.type,
+            name: resp.effect.name,
+            config: resp.effect.config
           }
         }),
         false,
@@ -213,9 +214,9 @@ const storeVirtuals = (set: any) => ({
     set(
       produce((state: IStore) => {
         state.virtuals[virtId].effect = {
-          type: '',
+          type: undefined,
           name: '',
-          config: {}
+          config: undefined
         }
       }),
       false,
