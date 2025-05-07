@@ -22,7 +22,7 @@ import MGraph from '../../components/MGraph'
 import openrgbLogo from '../../icons/png/openrgb.png'
 import fx from '../../components/Icons/FX.svg'
 import { IDevice } from '../../store/api/storeConfig'
-import { Virtual } from '../../store/api/storeVirtuals'
+import { Virtual } from '../../api/ledfx.types'
 
 const Dashboard = () => {
   const theme = useTheme()

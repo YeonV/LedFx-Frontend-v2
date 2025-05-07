@@ -120,7 +120,7 @@ const PixelGraphCanvas = ({
         maxWidth: fullScreen ? '100vw' : '520px',
         maxHeight: fullScreen ? '100vh' : '520px',
         height:
-          !render || virtuals[virtId]?.config?.rows < 2 || !showMatrix
+          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix
             ? '20px'
             : 'auto',
         width: '100%',
