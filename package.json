@@ -150,7 +150,7 @@
     "prebuild-storybookgh": "node -e \"let pkg=require('./package.json'); pkg.homepage='/LedFx-Frontend-v2/docs'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-typedoc": "npx --yes typedoc ./src/api/ledfx.types.ts"
+    "build-typedoc": "npx --yes -p typedoc -p typedoc-material-theme typedoc ./src/api/ledfx.types.ts --plugin typedoc-material-theme --themeColor '#800000' --options ./src/api/typedoc.json"
   },
   "eslintConfig": {
     "extends": [
