@@ -2,8 +2,7 @@ import { useTheme, Stack } from '@mui/material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import DbRow from './DbRow'
 import useStore from '../../store/useStore'
-import { IDevice } from '../../store/api/storeConfig'
-import { Virtual } from '../../api/ledfx.types'
+import { Device, Virtual } from '../../api/ledfx.types'
 
 const DbStats = () => {
   const theme = useTheme()
@@ -12,7 +11,7 @@ const DbStats = () => {
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
 
-  const filterDevDevices = (obj: Record<string, IDevice | Virtual>) =>
+  const filterDevDevices = (obj: Record<string, Device | Virtual>) =>
     Object.keys(obj).filter(
       (key) =>
         !key.startsWith('gap-') &&
@@ -29,11 +28,11 @@ const DbStats = () => {
 
   const pixelTotalOnline = filterDevDevices(devices)
     .map((d) => devices[d].online && devices[d].config.pixel_count)
-    .reduce((a, b) => a + b, 0)
+    .reduce((a, b) => (a || 0) + (b || 0), 0)
 
   const pixelTotal = filterDevDevices(devices)
     .map((d) => devices[d].config.pixel_count)
-    .reduce((a, b) => a + b, 0)
+    .reduce((a, b) => (a || 0) + (b || 0), 0)
 
   return (
     <BladeFrame

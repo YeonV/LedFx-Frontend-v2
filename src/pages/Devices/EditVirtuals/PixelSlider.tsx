@@ -30,7 +30,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
   const marks = [
     { value: 0, label: 1 },
     {
-      value: devices[s[0]].config.pixel_count - 1,
+      value: (devices[s[0]].config.pixel_count || 0) - 1,
       label: devices[s[0]].config.pixel_count
     }
   ]
@@ -96,10 +96,14 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
               return
             }
             if (
-              parseInt(e.target.value, 10) > devices[s[0]].config.pixel_count
+              parseInt(e.target.value, 10) >
+              (devices[s[0]].config.pixel_count || 0)
             ) {
-              setRange([range[0], devices[s[0]].config.pixel_count - 1])
-              throttled(e, [range[0], devices[s[0]].config.pixel_count - 1])
+              setRange([range[0], (devices[s[0]].config.pixel_count || 0) - 1])
+              throttled(e, [
+                range[0],
+                (devices[s[0]].config.pixel_count || 0) - 1
+              ])
               return
             }
             setRange([range[0], parseInt(e.target.value, 10) - 1])
@@ -113,7 +117,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
         marks={marks}
         valueLabelFormat={(e) => e + 1}
         min={0}
-        max={devices[s[0]].config.pixel_count - 1}
+        max={(devices[s[0]].config.pixel_count || 0) - 1}
         onChange={(_event: any, n: any) => {
           setRange(n)
           throttled(_event, n)

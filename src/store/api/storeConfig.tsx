@@ -31,14 +31,14 @@ export interface IPresets {
   user_presets: Record<string, IPreset>
 }
 
-export interface IDevice {
-  config: Record<string, any>
-  id: string
-  type: string
-  online?: boolean
-  virtuals?: string[]
-  active_virtuals?: string[]
-}
+// export interface IDevice {
+//   config: Record<string, any>
+//   id: string
+//   type: string
+//   online?: boolean
+//   virtuals?: string[]
+//   active_virtuals?: string[]
+// }
 
 export interface ISystemConfig {
   integrations: undefined

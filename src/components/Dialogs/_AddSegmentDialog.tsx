@@ -148,7 +148,7 @@ export default function ConfirmationDialog({
       if (device && device?.config) {
         const temp = [
           ...virtual.segments,
-          [device.id, 0, device?.config?.pixel_count - 1, false]
+          [device.id, 0, (device?.config?.pixel_count ?? 0) - 1, false]
         ]
         const test = temp.filter((t) => t.length === 4)
 
@@ -178,7 +178,7 @@ export default function ConfirmationDialog({
               virtual.id,
               device.id,
               0,
-              device?.config?.pixel_count - 1,
+              (device?.config?.pixel_count ?? 0) - 1,
               false
             )
           }
