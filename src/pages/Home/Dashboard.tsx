@@ -21,8 +21,7 @@ import SmartBar from '../../components/Dialogs/SmartBar'
 import MGraph from '../../components/MGraph'
 import openrgbLogo from '../../icons/png/openrgb.png'
 import fx from '../../components/Icons/FX.svg'
-import { IDevice } from '../../store/api/storeConfig'
-import { Virtual } from '../../api/ledfx.types'
+import { Device, Virtual } from '../../api/ledfx.types'
 
 const Dashboard = () => {
   const theme = useTheme()
@@ -47,7 +46,7 @@ const Dashboard = () => {
 
   const getScenes = useStore((state) => state.getScenes)
   const [scanning, setScanning] = useState(-1)
-  const filterDevDevices = (obj: Record<string, IDevice | Virtual>) =>
+  const filterDevDevices = (obj: Record<string, Device | Virtual>) =>
     Object.keys(obj).filter(
       (key) =>
         !key.startsWith('gap-') &&
@@ -58,7 +57,7 @@ const Dashboard = () => {
 
   const pixelTotal = filterDevDevices(devices)
     .map((key) => devices[key].config.pixel_count)
-    .reduce((a, b) => a + b, 0)
+    .reduce((a, b) => (a || 0) + (b || 0), 0)
 
   const devicesOnline = filterDevDevices(devices).filter(
     (key) => devices[key].online
@@ -71,7 +70,7 @@ const Dashboard = () => {
   const pixelTotalOnline = filterDevDevices(devices)
     .filter((key) => devices[key].online)
     .map((key) => devices[key].config.pixel_count)
-    .reduce((a, b) => a + b, 0)
+    .reduce((a, b) => (a || 0) + (b || 0), 0)
 
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
@@ -109,7 +108,7 @@ const Dashboard = () => {
           <>
             <Stack spacing={2} direction="row" className="hideTablet">
               <Gauge
-                value={pixelTotal > 0 ? 100 : 0}
+                value={(pixelTotal || 0) > 0 ? 100 : 0}
                 unit="Pixels"
                 total={pixelTotal}
                 current={pixelTotal}
