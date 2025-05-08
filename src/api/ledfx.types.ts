@@ -426,73 +426,39 @@ export type DeviceConfigUnion = ArtnetDeviceConfig | DdpDeviceConfig | DummyDevi
 // Universal interface merging all possible *optional* device properties (using snake_case)
 export interface DeviceConfig {
   type?: DeviceType; // Optional device type identifier
-  /** Property from the universal set. */
   auth_token?: string;
-  /** Property from the universal set. */
   center_offset?: number;
-  /** Property from the universal set. */
   channel?: number;
-  /** Property from the universal set. */
   channel_offset?: number;
-  /** Property from the universal set. */
   color_order?: string;
-  /** Property from the universal set. */
   create_segments?: boolean;
-  /** Property from the universal set. */
   dmx_start_address?: number;
-  /** Property from the universal set. */
   even_packet_size?: boolean;
-  /** Property from the universal set. */
   gpio_pin?: number;
-  /** Property from the universal set. */
   group_name?: string;
-  /** Property from the universal set. */
   icon_name?: string;
-  /** Property from the universal set. */
   ignore_status?: boolean;
-  /** Property from the universal set. */
   ip_address?: string;
-  /** Property from the universal set. */
   minimise_traffic?: boolean;
-  /** Property from the universal set. */
   name?: string;
-  /** Property from the universal set. */
   output_mode?: string;
-  /** Property from the universal set. */
   packet_priority?: number;
-  /** Property from the universal set. */
   packet_size?: number;
-  /** Property from the universal set. */
   path?: string;
-  /** Property from the universal set. */
   pixel_count?: number;
-  /** Property from the universal set. */
   pixels_per_device?: number;
-  /** Property from the universal set. */
   port?: number;
-  /** Property from the universal set. */
   post_amble?: string;
-  /** Property from the universal set. */
   pre_amble?: string;
-  /** Property from the universal set. */
   refresh_rate?: number /* FPS */;
-  /** Property from the universal set. */
   send_type?: string;
-  /** Property from the universal set. */
   starting_addr?: number;
-  /** Property from the universal set. */
   stretch_to_fit?: boolean;
-  /** Property from the universal set. */
   sync_mode?: string;
-  /** Property from the universal set. */
   timeout?: number;
-  /** Property from the universal set. */
   udp_packet_type?: string;
-  /** Property from the universal set. */
   udp_port?: number;
-  /** Property from the universal set. */
   universe?: number;
-  /** Property from the universal set. */
   universe_size?: number;
 }
 
