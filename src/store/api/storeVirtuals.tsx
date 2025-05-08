@@ -214,9 +214,9 @@ const storeVirtuals = (set: any) => ({
     set(
       produce((state: IStore) => {
         state.virtuals[virtId].effect = {
-          type: undefined,
+          type: null,
           name: '',
-          config: undefined
+          config: null
         }
       }),
       false,

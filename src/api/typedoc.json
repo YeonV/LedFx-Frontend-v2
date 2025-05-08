@@ -1,0 +1,8 @@
+{
+    "navigation": {
+        "includeCategories": true,
+        "includeGroups": true,
+        "includeFolders": true,
+    },
+    "categoryOrder": ["General", "Configs", "Types", "Specific", "*", "Others"]
+}
