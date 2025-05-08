@@ -17,7 +17,7 @@ export function createMenu(
       {
         label: 'Show',
         click: () => {
-          if (process.platform === 'darwin') app.dock.show()
+          if (process.platform === 'darwin') app.dock?.show()
           wind.show()
         }
       },
@@ -25,7 +25,7 @@ export function createMenu(
       {
         label: 'Minimize to tray',
         click: () => {
-          if (process.platform === 'darwin') app.dock.hide()
+          if (process.platform === 'darwin') app.dock?.hide()
           wind.hide()
         }
       },
@@ -63,7 +63,7 @@ export function createMenu(
       {
         label: 'Show',
         click: () => {
-          if (process.platform === 'darwin') app.dock.show()
+          if (process.platform === 'darwin') app.dock?.show()
           wind.show()
         }
       },
@@ -71,7 +71,7 @@ export function createMenu(
       {
         label: 'Minimize to tray',
         click: () => {
-          if (process.platform === 'darwin') app.dock.hide()
+          if (process.platform === 'darwin') app.dock?.hide()
           wind.hide()
         }
       },

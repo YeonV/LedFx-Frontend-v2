@@ -150,7 +150,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }
 
   const handleEffectConfig = (config: Effect['config']) => {
-    if (updateEffect && getVirtuals !== undefined && effectType) {
+    if (config && updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(virtId, effectType, config, false).then(() => {
         getVirtuals()
       })
