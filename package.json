@@ -150,7 +150,7 @@
     "prebuild-storybookgh": "node -e \"let pkg=require('./package.json'); pkg.homepage='/LedFx-Frontend-v2/docs'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-typedoc": "cd src/api && npx --yes typedoc ./ledfx.types.ts"
+    "build-typedoc": "npx --yes typedoc ./src/api/ledfx.types.ts"
   },
   "eslintConfig": {
     "extends": [
