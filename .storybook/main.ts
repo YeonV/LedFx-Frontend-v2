@@ -7,8 +7,7 @@ const config: StorybookConfig = {
     '../src/components/Icons/BladeIcon/BladeIcon.stories.tsx',
     '../src/stories/Doc/Api.stories.tsx',
     '../src/components/Popover/Popover.stories.tsx',
-    '../src/pages/Devices/DeviceCard/DeviceCard.stories.tsx',
-    '../src/components/TypesViewer/**/*.stories.tsx'
+    '../src/pages/Devices/DeviceCard/DeviceCard.stories.tsx'
   ],
   addons: [
     '@storybook/preset-create-react-app',
