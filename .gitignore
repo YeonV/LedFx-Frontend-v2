@@ -46,3 +46,5 @@ public/electron.js
 public/preload.js
 public/preload.cjs
 public/renderer.js
+src/api/docs/*
+docs/*
