@@ -524,7 +524,7 @@ export interface DeviceConfig {
 // Specific Effect Configurations (for Discriminated Union)
 /**
  * Specific configuration for the 'bands' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BandsEffectConfig {
   type: "bands";
@@ -544,7 +544,7 @@ export interface BandsEffectConfig {
 
 /**
  * Specific configuration for the 'bands_matrix' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BandsMatrixEffectConfig {
   type: "bands_matrix";
@@ -574,7 +574,7 @@ export interface BandsMatrixEffectConfig {
 
 /**
  * Specific configuration for the 'bar' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BarEffectConfig {
   type: "bar";
@@ -616,7 +616,7 @@ export interface BarEffectConfig {
 
 /**
  * Specific configuration for the 'blade_power_plus' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BladePowerPlusEffectConfig {
   type: "blade_power_plus";
@@ -660,7 +660,7 @@ export interface BladePowerPlusEffectConfig {
 
 /**
  * Specific configuration for the 'bleep' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BleepEffectConfig {
   type: "bleep";
@@ -709,7 +709,7 @@ export interface BleepEffectConfig {
 
 /**
  * Specific configuration for the 'blender' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BlenderEffectConfig {
   type: "blender";
@@ -759,7 +759,7 @@ export interface BlenderEffectConfig {
 
 /**
  * Specific configuration for the 'block_reflections' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BlockReflectionsEffectConfig {
   type: "block_reflections";
@@ -781,7 +781,7 @@ export interface BlockReflectionsEffectConfig {
 
 /**
  * Specific configuration for the 'blocks' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface BlocksEffectConfig {
   type: "blocks";
@@ -796,7 +796,7 @@ export interface BlocksEffectConfig {
 
 /**
  * Specific configuration for the 'clone' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface CloneEffectConfig {
   type: "clone";
@@ -839,7 +839,7 @@ export interface CloneEffectConfig {
 
 /**
  * Specific configuration for the 'crawler' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface CrawlerEffectConfig {
   type: "crawler";
@@ -882,7 +882,7 @@ export interface CrawlerEffectConfig {
 
 /**
  * Specific configuration for the 'digitalrain2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Digitalrain2dEffectConfig {
   type: "digitalrain2d";
@@ -944,7 +944,7 @@ export interface Digitalrain2dEffectConfig {
 
 /**
  * Specific configuration for the 'energy' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface EnergyEffectConfig {
   type: "energy";
@@ -996,7 +996,7 @@ export interface EnergyEffectConfig {
 
 /**
  * Specific configuration for the 'energy2' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Energy2EffectConfig {
   type: "energy2";
@@ -1018,7 +1018,7 @@ export interface Energy2EffectConfig {
 
 /**
  * Specific configuration for the 'equalizer' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface EqualizerEffectConfig {
   type: "equalizer";
@@ -1038,7 +1038,7 @@ export interface EqualizerEffectConfig {
 
 /**
  * Specific configuration for the 'equalizer2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Equalizer2dEffectConfig {
   type: "equalizer2d";
@@ -1111,7 +1111,7 @@ export interface Equalizer2dEffectConfig {
 
 /**
  * Specific configuration for the 'fade' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface FadeEffectConfig {
   type: "fade";
@@ -1126,7 +1126,7 @@ export interface FadeEffectConfig {
 
 /**
  * Specific configuration for the 'fire' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface FireEffectConfig {
   type: "fire";
@@ -1155,7 +1155,7 @@ export interface FireEffectConfig {
 
 /**
  * Specific configuration for the 'game_of_life' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface GameOfLifeEffectConfig {
   type: "game_of_life";
@@ -1199,7 +1199,7 @@ export interface GameOfLifeEffectConfig {
 
 /**
  * Specific configuration for the 'gifplayer' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface GifplayerEffectConfig {
   type: "gifplayer";
@@ -1224,7 +1224,7 @@ export interface GifplayerEffectConfig {
 
 /**
  * Specific configuration for the 'glitch' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface GlitchEffectConfig {
   type: "glitch";
@@ -1253,7 +1253,7 @@ export interface GlitchEffectConfig {
 
 /**
  * Specific configuration for the 'gradient' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface GradientEffectConfig {
   type: "gradient";
@@ -1268,7 +1268,7 @@ export interface GradientEffectConfig {
 
 /**
  * Specific configuration for the 'imagespin' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface ImagespinEffectConfig {
   type: "imagespin";
@@ -1320,7 +1320,7 @@ export interface ImagespinEffectConfig {
 
 /**
  * Specific configuration for the 'keybeat2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Keybeat2dEffectConfig {
   type: "keybeat2d";
@@ -1413,7 +1413,7 @@ export interface Keybeat2dEffectConfig {
 
 /**
  * Specific configuration for the 'lava_lamp' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface LavaLampEffectConfig {
   type: "lava_lamp";
@@ -1442,7 +1442,7 @@ export interface LavaLampEffectConfig {
 
 /**
  * Specific configuration for the 'magnitude' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface MagnitudeEffectConfig {
   type: "magnitude";
@@ -1455,7 +1455,7 @@ export interface MagnitudeEffectConfig {
 
 /**
  * Specific configuration for the 'marching' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface MarchingEffectConfig {
   type: "marching";
@@ -1477,7 +1477,7 @@ export interface MarchingEffectConfig {
 
 /**
  * Specific configuration for the 'melt' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface MeltEffectConfig {
   type: "melt";
@@ -1499,7 +1499,7 @@ export interface MeltEffectConfig {
 
 /**
  * Specific configuration for the 'melt_and_sparkle' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface MeltAndSparkleEffectConfig {
   type: "melt_and_sparkle";
@@ -1570,7 +1570,7 @@ export interface MeltAndSparkleEffectConfig {
 
 /**
  * Specific configuration for the 'metro' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface MetroEffectConfig {
   type: "metro";
@@ -1621,7 +1621,7 @@ export interface MetroEffectConfig {
 
 /**
  * Specific configuration for the 'multiBar' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface MultibarEffectConfig {
   type: "multiBar";
@@ -1646,7 +1646,7 @@ export interface MultibarEffectConfig {
 
 /**
  * Specific configuration for the 'noise2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Noise2dEffectConfig {
   type: "noise2d";
@@ -1701,7 +1701,7 @@ export interface Noise2dEffectConfig {
 
 /**
  * Specific configuration for the 'pitchSpectrum' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface PitchspectrumEffectConfig {
   type: "pitchSpectrum";
@@ -1735,7 +1735,7 @@ export interface PitchspectrumEffectConfig {
 
 /**
  * Specific configuration for the 'pixels' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface PixelsEffectConfig {
   type: "pixels";
@@ -1779,7 +1779,7 @@ export interface PixelsEffectConfig {
 
 /**
  * Specific configuration for the 'plasma2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Plasma2dEffectConfig {
   type: "plasma2d";
@@ -1827,7 +1827,7 @@ export interface Plasma2dEffectConfig {
 
 /**
  * Specific configuration for the 'plasmawled' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface PlasmawledEffectConfig {
   type: "plasmawled";
@@ -1875,7 +1875,7 @@ export interface PlasmawledEffectConfig {
 
 /**
  * Specific configuration for the 'power' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface PowerEffectConfig {
   type: "power";
@@ -1914,7 +1914,7 @@ export interface PowerEffectConfig {
 
 /**
  * Specific configuration for the 'rain' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface RainEffectConfig {
   type: "rain";
@@ -1973,7 +1973,7 @@ export interface RainEffectConfig {
 
 /**
  * Specific configuration for the 'rainbow' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface RainbowEffectConfig {
   type: "rainbow";
@@ -1995,7 +1995,7 @@ export interface RainbowEffectConfig {
 
 /**
  * Specific configuration for the 'random_flash' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface RandomFlashEffectConfig {
   type: "random_flash";
@@ -2029,7 +2029,7 @@ export interface RandomFlashEffectConfig {
 
 /**
  * Specific configuration for the 'real_strobe' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface RealStrobeEffectConfig {
   type: "real_strobe";
@@ -2082,7 +2082,7 @@ export interface RealStrobeEffectConfig {
 
 /**
  * Specific configuration for the 'scan' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface ScanEffectConfig {
   type: "scan";
@@ -2165,7 +2165,7 @@ export interface ScanEffectConfig {
 
 /**
  * Specific configuration for the 'scan_and_flare' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface ScanAndFlareEffectConfig {
   type: "scan_and_flare";
@@ -2259,7 +2259,7 @@ export interface ScanAndFlareEffectConfig {
 
 /**
  * Specific configuration for the 'scan_multi' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface ScanMultiEffectConfig {
   type: "scan_multi";
@@ -2359,7 +2359,7 @@ export interface ScanMultiEffectConfig {
 
 /**
  * Specific configuration for the 'scroll' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface ScrollEffectConfig {
   type: "scroll";
@@ -2415,7 +2415,7 @@ export interface ScrollEffectConfig {
 
 /**
  * Specific configuration for the 'scroll_plus' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface ScrollPlusEffectConfig {
   type: "scroll_plus";
@@ -2471,7 +2471,7 @@ export interface ScrollPlusEffectConfig {
 
 /**
  * Specific configuration for the 'singleColor' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface SinglecolorEffectConfig {
   type: "singleColor";
@@ -2484,7 +2484,7 @@ export interface SinglecolorEffectConfig {
 
 /**
  * Specific configuration for the 'spectrum' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface SpectrumEffectConfig {
   type: "spectrum";
@@ -2499,7 +2499,7 @@ export interface SpectrumEffectConfig {
 
 /**
  * Specific configuration for the 'strobe' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface StrobeEffectConfig {
   type: "strobe";
@@ -2531,7 +2531,7 @@ export interface StrobeEffectConfig {
 
 /**
  * Specific configuration for the 'texter2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Texter2dEffectConfig {
   type: "texter2d";
@@ -2624,7 +2624,7 @@ export interface Texter2dEffectConfig {
 
 /**
  * Specific configuration for the 'vumeter' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface VumeterEffectConfig {
   type: "vumeter";
@@ -2673,7 +2673,7 @@ export interface VumeterEffectConfig {
 
 /**
  * Specific configuration for the 'water' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface WaterEffectConfig {
   type: "water";
@@ -2723,7 +2723,7 @@ export interface WaterEffectConfig {
 
 /**
  * Specific configuration for the 'waterfall2d' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface Waterfall2dEffectConfig {
   type: "waterfall2d";
@@ -2755,7 +2755,7 @@ export interface Waterfall2dEffectConfig {
 
 /**
  * Specific configuration for the 'wavelength' effect.
- * @category EffectSpecificConfiga
+ * @category EffectSpecificConfigs
  */
 export interface WavelengthEffectConfig {
   type: "wavelength";
