@@ -139,10 +139,19 @@ const EffectTypeDialog = ({
               padding: '5px !important',
 
               '& .MuiAutocomplete-listbox': {
-                paddingTop: '0px !important'
+                paddingTop: '0px !important',
+                maxHeight: '100% !important',
+                overflowY: 'auto'
               },
               '& .MuiAutocomplete-groupLabel': {
                 backgroundColor: '#3f3f41 !important'
+              },
+              '& .MuiAutocomplete-popper': {
+                height: 'calc(100% - 56px)'
+              },
+              '& .MuiAutocomplete-paper': {
+                height: '100%',
+                maxHeight: '100%'
               }
             },
             showFilter
@@ -206,10 +215,6 @@ const EffectTypeDialog = ({
               '& .MuiAutocomplete-popupIndicator': {
                 transform: 'none',
                 right: 5
-              },
-              '& .MuiAutocomplete-paper': {
-                height: '100%',
-                maxHeight: '100%'
               }
             }}
             groupBy={(option) => option.group}
