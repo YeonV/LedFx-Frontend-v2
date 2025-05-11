@@ -28,17 +28,17 @@ import Assign from './Assign'
 import GamepadSvgPs3 from './GamepadSvgPs3'
 import GamepadSvgPs4 from './GamepadSvgPs4'
 import GamepadSvgPs5 from './GamepadSvgPs5'
-import { sleep } from '../../utils/helpers'
 import MuiSwitch from '../MuiSwitch'
+import { executeCommand } from '../../utils/commandHandler'
 
-const Gamepad = ({ setScene, bottom }: any) => {
+const Gamepad = ({ bottom }: any) => {
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const setFeatures = useStore((state) => state.setFeatures)
-  const smartBarPadOpen = useStore((state) => state.ui.bars.smartBarPad.open)
-  const setSmartBarPadOpen = useStore(
-    (state) => state.ui.bars && state.ui.setSmartBarPadOpen
-  )
+  // const smartBarPadOpen = useStore((state) => state.ui.bars.smartBarPad.open)
+  // const setSmartBarPadOpen = useStore(
+  //   (state) => state.ui.bars && state.ui.setSmartBarPadOpen
+  // )
   const [open, setOpen] = useState<boolean>(false)
   const [pad0, setPad0] = useState<any>()
   const [pad1, setPad1] = useState<any>()
@@ -59,38 +59,11 @@ const Gamepad = ({ setScene, bottom }: any) => {
   const blocked = useStore((state) => state.blocked)
   const setBlocked = useStore((state) => state.setBlocked)
   const handleChange = (_e: ev, v: number) => setCurrentPad(v)
-  const togglePause = useStore((state) => state.togglePause)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const brightness = useStore((state) => state.config.global_brightness)
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
-  }
-  const [scanning, setScanning] = useState(-1)
-  const scanForDevices = useStore((state) => state.scanForDevices)
-  const getDevices = useStore((state) => state.getDevices)
-  const getVirtuals = useStore((state) => state.getVirtuals)
-  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
-  const oneShotAll = useStore((state) => state.oneShotAll)
-
-  const features = useStore((state) => state.features)
-
-  const handleScan = () => {
-    setScanning(0)
-    scanForDevices()
-      .then(async () => {
-        for (let sec = 1; sec <= 30; sec += 1) {
-          if (scanning === -1) break
-          sleep(1000).then(() => {
-            getDevices()
-            getVirtuals()
-            if (scanning !== -1) setScanning(sec)
-          })
-        }
-      })
-      .then(() => {
-        setScanning(-1)
-      })
   }
 
   useGamepads((g) => {
@@ -122,45 +95,6 @@ const Gamepad = ({ setScene, bottom }: any) => {
     }
   })
 
-  function handleButtonPress(command: string, payload?: any) {
-    if (command === 'scene' && payload?.scene) {
-      setScene(payload.scene)
-    } else if (command === 'padscreen') {
-      setOpen(!open)
-    } else if (command === 'smartbar') {
-      setSmartBarPadOpen(!smartBarPadOpen)
-    } else if (command === 'play/pause') {
-      togglePause()
-    } else if (command === 'brightness-up') {
-      setSystemSetting(
-        'global_brightness',
-        Math.min(brightness + 0.1, 1).toFixed(2)
-      )
-    } else if (command === 'brightness-down') {
-      setSystemSetting(
-        'global_brightness',
-        Math.max(brightness - 0.1, 0).toFixed(2)
-      )
-    } else if (command === 'scan-wled') {
-      handleScan()
-    } else if (command === 'copy-to') {
-      setFeatures('streamto', !features.streamto)
-    } else if (command === 'transitions') {
-      setFeatures('transitions', !features.transitions)
-    } else if (command === 'frequencies') {
-      setFeatures('frequencies', !features.frequencies)
-    } else if (command === 'scene-playlist') {
-      toggleScenePLplay()
-    } else if (command === 'one-shot') {
-      oneShotAll(
-        payload?.color || '#0dbedc',
-        payload?.ramp || 10,
-        payload?.hold || 200,
-        payload?.fade || 2000
-      )
-    }
-  }
-
   useEffect(() => {
     if (!blocked) {
       const m = [pad0, pad1, pad2, pad3]
@@ -173,7 +107,7 @@ const Gamepad = ({ setScene, bottom }: any) => {
             mapping[pad.index][i].command &&
             mapping[pad.index][i].command !== 'none'
           if (test) {
-            handleButtonPress(
+            executeCommand(
               mapping[pad.index][i].command!,
               mapping[pad.index][i].payload
             )
