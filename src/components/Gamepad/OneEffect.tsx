@@ -20,8 +20,9 @@ import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import SliderInput from '../SchemaForm/components/Number/SliderInput'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { log } from '../../utils/log'
 
-const OneEffect = ({ setPayload, noButton }: any) => {
+const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const [virtId, setVirtId] = useState('')
@@ -39,13 +40,46 @@ const OneEffect = ({ setPayload, noButton }: any) => {
   const getPresets = useStore((state) => state.getPresets)
   const setEffectFallback = useStore((state) => state.setEffectFallback)
 
+  log.purple('OneEffect', initialPayload)
+
   const p = { ...presets.ledfx_presets, ...presets.user_presets }
 
   const handleClose = () => {
     setDialogOpen(false)
   }
   const handleSave = () => {
-    setPayload({})
+    let finalConfigString
+    if (config && config !== '') {
+      // config state is a non-empty JSON string
+      try {
+        // Parse and re-stringify to ensure consistent formatting (e.g., pretty print)
+        finalConfigString = JSON.stringify(JSON.parse(config), null, 4)
+      } catch (e) {
+        log.error(
+          'OneEffect',
+          'Error parsing config state before save:',
+          config,
+          e
+        )
+        finalConfigString = JSON.stringify({}, null, 4) // Fallback to empty object string
+      }
+    } else {
+      finalConfigString = JSON.stringify({}, null, 4) // Represents an empty config
+    }
+    log.purple(
+      'OneEffect',
+      'Final config string:',
+      fallbackUseNumber,
+      fallbackNumber,
+      fallbackBool
+    )
+    setPayload({
+      virtId,
+      type,
+      config: finalConfigString,
+      active,
+      fallback: fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool // Ensure fallbackNumber is scaled (0-1)
+    })
     setDialogOpen(false)
   }
   // const handleTest = (virtId: string, type: string, config: EffectConfig, active: boolean, fallback: boolean | number) => {
@@ -60,6 +94,63 @@ const OneEffect = ({ setPayload, noButton }: any) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId, type])
+
+  // Initializing the dialog state when it opens
+  useEffect(() => {
+    if (dialogOpen) {
+      log.purple(
+        'OneEffect',
+        'Dialog opened, initializing with initialPayload:',
+        initialPayload
+      )
+      setVirtId(initialPayload?.virtId || '')
+      setType(initialPayload?.type || '')
+
+      // Config: initialPayload.config is expected to be a stringified JSON.
+      // The local `config` state will also store it as a string (or '' for "Please select").
+      const initialConfigStr = initialPayload?.config
+      if (initialConfigStr) {
+        try {
+          JSON.parse(initialConfigStr) // Validate if it's a JSON string
+          setConfig(JSON.stringify(JSON.parse(initialConfigStr)))
+        } catch (e) {
+          console.warn(
+            'Initial payload config is not a valid JSON string:',
+            initialConfigStr,
+            e
+          )
+          setConfig('') // Default to "Please select" or empty
+        }
+      } else {
+        setConfig('') // For create mode or if config is not set
+      }
+
+      setActive(
+        initialPayload?.active !== undefined ? initialPayload.active : false
+      )
+
+      // Handle fallback logic
+      if (initialPayload && initialPayload.fallback !== undefined) {
+        if (typeof initialPayload.fallback === 'number') {
+          setFallbackUseNumber(true)
+          // Assuming initialPayload.fallback is 0-1, and slider uses 0-1000
+          setFallbackNumber(initialPayload.fallback * 1000)
+          setFallbackBool(true)
+        } else {
+          // Assuming boolean
+          setFallbackUseNumber(false)
+          setFallbackBool(Boolean(initialPayload.fallback)) // Ensure it's a boolean
+          // setFallbackNumber(20) // Default for number when bool is used (current default)
+        }
+      } else {
+        // Defaults for create mode or if initialPayload.fallback is undefined
+        setFallbackUseNumber(true) // Default to number type
+        setFallbackNumber(20) // Default value for number (0-1000 scale)
+        setFallbackBool(false) // Default value for bool
+      }
+    }
+    // Rerun this effect when the dialog opens or the initialPayload changes.
+  }, [dialogOpen, initialPayload])
 
   return (
     <>
@@ -120,7 +211,7 @@ const OneEffect = ({ setPayload, noButton }: any) => {
               </Typography>
               <Select
                 fullWidth
-                value={typeof config === 'string' ? config : ''}
+                value={config}
                 onChange={(e) => setConfig(e.target.value)}
               >
                 <MenuItem key={'noValue'} value={''}>
@@ -187,7 +278,9 @@ const OneEffect = ({ setPayload, noButton }: any) => {
                   color="primary"
                   value={fallbackBool}
                   exclusive
-                  onChange={(e, v) => setFallbackBool(v)}
+                  onChange={(_e, v) => {
+                    if (v !== null) setFallbackBool(v)
+                  }}
                   aria-label="Platform"
                 >
                   <ToggleButton value={true}>true</ToggleButton>
@@ -229,11 +322,20 @@ const OneEffect = ({ setPayload, noButton }: any) => {
               >
                 <pre>
                   {`{
-  "virtId": "${virtId}",
-  "type": "${type}",
-  "config": ${typeof config === 'string' ? JSON.stringify(JSON.parse(config), null, 4) : JSON.stringify(config, null, 4)},
-  "active": ${active},
-  "fallback": ${fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool}
+"virtId": "${virtId}",
+"type": "${type}",
+"config": ${(() => {
+                    if (config && config !== '') {
+                      try {
+                        return JSON.stringify(JSON.parse(config), null, 4)
+                      } catch (e) {
+                        return '"Error: Invalid config format"'
+                      }
+                    }
+                    return JSON.stringify({}, null, 4)
+                  })()},
+"active": ${active},
+"fallback": ${fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool}
 }`}
                 </pre>
               </code>
@@ -244,17 +346,30 @@ const OneEffect = ({ setPayload, noButton }: any) => {
             <Button
               // onClick={() => handleTest()}
               onMouseDownCapture={() => {
-                // console.log('onMouseDownCapture', e)
+                let effectConfigObject = {}
+                if (config && config !== '') {
+                  try {
+                    effectConfigObject = JSON.parse(config)
+                  } catch (e) {
+                    log.error(
+                      'OneEffect',
+                      'Error parsing config for test:',
+                      config,
+                      e
+                    )
+                    // effectConfigObject remains {}
+                  }
+                }
                 setEffect(
                   virtId,
                   type,
-                  JSON.parse(config),
+                  effectConfigObject, // Pass parsed object
                   active,
-                  fallbackUseNumber ? fallbackNumber : fallbackBool
+                  fallbackUseNumber ? fallbackNumber / 1000 : fallbackBool // Ensure fallbackNumber is scaled (0-1)
                 )
               }}
               onMouseUpCapture={() => {
-                // console.log('onMouseUp', e)
+                // log.purple('onMouseUp', e)
                 setEffectFallback(virtId)
               }}
             >
