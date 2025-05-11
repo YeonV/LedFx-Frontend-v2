@@ -17,7 +17,7 @@ import {
   Tabs,
   Tooltip
 } from '@mui/material'
-import { useState, SyntheticEvent as ev, useEffect } from 'react'
+import { useState, SyntheticEvent as ev, useEffect, useRef } from 'react'
 import { useGamepads } from 'react-gamepads'
 import useStore from '../../store/useStore'
 import { CustomTabPanel as PN, a11yProps } from './Gamepad.props'
@@ -30,15 +30,14 @@ import GamepadSvgPs4 from './GamepadSvgPs4'
 import GamepadSvgPs5 from './GamepadSvgPs5'
 import MuiSwitch from '../MuiSwitch'
 import { executeCommand } from '../../utils/commandHandler'
+import { log } from '../../utils/log'
 
 const Gamepad = ({ bottom }: any) => {
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const setFeatures = useStore((state) => state.setFeatures)
-  // const smartBarPadOpen = useStore((state) => state.ui.bars.smartBarPad.open)
-  // const setSmartBarPadOpen = useStore(
-  //   (state) => state.ui.bars && state.ui.setSmartBarPadOpen
-  // )
+  const prevButtonStatesRef = useRef<Record<number, boolean[]>>({})
+
   const [open, setOpen] = useState<boolean>(false)
   const [pad0, setPad0] = useState<any>()
   const [pad1, setPad1] = useState<any>()
@@ -53,7 +52,6 @@ const Gamepad = ({ bottom }: any) => {
   const setAnalogBrightness = useStore((state) => state.setAnalogBrightness)
 
   const padTypes = ['generic', 'ps3', 'ps4', 'ps5']
-  // const padTypes = ['generic', 'ps3', 'ps4', 'ps5', 'xbox']
   const [padType, setPadType] = useState('generic')
 
   const blocked = useStore((state) => state.blocked)
@@ -61,10 +59,10 @@ const Gamepad = ({ bottom }: any) => {
   const handleChange = (_e: ev, v: number) => setCurrentPad(v)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
-  const brightness = useStore((state) => state.config.global_brightness)
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
   }
+  const brightness = useStore((state) => state.config.global_brightness)
 
   useGamepads((g) => {
     if (g[0]) setPad0(g[0])
@@ -72,7 +70,7 @@ const Gamepad = ({ bottom }: any) => {
     if (g[2]) setPad2(g[2])
     if (g[3]) setPad3(g[3])
     setGp(pad0?.id || pad1?.id || pad2?.id || pad3?.id)
-    if (Object.keys(g).some((k: any) => g[k]?.buttons[8].pressed && g[k]?.buttons[9].pressed)) {
+    if (Object.keys(g).some((k: any) => g[k]?.buttons[8]?.pressed && g[k]?.buttons[9]?.pressed)) {
       alert('DevMode activated!')
       setFeatures('dev', true)
     } else if (
@@ -89,41 +87,123 @@ const Gamepad = ({ bottom }: any) => {
   })
 
   useEffect(() => {
-    if (!blocked) {
-      const m = [pad0, pad1, pad2, pad3]
-      m.map((pad: any) =>
-        pad?.buttons.map((b: any, i: number) => {
-          const test =
-            b.pressed &&
-            b.value === 1 &&
-            mapping[pad.index][i] &&
-            mapping[pad.index][i].command &&
-            mapping[pad.index][i].command !== 'none'
-          if (test) {
-            executeCommand(mapping[pad.index][i].command!, mapping[pad.index][i].payload)
-          } else if (pad.axes[0] === 1 && analogBrightness[0]) {
-            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
-          } else if (pad.axes[0] === -1 && analogBrightness[0]) {
-            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
-          } else if (pad.axes[1] === -1 && analogBrightness[1]) {
-            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
-          } else if (pad.axes[1] === 1 && analogBrightness[1]) {
-            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
-          } else if (pad.axes[2] === 1 && analogBrightness[2]) {
-            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
-          } else if (pad.axes[2] === -1 && analogBrightness[2]) {
-            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
-          } else if (pad.axes[3] === -1 && analogBrightness[3]) {
-            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
-          } else if (pad.axes[3] === 1 && analogBrightness[3]) {
-            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
-          }
-          return null
-        })
-      )
+    if (blocked) {
+      log.yellow('Gamepad handling blocked by "blocked" state')
+      return
     }
+
+    const gamepadsArray = [pad0, pad1, pad2, pad3]
+    const newPrevButtonStates: Record<number, boolean[]> = {}
+
+    gamepadsArray.forEach((pad) => {
+      if (!pad || !pad.id || !pad.buttons || !pad.axes) {
+        return
+      }
+
+      const padIndex = pad.index
+
+      if (!prevButtonStatesRef.current[padIndex]) {
+        log.blue('Gamepad: Initializing prevButtonStates for padIndex', padIndex)
+        prevButtonStatesRef.current[padIndex] = Array(pad.buttons.length).fill(false)
+      }
+      if (!newPrevButtonStates[padIndex]) {
+        newPrevButtonStates[padIndex] = Array(pad.buttons.length).fill(false)
+      }
+
+      const previousPadButtonStates = prevButtonStatesRef.current[padIndex]
+
+      pad.buttons.forEach((buttonState: any, buttonIndex: number) => {
+        const isCurrentlyPressed = buttonState.pressed && buttonState.value === 1
+        newPrevButtonStates[padIndex][buttonIndex] = isCurrentlyPressed
+
+        const wasPreviouslyPressed = previousPadButtonStates[buttonIndex]
+        const mappingEntry = mapping[padIndex]?.[buttonIndex]
+
+        if (!mappingEntry || !mappingEntry.command || mappingEntry.command === 'none') {
+          return
+        }
+
+        const command = mappingEntry.command
+        const payloadFromMapping = mappingEntry.payload || {}
+
+        // --- onPressed Event ---
+        if (isCurrentlyPressed && !wasPreviouslyPressed) {
+          log.green(`Gamepad Button ON_PRESSED: Pad ${padIndex}, Button ${buttonIndex}`, {
+            command,
+            payload: payloadFromMapping
+          })
+
+          if (command === 'padscreen') {
+            setOpen((prevOpen) => !prevOpen)
+          } else {
+            const finalPayload = { ...payloadFromMapping }
+            executeCommand(command, finalPayload)
+          }
+        }
+        // --- onReleased Event ---
+        else if (!isCurrentlyPressed && wasPreviouslyPressed) {
+          log.red(`Gamepad Button ON_RELEASED: Pad ${padIndex}, Button ${buttonIndex}`, {
+            command,
+            payload: payloadFromMapping
+          })
+
+          if (command === 'effect') {
+            if (payloadFromMapping.fallback === true) {
+              log.blue(
+                'Gamepad: Triggering effect-fallback (dynamic) for virtId:',
+                payloadFromMapping.virtId
+              )
+              executeCommand('effect-fallback', { virtId: payloadFromMapping.virtId })
+            }
+          }
+        }
+      })
+
+      // --- Analog Stick Brightness Handling ---
+      const currentBrightness = brightness // From useStore selector, ensures fresh value
+
+      if (analogBrightness[0]) {
+        if (pad.axes[0] === 1)
+          setSystemSetting('global_brightness', Math.min(currentBrightness + 0.1, 1).toFixed(2))
+        else if (pad.axes[0] === -1)
+          setSystemSetting('global_brightness', Math.max(currentBrightness - 0.1, 0).toFixed(2))
+      }
+      if (analogBrightness[1]) {
+        // PS Y-axis: -1 is up, 1 is down
+        if (pad.axes[1] === -1)
+          setSystemSetting('global_brightness', Math.min(currentBrightness + 0.1, 1).toFixed(2))
+        else if (pad.axes[1] === 1)
+          setSystemSetting('global_brightness', Math.max(currentBrightness - 0.1, 0).toFixed(2))
+      }
+      if (analogBrightness[2]) {
+        if (pad.axes[2] === 1)
+          setSystemSetting('global_brightness', Math.min(currentBrightness + 0.1, 1).toFixed(2))
+        else if (pad.axes[2] === -1)
+          setSystemSetting('global_brightness', Math.max(currentBrightness - 0.1, 0).toFixed(2))
+      }
+      if (analogBrightness[3]) {
+        // PS R-Stick Y-axis: -1 is up, 1 is down
+        if (pad.axes[3] === -1)
+          setSystemSetting('global_brightness', Math.min(currentBrightness + 0.1, 1).toFixed(2))
+        else if (pad.axes[3] === 1)
+          setSystemSetting('global_brightness', Math.max(currentBrightness - 0.1, 0).toFixed(2))
+      }
+    })
+
+    // After processing all gamepads, update the ref for the next frame's comparison
+    prevButtonStatesRef.current = newPrevButtonStates
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pad0, pad1, pad2, pad3])
+  }, [
+    pad0,
+    pad1,
+    pad2,
+    pad3, // Gamepad states
+    blocked, // Local guard
+    mapping, // For command lookup
+    analogBrightness, // For analog stick logic
+    brightness, // For analog stick logic (current brightness)
+    setOpen // For 'padscreen' command
+  ])
 
   return gp ? (
     <div style={{ position: 'fixed', left: '1rem', bottom }}>
@@ -214,7 +294,7 @@ const Gamepad = ({ bottom }: any) => {
                     >
                       {[0, 1, 2, 3].map((inde) => (
                         <Stack direction="column" key={`axes${inde}`}>
-                          <PD label={`axes${inde}`} value={pad.axes[inde].toFixed(5)} />
+                          <PD label={`axes${inde}`} value={pad.axes[inde]?.toFixed(5)} />
                           <MuiSwitch
                             checked={analogBrightness[inde as 0 | 1 | 2 | 3]}
                             onChange={() =>
