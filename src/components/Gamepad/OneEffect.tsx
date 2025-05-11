@@ -7,6 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   MenuItem,
   Select,
   Stack,
@@ -134,9 +135,9 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   return (
     <>
       {!noButton && (
-        <Button variant="text" onClick={() => setDialogOpen(true)}>
+        <IconButton onClick={() => setDialogOpen(true)}>
           <Edit />
-        </Button>
+        </IconButton>
       )}
       <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
         <DialogTitle alignItems="center" display="flex">

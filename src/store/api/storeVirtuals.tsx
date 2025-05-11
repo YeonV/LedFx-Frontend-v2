@@ -314,7 +314,7 @@ const storeVirtuals = (set: any) => ({
     return false
   },
   oneShotAll: async (color: string, ramp: number, hold: number, fade: number) => {
-    const resp = await Ledfx('/api/virtuals_tools', 'PUT', {
+    const resp = await Ledfx('/api/virtuals_tools', 'POST', {
       tool: 'oneshot',
       color,
       ramp,

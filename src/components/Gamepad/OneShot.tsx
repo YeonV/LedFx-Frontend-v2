@@ -30,17 +30,13 @@ const OneShot = ({
   const [ramp, setRamp] = useState(defaultRamp || 10)
   const [hold, setHold] = useState(defaultHold || 200)
   const [fade, setFade] = useState(defaultFate || 2000)
-  const [holdType, setHoldType] = useState('press')
 
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newHoldType: string) => {
-    setHoldType(newHoldType)
-  }
   const colors = useStore((state) => state.colors)
   const handleClose = () => {
     setDialogOpen(false)
   }
   const handleSave = () => {
-    setPayload({ color, ramp, hold, fade, holdType })
+    setPayload({ color, ramp, hold, fade })
     setDialogOpen(false)
   }
 
@@ -68,7 +64,9 @@ const OneShot = ({
               borderRadius: '4px',
               justifyContent: 'space-between',
               backgroundColor: defaultColor,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              marginLeft: '16px !important',
+              marginRight: '8px !important'
             },
             size === 'large'
               ? {
@@ -132,20 +130,6 @@ const OneShot = ({
                   backgroundColor: color
                 }}
               />
-              <Stack direction={'column'} alignItems={'center'} justifyContent={'space-between'}>
-                <label>Hold after</label>
-                <ToggleButtonGroup
-                  fullWidth
-                  color="primary"
-                  value={holdType}
-                  exclusive
-                  onChange={handleChange}
-                  aria-label="Platform"
-                >
-                  <ToggleButton value="press">Press</ToggleButton>
-                  <ToggleButton value="release">Release</ToggleButton>
-                </ToggleButtonGroup>
-              </Stack>
             </Stack>
           </Stack>
           <SliderInput title="Ramp" value={ramp} setValue={setRamp} />
