@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 interface WorkerMessageTimer {
   action: 'start' | 'stop'
   interval: number

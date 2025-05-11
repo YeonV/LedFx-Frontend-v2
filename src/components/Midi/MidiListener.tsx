@@ -22,7 +22,6 @@ const MIDIListener = () => {
   const midiEvent = useStore((state) => state.midiEvent)
   const setFeatures = useStore((state) => state.setFeatures)
   const getUiBtnNo = useStore((state) => state.getUiBtnNo)
-  const oneShotAll = useStore((state) => state.oneShotAll)
   const setMidiEvent = useStore((state) => state.setMidiEvent)
   const setMidiInputs = useStore((state) => state.setMidiInputs)
   const setMidiOutputs = useStore((state) => state.setMidiOutputs)
@@ -114,17 +113,13 @@ const MIDIListener = () => {
 
     const handleNoteOff = (event: any, input: Input) => {
       const mapping = getMappingByButtonNumber(event.note.number)
-      if (mapping?.command === 'one-shot' && mapping?.payload?.holdType === 'release') {
-        oneShotAll(
-          mapping.payload?.color || '#0dbedc',
-          mapping.payload?.ramp || 10,
-          1,
-          mapping.payload?.fade || 220
-        )
-      }
-      if (mapping?.command === 'effect' && mapping?.payload?.holdType === 'release') {
-        // will come soon
-        // setEffectFallback(mapping.payload?.virtId)
+      if (
+        mapping?.command === 'effect' &&
+        typeof mapping?.payload?.fallback === 'boolean' &&
+        mapping?.payload?.fallback === true &&
+        mapping.payload?.virtId
+      ) {
+        executeCommand('effect-fallback', { virtId: mapping.payload?.virtId })
       }
 
       if (midiInput !== input.name) return
