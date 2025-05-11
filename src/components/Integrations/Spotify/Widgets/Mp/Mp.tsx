@@ -9,13 +9,7 @@ const Mp = () => {
   return (
     <Box component={MpFloating}>
       <div className={classes.Widget}>
-        <Box
-          bgcolor="#111"
-          height={50}
-          alignItems="center"
-          justifyContent="center"
-          display="flex"
-        >
+        <Box bgcolor="#111" height={50} alignItems="center" justifyContent="center" display="flex">
           Player
         </Box>
         {/* <iframe

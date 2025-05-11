@@ -68,11 +68,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       if (showComplex) {
         return v
       } else {
-        return !(
-          v.endsWith('-mask') ||
-          v.endsWith('-foreground') ||
-          v.endsWith('-background')
-        )
+        return !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
       }
     })
     .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
@@ -95,11 +91,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       <DialogTitle id="confirmation-dialog-title">Select a segment</DialogTitle>
       <DialogContent dividers>
         <BladeFrame full>
-          <Select
-            value={value}
-            style={{ width: '100%' }}
-            onChange={handleChange}
-          >
+          <Select value={value} style={{ width: '100%' }} onChange={handleChange}>
             {Object.keys(segments).map((v) => {
               const k = virtualKeys.find((vi) => virtuals[vi].config.name === v)
               return (
@@ -128,13 +120,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   )
 }
 
-function AddExistingSegmentDialog({
-  virtual,
-  config = {}
-}: {
-  virtual: any
-  config?: any
-}) {
+function AddExistingSegmentDialog({ virtual, config = {} }: { virtual: any; config?: any }) {
   const [open, setOpen] = React.useState(false)
   const deviceList = useStore((state) => state.devices) || {}
   const virtuals = useStore((state) => state.virtuals) || {}
@@ -159,9 +145,7 @@ function AddExistingSegmentDialog({
     // console.log(name)
     // console.log(segments)
     if (name && segments) {
-      const deviceKey = Object.keys(deviceList).find(
-        (d) => deviceList[d].id === segments[0]
-      )
+      const deviceKey = Object.keys(deviceList).find((d) => deviceList[d].id === segments[0])
       const device = deviceKey ? deviceList[deviceKey] : undefined
       // console.log(device)
       const temp = [...virtual.segments, segments]
@@ -169,11 +153,7 @@ function AddExistingSegmentDialog({
 
       updateSegments(virtual.id, test).then(() => {
         getVirtuals()
-        if (
-          device &&
-          virtual.active === false &&
-          virtual.segments.length === 0
-        ) {
+        if (device && virtual.active === false && virtual.segments.length === 0) {
           if (
             device.active_virtuals &&
             device.active_virtuals[0] &&
@@ -193,13 +173,7 @@ function AddExistingSegmentDialog({
           }
         }
         if (device) {
-          highlightSegment(
-            virtual.id,
-            device.id,
-            segments[1],
-            segments[2],
-            false
-          )
+          highlightSegment(virtual.id, device.id, segments[1], segments[2], false)
         }
       })
     }

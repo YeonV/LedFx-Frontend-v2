@@ -41,11 +41,7 @@ const ScenesPlaylistMenu = () => {
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
-            download(
-              { scenePL, scenePLintervals },
-              'ScenePlaylist.json',
-              'application/json'
-            )
+            download({ scenePL, scenePLintervals }, 'ScenePlaylist.json', 'application/json')
             handleClose()
           }}
         >
@@ -61,10 +57,7 @@ const ScenesPlaylistMenu = () => {
             type="file"
             onChange={(e) => fileChanged(e)}
           />
-          <label
-            htmlFor="contained-button-file"
-            style={{ width: '100%', flexBasis: '49%' }}
-          >
+          <label htmlFor="contained-button-file" style={{ width: '100%', flexBasis: '49%' }}>
             <ListItemIcon>
               <BladeIcon name="mdi:folder-open" />
             </ListItemIcon>

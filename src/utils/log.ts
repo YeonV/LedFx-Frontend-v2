@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // --- Configuration ---
 const colorStyles = {
   // Use 'as const' for stricter key inference if needed, but Record is fine
@@ -65,9 +66,7 @@ interface LogObject {
 }
 
 // --- Filtering State ---
-const defaultEnabledColorsList = allColorNames.filter(
-  (color) => color !== 'purple'
-)
+const defaultEnabledColorsList = allColorNames.filter((color) => color !== 'purple')
 let enabledLogColors: Set<ColorName> = new Set(defaultEnabledColorsList)
 
 // --- Internal Implementation ---
@@ -79,11 +78,7 @@ const performLog = (
   colorNameUsed: ColorName | null
 ) => {
   if (colorNameUsed === null || enabledLogColors.has(colorNameUsed)) {
-    method(
-      `%c${category}`,
-      `padding: 2px 6px; border-radius: 3px; ${style}`,
-      ...messages
-    )
+    method(`%c${category}`, `padding: 2px 6px; border-radius: 3px; ${style}`, ...messages)
   }
 }
 
@@ -94,18 +89,11 @@ const createLevelObject = (level: BrowserLogLevel): LogLevelMethods => {
   const consoleMethod = consoleMethods[level]
   const defaultColorStyle = defaultLevelColors[level]
   const defaultColorName =
-    allColorNames.find((name) => colorStyles[name] === defaultColorStyle) ||
-    null
+    allColorNames.find((name) => colorStyles[name] === defaultColorStyle) || null
 
   // Base function for this level
   const baseFunc: LogMethodSignature = (category, ...messages) => {
-    performLog(
-      consoleMethod,
-      defaultColorStyle,
-      category,
-      messages,
-      defaultColorName
-    )
+    performLog(consoleMethod, defaultColorStyle, category, messages, defaultColorName)
   }
 
   // Create the object, starting with the base function, cast initially
@@ -171,16 +159,11 @@ export const log = logExport // Export the fully constructed object
 export const setEnabledLogColors = (colors: ColorName[]) => {
   enabledLogColors = new Set(colors)
   // Now log.info definitely exists
-  log.info.purple(
-    'LoggerConfig',
-    'Enabled colors updated:',
-    Array.from(enabledLogColors)
-  )
+  log.info.purple('LoggerConfig', 'Enabled colors updated:', Array.from(enabledLogColors))
 }
 
 /** Gets the currently enabled log colors. */
-export const getEnabledLogColors = (): ColorName[] =>
-  Array.from(enabledLogColors)
+export const getEnabledLogColors = (): ColorName[] => Array.from(enabledLogColors)
 
 /** List of all available color names. */
 export const availableColorNames = allColorNames
@@ -190,10 +173,7 @@ try {
   const storedColors = localStorage.getItem('logViewerEnabledColors')
   if (storedColors) {
     const parsedColors = JSON.parse(storedColors)
-    if (
-      Array.isArray(parsedColors) &&
-      parsedColors.every((c) => availableColorNames.includes(c))
-    ) {
+    if (Array.isArray(parsedColors) && parsedColors.every((c) => availableColorNames.includes(c))) {
       setEnabledLogColors(parsedColors)
     } else {
       console.warn(
@@ -203,9 +183,6 @@ try {
     }
   }
 } catch (e) {
-  console.error(
-    '[LoggerConfig] Failed to initialize log color filter from localStorage',
-    e
-  )
+  console.error('[LoggerConfig] Failed to initialize log color filter from localStorage', e)
   setEnabledLogColors(defaultEnabledColorsList)
 }

@@ -52,9 +52,7 @@ const storeQLCActions = (set: any) => ({
   removeQLCActTriggers: async (id: string) => {
     set(
       produce((state: IStore) => {
-        state.qlc.QLCActTriggers = state.qlc.QLCActTriggers.filter(
-          (f: any) => f.id !== id
-        )
+        state.qlc.QLCActTriggers = state.qlc.QLCActTriggers.filter((f: any) => f.id !== id)
       }),
       false,
       'qlc/delTriggers'

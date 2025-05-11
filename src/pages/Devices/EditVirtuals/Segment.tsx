@@ -13,8 +13,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
   const title =
     devices &&
     virtuals &&
-    virtuals[devices && Object.keys(devices).find((d) => d === s[0])!].config!
-      .name
+    virtuals[devices && Object.keys(devices).find((d) => d === s[0])!].config!.name
   const classes = useSegmentStyles()
   const updateSegments = useStore((state) => state.updateSegments)
   const highlightSegment = useStore((state) => state.highlightSegment)
@@ -42,8 +41,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     })
   }
   const reorder = (direction: string) => {
-    const newSegments =
-      direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1)
+    const newSegments = direction === 'UP' ? swap(segments, i - 1, i) : swap(segments, i, i + 1)
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
       if (calib) {
@@ -59,9 +57,7 @@ const Segment = ({ s, i, virtual, segments, calib }: any) => {
     })
   }
   const handleDeleteSegment = () => {
-    const newSegments = segments.filter(
-      (_seg: any, index: number) => index !== i
-    )
+    const newSegments = segments.filter((_seg: any, index: number) => index !== i)
     updateSegments(virtual.id, newSegments).then(() => {
       getVirtuals()
       if (calib) {

@@ -10,15 +10,7 @@ import {
   PauseCircle,
   PlayCircle
 } from '@mui/icons-material'
-import {
-  Button,
-  Box,
-  IconButton,
-  Slider,
-  Select,
-  MenuItem,
-  Typography
-} from '@mui/material'
+import { Button, Box, IconButton, Slider, Select, MenuItem, Typography } from '@mui/material'
 import { useState, useContext } from 'react'
 import useStore from '../../../../../store/useStore'
 import useStyle, { TinyText, PosSliderStyles } from './SpWidgetPro.styles'
@@ -90,20 +82,11 @@ export default function SpControls({ className }: any) {
                 onClick={() => setVol(spotifyVolume === 0 ? 1 : 0)}
               >
                 {spotifyVolume === 0 ? (
-                  <VolumeMute
-                    style={{ fontSize: '1.5rem' }}
-                    htmlColor="rgba(255,255,255,0.7)"
-                  />
+                  <VolumeMute style={{ fontSize: '1.5rem' }} htmlColor="rgba(255,255,255,0.7)" />
                 ) : spotifyVolume < 0.5 ? (
-                  <VolumeDown
-                    style={{ fontSize: '1.5rem' }}
-                    htmlColor="rgba(255,255,255,0.7)"
-                  />
+                  <VolumeDown style={{ fontSize: '1.5rem' }} htmlColor="rgba(255,255,255,0.7)" />
                 ) : (
-                  <VolumeUp
-                    style={{ fontSize: '1.5rem' }}
-                    htmlColor="rgba(255,255,255,0.7)"
-                  />
+                  <VolumeUp style={{ fontSize: '1.5rem' }} htmlColor="rgba(255,255,255,0.7)" />
                 )}
               </IconButton>
             </div>
@@ -112,11 +95,7 @@ export default function SpControls({ className }: any) {
                 aria-label="shuffle"
                 onClick={() => spotifyShuffle(spotifyDevice, !shuffle)}
               >
-                {shuffle ? (
-                  <Shuffle color="primary" />
-                ) : (
-                  <Shuffle htmlColor="#bbb" />
-                )}
+                {shuffle ? <Shuffle color="primary" /> : <Shuffle htmlColor="#bbb" />}
               </IconButton>
             )}
             {premium && (
@@ -163,8 +142,7 @@ export default function SpControls({ className }: any) {
                   disableUnderline
                   defaultValue={
                     spotifyDevices && spotifyDevices.length > 0
-                      ? spotifyDevices.find((d) => d.is_active)?.id ||
-                        'No Player detected'
+                      ? spotifyDevices.find((d) => d.is_active)?.id || 'No Player detected'
                       : 'No Player detected'
                   }
                 >
@@ -174,9 +152,7 @@ export default function SpControls({ className }: any) {
                       <MenuItem key={d.id + i} value={d.id}>
                         <div style={{ display: 'flex' }}>
                           <BladeIcon name={d.type} />
-                          <Typography sx={{ marginLeft: 2 }}>
-                            {d.name}
-                          </Typography>
+                          <Typography sx={{ marginLeft: 2 }}>{d.name}</Typography>
                         </div>
                       </MenuItem>
                     ))}
@@ -198,18 +174,12 @@ export default function SpControls({ className }: any) {
               justifyContent: 'space-between'
             }}
           >
-            <TinyText>
-              {formatTime(spotifyCtx?.position || spCtx?.progress_ms || 0)}
-            </TinyText>
+            <TinyText>{formatTime(spotifyCtx?.position || spCtx?.progress_ms || 0)}</TinyText>
             <Slider
               aria-label="time-indicator"
               size="small"
               marks={marks}
-              value={
-                position >= 0
-                  ? position
-                  : spotifyCtx?.position || spCtx?.progress_ms || 0
-              }
+              value={position >= 0 ? position : spotifyCtx?.position || spCtx?.progress_ms || 0}
               min={0}
               step={1}
               max={duration}

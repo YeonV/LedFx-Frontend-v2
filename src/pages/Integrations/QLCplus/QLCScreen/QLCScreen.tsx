@@ -1,19 +1,7 @@
 import React from 'react'
-import {
-  Typography,
-  Toolbar,
-  AppBar,
-  Dialog,
-  Button,
-  Grid2 as Grid
-} from '@mui/material'
+import { Typography, Toolbar, AppBar, Dialog, Button, Grid2 as Grid } from '@mui/material'
 import { Settings, NavigateBefore, Add } from '@mui/icons-material'
-import {
-  MuiMenuItem,
-  QLCScreenDefaultProps,
-  QLCScreenProps,
-  Transition
-} from './QLCScreen.props'
+import { MuiMenuItem, QLCScreenDefaultProps, QLCScreenProps, Transition } from './QLCScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
 import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable'
 // import QLCDropdownTable from '../../../../components/Integrations/QLC/QLCDropdownTable'
@@ -73,12 +61,7 @@ export default function QLCScreen({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
+      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
@@ -121,12 +104,11 @@ export default function QLCScreen({
           <div style={{ marginTop: '1rem' }} />
           <QLCTriggerTable />
           <Typography>
-            Please note, QLC+ integration is in Beta, and might notice bugs;
-            such as edit button.
+            Please note, QLC+ integration is in Beta, and might notice bugs; such as edit button.
           </Typography>
           <Typography>
-            To find out if known bug or to report a bug, please visit our LedFx
-            discord Integrations channel: QLC+.
+            To find out if known bug or to report a bug, please visit our LedFx discord Integrations
+            channel: QLC+.
           </Typography>
           {/* <QLCDropdownTable /> */}
         </div>

@@ -74,8 +74,8 @@ const steps = [
         <h2>Frontend FPS</h2>
         FPS sent to the frontend to render the PixelGraphs
         <p>
-          Note: Low-end devices might struggle with too much data. Keep it at
-          maximum, if everything runs smooth.
+          Note: Low-end devices might struggle with too much data. Keep it at maximum, if everything
+          runs smooth.
         </p>
       </div>
     ),
@@ -158,11 +158,7 @@ const TourSettings = ({ cally }: any) => {
         Tour
       </MenuItem>
       <Tour
-        steps={
-          features.wled
-            ? steps
-            : steps.filter((s) => s.selector !== '.step-settings-five')
-        }
+        steps={features.wled ? steps : steps.filter((s) => s.selector !== '.step-settings-five')}
         accentColor="#800000"
         isOpen={isTourOpen}
         onRequestClose={() => {

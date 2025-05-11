@@ -392,9 +392,7 @@ const DeviceCard = ({
             }}
           >
             <div
-              className={`${classes.buttonBarMobileWrapper} ${
-                !graphsActive ? 'graphs' : ''
-              } ${expanded ? 'extended' : ''}`}
+              className={`${classes.buttonBarMobileWrapper} ${!graphsActive ? 'graphs' : ''} ${expanded ? 'extended' : ''}`}
               onClick={(e) => e.preventDefault()}
             >
               <div />

@@ -35,9 +35,7 @@ const AddVirtualDialog = () => {
 
   const initial = virtual || { type: '', config: {} }
 
-  const setDialogOpenAddVirtual = useStore(
-    (state) => state.setDialogOpenAddVirtual
-  )
+  const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
 
   const virtualsSchemas = useStore((state) => state.schemas?.virtuals)
@@ -52,9 +50,7 @@ const AddVirtualDialog = () => {
     setModel({})
   }
   const handleAddVirtual = () => {
-    const cleanedModel = Object.fromEntries(
-      Object.entries(model).filter(([_, v]) => v !== '')
-    )
+    const cleanedModel = Object.fromEntries(Object.entries(model).filter(([_, v]) => v !== ''))
     const defaultModel = {} as any
 
     for (const key in currentSchema.properties) {
@@ -119,32 +115,22 @@ const AddVirtualDialog = () => {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
           {addNew ? 'Add Virtual Device' : 'Settings'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText component="div">
-            With Virtuals, you can split devices into segments and merge several
-            segments over several devices into one Virtual-Device.
+            With Virtuals, you can split devices into segments and merge several segments over
+            several devices into one Virtual-Device.
             <div style={{ marginTop: '1rem', color: '#666' }}>
               {' '}
               Icons:{' '}
-              <Link
-                href="https://mui.com/material-ui/material-icons/"
-                target="_blank"
-              >
+              <Link href="https://mui.com/material-ui/material-icons/" target="_blank">
                 MUI
               </Link>
               (ie: iconName) |{' '}
-              <Link
-                href="https://pictogrammers.com/library/mdi"
-                target="_blank"
-              >
+              <Link href="https://pictogrammers.com/library/mdi" target="_blank">
                 MDI
               </Link>
               (ie: mdi:icon-name) |{' '}

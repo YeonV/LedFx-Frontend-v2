@@ -33,22 +33,12 @@ export const keyButtons = (text: string) => (
   </Stack>
 )
 
-export const KeysRow = ({
-  keys,
-  description
-}: {
-  keys: string
-  description: string
-}) => {
+export const KeysRow = ({ keys, description }: { keys: string; description: string }) => {
   const match = description.match(/(.*?)(\s*\(.*?\))/)
   const mainText = match ? match[1] : description
   const bracketText = match ? match[2] : ''
   return (
-    <Stack
-      direction={'row'}
-      alignItems={'center'}
-      justifyContent={'space-between'}
-    >
+    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <Stack direction={'row'} alignItems={'center'}>
         <Typography>{mainText}</Typography>
         {bracketText && (

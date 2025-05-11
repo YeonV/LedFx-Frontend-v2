@@ -1,12 +1,4 @@
-import {
-  Box,
-  Divider,
-  IconButton,
-  MenuItem,
-  Select,
-  Stack,
-  Typography
-} from '@mui/material'
+import { Box, Divider, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import { SettingsRow } from '../../../../../pages/Settings/SettingsComponents'
 import PixelGraphsSettingsCard from '../../../../../pages/Settings/PixelGraphsSettingsCard'
@@ -17,14 +9,10 @@ import { PixelGraphVariants } from '../../../../../store/ui-persist/storeUIpersi
 
 const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
   const classes = useStyle()
-  const smoothing = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.smoothing
-  )
+  const smoothing = useStore((state) => state.uiPersist.pixelGraphSettings?.smoothing)
   const round = useStore((state) => state.uiPersist.pixelGraphSettings?.round)
   const space = useStore((state) => state.uiPersist.pixelGraphSettings?.space)
-  const stretch = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.stretch
-  )
+  const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
   const setPixelGraphSettings = useStore((state) => state.setPixelGraphSettings)
   const graphs = useStore((state) => state.graphs)
   const toggleGraphs = useStore((state) => state.toggleGraphs)
@@ -32,9 +20,7 @@ const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const showMatrix = useStore((state) => state.showMatrix)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
-  const variants = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.variants
-  )
+  const variants = useStore((state) => state.uiPersist.pixelGraphSettings?.variants)
   return (
     <Box component={PgsFloating}>
       <div className={classes.Widget}>
@@ -61,9 +47,7 @@ const PixelGraphSettingsFloating = ({ close }: { close?: () => void }) => {
               sx={{ width: 150 }}
               disableUnderline
               value={variants}
-              onChange={(e) =>
-                setPixelGraphSettings('variants', e.target.value)
-              }
+              onChange={(e) => setPixelGraphSettings('variants', e.target.value)}
             >
               {PixelGraphVariants.map((variant) => (
                 <MenuItem key={variant} value={variant}>

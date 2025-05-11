@@ -51,22 +51,14 @@ export default function SpLayoutButtons() {
     }
     setSwSize(newSize)
   }
-  const handleAlignment = (
-    event: React.MouseEvent<HTMLElement>,
-    newSize: string | null
-  ) => {
+  const handleAlignment = (event: React.MouseEvent<HTMLElement>, newSize: string | null) => {
     if (newSize !== null) {
       settingSize(newSize)
     }
   }
 
   return (
-    <ButtonGroup
-      value={swSize}
-      exclusive
-      onChange={handleAlignment}
-      aria-label="text alignment"
-    >
+    <ButtonGroup value={swSize} exclusive onChange={handleAlignment} aria-label="text alignment">
       <ToggleButton value="small" aria-label="small">
         <PanoramaVerticalSelect />
       </ToggleButton>

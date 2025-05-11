@@ -55,24 +55,13 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
         // Parse and re-stringify to ensure consistent formatting (e.g., pretty print)
         finalConfigString = JSON.stringify(JSON.parse(config), null, 4)
       } catch (e) {
-        log.error(
-          'OneEffect',
-          'Error parsing config state before save:',
-          config,
-          e
-        )
+        log.error('OneEffect', 'Error parsing config state before save:', config, e)
         finalConfigString = JSON.stringify({}, null, 4) // Fallback to empty object string
       }
     } else {
       finalConfigString = JSON.stringify({}, null, 4) // Represents an empty config
     }
-    log.purple(
-      'OneEffect',
-      'Final config string:',
-      fallbackUseNumber,
-      fallbackNumber,
-      fallbackBool
-    )
+    log.purple('OneEffect', 'Final config string:', fallbackUseNumber, fallbackNumber, fallbackBool)
     setPayload({
       virtId,
       type,
@@ -98,11 +87,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   // Initializing the dialog state when it opens
   useEffect(() => {
     if (dialogOpen) {
-      log.purple(
-        'OneEffect',
-        'Dialog opened, initializing with initialPayload:',
-        initialPayload
-      )
+      log.purple('OneEffect', 'Dialog opened, initializing with initialPayload:', initialPayload)
       setVirtId(initialPayload?.virtId || '')
       setType(initialPayload?.type || '')
 
@@ -114,20 +99,14 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
           JSON.parse(initialConfigStr) // Validate if it's a JSON string
           setConfig(JSON.stringify(JSON.parse(initialConfigStr)))
         } catch (e) {
-          console.warn(
-            'Initial payload config is not a valid JSON string:',
-            initialConfigStr,
-            e
-          )
+          console.warn('Initial payload config is not a valid JSON string:', initialConfigStr, e)
           setConfig('') // Default to "Please select" or empty
         }
       } else {
         setConfig('') // For create mode or if config is not set
       }
 
-      setActive(
-        initialPayload?.active !== undefined ? initialPayload.active : false
-      )
+      setActive(initialPayload?.active !== undefined ? initialPayload.active : false)
 
       // Handle fallback logic
       if (initialPayload && initialPayload.fallback !== undefined) {
@@ -170,11 +149,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
               <Typography flexShrink={0} flexBasis={'150px'}>
                 Virtual ID
               </Typography>
-              <Select
-                fullWidth
-                value={virtId}
-                onChange={(e) => setVirtId(e.target.value)}
-              >
+              <Select fullWidth value={virtId} onChange={(e) => setVirtId(e.target.value)}>
                 <MenuItem key={'noValue'} value={''}>
                   Please select
                 </MenuItem>
@@ -189,11 +164,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
               <Typography flexShrink={0} flexBasis={'150px'}>
                 Type
               </Typography>
-              <Select
-                fullWidth
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
+              <Select fullWidth value={type} onChange={(e) => setType(e.target.value)}>
                 <MenuItem key={'noValue'} value={''}>
                   Please select
                 </MenuItem>
@@ -209,11 +180,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
               <Typography flexShrink={0} flexBasis={'150px'}>
                 Preset
               </Typography>
-              <Select
-                fullWidth
-                value={config}
-                onChange={(e) => setConfig(e.target.value)}
-              >
+              <Select fullWidth value={config} onChange={(e) => setConfig(e.target.value)}>
                 <MenuItem key={'noValue'} value={''}>
                   Please select
                 </MenuItem>
@@ -328,6 +295,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
                     if (config && config !== '') {
                       try {
                         return JSON.stringify(JSON.parse(config), null, 4)
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
                       } catch (e) {
                         return '"Error: Invalid config format"'
                       }
@@ -351,12 +319,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
                   try {
                     effectConfigObject = JSON.parse(config)
                   } catch (e) {
-                    log.error(
-                      'OneEffect',
-                      'Error parsing config for test:',
-                      config,
-                      e
-                    )
+                    log.error('OneEffect', 'Error parsing config for test:', config, e)
                     // effectConfigObject remains {}
                   }
                 }
@@ -375,9 +338,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
             >
               test
             </Button>
-            <Button onClick={handleClose}>
-              {noButton ? 'Close' : 'Cancel'}
-            </Button>
+            <Button onClick={handleClose}>{noButton ? 'Close' : 'Cancel'}</Button>
             {!noButton && <Button onClick={handleSave}>Save</Button>}
           </DialogActions>
         </DialogContent>

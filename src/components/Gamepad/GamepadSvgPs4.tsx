@@ -30,17 +30,13 @@ const GamepadSvgPs4 = ({
         <g>
           <path
             id="BTN-START"
-            stroke={
-              pad.buttons[9]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[9]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M405.318,229.731c2.809,0,5.098-2.289,5.098-5.098v-13.703c0-2.809-2.289-5.098-5.098-5.098s-5.098,2.289-5.098,5.098    v13.703C400.221,227.443,402.51,229.731,405.318,229.731z"
           />
           <circle
             id="BTN-Triangle"
-            stroke={
-              pad.buttons[3]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[3]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             cx="466.5"
             cy="231.598"
@@ -48,17 +44,13 @@ const GamepadSvgPs4 = ({
           />
           <path
             id="BTN-PS"
-            stroke={
-              pad.buttons[16]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[16]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M287.178,312.706c-17.424,0-31.598,14.175-31.598,31.598c0,17.424,14.174,31.598,31.598,31.598    c17.423,0,31.597-14.174,31.597-31.598C318.775,326.881,304.602,312.706,287.178,312.706z M279.075,356.177    c-0.012,0.214-0.453,0.545-0.734,0.594c-4.982,0.832-9.835,0.3-14.541-1.523c-0.404-0.159-0.784-0.398-1.139-0.649    c-1.793-1.267-1.787-2.949,0.043-4.125c0.795-0.508,1.646-0.979,2.528-1.303c4.522-1.671,9.069-3.287,13.849-5.007    c0,1.677,0.031,3.226-0.037,4.768c-0.006,0.208-0.496,0.472-0.808,0.588c-2.503,0.918-5.024,1.793-7.528,2.717    c-0.582,0.215-1.107,0.575-1.658,0.863c0.012,0.141,0.024,0.281,0.03,0.422c0.551,0.19,1.114,0.575,1.652,0.539    c1.548-0.11,3.109-0.288,4.621-0.624c1.224-0.275,2.393-0.82,3.77-1.316C279.106,353.576,279.143,354.88,279.075,356.177z     M289.26,329.684c-0.172,0.416-0.129,0.93-0.129,1.407c-0.006,9.694,0,19.389,0,29.082c0,0.459,0,0.925,0,1.555    c-2.846-0.899-5.484-1.731-8.116-2.595c-0.208-0.067-0.392-0.397-0.459-0.637c-0.08-0.306-0.031-0.654-0.031-0.985    c0.012-11.45,0.025-22.9,0.037-34.352c0-0.397,0-0.795,0-1.346c0.783,0.152,1.462,0.238,2.111,0.428    c3.715,1.09,7.43,2.173,11.127,3.329c0.967,0.301,1.877,0.814,2.771,1.311c2.92,1.621,4.602,4.094,5.018,7.417    c0.289,2.301,0.393,4.584-0.348,6.836c-1.262,3.807-4.762,4.878-8.451,3.121c-0.289-0.135-0.473-0.765-0.479-1.169    c-0.031-3.88,0.012-7.754-0.043-11.634c-0.012-0.765-0.227-1.609-0.605-2.265c-0.232-0.392-0.998-0.71-1.469-0.643    C289.828,328.582,289.449,329.23,289.26,329.684z M311.498,348.931c1.99,1.322,2.082,2.919,0.08,4.217    c-1.242,0.802-2.65,1.39-4.045,1.903c-5.35,1.971-10.723,3.874-16.09,5.796c-0.232,0.085-0.482,0.128-0.898,0.244    c0-1.585-0.043-3.011,0.035-4.425c0.02-0.293,0.473-0.685,0.809-0.808c3.873-1.42,7.771-2.79,11.658-4.18    c0.514-0.184,1.047-0.343,1.523-0.605c0.289-0.159,0.479-0.49,0.711-0.747c-0.27-0.208-0.508-0.526-0.814-0.6    c-1.719-0.435-3.414-0.221-5.066,0.354c-2.521,0.875-5.031,1.775-7.547,2.662c-0.373,0.129-0.746,0.239-1.303,0.423    c0-1.708-0.025-3.262,0.029-4.811c0.006-0.208,0.387-0.508,0.648-0.588c6.586-2.074,13.098-2.007,19.5,0.741    C310.996,348.612,311.254,348.766,311.498,348.931z"
           />
           <circle
             id="BTN-Circle"
-            stroke={
-              pad.buttons[1]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[1]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             cx="506.592"
             cy="271.69"
@@ -74,9 +66,7 @@ const GamepadSvgPs4 = ({
             style={{
               transform: `translateX(${pad.axes[0] * 10}px) translateY(${pad.axes[1] * 10}px)`
             }}
-            stroke={
-              pad.buttons[10]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[10]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M190.892,326.654c-15.024,0-27.252,12.228-27.252,27.258c0,15.025,12.228,27.253,27.252,27.253    c15.031,0,27.258-12.228,27.258-27.253C218.15,338.882,205.923,326.654,190.892,326.654z"
           />
@@ -90,9 +80,7 @@ const GamepadSvgPs4 = ({
             style={{
               transform: `translateX(${pad.axes[2] * 10}px) translateY(${pad.axes[3] * 10}px)`
             }}
-            stroke={
-              pad.buttons[11]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[11]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M378.482,326.654c-15.031,0-27.258,12.228-27.258,27.258c0,15.025,12.227,27.253,27.258,27.253    c15.025,0,27.252-12.228,27.252-27.253C405.734,338.882,393.508,326.654,378.482,326.654z"
           />
@@ -104,9 +92,7 @@ const GamepadSvgPs4 = ({
           />
           <circle
             id="BTN-Square"
-            stroke={
-              pad.buttons[2]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[2]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             cx="426.408"
             cy="271.69"
@@ -114,9 +100,7 @@ const GamepadSvgPs4 = ({
           />
           <circle
             id="BTN-X"
-            stroke={
-              pad.buttons[0]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[0]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             cx="466.5"
             cy="311.776"
@@ -124,49 +108,37 @@ const GamepadSvgPs4 = ({
           />
           <path
             id="BTN-Select"
-            stroke={
-              pad.buttons[8]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[8]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M169.038,229.731c2.809,0,5.098-2.289,5.098-5.098v-13.703c0-2.809-2.289-5.098-5.098-5.098s-5.098,2.289-5.098,5.098    v13.703C163.939,227.443,166.229,229.731,169.038,229.731z"
           />
           <path
             id="D-Down"
-            stroke={
-              pad.buttons[13]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[13]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M106.687,284.444c-4.572,3.36-9.29,7.313-9.97,8.678c-1.23,2.454-2.943,15.723-2.625,20.276    c0.171,2.436,4.407,3.678,12.571,3.684l0.043,3.061v-3.061c8.17-0.006,12.393-1.242,12.57-3.684    c0.331-4.548-1.389-17.81-2.62-20.276C116.032,291.88,111.656,288.098,106.687,284.444z"
           />
           <path
             id="D-Left"
-            stroke={
-              pad.buttons[14]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[14]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M87.256,263.728c-2.179-1.095-13.421-2.656-19.088-2.656c-0.446,0-0.851,0.012-1.181,0.037    c-2.442,0.171-3.684,4.4-3.69,12.57c0.006,8.207,1.242,12.436,3.69,12.613c0.331,0.024,0.716,0.037,1.157,0.037    c5.673,0,16.928-1.566,19.113-2.662c1.365-0.679,5.318-5.397,8.678-9.969C92.28,268.722,88.499,264.346,87.256,263.728z"
           />
           <path
             id="D-Up"
-            stroke={
-              pad.buttons[12]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[12]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M106.687,262.945c4.969-3.647,9.345-7.43,9.969-8.672c1.23-2.46,2.944-15.729,2.62-20.276    c-0.171-2.442-4.4-3.684-12.57-3.69c-8.207,0.006-12.436,1.243-12.614,3.69c-0.324,4.547,1.396,17.821,2.625,20.276    C97.391,255.625,102.115,259.585,106.687,262.945z"
           />
           <path
             id="D-Right"
-            stroke={
-              pad.buttons[15]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[15]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M146.394,261.109c-0.343-0.024-0.741-0.037-1.188-0.037c-5.673,0-16.916,1.561-19.094,2.656    c-1.242,0.625-5.024,4.994-8.672,9.97c3.36,4.572,7.313,9.296,8.672,9.969c2.356,1.175,15.533,2.962,20.282,2.625    c2.436-0.171,3.678-4.406,3.684-12.57C150.072,265.509,148.835,261.28,146.394,261.109z"
           />
           <path
             id="Touchpad"
-            stroke={
-              pad.buttons[17]?.pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[17]?.pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth}
             d="M194.943,197.173v82.62c0,5.508,4.48,9.994,9.994,9.994h164.48c5.508,0,9.994-4.48,9.994-9.994v-82.62    c0-2.632-1.039-5.019-2.717-6.806H197.661C195.984,192.155,194.943,194.536,194.943,197.173z"
           />

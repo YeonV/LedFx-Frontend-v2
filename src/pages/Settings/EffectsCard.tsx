@@ -10,9 +10,7 @@ const EffectsSettingsCard = () => {
   const setShowHex = useStore((state) => state.setShowHex)
   const setFeatures = useStore((state) => state.setFeatures)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
-  const setEffectDescriptions = useStore(
-    (state) => state.ui.setEffectDescriptions
-  )
+  const setEffectDescriptions = useStore((state) => state.ui.setEffectDescriptions)
 
   return (
     <>
@@ -51,9 +49,7 @@ const EffectsSettingsCard = () => {
         <Select
           disableUnderline
           value={effectDescriptions}
-          onChange={(e) =>
-            setEffectDescriptions(e.target.value as 'Auto' | 'Show' | 'Hide')
-          }
+          onChange={(e) => setEffectDescriptions(e.target.value as 'Auto' | 'Show' | 'Hide')}
         >
           <MenuItem value="Auto">Auto</MenuItem>
           <MenuItem value="Show">Show</MenuItem>

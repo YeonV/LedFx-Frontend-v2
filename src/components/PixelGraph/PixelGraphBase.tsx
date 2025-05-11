@@ -173,7 +173,9 @@ const PixelGraphBase = ({
                       decodedPixels.length > 0 &&
                       decodedPixels[row * displayCols + i]
                       ? `rgb(${Object.values(decodedPixels[row * displayCols + i])})`
-                      : `rgb(${pixels[0][row * displayCols + i]},${pixels[1][row * displayCols + i]},${pixels[2][row * displayCols + i]})`
+                      : `rgb(${
+                          pixels[0][row * displayCols + i]
+                        },${pixels[1][row * displayCols + i]},${pixels[2][row * displayCols + i]})`
                     : '#0002'
                 }}
               />

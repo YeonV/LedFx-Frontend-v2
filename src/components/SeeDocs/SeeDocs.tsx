@@ -1,8 +1,6 @@
 import { Link } from '@mui/material'
 
-const SeeDocs = ({
-  url = 'https://docs.ledfx.app/en/latest/configuring.html'
-}) => {
+const SeeDocs = ({ url = 'https://docs.ledfx.app/en/latest/configuring.html' }) => {
   return (
     <Link href={url} target="_blank">
       See Docs

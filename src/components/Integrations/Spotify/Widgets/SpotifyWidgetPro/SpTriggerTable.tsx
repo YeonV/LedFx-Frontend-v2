@@ -1,15 +1,6 @@
-import {
-  DataGrid,
-  GridColDef,
-  GridRowParams,
-  GridCellParams
-} from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRowParams, GridCellParams } from '@mui/x-data-grid'
 import { styled } from '@mui/material/styles'
-import {
-  DeleteForever,
-  NotStarted,
-  PlayCircleFilled
-} from '@mui/icons-material'
+import { DeleteForever, NotStarted, PlayCircleFilled } from '@mui/icons-material'
 import { useContext, useEffect } from 'react'
 import {
   Card,
@@ -43,10 +34,9 @@ const Root = styled('div')(({ theme }: any) => ({
       color: theme.palette.text.primary
     },
   [`& .${classes.root}`]: {
-    '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
-      {
-        color: theme.palette.text.secondary
-      },
+    '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root': {
+      color: theme.palette.text.secondary
+    },
     '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
       color: theme.palette.text.secondary
     },
@@ -63,11 +53,10 @@ const Root = styled('div')(({ theme }: any) => ({
         backgroundColor: `${theme.palette.primary.main}20`,
         color: theme.palette.text.primary
       },
-    '& .activated, .activated.MuiDataGrid-row:hover, .activated.MuiDataGrid-row.Mui-hovered':
-      {
-        backgroundColor: `${theme.palette.primary.main}50`,
-        color: theme.palette.text.primary
-      },
+    '& .activated, .activated.MuiDataGrid-row:hover, .activated.MuiDataGrid-row.Mui-hovered': {
+      backgroundColor: `${theme.palette.primary.main}50`,
+      color: theme.palette.text.primary
+    },
     '& .disabled.MuiDataGrid-row': {
       pointerEvents: 'none',
       color: '#666'
@@ -240,11 +229,7 @@ export default function SpotifyTriggerTable() {
                 aria-label="play"
                 color="inherit"
                 onClick={() => {
-                  spotifyPlaySong(
-                    spotifyDevice,
-                    params.row.songId,
-                    params.row.position_ms
-                  )
+                  spotifyPlaySong(spotifyDevice, params.row.songId, params.row.position_ms)
                 }}
               >
                 <PlayCircleFilled fontSize="inherit" />
@@ -297,11 +282,8 @@ export default function SpotifyTriggerTable() {
           rows={rows}
           getRowClassName={(params: GridRowParams<any>) =>
             params.row.songId ===
-            (
-              playerState?.context.metadata?.current_item || spCtx?.item
-            )?.uri.split(':')[2]
-              ? (playerState?.position || spCtx?.progress_ms || 0) >
-                params.row.position_ms
+            (playerState?.context.metadata?.current_item || spCtx?.item)?.uri.split(':')[2]
+              ? (playerState?.position || spCtx?.progress_ms || 0) > params.row.position_ms
                 ? 'activated'
                 : 'currently_playing'
               : ''

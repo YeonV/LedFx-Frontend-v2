@@ -1,10 +1,4 @@
-import {
-  TextField,
-  Dialog,
-  Typography,
-  Paper,
-  InputAdornment
-} from '@mui/material'
+import { TextField, Dialog, Typography, Paper, InputAdornment } from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
@@ -49,9 +43,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
         popupIcon={null}
         filterOptions={filterOptions}
         getOptionLabel={(option: any) =>
-          Object.keys(option).indexOf('is_device') > -1
-            ? option.config.name
-            : option.name
+          Object.keys(option).indexOf('is_device') > -1 ? option.config.name : option.name
         }
         onChange={(_event, value: any, _reason, _details) => {
           if (value && typeof value === 'object') {
@@ -59,9 +51,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
               window.location.href = `${window.location.origin}/#/device/${value.id}`
             } else {
               activateScene(
-                Object.entries(scenes).filter(
-                  ([_k, v]: any) => v.name === value.name
-                )[0][0]
+                Object.entries(scenes).filter(([_k, v]: any) => v.name === value.name)[0][0]
               )
             }
           }
@@ -145,10 +135,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
                 'LightBw'
               ].indexOf(value.replace('theme:', '')) > -1
             ) {
-              window.localStorage.setItem(
-                'ledfx-theme',
-                value.replace('theme:', '')
-              )
+              window.localStorage.setItem('ledfx-theme', value.replace('theme:', ''))
               reloadTheme()
             }
           }
@@ -192,15 +179,10 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
               '&&&': { justifyContent: 'space-between' }
             }}
           >
-            <Typography variant="body1">
-              {' '}
-              {option.config?.name || option.name}{' '}
-            </Typography>
+            <Typography variant="body1"> {option.config?.name || option.name} </Typography>
             <div>
               <Typography style={{ opacity: 0.6 }} variant="caption">
-                {Object.keys(option).indexOf('is_device') > -1
-                  ? 'jump to '
-                  : 'activate '}
+                {Object.keys(option).indexOf('is_device') > -1 ? 'jump to ' : 'activate '}
               </Typography>
               <Typography
                 style={{
@@ -211,9 +193,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
                 }}
                 variant="caption"
               >
-                {Object.keys(option).indexOf('is_device') > -1
-                  ? 'Device'
-                  : 'Scene'}
+                {Object.keys(option).indexOf('is_device') > -1 ? 'Device' : 'Scene'}
               </Typography>
             </div>
           </Box>

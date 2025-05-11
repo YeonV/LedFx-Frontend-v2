@@ -27,12 +27,7 @@ import ScenesPlaylistMenu from './ScenesPlaylistMenu'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
 
-export default function ScenesPlaylist({
-  scenes,
-  title,
-  activateScene,
-  db
-}: any) {
+export default function ScenesPlaylist({ scenes, title, activateScene, db }: any) {
   const theme = useTheme()
   const workerRef = useRef<Worker | null>(null)
   const [theScenes, setTheScenes] = useState([])
@@ -40,9 +35,7 @@ export default function ScenesPlaylist({
   const scenePLintervals = useStore((state) => state.scenePLintervals)
   const setScenePLintervals = useStore((state) => state.setScenePLintervals)
   const sceneUseIntervals = useStore((state) => state.sceneUseIntervals)
-  const toggleSceneUseIntervals = useStore(
-    (state) => state.toggleSceneUseIntervals
-  )
+  const toggleSceneUseIntervals = useStore((state) => state.toggleSceneUseIntervals)
   const scenePLplay = useStore((state) => state.scenePLplay)
   const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
   const scenePLrepeat = useStore((state) => state.scenePLrepeat)
@@ -64,9 +57,7 @@ export default function ScenesPlaylist({
 
   useEffect(() => {
     if (workerRef.current === null) {
-      workerRef.current = new Worker(
-        new URL('../../workers/timerWorker.ts', import.meta.url)
-      )
+      workerRef.current = new Worker(new URL('../../workers/timerWorker.ts', import.meta.url))
       workerRef.current.onmessage = (e) => {
         if (e.data.action === 'sceneChanged') {
           setScenePLactiveIndex(e.data.nextIndex)
@@ -78,9 +69,7 @@ export default function ScenesPlaylist({
       workerRef.current.postMessage({
         action: 'start',
         interval:
-          (sceneUseIntervals
-            ? scenePLinterval
-            : scenePLintervals[scenePLactiveIndex] || 2) * 1000,
+          (sceneUseIntervals ? scenePLinterval : scenePLintervals[scenePLactiveIndex] || 2) * 1000,
         scenePL,
         scenePLactiveIndex,
         scenePLrepeat,
@@ -198,11 +187,7 @@ export default function ScenesPlaylist({
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const removeScene2PL = useStore((state) => state.removeScene2PL)
         return (
-          <Button
-            onClick={() => removeScene2PL(params.id as number)}
-            size="small"
-            variant="text"
-          >
+          <Button onClick={() => removeScene2PL(params.id as number)} size="small" variant="text">
             <PlaylistRemove />
           </Button>
         )
@@ -365,13 +350,12 @@ export default function ScenesPlaylist({
             // headerHeight={1}
             // pageSize={5}
             disableRowSelectionOnClick
-            rows={(
-              (theScenes && theScenes.length > 0 && Object.values(theScenes)) ||
-              []
-            ).map((v: any, i: number) => ({
-              id: i + 1,
-              ...v
-            }))}
+            rows={((theScenes && theScenes.length > 0 && Object.values(theScenes)) || []).map(
+              (v: any, i: number) => ({
+                id: i + 1,
+                ...v
+              })
+            )}
             getRowClassName={(params) =>
               `row${params.row.id === scenePLactiveIndex ? '--active' : ''}`
             }

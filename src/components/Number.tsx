@@ -9,13 +9,7 @@ interface NumberProps {
   onBlur?: (_event: React.FocusEvent<HTMLInputElement>) => void
 }
 
-const Number: React.FC<NumberProps> = ({
-  min,
-  max,
-  value,
-  onChange,
-  onBlur
-}) => {
+const Number: React.FC<NumberProps> = ({ min, max, value, onChange, onBlur }) => {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numericValue = parseFloat(e.target.value)
 

@@ -46,8 +46,7 @@ const BladeSelect = ({
   const [showReserved, setShowReserved] = useState(false)
   const [icon, setIcon] = useState(
     schema.id === 'icon_name'
-      ? (model && model_id && model[model_id]) ||
-          (schema.enum && schema.enum[0])
+      ? (model && model_id && model[model_id]) || (schema.enum && schema.enum[0])
       : ''
   )
   useEffect(() => {
@@ -97,11 +96,7 @@ const BladeSelect = ({
               </Stack>
               <Stack direction={'row'} spacing={1}>
                 <Typography variant="body1">
-                  <Link
-                    href="https://pictogrammers.com/library/mdi"
-                    target="_blank"
-                    sx={{ mr: 1 }}
-                  >
+                  <Link href="https://pictogrammers.com/library/mdi" target="_blank" sx={{ mr: 1 }}>
                     MDI
                   </Link>
                 </Typography>
@@ -147,11 +142,7 @@ const BladeSelect = ({
               ...(selectStyle as any)
             }}
             defaultValue={schema.default}
-            value={
-              (model && model_id && model[model_id]) ||
-              schema.default ||
-              schema.enum[0]
-            }
+            value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
             onChange={(e) => onChange(model_id, e.target.value)}
           >
             {children ||
@@ -190,11 +181,7 @@ const BladeSelect = ({
             ...(selectStyle as any)
           }}
           defaultValue={schema.default}
-          value={
-            (model && model_id && model[model_id]) ||
-            schema.default ||
-            schema.enum[0]
-          }
+          value={(model && model_id && model[model_id]) || schema.default || schema.enum[0]}
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
@@ -214,17 +201,13 @@ const BladeSelect = ({
           }}
           defaultValue={schema.default}
           value={
-            (model && model_id && schema.enum[model[model_id]]) ||
-            schema.default ||
-            schema.enum[0]
+            (model && model_id && schema.enum[model[model_id]]) || schema.default || schema.enum[0]
           }
           onChange={(e) =>
             onChange(
               model_id,
               parseInt(
-                Object.keys(schema.enum).find(
-                  (en) => schema.enum[en] === e.target.value
-                ) || '0',
+                Object.keys(schema.enum).find((en) => schema.enum[en] === e.target.value) || '0',
                 10
               )
             )
@@ -241,9 +224,7 @@ const BladeSelect = ({
           <TextField
             variant="standard"
             inputRef={inputRef}
-            type={
-              schema.description?.includes('password') ? 'password' : 'unset'
-            }
+            type={schema.description?.includes('password') ? 'password' : 'unset'}
             helperText={!hideDesc && schema.description}
             slotProps={{
               input:
@@ -267,18 +248,11 @@ const BladeSelect = ({
             onBlur={(e) => onChange(model_id, e.target.value)}
             onChange={(e) => {
               if (schema.id === 'icon_name') setIcon(e.target.value)
-              const reservedParts = [
-                'gap-',
-                '-background',
-                '-foreground',
-                '-mask'
-              ]
+              const reservedParts = ['gap-', '-background', '-foreground', '-mask']
               if (
                 schema.title === 'Name' &&
                 reservedParts.some(
-                  (part) =>
-                    e.target.value.startsWith(part) ||
-                    e.target.value.endsWith(part)
+                  (part) => e.target.value.startsWith(part) || e.target.value.endsWith(part)
                 )
               ) {
                 setShowReserved(true)
@@ -310,17 +284,15 @@ const BladeSelect = ({
               }}
             />
           )}
-          {schema.id === 'beat_frames' &&
-            model.image_location &&
-            model.image_location !== '' && (
-              <GifFramePicker
-                model={model}
-                onChange={(gif: string) => {
-                  onChange(model_id, gif)
-                  inputRef.current.value = gif
-                }}
-              />
-            )}
+          {schema.id === 'beat_frames' && model.image_location && model.image_location !== '' && (
+            <GifFramePicker
+              model={model}
+              onChange={(gif: string) => {
+                onChange(model_id, gif)
+                inputRef.current.value = gif
+              }}
+            />
+          )}
           {model_id === 'auth_token' && type === 'nanoleaf' && (
             <Tooltip
               title={
@@ -334,21 +306,14 @@ const BladeSelect = ({
                   fontSize: 10,
                   height: 56,
                   color:
-                    model.ip_address === undefined || model.ip_address === ''
-                      ? 'grey'
-                      : 'inherit'
+                    model.ip_address === undefined || model.ip_address === '' ? 'grey' : 'inherit'
                 }}
                 onClick={async () => {
-                  if (model.ip_address === undefined || model.ip_address === '')
-                    return
-                  const { auth_token } = await Ledfx(
-                    '/api/get_nanoleaf_token',
-                    'POST',
-                    {
-                      ip_address: model.ip_address,
-                      port: model.port || 16021
-                    }
-                  )
+                  if (model.ip_address === undefined || model.ip_address === '') return
+                  const { auth_token } = await Ledfx('/api/get_nanoleaf_token', 'POST', {
+                    ip_address: model.ip_address,
+                    port: model.port || 16021
+                  })
                   onChange(model_id, auth_token)
                   inputRef.current.value = auth_token
                 }}

@@ -9,11 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import { Language } from '@mui/icons-material'
 
-export default function ChangeYoutubeURLDialog({
-  style,
-  youtubeURL,
-  setYoutubeURL
-}: any) {
+export default function ChangeYoutubeURLDialog({ style, youtubeURL, setYoutubeURL }: any) {
   const [open, setOpen] = React.useState(false)
   const [url, setUrl] = React.useState(youtubeURL)
 
@@ -33,11 +29,7 @@ export default function ChangeYoutubeURLDialog({
       <IconButton onClick={handleClickOpen} style={style}>
         <Language />
       </IconButton>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Youtube URL</DialogTitle>
         <DialogContent>
           <DialogContentText>Playlist/Track URL of youtube</DialogContentText>

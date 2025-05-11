@@ -11,11 +11,7 @@ import {
 } from '@mui/material'
 import { Settings, NavigateBefore } from '@mui/icons-material'
 import isElectron from 'is-electron'
-import {
-  MuiMenuItem,
-  SpotifyScreenProps,
-  Transition
-} from './SpotifyScreen.props'
+import { MuiMenuItem, SpotifyScreenProps, Transition } from './SpotifyScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
 import SpotifyWidgetPro from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpWidgetPro'
 // import RadarChart from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpAudioFeatures/SpRadarChart';

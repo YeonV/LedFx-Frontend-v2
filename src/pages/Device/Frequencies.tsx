@@ -72,10 +72,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
 
   return (
     <Card variant="outlined" className="step-device-four" style={style}>
-      <CardHeader
-        title="Frequencies"
-        subheader="Adjust the audio range used for this strip"
-      />
+      <CardHeader title="Frequencies" subheader="Adjust the audio range used for this strip" />
       <CardContent
         sx={{
           display: 'flex',
@@ -85,10 +82,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
         }}
       >
         <div style={{ width: '100%' }}>
-          <BladeFrame
-            title="Range"
-            style={{ padding: '16px 2rem 6px 2rem', marginBottom: '1rem' }}
-          >
+          <BladeFrame title="Range" style={{ padding: '16px 2rem 6px 2rem', marginBottom: '1rem' }}>
             <Slider
               value={[value[0], value[1]]}
               aria-labelledby="discrete-slider-custom"
@@ -97,9 +91,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
               marks={convertedMarks}
               min={logIt(config.melbanks?.min_frequency)}
               max={logIt(
-                config.melbanks?.max_frequencies[
-                  (config.melbanks?.max_frequencies.length || 1) - 1
-                ]
+                config.melbanks?.max_frequencies[(config.melbanks?.max_frequencies.length || 1) - 1]
               )}
               onChange={(e: any, v: any) => handleChange(e, v)}
               components={{ ValueLabel: ValueLabelComponent }}
@@ -131,9 +123,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 type="number"
                 slotProps={{
                   input: {
-                    endAdornment: (
-                      <InputAdornment position="end">Hz</InputAdornment>
-                    )
+                    endAdornment: <InputAdornment position="end">Hz</InputAdornment>
                   },
                   htmlInput: {
                     style: { textAlign: 'right' },
@@ -142,11 +132,7 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                   },
                   inputLabel: { shrink: true }
                 }}
-                value={
-                  Math.round(hzIt(value[0])) < 5
-                    ? value[0]
-                    : Math.round(hzIt(value[0]))
-                }
+                value={Math.round(hzIt(value[0])) < 5 ? value[0] : Math.round(hzIt(value[0]))}
                 onChange={(e: any) => {
                   setValue([logIt(e.target.value), value[1]])
                 }}
@@ -157,19 +143,13 @@ const FrequenciesCard = ({ virtual, style }: any) => {
                 id="max"
                 label="Max"
                 type="number"
-                value={
-                  Math.round(hzIt(value[1])) > 20001
-                    ? value[1]
-                    : Math.round(hzIt(value[1]))
-                }
+                value={Math.round(hzIt(value[1])) > 20001 ? value[1] : Math.round(hzIt(value[1]))}
                 onChange={(e: any) => {
                   setValue([value[0], logIt(e.target.value)])
                 }}
                 slotProps={{
                   input: {
-                    endAdornment: (
-                      <InputAdornment position="end">Hz</InputAdornment>
-                    )
+                    endAdornment: <InputAdornment position="end">Hz</InputAdornment>
                   },
                   htmlInput: {
                     min: 20,

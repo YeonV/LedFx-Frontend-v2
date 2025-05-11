@@ -34,14 +34,7 @@ function Draggable({ children, id, ...props }: any) {
   //   }
   // })
   return (
-    <div
-      type="button"
-      ref={setNodeRef}
-      style={style}
-      {...props}
-      {...listeners}
-      {...attributes}
-    >
+    <div type="button" ref={setNodeRef} style={style} {...props} {...listeners} {...attributes}>
       {children}
     </div>
   )

@@ -147,9 +147,7 @@ const storeSpotifyActions = (set: any) => ({
   removeSpActTriggers: async (id: string) => {
     set(
       produce((state: IStore) => {
-        state.spotify.spActTriggers = state.spotify.spActTriggers.filter(
-          (f: any) => f.id !== id
-        )
+        state.spotify.spActTriggers = state.spotify.spActTriggers.filter((f: any) => f.id !== id)
       }),
       false,
       'spotify/delTriggers'
@@ -173,8 +171,8 @@ const storeSpotifyActions = (set: any) => ({
             //   ...state.spotify.spTriggersList,
             //   newTrigger,
             // ];
-            state.spotify.spTriggersList = state.spotify.spTriggersList.map(
-              (each: any) => (each.id === newTrigger.id ? newTrigger : each)
+            state.spotify.spTriggersList = state.spotify.spTriggersList.map((each: any) =>
+              each.id === newTrigger.id ? newTrigger : each
             )
           }),
           false,

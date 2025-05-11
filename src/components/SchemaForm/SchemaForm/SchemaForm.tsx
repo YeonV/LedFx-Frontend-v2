@@ -71,9 +71,7 @@ const SchemaForm = ({
         ...schema.properties[sk],
         id: sk,
         required: schema.required && schema.required.indexOf(sk) !== -1,
-        permitted: schema.permitted_keys
-          ? schema.permitted_keys.indexOf(sk) > -1
-          : true
+        permitted: schema.permitted_keys ? schema.permitted_keys.indexOf(sk) > -1 : true
       }))
       .sort((a, _b) => (a.required ? -1 : 1))
       .sort((a, _b) => (a.id === 'name' ? -1 : 1))
@@ -124,20 +122,13 @@ const SchemaForm = ({
                     }
                   }
 
-                  audio_groups = Object.values(
-                    schema.properties.audio_device?.enum
-                  )
+                  audio_groups = Object.values(schema.properties.audio_device?.enum)
                     .map((d: any) => d.split(':')[0])
                     .filter(onlyUnique)
                 }
 
                 return audio_groups?.length ? (
-                  <BladeFrame
-                    key={i}
-                    style={{ order: -1 }}
-                    title="Audio Device"
-                    full
-                  >
+                  <BladeFrame key={i} style={{ order: -1 }} title="Audio Device" full>
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
@@ -257,17 +248,11 @@ const SchemaForm = ({
                         usePerDeviceDelay &&
                         model.audio_device &&
                         value !==
-                          perDeviceDelay[
-                            schema.properties.audio_device?.enum[
-                              model.audio_device
-                            ]
-                          ]
+                          perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]]
                       ) {
                         setPerDeviceDelay({
                           ...perDeviceDelay,
-                          [schema.properties.audio_device?.enum[
-                            model.audio_device
-                          ]]: value
+                          [schema.properties.audio_device?.enum[model.audio_device]]: value
                         })
                       }
                       if (onModelChange) {
@@ -338,12 +323,7 @@ const SchemaForm = ({
           <Divider style={{ margin: '1rem 0 0.5rem 0' }} />
           <FormControlLabel
             value="start"
-            control={
-              <Switch
-                checked={!hideDesc}
-                onChange={(_e) => setHideDesc(!hideDesc)}
-              />
-            }
+            control={<Switch checked={!hideDesc} onChange={(_e) => setHideDesc(!hideDesc)} />}
             label={
               <DialogContentText
                 style={{

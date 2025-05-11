@@ -34,9 +34,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
   const [mDevices, setMDevices] = useState<MediaDeviceInfo[]>([])
   const [ip, setIp] = useState('')
   const wledIp = useStore((state) => state.videoMapper.wledIp)
-  const wledDeviceId = Object.keys(devices).find(
-    (d) => devices[d].config.ip_address === wledIp
-  )
+  const wledDeviceId = Object.keys(devices).find((d) => devices[d].config.ip_address === wledIp)
   const setWledIp = useStore((state) => state.setWledIp)
   const [threshold, setThreshold] = useState(128)
   const [singleLed, setSingleLed] = useState(0)
@@ -54,9 +52,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
 
   const handleDevices = useCallback(
     (mediaDevices: MediaDeviceInfo[]) => {
-      const videoDevices = mediaDevices.filter(
-        ({ kind }) => kind === 'videoinput'
-      )
+      const videoDevices = mediaDevices.filter(({ kind }) => kind === 'videoinput')
       if (deviceId === '' && videoDevices.length > 0) {
         setDeviceId(videoDevices[0].deviceId)
       }
@@ -111,16 +107,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         cancelAnimationFrame(animationFrameId)
       }
     }
-  }, [
-    isAdjusting,
-    threshold,
-    baseImage,
-    capture,
-    ignoreTop,
-    ignoreLeft,
-    ignoreBottom,
-    ignoreRight
-  ])
+  }, [isAdjusting, threshold, baseImage, capture, ignoreTop, ignoreLeft, ignoreBottom, ignoreRight])
 
   useEffect(() => {
     if (isCalibrating) {
@@ -216,10 +203,7 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         >
           Initialize
         </Button>
-        <Button
-          onClick={() => setIsAdjusting(!isAdjusting)}
-          className="step-2d-virtual-ten"
-        >
+        <Button onClick={() => setIsAdjusting(!isAdjusting)} className="step-2d-virtual-ten">
           {isAdjusting ? 'Stop Adjust' : 'Adjust'}
         </Button>
         <Button

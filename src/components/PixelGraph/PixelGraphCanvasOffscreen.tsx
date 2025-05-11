@@ -36,13 +36,9 @@ const PixelGraphCanvasOffscreen = ({
       config: state.config
     }))
   )
-  const smoothing = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.smoothing
-  )
+  const smoothing = useStore((state) => state.uiPersist.pixelGraphSettings?.smoothing)
 
-  const stretch = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.stretch
-  )
+  const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
 
   useEffect(() => {
     setTimeout(() => {
@@ -50,9 +46,7 @@ const PixelGraphCanvasOffscreen = ({
       if (!canvas || transferredRef.current) return
 
       const offscreen = canvas.transferControlToOffscreen()
-      const worker = new Worker(
-        new URL('../../workers/pixelGraphWorker.ts', import.meta.url)
-      )
+      const worker = new Worker(new URL('../../workers/pixelGraphWorker.ts', import.meta.url))
       workerRef.current = worker
       transferredRef.current = true
 
@@ -81,8 +75,7 @@ const PixelGraphCanvasOffscreen = ({
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
   const render =
-    (virtuals[virtId].active && virtuals[virtId].effect?.name) ||
-    virtuals[virtId].streaming
+    (virtuals[virtId].active && virtuals[virtId].effect?.name) || virtuals[virtId].streaming
 
   if (!(graphs || intGraphs)) {
     return null
@@ -96,9 +89,7 @@ const PixelGraphCanvasOffscreen = ({
         maxWidth: fullScreen ? '100vw' : '520px',
         maxHeight: fullScreen ? '100vh' : 'unset',
         height:
-          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix
-            ? '20px'
-            : 'auto',
+          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix ? '20px' : 'auto',
         width: '100%',
         borderRadius: '10px',
         overflow: 'hidden',

@@ -14,10 +14,7 @@ contextBridge.exposeInMainWorld('api', {
     const validChannels = ['fromMain']
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
-      ipcRenderer.on(
-        channel,
-        (event: Electron.IpcRendererEvent, ...args: any[]) => func(...args)
-      )
+      ipcRenderer.on(channel, (event: Electron.IpcRendererEvent, ...args: any[]) => func(...args))
     }
   },
   yz: true

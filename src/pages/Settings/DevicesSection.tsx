@@ -47,11 +47,7 @@ const DevicesSection = () => {
         checked={showComplex}
         onChange={() => setShowComplex(!showComplex)}
       />
-      <SettingsRow
-        title="Show gaps"
-        checked={showGaps}
-        onChange={() => setShowGaps(!showGaps)}
-      />
+      <SettingsRow title="Show gaps" checked={showGaps} onChange={() => setShowGaps(!showGaps)} />
     </>
   )
 }

@@ -13,9 +13,7 @@ const LoginRedirect = () => {
   useEffect(() => {
     // Successfully logged with the provider
     // Now logging with strapi by using the access_token (given by the provider) in props.location.search
-    fetch(
-      `${backendUrl}/auth/${params.providerName}/callback${location.search}`
-    )
+    fetch(`${backendUrl}/auth/${params.providerName}/callback${location.search}`)
       .then((res) => {
         if (res.status !== 200) {
           throw new Error(`Couldn't login to Strapi. Status: ${res.status}`)
@@ -42,9 +40,7 @@ const LoginRedirect = () => {
         localStorage.setItem('ledfx-cloud-userid', user.id)
         localStorage.setItem('ledfx-cloud-role', user.role.type)
         setText(
-          `You have been successfully logged in as ${localStorage.getItem(
-            'username'
-          )}. You will be redirected in a few seconds...`
+          `You have been successfully logged in as ${localStorage.getItem('username')}. You will be redirected in a few seconds...`
         )
         setTimeout(() => {
           return isElectron() ? window.close() : history('/devices')

@@ -52,35 +52,28 @@ export const AddBWrapper = styled('div')({
   }
 })
 
-export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>(
-  (props, ref) => {
-    const {
-      icon = <Send fontSize="small" />,
-      name = 'MenuItem',
-      description = '',
-      action
-    } = props
-    const theme = useTheme()
-    return (
-      <MenuItem onClick={action} ref={ref}>
-        <Stack direction="column" mt={1}>
-          <Stack direction="row" spacing={2}>
-            <ListItemIcon>{icon}</ListItemIcon>
-            <ListItemText primary={name} />
-          </Stack>
-          <ListItemText>
-            <Typography
-              sx={{ pl: 6.5, mt: '4px !important', mb: 1 }}
-              color={theme.palette.text.disabled}
-            >
-              {description}
-            </Typography>
-          </ListItemText>
+export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>((props, ref) => {
+  const { icon = <Send fontSize="small" />, name = 'MenuItem', description = '', action } = props
+  const theme = useTheme()
+  return (
+    <MenuItem onClick={action} ref={ref}>
+      <Stack direction="column" mt={1}>
+        <Stack direction="row" spacing={2}>
+          <ListItemIcon>{icon}</ListItemIcon>
+          <ListItemText primary={name} />
         </Stack>
-      </MenuItem>
-    )
-  }
-)
+        <ListItemText>
+          <Typography
+            sx={{ pl: 6.5, mt: '4px !important', mb: 1 }}
+            color={theme.palette.text.disabled}
+          >
+            {description}
+          </Typography>
+        </ListItemText>
+      </Stack>
+    </MenuItem>
+  )
+})
 
 export const StyledMenu = ({ open, ...props }: StyledMenuProps) => (
   <Menu

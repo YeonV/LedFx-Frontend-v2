@@ -136,9 +136,7 @@ async function makeSpotifyApiRequest<T>(
         Authorization: `Bearer ${access_token}`,
         // Set Content-Type only for methods with a body
         'Content-Type':
-          options?.data && (method === 'post' || method === 'put')
-            ? 'application/json'
-            : undefined
+          options?.data && (method === 'post' || method === 'put') ? 'application/json' : undefined
       },
       params: options?.params // URL query parameters for GET
     }
@@ -164,10 +162,7 @@ async function makeSpotifyApiRequest<T>(
     }
 
     // Check for 204 No Content specifically for PUT/DELETE/POST where it's valid success
-    if (
-      (method === 'put' || method === 'delete' || method === 'post') &&
-      res.status === 204
-    ) {
+    if ((method === 'put' || method === 'delete' || method === 'post') && res.status === 204) {
       // For actions resulting in 204, return a generic success object or specific type if needed
       // Since we expect 'Success' string or error string, handle this appropriately downstream
       // Or adjust function signature to return T | null | string
@@ -218,9 +213,7 @@ async function makeSpotifyApiRequest<T>(
 
 // --- Authentication Functions ---
 
-export const finishAuth = async (
-  code: string | null
-): Promise<FinishAuthResult> => {
+export const finishAuth = async (code: string | null): Promise<FinishAuthResult> => {
   // ... (Implementation remains the same as your last version) ...
   // log('successSpotify', 'finishAuth starting with code:', code)
   const cookies = new Cookies(null, cookieOptions)
@@ -275,16 +268,11 @@ export const finishAuth = async (
     return { success: true, accessToken: res.data.access_token }
   } catch (error: any) {
     const axiosError = error as AxiosError<{ error_description?: string }>
-    console.error(
-      'Spotify token exchange error. Status:',
-      axiosError.response?.status
-    )
+    console.error('Spotify token exchange error. Status:', axiosError.response?.status)
     console.error('Spotify error response data:', axiosError.response?.data)
     cookies.remove('verifier')
     const spotifyErrorDesc =
-      axiosError.response?.data?.error_description ||
-      axiosError.message ||
-      'Token exchange failed'
+      axiosError.response?.data?.error_description || axiosError.message || 'Token exchange failed'
     return { success: false, error: spotifyErrorDesc }
   }
 }
@@ -341,9 +329,7 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
     const status = axiosError.response?.status
     const spotifyError = axiosError.response?.data?.error
     const spotifyErrorDesc =
-      axiosError.response?.data?.error_description ||
-      axiosError.message ||
-      'Token refresh failed'
+      axiosError.response?.data?.error_description || axiosError.message || 'Token refresh failed'
     console.error('Spotify token refresh error. Status:', status)
     console.error('Spotify error response data:', axiosError.response?.data)
     if (status === 400 && spotifyError === 'invalid_grant') {
@@ -374,9 +360,7 @@ export async function spotifyMe(): Promise<SpotifyUser | string> {
   return makeSpotifyApiRequest<SpotifyUser>('get', '/me')
 }
 
-export async function spotifyCurrentTime(): Promise<
-  SpotifyPlayerState | string
-> {
+export async function spotifyCurrentTime(): Promise<SpotifyPlayerState | string> {
   const result = await makeSpotifyApiRequest<SpotifyPlayerState>(
     'get',
     '/me/player/currently-playing'
@@ -384,10 +368,7 @@ export async function spotifyCurrentTime(): Promise<
   if (typeof result === 'string') return result
   // Check for empty response which might signify 204, although helper should handle it
   if (result == null) {
-    log(
-      'infoSpotify',
-      'spotifyCurrentTime: No content playing (received empty response).'
-    )
+    log('infoSpotify', 'spotifyCurrentTime: No content playing (received empty response).')
     return { is_playing: false } // Default not playing state
   }
   // Check if the result *looks* like a player state object
@@ -395,11 +376,7 @@ export async function spotifyCurrentTime(): Promise<
     return result
   }
   // Fallback if the response wasn't an error string but also not a player state
-  log(
-    'warningSpotify',
-    'spotifyCurrentTime: Received unexpected response format.',
-    result
-  )
+  log('warningSpotify', 'spotifyCurrentTime: Received unexpected response format.', result)
   return { is_playing: false } // Default state
 }
 
@@ -414,9 +391,7 @@ export async function spotifyPause(): Promise<SpotifySuccessOrError> {
   return typeof result === 'string' ? result : 'Success'
 }
 
-export async function spotifyPlay(
-  deviceId?: string
-): Promise<SpotifySuccessOrError> {
+export async function spotifyPlay(deviceId?: string): Promise<SpotifySuccessOrError> {
   let endpoint: string
   const requestOptions: { data?: any } = {} // Use 'any' temporarily or define a broader type
 
@@ -437,17 +412,11 @@ export async function spotifyPlay(
   }
 
   // Use the helper, passing the correctly typed data (or undefined)
-  const result = await makeSpotifyApiRequest<void>(
-    'put',
-    endpoint,
-    requestOptions
-  )
+  const result = await makeSpotifyApiRequest<void>('put', endpoint, requestOptions)
   return typeof result === 'string' ? result : 'Success'
 }
 
-export async function spotifyPlayOnly(
-  deviceId: string
-): Promise<SpotifySuccessOrError> {
+export async function spotifyPlayOnly(deviceId: string): Promise<SpotifySuccessOrError> {
   // This specific endpoint usage seems redundant if spotifyPlay covers transfer.
   // But keeping it if you use it elsewhere. PUT /me/player/play?device_id=...
   const result = await makeSpotifyApiRequest<void>('put', '/me/player/play', {
@@ -487,10 +456,7 @@ export async function spotifyPlaySong(
 
   // Specific error handling (optional, can be done in caller)
   if (typeof result === 'string' && result.includes('Restriction violated')) {
-    log(
-      'warningSpotify',
-      'Playback restricted (Premium required, unavailable content, etc.)'
-    )
+    log('warningSpotify', 'Playback restricted (Premium required, unavailable content, etc.)')
     const showSnackbar = useStore.getState().ui.showSnackbar
     showSnackbar('error', 'Song or device not available/restricted')
     return 'Error: Playback restriction'
@@ -514,56 +480,37 @@ export async function spotifyShuffle(
   deviceId: string,
   state: boolean
 ): Promise<SpotifySuccessOrError> {
-  const result = await makeSpotifyApiRequest<void>(
-    'put',
-    '/me/player/shuffle',
-    {
-      params: { state, device_id: deviceId }
-    }
-  )
+  const result = await makeSpotifyApiRequest<void>('put', '/me/player/shuffle', {
+    params: { state, device_id: deviceId }
+  })
   return typeof result === 'string' ? result : 'Success'
 }
 
 // --- Other API Wrappers ---
 // Updated to use the helper where appropriate (passing token explicitly)
 
-export async function getTrackFeatures(
-  id: string,
-  token: string
-): Promise<any | string> {
+export async function getTrackFeatures(id: string, token: string): Promise<any | string> {
   if (!token) return 'Error: Missing token argument'
   return makeSpotifyApiRequest<any>('get', `/audio-features/${id}`, { token })
 }
 
-export async function getTrackArtist(
-  id: string,
-  token: string
-): Promise<any | string> {
+export async function getTrackArtist(id: string, token: string): Promise<any | string> {
   if (!token) return 'Error: Missing token argument'
   return makeSpotifyApiRequest<any>('get', `/artists/${id}`, { token })
 }
 
-export async function getTrackAnalysis(
-  id: string,
-  token: string
-): Promise<any | string> {
+export async function getTrackAnalysis(id: string, token: string): Promise<any | string> {
   if (!token) return 'Error: Missing token argument'
   return makeSpotifyApiRequest<any>('get', `/audio-analysis/${id}`, { token })
 }
 
-export async function getPlaylist(
-  id: string,
-  token: string
-): Promise<any | string> {
+export async function getPlaylist(id: string, token: string): Promise<any | string> {
   if (!token) return 'Error: Missing token argument'
   // Note: Returns Paging Object<PlaylistTrackObject>, define types if needed
   return makeSpotifyApiRequest<any>('get', `/playlists/${id}/tracks`, { token })
 }
 
-export async function getPlaylistB(
-  id: string,
-  token: string
-): Promise<any | string> {
+export async function getPlaylistB(id: string, token: string): Promise<any | string> {
   if (!token) return 'Error: Missing token argument'
   // Note: Returns PlaylistObject, define types if needed
   return makeSpotifyApiRequest<any>('get', `/playlists/${id}`, { token })
@@ -575,20 +522,14 @@ export async function addTrigger(trigger: any): Promise<SpotifySuccessOrError> {
   // ... (Implementation remains the same) ...
   const backendUrl = storedURL || baseURL
   try {
-    const res = await axios.post(
-      `${backendUrl}/api/integrations/spotify/spotify`,
-      trigger
-    )
+    const res = await axios.post(`${backendUrl}/api/integrations/spotify/spotify`, trigger)
     if (res.status === 200 || res.status === 201) {
       return 'Success'
     } else {
       return `Error: Backend responded with status ${res.status}`
     }
   } catch (error: any) {
-    console.error(
-      'Error calling local backend addTrigger:',
-      error.response?.data || error.message
-    )
+    console.error('Error calling local backend addTrigger:', error.response?.data || error.message)
     return `Error communicating with backend: ${error.message}`
   }
 }

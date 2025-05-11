@@ -35,9 +35,7 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
   const [colorType, setColorType] = useState('90')
   const [buttonNumber, setButtonNumber] = useState(-1)
   const [midiMessageToSend, setMidiMessageToSend] = useState<string>('')
-  const [midiLogs, setMidiLogs] = useState<
-    { name: string; note: string; button: number }[]
-  >([])
+  const [midiLogs, setMidiLogs] = useState<{ name: string; note: string; button: number }[]>([])
 
   const midiOutput = useStore((state) => state.midiOutput)
   const midiEvent = useStore((state) => state.midiEvent)
@@ -48,8 +46,7 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
   const setSendSpotifyTrack = useStore((state) => state.setSendSpotifyTrack)
 
   const lp = LaunchpadX
-  const output =
-    midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
+  const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
   const buttons = ['programmer', 'live', 'standalone', 'daw'] as const
 
   const handleClickOpen = () => {
@@ -100,30 +97,18 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
         </DialogTitle>
         <DialogContent>
           <Divider sx={{ mt: 0, mb: 2 }} />
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
+          <Stack direction="row" justifyContent={'space-between'} alignItems={'center'}>
             <Typography variant="h6">Mode</Typography>
             <Stack direction="row">
               {buttons.map((button) => (
-                <Button
-                  size="large"
-                  key={button}
-                  onClick={() => output.send(lp.command[button])}
-                >
+                <Button size="large" key={button} onClick={() => output.send(lp.command[button])}>
                   {button}
                 </Button>
               ))}
             </Stack>
           </Stack>
           <Divider sx={{ mt: 2, mb: 2 }} />
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
+          <Stack direction="row" justifyContent={'space-between'} alignItems={'center'}>
             <Typography variant="h6">ButtonColor</Typography>
             <Stack direction="row">
               <Select
@@ -164,11 +149,7 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
             </Stack>
           </Stack>
           <Divider sx={{ mt: 2, mb: 2 }} />
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
+          <Stack direction="row" justifyContent={'space-between'} alignItems={'center'}>
             <Typography variant="h6">Text</Typography>
             <Stack direction="row">
               <TextField
@@ -209,9 +190,7 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
                   horizontal: 'left'
                 }}
               >
-                <Box
-                  sx={{ maxHeight: 700, overflowY: 'auto', p: 1, width: 283 }}
-                >
+                <Box sx={{ maxHeight: 700, overflowY: 'auto', p: 1, width: 283 }}>
                   <ReactGPicker
                     format="rgb"
                     showAlpha={false}
@@ -281,9 +260,7 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
               <Button
                 onClick={() => {
                   const output =
-                    midiOutput !== ''
-                      ? WebMidi.getOutputByName(midiOutput)
-                      : WebMidi.outputs[1]
+                    midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
                   if (!output) return
                   output.send(
                     midiMessageToSend
@@ -294,9 +271,7 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
                 }}
                 onContextMenu={() => {
                   const output =
-                    midiOutput !== ''
-                      ? WebMidi.getOutputByName(midiOutput)
-                      : WebMidi.outputs[1]
+                    midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
                   if (!output) return
                   if ('text' in lp.fn && lp.fn.text)
                     output.send(lp.fn.text('Hacked by Blade!', 128, 0, 0))

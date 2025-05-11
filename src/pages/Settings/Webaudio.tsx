@@ -1,12 +1,4 @@
-import {
-  Button,
-  Fab,
-  TextField,
-  Popover,
-  Select,
-  MenuItem,
-  Stack
-} from '@mui/material'
+import { Button, Fab, TextField, Popover, Select, MenuItem, Stack } from '@mui/material'
 import { Check, Close } from '@mui/icons-material'
 import { useState, useEffect, CSSProperties } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -14,14 +6,13 @@ import ws from '../../utils/Websocket'
 import useStore from '../../store/useStore'
 
 const getMedia = async (clientDevice: MediaDeviceInfo) => {
-  const audioSetting: boolean | MediaTrackConstraints | undefined =
-    await navigator.mediaDevices
-      .enumerateDevices()
-      .then(function (devices): any {
-        return clientDevice === null || devices.indexOf(clientDevice) === -1
-          ? true
-          : { deviceId: { exact: clientDevice } }
-      })
+  const audioSetting: boolean | MediaTrackConstraints | undefined = await navigator.mediaDevices
+    .enumerateDevices()
+    .then(function (devices): any {
+      return clientDevice === null || devices.indexOf(clientDevice) === -1
+        ? true
+        : { deviceId: { exact: clientDevice } }
+    })
   try {
     return await navigator.mediaDevices.getUserMedia({
       audio: audioSetting,
@@ -70,8 +61,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
     }
   }, [webAudType])
 
-  const audioContext =
-    webAud && new (window.AudioContext || (window as any).webkitAudioContext)()
+  const audioContext = webAud && new (window.AudioContext || (window as any).webkitAudioContext)()
   const [anchorEl, setAnchorEl] = useState(null)
 
   const getSchemas = useStore((state) => state.getSchemas)
@@ -148,10 +138,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
                   }
                   const uint8Array = new Uint8Array(int16Array.buffer)
                   const numberArray = Array.from(uint8Array)
-                  const binaryString = String.fromCharCode.apply(
-                    null,
-                    numberArray
-                  )
+                  const binaryString = String.fromCharCode.apply(null, numberArray)
                   const base64String = btoa(binaryString)
                   const request = {
                     data: base64String,
@@ -260,11 +247,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
             />
           </>
         ) : (
-          <BladeIcon
-            name="mdi:stop"
-            colorIndicator={webAud}
-            style={{ position: 'relative' }}
-          />
+          <BladeIcon name="mdi:stop" colorIndicator={webAud} style={{ position: 'relative' }} />
         )}
       </Fab>
       <Popover

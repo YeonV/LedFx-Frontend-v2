@@ -44,8 +44,8 @@ const steps = [
     content: (
       <div>
         <h2>Presets</h2>
-        Easily save and apply the settings of an effect. LedFx has some built in
-        presets, and you can save your own too
+        Easily save and apply the settings of an effect. LedFx has some built in presets, and you
+        can save your own too
       </div>
     ),
     style: {
@@ -59,9 +59,7 @@ const steps = [
         <h2>Frequency Range</h2>
         <li>Adjust the audio frequency range used for effects</li>
         <li>Most 1.0 effects will work with any frequency range you specify</li>
-        <li>
-          Some effects will bypass this and do their own internal analysis
-        </li>
+        <li>Some effects will bypass this and do their own internal analysis</li>
       </div>
     ),
     style: {

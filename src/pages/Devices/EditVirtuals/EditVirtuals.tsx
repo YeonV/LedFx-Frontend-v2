@@ -15,12 +15,7 @@ import {
   ToggleButton,
   Tooltip
 } from '@mui/material'
-import {
-  GridOn,
-  Settings,
-  Visibility,
-  VisibilityOff
-} from '@mui/icons-material'
+import { GridOn, Settings, Visibility, VisibilityOff } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
 import { getOverlapping } from '../../../utils/helpers'
 import useStore from '../../../store/useStore'
@@ -34,11 +29,9 @@ import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import Tour2dVirtual from '../../../components/Tours/Tour2dVirtual'
 import AddExistingSegmentDialog from '../../../components/Dialogs/AddExistingSegmentDialog'
 
-const Transition = React.forwardRef<unknown, TransitionProps>(
-  function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...(props as any)} />
-  }
-)
+const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...(props as any)} />
+})
 type Props = {
   _?: never
   children?: any
@@ -76,9 +69,7 @@ export default function EditVirtuals({
   const getDevices = useStore((state) => state.getDevices)
   const virtuals = useStore((state) => state.virtuals)
   // const editVirtual = useStore((state) => state.dialogs.editVirtual);
-  const setDialogOpenEditVirtual = useStore(
-    (state) => state.setDialogOpenEditVirtual
-  )
+  const setDialogOpenEditVirtual = useStore((state) => state.setDialogOpenEditVirtual)
   const activeSegment = useStore((state) => state.activeSegment)
   const highlightSegment = useStore((state) => state.highlightSegment)
 
@@ -94,10 +85,7 @@ export default function EditVirtuals({
     const output = getOverlapping(virtual.segments)
     const overlap = Object.keys(output).find((k) => output[k].overlap)
     if (overlap) {
-      showSnackbar(
-        'warning',
-        `Overlapping in ${overlap} detected! Please Check your config`
-      )
+      showSnackbar('warning', `Overlapping in ${overlap} detected! Please Check your config`)
     } else {
       setOpen(false)
       setDialogOpenEditVirtual(false)
@@ -166,12 +154,7 @@ export default function EditVirtuals({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
+      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar enableColorOnDark color="secondary" className={classes.appBar}>
           <Toolbar>
             <Button

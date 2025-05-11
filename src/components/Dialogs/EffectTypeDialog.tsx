@@ -14,13 +14,7 @@ import { EffectDropDownProps } from '../SchemaForm/components/DropDown/DropDown.
 import useStyles from '../SchemaForm/components/DropDown/DropDown.styles'
 import BladeFrame from '../SchemaForm/components/BladeFrame'
 
-const EffectTypeDialog = ({
-  value,
-  onChange,
-  groups,
-  showFilter,
-  title
-}: EffectDropDownProps) => {
+const EffectTypeDialog = ({ value, onChange, groups, showFilter, title }: EffectDropDownProps) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const handleClose = () => {
     setDialogOpen(false)
@@ -28,9 +22,7 @@ const EffectTypeDialog = ({
 
   const classes = useStyles()
   // const theme = useTheme()
-  const [formats, setFormats] = useState(
-    () => groups && Object.keys(groups).map((c) => c || [])
-  )
+  const [formats, setFormats] = useState(() => groups && Object.keys(groups).map((c) => c || []))
   const handleFormat = (_: any, newFormats: any) => {
     setFormats(newFormats)
   }
@@ -44,20 +36,11 @@ const EffectTypeDialog = ({
           (c) =>
             formats &&
             formats.indexOf(c) !== -1 &&
-            groups[c].flatMap((e: any) => [
-              { value: e.id, label: e.name, group: c }
-            ])
+            groups[c].flatMap((e: any) => [{ value: e.id, label: e.name, group: c }])
         )
         .filter((e: any) => !!e?.value)
         .sort((a, b) => {
-          const order = [
-            'Non-Reactive',
-            'BPM',
-            'Classic',
-            'Atmospheric',
-            '2D',
-            'Matrix'
-          ]
+          const order = ['Non-Reactive', 'BPM', 'Classic', 'Atmospheric', '2D', 'Matrix']
           return order.indexOf(a.group) - order.indexOf(b.group)
         })
         .sort((a, b) => {
@@ -70,11 +53,7 @@ const EffectTypeDialog = ({
   const yoptAll = useMemo(
     () => [
       ...Object.keys(groups || {})
-        .flatMap((c) =>
-          groups[c].flatMap((e: any) => [
-            { value: e.id, label: e.name, group: c }
-          ])
-        )
+        .flatMap((c) => groups[c].flatMap((e: any) => [{ value: e.id, label: e.name, group: c }]))
         .filter((e: any) => !!e?.value)
     ],
     [groups]
@@ -180,12 +159,7 @@ const EffectTypeDialog = ({
             >
               {groups &&
                 Object.keys(groups).map((c, i) => (
-                  <ToggleButton
-                    className={classes.FormToggle}
-                    key={i}
-                    value={c}
-                    aria-label={c}
-                  >
+                  <ToggleButton className={classes.FormToggle} key={i} value={c} aria-label={c}>
                     {c}
                   </ToggleButton>
                 ))}

@@ -49,11 +49,7 @@ const GlobalActionBar = ({
             color: theme.palette.primary.main === '#000000' ? '#000' : '#fff'
           }}
         >
-          {paused ? (
-            <PlayArrow sx={{ fontSize: 32 }} />
-          ) : (
-            <PauseOutlined sx={{ fontSize: 32 }} />
-          )}
+          {paused ? <PlayArrow sx={{ fontSize: 32 }} /> : <PauseOutlined sx={{ fontSize: 32 }} />}
         </IconButton>
       ) : type === 'button' ? (
         <Button
@@ -69,11 +65,7 @@ const GlobalActionBar = ({
             color: theme.palette.primary.main === '#000000' ? '#000' : '#fff'
           }}
         >
-          {paused ? (
-            <PlayArrow sx={{ fontSize: 32 }} />
-          ) : (
-            <PauseOutlined sx={{ fontSize: 32 }} />
-          )}
+          {paused ? <PlayArrow sx={{ fontSize: 32 }} /> : <PauseOutlined sx={{ fontSize: 32 }} />}
         </Button>
       ) : (
         // <BladeIcon name="Brightness7" />
@@ -139,10 +131,7 @@ const GlobalActionBar = ({
         min={0}
         max={100}
         onChangeCommitted={(_e, val) =>
-          setSystemSetting(
-            'global_brightness',
-            typeof val === 'number' ? val / 100 : 0
-          )
+          setSystemSetting('global_brightness', typeof val === 'number' ? val / 100 : 0)
         }
       />
     </Stack>

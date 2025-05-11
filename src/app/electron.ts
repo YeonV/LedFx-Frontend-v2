@@ -1,13 +1,6 @@
 import path from 'path'
 import isDev from 'electron-is-dev'
-import {
-  app,
-  nativeTheme,
-  BrowserWindow,
-  ipcMain,
-  shell,
-  session
-} from 'electron'
+import { app, nativeTheme, BrowserWindow, ipcMain, shell, session } from 'electron'
 import { EventEmitter } from 'events'
 import { fileURLToPath } from 'node:url'
 import { handleProtocol, setupProtocol } from './app/protocol.mjs'
@@ -66,8 +59,7 @@ const ready = () =>
 
     ipcMain.on(
       'toMain',
-      async (event, parameters) =>
-        wind && handlers(wind, subprocesses, event, parameters)
+      async (event, parameters) => wind && handlers(wind, subprocesses, event, parameters)
     )
     if (wind) {
       wind.on('close', () => {
@@ -88,7 +80,4 @@ app.on('window-all-closed', () => {
 
 app.on('before-quit', () => wind && closeAllSubs(wind, subpy, subprocesses))
 
-app.on(
-  'activate',
-  () => BrowserWindow.getAllWindows().length === 0 && createWindow()
-)
+app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createWindow())

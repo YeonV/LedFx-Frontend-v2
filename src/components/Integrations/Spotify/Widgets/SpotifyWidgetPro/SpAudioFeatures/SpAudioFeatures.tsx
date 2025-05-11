@@ -13,17 +13,8 @@ import {
   Stack
   // useTheme,
 } from '@mui/material'
-import {
-  BarChart,
-  MusicNote,
-  Speed,
-  Wallpaper,
-  Piano
-} from '@mui/icons-material'
-import {
-  getTrackFeatures,
-  getTrackArtist
-} from '../../../../../../utils/spotifyProxies'
+import { BarChart, MusicNote, Speed, Wallpaper, Piano } from '@mui/icons-material'
+import { getTrackFeatures, getTrackArtist } from '../../../../../../utils/spotifyProxies'
 import RadarChart from './SpRadarChart'
 import useStore from '../../../../../../store/useStore'
 import { SpotifyStateContext } from '../../../SpotifyProvider'
@@ -31,15 +22,10 @@ import { SpotifyStateContext } from '../../../SpotifyProvider'
 export default function SpAudioFeatures() {
   // const theme = useTheme();
   const spotifyState = useContext(SpotifyStateContext)
-  const audioFeatures = useStore(
-    (state) => state.spotify.spotifyData.audioFeatures
-  )
+  const audioFeatures = useStore((state) => state.spotify.spotifyData.audioFeatures)
   const artist = useStore((state) => state.spotify.spotifyData.Artist)
   const songID = spotifyState?.track_window?.current_track?.id || ''
-  const artistID =
-    spotifyState?.track_window?.current_track?.artists[0].uri
-      .split(':')
-      .pop() || ''
+  const artistID = spotifyState?.track_window?.current_track?.artists[0].uri.split(':').pop() || ''
   const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken)
   const setSpotifyData = useStore((state) => state.setSpData)
 
@@ -108,11 +94,7 @@ export default function SpAudioFeatures() {
             <Table aria-label="simple table">
               <TableBody>
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    style={{ padding: '13px 16px' }}
-                  >
+                  <TableCell component="th" scope="row" style={{ padding: '13px 16px' }}>
                     <Stack direction="row" alignItems="flex-end">
                       <BarChart style={{ marginRight: '0.5rem' }} />
                       Artist Genre
@@ -145,11 +127,7 @@ export default function SpAudioFeatures() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    style={{ padding: '13px 16px' }}
-                  >
+                  <TableCell component="th" scope="row" style={{ padding: '13px 16px' }}>
                     <Stack direction="row" alignItems="flex-end">
                       <MusicNote style={{ marginRight: '0.5rem' }} />
                       Modality
@@ -160,11 +138,7 @@ export default function SpAudioFeatures() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    style={{ padding: '13px 16px' }}
-                  >
+                  <TableCell component="th" scope="row" style={{ padding: '13px 16px' }}>
                     <Stack direction="row" alignItems="flex-end">
                       <BarChart style={{ marginRight: '0.5rem' }} />
                       Beats per bar
@@ -175,11 +149,7 @@ export default function SpAudioFeatures() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    style={{ padding: '13px 16px' }}
-                  >
+                  <TableCell component="th" scope="row" style={{ padding: '13px 16px' }}>
                     <Stack direction="row" alignItems="flex-end">
                       <Wallpaper style={{ marginRight: '0.5rem' }} />
                       Triggers

@@ -16,12 +16,7 @@ const storeIntegrationsSpotify = (set: any) => ({
       )
     }
   },
-  addSpSongTrigger: async ({
-    scene_id,
-    song_id,
-    song_name,
-    song_position
-  }: any) => {
+  addSpSongTrigger: async ({ scene_id, song_id, song_name, song_position }: any) => {
     await Ledfx('/api/integrations/spotify/spotify', 'POST', {
       scene_id,
       song_id,
@@ -29,12 +24,7 @@ const storeIntegrationsSpotify = (set: any) => ({
       song_position
     })
   },
-  editSpSongTrigger: async ({
-    scene_id,
-    song_id,
-    song_name,
-    song_position
-  }: any) => {
+  editSpSongTrigger: async ({ scene_id, song_id, song_name, song_position }: any) => {
     await Ledfx('/api/integrations/spotify/spotify', 'PUT', {
       scene_id,
       song_id,

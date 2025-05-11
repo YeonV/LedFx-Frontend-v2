@@ -5,11 +5,7 @@ import startCore from './startCore.mjs'
 import coreParams from './coreParams.mjs'
 // import { download } from 'electron-dl'
 
-export function createMenu(
-  isCC: boolean,
-  wind: BrowserWindow,
-  thePath: string
-) {
+export function createMenu(isCC: boolean, wind: BrowserWindow, thePath: string) {
   let contextMenu
 
   if (isCC) {
@@ -36,11 +32,7 @@ export function createMenu(
       {
         label: 'Start core',
         click: () =>
-          startCore(
-            wind,
-            process.platform as 'darwin' | 'linux' | 'win32',
-            coreParams.instance
-          )
+          startCore(wind, process.platform as 'darwin' | 'linux' | 'win32', coreParams.instance)
       },
       {
         label: 'Stop core',
@@ -100,12 +92,7 @@ export function createMenu(
   return contextMenu
 }
 
-export function createTray(
-  isCC: boolean,
-  wind: BrowserWindow,
-  thePath: string,
-  dir: string
-) {
+export function createTray(isCC: boolean, wind: BrowserWindow, thePath: string, dir: string) {
   const icon = path.join(dir, 'icon_16x16a.png')
   const tray = new Tray(icon)
 

@@ -30,13 +30,7 @@ const preview: Preview = {
           'BladeBook',
           ['Introduction', 'Getting Started', 'App Structure', 'Guides'],
           'UI Components',
-          [
-            'Examples',
-            'Schema Components',
-            'Base Components',
-            'Default',
-            ['*', 'Color']
-          ],
+          ['Examples', 'Schema Components', 'Base Components', 'Default', ['*', 'Color']],
           'Api'
         ]
       }

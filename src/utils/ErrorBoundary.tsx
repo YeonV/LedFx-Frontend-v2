@@ -59,8 +59,7 @@ class ErrorBoundary extends Component<Props, State> {
           >
             <h1>Sorry</h1>
             <p style={{ fontSize: 18, marginBottom: '60px' }}>
-              Try refresh first. If the problem persists, clear your browser
-              data.
+              Try refresh first. If the problem persists, clear your browser data.
             </p>
             <button
               type="button"

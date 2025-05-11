@@ -21,8 +21,7 @@ const columns: GridColDef[] = [
     field: 'scene_image',
     headerName: 'Image',
     width: 150,
-    renderCell: (params: GridRenderCellParams) =>
-      sceneImage(params.value || 'Wallpaper')
+    renderCell: (params: GridRenderCellParams) => sceneImage(params.value || 'Wallpaper')
   },
   {
     field: 'name',
@@ -39,9 +38,7 @@ const columns: GridColDef[] = [
       params?.value &&
       params.value
         .split(',')
-        .map((t: string) => (
-          <Chip label={t} key={t} sx={{ cursor: 'pointer' }} />
-        ))
+        .map((t: string) => <Chip label={t} key={t} sx={{ cursor: 'pointer' }} />)
   },
   {
     field: 'actions',

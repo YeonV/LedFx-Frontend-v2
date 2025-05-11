@@ -30,9 +30,7 @@ export default {
   }
 } as Meta<typeof EffectSchemaForm>
 
-const Template: StoryFn<typeof EffectSchemaForm> = (args) => (
-  <EffectSchemaForm {...args} />
-)
+const Template: StoryFn<typeof EffectSchemaForm> = (args) => <EffectSchemaForm {...args} />
 
 export const EffectForm = Template.bind({})
 EffectForm.storyName = 'Effect Schema'

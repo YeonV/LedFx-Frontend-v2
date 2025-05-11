@@ -34,13 +34,9 @@ const PixelGraphCanvas = ({
       config: state.config
     }))
   )
-  const smoothing = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.smoothing
-  )
+  const smoothing = useStore((state) => state.uiPersist.pixelGraphSettings?.smoothing)
 
-  const stretch = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.stretch
-  )
+  const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -67,11 +63,9 @@ const PixelGraphCanvas = ({
         let displayRows, displayCols
         if (showMatrix) {
           displayRows =
-            (shape && shape[0]) ||
-            (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
+            (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
           displayCols =
-            (shape && shape[1]) ||
-            (realPixelCount > 4096 ? 4096 / displayRows : realCols)
+            (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
         } else {
           displayRows = 1
           displayCols = totalPixels
@@ -102,8 +96,7 @@ const PixelGraphCanvas = ({
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
   const render =
-    (virtuals[virtId].active && virtuals[virtId].effect?.name) ||
-    virtuals[virtId].streaming
+    (virtuals[virtId].active && virtuals[virtId].effect?.name) || virtuals[virtId].streaming
 
   if (!(graphs || intGraphs)) {
     return null
@@ -120,9 +113,7 @@ const PixelGraphCanvas = ({
         maxWidth: fullScreen ? '100vw' : '520px',
         maxHeight: fullScreen ? '100vh' : '520px',
         height:
-          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix
-            ? '20px'
-            : 'auto',
+          !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix ? '20px' : 'auto',
         width: '100%',
         borderRadius: '10px',
         overflow: 'hidden',

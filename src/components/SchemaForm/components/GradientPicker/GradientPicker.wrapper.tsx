@@ -30,11 +30,9 @@ const GradientPickerWrapper = ({
 
   const sendColorToVirtuals = (e: any) => {
     if (virtual && virtual.effect && virtual.effect.type) {
-      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false).then(
-        () => {
-          getVirtuals()
-        }
-      )
+      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false).then(() => {
+        getVirtuals()
+      })
     }
   }
 

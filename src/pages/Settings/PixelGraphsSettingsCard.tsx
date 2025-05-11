@@ -17,9 +17,7 @@ const PixelGraphsSettingsCard = () => {
   const setVirtual2dLimit = useStore((state) => state.ui.setVirtual2dLimit)
   const setShowWarning = useStore((state) => state.setWarnings)
   const setPixelGraphSettings = useStore((state) => state.setPixelGraphSettings)
-  const variants = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.variants
-  )
+  const variants = useStore((state) => state.uiPersist.pixelGraphSettings?.variants)
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
   const [uiBrightnessBoost, setUiBrightnessBoost] = useState(0)
@@ -78,14 +76,8 @@ const PixelGraphsSettingsCard = () => {
         <Select
           disableUnderline
           variant="standard"
-          defaultValue={
-            config.transmission_mode ||
-            schemaTransmissionMode?.default ||
-            'compressed'
-          }
-          onChange={(e) =>
-            setSystemSetting('transmission_mode', e.target.value)
-          }
+          defaultValue={config.transmission_mode || schemaTransmissionMode?.default || 'compressed'}
+          onChange={(e) => setSystemSetting('transmission_mode', e.target.value)}
         >
           {schemaTransmissionMode?.enum?.map((item: any) => (
             <MenuItem key={item} value={item}>
@@ -100,16 +92,11 @@ const PixelGraphsSettingsCard = () => {
           variant="standard"
           value={'select'}
           onChange={(e) =>
-            e.target.value !== 'select' &&
-            setSystemSetting('visualisation_maxlen', e.target.value)
+            e.target.value !== 'select' && setSystemSetting('visualisation_maxlen', e.target.value)
           }
         >
           {marks.map((item: any) => (
-            <MenuItem
-              disabled={item.value === 'select'}
-              key={item.value}
-              value={item.value}
-            >
+            <MenuItem disabled={item.value === 'select'} key={item.value} value={item.value}>
               {item.label}
             </MenuItem>
           ))}
@@ -123,12 +110,7 @@ const PixelGraphsSettingsCard = () => {
           onChange={(e) => {
             setPixelLength(parseInt(e.target.value, 10))
           }}
-          onBlur={(e) =>
-            setSystemSetting(
-              'visualisation_maxlen',
-              parseInt(e.target.value, 10)
-            )
-          }
+          onBlur={(e) => setSystemSetting('visualisation_maxlen', parseInt(e.target.value, 10))}
           sx={{
             '& input': { textAlign: 'right' }
           }}
@@ -146,9 +128,7 @@ const PixelGraphsSettingsCard = () => {
           step={1}
           min={1}
           max={60}
-          onChangeCommitted={(_e: any, val: any) =>
-            setSystemSetting('visualisation_fps', val)
-          }
+          onChangeCommitted={(_e: any, val: any) => setSystemSetting('visualisation_fps', val)}
           onChange={(_e: any, val: any) => {
             setFps(val)
           }}
@@ -184,9 +164,7 @@ const PixelGraphsSettingsCard = () => {
           min={0}
           max={1}
           marks={[{ value: 300, label: null }]}
-          onChangeCommitted={(_e: any, val: any) =>
-            setSystemSetting('ui_brightness_boost', val)
-          }
+          onChangeCommitted={(_e: any, val: any) => setSystemSetting('ui_brightness_boost', val)}
           onChange={(_e: any, val: any) => {
             setUiBrightnessBoost(val)
           }}
@@ -200,12 +178,7 @@ const PixelGraphsSettingsCard = () => {
           onChange={(e) => {
             setUiBrightnessBoost(parseInt(e.target.value, 10))
           }}
-          onBlur={(e) =>
-            setSystemSetting(
-              'ui_brightness_boost',
-              parseInt(e.target.value, 10)
-            )
-          }
+          onBlur={(e) => setSystemSetting('ui_brightness_boost', parseInt(e.target.value, 10))}
           sx={{
             '& input': { textAlign: 'right' }
           }}

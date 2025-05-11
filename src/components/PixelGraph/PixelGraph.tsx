@@ -26,9 +26,7 @@ const PixelGraph = ({
   db?: boolean
   onDoubleClick?: any
 }) => {
-  const variants = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.variants
-  )
+  const variants = useStore((state) => state.uiPersist.pixelGraphSettings?.variants)
   return (
     <>
       {variants === 'original' && (

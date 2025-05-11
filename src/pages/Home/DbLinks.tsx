@@ -23,11 +23,7 @@ const DbLinks = () => {
       <Stack width="100%">
         <Button
           onClick={() =>
-            window.open(
-              'https://github.com/LedFx/LedFx',
-              '_blank',
-              'noopener,noreferrer'
-            )
+            window.open('https://github.com/LedFx/LedFx', '_blank', 'noopener,noreferrer')
           }
           variant="text"
           startIcon={<GitHub />}
@@ -65,11 +61,7 @@ const DbLinks = () => {
         </Button>
         <Button
           onClick={() =>
-            window.open(
-              'https://discord.gg/nyMeUR8C',
-              '_blank',
-              'noopener,noreferrer'
-            )
+            window.open('https://discord.gg/nyMeUR8C', '_blank', 'noopener,noreferrer')
           }
           variant="text"
           startIcon={

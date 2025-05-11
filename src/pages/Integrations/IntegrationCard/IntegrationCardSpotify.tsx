@@ -6,15 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
-import {
-  CardActions,
-  Chip,
-  CardContent,
-  CardHeader,
-  Switch,
-  Avatar,
-  useTheme
-} from '@mui/material'
+import { CardActions, Chip, CardContent, CardHeader, Switch, Avatar, useTheme } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import useStore from '../../../store/useStore'
 import useIntegrationCardStyles from './IntegrationCard.styles'
@@ -33,9 +25,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const setMe = useStore((state) => state.setMe)
   const me = useStore((state) => state.spotify.me)
   const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
-  const setDialogOpenAddIntegration = useStore(
-    (state) => state.setDialogOpenAddIntegration
-  )
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration)
   const player = useStore((state) => state.spotify.player)
 
   const [expanded, setExpanded] = useState(false)
@@ -72,10 +62,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         // )
         setMe(meData)
       } else {
-        console.error(
-          'IntegrationCardSpotify: spotifyMe failed or returned error:',
-          meData
-        )
+        console.error('IntegrationCardSpotify: spotifyMe failed or returned error:', meData)
         // Optionally handle error: show message, trigger logout state?
         // Example: if (meData === 'Error: Missing Access Token' || meData === 'Error: Unauthorized (Token might be invalid/expired)') { ... }
       }
@@ -106,10 +93,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   // Ensure integrations[integration] exists before accessing config
   if (!integrations || !integrations[integration]?.config) {
     // Optional: Render a loading state or null while integrations load
-    console.log(
-      'IntegrationCardSpotify: Waiting for integration data for ID:',
-      integration
-    )
+    console.log('IntegrationCardSpotify: Waiting for integration data for ID:', integration)
     return null // Or <CircularProgress />
   }
 
@@ -119,10 +103,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         title={integrations[integration].config.name}
         subheader={integrations[integration].config.description}
         avatar={
-          <Avatar
-            aria-label="recipe"
-            sx={{ width: 56, height: 56, color: '#fff' }}
-          >
+          <Avatar aria-label="recipe" sx={{ width: 56, height: 56, color: '#fff' }}>
             <BladeIcon name="mdi:spotify" style={{ fontSize: 46 }} />
           </Avatar>
         }
@@ -144,19 +125,15 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
         }
       />
 
-      {me?.display_name &&
-        integrations[integration].status === 1 &&
-        spAuthenticated && (
-          <CardContent>
-            <Chip
-              avatar={
-                <Avatar src={me.images[0]?.url}>{me.display_name[0]}</Avatar>
-              }
-              label={me.display_name}
-              variant="outlined"
-            />
-          </CardContent>
-        )}
+      {me?.display_name && integrations[integration].status === 1 && spAuthenticated && (
+        <CardContent>
+          <Chip
+            avatar={<Avatar src={me.images[0]?.url}>{me.display_name[0]}</Avatar>}
+            label={me.display_name}
+            variant="outlined"
+          />
+        </CardContent>
+      )}
       <CardActions style={{ alignSelf: 'flex-end' }}>
         <div className={classes.integrationCardContainer}>
           <IconButton
@@ -210,19 +187,12 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               variant={variant}
               color={color}
               className={classes.editButton}
-              disabled={
-                integrations[integration].status !== 1 || !spAuthenticated
-              }
+              disabled={integrations[integration].status !== 1 || !spAuthenticated}
             />
           </div>
         </div>
 
-        <Collapse
-          in={expanded}
-          timeout="auto"
-          unmountOnExit
-          className={classes.buttonBarMobile}
-        >
+        <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
           <div className={classes.buttonBarMobileWrapper}>
             {integrations[integration].active && <SpotifyAuthButton />}
             <Popover
@@ -245,9 +215,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               variant={variant}
               color={color}
               className={classes.editButton}
-              disabled={
-                integrations[integration].status !== 1 || !spAuthenticated
-              }
+              disabled={integrations[integration].status !== 1 || !spAuthenticated}
             />
           </div>
         </Collapse>

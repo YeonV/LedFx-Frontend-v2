@@ -53,8 +53,7 @@ const StreamToCard = ({
     setStreamingToDevices(newStreamingDevices)
   }
 
-  const handleCopy = () =>
-    copyTo(virtual.id, streamingTo).then(() => getVirtuals())
+  const handleCopy = () => copyTo(virtual.id, streamingTo).then(() => getVirtuals())
 
   useEffect(() => {
     if (streaming) {
@@ -83,21 +82,14 @@ const StreamToCard = ({
         }}
       >
         <FormControl style={{ margin: 10, width: '100%' }}>
-          <InputLabel id="streamto-label">
-            Select device(s) to copy to
-          </InputLabel>
+          <InputLabel id="streamto-label">Select device(s) to copy to</InputLabel>
           <Select
             labelId="streamto-label"
             id="streamto"
             multiple
             value={streamingTo}
             onChange={(e, b: any) => handleToggle(b.props.value)}
-            input={
-              <OutlinedInput
-                id="select-multiple-chip"
-                label="Select device(s) to copy to"
-              />
-            }
+            input={<OutlinedInput id="select-multiple-chip" label="Select device(s) to copy to" />}
             renderValue={(selected: any) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 {selected.map((value: string) => (

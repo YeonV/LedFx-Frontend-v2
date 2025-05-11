@@ -66,8 +66,7 @@ export const sortColorsByHSL = (colors: IColor[]) => {
   })
 }
 
-export const rgbValues = (rgbString: string) =>
-  rgbString.match(/\d+/g)?.map(Number)
+export const rgbValues = (rgbString: string) => rgbString.match(/\d+/g)?.map(Number)
 
 export const sendMidiMessageHelper = (
   fn: (typeof MidiDevices)[keyof typeof MidiDevices][keyof (typeof MidiDevices)[keyof typeof MidiDevices]]['fn'],
@@ -82,12 +81,7 @@ export const sendMidiMessageHelper = (
     return
   }
   // console.log(1,'rgb' in fn , color?.startsWith('rgb') , typeCommand === 'rgb')
-  if (
-    'rgb' in fn &&
-    fn.rgb &&
-    color?.startsWith('rgb') &&
-    typeCommand === 'rgb'
-  ) {
+  if ('rgb' in fn && fn.rgb && color?.startsWith('rgb') && typeCommand === 'rgb') {
     const [r, g, b] = rgbValues(color) || (isActive ? [0, 255, 0] : [255, 0, 0])
     output.send(fn.rgb(buttonNumber, r, g, b))
     // console.log('rgb', buttonNumber, r, g, b)

@@ -76,15 +76,12 @@ export const SettingsStylesSlider = styled(Slider)(({ theme }: any) => ({
     height: 20,
     width: 20,
     backgroundColor: '#fff',
-    boxShadow:
-      '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
+    boxShadow: '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)',
     '&:focus, &:hover, &.Mui-active': {
-      boxShadow:
-        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
+      boxShadow: '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
       // Reset on touch devices, it doesn't add specificity
       '@media (hover: none)': {
-        boxShadow:
-          '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
+        boxShadow: '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
       }
     }
   },
@@ -234,9 +231,7 @@ export const SettingsRow = ({
       className={`${classes.settingsRow} step-settings-${step} `}
       style={{
         ...style,
-        color: disabled
-          ? theme.palette.text.disabled
-          : theme.palette.text.primary
+        color: disabled ? theme.palette.text.disabled : theme.palette.text.primary
       }}
     >
       <label>
@@ -262,26 +257,14 @@ export const SettingsRow = ({
         {children ||
           (title === 'Beta Mode' ? (
             <Tooltip title="AlphaMode: Smartbar -> HackedByBlade! -> OK -> BladeAlpha">
-              <SettingsSwitch
-                disabled={disabled}
-                checked={checked}
-                onChange={onChange}
-              />
+              <SettingsSwitch disabled={disabled} checked={checked} onChange={onChange} />
             </Tooltip>
           ) : title === 'Gamepad' ? (
             <Tooltip title="Press Start button on your gamepad. Else try other buttons :)">
-              <SettingsSwitch
-                disabled={disabled}
-                checked={checked}
-                onChange={onChange}
-              />
+              <SettingsSwitch disabled={disabled} checked={checked} onChange={onChange} />
             </Tooltip>
           ) : (
-            <SettingsSwitch
-              disabled={disabled}
-              checked={checked}
-              onChange={onChange}
-            />
+            <SettingsSwitch disabled={disabled} checked={checked} onChange={onChange} />
           ))}
       </div>
     </div>
@@ -308,23 +291,15 @@ export const SettingsAccordion = ({
   return (
     <Accordion
       onDoubleClick={() => setSettingsExpanded('all')}
-      expanded={
-        settingsExpanded === 'all' || settingsExpanded === `panel${accId}`
-      }
-      onChange={(event, isExpanded) =>
-        handleExpanded(`panel${accId}`, event, isExpanded)
-      }
+      expanded={settingsExpanded === 'all' || settingsExpanded === `panel${accId}`}
+      onChange={(event, isExpanded) => handleExpanded(`panel${accId}`, event, isExpanded)}
     >
       <AccordionSummary
         expandIcon={<ExpandMore />}
         aria-controls={`panel${accId}-content`}
         id={`panel${accId}-header`}
       >
-        {icon && icon !== '' ? (
-          <BladeIcon name={icon} style={{ marginRight: '0.75rem' }} />
-        ) : (
-          <></>
-        )}
+        {icon && icon !== '' ? <BladeIcon name={icon} style={{ marginRight: '0.75rem' }} /> : <></>}
         <Typography>{title}</Typography>
       </AccordionSummary>
       <AccordionDetails>{children}</AccordionDetails>

@@ -5,20 +5,12 @@ import useStore from '../../store/useStore'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
-const SceneImage = ({
-  iconName,
-  list
-}: {
-  iconName: string
-  list?: boolean
-}) => {
+const SceneImage = ({ iconName, list }: { iconName: string; list?: boolean }) => {
   const classes = useStyles()
   const [imageData, setImageData] = useState(null)
   const getImage = useStore((state) => state.getImage)
   const fetchImage = useCallback(async (ic: string) => {
-    const result = await getImage(
-      ic.split('image:')[1]?.replaceAll('file:///', '')
-    )
+    const result = await getImage(ic.split('image:')[1]?.replaceAll('file:///', ''))
     if (result?.image) setImageData(result.image)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

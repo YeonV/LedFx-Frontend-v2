@@ -30,9 +30,7 @@ const GeneralCard = () => {
   const scenes = useStore((state) => state.scenes)
 
   const configDownload = async () => {
-    getFullConfig().then((newConfig) =>
-      download(newConfig, 'config.json', 'application/json')
-    )
+    getFullConfig().then((newConfig) => download(newConfig, 'config.json', 'application/json'))
   }
 
   const configDelete = async () => {
@@ -66,10 +64,7 @@ const GeneralCard = () => {
         style={{ display: 'flex', justifyContent: 'space-between' }}
       >
         <div style={{ flex: '0 0 49%' }}>
-          <SettingsButton
-            startIcon={<CloudUpload />}
-            onClick={() => configDownload()}
-          >
+          <SettingsButton startIcon={<CloudUpload />} onClick={() => configDownload()}>
             Export Config
           </SettingsButton>
           <PopoverSure
@@ -92,37 +87,26 @@ const GeneralCard = () => {
             type="file"
             onChange={(e) => fileChanged(e)}
           />
-          <label
-            htmlFor="contained-button-file"
-            style={{ width: '100%', flexBasis: '49%' }}
-          >
+          <label htmlFor="contained-button-file" style={{ width: '100%', flexBasis: '49%' }}>
             <SettingsButton component="span" startIcon={<CloudDownload />}>
               Import Config
             </SettingsButton>
           </label>
-          {isElectron() &&
-            window.process?.argv.indexOf('integratedCore') !== -1 && (
-              <SettingsButton
-                startIcon={<CloudUpload />}
-                onClick={() =>
-                  window.api.send('toMain', { command: 'open-config' })
-                }
-              >
-                Config Location
-              </SettingsButton>
-            )}
+          {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1 && (
+            <SettingsButton
+              startIcon={<CloudUpload />}
+              onClick={() => window.api.send('toMain', { command: 'open-config' })}
+            >
+              Config Location
+            </SettingsButton>
+          )}
         </div>
         <div style={{ flex: '0 0 49%' }}>
           <AboutDialog startIcon={<Info />} className={classes.actionButton}>
             About
           </AboutDialog>
-          <SettingsButton
-            disabled={disconnected}
-            startIcon={<Refresh />}
-            onClick={restart}
-          >
-            {isElectron() &&
-            window.process?.argv.indexOf('integratedCore') !== -1
+          <SettingsButton disabled={disconnected} startIcon={<Refresh />} onClick={restart}>
+            {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1
               ? 'Restart Core'
               : 'Restart'}
           </SettingsButton>
@@ -132,63 +116,45 @@ const GeneralCard = () => {
             startIcon={<PowerSettingsNew />}
             onClick={shutdown}
           >
-            {isElectron() &&
-            window.process?.argv.indexOf('integratedCore') !== -1
+            {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1
               ? 'Shutdown Core'
               : 'Shutdown'}
           </SettingsButton>
-          {isElectron() &&
-            window.process?.argv.indexOf('integratedCore') !== -1 && (
-              <SettingsButton
-                startIcon={<PowerSettingsNew />}
-                onClick={() => {
-                  window.api.send('toMain', { command: 'start-core' })
-                }}
-              >
-                Start Core
-              </SettingsButton>
-            )}
+          {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1 && (
+            <SettingsButton
+              startIcon={<PowerSettingsNew />}
+              onClick={() => {
+                window.api.send('toMain', { command: 'start-core' })
+              }}
+            >
+              Start Core
+            </SettingsButton>
+          )}
         </div>
       </div>
       <Divider style={{ margin: '20px 0 10px' }} />
-      <div
-        className={`${classes.settingsRow} step-settings-six `}
-        style={{ flexBasis: '100%' }}
-      >
+      <div className={`${classes.settingsRow} step-settings-six `} style={{ flexBasis: '100%' }}>
         <label>Global Transitions</label>
         <SettingsSwitch
           checked={settings.global_transitions}
           onChange={() =>
-            onSystemSettingsChange(
-              'global_transitions',
-              !settings.global_transitions
-            )
+            onSystemSettingsChange('global_transitions', !settings.global_transitions)
           }
         />
       </div>
-      <div
-        className={`${classes.settingsRow} step-settings-seven `}
-        style={{ flexBasis: '100%' }}
-      >
+      <div className={`${classes.settingsRow} step-settings-seven `} style={{ flexBasis: '100%' }}>
         <label>Scan on startup</label>
         <SettingsSwitch
           checked={settings.scan_on_startup}
-          onChange={() =>
-            onSystemSettingsChange('scan_on_startup', !settings.scan_on_startup)
-          }
+          onChange={() => onSystemSettingsChange('scan_on_startup', !settings.scan_on_startup)}
         />
       </div>
-      <div
-        className={`${classes.settingsRow} step-settings-eleven `}
-        style={{ flexBasis: '100%' }}
-      >
+      <div className={`${classes.settingsRow} step-settings-eleven `} style={{ flexBasis: '100%' }}>
         <label>Scene on startup</label>
         <Select
           value={settings.startup_scene_id || ''}
           disableUnderline
-          onChange={(e) =>
-            onSystemSettingsChange('startup_scene_id', e.target.value)
-          }
+          onChange={(e) => onSystemSettingsChange('startup_scene_id', e.target.value)}
         >
           <MenuItem key={'none'} value={''}>
             {'None'}
@@ -200,31 +166,20 @@ const GeneralCard = () => {
           ))}
         </Select>
       </div>
-      <div
-        className={`${classes.settingsRow} step-settings-eight `}
-        style={{ flexBasis: '100%' }}
-      >
+      <div className={`${classes.settingsRow} step-settings-eight `} style={{ flexBasis: '100%' }}>
         <label>Auto-generate Virtuals for Segments</label>
         <SettingsSwitch
           checked={settings.create_segments}
-          onChange={() =>
-            onSystemSettingsChange('create_segments', !settings.create_segments)
-          }
+          onChange={() => onSystemSettingsChange('create_segments', !settings.create_segments)}
         />
       </div>
-      <div
-        className={`${classes.settingsRow} step-settings-ten `}
-        style={{ flexBasis: '100%' }}
-      >
+      <div className={`${classes.settingsRow} step-settings-ten `} style={{ flexBasis: '100%' }}>
         <label>Deactivate to black</label>
         <Tooltip title="On deactivation, virtuals and devices will fill pixels with black. If off pixels will be left with the last rendered color from before deactivation, this is the original LedFX behaviour">
           <SettingsSwitch
             checked={settings.flush_on_deactivate}
             onChange={() =>
-              onSystemSettingsChange(
-                'flush_on_deactivate',
-                !settings.flush_on_deactivate
-              )
+              onSystemSettingsChange('flush_on_deactivate', !settings.flush_on_deactivate)
             }
           />
         </Tooltip>

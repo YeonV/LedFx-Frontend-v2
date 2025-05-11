@@ -30,9 +30,7 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
   const deleteScene = useStore((state) => state.deleteScene)
 
   const sceneBlenderFilter = (sc: string) =>
-    scenes[sc].scene_tags?.split(',')?.includes('blender') &&
-    virtId &&
-    sc.startsWith(virtId)
+    scenes[sc].scene_tags?.split(',')?.includes('blender') && virtId && sc.startsWith(virtId)
 
   const handleAddScene = () => {
     if (!virtId || name.length === 0) return
@@ -91,11 +89,9 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
                       !(
                         name.length === 0 ||
                         (scenes &&
-                          (Object.keys(scenes).indexOf(`${virtId}-${name}`) >
-                            -1 ||
-                            Object.values(scenes).filter(
-                              (p: any) => p.name === `${virtId}-${name}`
-                            ).length > 0)) ||
+                          (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
+                            Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
+                              .length > 0)) ||
                         !valid
                       )
                     ) {
@@ -106,18 +102,16 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
                   error={
                     scenes &&
                     (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
-                      Object.values(scenes).filter(
-                        (p: any) => p.name === `${virtId}-${name}`
-                      ).length > 0)
+                      Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
+                        .length > 0)
                   }
                   size="small"
                   id="presetNameInput"
                   label={
                     scenes &&
                     (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
-                      Object.values(scenes).filter(
-                        (p: any) => p.name === `${virtId}-${name}`
-                      ).length > 0)
+                      Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
+                        .length > 0)
                       ? 'Partial Scene already exsisting'
                       : 'Add Partial Scene'
                   }
@@ -129,8 +123,7 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
                       scenes &&
                       (Object.keys(scenes).indexOf(e.target.value) > -1 ||
                         Object.values(scenes).filter(
-                          (p: any) =>
-                            p.name.replace(`${virtId}-`, '') === e.target.value
+                          (p: any) => p.name.replace(`${virtId}-`, '') === e.target.value
                         ).length > 0)
                     ) {
                       setValid(false)
@@ -142,10 +135,7 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
               }
               footer={
                 <div style={{ margin: '0 0 0.5rem 1rem' }}>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: theme.palette.text.disabled }}
-                  >
+                  <Typography variant="body2" sx={{ color: theme.palette.text.disabled }}>
                     Save the current effect configuration as a new preset.
                   </Typography>
                 </div>
@@ -154,9 +144,8 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
                 name.length === 0 ||
                 (scenes &&
                   (Object.keys(scenes).indexOf(name) > -1 ||
-                    Object.values(scenes).filter(
-                      (p: any) => p.name === `${virtId}-${name}`
-                    ).length > 0)) ||
+                    Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
+                      .length > 0)) ||
                 !valid
               }
               onConfirm={handleAddScene}

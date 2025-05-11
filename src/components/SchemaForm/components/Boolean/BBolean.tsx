@@ -21,12 +21,7 @@ const BBoolean = ({
   switch (type) {
     case 'switch':
       return (
-        <BladeFrame
-          index={index}
-          required={required}
-          style={style}
-          title={title}
-        >
+        <BladeFrame index={index} required={required} style={style} title={title}>
           <Switch
             defaultValue={defaultValue || value}
             checked={value}
@@ -55,11 +50,7 @@ const BBoolean = ({
       )
     case 'button':
       return (
-        <Button
-          color="primary"
-          variant={value ? 'contained' : 'outlined'}
-          onClick={onChange}
-        >
+        <Button color="primary" variant={value ? 'contained' : 'outlined'} onClick={onChange}>
           {title}
         </Button>
       )

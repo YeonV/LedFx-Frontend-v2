@@ -70,10 +70,6 @@ export default function Home() {
       <Dashboard />
     )
   ) : (
-    <IntroDialog
-      scanning={scanning}
-      handleScan={handleScan}
-      setScanning={setScanning}
-    />
+    <IntroDialog scanning={scanning} handleScan={handleScan} setScanning={setScanning} />
   )
 }

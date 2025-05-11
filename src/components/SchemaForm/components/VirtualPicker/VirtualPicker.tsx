@@ -42,10 +42,7 @@ const VirtualPicker = ({
       >
         {Object.keys(virtuals)
           .filter(
-            (v) =>
-              typeof virtuals[v].is_device === 'string' &&
-              virtuals[v].is_device !== '' &&
-              v
+            (v) => typeof virtuals[v].is_device === 'string' && virtuals[v].is_device !== '' && v
           )
           .map((v) => {
             return (

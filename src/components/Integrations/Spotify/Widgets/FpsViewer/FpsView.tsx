@@ -46,12 +46,7 @@ const FpsView: React.FC<FpsViewProps> = ({
             const barHeight = (height * val) / maxFps
             const barColor = val < maxFps * 0.8 ? lowFpsColor : color
             ctx.fillStyle = barColor
-            ctx.fillRect(
-              canvas.width - (i + 1) * 4,
-              height - barHeight,
-              4,
-              barHeight
-            )
+            ctx.fillRect(canvas.width - (i + 1) * 4, height - barHeight, 4, barHeight)
           })
       }
     }

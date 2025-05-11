@@ -10,14 +10,11 @@ import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 
 const TransitionCard = ({ virtual, style }: any) => {
   const schemas = useStore(
-    (state) =>
-      state.schemas.virtuals && state.schemas.virtuals.schema.properties
+    (state) => state.schemas.virtuals && state.schemas.virtuals.schema.properties
   )
   const addVirtual = useStore((state) => state.addVirtual)
-  const transition_mode =
-    virtual && virtual.config && virtual.config.transition_mode
-  const transition_time =
-    virtual && virtual.config && virtual.config.transition_time
+  const transition_mode = virtual && virtual.config && virtual.config.transition_mode
+  const transition_time = virtual && virtual.config && virtual.config.transition_time
 
   const handleSetTransition = (virtId: string, config: any) =>
     addVirtual({
@@ -43,10 +40,7 @@ const TransitionCard = ({ virtual, style }: any) => {
 
   return (
     <Card variant="outlined" className="step-device-two" style={style}>
-      <CardHeader
-        title="Transitions"
-        subheader="Seamlessly blend between effects"
-      />
+      <CardHeader title="Transitions" subheader="Seamlessly blend between effects" />
       <CardContent
         sx={{
           display: 'flex',

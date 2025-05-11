@@ -14,10 +14,9 @@ const classes = {
 
 const Root = styled('div')(({ theme }: any) => ({
   [`& .${classes.root}`]: {
-    '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root':
-      {
-        color: theme.palette.text.secondary
-      },
+    '&.MuiDataGrid-root .MuiDataGrid-footerContainer .MuiTablePagination-root': {
+      color: theme.palette.text.secondary
+    },
     '&.MuiDataGrid-root .MuiButtonBase-root.MuiIconButton-root': {
       color: theme.palette.text.secondary
     }
@@ -51,15 +50,13 @@ export default function QLCTriggerTable() {
         const triggerType = temp1[0] // Assuming temp1[0] holds the event type
         const sceneName = temp1[1].scene_id
         const effectName = temp1[1].effect_name
-        const triggerName =
-          triggerType === 'scene_activated' ? sceneName : effectName
+        const triggerName = triggerType === 'scene_activated' ? sceneName : effectName
         const enabled = temp1[2]
         const current_data = temp1[3]
         const arr_widgets: any = []
         const arr_values: any = []
         Object.entries(current_data)?.forEach(([k, v]) => {
-          const other_data =
-            qlcInfo && qlcInfo?.qlc_widgets?.find((widg: any) => widg[0] === k)
+          const other_data = qlcInfo && qlcInfo?.qlc_widgets?.find((widg: any) => widg[0] === k)
           const obj = { ID: '', Type: '', Name: '' }
           obj.ID = k
           obj.Type = other_data && other_data[1]
@@ -102,9 +99,7 @@ export default function QLCTriggerTable() {
 
   const deleteTriggerHandler = (paramsTemp: any) => {
     const filterKey =
-      paramsTemp?.row?.triggerType === 'scene_activated'
-        ? 'scene_id'
-        : 'effect_name'
+      paramsTemp?.row?.triggerType === 'scene_activated' ? 'scene_id' : 'effect_name'
     deleteQLCTrigger({
       data: {
         event_filter: { [filterKey]: paramsTemp?.row?.triggerName },
@@ -156,9 +151,7 @@ export default function QLCTriggerTable() {
             aria-label="Enable/Disable Trigger"
             onChange={() => {
               const filterKey =
-                params?.row?.triggerType === 'scene_activated'
-                  ? 'scene_id'
-                  : 'effect_name'
+                params?.row?.triggerType === 'scene_activated' ? 'scene_id' : 'effect_name'
               toggleQLCTrigger('qlc', {
                 event_filter: { [filterKey]: params?.row?.triggerName },
                 event_type: params?.row?.triggerType

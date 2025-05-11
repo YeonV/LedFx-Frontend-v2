@@ -1,13 +1,7 @@
 import { DialogTitle, Typography } from '@mui/material'
 import useStyles from './M.styles'
 
-const MDialogTitle = ({
-  currentCell,
-  m
-}: {
-  currentCell: number[]
-  m: any[]
-}) => {
+const MDialogTitle = ({ currentCell, m }: { currentCell: number[]; m: any[] }) => {
   const classes = useStyles()
 
   return (

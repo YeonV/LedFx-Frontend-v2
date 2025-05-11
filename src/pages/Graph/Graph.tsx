@@ -58,15 +58,7 @@ const Graph = () => {
         transitionDuration: `${(virtual?.config?.transition_time || 0) * 1000}`
       }}
     >
-      {virtId && (
-        <PixelGraph
-          showMatrix
-          fullScreen
-          virtId={virtId}
-          active={true}
-          dummy={false}
-        />
-      )}
+      {virtId && <PixelGraph showMatrix fullScreen virtId={virtId} active={true} dummy={false} />}
     </Box>
   )
 }

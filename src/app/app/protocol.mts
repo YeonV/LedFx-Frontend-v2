@@ -11,9 +11,7 @@ export const setupProtocol = () => {
 
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
-      app.setAsDefaultProtocolClient('ledfx', process.execPath, [
-        path.resolve(process.argv[1])
-      ])
+      app.setAsDefaultProtocolClient('ledfx', process.execPath, [path.resolve(process.argv[1])])
     }
   } else {
     app.setAsDefaultProtocolClient('ledfx')
@@ -31,11 +29,7 @@ export const handleProtocol = (
     } else {
       app.on(
         'second-instance',
-        (
-          event: Electron.Event,
-          commandLine: string[],
-          workingDirectory: string
-        ) => {
+        (event: Electron.Event, commandLine: string[], workingDirectory: string) => {
           const wind = getWind()
           console.log(commandLine, wind)
           if (wind) {
@@ -49,14 +43,10 @@ export const handleProtocol = (
         }
       )
       ready()
-      app.on('open-url', (event: Electron.Event, url: string) =>
-        console.log(event, url)
-      )
+      app.on('open-url', (event: Electron.Event, url: string) => console.log(event, url))
     }
   } else {
     ready()
-    app.on('open-url', (event: Electron.Event, url: string) =>
-      console.log(event, url)
-    )
+    app.on('open-url', (event: Electron.Event, url: string) => console.log(event, url))
   }
 }

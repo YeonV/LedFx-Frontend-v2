@@ -118,13 +118,7 @@ const MControls = ({
   }, [virtuals, pixelGraphs, showPixelGraph, virtual])
 
   return (
-    <Stack
-      minWidth={400}
-      direction="column"
-      spacing={2}
-      style={{ marginBottom: '1rem' }}
-      p={2}
-    >
+    <Stack minWidth={400} direction="column" spacing={2} style={{ marginBottom: '1rem' }} p={2}>
       <Collapse in={!camMapper}>
         <Stack
           direction="column"
@@ -148,8 +142,7 @@ const MControls = ({
                   max={virtual2dLimit}
                   value={rowN}
                   onChange={(e, newRowNumber) =>
-                    typeof newRowNumber === 'number' &&
-                    setRowNumber(newRowNumber)
+                    typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
                   }
                 />
               </Box>
@@ -165,8 +158,7 @@ const MControls = ({
                   max={virtual2dLimit}
                   value={colN}
                   onChange={(e, newColNumber) =>
-                    typeof newColNumber === 'number' &&
-                    setColNumber(newColNumber)
+                    typeof newColNumber === 'number' && setColNumber(newColNumber)
                   }
                 />
               </Box>
@@ -280,18 +272,8 @@ const MControls = ({
             className="step-2d-virtual-six"
           >
             <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab
-                icon={<PanTool />}
-                iconPosition="start"
-                label="DND-Canvas"
-                value="1"
-              />
-              <Tab
-                icon={<ControlCamera />}
-                iconPosition="start"
-                label="DND-Pixels"
-                value="2"
-              />
+              <Tab icon={<PanTool />} iconPosition="start" label="DND-Canvas" value="1" />
+              <Tab icon={<ControlCamera />} iconPosition="start" label="DND-Pixels" value="2" />
             </TabList>
           </Box>
           <TabPanel value="1" sx={{ padding: 0 }}>
@@ -320,10 +302,7 @@ const MControls = ({
             </Collapse>
           </TabPanel>
           <TabPanel value="2">
-            <Collapse
-              in={infoAlerts.pixelMode}
-              sx={{ marginTop: '0 !important' }}
-            >
+            <Collapse in={infoAlerts.pixelMode} sx={{ marginTop: '0 !important' }}>
               <Alert
                 severity="info"
                 sx={{ width: '100%' }}
@@ -340,19 +319,9 @@ const MControls = ({
         {move ? (
           <Box>
             <Box className="step-2d-virtual-five">
-              <Tab
-                icon={<ControlCamera />}
-                iconPosition="start"
-                label="Move Group"
-                value
-              />
+              <Tab icon={<ControlCamera />} iconPosition="start" label="Move Group" value />
             </Box>
-            <Stack
-              direction="column"
-              spacing={0}
-              alignItems="center"
-              justifyContent="center"
-            >
+            <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
               <IconButton
                 onClick={() =>
                   moveSelectedGroupUp({
@@ -444,9 +413,7 @@ const MControls = ({
           {camMapper ? 'Exit CameraMapper' : 'Map Pixels via Camera'}
         </Button>
       )}
-      <Collapse in={camMapper}>
-        {camMapper && <Webcam rowN={rowN} colN={colN} />}
-      </Collapse>
+      <Collapse in={camMapper}>{camMapper && <Webcam rowN={rowN} colN={colN} />}</Collapse>
     </Stack>
   )
 }

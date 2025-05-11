@@ -1,12 +1,4 @@
-import {
-  useTheme,
-  Stack,
-  Chip,
-  IconButton,
-  Typography,
-  Box,
-  CircularProgress
-} from '@mui/material'
+import { useTheme, Stack, Chip, IconButton, Typography, Box, CircularProgress } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
@@ -34,13 +26,7 @@ import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import PixelGraph from '../../components/PixelGraph/PixelGraph'
 import Popover from '../../components/Popover/Popover'
 
-const DeviceActions = ({
-  virtId,
-  effect
-}: {
-  virtId: string
-  effect?: boolean
-}) => {
+const DeviceActions = ({ virtId, effect }: { virtId: string; effect?: boolean }) => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const virtuals = useStore((state) => state.virtuals)
@@ -50,12 +36,8 @@ const DeviceActions = ({
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
   const clearEffect = useStore((state) => state.clearEffect)
-  const setDialogOpenAddVirtual = useStore(
-    (state) => state.setDialogOpenAddVirtual
-  )
-  const setDialogOpenAddDevice = useStore(
-    (state) => state.setDialogOpenAddDevice
-  )
+  const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual)
+  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice)
 
   const handleEditVirtual = () => {
     setDialogOpenAddVirtual(true, virtId)
@@ -247,11 +229,7 @@ const DbDevices = () => {
           .filter((v) =>
             showComplex
               ? v
-              : !(
-                  v.endsWith('-mask') ||
-                  v.endsWith('-foreground') ||
-                  v.endsWith('-background')
-                )
+              : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
       )
@@ -269,9 +247,7 @@ const DbDevices = () => {
       width: 50,
       display: 'flex',
       align: 'center',
-      renderCell: (params: GridRenderCellParams) => (
-        <BladeIcon name={params.value} />
-      )
+      renderCell: (params: GridRenderCellParams) => <BladeIcon name={params.value} />
     },
     {
       field: 'name',
@@ -293,16 +269,9 @@ const DbDevices = () => {
       field: 'PixelGraph',
       headerName: 'Graph',
       renderHeader: () => (
-        <Stack
-          direction={'row'}
-          spacing={2}
-          alignItems={'center'}
-          style={{ width: 200 }}
-        >
+        <Stack direction={'row'} spacing={2} alignItems={'center'} style={{ width: 200 }}>
           <Typography>Graph</Typography>
-          {Object.keys(virtuals).some(
-            (v) => (virtuals[v].config.rows || 1) > 1
-          ) && (
+          {Object.keys(virtuals).some((v) => (virtuals[v].config.rows || 1) > 1) && (
             <IconButton
               size="small"
               onClick={async (e) => {
@@ -321,8 +290,7 @@ const DbDevices = () => {
         graphsMulti && (
           <div
             style={{
-              paddingTop:
-                (virtuals[params.row.id].config.rows || 1) > 1 ? 0 : '7px',
+              paddingTop: (virtuals[params.row.id].config.rows || 1) > 1 ? 0 : '7px',
               opacity: fade ? 0.2 : 1,
               transitionDuration: fade
                 ? `${(virtuals[params.row.id].config.transition_time || 0) * 1000 || 1}s`
@@ -356,8 +324,7 @@ const DbDevices = () => {
       width: 200,
       align: 'left',
       renderCell: (params: GridRenderCellParams) =>
-        devices[Object.keys(devices).find((d) => d === params.row.id) || '']
-          ?.online
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online
           ? virtuals[params.row.id]?.effect?.name
             ? `Effect: ${virtuals[params.row.id]?.effect?.name}`
             : `${virtuals[params.row.id]?.last_effect ? `Last Effect: ${schemas.effects[virtuals[params.row.id]?.last_effect as string].name}` : 'Online'}`
@@ -403,8 +370,7 @@ const DbDevices = () => {
       ),
       width: 260,
       renderCell: (params: GridRenderCellParams) =>
-        devices[Object.keys(devices).find((d) => d === params.row.id) || '']
-          ?.online ? (
+        devices[Object.keys(devices).find((d) => d === params.row.id) || '']?.online ? (
           virtuals[params.row.id]?.effect.name ? (
             <DeviceActions virtId={params.row.id} effect />
           ) : (
@@ -425,11 +391,7 @@ const DbDevices = () => {
         .filter((v) =>
           showComplex
             ? v
-            : !(
-                v.endsWith('-mask') ||
-                v.endsWith('-foreground') ||
-                v.endsWith('-background')
-              )
+            : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
         )
         .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
         .find((key) => virtuals[key].id === v.id)

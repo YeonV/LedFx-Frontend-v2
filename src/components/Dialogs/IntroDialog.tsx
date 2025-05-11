@@ -11,11 +11,7 @@ import {
 import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
 import Button from '@mui/material/Button'
-import {
-  CheckCircleOutlineOutlined,
-  ChevronLeft,
-  ChevronRight
-} from '@mui/icons-material'
+import { CheckCircleOutlineOutlined, ChevronLeft, ChevronRight } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import banner from '../../icons/png/banner.png'
@@ -27,20 +23,14 @@ import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { SettingsRow } from '../../pages/Settings/SettingsComponents'
 
-export default function IntroDialog({
-  handleScan,
-  scanning,
-  setScanning
-}: any) {
+export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
   const intro = useStore((state) => state.intro)
   const devices = useStore((state) => state.devices)
   const openRgbDevices = useStore((state) => state.openRgbDevices)
   const launchpadDevice = useStore((state) => state.launchpadDevice)
   // const virtuals = useStore((state) => state.virtuals)
   const scanForOpenRgbDevices = useStore((state) => state.scanForOpenRgbDevices)
-  const scanForLaunchpadDevices = useStore(
-    (state) => state.scanForLaunchpadDevices
-  )
+  const scanForLaunchpadDevices = useStore((state) => state.scanForLaunchpadDevices)
   const setIntro = useStore((state) => state.setIntro)
   const setTour = useStore((state) => state.setTour)
   const setTourOpen = useStore((state) => state.setTourOpen)
@@ -333,11 +323,7 @@ export default function IntroDialog({
                 ) : null}
               </Stack>
             ) : (
-              <BladeIcon
-                intro
-                style={{ fontSize: 128 }}
-                name={steps[activeStep].icon}
-              />
+              <BladeIcon intro style={{ fontSize: 128 }} name={steps[activeStep].icon} />
             )}
 
             <div>
@@ -478,17 +464,13 @@ export default function IntroDialog({
                 <SettingsRow
                   title="Scenes Playlist"
                   checked={features.scenePlaylist}
-                  onChange={() =>
-                    setFeatures('scenePlaylist', !features.scenePlaylist)
-                  }
+                  onChange={() => setFeatures('scenePlaylist', !features.scenePlaylist)}
                 />
                 <SettingsRow
                   title="Expert Mode"
                   checked={viewMode !== 'user'}
                   onChange={() =>
-                    viewMode === 'user'
-                      ? setViewMode('expert')
-                      : setViewMode('user')
+                    viewMode === 'user' ? setViewMode('expert') : setViewMode('user')
                   }
                 />
               </Box>
@@ -549,19 +531,12 @@ export default function IntroDialog({
                   <SettingsRow
                     title="WLED Segments"
                     checked={assistant.wledSegments}
-                    onChange={() =>
-                      setAssistant('wledSegments', !assistant.wledSegments)
-                    }
+                    onChange={() => setAssistant('wledSegments', !assistant.wledSegments)}
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
                   />
                 </Stack>
                 <Stack direction="row" alignItems="center">
-                  <img
-                    width={32}
-                    height="auto"
-                    src={openrgbLogo}
-                    alt="openrgb"
-                  />
+                  <img width={32} height="auto" src={openrgbLogo} alt="openrgb" />
                   <SettingsRow
                     title="OpenRGB"
                     checked={assistant.openRgb}
@@ -570,18 +545,11 @@ export default function IntroDialog({
                   />
                 </Stack>
                 <Stack direction="row" alignItems="center">
-                  <img
-                    width={32}
-                    height="auto"
-                    src={launchpadLogo}
-                    alt="wled"
-                  />
+                  <img width={32} height="auto" src={launchpadLogo} alt="wled" />
                   <SettingsRow
                     title="Launchpad"
                     checked={assistant.launchpad}
-                    onChange={() =>
-                      setAssistant('launchpad', !assistant.launchpad)
-                    }
+                    onChange={() => setAssistant('launchpad', !assistant.launchpad)}
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
                   />
                 </Stack>
@@ -629,9 +597,7 @@ export default function IntroDialog({
                       }
                 ]}
               >
-                {steps[activeStep].key === 'wledScanning' &&
-                scanning &&
-                scanning > -1
+                {steps[activeStep].key === 'wledScanning' && scanning && scanning > -1
                   ? `Scanning...${scanning}%`
                   : steps[activeStep].label_left}
               </Button>

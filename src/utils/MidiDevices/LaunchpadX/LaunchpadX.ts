@@ -33,8 +33,8 @@ export const LaunchpadX: LaunchpadXDevice = {
     ledPulse: [0x92, 'buttonNumber', 'color'],
     rgb: [240, 0, 32, 41, 2, 12, 3, 3, 'buttonNumber', 'r', 'g', 'b', 247],
     text: [
-      240, 0, 32, 41, 2, 12, 7, 1, 7, 0, 37, 72, 97, 99, 107, 101, 100, 32, 98,
-      121, 32, 66, 108, 97, 100, 101, 33, 247
+      240, 0, 32, 41, 2, 12, 7, 1, 7, 0, 37, 72, 97, 99, 107, 101, 100, 32, 98, 121, 32, 66, 108,
+      97, 100, 101, 33, 247
     ],
     stopText: [240, 0, 32, 41, 2, 12, 7, 247]
   },
@@ -79,14 +79,7 @@ export const LaunchpadX: LaunchpadXDevice = {
       Math.floor(b / 2),
       247
     ],
-    text: (
-      text: string,
-      r: number,
-      g: number,
-      b: number,
-      loop?: boolean,
-      speed: number = 7
-    ) => [
+    text: (text: string, r: number, g: number, b: number, loop?: boolean, speed: number = 7) => [
       240,
       0,
       32,

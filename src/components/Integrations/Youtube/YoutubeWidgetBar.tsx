@@ -104,10 +104,7 @@ const YoutubeWidgetBar = ({
         >
           <BladeIcon name="Sync" />
         </Button> */}
-        <ChangeYoutubeURLDialog
-          youtubeURL={youtubeURL}
-          setYoutubeURL={setYoutubeURL}
-        />
+        <ChangeYoutubeURLDialog youtubeURL={youtubeURL} setYoutubeURL={setYoutubeURL} />
         <IconButton onClick={() => setYoutubeExpanded(!youtubeExpanded)}>
           <QueueMusic />
         </IconButton>
@@ -196,14 +193,10 @@ const YoutubeWidgetBar = ({
               }}
             >
               <Typography variant="h6">
-                {state.now_playing.url !== ''
-                  ? state.now_playing.title
-                  : 'Youtube Integration'}
+                {state.now_playing.url !== '' ? state.now_playing.title : 'Youtube Integration'}
               </Typography>
               <div>
-                <Typography variant="caption">
-                  {state.now_playing.artist}
-                </Typography>
+                <Typography variant="caption">{state.now_playing.artist}</Typography>
                 {state.now_playing.url === '' && (
                   <Typography variant="caption" color="textSecondary">
                     hacked by Blade
@@ -266,8 +259,7 @@ const YoutubeWidgetBar = ({
                       flexWrap: 'wrap',
                       borderBottom: '1px solid #333',
                       borderTop: i === 0 ? '1px solid #333' : 0,
-                      backgroundColor:
-                        i === state.track_index ? '#fff2' : '#fff0'
+                      backgroundColor: i === state.track_index ? '#fff2' : '#fff0'
                     }}
                   >
                     <div style={{ margin: '0 20px' }}>
@@ -291,22 +283,14 @@ const YoutubeWidgetBar = ({
                     <div>
                       <Typography
                         variant="h6"
-                        color={
-                          i === state.track_index
-                            ? 'textPrimary'
-                            : 'textSecondary'
-                        }
+                        color={i === state.track_index ? 'textPrimary' : 'textSecondary'}
                       >
                         {t.title}
                       </Typography>
                       <div>
                         <Typography
                           variant="caption"
-                          color={
-                            i === state.track_index
-                              ? 'textPrimary'
-                              : 'textSecondary'
-                          }
+                          color={i === state.track_index ? 'textPrimary' : 'textSecondary'}
                         >
                           {t.artist}
                         </Typography>

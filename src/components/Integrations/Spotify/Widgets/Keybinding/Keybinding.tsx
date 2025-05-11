@@ -81,11 +81,7 @@ const Keybinding = ({ close }: { close?: () => void }) => {
         <Box p={2}>
           <Stack spacing={2}>
             {keybindings.map((keybinding, index) => (
-              <KeysRow
-                key={index}
-                keys={keybinding.keys}
-                description={keybinding.description}
-              />
+              <KeysRow key={index} keys={keybinding.keys} description={keybinding.description} />
             ))}
           </Stack>
         </Box>

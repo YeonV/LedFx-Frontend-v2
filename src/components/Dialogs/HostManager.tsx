@@ -20,13 +20,7 @@ import {
   ToggleButton,
   Tooltip
 } from '@mui/material'
-import {
-  Add,
-  CalendarViewDay,
-  Delete,
-  FormatListBulleted,
-  PlayArrow
-} from '@mui/icons-material'
+import { Add, CalendarViewDay, Delete, FormatListBulleted, PlayArrow } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
 import Instances from './Instances'
@@ -48,8 +42,7 @@ export default function HostManager() {
   const setHost = useStore((state) => state.setHost)
   const storedURL = window.localStorage.getItem('ledfx-host')
   const storedURLs = JSON.parse(
-    window.localStorage.getItem('ledfx-hosts') ||
-      JSON.stringify(['http://localhost:8888'])
+    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(['http://localhost:8888'])
   )
   const [hosts, setHosts] = useState(['http://localhost:8888'])
   const [hostvalue, setHostvalue] = useState('http://localhost:8888')
@@ -73,10 +66,7 @@ export default function HostManager() {
 
   const handleDelete = (e: any, title: string) => {
     e.stopPropagation()
-    window.localStorage.setItem(
-      'ledfx-hosts',
-      JSON.stringify(hosts.filter((h) => h !== title))
-    )
+    window.localStorage.setItem('ledfx-hosts', JSON.stringify(hosts.filter((h) => h !== title)))
     setHosts(hosts.filter((h) => h !== title))
   }
 
@@ -186,20 +176,13 @@ export default function HostManager() {
 
   const [alignment, setAlignment] = useState('cards')
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
-  ) => {
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
     setAlignment(newAlignment)
   }
 
   return (
     <div key="nohost-dialog">
-      <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={dialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
           LedFx HostManager{' '}
           <span
@@ -214,25 +197,16 @@ export default function HostManager() {
           </span>
         </DialogTitle>
         <DialogContent>
-          {!edit && (
-            <DialogContentText>
-              You can change the host if you want:
-            </DialogContentText>
-          )}
+          {!edit && <DialogContentText>You can change the host if you want:</DialogContentText>}
           <div style={{ display: 'flex', marginTop: '0.5rem' }}>
             <TextField
               label="IP:Port"
               variant="outlined"
               value={hostvalue}
-              onKeyDown={(e) =>
-                e.key === 'Enter' && setHosts([...hosts, hostvalue])
-              }
+              onKeyDown={(e) => e.key === 'Enter' && setHosts([...hosts, hostvalue])}
               onChange={(e) => setHostvalue(e.target.value)}
             />
-            <Button
-              aria-label="add"
-              onClick={() => setHosts([...hosts, hostvalue])}
-            >
+            <Button aria-label="add" onClick={() => setHosts([...hosts, hostvalue])}>
               <Add />
             </Button>
           </div>
@@ -253,88 +227,75 @@ export default function HostManager() {
                   >
                     {h}
                   </Button>
-                  <Button
-                    aria-label="delete"
-                    onClick={(e) => h && handleDelete(e, h)}
-                  >
+                  <Button aria-label="delete" onClick={(e) => h && handleDelete(e, h)}>
                     <Delete />
                   </Button>
                 </div>
               </div>
             ))}
           </div>
-          {isElectron() &&
-            window.process?.argv.indexOf('integratedCore') !== -1 && (
-              <div style={{ marginTop: '1rem' }}>
-                <div style={{ marginBottom: '1rem' }}>
-                  <Typography variant="caption" sx={{ marginBottom: '1rem' }}>
-                    Core Instances
-                  </Typography>
-                  <Divider sx={{ marginBottom: '1rem' }} />
-                </div>
-                {instanceVariant === 'line' && (
-                  <>
-                    <Box display="flex">
-                      <Box sx={{ width: '60px', margin: '0 1rem' }}>Port</Box>
-                      <Box sx={{ width: '90px', marginRight: '0.5rem' }}>
-                        Status
-                      </Box>
-                      <Box sx={{ width: '90px', marginRight: '0.5rem' }}>
-                        Instance
-                      </Box>
-                      {/* <Box sx={{width: '110px', marginRight: '0.5rem'}}>Config</Box> */}
-                      <Box
-                        sx={{
-                          flexGrow: 1,
-                          marginRight: '0.5rem',
-                          textAlign: 'left',
-                          paddingLeft: '0.5rem'
-                        }}
-                      >
-                        Actions
-                      </Box>
+          {isElectron() && window.process?.argv.indexOf('integratedCore') !== -1 && (
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <Typography variant="caption" sx={{ marginBottom: '1rem' }}>
+                  Core Instances
+                </Typography>
+                <Divider sx={{ marginBottom: '1rem' }} />
+              </div>
+              {instanceVariant === 'line' && (
+                <>
+                  <Box display="flex">
+                    <Box sx={{ width: '60px', margin: '0 1rem' }}>Port</Box>
+                    <Box sx={{ width: '90px', marginRight: '0.5rem' }}>Status</Box>
+                    <Box sx={{ width: '90px', marginRight: '0.5rem' }}>Instance</Box>
+                    {/* <Box sx={{width: '110px', marginRight: '0.5rem'}}>Config</Box> */}
+                    <Box
+                      sx={{
+                        flexGrow: 1,
+                        marginRight: '0.5rem',
+                        textAlign: 'left',
+                        paddingLeft: '0.5rem'
+                      }}
+                    >
+                      Actions
                     </Box>
-                    <Divider sx={{ marginBottom: '1rem' }} />
-                    <Divider />
-                  </>
-                )}
+                  </Box>
+                  <Divider sx={{ marginBottom: '1rem' }} />
+                  <Divider />
+                </>
+              )}
 
-                {Object.keys(coreParams).map((h, i) => (
-                  <Instances
-                    handleDeleteHost={handleDelete}
-                    handleSave={handleSave}
-                    instances={Object.keys(coreParams).map(
-                      (ho) => parseInt(coreParams[ho][1], 10) || 8888
-                    )}
-                    variant={instanceVariant}
-                    i={i}
-                    instance={h}
-                    port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'}
-                    key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'}
-                  />
-                ))}
+              {Object.keys(coreParams).map((h, i) => (
                 <Instances
-                  handleSave={handleSave}
                   handleDeleteHost={handleDelete}
+                  handleSave={handleSave}
                   instances={Object.keys(coreParams).map(
                     (ho) => parseInt(coreParams[ho][1], 10) || 8888
                   )}
                   variant={instanceVariant}
-                  instance={false}
-                  i={Object.keys(coreParams).length + 1}
-                  port={`${parseInt(coreParams[`instance${Object.keys(coreParams).length}`]?.[1] || '8888', 10) + 1}`}
+                  i={i}
+                  instance={h}
+                  port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'}
+                  key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'}
                 />
-              </div>
-            )}
+              ))}
+              <Instances
+                handleSave={handleSave}
+                handleDeleteHost={handleDelete}
+                instances={Object.keys(coreParams).map(
+                  (ho) => parseInt(coreParams[ho][1], 10) || 8888
+                )}
+                variant={instanceVariant}
+                instance={false}
+                i={Object.keys(coreParams).length + 1}
+                port={`${parseInt(coreParams[`instance${Object.keys(coreParams).length}`]?.[1] || '8888', 10) + 1}`}
+              />
+            </div>
+          )}
 
           <div style={{ marginTop: '1rem' }}>
             <div style={{ marginBottom: '1rem' }}>
-              <Stack
-                direction="row"
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center">
                 <Tooltip title="Same scene id with different scene config across all running cors. ATTENTION: You have to make sure yourself, they are not colliding!">
                   <Typography variant="caption" sx={{ marginBottom: '1rem' }}>
                     Common Scenes{' '}
@@ -374,9 +335,7 @@ export default function HostManager() {
                 {alignment === 'list' && (
                   <>
                     <Box display="flex">
-                      <Box sx={{ width: '240px', margin: '0 2rem 0 1rem' }}>
-                        Scene
-                      </Box>
+                      <Box sx={{ width: '240px', margin: '0 2rem 0 1rem' }}>Scene</Box>
                       <Box
                         sx={{
                           flexGrow: 1,
@@ -407,9 +366,7 @@ export default function HostManager() {
                         style={{ background: theme.palette.background.default }}
                         onClick={() => activateCommon(sc)}
                       >
-                        <SceneImage
-                          iconName={commonScenes[sc].scene_image || 'Wallpaper'}
-                        />
+                        <SceneImage iconName={commonScenes[sc].scene_image || 'Wallpaper'} />
                       </CardActionArea>
                       <CardActions>
                         <Typography
@@ -440,9 +397,7 @@ export default function HostManager() {
                         >
                           <SceneImage
                             key={sc}
-                            iconName={
-                              commonScenes[sc].scene_image || 'Wallpaper'
-                            }
+                            iconName={commonScenes[sc].scene_image || 'Wallpaper'}
                           />
                         </Box>
                         <Typography
@@ -473,12 +428,7 @@ export default function HostManager() {
               </>
             )}
             <div style={{ marginBottom: '1rem' }}>
-              <Stack
-                direction="row"
-                spacing={2}
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center">
                 <Tooltip title="Same scene id with different scene config across all running cors. ATTENTION: You have to make sure yourself, they are not colliding!">
                   <Typography variant="caption" sx={{ marginBottom: '1rem' }}>
                     Song detector{' '}

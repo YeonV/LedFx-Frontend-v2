@@ -5,14 +5,7 @@ import useStore from '../../store/useStore'
 import GlobalActionBar from '../GlobalActionBar'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { AddButtonProps } from './AddButton.props'
-import {
-  AddBStyle,
-  AddBWrapper,
-  AnchorState,
-  MenuLine,
-  StyledMenu,
-  useStyles
-} from './AddB.styles'
+import { AddBStyle, AddBWrapper, AnchorState, MenuLine, StyledMenu, useStyles } from './AddB.styles'
 
 const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
   const classes = useStyles()
@@ -78,11 +71,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
   }
   return (
     <>
-      <AddBWrapper
-        className={`${className} hideHd`}
-        style={{ zIndex: 5, ...style }}
-        sx={sx}
-      >
+      <AddBWrapper className={`${className} hideHd`} style={{ zIndex: 5, ...style }} sx={sx}>
         <Fab
           variant="circular"
           aria-label="add"
@@ -113,11 +102,7 @@ const AddButton = ({ className, style, setBackdrop, sx }: AddButtonProps) => {
         </StyledMenu>
       </AddBWrapper>
       <div className={`showHd ${classes.globalWrapper}`}>
-        <GlobalActionBar
-          className={classes.globalActionBar}
-          height={15}
-          type="icon"
-        />
+        <GlobalActionBar className={classes.globalActionBar} height={15} type="icon" />
         <AddBWrapper className={className}>
           <IconButton
             color="inherit"

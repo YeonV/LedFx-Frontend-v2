@@ -27,18 +27,12 @@ function createSocket() {
       ? 'http://localhost:8888'
       : window.location.href.split('/#')[0].replace(/\/+$/, ''))
 
-  const wsUrl =
-    host.replace('https://', 'wss://').replace('http://', 'ws://') +
-    '/api/websocket'
+  const wsUrl = host.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/websocket'
 
   if (YZFLAG) {
     return 'mixedContent'
   }
-  if (
-    window.location.protocol === 'https:' &&
-    wsUrl.startsWith('ws://') &&
-    YZFLAG
-  ) {
+  if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://') && YZFLAG) {
     console.info('BOOOM')
     // return undefined
   }
@@ -223,11 +217,7 @@ export const HandleWs = () => {
           .filter((v) =>
             showComplex
               ? v
-              : !(
-                  v.endsWith('-mask') ||
-                  v.endsWith('-foreground') ||
-                  v.endsWith('-background')
-                )
+              : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
       )

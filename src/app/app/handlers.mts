@@ -2,13 +2,7 @@
 import { app, shell, BrowserWindow, nativeTheme } from 'electron'
 import path from 'path'
 import { generateMfaQr, handleVerifyOTP } from './otp.js'
-import {
-  startInstance,
-  stopInstance,
-  sendStatus,
-  Subprocesses,
-  IPlatform
-} from './instances.mjs'
+import { startInstance, stopInstance, sendStatus, Subprocesses, IPlatform } from './instances.mjs'
 import coreParams from './utils/coreParams.mjs'
 import defaultCoreParams from './utils/defaultCoreParams.mjs'
 import store from './utils/store.mjs'
@@ -49,10 +43,7 @@ export const handlers = async (
         break
       case 'get-core-params':
         if (isCC()) {
-          wind.webContents.send('fromMain', [
-            'coreParams',
-            coreParams[process.platform]
-          ])
+          wind.webContents.send('fromMain', ['coreParams', coreParams[process.platform]])
           sendStatus(wind, subprocesses, false, parameters.instance)
         }
         break
@@ -63,12 +54,7 @@ export const handlers = async (
         break
       case 'start-core-instance':
         if (isCC()) {
-          startInstance(
-            wind,
-            parameters.instance,
-            subprocesses,
-            parameters.port
-          )
+          startInstance(wind, parameters.instance, subprocesses, parameters.port)
         }
         break
       case 'stop-core-instance':
@@ -86,10 +72,7 @@ export const handlers = async (
           })
           delete coreParams[process.platform][parameters.instance]
           store.set('coreParams', coreParams)
-          wind.webContents.send('fromMain', [
-            'coreParams',
-            coreParams[process.platform]
-          ])
+          wind.webContents.send('fromMain', ['coreParams', coreParams[process.platform]])
         }
         break
       case 'delete-core-params':
@@ -111,39 +94,18 @@ export const handlers = async (
 
         if (parameters.instance && parameters.instance !== 'instance1') {
           shell.showItemInFolder(
-            path.join(
-              app.getPath('userData'),
-              '.ledfx-cc',
-              parameters.instance,
-              'config.json'
-            )
+            path.join(app.getPath('userData'), '.ledfx-cc', parameters.instance, 'config.json')
           )
           shell.showItemInFolder(
-            path.join(
-              app.getPath('appData'),
-              '.ledfx-cc',
-              parameters.instance,
-              'config.json'
-            )
+            path.join(app.getPath('appData'), '.ledfx-cc', parameters.instance, 'config.json')
           )
           shell.showItemInFolder(
-            path.join(
-              app.getPath('home'),
-              '.ledfx-cc',
-              parameters.instance,
-              'config.json'
-            )
+            path.join(app.getPath('home'), '.ledfx-cc', parameters.instance, 'config.json')
           )
         } else {
-          shell.showItemInFolder(
-            path.join(app.getPath('userData'), '.ledfx', 'config.json')
-          )
-          shell.showItemInFolder(
-            path.join(app.getPath('appData'), '.ledfx', 'config.json')
-          )
-          shell.showItemInFolder(
-            path.join(app.getPath('home'), '.ledfx', 'config.json')
-          )
+          shell.showItemInFolder(path.join(app.getPath('userData'), '.ledfx', 'config.json'))
+          shell.showItemInFolder(path.join(app.getPath('appData'), '.ledfx', 'config.json'))
+          shell.showItemInFolder(path.join(app.getPath('home'), '.ledfx', 'config.json'))
         }
 
         break

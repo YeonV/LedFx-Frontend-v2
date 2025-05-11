@@ -16,6 +16,7 @@ interface ExpandMoreProps extends IconButtonProps {
 }
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const { expand, ...other } = props
   return <IconButton {...other} />
 })(({ theme }) => ({
@@ -85,11 +86,7 @@ const ExpanderCard = ({
         </ExpandMore>
       </Typography>
       <Collapse in={expander[cardKey]}>
-        <Box
-          sx={{ height: 298, width: '100%', maxWidth: '470px', m: '0 auto' }}
-        >
-          {children}
-        </Box>
+        <Box sx={{ height: 298, width: '100%', maxWidth: '470px', m: '0 auto' }}>{children}</Box>
       </Collapse>
     </Card>
   )

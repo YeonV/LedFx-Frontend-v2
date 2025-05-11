@@ -1,13 +1,7 @@
 import { clone } from '../M.utils'
 import { IMoveGroupHorizontal } from './interfaces'
 
-const moveSelectedGroupLeft = ({
-  m,
-  rowN,
-  colN,
-  selectedGroup,
-  setM
-}: IMoveGroupHorizontal) => {
+const moveSelectedGroupLeft = ({ m, rowN, colN, selectedGroup, setM }: IMoveGroupHorizontal) => {
   const updatedM = clone(m)
   for (let i = 0; i < rowN; i++) {
     for (let j = 0; j < colN; j++) {

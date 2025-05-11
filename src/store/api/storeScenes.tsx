@@ -33,12 +33,9 @@ const storeScenes = (set: any) => ({
   setSceneOrderUp: (sceneId: string) => {
     let target = null
     const sceneOrder = useStore.getState().sceneOrder
-    const current =
-      sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
+    const current = sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
     if (!current || current.order < 1) return
-    target =
-      sceneOrder.find((s: ISceneOrder) => s.order === current?.order - 1) ||
-      null
+    target = sceneOrder.find((s: ISceneOrder) => s.order === current?.order - 1) || null
     if (!target) return
     // console.log('Move up', sceneId, current, target)
 
@@ -64,12 +61,9 @@ const storeScenes = (set: any) => ({
   setSceneOrderDown: (sceneId: string) => {
     let target = null
     const sceneOrder = useStore.getState().sceneOrder
-    const current =
-      sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
+    const current = sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
     if (!current || current.order >= sceneOrder.length - 1) return
-    target =
-      sceneOrder.find((s: ISceneOrder) => s.order === current?.order + 1) ||
-      null
+    target = sceneOrder.find((s: ISceneOrder) => s.order === current?.order + 1) || null
     if (!target) return
     // console.log('Move down', sceneId, current, target)
 
@@ -292,8 +286,7 @@ const storeScenes = (set: any) => ({
       action: 'activate_in',
       ms
     }),
-  deleteScene: async (name: string) =>
-    await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
+  deleteScene: async (name: string) => await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
 
   captivateScene: async (scene_puturl: string, scene_payload: string) =>
     await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload))

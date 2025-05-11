@@ -1,11 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const IStorage = ['localStorage', 'indexedDb', 'cloud', 'custom'] as const
-export const storageOptions = [
-  'localStorage',
-  'indexedDb',
-  'cloud',
-  'custom'
-] as typeof IStorage
+export const storageOptions = ['localStorage', 'indexedDb', 'cloud', 'custom'] as typeof IStorage
 export interface AvatarPickerProps {
   /**
    * Where to store the avatar

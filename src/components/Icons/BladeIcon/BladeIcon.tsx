@@ -2,21 +2,8 @@ import { Icon } from '@mui/material'
 import Wled from '../Wled'
 import RazerMouse from '../RzrMouse'
 import RazerLogo from '../RzrLogo'
-import {
-  YZLogo2,
-  YZLogo2Bottom,
-  YZLogo2Top,
-  YZLogo2Y,
-  YZLogo2Z
-} from '../YZ-Logo2'
-import {
-  YZLogo3,
-  YZLogo3Left,
-  YZLogo3Right,
-  YZLogo3Top,
-  YZLogo3Y,
-  YZLogo3Z
-} from '../YZ-Logo3'
+import { YZLogo2, YZLogo2Bottom, YZLogo2Top, YZLogo2Y, YZLogo2Z } from '../YZ-Logo2'
+import { YZLogo3, YZLogo3Left, YZLogo3Right, YZLogo3Top, YZLogo3Y, YZLogo3Z } from '../YZ-Logo3'
 import { camelToSnake } from '../../../utils/helpers'
 import '../../../assets/materialdesignicons.css'
 import '../../../index.css'
@@ -26,27 +13,13 @@ import NovationLogo from '../Novation'
 
 import type { JSX } from 'react'
 
-const getStyle = (
-  card: boolean,
-  scene: boolean,
-  intro: boolean,
-  list: boolean
-) => ({
-  transform: card
-    ? 'unset'
-    : scene
-      ? 'scale(1)'
-      : intro
-        ? 'scale(0.05)'
-        : 'scale(0.012)',
+const getStyle = (card: boolean, scene: boolean, intro: boolean, list: boolean) => ({
+  transform: card ? 'unset' : scene ? 'scale(1)' : intro ? 'scale(0.05)' : 'scale(0.012)',
   marginTop: '3px',
   height: list ? '100%' : 'unset'
 })
 
-const renderIcon = (
-  name: string,
-  style: React.CSSProperties
-): JSX.Element | string => {
+const renderIcon = (name: string, style: React.CSSProperties): JSX.Element | string => {
   const components: { [key: string]: JSX.Element } = {
     'yz:logo2y': <YZLogo2Y style={style} />,
     'yz:logo2z': <YZLogo2Z style={style} />,
@@ -72,12 +45,7 @@ const renderIcon = (
 
   if (name.startsWith('https://')) {
     return (
-      <img
-        src={name.replaceAll('#000000', 'currentColor')}
-        width={50}
-        alt="icon"
-        style={style}
-      />
+      <img src={name.replaceAll('#000000', 'currentColor')} width={50} alt="icon" style={style} />
     )
   }
 

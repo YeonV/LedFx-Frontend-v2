@@ -7,9 +7,7 @@ interface NoYetProps {
   type?: string
 }
 
-const NoYet: React.FC<NoYetProps> = ({
-  type = 'Thing'
-}: NoYetProps): JSX.Element => (
+const NoYet: React.FC<NoYetProps> = ({ type = 'Thing' }: NoYetProps): JSX.Element => (
   <Card>
     <CardHeader
       avatar={<Info />}
