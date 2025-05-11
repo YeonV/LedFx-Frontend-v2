@@ -10,13 +10,14 @@ import {
   TextField,
   Typography
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import LpColorPicker from './LpColorPicker'
 import Assign from '../Gamepad/Assign'
 import useStore from '../../store/useStore'
 import { Autorenew, Save } from '@mui/icons-material'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ColorTypePicker from './ColorTypePicker'
+import { executeCommand } from '../../utils/commandHandler'
 
 const LaunchpadButton = ({
   uiButtonNumber,
@@ -60,29 +61,6 @@ const LaunchpadButton = ({
     (state) => state.midiColors.sceneActiveType
   )
   const midiCommandType = useStore((state) => state.midiColors.commandType)
-  const setFeatures = useStore((state) => state.setFeatures)
-  const togglePause = useStore((state) => state.togglePause)
-  const global_brightness = useStore((state) => state.config.global_brightness)
-  const glBrightness = useRef(global_brightness)
-  const setSystemConfig = useStore((state) => state.setSystemConfig)
-  const setSystemSetting = (setting: string, value: any) => {
-    setSystemConfig({ [setting]: value })
-  }
-  const oneShotAll = useStore((state) => state.oneShotAll)
-  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
-  const [bright, setBright] = useState(1)
-  const scenes = useStore((state) => state.scenes)
-  const activateScene = useStore((state) => state.activateScene)
-  const captivateScene = useStore((state) => state.captivateScene)
-
-  const setSmartBarOpen = useStore(
-    (state) => state.ui.bars && state.ui.setSmartBarOpen
-  )
-  const setScene = (e: string) => {
-    activateScene(e)
-    if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
-      captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
-  }
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -101,44 +79,6 @@ const LaunchpadButton = ({
 
   const lp = MidiDevices[midiType][midiModel]
   const isRgb = 'rgb' in lp.fn
-  function handleButtonPress(command: string, payload?: any) {
-    if (command === 'scene' && payload?.scene) {
-      setScene(payload.scene)
-    } else if (command === 'smartbar') {
-      setSmartBarOpen(!useStore.getState().ui.bars.smartBar.open)
-    } else if (command === 'play/pause') {
-      togglePause()
-    } else if (command === 'brightness-up') {
-      setSystemSetting(
-        'global_brightness',
-        Math.min(glBrightness.current + 0.1, 1).toFixed(2)
-      )
-      glBrightness.current = Math.min(glBrightness.current + 0.1, 1)
-      setBright(Math.min(bright + 0.1, 1))
-    } else if (command === 'brightness-down') {
-      setSystemSetting(
-        'global_brightness',
-        Math.max(glBrightness.current - 0.1, 0).toFixed(2)
-      )
-      glBrightness.current = Math.min(glBrightness.current - 0.1, 1)
-      setBright(Math.max(bright - 0.1, 0))
-    } else if (command === 'scene-playlist') {
-      toggleScenePLplay()
-    } else if (command === 'one-shot') {
-      oneShotAll(
-        payload?.color || '#0dbedc',
-        payload?.ramp || 10,
-        payload?.holdType !== 'release' ? payload?.hold || 200 : 10000,
-        payload?.fade || 2000
-      )
-    } else if (command === 'copy-to') {
-      setFeatures('streamto', !useStore.getState().features.streamto)
-    } else if (command === 'transitions') {
-      setFeatures('transitions', !useStore.getState().features.transitions)
-    } else if (command === 'frequencies') {
-      setFeatures('frequencies', !useStore.getState().features.frequencies)
-    }
-  }
 
   const handleColorSelect = (type: string, color: string | number) => {
     setMidiMapping({
@@ -166,12 +106,21 @@ const LaunchpadButton = ({
     <div style={{ visibility: hidden ? 'hidden' : 'visible' }}>
       <Button
         variant="outlined"
-        onClick={() =>
+        onMouseDownCapture={() =>
           currentMapping.command &&
           currentMapping.command !== '' &&
           currentMapping.command !== 'none' &&
-          handleButtonPress(currentMapping.command, currentMapping.payload)
+          executeCommand(currentMapping.command, currentMapping.payload)
         }
+        onMouseUpCapture={() => {
+          // console.log('mouseup', currentMapping.payload)
+          if (
+            typeof currentMapping.payload.fallback === 'boolean' &&
+            currentMapping.payload.fallback === true
+          ) {
+            executeCommand('effect-fallback', currentMapping.payload)
+          }
+        }}
         onContextMenu={(e) => {
           e.preventDefault()
           handleClickOpen()
@@ -180,10 +129,6 @@ const LaunchpadButton = ({
           {
             width: 70,
             height: 70,
-
-            // height: (row === 8 || ((row === 2 || row === 3) && col < 5 ))  ? 35 : 70,
-            // marginRight: col === 4 && row !== 8 ? 2 : 0,
-            // marginTop: row === 3 && col < 5 ? '34px' : 0,
             borderRadius: 1,
 
             borderStyle: 'solid',
