@@ -22,7 +22,6 @@ interface OneShotPayload {
   color?: string
   ramp?: number
   hold?: number
-  holdType?: 'press' | 'release' // From MIDIListener example
   fade?: number
 }
 
@@ -63,19 +62,11 @@ const commandStrategies: {
   },
 
   'one-shot': (payload: OneShotPayload, store) => {
-    // Normalize hold logic if it differs based on source (e.g. MIDI noteoff vs Gamepad press)
-    // For now, using the example from MIDIListener
-    // wtf was this again?
-    const holdDuration =
-      (payload.holdType && payload.holdType !== 'release') || !payload.holdType
-        ? (payload.hold ?? 200) // Default hold if not release type
-        : 10000 // Long hold for release type (or specific logic from MIDIListener)
-
     store.oneShotAll(
-      payload.color || '#0dbedc',
-      payload.ramp || 10,
-      holdDuration,
-      payload.fade || 2000
+      payload?.color || '#0dbedc',
+      payload?.ramp || 10,
+      payload?.hold || 200,
+      payload?.fade || 2000
     )
   },
 
@@ -110,7 +101,6 @@ const commandStrategies: {
   },
 
   'copy-to': (_payload: any, store) => {
-    // Assuming payload for 'copy-to' might not be used by this handler
     store.setFeatures('streamto', !store.features.streamto)
   },
 
@@ -125,10 +115,8 @@ const commandStrategies: {
   'scene-playlist': (_payload: any, store) => {
     store.toggleScenePLplay()
   },
-
-  // Add other commands from Gamepad.tsx like 'scan-wled' if they should be global
   'scan-wled': (_payload: any, store) => {
-    store.scanForDevices() // Assuming scanForDevices is a store action
+    store.scanForDevices()
   },
   smartbar: (_payload: any, store) => {
     store.ui.setSmartBarOpen(!store.ui.bars.smartBar.open)
@@ -151,14 +139,15 @@ export function executeCommand(command: string, payload?: any): void {
       handler(payload, storeApi)
       log.purple('CommandHandler', `Executed: ${command}`)
     } catch (error) {
-      console.error(
-        `[CommandHandler] Error executing command '${command}':`,
+      log.error(
+        'CommandHandler',
+        `Error executing command '${command}':`,
         error,
         'Payload:',
         payload
       )
     }
   } else {
-    console.warn(`[CommandHandler] No handler found for command: ${command}`)
+    log.warn('CommandHandler', `No handler found for command: ${command}`)
   }
 }
