@@ -4,45 +4,41 @@ import BladeFrame from '../BladeFrame'
 
 const VirtualPicker = ({
   title,
-  id,
-  model,
-  hide,
-  handleEffectConfig
+  value,
+  showAll,
+  onChange
 }: {
-  title: string
-  id: string
-  model: Record<string, unknown>
-  hide?: boolean
-  handleEffectConfig?: (_config: Record<string, unknown>) => void
+  title?: string
+  value?: string
+  showAll?: boolean
+  // eslint-disable-next-line no-unused-vars
+  onChange?: (value: string) => void
 }) => {
   const virtuals = useStore((state) => state.virtuals)
-
-  if (hide) return null
 
   return (
     <BladeFrame
       title={title}
-      key={id}
-      required
       style={{
         margin: '0.5rem 0',
-        flexBasis: '49%',
+        flexBasis: '100%',
         width: 'unset'
       }}
     >
       <Select
         onChange={(e: any) => {
-          const c: Record<string, unknown> = {}
-          c[id] = e.target.value
-          return handleEffectConfig && handleEffectConfig(c)
+          const c = e.target.value
+          return onChange && onChange(c)
         }}
-        value={model[id]}
+        value={value}
         fullWidth
         disableUnderline
       >
         {Object.keys(virtuals)
-          .filter(
-            (v) => typeof virtuals[v].is_device === 'string' && virtuals[v].is_device !== '' && v
+          .filter((v) =>
+            showAll
+              ? true
+              : typeof virtuals[v].is_device === 'string' && virtuals[v].is_device !== '' && v
           )
           .map((v) => {
             return (

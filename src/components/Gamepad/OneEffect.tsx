@@ -1,7 +1,7 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
+  // Accordion,
+  // AccordionDetails,
+  // AccordionSummary,
   Button,
   Dialog,
   DialogActions,
@@ -12,16 +12,18 @@ import {
   Select,
   Stack,
   ToggleButton,
-  ToggleButtonGroup,
-  Typography
+  ToggleButtonGroup
+  // Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { Edit, ExpandMore } from '@mui/icons-material'
+import { Edit } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import SliderInput from '../SchemaForm/components/Number/SliderInput'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { log } from '../../utils/log'
+import VirtualPicker from '../SchemaForm/components/VirtualPicker/VirtualPicker'
+import BladeFrame from '../SchemaForm/components/BladeFrame'
 
 const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -29,13 +31,13 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   const [virtId, setVirtId] = useState('')
   const [type, setType] = useState('')
   const [config, setConfig] = useState<any>({})
-  const [active, setActive] = useState(false)
+  const [active, setActive] = useState(true)
+  const [fallback, setFallback] = useState(1)
   const [fallbackBool, setFallbackBool] = useState(false)
   const [fallbackUseNumber, setFallbackUseNumber] = useState(true)
   const [fallbackNumber, setFallbackNumber] = useState(20)
 
   const effects = useStore((state) => state.schemas.effects)
-  const virtuals = useStore((state) => state.virtuals)
   const presets = useStore((state) => state.presets)
   const setEffect = useStore((state) => state.setEffect)
   const getPresets = useStore((state) => state.getPresets)
@@ -72,10 +74,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
     })
     setDialogOpen(false)
   }
-  // const handleTest = (virtId: string, type: string, config: EffectConfig, active: boolean, fallback: boolean | number) => {
-  // const handleTest = () => {
-  //   setEffect(virtId, type, JSON.parse(config), active, fallbackUseNumber ? fallbackNumber : fallbackBool)
-  // }
+
   useHotkeys(['ctrl+alt+e'], () => setDialogOpen(!dialogOpen))
 
   useEffect(() => {
@@ -84,6 +83,35 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId, type])
+
+  const handleFallbackChange = (newValue: number | null) => {
+    // The ToggleButtonGroup with exclusive=true should always pass a value (1, 2, or 3)
+    // unless all buttons are somehow deselected, which shouldn't happen.
+    // If newValue can be null, you might want to default to a state (e.g., 1) or just return.
+    if (newValue === null) {
+      return
+    }
+
+    setFallback(newValue) // Update the main selector state
+
+    switch (newValue) {
+      case 1: // "No Fallback"
+        setFallbackUseNumber(false)
+        setFallbackBool(false)
+        break
+      case 2: // "Timeout"
+        setFallbackUseNumber(true)
+        setFallbackBool(false)
+        break
+      case 3: // "Button-Release"
+        setFallbackUseNumber(false)
+        setFallbackBool(true)
+        break
+      default:
+        // Should not happen
+        break
+    }
+  }
 
   // Initializing the dialog state when it opens
   useEffect(() => {
@@ -146,55 +174,94 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>
-                Virtual ID
-              </Typography>
-              <Select fullWidth value={virtId} onChange={(e) => setVirtId(e.target.value)}>
-                <MenuItem key={'noValue'} value={''}>
-                  Please select
-                </MenuItem>
-                {Object.keys(virtuals).map((k) => (
-                  <MenuItem key={k} value={k}>
-                    {k}
+            <VirtualPicker title="Virtual" value={virtId} onChange={(v) => setVirtId(v)} showAll />
+            <Stack direction="row" spacing={2} alignItems={'center'} pb={2}>
+              <BladeFrame
+                title="Type"
+                style={{
+                  // margin: '0.5rem 0',
+                  flexBasis: '100%',
+                  width: 'unset'
+                }}
+              >
+                <Select
+                  disableUnderline
+                  fullWidth
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <MenuItem key={'noValue'} value={''}>
+                    Please select
                   </MenuItem>
-                ))}
-              </Select>
+                  {effects &&
+                    Object.keys(effects).map((k) => (
+                      <MenuItem key={k} value={k}>
+                        {effects[k].name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </BladeFrame>
+              <BladeFrame
+                title="Preset"
+                style={{
+                  // margin: '0.5rem 0',
+                  flexBasis: '100%',
+                  width: 'unset'
+                }}
+              >
+                <Select
+                  disableUnderline
+                  fullWidth
+                  value={config}
+                  onChange={(e) => setConfig(e.target.value)}
+                >
+                  <MenuItem key={'noValue'} value={''}>
+                    Please select
+                  </MenuItem>
+                  {presets &&
+                    Object.values(p).map((k) => (
+                      <MenuItem key={k.name} value={JSON.stringify(k.config)}>
+                        {k.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </BladeFrame>
             </Stack>
-            <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>
-                Type
-              </Typography>
-              <Select fullWidth value={type} onChange={(e) => setType(e.target.value)}>
-                <MenuItem key={'noValue'} value={''}>
-                  Please select
-                </MenuItem>
-                {effects &&
-                  Object.keys(effects).map((k) => (
-                    <MenuItem key={k} value={k}>
-                      {effects[k].name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>
-                Preset
-              </Typography>
-              <Select fullWidth value={config} onChange={(e) => setConfig(e.target.value)}>
-                <MenuItem key={'noValue'} value={''}>
-                  Please select
-                </MenuItem>
-                {presets &&
-                  Object.values(p).map((k) => (
-                    <MenuItem key={k.name} value={JSON.stringify(k.config)}>
-                      {k.name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </Stack>
+            <BladeFrame
+              title="Fallback"
+              style={{
+                margin: '0.5rem 0',
+                paddingBottom: '0.7rem',
+                flexBasis: '100%',
+                width: 'unset',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              <ToggleButtonGroup
+                fullWidth
+                size="small"
+                color="primary"
+                value={fallback}
+                exclusive
+                onChange={(e, v) => handleFallbackChange(v)}
+                aria-label="Platform"
+              >
+                <ToggleButton value={1}>No Fallback</ToggleButton>
+                <ToggleButton value={2}>Timeout</ToggleButton>
+                <ToggleButton value={3}>Button-Release</ToggleButton>
+              </ToggleButtonGroup>
+              {fallback === 2 && (
+                <SliderInput
+                  value={fallbackNumber}
+                  setValue={setFallbackNumber}
+                  sx={{ width: '95%', mt: 1 }}
+                  units="ms"
+                />
+              )}
+            </BladeFrame>
 
-            <Stack direction="row" spacing={2} alignItems={'center'}>
+            {/* <Stack direction="row" spacing={2} alignItems={'center'}>
               <Typography flexShrink={0} flexBasis={'150px'}>
                 Active
               </Typography>
@@ -210,54 +277,9 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
                 <ToggleButton value={true}>True</ToggleButton>
                 <ToggleButton value={false}>False</ToggleButton>
               </ToggleButtonGroup>
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems={'center'}>
-              <Typography flexShrink={0} flexBasis={'150px'}>
-                Fallback Type
-              </Typography>
-              <ToggleButtonGroup
-                fullWidth
-                size="small"
-                color="primary"
-                value={fallbackUseNumber}
-                exclusive
-                onChange={(e, v) => setFallbackUseNumber(v)}
-                aria-label="Platform"
-              >
-                <ToggleButton value={true}>Number</ToggleButton>
-                <ToggleButton value={false}>Boolean</ToggleButton>
-              </ToggleButtonGroup>
-            </Stack>
-            {fallbackUseNumber ? (
-              <SliderInput
-                title="Fallback"
-                titleWidth={180}
-                value={fallbackNumber}
-                setValue={setFallbackNumber}
-              />
-            ) : (
-              <Stack direction="row" spacing={2} alignItems={'center'}>
-                <Typography flexShrink={0} flexBasis={'150px'}>
-                  Fallback
-                </Typography>
-                <ToggleButtonGroup
-                  fullWidth
-                  size="small"
-                  color="primary"
-                  value={fallbackBool}
-                  exclusive
-                  onChange={(_e, v) => {
-                    if (v !== null) setFallbackBool(v)
-                  }}
-                  aria-label="Platform"
-                >
-                  <ToggleButton value={true}>true</ToggleButton>
-                  <ToggleButton value={false}>false</ToggleButton>
-                </ToggleButtonGroup>
-              </Stack>
-            )}
+            </Stack> */}
           </Stack>
-          <Accordion
+          {/* <Accordion
             disableGutters
             elevation={0}
             sx={{
@@ -309,7 +331,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
                 </pre>
               </code>
             </AccordionDetails>
-          </Accordion>
+          </Accordion> */}
 
           <DialogActions>
             <Button

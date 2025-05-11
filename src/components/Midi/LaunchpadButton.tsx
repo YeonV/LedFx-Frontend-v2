@@ -96,12 +96,18 @@ const LaunchpadButton = ({
     <div style={{ visibility: hidden ? 'hidden' : 'visible' }}>
       <Button
         variant="outlined"
-        onMouseDownCapture={() =>
-          currentMapping.command &&
-          currentMapping.command !== '' &&
-          currentMapping.command !== 'none' &&
-          executeCommand(currentMapping.command, currentMapping.payload)
-        }
+        onMouseDownCapture={(e) => {
+          if (e.button !== 0) {
+            return
+          }
+          if (
+            currentMapping.command &&
+            currentMapping.command !== '' &&
+            currentMapping.command !== 'none'
+          ) {
+            return executeCommand(currentMapping.command, currentMapping.payload)
+          }
+        }}
         onMouseUpCapture={() => {
           // console.log('mouseup', currentMapping.payload)
           if (
