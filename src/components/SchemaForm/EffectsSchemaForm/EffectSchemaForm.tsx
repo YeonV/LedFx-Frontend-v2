@@ -5,7 +5,7 @@ import BladeSlider from '../components/Number/BladeSlider'
 import GradientPickerWrapper from '../components/GradientPicker/GradientPicker.wrapper'
 import { EffectSchemaFormProps } from './EffectSchemaForm.props'
 import useStore from '../../../store/useStore'
-import VirtualPicker from '../components/VirtualPicker/VirtualPicker'
+import VirtualPickerSchemaForm from '../components/VirtualPicker/VirtualPickerSchemaForm'
 
 const PREFIX = 'EffectSchemaForm'
 
@@ -60,7 +60,7 @@ const EffectSchemaForm = ({
                 const complex = ['mask', 'foreground', 'background']
                 if (selectedType === 'blender' && complex.includes(s.id))
                   return (
-                    <VirtualPicker
+                    <VirtualPickerSchemaForm
                       title={s.title}
                       id={s.id}
                       model={model}
@@ -136,7 +136,7 @@ const EffectSchemaForm = ({
               )
             case 'virtual':
               return (
-                <VirtualPicker
+                <VirtualPickerSchemaForm
                   title={s.title}
                   id={s.id}
                   model={model}

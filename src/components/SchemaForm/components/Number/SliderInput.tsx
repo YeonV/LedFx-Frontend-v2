@@ -7,20 +7,27 @@ const SliderInput = ({
   title,
   value,
   setValue,
-  titleWidth = 100
+  titleWidth = 100,
+  units = '',
+  sx
 }: {
   min?: number
   max?: number
   step?: number
-  title: string
+  title?: string
   value: number
   titleWidth?: number
+  sx?: any
+  units?: string
   setValue: (_v: number) => void
 }) => {
   return (
-    <Stack direction={'row'} alignItems={'center'}>
-      <label style={{ width: titleWidth, flexShrink: 0 }}>{title}</label>
+    <Stack direction={'row'} alignItems={'center'} sx={sx}>
+      <label style={{ width: title && titleWidth, flexShrink: 0 }}>{title}</label>
       <Slider
+        sx={{
+          flexGrow: 1
+        }}
         value={value}
         onChange={(_e, v) => setValue(v as number)}
         valueLabelDisplay="auto"
@@ -31,7 +38,8 @@ const SliderInput = ({
       <TextField
         slotProps={{
           input: {
-            disableUnderline: true
+            disableUnderline: true,
+            endAdornment: units
           },
           htmlInput: { style: { textAlign: 'right', width: 130 } }
         }}
