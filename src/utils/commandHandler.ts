@@ -52,19 +52,13 @@ const commandStrategies: {
 
   'brightness-up': (_payload: any, store) => {
     store.setSystemConfig({
-      global_brightness: Math.min(
-        store.config.global_brightness + 0.1,
-        1
-      ).toFixed(2)
+      global_brightness: Math.min(store.config.global_brightness + 0.1, 1).toFixed(2)
     })
   },
 
   'brightness-down': (_payload: any, store) => {
     store.setSystemConfig({
-      global_brightness: Math.max(
-        store.config.global_brightness - 0.1,
-        0
-      ).toFixed(2)
+      global_brightness: Math.max(store.config.global_brightness - 0.1, 0).toFixed(2)
     })
   },
 
@@ -86,20 +80,14 @@ const commandStrategies: {
   },
 
   effect: (payload: EffectCommandPayload, store) => {
-    if (
-      !payload ||
-      typeof payload.virtId !== 'string' ||
-      typeof payload.type !== 'string'
-    ) {
+    if (!payload || typeof payload.virtId !== 'string' || typeof payload.type !== 'string') {
       console.warn('Effect command called with invalid base payload:', payload)
       return
     }
     if (payload.config) {
       try {
         const parsedConfig =
-          typeof payload.config === 'string'
-            ? JSON.parse(payload.config)
-            : payload.config
+          typeof payload.config === 'string' ? JSON.parse(payload.config) : payload.config
 
         store.setEffect(
           payload.virtId,
@@ -109,17 +97,10 @@ const commandStrategies: {
           payload.fallback
         )
       } catch (e) {
-        console.error(
-          'Error parsing/setting effect config in commandHandler:',
-          payload.config,
-          e
-        )
+        console.error('Error parsing/setting effect config in commandHandler:', payload.config, e)
       }
     } else {
-      console.warn(
-        'Effect command called without a config payload in commandHandler:',
-        payload
-      )
+      console.warn('Effect command called without a config payload in commandHandler:', payload)
     }
   },
   'effect-fallback': (payload: Partial<EffectCommandPayload>, store) => {

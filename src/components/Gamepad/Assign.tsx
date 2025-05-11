@@ -1,29 +1,10 @@
-import {
-  Fab,
-  FormControl,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-  useTheme
-} from '@mui/material'
-import {
-  BrightnessHigh,
-  BrightnessLow,
-  Collections,
-  CopyAll,
-  GraphicEq,
-  LensBlur,
-  LocalPlay,
-  PlayArrow,
-  QuestionMark,
-  SportsEsports,
-  Wallpaper
-} from '@mui/icons-material'
+import { Fab, FormControl, MenuItem, Select, Stack, Typography, useTheme } from '@mui/material'
+import { QuestionMark, Wallpaper } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import OneShot from './OneShot'
 import OneEffect from './OneEffect'
+import { commandIcons } from '../../utils/commandIcons'
 
 const Assign = ({
   type,
@@ -38,22 +19,24 @@ const Assign = ({
   // console.log('mapping', mapping)
   const theme = useTheme()
   const scenes = useStore((state) => state.scenes)
-  const commands = {
-    scene: <Wallpaper />,
-    smartbar: <LocalPlay />,
-    'play/pause': <PlayArrow />,
-    'brightness-up': <BrightnessHigh />,
-    'brightness-down': <BrightnessLow />,
-    'copy-to': <CopyAll />,
-    transitions: <GraphicEq />,
-    frequencies: <BladeIcon name="mdi:sine-wave" />,
-    'scene-playlist': <Collections />,
-    padscreen: <SportsEsports />,
-    'one-shot': <BladeIcon name="mdi:pistol" />,
-    'scan-wled': <BladeIcon name="wled" />,
-    effect: <LensBlur />
-  }
+  const getDropdownIconForCommand = (commandKey: string): React.ReactNode => {
+    const iconConfig = commandIcons[commandKey]
+    if (!iconConfig) return null
 
+    let iconName: string
+    if (typeof iconConfig === 'function') {
+      if (commandKey === 'play/pause') {
+        iconName = iconConfig({ paused: true })
+      } else if (commandKey === 'effect') {
+        iconName = iconConfig({ fallback: false })
+      } else {
+        iconName = 'HelpOutline'
+      }
+    } else {
+      iconName = iconConfig
+    }
+    return <BladeIcon name={iconName} sx={{ fontSize: '1.25rem' }} />
+  }
   return (
     <Stack
       key={index}
@@ -93,18 +76,12 @@ const Assign = ({
         </Fab>
       )}
       {!compact ? (
-        <Stack
-          direction="row"
-          justifyContent={'space-between'}
-          alignItems={'center'}
-        >
+        <Stack direction="row" justifyContent={'space-between'} alignItems={'center'}>
           <Typography>Command</Typography>
           <FormControl>
             <Select
               disableUnderline
-              disabled={
-                disabled || mapping[padIndex][index]?.command === 'scene'
-              }
+              disabled={disabled || mapping[padIndex][index]?.command === 'scene'}
               // IconComponent={() => null}
               style={{
                 textAlign: 'right',
@@ -144,15 +121,15 @@ const Assign = ({
                   <span>{disabled ? 'used by LedFx' : 'choose command'}</span>
                 </Stack>
               </MenuItem>
-              {Object.keys(commands).map((s) => (
+              {Object.keys(commandIcons).map((commandKey) => (
                 <MenuItem
-                  key={s}
-                  value={s}
-                  disabled={type === 'midi' && s === 'scene'}
+                  key={commandKey}
+                  value={commandKey}
+                  disabled={type === 'midi' && commandKey === 'scene'}
                 >
-                  <Stack direction="row" spacing={1}>
-                    {commands[s as keyof typeof commands] || ''}
-                    <span>{s || 'none'}</span>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    {getDropdownIconForCommand(commandKey)}
+                    <span>{commandKey}</span>
                   </Stack>
                 </MenuItem>
               ))}
@@ -204,8 +181,7 @@ const Assign = ({
             fullWidth
             disableUnderline
             disabled={
-              disabled ||
-              (type === 'midi' && mapping[padIndex][index]?.command === 'scene')
+              disabled || (type === 'midi' && mapping[padIndex][index]?.command === 'scene')
             }
             // IconComponent={() => null}
             style={{
@@ -222,9 +198,7 @@ const Assign = ({
             }}
             labelId="command-select-label"
             label="command"
-            renderValue={(v) =>
-              v === 'scene' ? <Wallpaper sx={{ pr: 4 }} /> : v
-            }
+            renderValue={(v) => (v === 'scene' ? <Wallpaper sx={{ pr: 4 }} /> : v)}
             value={mapping[padIndex]?.[index]?.command || 'none'}
             onChange={(e) =>
               setMapping({
@@ -242,15 +216,15 @@ const Assign = ({
                 <span>{disabled ? 'used by LedFx' : 'choose command'}</span>
               </Stack>
             </MenuItem>
-            {Object.keys(commands).map((s) => (
+            {Object.keys(commandIcons).map((commandKey) => (
               <MenuItem
-                key={s}
-                value={s}
-                disabled={type === 'midi' && s === 'scene'}
+                key={commandKey}
+                value={commandKey}
+                disabled={type === 'midi' && commandKey === 'scene'}
               >
-                <Stack direction="row" spacing={1}>
-                  {commands[s as keyof typeof commands] || ''}
-                  <span>{s || 'none'}</span>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {getDropdownIconForCommand(commandKey)}
+                  <span>{commandKey}</span>
                 </Stack>
               </MenuItem>
             ))}
@@ -259,19 +233,12 @@ const Assign = ({
       )}
       {mapping[padIndex]?.[index]?.command === 'scene' &&
         (!compact ? (
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            mt={0.5}
-          >
+          <Stack direction="row" justifyContent={'space-between'} alignItems={'center'} mt={0.5}>
             <Typography>Scene</Typography>
             <FormControl sx={{ maxWidth: 150, minWidth: 150 }}>
               <Select
                 disableUnderline
-                disabled={
-                  disabled || mapping[padIndex][index]?.command === 'scene'
-                }
+                disabled={disabled || mapping[padIndex][index]?.command === 'scene'}
                 // IconComponent={() => null}
                 style={{
                   textAlign: 'right',
@@ -320,9 +287,7 @@ const Assign = ({
               fullWidth
               disableUnderline
               disabled={
-                disabled ||
-                (type === 'midi' &&
-                  mapping[padIndex][index]?.command === 'scene')
+                disabled || (type === 'midi' && mapping[padIndex][index]?.command === 'scene')
               }
               // IconComponent={() => null}
               style={{
