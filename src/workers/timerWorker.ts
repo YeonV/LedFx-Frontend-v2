@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 interface WorkerMessageTimer {
   action: 'start' | 'stop'
   interval: number
@@ -12,8 +10,7 @@ interface WorkerMessageTimer {
 let timer: ReturnType<typeof setInterval> | null = null
 
 self.onmessage = async function (e: MessageEvent<WorkerMessageTimer>) {
-  const { action, interval, scenePL, scenePLactiveIndex, scenePLrepeat, url } =
-    e.data
+  const { action, interval, scenePL, scenePLactiveIndex, scenePLrepeat, url } = e.data
 
   if (action === 'start') {
     if (timer === null) {

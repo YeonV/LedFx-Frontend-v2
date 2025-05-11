@@ -70,14 +70,12 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
     qlcInfo?.event_types?.scene_activated?.event_filters?.scene_id
 
   const EffectSet =
-    qlcInfo &&
-    qlcInfo?.event_types &&
-    qlcInfo?.event_types.effect_set?.event_filters?.effect_name
+    qlcInfo && qlcInfo?.event_types && qlcInfo?.event_types.effect_set?.event_filters?.effect_name
 
   const temp = (qlcInfo && qlcInfo?.qlc_widgets) || []
 
   const QLCWidgets =
-    temp.length > 0 // eslint-disable-next-line
+    temp.length > 0
       ? [...temp].sort((a: string[], b: string[]) => parseInt(a[0], 10) - parseInt(b[0], 10))
       : []
 
@@ -134,13 +132,9 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
         }
       }
       setformData(newSwitchState)
-    } else if (
-      event.target.name === 'scene_id' ||
-      event.target.name === 'effect_name'
-    ) {
+    } else if (event.target.name === 'scene_id' || event.target.name === 'effect_name') {
       value = JSON.parse(value)
-      const filterKey =
-        value?.event_type === 'scene_activated' ? 'scene_id' : 'effect_name'
+      const filterKey = value?.event_type === 'scene_activated' ? 'scene_id' : 'effect_name'
       const newFormState = {
         ...formData,
         event_filter: {
@@ -181,23 +175,12 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   }
 
   // work here next time to eliminate reference cloning probably make different handleswitchchange
-  const handleDropTypeChange = (
-    event: any,
-    index: any,
-    val: any,
-    name: any
-  ) => {
+  const handleDropTypeChange = (event: any, index: any, val: any, name: any) => {
     const newArr: any = dropDownRenderList.slice()
-    if (
-      event.target.name === 'qlc_payload' &&
-      event.target.value.includes('Button')
-    ) {
+    if (event.target.name === 'qlc_payload' && event.target.value.includes('Button')) {
       newArr[index].showSwitch = true
       newArr[index].showSlider = false
-    } else if (
-      event.target.name === 'qlc_payload' &&
-      event.target.value.includes('Slider')
-    ) {
+    } else if (event.target.name === 'qlc_payload' && event.target.value.includes('Slider')) {
       newArr[index].showSlider = true
       newArr[index].showSwitch = false
     }
@@ -313,9 +296,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       open={open}
       {...other}
     >
-      <DialogTitle id="confirmation-dialog-title">
-        Event Listener Setup: {valueProp}
-      </DialogTitle>
+      <DialogTitle id="confirmation-dialog-title">Event Listener Setup: {valueProp}</DialogTitle>
       <DialogContent dividers>
         <DialogContentText>
           Trigger <b>Actions</b> based on <b>Events</b>.
@@ -325,9 +306,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
           <Select
             variant="outlined"
             id="grouped-select"
-            name={
-              formData?.event_type === 'effect_set' ? 'effect_name' : 'scene_id'
-            }
+            name={formData?.event_type === 'effect_set' ? 'effect_name' : 'scene_id'}
             onChange={handleEventChange}
             sx={{ minWidth: 250 }}
           >
@@ -397,9 +376,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
           </Select>
         </FormControl>
         <Root>
-          {checkButtonType && (
-            <label>QLC+ widget selected above (On/Off) </label>
-          )}
+          {checkButtonType && <label>QLC+ widget selected above (On/Off) </label>}
           {checkButtonType && (
             <Switch
               color="primary"
@@ -487,11 +464,7 @@ export default function ConfirmationDialog({ integration }: any) {
         ADD EVENT LISTENER
       </Button>
 
-      <ConfirmationDialogRaw
-        open={open}
-        onClose={handleClose}
-        value={integration}
-      />
+      <ConfirmationDialogRaw open={open} onClose={handleClose} value={integration} />
     </div>
   )
 }

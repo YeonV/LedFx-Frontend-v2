@@ -67,12 +67,7 @@ export const StyledBadge = styled(Badge)(() => ({
   }
 }))
 
-const LeftButtons = (
-  pathname: any,
-  history: any,
-  open?: boolean,
-  handleLeftBarOpen?: any
-) => {
+const LeftButtons = (pathname: any, history: any, open?: boolean, handleLeftBarOpen?: any) => {
   const theme = useTheme()
 
   if (
@@ -141,10 +136,7 @@ const Title = (
   const t = window.localStorage.getItem('ledfx-theme')
   const newVerOnline =
     latestTag.replace('v', '').includes('-b') && pkg.version.includes('-b')
-      ? compareVersions(
-          latestTag.replace('v', '').split('-b')[1],
-          pkg.version.split('-b')[1]
-        ) === 1
+      ? compareVersions(latestTag.replace('v', '').split('-b')[1], pkg.version.split('-b')[1]) === 1
       : compareVersions(latestTag.replace('v', ''), pkg.version) === 1
   if (pathname === '/') {
     return (
@@ -154,10 +146,7 @@ const Title = (
             LedFx
           </Typography>
         </Tooltip>
-        {!process.env.MS_STORE &&
-        newVerOnline &&
-        frConfig?.updateUrl &&
-        frConfig.releaseUrl ? (
+        {!process.env.MS_STORE && newVerOnline && frConfig?.updateUrl && frConfig.releaseUrl ? (
           <Button
             color={t && ['DarkBw', 'LightBw'].includes(t) ? 'primary' : 'error'}
             variant="contained"
@@ -171,9 +160,7 @@ const Title = (
           <Button
             color="error"
             variant="contained"
-            onClick={() =>
-              window.open('https://github.com/LedFx/LedFx/releases/latest')
-            }
+            onClick={() => window.open('https://github.com/LedFx/LedFx/releases/latest')}
             sx={{ ml: 2 }}
           >
             New Core Update
@@ -186,9 +173,7 @@ const Title = (
     return virtuals[pathname.split('/')[2]]?.config.name
   }
   if (pathname === '/User') {
-    return `LedFx Cloud ${
-      localStorage.getItem('username') !== 'YeonV' ? 'Free' : ''
-    } User`
+    return `LedFx Cloud ${localStorage.getItem('username') !== 'YeonV' ? 'Free' : ''} User`
   }
   return pathname.split('/').pop()
 }
@@ -229,9 +214,7 @@ const TopBar = () => {
   const invScenes = useStore((state) => state.tours.scenes)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
-  const updateNotificationInterval = useStore(
-    (state) => state.updateNotificationInterval
-  )
+  const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
   const { requestWakeLock, releaseWakeLock } = useWakeLock()
 
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
@@ -284,8 +267,7 @@ const TopBar = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const configUrl = new URL('frontend_config.json', window.location.href)
-          .href
+        const configUrl = new URL('frontend_config.json', window.location.href).href
         const res = await fetch(configUrl)
 
         if (!res.ok) {
@@ -321,28 +303,19 @@ const TopBar = () => {
   useEffect(() => {
     const checkForUpdates = async () => {
       const updateInfo = await getUpdateInfo(false)
-      if (
-        updateInfo?.status === 'success' &&
-        updateInfo?.payload?.type === 'warning'
-      ) {
+      if (updateInfo?.status === 'success' && updateInfo?.payload?.type === 'warning') {
         setUpdateAvailable(true)
         if (
           compareVersions(latestTag.replace('v', ''), pkg.version) === 1 &&
           Date.now() -
-            parseInt(
-              window.localStorage.getItem('last-update-notification') || '0',
-              10
-            ) >
+            parseInt(window.localStorage.getItem('last-update-notification') || '0', 10) >
             updateNotificationInterval * 1000 * 60
         ) {
           Ledfx('/api/notify', 'PUT', {
             title: 'Update available',
             text: 'A new version of LedFx has been released'
           })
-          window.localStorage.setItem(
-            'last-update-notification',
-            `${Date.now()}`
-          )
+          window.localStorage.setItem('last-update-notification', `${Date.now()}`)
         }
       }
     }
@@ -356,9 +329,7 @@ const TopBar = () => {
         try {
           const res = await fetch(frConfig.updateUrl)
           if (!res.ok) {
-            console.error(
-              `Failed to fetch latest tag from ${frConfig.updateUrl}: ${res.status}`
-            )
+            console.error(`Failed to fetch latest tag from ${frConfig.updateUrl}: ${res.status}`)
             return null
           }
           const resp = await res.json()
@@ -427,9 +398,7 @@ const TopBar = () => {
           LedFx
         </div>
       )}
-      {!(
-        isElectron() && window.localStorage.getItem('lock') === 'activated'
-      ) && (
+      {!(isElectron() && window.localStorage.getItem('lock') === 'activated') && (
         <AppBar
           enableColorOnDark
           color="secondary"
@@ -506,10 +475,7 @@ const TopBar = () => {
                     className="step-two"
                     style={{ position: 'absolute', right: '4rem' }}
                   >
-                    <BladeIcon
-                      style={{ position: 'relative' }}
-                      name="mdi:lan-disconnect"
-                    />
+                    <BladeIcon style={{ position: 'relative' }} name="mdi:lan-disconnect" />
                     <CircularProgress
                       size={44}
                       style={{
@@ -562,8 +528,7 @@ const TopBar = () => {
                     <ListItemIcon style={{ marginTop: -13 }}>
                       <StyledBadge
                         badgeContent={
-                          localStorage.getItem('ledfx-cloud-role') ===
-                          'authenticated'
+                          localStorage.getItem('ledfx-cloud-role') === 'authenticated'
                             ? 'logged in'
                             : localStorage.getItem('ledfx-cloud-role')
                         }
@@ -585,9 +550,7 @@ const TopBar = () => {
                       if (isLogged) {
                         setLogginIn(false)
                         logout(e)
-                      } else if (
-                        window.location.pathname.includes('hassio_ingress')
-                      ) {
+                      } else if (window.location.pathname.includes('hassio_ingress')) {
                         window.location.href = `${backendUrl}/connect/github?callback=${window.location.origin}`
                       } else if (isElectron()) {
                         window.open(
@@ -651,18 +614,12 @@ const TopBar = () => {
                       mode="drawer"
                       onOpen={() => setAnchorEl(null)}
                     />,
-                    <TourDevices
-                      key={'device-tour'}
-                      cally={() => setAnchorEl(null)}
-                    />
+                    <TourDevices key={'device-tour'} cally={() => setAnchorEl(null)} />
                   ]
                 ) : slug === 'Integrations' ? (
                   <TourIntegrations cally={() => setAnchorEl(null)} />
                 ) : (
-                  <TourHome
-                    variant="menuitem"
-                    cally={() => setAnchorEl(null)}
-                  />
+                  <TourHome variant="menuitem" cally={() => setAnchorEl(null)} />
                 )}
                 {slug !== 'Settings' && [
                   <Divider key={'divider1'} />,
@@ -681,9 +638,7 @@ const TopBar = () => {
                     Settings
                   </MenuItem>
                 ]}
-                {localStorage.getItem('username') === 'YeonV' && (
-                  <Divider key={'divider2'} />
-                )}
+                {localStorage.getItem('username') === 'YeonV' && <Divider key={'divider2'} />}
                 {localStorage.getItem('username') === 'YeonV' && (
                   <Select
                     IconComponent={() => null}
@@ -700,14 +655,8 @@ const TopBar = () => {
                     {Object.keys(ledfxThemes).map((t) => (
                       <MenuItem key={t} value={t}>
                         <Stack direction={'row'}>
-                          <ListItemIcon
-                            sx={{ alignItems: 'center', minWidth: 38 }}
-                          >
-                            <BladeIcon
-                              name={
-                                t.startsWith('Dark') ? 'DarkMode' : 'LightMode'
-                              }
-                            />
+                          <ListItemIcon sx={{ alignItems: 'center', minWidth: 38 }}>
+                            <BladeIcon name={t.startsWith('Dark') ? 'DarkMode' : 'LightMode'} />
                           </ListItemIcon>
                           <ListItemText>{t}</ListItemText>
                         </Stack>
@@ -718,8 +667,7 @@ const TopBar = () => {
                 {localStorage.getItem('username') === 'YeonV' && (
                   <MenuItem
                     onClick={() => {
-                      const t =
-                        window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
+                      const t = window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
                       const mode = t.startsWith('Dark') ? 'dark' : 'light'
                       const color =
                         ((mode === 'dark'
@@ -738,11 +686,7 @@ const TopBar = () => {
                     <Stack direction={'row'}>
                       <ListItemIcon sx={{ alignItems: 'center', minWidth: 38 }}>
                         <BladeIcon
-                          name={
-                            theme.palette.mode === 'dark'
-                              ? 'DarkMode'
-                              : 'LightMode'
-                          }
+                          name={theme.palette.mode === 'dark' ? 'DarkMode' : 'LightMode'}
                         />
                       </ListItemIcon>
                       <ListItemText>DarkMode</ListItemText>
@@ -756,24 +700,21 @@ const TopBar = () => {
                     sx={{ pl: 2 }}
                     disableUnderline
                     value={
-                      ((((
-                        window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
-                      ).startsWith('Dark')
+                      ((((window.localStorage.getItem('ledfx-theme') || 'DarkBlue').startsWith(
+                        'Dark'
+                      )
                         ? 'dark'
                         : 'light') === 'dark'
-                        ? (
-                            window.localStorage.getItem('ledfx-theme') ||
-                            'DarkBlue'
-                          ).split('Dark')[1]
-                        : (
-                            window.localStorage.getItem('ledfx-theme') ||
-                            'DarkBlue'
-                          ).split('Light')[1]
+                        ? (window.localStorage.getItem('ledfx-theme') || 'DarkBlue').split(
+                            'Dark'
+                          )[1]
+                        : (window.localStorage.getItem('ledfx-theme') || 'DarkBlue').split(
+                            'Light'
+                          )[1]
                       )?.toLowerCase() as keyof typeof themes) || 'blue'
                     }
                     onChange={(e) => {
-                      const t =
-                        window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
+                      const t = window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
                       const mode = t.startsWith('Dark') ? 'dark' : 'light'
                       const newTheme =
                         (mode === 'dark' ? 'Dark' : 'Light') +
@@ -792,16 +733,13 @@ const TopBar = () => {
                               alignItems: 'center',
                               minWidth: 38,
                               color:
-                                themes[t as keyof typeof themes][
-                                  theme.palette.mode
-                                ].palette.primary.main
+                                themes[t as keyof typeof themes][theme.palette.mode].palette.primary
+                                  .main
                             }}
                           >
                             <BladeIcon name={'circle'} />
                           </ListItemIcon>
-                          <ListItemText>
-                            {t.charAt(0).toUpperCase() + t.slice(1)}
-                          </ListItemText>
+                          <ListItemText>{t.charAt(0).toUpperCase() + t.slice(1)}</ListItemText>
                         </Stack>
                       </MenuItem>
                     ))}

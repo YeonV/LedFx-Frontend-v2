@@ -17,11 +17,9 @@ import useTroubleshootStyles from './Troubleshoot.styles'
 import useStore from '../../store/useStore'
 import Wled from '../../components/Icons/Wled'
 
-const Transition = forwardRef<unknown, TransitionProps>(
-  function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...(props as any)} />
-  }
-)
+const Transition = forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...(props as any)} />
+})
 
 const Row = ({ name, value }: { name: string; value: any }) => {
   const classes = useTroubleshootStyles()
@@ -33,9 +31,7 @@ const Row = ({ name, value }: { name: string; value: any }) => {
   )
 }
 
-export default function TroubleshootButton({
-  virtual
-}: any): JSX.Element | null {
+export default function TroubleshootButton({ virtual }: any): JSX.Element | null {
   const classes = useTroubleshootStyles()
   const devices = useStore((state) => state.devices)
   const getPing = useStore((state) => state.getPing)
@@ -50,9 +46,7 @@ export default function TroubleshootButton({
       if (!loading) {
         setLoading(true)
       }
-      const res = await fetch(
-        `http://${devices[virtual.id].config.ip_address}/json/info`
-      )
+      const res = await fetch(`http://${devices[virtual.id].config.ip_address}/json/info`)
       const resp = await res.json()
       setWledData(resp)
       const pinging = getPing(virtual.id)
@@ -77,16 +71,9 @@ export default function TroubleshootButton({
     }
   }, [virtual, devices])
 
-  return virtual &&
-    virtual.config &&
-    devices[virtual.id] &&
-    devices[virtual.id].type === 'wled' ? (
+  return virtual && virtual.config && devices[virtual.id] && devices[virtual.id].type === 'wled' ? (
     <>
-      <Button
-        color="inherit"
-        onClick={() => setOpen(true)}
-        style={{ marginRight: '.5rem' }}
-      >
+      <Button color="inherit" onClick={() => setOpen(true)} style={{ marginRight: '.5rem' }}>
         <BugReport />
       </Button>
       <Dialog
@@ -179,23 +166,13 @@ export default function TroubleshootButton({
                 />
                 <Row
                   name="PACKETS LOST"
-                  value={`${
-                    pingData.packetlosspercent
-                      ? pingData.packetlosspercent.toFixed(2)
-                      : 0
-                  } %`}
+                  value={`${pingData.packetlosspercent ? pingData.packetlosspercent.toFixed(2) : 0} %`}
                 />
                 <Divider style={{ margin: '1rem 0' }} />
-                <Row
-                  name="WiFi Signal strength"
-                  value={`${wledData.wifi?.signal} %`}
-                />
+                <Row name="WiFi Signal strength" value={`${wledData.wifi?.signal} %`} />
                 <Row name="WiFi Channel" value={wledData.wifi?.channel} />
                 <Row name="MAC" value={wledData.mac} />
-                <Row
-                  name="Frames Per Second"
-                  value={`${wledData.leds?.fps} fps`}
-                />
+                <Row name="Frames Per Second" value={`${wledData.leds?.fps} fps`} />
               </Grid>
               <Grid
                 size={{
@@ -210,15 +187,11 @@ export default function TroubleshootButton({
                 <Row name="RGBW" value={JSON.stringify(wledData.leds?.rgbw)} />
                 <Row
                   name="Estimated Power"
-                  value={`${wledData.leds?.pwr
-                    ?.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} mA`}
+                  value={`${wledData.leds?.pwr?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} mA`}
                 />
                 <Row
                   name="Max power"
-                  value={`${wledData.leds?.maxpwr
-                    ?.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} mA`}
+                  value={`${wledData.leds?.maxpwr?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} mA`}
                 />
                 <Row name="Live Mode" value={JSON.stringify(wledData.live)} />
                 <Row name="Live Mode Source" value={wledData.lip} />
@@ -226,9 +199,7 @@ export default function TroubleshootButton({
                 <Row name="UDP Port" value={wledData.udpport} />
                 <Row
                   name="Uptime"
-                  value={new Date((wledData.uptime + uptime) * 1000)
-                    .toISOString()
-                    .slice(11, 19)}
+                  value={new Date((wledData.uptime + uptime) * 1000).toISOString().slice(11, 19)}
                 />
               </Grid>
             </Grid>

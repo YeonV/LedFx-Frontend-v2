@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 interface Pixel {
   r: number
   g: number
@@ -28,9 +26,7 @@ self.onmessage = (event: MessageEvent<WorkerMessageGL>) => {
     canvasGL = event.data.canvas
     /* expect ts(2769) error */
     gl =
-      (canvasGL.getContext(
-        'webgl' as OffscreenRenderingContextId
-      ) as WebGLRenderingContext) ||
+      (canvasGL.getContext('webgl' as OffscreenRenderingContextId) as WebGLRenderingContext) ||
       (canvasGL.getContext(
         'experimental-webgl' as OffscreenRenderingContextId
       ) as WebGLRenderingContext)
@@ -91,9 +87,7 @@ const initWebGL = () => {
   gl!.bindBuffer(gl!.ARRAY_BUFFER, positionBuffer)
   gl!.bufferData(
     gl!.ARRAY_BUFFER,
-    new Float32Array([
-      -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0
-    ]),
+    new Float32Array([-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0]),
     gl!.STATIC_DRAW
   )
 
@@ -102,9 +96,7 @@ const initWebGL = () => {
   gl!.bindBuffer(gl!.ARRAY_BUFFER, texCoordBuffer)
   gl!.bufferData(
     gl!.ARRAY_BUFFER,
-    new Float32Array([
-      0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0
-    ]),
+    new Float32Array([0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0]),
     gl!.STATIC_DRAW
   )
 

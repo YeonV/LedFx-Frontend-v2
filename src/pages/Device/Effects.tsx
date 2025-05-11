@@ -158,8 +158,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }
 
   const handlePlayPause = () => {
-    if (virtual)
-      updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
+    if (virtual) updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
   }
 
   useEffect(() => {
@@ -170,8 +169,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (
       virtuals &&
       virtuals[virtId]?.effect?.config &&
-      JSON.stringify(theModel) !==
-        JSON.stringify(virtuals[virtId].effect.config)
+      JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId].effect.config)
     ) {
       // console.log('virtuals[virtId]', virtuals[virtId].effect?.config)
 
@@ -209,11 +207,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   const actives = devices[
     Object.keys(devices).find((d) => d === virtId) || ''
-  ]?.active_virtuals?.filter(
-    (value, index, self) => self.indexOf(value) === index
-  )
-  const streaming =
-    actives && actives.length > 0 && actives?.some((a) => virtuals[a].active)
+  ]?.active_virtuals?.filter((value, index, self) => self.indexOf(value) === index)
+  const streaming = actives && actives.length > 0 && actives?.some((a) => virtuals[a].active)
 
   const running = virtual && virtual.effect && virtual.effect.type
 
@@ -270,9 +265,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
               )}
               {effects && effectType && (
                 <>
-                  {viewMode !== 'user' && (
-                    <TroubleshootButton virtual={virtual} />
-                  )}
+                  {viewMode !== 'user' && <TroubleshootButton virtual={virtual} />}
                   <TourEffect schemaProperties={orderedProperties} />
                   {/* <Button
                     onClick={() => handleRandomize()}
@@ -355,9 +348,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                   }
             }
             style={{
-              transitionDuration: `${
-                (virtual?.config?.transition_time || 0) * 1000
-              }`
+              transitionDuration: `${(virtual?.config?.transition_time || 0) * 1000}`
             }}
           >
             <FullScreen handle={handle} onChange={setFullScreen}>
@@ -391,44 +382,40 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
           )}
         </CardContent>
       </Card>
-      {virtuals &&
-        virtual &&
-        effects &&
-        virtual.effect &&
-        virtual.effect.config && (
-          <Card variant="outlined" style={{ marginTop: '1rem' }}>
-            <CardContent style={{ padding: '0 16px' }}>
-              <Accordion
-                style={{ padding: 0, boxShadow: 'none' }}
-                defaultExpanded
-                // defaultExpanded={viewMode !== 'user'}
+      {virtuals && virtual && effects && virtual.effect && virtual.effect.config && (
+        <Card variant="outlined" style={{ marginTop: '1rem' }}>
+          <CardContent style={{ padding: '0 16px' }}>
+            <Accordion
+              style={{ padding: 0, boxShadow: 'none' }}
+              defaultExpanded
+              // defaultExpanded={viewMode !== 'user'}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                style={{ padding: 0 }}
               >
-                <AccordionSummary
-                  expandIcon={<ExpandMore />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                  style={{ padding: 0 }}
-                >
-                  <Typography variant="h5">Effect Configuration</Typography>
-                </AccordionSummary>
-                <AccordionDetails style={{ padding: '0 0 8px 0' }}>
-                  {theModel && effectType && (
-                    <div>
-                      <BladeEffectSchemaForm
-                        handleEffectConfig={handleEffectConfig}
-                        virtId={virtual.id}
-                        schemaProperties={orderedProperties}
-                        model={theModel as Record<string, unknown>}
-                        selectedType={effectType}
-                        descriptions={effectDescriptions}
-                      />
-                    </div>
-                  )}
-                </AccordionDetails>
-              </Accordion>
-            </CardContent>
-          </Card>
-        )}
+                <Typography variant="h5">Effect Configuration</Typography>
+              </AccordionSummary>
+              <AccordionDetails style={{ padding: '0 0 8px 0' }}>
+                {theModel && effectType && (
+                  <div>
+                    <BladeEffectSchemaForm
+                      handleEffectConfig={handleEffectConfig}
+                      virtId={virtual.id}
+                      schemaProperties={orderedProperties}
+                      model={theModel as Record<string, unknown>}
+                      selectedType={effectType}
+                      descriptions={effectDescriptions}
+                    />
+                  </div>
+                )}
+              </AccordionDetails>
+            </Accordion>
+          </CardContent>
+        </Card>
+      )}
     </>
   )
 }

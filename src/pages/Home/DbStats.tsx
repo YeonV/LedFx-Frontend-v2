@@ -19,12 +19,8 @@ const DbStats = () => {
         !key.endsWith('-foreground') &&
         !key.endsWith('-background')
     )
-  const devicesOnline = filterDevDevices(devices).filter(
-    (d) => devices[d].online
-  )
-  const virtualsReal = filterDevDevices(virtuals).filter(
-    (d) => !virtuals[d].is_device
-  )
+  const devicesOnline = filterDevDevices(devices).filter((d) => devices[d].online)
+  const virtualsReal = filterDevDevices(virtuals).filter((d) => !virtuals[d].is_device)
 
   const pixelTotalOnline = filterDevDevices(devices)
     .map((d) => devices[d].online && devices[d].config.pixel_count)
@@ -51,17 +47,14 @@ const DbStats = () => {
         <DbRow left="Pixels:" right={`${pixelTotalOnline} / ${pixelTotal}`} />
         <DbRow
           left="Devices:"
-          right={`${Object.keys(devicesOnline).length} / ${
-            Object.keys(devices).length
-          }`}
+          right={`${Object.keys(devicesOnline).length} / ${Object.keys(devices).length}`}
         />
         <DbRow left="Virtuals:" right={String(virtualsReal.length)} />
         <DbRow left="Scenes:" right={String(Object.keys(scenes).length)} />
         <DbRow
           left="User Colors:"
           right={String(
-            Object.keys(config.user_colors).length +
-              Object.keys(config.user_gradients).length
+            Object.keys(config.user_colors).length + Object.keys(config.user_gradients).length
           )}
         />
         <DbRow

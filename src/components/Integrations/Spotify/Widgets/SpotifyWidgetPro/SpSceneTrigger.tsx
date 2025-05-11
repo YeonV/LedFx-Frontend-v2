@@ -1,13 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
-import {
-  InputAdornment,
-  TextField,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select
-} from '@mui/material'
+import { InputAdornment, TextField, MenuItem, FormControl, InputLabel, Select } from '@mui/material'
 import useStore from '../../../../../store/useStore'
 
 import Popover from '../../../../Popover/Popover'
@@ -27,13 +20,9 @@ export default function SpSceneTrigger() {
 
   const addSpotifySongTrigger = useStore((state) => state.addSpSongTrigger)
   const getIntegrations = useStore((state) => state.getIntegrations)
-  const songID =
-    spotifyState?.track_window?.current_track?.id || spCtx?.item?.id || ''
-  const songTitleAndArtist = `${
-    spotifyState?.track_window?.current_track?.name || spCtx?.item?.name
-  } - ${
-    spotifyState?.track_window?.current_track?.artists[0]?.name ||
-    spCtx?.item?.artists[0]?.name
+  const songID = spotifyState?.track_window?.current_track?.id || spCtx?.item?.id || ''
+  const songTitleAndArtist = `${spotifyState?.track_window?.current_track?.name || spCtx?.item?.name} - ${
+    spotifyState?.track_window?.current_track?.artists[0]?.name || spCtx?.item?.artists[0]?.name
   }`
   const spotifyTriggerData = {
     scene_id: spotifyScene, // Incorrectly sending scene_id instead of scene_id
@@ -74,10 +63,7 @@ export default function SpSceneTrigger() {
         <div>
           <Box sx={{ minWidth: 220, margin: 0, padding: '6px 5px 1px 5px' }}>
             <FormControl style={{ minWidth: 220 }}>
-              <InputLabel
-                id="scenelabel"
-                style={{ marginLeft: 14, marginTop: -7 }}
-              >
+              <InputLabel id="scenelabel" style={{ marginLeft: 14, marginTop: -7 }}>
                 Scene
               </InputLabel>
               <Select
@@ -109,9 +95,7 @@ export default function SpSceneTrigger() {
               }}
               slotProps={{
                 input: {
-                  endAdornment: (
-                    <InputAdornment position="end">ms</InputAdornment>
-                  )
+                  endAdornment: <InputAdornment position="end">ms</InputAdornment>
                 }
               }}
               type="number"

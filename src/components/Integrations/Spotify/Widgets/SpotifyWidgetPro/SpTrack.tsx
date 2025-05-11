@@ -14,10 +14,7 @@ export default function SpTrack({ className }: any) {
   const spotifyToken = useStore((state) => state.spotify.spotifyAuthToken)
   const setPlaylist = useStore((state) => state.setPlaylist)
   const setCurrentTrack = useStore((state) => state.setCurrentTrack)
-  const title =
-    spotifyCtx?.track_window?.current_track?.name ||
-    spCtx?.item?.name ||
-    'Not playing'
+  const title = spotifyCtx?.track_window?.current_track?.name || spCtx?.item?.name || 'Not playing'
   const image =
     spotifyCtx?.track_window?.current_track?.album.images[0].url ||
     spCtx?.item?.album?.images[0].url ||
@@ -26,8 +23,7 @@ export default function SpTrack({ className }: any) {
     spCtx?.item?.artists || [{ name: 'on LedFx' }]
 
   useEffect(() => {
-    const playlistUri =
-      spotifyCtx?.context?.metadata?.uri || spCtx?.context?.uri
+    const playlistUri = spotifyCtx?.context?.metadata?.uri || spCtx?.context?.uri
     if (playlistUri?.split(':')[1] === 'playlist') {
       getPlaylist(playlistUri.split(':')[2], spotifyToken).then((r) => {
         setPlaylist(r.items)
@@ -37,16 +33,10 @@ export default function SpTrack({ className }: any) {
   }, [spotifyCtx?.context?.metadata?.uri, spCtx?.context?.uri])
 
   const album =
-    spotifyCtx?.track_window?.current_track?.album?.name ||
-    spCtx?.item?.album?.name ||
-    ''
+    spotifyCtx?.track_window?.current_track?.album?.name || spCtx?.item?.album?.name || ''
 
   setCurrentTrack(
-    `${
-      artist.length > 1
-        ? artist.map((art: any) => art.name).join(',')
-        : artist[0].name
-    } - ${title}`
+    `${artist.length > 1 ? artist.map((art: any) => art.name).join(',') : artist[0].name} - ${title}`
   )
   return (
     <Box className={className}>
@@ -54,21 +44,14 @@ export default function SpTrack({ className }: any) {
         <img alt="album_image" src={image} />
       </CoverImage>
       <Box sx={{ ml: 1.5, minWidth: 0 }}>
-        <Typography
-          variant="body2"
-          color="rgba(255,255,255,0.7)"
-          fontSize={10}
-          noWrap
-        >
+        <Typography variant="body2" color="rgba(255,255,255,0.7)" fontSize={10} noWrap>
           {album}
         </Typography>
         <Typography noWrap>
           <b>{title}</b>
         </Typography>
         <Typography noWrap letterSpacing={-0.25} color="rgba(255,255,255,0.8)">
-          {artist.length > 1
-            ? artist.map((art: any) => art.name).join(',')
-            : artist[0].name}
+          {artist.length > 1 ? artist.map((art: any) => art.name).join(',') : artist[0].name}
         </Typography>
       </Box>
     </Box>

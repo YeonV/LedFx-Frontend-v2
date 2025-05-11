@@ -39,9 +39,7 @@ const Instances = ({
   const [newPort, setNewPort] = useState<number>(port ? parseInt(port, 10) : 0)
   const coreStatus = useStore((state) => state.coreStatus)
   const portRef = useRef<HTMLInputElement>(null)
-  const active =
-    window.localStorage.getItem('ledfx-host')?.includes(`localhost:${port}`) ||
-    false
+  const active = window.localStorage.getItem('ledfx-host')?.includes(`localhost:${port}`) || false
 
   const handleStartCore = (e: any, p: number) => {
     e.stopPropagation()
@@ -81,10 +79,7 @@ const Instances = ({
       <div
         onDoubleClick={() => {
           if (coreStatus[instance] === 'running')
-            handleSave(
-              `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
-              true
-            )
+            handleSave(`http://localhost:${newPort}` || parseInt(port, 10) || 8888, true)
         }}
         key={port}
         style={{
@@ -121,9 +116,7 @@ const Instances = ({
                 disableUnderline: variant === 'line',
                 sx: {
                   color:
-                    variant === 'line' &&
-                    !instance &&
-                    instances.includes(newPort)
+                    variant === 'line' && !instance && instances.includes(newPort)
                       ? 'error.main'
                       : coreStatus[instance] === 'running'
                         ? '#ddd'
@@ -178,10 +171,7 @@ const Instances = ({
                   input: {
                     disableUnderline: variant === 'line',
                     sx: {
-                      color:
-                        coreStatus[instance] === 'running'
-                          ? '#ddd'
-                          : 'text.disabled'
+                      color: coreStatus[instance] === 'running' ? '#ddd' : 'text.disabled'
                     }
                   },
                   inputLabel: {
@@ -223,16 +213,9 @@ const Instances = ({
           <Tooltip title={`Start ${instance} on ${newPort}`}>
             <span>
               <Button
-                disabled={
-                  coreStatus[instance] === 'starting' ||
-                  coreStatus[instance] === 'running'
-                }
+                disabled={coreStatus[instance] === 'starting' || coreStatus[instance] === 'running'}
                 variant={variant === 'line' ? 'text' : 'outlined'}
-                sx={
-                  variant === 'line'
-                    ? { minWidth: '32px', width: '32px' }
-                    : { height: 40 }
-                }
+                sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="delete"
                 onClick={(e) => {
                   handleStartCore(e, newPort || parseInt(port, 10) || 8888)
@@ -248,11 +231,7 @@ const Instances = ({
               <Button
                 disabled={coreStatus[instance] !== 'running'}
                 variant={variant === 'line' ? 'text' : 'outlined'}
-                sx={
-                  variant === 'line'
-                    ? { minWidth: '32px', width: '32px' }
-                    : { height: 40 }
-                }
+                sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="stop"
                 onClick={(e) => {
                   handleStopCore(e, newPort || parseInt(port, 10) || 8888)
@@ -268,17 +247,10 @@ const Instances = ({
                 disabled={coreStatus[instance] !== 'running'}
                 variant={variant === 'line' ? 'text' : 'outlined'}
                 color={active ? 'success' : 'inherit'}
-                sx={
-                  variant === 'line'
-                    ? { minWidth: '32px', width: '32px' }
-                    : { height: 40 }
-                }
+                sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="connect"
                 onClick={() => {
-                  handleSave(
-                    `http://localhost:${newPort}` || parseInt(port, 10) || 8888,
-                    true
-                  )
+                  handleSave(`http://localhost:${newPort}` || parseInt(port, 10) || 8888, true)
                 }}
               >
                 <Cable />
@@ -289,11 +261,7 @@ const Instances = ({
             <span>
               <Button
                 variant={variant === 'line' ? 'text' : 'outlined'}
-                sx={
-                  variant === 'line'
-                    ? { minWidth: '32px', width: '32px' }
-                    : { height: 40 }
-                }
+                sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="open-config"
                 onClick={() => {
                   window.api.send('toMain', {
@@ -316,18 +284,10 @@ const Instances = ({
                   instance === 'instance1'
                 }
                 icon={<Delete />}
-                style={
-                  variant === 'line'
-                    ? { minWidth: '32px', width: '32px' }
-                    : { height: 40 }
-                }
+                style={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 variant={variant === 'line' ? 'text' : 'outlined'}
                 onConfirm={(e) =>
-                  handleDelete(
-                    e,
-                    parseInt(`${port}` || portRef.current?.value || '', 10) ||
-                      8888
-                  )
+                  handleDelete(e, parseInt(`${port}` || portRef.current?.value || '', 10) || 8888)
                 }
               />
             </span>
@@ -426,9 +386,7 @@ const Instances = ({
                   disableUnderline: variant === 'line',
                   sx: {
                     color:
-                      variant === 'line' &&
-                      !instance &&
-                      instances.includes(newPort)
+                      variant === 'line' && !instance && instances.includes(newPort)
                         ? 'error.main'
                         : 'inherit'
                   }
@@ -439,9 +397,7 @@ const Instances = ({
         }
         icon={<Add />}
         confirmDisabled={instances.includes(
-          portRef.current?.value
-            ? parseInt(portRef.current?.value, 10)
-            : newPort
+          portRef.current?.value ? parseInt(portRef.current?.value, 10) : newPort
         )}
         variant={variant === 'line' ? 'text' : 'outlined'}
         style={variant === 'line' ? { minWidth: '32px', width: '32px' } : {}}
@@ -449,9 +405,7 @@ const Instances = ({
         onConfirm={(e) => {
           handleStartCore(
             e,
-            (portRef.current?.value
-              ? parseInt(portRef.current?.value, 10)
-              : newPort) ||
+            (portRef.current?.value ? parseInt(portRef.current?.value, 10) : newPort) ||
               parseInt(port, 10) ||
               8888
           )
@@ -460,9 +414,7 @@ const Instances = ({
             setNewPort(parseInt(portRef.current?.value, 10))
           }
           handleSave(
-            `http://localhost:${
-              (parseInt(portRef.current!.value, 10) || newPort) - 1
-            }`,
+            `http://localhost:${(parseInt(portRef.current!.value, 10) || newPort) - 1}`,
             false
           )
         }}

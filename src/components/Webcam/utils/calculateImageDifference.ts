@@ -18,31 +18,11 @@ function calculateImageDifference(
   if (!context) {
     throw new Error('Could not get 2d context')
   }
-  context.drawImage(
-    img1,
-    ignoreLeft,
-    ignoreTop,
-    width,
-    height,
-    0,
-    0,
-    width,
-    height
-  )
+  context.drawImage(img1, ignoreLeft, ignoreTop, width, height, 0, 0, width, height)
   const imageData1 = context.getImageData(0, 0, width, height).data
   context.clearRect(0, 0, width, height)
   // context.drawImage(img2, 0, 0, width, height)
-  context.drawImage(
-    img2,
-    ignoreLeft,
-    ignoreTop,
-    width,
-    height,
-    0,
-    0,
-    width,
-    height
-  )
+  context.drawImage(img2, ignoreLeft, ignoreTop, width, height, 0, 0, width, height)
   const imageData2 = context.getImageData(0, 0, width, height).data
   const diffData = new Uint8ClampedArray(width * height * 4)
 
@@ -70,7 +50,10 @@ function calculateImageDifference(
   const whitePixelsCount = whitePixels.length
   const whitePixelsCenter = whitePixels.reduce(
     (acc, { x, y }) => ({ x: acc.x + x, y: acc.y + y }),
-    { x: 0, y: 0 }
+    {
+      x: 0,
+      y: 0
+    }
   )
   whitePixelsCenter.x /= whitePixelsCount
   whitePixelsCenter.y /= whitePixelsCount
@@ -79,14 +62,7 @@ function calculateImageDifference(
 
   // Draw a small red circle at the center of the white area
   context.beginPath()
-  context.arc(
-    whitePixelsCenter.x,
-    whitePixelsCenter.y,
-    5,
-    0,
-    2 * Math.PI,
-    false
-  )
+  context.arc(whitePixelsCenter.x, whitePixelsCenter.y, 5, 0, 2 * Math.PI, false)
   context.fillStyle = 'red'
   context.fill()
 

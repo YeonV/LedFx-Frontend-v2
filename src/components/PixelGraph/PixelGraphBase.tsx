@@ -25,17 +25,12 @@ const PixelGraphBase = ({
   onDoubleClick?: any
 }) => {
   const [pixels, setPixels] = useState<any>([])
-  const [shape, setShape] = useState<[null | number, null | number]>([
-    null,
-    null
-  ])
+  const [shape, setShape] = useState<[null | number, null | number]>([null, null])
 
   const showWarning = useStore((state) => state.uiPersist.warnings.lessPixels)
   const round = useStore((state) => state.uiPersist.pixelGraphSettings?.round)
   const space = useStore((state) => state.uiPersist.pixelGraphSettings?.space)
-  const stretch = useStore(
-    (state) => state.uiPersist.pixelGraphSettings?.stretch
-  )
+  const stretch = useStore((state) => state.uiPersist.pixelGraphSettings?.stretch)
   const { pixelGraphs, virtuals, devices, graphs, config } = useStore(
     useShallow((state) => ({
       pixelGraphs: state.pixelGraphs,
@@ -75,26 +70,20 @@ const PixelGraphBase = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtuals, pixelGraphs, virtId])
 
-  const tooLessPixels = useStore(
-    (state) => state.dialogs.lessPixels?.open || false
-  )
+  const tooLessPixels = useStore((state) => state.dialogs.lessPixels?.open || false)
 
   if (!(graphs || intGraphs)) {
     return null
   }
 
-  const totalPixels =
-    decodedPixels.length > 0 ? decodedPixels.length : pixels[0]?.length
+  const totalPixels = decodedPixels.length > 0 ? decodedPixels.length : pixels[0]?.length
   const realPixelCount = virtuals[virtId]?.pixel_count || totalPixels
   const realCols = Math.ceil(realPixelCount / rows)
   const aspectRatio = realCols / rows
   // console.log(shape)
   const displayRows =
-    (shape && shape[0]) ||
-    (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
-  const displayCols =
-    (shape && shape[1]) ||
-    (realPixelCount > 4096 ? 4096 / displayRows : realCols)
+    (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
+  const displayCols = (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
 
   return dummy || (tooLessPixels && showWarning) ? (
     <div
@@ -130,8 +119,7 @@ const PixelGraphBase = ({
         maxHeight: fullScreen ? '100vh' : 'unset',
         display: 'flex',
         flexDirection:
-          virtuals[virtId].id === 'launchpad-x' ||
-          virtuals[virtId].id === 'launchpad-x-matrix'
+          virtuals[virtId].id === 'launchpad-x' || virtuals[virtId].id === 'launchpad-x-matrix'
             ? 'column-reverse'
             : 'column',
         width: '100%',
@@ -156,8 +144,7 @@ const PixelGraphBase = ({
           }}
           className={`${className} ${active ? 'active' : ''}`}
         >
-          {(config.transmission_mode === 'compressed' &&
-          decodedPixels.length > 0
+          {(config.transmission_mode === 'compressed' && decodedPixels.length > 0
             ? decodedPixels.slice(row * displayCols, (row + 1) * displayCols)
             : pixels[0]?.slice(row * displayCols, (row + 1) * displayCols)
           ).map((_p: any, i: number) => (
@@ -165,9 +152,7 @@ const PixelGraphBase = ({
               key={i}
               style={{
                 flex: 1,
-                margin: !space
-                  ? 0
-                  : `${db || (totalPixels > 100 && displayRows > 7) ? 1 : 2}px`,
+                margin: !space ? 0 : `${db || (totalPixels > 100 && displayRows > 7) ? 1 : 2}px`,
                 borderRadius: !round
                   ? 0
                   : db || (totalPixels > 100 && displayRows > 7)
@@ -210,24 +195,23 @@ const PixelGraphBase = ({
       }}
       className={`${className} ${active ? 'active' : ''}`}
     >
-      {(config.transmission_mode === 'compressed'
-        ? decodedPixels
-        : pixels[0]
-      ).map((p: any, i: number) => (
-        <div
-          key={i}
-          style={{
-            height: '20px',
-            flex: 1,
-            borderRadius: '0',
-            backgroundColor: active
-              ? config.transmission_mode === 'compressed'
-                ? `rgb(${Object.values(p)})`
-                : `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})`
-              : '#0002'
-          }}
-        />
-      ))}
+      {(config.transmission_mode === 'compressed' ? decodedPixels : pixels[0]).map(
+        (p: any, i: number) => (
+          <div
+            key={i}
+            style={{
+              height: '20px',
+              flex: 1,
+              borderRadius: '0',
+              backgroundColor: active
+                ? config.transmission_mode === 'compressed'
+                  ? `rgb(${Object.values(p)})`
+                  : `rgb(${pixels[0][i]},${pixels[1][i]},${pixels[2][i]})`
+                : '#0002'
+            }}
+          />
+        )
+      )}
     </div>
   ) : (
     <div

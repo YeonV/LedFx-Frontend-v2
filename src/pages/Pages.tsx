@@ -1,9 +1,4 @@
-import {
-  HashRouter as Router,
-  BrowserRouter,
-  Routes,
-  Route
-} from 'react-router-dom'
+import { HashRouter as Router, BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -58,15 +53,9 @@ const Routings = ({ handleWs }: any) => {
   const setShowFeatures = useStore((state) => state.setShowFeatures)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
-  const smartBarOpen = useStore(
-    (state) => state.ui.bars && state.ui.bars.smartBar.open
-  )
-  const setSmartBarOpen = useStore(
-    (state) => state.ui.bars && state.ui.setSmartBarOpen
-  )
-  const leftBarOpen = useStore(
-    (state) => state.ui.bars && state.ui.bars.leftBar.open
-  )
+  const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
+  const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
+  const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open)
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
   useHotkeys(['ctrl+alt+d'], () => setMp(!mp))
@@ -146,10 +135,7 @@ const Routings = ({ handleWs }: any) => {
             <Route path="*" element={<Lock />} />
           ) : (
             <>
-              <Route
-                path="/connect/:providerName/redirect"
-                element={<LoginRedirect />}
-              />
+              <Route path="/connect/:providerName/redirect" element={<LoginRedirect />} />
               <Route path="/" element={<Home />} />
               <Route path="/callback" element={<SpotifyLoginRedirect />} />
               <Route path="/devices" element={<Devices />} />
@@ -166,8 +152,11 @@ const Routings = ({ handleWs }: any) => {
               <Route
                 path="*"
                 element={
-                  // eslint-disable-next-line
-                  !(window.localStorage.getItem('guestmode') === 'activated') ? <Home /> : <Scenes />
+                  !(window.localStorage.getItem('guestmode') === 'activated') ? (
+                    <Home />
+                  ) : (
+                    <Scenes />
+                  )
                 }
               />
             </>
@@ -182,15 +171,9 @@ const Routings = ({ handleWs }: any) => {
         <NoHostDialog />
         <HostManager />
         <FrontendPixelsTooSmall />
-        <SmartBar
-          open={smartBarOpen}
-          setOpen={setSmartBarOpen}
-          direct={false}
-        />
+        <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
       </Box>
-      {!(isElect && window.localStorage.getItem('lock') === 'activated') && (
-        <BottomBar />
-      )}
+      {!(isElect && window.localStorage.getItem('lock') === 'activated') && <BottomBar />}
     </>
   )
 }
