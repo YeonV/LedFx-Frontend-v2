@@ -52,19 +52,14 @@ const Settings = () => {
       <SettingsAccordion title="Audio" accId="1a" icon="Speaker">
         <>
           {features.webaudio && (
-            <Webaudio
-              style={{ position: 'absolute', right: '3.5rem', top: '0.3rem' }}
-            />
+            <Webaudio style={{ position: 'absolute', right: '3.5rem', top: '0.3rem' }} />
           )}
           <ClientAudioCard />
           <AudioCard className={`${classes.audioCard} step-settings-one`} />
         </>
       </SettingsAccordion>
 
-      <Accordion
-        disabled
-        sx={{ backgroundColor: 'transparent !important', pt: 3 }}
-      >
+      <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
         <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
           <Typography>Client Settings</Typography>
         </AccordionSummary>
@@ -72,11 +67,7 @@ const Settings = () => {
       <SettingsAccordion title="Home" accId="1db" icon="Home">
         <DashboardCard />
       </SettingsAccordion>
-      <SettingsAccordion
-        title="Devices"
-        accId="devices"
-        icon="mdi:led-strip-variant"
-      >
+      <SettingsAccordion title="Devices" accId="devices" icon="mdi:led-strip-variant">
         <DevicesSection />
       </SettingsAccordion>
       <SettingsAccordion title="Scenes" accId="scenes" icon="Image">
@@ -109,14 +100,8 @@ const Settings = () => {
 
       {viewMode !== 'user' && (
         <>
-          <Accordion
-            disabled
-            sx={{ backgroundColor: 'transparent !important', pt: 3 }}
-          >
-            <AccordionSummary
-              aria-controls="panel3a-content"
-              id="panel3a-header"
-            >
+          <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
+            <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
               <Typography>Client Features</Typography>
             </AccordionSummary>
           </Accordion>
@@ -125,20 +110,12 @@ const Settings = () => {
             <ExpertFeatures />
           </SettingsAccordion>
           {features.beta && (
-            <SettingsAccordion
-              title="Beta"
-              accId="2y2"
-              icon="mdi:emoticon-devil"
-            >
+            <SettingsAccordion title="Beta" accId="2y2" icon="mdi:emoticon-devil">
               <BetaFeatures />
             </SettingsAccordion>
           )}
           {features.alpha && showFeatures.alpha && (
-            <SettingsAccordion
-              title="Alpha"
-              accId="2y1"
-              icon="mdi:emoticon-devil-outline"
-            >
+            <SettingsAccordion title="Alpha" accId="2y1" icon="mdi:emoticon-devil-outline">
               <AlphaFeatures />
             </SettingsAccordion>
           )}

@@ -28,12 +28,7 @@ const DbScenes = () => {
       title="Most used Scenes"
     >
       <Stack width="100%">
-        <ScenesMostUsed
-          db
-          title="Most used"
-          scenes={scenes}
-          activateScene={handleActivateScene}
-        />
+        <ScenesMostUsed db title="Most used" scenes={scenes} activateScene={handleActivateScene} />
       </Stack>
     </BladeFrame>
   )

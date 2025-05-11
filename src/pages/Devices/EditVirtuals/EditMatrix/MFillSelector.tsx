@@ -22,19 +22,9 @@ import topFlip from '../../../../assets/top-flip.svg'
 import topSnakeFlip from '../../../../assets/top-snake-flip.svg'
 import type { IDir } from './M.utils'
 
-const MFillSelector = ({
-  direction,
-  onChange
-}: {
-  direction: IDir
-  onChange: any
-}) => {
+const MFillSelector = ({ direction, onChange }: { direction: IDir; onChange: any }) => {
   return (
-    <BladeFrame
-      title="Fill Direction"
-      full={false}
-      style={{ marginBottom: '1rem' }}
-    >
+    <BladeFrame title="Fill Direction" full={false} style={{ marginBottom: '1rem' }}>
       <Select
         value={direction}
         variant="standard"
@@ -99,10 +89,7 @@ const MFillSelector = ({
             <img width="30px" src={rightSnake} alt="rightSnake" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="right-snake-flip"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="right-snake-flip">
           <div
             style={{
               width: '100%',
@@ -171,10 +158,7 @@ const MFillSelector = ({
             <img width="30px" src={bottomSnake} alt="bottomSnake" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="bottom-snake-flip"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="bottom-snake-flip">
           <div
             style={{
               width: '100%',
@@ -243,10 +227,7 @@ const MFillSelector = ({
             <img width="30px" src={leftSnake} alt="leftSnake" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="left-snake-flip"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="left-snake-flip">
           <div
             style={{
               width: '100%',
@@ -315,10 +296,7 @@ const MFillSelector = ({
             <img width="30px" src={topSnake} alt="topSnake" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="top-snake-flip"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="top-snake-flip">
           <div
             style={{
               width: '100%',
@@ -336,10 +314,7 @@ const MFillSelector = ({
           </div>
         </MenuItem>
         <Divider />
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="diagonal-top-right"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-top-right">
           <div
             style={{
               width: '100%',
@@ -356,10 +331,7 @@ const MFillSelector = ({
             <img width="30px" src={topRight} alt="topRight" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="diagonal-bottom-right"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-bottom-right">
           <div
             style={{
               width: '100%',
@@ -376,10 +348,7 @@ const MFillSelector = ({
             <img width="30px" src={bottomRight} alt="bottomRight" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="diagonal-bottom-left"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-bottom-left">
           <div
             style={{
               width: '100%',
@@ -396,10 +365,7 @@ const MFillSelector = ({
             <img width="30px" src={bottomLeft} alt="bottomLeft" />
           </div>
         </MenuItem>
-        <MenuItem
-          sx={{ justifyContent: 'space-between' }}
-          value="diagonal-top-left"
-        >
+        <MenuItem sx={{ justifyContent: 'space-between' }} value="diagonal-top-left">
           <div
             style={{
               width: '100%',

@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { styled } from '@mui/material/styles'
-import {
-  Button,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem
-} from '@mui/material'
+import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 import { useLongPress } from 'use-long-press'
 import { CloudOff, CloudUpload } from '@mui/icons-material'
 import useStore from '../../store/useStore'

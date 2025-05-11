@@ -54,28 +54,19 @@ const storeMidi = (set: any, get: any) => ({
     const colors = MidiDevices[state.midiType][state.midiModel].colors
     const numericValue = parseInt(value, 16)
     return (
-      Object.keys(colors).find(
-        (key) => colors[key as keyof typeof colors] === numericValue
-      ) || undefined
+      Object.keys(colors).find((key) => colors[key as keyof typeof colors] === numericValue) ||
+      undefined
     )
   },
   getUiBtnNo: (inputInt: number): number | null => {
     const state = get() as IStore
-    for (
-      let i = 0;
-      i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length;
-      i++
-    ) {
+    for (let i = 0; i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length; i++) {
       for (
         let j = 0;
-        j <
-        MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length;
+        j < MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length;
         j++
       ) {
-        if (
-          MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] ===
-          inputInt
-        ) {
+        if (MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] === inputInt) {
           return MidiDevices.Launchpad.X.buttonNumbers[i][j]
         }
       }
@@ -233,10 +224,7 @@ const storeMidi = (set: any, get: any) => ({
   setMidiMappingButtonNumbers: (inputArray: number[][]): void =>
     set(
       produce((state: IStore) => {
-        if (
-          inputArray.length !== 9 ||
-          !inputArray.every((row) => row.length === 9)
-        ) {
+        if (inputArray.length !== 9 || !inputArray.every((row) => row.length === 9)) {
           throw new Error('Input must be a 9x9 array')
         }
         const updatedMapping = { ...state.midiMapping }

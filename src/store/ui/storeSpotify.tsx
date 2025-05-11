@@ -2,8 +2,7 @@ import { spDevice } from './SpState'
 import { SpotifyState } from './SpotifyState'
 
 const storeSpotify = () => ({
-  spotifyEmbedUrl:
-    'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
+  spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
   spotifyAuthToken: '',
   player: null as any,
   swSize: 'small',

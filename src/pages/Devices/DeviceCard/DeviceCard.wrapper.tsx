@@ -7,32 +7,20 @@ import { IVirtualOrder } from '../../../store/api/storeVirtuals'
 import { Button, Popover } from '@mui/material'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
 
-const DeviceCardWrapper = ({
-  virtual,
-  index
-}: {
-  virtual: any
-  index: number
-}) => {
+const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
   const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const devices = useStore((state) => state.devices)
   const deleteVirtual = useStore((state) => state.deleteVirtual)
-  const setDialogOpenAddDevice = useStore(
-    (state) => state.setDialogOpenAddDevice
-  )
-  const setDialogOpenAddVirtual = useStore(
-    (state) => state.setDialogOpenAddVirtual
-  )
+  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice)
+  const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual)
   const graphs = useStore((state) => state.graphs)
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
   const graphsMulti = useStore((state) => state.graphsMulti)
-  const removeEffectfromHistory = useStore(
-    (state) => state.removeEffectfromHistory
-  )
+  const removeEffectfromHistory = useStore((state) => state.removeEffectfromHistory)
   const clearEffect = useStore((state) => state.clearEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
   const activateDevice = useStore((state) => state.activateDevice)
@@ -59,8 +47,7 @@ const DeviceCardWrapper = ({
       virtuals[virtual].effect &&
       Object.keys(virtuals[virtual].effect)?.length > 0) ||
       (devices &&
-        devices[Object.keys(devices).find((d) => d === virtual) || '']
-          ?.active_virtuals!.length > 0)
+        devices[Object.keys(devices).find((d) => d === virtual) || '']?.active_virtuals!.length > 0)
   )
 
   const handleDeleteDevice = () => {
@@ -92,9 +79,7 @@ const DeviceCardWrapper = ({
       }
       return null
     })
-    Promise.all(
-      toDelete.map(async (v) => await deleteVirtual(virtuals[v]?.id))
-    ).then(() => {
+    Promise.all(toDelete.map(async (v) => await deleteVirtual(virtuals[v]?.id))).then(() => {
       getVirtuals()
     })
   }
@@ -126,9 +111,7 @@ const DeviceCardWrapper = ({
   }
 
   const handlePlayPause = () => {
-    updateVirtual(virtuals[virtual].id, !virtuals[virtual].active).then(() =>
-      getVirtuals()
-    )
+    updateVirtual(virtuals[virtual].id, !virtuals[virtual].active).then(() => getVirtuals())
   }
 
   const handleActivateDevice = (e: any) => {
@@ -137,11 +120,8 @@ const DeviceCardWrapper = ({
 
   useEffect(() => {
     setIsActive(
-      (virtual &&
-        virtuals[virtual] &&
-        Object.keys(virtuals[virtual]?.effect)?.length > 0) ||
-        devices[Object.keys(devices).find((d) => d === virtual) || '']
-          ?.active_virtuals!.length > 0
+      (virtual && virtuals[virtual] && Object.keys(virtuals[virtual]?.effect)?.length > 0) ||
+        devices[Object.keys(devices).find((d) => d === virtual) || '']?.active_virtuals!.length > 0
     )
   }, [virtuals, devices, virtual])
 
@@ -216,12 +196,8 @@ const DeviceCardWrapper = ({
           e.stopPropagation()
           handleClick(e)
         }}
-        deviceName={
-          virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name
-        }
-        online={
-          devices[Object.keys(devices).find((d) => d === virtual) || '']?.online
-        }
+        deviceName={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.name}
+        online={devices[Object.keys(devices).find((d) => d === virtual) || '']?.online}
         lastEffect={
           virtuals[virtual]?.last_effect
             ? schemas.effects[virtuals[virtual]?.last_effect].name
@@ -251,18 +227,11 @@ const DeviceCardWrapper = ({
         isPlaying={virtuals[virtual]?.active}
         transitionTime={(virtuals[virtual].config.transition_time || 0) * 1000}
         isStreaming={
-          devices[Object.keys(devices).find((d) => d === virtual) || '']
-            ?.active_virtuals!.length > 0
+          devices[Object.keys(devices).find((d) => d === virtual) || '']?.active_virtuals!.length >
+          0
         }
-        previewOnly={
-          virtual &&
-          virtuals[virtual]?.config &&
-          virtuals[virtual]?.config.preview_only
-        }
-        dummy={
-          devices[Object.keys(devices).find((d) => d === virtual) || '']
-            ?.type === 'dummy'
-        }
+        previewOnly={virtual && virtuals[virtual]?.config && virtuals[virtual]?.config.preview_only}
+        dummy={devices[Object.keys(devices).find((d) => d === virtual) || '']?.type === 'dummy'}
         isEffectSet={Object.keys(virtuals[virtual]?.effect)?.length > 0}
         additionalStyle={{
           order

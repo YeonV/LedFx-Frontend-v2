@@ -42,9 +42,7 @@ const Scenes = () => {
   const mediumScreen = useMediaQuery('(max-width: 870px)')
   const largeScreen = useMediaQuery('(min-width: 1480px)')
 
-  const toggletSceneActiveTag = useStore(
-    (state) => state.ui.toggletSceneActiveTag
-  )
+  const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const captivateScene = useStore((state) => state.captivateScene)
 
   const handleActivateScene = (e: string) => {
@@ -71,9 +69,7 @@ const Scenes = () => {
   }, [scenes])
 
   const sceneFilter = (sc: string) =>
-    scenes[sc].scene_tags
-      ?.split(',')
-      .some((sce: string) => sceneActiveTags.includes(sce))
+    scenes[sc].scene_tags?.split(',').some((sce: string) => sceneActiveTags.includes(sce))
 
   const sceneBlenderFilter = (sc: string) =>
     scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
@@ -97,8 +93,7 @@ const Scenes = () => {
           >
             Head over to Devices-Page and adjust all effects for all devices.
             <br />
-            You can then save everything as a scene by using the{' '}
-            <strong>+</strong> button
+            You can then save everything as a scene by using the <strong>+</strong> button
           </Alert>
         </Collapse>
 
@@ -156,16 +151,12 @@ const Scenes = () => {
                   .map((t: string) => {
                     return (
                       <Chip
-                        variant={
-                          sceneActiveTags.includes(t) ? 'filled' : 'outlined'
-                        }
+                        variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}
                         sx={{
                           ml: 1,
                           mt: 1,
                           mr: 1,
-                          cursor: sceneActiveTags.includes(t)
-                            ? 'zoom-out'
-                            : 'zoom-in'
+                          cursor: sceneActiveTags.includes(t) ? 'zoom-out' : 'zoom-in'
                         }}
                         key={t}
                         label={t}
@@ -198,9 +189,7 @@ const Scenes = () => {
                         key={i}
                         mt={['0.5rem', '0.5rem', 0, 0, 0]}
                         p="8px !important"
-                        order={
-                          sceneOrder.find((o) => o.sceneId === s)?.order || 0
-                        }
+                        order={sceneOrder.find((o) => o.sceneId === s)?.order || 0}
                       >
                         <Card
                           className={classes.root}
@@ -215,12 +204,8 @@ const Scenes = () => {
                             }}
                             onClick={() => handleActivateScene(s)}
                           >
-                            <SceneImage
-                              iconName={scenes[s].scene_image || 'Wallpaper'}
-                            />
-                            <div
-                              style={{ position: 'absolute', top: 0, right: 0 }}
-                            >
+                            <SceneImage iconName={scenes[s].scene_image || 'Wallpaper'} />
+                            <div style={{ position: 'absolute', top: 0, right: 0 }}>
                               {scenes[s].scene_tags?.split(',').map(
                                 (t: string) =>
                                   t.length > 0 &&
@@ -231,8 +216,7 @@ const Scenes = () => {
                                       key={t}
                                       sx={{
                                         cursor: 'pointer',
-                                        backgroundColor:
-                                          theme.palette.background.paper,
+                                        backgroundColor: theme.palette.background.paper,
                                         border: '1px solid',
                                         borderColor: theme.palette.text.disabled
                                       }}
@@ -248,17 +232,12 @@ const Scenes = () => {
                               width: '100%'
                             }}
                           >
-                            <Typography
-                              className={classes.sceneTitle}
-                              variant="h5"
-                              component="h2"
-                            >
+                            <Typography className={classes.sceneTitle} variant="h5" component="h2">
                               {scenes[s].name || s}
                             </Typography>
-                            {!(
-                              window.localStorage.getItem('guestmode') ===
-                              'activated'
-                            ) && <ScenesMenu sceneId={s} />}
+                            {!(window.localStorage.getItem('guestmode') === 'activated') && (
+                              <ScenesMenu sceneId={s} />
+                            )}
                           </CardActions>
                         </Card>
                       </Grid>

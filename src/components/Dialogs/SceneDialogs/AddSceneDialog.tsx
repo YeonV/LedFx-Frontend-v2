@@ -30,27 +30,19 @@ const AddSceneDialog = () => {
     if (!invalid) {
       addScene(name).then(async () => {
         const newScenes = await getScenes()
-        const sceneId = Object.keys(newScenes).find(
-          (s) => newScenes[s].name === name
-        )
+        const sceneId = Object.keys(newScenes).find((s) => newScenes[s].name === name)
         setName('')
-        if (sceneId)
-          setDialogOpenAddScene(true, true, sceneId, newScenes[sceneId])
+        if (sceneId) setDialogOpenAddScene(true, true, sceneId, newScenes[sceneId])
       })
     }
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Add Scene</DialogTitle>
       <DialogContent>
         <Typography mb={2}>
-          Save all active effects of all devices with their settings into one
-          scene.
+          Save all active effects of all devices with their settings into one scene.
         </Typography>
         <TextField
           autoFocus

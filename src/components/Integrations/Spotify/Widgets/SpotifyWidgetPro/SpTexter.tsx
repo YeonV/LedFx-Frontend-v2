@@ -1,12 +1,5 @@
 import { useState } from 'react'
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  useTheme
-} from '@mui/material'
+import { Box, Dialog, DialogContent, DialogTitle, IconButton, useTheme } from '@mui/material'
 import BladeIcon from '../../../../Icons/BladeIcon/BladeIcon'
 import useStore from '../../../../../store/useStore'
 import SpTexterForm from './SpTexterForm'

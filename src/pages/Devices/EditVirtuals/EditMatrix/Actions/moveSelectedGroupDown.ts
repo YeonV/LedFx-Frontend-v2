@@ -1,14 +1,7 @@
 import { clone } from '../M.utils'
 import { IMoveGroup } from './interfaces'
 
-const moveSelectedGroupDown = ({
-  m,
-  rowN,
-  colN,
-  selectedGroup,
-  setError,
-  setM
-}: IMoveGroup) => {
+const moveSelectedGroupDown = ({ m, rowN, colN, selectedGroup, setError, setM }: IMoveGroup) => {
   const updatedM = clone(m)
   const conflictingCells = [] // Array to store conflicting cells
 

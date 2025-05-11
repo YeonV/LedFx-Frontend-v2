@@ -9,11 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import { Language } from '@mui/icons-material'
 
-export default function SpotifyChangeURLDialog({
-  style,
-  spotifyURL,
-  setSpotifyURL
-}: any) {
+export default function SpotifyChangeURLDialog({ style, spotifyURL, setSpotifyURL }: any) {
   const [open, setOpen] = React.useState(false)
   const [url, setUrl] = React.useState(spotifyURL)
 
@@ -33,16 +29,12 @@ export default function SpotifyChangeURLDialog({
       <IconButton onClick={handleClickOpen} style={style}>
         <Language />
       </IconButton>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Spotify URL</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Right-click a Playlist/Track/... in spotify and select share, copy
-            link and paste it here
+            Right-click a Playlist/Track/... in spotify and select share, copy link and paste it
+            here
           </DialogContentText>
           <TextField
             autoFocus

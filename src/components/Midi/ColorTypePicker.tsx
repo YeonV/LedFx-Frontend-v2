@@ -6,12 +6,7 @@ interface ColorTypePickerProps extends Omit<SelectProps, 'value' | 'onChange'> {
   isRgb?: boolean
 }
 
-const ColorTypePicker: React.FC<ColorTypePickerProps> = ({
-  value,
-  onChange,
-  isRgb,
-  ...props
-}) => (
+const ColorTypePicker: React.FC<ColorTypePickerProps> = ({ value, onChange, isRgb, ...props }) => (
   <Select disableUnderline value={value} onChange={onChange} {...props}>
     <MenuItem value={'90'}>Solid</MenuItem>
     <MenuItem value={'91'}>Flash</MenuItem>

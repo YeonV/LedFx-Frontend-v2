@@ -23,11 +23,7 @@ const MidiCard = ({ className }: any) => {
   return (
     <div className={className}>
       <Stack direction={'row'} spacing={2}>
-        <BladeFrame
-          title={'Input Device'}
-          full
-          style={{ marginBottom: '1rem' }}
-        >
+        <BladeFrame title={'Input Device'} full style={{ marginBottom: '1rem' }}>
           <Select
             fullWidth
             disableUnderline

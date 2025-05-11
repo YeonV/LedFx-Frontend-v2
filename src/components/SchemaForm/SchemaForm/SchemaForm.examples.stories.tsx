@@ -144,8 +144,7 @@ AddDeviceWLED.args = {
         type: 'string',
         enum: ['UDP', 'DDP', 'E131'],
         title: 'Sync Mode',
-        description:
-          'Streaming protocol to WLED device. Recommended: UDP<480px, DDP>480px',
+        description: 'Streaming protocol to WLED device. Recommended: UDP<480px, DDP>480px',
         default: 'UDP'
       },
       timeout: {
@@ -234,15 +233,13 @@ AddDeviceUDP.args = {
         minimum: 1,
         maximum: 255,
         title: 'Timeout',
-        description:
-          'Seconds to wait after the last received packet to yield device control',
+        description: 'Seconds to wait after the last received packet to yield device control',
         default: 1
       },
       minimise_traffic: {
         type: 'boolean',
         title: 'Minimise Traffic',
-        description:
-          'Will not send updates if nothing has changed on the LED device',
+        description: 'Will not send updates if nothing has changed on the LED device',
         default: true
       }
     },
@@ -279,8 +276,7 @@ AddVirtual.args = {
         type: 'string',
         enum: ['span', 'copy'],
         title: 'Mapping',
-        description:
-          'Span: Effect spans all segments. Copy: Effect copied on each segment',
+        description: 'Span: Effect spans all segments. Copy: Effect copied on each segment',
         default: 'span'
       },
       icon_name: {

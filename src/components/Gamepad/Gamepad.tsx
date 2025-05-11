@@ -72,21 +72,14 @@ const Gamepad = ({ bottom }: any) => {
     if (g[2]) setPad2(g[2])
     if (g[3]) setPad3(g[3])
     setGp(pad0?.id || pad1?.id || pad2?.id || pad3?.id)
-    if (
-      Object.keys(g).some(
-        (k: any) => g[k]?.buttons[8].pressed && g[k]?.buttons[9].pressed
-      )
-    ) {
+    if (Object.keys(g).some((k: any) => g[k]?.buttons[8].pressed && g[k]?.buttons[9].pressed)) {
       alert('DevMode activated!')
       setFeatures('dev', true)
     } else if (
       Object.keys(g).some(
         (k: any) =>
           g[k]?.buttons
-            .map(
-              (b: any, i: number) =>
-                b.pressed && mapping[g[k].index][i]?.command === 'scene'
-            )
+            .map((b: any, i: number) => b.pressed && mapping[g[k].index][i]?.command === 'scene')
             .filter((bu: any) => !!bu).length === 2
       )
     ) {
@@ -107,50 +100,23 @@ const Gamepad = ({ bottom }: any) => {
             mapping[pad.index][i].command &&
             mapping[pad.index][i].command !== 'none'
           if (test) {
-            executeCommand(
-              mapping[pad.index][i].command!,
-              mapping[pad.index][i].payload
-            )
+            executeCommand(mapping[pad.index][i].command!, mapping[pad.index][i].payload)
           } else if (pad.axes[0] === 1 && analogBrightness[0]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.min(brightness + 0.1, 1).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
           } else if (pad.axes[0] === -1 && analogBrightness[0]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.max(brightness - 0.1, 0).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
           } else if (pad.axes[1] === -1 && analogBrightness[1]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.min(brightness + 0.1, 1).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
           } else if (pad.axes[1] === 1 && analogBrightness[1]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.max(brightness - 0.1, 0).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
           } else if (pad.axes[2] === 1 && analogBrightness[2]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.min(brightness + 0.1, 1).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
           } else if (pad.axes[2] === -1 && analogBrightness[2]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.max(brightness - 0.1, 0).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
           } else if (pad.axes[3] === -1 && analogBrightness[3]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.min(brightness + 0.1, 1).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.min(brightness + 0.1, 1).toFixed(2))
           } else if (pad.axes[3] === 1 && analogBrightness[3]) {
-            setSystemSetting(
-              'global_brightness',
-              Math.max(brightness - 0.1, 0).toFixed(2)
-            )
+            setSystemSetting('global_brightness', Math.max(brightness - 0.1, 0).toFixed(2))
           }
           return null
         })
@@ -231,11 +197,7 @@ const Gamepad = ({ bottom }: any) => {
           {[pad0, pad1, pad2, pad3].map((pad: any, pi: number) => (
             <PN value={currentPad} index={pi} key={pi} minHeight={gp ? 875 : 0}>
               {pad?.id ? (
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  flexWrap="wrap"
-                >
+                <Stack direction="row" justifyContent="space-between" flexWrap="wrap">
                   <Stack direction="column">
                     <PT label={pad.id} />
                     <Stack direction="row" justifyContent="space-between">
@@ -252,10 +214,7 @@ const Gamepad = ({ bottom }: any) => {
                     >
                       {[0, 1, 2, 3].map((inde) => (
                         <Stack direction="column" key={`axes${inde}`}>
-                          <PD
-                            label={`axes${inde}`}
-                            value={pad.axes[inde].toFixed(5)}
-                          />
+                          <PD label={`axes${inde}`} value={pad.axes[inde].toFixed(5)} />
                           <MuiSwitch
                             checked={analogBrightness[inde as 0 | 1 | 2 | 3]}
                             onChange={() =>
@@ -268,16 +227,8 @@ const Gamepad = ({ bottom }: any) => {
                         </Stack>
                       ))}
                     </Stack>
-                    <Stack
-                      direction="row"
-                      marginTop={2}
-                      marginBottom={2}
-                      spacing={5}
-                    >
-                      <PD
-                        label="Motor"
-                        value={pad.vibrationActuator?.type || 'No Motor'}
-                      />
+                    <Stack direction="row" marginTop={2} marginBottom={2} spacing={5}>
+                      <PD label="Motor" value={pad.vibrationActuator?.type || 'No Motor'} />
                       <Stack direction="column">
                         <span
                           style={{
@@ -317,15 +268,9 @@ const Gamepad = ({ bottom }: any) => {
                     {padType === 'ps5' && <GamepadSvgPs5 pad={pad} />}
                     {padType === 'ps4' && <GamepadSvgPs4 pad={pad} />}
                     {padType === 'ps3' && <GamepadSvgPs3 pad={pad} />}
-                    {padType === 'generic' && (
-                      <GamepadSvgPs3 pad={pad} type="generic" />
-                    )}
+                    {padType === 'generic' && <GamepadSvgPs3 pad={pad} type="generic" />}
                   </Stack>
-                  <Stack
-                    direction="column"
-                    spacing={1}
-                    sx={{ mt: 2, minWidth: 300 }}
-                  >
+                  <Stack direction="column" spacing={1} sx={{ mt: 2, minWidth: 300 }}>
                     {pad?.buttons.map((b: any, i: number) => (
                       <Assign
                         // disabled={i === 16}

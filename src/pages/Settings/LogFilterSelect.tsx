@@ -38,17 +38,10 @@ const LogColorFilterSelect: React.FC = () => {
           Array.isArray(parsedColors) &&
           parsedColors.every((c) => availableColorNames.includes(c))
         ) {
-          log.purple(
-            'Settings',
-            'Loaded colors from localStorage:',
-            parsedColors
-          ) // Good place for debug log
+          log.purple('Settings', 'Loaded colors from localStorage:', parsedColors) // Good place for debug log
           return parsedColors // Use stored value
         }
-        log.warn(
-          'Settings',
-          'Invalid color data in localStorage, using default.'
-        )
+        log.warn('Settings', 'Invalid color data in localStorage, using default.')
       }
     } catch (e) {
       console.error('Failed to parse log color filter from localStorage', e)
@@ -56,13 +49,8 @@ const LogColorFilterSelect: React.FC = () => {
 
     // --- MODIFIED FALLBACK ---
     // If localStorage is empty or invalid, default to all available colors *except* 'purple'
-    log.debug(
-      'Settings',
-      'No valid localStorage colors, initializing default filter (no purple).'
-    )
-    const defaultSelection = availableColorNames.filter(
-      (color) => color !== 'purple'
-    )
+    log.debug('Settings', 'No valid localStorage colors, initializing default filter (no purple).')
+    const defaultSelection = availableColorNames.filter((color) => color !== 'purple')
     return defaultSelection
     // --- END MODIFICATION ---
   })
@@ -73,10 +61,7 @@ const LogColorFilterSelect: React.FC = () => {
     setEnabledLogColors(selectedColors as ColorName[]) // Update the actual filter
     // Persist selection to localStorage
     try {
-      localStorage.setItem(
-        'logViewerEnabledColors',
-        JSON.stringify(selectedColors)
-      )
+      localStorage.setItem('logViewerEnabledColors', JSON.stringify(selectedColors))
     } catch (e) {
       console.error('Failed to save log color filter to localStorage', e)
     }
@@ -115,10 +100,7 @@ const LogColorFilterSelect: React.FC = () => {
       {availableColorNames.map((colorName) => (
         <MenuItem key={colorName} value={colorName}>
           {/* Add Checkbox for visual selection indication */}
-          <Checkbox
-            checked={selectedColors.indexOf(colorName) > -1}
-            size="small"
-          />
+          <Checkbox checked={selectedColors.indexOf(colorName) > -1} size="small" />
           <ListItemText primary={colorName} />
           {/* Optional: Add a color swatch */}
           {/* <Box sx={{ width: 16, height: 16, bgcolor: colorStyles[colorName] || '#ccc', ml: 1, border: '1px solid grey' }} /> */}

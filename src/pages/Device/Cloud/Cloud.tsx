@@ -129,12 +129,7 @@ export default function CloudScreen({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
+      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button
@@ -155,10 +150,7 @@ export default function CloudScreen({
             <div
               key={i}
               style={{
-                order:
-                  virtual?.effect.name?.toLowerCase() === effect.toLowerCase()
-                    ? -1
-                    : 1
+                order: virtual?.effect.name?.toLowerCase() === effect.toLowerCase() ? -1 : 1
               }}
             >
               <Typography
@@ -177,23 +169,13 @@ export default function CloudScreen({
                 {cloudEffects[effect].map((p: any, ind: number) => (
                   <Grid key={ind}>
                     <Card
-                      className={`${classes.cloudEffectCard} ${
-                        virtual?.effect.name?.toLowerCase() ===
-                          effect.toLowerCase() &&
-                        activeCloudPreset === p.Name.toLowerCase()
-                          ? ' active'
-                          : ''
-                      }`}
+                      className={`${classes.cloudEffectCard} ${virtual?.effect.name?.toLowerCase() === effect.toLowerCase() && activeCloudPreset === p.Name.toLowerCase() ? ' active' : ''}`}
                       key={ind}
                       onClick={() => handleCloudPresets(p, false)}
                     >
                       <CardHeader
                         title={p.Name}
-                        subheader={
-                          <div
-                            style={{ color: '#999' }}
-                          >{`by ${p.user.username}`}</div>
-                        }
+                        subheader={<div style={{ color: '#999' }}>{`by ${p.user.username}`}</div>}
                         action={
                           <IconButton
                             aria-label="Import"

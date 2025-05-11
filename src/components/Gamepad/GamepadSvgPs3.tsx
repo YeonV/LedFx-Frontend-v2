@@ -32,9 +32,7 @@ const GamepadSvgPs3 = ({
             <path
               id="BTN-PS"
               stroke={stroke}
-              fill={
-                pad.buttons[16].pressed ? theme.palette.primary.main : stroke
-              }
+              fill={pad.buttons[16].pressed ? theme.palette.primary.main : stroke}
               strokeWidth={strokeWidth}
               style={{ transform: 'scale(0.60)', transformOrigin: 'center' }}
               d="M290.559,264.842c-17.057,0-30.931,13.874-30.931,30.931c0,17.056,13.874,30.93,30.931,30.93    c17.057,0,30.931-13.874,30.931-30.93C321.49,278.716,307.616,264.842,290.559,264.842z M282.621,307.401    c-0.012,0.214-0.447,0.532-0.722,0.581c-4.884,0.82-9.633,0.294-14.247-1.493c-0.398-0.153-0.771-0.392-1.12-0.637    c-1.756-1.242-1.756-2.895,0.043-4.039c0.783-0.502,1.609-0.961,2.479-1.279c4.431-1.634,8.886-3.219,13.568-4.901    c0,1.646,0.031,3.157-0.037,4.669c-0.012,0.208-0.49,0.466-0.795,0.575c-2.454,0.9-4.927,1.757-7.381,2.662    c-0.569,0.209-1.089,0.563-1.628,0.845c0.012,0.135,0.024,0.275,0.031,0.41c0.539,0.189,1.089,0.563,1.616,0.526    c1.518-0.104,3.047-0.281,4.529-0.612c1.199-0.269,2.344-0.802,3.696-1.285C282.652,304.855,282.688,306.134,282.621,307.401z     M292.598,281.446c-0.172,0.404-0.123,0.912-0.123,1.377c-0.006,9.498,0,18.996,0,28.501c0,0.452,0,0.899,0,1.523    c-2.785-0.888-5.374-1.695-7.95-2.546c-0.202-0.067-0.385-0.386-0.447-0.624c-0.08-0.3-0.03-0.643-0.03-0.961    c0.012-11.218,0.024-22.441,0.037-33.66c0-0.392,0-0.783,0-1.321c0.765,0.152,1.432,0.232,2.068,0.416    c3.642,1.064,7.283,2.13,10.9,3.262c0.948,0.294,1.842,0.796,2.717,1.279c2.858,1.585,4.511,4.015,4.921,7.265    c0.281,2.252,0.386,4.492-0.343,6.701c-1.23,3.727-4.67,4.779-8.28,3.06c-0.281-0.135-0.465-0.752-0.465-1.145    c-0.031-3.8,0.012-7.601-0.043-11.401c-0.013-0.753-0.221-1.579-0.594-2.222c-0.227-0.385-0.979-0.691-1.438-0.63    C293.16,280.363,292.787,280.993,292.598,281.446z M314.391,300.301c1.952,1.292,2.044,2.864,0.079,4.131    c-1.218,0.79-2.595,1.365-3.965,1.867c-5.239,1.928-10.509,3.794-15.766,5.679c-0.227,0.08-0.471,0.129-0.881,0.239    c0-1.555-0.043-2.95,0.036-4.339c0.019-0.288,0.466-0.674,0.796-0.796c3.801-1.39,7.613-2.735,11.426-4.095    c0.508-0.177,1.028-0.336,1.493-0.593c0.282-0.153,0.466-0.484,0.698-0.729c-0.264-0.202-0.502-0.515-0.796-0.588    c-1.683-0.422-3.348-0.214-4.963,0.349c-2.467,0.857-4.927,1.738-7.394,2.607c-0.361,0.129-0.729,0.238-1.279,0.41    c0-1.671-0.024-3.194,0.031-4.719c0.006-0.202,0.379-0.495,0.637-0.575c6.45-2.032,12.833-1.971,19.106,0.723    C313.901,299.99,314.152,300.142,314.391,300.301z"
@@ -55,9 +53,7 @@ const GamepadSvgPs3 = ({
                   : stroke
                 : 'transparent'
             }
-            stroke={
-              pad.buttons[13].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[13].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
             d="M114.003,255.595c-5.043,3.696-10.324,8.09-11.102,9.663c-1.353,2.705-3.244,17.252-2.889,22.24    c0.073,1.053,0.306,4.26,13.972,4.266l0.042,3.06v-3.06c13.666-0.006,13.898-3.213,13.972-4.271    c0.355-4.976-1.53-19.523-2.889-22.234C124.407,263.851,119.682,259.762,114.003,255.595z"
           />
@@ -70,9 +66,7 @@ const GamepadSvgPs3 = ({
                   : stroke
                 : 'transparent'
             }
-            stroke={
-              pad.buttons[12].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[12].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
             d="M114.003,232.84c5.686-4.167,10.404-8.256,11.108-9.669c1.353-2.699,3.244-17.246,2.889-22.24    c-0.08-1.053-0.306-4.254-13.972-4.26c-13.708,0.006-13.935,3.207-14.015,4.26c-0.355,4.987,1.53,19.535,2.889,22.24    C103.685,224.744,108.96,229.15,114.003,232.84z"
           />
@@ -85,9 +79,7 @@ const GamepadSvgPs3 = ({
                   : stroke
                 : 'transparent'
             }
-            stroke={
-              pad.buttons[14].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[14].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
             d="M92.962,233.11c-2.46-1.229-14.584-2.925-20.918-2.925c-0.502,0-0.937,0.012-1.31,0.042    c-1.059,0.074-4.266,0.301-4.271,13.966c0.006,13.709,3.213,13.936,4.266,14.009c0.379,0.031,0.82,0.043,1.316,0.043    c6.34,0,18.464-1.688,20.918-2.925c1.671-0.839,6.353-6.573,9.676-11.102C98.936,239.181,94.529,233.893,92.962,233.11z"
           />
@@ -100,9 +92,7 @@ const GamepadSvgPs3 = ({
                   : stroke
                 : 'transparent'
             }
-            stroke={
-              pad.buttons[15].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[15].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
             d="M157.284,230.234c-0.379-0.031-0.82-0.043-1.316-0.043c-6.34,0-18.464,1.689-20.924,2.925    c-1.566,0.784-5.973,6.065-9.669,11.108c3.317,4.528,7.999,10.27,9.669,11.102c2.46,1.23,14.584,2.925,20.918,2.925    c0.496,0,0.936-0.012,1.31-0.042c1.059-0.074,4.266-0.3,4.271-13.966c0-0.05,0-0.092,0-0.129    C161.525,230.528,158.336,230.301,157.284,230.234z"
           />
@@ -118,9 +108,7 @@ const GamepadSvgPs3 = ({
             cx="465.824"
             cy="194.529"
             r="19"
-            stroke={
-              pad.buttons[3].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[3].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={type === 'ps3' ? 0 : strokeWidth2}
           />
 
@@ -142,9 +130,7 @@ const GamepadSvgPs3 = ({
             cx="512.446"
             cy="241.152"
             r="19"
-            stroke={
-              pad.buttons[1].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[1].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
           />
           <circle
@@ -231,9 +217,7 @@ const GamepadSvgPs3 = ({
               width="20"
               height="20"
               stroke={cover}
-              fill={
-                pad.buttons[2].pressed ? theme.palette.primary.main : stroke
-              }
+              fill={pad.buttons[2].pressed ? theme.palette.primary.main : stroke}
               strokeWidth={strokeWidth2}
             />
           )}
@@ -247,9 +231,7 @@ const GamepadSvgPs3 = ({
                 : 'transparent'
             }
             points="333.062,246.586 349.171,241.751 333.062,237.381"
-            stroke={
-              pad.buttons[9].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[9].pressed ? theme.palette.primary.main : stroke}
             strokeWidth="2"
           />
           <rect
@@ -362,9 +344,7 @@ const GamepadSvgPs3 = ({
             y="239"
             width="21"
             height="7.711"
-            stroke={
-              pad.buttons[8].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[8].pressed ? theme.palette.primary.main : stroke}
             strokeWidth="2"
           />
           <circle
@@ -381,9 +361,7 @@ const GamepadSvgPs3 = ({
             cx={200 + pad.axes[0] * 20}
             cy={324 + pad.axes[1] * 20}
             r="31"
-            stroke={
-              pad.buttons[10].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[10].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
           />
           <circle
@@ -400,9 +378,7 @@ const GamepadSvgPs3 = ({
             cx={381 + pad.axes[2] * 20}
             cy={324 + pad.axes[3] * 20}
             r="31"
-            stroke={
-              pad.buttons[11].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[11].pressed ? theme.palette.primary.main : stroke}
             strokeWidth={strokeWidth2}
           />
           <path
@@ -428,14 +404,7 @@ const GamepadSvgPs3 = ({
             strokeWidth={strokeWidth2}
           />
           {type !== 'ps3' && (
-            <rect
-              id="SONY-COVER"
-              fill={cover}
-              x="235"
-              y="185"
-              width="115"
-              height="25"
-            />
+            <rect id="SONY-COVER" fill={cover} x="235" y="185" width="115" height="25" />
           )}
           <circle
             id="BTN-PS-RING"
@@ -452,9 +421,7 @@ const GamepadSvgPs3 = ({
             cx="290.5"
             cy="293.5"
             r="19"
-            stroke={
-              pad.buttons[16].pressed ? theme.palette.primary.main : stroke
-            }
+            stroke={pad.buttons[16].pressed ? theme.palette.primary.main : stroke}
             strokeWidth="2"
           />
         </g>

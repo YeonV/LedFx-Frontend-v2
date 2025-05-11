@@ -16,18 +16,12 @@ interface Size {
   height: number
 }
 
-export function rotateSize(
-  width: number,
-  height: number,
-  rotation: number
-): Size {
+export function rotateSize(width: number, height: number, rotation: number): Size {
   const rotRad = getRadianAngle(rotation)
 
   return {
-    width:
-      Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
-    height:
-      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height)
+    width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
+    height: Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height)
   }
 }
 
@@ -63,11 +57,7 @@ export async function getCroppedImg(
   const rotRad = getRadianAngle(rotation)
 
   // calculate bounding box of the rotated image
-  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
-    image.width,
-    image.height,
-    rotation
-  )
+  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(image.width, image.height, rotation)
 
   // set canvas size to match the bounding box
   canvas.width = bBoxWidth
@@ -122,10 +112,7 @@ export async function getCroppedImg(
   })
 }
 
-export async function getRotatedImage(
-  imageSrc: string,
-  rotation = 0
-): Promise<string> {
+export async function getRotatedImage(imageSrc: string, rotation = 0): Promise<string> {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')

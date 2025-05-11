@@ -121,17 +121,14 @@ const AvatarPicker = ({
 
   const setAvatarIndexedDb = (a: string) => {
     if (newStorage === 'indexedDb' && !setAvatar && update) {
-      update({ id: 1, [storageKey]: a }).then(() =>
-        console.log('avatar updated')
-      )
+      update({ id: 1, [storageKey]: a }).then(() => console.log('avatar updated'))
     }
   }
 
   if (newStorage === 'indexedDb' && !setAvatar && getByID) {
     getByID(1).then(
       (avatarFromDB: any) => {
-        if (avatarFromDB && avatarFromDB[storageKey])
-          setAvatarSrc(avatarFromDB[storageKey])
+        if (avatarFromDB && avatarFromDB[storageKey]) setAvatarSrc(avatarFromDB[storageKey])
       },
       (error) => {
         console.log('Error: ', error)
@@ -143,11 +140,7 @@ const AvatarPicker = ({
       return
     }
     try {
-      const newcroppedImage = await getCroppedImg(
-        imageSrc,
-        croppedAreaPixels,
-        rotation
-      )
+      const newcroppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, rotation)
 
       fetch(newcroppedImage as any)
         .then((res) => res.blob())
@@ -167,9 +160,7 @@ const AvatarPicker = ({
                 const hasAvatar = !!userDetails?.[0]?.avatarUrl?.url
                 let newUserDetail
                 if (hasAvatar) {
-                  await cloud.delete(
-                    `upload/files/${userDetails?.[0]?.avatarUrl?.id}`
-                  )
+                  await cloud.delete(`upload/files/${userDetails?.[0]?.avatarUrl?.id}`)
                 }
                 if (!userDetails?.[0]?.id) {
                   const getNewUserDetail = cloud.post('user-details', {
@@ -201,10 +192,7 @@ const AvatarPicker = ({
                 // const resizedBlob2 = await resizedBlob
                 formData.append('files', blob, `${userName}.png`)
                 formData.append('ref', 'application::user-details.user-details')
-                formData.append(
-                  'refId',
-                  `${userDetails?.[0]?.id || newUserDetail!.data.id}`
-                )
+                formData.append('refId', `${userDetails?.[0]?.id || newUserDetail!.data.id}`)
                 formData.append('field', 'avatarUrl')
                 const imageUploaded = await fetch(`${backendUrl}/upload`, {
                   method: 'POST',
@@ -281,9 +269,7 @@ const AvatarPicker = ({
                     max={maxZoom}
                     step={stepZoom}
                     aria-labelledby="Zoom"
-                    onChange={(e, newzoom) =>
-                      typeof newzoom === 'number' && setZoom(newzoom)
-                    }
+                    onChange={(e, newzoom) => typeof newzoom === 'number' && setZoom(newzoom)}
                   />
                 </div>
                 <div>
@@ -295,8 +281,7 @@ const AvatarPicker = ({
                     step={stepRotation}
                     aria-labelledby="Rotation"
                     onChange={(e, newrotation) =>
-                      typeof newrotation === 'number' &&
-                      setRotation(newrotation)
+                      typeof newrotation === 'number' && setRotation(newrotation)
                     }
                   />
                 </div>
@@ -329,13 +314,9 @@ const AvatarPicker = ({
                       )
                     } else if (storage === 'cloud') {
                       const userDetails = await getUserDetails()
-                      cloud
-                        .delete(
-                          `upload/files/${userDetails?.[0]?.avatarUrl?.id}`
-                        )
-                        .then(() => {
-                          setAvatarSrc(null)
-                        })
+                      cloud.delete(`upload/files/${userDetails?.[0]?.avatarUrl?.id}`).then(() => {
+                        setAvatarSrc(null)
+                      })
                     } else if (setAvatar) {
                       setAvatar('')
                     }

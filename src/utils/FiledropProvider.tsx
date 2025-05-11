@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useCallback, useState } from 'react'
 import isElectron from 'is-electron'
 import useStore from '../store/useStore'
@@ -131,8 +124,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           break
         case 'scenePlaylist':
           if (newData.data.scenePL) setScenePL(newData.data.scenePL)
-          if (newData.data.scenePLintervals)
-            setScenePLintervals(newData.data.scenePLintervals)
+          if (newData.data.scenePLintervals) setScenePLintervals(newData.data.scenePLintervals)
           showSnackbar('success', 'Scene Playlist updated')
           break
         case 'fullConfig':
@@ -160,9 +152,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       <Dialog open={open}>
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          Would you like to import it and overwrite current?
-        </DialogContent>
+        <DialogContent>Would you like to import it and overwrite current?</DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
           <Button onClick={handleSave}>Yes</Button>

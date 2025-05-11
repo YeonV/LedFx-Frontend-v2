@@ -193,10 +193,9 @@ export const PosSliderStyles = {
     opacity: 0,
     color: '#aaa'
   },
-  '& .MuiSlider-mark:hover + .MuiSlider-markLabel, & .MuiSlider-markLabel:hover':
-    {
-      opacity: 1
-    },
+  '& .MuiSlider-mark:hover + .MuiSlider-markLabel, & .MuiSlider-markLabel:hover': {
+    opacity: 1
+  },
   '& .MuiSlider-markActive + .MuiSlider-markLabel': {
     opacity: 1
   }

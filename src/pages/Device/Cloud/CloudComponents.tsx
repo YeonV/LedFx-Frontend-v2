@@ -28,8 +28,6 @@ type Props = {
   onClick?: any
 }
 
-export const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>(
-  (props, ref) => {
-    return <MenuItem ref={ref} {...props} />
-  }
-)
+export const MuiMenuItem = React.forwardRef<HTMLLIElement, Props>((props, ref) => {
+  return <MenuItem ref={ref} {...props} />
+})

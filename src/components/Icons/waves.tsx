@@ -28,9 +28,7 @@ const WaveLines = ({
     viewBox={`0 0 ${width} ${height}`}
   >
     <g
-      transform={`translate(${width / 2},${
-        height / (width <= 480 ? 1 : 2)
-      }) scale(1,-1) translate(-${width / 2},-${height / 2})`}
+      transform={`translate(${width / 2},${height / (width <= 480 ? 1 : 2)}) scale(1,-1) translate(-${width / 2},-${height / 2})`}
     >
       <linearGradient id="wavelines" x1="0" x2="1" y1="0" y2="0">
         <stop stopColor={startColor} offset="0" />

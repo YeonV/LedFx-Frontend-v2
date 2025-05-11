@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  MenuItem,
-  Select
-} from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, MenuItem, Select } from '@mui/material'
 import MDialogTitle from './MDialogTitle'
 import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
 import MSwitch from './MSwitch'
@@ -98,12 +91,7 @@ const AssignPixelDialog = ({
         {currentDevice && (
           <>
             <MSwitch group={group} setGroup={setGroup} />
-            {group && (
-              <MFillSelector
-                direction={direction}
-                onChange={handleDirectionChange}
-              />
-            )}
+            {group && <MFillSelector direction={direction} onChange={handleDirectionChange} />}
             <MSlider
               group={group}
               devices={devices}

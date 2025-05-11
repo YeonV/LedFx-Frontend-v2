@@ -8,12 +8,7 @@ export interface IVirtualOrder {
   order: number
 }
 
-export type Segment = [
-  device: string,
-  start: number,
-  end: number,
-  reverse: boolean
-]
+export type Segment = [device: string, start: number, end: number, reverse: boolean]
 
 // export interface EffectConfig {
 //   background_brightness?: number
@@ -168,14 +163,11 @@ const storeVirtuals = (set: any) => ({
       }
     }
   },
-  addVirtual: async (config: any) =>
-    await Ledfx('/api/virtuals', 'POST', config),
+  addVirtual: async (config: any) => await Ledfx('/api/virtuals', 'POST', config),
   updateVirtual: async (virtId: string, active: boolean) =>
     await Ledfx(`/api/virtuals/${virtId}`, 'PUT', { active }),
-  deleteVirtual: async (virtId: string) =>
-    await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
-  clearEffect: async (virtId: string) =>
-    await Ledfx(`/api/virtuals/${virtId}/effects`, 'DELETE'),
+  deleteVirtual: async (virtId: string) => await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
+  clearEffect: async (virtId: string) => await Ledfx(`/api/virtuals/${virtId}/effects`, 'DELETE'),
   setEffect: async (
     virtId: string,
     type: string,
@@ -321,12 +313,7 @@ const storeVirtuals = (set: any) => ({
     }
     return false
   },
-  oneShotAll: async (
-    color: string,
-    ramp: number,
-    hold: number,
-    fade: number
-  ) => {
+  oneShotAll: async (color: string, ramp: number, hold: number, fade: number) => {
     const resp = await Ledfx('/api/virtuals_tools', 'PUT', {
       tool: 'oneshot',
       color,
@@ -339,13 +326,7 @@ const storeVirtuals = (set: any) => ({
     }
     return false
   },
-  oneShot: async (
-    virtId: string,
-    color: string,
-    ramp: number,
-    hold: number,
-    fade: number
-  ) => {
+  oneShot: async (virtId: string, color: string, ramp: number, hold: number, fade: number) => {
     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
       tool: 'oneshot',
       color,

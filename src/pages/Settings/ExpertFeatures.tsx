@@ -13,12 +13,8 @@ const ExpertFeatures = () => {
   const keybinding = useStore((state) => state.ui.keybinding)
   const setKeybinding = useStore((state) => state.ui.setKeybinding)
 
-  const updateNotificationInterval = useStore(
-    (state) => state.updateNotificationInterval
-  )
-  const setUpdateNotificationInterval = useStore(
-    (state) => state.setUpdateNotificationInterval
-  )
+  const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
+  const setUpdateNotificationInterval = useStore((state) => state.setUpdateNotificationInterval)
   return (
     <>
       {showFeatures.cloud && (
@@ -41,9 +37,7 @@ const ExpertFeatures = () => {
           step={1}
           min={1}
           max={4320}
-          onChange={(_e: any, val: number) =>
-            setUpdateNotificationInterval(val)
-          }
+          onChange={(_e: any, val: number) => setUpdateNotificationInterval(val)}
         />
         <Input
           disableUnderline

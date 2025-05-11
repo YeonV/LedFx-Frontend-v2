@@ -1,11 +1,5 @@
 import { styled } from '@mui/material/styles'
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button
-} from '@mui/material'
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material'
 import {
   DataGrid,
   GridColDef,
@@ -128,11 +122,7 @@ const AddWledDialog = () => {
     [col]
   )
   return (
-    <StyledDialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
+    <StyledDialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Add more WLEDs to LedFx</DialogTitle>
       <DialogContent>
         <DataGrid

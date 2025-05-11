@@ -21,9 +21,7 @@ const Circle = () => (
 )
 
 const SpotifyLoginRedirect = () => {
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
-    'loading'
-  )
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
   const navigate = useNavigate()
   const setSpAuthenticated = useStore((state) => state.setSpAuthenticated) // Get Zustand setter
@@ -74,9 +72,7 @@ const SpotifyLoginRedirect = () => {
       } catch (err: any) {
         console.error('Error during finishAuth:', err)
         setStatus('error')
-        setErrorMessage(
-          `Authentication error: ${err.message || 'Unknown error'}`
-        )
+        setErrorMessage(`Authentication error: ${err.message || 'Unknown error'}`)
         // Optional: Redirect after delay
         setTimeout(() => navigate('/#/Integrations', { replace: true }), 4000)
       }
@@ -125,9 +121,7 @@ const SpotifyLoginRedirect = () => {
             }}
           >
             {status === 'loading' && <CircularProgress color="success" />}
-            {status === 'success' && (
-              <CheckCircle color="success" sx={{ fontSize: '3rem' }} />
-            )}
+            {status === 'success' && <CheckCircle color="success" sx={{ fontSize: '3rem' }} />}
             {status === 'error' && (
               <BladeIcon
                 name="mdi:alert-circle-outline"
@@ -152,8 +146,7 @@ const SpotifyLoginRedirect = () => {
           </Avatar>
         </Stack>
         {status === 'loading' && 'Logging in with Spotify...'}
-        {status === 'success' &&
-          'Successfully logged in with Spotify. Preparing your session...'}
+        {status === 'success' && 'Successfully logged in with Spotify. Preparing your session...'}
         {status === 'error' && `Login Failed: ${errorMessage}`}
       </div>
     </Dialog>

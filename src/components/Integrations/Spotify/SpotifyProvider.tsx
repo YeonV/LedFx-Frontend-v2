@@ -43,9 +43,7 @@ interface SpotifyTrigger {
   sceneName: string
 }
 
-export const SpotifyStateContext = createContext<SpotifyState | undefined>(
-  undefined
-)
+export const SpotifyStateContext = createContext<SpotifyState | undefined>(undefined)
 export const SpStateContext = createContext<SpState | undefined>(undefined)
 export const SpotifyVolumeContext = createContext<number>(1)
 export const SpotifyTriggersContext = createContext<SpotifyTrigger[]>([])
@@ -66,14 +64,10 @@ interface ISpotifyProviderProps {
 
 const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
   // --- State ---
-  const [spotifyState, setSpotifyState] = useState<SpotifyState | undefined>(
-    undefined
-  )
+  const [spotifyState, setSpotifyState] = useState<SpotifyState | undefined>(undefined)
   const [spState, setSpState] = useState<SpState | undefined>(undefined)
   const [volume, setVolume] = useState<number>(1)
-  const [currentSceneTriggers, setCurrentTriggers] = useState<SpotifyTrigger[]>(
-    []
-  )
+  const [currentSceneTriggers, setCurrentTriggers] = useState<SpotifyTrigger[]>([])
   const [lastTriggerId, setLastTriggerId] = useState('')
   const [isPollingActive, setIsPollingActive] = useState(false)
 
@@ -99,9 +93,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     () => ({
       togglePlay: () => {
         if (spotifyState)
-          setSpotifyState((prev) =>
-            prev ? { ...prev, paused: !prev.paused } : undefined
-          )
+          setSpotifyState((prev) => (prev ? { ...prev, paused: !prev.paused } : undefined))
         player?.togglePlay()
       },
       stop: () => player?.stop(),
@@ -125,8 +117,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     const triggersNew: SpotifyTrigger[] = []
     let id = 1
     const temp = integrations.spotify.data
-    const currentTrackId =
-      spotifyState?.track_window?.current_track?.id || spState?.item?.id
+    const currentTrackId = spotifyState?.track_window?.current_track?.id || spState?.item?.id
     if (temp && currentTrackId) {
       Object.keys(temp).forEach((sceneId) => {
         const sceneData = temp[sceneId]
@@ -182,10 +173,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     } else {
       log.error.purple('Spotify', 'Token refresh failed:', result.error)
       if (intervalIdRef.current) {
-        log.purple(
-          'Spotify',
-          'Clearing polling interval due to refresh failure.'
-        )
+        log.purple('Spotify', 'Clearing polling interval due to refresh failure.')
         clearInterval(intervalIdRef.current)
         intervalIdRef.current = null
       }
@@ -200,13 +188,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       isRefreshingToken.current = false
       return false
     }
-  }, [
-    player,
-    setPlayer,
-    setSpAuthenticated,
-    setSpotifyAuthToken,
-    setIsPollingActive
-  ]) // Dependencies for useCallback
+  }, [player, setPlayer, setSpAuthenticated, setSpotifyAuthToken, setIsPollingActive]) // Dependencies for useCallback
 
   // --- Effect for Polling ---
   useEffect(() => {
@@ -222,10 +204,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     }
     if (!shouldPoll) {
       if (intervalIdRef.current) {
-        log.purple(
-          'Spotify',
-          'Polling useEffect: Conditions no longer met, clearing interval.'
-        )
+        log.purple('Spotify', 'Polling useEffect: Conditions no longer met, clearing interval.')
         clearInterval(intervalIdRef.current)
         intervalIdRef.current = null
       }
@@ -251,16 +230,12 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
         setSpDevices(devicesResult.devices as spDevice[])
       }
       if (
-        (!spotifyState?.track_window?.current_track?.id ||
-          spotifyState?.paused) &&
+        (!spotifyState?.track_window?.current_track?.id || spotifyState?.paused) &&
         !refreshAttemptedThisCycle
       ) {
         const timeResult = await spotifyCurrentTime()
         if (typeof timeResult === 'string') {
-          if (
-            timeResult.includes('Unauthorized') ||
-            timeResult.includes('Missing Access Token')
-          ) {
+          if (timeResult.includes('Unauthorized') || timeResult.includes('Missing Access Token')) {
             if (!refreshAttemptedThisCycle) {
               refreshAttemptedThisCycle = true
               await attemptTokenRefresh()
@@ -314,10 +289,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
     const createWebPlayer = (tokenArg: string) => {
       // Changed parameter name
       if ((window as any).onSpotifyWebPlaybackSDKReady) {
-        log.purple(
-          'Spotify',
-          'onSpotifyWebPlaybackSDKReady already exists, triggering manually.'
-        )
+        log.purple('Spotify', 'onSpotifyWebPlaybackSDKReady already exists, triggering manually.')
         ;(window as any).onSpotifyWebPlaybackSDKReady()
         return
       }
@@ -325,33 +297,25 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       ;(window as any).onSpotifyWebPlaybackSDKReady = () => {
         log.purple('Spotify', 'Spotify SDK is ready.')
         if (!(window as any).Spotify) {
-          console.error(
-            'Spotify SDK Ready callback fired, but window.Spotify is not defined!'
-          )
+          console.error('Spotify SDK Ready callback fired, but window.Spotify is not defined!')
           return
         }
         try {
           const new_player = new (window as any).Spotify.Player({
             name: 'LedFX Web Player',
-            // --- FIXED ESLint Warning ---
+            // eslint-disable-next-line no-unused-vars
             getOAuthToken: (cb: (accessToken: string) => void) => {
-              log.purple(
-                'Spotify',
-                'getOAuthToken called by SDK, providing token.'
-              )
+              log.purple('Spotify', 'getOAuthToken called by SDK, providing token.')
               cb(tokenArg) // Use the token passed into createWebPlayer
             },
             // --- End Fix ---
             volume: 0.5
           })
           // Add Listeners
-          new_player.addListener(
-            'initialization_error',
-            ({ message }: { message: string }) => {
-              console.error('Spotify SDK Init Error:', message)
-              setPlayer(undefined)
-            }
-          )
+          new_player.addListener('initialization_error', ({ message }: { message: string }) => {
+            console.error('Spotify SDK Init Error:', message)
+            setPlayer(undefined)
+          })
           new_player.addListener(
             'authentication_error',
             async ({ message }: { message: string }) => {
@@ -369,55 +333,34 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
               }
             }
           )
-          new_player.addListener(
-            'account_error',
-            ({ message }: { message: string }) => {
-              console.error('Spotify SDK Account Error:', message)
-              if (message.includes('premium')) {
-                log.green('Spotify', 'no premium? no problem! using free')
-              }
+          new_player.addListener('account_error', ({ message }: { message: string }) => {
+            console.error('Spotify SDK Account Error:', message)
+            if (message.includes('premium')) {
+              log.green('Spotify', 'no premium? no problem! using free')
             }
-          )
-          new_player.addListener(
-            'playback_error',
-            ({ message }: { message: string }) => {
-              console.error('Spotify SDK Playback Error:', message)
-            }
-          )
-          new_player.addListener(
-            'player_state_changed',
-            (state: SpotifyState | null) => {
-              if (state) {
-                setSpotifyState(state)
-                new_player.getVolume().then((v: number) => setVolume(v))
-                setSpState(undefined)
-              } else {
-                log.purple('Spotify', 'SDK player state is null.')
-                setSpotifyState(undefined)
-              }
-            }
-          )
-          new_player.addListener(
-            'ready',
-            ({ device_id }: { device_id: string }) => {
-              log.purple(
-                'Spotify',
-                `Spotify SDK Player ready with Device ID: ${device_id}`
-              )
-              setSpotifyDevice(device_id)
-            }
-          )
-          new_player.addListener(
-            'not_ready',
-            ({ device_id }: { device_id: string }) => {
-              log.error.purple(
-                'Spotify',
-                `Spotify SDK Player disconnected: ${device_id}`
-              )
-              setSpotifyDevice('')
+          })
+          new_player.addListener('playback_error', ({ message }: { message: string }) => {
+            console.error('Spotify SDK Playback Error:', message)
+          })
+          new_player.addListener('player_state_changed', (state: SpotifyState | null) => {
+            if (state) {
+              setSpotifyState(state)
+              new_player.getVolume().then((v: number) => setVolume(v))
+              setSpState(undefined)
+            } else {
+              log.purple('Spotify', 'SDK player state is null.')
               setSpotifyState(undefined)
             }
-          )
+          })
+          new_player.addListener('ready', ({ device_id }: { device_id: string }) => {
+            log.purple('Spotify', `Spotify SDK Player ready with Device ID: ${device_id}`)
+            setSpotifyDevice(device_id)
+          })
+          new_player.addListener('not_ready', ({ device_id }: { device_id: string }) => {
+            log.error.purple('Spotify', `Spotify SDK Player disconnected: ${device_id}`)
+            setSpotifyDevice('')
+            setSpotifyState(undefined)
+          })
           // Connect
           new_player
             .connect()
@@ -426,10 +369,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
                 log.green('Spotify', 'connected. checking premium...')
                 setPlayer(new_player)
               } else {
-                log.error.purple(
-                  'Spotify',
-                  'Spotify SDK Player connection failed.'
-                )
+                log.error.purple('Spotify', 'Spotify SDK Player connection failed.')
                 setPlayer(undefined)
               }
             })
@@ -443,11 +383,7 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
         }
       } // End onSpotifyWebPlaybackSDKReady
       // Load Script
-      if (
-        !document.querySelector(
-          'script[src="https://sdk.scdn.co/spotify-player.js"]'
-        )
-      ) {
+      if (!document.querySelector('script[src="https://sdk.scdn.co/spotify-player.js"]')) {
         log.purple('Spotify', 'Loading Spotify SDK script...')
         const script = document.createElement('script')
         script.src = 'https://sdk.scdn.co/spotify-player.js'
@@ -457,16 +393,10 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
           console.error('Failed to load Spotify SDK script.')
         }
       } else if ((window as any).Spotify) {
-        log.purple(
-          'Spotify',
-          'SDK script already loaded, triggering ready callback manually.'
-        )
+        log.purple('Spotify', 'SDK script already loaded, triggering ready callback manually.')
         ;(window as any).onSpotifyWebPlaybackSDKReady()
       } else {
-        log.warn.purple(
-          'Spotify',
-          'SDK script tag found, but window.Spotify not defined yet.'
-        )
+        log.warn.purple('Spotify', 'SDK script tag found, but window.Spotify not defined yet.')
       }
     } // End createWebPlayer
 
@@ -502,21 +432,11 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
       activeTrigger = currentSceneTriggers[currentSceneTriggers.length - 1]
     }
     const currentScene = activeTrigger
-    const nxtScene =
-      nextTriggerIndex !== -1
-        ? currentSceneTriggers[nextTriggerIndex]
-        : undefined
-    if (
-      nxtScene &&
-      nxtScene.position_ms - spotifyPos <= 100 &&
-      spotifyPos < nxtScene.position_ms
-    ) {
+    const nxtScene = nextTriggerIndex !== -1 ? currentSceneTriggers[nextTriggerIndex] : undefined
+    if (nxtScene && nxtScene.position_ms - spotifyPos <= 100 && spotifyPos < nxtScene.position_ms) {
       if (nxtScene.trigger_id !== lastTriggerId) {
         setLastTriggerId(nxtScene.trigger_id)
-        activateSceneIn(
-          nxtScene.sceneId,
-          (nxtScene.position_ms - spotifyPos) / 1000
-        )
+        activateSceneIn(nxtScene.sceneId, (nxtScene.position_ms - spotifyPos) / 1000)
       }
     } else if (currentScene && currentScene.trigger_id !== lastTriggerId) {
       setLastTriggerId(currentScene.trigger_id)

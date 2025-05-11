@@ -1,10 +1,5 @@
 import { InfoRounded } from '@mui/icons-material'
-import {
-  Box,
-  ClickAwayListener,
-  Tooltip as MuiTooltip,
-  TooltipProps
-} from '@mui/material'
+import { Box, ClickAwayListener, Tooltip as MuiTooltip, TooltipProps } from '@mui/material'
 import { useState } from 'react'
 
 const Tooltip = (props: TooltipProps) => {
@@ -29,11 +24,7 @@ const Tooltip = (props: TooltipProps) => {
           {...props}
         >
           {/* <IconButton onClick={handleTooltipOpen}> */}
-          <InfoRounded
-            sx={{ cursor: 'pointer' }}
-            onClick={handleTooltipOpen}
-            fontSize="small"
-          />
+          <InfoRounded sx={{ cursor: 'pointer' }} onClick={handleTooltipOpen} fontSize="small" />
           {/* </IconButton> */}
         </MuiTooltip>
       </Box>

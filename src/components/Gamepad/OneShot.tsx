@@ -32,10 +32,7 @@ const OneShot = ({
   const [fade, setFade] = useState(defaultFate || 2000)
   const [holdType, setHoldType] = useState('press')
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newHoldType: string
-  ) => {
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newHoldType: string) => {
     setHoldType(newHoldType)
   }
   const colors = useStore((state) => state.colors)
@@ -123,10 +120,7 @@ const OneShot = ({
                 defaultColors={Object.values(defaultColors)}
               />
             </FormControl>
-            <Stack
-              sx={{ width: '40%', alignSelf: 'stretch' }}
-              justifyContent={'space-between'}
-            >
+            <Stack sx={{ width: '40%', alignSelf: 'stretch' }} justifyContent={'space-between'}>
               <Box
                 sx={{
                   display: 'block',
@@ -138,11 +132,7 @@ const OneShot = ({
                   backgroundColor: color
                 }}
               />
-              <Stack
-                direction={'column'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-              >
+              <Stack direction={'column'} alignItems={'center'} justifyContent={'space-between'}>
                 <label>Hold after</label>
                 <ToggleButtonGroup
                   fullWidth

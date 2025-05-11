@@ -29,13 +29,7 @@ const RadarChart = (props: any) => {
   const TrackFeatures = props
   ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Legend)
   const data = {
-    labels: [
-      'Energy',
-      'Danceability',
-      'Positiveness',
-      'Instrumentalness',
-      'Loudness'
-    ],
+    labels: ['Energy', 'Danceability', 'Positiveness', 'Instrumentalness', 'Loudness'],
     datasets: [
       {
         label: 'Track Features',

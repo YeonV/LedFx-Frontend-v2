@@ -1,21 +1,11 @@
 import { useEffect } from 'react'
-import {
-  DataGrid,
-  GridColDef,
-  GridEventListener,
-  GridRenderCellParams
-} from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridEventListener, GridRenderCellParams } from '@mui/x-data-grid'
 import { useMediaQuery, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
 
-export default function ScenesMostUsed({
-  scenes,
-  activateScene,
-  title,
-  db
-}: any) {
+export default function ScenesMostUsed({ scenes, activateScene, title, db }: any) {
   const theme = useTheme()
   const count = useStore((state) => state.count)
   // const [mostUsedScenes, setMostUsedScenes] = useState({});
@@ -28,9 +18,7 @@ export default function ScenesMostUsed({
     scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
 
   const handleEvent: GridEventListener<'rowClick'> = async (params) => {
-    await activateScene(
-      Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
-    )
+    await activateScene(Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name))
     getVirtuals()
   }
   useEffect(() => {

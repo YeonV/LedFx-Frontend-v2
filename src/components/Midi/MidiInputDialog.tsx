@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Tooltip
-} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
@@ -30,11 +24,7 @@ const MidiInputDialog = () => {
         onClose={() => setOpen(false)}
         PaperProps={{
           sx: {
-            maxWidth: fullScreen
-              ? 'unset'
-              : sideBarOpen
-                ? 'min(95vw, 1060px)'
-                : 'min(95vw, 742px)',
+            maxWidth: fullScreen ? 'unset' : sideBarOpen ? 'min(95vw, 1060px)' : 'min(95vw, 742px)',
             minWidth: sideBarOpen ? 'min(95vw, 750px)' : 'min(95vw, 542px)',
             width: '100%'
           }

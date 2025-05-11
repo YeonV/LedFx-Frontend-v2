@@ -16,11 +16,7 @@ const MSlider = ({
   handleSliderChange: any
 }) => {
   return (
-    <BladeFrame
-      title={`Pixel${group ? 's' : ''}`}
-      full={false}
-      style={{ marginBottom: '1rem' }}
-    >
+    <BladeFrame title={`Pixel${group ? 's' : ''}`} full={false} style={{ marginBottom: '1rem' }}>
       <Stack
         direction="column"
         spacing={2}
@@ -47,9 +43,7 @@ const MSlider = ({
             min={0}
             max={devices[currentDevice].config.pixel_count - 1}
             value={selectedPixel}
-            onChange={(e: any) =>
-              handleSliderChange(e, parseInt(e.target.value))
-            }
+            onChange={(e: any) => handleSliderChange(e, parseInt(e.target.value))}
           />
         ) : (
           <Stack direction={'row'} spacing={2}>
@@ -58,11 +52,7 @@ const MSlider = ({
               max={devices[currentDevice].config.pixel_count - 1}
               value={selectedPixel[0]}
               onChange={(e) =>
-                handleSliderChange(
-                  e,
-                  [parseInt(e.target.value), selectedPixel[1]],
-                  0
-                )
+                handleSliderChange(e, [parseInt(e.target.value), selectedPixel[1]], 0)
               }
             />
             <Number
@@ -70,11 +60,7 @@ const MSlider = ({
               max={devices[currentDevice].config.pixel_count - 1}
               value={selectedPixel[1]}
               onChange={(e) =>
-                handleSliderChange(
-                  e,
-                  [selectedPixel[0], parseInt(e.target.value)],
-                  1
-                )
+                handleSliderChange(e, [selectedPixel[0], parseInt(e.target.value)], 1)
               }
             />
           </Stack>

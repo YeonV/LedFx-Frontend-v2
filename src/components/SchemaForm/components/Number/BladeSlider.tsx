@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  Slider,
-  Input,
-  TextField,
-  Typography,
-  useTheme,
-  Box
-} from '@mui/material'
+import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material'
 import useStyles from './BladeSlider.styles'
 import { BladeSliderInnerProps, BladeSliderProps } from './BladeSlider.props'
 
@@ -231,9 +224,7 @@ const BladeSlider = ({
     >
       <label
         style={{
-          color: disabled
-            ? theme.palette.text.disabled
-            : theme.palette.text.primary
+          color: disabled ? theme.palette.text.disabled : theme.palette.text.primary
         }}
         className="MuiFormLabel-root"
       >

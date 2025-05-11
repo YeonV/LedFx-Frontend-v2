@@ -1,14 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react'
-import {
-  Card,
-  CardContent,
-  Box,
-  IconButton,
-  Stack,
-  capitalize
-} from '@mui/material'
+import { Card, CardContent, Box, IconButton, Stack, capitalize } from '@mui/material'
 import { GridOn, GridOff, Settings } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
@@ -62,13 +55,7 @@ const orderEffectProperties = (
     .sort((a) => (a.id === 'gradient' ? -1 : 1))
 }
 
-const EffectsComplex = ({
-  virtId,
-  initMatix
-}: {
-  virtId: string
-  initMatix?: boolean
-}) => {
+const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boolean }) => {
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSchemas = useStore((state) => state.getSchemas)
@@ -129,8 +116,7 @@ const EffectsComplex = ({
         const ent = Object.entries(v.effects)
         if (!ent) return
         const [type, config] = ent[0]
-        if (type && (config as any).config)
-          setEffect(virtId, type, (config as any).config, true)
+        if (type && (config as any).config) setEffect(virtId, type, (config as any).config, true)
       })
     }
   }, [effectType])
@@ -139,8 +125,7 @@ const EffectsComplex = ({
     if (
       virtuals &&
       virtuals[virtId]?.effect?.config &&
-      JSON.stringify(theModel) !==
-        JSON.stringify(virtuals[virtId].effect.config)
+      JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId].effect.config)
     ) {
       setTheModel(virtual?.effect.config)
     }
@@ -172,12 +157,7 @@ const EffectsComplex = ({
             transitionDuration: `${(virtual?.config?.transition_time || 0) * 1000}`
           }}
         >
-          <PixelGraph
-            showMatrix={matrix}
-            virtId={virtId}
-            active={true}
-            dummy={false}
-          />
+          <PixelGraph showMatrix={matrix} virtId={virtId} active={true} dummy={false} />
         </Box>
         <Stack
           direction="row"

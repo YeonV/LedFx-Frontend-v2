@@ -8,7 +8,6 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
-  Divider,
   Box,
   Alert,
   Accordion,
@@ -36,14 +35,12 @@ export default function NoHostDialog() {
   const setHost = useStore((state) => state.setHost)
   const storedURL = window.localStorage.getItem('ledfx-host')
   const storedURLs = JSON.parse(
-    window.localStorage.getItem('ledfx-hosts') ||
-      JSON.stringify(['http://localhost:8888'])
+    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(['http://localhost:8888'])
   )
   const [hosts, setHosts] = useState(['http://localhost:8888'])
   const [hostvalue, setHostvalue] = useState('http://localhost:8888')
 
-  const cc =
-    isElectron() && window.process?.argv.indexOf('integratedCore') !== -1
+  const cc = isElectron() && window.process?.argv.indexOf('integratedCore') !== -1
 
   const handleClose = () => {
     setDialogOpen(false)
@@ -64,10 +61,7 @@ export default function NoHostDialog() {
 
   const handleDelete = (e: any, title: string) => {
     e.stopPropagation()
-    window.localStorage.setItem(
-      'ledfx-hosts',
-      JSON.stringify(hosts.filter((h) => h !== title))
-    )
+    window.localStorage.setItem('ledfx-hosts', JSON.stringify(hosts.filter((h) => h !== title)))
     setHosts(hosts.filter((h) => h !== title))
   }
 
@@ -77,11 +71,9 @@ export default function NoHostDialog() {
     if (
       window.location.protocol === 'https:' &&
       (storedURLs.some(
-        (u: string) =>
-          u.split(':')[0] === 'http' && !u.startsWith('http://localhost')
+        (u: string) => u.split(':')[0] === 'http' && !u.startsWith('http://localhost')
       ) ||
-        (storedURL?.split(':')[0] === 'http' &&
-          !storedURL.startsWith('http://localhost')))
+        (storedURL?.split(':')[0] === 'http' && !storedURL.startsWith('http://localhost')))
     ) {
       setMixedContent(true)
     }
@@ -112,17 +104,9 @@ export default function NoHostDialog() {
 
   return (
     <div key="nohost-dialog">
-      <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={dialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
-          {edit
-            ? 'LedFx-Core Host'
-            : !cc
-              ? 'No LedFx-Core found'
-              : 'LedFx-Core not ready'}
+          {edit ? 'LedFx-Core Host' : !cc ? 'No LedFx-Core found' : 'LedFx-Core not ready'}
           {!edit && cc && (
             <CircularProgress
               size={20}
@@ -138,8 +122,7 @@ export default function NoHostDialog() {
             <>
               <Alert severity="warning">
                 Chrome will protect you from using insecure content.
-                <br /> You need to allow insecure content in your browser's site
-                settings.
+                <br /> You need to allow insecure content in your browser's site settings.
                 <Accordion sx={{ bgcolor: 'transparent' }}>
                   <AccordionSummary
                     expandIcon={<ExpandMore />}
@@ -158,9 +141,7 @@ export default function NoHostDialog() {
               </Alert>
             </>
           )}
-          <DialogContentText mb={1}>
-            Known Hosts: (click to connect)
-          </DialogContentText>
+          <DialogContentText mb={1}>Known Hosts: (click to connect)</DialogContentText>
           <div>
             {hosts.map((h) => (
               <div key={h}>
@@ -177,10 +158,7 @@ export default function NoHostDialog() {
                   >
                     {h}
                   </Button>
-                  <Button
-                    aria-label="delete"
-                    onClick={(e) => h && handleDelete(e, h)}
-                  >
+                  <Button aria-label="delete" onClick={(e) => h && handleDelete(e, h)}>
                     <Delete />
                   </Button>
                 </div>
@@ -190,9 +168,7 @@ export default function NoHostDialog() {
           {add ? (
             <>
               {!edit ? (
-                <DialogContentText>
-                  You can change the host if you want:
-                </DialogContentText>
+                <DialogContentText>You can change the host if you want:</DialogContentText>
               ) : (
                 <DialogContentText mt={3}>Add new host:</DialogContentText>
               )}
@@ -201,9 +177,7 @@ export default function NoHostDialog() {
                   label="IP:Port"
                   variant="outlined"
                   value={hostvalue}
-                  onKeyDown={(e) =>
-                    e.key === 'Enter' && setHosts([...hosts, hostvalue])
-                  }
+                  onKeyDown={(e) => e.key === 'Enter' && setHosts([...hosts, hostvalue])}
                   onChange={(e) => setHostvalue(e.target.value)}
                 />
                 <Button
@@ -244,31 +218,6 @@ export default function NoHostDialog() {
                 />
               </a>
             </Typography>
-          )}
-          {cc && (
-            <div style={{ marginTop: '1rem' }}>
-              <div style={{ marginBottom: '1rem' }}>
-                <Typography variant="caption" sx={{ marginBottom: '1rem' }}>
-                  Core Instances
-                </Typography>
-                <Divider sx={{ marginBottom: '1rem' }} />
-              </div>
-              {/* {instanceVariant === 'line' && <><Box display="flex">
-              <Box sx={{width: '90px', marginRight: '0.5rem'}}>Port</Box>
-              <Box sx={{width: '110px', marginRight: '0.5rem'}}>Status</Box>
-              <Box sx={{width: '110px', marginRight: '0.5rem'}}>Instance</Box>
-              <Box sx={{width: '110px', marginRight: '0.5rem'}}>Config</Box>
-              <Box sx={{flexGrow: 1, marginRight: '0.5rem', textAlign: 'center'}}>Actions</Box>
-            </Box>
-            <Divider sx={{ marginBottom: '1rem' }} />
-            </>} */}
-
-              {/* {Object.keys(coreParams).map((h, i)=><Instances instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)} variant={instanceVariant} i={i} instance={h} port={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} key={coreParams[h].length > 0 ? coreParams[h][1] : '8888'} />)}
-            <Instances 
-              instances={Object.keys(coreParams).map((ho)=>parseInt(coreParams[ho][1], 10) || 8888)}
-              variant={instanceVariant} instance={false} i={Object.keys(coreParams).length + 1}
-              port={`${parseInt(coreParams[`instance${  Object.keys(coreParams).length }`]?.[1] || '8888', 10) + 1}`} /> */}
-            </div>
           )}
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'flex-end' }}>

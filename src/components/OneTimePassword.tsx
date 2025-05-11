@@ -50,9 +50,7 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
 
   return (
     <div>
-      {!enabled && (
-        <div>{qrCodePng && <img src={qrCodePng} alt="MFA QR Code" />}</div>
-      )}
+      {!enabled && <div>{qrCodePng && <img src={qrCodePng} alt="MFA QR Code" />}</div>}
 
       <form onSubmit={handleSubmit}>
         <OtpInput
@@ -78,9 +76,7 @@ const OneTimePassword = ({ enabled }: { enabled: boolean }) => {
                 }}
               />
               {index !== 5 && <span style={{ marginRight: 20 }} />}
-              {index === 2 && (
-                <span style={{ margin: '0 30px 0 10px' }}>-</span>
-              )}
+              {index === 2 && <span style={{ margin: '0 30px 0 10px' }}>-</span>}
             </>
           )}
         />

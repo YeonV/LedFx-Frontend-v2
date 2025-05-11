@@ -1,16 +1,12 @@
 import isElectron from 'is-electron'
 
-export const getBaseURL = () =>
-  isElectron() ? 'http://localhost:8888' : window.location.origin
+export const getBaseURL = () => (isElectron() ? 'http://localhost:8888' : window.location.origin)
 
 const calculateRedirectUrl = () => {
   const productionBase = getBaseURL()
-  const developmentBase = isElectron()
-    ? productionBase
-    : 'http://localhost:3000'
+  const developmentBase = isElectron() ? productionBase : 'http://localhost:3000'
 
-  const finalBase =
-    process.env.NODE_ENV === 'production' ? productionBase : developmentBase
+  const finalBase = process.env.NODE_ENV === 'production' ? productionBase : developmentBase
 
   return `${finalBase}/callback/#/Integrations?`
 }

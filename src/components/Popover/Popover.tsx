@@ -162,12 +162,7 @@ const Popover = ({
           {children}
         </Button>
       ) : type === 'iconbutton' ? (
-        <IconButton
-          color={color}
-          style={style}
-          onClick={(e) => openPopover(e)}
-          disabled={disabled}
-        >
+        <IconButton color={color} style={style} onClick={(e) => openPopover(e)} disabled={disabled}>
           {!startIcon && !noIcon && icon}
         </IconButton>
       ) : (
@@ -218,9 +213,7 @@ const Popover = ({
         }
       >
         <div style={{ display: 'flex', ...popoverStyle }}>
-          {content || (
-            <Typography sx={{ padding: theme.spacing(2) }}>{text}</Typography>
-          )}
+          {content || <Typography sx={{ padding: theme.spacing(2) }}>{text}</Typography>}
           <Button
             disabled={confirmDisabled}
             aria-describedby={id}

@@ -14,12 +14,7 @@ const DbButton = ({
     <Button
       onClick={onClick}
       variant="text"
-      startIcon={
-        <BladeIcon
-          name={icon}
-          style={icon === 'wled' ? { marginTop: -4 } : {}}
-        />
-      }
+      startIcon={<BladeIcon name={icon} style={icon === 'wled' ? { marginTop: -4 } : {}} />}
       size="large"
       sx={{
         textTransform: 'none',

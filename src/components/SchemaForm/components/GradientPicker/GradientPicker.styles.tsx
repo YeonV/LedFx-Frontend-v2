@@ -17,11 +17,10 @@ const useStyles = makeStyles(() => ({
     '&.show_hex .input_rgba': {
       display: 'block'
     },
-    '&.show_hex .input_rgba .input_rgba-wrap .input_rgba-hex .input_rgba-hex-label':
-      {
-        color: '#eee',
-        paddingTop: '1px'
-      },
+    '&.show_hex .input_rgba .input_rgba-wrap .input_rgba-hex .input_rgba-hex-label': {
+      color: '#eee',
+      paddingTop: '1px'
+    },
     '&.show_hex .input_rgba .input_rgba-wrap .input_rgba-hex input': {
       backgroundColor: '#333',
       color: '#eee',

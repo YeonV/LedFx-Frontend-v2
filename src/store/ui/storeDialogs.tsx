@@ -60,10 +60,7 @@ const storeDialogs = (set: any) => ({
     openRgb: true,
     launchpad: true
   },
-  setAssistant: (
-    kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad',
-    val: boolean
-  ) =>
+  setAssistant: (kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad', val: boolean) =>
     set(
       produce((state: IStore) => {
         state.assistant[kind] = val

@@ -91,9 +91,7 @@ const ThisDropDown: React.FC<DropDownProps> = (props) => {
             min={0}
             max={255}
             defaultValue={1}
-            onChange={(event, val) =>
-              handleDropTypeChange(event, idx, val, val)
-            }
+            onChange={(event, val) => handleDropTypeChange(event, idx, val, val)}
           />
         )}
       </div>

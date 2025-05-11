@@ -84,10 +84,7 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
                   marginRight: '10px',
                   border: '2px solid',
                   cursor: 'pointer',
-                  borderColor:
-                    selectedGif === gif.url
-                      ? theme.palette.primary.main
-                      : 'transparent'
+                  borderColor: selectedGif === gif.url ? theme.palette.primary.main : 'transparent'
                 }}
                 tabIndex={i + 1}
                 onKeyDown={(e) => {

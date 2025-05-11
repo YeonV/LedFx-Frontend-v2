@@ -17,9 +17,7 @@ function createWindow(win?: any, args = {}) {
     autoHideMenuBar: true,
     titleBarStyle: process.platform === 'darwin' ? 'default' : 'hidden',
     titleBarOverlay:
-      process.platform === 'darwin'
-        ? false
-        : { color: '#333', symbolColor: '#ffffff' },
+      process.platform === 'darwin' ? false : { color: '#333', symbolColor: '#ffffff' },
     frame: process.platform === 'darwin',
     webPreferences: {
       webSecurity: false,
@@ -36,9 +34,7 @@ function createWindow(win?: any, args = {}) {
   })
 
   win.loadURL(
-    isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../../index.html')}`
+    isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../../index.html')}`
   )
 
   return win

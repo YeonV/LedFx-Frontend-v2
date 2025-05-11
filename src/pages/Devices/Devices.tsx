@@ -94,11 +94,7 @@ const Devices = () => {
           .filter((v) =>
             showComplex
               ? v
-              : !(
-                  v.endsWith('-mask') ||
-                  v.endsWith('-foreground') ||
-                  v.endsWith('-background')
-                )
+              : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
       )
@@ -124,8 +120,8 @@ const Devices = () => {
         >
           Use the + Button to add a new device or virtual.
           <br />
-          Virtuals can be used to <strong>split</strong> or{' '}
-          <strong> group</strong> segments of devices.
+          Virtuals can be used to <strong>split</strong> or <strong> group</strong> segments of
+          devices.
         </Alert>
       </Collapse>
       <div className={classes.cardWrapper}>
@@ -134,16 +130,10 @@ const Devices = () => {
             .filter((v) =>
               showComplex
                 ? v
-                : !(
-                    v.endsWith('-mask') ||
-                    v.endsWith('-foreground') ||
-                    v.endsWith('-background')
-                  )
+                : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
             )
             .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
-            .map((virtual, i) => (
-              <DeviceCard virtual={virtual} key={i} index={i} />
-            ))
+            .map((virtual, i) => <DeviceCard virtual={virtual} key={i} index={i} />)
         ) : (
           <NoYet type="Device" />
         )}

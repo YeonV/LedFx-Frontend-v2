@@ -9,12 +9,8 @@ const MIDIListener = () => {
   const features = useStore((state) => state.features)
   const midiInitialized = useStore((state) => state.midiInitialized)
   const scenes = useStore((state) => state.scenes)
-  const midiSceneInactiveColor = useStore(
-    (state) => state.midiColors.sceneInactiveColor
-  )
-  const midiSceneActiveColor = useStore(
-    (state) => state.midiColors.sceneActiveColor
-  )
+  const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
+  const midiSceneActiveColor = useStore((state) => state.midiColors.sceneActiveColor)
   const commandColor = useStore((state) => state.midiColors.commandColor)
   const midiType = useStore((state) => state.midiType)
   const midiModel = useStore((state) => state.midiModel)
@@ -35,9 +31,7 @@ const MIDIListener = () => {
   const setMidiMapping = useStore((state) => state.setMidiMapping)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
-  const sceneDialogOpen = useStore(
-    (state) => state.dialogs.addScene.sceneKey !== ''
-  )
+  const sceneDialogOpen = useStore((state) => state.dialogs.addScene.sceneKey !== '')
   const lp = MidiDevices[midiType][midiModel]
   const fn = lp.fn
 
@@ -47,9 +41,7 @@ const MIDIListener = () => {
   }
 
   const getMappingByButtonNumber = (buttonNumber: number) => {
-    return Object.values(midiMapping[0]).find(
-      (mapping) => mapping.buttonNumber === buttonNumber
-    )
+    return Object.values(midiMapping[0]).find((mapping) => mapping.buttonNumber === buttonNumber)
   }
 
   const initLeds = (output: Output) => {
@@ -61,39 +53,23 @@ const MIDIListener = () => {
 
       const sendMidiMessage = (color: string, typeCommand: string) => {
         // console.log(1,'color',color, typeCommand, lp.globalColors.commandType)
-        sendMidiMessageHelper(
-          fn,
-          output,
-          buttonNumber,
-          color,
-          typeCommand,
-          false
-        )
+        sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, false)
       }
 
       try {
-        if (
-          value.command !== 'scene' &&
-          value.command &&
-          value.command !== 'none'
-        ) {
+        if (value.command !== 'scene' && value.command && value.command !== 'none') {
           const color = value.colorCommand || commandColor
           // console.log(1,'color',color, value.typeCommand, lp.globalColors.commandType)
           sendMidiMessage(
             color,
-            color.startsWith('rgb')
-              ? 'rgb'
-              : value.typeCommand || lp.globalColors.commandType
+            color.startsWith('rgb') ? 'rgb' : value.typeCommand || lp.globalColors.commandType
           )
         } else if (value.command === 'scene') {
           const colorActive = value.colorSceneActive || midiSceneActiveColor
-          const colorInactive =
-            value.colorSceneInactive || midiSceneInactiveColor
+          const colorInactive = value.colorSceneInactive || midiSceneInactiveColor
           const isActiveScene = value.payload?.scene === recentScenes
           const color = isActiveScene ? colorActive : colorInactive
-          const typeCommand = isActiveScene
-            ? value.typeSceneActive
-            : value.typeSceneInactive
+          const typeCommand = isActiveScene ? value.typeSceneActive : value.typeSceneInactive
           sendMidiMessage(color, typeCommand || lp.globalColors.commandType)
         }
       } catch (error) {
@@ -112,9 +88,7 @@ const MIDIListener = () => {
 
       input.addListener('noteon', (event: any) => handleNoteOn(event, input))
       input.addListener('noteoff', (event: any) => handleNoteOff(event, input))
-      input.addListener('controlchange', (event: any) =>
-        handleControlChange(event, input)
-      )
+      input.addListener('controlchange', (event: any) => handleControlChange(event, input))
     }
 
     const handleNoteOn = (event: any, input: Input) => {
@@ -140,10 +114,7 @@ const MIDIListener = () => {
 
     const handleNoteOff = (event: any, input: Input) => {
       const mapping = getMappingByButtonNumber(event.note.number)
-      if (
-        mapping?.command === 'one-shot' &&
-        mapping?.payload?.holdType === 'release'
-      ) {
+      if (mapping?.command === 'one-shot' && mapping?.payload?.holdType === 'release') {
         oneShotAll(
           mapping.payload?.color || '#0dbedc',
           mapping.payload?.ramp || 10,
@@ -151,10 +122,7 @@ const MIDIListener = () => {
           mapping.payload?.fade || 220
         )
       }
-      if (
-        mapping?.command === 'effect' &&
-        mapping?.payload?.holdType === 'release'
-      ) {
+      if (mapping?.command === 'effect' && mapping?.payload?.holdType === 'release') {
         // will come soon
         // setEffectFallback(mapping.payload?.virtId)
       }
@@ -168,11 +136,7 @@ const MIDIListener = () => {
     }
 
     const handleControlChange = (event: any, input: Input) => {
-      if (
-        event.controller.number === midiEvent.button &&
-        midiEvent.name === input.name
-      )
-        return
+      if (event.controller.number === midiEvent.button && midiEvent.name === input.name) return
       if (event.value === 1) {
         setMidiEvent({
           name: input.name,
@@ -207,19 +171,14 @@ const MIDIListener = () => {
           setMidiOutputs(outputs.map((output) => output.name))
 
           if (midiInput === '') setMidiInput(inputs[inputs.length - 1]?.name)
-          if (midiOutput === '')
-            setMidiOutput(outputs[outputs.length - 1]?.name)
+          if (midiOutput === '') setMidiOutput(outputs[outputs.length - 1]?.name)
 
           const output = outputs[outputs.length - 1]
           const lp = MidiDevices[midiType][midiModel].fn
 
           Object.entries(midiMapping).forEach(([_key, value]) => {
             const buttonNumber = value.buttonNumber
-            if (
-              !value.command ||
-              value.command === 'none' ||
-              buttonNumber === -1
-            ) {
+            if (!value.command || value.command === 'none' || buttonNumber === -1) {
               if (output && buttonNumber !== -1) {
                 try {
                   output.send(lp.ledOff(buttonNumber))
@@ -240,10 +199,7 @@ const MIDIListener = () => {
         }
       }).catch((_error) => {
         setFeatures('scenemidi', false)
-        showSnackbar(
-          'error',
-          'Could not get MIDI permissions, please check your browser settings'
-        )
+        showSnackbar('error', 'Could not get MIDI permissions, please check your browser settings')
       })
     }
 
@@ -254,10 +210,7 @@ const MIDIListener = () => {
           const { scene_id } = event.detail
           Object.keys(scenes).forEach((key) => {
             const scene = scenes[key]
-            const buttonNumber = parseInt(
-              scene.scene_midiactivate?.split('buttonNumber: ')[1],
-              10
-            )
+            const buttonNumber = parseInt(scene.scene_midiactivate?.split('buttonNumber: ')[1], 10)
             const uiButtonNumber = getUiBtnNo(buttonNumber)
             const value = uiButtonNumber && midiMapping[0][uiButtonNumber]
             if (!value || value.command !== 'scene' || !output) return
@@ -280,23 +233,12 @@ const MIDIListener = () => {
       isActive: boolean
     ) => {
       const color = isActive
-        ? value.colorSceneActive ||
-          midiSceneActiveColor ||
-          lp.globalColors.sceneActiveColor
-        : value.colorSceneInactive ||
-          midiSceneInactiveColor ||
-          lp.globalColors.sceneInactiveColor
+        ? value.colorSceneActive || midiSceneActiveColor || lp.globalColors.sceneActiveColor
+        : value.colorSceneInactive || midiSceneInactiveColor || lp.globalColors.sceneInactiveColor
       const typeCommand = isActive
         ? value.typeSceneActive || lp.globalColors.sceneActiveType
         : value.typeSceneInactive || lp.globalColors.sceneInactiveType
-      sendMidiMessageHelper(
-        fn,
-        output,
-        buttonNumber,
-        color,
-        typeCommand,
-        isActive
-      )
+      sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, isActive)
     }
 
     if (features.scenemidi) {
@@ -318,10 +260,7 @@ const MIDIListener = () => {
     Object.keys(scenes).forEach((key) => {
       const scene = scenes[key]
       if (!scene.scene_midiactivate) return
-      const buttonNumber = parseInt(
-        scene.scene_midiactivate.split('buttonNumber: ')[1],
-        10
-      )
+      const buttonNumber = parseInt(scene.scene_midiactivate.split('buttonNumber: ')[1], 10)
       const uiButtonNumber = getUiBtnNo(buttonNumber) || -1
       mapping[0] = {
         ...mapping[0],

@@ -95,12 +95,8 @@ const Device = () => {
     promises.push(
       setEffect(
         `${virtId}-mask`,
-        is2d
-          ? defaultEffects.blenderMask2d.type
-          : defaultEffects.blenderMask.type,
-        is2d
-          ? defaultEffects.blenderMask2d.config
-          : defaultEffects.blenderMask.config,
+        is2d ? defaultEffects.blenderMask2d.type : defaultEffects.blenderMask.type,
+        is2d ? defaultEffects.blenderMask2d.config : defaultEffects.blenderMask.config,
         true
       ).then(() => {
         updateVirtual(`${virtId}-mask`, true)
@@ -109,12 +105,8 @@ const Device = () => {
     promises.push(
       setEffect(
         `${virtId}-foreground`,
-        is2d
-          ? defaultEffects.blenderForeground2d.type
-          : defaultEffects.blenderForeground.type,
-        is2d
-          ? defaultEffects.blenderForeground2d.config
-          : defaultEffects.blenderForeground.config,
+        is2d ? defaultEffects.blenderForeground2d.type : defaultEffects.blenderForeground.type,
+        is2d ? defaultEffects.blenderForeground2d.config : defaultEffects.blenderForeground.config,
         true
       ).then(() => {
         updateVirtual(`${virtId}-foreground`, true)
@@ -123,12 +115,8 @@ const Device = () => {
     promises.push(
       setEffect(
         `${virtId}-background`,
-        is2d
-          ? defaultEffects.blenderBackground2d.type
-          : defaultEffects.blenderBackground.type,
-        is2d
-          ? defaultEffects.blenderBackground2d.config
-          : defaultEffects.blenderBackground.config,
+        is2d ? defaultEffects.blenderBackground2d.type : defaultEffects.blenderBackground.type,
+        is2d ? defaultEffects.blenderBackground2d.config : defaultEffects.blenderBackground.config,
         true
       ).then(() => {
         updateVirtual(`${virtId}-background`, true)
@@ -209,12 +197,9 @@ const Device = () => {
       devices[`${virtId}-background`] &&
       virtuals[virtId]?.effect?.type !== 'blender'
     ) {
-      if (virtuals[`${virtId}-mask`].effect.config)
-        clearEffect(`${virtId}-mask`)
-      if (virtuals[`${virtId}-foreground`].effect.config)
-        clearEffect(`${virtId}-foreground`)
-      if (virtuals[`${virtId}-background`].effect.config)
-        clearEffect(`${virtId}-background`)
+      if (virtuals[`${virtId}-mask`].effect.config) clearEffect(`${virtId}-mask`)
+      if (virtuals[`${virtId}-foreground`].effect.config) clearEffect(`${virtId}-foreground`)
+      if (virtuals[`${virtId}-background`].effect.config) clearEffect(`${virtId}-background`)
     }
   }, [devices, virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
 
@@ -222,27 +207,13 @@ const Device = () => {
     getVirtuals()
     getSchemas()
     if (graphs && virtId) {
-      if (
-        blenderAutomagic &&
-        virtId &&
-        virtuals[virtId]?.effect?.type === 'blender'
-      ) {
-        setPixelGraphs([
-          virtId,
-          `${virtId}-mask`,
-          `${virtId}-foreground`,
-          `${virtId}-background`
-        ])
+      if (blenderAutomagic && virtId && virtuals[virtId]?.effect?.type === 'blender') {
+        setPixelGraphs([virtId, `${virtId}-mask`, `${virtId}-foreground`, `${virtId}-background`])
       } else {
         setPixelGraphs([virtId])
       }
     }
-  }, [
-    graphs,
-    effectType,
-    virtId && virtuals[virtId]?.effect.type,
-    blenderAutomagic
-  ])
+  }, [graphs, effectType, virtId && virtuals[virtId]?.effect.type, blenderAutomagic])
 
   const matrixOpen = !!(
     virtId &&
@@ -328,11 +299,7 @@ const Device = () => {
                   style={{ marginBottom: '1rem' }}
                 />
               )}
-            {!(
-              features.streamto ||
-              features.transitions ||
-              features.frequencies
-            ) && (
+            {!(features.streamto || features.transitions || features.frequencies) && (
               <Typography variant="body2" color="textSecondary" align="right">
                 {' '}
                 activate more advanced features with{' '}
@@ -342,9 +309,7 @@ const Device = () => {
                 </Link>
               </Typography>
             )}
-            {features.streamto && (
-              <StreamToCard virtuals={virtuals} virtual={virtual} />
-            )}
+            {features.streamto && <StreamToCard virtuals={virtuals} virtual={virtual} />}
             {features.transitions && (
               <TransitionCard virtual={virtual} style={{ marginTop: '1rem' }} />
             )}

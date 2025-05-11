@@ -59,7 +59,9 @@ const Pixel = ({
                 ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
                 : '#222'
               : pixels && pixels[0] && pixels[0].length
-                ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
+                ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${
+                    pixels[1][currentRowIndex * colN + currentColIndex]
+                  },${pixels[2][currentRowIndex * colN + currentColIndex]})`
                 : '#222'
         },
         isDragging
@@ -70,8 +72,7 @@ const Pixel = ({
               opacity:
                 move && yzcolumn?.group === selectedGroup
                   ? 1
-                  : (move && yzcolumn?.group !== selectedGroup) ||
-                      selectedGroup === ''
+                  : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === ''
                     ? 0.9
                     : yzcolumn.deviceId !== ''
                       ? 1
@@ -98,9 +99,7 @@ const Pixel = ({
     >
       {yzcolumn.deviceId !== '' && (
         <div className={classes.pixel}>
-          <Typography variant="caption">
-            {devices[yzcolumn.deviceId].config.name}
-          </Typography>
+          <Typography variant="caption">{devices[yzcolumn.deviceId].config.name}</Typography>
           <Typography variant="caption">{yzcolumn.pixel}</Typography>
         </div>
       )}

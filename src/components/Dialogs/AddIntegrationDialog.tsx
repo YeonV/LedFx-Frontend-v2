@@ -60,34 +60,24 @@ const AddIntegrationDialog = () => {
 
   const open = useStore((state) => state.dialogs.addIntegration?.open || false)
 
-  const integrationId = useStore(
-    (state) => state.dialogs.addIntegration?.edit || false
-  )
+  const integrationId = useStore((state) => state.dialogs.addIntegration?.edit || false)
   const initial =
-    typeof integrationId === 'string'
-      ? integrations[integrationId]
-      : { type: '', config: {} }
+    typeof integrationId === 'string' ? integrations[integrationId] : { type: '', config: {} }
 
-  const setDialogOpenAddIntegration = useStore(
-    (state) => state.setDialogOpenAddIntegration
-  )
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration)
 
   const integrationsTypes = useStore((state) => state.schemas?.integrations)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const [integrationType, setIntegrationType] = useState('')
   const [model, setModel] = useState({})
 
-  const currentSchema = integrationType
-    ? integrationsTypes[integrationType].schema
-    : {}
+  const currentSchema = integrationType ? integrationsTypes[integrationType].schema : {}
 
   const handleClose = () => {
     setDialogOpenAddIntegration(false)
   }
   const handleAddDevice = () => {
-    const cleanedModel = Object.fromEntries(
-      Object.entries(model).filter(([_, v]) => v !== '')
-    )
+    const cleanedModel = Object.fromEntries(Object.entries(model).filter(([_, v]) => v !== ''))
     const defaultModel = {} as any
 
     for (const key in currentSchema.properties) {
@@ -146,11 +136,7 @@ const AddIntegrationDialog = () => {
   }, [initial.type, JSON.stringify(initial.config)])
 
   return (
-    <StyledDialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
+    <StyledDialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">
         {initial.config &&
         Object.keys(initial.config).length === 0 &&
@@ -162,9 +148,8 @@ const AddIntegrationDialog = () => {
       <DialogContent>
         {!integrationType && (
           <DialogContentText>
-            To add an interation to LedFx, please first select the type of
-            integration you wish to add then provide the necessary
-            configuration.
+            To add an interation to LedFx, please first select the type of integration you wish to
+            add then provide the necessary configuration.
           </DialogContentText>
         )}
         <div className={classes.wrapper}>

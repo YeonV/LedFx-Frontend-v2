@@ -4,9 +4,7 @@ import useStore from '../../store/useStore'
 import { useShallow } from 'zustand/shallow'
 
 const MessageBar = () => {
-  const { message, messageType, isOpen } = useStore(
-    useShallow((state) => state.ui.snackbar)
-  )
+  const { message, messageType, isOpen } = useStore(useShallow((state) => state.ui.snackbar))
   const clearSnackbar = useStore((state) => state.ui?.clearSnackbar)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
 
@@ -31,12 +29,7 @@ const MessageBar = () => {
       onClose={() => handleClose()}
       aria-describedby="client-snackbar"
       action={[
-        <IconButton
-          key="close"
-          aria-label="close"
-          color="inherit"
-          onClick={() => handleClose()}
-        >
+        <IconButton key="close" aria-label="close" color="inherit" onClick={() => handleClose()}>
           <Icon>close</Icon>
         </IconButton>
       ]}
@@ -44,9 +37,7 @@ const MessageBar = () => {
       <Alert
         elevation={6}
         variant="filled"
-        severity={
-          message.includes('[ERROR') ? 'error' : (messageType as AlertColor)
-        }
+        severity={message.includes('[ERROR') ? 'error' : (messageType as AlertColor)}
         sx={{
           whiteSpace: 'pre-line',
           width: message.includes('[ERROR') ? 'min(80vw, 720px)' : 'auto'

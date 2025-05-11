@@ -1,21 +1,8 @@
 import { useState, useEffect } from 'react'
-import {
-  Box,
-  Grid2 as Grid,
-  Paper,
-  Typography,
-  Popover,
-  Button,
-  useTheme
-} from '@mui/material'
+import { Box, Grid2 as Grid, Paper, Typography, Popover, Button, useTheme } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { darken } from '@mui/material/styles'
-import {
-  IColor,
-  rgbValues,
-  sortColorsByHSL,
-  zeroPadHex
-} from '../../utils/MidiDevices/colorHelper'
+import { IColor, rgbValues, sortColorsByHSL, zeroPadHex } from '../../utils/MidiDevices/colorHelper'
 import useStore from '../../store/useStore'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ReactGPicker from 'react-gcolor-picker'
@@ -36,9 +23,7 @@ const LpColorPicker = ({
   type = '90',
   height = 32
 }: LpColorPickerProps) => {
-  const [selectedColor, setSelectedColor] = useState<IColor | string | null>(
-    null
-  )
+  const [selectedColor, setSelectedColor] = useState<IColor | string | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const theme = useTheme()
   const midiOutput = useStore((state) => state.midiOutput)
@@ -48,9 +33,7 @@ const LpColorPicker = ({
   const getColorFromValue = useStore((state) => state.getColorFromValue)
   const output =
     WebMidi.enabled &&
-    (midiOutput !== ''
-      ? WebMidi.getOutputByName(midiOutput)
-      : WebMidi.outputs[1])
+    (midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1])
   const lp = MidiDevices[midiType][midiModel]
   const isRgb = 'rgb' in lp.fn
 
@@ -69,9 +52,7 @@ const LpColorPicker = ({
     setSelectedColor(color)
     if (onColorSelect) {
       onColorSelect(
-        isRgb && color.startsWith('rgb')
-          ? color
-          : zeroPadHex(colors[color as keyof typeof colors])
+        isRgb && color.startsWith('rgb') ? color : zeroPadHex(colors[color as keyof typeof colors])
       )
     }
     setAnchorEl(null)
@@ -106,10 +87,7 @@ const LpColorPicker = ({
             (selectedColor || defaultColor || '#000000') as string
           ),
           '&:hover': {
-            backgroundColor: darken(
-              selectedColor || defaultColor || '#ffffff',
-              0.2
-            )
+            backgroundColor: darken(selectedColor || defaultColor || '#ffffff', 0.2)
           }
         }}
       >

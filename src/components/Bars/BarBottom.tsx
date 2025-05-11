@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Backdrop,
-  useTheme
-} from '@mui/material'
+import { BottomNavigation, BottomNavigationAction, Backdrop, useTheme } from '@mui/material'
 import {
   Settings,
   Home,
@@ -37,23 +32,15 @@ export default function BarBottom() {
   const { pathname } = useLocation()
   const [value, setValue] = useState(pathname)
   const [backdrop, setBackdrop] = useState(false)
-  const leftOpen = useStore(
-    (state) => state.ui.bars && state.ui.bars?.leftBar.open
-  )
-  const bottomBarOpen = useStore(
-    (state) => state.ui.bars && state.ui.bars?.bottomBar
-  )
+  const leftOpen = useStore((state) => state.ui.bars && state.ui.bars?.leftBar.open)
+  const bottomBarOpen = useStore((state) => state.ui.bars && state.ui.bars?.bottomBar)
 
   const features = useStore((state) => state.features)
   const integrations = useStore((state) => state.integrations)
   const activateScene = useStore((state) => state.activateScene)
   const captivateScene = useStore((state) => state.captivateScene)
-  const smartBarPadOpen = useStore(
-    (state) => state.ui.bars && state.ui.bars.smartBarPad.open
-  )
-  const setSmartBarPadOpen = useStore(
-    (state) => state.ui.bars && state.ui.setSmartBarPadOpen
-  )
+  const smartBarPadOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBarPad.open)
+  const setSmartBarPadOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarPadOpen)
   const scenes = useStore((state) => state.scenes)
   const handleActivateScene = (e: string) => {
     activateScene(e)
@@ -188,11 +175,7 @@ export default function BarBottom() {
           component={Link}
           to="/Devices"
           icon={<BladeIcon name="mdi:led-strip-variant" />}
-          style={
-            bottomBarOpen.indexOf('Devices') > -1
-              ? { color: theme.palette.primary.main }
-              : {}
-          }
+          style={bottomBarOpen.indexOf('Devices') > -1 ? { color: theme.palette.primary.main } : {}}
           // onContextMenu={(e: any) => {
           //   e.preventDefault();
           //   setBottomBarOpen('Devices');
@@ -204,36 +187,31 @@ export default function BarBottom() {
           label="Scenes"
           value="/Scenes"
           icon={<BladeIcon name="mdi:image" />}
-          style={
-            bottomBarOpen.indexOf('Scenes') > -1
-              ? { color: theme.palette.primary.main }
-              : {}
-          }
+          style={bottomBarOpen.indexOf('Scenes') > -1 ? { color: theme.palette.primary.main } : {}}
           // onContextMenu={(e: any) => {
           //   e.preventDefault();
           //   setBottomBarOpen('Scenes');
           // }}
         />
 
-        {features.integrations &&
-          !(window.localStorage.getItem('guestmode') === 'activated') && (
-            <BottomNavigationAction
-              label="Integrations"
-              value="/Integrations"
-              component={Link}
-              to="/Integrations"
-              icon={<ElectricalServices />}
-              style={
-                bottomBarOpen.indexOf('Integrations') > -1
-                  ? { color: theme.palette.primary.main }
-                  : {}
-              }
-              // onContextMenu={(e: any) => {
-              //   e.preventDefault();
-              //   setBottomBarOpen('Integrations');
-              // }}
-            />
-          )}
+        {features.integrations && !(window.localStorage.getItem('guestmode') === 'activated') && (
+          <BottomNavigationAction
+            label="Integrations"
+            value="/Integrations"
+            component={Link}
+            to="/Integrations"
+            icon={<ElectricalServices />}
+            style={
+              bottomBarOpen.indexOf('Integrations') > -1
+                ? { color: theme.palette.primary.main }
+                : {}
+            }
+            // onContextMenu={(e: any) => {
+            //   e.preventDefault();
+            //   setBottomBarOpen('Integrations');
+            // }}
+          />
+        )}
 
         {!(window.localStorage.getItem('guestmode') === 'activated') && (
           <BottomNavigationAction
@@ -243,9 +221,7 @@ export default function BarBottom() {
             component={Link}
             to="/Settings"
             style={
-              bottomBarOpen.indexOf('Settings') > -1
-                ? { color: theme.palette.primary.main }
-                : {}
+              bottomBarOpen.indexOf('Settings') > -1 ? { color: theme.palette.primary.main } : {}
             }
             // onContextMenu={(e: any) => {
             //   e.preventDefault();
@@ -303,11 +279,7 @@ export default function BarBottom() {
       {features.gamepad && (
         <>
           <Gamepad setScene={handleActivateScene} bottom={botHeight + 65} />
-          <SmartBar
-            open={smartBarPadOpen}
-            setOpen={setSmartBarPadOpen}
-            direct={false}
-          />
+          <SmartBar open={smartBarPadOpen} setOpen={setSmartBarPadOpen} direct={false} />
         </>
       )}
       {!(window.localStorage.getItem('guestmode') === 'activated') && (
@@ -351,10 +323,7 @@ export default function BarBottom() {
           className="step-four"
         />
       )}
-      <Backdrop
-        style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }}
-        open={backdrop}
-      />
+      <Backdrop style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} open={backdrop} />
     </>
   )
 }

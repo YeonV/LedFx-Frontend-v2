@@ -21,47 +21,27 @@ import useClickOutside from '../../utils/useClickOutside'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ColorTypePicker from './ColorTypePicker'
 
-const LaunchpadColors = ({
-  component = 'Button'
-}: {
-  component?: 'Button' | 'MenuItem'
-}) => {
+const LaunchpadColors = ({ component = 'Button' }: { component?: 'Button' | 'MenuItem' }) => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const theme = useTheme()
   const midiType = useStore((state) => state.midiType)
   const midiModel = useStore((state) => state.midiModel)
-  const sceneInactiveType = useStore(
-    (state) => state.midiColors.sceneInactiveType
-  )
+  const sceneInactiveType = useStore((state) => state.midiColors.sceneInactiveType)
   const sceneActiveType = useStore((state) => state.midiColors.sceneActiveType)
   const commandType = useStore((state) => state.midiColors.commandType)
-  const midiSceneInactiveColor = useStore(
-    (state) => state.midiColors.sceneInactiveColor
-  )
-  const midiSceneActiveColor = useStore(
-    (state) => state.midiColors.sceneActiveColor
-  )
+  const midiSceneInactiveColor = useStore((state) => state.midiColors.sceneInactiveColor)
+  const midiSceneActiveColor = useStore((state) => state.midiColors.sceneActiveColor)
   const midiCommandColor = useStore((state) => state.midiColors.commandColor)
-  const pressedButtonColor = useStore(
-    (state) => state.midiColors.pressedButtonColor
-  )
+  const pressedButtonColor = useStore((state) => state.midiColors.pressedButtonColor)
   const getColorFromValue = useStore((state) => state.getColorFromValue)
   const setPressedButtonColor = useStore((state) => state.setPressedButtonColor)
-  const setMidiSceneInactiveColor = useStore(
-    (state) => state.setMidiSceneInactiveColor
-  )
-  const setMidiSceneActiveColor = useStore(
-    (state) => state.setMidiSceneActiveColor
-  )
+  const setMidiSceneInactiveColor = useStore((state) => state.setMidiSceneInactiveColor)
+  const setMidiSceneActiveColor = useStore((state) => state.setMidiSceneActiveColor)
   const setMidiCommandColor = useStore((state) => state.setMidiCommandColor)
   const setMidiCommandType = useStore((state) => state.setMidiCommandType)
-  const setMidiSceneActiveType = useStore(
-    (state) => state.setMidiSceneActiveType
-  )
-  const setMidiSceneInactiveType = useStore(
-    (state) => state.setMidiSceneInactiveType
-  )
+  const setMidiSceneActiveType = useStore((state) => state.setMidiSceneActiveType)
+  const setMidiSceneInactiveType = useStore((state) => state.setMidiSceneInactiveType)
 
   const lp = MidiDevices[midiType][midiModel]
   const isRgb = 'rgb' in lp.fn
@@ -175,9 +155,7 @@ const LaunchpadColors = ({
                   defaultColor={
                     isRgb && midiCommandColor.startsWith('rgb')
                       ? midiCommandColor
-                      : getColorFromValue(
-                          midiCommandColor || lp.globalColors.commandColor
-                        )
+                      : getColorFromValue(midiCommandColor || lp.globalColors.commandColor)
                   }
                   onColorSelect={(color: string) => {
                     setMidiCommandColor(color)
@@ -194,8 +172,7 @@ const LaunchpadColors = ({
               <Typography>Pressed button</Typography>
               <div
                 style={{
-                  backgroundColor:
-                    pressedButtonColor || theme.palette.primary.main,
+                  backgroundColor: pressedButtonColor || theme.palette.primary.main,
                   height: 30,
                   width: 65,
                   cursor: 'pointer',

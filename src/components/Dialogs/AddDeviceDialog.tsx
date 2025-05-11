@@ -63,9 +63,7 @@ const AddDeviceDialog = () => {
   const deviceId = useStore((state) => state.dialogs.addDevice?.edit || false)
   const initial = devices[deviceId] || { type: '', config: {} }
 
-  const setDialogOpenAddDevice = useStore(
-    (state) => state.setDialogOpenAddDevice
-  )
+  const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice)
 
   const deviceTypes = useStore((state) => state.schemas?.devices)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
@@ -78,9 +76,7 @@ const AddDeviceDialog = () => {
     setDialogOpenAddDevice(false)
   }
   const handleAddDevice = () => {
-    const cleanedModel = Object.fromEntries(
-      Object.entries(model).filter(([_, v]) => v !== '')
-    )
+    const cleanedModel = Object.fromEntries(Object.entries(model).filter(([_, v]) => v !== ''))
     const defaultModel = {} as any
 
     for (const key in currentSchema.properties) {
@@ -106,9 +102,7 @@ const AddDeviceDialog = () => {
       }).then((res: any) => {
         if (res !== 'failed') {
           if (deviceType === 'wled') {
-            const deviceIps = Object.values(devices).map(
-              (device: any) => device.config.ip_address
-            )
+            const deviceIps = Object.values(devices).map((device: any) => device.config.ip_address)
             const newDevices = [] as { name: string; ip_address: string }[]
             if (res.nodes) {
               res.nodes.forEach((node: any) => {
@@ -146,20 +140,14 @@ const AddDeviceDialog = () => {
   }
 
   function filterObject(obj: any, callback: any) {
-    return Object.fromEntries(
-      Object.entries(obj).filter(([key, val]) => callback(key, val))
-    )
+    return Object.fromEntries(Object.entries(obj).filter(([key, val]) => callback(key, val)))
   }
   useEffect(() => {
     handleTypeChange(initial.type, initial.config) // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initial.type, JSON.stringify(initial.config)])
 
   return (
-    <StyledDialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
+    <StyledDialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">
         {initial.config &&
         Object.keys(initial.config).length === 0 &&
@@ -169,14 +157,14 @@ const AddDeviceDialog = () => {
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          To add a device to LedFx, please first select the type of device you
-          wish to add then provide the necessary configuration.
+          To add a device to LedFx, please first select the type of device you wish to add then
+          provide the necessary configuration.
           <SeeDocs url="https://docs.ledfx.app/en/latest/configuring.html" />
         </DialogContentText>
         {deviceType === 'launchpad' && (
           <Alert severity="info">
-            When adding a Lunchpad as a led-output device, you cannot use it as
-            a MIDI input device at the same time (atm).
+            When adding a Lunchpad as a led-output device, you cannot use it as a MIDI input device
+            at the same time (atm).
             <SeeDocs url="https://docs.ledfx.app/en/latest/configuring.html" />
           </Alert>
         )}
@@ -233,10 +221,7 @@ const AddDeviceDialog = () => {
               Object.keys(initial.config).length === 0 &&
               initial.config?.constructor === Object
                 ? model
-                : filterObject(
-                    model,
-                    (p: string, _v: any) => p !== 'icon_name' && p !== 'name'
-                  )
+                : filterObject(model, (p: string, _v: any) => p !== 'icon_name' && p !== 'name')
             }
             onModelChange={handleModelChange}
             hideToggle={!deviceType}

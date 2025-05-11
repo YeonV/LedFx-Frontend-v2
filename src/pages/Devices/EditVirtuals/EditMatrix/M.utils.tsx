@@ -64,17 +64,10 @@ export const getMaxRange = (
  */
 export const clone = (input: any) => JSON.parse(JSON.stringify(input))
 
-export const getOpacity = (
-  move: boolean,
-  yzcolumn: IMCell,
-  selectedGroup: string
-) => {
+export const getOpacity = (move: boolean, yzcolumn: IMCell, selectedGroup: string) => {
   if (move && yzcolumn?.group === selectedGroup) {
     return 1
-  } else if (
-    (move && yzcolumn?.group !== selectedGroup) ||
-    selectedGroup === ''
-  ) {
+  } else if ((move && yzcolumn?.group !== selectedGroup) || selectedGroup === '') {
     return 0.3
   } else if (yzcolumn.deviceId !== '') {
     return 1
@@ -96,7 +89,9 @@ export const getBackgroundColor = (
       ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
       : '#222'
   } else if (pixels && pixels[0] && pixels[0].length) {
-    return `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
+    return `rgb(${
+      pixels[0][currentRowIndex * colN + currentColIndex]
+    },${pixels[1][currentRowIndex * colN + currentColIndex]},${pixels[2][currentRowIndex * colN + currentColIndex]})`
   } else {
     return '#222'
   }

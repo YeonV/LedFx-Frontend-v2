@@ -176,11 +176,9 @@ const storeConfig = (set: any) => ({
       'api/getUserPresets'
     )
   },
-  setSystemConfig: async (config: any) =>
-    await Ledfx('/api/config', 'PUT', config),
+  setSystemConfig: async (config: any) => await Ledfx('/api/config', 'PUT', config),
   deleteSystemConfig: async () => await Ledfx('/api/config', 'DELETE'),
-  importSystemConfig: async (config: any) =>
-    await Ledfx('/api/config', 'POST', config)
+  importSystemConfig: async (config: any) => await Ledfx('/api/config', 'POST', config)
 })
 
 export default storeConfig

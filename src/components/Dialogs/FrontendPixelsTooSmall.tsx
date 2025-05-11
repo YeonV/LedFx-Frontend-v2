@@ -46,9 +46,7 @@ export default function FrontendPixelsTooSmall() {
     { value: 4096, label: '4K' }
   ]
 
-  const setDialogOpenLessPixels = useStore(
-    (state) => state.setDialogOpenLessPixels
-  )
+  const setDialogOpenLessPixels = useStore((state) => state.setDialogOpenLessPixels)
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
   }
@@ -56,34 +54,20 @@ export default function FrontendPixelsTooSmall() {
 
   useEffect(() => {
     const tooBig = Object.keys(virtuals).filter(
-      (v: any) =>
-        (virtuals[v].config.rows || 1) > 1 && virtuals[v]?.pixel_count > fPixels
+      (v: any) => (virtuals[v].config.rows || 1) > 1 && virtuals[v]?.pixel_count > fPixels
     )
     const biggest = tooBig.reduce(
-      (a: any, b: any) =>
-        virtuals[a]?.pixel_count > virtuals[b]?.pixel_count ? a : b,
+      (a: any, b: any) => (virtuals[a]?.pixel_count > virtuals[b]?.pixel_count ? a : b),
       0
     )
-    if (
-      fPixels &&
-      (showMatrix || alphaMatrix) &&
-      tooBig.length > 0 &&
-      fPixels < 4096
-    ) {
+    if (fPixels && (showMatrix || alphaMatrix) && tooBig.length > 0 && fPixels < 4096) {
       setBiggestDevice({ id: biggest, pixels: virtuals[biggest]?.pixel_count })
       setDialogOpenLessPixels(true)
     }
     if (fPixels && showMatrix && tooBig.length === 0) {
       setDialogOpenLessPixels(false)
     }
-  }, [
-    showMatrix,
-    fPixels,
-    virtuals,
-    setDialogOpenLessPixels,
-    location,
-    alphaMatrix
-  ])
+  }, [showMatrix, fPixels, virtuals, setDialogOpenLessPixels, location, alphaMatrix])
 
   useEffect(() => {
     getSystemConfig()
@@ -136,11 +120,7 @@ export default function FrontendPixelsTooSmall() {
             }
           >
             {marks.map((item: any) => (
-              <MenuItem
-                disabled={item.value === 'select'}
-                key={item.value}
-                value={item.value}
-              >
+              <MenuItem disabled={item.value === 'select'} key={item.value} value={item.value}>
                 {item.label}
               </MenuItem>
             ))}
@@ -154,12 +134,7 @@ export default function FrontendPixelsTooSmall() {
             onChange={(e) => {
               setPixelLength(parseInt(e.target.value, 10))
             }}
-            onBlur={(e) =>
-              setSystemSetting(
-                'visualisation_maxlen',
-                parseInt(e.target.value, 10)
-              )
-            }
+            onBlur={(e) => setSystemSetting('visualisation_maxlen', parseInt(e.target.value, 10))}
             sx={{
               '& input': { textAlign: 'right' }
             }}

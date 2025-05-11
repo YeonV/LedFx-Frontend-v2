@@ -91,16 +91,14 @@ Color.args = {
           'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 0, 178) 50%, rgb(0, 0, 255) 100%)',
         Plasma:
           'linear-gradient(90deg, rgb(0, 0, 255) 0%, rgb(128, 0, 128) 25%, rgb(255, 0, 0) 50%, rgb(255, 40, 0) 75%, rgb(255, 200, 0) 100%)',
-        Ocean:
-          'linear-gradient(90deg, rgb(0, 255, 255) 0%, rgb(0, 0, 255) 100%)',
+        Ocean: 'linear-gradient(90deg, rgb(0, 255, 255) 0%, rgb(0, 0, 255) 100%)',
         Viridis:
           'linear-gradient(90deg, rgb(128, 0, 128) 0%, rgb(0, 0, 255) 25%, rgb(0, 128, 128) 50%, rgb(0, 255, 0) 75%, rgb(255, 200, 0) 100%)',
         Jungle:
           'linear-gradient(90deg, rgb(0, 255, 0) 0%, rgb(34, 139, 34) 50%, rgb(255, 120, 0) 100%)',
         Spring:
           'linear-gradient(90deg, rgb(255, 0, 178) 0%, rgb(255, 40, 0) 50%, rgb(255, 200, 0) 100%)',
-        Winter:
-          'linear-gradient(90deg, rgb(0, 199, 140) 0%, rgb(0, 255, 50) 100%)',
+        Winter: 'linear-gradient(90deg, rgb(0, 199, 140) 0%, rgb(0, 255, 50) 100%)',
         Frost:
           'linear-gradient(90deg, rgb(0, 0, 255) 0%, rgb(0, 255, 255) 33%, rgb(128, 0, 128) 66%, rgb(255, 0, 178) 99%)',
         Sunset:

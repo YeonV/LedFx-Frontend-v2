@@ -50,12 +50,7 @@ AllRoutes.parameters = {
 
 export function Typedoc() {
   return (
-    <IFrame
-      width="100%"
-      height="100%"
-      frameborder="0"
-      src="https://typedoc.ledfx.stream/modules"
-    />
+    <IFrame width="100%" height="100%" frameborder="0" src="https://typedoc.ledfx.stream/modules" />
   )
 }
 Typedoc.parameters = {

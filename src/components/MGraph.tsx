@@ -55,34 +55,22 @@ const MGraph = () => {
     setAnimationDuration(typeof newValue === 'number' ? newValue : newValue[0])
   }
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAnimationDuration(
-      event.target.value === '' ? 0 : Number(event.target.value)
-    )
+    setAnimationDuration(event.target.value === '' ? 0 : Number(event.target.value))
   }
 
   const [fillOpacity, setFillOpacity] = useState<number>(0)
-  const handleFillOpacitySliderChange = (
-    event: Event,
-    newValue: number | number[]
-  ) => {
+  const handleFillOpacitySliderChange = (event: Event, newValue: number | number[]) => {
     setFillOpacity(typeof newValue === 'number' ? newValue : newValue[0])
   }
-  const handleFillOpacityInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFillOpacityInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFillOpacity(event.target.value === '' ? 0 : Number(event.target.value))
   }
 
   const [lineTension, setLineTension] = useState<number>(0.5)
-  const handleLineTensionSliderChange = (
-    event: Event,
-    newValue: number | number[]
-  ) => {
+  const handleLineTensionSliderChange = (event: Event, newValue: number | number[]) => {
     setLineTension(typeof newValue === 'number' ? newValue : newValue[0])
   }
-  const handleLineTensionInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleLineTensionInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLineTension(event.target.value === '' ? 0 : Number(event.target.value))
   }
 
@@ -204,9 +192,7 @@ const MGraph = () => {
       }
       // console.log('Send')
       if (ws === 'mixedContent') {
-        alert(
-          'Mixed content error in Mgraph.ts: Cannot connect to ws:// from an https:// page.'
-        )
+        alert('Mixed content error in Mgraph.ts: Cannot connect to ws:// from an https:// page.')
         return
       }
       ws?.send(JSON.stringify(req.id && req))
@@ -275,9 +261,7 @@ const MGraph = () => {
             style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}
           >
             <Slider
-              value={
-                typeof animationDuration === 'number' ? animationDuration : 0
-              }
+              value={typeof animationDuration === 'number' ? animationDuration : 0}
               onChange={handleSliderChange}
               valueLabelDisplay="auto"
               min={0}
@@ -290,9 +274,7 @@ const MGraph = () => {
                 }
               }}
               type="number"
-              value={
-                typeof animationDuration === 'number' ? animationDuration : 0
-              }
+              value={typeof animationDuration === 'number' ? animationDuration : 0}
               onChange={handleInputChange}
               style={{
                 marginLeft: '2rem',
@@ -329,10 +311,7 @@ const MGraph = () => {
             />
           </BladeFrame>
 
-          <BladeFrame
-            title="LineTension"
-            style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}
-          >
+          <BladeFrame title="LineTension" style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}>
             <Slider
               value={typeof lineTension === 'number' ? lineTension : 0}
               onChange={handleLineTensionSliderChange}
@@ -358,60 +337,48 @@ const MGraph = () => {
             />
           </BladeFrame>
 
-          <BladeFrame
-            title="Logarithmic"
-            style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}
-          >
-            <Switch
-              value={scaleType}
-              onChange={() => setScaleType(!scaleType)}
-            />
+          <BladeFrame title="Logarithmic" style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem' }}>
+            <Switch value={scaleType} onChange={() => setScaleType(!scaleType)} />
           </BladeFrame>
         </CardContent>
       </Card>
       <Grid container spacing={2} justifyContent={'center'}>
-        {data1?.chartData &&
-          data1?.chartOptions &&
-          data1?.chartData?.labels && (
-            <div
-              style={{
-                maxWidth: 700,
-                width: '100%',
-                height: 350,
-                margin: '3rem'
-              }}
-            >
-              <Line data={data1.chartData} options={data1.chartOptions} />
-            </div>
-          )}
-        {data2?.chartData &&
-          data2?.chartOptions &&
-          data2?.chartData?.labels && (
-            <div
-              style={{
-                maxWidth: 700,
-                width: '100%',
-                height: 350,
-                margin: '3rem'
-              }}
-            >
-              <Line data={data2.chartData} options={data2.chartOptions} />
-            </div>
-          )}
-        {data3?.chartData &&
-          data3?.chartOptions &&
-          data3?.chartData?.labels && (
-            <div
-              style={{
-                maxWidth: 700,
-                width: '100%',
-                height: 350,
-                margin: '3rem'
-              }}
-            >
-              <Line data={data3.chartData} options={data3.chartOptions} />
-            </div>
-          )}
+        {data1?.chartData && data1?.chartOptions && data1?.chartData?.labels && (
+          <div
+            style={{
+              maxWidth: 700,
+              width: '100%',
+              height: 350,
+              margin: '3rem'
+            }}
+          >
+            <Line data={data1.chartData} options={data1.chartOptions} />
+          </div>
+        )}
+        {data2?.chartData && data2?.chartOptions && data2?.chartData?.labels && (
+          <div
+            style={{
+              maxWidth: 700,
+              width: '100%',
+              height: 350,
+              margin: '3rem'
+            }}
+          >
+            <Line data={data2.chartData} options={data2.chartOptions} />
+          </div>
+        )}
+        {data3?.chartData && data3?.chartOptions && data3?.chartData?.labels && (
+          <div
+            style={{
+              maxWidth: 700,
+              width: '100%',
+              height: 350,
+              margin: '3rem'
+            }}
+          >
+            <Line data={data3.chartData} options={data3.chartOptions} />
+          </div>
+        )}
       </Grid>
     </Stack>
   )

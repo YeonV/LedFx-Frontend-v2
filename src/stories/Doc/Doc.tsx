@@ -13,11 +13,9 @@ import { TransitionProps } from '@mui/material/transitions'
 import '@stoplight/elements/styles.min.css'
 // import configApiYaml from './configApiYaml';
 
-const Transition = React.forwardRef<unknown, TransitionProps>(
-  function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...(props as any)} />
-  }
-)
+const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...(props as any)} />
+})
 
 type Props = {
   _?: never
@@ -113,12 +111,7 @@ export default function Doc({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
+      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar
           enableColorOnDark
           sx={{

@@ -4,22 +4,14 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { VolumeDown, VolumeMute, VolumeUp } from '@mui/icons-material'
 import { VolSliderStyles } from './SpWidgetPro.styles'
-import {
-  SpotifyControlContext,
-  SpotifyVolumeContext
-} from '../../SpotifyProvider'
+import { SpotifyControlContext, SpotifyVolumeContext } from '../../SpotifyProvider'
 
 export default function SpVolume() {
   const [volu, setVolu] = useState(-1)
   const spotifyVolume = useContext(SpotifyVolumeContext)
   const { setVol } = useContext(SpotifyControlContext)
   return (
-    <Stack
-      spacing={2}
-      direction="row"
-      sx={{ width: '80%' }}
-      alignItems="center"
-    >
+    <Stack spacing={2} direction="row" sx={{ width: '80%' }} alignItems="center">
       <IconButton
         aria-label="next song"
         sx={{ marginLeft: '0 !important' }}

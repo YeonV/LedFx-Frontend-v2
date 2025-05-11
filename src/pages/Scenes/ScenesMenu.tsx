@@ -1,12 +1,6 @@
 import { useState, MouseEvent } from 'react'
 import { Menu, MenuItem, ListItemIcon, Button } from '@mui/material'
-import {
-  PlaylistAdd,
-  Edit,
-  MoreVert,
-  ChevronLeft,
-  ChevronRight
-} from '@mui/icons-material'
+import { PlaylistAdd, Edit, MoreVert, ChevronLeft, ChevronRight } from '@mui/icons-material'
 import Popover from '../../components/Popover/Popover'
 import useStore from '../../store/useStore'
 

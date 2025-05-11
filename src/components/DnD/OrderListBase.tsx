@@ -4,12 +4,7 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult
-} from '@hello-pangea/dnd'
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { useTheme } from '@mui/styles'
 import { Theme } from '@mui/material'
 import useStore from '../../store/useStore'
@@ -26,11 +21,7 @@ interface OrderListBaseProps {
   setOrders: (_orders: Order[]) => void
 }
 
-const reorder = (
-  list: Order[],
-  startIndex: number,
-  endIndex: number
-): Order[] => {
+const reorder = (list: Order[], startIndex: number, endIndex: number): Order[] => {
   const result = Array.from(list)
   const [removed] = result.splice(startIndex, 1)
   result.splice(endIndex, 0, removed)
@@ -38,11 +29,7 @@ const reorder = (
   return result.map((item, index) => ({ ...item, order: index }))
 }
 
-const getItemStyle = (
-  isDragging: boolean,
-  draggableStyle: any,
-  theme: Theme
-) => ({
+const getItemStyle = (isDragging: boolean, draggableStyle: any, theme: Theme) => ({
   ...draggableStyle,
   borderRadius: 4,
   ...(isDragging && {
@@ -67,11 +54,7 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
       return
     }
 
-    const reorderedItems = reorder(
-      orders,
-      result.source.index,
-      result.destination.index
-    )
+    const reorderedItems = reorder(orders, result.source.index, result.destination.index)
     setOrders(reorderedItems)
   }
 
@@ -79,27 +62,16 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
         {(provided, snapshot) => (
-          <List
-            ref={provided.innerRef}
-            style={getListStyle(snapshot.isDraggingOver)}
-          >
+          <List ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
             {orders.map((item, index) => (
-              <Draggable
-                key={item.virtId}
-                draggableId={item.virtId}
-                index={index}
-              >
+              <Draggable key={item.virtId} draggableId={item.virtId} index={index}>
                 {(provided, snapshot) => (
                   <ListItem
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     style={{
-                      ...getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style,
-                        theme
-                      ),
+                      ...getItemStyle(snapshot.isDragging, provided.draggableProps.style, theme),
                       cursor: 'grab',
                       color:
                         item.virtId.startsWith('gap-') ||
@@ -129,9 +101,7 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
                     </ListItemIcon>
                     <ListItemText primary={item.name || item.virtId} />
                     <BladeIcon
-                      name={
-                        snapshot.isDragging ? 'DragHandle' : 'DragIndicator'
-                      }
+                      name={snapshot.isDragging ? 'DragHandle' : 'DragIndicator'}
                       sx={{}}
                     />
                   </ListItem>

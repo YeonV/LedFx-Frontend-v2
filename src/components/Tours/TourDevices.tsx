@@ -45,8 +45,8 @@ const steps = [
     content: (
       <div>
         <h2>Device-Settings</h2>
-        The wrench will allow you to modify logical device settings including
-        streaming mode , pixel count, and IP address.
+        The wrench will allow you to modify logical device settings including streaming mode , pixel
+        count, and IP address.
       </div>
     ),
     style: {
@@ -82,11 +82,11 @@ const steps = [
     content: (
       <div>
         <h2>Pixelgraph</h2>
-        When actively streaming with an active sound source selected you will
-        find the graph display here.
+        When actively streaming with an active sound source selected you will find the graph display
+        here.
         <p>
-          Note: Graphs are disabled by default to keep low-end devices safe. For
-          high-end clients they can be enabled using the top-right-menu
+          Note: Graphs are disabled by default to keep low-end devices safe. For high-end clients
+          they can be enabled using the top-right-menu
         </p>
       </div>
     ),

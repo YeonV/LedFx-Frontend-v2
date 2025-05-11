@@ -10,12 +10,9 @@ const steps = [
     content: (
       <div>
         <h2>Scenes</h2>
-        You can save the current state of LedFx as a scene, while giving it a
-        name and optionally an image or an icon.
-        <p>
-          Note: This includes all active effects for all devices and their
-          effect-settings.
-        </p>
+        You can save the current state of LedFx as a scene, while giving it a name and optionally an
+        image or an icon.
+        <p>Note: This includes all active effects for all devices and their effect-settings.</p>
       </div>
     ),
     style: {

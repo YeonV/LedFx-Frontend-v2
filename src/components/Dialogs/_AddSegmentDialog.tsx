@@ -68,11 +68,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       if (showComplex) {
         return v
       } else {
-        return !(
-          v.endsWith('-mask') ||
-          v.endsWith('-foreground') ||
-          v.endsWith('-background')
-        )
+        return !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
       }
     })
     .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
@@ -88,16 +84,9 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       <DialogTitle id="confirmation-dialog-title">Select a device</DialogTitle>
       <DialogContent dividers>
         <BladeFrame full>
-          <Select
-            value={value}
-            style={{ width: '100%' }}
-            onChange={handleChange}
-          >
+          <Select value={value} style={{ width: '100%' }} onChange={handleChange}>
             {deviceKeys.map((device) => (
-              <MenuItem
-                value={props.deviceList[device].id}
-                key={props.deviceList[device].id}
-              >
+              <MenuItem value={props.deviceList[device].id} key={props.deviceList[device].id}>
                 {virtuals[props.deviceList[device].id]?.config?.name ||
                   props.deviceList[device]?.config?.name}
               </MenuItem>
@@ -140,10 +129,7 @@ export default function ConfirmationDialog({
     setOpen(false)
     if (newValue) {
       const device = {
-        ...deviceList[
-          Object.keys(deviceList).find((d) => deviceList[d].id === newValue) ||
-            0
-        ]
+        ...deviceList[Object.keys(deviceList).find((d) => deviceList[d].id === newValue) || 0]
       }
       if (device && device?.config) {
         const temp = [

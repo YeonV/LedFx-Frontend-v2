@@ -23,8 +23,6 @@ export const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...(props as any)} />
 })
 
-export const MuiMenuItem = React.forwardRef(
-  (props: any, ref: React.Ref<unknown>) => {
-    return <MenuItem ref={ref} {...props} />
-  }
-)
+export const MuiMenuItem = React.forwardRef((props: any, ref: React.Ref<unknown>) => {
+  return <MenuItem ref={ref} {...props} />
+})

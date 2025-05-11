@@ -2,13 +2,7 @@ import { useEffect, useState } from 'react'
 import useStore from '../../store/useStore'
 import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField
-} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material'
 import { Delete, Visibility } from '@mui/icons-material'
 
 const AudioCard = ({ className }: any) => {
@@ -28,28 +22,15 @@ const AudioCard = ({ className }: any) => {
   }, [])
 
   useEffect(() => {
-    if (
-      usePerDeviceDelay &&
-      model?.audio_device &&
-      schema.properties?.audio_device?.enum
-    ) {
+    if (usePerDeviceDelay && model?.audio_device && schema.properties?.audio_device?.enum) {
       if (
-        (perDeviceDelay[
-          schema.properties.audio_device?.enum[model.audio_device]
-        ] ||
-          perDeviceDelay[
-            schema.properties.audio_device?.enum[model.audio_device]
-          ] === 0) &&
-        perDeviceDelay[
-          schema.properties.audio_device?.enum[model.audio_device]
-        ] !== model.delay_ms
+        (perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]] ||
+          perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]] === 0) &&
+        perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]] !== model.delay_ms
       ) {
         setSystemConfig({
           audio: {
-            delay_ms:
-              perDeviceDelay[
-                schema.properties.audio_device?.enum[model.audio_device]
-              ]
+            delay_ms: perDeviceDelay[schema.properties.audio_device?.enum[model.audio_device]]
           }
         }).then(() => getSystemConfig())
       }
@@ -95,11 +76,7 @@ const AudioCard = ({ className }: any) => {
           onChange={(e) => setUsePerDeviceDelay(e.target.checked)}
         />
       </SettingsRow>
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="lg"
-      >
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg">
         <DialogTitle>Per Device Delay</DialogTitle>
         <DialogContent>
           {perDeviceDelay.length === 0 ? (

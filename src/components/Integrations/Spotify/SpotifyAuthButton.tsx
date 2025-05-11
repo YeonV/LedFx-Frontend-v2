@@ -42,11 +42,7 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
     const authURL =
       'https://accounts.spotify.com/authorize/' +
       '?response_type=code' +
-      `&client_id=${encodeURIComponent(apiCredentials.CLIENT_ID)}&scope=${encodeURIComponent(
-        'user-library-read user-library-modify user-read-email user-top-read streaming user-read-private user-read-playback-state user-modify-playback-state'
-      )}&redirect_uri=${encodeURIComponent(
-        apiCredentials.REDIRECT_URL
-      )}&code_challenge=${encodeURIComponent((codes as any).challenge)}&code_challenge_method=S256`
+      `&client_id=${encodeURIComponent(apiCredentials.CLIENT_ID)}&scope=${encodeURIComponent('user-library-read user-library-modify user-read-email user-top-read streaming user-read-private user-read-playback-state user-modify-playback-state')}&redirect_uri=${encodeURIComponent(apiCredentials.REDIRECT_URL)}&code_challenge=${encodeURIComponent((codes as any).challenge)}&code_challenge_method=S256`
     if (window.location.pathname.includes('hassio_ingress')) {
       window.location.href = authURL
     } else {

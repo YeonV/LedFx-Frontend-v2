@@ -24,17 +24,7 @@ const iterativeOnOnlyOne = async (
           i:
             i === 0
               ? [i, i + 1, 'FFFFFF', i + 1, segment.len, '000000']
-              : [
-                  0,
-                  i,
-                  '000000',
-                  i,
-                  i + 1,
-                  'FFFFFF',
-                  i + 1,
-                  segment.len,
-                  '000000'
-                ]
+              : [0, i, '000000', i, i + 1, 'FFFFFF', i + 1, segment.len, '000000']
         }
       }
       await wled(singleLedOn)

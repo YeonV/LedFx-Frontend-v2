@@ -22,18 +22,12 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
   const addScene = useStore((state) => state.addScene)
   const small = useMediaQuery('(max-width: 720px)')
 
-  const matrix = Object.keys(virtuals).filter(
-    (v: string) => virtuals[v].config.rows > 1
-  )
-  const smalls = Object.keys(virtuals).filter(
-    (v: string) => virtuals[v].pixel_count < 9
-  )
+  const matrix = Object.keys(virtuals).filter((v: string) => virtuals[v].config.rows > 1)
+  const smalls = Object.keys(virtuals).filter((v: string) => virtuals[v].pixel_count < 9)
   const medium = Object.keys(virtuals).filter(
     (v: string) => virtuals[v].pixel_count >= 9 && virtuals[v].pixel_count < 100
   )
-  const large = Object.keys(virtuals).filter(
-    (v: string) => virtuals[v].pixel_count >= 100
-  )
+  const large = Object.keys(virtuals).filter((v: string) => virtuals[v].pixel_count >= 100)
 
   const addBladeScene = () => {
     // if (noAuto) {
@@ -45,64 +39,43 @@ const BladeScene = ({ onClick }: { onClick: () => void }) => {
       setEffect(v, 'blade_power_plus', {}, true)
       // if (_i % 2 === 0)
       //   updateEffect(v, 'blade_power_plus', { flip: true }, false)
-      return activatePreset(
-        v,
-        'ledfx_presets',
-        'blade_power_plus',
-        'purplered-bass'
-      )
+      return activatePreset(v, 'ledfx_presets', 'blade_power_plus', 'purplered-bass')
     })
 
     smalls.map((v) => {
       setEffect(v, 'blade_power_plus', {}, true)
-      return activatePreset(
-        v,
-        'ledfx_presets',
-        'blade_power_plus',
-        'orange-hi-hat'
-      )
+      return activatePreset(v, 'ledfx_presets', 'blade_power_plus', 'orange-hi-hat')
     })
     // Use medium as smalls
     if (Object.keys(smalls).length === 0 && Object.keys(medium).length > 1) {
-      const v = medium.sort(
-        (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
-      )[0]
+      const v = medium.sort((a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count)[0]
       setEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'ledfx_presets', 'blade_power_plus', 'orange-hi-hat')
     }
     // Use medium as large
     if (Object.keys(large).length === 0 && Object.keys(medium).length > 2) {
-      const v = medium.sort(
-        (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
-      )[Object.keys(medium).length - 1]
+      const v = medium.sort((a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count)[
+        Object.keys(medium).length - 1
+      ]
       setEffect(v, 'melt', {}, true)
       activatePreset(v, 'ledfx_presets', 'melt', 'purple-red')
     }
 
     // Use large as smalls
     if (Object.keys(smalls).length === 0 && Object.keys(large).length > 1) {
-      const v = large.sort(
-        (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
-      )[0]
+      const v = large.sort((a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count)[0]
       setEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'ledfx_presets', 'blade_power_plus', 'orange-hi-hat')
     }
     // Use large as medium
     if (Object.keys(medium).length === 0 && Object.keys(large).length > 2) {
-      const v = large.sort(
-        (a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count
-      )[1]
+      const v = large.sort((a, b) => virtuals[a].pixel_count - virtuals[b].pixel_count)[1]
       setEffect(v, 'blade_power_plus', {}, true)
       activatePreset(v, 'ledfx_presets', 'blade_power_plus', 'purplered-bass')
     }
     if (Object.keys(matrix).length > 0) {
       matrix.map((v) => {
-        return setEffect(
-          v,
-          'equalizer',
-          { gradient_repeat: virtuals[v].config.rows },
-          true
-        )
+        return setEffect(v, 'equalizer', { gradient_repeat: virtuals[v].config.rows }, true)
       })
     }
     // }
@@ -189,8 +162,7 @@ export const defaultEffects = {
       fix_hues: false,
       flip: true,
       frequency_range: 'High',
-      gradient:
-        'linear-gradient(90deg, rgb(255, 40, 0) 0%, rgb(255, 0, 0) 100%)',
+      gradient: 'linear-gradient(90deg, rgb(255, 40, 0) 0%, rgb(255, 0, 0) 100%)',
       gradient_roll: 0,
       mirror: false,
       multiplier: 0.5
@@ -265,8 +237,7 @@ export const defaultEffects = {
       flip_horizontal: false,
       flip_vertical: false,
       frequency_range: 'Lows (beat+bass)',
-      gradient:
-        'linear-gradient(90deg, #ff00b2 0.00%,#ff2800 50.00%,#ffc800 100.00%)',
+      gradient: 'linear-gradient(90deg, #ff00b2 0.00%,#ff2800 50.00%,#ffc800 100.00%)',
       gradient_roll: 0,
       lower: 0.01,
       mirror: false,

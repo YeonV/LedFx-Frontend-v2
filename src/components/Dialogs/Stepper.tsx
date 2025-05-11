@@ -17,8 +17,7 @@ const steps = [
   },
   {
     label: 'Create an ad group',
-    description:
-      'An ad group contains one or more ads which target a shared set of keywords.'
+    description: 'An ad group contains one or more ads which target a shared set of keywords.'
   },
   {
     label: 'Create an ad',

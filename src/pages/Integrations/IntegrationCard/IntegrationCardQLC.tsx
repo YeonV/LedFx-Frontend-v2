@@ -6,14 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
-import {
-  CardActions,
-  CardHeader,
-  Switch,
-  Link,
-  useTheme,
-  Avatar
-} from '@mui/material'
+import { CardActions, CardHeader, Switch, Link, useTheme, Avatar } from '@mui/material'
 import { InsertLink, QuestionMark } from '@mui/icons-material'
 import Popover from '../../../components/Popover/Popover'
 import useStore from '../../../store/useStore'
@@ -29,9 +22,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
   const integrations = useStore((state) => state.integrations)
   const deleteIntegration = useStore((state) => state.deleteIntegration)
   const toggleIntegration = useStore((state) => state.toggleIntegration)
-  const setDialogOpenAddIntegration = useStore(
-    (state) => state.setDialogOpenAddIntegration
-  )
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration)
 
   const [expanded, setExpanded] = useState(false)
   const variant = 'outlined'
@@ -60,17 +51,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
     <Card className={classes.integrationCardPortrait}>
       <CardHeader
         title={integrations[integration].config.name}
-        subheader={`Current Status: ${
-          integrations[integration].status === 3
-            ? 'Connecting...'
-            : integrations[integration].status === 2
-              ? 'Disconnecting'
-              : integrations[integration].status === 1
-                ? 'Connected'
-                : integrations[integration].status === 0
-                  ? 'Disconnected'
-                  : 'Unknown'
-        }`}
+        subheader={`Current Status: ${integrations[integration].status === 3 ? 'Connecting...' : integrations[integration].status === 2 ? 'Disconnecting' : integrations[integration].status === 1 ? 'Connected' : integrations[integration].status === 0 ? 'Disconnected' : 'Unknown'}`}
         action={
           <Switch
             aria-label="status"
@@ -79,10 +60,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
           />
         }
         avatar={
-          <Avatar
-            aria-label="recipe"
-            sx={{ width: 56, height: 56, color: '#fff' }}
-          >
+          <Avatar aria-label="recipe" sx={{ width: 56, height: 56, color: '#fff' }}>
             Q
           </Avatar>
         }
@@ -141,12 +119,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
                 href="https://www.qlcplus.org/docs/html_en_EN/webinterface.html"
                 color={color}
               >
-                <Button
-                  variant={variant}
-                  size="small"
-                  color={color}
-                  className={classes.editButton}
-                >
+                <Button variant={variant} size="small" color={color} className={classes.editButton}>
                   <QuestionMark />
                 </Button>
               </Link>
@@ -156,12 +129,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
                 target="_blank"
                 href={`http://${integrations[integration].config.ip_address}:${integrations[integration].config.port}`}
               >
-                <Button
-                  variant={variant}
-                  size="small"
-                  color={color}
-                  className={classes.editButton}
-                >
+                <Button variant={variant} size="small" color={color} className={classes.editButton}>
                   <InsertLink />
                 </Button>
               </Link>
@@ -176,12 +144,7 @@ const IntegrationCardQLC = ({ integration }: any) => {
           </div>
         </div>
 
-        <Collapse
-          in={expanded}
-          timeout="auto"
-          unmountOnExit
-          className={classes.buttonBarMobile}
-        >
+        <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
           <div className={classes.buttonBarMobileWrapper}>
             <Popover
               variant={variant}

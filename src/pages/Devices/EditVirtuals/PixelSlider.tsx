@@ -37,12 +37,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
 
   return (
     <Stack direction="row" spacing={5} alignItems="flex-start" flexBasis="100%">
-      <Stack
-        direction="row"
-        spacing={1}
-        alignItems="flex-start"
-        alignSelf="flex-end"
-      >
+      <Stack direction="row" spacing={1} alignItems="flex-start" alignSelf="flex-end">
         <TextField
           size="small"
           type="number"
@@ -55,9 +50,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
             }
           }}
           value={range[0] + 1}
-          onChange={(
-            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-          ) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             if (parseInt(e.target.value, 10) > range[1] + 1) {
               return
             }
@@ -82,9 +75,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
             }
           }}
           value={range[1] + 1}
-          onChange={(
-            e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-          ) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             if (e.target.value === '') {
               setRange([range[0], range[0] + 1])
               throttled(e, [range[0], range[0] + 1])
@@ -95,15 +86,9 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
               throttled(e, [range[0], range[0] + 1])
               return
             }
-            if (
-              parseInt(e.target.value, 10) >
-              (devices[s[0]].config.pixel_count || 0)
-            ) {
+            if (parseInt(e.target.value, 10) > (devices[s[0]].config.pixel_count || 0)) {
               setRange([range[0], (devices[s[0]].config.pixel_count || 0) - 1])
-              throttled(e, [
-                range[0],
-                (devices[s[0]].config.pixel_count || 0) - 1
-              ])
+              throttled(e, [range[0], (devices[s[0]].config.pixel_count || 0) - 1])
               return
             }
             setRange([range[0], parseInt(e.target.value, 10) - 1])

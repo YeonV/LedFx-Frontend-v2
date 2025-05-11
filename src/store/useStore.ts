@@ -77,10 +77,7 @@ const useStore = create(
         name: 'ledfx-storage',
         version: frontendConfig,
         migrate: (persistedState, version) => {
-          log(
-            'infoConfig Migrator',
-            `Migrating from version ${version} to ${frontendConfig}`
-          )
+          log('infoConfig Migrator', `Migrating from version ${version} to ${frontendConfig}`)
           let state = persistedState as MigrationState
           for (let i = version + 1; i <= frontendConfig; i++) {
             if (migrations[i]) {
@@ -93,14 +90,7 @@ const useStore = create(
         partialize: (state) =>
           Object.fromEntries(
             Object.entries(state).filter(
-              ([key]) =>
-                ![
-                  'dialogs',
-                  'disconnected',
-                  'ui',
-                  'spotify',
-                  'pixelGraphs'
-                ].includes(key)
+              ([key]) => !['dialogs', 'disconnected', 'ui', 'spotify', 'pixelGraphs'].includes(key)
             )
           )
       }

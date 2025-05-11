@@ -33,18 +33,9 @@ export interface LaunchpadXDevice {
       color: keyof typeof lpColors | number,
       mode?: 'solid' | 'flash' | 'pulse'
     ) => number[]
-    ledSolid: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number
-    ) => number[]
-    ledFlash: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number
-    ) => number[]
-    ledPulse: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number
-    ) => number[]
+    ledSolid: (buttonNumber: number, color: keyof typeof lpColors | number) => number[]
+    ledFlash: (buttonNumber: number, color: keyof typeof lpColors | number) => number[]
+    ledPulse: (buttonNumber: number, color: keyof typeof lpColors | number) => number[]
     rgb: (buttonNumber: number, r: number, g: number, b: number) => number[]
     text: (
       text: string,
@@ -71,10 +62,7 @@ export interface LaunchpadSDevice {
   }
   fn: {
     ledOff: (buttonNumber: number) => number[]
-    ledOn: (
-      buttonNumber: number,
-      color: keyof typeof lpsColors | number
-    ) => number[]
+    ledOn: (buttonNumber: number, color: keyof typeof lpsColors | number) => number[]
   }
 }
 
@@ -107,23 +95,11 @@ export interface LaunchpadMK2Device {
       color: keyof typeof lpColors | number,
       mode?: 'solid' | 'flash' | 'pulse'
     ) => number[]
-    ledSolid: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number
-    ) => number[]
-    ledFlash: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number
-    ) => number[]
-    ledPulse: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number
-    ) => number[]
+    ledSolid: (buttonNumber: number, color: keyof typeof lpColors | number) => number[]
+    ledFlash: (buttonNumber: number, color: keyof typeof lpColors | number) => number[]
+    ledPulse: (buttonNumber: number, color: keyof typeof lpColors | number) => number[]
     rgb: (buttonNumber: number, r: number, g: number, b: number) => number[]
   }
 }
 
-export type LaunchpadDevice =
-  | LaunchpadXDevice
-  | LaunchpadSDevice
-  | LaunchpadMK2Device
+export type LaunchpadDevice = LaunchpadXDevice | LaunchpadSDevice | LaunchpadMK2Device

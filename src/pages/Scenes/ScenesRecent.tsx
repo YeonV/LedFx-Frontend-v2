@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  DataGrid,
-  GridColDef,
-  GridEventListener,
-  GridRenderCellParams
-} from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridEventListener, GridRenderCellParams } from '@mui/x-data-grid'
 import { useMediaQuery, useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
@@ -46,9 +41,7 @@ export default function ScenesRecent({ scenes, activateScene, title }: any) {
     scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
 
   const handleEvent: GridEventListener<'rowClick'> = (params) =>
-    activateScene(
-      Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name)
-    )
+    activateScene(Object.keys(scenes).find((s: any) => scenes[s].name === params.row?.name))
 
   useEffect(() => {
     const current = {} as any

@@ -39,11 +39,7 @@ export const poll = async (
   }
 }
 
-export function stopInstance(
-  wind: BrowserWindow,
-  name: string,
-  subprocesses: Subprocesses
-) {
+export function stopInstance(wind: BrowserWindow, name: string, subprocesses: Subprocesses) {
   if (subprocesses[name]) {
     subprocesses[name].running = false
     sendStatus(wind, subprocesses, false, name)
@@ -133,11 +129,7 @@ export function sendStatus(
   for (const name in platformParams) {
     if (subprocesses && subprocesses[name]) {
       if (name === n) {
-        status[name] = connected
-          ? 'running'
-          : subprocesses[name].running
-            ? 'starting'
-            : 'stopped'
+        status[name] = connected ? 'running' : subprocesses[name].running ? 'starting' : 'stopped'
       } else {
         status[name] = subprocesses[name].running ? 'running' : 'stopped'
       }
@@ -149,13 +141,8 @@ export function sendStatus(
     wind.webContents.send('fromMain', ['status', status])
 }
 
-export function closeAllSubs(
-  wind: BrowserWindow,
-  subpy: Subprocess,
-  subprocesses: Subprocesses
-) {
-  if (wind && wind.webContents && !wind.isDestroyed())
-    wind.webContents.send('fromMain', 'shutdown')
+export function closeAllSubs(wind: BrowserWindow, subpy: Subprocess, subprocesses: Subprocesses) {
+  if (wind && wind.webContents && !wind.isDestroyed()) wind.webContents.send('fromMain', 'shutdown')
   if (subpy !== null) kills(subpy)
   if (subprocesses && Object.keys(subprocesses).length > 0) {
     Object.values(subprocesses).forEach((sub) => {

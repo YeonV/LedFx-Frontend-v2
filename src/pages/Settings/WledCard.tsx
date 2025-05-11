@@ -105,9 +105,7 @@ const WledCard = ({ className }: any) => {
       />
       <CardContent className={classes.content}>
         <FormControl>
-          <InputLabel id="wled-scan-selector">
-            Scan for WLED on startup
-          </InputLabel>
+          <InputLabel id="wled-scan-selector">Scan for WLED on startup</InputLabel>
           <Select
             labelId="wled-scan-selector"
             id="wled-scan-select"
@@ -128,13 +126,12 @@ const WledCard = ({ className }: any) => {
           </AccordionSummary>
           <AccordionDetails className={classes.content}>
             <p style={{ margin: '0 0 2rem 0' }}>
-              LedFx can configure WLED&apos;s sync settings to recommended
-              values.
+              LedFx can configure WLED&apos;s sync settings to recommended values.
               <br />
               <br />
               WARNING: <br />
-              If you are using your strips with other controllers, changes to
-              these settings might impact their functionality!
+              If you are using your strips with other controllers, changes to these settings might
+              impact their functionality!
               <br />
               <br />
               LedFx will only change settings that you select with the checkbox
@@ -142,36 +139,24 @@ const WledCard = ({ className }: any) => {
             <div className={classes.rowContainer}>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.wled_preferred_mode.user_enabled
-                  }
+                  checked={settings.wled_preferences.wled_preferred_mode.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
                       'wled_preferred_mode',
-                      !settings.wled_preferences.wled_preferred_mode
-                        .user_enabled
+                      !settings.wled_preferences.wled_preferred_mode.user_enabled
                     )
                   }
                   inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
                 <FormControl className={classes.formControl}>
-                  <InputLabel id="wled-mode-selector">
-                    Preferred WLED mode
-                  </InputLabel>
+                  <InputLabel id="wled-mode-selector">Preferred WLED mode</InputLabel>
                   <Select
                     labelId="wled-mode-selector"
                     id="wled-mode-select"
-                    value={
-                      settings.wled_preferences.wled_preferred_mode.setting
-                    }
-                    onChange={(e) =>
-                      onChangeSetting('wled_preferred_mode', e.target.value)
-                    }
-                    disabled={
-                      !settings.wled_preferences.wled_preferred_mode
-                        .user_enabled
-                    }
+                    value={settings.wled_preferences.wled_preferred_mode.setting}
+                    onChange={(e) => onChangeSetting('wled_preferred_mode', e.target.value)}
+                    disabled={!settings.wled_preferences.wled_preferred_mode.user_enabled}
                   >
                     <MenuItem value="unset">Unset</MenuItem>
                     <MenuItem value="E131">E131</MenuItem>
@@ -182,16 +167,12 @@ const WledCard = ({ className }: any) => {
               </div>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.realtime_gamma_enabled
-                      .user_enabled
-                  }
+                  checked={settings.wled_preferences.realtime_gamma_enabled.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
                       'realtime_gamma_enabled',
-                      !settings.wled_preferences.realtime_gamma_enabled
-                        .user_enabled
+                      !settings.wled_preferences.realtime_gamma_enabled.user_enabled
                     )
                   }
                   inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -201,16 +182,9 @@ const WledCard = ({ className }: any) => {
                   <Select
                     labelId="wled-gamma"
                     id="wled-gamma-select"
-                    value={
-                      settings.wled_preferences.realtime_gamma_enabled.setting
-                    }
-                    onChange={(e) =>
-                      onChangeSetting('realtime_gamma_enabled', e.target.value)
-                    }
-                    disabled={
-                      !settings.wled_preferences.realtime_gamma_enabled
-                        .user_enabled
-                    }
+                    value={settings.wled_preferences.realtime_gamma_enabled.setting}
+                    onChange={(e) => onChangeSetting('realtime_gamma_enabled', e.target.value)}
+                    disabled={!settings.wled_preferences.realtime_gamma_enabled.user_enabled}
                   >
                     <MenuItem value="true">Enable</MenuItem>
                     <MenuItem>Disable</MenuItem>
@@ -219,36 +193,24 @@ const WledCard = ({ className }: any) => {
               </div>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.force_max_brightness.user_enabled
-                  }
+                  checked={settings.wled_preferences.force_max_brightness.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
                       'force_max_brightness',
-                      !settings.wled_preferences.force_max_brightness
-                        .user_enabled
+                      !settings.wled_preferences.force_max_brightness.user_enabled
                     )
                   }
                   inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
                 <FormControl className={classes.formControl}>
-                  <InputLabel id="wled-brightness">
-                    Force MaxBrightness
-                  </InputLabel>
+                  <InputLabel id="wled-brightness">Force MaxBrightness</InputLabel>
                   <Select
                     labelId="wled-brightness"
                     id="wled-brightness-select"
-                    value={
-                      settings.wled_preferences.force_max_brightness.setting
-                    }
-                    onChange={(e) =>
-                      onChangeSetting('force_max_brightness', e.target.value)
-                    }
-                    disabled={
-                      !settings.wled_preferences.force_max_brightness
-                        .user_enabled
-                    }
+                    value={settings.wled_preferences.force_max_brightness.setting}
+                    onChange={(e) => onChangeSetting('force_max_brightness', e.target.value)}
+                    disabled={!settings.wled_preferences.force_max_brightness.user_enabled}
                   >
                     <MenuItem value="true">Enable</MenuItem>
                     <MenuItem>Disable</MenuItem>
@@ -257,9 +219,7 @@ const WledCard = ({ className }: any) => {
               </div>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.realtime_dmx_mode.user_enabled
-                  }
+                  checked={settings.wled_preferences.realtime_dmx_mode.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
@@ -275,12 +235,8 @@ const WledCard = ({ className }: any) => {
                     labelId="wled-dmx"
                     id="wled-dmx-select"
                     value={settings.wled_preferences.realtime_dmx_mode.setting}
-                    onChange={(e) =>
-                      onChangeSetting('realtime_dmx_mode', e.target.value)
-                    }
-                    disabled={
-                      !settings.wled_preferences.realtime_dmx_mode.user_enabled
-                    }
+                    onChange={(e) => onChangeSetting('realtime_dmx_mode', e.target.value)}
+                    disabled={!settings.wled_preferences.realtime_dmx_mode.user_enabled}
                   >
                     <MenuItem value="MultiRGB">Disabled</MenuItem>
                     <MenuItem value="MultiRGB">Single RGB</MenuItem>
@@ -293,16 +249,12 @@ const WledCard = ({ className }: any) => {
               </div>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.start_universe_setting
-                      .user_enabled
-                  }
+                  checked={settings.wled_preferences.start_universe_setting.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
                       'start_universe_setting',
-                      !settings.wled_preferences.start_universe_setting
-                        .user_enabled
+                      !settings.wled_preferences.start_universe_setting.user_enabled
                     )
                   }
                   inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -311,24 +263,15 @@ const WledCard = ({ className }: any) => {
                   type="number"
                   label="Start universe"
                   id="wled-universe-select"
-                  value={
-                    settings.wled_preferences.start_universe_setting.setting
-                  }
-                  onChange={(e) =>
-                    onChangeSetting('start_universe_setting', e.target.value)
-                  }
-                  disabled={
-                    !settings.wled_preferences.start_universe_setting
-                      .user_enabled
-                  }
+                  value={settings.wled_preferences.start_universe_setting.setting}
+                  onChange={(e) => onChangeSetting('start_universe_setting', e.target.value)}
+                  disabled={!settings.wled_preferences.start_universe_setting.user_enabled}
                   className={classes.formControl}
                 />
               </div>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.dmx_address_start.user_enabled
-                  }
+                  checked={settings.wled_preferences.dmx_address_start.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
@@ -343,20 +286,14 @@ const WledCard = ({ className }: any) => {
                   label="DMX start address"
                   id="wled-dmx-start-select"
                   value={settings.wled_preferences.dmx_address_start.setting}
-                  onChange={(e) =>
-                    onChangeSetting('dmx_address_start', e.target.value)
-                  }
-                  disabled={
-                    !settings.wled_preferences.dmx_address_start.user_enabled
-                  }
+                  onChange={(e) => onChangeSetting('dmx_address_start', e.target.value)}
+                  disabled={!settings.wled_preferences.dmx_address_start.user_enabled}
                   className={classes.formControl}
                 />
               </div>
               <div className={classes.row}>
                 <Checkbox
-                  checked={
-                    settings.wled_preferences.inactivity_timeout.user_enabled
-                  }
+                  checked={settings.wled_preferences.inactivity_timeout.user_enabled}
                   className={classes.check}
                   onChange={() =>
                     toggleSetting(
@@ -371,12 +308,8 @@ const WledCard = ({ className }: any) => {
                   label="Inactivity Timeout"
                   id="wled-inactivity-select"
                   value={settings.wled_preferences.inactivity_timeout.setting}
-                  onChange={(e) =>
-                    onChangeSetting('inactivity_timeout', e.target.value)
-                  }
-                  disabled={
-                    !settings.wled_preferences.inactivity_timeout.user_enabled
-                  }
+                  onChange={(e) => onChangeSetting('inactivity_timeout', e.target.value)}
+                  disabled={!settings.wled_preferences.inactivity_timeout.user_enabled}
                   className={classes.formControl}
                 />
               </div>

@@ -5,13 +5,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
-import {
-  Avatar,
-  CardActions,
-  CardHeader,
-  Switch,
-  useTheme
-} from '@mui/material'
+import { Avatar, CardActions, CardHeader, Switch, useTheme } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import useStore from '../../../store/useStore'
 import useIntegrationCardStyles from './IntegrationCard.styles'
@@ -25,9 +19,7 @@ const IntegrationCard = ({ integration }: any) => {
   const integrations = useStore((state) => state.integrations)
   const deleteIntegration = useStore((state) => state.deleteIntegration)
   const toggleIntegration = useStore((state) => state.toggleIntegration)
-  const setDialogOpenAddIntegration = useStore(
-    (state) => state.setDialogOpenAddIntegration
-  )
+  const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration)
 
   const [expanded, setExpanded] = useState(false)
   const variant = 'outlined'
@@ -65,10 +57,7 @@ const IntegrationCard = ({ integration }: any) => {
           />
         }
         avatar={
-          <Avatar
-            aria-label="recipe"
-            sx={{ width: 56, height: 56, color: '#fff' }}
-          >
+          <Avatar aria-label="recipe" sx={{ width: 56, height: 56, color: '#fff' }}>
             <BladeIcon
               name={
                 integrations[integration].config.name.startsWith('Home')
@@ -130,12 +119,7 @@ const IntegrationCard = ({ integration }: any) => {
           </div>
         </div>
 
-        <Collapse
-          in={expanded}
-          timeout="auto"
-          unmountOnExit
-          className={classes.buttonBarMobile}
-        >
+        <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.buttonBarMobile}>
           <div className={classes.buttonBarMobileWrapper}>
             <Popover
               variant={variant}

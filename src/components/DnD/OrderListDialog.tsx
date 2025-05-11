@@ -116,14 +116,8 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
                   type="file"
                   onChange={(e) => fileChanged(e)}
                 />
-                <label
-                  htmlFor="contained-button-file"
-                  style={{ width: '100%', flexBasis: '49%' }}
-                >
-                  <BladeIcon
-                    sx={{ pt: 0.4, cursor: 'pointer' }}
-                    name="mdi:folder-open"
-                  />
+                <label htmlFor="contained-button-file" style={{ width: '100%', flexBasis: '49%' }}>
+                  <BladeIcon sx={{ pt: 0.4, cursor: 'pointer' }} name="mdi:folder-open" />
                 </label>
               </IconButton>
             </Stack>

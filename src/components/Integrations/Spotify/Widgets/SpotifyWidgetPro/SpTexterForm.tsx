@@ -15,39 +15,25 @@ const SpTexterForm = () => {
   const setSpTexterFallback = useStore((state) => state.setSpTexterFallback)
   const setSendSpotifyTrack = useStore((state) => state.setSendSpotifyTrack)
   const setSpTexterTextColor = useStore((state) => state.setSpTexterTextColor)
-  const setSpTexterFlipVertical = useStore(
-    (state) => state.setSpTexterFlipVertical
-  )
-  const setSpTexterFlipHorizontal = useStore(
-    (state) => state.setSpTexterFlipHorizontal
-  )
-  const setSpTexterUseGradient = useStore(
-    (state) => state.setSpTexterUseGradient
-  )
+  const setSpTexterFlipVertical = useStore((state) => state.setSpTexterFlipVertical)
+  const setSpTexterFlipHorizontal = useStore((state) => state.setSpTexterFlipHorizontal)
+  const setSpTexterUseGradient = useStore((state) => state.setSpTexterUseGradient)
   const setSpTexterAlpha = useStore((state) => state.setSpTexterAlpha)
   const setSpTexterBackground = useStore((state) => state.setSpTexterBackground)
   const setSpTexterGradient = useStore((state) => state.setSpTexterGradient)
-  const setSpTexterGradientRoll = useStore(
-    (state) => state.setSpTexterGradientRoll
-  )
+  const setSpTexterGradientRoll = useStore((state) => state.setSpTexterGradientRoll)
   const setSpTexterRotate = useStore((state) => state.setSpTexterRotate)
-  const setSpTexterHeightPercent = useStore(
-    (state) => state.setSpTexterHeightPercent
-  )
+  const setSpTexterHeightPercent = useStore((state) => state.setSpTexterHeightPercent)
   const setSpTexterBrightness = useStore((state) => state.setSpTexterBrightness)
   const setSpTexterSpeed = useStore((state) => state.setSpTexterSpeed)
-  const setSpTexterBackgroundBrightness = useStore(
-    (state) => state.setSpTexterBackgroundBrightness
-  )
+  const setSpTexterBackgroundBrightness = useStore((state) => state.setSpTexterBackgroundBrightness)
   const setSpTexterFont = useStore((state) => state.setSpTexterFont)
   const setSpTexterTextEffect = useStore((state) => state.setSpTexterTextEffect)
   const setEffect = useStore((state) => state.setEffect)
 
   const [selected, setSelected] = useState('')
 
-  const matrix = Object.keys(virtuals).filter(
-    (v: string) => (virtuals[v].config.rows || 1) > 1
-  )
+  const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
 
   useEffect(() => {
     if (sendSpotifyTrack && currentTrack !== '' && selected !== '') {
@@ -132,9 +118,7 @@ const SpTexterForm = () => {
             step={0.01}
             valueLabelDisplay="auto"
             value={spotifyTexter.brightness}
-            onChange={(_e, v) =>
-              typeof v === 'number' && setSpTexterBrightness(v)
-            }
+            onChange={(_e, v) => typeof v === 'number' && setSpTexterBrightness(v)}
           />
         </BladeFrame>
         <BladeFrame title="Height %" style={{ width: '50%' }}>
@@ -144,9 +128,7 @@ const SpTexterForm = () => {
             step={0.01}
             valueLabelDisplay="auto"
             value={spotifyTexter.background_brightness}
-            onChange={(_e, v) =>
-              typeof v === 'number' && setSpTexterBackgroundBrightness(v)
-            }
+            onChange={(_e, v) => typeof v === 'number' && setSpTexterBackgroundBrightness(v)}
           />
         </BladeFrame>
       </Stack>
@@ -193,9 +175,7 @@ const SpTexterForm = () => {
             step={0.1}
             valueLabelDisplay="auto"
             value={spotifyTexter.gradient_roll}
-            onChange={(_e, v) =>
-              typeof v === 'number' && setSpTexterGradientRoll(v)
-            }
+            onChange={(_e, v) => typeof v === 'number' && setSpTexterGradientRoll(v)}
           />
         </BladeFrame>
         <BladeFrame title="Rotate" style={{ width: '50%' }}>
@@ -227,9 +207,7 @@ const SpTexterForm = () => {
             step={1}
             valueLabelDisplay="auto"
             value={spotifyTexter.height_percent}
-            onChange={(_e, v) =>
-              typeof v === 'number' && setSpTexterHeightPercent(v)
-            }
+            onChange={(_e, v) => typeof v === 'number' && setSpTexterHeightPercent(v)}
           />
         </BladeFrame>
       </Stack>
@@ -242,13 +220,11 @@ const SpTexterForm = () => {
             value={spotifyTexter.font}
             onChange={(e) => setSpTexterFont(e.target.value)}
           >
-            {schemas.effects.texter2d.schema.properties.font.enum.map(
-              (f: string) => (
-                <MenuItem key={f} value={f}>
-                  {f}
-                </MenuItem>
-              )
-            )}
+            {schemas.effects.texter2d.schema.properties.font.enum.map((f: string) => (
+              <MenuItem key={f} value={f}>
+                {f}
+              </MenuItem>
+            ))}
           </Select>
         </BladeFrame>
         <BladeFrame title="Font" style={{ width: '50%' }}>
@@ -259,13 +235,11 @@ const SpTexterForm = () => {
             value={spotifyTexter.text_effect}
             onChange={(e) => setSpTexterTextEffect(e.target.value)}
           >
-            {schemas.effects.texter2d.schema.properties.text_effect.enum.map(
-              (f: string) => (
-                <MenuItem key={f} value={f}>
-                  {f}
-                </MenuItem>
-              )
-            )}
+            {schemas.effects.texter2d.schema.properties.text_effect.enum.map((f: string) => (
+              <MenuItem key={f} value={f}>
+                {f}
+              </MenuItem>
+            ))}
           </Select>
         </BladeFrame>
       </Stack>

@@ -253,9 +253,7 @@ const storeUI = (set: any) => ({
         if (state.ui.bars.bottomBar.indexOf(page) === -1) {
           state.ui.bars.bottomBar = [...state.ui.bars.bottomBar, page]
         } else {
-          state.ui.bars.bottomBar = state.ui.bars.bottomBar.filter(
-            (p: any) => p !== page
-          )
+          state.ui.bars.bottomBar = state.ui.bars.bottomBar.filter((p: any) => p !== page)
         }
       }),
       false,

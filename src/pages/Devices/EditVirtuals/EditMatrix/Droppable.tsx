@@ -31,12 +31,7 @@ function Droppable({
   const classes = useStyles()
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={classes.gridCell}
-      onContextMenu={onContextMenu}
-    >
+    <div ref={setNodeRef} style={style} className={classes.gridCell} onContextMenu={onContextMenu}>
       {children}
     </div>
   )

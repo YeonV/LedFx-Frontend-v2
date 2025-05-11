@@ -21,10 +21,7 @@ function getConfig() {
   return JSON.parse(configData.toString())
 }
 
-export function showNotification(
-  title = NOTIFICATION_TITLE,
-  body = NOTIFICATION_BODY
-) {
+export function showNotification(title = NOTIFICATION_TITLE, body = NOTIFICATION_BODY) {
   const config = getConfig()
   const updateUrl = config.updateUrl
 

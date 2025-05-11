@@ -26,10 +26,7 @@ interface GifFramePickerProps {
   model: any
 }
 
-const GifFramePicker: FC<GifFramePickerProps> = ({
-  onChange,
-  model
-}: GifFramePickerProps) => {
+const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePickerProps) => {
   const [open, setOpen] = useState(false)
   const [imageData, setImageData] = useState<string[]>([])
   const getGifFrames = useStore((state) => state.getGifFrames)
@@ -92,16 +89,10 @@ const GifFramePicker: FC<GifFramePickerProps> = ({
                 <GifFrame image={imageData[currentFrame - 1]} />
                 <GifFrame
                   image={imageData[currentFrame]}
-                  selected={model.beat_frames
-                    .split(' ')
-                    .includes(currentFrame.toString())}
+                  selected={model.beat_frames.split(' ').includes(currentFrame.toString())}
                   onClick={() => {
                     let output = ''
-                    if (
-                      model.beat_frames
-                        .split(' ')
-                        .includes(currentFrame.toString())
-                    ) {
+                    if (model.beat_frames.split(' ').includes(currentFrame.toString())) {
                       output = model.beat_frames
                         .split(' ')
                         .filter((b: string) => b !== currentFrame.toString())
@@ -110,10 +101,7 @@ const GifFramePicker: FC<GifFramePickerProps> = ({
                       output = model.beat_frames
                         .concat([` ${currentFrame.toString()}`])
                         .split(' ')
-                        .sort(
-                          (a: string, b: string) =>
-                            parseInt(a, 10) - parseInt(b, 10)
-                        )
+                        .sort((a: string, b: string) => parseInt(a, 10) - parseInt(b, 10))
                         .join(' ')
                     }
                     onChange(output)
@@ -121,12 +109,7 @@ const GifFramePicker: FC<GifFramePickerProps> = ({
                 />
                 <GifFrame image={imageData[currentFrame + 1]} />
               </div>
-              <Stack
-                direction="row"
-                spacing={1}
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
                 <IconButton
                   onClick={() => setCurrentFrame(currentFrame - 1)}
                   disabled={currentFrame === 0}

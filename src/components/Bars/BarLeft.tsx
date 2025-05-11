@@ -47,8 +47,7 @@ const LeftBar = () => {
                 src={logoAsset}
                 alt="logo"
                 style={{
-                  filter:
-                    theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)'
+                  filter: theme.palette.mode === 'light' ? 'invert(1)' : 'invert(0)'
                 }}
               />
             </div>
@@ -62,8 +61,7 @@ const LeftBar = () => {
 
                 backgroundColor: isElectron()
                   ? 'transparent'
-                  : theme.palette.mode === 'light' ||
-                      theme.palette.primary.main === '#FFFFFF'
+                  : theme.palette.mode === 'light' || theme.palette.primary.main === '#FFFFFF'
                     ? 'transparent'
                     : theme.palette.primary.main,
 
@@ -103,9 +101,7 @@ const LeftBar = () => {
         onClick={handleDrawerClose}
       >
         {logo}
-        <IconButton>
-          {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
-        </IconButton>
+        <IconButton>{theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}</IconButton>
       </Box>
       <Divider />
       <List>
@@ -113,11 +109,7 @@ const LeftBar = () => {
           .filter((v) =>
             showComplex
               ? v
-              : !(
-                  v.endsWith('-mask') ||
-                  v.endsWith('-foreground') ||
-                  v.endsWith('-background')
-                )
+              : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
           .map((d, i) => (

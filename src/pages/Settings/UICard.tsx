@@ -13,9 +13,7 @@ const UICard = () => {
       <SettingsRow
         title="Expert Mode"
         checked={viewMode !== 'user'}
-        onChange={() =>
-          viewMode === 'user' ? setViewMode('expert') : setViewMode('user')
-        }
+        onChange={() => (viewMode === 'user' ? setViewMode('expert') : setViewMode('user'))}
       />
       <SettingsRow
         expert

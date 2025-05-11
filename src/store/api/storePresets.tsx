@@ -20,12 +20,7 @@ const storePresets = (set: any) => ({
   },
   addPreset: async (effectId: string, name: string) =>
     await Ledfx(`/api/virtuals/${effectId}/presets`, 'POST', { name }),
-  activatePreset: async (
-    virtId: string,
-    category: string,
-    effectType: string,
-    presetId: string
-  ) =>
+  activatePreset: async (virtId: string, category: string, effectType: string, presetId: string) =>
     await Ledfx(`/api/virtuals/${virtId}/presets`, 'PUT', {
       category,
       effect_id: effectType,

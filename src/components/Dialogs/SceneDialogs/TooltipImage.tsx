@@ -11,10 +11,7 @@ const TooltipImage = () => (
         <ul style={{ paddingLeft: '1rem' }}>
           <li>
             iconName{' '}
-            <Link
-              href="https://mui.com/material-ui/material-icons/"
-              target="_blank"
-            >
+            <Link href="https://mui.com/material-ui/material-icons/" target="_blank">
               Find MUI icons here
             </Link>
             <Typography color="textSecondary" variant="subtitle1">
@@ -39,9 +36,7 @@ const TooltipImage = () => (
             >
               <em>eg. image:file:///C:/Users/username/Pictures/scene.png</em> or
               <br />
-              <em>
-                image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg
-              </em>
+              <em>image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg</em>
             </Typography>
           </li>
         </ul>
