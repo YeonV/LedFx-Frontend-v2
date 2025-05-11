@@ -143,6 +143,15 @@ const storeScenes = (set: any) => ({
       'setMostUsedScenes'
     )
   },
+  clearMostUsedScenes: () => {
+    set(
+      produce((s: IStore) => {
+        s.mostUsedScenes = {}
+      }),
+      false,
+      'clearMostUsedScenes'
+    )
+  },
   setScenePL: (scenes: string[]) => {
     set(
       produce((s: IStore) => {

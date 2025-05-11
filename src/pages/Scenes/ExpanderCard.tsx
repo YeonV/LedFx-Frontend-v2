@@ -43,11 +43,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 const ExpanderCard = ({
   title,
   cardKey,
-  children
+  children,
+  onContextMenu
 }: {
   title: string
   cardKey: string
   children: React.ReactNode
+  onContextMenu?: any
 }) => {
   const theme = useTheme()
   const setExpander = useStore((state) => state.setExpander)
@@ -58,7 +60,7 @@ const ExpanderCard = ({
   }
 
   return (
-    <Card sx={{ width: '100%', maxWidth: '100vw' }}>
+    <Card sx={{ width: '100%', maxWidth: '100vw' }} onContextMenu={onContextMenu}>
       <Typography
         onClick={handleExpandClick}
         color={'GrayText'}
