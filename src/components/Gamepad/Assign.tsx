@@ -350,6 +350,25 @@ const Assign = ({
           }
         />
       )}
+
+      {compact && mapping[padIndex]?.[index]?.command === 'effect' && (
+        <OneEffect
+          size={compact ? 'small' : 'large'}
+          initialPayload={mapping[padIndex]?.[index]?.payload}
+          setPayload={(v: any) =>
+            setMapping({
+              ...mapping,
+              [padIndex]: {
+                ...mapping[padIndex],
+                [index]: {
+                  ...mapping[padIndex]?.[index],
+                  payload: v
+                }
+              }
+            })
+          }
+        />
+      )}
     </Stack>
   )
 }
