@@ -32,7 +32,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   const [type, setType] = useState('')
   const [config, setConfig] = useState<any>({})
   const [active, setActive] = useState(true)
-  const [fallback, setFallback] = useState(1)
+  const [fallback, setFallback] = useState(2)
   const [fallbackBool, setFallbackBool] = useState(false)
   const [fallbackUseNumber, setFallbackUseNumber] = useState(true)
   const [fallbackNumber, setFallbackNumber] = useState(20)
@@ -85,9 +85,6 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
   }, [virtId, type])
 
   const handleFallbackChange = (newValue: number | null) => {
-    // The ToggleButtonGroup with exclusive=true should always pass a value (1, 2, or 3)
-    // unless all buttons are somehow deselected, which shouldn't happen.
-    // If newValue can be null, you might want to default to a state (e.g., 1) or just return.
     if (newValue === null) {
       return
     }
@@ -120,19 +117,17 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
       setVirtId(initialPayload?.virtId || '')
       setType(initialPayload?.type || '')
 
-      // Config: initialPayload.config is expected to be a stringified JSON.
-      // The local `config` state will also store it as a string (or '' for "Please select").
       const initialConfigStr = initialPayload?.config
       if (initialConfigStr) {
         try {
-          JSON.parse(initialConfigStr) // Validate if it's a JSON string
+          JSON.parse(initialConfigStr)
           setConfig(JSON.stringify(JSON.parse(initialConfigStr)))
         } catch (e) {
           console.warn('Initial payload config is not a valid JSON string:', initialConfigStr, e)
-          setConfig('') // Default to "Please select" or empty
+          setConfig('')
         }
       } else {
-        setConfig('') // For create mode or if config is not set
+        setConfig('')
       }
 
       setActive(initialPayload?.active !== undefined ? initialPayload.active : false)
@@ -140,15 +135,15 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
       // Handle fallback logic
       if (initialPayload && initialPayload.fallback !== undefined) {
         if (typeof initialPayload.fallback === 'number') {
+          setFallback(2)
           setFallbackUseNumber(true)
-          // Assuming initialPayload.fallback is 0-1, and slider uses 0-1000
           setFallbackNumber(initialPayload.fallback * 1000)
           setFallbackBool(true)
         } else {
           // Assuming boolean
           setFallbackUseNumber(false)
-          setFallbackBool(Boolean(initialPayload.fallback)) // Ensure it's a boolean
-          // setFallbackNumber(20) // Default for number when bool is used (current default)
+          setFallbackBool(Boolean(initialPayload.fallback))
+          setFallback(initialPayload.fallback ? 3 : 1)
         }
       } else {
         // Defaults for create mode or if initialPayload.fallback is undefined
@@ -179,7 +174,6 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
               <BladeFrame
                 title="Type"
                 style={{
-                  // margin: '0.5rem 0',
                   flexBasis: '100%',
                   width: 'unset'
                 }}
