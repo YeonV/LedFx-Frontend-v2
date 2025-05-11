@@ -19,7 +19,8 @@ const useStyle = makeStyles(() => ({
     }
   },
   virtualCardPortrait: {
-    padding: '1rem 0.7rem 0.7rem 0.7rem',
+    padding: '0rem 0.6rem 0.2rem 0.6rem',
+    // padding: '1rem 0.7rem 0.7rem 0.7rem',
     display: 'flex',
     alignItems: 'flex-start',
     flexDirection: 'column',
@@ -75,7 +76,10 @@ const useStyle = makeStyles(() => ({
     minHeight: '73px',
     padding: '0 0.3rem',
     justifyContent: 'space-between',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    '@media (max-width: 470px)': {
+      paddingRight: '0'
+    }
   },
 
   virtualSubline: {

@@ -149,10 +149,12 @@ const commandStrategies: {
   'scan-wled': (_payload: any, store) => {
     store.scanForDevices() // Assuming scanForDevices is a store action
   },
-
-  // NOTE: UI-specific commands like 'padscreen' (open Gamepad dialog) or
   smartbar: (_payload: any, store) => {
     store.ui.setSmartBarOpen(!store.ui.bars.smartBar.open)
+  },
+  padscreen: (_payload: any, _store) => {
+    // not in useStore yet
+    // store.ui.setPadScreenOpen(!store.ui.bars.padScreen.open)
   }
 }
 
