@@ -43,9 +43,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const getFullConfig = useStore((state) => state.getFullConfig)
   const getCloudConfigs = async () => {
     try {
-      const response = await cloud.get(
-        `configs?user.username=${localStorage.getItem('username')}`
-      )
+      const response = await cloud.get(`configs?user.username=${localStorage.getItem('username')}`)
       if (response.status !== 200) {
         alert('No Access')
         return
@@ -59,9 +57,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
   const uploadPresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
-      `presets?user.username=${localStorage.getItem('username')}&Name=${
-        list[preset].name
-      }`
+      `presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`
     )
     const exists = await existing.data
     const eff = await cloud.get(`effects?ledfx_id=${effectType}`)
@@ -87,9 +83,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
   const deletePresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
-      `presets?user.username=${localStorage.getItem('username')}&Name=${
-        list[preset].name
-      }`
+      `presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`
     )
     const exists = await existing.data
     if (exists.length && exists.length > 0) {
@@ -133,13 +127,10 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       getPresets(effectType)
     })
 
-  const handleActivatePreset =
-    (virtId: string, category: string, presetId: string) => () => {
-      activatePreset(virtId, category, effectType, presetId).then(() =>
-        getVirtuals()
-      )
-      setName('')
-    }
+  const handleActivatePreset = (virtId: string, category: string, presetId: string) => () => {
+    activatePreset(virtId, category, effectType, presetId).then(() => getVirtuals())
+    setName('')
+  }
 
   const renderPresetsButton = (list: any, CATEGORY: string) => {
     if (list && !Object.keys(list)?.length) {
@@ -163,8 +154,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
             {CATEGORY !== 'ledfx_presets' ? (
               <PresetButton
                 buttonColor={
-                  JSON.stringify(virtual.effect.config) ===
-                  JSON.stringify(list[preset].config)
+                  JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config)
                     ? 'primary'
                     : 'inherit'
                 }
@@ -178,8 +168,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               <Button
                 size="medium"
                 color={
-                  JSON.stringify(virtual.effect.config) ===
-                  JSON.stringify(list[preset].config)
+                  JSON.stringify(virtual.effect.config) === JSON.stringify(list[preset].config)
                     ? 'primary'
                     : 'inherit'
                 }
@@ -250,17 +239,11 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
       />
       <CardContent>
         <Grid spacing={2} container>
-          {renderPresetsButton(
-            presets?.ledfx_presets || presets?.default_presets,
-            'ledfx_presets'
-          )}
+          {renderPresetsButton(presets?.ledfx_presets || presets?.default_presets, 'ledfx_presets')}
         </Grid>
         <Divider style={{ margin: '1rem 0' }} />
         <Grid spacing={2} container>
-          {renderPresetsButton(
-            presets?.user_presets || presets?.custom_presets,
-            'user_presets'
-          )}
+          {renderPresetsButton(presets?.user_presets || presets?.custom_presets, 'user_presets')}
           <Grid>
             <Popover
               popoverStyle={{ padding: '0.5rem' }}
@@ -273,25 +256,21 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                   error={
                     presets.ledfx_presets &&
                     (Object.keys(presets.ledfx_presets).indexOf(name) > -1 ||
-                      Object.values(presets.ledfx_presets).filter(
-                        (p: any) => p.name === name
-                      ).length > 0)
+                      Object.values(presets.ledfx_presets).filter((p: any) => p.name === name)
+                        .length > 0)
                   }
                   size="small"
                   id="presetNameInput"
                   label={
                     presets.ledfx_presets &&
                     (Object.keys(presets.ledfx_presets).indexOf(name) > -1 ||
-                      Object.values(presets.ledfx_presets).filter(
-                        (p: any) => p.name === name
-                      ).length > 0)
+                      Object.values(presets.ledfx_presets).filter((p: any) => p.name === name)
+                        .length > 0)
                       ? 'Default presets are readonly'
                       : presets.user_presets &&
-                          (Object.keys(presets.user_presets).indexOf(name) >
-                            -1 ||
-                            Object.values(presets.user_presets).filter(
-                              (p: any) => p.name === name
-                            ).length > 0)
+                          (Object.keys(presets.user_presets).indexOf(name) > -1 ||
+                            Object.values(presets.user_presets).filter((p: any) => p.name === name)
+                              .length > 0)
                         ? 'Preset already exsisting'
                         : 'Add Custom Preset'
                   }
@@ -301,9 +280,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                     setName(e.target.value)
                     if (
                       presets.user_presets &&
-                      (Object.keys(presets.user_presets).indexOf(
-                        e.target.value
-                      ) > -1 ||
+                      (Object.keys(presets.user_presets).indexOf(e.target.value) > -1 ||
                         Object.values(presets.user_presets).filter(
                           (p: any) => p.name === e.target.value
                         ).length > 0)
@@ -317,10 +294,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               }
               footer={
                 <div style={{ margin: '0 0 0.5rem 1rem' }}>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: theme.palette.text.disabled }}
-                  >
+                  <Typography variant="body2" sx={{ color: theme.palette.text.disabled }}>
                     Save the current effect configuration as a new preset.
                   </Typography>
                 </div>
@@ -329,9 +303,8 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                 name.length === 0 ||
                 (presets.ledfx_presets &&
                   (Object.keys(presets.ledfx_presets).indexOf(name) > -1 ||
-                    Object.values(presets.ledfx_presets).filter(
-                      (p: any) => p.name === name
-                    ).length > 0)) ||
+                    Object.values(presets.ledfx_presets).filter((p: any) => p.name === name)
+                      .length > 0)) ||
                 !valid
               }
               onConfirm={handleAddPreset}
@@ -352,10 +325,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               alignItems: 'flex-end'
             }}
           >
-            <Typography
-              variant="body2"
-              sx={{ color: theme.palette.text.disabled }}
-            >
+            <Typography variant="body2" sx={{ color: theme.palette.text.disabled }}>
               Long-Press or right-click to open context-menu
             </Typography>
           </div>
@@ -389,9 +359,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
             </>
           )}
 
-          {cloudConfigs.some(
-            (c: any) => Object.keys(c.config.user_presets).length > 0
-          ) && (
+          {cloudConfigs.some((c: any) => Object.keys(c.config.user_presets).length > 0) && (
             <>
               <Divider style={{ margin: '0.5rem 0' }} />
 

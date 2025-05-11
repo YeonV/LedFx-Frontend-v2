@@ -9,7 +9,7 @@ export interface QLCScreenProps {
   label: string
   type: string
   className: string
-  // eslint-disable-next-line
+
   color: 'inherit' | 'primary' | 'secondary' | 'error' | 'success' | 'warning' | 'info' | undefined
   variant: 'outlined' | 'text' | 'contained' | undefined
   innerKey: string
@@ -39,8 +39,6 @@ export const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...(props as any)} />
 })
 
-export const MuiMenuItem = React.forwardRef(
-  (props: any, ref: React.Ref<unknown>) => {
-    return <MenuItem ref={ref} {...props} />
-  }
-)
+export const MuiMenuItem = React.forwardRef((props: any, ref: React.Ref<unknown>) => {
+  return <MenuItem ref={ref} {...props} />
+})

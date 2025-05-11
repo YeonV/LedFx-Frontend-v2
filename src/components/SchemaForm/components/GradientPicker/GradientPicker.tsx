@@ -86,15 +86,8 @@ const GradientPicker = ({
       //   },
       // }}
     >
-      <label
-        className="MuiFormLabel-root"
-        style={{ background: theme.palette.background.paper }}
-      >
-        {title &&
-          title
-            .replaceAll('_', ' ')
-            .replaceAll('background', 'bg')
-            .replaceAll('name', '')}
+      <label className="MuiFormLabel-root" style={{ background: theme.palette.background.paper }}>
+        {title && title.replaceAll('_', ' ').replaceAll('background', 'bg').replaceAll('name', '')}
       </label>
       {}
       <div
@@ -112,9 +105,7 @@ const GradientPicker = ({
         sx={{ zIndex: 1300 }}
       >
         <div
-          className={`${classes.paper} gradient-picker ${
-            showHex ? 'show_hex' : ''
-          }`}
+          className={`${classes.paper} gradient-picker ${showHex ? 'show_hex' : ''}`}
           style={{
             padding: theme.spacing(1),
             backgroundColor: theme.palette.background.paper
@@ -186,21 +177,17 @@ const GradientPicker = ({
                 <TextField
                   autoFocus
                   onClick={(e) => e.stopPropagation()}
-                  onKeyDown={(e: any) =>
-                    e.key === 'Enter' && handleAddGradient(name)
-                  }
+                  onKeyDown={(e: any) => e.key === 'Enter' && handleAddGradient(name)}
                   error={
                     colors?.length &&
                     colors.colors?.length &&
                     colors.gradients?.length &&
                     (Object.keys(colors.colors).indexOf(name) > -1 ||
-                      Object.values(colors.colors).filter(
-                        (p) => p === pickerBgColorInt
-                      )?.length > 0 ||
+                      Object.values(colors.colors).filter((p) => p === pickerBgColorInt)?.length >
+                        0 ||
                       Object.keys(colors.gradients).indexOf(name) > -1 ||
-                      Object.values(colors.gradients).filter(
-                        (p) => p === pickerBgColorInt
-                      ).length > 0)
+                      Object.values(colors.gradients).filter((p) => p === pickerBgColorInt).length >
+                        0)
                   }
                   size="small"
                   id="gradientNameInput"
@@ -221,10 +208,7 @@ const GradientPicker = ({
           </div>
         </div>
       </Popper>
-      <DeleteColorsDialog
-        setDialogOpen={setDialogOpen}
-        dialogOpen={dialogOpen}
-      />
+      <DeleteColorsDialog setDialogOpen={setDialogOpen} dialogOpen={dialogOpen} />
     </div>
   )
 }

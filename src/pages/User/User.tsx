@@ -84,14 +84,12 @@ const User = () => {
     }
   })
 
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false)
-    }
-  const handleChangeSub =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setSubExpanded(isExpanded ? panel : false)
-    }
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false)
+  }
+  const handleChangeSub = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setSubExpanded(isExpanded ? panel : false)
+  }
   const getCloudPresets = async () => {
     try {
       const response = await cloud.get('presets')
@@ -112,9 +110,7 @@ const User = () => {
   }
 
   const getCloudConfigs = async () => {
-    const response = await cloud.get(
-      `configs?user.username=${localStorage.getItem('username')}`
-    )
+    const response = await cloud.get(`configs?user.username=${localStorage.getItem('username')}`)
     if (response.status !== 200) {
       alert('No Access')
       return
@@ -156,9 +152,7 @@ const User = () => {
   const deleteCloudConfig = async (name: string, date: any) => {
     try {
       const existing = await cloud.get(
-        `configs?user.username=${localStorage.getItem(
-          'username'
-        )}&Name=${name}&Date=${date}`
+        `configs?user.username=${localStorage.getItem('username')}&Name=${name}&Date=${date}`
       )
       const exists = await existing.data
       if (exists.length && exists.length > 0) {
@@ -235,18 +229,8 @@ const User = () => {
   }, [trophies])
 
   return (
-    <Box
-      alignItems="center"
-      justifyContent="center"
-      sx={{ marginBottom: '5rem' }}
-    >
-      <Stack
-        alignItems="center"
-        direction="column"
-        gap={2}
-        maxWidth={450}
-        margin="0 auto"
-      >
+    <Box alignItems="center" justifyContent="center" sx={{ marginBottom: '5rem' }}>
+      <Stack alignItems="center" direction="column" gap={2} maxWidth={450} margin="0 auto">
         <Collapse in={infoAlerts.user}>
           <Alert
             sx={{ mb: 2 }}
@@ -256,11 +240,9 @@ const User = () => {
                 setInfoAlerts('user', false)
             }}
           >
-            LedFx Cloud is a proof of concept and is running on a cheap six
-            bucks a month server.
+            LedFx Cloud is a proof of concept and is running on a cheap six bucks a month server.
             <br />
-            Dont expect anything in alpha-state. like if the server crashes the
-            data is gone!
+            Dont expect anything in alpha-state. like if the server crashes the data is gone!
             <br />
             <br />
             You have been warned!
@@ -285,13 +267,7 @@ const User = () => {
           ) : (
             <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />
           )}
-          <Stack
-            alignItems="center"
-            direction="column"
-            gap={2}
-            maxWidth={450}
-            margin="0 auto"
-          >
+          <Stack alignItems="center" direction="column" gap={2} maxWidth={450} margin="0 auto">
             <Typography variant="h5">
               {userName !== 'YeonV' ? 'FreeUser' : ''}
               &nbsp;{userName}&nbsp;
@@ -312,10 +288,7 @@ const User = () => {
           </Stack>
         </Stack>
         <div style={{ width: 450 }}>
-          <Accordion
-            expanded={expanded === 'panel0'}
-            onChange={handleChange('panel0')}
-          >
+          <Accordion expanded={expanded === 'panel0'} onChange={handleChange('panel0')}>
             <AccordionSummary
               expandIcon={<>&nbsp;</>}
               aria-controls="panel0bh-content"
@@ -334,10 +307,7 @@ const User = () => {
               </Typography>
             </AccordionSummary>
           </Accordion>
-          <Accordion
-            expanded={expanded === 'panel01'}
-            onChange={handleChange('panel01')}
-          >
+          <Accordion expanded={expanded === 'panel01'} onChange={handleChange('panel01')}>
             <AccordionSummary
               expandIcon={<>&nbsp;</>}
               aria-controls="panel01bh-content"
@@ -358,18 +328,13 @@ const User = () => {
               </Typography>
             </AccordionSummary>
           </Accordion>
-          <Accordion
-            expanded={expanded === 'panel001'}
-            onChange={handleChange('panel001')}
-          >
+          <Accordion expanded={expanded === 'panel001'} onChange={handleChange('panel001')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel001bh-content"
               id="panel001bh-header"
             >
-              <Typography sx={{ width: '60%', flexShrink: 0 }}>
-                Trophies
-              </Typography>
+              <Typography sx={{ width: '60%', flexShrink: 0 }}>Trophies</Typography>
               <Typography
                 sx={{
                   color: 'text.secondary',
@@ -452,16 +417,11 @@ const User = () => {
                       <Step key="core" completed={starred.core}>
                         <StepButton
                           onClick={() => {
-                            window.open(
-                              'https://github.com/LedFx/LedFx',
-                              '_blank'
-                            )
+                            window.open('https://github.com/LedFx/LedFx', '_blank')
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.core
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.core ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.core ? <Star /> : <StarOutline />}
                         >
@@ -471,16 +431,11 @@ const User = () => {
                       <Step key="client" completed={starred.client}>
                         <StepButton
                           onClick={() => {
-                            window.open(
-                              'https://github.com/YeonV/LedFx-Frontend-v2',
-                              '_blank'
-                            )
+                            window.open('https://github.com/YeonV/LedFx-Frontend-v2', '_blank')
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.client
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.client ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.client ? <Star /> : <StarOutline />}
                         >
@@ -490,16 +445,11 @@ const User = () => {
                       <Step key="build" completed={starred.build}>
                         <StepButton
                           onClick={() => {
-                            window.open(
-                              'https://github.com/YeonV/LedFx-Builds',
-                              '_blank'
-                            )
+                            window.open('https://github.com/YeonV/LedFx-Builds', '_blank')
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.build
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.build ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.build ? <Star /> : <StarOutline />}
                         >
@@ -571,16 +521,11 @@ const User = () => {
                       <Step key="hass" completed={starred.hass}>
                         <StepButton
                           onClick={() => {
-                            window.open(
-                              'https://github.com/YeonV/home-assistant-addons',
-                              '_blank'
-                            )
+                            window.open('https://github.com/YeonV/home-assistant-addons', '_blank')
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.hass
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.hass ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.hass ? <Star /> : <StarOutline />}
                         >
@@ -590,16 +535,11 @@ const User = () => {
                       <Step key="wledman" completed={starred.wledman}>
                         <StepButton
                           onClick={() => {
-                            window.open(
-                              'https://github.com/YeonV/wled-manager',
-                              '_blank'
-                            )
+                            window.open('https://github.com/YeonV/wled-manager', '_blank')
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.wledman
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.wledman ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.wledman ? <Star /> : <StarOutline />}
                         >
@@ -609,16 +549,11 @@ const User = () => {
                       <Step key="audiopipes" completed={starred.audiopipes}>
                         <StepButton
                           onClick={() => {
-                            window.open(
-                              'https://github.com/YeonV/audio-pipes',
-                              '_blank'
-                            )
+                            window.open('https://github.com/YeonV/audio-pipes', '_blank')
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.audiopipes
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.audiopipes ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.audiopipes ? <Star /> : <StarOutline />}
                         >
@@ -632,9 +567,7 @@ const User = () => {
                           }}
                           sx={{
                             textTransform: 'capitalize',
-                            color: starred.io
-                              ? theme.palette.primary.main
-                              : 'inherit'
+                            color: starred.io ? theme.palette.primary.main : 'inherit'
                           }}
                           icon={starred.io ? <Star /> : <StarOutline />}
                         >
@@ -710,18 +643,13 @@ const User = () => {
                */}
             </AccordionDetails>
           </Accordion>
-          <Accordion
-            expanded={expanded === 'panel1'}
-            onChange={handleChange('panel1')}
-          >
+          <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1bh-content"
               id="panel1bh-header"
             >
-              <Typography sx={{ width: '60%', flexShrink: 0 }}>
-                Cloud-Presets
-              </Typography>
+              <Typography sx={{ width: '60%', flexShrink: 0 }}>Cloud-Presets</Typography>
               <Typography
                 sx={{
                   color: 'text.secondary',
@@ -745,18 +673,13 @@ const User = () => {
               </Typography>
             </AccordionDetails>
           </Accordion>
-          <Accordion
-            expanded={expanded === 'panel2'}
-            onChange={handleChange('panel2')}
-          >
+          <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel2bh-content"
               id="panel2bh-header"
             >
-              <Typography sx={{ width: '60%', flexShrink: 0 }}>
-                Cloud-Configs
-              </Typography>
+              <Typography sx={{ width: '60%', flexShrink: 0 }}>Cloud-Configs</Typography>
               <Typography
                 sx={{
                   color: 'text.secondary',
@@ -769,11 +692,7 @@ const User = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography>Upload current config</Typography>
                 <Popover
                   icon={<CloudUpload />}
@@ -806,11 +725,7 @@ const User = () => {
                 cloudConfigs.map((c: any, i: number) => (
                   <div key={i}>
                     <Divider />
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
                       <Typography>{c.Name}</Typography>
 
                       <Stack direction="row" alignItems="center">
@@ -835,9 +750,7 @@ const User = () => {
                           }}
                           content={
                             <Stack>
-                              <Typography
-                                sx={{ padding: '0.5rem 1rem 0 1rem' }}
-                              >
+                              <Typography sx={{ padding: '0.5rem 1rem 0 1rem' }}>
                                 overwrite current config?
                               </Typography>
                               <Typography
@@ -864,9 +777,7 @@ const User = () => {
                           }}
                           content={
                             <Stack>
-                              <Typography
-                                sx={{ padding: '0.5rem 1rem 0 1rem' }}
-                              >
+                              <Typography sx={{ padding: '0.5rem 1rem 0 1rem' }}>
                                 overwrite current config?
                               </Typography>
                               <Typography
@@ -888,13 +799,10 @@ const User = () => {
                         {/* </Tooltip> */}
 
                         <Tooltip
-                          title={`Config from ${new Intl.DateTimeFormat(
-                            'en-GB',
-                            {
-                              dateStyle: 'medium',
-                              timeStyle: 'medium'
-                            }
-                          )
+                          title={`Config from ${new Intl.DateTimeFormat('en-GB', {
+                            dateStyle: 'medium',
+                            timeStyle: 'medium'
+                          })
                             .format(new Date(c.Date))
                             .split(',')
                             .join(' at ')}`}
@@ -908,18 +816,13 @@ const User = () => {
             </AccordionDetails>
           </Accordion>
 
-          <Accordion
-            expanded={expanded === 'panel3'}
-            onChange={handleChange('panel3')}
-          >
+          <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel3bh-content"
               id="panel3bh-header"
             >
-              <Typography sx={{ width: '60%', flexShrink: 0 }}>
-                Cloud-Playlists
-              </Typography>
+              <Typography sx={{ width: '60%', flexShrink: 0 }}>Cloud-Playlists</Typography>
               <Typography
                 sx={{
                   color: 'text.secondary',
@@ -932,11 +835,7 @@ const User = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Typography>Upload current playlist</Typography>
                 <Popover
                   icon={<CloudUpload />}
@@ -967,11 +866,7 @@ const User = () => {
                 cloudPlaylists.map((p: any, i: number) => (
                   <div key={i}>
                     <Divider />
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
                       <Typography>{p.Name}</Typography>
 
                       <Stack direction="row" alignItems="center">
@@ -992,9 +887,7 @@ const User = () => {
                           }}
                           content={
                             <Stack>
-                              <Typography
-                                sx={{ padding: '0.5rem 1rem 0 1rem' }}
-                              >
+                              <Typography sx={{ padding: '0.5rem 1rem 0 1rem' }}>
                                 overwrite current playlist?
                               </Typography>
                             </Stack>
@@ -1009,13 +902,10 @@ const User = () => {
                         />
 
                         <Tooltip
-                          title={`Config from ${new Intl.DateTimeFormat(
-                            'en-GB',
-                            {
-                              dateStyle: 'medium',
-                              timeStyle: 'medium'
-                            }
-                          )
+                          title={`Config from ${new Intl.DateTimeFormat('en-GB', {
+                            dateStyle: 'medium',
+                            timeStyle: 'medium'
+                          })
                             .format(new Date(p.Date))
                             .split(',')
                             .join(' at ')}`}
@@ -1029,21 +919,14 @@ const User = () => {
             </AccordionDetails>
           </Accordion>
 
-          {(trophies.fan > 0 ||
-            trophies.enthusiast > 0 ||
-            trophies.contributor > 0) && (
-            <Accordion
-              expanded={expanded === 'panel4'}
-              onChange={handleChange('panel4')}
-            >
+          {(trophies.fan > 0 || trophies.enthusiast > 0 || trophies.contributor > 0) && (
+            <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel4bh-content"
                 id="panel4bh-header"
               >
-                <Typography sx={{ width: '60%', flexShrink: 0 }}>
-                  Theme-Selector
-                </Typography>
+                <Typography sx={{ width: '60%', flexShrink: 0 }}>Theme-Selector</Typography>
                 <Typography
                   sx={{
                     color: 'text.secondary',
@@ -1057,9 +940,7 @@ const User = () => {
               </AccordionSummary>
               <AccordionDetails>
                 <Select
-                  value={
-                    window.localStorage.getItem('ledfx-theme') || 'DarkBlue'
-                  }
+                  value={window.localStorage.getItem('ledfx-theme') || 'DarkBlue'}
                   fullWidth
                   onChange={(e) => {
                     if (e.target.value === 'DarkBlue') {

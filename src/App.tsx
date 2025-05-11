@@ -61,14 +61,10 @@ export default function App() {
   const theme = useMemo(
     () =>
       createTheme({
-        ...ledfxThemes[
-          window.localStorage.getItem('ledfx-theme') ?? ledfxTheme
-        ],
+        ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme],
         ...common,
         palette: {
-          ...ledfxThemes[
-            window.localStorage.getItem('ledfx-theme') ?? ledfxTheme
-          ]?.palette
+          ...ledfxThemes[window.localStorage.getItem('ledfx-theme') ?? ledfxTheme]?.palette
         }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -171,7 +167,9 @@ export default function App() {
         cookies.set(
           'access_token',
           proto[2].replace('?code=', '').replace('#%2FIntegrations%3F', ''),
-          { expires: expDate }
+          {
+            expires: expDate
+          }
         )
       } else if (proto[1] === 'auth') {
         login(proto.join().split('redirect?')[1]).then(() => {
@@ -198,11 +196,7 @@ export default function App() {
           } else if (proto[3] === 'previous' || proto[3] === 'prev') {
             handlePrev()
             showSnackbar('info', 'Previous playlist')
-          } else if (
-            proto[3] === 'play' ||
-            proto[3] === 'stop' ||
-            proto[3] === 'pause'
-          ) {
+          } else if (proto[3] === 'play' || proto[3] === 'stop' || proto[3] === 'pause') {
             toggleScenePLplay()
             showSnackbar('info', 'Toggle playlist')
           } else if (proto[3] === 'repeat') {
@@ -215,9 +209,7 @@ export default function App() {
         if (v === 'ledfxcc' && proto[3].length > 3) {
           setCurrentTrack(proto[3])
         } else {
-          const virtual = Object.keys(virtuals).find(
-            (virt) => virtuals[virt].id === v
-          )
+          const virtual = Object.keys(virtuals).find((virt) => virtuals[virt].id === v)
           if (virtual && proto[3].length > 3) {
             setEffect(
               v,
@@ -259,10 +251,7 @@ export default function App() {
           }
         }
       } else {
-        showSnackbar(
-          'info',
-          `External call: ${protoCall.replace('ledfx://', '')}`
-        )
+        showSnackbar('info', `External call: ${protoCall.replace('ledfx://', '')}`)
       }
       setProtoCall('')
     }
@@ -276,12 +265,7 @@ export default function App() {
           <SpotifyProvider>
             <FiledropProvider>
               <CssBaseline />
-              <FpsViewer
-                open={fpsViewer}
-                bottom={60}
-                left={5}
-                color={theme.palette.primary.main}
-              />
+              <FpsViewer open={fpsViewer} bottom={60} left={5} color={theme.palette.primary.main} />
               <GlobalStyles
                 styles={{
                   body: {

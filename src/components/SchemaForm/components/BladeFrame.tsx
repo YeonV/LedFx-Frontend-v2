@@ -77,19 +77,12 @@ const BladeFrame = ({
     >
       <label
         style={{ ...labelStyle }}
-        className={`MuiFormLabel-root${
-          disabled ? ' Mui-disabled' : ''
-        }  step-effect-${index}`}
+        className={`MuiFormLabel-root${disabled ? ' Mui-disabled' : ''}  step-effect-${index}`}
       >
         {title}
         {required ? '*' : ''}
         {tooltip ? (
-          <Tooltip
-            sx={{ ml: 1, mr: 0.5 }}
-            title={tooltip}
-            arrow
-            placement="top"
-          >
+          <Tooltip sx={{ ml: 1, mr: 0.5 }} title={tooltip} arrow placement="top">
             <InfoRounded fontSize="small" />
           </Tooltip>
         ) : null}

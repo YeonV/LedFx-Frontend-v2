@@ -89,13 +89,9 @@ const EditSceneDialog = () => {
   const setBlockMidiHandler = useStore((state) => state.setBlockMidiHandler)
   const getFullConfig = useStore((state) => state.getFullConfig)
 
-  const toggletSceneActiveTag = useStore(
-    (state) => state.ui.toggletSceneActiveTag
-  )
+  const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const fetchImage = useCallback(async (ic: string) => {
-    const result = await getImage(
-      ic.split('image:')[1]?.replaceAll('file:///', '')
-    )
+    const result = await getImage(ic.split('image:')[1]?.replaceAll('file:///', ''))
     setImageData(result.image)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -187,11 +183,9 @@ const EditSceneDialog = () => {
   }
 
   const handleEditScene = () => {
-    updateScene(name, sceneId, image, tags, url, payload, midiActivate).then(
-      () => {
-        getScenes()
-      }
-    )
+    updateScene(name, sceneId, image, tags, url, payload, midiActivate).then(() => {
+      getScenes()
+    })
     setName('')
     setImage('')
     setTags('')
@@ -239,19 +233,14 @@ const EditSceneDialog = () => {
 
   useEffect(() => {
     if (features.scenemidi && midiEvent.button > -1) {
-      setMIDIActivate(
-        `${midiEvent.name} Note: ${midiEvent.note} buttonNumber: ${midiEvent.button}`
-      )
+      setMIDIActivate(`${midiEvent.name} Note: ${midiEvent.note} buttonNumber: ${midiEvent.button}`)
     }
   }, [midiEvent, features.scenemidi])
 
   useEffect(() => {
     if (features.scenemidi && open) {
       initMidi()
-      const output =
-        midiOutput !== ''
-          ? WebMidi.getOutputByName(midiOutput)
-          : WebMidi.outputs[1]
+      const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(
         scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
       )
@@ -272,10 +261,7 @@ const EditSceneDialog = () => {
   useEffect(() => {
     if (features.scenemidi && open) {
       setBlockMidiHandler(true)
-      const output =
-        midiOutput !== ''
-          ? WebMidi.getOutputByName(midiOutput)
-          : WebMidi.outputs[1]
+      const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(
         scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
       )
@@ -289,10 +275,7 @@ const EditSceneDialog = () => {
             } else {
               output.send(lp.ledOn(newBtnNumber, 57))
             }
-            if (
-              lastButton.current !== newBtnNumber &&
-              lastButton.current > -1
-            ) {
+            if (lastButton.current !== newBtnNumber && lastButton.current > -1) {
               output.send(lp.ledOff(lastButton.current))
             }
           }
@@ -324,35 +307,26 @@ const EditSceneDialog = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, features.scenemidi, midiEvent])
 
-  const renderPresets = (
-    current_ledfx_presets: any,
-    dev: string,
-    effectId: string
-  ) => {
+  const renderPresets = (current_ledfx_presets: any, dev: string, effectId: string) => {
     if (current_ledfx_presets || user_presets) {
       const ledfxPreset =
         current_ledfx_presets &&
         Object.keys(current_ledfx_presets).length > 0 &&
         Object.keys(current_ledfx_presets).find(
           (k) =>
-            JSON.stringify(
-              ordered((current_ledfx_presets[k] as any).config)
-            ) === JSON.stringify(ordered(sVirtuals[dev].config))
+            JSON.stringify(ordered((current_ledfx_presets[k] as any).config)) ===
+            JSON.stringify(ordered(sVirtuals[dev].config))
         )
       const userPresets =
         user_presets[effectId] &&
         Object.keys(user_presets[effectId])
           .map(
             (k) =>
-              JSON.stringify(
-                ordered((user_presets[effectId][k] as any).config)
-              ) ===
-                JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) &&
-              k
+              JSON.stringify(ordered((user_presets[effectId][k] as any).config)) ===
+                JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) && k
           )
           .filter((n) => !!n)
-      const userPreset =
-        userPresets && userPresets.length === 1 && userPresets[0]
+      const userPreset = userPresets && userPresets.length === 1 && userPresets[0]
 
       return ledfxPreset || userPreset ? (
         <Select
@@ -362,38 +336,31 @@ const EditSceneDialog = () => {
             if (
               user_presets &&
               user_presets[effectId] &&
-              Object.prototype.hasOwnProperty.call(
-                user_presets[effectId],
-                e.target.value
-              )
+              Object.prototype.hasOwnProperty.call(user_presets[effectId], e.target.value)
             ) {
               category = 'user_presets'
             }
 
             return (
               e.target.value &&
-              activatePreset(
-                dev,
-                category,
-                sVirtuals[dev].type,
-                e.target.value
-              ).then(() => getVirtuals())
+              activatePreset(dev, category, sVirtuals[dev].type, e.target.value).then(() =>
+                getVirtuals()
+              )
             )
           }}
-          disabled={
-            scVirtualsToIgnore.indexOf(dev) > -1 ||
-            disabledPSelector.indexOf(dev) > -1
-          }
+          disabled={scVirtualsToIgnore.indexOf(dev) > -1 || disabledPSelector.indexOf(dev) > -1}
           disableUnderline
-          sx={[scVirtualsToIgnore.indexOf(dev) > -1 ? {
-            textDecoration: 'line-through'
-          } : {
-            textDecoration: ''
-          }]}
+          sx={[
+            scVirtualsToIgnore.indexOf(dev) > -1
+              ? {
+                  textDecoration: 'line-through'
+                }
+              : {
+                  textDecoration: ''
+                }
+          ]}
         >
-          {current_ledfx_presets && (
-            <ListSubheader>LedFx Presets</ListSubheader>
-          )}
+          {current_ledfx_presets && <ListSubheader>LedFx Presets</ListSubheader>}
           {current_ledfx_presets &&
             Object.keys(current_ledfx_presets)
               .sort((k) => (k === 'reset' ? -1 : 1))
@@ -419,30 +386,22 @@ const EditSceneDialog = () => {
             if (
               user_presets &&
               user_presets[effectId] &&
-              Object.prototype.hasOwnProperty.call(
-                user_presets[effectId],
-                e.target.value
-              )
+              Object.prototype.hasOwnProperty.call(user_presets[effectId], e.target.value)
             ) {
               category = 'user_presets'
             }
 
             return (
               e.target.value &&
-              activatePreset(
-                dev,
-                category,
-                sVirtuals[dev].type,
-                e.target.value
-              ).then(() => getVirtuals())
+              activatePreset(dev, category, sVirtuals[dev].type, e.target.value).then(() =>
+                getVirtuals()
+              )
             )
           }}
           disableUnderline
         >
           <MenuItem value="Not saved as Preset">Not saved as Preset</MenuItem>
-          {current_ledfx_presets && (
-            <ListSubheader>LedFx Presets</ListSubheader>
-          )}
+          {current_ledfx_presets && <ListSubheader>LedFx Presets</ListSubheader>}
           {current_ledfx_presets &&
             Object.keys(current_ledfx_presets)
               .sort((k) => (k === 'reset' ? -1 : 1))
@@ -460,31 +419,39 @@ const EditSceneDialog = () => {
               </MenuItem>
             ))}
         </Select>
-      );
+      )
     }
     return <></>
   }
   const renderEffects = (effect: string, dev: string) => {
-    return (effects && (<Select
-      defaultValue={effect}
-      onChange={(e) => {
-        setEffect(dev, e.target.value, {}, true)
-        setDisabledPSelector([...disabledPSelector, dev])
-      }}
-      disabled={scVirtualsToIgnore.indexOf(dev) > -1}
-      disableUnderline
-      sx={[scVirtualsToIgnore.indexOf(dev) > -1 ? {
-        textDecoration: 'line-through'
-      } : {
-        textDecoration: ''
-      }]}
-    >
-      {Object.keys(effects).map((ke, i) => (
-        <MenuItem key={ke + i} value={ke}>
-          {ke}
-        </MenuItem>
-      ))}
-    </Select>));
+    return (
+      effects && (
+        <Select
+          defaultValue={effect}
+          onChange={(e) => {
+            setEffect(dev, e.target.value, {}, true)
+            setDisabledPSelector([...disabledPSelector, dev])
+          }}
+          disabled={scVirtualsToIgnore.indexOf(dev) > -1}
+          disableUnderline
+          sx={[
+            scVirtualsToIgnore.indexOf(dev) > -1
+              ? {
+                  textDecoration: 'line-through'
+                }
+              : {
+                  textDecoration: ''
+                }
+          ]}
+        >
+          {Object.keys(effects).map((ke, i) => (
+            <MenuItem key={ke + i} value={ke}>
+              {ke}
+            </MenuItem>
+          ))}
+        </Select>
+      )
+    )
   }
 
   return (
@@ -530,10 +497,7 @@ const EditSceneDialog = () => {
             <ul style={{ paddingLeft: '1rem' }}>
               <li>
                 iconName{' '}
-                <Link
-                  href="https://mui.com/material-ui/material-icons/"
-                  target="_blank"
-                >
+                <Link href="https://mui.com/material-ui/material-icons/" target="_blank">
                   Find MUI icons here
                 </Link>
                 <Typography color="textSecondary" variant="subtitle1">
@@ -542,10 +506,7 @@ const EditSceneDialog = () => {
               </li>
               <li>
                 mdi:icon-name{' '}
-                <Link
-                  href="https://pictogrammers.com/library/mdi"
-                  target="_blank"
-                >
+                <Link href="https://pictogrammers.com/library/mdi" target="_blank">
                   Find Material Design icons here
                 </Link>
                 <Typography color="textSecondary" variant="subtitle1">
@@ -578,13 +539,18 @@ const EditSceneDialog = () => {
         >
           <div style={{ flexGrow: 1, paddingRight: medium ? 0 : '2rem' }}>
             <TextField
-              sx={[{
-                '& .MuiInputBase-root': { paddingRight: '6px' }
-              }, data ? {
-                mt: '2rem'
-              } : {
-                mt: ''
-              }]}
+              sx={[
+                {
+                  '& .MuiInputBase-root': { paddingRight: '6px' }
+                },
+                data
+                  ? {
+                      mt: '2rem'
+                    }
+                  : {
+                      mt: ''
+                    }
+              ]}
               autoFocus
               margin="dense"
               id="name"
@@ -680,11 +646,7 @@ const EditSceneDialog = () => {
                   (option: string, index: number) =>
                     option &&
                     option.length > 0 && (
-                      <Chip
-                        variant="outlined"
-                        label={option}
-                        {...getTagProps({ index })}
-                      />
+                      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
                     )
                 )
               }
@@ -712,9 +674,7 @@ const EditSceneDialog = () => {
               )}
             />
             {features.sceneexternal ? (
-              <div
-                style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}
-              >
+              <div style={{ display: 'flex', margin: '0 auto', maxWidth: '960px' }}>
                 <TextField
                   margin="dense"
                   id="url"
@@ -745,19 +705,22 @@ const EditSceneDialog = () => {
             {features && features.scenemidi ? (
               <>
                 <Stack direction={small ? 'column' : 'row'} gap={1}>
-                  <FormControl sx={[{
-                    mt: 1
-                  }, small ? {
-                    width: '100%'
-                  } : {
-                    width: '130px'
-                  }]}>
+                  <FormControl
+                    sx={[
+                      {
+                        mt: 1
+                      },
+                      small
+                        ? {
+                            width: '100%'
+                          }
+                        : {
+                            width: '130px'
+                          }
+                    ]}
+                  >
                     <InputLabel id="midi-label">Connected To</InputLabel>
-                    <Select
-                      variant="outlined"
-                      defaultValue="Client"
-                      label="Connected To"
-                    >
+                    <Select variant="outlined" defaultValue="Client" label="Connected To">
                       <MenuItem value="Client">Client</MenuItem>
                       <MenuItem value="Core" disabled>
                         Core
@@ -774,8 +737,7 @@ const EditSceneDialog = () => {
                       Object.keys(scenes)
                         .filter((k) => k !== sceneId)
                         .some(
-                          (sceneId: any) =>
-                            scenes[sceneId]?.scene_midiactivate === midiActivate
+                          (sceneId: any) => scenes[sceneId]?.scene_midiactivate === midiActivate
                         )
                     }
                     helperText={
@@ -784,20 +746,17 @@ const EditSceneDialog = () => {
                       Object.keys(scenes)
                         .filter((k) => k !== sceneId)
                         .some(
-                          (sceneId: any) =>
-                            scenes[sceneId]?.scene_midiactivate === midiActivate
+                          (sceneId: any) => scenes[sceneId]?.scene_midiactivate === midiActivate
                         ) && (
                         <Typography>
-                          Please select another MIDI key/button. Already
-                          assigned to{' '}
+                          Please select another MIDI key/button. Already assigned to{' '}
                           {
                             scenes[
                               Object.keys(scenes)
                                 .filter((k) => k !== sceneId)
                                 .find(
                                   (sceneId: any) =>
-                                    scenes[sceneId]?.scene_midiactivate ===
-                                    midiActivate
+                                    scenes[sceneId]?.scene_midiactivate === midiActivate
                                 )!
                             ]!.name
                           }
@@ -808,25 +767,33 @@ const EditSceneDialog = () => {
                     // value={midiActivate}
                     fullWidth
                     disabled
-                    sx={[{
-                      color: 'transparent'
-                    }, xsmall ? {
-                      '& input': {
-                        width: '5px'
-                      }
-                    } : {
-                      '& input': {
-                        width: '100%'
-                      }
-                    }, xsmall ? {
-                      '& input': {
-                        height: '5rem'
-                      }
-                    } : {
-                      '& input': {
-                        height: ''
-                      }
-                    }]}
+                    sx={[
+                      {
+                        color: 'transparent'
+                      },
+                      xsmall
+                        ? {
+                            '& input': {
+                              width: '5px'
+                            }
+                          }
+                        : {
+                            '& input': {
+                              width: '100%'
+                            }
+                          },
+                      xsmall
+                        ? {
+                            '& input': {
+                              height: '5rem'
+                            }
+                          }
+                        : {
+                            '& input': {
+                              height: ''
+                            }
+                          }
+                    ]}
                     slotProps={{
                       input: {
                         endAdornment: (
@@ -837,22 +804,27 @@ const EditSceneDialog = () => {
                         startAdornment: (
                           <InputAdornment
                             position="start"
-                            sx={[xsmall ? {
-                              flexWrap: 'wrap'
-                            } : {
-                              flexWrap: ''
-                            }, xsmall ? {
-                              mt: -8
-                            } : {
-                              mt: ''
-                            }]}
+                            sx={[
+                              xsmall
+                                ? {
+                                    flexWrap: 'wrap'
+                                  }
+                                : {
+                                    flexWrap: ''
+                                  },
+                              xsmall
+                                ? {
+                                    mt: -8
+                                  }
+                                : {
+                                    mt: ''
+                                  }
+                            ]}
                           >
                             {midiActivate?.split(' ')?.length > 1 && (
                               <>
                                 <Chip
-                                  label={midiActivate
-                                    ?.split(' ')[0]
-                                    .replace('MIDI', '')}
+                                  label={midiActivate?.split(' ')[0].replace('MIDI', '')}
                                   avatar={
                                     <Avatar>
                                       <BladeIcon name="mdi:midi" />
@@ -860,11 +832,7 @@ const EditSceneDialog = () => {
                                   }
                                 />
                                 <Chip
-                                  label={
-                                    midiActivate
-                                      ?.split('Note: ')[1]
-                                      ?.split(' ')[0]
-                                  }
+                                  label={midiActivate?.split('Note: ')[1]?.split(' ')[0]}
                                   avatar={
                                     <Avatar>
                                       <MusicNote />
@@ -872,11 +840,7 @@ const EditSceneDialog = () => {
                                   }
                                 />
                                 <Chip
-                                  label={
-                                    midiActivate
-                                      ?.split('buttonNumber: ')[1]
-                                      ?.split(' ')[0]
-                                  }
+                                  label={midiActivate?.split('buttonNumber: ')[1]?.split(' ')[0]}
                                   avatar={<Avatar>No</Avatar>}
                                 />
                                 <Chip
@@ -895,10 +859,9 @@ const EditSceneDialog = () => {
                       inputLabel: { shrink: true }
                     }}
                   />
-                  {/\((.*?)\)/
-                    .exec(midiActivate)?.[1]
-                    .replace(' MIDI', '')
-                    .trim() === 'LPX' && <MidiInputDialog />}
+                  {/\((.*?)\)/.exec(midiActivate)?.[1].replace(' MIDI', '').trim() === 'LPX' && (
+                    <MidiInputDialog />
+                  )}
                 </Stack>
               </>
             ) : (
@@ -948,18 +911,14 @@ const EditSceneDialog = () => {
               >
                 {tags?.split(',').map((t: string) => (
                   <Chip
-                    variant={
-                      sceneActiveTags.includes(t) ? 'filled' : 'outlined'
-                    }
+                    variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}
                     sx={{
                       flexGrow: 0,
                       minWidth: 50,
                       ml: 1,
                       mt: 1,
                       mr: 1,
-                      cursor: sceneActiveTags.includes(t)
-                        ? 'zoom-out'
-                        : 'zoom-in'
+                      cursor: sceneActiveTags.includes(t) ? 'zoom-out' : 'zoom-in'
                     }}
                     key={t}
                     label={t}
@@ -1005,12 +964,8 @@ const EditSceneDialog = () => {
                   fontVariant: 'all-small-caps',
                   margin: '0 auto',
                   maxWidth: '960px',
-                  color:
-                    scVirtualsToIgnore.indexOf(dev) > -1
-                      ? theme.palette.text.disabled
-                      : '',
-                  textDecoration:
-                    scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
+                  color: scVirtualsToIgnore.indexOf(dev) > -1 ? theme.palette.text.disabled : '',
+                  textDecoration: scVirtualsToIgnore.indexOf(dev) > -1 ? 'line-through' : ''
                 }}
               >
                 <span>{dev}</span>
@@ -1039,17 +994,11 @@ const EditSceneDialog = () => {
                     }}
                     onClick={() => {
                       setScVirtualsToIgnore((p) => {
-                        return p.indexOf(dev) > -1
-                          ? [...p.filter((v) => v !== dev)]
-                          : [...p, dev]
+                        return p.indexOf(dev) > -1 ? [...p.filter((v) => v !== dev)] : [...p, dev]
                       })
                     }}
                   >
-                    {scVirtualsToIgnore.indexOf(dev) > -1 ? (
-                      <Undo />
-                    ) : (
-                      <Clear />
-                    )}
+                    {scVirtualsToIgnore.indexOf(dev) > -1 ? <Undo /> : <Clear />}
                   </Box>
                 </span>
               </div>
@@ -1057,8 +1006,7 @@ const EditSceneDialog = () => {
         {disabledPSelector.length > 0 && (
           <Alert severity="info" sx={{ margin: '2rem auto', maxWidth: 960 }}>
             <Typography>
-              Effect-Type Changed! Preset-Selectors disabled until saved or
-              canceled
+              Effect-Type Changed! Preset-Selectors disabled until saved or canceled
             </Typography>
           </Alert>
         )}
@@ -1066,11 +1014,10 @@ const EditSceneDialog = () => {
           <Alert severity="info" sx={{ margin: '2rem auto', maxWidth: 960 }}>
             <Typography>
               Removing detected: <br />
-              You can use this to make this scene ignore disabled Virtuals, so
-              it will not overwrite those on activation.
+              You can use this to make this scene ignore disabled Virtuals, so it will not overwrite
+              those on activation.
               <br />
-              However, once saved you can <b>not</b> undo it. You would need to
-              add a new Scene.
+              However, once saved you can <b>not</b> undo it. You would need to add a new Scene.
             </Typography>
           </Alert>
         )}
@@ -1082,16 +1029,13 @@ const EditSceneDialog = () => {
           onClick={() => {
             const deepCopy = (obj: any) => JSON.parse(JSON.stringify(obj))
             const newMapping = deepCopy(midiMapping) as IMapping
-            const newBtnNumber = parseInt(
-              midiActivate?.split('buttonNumber: ')[1]
-            )
+            const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1])
             const currentBtnNumber = parseInt(
               scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
             )
             const item = parseInt(
               Object.keys(newMapping[0]).find(
-                (k) =>
-                  newMapping[0][parseInt(k)].buttonNumber === currentBtnNumber
+                (k) => newMapping[0][parseInt(k)].buttonNumber === currentBtnNumber
               ) || ''
             )
 
@@ -1100,11 +1044,7 @@ const EditSceneDialog = () => {
             } else {
               handleEditScene()
             }
-            if (
-              currentBtnNumber &&
-              newBtnNumber &&
-              currentBtnNumber !== newBtnNumber
-            ) {
+            if (currentBtnNumber && newBtnNumber && currentBtnNumber !== newBtnNumber) {
               if (item) {
                 newMapping[0][item] = { buttonNumber: currentBtnNumber }
                 setMidiMapping(newMapping)
@@ -1122,7 +1062,7 @@ const EditSceneDialog = () => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  )
 }
 
 export default EditSceneDialog

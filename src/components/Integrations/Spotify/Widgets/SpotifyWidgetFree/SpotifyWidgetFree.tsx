@@ -20,20 +20,14 @@ const SpotifyWidgetFree = ({
           zIndex: 2
         }}
       >
-        <SpotifyChangeURLDialog
-          spotifyURL={spotifyURL}
-          setSpotifyURL={setSpotifyURL}
-        />
+        <SpotifyChangeURLDialog spotifyURL={spotifyURL} setSpotifyURL={setSpotifyURL} />
         <IconButton onClick={() => setSpotifyExpanded(!spotifyExpanded)}>
           <QueueMusic />
         </IconButton>
       </div>
       <iframe
         title="Spotify Embed Player"
-        src={`${spotifyURL
-          .split('?')[0]
-          .replace('.com/embed/', '.com/')
-          .replace('.com/', '.com/embed/')}?theme=0`}
+        src={`${spotifyURL.split('?')[0].replace('.com/embed/', '.com/').replace('.com/', '.com/embed/')}?theme=0`}
         width="100%"
         height={spotifyEnabled ? (spotifyExpanded ? 300 : 80) : 0}
         style={{ position: 'fixed', bottom: 0, left: 0 }}

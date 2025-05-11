@@ -1,9 +1,4 @@
-import {
-  DataGrid,
-  GridColDef,
-  GridValueGetter,
-  GridRowParams
-} from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridValueGetter, GridRowParams } from '@mui/x-data-grid'
 
 import { Card, Grid2 as Grid, IconButton, Stack } from '@mui/material'
 import { PlayCircleFilled } from '@mui/icons-material'
@@ -55,12 +50,7 @@ export default function SpPlaylist() {
             aria-label="playstart"
             color="inherit"
             onClick={() => {
-              spotifyPlaySong(
-                spotifyDevice,
-                params.row.track.id,
-                undefined,
-                playlistUri
-              )
+              spotifyPlaySong(spotifyDevice, params.row.track.id, undefined, playlistUri)
             }}
           >
             <PlayCircleFilled fontSize="inherit" />
@@ -76,9 +66,7 @@ export default function SpPlaylist() {
       filterable: false,
       disableColumnMenu: true,
       valueGetter: ((value, row) =>
-        `${row?.track?.artists?.[0]?.name || ''} - ${
-          row?.track?.name || ''
-        }`) as GridValueGetter
+        `${row?.track?.artists?.[0]?.name || ''} - ${row?.track?.name || ''}`) as GridValueGetter
     }
   ]
   const rows = playlist.map((item: any, index: number) => ({
@@ -119,12 +107,7 @@ export default function SpPlaylist() {
             actions: premium
           }}
           onRowDoubleClick={(params: any) => {
-            spotifyPlaySong(
-              spotifyDevice,
-              params.row.track.id,
-              undefined,
-              playlistUri
-            )
+            spotifyPlaySong(spotifyDevice, params.row.track.id, undefined, playlistUri)
           }}
           sx={(theme) => ({
             boxShadow: 2,
@@ -144,13 +127,11 @@ export default function SpPlaylist() {
           // pageSize={rows.length}
           // rowsPerPageOptions={[rows.length]}
           getRowClassName={(params: GridRowParams<any>) => {
-            return (params.row.track?.name ===
-              playerState?.context.metadata?.current_item?.name &&
+            return (params.row.track?.name === playerState?.context.metadata?.current_item?.name &&
               params.row.track.artists?.[0].uri ===
                 playerState?.context.metadata?.current_item.artists?.[0].uri) ||
               (params.row.track?.name === spCtx?.item?.name &&
-                params.row.track.artists?.[0]?.name ===
-                  spCtx?.item?.artists?.[0]?.name)
+                params.row.track.artists?.[0]?.name === spCtx?.item?.artists?.[0]?.name)
               ? 'currently_playing'
               : ''
           }}

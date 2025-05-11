@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 interface Pixel {
   r: number
   g: number

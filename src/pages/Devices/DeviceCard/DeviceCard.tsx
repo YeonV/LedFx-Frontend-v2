@@ -11,14 +11,7 @@ import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import {
-  Delete,
-  Pause,
-  PestControl,
-  PlayArrow,
-  Stop,
-  SyncProblem
-} from '@mui/icons-material'
+import { Delete, Pause, PestControl, PlayArrow, Stop, SyncProblem } from '@mui/icons-material'
 import { Box, CircularProgress, Stack, Theme } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
@@ -86,9 +79,7 @@ const DeviceCard = ({
     <NavLink
       onContextMenu={onContextMenu}
       to={linkTo}
-      className={`${classes.virtualCardPortraitW} ${
-        isEffectSet ? 'active' : ''
-      } ${online ? 'online' : 'offline'}`}
+      className={`${classes.virtualCardPortraitW} ${isEffectSet ? 'active' : ''} ${online ? 'online' : 'offline'}`}
       style={{
         ...additionalStyle,
         width: '100%',
@@ -109,9 +100,7 @@ const DeviceCard = ({
             <BladeIcon
               colorIndicator={false}
               name={iconName}
-              className={`${classes.virtualIcon} ${
-                !graphsActive ? 'graphs' : ''
-              } ${expanded ? 'extended' : ''}`}
+              className={`${classes.virtualIcon} ${!graphsActive ? 'graphs' : ''} ${expanded ? 'extended' : ''}`}
               style={{
                 zIndex: 3,
                 opacity: online ? 1 : 0.3,
@@ -236,11 +225,7 @@ const DeviceCard = ({
                 </Box>
               </Typography>
             ) : isStreaming ? (
-              <Typography
-                variant="body1"
-                color="textSecondary"
-                style={{ height: 25 }}
-              >
+              <Typography variant="body1" color="textSecondary" style={{ height: 25 }}>
                 Streaming...
               </Typography>
             ) : (
@@ -356,9 +341,7 @@ const DeviceCard = ({
           <div
             style={{
               opacity: fade ? 0.2 : 1,
-              transitionDuration: fade
-                ? `${transitionTime || 1}s`
-                : `${transitionTime || 0}s`,
+              transitionDuration: fade ? `${transitionTime || 1}s` : `${transitionTime || 0}s`,
               width: '100%',
               transition: 'opacity'
             }}
