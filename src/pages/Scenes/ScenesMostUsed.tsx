@@ -11,6 +11,7 @@ export default function ScenesMostUsed({ scenes, activateScene, title, db }: any
   // const [mostUsedScenes, setMostUsedScenes] = useState({});
   const mostUsedScenes = useStore((state) => state.mostUsedScenes)
   const setMostUsedScenes = useStore((state) => state.setMostUsedScenes)
+  // const clearMostUsedScenes = useStore((state) => state.clearMostUsedScenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
@@ -50,7 +51,15 @@ export default function ScenesMostUsed({ scenes, activateScene, title, db }: any
   ]
 
   return (
-    <ExpanderCard title={title} cardKey="scenesMostUsed">
+    <ExpanderCard
+      title={title}
+      cardKey="scenesMostUsed"
+      // onContextMenu={(e: any) => {
+      //   e.preventDefault()
+      //   console.log('context menu')
+      //   clearMostUsedScenes()
+      // }}
+    >
       <DataGrid
         onRowClick={handleEvent}
         rowHeight={50}
@@ -63,7 +72,7 @@ export default function ScenesMostUsed({ scenes, activateScene, title, db }: any
         disableColumnFilter
         disableRowSelectionOnClick
         rows={Object.values(mostUsedScenes)
-          .filter((scene: any) => sceneBlenderFilter(scene.name))
+          .filter((scene: any) => !sceneBlenderFilter(scene.name))
           .map((v: any, i: number) => ({
             id: i + 1,
             ...v
