@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.0.109-b4",
+  "version": "2.0.109-b5",
   "description": "LedFx v2 - BladeMOD!",
   "author": "YeonV aka Blade",
   "private": true,
@@ -95,6 +95,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "startandroid": "cross-env REACT_APP_LEDFX_ANDROID=true react-scripts start",
     "build": "run-script-os",
     "build:win32": "set GENERATE_SOURCEMAP=false && set CI=false && react-scripts build",
     "build:default": "GENERATE_SOURCEMAP=false CI=false react-scripts build",
@@ -111,7 +112,7 @@
     "buildledfx": "cross-env GENERATE_SOURCEMAP=false PUBLIC_URL=/ CI=false react-scripts build",
     "prebuildledfx": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "postbuildledfx": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && del /q /s \"build\\app\" && rmdir /q /s \"build\\app\" && del /q \"build\\preload.cjs\" && del /q \"build\\renderer.js\" && del /q \"build\\electron.js\"",
-    "buildandroid": "cross-env LEDFX_ANDROID=true GENERATE_SOURCEMAP=false PUBLIC_URL=/ CI=false react-scripts build",
+    "buildandroid": "cross-env REACT_APP_LEDFX_ANDROID=true GENERATE_SOURCEMAP=false PUBLIC_URL=/ CI=false react-scripts build",
     "prebuildandroid": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "postbuildandroid": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && rm -rf build/app && rm -f build/preload.cjs && rm -f build/renderer.js && rm -f build/electron.js",
     "buildcloudflare": "cross-env GENERATE_SOURCEMAP=false PUBLIC_URL=/ CI=false react-scripts build",
