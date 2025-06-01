@@ -89,7 +89,10 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
   const [steps, setSteps] = useState([
     {
       key: 'setup',
-      title: 'Start Setup-Assistant?',
+      title:
+        'Start Setup-Assistant?' + process.env.REACT_APP_LEDFX_ANDROID === 'true'
+          ? ' (Android)'
+          : '',
       label_left: 'Nah, im an expert. Just let me in',
       label_right: 'Yes, please show me around',
       action_left: () => {
@@ -144,7 +147,9 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     const ste = [
       {
         key: 'setup',
-        title: 'Start Setup-Assistant?',
+        title:
+          'Start Setup Assistant' +
+          (process.env.REACT_APP_LEDFX_ANDROID === 'true' ? ' for Android?' : ' ?'),
         label_left: 'Skip',
         label_right: 'Yes',
         action_left: () => {
@@ -535,24 +540,28 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                     style={{ fontSize: 16, paddingLeft: '0.75rem' }}
                   />
                 </Stack>
-                <Stack direction="row" alignItems="center">
-                  <img width={32} height="auto" src={openrgbLogo} alt="openrgb" />
-                  <SettingsRow
-                    title="OpenRGB"
-                    checked={assistant.openRgb}
-                    onChange={() => setAssistant('openRgb', !assistant.openRgb)}
-                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
-                  />
-                </Stack>
-                <Stack direction="row" alignItems="center">
-                  <img width={32} height="auto" src={launchpadLogo} alt="wled" />
-                  <SettingsRow
-                    title="Launchpad"
-                    checked={assistant.launchpad}
-                    onChange={() => setAssistant('launchpad', !assistant.launchpad)}
-                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
-                  />
-                </Stack>
+                {process.env.REACT_APP_LEDFX_ANDROID !== 'true' && (
+                  <Stack direction="row" alignItems="center">
+                    <img width={32} height="auto" src={openrgbLogo} alt="openrgb" />
+                    <SettingsRow
+                      title="OpenRGB"
+                      checked={assistant.openRgb}
+                      onChange={() => setAssistant('openRgb', !assistant.openRgb)}
+                      style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    />
+                  </Stack>
+                )}
+                {process.env.REACT_APP_LEDFX_ANDROID !== 'true' && (
+                  <Stack direction="row" alignItems="center">
+                    <img width={32} height="auto" src={launchpadLogo} alt="wled" />
+                    <SettingsRow
+                      title="Launchpad"
+                      checked={assistant.launchpad}
+                      onChange={() => setAssistant('launchpad', !assistant.launchpad)}
+                      style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    />
+                  </Stack>
+                )}
               </Box>
             </div>
           )}
