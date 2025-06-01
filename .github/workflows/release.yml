@@ -162,7 +162,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Prepare Trigger Android
-        id: get-id
+        id: get-version
         run: |
           id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
           echo "::set-output name=id::$id"
@@ -172,7 +172,7 @@ jobs:
           workflow: LedFx BuildPipeline Android
           repo: YeonV/LedFx-Builds
           token: ${{ secrets.FRONTEND_TOKEN }}
-          inputs: '{ "fversion": "${{ steps.get-id.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}", "upload_url": "${{ steps.create_release.outputs.upload_url }}" }'
+          inputs: '{ "fversion": "${{ steps.get-version.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}", "upload_url": "${{ steps.create_release.outputs.upload_url }}" }'
 
       # - name: Prepare Trigger Hass
       #   id: hass
