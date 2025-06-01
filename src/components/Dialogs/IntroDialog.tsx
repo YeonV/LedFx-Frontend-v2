@@ -81,6 +81,10 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
 
   useEffect(() => {
     getSystemConfig()
+    if (process.env.REACT_APP_LEDFX_ANDROID === 'true') {
+      setAssistant('openRgb', false)
+      setAssistant('launchpad', false)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
