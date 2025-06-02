@@ -7,7 +7,9 @@ import {
   CircularProgress as CircularProgress5,
   Fab,
   Tooltip,
-  useMediaQuery
+  useMediaQuery,
+  Alert,
+  AlertTitle
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { DeleteForever, GitHub } from '@mui/icons-material'
@@ -26,6 +28,7 @@ import { Device, Virtual } from '../../api/ledfx.types'
 const Dashboard = () => {
   const theme = useTheme()
   const db = true
+  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
   const navigate = useNavigate()
   const scanForDevices = useStore((state) => state.scanForDevices)
   const scanForOpenRgbDevices = useStore((state) => state.scanForOpenRgbDevices)
@@ -243,34 +246,36 @@ const Dashboard = () => {
                 </Popover>
               </Box>
             </Tooltip>
-            <Tooltip title="Scan for OpenRGB Devices">
-              <Fab
-                aria-label="scan"
-                onClick={() => {
-                  scanForOpenRgbDevices()
-                }}
-                style={{
-                  margin: '8px',
-                  zIndex: 0
-                }}
-                sx={{
-                  bgcolor: theme.palette.primary.main,
-                  '&:hover': {
-                    bgcolor: theme.palette.primary.light
-                  }
-                }}
-              >
-                <img
-                  width={23}
-                  height="auto"
-                  src={openrgbLogo}
-                  alt="wled"
-                  style={{
-                    filter: `grayscale(100%) brightness(0)${theme.palette.primary.contrastText === '#fff' ? ' invert(1)' : ''}`
+            {!isAndroid && (
+              <Tooltip title="Scan for OpenRGB Devices">
+                <Fab
+                  aria-label="scan"
+                  onClick={() => {
+                    scanForOpenRgbDevices()
                   }}
-                />
-              </Fab>
-            </Tooltip>
+                  style={{
+                    margin: '8px',
+                    zIndex: 0
+                  }}
+                  sx={{
+                    bgcolor: theme.palette.primary.main,
+                    '&:hover': {
+                      bgcolor: theme.palette.primary.light
+                    }
+                  }}
+                >
+                  <img
+                    width={23}
+                    height="auto"
+                    src={openrgbLogo}
+                    alt="wled"
+                    style={{
+                      filter: `grayscale(100%) brightness(0)${theme.palette.primary.contrastText === '#fff' ? ' invert(1)' : ''}`
+                    }}
+                  />
+                </Fab>
+              </Tooltip>
+            )}
             {/* <Tooltip title="Play / Pause LedFx Effect-streaming">
             <Fab
               aria-label="play-pause"
@@ -424,6 +429,24 @@ const Dashboard = () => {
         </Stack>
       </Stack>
       {features.melbankGraph && <MGraph />}
+      {isAndroid && (
+        <Box sx={{ m: 4, pt: features.melbankGraph ? 0 : 6 }}>
+          <Alert variant="outlined" severity="info">
+            <AlertTitle>
+              LedFx for Android - <strong>Alpha Build</strong>
+            </AlertTitle>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              This is an unoffical build of LedFx for Android. It is not supported by the LedFx team
+              and any issue needs to be reproduced using the official LedFx build.
+            </Typography>
+            {/* <Typography variant="body2" sx={{ mt: 2 }}>
+            [MAYBE LATER WE ADD]:
+            <br />
+            There is a small chance to get help on discord in this [channel]
+          </Typography> */}
+          </Alert>
+        </Box>
+      )}
     </div>
   )
 }

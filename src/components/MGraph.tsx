@@ -22,6 +22,7 @@ import {
   Stack,
   Switch,
   TextField,
+  useMediaQuery,
   useTheme
 } from '@mui/material'
 import BladeFrame from './SchemaForm/components/BladeFrame'
@@ -47,6 +48,8 @@ const MGraph = () => {
   const [data3, setData3] = useState({} as any)
   const [showSettings, setShowSettings] = useState(false)
   const theme = useTheme()
+  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
+  const smallScreen = useMediaQuery('(max-width:768px)')
 
   const [scaleType, setScaleType] = useState(false)
 
@@ -248,7 +251,7 @@ const MGraph = () => {
           display: !showSettings ? 'none' : '',
           maxWidth: 720,
           width: '100%',
-          margin: '3rem',
+          margin: isAndroid || smallScreen ? 0 : '3rem',
           // background: theme.palette.mode === 'dark' ? '#1c1c1e' : ''
           background: theme.palette.background.paper
           // border: theme.palette.background.paper === '#000000' ? '1px solid #333' : ''
@@ -342,14 +345,20 @@ const MGraph = () => {
           </BladeFrame>
         </CardContent>
       </Card>
-      <Grid container spacing={2} justifyContent={'center'}>
+      <Grid
+        container
+        spacing={2}
+        justifyContent={'center'}
+        sx={{ width: smallScreen ? '100%' : '' }}
+      >
         {data1?.chartData && data1?.chartOptions && data1?.chartData?.labels && (
           <div
             style={{
               maxWidth: 700,
               width: '100%',
               height: 350,
-              margin: '3rem'
+              margin: smallScreen || isAndroid ? '0' : '3rem',
+              marginTop: '5rem'
             }}
           >
             <Line data={data1.chartData} options={data1.chartOptions} />
@@ -361,7 +370,8 @@ const MGraph = () => {
               maxWidth: 700,
               width: '100%',
               height: 350,
-              margin: '3rem'
+              margin: smallScreen || isAndroid ? '0' : '3rem',
+              marginTop: '5rem'
             }}
           >
             <Line data={data2.chartData} options={data2.chartOptions} />
@@ -372,11 +382,31 @@ const MGraph = () => {
             style={{
               maxWidth: 700,
               width: '100%',
-              height: 350,
-              margin: '3rem'
+              height: smallScreen || isAndroid ? 'auto' : 350,
+              margin: smallScreen || isAndroid ? '0' : '3rem',
+              marginTop: '5rem'
             }}
           >
-            <Line data={data3.chartData} options={data3.chartOptions} />
+            <Line
+              data={data3.chartData}
+              options={
+                smallScreen
+                  ? {
+                      ...data3.chartOptions,
+                      scales: {
+                        ...data3.chartOptions.scales,
+                        y: {
+                          ...data3.chartOptions.scales?.y,
+                          title: {
+                            ...(data3.chartOptions.scales?.y?.title || {}),
+                            display: false
+                          }
+                        }
+                      }
+                    }
+                  : data3.chartOptions
+              }
+            />
           </div>
         )}
       </Grid>
