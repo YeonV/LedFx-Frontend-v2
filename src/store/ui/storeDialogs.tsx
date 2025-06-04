@@ -11,6 +11,15 @@ const storeDialogs = (set: any) => ({
       false,
       'api/dialog/nohost'
     ),
+  userClosedQrConnector: false,
+  setUserClosedQrConnector: (closed: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.userClosedQrConnector = closed
+      }),
+      false,
+      'api/dialog/QrScanner'
+    ),
   dialogs: {
     qrConnector: {
       open: false,
