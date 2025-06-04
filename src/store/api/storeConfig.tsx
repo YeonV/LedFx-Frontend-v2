@@ -72,6 +72,7 @@ export interface ISystemConfig {
   global_transitions: boolean
   virtuals: undefined
   host: string
+  hosts?: string[]
   visualisation_maxlen: number
   port_s: number
   user_presets: Record<string, Record<string, IPreset>>
