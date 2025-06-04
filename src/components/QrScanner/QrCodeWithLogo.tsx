@@ -12,7 +12,7 @@ interface QrCodeWithLogoProps {
   alt?: string // Alt text for the image
   className?: string // Optional CSS class for the container/image
   style?: React.CSSProperties // Optional inline styles
-  onQrReady?: (dataUrl: string) => void // Callback when QR is ready
+  onQrReady?: (_dataUrl: string) => void // Callback when QR is ready
 }
 
 const QrCodeWithLogo: React.FC<QrCodeWithLogoProps> = ({
@@ -167,7 +167,9 @@ const QrCodeWithLogo: React.FC<QrCodeWithLogoProps> = ({
     data,
     logoSrc,
     logoSizeRatio,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(qrCodeOptions),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(imageSettings),
     width,
     height

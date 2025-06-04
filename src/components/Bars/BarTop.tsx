@@ -196,8 +196,8 @@ const TopBar = () => {
   const setCurrentTheme = useStore((state) => state.ui.setCurrentTheme)
   const setLatestTag = useStore((state) => state.ui.setLatestTag)
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen)
-  const qrConnectOpen = useStore((state) => state.dialogs.qrConnector?.open)
   const setQrConnectOpen = useStore((state) => state.setDialogOpenQrConnector)
+  const userClosedQrConnector = useStore((state) => state.userClosedQrConnector)
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setHostManager = useStore((state) => state.setHostManager)
@@ -220,6 +220,7 @@ const TopBar = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
+
   const hosts = useStore((state) => state.config.hosts) || []
   const port = useStore((state) => state.config.port) || 8888
 
@@ -400,8 +401,8 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if (isAndroidTv) setQrConnectOpen(true)
-  }, [isAndroidTv, setQrConnectOpen])
+    if (isAndroidTv && !userClosedQrConnector) setQrConnectOpen(true)
+  }, [isAndroidTv, userClosedQrConnector, setQrConnectOpen])
 
   return (
     <>
@@ -473,11 +474,7 @@ const TopBar = () => {
               style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
             >
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
-
-              <QrConnector
-                // hosts={['http://10.0.0.2:8888', ...hosts]}
-                hosts={hosts}
-              />
+              <QrConnector hosts={hosts} />
             </Typography>
             <div
               style={{

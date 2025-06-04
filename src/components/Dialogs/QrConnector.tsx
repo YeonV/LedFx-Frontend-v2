@@ -15,7 +15,9 @@ import {
   Radio,
   CircularProgress,
   Stack,
-  Button
+  Button,
+  Alert,
+  AlertTitle
 } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
 import { QrCode2 as QrCodeIcon, ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
@@ -45,11 +47,13 @@ const QrConnector: React.FC<QrConnectorProps> = ({
 }) => {
   const dialogOpen = useStore((state) => state.dialogs.qrConnector?.open)
   const setDialogOpen = useStore((state) => state.setDialogOpenQrConnector)
+  const setUserClosedQrConnector = useStore((state) => state.setUserClosedQrConnector)
   const [activeHostIndex, setActiveHostIndex] = useState(0)
   const [formattedHosts, setFormattedHosts] = useState<string[]>([])
   const navigate = useNavigate()
   const port = useStore((state) => state.config.port || 8888)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
 
   useEffect(() => {
     const isValidHttpUrl = (host: string) => {
@@ -87,6 +91,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   }
 
   const handleCloseDialog = () => {
+    setUserClosedQrConnector(true)
     setDialogOpen(false)
   }
 
@@ -261,7 +266,6 @@ const QrConnector: React.FC<QrConnectorProps> = ({
             </Box>
           )}
 
-          {/* QR Code Section */}
           <Box
             sx={{
               flexGrow: 1,
@@ -311,6 +315,14 @@ const QrConnector: React.FC<QrConnectorProps> = ({
               </Typography>
             )}
           </Box>
+          {isAndroid && (
+            <Box sx={{ p: 2, margin: '0 auto' }}>
+              <Alert severity="info" sx={{ m: 2, p: 2 }}>
+                <AlertTitle>Useragent:</AlertTitle>
+                {navigator.userAgent}
+              </Alert>
+            </Box>
+          )}
         </Box>
       </Dialog>
     </>
