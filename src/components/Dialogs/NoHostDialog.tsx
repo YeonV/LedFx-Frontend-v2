@@ -16,11 +16,12 @@ import {
   CircularProgress
   // Box,
 } from '@mui/material'
-import { Add, Delete, ExpandMore, Save } from '@mui/icons-material'
+import { Add, Delete, ExpandMore, QrCodeScanner, Save } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
 import mixedContent1 from '../../assets/mixedContent1.jpeg'
 import mixedContent2 from '../../assets/mixedContent2.jpeg'
+import QrScanner from '../QrScanner/QrScanner'
 // import Instances from './Instances';
 
 export default function NoHostDialog() {
@@ -39,6 +40,7 @@ export default function NoHostDialog() {
   )
   const [hosts, setHosts] = useState(['http://localhost:8888'])
   const [hostvalue, setHostvalue] = useState('http://localhost:8888')
+  const [qrScannerOpen, setQrScannerOpen] = useState(false)
 
   const cc = isElectron() && window.process?.argv.indexOf('integratedCore') !== -1
 
@@ -63,6 +65,32 @@ export default function NoHostDialog() {
     e.stopPropagation()
     window.localStorage.setItem('ledfx-hosts', JSON.stringify(hosts.filter((h) => h !== title)))
     setHosts(hosts.filter((h) => h !== title))
+  }
+
+  const handleScanSuccess = (scannedHost: string) => {
+    console.log('Scanned host:', scannedHost)
+    // Basic validation (you might want more robust validation)
+    if (scannedHost.startsWith('http://') || scannedHost.startsWith('https://')) {
+      setHostvalue(scannedHost.replace(/\/+$/, '')) // Set for the TextField, remove trailing slashes
+      setAdd(true) // Show the add section if it's not already visible
+      // Optionally, directly add to hosts list or even save
+      // if (!hosts.some(h => h === scannedHost)) {
+      //   setHosts(prevHosts => [...prevHosts, scannedHost]);
+      // }
+      // handleSave(scannedHost); // Or let user click save
+    } else {
+      // Handle invalid QR code content, e.g., show a snackbar or alert
+      alert(
+        `Invalid QR code content: "${scannedHost}". Expected a URL starting with http:// or https://`
+      )
+    }
+    setQrScannerOpen(false) // Close the scanner dialog
+  }
+
+  const handleQrScannerError = (message: string) => {
+    // Optionally handle scanner errors in the parent, e.g., show a snackbar
+    console.error('QR Scanner Error in Parent:', message)
+    // alert(`QR Scanner Error: ${message}`); // Example
   }
 
   useEffect(() => {
@@ -200,6 +228,19 @@ export default function NoHostDialog() {
               >
                 <Add />
               </Button>
+              <Button
+                sx={{ mt: 2, ml: 'auto', mr: 'auto' }}
+                aria-label="add"
+                onClick={() => setAdd(true)}
+              >
+                <QrCodeScanner />
+              </Button>
+              <QrScanner
+                onClose={() => setAdd(false)}
+                onScanSuccess={handleScanSuccess}
+                open={qrScannerOpen}
+                onScannerError={handleQrScannerError}
+              />
             </Box>
           )}
           {isLedFxStream && (
