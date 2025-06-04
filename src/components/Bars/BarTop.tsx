@@ -51,6 +51,7 @@ import { backendUrl } from '../../pages/Device/Cloud/CloudComponents'
 import { ledfxThemes, themes } from '../../themes/AppThemes'
 import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
+import QrConnector from '../Dialogs/QrConnector'
 
 interface FrontendConfig {
   updateUrl: string
@@ -179,8 +180,12 @@ const Title = (
 }
 
 const TopBar = () => {
+  const { requestWakeLock, releaseWakeLock } = useWakeLock()
+  const { pathname } = useLocation()
   const navigate = useNavigate()
+  const history = useNavigate()
   const theme = useTheme()
+
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [loggingIn, setLogginIn] = useState(false)
 
@@ -191,6 +196,8 @@ const TopBar = () => {
   const setCurrentTheme = useStore((state) => state.ui.setCurrentTheme)
   const setLatestTag = useStore((state) => state.ui.setLatestTag)
   const setLeftBarOpen = useStore((state) => state.ui.setLeftBarOpen)
+  const qrConnectOpen = useStore((state) => state.dialogs.qrConnector?.open)
+  const setQrConnectOpen = useStore((state) => state.setDialogOpenQrConnector)
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setHostManager = useStore((state) => state.setHostManager)
@@ -200,8 +207,6 @@ const TopBar = () => {
   const setIsLogged = useStore((state) => state.setIsLogged)
   const disconnected = useStore((state) => state.disconnected)
   const setDisconnected = useStore((state) => state.setDisconnected)
-  const { pathname } = useLocation()
-  const history = useNavigate()
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const features = useStore((state) => state.features)
@@ -215,7 +220,11 @@ const TopBar = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
-  const { requestWakeLock, releaseWakeLock } = useWakeLock()
+  const hosts = useStore((state) => state.config.hosts) || []
+  const port = useStore((state) => state.config.port) || 8888
+
+  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
+  const isAndroidTv = isAndroid && port === 8889
 
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
@@ -390,6 +399,10 @@ const TopBar = () => {
 
   const slug = pathname.split('/')[1]
 
+  useEffect(() => {
+    if (isAndroidTv) setQrConnectOpen(true)
+  }, [isAndroidTv, setQrConnectOpen])
+
   return (
     <>
       {isElectron() && platform !== 'darwin' && (
@@ -454,8 +467,17 @@ const TopBar = () => {
               {LeftButtons(pathname, history, open, handleLeftBarOpen)}
             </div>
 
-            <Typography variant="h6" noWrap style={{ margin: '0 auto' }}>
+            <Typography
+              variant="h6"
+              noWrap
+              style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
+            >
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
+
+              <QrConnector
+                // hosts={['http://10.0.0.2:8888', ...hosts]}
+                hosts={hosts}
+              />
             </Typography>
             <div
               style={{
@@ -491,7 +513,6 @@ const TopBar = () => {
               ) : (
                 <GlobalActionBar className="hideHd" />
               )}
-
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <IconButton
                   aria-label="display more actions"

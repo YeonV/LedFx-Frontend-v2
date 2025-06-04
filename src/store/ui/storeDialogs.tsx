@@ -12,6 +12,10 @@ const storeDialogs = (set: any) => ({
       'api/dialog/nohost'
     ),
   dialogs: {
+    qrConnector: {
+      open: false,
+      edit: false
+    },
     nohost: {
       open: false,
       edit: false
@@ -88,6 +92,17 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/nohost'
+    ),
+  setDialogOpenQrConnector: (open: boolean, edit?: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.qrConnector = {
+          open,
+          edit: edit || false
+        }
+      }),
+      false,
+      'api/dialog/QrConnector'
     ),
   setDialogOpenFileDrop: (open: boolean, edit?: boolean) =>
     set(

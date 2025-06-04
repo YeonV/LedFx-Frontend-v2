@@ -26,6 +26,7 @@ import QrScanner from '../QrScanner/QrScanner'
 
 export default function NoHostDialog() {
   const dialogOpen = useStore((state) => state.dialogs.nohost?.open || false)
+  const dialogQrOpen = useStore((state) => state.dialogs.qrConnector?.open)
   const [add, setAdd] = useState(false)
   const [mixedContent, setMixedContent] = useState(false)
   const [isLedFxStream, setIsLedFxStream] = useState(false)
@@ -74,23 +75,17 @@ export default function NoHostDialog() {
       setHostvalue(scannedHost.replace(/\/+$/, '')) // Set for the TextField, remove trailing slashes
       setAdd(true) // Show the add section if it's not already visible
       // Optionally, directly add to hosts list or even save
-      // if (!hosts.some(h => h === scannedHost)) {
-      //   setHosts(prevHosts => [...prevHosts, scannedHost]);
-      // }
-      // handleSave(scannedHost); // Or let user click save
+      if (!hosts.some((h) => h === scannedHost)) {
+        setHosts((prevHosts) => [...prevHosts, scannedHost])
+      }
+      handleSave(scannedHost) // Or let user click save
     } else {
       // Handle invalid QR code content, e.g., show a snackbar or alert
       alert(
         `Invalid QR code content: "${scannedHost}". Expected a URL starting with http:// or https://`
       )
     }
-    setQrScannerOpen(false) // Close the scanner dialog
-  }
-
-  const handleQrScannerError = (message: string) => {
-    // Optionally handle scanner errors in the parent, e.g., show a snackbar
-    console.error('QR Scanner Error in Parent:', message)
-    // alert(`QR Scanner Error: ${message}`); // Example
+    // setQrScannerOpen(false) // Close the scanner dialog
   }
 
   useEffect(() => {
@@ -132,7 +127,11 @@ export default function NoHostDialog() {
 
   return (
     <div key="nohost-dialog">
-      <Dialog open={dialogOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        open={dialogOpen && !dialogQrOpen}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">
           {edit ? 'LedFx-Core Host' : !cc ? 'No LedFx-Core found' : 'LedFx-Core not ready'}
           {!edit && cc && (
@@ -231,15 +230,14 @@ export default function NoHostDialog() {
               <Button
                 sx={{ mt: 2, ml: 'auto', mr: 'auto' }}
                 aria-label="add"
-                onClick={() => setAdd(true)}
+                onClick={() => setQrScannerOpen(true)}
               >
                 <QrCodeScanner />
               </Button>
               <QrScanner
-                onClose={() => setAdd(false)}
+                onClose={() => setQrScannerOpen(false)}
                 onScanSuccess={handleScanSuccess}
                 open={qrScannerOpen}
-                onScannerError={handleQrScannerError}
               />
             </Box>
           )}
