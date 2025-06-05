@@ -29,8 +29,21 @@ const GeneralCard = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenes = useStore((state) => state.scenes)
 
+  const isAndroidBridgeAvailable = (): boolean => {
+    return typeof (window as any).LedFxAndroidBridge !== 'undefined'
+  }
+
+  const dl = async (fileName: string, content: any, contentType: string = 'application/json') => {
+    if (isAndroidBridgeAvailable()) {
+      const fileContentJson = JSON.stringify(content, null, 4)
+      ;(window as any).LedFxAndroidBridge.exportConfigFile(fileName, fileContentJson)
+    } else {
+      download(content, 'config.json', contentType)
+    }
+  }
+
   const configDownload = async () => {
-    getFullConfig().then((newConfig) => download(newConfig, 'config.json', 'application/json'))
+    getFullConfig().then((newConfig) => dl('config.json', newConfig, 'application/json'))
   }
 
   const configDelete = async () => {
