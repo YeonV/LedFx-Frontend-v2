@@ -22,6 +22,7 @@ import useStore from '../../store/useStore'
 import mixedContent1 from '../../assets/mixedContent1.jpeg'
 import mixedContent2 from '../../assets/mixedContent2.jpeg'
 import QrScanner from '../QrScanner/QrScanner'
+import { getBaseUrl } from '../../utils/getBaseUrl'
 // import Instances from './Instances';
 
 export default function NoHostDialog() {
@@ -108,16 +109,12 @@ export default function NoHostDialog() {
 
   useEffect(() => {
     if (!storedURL) {
-      setHost(
-        isElectron()
-          ? 'http://localhost:8888'
-          : window.location.href.split('/#')[0].replace(/\/+$/, '')
-      )
+      setHost(isElectron() ? 'http://localhost:8888' : getBaseUrl(window.location.href))
       window.localStorage.setItem(
         'ledfx-host',
         isElectron()
           ? 'http://localhost:8888'
-          : window.location.href.split('/#')[0].replace(/\/+$/, '')
+          : getBaseUrl(window.location.href) || 'http://localhost:8888'
       )
       // eslint-disable-next-line no-self-assign
       window.location.href = window.location.href
