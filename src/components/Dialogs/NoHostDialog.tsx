@@ -110,6 +110,11 @@ export default function NoHostDialog() {
   useEffect(() => {
     if (!storedURL) {
       setHost(isElectron() ? 'http://localhost:8888' : getBaseUrl(window.location.href))
+      setHostvalue(
+        isElectron()
+          ? 'http://localhost:8888'
+          : getBaseUrl(window.location.href) || 'http://localhost:8888'
+      )
       window.localStorage.setItem(
         'ledfx-host',
         isElectron()
