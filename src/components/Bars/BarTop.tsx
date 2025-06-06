@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { compareVersions } from 'compare-versions'
 import {
   Menu as MenuIcon,
@@ -67,10 +67,6 @@ export const StyledBadge = styled(Badge)(() => ({
     height: '14px'
   }
 }))
-
-const isAndroidBridge = (): boolean => {
-  return typeof (window as any).LedFxAndroidBridge !== 'undefined'
-}
 
 const LeftButtons = (pathname: any, history: any, open?: boolean, handleLeftBarOpen?: any) => {
   const theme = useTheme()
@@ -189,6 +185,8 @@ const TopBar = () => {
   const navigate = useNavigate()
   const history = useNavigate()
   const theme = useTheme()
+  const [searchParams] = useSearchParams()
+  const isTv = searchParams.get('isAndroidTv') === 'true'
 
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [loggingIn, setLogginIn] = useState(false)
@@ -405,8 +403,8 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if ((isAndroidTv || isAndroidBridge()) && !userClosedQrConnector) setQrConnectOpen(true)
-  }, [isAndroidTv, userClosedQrConnector, setQrConnectOpen])
+    if ((isAndroidTv || isTv) && !userClosedQrConnector) setQrConnectOpen(true)
+  }, [isAndroidTv, isTv, userClosedQrConnector, setQrConnectOpen])
 
   return (
     <>
