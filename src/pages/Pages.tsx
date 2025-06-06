@@ -169,7 +169,7 @@ const Routings = ({ handleWs }: any) => {
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         <OneEffect noButton />
         <NoHostDialog />
-        <HostManager />
+        {isElect && <HostManager />}
         <FrontendPixelsTooSmall />
         <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
       </Box>

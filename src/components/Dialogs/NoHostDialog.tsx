@@ -109,18 +109,16 @@ export default function NoHostDialog() {
 
   useEffect(() => {
     if (!storedURL) {
-      setHost(isElectron() ? 'http://localhost:8888' : getBaseUrl(window.location.href))
-      setHostvalue(
-        isElectron()
-          ? 'http://localhost:8888'
-          : getBaseUrl(window.location.href) || 'http://localhost:8888'
-      )
-      window.localStorage.setItem(
-        'ledfx-host',
-        isElectron()
-          ? 'http://localhost:8888'
-          : getBaseUrl(window.location.href) || 'http://localhost:8888'
-      )
+      const defaultHost = 'http://localhost:8888'
+      const baseHost = getBaseUrl(window.location.href)
+      const newHost = isElectron()
+        ? defaultHost
+        : baseHost === 'http://localhost:3000'
+          ? defaultHost
+          : baseHost || defaultHost
+      setHost(newHost)
+      setHostvalue(newHost)
+      window.localStorage.setItem('ledfx-host', newHost)
       // eslint-disable-next-line no-self-assign
       window.location.href = window.location.href
     }
