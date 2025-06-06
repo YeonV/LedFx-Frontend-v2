@@ -68,6 +68,10 @@ export const StyledBadge = styled(Badge)(() => ({
   }
 }))
 
+const isAndroidBridge = (): boolean => {
+  return typeof (window as any).LedFxAndroidBridge !== 'undefined'
+}
+
 const LeftButtons = (pathname: any, history: any, open?: boolean, handleLeftBarOpen?: any) => {
   const theme = useTheme()
 
@@ -401,7 +405,7 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if (isAndroidTv && !userClosedQrConnector) setQrConnectOpen(true)
+    if ((isAndroidTv || isAndroidBridge()) && !userClosedQrConnector) setQrConnectOpen(true)
   }, [isAndroidTv, userClosedQrConnector, setQrConnectOpen])
 
   return (
