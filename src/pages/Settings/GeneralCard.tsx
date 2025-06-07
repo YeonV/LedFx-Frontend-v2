@@ -15,6 +15,7 @@ import PopoverSure from '../../components/Popover/Popover'
 
 import AboutDialog from '../../components/Dialogs/AboutDialog'
 import { useStyles, SettingsButton, SettingsSwitch } from './SettingsComponents'
+import { navigateToRoot } from '../../utils/navigateToRoot'
 
 const GeneralCard = () => {
   const classes = useStyles()
@@ -28,6 +29,7 @@ const GeneralCard = () => {
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenes = useStore((state) => state.scenes)
+  const setIntro = useStore((state) => state.setIntro)
 
   const isAndroidBridgeAvailable = (): boolean => {
     return typeof (window as any).LedFxAndroidBridge !== 'undefined'
@@ -48,12 +50,16 @@ const GeneralCard = () => {
 
   const configDelete = async () => {
     deleteFrontendConfig(true)
-    deleteSystemConfig().then(() => {
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
-      window.location.href = window.location.href.split('/#/')[0] + '/#/'
-    })
+    setTimeout(() => {
+      deleteSystemConfig().then(() => {
+        setTimeout(() => {
+          window.localStorage.setItem('ledfx-host', 'http://localhost:8888')
+          window.location.reload()
+          setIntro(true)
+        }, 500)
+        navigateToRoot()
+      })
+    }, 300)
   }
 
   const fileChanged = async (e: any) => {

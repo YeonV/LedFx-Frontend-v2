@@ -17,7 +17,8 @@ import {
   Stack,
   Button,
   Alert,
-  AlertTitle
+  AlertTitle,
+  useMediaQuery
 } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
 import { QrCode2 as QrCodeIcon, ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
@@ -53,7 +54,9 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const navigate = useNavigate()
   const port = useStore((state) => state.config.port || 8888)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
+  // check landscape mode
+  const isLandscape = useMediaQuery('(orientation: landscape)')
+  // const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
 
   useEffect(() => {
     const isValidHttpUrl = (host: string) => {
@@ -142,15 +145,16 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         TransitionComponent={Transition}
       >
         <AppBar sx={{ position: 'relative', background: 'rgba(0,0,0,0.8)' }}>
-          <Toolbar>
+          <Toolbar sx={{ minHeight: '50px !important' }}>
             <Stack
               direction="row"
-              spacing={1}
+              spacing={0}
               alignItems="center"
               justifyContent={'space-between'}
               sx={{ width: '100%' }}
             >
               <Button
+                size="small"
                 variant="outlined"
                 color="inherit"
                 onClick={handleCloseDialog}
@@ -163,6 +167,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                 Scan to Connect
               </Typography>
               <Button
+                size="small"
                 variant="outlined"
                 color="inherit"
                 onClick={() => {
@@ -181,7 +186,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: isLandscape ? 'row' : 'column',
             height: 'calc(100% - 64px)',
             background: 'linear-gradient(to bottom, #232323, #121212)',
             color: 'white'
@@ -214,7 +219,9 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                       mb: 1,
                       cursor: 'pointer',
                       borderColor:
-                        activeHostIndex === index ? 'primary.main' : 'rgba(255,255,255,0.23)',
+                        activeHostIndex === index
+                          ? 'rgba(255,255,255,0.5)'
+                          : 'rgba(255,255,255,0.20)',
                       backgroundColor:
                         activeHostIndex === index
                           ? 'rgba(var(--mui-palette-primary-mainChannel) / 0.2)'
@@ -233,7 +240,10 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                       primary={host}
                       primaryTypographyProps={{
                         fontWeight: activeHostIndex === index ? 'bold' : 'normal',
-                        color: activeHostIndex === index ? 'primary.light' : 'inherit',
+                        color:
+                          activeHostIndex === index
+                            ? 'rgba(255,255,255,0.6)'
+                            : 'rgba(255,255,255,0.2)',
                         fontSize: '1.1rem'
                       }}
                     />
@@ -315,14 +325,14 @@ const QrConnector: React.FC<QrConnectorProps> = ({
               </Typography>
             )}
           </Box>
-          {isAndroid && (
+          {/* {isAndroid && (
             <Box sx={{ p: 2, margin: '0 auto' }}>
               <Alert severity="info" sx={{ m: 2, p: 2 }}>
                 <AlertTitle>Useragent:</AlertTitle>
                 {navigator.userAgent}
               </Alert>
             </Box>
-          )}
+          )} */}
         </Box>
       </Dialog>
     </>

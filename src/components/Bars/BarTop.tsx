@@ -403,7 +403,7 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if ((isAndroidTv || isTv) && !userClosedQrConnector) setQrConnectOpen(true)
+    if (isAndroidTv || isTv) setQrConnectOpen(true)
   }, [isAndroidTv, isTv, userClosedQrConnector, setQrConnectOpen])
 
   return (
@@ -476,7 +476,8 @@ const TopBar = () => {
               style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
             >
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
-              <QrConnector hosts={hosts} />
+              <QrConnector hosts={[...hosts, 'http://10.0.0.1:8888']} />
+              {/* <QrConnector hosts={hosts} /> */}
             </Typography>
             <div
               style={{
