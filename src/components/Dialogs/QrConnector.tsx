@@ -16,8 +16,6 @@ import {
   CircularProgress,
   Stack,
   Button,
-  Alert,
-  AlertTitle,
   useMediaQuery
 } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
@@ -145,7 +143,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         TransitionComponent={Transition}
       >
         <AppBar sx={{ position: 'relative', background: 'rgba(0,0,0,0.8)' }}>
-          <Toolbar sx={{ minHeight: '50px !important' }}>
+          <Toolbar sx={{ minHeight: '40px !important' }}>
             <Stack
               direction="row"
               spacing={0}
@@ -159,7 +157,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                 color="inherit"
                 onClick={handleCloseDialog}
                 startIcon={<ArrowBackIos />}
-                sx={{ padding: '6px 20px', borderRadius: '8px' }}
+                sx={{ padding: '2px 20px', borderRadius: '8px' }}
               >
                 Back
               </Button>
@@ -175,7 +173,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                   handleCloseDialog()
                 }}
                 endIcon={<ArrowForwardIos />}
-                sx={{ padding: '6px 20px', borderRadius: '8px' }}
+                sx={{ padding: '2px 20px', borderRadius: '8px' }}
               >
                 Devices
               </Button>
@@ -198,12 +196,12 @@ const QrConnector: React.FC<QrConnectorProps> = ({
               sx={{
                 p: 2,
                 pb: 0,
-                maxHeight: '35%',
+                maxHeight: '80vh',
                 overflowY: 'auto',
                 flexShrink: 0,
                 maxWidth: 720,
                 alignSelf: 'center',
-                width: '100%'
+                width: 'auto'
               }}
             >
               <List>
@@ -325,14 +323,6 @@ const QrConnector: React.FC<QrConnectorProps> = ({
               </Typography>
             )}
           </Box>
-          {/* {isAndroid && (
-            <Box sx={{ p: 2, margin: '0 auto' }}>
-              <Alert severity="info" sx={{ m: 2, p: 2 }}>
-                <AlertTitle>Useragent:</AlertTitle>
-                {navigator.userAgent}
-              </Alert>
-            </Box>
-          )} */}
         </Box>
       </Dialog>
     </>
