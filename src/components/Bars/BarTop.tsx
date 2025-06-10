@@ -224,11 +224,8 @@ const TopBar = () => {
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
 
   const hosts = useStore((state) => state.config.hosts) || []
-  const port = useStore((state) => state.config.port) || 8888
 
   const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
-  const isAndroidTv = isAndroid && port === 8889
-
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
     switch (pathname.split('/')[1]) {
@@ -403,8 +400,8 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if (isAndroidTv || isTv) setQrConnectOpen(true)
-  }, [isAndroidTv, isTv, userClosedQrConnector, setQrConnectOpen])
+    if (isAndroid && isTv) setQrConnectOpen(true)
+  }, [isAndroid, isTv, userClosedQrConnector, setQrConnectOpen])
 
   return (
     <>
