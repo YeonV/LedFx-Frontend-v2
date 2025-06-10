@@ -30,6 +30,7 @@ const GeneralCard = () => {
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenes = useStore((state) => state.scenes)
   const setIntro = useStore((state) => state.setIntro)
+  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
 
   const isAndroidBridgeAvailable = (): boolean => {
     return typeof (window as any).LedFxAndroidBridge !== 'undefined'
@@ -52,12 +53,14 @@ const GeneralCard = () => {
     deleteFrontendConfig(true)
     setTimeout(() => {
       deleteSystemConfig().then(() => {
-        setTimeout(() => {
-          window.localStorage.setItem('ledfx-host', 'http://localhost:8888')
-          window.location.reload()
-          setIntro(true)
-        }, 500)
-        navigateToRoot()
+        if (!isAndroid) {
+          setTimeout(() => {
+            window.localStorage.setItem('ledfx-host', 'http://localhost:8888')
+            window.location.reload()
+            setIntro(true)
+          }, 500)
+          navigateToRoot()
+        }
       })
     }, 300)
   }
