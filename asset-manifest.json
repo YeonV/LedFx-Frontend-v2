@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.7b9f96b2.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.fbc5130e.js",
-    "static/js/904.090f0346.chunk.js": "/LedFx-Frontend-v2/static/js/904.090f0346.chunk.js",
-    "static/js/865.b62d6362.chunk.js": "/LedFx-Frontend-v2/static/js/865.b62d6362.chunk.js",
-    "static/js/703.745a3616.chunk.js": "/LedFx-Frontend-v2/static/js/703.745a3616.chunk.js",
-    "static/js/84.745a3616.chunk.js": "/LedFx-Frontend-v2/static/js/84.745a3616.chunk.js",
-    "static/js/685.db35d3c0.chunk.js": "/LedFx-Frontend-v2/static/js/685.db35d3c0.chunk.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.f1b34144.js",
+    "static/js/956.517c011f.chunk.js": "/LedFx-Frontend-v2/static/js/956.517c011f.chunk.js",
+    "static/js/429.748331ac.chunk.js": "/LedFx-Frontend-v2/static/js/429.748331ac.chunk.js",
+    "static/js/83.344794cb.chunk.js": "/LedFx-Frontend-v2/static/js/83.344794cb.chunk.js",
+    "static/js/464.344794cb.chunk.js": "/LedFx-Frontend-v2/static/js/464.344794cb.chunk.js",
+    "static/js/685.1b59d551.chunk.js": "/LedFx-Frontend-v2/static/js/685.1b59d551.chunk.js",
     "static/media/xmas.png": "/LedFx-Frontend-v2/static/media/xmas.3e4e83405d14fb81488b.png",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
     "static/media/fireworks.jpg": "/LedFx-Frontend-v2/static/media/fireworks.b0378f4b56783c9e58d1.jpg",
@@ -40,10 +40,16 @@
     "static/media/left-snake.svg": "/LedFx-Frontend-v2/static/media/left-snake.77e313afd0b58fc57bc1b98df60eacfd.svg",
     "static/media/right-snake.svg": "/LedFx-Frontend-v2/static/media/right-snake.48646339a693661b2cbfb01036d4347d.svg",
     "static/media/bottom-snake.svg": "/LedFx-Frontend-v2/static/media/bottom-snake.9b9a83d44ad5de6f52df46864a7815b8.svg",
-    "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.866a1a9f220801e888735cdfa6f22698.svg"
+    "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.866a1a9f220801e888735cdfa6f22698.svg",
+    "main.f1b34144.js.map": "/LedFx-Frontend-v2/static/js/main.f1b34144.js.map",
+    "956.517c011f.chunk.js.map": "/LedFx-Frontend-v2/static/js/956.517c011f.chunk.js.map",
+    "429.748331ac.chunk.js.map": "/LedFx-Frontend-v2/static/js/429.748331ac.chunk.js.map",
+    "83.344794cb.chunk.js.map": "/LedFx-Frontend-v2/static/js/83.344794cb.chunk.js.map",
+    "464.344794cb.chunk.js.map": "/LedFx-Frontend-v2/static/js/464.344794cb.chunk.js.map",
+    "685.1b59d551.chunk.js.map": "/LedFx-Frontend-v2/static/js/685.1b59d551.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7b9f96b2.css",
-    "static/js/main.fbc5130e.js"
+    "static/js/main.f1b34144.js"
   ]
 }
