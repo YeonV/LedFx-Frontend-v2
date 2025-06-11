@@ -9,9 +9,11 @@ const config: StorybookConfig = {
     '../src/components/Popover/Popover.stories.tsx',
     '../src/pages/Devices/DeviceCard/DeviceCard.stories.tsx'
   ],
-  addons: [// '@chromatic-com/storybook',
-  '@storybook/preset-create-react-app', // '@storybook/addon-interactions',
-  '@storybook/addon-themes', '@storybook/addon-docs'],
+  addons: [
+    '@storybook/preset-create-react-app',
+    '@storybook/addon-themes',
+    '@storybook/addon-docs'
+  ],
   framework: {
     name: '@storybook/react-webpack5',
     options: {}
