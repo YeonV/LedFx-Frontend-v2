@@ -195,7 +195,7 @@
     "@storybook/preset-create-react-app": "^9.0.8",
     "@storybook/react-webpack5": "^9.0.8",
     "@types/babel__template": "^7.4.4",
-    "@types/chart.js": "^2.9.41",
+    "@types/chart.js": "^4.0.1",
     "@types/color": "^4.2.0",
     "@types/electron": "^1.6.12",
     "@types/eslint__js": "^9.14.0",
