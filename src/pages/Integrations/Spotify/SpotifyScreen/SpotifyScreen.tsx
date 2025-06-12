@@ -6,7 +6,7 @@ import {
   AppBar,
   Dialog,
   Button,
-  Grid2 as Grid,
+  Grid,
   useTheme
 } from '@mui/material'
 import { Settings, NavigateBefore } from '@mui/icons-material'

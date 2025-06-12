@@ -8,7 +8,7 @@ import {
   // TableHead,
   TableRow,
   Paper,
-  Grid2 as Grid,
+  Grid,
   Card,
   Stack
   // useTheme,
