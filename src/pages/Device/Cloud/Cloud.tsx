@@ -6,7 +6,7 @@ import {
   Card,
   CardHeader,
   Dialog,
-  Grid2 as Grid,
+  Grid,
   IconButton,
   ListItemIcon,
   Toolbar,

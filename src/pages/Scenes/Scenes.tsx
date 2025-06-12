@@ -10,7 +10,7 @@ import {
   Alert,
   Collapse,
   useMediaQuery,
-  Grid2 as Grid,
+  Grid,
   Box,
   Stack
 } from '@mui/material'

@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef, GridValueGetter, GridRowParams } from '@mui/x-data-grid'
 
-import { Card, Grid2 as Grid, IconButton, Stack } from '@mui/material'
+import { Card, Grid, IconButton, Stack } from '@mui/material'
 import { PlayCircleFilled } from '@mui/icons-material'
 import useStore from '../../../../../store/useStore'
 import { spotifyPlaySong } from '../../../../../utils/spotifyProxies'

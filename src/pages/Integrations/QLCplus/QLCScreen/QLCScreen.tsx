@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography, Toolbar, AppBar, Dialog, Button, Grid2 as Grid } from '@mui/material'
+import { Typography, Toolbar, AppBar, Dialog, Button, Grid } from '@mui/material'
 import { Settings, NavigateBefore, Add } from '@mui/icons-material'
 import { MuiMenuItem, QLCScreenDefaultProps, QLCScreenProps, Transition } from './QLCScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'

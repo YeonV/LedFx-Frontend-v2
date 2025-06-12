@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Box, Grid2 as Grid, Paper, Typography, Popover, Button, useTheme } from '@mui/material'
+import { Box, Grid, Paper, Typography, Popover, Button, useTheme } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { darken } from '@mui/material/styles'
 import { IColor, rgbValues, sortColorsByHSL, zeroPadHex } from '../../utils/MidiDevices/colorHelper'

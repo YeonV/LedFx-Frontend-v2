@@ -17,7 +17,7 @@ import {
   CardContent,
   CardHeader,
   Fab,
-  Grid2 as Grid,
+  Grid,
   Slider,
   Stack,
   Switch,

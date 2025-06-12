@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
@@ -259,75 +260,82 @@ export default function App() {
   }, [protoCall, showSnackbar, setProtoCall])
 
   return (
-    <ThemeProvider theme={theme}>
-      <SnackbarProvider maxSnack={15}>
-        <WsContext.Provider value={ws}>
-          <SpotifyProvider>
-            <FiledropProvider>
-              <CssBaseline />
-              <FpsViewer open={fpsViewer} bottom={60} left={5} color={theme.palette.primary.main} />
-              <GlobalStyles
-                styles={{
-                  body: {
-                    colorScheme: theme.palette.mode
-                  }
+    <ThemeProviderNew theme={theme}>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider maxSnack={15}>
+          <WsContext.Provider value={ws}>
+            <SpotifyProvider>
+              <FiledropProvider>
+                <CssBaseline />
+                <FpsViewer
+                  open={fpsViewer}
+                  bottom={60}
+                  left={5}
+                  color={theme.palette.primary.main}
+                />
+                <GlobalStyles
+                  styles={{
+                    body: {
+                      colorScheme: theme.palette.mode
+                    }
+                  }}
+                />
+                <Pages handleWs={<HandleWs />} />
+              </FiledropProvider>
+            </SpotifyProvider>
+          </WsContext.Provider>
+          {features.waves && (
+            <WaveLines
+              startColor={theme.palette.primary.main}
+              stopColor={theme.palette.accent.main || '#ffdc0f'}
+              width={width - 8}
+              height={height}
+            />
+          )}
+          {new Date().getFullYear() === 2024 &&
+            new Date().getMonth() === 11 &&
+            new Date().getDate() >= 24 && (
+              <div
+                style={{
+                  margin: 'auto',
+                  backgroundImage: `url(${xmas})`,
+                  backgroundSize: 'cover',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'bottom',
+                  display: 'block',
+                  zIndex: -1,
+                  position: 'fixed',
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  opacity: 0.7
                 }}
               />
-              <Pages handleWs={<HandleWs />} />
-            </FiledropProvider>
-          </SpotifyProvider>
-        </WsContext.Provider>
-        {features.waves && (
-          <WaveLines
-            startColor={theme.palette.primary.main}
-            stopColor={theme.palette.accent.main || '#ffdc0f'}
-            width={width - 8}
-            height={height}
-          />
-        )}
-        {new Date().getFullYear() === 2024 &&
-          new Date().getMonth() === 11 &&
-          new Date().getDate() >= 24 && (
-            <div
-              style={{
-                margin: 'auto',
-                backgroundImage: `url(${xmas})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'bottom',
-                display: 'block',
-                zIndex: -1,
-                position: 'fixed',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                opacity: 0.7
-              }}
-            />
-          )}
-        {new Date().getFullYear() === 2025 &&
-          new Date().getMonth() === 0 &&
-          new Date().getDate() === 1 && (
-            <div
-              style={{
-                margin: 'auto',
-                backgroundImage: `url(${newyear})`,
-                backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'bottom right',
-                display: 'block',
-                zIndex: -1,
-                position: 'fixed',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                opacity: 0.7
-              }}
-            />
-          )}
-      </SnackbarProvider>
-    </ThemeProvider>
+            )}
+          {new Date().getFullYear() === 2025 &&
+            new Date().getMonth() === 0 &&
+            new Date().getDate() === 1 && (
+              <div
+                style={{
+                  margin: 'auto',
+                  backgroundImage: `url(${newyear})`,
+                  backgroundSize: 'contain',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'bottom right',
+                  display: 'block',
+                  zIndex: -1,
+                  position: 'fixed',
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  opacity: 0.7
+                }}
+              />
+            )}
+        </SnackbarProvider>
+      </ThemeProvider>
+    </ThemeProviderNew>
   )
 }
