@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react'
+import type { Preview } from '@storybook/react-webpack5'
 import {
   BladeDarkBlueTheme as darkTheme,
   BladeLightBlueTheme as lightTheme
@@ -6,7 +6,8 @@ import {
 import './globals.css'
 import '../src/index.css'
 
-import { ThemeProvider, CssBaseline } from '@mui/material'
+import { CssBaseline } from '@mui/material'
+import { ThemeProvider } from '@mui/styles'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 
 const preview: Preview = {

@@ -69,7 +69,7 @@ const AddWledDialog = () => {
     }
 
     // let icon = 'wled'
-    const promises: any = apiRef.current.getSelectedRows().forEach((row) => {
+    const promises: any = apiRef.current?.getSelectedRows().forEach((row) => {
       // if row.name is part of a key of nametoicon then return the value else 'wled'
 
       // Object.keys(nameToIcon).some((key) => {

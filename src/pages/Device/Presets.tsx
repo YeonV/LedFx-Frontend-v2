@@ -6,7 +6,7 @@ import {
   CardHeader,
   Divider,
   Button,
-  Grid2 as Grid,
+  Grid,
   Typography,
   TextField,
   useTheme,
