@@ -8,7 +8,7 @@ import {
   Slide,
   Divider,
   Icon,
-  Grid2 as Grid,
+  Grid,
   CircularProgress
 } from '@mui/material'
 import { BugReport, NavigateBefore } from '@mui/icons-material'

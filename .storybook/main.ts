@@ -11,11 +11,8 @@ const config: StorybookConfig = {
   ],
   addons: [
     '@storybook/preset-create-react-app',
-    // '@storybook/addon-onboarding',
-    '@storybook/addon-essentials',
-    // '@chromatic-com/storybook',
-    // '@storybook/addon-interactions',
-    '@storybook/addon-themes'
+    '@storybook/addon-themes',
+    '@storybook/addon-docs'
   ],
   framework: {
     name: '@storybook/react-webpack5',
