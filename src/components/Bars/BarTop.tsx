@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { compareVersions } from 'compare-versions'
 import {
   Menu as MenuIcon,
@@ -185,8 +185,7 @@ const TopBar = () => {
   const navigate = useNavigate()
   const history = useNavigate()
   const theme = useTheme()
-  const [searchParams] = useSearchParams()
-  const isTv = searchParams.get('isAndroidTv') === 'true'
+  const isTv = window.location.href.includes('isAndroidTv=true')
 
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [loggingIn, setLogginIn] = useState(false)
@@ -400,8 +399,8 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if (isAndroid && isTv) setQrConnectOpen(true)
-  }, [isAndroid, isTv, userClosedQrConnector, setQrConnectOpen])
+    if (isTv) setQrConnectOpen(true)
+  }, [isTv, userClosedQrConnector, setQrConnectOpen])
 
   return (
     <>
