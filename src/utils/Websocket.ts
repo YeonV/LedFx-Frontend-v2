@@ -83,12 +83,33 @@ function createSocket() {
             type: 'subscribe_event'
           }
           ws.send(JSON.stringify(reqst.id && reqst))
+          const requst = {
+            event_type: 'client_connected',
+            id: 9005,
+            type: 'subscribe_event'
+          }
+          ws.send(JSON.stringify(requst.id && requst))
+          const request = {
+            event_type: 'client_disconnected',
+            id: 9006,
+            type: 'subscribe_event'
+          }
+          ws.send(JSON.stringify(request.id && request))
+          const requesta = {
+            event_type: ' client_sync',
+            id: 9007,
+            type: 'subscribe_event'
+          }
+          ws.send(JSON.stringify(requesta.id && requesta))
         }
       },
       onmessage: (event) => {
         const data = JSON.parse(event.data)
         if (!data?.event_type) {
           return
+        }
+        if (data.event_type === 'client_id') {
+          console.log('Client ID:', data.client_id)
         }
         if (data.event_type === 'visualisation_update') {
           if (data.timestamp) {
