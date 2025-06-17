@@ -224,7 +224,7 @@ const TopBar = () => {
 
   const hosts = useStore((state) => state.config.hosts) || []
 
-  const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
+  // const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
   const invisible = () => {
     switch (pathname.split('/')[1]) {
