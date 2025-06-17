@@ -57,6 +57,17 @@ const VirtualDiag = () => {
         id: 9998,
         type: 'subscribe_event'
       }
+      if (typeof ws !== 'object' || !('readyState' in ws) || ws.readyState !== WebSocket.OPEN) {
+        setTimeout(() => {
+          if (typeof ws !== 'object' || !('readyState' in ws) || ws.readyState !== WebSocket.OPEN) {
+            setTimeout(() => {
+              ;(ws as any).send(JSON.stringify(requestb))
+            }, 500)
+          }
+        }, 500)
+        return
+      }
+
       ;(ws as any).send(JSON.stringify(requestb))
     } else {
       setDataHistory([])
