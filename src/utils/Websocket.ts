@@ -6,11 +6,11 @@
 // const ws = new WebSocket(`wss://127.0.0.1/api/websocket`, 'wss');
 
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-
 import { useLocation } from 'react-router-dom'
 import Sockette from 'sockette'
 import isElectron from 'is-electron'
 import useStore from '../store/useStore'
+import { handlerConfig, initialSubscriptions } from './Websocket/websocket.config'
 
 interface WebSockette extends Sockette {
   ws: WebSocket
@@ -18,7 +18,6 @@ interface WebSockette extends Sockette {
 
 // eslint-disable-next-line no-var
 var YZFLAG = false
-// const YZFLAG2 = false
 
 function createSocket() {
   const host =
@@ -29,12 +28,43 @@ function createSocket() {
 
   const wsUrl = host.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/websocket'
 
+  const dispatch = (eventName: string, detail: any) => {
+    document.dispatchEvent(new CustomEvent(eventName, { detail }))
+  }
+
+  const buildDispatchHandlers = (config: typeof handlerConfig) => {
+    const handlers: { [key: string]: (data: any) => void } = {}
+
+    for (const eventName in config) {
+      const rule = config[eventName as keyof typeof config]
+
+      if (typeof rule === 'function') {
+        // If the rule is a function, use it to transform the data.
+        handlers[eventName] = (data) => dispatch(eventName, rule(data))
+      } else if (rule === true) {
+        // If the rule is `true`, pass the data directly.
+        handlers[eventName] = (data) => dispatch(eventName, data)
+      } else {
+        // Otherwise, the rule is a static value, so ignore data and dispatch the rule.
+        handlers[eventName] = () => dispatch(eventName, rule)
+      }
+    }
+    return handlers
+  }
+
+  const messageHandlers = {
+    ...buildDispatchHandlers(handlerConfig),
+    // Special case: This handler doesn't dispatch, so we define it separately.
+    client_id: (data: any) => {
+      console.log('Client ID:', data.client_id)
+    }
+  }
+
   if (YZFLAG) {
     return 'mixedContent'
   }
   if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://') && YZFLAG) {
     console.info('BOOOM')
-    // return undefined
   }
 
   try {
@@ -42,13 +72,8 @@ function createSocket() {
       timeout: 5e3,
       maxAttempts: 10,
       onopen: (e) => {
-        // console.log('Connected!', e)
         document.dispatchEvent(
-          new CustomEvent('disconnected', {
-            detail: {
-              isDisconnected: false
-            }
-          })
+          new CustomEvent('disconnected', { detail: { isDisconnected: false } })
         )
         if (ws === 'mixedContent') {
           alert(
@@ -59,154 +84,24 @@ function createSocket() {
         if (ws) {
           ws.ws = e.target as WebSocket
 
-          const req = {
-            event_type: 'devices_updated',
-            id: 9002,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(req.id && req))
-          const requ = {
-            event_type: 'device_created',
-            id: 9001,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(requ.id && requ))
-          const reqs = {
-            event_type: 'scene_activated',
-            id: 9003,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(reqs.id && reqs))
-          const reqst = {
-            event_type: 'effect_set',
-            id: 9004,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(reqst.id && reqst))
-          const requst = {
-            event_type: 'client_connected',
-            id: 9005,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(requst.id && requst))
-          const request = {
-            event_type: 'client_disconnected',
-            id: 9006,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(request.id && request))
-          const requesta = {
-            event_type: 'client_sync',
-            id: 9007,
-            type: 'subscribe_event'
-          }
-          ws.send(JSON.stringify(requesta))
-          // ws.send(JSON.stringify(requestb))
-          // const requester = {
-          //   event_type: 'general_diag',
-          //   id: 9999,
-          //   type: 'subscribe_event'
-          // }
-          // ws.send(JSON.stringify(requester))
+          initialSubscriptions.forEach((sub) => {
+            ws.send(JSON.stringify({ ...sub, type: 'subscribe_event' }))
+          })
         }
       },
       onmessage: (event) => {
         const data = JSON.parse(event.data)
-        if (!data?.event_type) {
-          return
-        }
-        if (data.event_type === 'client_id') {
-          console.log('Client ID:', data.client_id)
-        }
-        if (data.event_type === 'visualisation_update') {
-          if (data.timestamp) {
-            document.dispatchEvent(
-              new CustomEvent('visualisation_update', {
-                detail: {
-                  id: data.vis_id,
-                  pixels: data.pixels,
-                  shape: data.shape,
-                  rid: data.id,
-                  timestamp: data.timestamp
-                }
-              })
-            )
-          } else {
-            document.dispatchEvent(
-              new CustomEvent('visualisation_update', {
-                detail: {
-                  id: data.vis_id,
-                  pixels: data.pixels,
-                  shape: data.shape
-                }
-              })
-            )
-          }
-        }
-        if (data.event_type === 'devices_updated') {
-          document.dispatchEvent(
-            new CustomEvent('devices_updated', {
-              detail: 'devices_updated'
-            })
-          )
-        }
-        if (data.event_type === 'device_created') {
-          document.dispatchEvent(
-            new CustomEvent('device_created', {
-              detail: {
-                id: 'device_created',
-                device_name: data.device_name
-              }
-            })
-          )
-        }
-        if (data.event_type === 'graph_update') {
-          document.dispatchEvent(
-            new CustomEvent('graph_update', {
-              detail: data
-            })
-          )
-        }
-        if (data.event_type === 'effect_set') {
-          document.dispatchEvent(
-            new CustomEvent('effect_set', {
-              detail: data
-            })
-          )
-        }
-        if (data.event_type === 'scene_activated') {
-          // console.log('scene_activated', data)
-          document.dispatchEvent(
-            new CustomEvent('scene_activated', {
-              detail: {
-                id: 'scene_activated',
-                scene_id: data.scene_id
-              }
-            })
-          )
-        }
-        if (data.event_type === 'virtual_diag') {
-          // console.log('virtual_diag', data)
-          document.dispatchEvent(
-            new CustomEvent('virtual_diag', {
-              detail: {
-                data
-              }
-            })
-          )
+        if (!data?.event_type) return
+
+        const handler = messageHandlers[data.event_type as keyof typeof messageHandlers]
+        if (handler) {
+          handler(data)
         }
       },
-      // onreconnect: e => console.log('Reconnecting...', e),
-      // onmaximum: e => console.log('Stop Attempting!', e),
       onclose: () => {
-        // console.log('Closed!', e)
         window.localStorage.removeItem('core-init')
         document.dispatchEvent(
-          new CustomEvent('disconnected', {
-            detail: {
-              isDisconnected: true
-            }
-          })
+          new CustomEvent('disconnected', { detail: { isDisconnected: true } })
         )
       },
       onerror: (e) => {
