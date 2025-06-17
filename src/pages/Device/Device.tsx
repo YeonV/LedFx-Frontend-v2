@@ -12,6 +12,7 @@ import EffectsComplex from './EffectsComplex'
 import { defaultEffects } from '../Home/BladeScene'
 import PresetsComplex from './PresetsComplex'
 import { Virtual } from '../../api/ledfx.types'
+import VirtualDiag from '../../components/Debug/VirtualDiag'
 
 const Device = () => {
   const navigate = useNavigate()
@@ -316,6 +317,7 @@ const Device = () => {
             {features.frequencies && (
               <MelbankCard virtual={virtual} style={{ marginTop: '1rem' }} />
             )}
+            <VirtualDiag />
           </Grid>
         </>
       )}

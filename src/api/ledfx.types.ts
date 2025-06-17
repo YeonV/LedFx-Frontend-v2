@@ -2842,6 +2842,7 @@ export interface EffectConfig {
   deep_diag?: boolean;
   density?: number;
   density_vertical?: number;
+  diag?: boolean;
   down?: number;
   draw?: string;
   drop_secs?: number;

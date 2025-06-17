@@ -71,6 +71,7 @@
     "react-rnd": "^10.4.14",
     "react-router-dom": "^7.5.3",
     "react-scripts": "5.0.1",
+    "react-spring": "^10.0.1",
     "react-webcam": "^7.2.0",
     "react-zoom-pan-pinch": "^3.7.0",
     "reactour": "^1.19.2",
