@@ -1,7 +1,6 @@
 // BeautifulDiagWidget.tsx
 
 import { Card, Typography, Grid, Box } from '@mui/material'
-import AnimatedNumber from './AnimatedNumber'
 
 // --- Icon Imports ---
 import SpeedIcon from '@mui/icons-material/Speed'
@@ -140,7 +139,7 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
               <Typography variant="body2">FPS</Typography>
             </Box>
             <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'monospace' }}>
-              <AnimatedNumber value={data.fps} />
+              {data.fps}
             </Typography>
           </Grid>
           <Grid size={{ xs: 6 }} sx={{ height: 40 }}>
@@ -157,7 +156,7 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
               <Typography variant="body2">Render Avg</Typography>
             </Box>
             <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'monospace' }}>
-              <AnimatedNumber value={formatMs(data.r_avg)} toFixed={2} />
+              {formatMs(data.r_avg).toFixed(2)}
               <span style={{ fontSize: '1rem', color: 'rgba(255, 255, 255, 0.7)' }}>ms</span>
             </Typography>
           </Grid>
@@ -172,19 +171,19 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
           <Grid size={{ xs: 4 }} display="flex" alignItems="center" justifyContent="center">
             <BoltIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
             <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-              <AnimatedNumber value={formatMs(data.cycle)} toFixed={1} />
+              {formatMs(data.cycle).toFixed(1)}
               ms
             </Typography>
           </Grid>
           <Grid size={{ xs: 4 }} display="flex" alignItems="center" justifyContent="center">
             <WorkHistoryIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
             <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-              <AnimatedNumber value={workload} toFixed={1} />%
+              {workload}%
             </Typography>
           </Grid>
           <Grid size={{ xs: 4 }} display="flex" alignItems="center" justifyContent="center">
             <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
-              max: <AnimatedNumber value={formatMs(data.r_max)} toFixed={1} />
+              max: {formatMs(data.r_max).toFixed(1)}
               ms
             </Typography>
           </Grid>
