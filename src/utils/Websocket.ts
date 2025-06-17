@@ -96,11 +96,18 @@ function createSocket() {
           }
           ws.send(JSON.stringify(request.id && request))
           const requesta = {
-            event_type: ' client_sync',
+            event_type: 'client_sync',
             id: 9007,
             type: 'subscribe_event'
           }
-          ws.send(JSON.stringify(requesta.id && requesta))
+          ws.send(JSON.stringify(requesta))
+          // ws.send(JSON.stringify(requestb))
+          // const requester = {
+          //   event_type: 'general_diag',
+          //   id: 9999,
+          //   type: 'subscribe_event'
+          // }
+          // ws.send(JSON.stringify(requester))
         }
       },
       onmessage: (event) => {
@@ -174,6 +181,16 @@ function createSocket() {
               detail: {
                 id: 'scene_activated',
                 scene_id: data.scene_id
+              }
+            })
+          )
+        }
+        if (data.event_type === 'virtual_diag') {
+          // console.log('virtual_diag', data)
+          document.dispatchEvent(
+            new CustomEvent('virtual_diag', {
+              detail: {
+                data
               }
             })
           )
