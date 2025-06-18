@@ -2,48 +2,42 @@ import { Button, Fab, TextField, Popover, Select, MenuItem, Stack } from '@mui/m
 import { Check, Close } from '@mui/icons-material'
 import { useState, useEffect, CSSProperties } from 'react'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
-import ws from '../../utils/Websocket'
 import useStore from '../../store/useStore'
+import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
-const getMedia = async (clientDevice: MediaDeviceInfo) => {
-  const audioSetting: boolean | MediaTrackConstraints | undefined = await navigator.mediaDevices
-    .enumerateDevices()
-    .then(function (devices): any {
-      return clientDevice === null || devices.indexOf(clientDevice) === -1
-        ? true
-        : { deviceId: { exact: clientDevice } }
-    })
+const getMedia = async (clientDevice: MediaDeviceInfo | null) => {
   try {
-    return await navigator.mediaDevices.getUserMedia({
-      audio: audioSetting,
-      video: false
-    })
+    const devices = await navigator.mediaDevices.enumerateDevices()
+    const audioSetting =
+      clientDevice === null || !devices.some((d) => d.deviceId === clientDevice.deviceId)
+        ? true
+        : { deviceId: { exact: clientDevice.deviceId } }
+    return await navigator.mediaDevices.getUserMedia({ audio: audioSetting, video: false })
   } catch (err) {
-    return console.log('Error:', err)
+    console.error('Error getting media stream:', err)
+    return null
   }
 }
 
 const Webaudio = ({ style }: { style: CSSProperties }) => {
-  const webAud = useStore((state) => state.webAud)
-  const setWebAud = useStore((state) => state.setWebAud)
-  const [wsReady, setWsReady] = useState(false)
-  const webAudName = useStore((state) => state.webAudName)
-  const setWebAudName = useStore((state) => state.setWebAudName)
+  const {
+    webAud,
+    setWebAud,
+    webAudName,
+    setWebAudName,
+    getSchemas,
+    clientDevice,
+    setClientDevices
+  } = useStore()
+  const { send, isConnected, getSocket } = useWebSocket()
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const webAudTypes = [
-    {
-      label: 'ws-v1',
-      value: 'audio_stream_data'
-    },
-    {
-      label: 'ws-v2',
-      value: 'audio_stream_data_v2'
-    },
-    {
-      label: 'udp',
-      value: 'audio_stream_data_udp'
-    }
+    { label: 'ws-v2', value: 'audio_stream_data_v2' },
+    { label: 'ws-v1', value: 'audio_stream_data' },
+    { label: 'udp', value: 'audio_stream_data_udp' }
   ]
-  const [webAudType, setWebAudType] = useState(webAudTypes[1].value)
+  const [webAudType, setWebAudType] = useState(webAudTypes[0].value)
   const [webAudConfig, setWebAudConfig] = useState({
     sampleRate: 44100,
     bufferSize: 1024,
@@ -52,23 +46,100 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
   const [bit, setBit] = useState(16)
 
   useEffect(() => {
-    if (webAudType === 'audio_stream_data_udp') {
-      setBit(8)
-    } else if (webAudType === 'audio_stream_data_v1') {
-      setBit(32)
-    } else {
-      setBit(16)
-    }
+    if (webAudType === 'audio_stream_data_udp') setBit(8)
+    else if (webAudType === 'audio_stream_data_v1') setBit(32)
+    else setBit(16)
   }, [webAudType])
 
-  const audioContext = webAud && new (window.AudioContext || (window as any).webkitAudioContext)()
-  const [anchorEl, setAnchorEl] = useState(null)
+  useEffect(() => {
+    if (!webAud || !isConnected) {
+      return
+    }
 
-  const getSchemas = useStore((state) => state.getSchemas)
-  const clientDevice = useStore((state) => state.clientDevice)
-  const setClientDevices = useStore((state) => state.setClientDevices)
+    let audioContext: AudioContext | null = null
+    let stream: MediaStream | null = null
+    let scriptNode: ScriptProcessorNode | null = null
 
-  const handleClick = (event: any) => {
+    const startStreaming = async () => {
+      stream = await getMedia(clientDevice)
+      if (!stream) {
+        setWebAud(false)
+        return
+      }
+
+      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const source = audioContext.createMediaStreamSource(stream)
+      scriptNode = audioContext.createScriptProcessor(1024, 1, 1)
+
+      source.connect(scriptNode)
+      scriptNode.connect(audioContext.destination)
+
+      send({
+        data: {
+          sampleRate: scriptNode.context.sampleRate,
+          bufferSize: scriptNode.bufferSize,
+          ...(webAudType === 'audio_stream_data_udp' ? { udpPort: webAudConfig.udpPort, bit } : {})
+        },
+        client: webAudName,
+        id: 8000,
+        type: 'audio_stream_config'
+      })
+
+      const rawSocket = getSocket()
+      scriptNode.onaudioprocess = (e) => {
+        // --- THIS IS THE FIX ---
+        // The broken check is removed. We just check if the socket instance exists.
+        // Sockette handles queuing if the connection is temporarily down.
+        if (!rawSocket) return
+
+        if (webAudType === 'audio_stream_data_v2') {
+          const floatData = e.inputBuffer.getChannelData(0)
+          const int16Array = new Int16Array(floatData.length)
+          for (let j = 0; j < floatData.length; j++) {
+            int16Array[j] = floatData[j] * 32767
+          }
+          // The Sockette `send` method can handle ArrayBuffer directly.
+          rawSocket.send(int16Array.buffer)
+        } else {
+          send({
+            data: Array.from(e.inputBuffer.getChannelData(0)),
+            client: webAudName,
+            id: 8000,
+            type: 'audio_stream_data'
+          })
+        }
+      }
+    }
+
+    startStreaming()
+
+    return () => {
+      send({
+        client: webAudName,
+        id: 8200,
+        type: 'audio_stream_stop'
+      })
+      stream?.getTracks().forEach((track) => track.stop())
+      if (audioContext?.state !== 'closed') {
+        audioContext?.close()
+      }
+      getSchemas()
+    }
+  }, [
+    webAud,
+    isConnected,
+    clientDevice,
+    webAudName,
+    webAudType,
+    webAudConfig,
+    bit,
+    send,
+    getSocket,
+    setWebAud,
+    getSchemas
+  ])
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
@@ -77,116 +148,25 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  let s: MediaStream
-  useEffect(() => {
-    if (webAud) {
-      getMedia(clientDevice).then((stream) => {
-        if (stream) {
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          s = stream
-          if (!audioContext || audioContext.state === 'closed') {
-            return
-          }
-
-          const source = stream && audioContext.createMediaStreamSource(stream)
-          const scriptNode = audioContext.createScriptProcessor(1024, 1, 1)
-          // const analyser = audioContext.createAnalyser()
-          // // const scriptNode = audioContext.createScriptProcessor(0, 1, 1);
-          // console.log("THIS", analyser);
-          source.connect(scriptNode)
-          // analyser.connect(scriptNode);
-          scriptNode.connect(audioContext.destination)
-          if (wsReady) {
-            if (webAud) {
-              const sendWs = async () => {
-                const i = 0
-                const request = {
-                  data: {
-                    sampleRate: scriptNode?.context?.sampleRate,
-                    bufferSize: scriptNode?.bufferSize,
-                    ...(webAudType === 'audio_stream_data_udp'
-                      ? {
-                          udpPort: webAudConfig.udpPort,
-                          bit
-                        }
-                      : {})
-                  },
-                  client: webAudName,
-                  id: 8000 + i,
-                  type: 'audio_stream_config'
-                }
-                if (ws === 'mixedContent') {
-                  alert(
-                    'Mixed content error in Webaudio.ts getmedia: Cannot connect to ws:// from an https:// page.'
-                  )
-                  return
-                }
-                ws?.ws.send(JSON.stringify(++request.id && request))
-              }
-              sendWs()
-            }
-          }
-          scriptNode.onaudioprocess = (e) => {
-            if (wsReady) {
-              if (webAud) {
-                const sendWsV2 = async () => {
-                  const i = 0
-                  const floatData = e.inputBuffer.getChannelData(0)
-                  const int16Array = new Int16Array(floatData.length)
-                  for (let j = 0; j < floatData.length; j++) {
-                    int16Array[j] = floatData[j] * 32767
-                  }
-                  const uint8Array = new Uint8Array(int16Array.buffer)
-                  const numberArray = Array.from(uint8Array)
-                  const binaryString = String.fromCharCode.apply(null, numberArray)
-                  const base64String = btoa(binaryString)
-                  const request = {
-                    data: base64String,
-                    client: webAudName,
-                    id: 8500 + i,
-                    type: 'audio_stream_data_v2'
-                  }
-                  if (ws === 'mixedContent') {
-                    alert(
-                      'Mixed content error in Webaudio.ts onaudioprocess v2: Cannot connect to ws:// from an https:// page.'
-                    )
-                    return
-                  }
-                  ws?.ws.send(JSON.stringify(++request.id && request))
-                }
-                const sendWsV1 = async () => {
-                  const i = 0
-                  const request = {
-                    data: e.inputBuffer.getChannelData(0),
-                    client: webAudName,
-                    id: 8000 + i,
-                    type: 'audio_stream_data'
-                  }
-                  if (ws === 'mixedContent') {
-                    alert(
-                      'Mixed content error in Webaudio.ts onaudioprocess v1: Cannot connect to ws:// from an https:// page.'
-                    )
-                    return
-                  }
-                  ws?.ws.send(JSON.stringify(++request.id && request))
-                }
-                if (webAudType === 'audio_stream_data_v2') {
-                  sendWsV2()
-                } else {
-                  sendWsV1()
-                }
-              }
-            }
-          }
-        }
-      })
+  const handleStartClick = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      setClientDevices(devices)
+    } catch (err) {
+      console.log(`${(err as Error).name}: ${(err as Error).message}`)
     }
-  }, [audioContext])
+    send({
+      data: {},
+      client: webAudName,
+      id: 8499,
+      type: 'audio_stream_start'
+    })
+    setAnchorEl(null)
+    setWebAud(true)
+  }
 
-  if (!wsReady) {
-    if (ws && (ws as any).ws && (ws as any).ws.readyState === 1) {
-      setWsReady(true)
-    }
+  const handleStopClick = () => {
+    setWebAud(false)
   }
 
   return (
@@ -195,35 +175,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
         aria-describedby={id}
         size="large"
         color={webAud ? 'inherit' : 'secondary'}
-        onClick={(e: any) => {
-          if (webAud) {
-            if (audioContext) {
-              s.getTracks().forEach((track) => track.stop())
-              audioContext.close()
-            }
-            const sendWs = async () => {
-              const i = 0
-              const request = {
-                client: webAudName,
-                id: 8200 + i,
-                type: 'audio_stream_stop'
-              }
-              if (ws === 'mixedContent') {
-                alert(
-                  'Mixed content error in Webaudio.ts fab: Cannot connect to ws:// from an https:// page.'
-                )
-                return
-              }
-              ws?.ws.send(JSON.stringify(++request.id && request))
-            }
-            sendWs().then(() => getSchemas())
-            setWebAud(false)
-            setClientDevices(null)
-            window.location.reload()
-          } else {
-            handleClick(e)
-          }
-        }}
+        onClick={webAud ? handleStopClick : handleClick}
         data-webaud={webAud}
         style={style}
       >
@@ -324,7 +276,6 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
               variant="outlined"
             />
           )}
-
           <TextField
             id="bit"
             disabled
@@ -334,63 +285,20 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
             variant="outlined"
           />
           <Stack direction="row" spacing={2} justifyContent="space-between">
-            <Button
-              aria-describedby={id}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setAnchorEl(null)
-              }}
-            >
+            <Button aria-describedby={id} variant="contained" color="primary" onClick={handleClose}>
               <Close />
             </Button>
             <Button
               aria-describedby={id}
               variant="contained"
               color="primary"
-              onClick={() => {
-                if (!webAud) {
-                  if (wsReady) {
-                    navigator.mediaDevices
-                      .enumerateDevices()
-                      .then(function (devices) {
-                        setClientDevices(devices)
-                      })
-                      .catch(function (err) {
-                        console.log(`${err.name}: ${err.message}`)
-                      })
-                    const sendWs = async () => {
-                      const request = {
-                        data: {},
-                        client: webAudName,
-                        id: 8499,
-                        type: 'audio_stream_start'
-                      }
-                      if (ws === 'mixedContent') {
-                        alert(
-                          'Mixed content error in Webaudio.ts button: Cannot connect to ws:// from an https:// page.'
-                        )
-                        return
-                      }
-                      ws?.ws.send(JSON.stringify(request.id && request))
-                    }
-                    sendWs()
-                    setTimeout(() => {
-                      getSchemas()
-                    }, 1000)
-                  }
-                }
-
-                setAnchorEl(null)
-                setWebAud(true)
-              }}
+              onClick={handleStartClick}
             >
               <Check />
             </Button>
           </Stack>
         </Stack>
       </Popover>
-      {/* <canvas width={dw} height={dh} style={style} ref={canvas} /> */}
     </>
   )
 }
