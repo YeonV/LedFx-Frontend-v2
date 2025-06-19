@@ -5,7 +5,6 @@ import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Cookies from 'universal-cookie'
-import ws, { WsContext, HandleWs } from './utils/Websocket'
 import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
 import './App.css'
@@ -19,7 +18,8 @@ import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
 import FpsViewer from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer'
-// import FpsViewer from './components/FpsViewer'
+import { useSubscription, WebSocketProvider } from './utils/Websocket/WebSocketProvider'
+import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -130,26 +130,15 @@ export default function App() {
     }
   })
 
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      showSnackbar(e.detail.type, e.detail.message)
-    }
-    document.addEventListener('show_message', handleWebsockets)
-    return () => {
-      document.removeEventListener('show_message', handleWebsockets)
-    }
-  }, [showSnackbar])
-
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      showSnackbar('info', 'Scene activated: ' + e.detail.scene_id)
-    }
-    document.addEventListener('scene_activated', handleWebsockets)
-    return () => {
-      document.removeEventListener('scene_activated', handleWebsockets)
-    }
-  }, [showSnackbar])
-
+  const AppSubscriptions = () => {
+    useSubscription('show_message', (e: any) => {
+      showSnackbar(e.type, e.message)
+    })
+    useSubscription('scene_activated', (e: any) => {
+      showSnackbar('info', 'Scene activated: ' + e.scene_id)
+    })
+    return null
+  }
   useEffect(() => {
     if (protoCall !== '') {
       // showSnackbar('info', `External call: ${protoCall}`)
@@ -263,7 +252,9 @@ export default function App() {
     <ThemeProviderNew theme={theme}>
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={15}>
-          <WsContext.Provider value={ws}>
+          <WebSocketProvider>
+            <WebSocketManager />
+            <AppSubscriptions />
             <SpotifyProvider>
               <FiledropProvider>
                 <CssBaseline />
@@ -280,10 +271,10 @@ export default function App() {
                     }
                   }}
                 />
-                <Pages handleWs={<HandleWs />} />
+                <Pages />
               </FiledropProvider>
             </SpotifyProvider>
-          </WsContext.Provider>
+          </WebSocketProvider>
           {features.waves && (
             <WaveLines
               startColor={theme.palette.primary.main}

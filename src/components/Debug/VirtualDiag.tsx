@@ -1,12 +1,9 @@
-// VirtualDiag.tsx
-
-import { useEffect, useState } from 'react'
-import ws from '../../utils/Websocket'
+import { useCallback, useEffect, useState } from 'react'
 import { Box } from '@mui/material'
-// import { DiagWidget } from './DiagWidget'
 import { useParams } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import { BeautifulDiagWidget } from './BeautifulDiagWidget'
+import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
 interface DiagPacket {
   id: number
@@ -20,67 +17,58 @@ interface DiagPacket {
   cycle: number
   sleep: number
 }
-
 interface DiagMessage {
   data: DiagPacket
   timestamp: Date
 }
-
-const MAX_HISTORY = 50 //
+const MAX_HISTORY = 50
 
 const VirtualDiag = () => {
   const { virtId } = useParams()
-  const virtuals = useStore((state) => state.virtuals)
-  const diag = virtuals[virtId || '']?.effect?.config?.diag || false
+  const diag = useStore((state) => state.virtuals[virtId || '']?.effect?.config?.diag || false)
 
   const [dataHistory, setDataHistory] = useState<DiagMessage[]>([])
+  const { send, isConnected } = useWebSocket()
+
+  const handleDiagPacket = useCallback(
+    (eventData: { data: DiagPacket }) => {
+      if (eventData.data.virtual_id !== virtId) {
+        return
+      }
+      const newMessage = { data: eventData.data, timestamp: new Date() }
+      setDataHistory((prev) => [newMessage, ...prev.slice(0, MAX_HISTORY - 1)])
+    },
+    [virtId]
+  )
+
+  useSubscription('virtual_diag', handleDiagPacket)
 
   useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      const newPacket = e.detail.data as DiagPacket
-      const newMessage = { data: newPacket, timestamp: new Date() }
-      setDataHistory((prevHistory) => [newMessage, ...prevHistory].slice(0, MAX_HISTORY))
-    }
-
-    document.addEventListener('virtual_diag', handleWebsockets)
-    return () => {
-      document.removeEventListener('virtual_diag', handleWebsockets)
-    }
-  }, [])
-
-  const latestData = dataHistory[0]
-
-  useEffect(() => {
-    if (diag) {
-      const requestb = {
+    if (diag && isConnected) {
+      const subscribeRequest = {
         event_type: 'virtual_diag',
         id: 9998,
         type: 'subscribe_event'
       }
-      if (typeof ws !== 'object' || !('readyState' in ws) || ws.readyState !== WebSocket.OPEN) {
-        setTimeout(() => {
-          if (typeof ws !== 'object' || !('readyState' in ws) || ws.readyState !== WebSocket.OPEN) {
-            setTimeout(() => {
-              ;(ws as any).send(JSON.stringify(requestb))
-            }, 500)
-          }
-        }, 500)
-        return
-      }
+      send(subscribeRequest)
 
-      ;(ws as any).send(JSON.stringify(requestb))
+      return () => {
+        const unsubscribeRequest = {
+          event_type: 'virtual_diag',
+          id: 9998,
+          type: 'unsubscribe_event'
+        }
+        send(unsubscribeRequest)
+      }
     } else {
       setDataHistory([])
     }
-  }, [diag])
+  }, [diag, isConnected, send])
+
+  const latestData = dataHistory[0]
 
   return (
     <>
-      {/* {diag && (
-        <Box sx={{ my: 2 }}>
-          {latestData && <DiagWidget key={virtId} latestMessage={latestData} />}
-        </Box>
-      )} */}
       {diag && (
         <Box sx={{ my: 2, display: 'flex', justifyContent: 'center' }}>
           {latestData && (

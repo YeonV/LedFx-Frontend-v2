@@ -52,6 +52,7 @@ import { ledfxThemes, themes } from '../../themes/AppThemes'
 import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 import QrConnector from '../Dialogs/QrConnector'
+import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
 interface FrontendConfig {
   updateUrl: string
@@ -206,9 +207,6 @@ const TopBar = () => {
   const graphs = useStore((state) => state.graphs)
   const isLogged = useStore((state) => state.isLogged)
   const setIsLogged = useStore((state) => state.setIsLogged)
-  const disconnected = useStore((state) => state.disconnected)
-  const setDisconnected = useStore((state) => state.setDisconnected)
-  const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
   const features = useStore((state) => state.features)
   const platform = useStore((state) => state.platform)
@@ -223,9 +221,29 @@ const TopBar = () => {
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
 
   const hosts = useStore((state) => state.config.hosts) || []
-
-  // const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
+
+  // --- THE FIX ---
+  // 1. Get the reactive `isConnected` boolean from our hook.
+  const { isConnected } = useWebSocket()
+  // 2. Get the `disconnected` state and UI actions from Zustand.
+  const disconnected = useStore((state) => state.disconnected)
+  const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
+
+  // 3. This new useEffect REPLACES the old event listener.
+  // It runs whenever the `disconnected` state changes.
+  useEffect(() => {
+    if (disconnected === false) {
+      // On RECONNECT
+      window.localStorage.removeItem('undefined')
+      setDialogOpen(false, true)
+      clearSnackbar()
+      if (window.localStorage.getItem('core-init') !== 'initialized') {
+        window.localStorage.setItem('core-init', 'initialized')
+      }
+    }
+  }, [disconnected, setDialogOpen, clearSnackbar])
+
   const invisible = () => {
     switch (pathname.split('/')[1]) {
       case 'device':
@@ -267,7 +285,6 @@ const TopBar = () => {
     e.preventDefault()
     localStorage.removeItem('jwt')
     localStorage.removeItem('username')
-    localStorage.removeItem('ledfx-cloud-userid')
     localStorage.removeItem('ledfx-cloud-role')
     setIsLogged(false)
   }
@@ -354,27 +371,6 @@ const TopBar = () => {
       })
     }
   }, [frConfig, latestTag, setLatestTag])
-
-  useEffect(() => {
-    const handleDisconnect = (e: any) => {
-      if (e.detail) {
-        setDisconnected(e.detail.isDisconnected)
-        if (e.detail.isDisconnected === false) {
-          window.localStorage.removeItem('undefined')
-          setDialogOpen(false, true)
-          clearSnackbar()
-          if (window.localStorage.getItem('core-init') !== 'initialized') {
-            window.localStorage.setItem('core-init', 'initialized')
-          }
-        }
-      }
-    }
-    document.addEventListener('disconnected', handleDisconnect)
-    return () => {
-      document.removeEventListener('disconnected', handleDisconnect)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     const t = window.localStorage.getItem('ledfx-theme')
@@ -473,7 +469,6 @@ const TopBar = () => {
             >
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
               <QrConnector hosts={[...hosts, 'http://10.0.0.1:8888']} />
-              {/* <QrConnector hosts={hosts} /> */}
             </Typography>
             <div
               style={{
@@ -483,7 +478,7 @@ const TopBar = () => {
                 right: 16
               }}
             >
-              {disconnected ? (
+              {!isConnected ? (
                 <Box>
                   <IconButton
                     aria-label="display more actions"
@@ -644,7 +639,15 @@ const TopBar = () => {
                     key={'settings'}
                     onClick={() => {
                       navigate(
-                        `/Settings?${slug === 'device' ? 'effects' : slug === 'Scenes' ? 'scenes' : slug === 'Devices' ? 'devices' : ''}`
+                        `/Settings?${
+                          slug === 'device'
+                            ? 'effects'
+                            : slug === 'Scenes'
+                              ? 'scenes'
+                              : slug === 'Devices'
+                                ? 'devices'
+                                : ''
+                        }`
                       )
                       setAnchorEl(null)
                     }}

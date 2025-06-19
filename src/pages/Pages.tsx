@@ -33,7 +33,7 @@ import OneEffect from '../components/Gamepad/OneEffect'
 import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
 import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widgets/PixelGraphSettings/PixelGraphSettingsFloating'
 
-const Routings = ({ handleWs }: any) => {
+const Routings = () => {
   const theme = useTheme()
   const isElect = isElectron()
   const keybinding = useStore((state) => state.ui.keybinding)
@@ -88,7 +88,6 @@ const Routings = ({ handleWs }: any) => {
   return (
     <>
       <ScrollToTop />
-      {handleWs}
       <MessageBar />
       <TopBar />
       <LeftBar />
@@ -178,16 +177,16 @@ const Routings = ({ handleWs }: any) => {
   )
 }
 
-const Pages = ({ handleWs }: any) => {
+const Pages = () => {
   return (
     <>
       {isElectron() ? (
         <Router>
-          <Routings handleWs={handleWs} />
+          <Routings />
         </Router>
       ) : (
         <Router basename={process.env.PUBLIC_URL}>
-          <Routings handleWs={handleWs} />
+          <Routings />
         </Router>
       )}
 

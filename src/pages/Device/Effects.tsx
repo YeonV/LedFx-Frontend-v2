@@ -30,6 +30,7 @@ import TroubleshootButton from './TroubleshootButton'
 import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { Effect, Virtual } from '../../api/ledfx.types'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -104,6 +105,8 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const handle = useFullScreenHandle()
   const [fullScreen, setFullScreen] = useState(false)
 
+  useSubscription('effect_set', getVirtuals)
+
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
@@ -162,17 +165,11 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }
 
   useEffect(() => {
-    // if (virtuals && virtual?.effect?.config) {
-    //   setTheModel(virtual.effect.config)
-    // } else
-
     if (
       virtuals &&
       virtuals[virtId]?.effect?.config &&
       JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId].effect.config)
     ) {
-      // console.log('virtuals[virtId]', virtuals[virtId].effect?.config)
-
       setTheModel(virtual?.effect.config)
     }
   }, [
@@ -194,16 +191,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
           virtuals[virtId].effect.type === 'blender')
     )
   }, [virtuals[virtId].effect.type])
-
-  useEffect(() => {
-    const handleWebsockets = (_e: any) => {
-      getVirtuals()
-    }
-    document.addEventListener('effect_set', handleWebsockets)
-    return () => {
-      document.removeEventListener('effect_set', handleWebsockets)
-    }
-  }, [])
 
   const actives = devices[
     Object.keys(devices).find((d) => d === virtId) || ''
@@ -267,13 +254,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                 <>
                   {viewMode !== 'user' && <TroubleshootButton virtual={virtual} />}
                   <TourEffect schemaProperties={orderedProperties} />
-                  {/* <Button
-                    onClick={() => handleRandomize()}
-                    style={{ marginRight: '.5rem' }}
-                    className={'step-device-six'}
-                    >
-                    <Casino />
-                  </Button> */}
                   {(virtual.config.rows || 1) > 1 && (
                     <Button
                       style={{ marginRight: '.5rem' }}
@@ -385,11 +365,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       {virtuals && virtual && effects && virtual.effect && virtual.effect.config && (
         <Card variant="outlined" style={{ marginTop: '1rem' }}>
           <CardContent style={{ padding: '0 16px' }}>
-            <Accordion
-              style={{ padding: 0, boxShadow: 'none' }}
-              defaultExpanded
-              // defaultExpanded={viewMode !== 'user'}
-            >
+            <Accordion style={{ padding: 0, boxShadow: 'none' }} defaultExpanded>
               <AccordionSummary
                 expandIcon={<ExpandMore />}
                 aria-controls="panel1a-content"

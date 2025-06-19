@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react'
-
+import { useState, useCallback } from 'react'
 import { useSnackbar } from 'notistack'
-
 import useStore from '../../store/useStore'
-
 import Dashboard from './Dashboard'
 import DashboardDetailed from './DashboardDetailed'
-// import ws from '../../utils/Websocket'
 import IntroDialog from '../../components/Dialogs/IntroDialog'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -19,7 +16,7 @@ export default function Home() {
   const getVirtuals = useStore((state) => state.getVirtuals)
 
   const [scanning, setScanning] = useState(-1)
-  const [lastFound, setLastFound] = useState([] as string[])
+  const [lastFound, setLastFound] = useState<string[]>([])
   const features = useStore((state) => state.features)
   const intro = useStore((state) => state.intro)
 
@@ -42,26 +39,22 @@ export default function Home() {
       })
   }
 
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === 'device_created') {
-        if (lastFound.indexOf(e.detail.device_name) === -1) {
-          enqueueSnackbar(`New Device added: ${e.detail.device_name}`, {
+  const handleDeviceCreated = useCallback(
+    (eventData: any) => {
+      if (eventData.id === 'device_created') {
+        if (!lastFound.includes(eventData.device_name)) {
+          enqueueSnackbar(`New Device added: ${eventData.device_name}`, {
             variant: 'info'
           })
-          setLastFound([...lastFound, e.detail.device_name])
+          setLastFound((prev) => [...prev, eventData.device_name])
           getDevices()
         }
       }
-    }
+    },
+    [lastFound, enqueueSnackbar, getDevices]
+  )
 
-    document.addEventListener('device_created', handleWebsockets)
-
-    // return () => {
-    //   document.removeEventListener('device_created', handleWebsockets)
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  useSubscription('device_created', handleDeviceCreated)
 
   return !intro ? (
     features.dashboardDetailed ? (
