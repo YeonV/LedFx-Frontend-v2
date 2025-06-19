@@ -144,26 +144,32 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
 
         {/* Lower Info Bar */}
         <Grid size={{ xs: 12 }} container spacing={1} mt={1} color="rgba(255, 255, 255, 0.9)">
-          <Grid size={{ xs: 3 }} display="flex" alignItems="center" justifyContent="center">
+          <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
             <BoltIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
             <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
               {formatMs(data.cycle).toFixed(1)}
               ms
             </Typography>
           </Grid>
-          <Grid size={{ xs: 3 }} display="flex" alignItems="center" justifyContent="center">
+          <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
             <WorkHistoryIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
             <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
               {workload.toFixed(4)}%
             </Typography>
           </Grid>
-          <Grid size={{ xs: 3 }} display="flex" alignItems="center" justifyContent="center">
+          <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
+            <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
+              min: {formatMs(data.r_min).toFixed(1)}
+              ms
+            </Typography>
+          </Grid>
+          <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
             <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
               max: {formatMs(data.r_max).toFixed(1)}
               ms
             </Typography>
           </Grid>
-          <Grid size={{ xs: 3 }} display="flex" alignItems="center" justifyContent="center">
+          <Grid size={{ xs: 4 }} display="flex" alignItems="center" justifyContent="center">
             <Typography variant="caption" color="rgba(255, 255, 255, 0.7)">
               {timestamp.toLocaleTimeString()}
             </Typography>
