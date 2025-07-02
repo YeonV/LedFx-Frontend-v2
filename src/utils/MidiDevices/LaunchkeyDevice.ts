@@ -68,4 +68,4 @@ export interface LaunchkeyMiniMK3Device {
   }
 }
 
-export type LaunchkeyDevice = LaunchkeyMK3Device | LaunchkeyMiniMK3Device;
+export type LaunchkeyDevice = LaunchkeyMK3Device | LaunchkeyMiniMK3Device

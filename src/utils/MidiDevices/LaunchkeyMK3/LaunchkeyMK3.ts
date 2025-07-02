@@ -3,8 +3,15 @@ import { lpColors, lpCommonColors } from '../LaunchpadX/lpColors'
 
 export const LaunchkeyMK3: LaunchkeyMK3Device = {
   buttonNumbers: [
-    [40, 41, 42, 43, 48, 49, 50, 51],
-    [36, 37, 38, 39, 44, 45, 46, 47],
+    [40, 41, 42, 43, 48, 49, 50, 51, -1],
+    [36, 37, 38, 39, 44, 45, 46, 47, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1]
   ],
   colors: lpColors,
   commonColors: lpCommonColors,
@@ -22,9 +29,7 @@ export const LaunchkeyMK3: LaunchkeyMK3Device = {
     ledOn: [0x99, 'buttonNumber', 'color'],
     ledFlash: [0x9a, 'buttonNumber', 'color'],
     ledPulse: [0x9b, 'buttonNumber', 'color'],
-    text: [
-      240, 0, 32, 41, 2, 15, 4, 'row', 'character', 'character', 247
-    ],
+    text: [240, 0, 32, 41, 2, 15, 4, 'row', 'character', 'character', 247],
     stopText: [240, 0, 32, 41, 2, 15, 6, 247]
   },
   fn: {
