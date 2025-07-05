@@ -60,6 +60,9 @@ export interface LaunchpadSDevice {
     commandType: string
     commandColor: string
   }
+  command: {
+    ledOn: (number | string)[]
+  }
   fn: {
     ledOff: (buttonNumber: number) => number[]
     ledOn: (buttonNumber: number, color: keyof typeof lpsColors | number) => number[]
