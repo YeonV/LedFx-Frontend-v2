@@ -23,6 +23,9 @@ export const LaunchpadS: LaunchpadSDevice = {
     commandType: '90',
     commandColor: '3E'
   },
+  command: {
+    ledOn: [0x90, 'buttonNumber', 'color']
+  },
   fn: {
     ledOff: (buttonNumber: number) => [0x90, buttonNumber, 0x0c],
     ledOn: (buttonNumber: number, color: keyof typeof lpsColors | number) => [
