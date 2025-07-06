@@ -271,7 +271,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
                           (Object.keys(presets.user_presets).indexOf(name) > -1 ||
                             Object.values(presets.user_presets).filter((p: any) => p.name === name)
                               .length > 0)
-                        ? 'Preset already exsisting'
+                        ? 'Preset Already Exists'
                         : 'Add Custom Preset'
                   }
                   style={{ marginRight: '1rem', flex: 1 }}
