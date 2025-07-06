@@ -1,27 +1,10 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import useStore from '../../store/useStore'
 import { useWebSocket } from './WebSocketProvider'
 
 export const WebSocketManager = () => {
   const { send, isConnected } = useWebSocket()
-  const { virtuals, pixelGraphs, setPixelGraphs, graphs, graphsMulti, showComplex, showGaps } =
-    useStore()
-
-  useLayoutEffect(() => {
-    if (!graphs || !graphsMulti) {
-      setPixelGraphs([])
-    } else {
-      setPixelGraphs(
-        Object.keys(virtuals)
-          .filter((v) =>
-            showComplex
-              ? v
-              : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
-          )
-          .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
-      )
-    }
-  }, [graphs, graphsMulti, virtuals, setPixelGraphs, showComplex, showGaps])
+  const { virtuals, pixelGraphs } = useStore()
 
   useEffect(() => {
     if (isConnected && pixelGraphs.length > 0) {
