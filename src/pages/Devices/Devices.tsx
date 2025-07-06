@@ -72,6 +72,11 @@ const Devices = () => {
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
       )
+    } else {
+      setPixelGraphs([])
+    }
+    return () => {
+      setPixelGraphs([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti, setPixelGraphs])
