@@ -16,6 +16,7 @@ interface DiagPacket {
   r_max: number
   cycle: number
   sleep: number
+  f_phy: number
 }
 interface DiagMessage {
   data: DiagPacket
