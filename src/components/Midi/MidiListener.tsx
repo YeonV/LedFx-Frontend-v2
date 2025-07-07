@@ -224,7 +224,9 @@ const MIDIListener = () => {
           const output = outputs[outputs.length - 1]
           const lp = MidiDevices[midiType][midiModel].fn
 
-          Object.entries(midiMapping).forEach(([_key, value]) => {
+          type midiMap = { buttonNumber: number, command: string|undefined }
+
+          function setMap(value: midiMap) {
             const buttonNumber = value.buttonNumber
             if (!value.command || value.command === 'none' || buttonNumber === -1) {
               if (output && buttonNumber !== -1) {
@@ -234,6 +236,14 @@ const MIDIListener = () => {
                   console.log('Error sending MIDI message:', error)
                 }
               }
+            }
+          }
+          Object.values(midiMapping)
+          .forEach((value: midiMap|{ [k: number]: midiMap }) => {
+            if (!('buttonNumber' in value)) {
+              Object.values(value).forEach(setMap);
+            } else {
+              setMap(value)
             }
           })
 

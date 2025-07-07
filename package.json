@@ -74,6 +74,7 @@
     "react-webcam": "^7.2.0",
     "react-zoom-pan-pinch": "^3.7.0",
     "reactour": "^1.19.2",
+    "rimraf": "^6.0.1",
     "sockette": "^2.0.6",
     "strip-ansi": "7.1.0",
     "styled-components": "^6.1.13",
@@ -101,7 +102,7 @@
     "build:default": "GENERATE_SOURCEMAP=false CI=false craco build",
     "prebuild": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "postbuild": "run-script-os",
-    "postbuild:win32": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && del /q build\\app && del /q build\\preload.cjs && del /q build\\renderer.js && del /q build\\electron.js",
+    "postbuild:win32": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && rimraf build/app && rimraf build/preload.cjs && rimraf build/renderer.js && rimraf build/electron.js",
     "postbuild:default": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && rm -rf build/app && rm -rf build/preload.cjs && rm -rf build/renderer.js && rm -rf build/electron.js",
     "buildhass": "GENERATE_SOURCEMAP=false CI=false craco build",
     "prebuildhass": "node -e \"let pkg=require('./package.json'); pkg.homepage='./'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
@@ -111,7 +112,7 @@
     "postbuildgh": "rm -rf build/app && rm -rf build/preload.cjs && rm -rf build/renderer.js && rm -rf build/electron.js",
     "buildledfx": "cross-env GENERATE_SOURCEMAP=false PUBLIC_URL=/ CI=false craco build",
     "prebuildledfx": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
-    "postbuildledfx": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && del /q /s \"build\\app\" && rmdir /q /s \"build\\app\" && del /q \"build\\preload.cjs\" && del /q \"build\\renderer.js\" && del /q \"build\\electron.js\"",
+    "postbuildledfx": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && rimraf \"build/app\" && rimraf \"build/preload.cjs\" && rimraf \"build/renderer.js\" && rimraf \"build/electron.js\"",
     "buildandroid": "cross-env REACT_APP_LEDFX_ANDROID=true GENERATE_SOURCEMAP=false PUBLIC_URL=/ CI=false craco build",
     "prebuildandroid": "node -e \"let pkg=require('./package.json'); pkg.homepage='/'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "postbuildandroid": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\" && rm -rf build/app && rm -f build/preload.cjs && rm -f build/renderer.js && rm -f build/electron.js",
@@ -295,4 +296,4 @@
       ]
     }
   }
-}
+}
