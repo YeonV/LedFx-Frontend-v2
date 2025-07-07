@@ -462,7 +462,7 @@ const TopBar = () => {
               style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
             >
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
-              <QrConnector hosts={[...hosts, 'http://10.0.0.1:8888']} />
+              <QrConnector hosts={[...hosts]} />
             </Typography>
             <div
               style={{
