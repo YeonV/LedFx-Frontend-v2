@@ -46,7 +46,7 @@ const PixelGraphCanvas = ({
       const ctx = canvas?.getContext('2d')
       if (!canvas || !ctx) return
 
-      const { virtuals, config, showMatrix: currentShowMatrix } = useStore.getState()
+      const { virtuals, config } = useStore.getState()
 
       ctx.imageSmoothingEnabled = false
 
@@ -55,7 +55,7 @@ const PixelGraphCanvas = ({
           ? hexColor(eventData.pixels, config.transmission_mode)
           : eventData.pixels
 
-      const rows = currentShowMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
+      const rows = showMatrix ? virtuals[virtId]?.config?.rows || 1 : 1
 
       const shape = eventData.shape
       const totalPixels = pixels.length
@@ -64,7 +64,7 @@ const PixelGraphCanvas = ({
       const aspectRatio = realCols / rows
 
       let displayRows, displayCols
-      if (currentShowMatrix) {
+      if (showMatrix) {
         displayRows =
           (shape && shape[0]) || (realPixelCount > 4096 ? Math.sqrt(4096 / aspectRatio) : rows)
         displayCols = (shape && shape[1]) || (realPixelCount > 4096 ? 4096 / displayRows : realCols)
@@ -89,7 +89,7 @@ const PixelGraphCanvas = ({
       }
       ctx.putImageData(imageData, 0, 0)
     },
-    [virtId]
+    [virtId, showMatrix]
   )
 
   useSubscription('visualisation_update', handleVisualisationUpdate)
