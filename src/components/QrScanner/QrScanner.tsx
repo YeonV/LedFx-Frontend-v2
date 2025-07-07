@@ -69,19 +69,15 @@ const QrScanner: React.FC<QrScannerDialogProps> = ({
           p: 0,
           '& .MuiDialogContent-root': {
             p: 0
-          } /* Attempt to remove padding if library adds too much space */
+          }
         }}
       >
-        {/*
-          The library will render its own video feed and UI.
-          We wrap it in a Box for potential sizing or styling.
-        */}
         <Box
           sx={{
             width: '100%',
             minHeight: '300px',
             position: 'relative',
-            overflow: 'hidden' /* Ensure video fits */
+            overflow: 'hidden'
           }}
         >
           {open && (
@@ -109,8 +105,6 @@ const QrScanner: React.FC<QrScannerDialogProps> = ({
 
         {errorMessage && (
           <Box sx={{ p: 2 }}>
-            {' '}
-            {/* Add padding back for the alert */}
             <Alert severity="error" sx={{ mt: 2 }}>
               {errorMessage}
             </Alert>
