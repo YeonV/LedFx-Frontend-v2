@@ -42,7 +42,6 @@ import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
 import useStore from '../../../../store/useStore'
 import Webcam from '../../../../components/Webcam/Webcam'
-import { useSubscription } from '../../../../utils/Websocket/WebSocketProvider'
 
 const MControls = ({
   rowN,
@@ -58,7 +57,8 @@ const MControls = ({
   setDnd,
   selectedGroup,
   setError,
-  setPixels
+  showPixelGraph,
+  setShowPixelGraph
 }: {
   rowN: number
   colN: number
@@ -73,13 +73,13 @@ const MControls = ({
   setDnd: any
   selectedGroup: string
   setError: any
-  setPixels: any
+  showPixelGraph?: boolean
+  setShowPixelGraph: (_show: boolean) => void
 }) => {
   const [tab, setTab] = useState('1')
   const [camMapper, setCamMapper] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
-  const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const graphs = useStore((state) => state.graphs)
   const graphsMulti = useStore((state) => state.graphsMulti)
@@ -107,13 +107,13 @@ const MControls = ({
   /**
    * Update the pixel-graphs when the virtual changes
    */
-  const handleVisualisationUpdate = (e: any) => {
-    if (!showPixelGraph || !virtual.id) return
-    if (e.id === virtual.id) {
-      setPixels(e.pixels)
-    }
-  }
-  useSubscription('visualisation_update', handleVisualisationUpdate)
+  // const handleVisualisationUpdate = (e: any) => {
+  //   if (!showPixelGraph || !virtual.id) return
+  //   if (e.id === virtual.id) {
+  //     setPixels(e.pixels)
+  //   }
+  // }
+  // useSubscription('visualisation_update', handleVisualisationUpdate)
 
   useEffect(() => {
     if (virtual.id && showPixelGraph) {

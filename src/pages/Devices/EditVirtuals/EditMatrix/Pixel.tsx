@@ -8,9 +8,9 @@ const Pixel = ({
   classes,
   currentRowIndex,
   move,
-  decodedPixels,
-  colN,
-  pixels,
+  // decodedPixels,
+  // colN,
+  // pixels,
   yzcolumn,
   selectedGroup,
   error,
@@ -18,16 +18,17 @@ const Pixel = ({
   setCurrentDevice,
   setSelectedPixel,
   openContextMenu,
-  isDragging
+  isDragging,
+  bgColor = 'transparent'
 }: {
   m: IMCell[][]
   currentColIndex: number
   classes: any
   currentRowIndex: number
   move: boolean
-  decodedPixels: any
-  colN: number
-  pixels: any
+  // decodedPixels: any
+  // colN: number
+  // pixels: any
   yzcolumn: IMCell
   selectedGroup: string
   error: {
@@ -39,9 +40,10 @@ const Pixel = ({
   setSelectedPixel: any
   openContextMenu: any
   isDragging: boolean
+  bgColor?: string
 }) => {
   const devices = useStore((state) => state.devices)
-  const mode = useStore((state) => state.config).transmission_mode
+  // const mode = useStore((state) => state.config).transmission_mode
   if (error.length > 0) console.log(isDragging, error)
   return (
     <Box
@@ -53,16 +55,16 @@ const Pixel = ({
           // )
           //   ? '1px solid red'
           //   : '1px solid #000',
-          backgroundColor:
-            mode === 'compressed' && decodedPixels
-              ? decodedPixels[currentRowIndex * colN + currentColIndex]
-                ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
-                : '#222'
-              : pixels && pixels[0] && pixels[0].length
-                ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${
-                    pixels[1][currentRowIndex * colN + currentColIndex]
-                  },${pixels[2][currentRowIndex * colN + currentColIndex]})`
-                : '#222'
+          backgroundColor: bgColor
+          //   mode === 'compressed' && decodedPixels
+          //     ? decodedPixels[currentRowIndex * colN + currentColIndex]
+          //       ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
+          //       : '#222'
+          //     : pixels && pixels[0] && pixels[0].length
+          //       ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${
+          //           pixels[1][currentRowIndex * colN + currentColIndex]
+          //         },${pixels[2][currentRowIndex * colN + currentColIndex]})`
+          //       : '#222'
         },
         isDragging
           ? {

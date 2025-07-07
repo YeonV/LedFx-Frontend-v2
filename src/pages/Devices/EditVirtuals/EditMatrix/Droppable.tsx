@@ -13,7 +13,7 @@ function Droppable({
   id: string
   children: React.ReactNode
   cell?: IMCell
-  bg: string
+  bg?: string
   opacity?: number
   onContextMenu?: React.MouseEventHandler<HTMLDivElement> | undefined
 }) {
