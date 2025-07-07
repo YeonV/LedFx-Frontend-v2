@@ -11,10 +11,10 @@ const TooltipTags = () => (
           can be used to categorize your scenes
         </Typography>
         <Typography color="textSecondary" variant="subtitle1">
-          <em>accepts a comma seperated list</em>
+          <em>please press ENTER after each tag</em>
         </Typography>
         <Typography color="textSecondary" variant="subtitle1">
-          <em>eg. HipHop,Smooth</em>
+          <em>eg. HipHop, Smooth</em>
         </Typography>
       </div>
     }
