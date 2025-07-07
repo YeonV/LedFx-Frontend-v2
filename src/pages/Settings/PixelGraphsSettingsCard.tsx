@@ -29,7 +29,11 @@ const PixelGraphsSettingsCard = () => {
     { value: 512, label: '512' },
     { value: 1024, label: '1K' },
     { value: 2048, label: '2K' },
-    { value: 4096, label: '4K' }
+    { value: 4096, label: '4K' },
+    { value: 8192, label: '8K' },
+    { value: 16384, label: '16K' },
+    { value: 32768, label: '32K' },
+    { value: 65535, label: '64K' }
   ]
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
@@ -96,7 +100,12 @@ const PixelGraphsSettingsCard = () => {
           }
         >
           {marks.map((item: any) => (
-            <MenuItem disabled={item.value === 'select'} key={item.value} value={item.value}>
+            <MenuItem
+              disabled={item.value === 'select'}
+              key={item.value}
+              value={item.value}
+              sx={{ color: item.value > 4096 ? '#f00' : 'inherit' }}
+            >
               {item.label}
             </MenuItem>
           ))}
@@ -112,11 +121,11 @@ const PixelGraphsSettingsCard = () => {
           }}
           onBlur={(e) => setSystemSetting('visualisation_maxlen', parseInt(e.target.value, 10))}
           sx={{
-            '& input': { textAlign: 'right' }
+            '& input': { textAlign: 'right', color: pixelLength > 4096 ? '#f00' : 'inherit' }
           }}
           inputProps={{
             min: 1,
-            max: 4096,
+            max: 65536,
             type: 'number',
             'aria-labelledby': 'input-slider'
           }}
