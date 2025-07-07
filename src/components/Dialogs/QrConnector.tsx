@@ -21,10 +21,10 @@ import {
 import { TransitionProps } from '@mui/material/transitions'
 import { QrCode2 as QrCodeIcon, ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
 import ledfxLogoForQr from '../../assets/logo.png'
-
 import QrCodeWithLogo from '../QrScanner/QrCodeWithLogo'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -95,6 +95,11 @@ const QrConnector: React.FC<QrConnectorProps> = ({
     setUserClosedQrConnector(true)
     setDialogOpen(false)
   }
+
+  useSubscription('client_connected', () => {
+    navigate('/Devices')
+    handleCloseDialog()
+  })
 
   useEffect(() => {
     if (dialogOpen && formattedHosts.length > 1) {
