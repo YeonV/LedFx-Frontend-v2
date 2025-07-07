@@ -223,18 +223,12 @@ const TopBar = () => {
   const hosts = useStore((state) => state.config.hosts) || []
   const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
 
-  // --- THE FIX ---
-  // 1. Get the reactive `isConnected` boolean from our hook.
   const { isConnected } = useWebSocket()
-  // 2. Get the `disconnected` state and UI actions from Zustand.
   const disconnected = useStore((state) => state.disconnected)
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
 
-  // 3. This new useEffect REPLACES the old event listener.
-  // It runs whenever the `disconnected` state changes.
   useEffect(() => {
     if (disconnected === false) {
-      // On RECONNECT
       window.localStorage.removeItem('undefined')
       setDialogOpen(false, true)
       clearSnackbar()
