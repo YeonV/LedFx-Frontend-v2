@@ -3,7 +3,7 @@ import { Box, Stack, useTheme } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import { DndContext, DragEndEvent } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
-import { MCell, clone, getBackgroundColor, getMaxRange, getOpacity } from './M.utils'
+import { MCell, clone, getMaxRange } from './M.utils'
 import type { IMCell, IDir } from './M.utils'
 import useStore from '../../../../store/useStore'
 import useStyles from './M.styles'
@@ -12,10 +12,11 @@ import MControls from './MControls'
 import Droppable from './Droppable'
 import Draggable from './Draggable'
 import Pixel from './Pixel'
-import hexColor from './Actions/hexColor'
+// import hexColor from './Actions/hexColor'
 import MContextMenu from './MContextMenu'
 import AssignPixelDialog from './AssignPixelDialog'
 import { Ledfx } from '../../../../api/ledfx'
+import PixelGraph from '../../../../components/PixelGraph/PixelGraph'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
@@ -23,7 +24,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const deviceRef = useRef<HTMLInputElement | null>(null)
 
   const devices = useStore((state) => state.devices)
-  const mode = useStore((state) => state.config).transmission_mode
+  // const mode = useStore((state) => state.config).transmission_mode
   const addDevice = useStore((state) => state.addDevice)
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -45,15 +46,13 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [m, setM] = useState<IMCell[][]>(Array(rowN).fill(Array(colN).fill(MCell)))
   const [pixelGroups, setPixelGroups] = useState<number>(0)
   const [selectedGroup, setSelectedGroup] = useState<string>('0-0')
-  const [pixels, setPixels] = useState<any>([])
+  // const [pixels, setPixels] = useState<any>([])
   const [move, setMove] = useState<boolean>(false)
   const [dnd, setDnd] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
-
-  const decodedPixels =
-    mode === 'compressed' ? pixels && pixels.length && hexColor(pixels, mode) : pixels
+  const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
 
   const handleContextMenu = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -269,7 +268,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           setMove={setMove}
           selectedGroup={selectedGroup}
           setError={setError}
-          setPixels={setPixels}
+          setShowPixelGraph={setShowPixelGraph}
+          showPixelGraph={showPixelGraph}
         />
       </Stack>
       <Box sx={{ flexGrow: 1, overflow: 'hidden', height: '100%' }}>
@@ -284,9 +284,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           <TransformComponent>
             <div
               className={classes.gridCellContainer}
-              style={{ width: colN * 100, height: rowN * 100 }}
+              style={{
+                width: colN * 100,
+                height: rowN * 100
+              }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', zIndex: 1 }}>
                 <DndContext
                   modifiers={[restrictToFirstScrollableAncestor]}
                   onDragEnd={(e) => handleDragEnd(e)}
@@ -301,15 +304,15 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                   {m.map((yzrow, currentRowIndex) => (
                     <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
                       {yzrow.map((yzcolumn: IMCell, currentColIndex: number) => {
-                        const bg = getBackgroundColor(
-                          mode,
-                          decodedPixels,
-                          pixels,
-                          currentRowIndex,
-                          colN,
-                          currentColIndex
-                        )
-                        const op = getOpacity(move, yzcolumn, selectedGroup)
+                        // const bg = getBackgroundColor(
+                        //   mode,
+                        //   decodedPixels,
+                        //   pixels,
+                        //   currentRowIndex,
+                        //   colN,
+                        //   currentColIndex
+                        // )
+                        // const op = getOpacity(move, yzcolumn, selectedGroup)
                         return (
                           <Droppable
                             cell={
@@ -319,8 +322,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                             }
                             id={`${currentColIndex}-${currentRowIndex}`}
                             key={`col-${currentColIndex}`}
-                            bg={bg}
-                            opacity={op}
+                            bg={
+                              m[currentRowIndex][currentColIndex].deviceId !== ''
+                                ? 'transparent'
+                                : 'black'
+                            }
+                            opacity={0.8}
                             onContextMenu={(e) =>
                               handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)
                             }
@@ -331,8 +338,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                                 handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)
                               }
                               sx={{
-                                backgroundColor: bg,
-                                opacity: op
+                                // backgroundColor: bg,
+                                opacity: 1
                               }}
                             >
                               {dnd ? (
@@ -344,9 +351,9 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                                       classes={classes}
                                       currentRowIndex={currentRowIndex}
                                       move={move}
-                                      decodedPixels={decodedPixels}
-                                      colN={colN}
-                                      pixels={pixels}
+                                      // decodedPixels={decodedPixels}
+                                      // colN={colN}
+                                      // pixels={pixels}
                                       yzcolumn={yzcolumn}
                                       selectedGroup={selectedGroup}
                                       error={error}
@@ -367,9 +374,9 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                                   classes={classes}
                                   currentRowIndex={currentRowIndex}
                                   move={move}
-                                  decodedPixels={decodedPixels}
-                                  colN={colN}
-                                  pixels={pixels}
+                                  // decodedPixels={decodedPixels}
+                                  // colN={colN}
+                                  // pixels={pixels}
                                   yzcolumn={yzcolumn}
                                   selectedGroup={selectedGroup}
                                   error={error}
@@ -390,6 +397,28 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                   ))}
                 </DndContext>
               </div>
+
+              {virtual.id && showPixelGraph && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: -2,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 0
+                  }}
+                >
+                  <PixelGraph
+                    showMatrix={true}
+                    virtId={virtual.id}
+                    active={true}
+                    dummy={false}
+                    fullScreen
+                    fill
+                  />
+                </div>
+              )}
               <MContextMenu
                 setDnd={setDnd}
                 setSelectedGroup={setSelectedGroup}

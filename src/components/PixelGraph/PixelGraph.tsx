@@ -14,7 +14,8 @@ const PixelGraph = ({
   showMatrix = false,
   fullScreen = false,
   db = false,
-  onDoubleClick
+  onDoubleClick,
+  fill = false
 }: {
   virtId: string
   dummy?: boolean
@@ -25,6 +26,7 @@ const PixelGraph = ({
   fullScreen?: boolean
   db?: boolean
   onDoubleClick?: any
+  fill?: boolean
 }) => {
   const variants = useStore((state) => state.uiPersist.pixelGraphSettings?.variants)
   return (
@@ -53,6 +55,7 @@ const PixelGraph = ({
           fullScreen={fullScreen}
           db={db}
           onDoubleClick={onDoubleClick}
+          fill={fill}
         />
       )}
       {variants === 'canvasOffscreen' && (

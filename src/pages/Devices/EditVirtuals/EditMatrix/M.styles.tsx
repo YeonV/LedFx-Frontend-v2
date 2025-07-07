@@ -15,7 +15,8 @@ const useStyles = makeStyles(() => ({
     background: '#111',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    position: 'relative'
   },
   gridCellInner: {
     display: 'flex',

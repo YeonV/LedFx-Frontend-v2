@@ -13,6 +13,7 @@ const PixelGraphCanvas = ({
   showMatrix = false,
   fullScreen = false,
   db = false,
+  fill = false,
   onDoubleClick
 }: {
   virtId: string
@@ -24,6 +25,7 @@ const PixelGraphCanvas = ({
   fullScreen?: boolean
   db?: boolean
   onDoubleClick?: any
+  fill?: boolean
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -106,14 +108,14 @@ const PixelGraphCanvas = ({
       ref={canvasRef}
       className={`${className} ${active ? 'active' : ''}`}
       style={{
-        maxWidth: fullScreen ? '100vw' : '520px',
-        maxHeight: fullScreen ? '100vh' : '520px',
+        maxWidth: fill ? 'unset' : fullScreen ? '100vw' : '520px',
+        maxHeight: fill ? 'unset' : fullScreen ? '100vh' : '520px',
         height:
           !render || (virtuals[virtId]?.config?.rows || 1) < 2 || !showMatrix ? '20px' : 'auto',
         width: '100%',
         borderRadius: '10px',
         overflow: 'hidden',
-        margin: db ? 0 : '0.5rem 0 0 0',
+        margin: db || fill ? 0 : '0.5rem 0 0 0',
         imageRendering: smoothing ? 'unset' : 'pixelated',
         objectFit: stretch && fullScreen ? 'contain' : 'fill'
       }}
