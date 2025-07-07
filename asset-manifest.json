@@ -1,11 +1,11 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.7b9f96b2.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.cefd7f8a.js",
-    "static/js/956.517c011f.chunk.js": "/LedFx-Frontend-v2/static/js/956.517c011f.chunk.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.cb4cdaf7.js",
     "static/js/429.748331ac.chunk.js": "/LedFx-Frontend-v2/static/js/429.748331ac.chunk.js",
     "static/js/83.344794cb.chunk.js": "/LedFx-Frontend-v2/static/js/83.344794cb.chunk.js",
     "static/js/464.344794cb.chunk.js": "/LedFx-Frontend-v2/static/js/464.344794cb.chunk.js",
+    "static/js/956.517c011f.chunk.js": "/LedFx-Frontend-v2/static/js/956.517c011f.chunk.js",
     "static/js/685.9e3b51a2.chunk.js": "/LedFx-Frontend-v2/static/js/685.9e3b51a2.chunk.js",
     "static/media/xmas.png": "/LedFx-Frontend-v2/static/media/xmas.3e4e83405d14fb81488b.png",
     "static/media/materialdesignicons-webfont.woff": "/LedFx-Frontend-v2/static/media/materialdesignicons-webfont.059ea00c378aeafc39fc.woff",
@@ -41,15 +41,15 @@
     "static/media/right-snake.svg": "/LedFx-Frontend-v2/static/media/right-snake.48646339a693661b2cbfb01036d4347d.svg",
     "static/media/bottom-snake.svg": "/LedFx-Frontend-v2/static/media/bottom-snake.9b9a83d44ad5de6f52df46864a7815b8.svg",
     "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.866a1a9f220801e888735cdfa6f22698.svg",
-    "main.cefd7f8a.js.map": "/LedFx-Frontend-v2/static/js/main.cefd7f8a.js.map",
-    "956.517c011f.chunk.js.map": "/LedFx-Frontend-v2/static/js/956.517c011f.chunk.js.map",
+    "main.cb4cdaf7.js.map": "/LedFx-Frontend-v2/static/js/main.cb4cdaf7.js.map",
     "429.748331ac.chunk.js.map": "/LedFx-Frontend-v2/static/js/429.748331ac.chunk.js.map",
     "83.344794cb.chunk.js.map": "/LedFx-Frontend-v2/static/js/83.344794cb.chunk.js.map",
     "464.344794cb.chunk.js.map": "/LedFx-Frontend-v2/static/js/464.344794cb.chunk.js.map",
+    "956.517c011f.chunk.js.map": "/LedFx-Frontend-v2/static/js/956.517c011f.chunk.js.map",
     "685.9e3b51a2.chunk.js.map": "/LedFx-Frontend-v2/static/js/685.9e3b51a2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7b9f96b2.css",
-    "static/js/main.cefd7f8a.js"
+    "static/js/main.cb4cdaf7.js"
   ]
 }
