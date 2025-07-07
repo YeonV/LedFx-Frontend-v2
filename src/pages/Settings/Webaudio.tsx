@@ -33,9 +33,21 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const webAudTypes = [
-    { label: 'ws-v2', value: 'audio_stream_data_v2' },
-    { label: 'ws-v1', value: 'audio_stream_data' },
-    { label: 'udp', value: 'audio_stream_data_udp' }
+    {
+      label: 'WebSocket v2',
+      value: 'audio_stream_data_v2',
+      description: '16-bit, binary - Best balance of quality & efficiency'
+    },
+    {
+      label: 'WebSocket v1',
+      value: 'audio_stream_data',
+      description: '32-bit, JSON - Highest quality, more bandwidth'
+    },
+    {
+      label: 'UDP Stream',
+      value: 'audio_stream_data_udp',
+      description: '8-bit - Lowest latency, reduced quality'
+    }
   ]
   const [webAudType, setWebAudType] = useState(webAudTypes[0].value)
   const [webAudConfig, setWebAudConfig] = useState({
@@ -87,9 +99,6 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
 
       const rawSocket = getSocket()
       scriptNode.onaudioprocess = (e) => {
-        // --- THIS IS THE FIX ---
-        // The broken check is removed. We just check if the socket instance exists.
-        // Sockette handles queuing if the connection is temporarily down.
         if (!rawSocket) return
 
         if (webAudType === 'audio_stream_data_v2') {
@@ -231,7 +240,12 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
           >
             {webAudTypes.map((type) => (
               <MenuItem key={type.value} value={type.value}>
-                {type.label}
+                <div>
+                  <div style={{ fontWeight: 'bold' }}>{type.label}</div>
+                  <div style={{ fontSize: '0.8em', color: 'text.secondary', opacity: 0.7 }}>
+                    {type.description}
+                  </div>
+                </div>
               </MenuItem>
             ))}
           </Select>

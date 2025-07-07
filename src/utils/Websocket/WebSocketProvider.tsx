@@ -4,12 +4,12 @@ import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
 import { initialSubscriptions, handlerConfig } from './websocket.config'
 
-interface WebSocketApi {
-  send: (data: any) => void
-  subscribe: (eventName: string, callback: (data: any) => void) => () => void
+export interface WebSocketApi {
+  send: (_data: any) => void
+  subscribe: (_eventName: string, _callback: (_data: any) => void) => () => void
   isConnected: boolean
   getSocket: () => Sockette | null
-  errorState: string | null // NEW: To hold error states like 'mixedContent'
+  errorState: string | null
 }
 
 const WebSocketContext = createContext<WebSocketApi>({
@@ -24,7 +24,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   const ws = useRef<Sockette | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [errorState, setErrorState] = useState<string | null>(null)
-  const subscribers = useRef(new Map<string, Set<(data: any) => void>>())
+  const subscribers = useRef(new Map<string, Set<(_data: any) => void>>())
 
   const send = useCallback((data: any) => {
     ws.current?.send(JSON.stringify(data))
@@ -32,7 +32,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
 
   const getSocket = useCallback(() => ws.current, [])
 
-  const subscribe = useCallback((eventName: string, callback: (data: any) => void) => {
+  const subscribe = useCallback((eventName: string, callback: (_data: any) => void) => {
     if (!subscribers.current.has(eventName)) {
       subscribers.current.set(eventName, new Set())
     }
@@ -101,7 +101,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
       },
       onerror: (e) => {
         console.error('WebSocket Error:', e)
-        setErrorState('connectionError') // A generic error state
+        setErrorState('connectionError')
       }
     })
 
@@ -117,7 +117,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
 
 export const useWebSocket = () => useContext(WebSocketContext)
 
-export const useSubscription = (eventName: string, callback: (data: any) => void) => {
+export const useSubscription = (eventName: string, callback: (_data: any) => void) => {
   const { subscribe } = useWebSocket()
   const callbackRef = useRef(callback)
 

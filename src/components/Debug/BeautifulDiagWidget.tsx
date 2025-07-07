@@ -63,6 +63,7 @@ const sparklineOptions = {
 
 export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWidgetProps) => {
   const { data } = latestMessage
+  // const { data, timestamp } = latestMessage
   const statusColor = getStatusColor(data)
   const workload = data.cycle > 0 ? ((data.cycle - data.sleep) / data.cycle) * 100 : 0
 
