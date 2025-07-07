@@ -42,6 +42,7 @@ import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
 import useStore from '../../../../store/useStore'
 import Webcam from '../../../../components/Webcam/Webcam'
+import { useSubscription } from '../../../../utils/Websocket/WebSocketProvider'
 
 const MControls = ({
   rowN,
@@ -79,8 +80,13 @@ const MControls = ({
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
   const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
-  const pixelGraphs = useStore((state) => state.pixelGraphs)
+  const setPixelGraphs = useStore((state) => state.setPixelGraphs)
+  const graphs = useStore((state) => state.graphs)
+  const graphsMulti = useStore((state) => state.graphsMulti)
   const virtuals = useStore((state) => state.virtuals)
+  const showComplex = useStore((state) => state.showComplex)
+  const showGaps = useStore((state) => state.showGaps)
+
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const features = useStore((state) => state.features)
@@ -101,21 +107,43 @@ const MControls = ({
   /**
    * Update the pixel-graphs when the virtual changes
    */
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      if (e.detail.id === virtual.id) {
-        setPixels(e.detail.pixels)
-      }
+  const handleVisualisationUpdate = (e: any) => {
+    if (!showPixelGraph || !virtual.id) return
+    if (e.id === virtual.id) {
+      setPixels(e.pixels)
     }
-    if (showPixelGraph && virtual.id) {
-      document.addEventListener('visualisation_update', handleWebsockets)
+  }
+  useSubscription('visualisation_update', handleVisualisationUpdate)
+
+  useEffect(() => {
+    if (virtual.id && showPixelGraph) {
+      setPixelGraphs([virtual.id])
     } else {
-      document.removeEventListener('visualisation_update', handleWebsockets)
+      setPixelGraphs([])
     }
     return () => {
-      document.removeEventListener('visualisation_update', handleWebsockets)
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtuals, pixelGraphs, showPixelGraph, virtual])
+      if (graphs && graphsMulti) {
+        setPixelGraphs(
+          Object.keys(virtuals)
+            .filter((v) =>
+              showComplex
+                ? v
+                : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
+            )
+            .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
+        )
+      }
+    }
+  }, [
+    virtual.id,
+    showPixelGraph,
+    setPixelGraphs,
+    graphs,
+    graphsMulti,
+    virtuals,
+    showComplex,
+    showGaps
+  ])
 
   return (
     <Stack minWidth={400} direction="column" spacing={2} style={{ marginBottom: '1rem' }} p={2}>
