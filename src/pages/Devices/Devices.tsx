@@ -4,8 +4,8 @@ import { Alert, Collapse } from '@mui/material'
 import useStore from '../../store/useStore'
 import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
-import ws from '../../utils/Websocket'
 import { useNavigate } from 'react-router-dom'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -43,7 +43,7 @@ const Devices = () => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
-  const fPixels = useStore((state) => state.config.visualisation_maxlen)
+  // const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -59,33 +59,7 @@ const Devices = () => {
     getVirtuals()
   }, [getDevices, getVirtuals])
 
-  useEffect(() => {
-    const handleWebsockets = (e: any) => {
-      if (e.detail === 'devices_updated') {
-        getDevices()
-      }
-    }
-    document.addEventListener('devices_updated', handleWebsockets)
-    return () => {
-      document.removeEventListener('devices_updated', handleWebsockets)
-    }
-  }, [getDevices])
-
-  useEffect(() => {
-    const handleWebsockets = () => {
-      const req = {
-        event_type: 'devices_updated',
-        id: 1,
-        type: 'subscribe_event'
-      }
-      // console.log("Send");
-      ;(ws as any).send(JSON.stringify(++req.id && req))
-    }
-    document.addEventListener('devices_updated', handleWebsockets)
-    return () => {
-      document.removeEventListener('devices_updated', handleWebsockets)
-    }
-  }, [fPixels])
+  useSubscription('devices_updated', getDevices)
 
   useEffect(() => {
     if (graphs && graphsMulti) {
@@ -98,6 +72,11 @@ const Devices = () => {
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
       )
+    } else {
+      setPixelGraphs([])
+    }
+    return () => {
+      setPixelGraphs([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti, setPixelGraphs])

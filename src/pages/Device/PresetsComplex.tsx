@@ -112,7 +112,7 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
                     (Object.keys(scenes).indexOf(`${virtId}-${name}`) > -1 ||
                       Object.values(scenes).filter((p: any) => p.name === `${virtId}-${name}`)
                         .length > 0)
-                      ? 'Partial Scene already exsisting'
+                      ? 'Partial Scene Already Exists'
                       : 'Add Partial Scene'
                   }
                   style={{ marginRight: '1rem', flex: 1 }}

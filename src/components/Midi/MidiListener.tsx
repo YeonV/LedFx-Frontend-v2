@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { WebMidi, Input, Output } from 'webmidi'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import { sendMidiMessageHelper } from '../../utils/MidiDevices/colorHelper'
 import useStore from '../../store/useStore'
 import { executeCommand } from '../../utils/commandHandler'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const MIDIListener = () => {
   const features = useStore((state) => state.features)
@@ -51,14 +52,12 @@ const MIDIListener = () => {
       if (buttonNumber === -1) return
 
       const sendMidiMessage = (color: string, typeCommand: string) => {
-        // console.log(1,'color',color, typeCommand, lp.globalColors.commandType)
         sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, false)
       }
 
       try {
         if (value.command !== 'scene' && value.command && value.command !== 'none') {
           const color = value.colorCommand || commandColor
-          // console.log(1,'color',color, value.typeCommand, lp.globalColors.commandType)
           sendMidiMessage(
             color,
             color.startsWith('rgb') ? 'rgb' : value.typeCommand || lp.globalColors.commandType
@@ -76,6 +75,60 @@ const MIDIListener = () => {
       }
     })
   }
+
+  // Create a stable callback for the subscription
+  const handleSceneActivated = useCallback(
+    (eventData: any) => {
+      const output = WebMidi.enabled && WebMidi.getOutputByName(midiOutput)
+      if (!output) return
+
+      const sendSceneMidiMessage = (
+        output: any,
+        buttonNumber: number,
+        value: any,
+        isActive: boolean
+      ) => {
+        const color = isActive
+          ? value.colorSceneActive || midiSceneActiveColor || lp.globalColors.sceneActiveColor
+          : value.colorSceneInactive || midiSceneInactiveColor || lp.globalColors.sceneInactiveColor
+        const typeCommand = isActive
+          ? value.typeSceneActive || lp.globalColors.sceneActiveType
+          : value.typeSceneInactive || lp.globalColors.sceneInactiveType
+        sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, isActive)
+      }
+
+      try {
+        const { scene_id } = eventData
+        Object.keys(scenes).forEach((key) => {
+          const scene = scenes[key]
+          const buttonNumber = parseInt(scene.scene_midiactivate?.split('buttonNumber: ')[1], 10)
+          const uiButtonNumber = getUiBtnNo(buttonNumber)
+          const value = uiButtonNumber && midiMapping[0][uiButtonNumber]
+          if (!value || value.command !== 'scene' || !output) return
+          if (key === scene_id) {
+            sendSceneMidiMessage(output, buttonNumber, value, true)
+          } else {
+            sendSceneMidiMessage(output, buttonNumber, value, false)
+          }
+        })
+      } catch (error) {
+        console.error('Error parsing websocket message:', error)
+      }
+    },
+    [
+      midiOutput,
+      scenes,
+      getUiBtnNo,
+      midiMapping,
+      lp,
+      midiSceneActiveColor,
+      midiSceneInactiveColor,
+      fn
+    ]
+  )
+
+  // Use the subscription hook
+  useSubscription('scene_activated', handleSceneActivated)
 
   useEffect(() => {
     const handleMidiInput = (input: Input) => {
@@ -198,54 +251,9 @@ const MIDIListener = () => {
       })
     }
 
-    const handleWebsockets = (event: any) => {
-      const output = WebMidi.enabled && WebMidi.getOutputByName(midiOutput)
-      try {
-        if (event.type === 'scene_activated') {
-          const { scene_id } = event.detail
-          Object.keys(scenes).forEach((key) => {
-            const scene = scenes[key]
-            const buttonNumber = parseInt(scene.scene_midiactivate?.split('buttonNumber: ')[1], 10)
-            const uiButtonNumber = getUiBtnNo(buttonNumber)
-            const value = uiButtonNumber && midiMapping[0][uiButtonNumber]
-            if (!value || value.command !== 'scene' || !output) return
-            if (key === scene_id) {
-              sendSceneMidiMessage(output, buttonNumber, value, true)
-            } else {
-              sendSceneMidiMessage(output, buttonNumber, value, false)
-            }
-          })
-        }
-      } catch (error) {
-        console.error('Error parsing websocket message:', error)
-      }
-    }
-
-    const sendSceneMidiMessage = (
-      output: any,
-      buttonNumber: number,
-      value: any,
-      isActive: boolean
-    ) => {
-      const color = isActive
-        ? value.colorSceneActive || midiSceneActiveColor || lp.globalColors.sceneActiveColor
-        : value.colorSceneInactive || midiSceneInactiveColor || lp.globalColors.sceneInactiveColor
-      const typeCommand = isActive
-        ? value.typeSceneActive || lp.globalColors.sceneActiveType
-        : value.typeSceneInactive || lp.globalColors.sceneInactiveType
-      sendMidiMessageHelper(fn, output, buttonNumber, color, typeCommand, isActive)
-    }
-
     if (features.scenemidi) {
       enableWebMidi()
     }
-
-    document.addEventListener('scene_activated', handleWebsockets)
-
-    return () => {
-      document.removeEventListener('scene_activated', handleWebsockets)
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenes, sceneDialogOpen, midiInitialized, features.scenemidi])
 
