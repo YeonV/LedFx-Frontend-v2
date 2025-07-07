@@ -8,6 +8,7 @@ import TimerIcon from '@mui/icons-material/Timer'
 import BoltIcon from '@mui/icons-material/Bolt'
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory'
 import { Line } from 'react-chartjs-2'
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 
 // --- Type definitions ---
 interface DiagPacket {
@@ -16,6 +17,7 @@ interface DiagPacket {
   r_avg: number
   r_min: number
   r_max: number
+  f_phy: number
   cycle: number
   sleep: number
 }
@@ -60,7 +62,7 @@ const sparklineOptions = {
 }
 
 export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWidgetProps) => {
-  const { data, timestamp } = latestMessage
+  const { data } = latestMessage
   const statusColor = getStatusColor(data)
   const workload = data.cycle > 0 ? ((data.cycle - data.sleep) / data.cycle) * 100 : 0
 
@@ -144,10 +146,18 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
 
         {/* Lower Info Bar */}
         <Grid size={{ xs: 12 }} container spacing={1} mt={1} color="rgba(255, 255, 255, 0.9)">
+          {data.f_phy > -1 && (
+            <Grid size={{ xs: 3 }} display="flex" alignItems="center" justifyContent="flex-start">
+              <BladeIcon name="wled" sx={{ mr: 1, fontSize: '0.9rem !important' }} />
+              <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
+                fps: {data.f_phy}
+              </Typography>
+            </Grid>
+          )}
           <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
             <BoltIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
             <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-              {formatMs(data.cycle).toFixed(1)}
+              {formatMs(data.cycle).toFixed(2)}
               ms
             </Typography>
           </Grid>
@@ -159,21 +169,21 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
           </Grid>
           <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
             <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
-              min: {formatMs(data.r_min).toFixed(1)}
+              min: {formatMs(data.r_min).toFixed(2)}
               ms
             </Typography>
           </Grid>
           <Grid size={{ xs: 2 }} display="flex" alignItems="center" justifyContent="center">
             <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
-              max: {formatMs(data.r_max).toFixed(1)}
+              max: {formatMs(data.r_max).toFixed(2)}
               ms
             </Typography>
           </Grid>
-          <Grid size={{ xs: 4 }} display="flex" alignItems="center" justifyContent="center">
+          {/* <Grid size={{ xs: 4 }} display="flex" alignItems="center" justifyContent="center">
             <Typography variant="caption" color="rgba(255, 255, 255, 0.7)">
               {timestamp.toLocaleTimeString()}
             </Typography>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
     </Card>
