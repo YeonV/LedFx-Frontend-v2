@@ -29,7 +29,6 @@ export default function FrontendPixelsTooSmall() {
   const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const showMatrix = useStore((state) => state.showMatrix)
   const virtuals = useStore((state) => state.virtuals)
-  const alphaMatrix = useStore((state) => state.features.matrix)
   const open = useStore((state) => state.dialogs.lessPixels?.open || false)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -68,14 +67,14 @@ export default function FrontendPixelsTooSmall() {
       (a: any, b: any) => (virtuals[a]?.pixel_count > virtuals[b]?.pixel_count ? a : b),
       0
     )
-    if (fPixels && (showMatrix || alphaMatrix) && tooBig.length > 0 && fPixels < 4096) {
+    if (fPixels && showMatrix && tooBig.length > 0 && fPixels < 4096) {
       setBiggestDevice({ id: biggest, pixels: virtuals[biggest]?.pixel_count })
       setDialogOpenLessPixels(true)
     }
     if (fPixels && showMatrix && tooBig.length === 0) {
       setDialogOpenLessPixels(false)
     }
-  }, [showMatrix, fPixels, virtuals, setDialogOpenLessPixels, location, alphaMatrix])
+  }, [showMatrix, fPixels, virtuals, setDialogOpenLessPixels, location])
 
   useEffect(() => {
     getSystemConfig()
