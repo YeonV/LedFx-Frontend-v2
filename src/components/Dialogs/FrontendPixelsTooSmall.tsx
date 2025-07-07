@@ -8,7 +8,9 @@ import {
   DialogTitle,
   Input,
   MenuItem,
-  Select
+  Select,
+  Tooltip,
+  useTheme
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import {
@@ -17,6 +19,7 @@ import {
 } from '../../pages/Settings/SettingsComponents'
 import useSliderStyles from '../SchemaForm/components/Number/BladeSlider.styles'
 import { useLocation } from 'react-router-dom'
+import { InfoRounded } from '@mui/icons-material'
 // import { inverseLogScale, logScale } from '../../utils/helpers'
 
 export default function FrontendPixelsTooSmall() {
@@ -32,6 +35,7 @@ export default function FrontendPixelsTooSmall() {
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const setShowWarning = useStore((state) => state.setWarnings)
+  const theme = useTheme()
 
   const [pixelLength, setPixelLength] = useState(fPixels || 50)
   const [biggestDevice, setBiggestDevice] = useState({ id: '', pixels: 0 })
@@ -114,6 +118,17 @@ export default function FrontendPixelsTooSmall() {
           onChange={() => toggleShowMatrix()}
         />
         <SettingsRow title="Frontend Pixels" step="three">
+          <Tooltip title="Use of high pixel counts in front end visualisation is strongly discouraged, and should not be used if access to the browser front end is from a client remote to the LedFx server.">
+            <InfoRounded
+              sx={{
+                color: pixelLength > 4096 ? theme.palette.warning.main : 'inherit',
+                cursor: 'pointer',
+                verticalAlign: 'middle',
+                mr: 2,
+                fontSize: '1.2rem'
+              }}
+            />
+          </Tooltip>
           <Select
             disableUnderline
             variant="standard"
@@ -124,7 +139,12 @@ export default function FrontendPixelsTooSmall() {
             }
           >
             {marks.map((item: any) => (
-              <MenuItem disabled={item.value === 'select'} key={item.value} value={item.value}>
+              <MenuItem
+                disabled={item.value === 'select'}
+                key={item.value}
+                value={item.value}
+                sx={{ color: item.value > 4096 ? theme.palette.warning.main : 'inherit' }}
+              >
                 {item.label}
               </MenuItem>
             ))}
@@ -140,7 +160,10 @@ export default function FrontendPixelsTooSmall() {
             }}
             onBlur={(e) => setSystemSetting('visualisation_maxlen', parseInt(e.target.value, 10))}
             sx={{
-              '& input': { textAlign: 'right' }
+              '& input': {
+                textAlign: 'right',
+                color: pixelLength > 4096 ? theme.palette.warning.main : 'inherit'
+              }
             }}
             inputProps={{
               min: 1,
