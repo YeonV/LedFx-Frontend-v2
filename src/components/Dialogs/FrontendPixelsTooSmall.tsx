@@ -43,7 +43,11 @@ export default function FrontendPixelsTooSmall() {
     { value: 512, label: '512' },
     { value: 1024, label: '1K' },
     { value: 2048, label: '2K' },
-    { value: 4096, label: '4K' }
+    { value: 4096, label: '4K' },
+    { value: 8192, label: '8K' },
+    { value: 16384, label: '16K' },
+    { value: 32768, label: '32K' },
+    { value: 65535, label: '64K' }
   ]
 
   const setDialogOpenLessPixels = useStore((state) => state.setDialogOpenLessPixels)
