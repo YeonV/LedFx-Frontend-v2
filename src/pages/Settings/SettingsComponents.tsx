@@ -251,6 +251,7 @@ export const SettingsRow = ({
           color: disabled ? '#000' : '#7b7a7c',
           flexGrow: 1,
           justifyContent: 'flex-end',
+          alignItems: 'center',
           textAlign: 'right'
         }}
       >

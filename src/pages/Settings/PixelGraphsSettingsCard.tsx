@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Input, Divider, Select, MenuItem } from '@mui/material'
+import { Input, Divider, Select, MenuItem, Tooltip, useTheme } from '@mui/material'
 import { SettingsSlider, SettingsRow } from './SettingsComponents'
 import useStore from '../../store/useStore'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 import { PixelGraphVariants } from '../../store/ui-persist/storeUIpersist'
+import { InfoRounded } from '@mui/icons-material'
 
 const PixelGraphsSettingsCard = () => {
   const sliderClasses = useSliderStyles()
@@ -21,6 +22,9 @@ const PixelGraphsSettingsCard = () => {
   const [fps, setFps] = useState(30)
   const [pixelLength, setPixelLength] = useState(50)
   const [uiBrightnessBoost, setUiBrightnessBoost] = useState(0)
+  const expertMode = useStore((state) => state.viewMode) === 'expert'
+  const theme = useTheme()
+
   const marks = [
     { value: 'select', label: 'select' },
     { value: 50, label: '50' },
@@ -91,10 +95,25 @@ const PixelGraphsSettingsCard = () => {
         </Select>
       </SettingsRow>
       <SettingsRow title="Frontend Pixels" step="three">
+        <Tooltip title="Use of high pixel counts in front end visualisation is strongly discouraged, and should not be used if access to the browser front end is from a client remote to the LedFx server.">
+          <InfoRounded
+            sx={{
+              color: pixelLength > 4096 ? theme.palette.warning.main : 'inherit',
+              cursor: 'pointer',
+              verticalAlign: 'middle',
+              mr: 2,
+              fontSize: '1.2rem'
+            }}
+          />
+        </Tooltip>
+
         <Select
           disableUnderline
           variant="standard"
-          value={'select'}
+          value={expertMode ? 'select' : pixelLength}
+          sx={{
+            color: pixelLength > 4096 ? theme.palette.warning.main : 'inherit'
+          }}
           onChange={(e) =>
             e.target.value !== 'select' && setSystemSetting('visualisation_maxlen', e.target.value)
           }
@@ -104,32 +123,37 @@ const PixelGraphsSettingsCard = () => {
               disabled={item.value === 'select'}
               key={item.value}
               value={item.value}
-              sx={{ color: item.value > 4096 ? '#f00' : 'inherit' }}
+              sx={{ color: item.value > 4096 ? theme.palette.warning.main : 'inherit' }}
             >
               {item.label}
             </MenuItem>
           ))}
         </Select>
-        <Input
-          disableUnderline
-          className={sliderClasses.input}
-          value={pixelLength}
-          style={{ width: 70 }}
-          margin="dense"
-          onChange={(e) => {
-            setPixelLength(parseInt(e.target.value, 10))
-          }}
-          onBlur={(e) => setSystemSetting('visualisation_maxlen', parseInt(e.target.value, 10))}
-          sx={{
-            '& input': { textAlign: 'right', color: pixelLength > 4096 ? '#f00' : 'inherit' }
-          }}
-          inputProps={{
-            min: 1,
-            max: 65536,
-            type: 'number',
-            'aria-labelledby': 'input-slider'
-          }}
-        />
+        {expertMode && (
+          <Input
+            disableUnderline
+            className={sliderClasses.input}
+            value={pixelLength}
+            style={{ width: 70 }}
+            margin="dense"
+            onChange={(e) => {
+              setPixelLength(parseInt(e.target.value, 10))
+            }}
+            onBlur={(e) => setSystemSetting('visualisation_maxlen', parseInt(e.target.value, 10))}
+            sx={{
+              '& input': {
+                textAlign: 'right',
+                color: pixelLength > 4096 ? theme.palette.warning.main : 'inherit'
+              }
+            }}
+            inputProps={{
+              min: 1,
+              max: 65536,
+              type: 'number',
+              'aria-labelledby': 'input-slider'
+            }}
+          />
+        )}
       </SettingsRow>
       <SettingsRow title="Frontend FPS" step="two">
         <SettingsSlider
