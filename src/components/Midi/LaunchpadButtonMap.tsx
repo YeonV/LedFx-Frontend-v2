@@ -247,16 +247,20 @@ const LaunchpadButtonMap = ({
     if (!output) return
     switch (mode) {
       case 'programmer':
-        output.send([0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x0e, 0x01, 0xf7])
+        if ('programmer' in lp.command)
+          output.send(lp.command?.programmer ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x0e, 0x01, 0xf7])
         break
       case 'live':
-        output.send([0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x0e, 0x00, 0xf7])
+        if ('live' in lp.command)
+          output.send(lp.command?.live ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x0e, 0x00, 0xf7])
         break
       case 'standalone':
-        output.send([0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x10, 0x00, 0xf7])
+        if ('standalone' in lp.command)
+          output.send(lp.command?.standalone ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x10, 0x00, 0xf7])
         break
       case 'daw':
-        output.send([0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x10, 0x01, 0xf7])
+        if ('daw' in lp.command)
+          output.send(lp.command?.daw ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x10, 0x01, 0xf7])
         break
       default:
         break
@@ -302,8 +306,18 @@ const LaunchpadButtonMap = ({
       >
         <Stack direction={'row'} alignItems={'center'} spacing={2}>
           <Stack direction={'row'} alignItems={'center'} spacing={0}>
-            <Button onClick={() => setMode('programmer')}>Programmer</Button>
-            <Button onClick={() => setMode('live')}>Live</Button>
+            {'programmer' in lp.command && (
+              <Button onClick={() => setMode('programmer')}>Programmer</Button>
+            )}
+            {'live' in lp.command && (
+              <Button onClick={() => setMode('live')}>Live</Button>
+            )}
+            {'standalone' in lp.command && (
+              <Button onClick={() => setMode('standalone')}>Standalone</Button>
+            )}
+            {'daw' in lp.command && (
+              <Button onClick={() => setMode('daw')}>DAW</Button>
+            )}
           </Stack>
         </Stack>
         <Stack direction={'row'} alignItems={'center'} spacing={0}>
