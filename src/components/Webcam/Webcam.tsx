@@ -149,7 +149,8 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         width: 400
       }}
     >
-      <FormControl fullWidth className="step-2d-virtual-seven">
+      {/* Note: Removed old className from this FormControl */}
+      <FormControl fullWidth>
         <InputLabel id="wled">WLED Devices</InputLabel>
         {wledIps.length > 0 && (
           <Select
@@ -177,7 +178,8 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         value={ip}
         onChange={(e) => setIp(e.target.value)}
       />
-      <FormControl fullWidth className="step-2d-virtual-eight">
+      {/* Note: Removed old className from this FormControl */}
+      <FormControl fullWidth>
         <InputLabel id="camera">Camera</InputLabel>
         <Select
           label="Camera"
@@ -199,17 +201,23 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
             const img = await initialize(capture)
             setBaseImage(img)
           }}
-          className="step-2d-virtual-nine"
+          // --- CLASSNAME ADDED ---
+          className="step-2d-virtual-cam-initialize"
         >
           Initialize
         </Button>
-        <Button onClick={() => setIsAdjusting(!isAdjusting)} className="step-2d-virtual-ten">
+        <Button
+          onClick={() => setIsAdjusting(!isAdjusting)}
+          // --- CLASSNAME ADDED ---
+          className="step-2d-virtual-cam-adjust"
+        >
           {isAdjusting ? 'Stop Adjust' : 'Adjust'}
         </Button>
         <Button
           disabled={isCalibrating || !isAdjusting}
           onClick={() => setIsCalibrating(true)}
-          className="step-2d-virtual-eleven"
+          // --- CLASSNAME ADDED ---
+          className="step-2d-virtual-cam-calibrate"
         >
           {isCalibrating ? 'Calibrating' : 'Calibrate'}
         </Button>
@@ -223,7 +231,8 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
       />
       <br />
       {!isCalibrating && !isAdjusting && (
-        <Stack direction="column" className="step-2d-virtual-twelve">
+        // --- CLASSNAME ADDED ---
+        <Stack direction="column" className="step-2d-virtual-cam-crop">
           <Stack direction="row" spacing={2}>
             <Typography width={120}>Cut Top</Typography>
             <Slider
@@ -263,7 +272,8 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
         </Stack>
       )}
       {!isCalibrating && isAdjusting && (
-        <Stack direction={'column'} className="step-2d-virtual-thirteen">
+        // --- CLASSNAME ADDED ---
+        <Stack direction={'column'} className="step-2d-virtual-cam-settings">
           <Stack direction="row" spacing={2}>
             <Typography width={120}>Led</Typography>
             <Slider

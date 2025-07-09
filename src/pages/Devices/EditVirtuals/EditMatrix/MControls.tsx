@@ -455,6 +455,7 @@ const MControls = ({
       {features.matrix_cam && (
         <Button
           sx={{ alignItems: 'center', textTransform: 'none' }}
+          className="step-2d-virtual-cam-toggle"
           onClick={() => {
             getDevices()
             setCamMapper(!camMapper)
