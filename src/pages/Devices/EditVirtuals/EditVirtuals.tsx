@@ -114,6 +114,12 @@ export default function EditVirtuals({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtual?.id, open])
 
+  useEffect(() => {
+    if (matrix) {
+      setCalib(false)
+    }
+  }, [matrix])
+
   // useEffect(() => {
   //   const unloadCallback = (event: any) => {
   //     event.preventDefault()
@@ -193,24 +199,26 @@ export default function EditVirtuals({
               {virtual.config.name}{' '}
             </Typography>
             {(virtual.config.rows || 1) > 1 && <Tour2dVirtual />}
-            <Tooltip title="Preview Effect">
-              <IconButton
-                onClick={() => {
-                  calibrationMode(virtual?.id, calib ? 'off' : 'on')
-                  if (!calib && virtual.segments[activeSegment])
-                    highlightSegment(
-                      virtual.id,
-                      virtual.segments[activeSegment][0],
-                      virtual.segments[activeSegment][1],
-                      virtual.segments[activeSegment][2],
-                      virtual.segments[activeSegment][3]
-                    )
-                  setCalib(!calib)
-                }}
-              >
-                {calib ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            </Tooltip>
+            {!matrix && (
+              <Tooltip title="Preview Effect">
+                <IconButton
+                  onClick={() => {
+                    calibrationMode(virtual?.id, calib ? 'off' : 'on')
+                    if (!calib && virtual.segments[activeSegment])
+                      highlightSegment(
+                        virtual.id,
+                        virtual.segments[activeSegment][0],
+                        virtual.segments[activeSegment][1],
+                        virtual.segments[activeSegment][2],
+                        virtual.segments[activeSegment][3]
+                      )
+                    setCalib(!calib)
+                  }}
+                >
+                  {calib ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </Tooltip>
+            )}
           </Toolbar>
         </AppBar>
         {matrix ? (
