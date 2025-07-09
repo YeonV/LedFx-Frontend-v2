@@ -263,7 +263,7 @@ const MControls = ({
                   {showPixelGraph ? <Stop /> : <PlayArrow />}
                 </Button>
               </Tooltip>
-              <Tooltip title={'Load / Reset'}>
+              <Tooltip title={'Reset'}>
                 <Button
                   onClick={() => {
                     setM(reverseProcessArray(virtual.segments, colN))
@@ -319,7 +319,12 @@ const MControls = ({
           >
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab icon={<PanTool />} iconPosition="start" label="DND-Canvas" value="1" />
-              <Tab icon={<ControlCamera />} iconPosition="start" label="DND-Pixels" value="2" />
+              <Tab
+                icon={<ControlCamera />}
+                iconPosition="start"
+                label="DND-Pixels [ wip ]"
+                value="2"
+              />
             </TabList>
           </Box>
           <TabPanel value="1" sx={{ padding: 0 }}>
