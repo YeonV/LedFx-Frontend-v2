@@ -87,6 +87,7 @@ const MControls = ({
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
 
+  const addVirtual = useStore((state) => state.addVirtual)
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const features = useStore((state) => state.features)
@@ -103,17 +104,6 @@ const MControls = ({
     if (!dnd && tab !== '1') setTab('1')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dnd])
-
-  /**
-   * Update the pixel-graphs when the virtual changes
-   */
-  // const handleVisualisationUpdate = (e: any) => {
-  //   if (!showPixelGraph || !virtual.id) return
-  //   if (e.id === virtual.id) {
-  //     setPixels(e.pixels)
-  //   }
-  // }
-  // useSubscription('visualisation_update', handleVisualisationUpdate)
 
   useEffect(() => {
     if (virtual.id && showPixelGraph) {
@@ -172,6 +162,26 @@ const MControls = ({
                   onChange={(e, newRowNumber) =>
                     typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
                   }
+                  onChangeCommitted={(e, newRowNumber) => {
+                    if (typeof newRowNumber === 'number') {
+                      addVirtual({
+                        id: virtual.id,
+                        config: { rows: newRowNumber }
+                      })
+                        .then(() => {
+                          getVirtuals()
+                          getDevices()
+                        })
+                        .then(() => {
+                          Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+                            segments: processArray(m.flat(), virtual.id)
+                          }).then(() => {
+                            getVirtuals()
+                            getDevices()
+                          })
+                        })
+                    }
+                  }}
                 />
               </Box>
               {rowN}
@@ -188,6 +198,14 @@ const MControls = ({
                   onChange={(e, newColNumber) =>
                     typeof newColNumber === 'number' && setColNumber(newColNumber)
                   }
+                  onChangeCommitted={() => {
+                    Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+                      segments: processArray(m.flat(), virtual.id)
+                    }).then(() => {
+                      getVirtuals()
+                      getDevices()
+                    })
+                  }}
                 />
               </Box>
               {colN}

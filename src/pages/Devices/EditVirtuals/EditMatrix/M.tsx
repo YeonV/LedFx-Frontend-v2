@@ -216,10 +216,10 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   /**
    * Update the row and column numbers when the virtual changes
    */
-  useEffect(() => {
-    setRowNumber(virtual.config.rows || 8)
-    setColNumber(Math.ceil(virtual.pixel_count / (virtual.config.rows || 1)) || 8)
-  }, [virtual])
+  // useEffect(() => {
+  //   setRowNumber(virtual.config.rows || 8)
+  //   setColNumber(Math.ceil(virtual.pixel_count / (virtual.config.rows || 1)) || 8)
+  // }, [virtual])
 
   /**
    * Update the matrix when a new point is added from the video mapper
