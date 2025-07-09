@@ -17,6 +17,7 @@ import MContextMenu from './MContextMenu'
 import AssignPixelDialog from './AssignPixelDialog'
 import { Ledfx } from '../../../../api/ledfx'
 import PixelGraph from '../../../../components/PixelGraph/PixelGraph'
+import { reverseProcessArray } from './processMatrix'
 
 const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const classes = useStyles()
@@ -209,6 +210,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           })
         })
       }
+    } else {
+      setM(reverseProcessArray(virtual.segments, colN))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
