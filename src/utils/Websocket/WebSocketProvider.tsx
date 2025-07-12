@@ -55,8 +55,6 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
       console.error('Mixed Content Error Detected: Attempting to connect to ws:// from https://.')
       setErrorState('mixedContent')
-      // We stop here. We don't even try to connect.
-      return
     }
 
     const dispatchToSubscribers = (eventName: string, data: any) => {
