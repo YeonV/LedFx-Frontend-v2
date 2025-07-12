@@ -10,13 +10,20 @@ interface DiagPacket {
   type: string
   event_type: 'virtual_diag'
   virtual_id: string
-  fps: number
   r_avg: number
   r_min: number
   r_max: number
   cycle: number
   sleep: number
-  f_phy: number
+  fps: number
+  phy: {
+    fps: number
+    ver: string
+    n: number
+    name: string
+    rssi: number
+    qual: number
+  }
 }
 interface DiagMessage {
   data: DiagPacket

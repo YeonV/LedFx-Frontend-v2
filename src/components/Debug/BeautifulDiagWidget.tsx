@@ -17,9 +17,16 @@ interface DiagPacket {
   r_avg: number
   r_min: number
   r_max: number
-  f_phy: number
   cycle: number
   sleep: number
+  phy: {
+    fps: number
+    ver: string
+    n: number
+    name: string
+    rssi: number
+    qual: number
+  }
 }
 
 interface DiagMessage {
@@ -147,11 +154,11 @@ export const BeautifulDiagWidget = ({ latestMessage, history }: BeautifulDiagWid
 
         {/* Lower Info Bar */}
         <Grid size={{ xs: 12 }} container spacing={1} mt={1} color="rgba(255, 255, 255, 0.9)">
-          {data.f_phy > -1 && (
+          {data.phy && (
             <Grid size={{ xs: 3 }} display="flex" alignItems="center" justifyContent="flex-start">
               <BladeIcon name="wled" sx={{ mr: 1, fontSize: '0.9rem !important' }} />
               <Typography variant="caption" sx={{ fontFamily: 'monospace', opacity: 0.7 }}>
-                fps: {data.f_phy}
+                fps: {data.phy.fps}
               </Typography>
             </Grid>
           )}
