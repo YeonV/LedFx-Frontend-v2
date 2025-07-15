@@ -10,7 +10,9 @@ const MContextMenu = ({
   m,
   setDnd,
   clearPixel,
-  clearPixelGroup
+  clearPixelGroup,
+  pixelGroups,
+  setPixelGroups
 }: {
   anchorEl: any
   closeContextMenu: any
@@ -22,6 +24,8 @@ const MContextMenu = ({
   setDnd: any
   clearPixel: any
   clearPixelGroup: any
+  pixelGroups: any
+  setPixelGroups: any
 }) => {
   const contextMenuOpen = Boolean(anchorEl)
   return (
@@ -76,6 +80,7 @@ const MContextMenu = ({
       <MenuItem
         onClick={(e) => {
           clearPixelGroup(m[currentCell[1]][currentCell[0]].group || '0-0')
+          setPixelGroups(pixelGroups - 1)
           closeContextMenu(e)
         }}
       >

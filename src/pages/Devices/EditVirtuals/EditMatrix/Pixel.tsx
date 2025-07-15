@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { IMCell } from './M.utils'
 import useStore from '../../../../store/useStore'
 
@@ -7,7 +7,6 @@ const Pixel = ({
   currentColIndex,
   classes,
   currentRowIndex,
-  move,
   // decodedPixels,
   // colN,
   // pixels,
@@ -19,6 +18,7 @@ const Pixel = ({
   setSelectedPixel,
   openContextMenu,
   isDragging,
+  move,
   bgColor = 'transparent'
 }: {
   m: IMCell[][]
@@ -42,44 +42,66 @@ const Pixel = ({
   isDragging: boolean
   bgColor?: string
 }) => {
+  const theme = useTheme()
   const devices = useStore((state) => state.devices)
   // const mode = useStore((state) => state.config).transmission_mode
   if (error.length > 0) console.log(isDragging, error)
+
+  const isSelected = yzcolumn.group && yzcolumn.group === selectedGroup
+
+  const isGroupActive = move && isSelected
+
+  const getDynamicStyles = () => {
+    // Base style from your classes.pixel
+    const styles = {
+      ...classes.pixel,
+      transition: 'all 0.2s ease-in-out'
+    }
+
+    // --- Highlighting Logic ---
+    if (isGroupActive) {
+      styles.borderColor = theme.palette.primary.light // Change the existing border color
+      styles.boxShadow = `inset 0 0 8px 2px ${theme.palette.primary.main}` // Add the glow
+    } else if (isSelected) {
+      styles.borderColor = theme.palette.primary.main // Subtle highlight
+      styles.boxShadow = `inset 0 0 8px 2px ${theme.palette.primary.main}`
+    }
+
+    // --- Opacity Logic ---
+    if (isDragging || isSelected) {
+      styles.opacity = isSelected ? 1 : 0.2
+    } else if (selectedGroup) {
+      styles.opacity = isSelected ? 1 : 0.4
+    }
+
+    return styles
+  }
+  const getDragStyles = () => {
+    // Base style from your classes.pixel
+    const styles = {
+      transition: 'all 0.2s ease-in-out',
+      opacity: 1
+    }
+
+    // --- Opacity Logic ---
+    if (isDragging) {
+      styles.opacity = isSelected ? 1 : 0.2
+    } else if (selectedGroup) {
+      styles.opacity = isSelected ? 1 : 0.4
+    }
+
+    return styles
+  }
+
   return (
     <Box
       key={`col-${currentColIndex}`}
       sx={[
         {
-          // border: error.find(
-          //   (e: any) => e.row === currentRowIndex && e.col === currentColIndex
-          // )
-          //   ? '1px solid red'
-          //   : '1px solid #000',
+          transition: 'all 0.2s ease-in-out',
           backgroundColor: bgColor
-          //   mode === 'compressed' && decodedPixels
-          //     ? decodedPixels[currentRowIndex * colN + currentColIndex]
-          //       ? `rgb(${Object.values(decodedPixels[currentRowIndex * colN + currentColIndex])})`
-          //       : '#222'
-          //     : pixels && pixels[0] && pixels[0].length
-          //       ? `rgb(${pixels[0][currentRowIndex * colN + currentColIndex]},${
-          //           pixels[1][currentRowIndex * colN + currentColIndex]
-          //         },${pixels[2][currentRowIndex * colN + currentColIndex]})`
-          //       : '#222'
         },
-        isDragging
-          ? {
-              opacity: 0.3
-            }
-          : {
-              opacity:
-                move && yzcolumn?.group === selectedGroup
-                  ? 1
-                  : (move && yzcolumn?.group !== selectedGroup) || selectedGroup === ''
-                    ? 0.9
-                    : yzcolumn.deviceId !== ''
-                      ? 1
-                      : 0.3
-            }
+        getDragStyles()
       ]}
       onContextMenu={(e) => {
         e.preventDefault()
@@ -92,18 +114,15 @@ const Pixel = ({
           currentColIndex > -1 &&
           m[currentRowIndex][currentColIndex]?.deviceId !== ''
         ) {
-          // console.log(m[currentCell[1]][currentCell[0]].group)
-
           openContextMenu(e)
         }
-        // setOpen(true)
       }}
     >
       {yzcolumn.deviceId !== '' && (
-        <div className={classes.pixel}>
+        <Box className={classes.pixel} sx={getDynamicStyles()}>
           <Typography variant="caption">{devices[yzcolumn.deviceId].config.name}</Typography>
           <Typography variant="caption">{yzcolumn.pixel}</Typography>
-        </div>
+        </Box>
       )}
     </Box>
   )
