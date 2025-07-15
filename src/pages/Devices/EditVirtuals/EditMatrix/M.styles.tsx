@@ -4,12 +4,8 @@ const useStyles = makeStyles(() => ({
   gridCell: {
     cursor: 'copy',
     border: '1px solid #666',
-    // background: '#111',
     width: 100,
-    height: 100,
-    '&:hover': {
-      // background: '#999'
-    }
+    height: 100
   },
   gridCellContainer: {
     background: '#111',
