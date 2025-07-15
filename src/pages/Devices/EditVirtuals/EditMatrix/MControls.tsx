@@ -20,13 +20,19 @@ import {
   Box,
   Button,
   Collapse,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Slider,
   Stack,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
   Typography
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
@@ -34,7 +40,7 @@ import TabPanel from '@mui/lab/TabPanel'
 import { Ledfx } from '../../../../api/ledfx'
 import Popover from '../../../../components/Popover/Popover'
 import { transpose } from '../../../../utils/helpers'
-import { MCell } from './M.utils'
+import { IMCell, MCell } from './M.utils'
 import { processArray, reverseProcessArray } from './processMatrix'
 import moveSelectedGroupUp from './Actions/moveSelectedGroupUp'
 import moveSelectedGroupLeft from './Actions/moveSelectedGroupLeft'
@@ -42,6 +48,7 @@ import moveSelectedGroupRight from './Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from './Actions/moveSelectedGroupDown'
 import useStore from '../../../../store/useStore'
 import Webcam from '../../../../components/Webcam/Webcam'
+import BladeIcon from '../../../../components/Icons/BladeIcon/BladeIcon'
 
 const MControls = ({
   rowN,
@@ -58,6 +65,9 @@ const MControls = ({
   selectedGroup,
   setError,
   showPixelGraph,
+  pixelGroups,
+  setPixelGroups,
+  setSelectedGroup,
   setShowPixelGraph
 }: {
   rowN: number
@@ -74,8 +84,12 @@ const MControls = ({
   selectedGroup: string
   setError: any
   showPixelGraph?: boolean
+  pixelGroups?: any
+  setPixelGroups?: any
   setShowPixelGraph: (_show: boolean) => void
+  setSelectedGroup: any
 }) => {
+  console.log(pixelGroups)
   const [tab, setTab] = useState('1')
   const [camMapper, setCamMapper] = useState(false)
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -92,6 +106,16 @@ const MControls = ({
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const features = useStore((state) => state.features)
   const virtual2dLimit = useStore((state) => state.ui.virtual2dLimit)
+
+  const uniqueGroups = useMemo(() => {
+    const groups = new Set<string>()
+    m.flat().forEach((cell: IMCell) => {
+      if (cell.group && typeof cell.group === 'string' && cell.group !== '0-0') {
+        groups.add(cell.group)
+      }
+    })
+    return Array.from(groups)
+  }, [m])
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') setDnd(false)
@@ -134,6 +158,16 @@ const MControls = ({
     showComplex,
     showGaps
   ])
+
+  useEffect(() => {
+    if (selectedGroup && !uniqueGroups.includes(selectedGroup)) {
+      setSelectedGroup('')
+    }
+    if (!uniqueGroups || uniqueGroups.length === 0) {
+      setDnd(false)
+      setTab('1')
+    }
+  }, [selectedGroup, uniqueGroups, setSelectedGroup, setDnd])
 
   return (
     <Stack minWidth={400} direction="column" spacing={2} style={{ marginBottom: '1rem' }} p={2}>
@@ -279,6 +313,7 @@ const MControls = ({
                     variant="outlined"
                     onConfirm={() => {
                       setM(Array(rowN).fill(Array(colN).fill(MCell)))
+                      setPixelGroups(0)
                     }}
                   />
                 </Box>
@@ -317,17 +352,25 @@ const MControls = ({
             }}
             className="step-2d-virtual-six"
           >
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab icon={<PanTool />} iconPosition="start" label="DND-Canvas" value="1" />
+            <TabList onChange={handleChange} aria-label="DND Mode Tabs">
               <Tab
+                sx={{ flexBasis: '50%', minHeight: 0, height: 40 }}
+                icon={<PanTool />}
+                iconPosition="start"
+                label="DND-Canvas"
+                value="1"
+              />
+              <Tab
+                disabled={!uniqueGroups || uniqueGroups.length === 0}
+                sx={{ flexBasis: '50%', minHeight: 0, height: 40 }}
                 icon={<ControlCamera />}
                 iconPosition="start"
-                label="DND-Pixels [ wip ]"
+                label="DND-Pixels"
                 value="2"
               />
             </TabList>
           </Box>
-          <TabPanel value="1" sx={{ padding: 0 }}>
+          <TabPanel value="1" sx={{ padding: 0, pt: 2 }}>
             <Collapse in={infoAlerts.camera}>
               <Alert
                 severity="info"
@@ -352,28 +395,66 @@ const MControls = ({
               </Alert>
             </Collapse>
           </TabPanel>
-          <TabPanel value="2">
-            <Collapse in={infoAlerts.pixelMode} sx={{ marginTop: '0 !important' }}>
-              <Alert
-                severity="info"
+
+          {uniqueGroups.length > 0 && (
+            <TabPanel value="2" sx={{ padding: 0, pt: 2 }}>
+              <Collapse in={infoAlerts.pixelMode}>
+                <Alert
+                  severity="info"
+                  sx={{ width: '100%' }}
+                  onClose={() => setInfoAlerts('pixelMode', false)}
+                >
+                  <strong>DND-{move ? 'Group' : 'Pixel'} Mode</strong>
+                  <ul style={{ padding: '0 1rem' }}>
+                    <li>move {move ? 'groups' : 'pixels individually'} with your mouse</li>
+                  </ul>
+                </Alert>
+              </Collapse>
+              <ToggleButtonGroup
                 sx={{ width: '100%' }}
-                onClose={() => setInfoAlerts('pixelMode', false)}
+                color="primary"
+                value={move ? 'group' : 'pixel'}
+                exclusive
+                onChange={() => setMove(!move)}
+                aria-label="Move Mode"
               >
-                <strong>DND-Pixels Mode</strong>
-                <ul style={{ padding: '0 1rem' }}>
-                  <li>move pixels individually with your mouse</li>
-                </ul>
-              </Alert>
-            </Collapse>
-          </TabPanel>
+                <ToggleButton value="pixel" sx={{ flex: 1 }}>
+                  <BladeIcon name="mdi:led-outline" sx={{ mr: 1 }} />
+                  Pixel
+                </ToggleButton>
+                <ToggleButton value="group" sx={{ flex: 1 }}>
+                  <BladeIcon name="mdi:led-strip-variant" sx={{ mr: 1 }} />
+                  Group
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </TabPanel>
+          )}
         </TabContext>
-        {move ? (
+        {uniqueGroups.length > 0 && (
           <Box>
-            <Box className="step-2d-virtual-five">
-              <Tab icon={<ControlCamera />} iconPosition="start" label="Move Group" value />
-            </Box>
+            <FormControl fullWidth sx={{ mt: 2, mb: 1 }}>
+              <InputLabel id="group-select-label">Move Group</InputLabel>
+              <Select
+                variant="outlined"
+                labelId="group-select-label"
+                id="group-select"
+                value={selectedGroup || ''}
+                label="Move Group"
+                onChange={(e) => setSelectedGroup(e.target.value as string)}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {uniqueGroups.map((group) => (
+                  <MenuItem key={group} value={group}>
+                    {group} {/* You could format this later if you want, e.g., "Group 1" */}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Stack direction="column" spacing={0} alignItems="center" justifyContent="center">
               <IconButton
+                disabled={!selectedGroup}
                 onClick={() =>
                   moveSelectedGroupUp({
                     m,
@@ -389,6 +470,7 @@ const MControls = ({
               </IconButton>
               <Stack direction="row" spacing={0} justifyContent="center">
                 <IconButton
+                  disabled={!selectedGroup}
                   onClick={() =>
                     moveSelectedGroupLeft({
                       m,
@@ -401,10 +483,11 @@ const MControls = ({
                 >
                   <ArrowBack />
                 </IconButton>
-                <IconButton onClick={() => setMove(false)}>
+                <IconButton disabled={!selectedGroup} onClick={() => setSelectedGroup('')}>
                   <Cancel />
                 </IconButton>
                 <IconButton
+                  disabled={!selectedGroup}
                   onClick={() =>
                     moveSelectedGroupRight({
                       m,
@@ -419,6 +502,7 @@ const MControls = ({
                 </IconButton>
               </Stack>
               <IconButton
+                disabled={!selectedGroup}
                 onClick={() =>
                   moveSelectedGroupDown({
                     m,
@@ -434,22 +518,6 @@ const MControls = ({
               </IconButton>
             </Stack>
           </Box>
-        ) : (
-          <Collapse in={infoAlerts.matrixGroups}>
-            <Alert
-              severity="info"
-              sx={{ width: 400, marginTop: 2 }}
-              onClose={() => {
-                setInfoAlerts('matrixGroups', false)
-              }}
-            >
-              <strong>
-                Right-Click an element to move a group.
-                <br />
-                Groups can only be moved with the UI buttons
-              </strong>
-            </Alert>
-          </Collapse>
         )}
       </Collapse>
       {features.matrix_cam && (
