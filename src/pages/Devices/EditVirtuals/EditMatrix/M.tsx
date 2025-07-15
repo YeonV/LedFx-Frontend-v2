@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, FC } from 'react'
 import { Box, Stack, useTheme } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
 import { MCell, clone, getMaxRange } from './M.utils'
 import type { IMCell, IDir } from './M.utils'
@@ -54,6 +54,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
   const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
+  const [activeDragGroup, setActiveDragGroup] = useState<string | null>(null)
 
   const handleContextMenu = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -142,19 +143,90 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     setM(updatedM)
   }
 
+  const executeGroupMove = (groupId: string, rowOffset: number, colOffset: number) => {
+    // This function was already correct. Its inputs were just wrong.
+    // Now that the inputs will be correct, it will work perfectly.
+    const groupPixels = []
+    for (let i = 0; i < rowN; i++) {
+      for (let j = 0; j < colN; j++) {
+        if (m[i][j].group === groupId) {
+          groupPixels.push({ ...m[i][j], oldRow: i, oldCol: j })
+        }
+      }
+    }
+    if (groupPixels.length === 0) return
+
+    // Phase 1: Pre-flight check
+    for (const pixel of groupPixels) {
+      const targetRow = pixel.oldRow + rowOffset
+      const targetCol = pixel.oldCol + colOffset
+      if (targetRow < 0 || targetRow >= rowN || targetCol < 0 || targetCol >= colN) {
+        console.error('Move aborted: group would go out of bounds.')
+        return
+      }
+      const targetCell = m[targetRow][targetCol]
+      if (targetCell.deviceId !== '' && targetCell.group !== groupId) {
+        console.error('Move aborted: collision with external pixel(s).')
+        return
+      }
+    }
+
+    // Phase 2: Execute Move
+    const updatedM = clone(m)
+    for (const pixel of groupPixels) {
+      updatedM[pixel.oldRow][pixel.oldCol] = { deviceId: '', pixel: 0, group: '' }
+    }
+    for (const pixel of groupPixels) {
+      const targetRow = pixel.oldRow + rowOffset
+      const targetCol = pixel.oldCol + colOffset
+      const { oldRow, oldCol, ...pixelData } = pixel
+      updatedM[targetRow][targetCol] = pixelData as IMCell
+    }
+    setM(updatedM)
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
-    // console.log(parent, event)
-    if (event.over && event.over.id) {
+    const { active, over } = event
+    setIsDragging(false) // Do this once at the top
+    setActiveDragGroup(null) // And this
+
+    if (!over || !over.id) {
+      return
+    }
+
+    // --- UNIFIED PARSING ---
+    // Since ALL IDs are now "col-row", this is the single source of truth for parsing.
+    const [startCol, startRow] = (active.id as string).split('-').map(Number)
+    const [endCol, endRow] = (over.id as string).split('-').map(Number)
+
+    // Check for invalid parsing
+    if (isNaN(startCol) || isNaN(startRow) || isNaN(endCol) || isNaN(endRow)) {
+      console.error('DND parsing failed', { active, over })
+      return
+    }
+
+    // --- UNIFIED LOGIC ---
+    if (move) {
+      const groupId = m[startRow][startCol]?.group
+      if (groupId) {
+        const rowOffset = endRow - startRow
+        const colOffset = endCol - startCol
+        executeGroupMove(groupId as string, rowOffset, colOffset)
+      }
+    } else {
       const updatedM = clone(m)
-      const [xOver, yOver] = (event.over.id as string).split('-').map(Number)
-      if (updatedM[yOver][xOver].deviceId === '') {
-        const [xActive, yActive] = (event.active.id as string).split('-').map(Number)
-        updatedM[yOver][xOver] = updatedM[yActive][xActive]
-        updatedM[yActive][xActive] = { deviceId: '', pixel: 0, group: 0 }
+      if (updatedM[endRow][endCol].deviceId === '') {
+        updatedM[endRow][endCol] = updatedM[startRow][startCol]
+        updatedM[startRow][startCol] = { deviceId: '', pixel: 0, group: 0 }
         setM(updatedM)
       }
     }
-    setIsDragging(false)
+  }
+
+  // And the matching onDragStart
+  const handleDragStart = (event: DragStartEvent) => {
+    setIsDragging(true)
+    // No need to set activeDragGroup anymore, we can get it from the start coordinates in handleDragEnd
   }
 
   /**
@@ -295,14 +367,11 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
               <div style={{ display: 'flex', flexDirection: 'column', zIndex: 1 }}>
                 <DndContext
                   modifiers={[restrictToFirstScrollableAncestor]}
+                  onDragStart={handleDragStart}
                   onDragEnd={(e) => handleDragEnd(e)}
                   onDragOver={(e) =>
                     setHoveringCell((e.over?.id as any)?.split('-').map(Number) || [-1, -1])
                   }
-                  onDragStart={() => {
-                    // console.log('zy', e.active?.id, hoveringCell, selectedGroup)
-                    setIsDragging(true)
-                  }}
                 >
                   {m.map((yzrow, currentRowIndex) => (
                     <div key={`row-${currentRowIndex}`} style={{ display: 'flex' }}>
@@ -347,7 +416,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                             >
                               {dnd ? (
                                 m[currentRowIndex][currentColIndex].deviceId !== '' ? (
-                                  <Draggable m={m} id={`${currentRowIndex}-${currentColIndex}`}>
+                                  <Draggable m={m} id={`${currentColIndex}-${currentRowIndex}`}>
                                     <Pixel
                                       m={m}
                                       currentColIndex={currentColIndex}
