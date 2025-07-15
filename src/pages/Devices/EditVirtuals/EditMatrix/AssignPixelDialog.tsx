@@ -105,7 +105,8 @@ const AssignPixelDialog = ({
       <DialogActions>
         <Button onClick={() => clearPixel()}>Clear</Button>
         <Button
-          onClick={() =>
+          onClick={() => {
+            const newGroupId = `group-${pixelGroups}`
             assignPixels({
               m,
               rowN,
@@ -117,9 +118,10 @@ const AssignPixelDialog = ({
               setM,
               closeClear,
               pixelGroups,
-              setPixelGroups
+              setPixelGroups,
+              newGroupId
             })
-          }
+          }}
         >
           Save
         </Button>

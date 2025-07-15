@@ -46,7 +46,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [direction, setDirection] = useState<IDir>('right')
   const [m, setM] = useState<IMCell[][]>(Array(rowN).fill(Array(colN).fill(MCell)))
   const [pixelGroups, setPixelGroups] = useState<number>(0)
-  const [selectedGroup, setSelectedGroup] = useState<string>('0-0')
+  const [selectedGroup, setSelectedGroup] = useState<string>('')
   // const [pixels, setPixels] = useState<any>([])
   const [move, setMove] = useState<boolean>(false)
   const [dnd, setDnd] = useState<boolean>(false)
@@ -54,7 +54,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const [isDragging, setIsDragging] = useState(false)
   const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
   const [showPixelGraph, setShowPixelGraph] = useState<boolean>(false)
-  const [activeDragGroup, setActiveDragGroup] = useState<string | null>(null)
 
   const handleContextMenu = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -179,7 +178,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
     for (const pixel of groupPixels) {
       const targetRow = pixel.oldRow + rowOffset
       const targetCol = pixel.oldCol + colOffset
-      const { oldRow, oldCol, ...pixelData } = pixel
+      const { ...pixelData } = pixel
       updatedM[targetRow][targetCol] = pixelData as IMCell
     }
     setM(updatedM)
@@ -188,7 +187,6 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     setIsDragging(false) // Do this once at the top
-    setActiveDragGroup(null) // And this
 
     if (!over || !over.id) {
       return
@@ -226,7 +224,13 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   // And the matching onDragStart
   const handleDragStart = (event: DragStartEvent) => {
     setIsDragging(true)
-    // No need to set activeDragGroup anymore, we can get it from the start coordinates in handleDragEnd
+    if (move) {
+      const [col, row] = (event.active.id as string).split('-').map(Number)
+      const groupId = m[row][col]?.group
+      if (groupId) {
+        setSelectedGroup(groupId)
+      }
+    }
   }
 
   /**
@@ -345,6 +349,9 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           setError={setError}
           setShowPixelGraph={setShowPixelGraph}
           showPixelGraph={showPixelGraph}
+          pixelGroups={pixelGroups}
+          setPixelGroups={setPixelGroups}
+          setSelectedGroup={setSelectedGroup}
         />
       </Stack>
       <Box sx={{ flexGrow: 1, overflow: 'hidden', height: '100%' }}>
@@ -403,6 +410,12 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                             onContextMenu={(e) =>
                               handleContextMenu(e, currentColIndex, currentRowIndex, yzcolumn)
                             }
+                            onClick={() => {
+                              console.log(`Clicked cell: ${currentColIndex}-${currentRowIndex}`)
+                              if (move && m[currentRowIndex][currentColIndex].deviceId === '') {
+                                setSelectedGroup('')
+                              }
+                            }}
                           >
                             <Box
                               key={`col-${currentColIndex}`}
@@ -502,6 +515,8 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                 setMove={setMove}
                 clearPixel={clearPixel}
                 clearPixelGroup={clearPixelGroup}
+                pixelGroups={pixelGroups}
+                setPixelGroups={setPixelGroups}
               />
               <AssignPixelDialog
                 open={open}

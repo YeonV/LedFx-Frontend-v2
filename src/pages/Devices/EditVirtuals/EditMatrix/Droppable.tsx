@@ -8,7 +8,8 @@ function Droppable({
   cell,
   bg,
   opacity = 1,
-  onContextMenu
+  onContextMenu,
+  onClick
 }: {
   id: string
   children: React.ReactNode
@@ -16,6 +17,7 @@ function Droppable({
   bg?: string
   opacity?: number
   onContextMenu?: React.MouseEventHandler<HTMLDivElement> | undefined
+  onClick?: React.MouseEventHandler<HTMLDivElement> | undefined
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id
@@ -31,7 +33,13 @@ function Droppable({
   const classes = useStyles()
 
   return (
-    <div ref={setNodeRef} style={style} className={classes.gridCell} onContextMenu={onContextMenu}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={classes.gridCell}
+      onContextMenu={onContextMenu}
+      onClick={onClick}
+    >
       {children}
     </div>
   )

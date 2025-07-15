@@ -12,7 +12,8 @@ const assignPixels = ({
   setM,
   closeClear,
   pixelGroups,
-  setPixelGroups
+  setPixelGroups,
+  newGroupId
 }: {
   m: IMCell[][]
   rowN: number
@@ -25,6 +26,7 @@ const assignPixels = ({
   closeClear: any
   pixelGroups: number
   setPixelGroups: any
+  newGroupId?: string
 }) => {
   let updatedM: IMCell[][] = clone(m)
   const [col, row] = currentCell
@@ -32,14 +34,14 @@ const assignPixels = ({
     updatedM[row][col] = {
       deviceId: currentDevice,
       pixel: selectedPixel,
-      group: `${row}-${col}`
+      group: newGroupId
     }
   } else {
     for (let index = 0; index <= Math.abs(selectedPixel[1] - selectedPixel[0]); index += 1) {
       const newM = {
         deviceId: currentDevice,
         pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
-        group: `${row}-${col}`
+        group: newGroupId
       }
       if (direction.includes('diagonal-top-right')) {
         for (
@@ -52,7 +54,7 @@ const assignPixels = ({
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
-            group: `${row}-${col}`
+            group: newGroupId
           }
           updatedM[row - index][col + index] = newM
         }
@@ -67,7 +69,7 @@ const assignPixels = ({
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
-            group: `${row}-${col}`
+            group: newGroupId
           }
           updatedM[row + index][col + index] = newM
         }
@@ -82,7 +84,7 @@ const assignPixels = ({
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
-            group: `${row}-${col}`
+            group: newGroupId
           }
           updatedM[row + index][col - index] = newM
         }
@@ -97,7 +99,7 @@ const assignPixels = ({
           const newM = {
             deviceId: currentDevice,
             pixel: Math.min(selectedPixel[0], selectedPixel[1]) + index,
-            group: `${row}-${col}`
+            group: newGroupId
           }
           updatedM[row - index][col - index] = newM
         }
