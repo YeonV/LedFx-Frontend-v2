@@ -117,7 +117,8 @@ const PixelGraphCanvas = ({
         overflow: 'hidden',
         margin: db || fill ? 0 : '0.5rem 0 0 0',
         imageRendering: smoothing ? 'unset' : 'pixelated',
-        objectFit: stretch && fullScreen ? 'contain' : 'fill'
+        objectFit: stretch && fullScreen ? 'contain' : 'fill',
+        position: fill ? 'absolute' : 'unset'
       }}
       onDoubleClick={onDoubleClick}
     />
