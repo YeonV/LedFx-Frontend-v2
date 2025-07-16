@@ -10,7 +10,7 @@ interface MContextMenuProps {
 }
 
 const MContextMenu = ({ anchorEl, closeContextMenu, currentCell, onEdit }: MContextMenuProps) => {
-  const { m, setDnd, setMove, clearPixel, clearPixelGroup, setSelectedGroup } =
+  const { m, setDnd, setDndMode, clearPixel, clearPixelGroup, setSelectedGroup } =
     useMatrixEditorContext()
 
   const contextMenuOpen = Boolean(anchorEl)
@@ -30,7 +30,7 @@ const MContextMenu = ({ anchorEl, closeContextMenu, currentCell, onEdit }: MCont
   const handleMoveGroup = () => {
     if (cellData?.group) {
       setSelectedGroup(cellData.group as string)
-      setMove(true)
+      setDndMode('group')
     }
     closeContextMenu()
   }

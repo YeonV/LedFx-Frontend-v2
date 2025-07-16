@@ -10,7 +10,7 @@ export interface MatrixEditorAPI {
   colN: number
   selectedGroup: string
   dnd: boolean
-  move: boolean
+  dndMode: 'pixel' | 'group'
   isDragging: boolean
   hoveringCell: [number, number]
   uniqueGroups: string[] // This is derived state, calculated inside the hook
@@ -27,7 +27,7 @@ export interface MatrixEditorAPI {
   setColNumber: (n: number) => void
   setSelectedGroup: (group: string) => void
   setDnd: (dnd: boolean) => void
-  setMove: (move: boolean) => void
+  setDndMode: (mode: 'pixel' | 'group') => void
   setShowPixelGraph: (show: boolean) => void
 
   // Matrix Manipulation Actions

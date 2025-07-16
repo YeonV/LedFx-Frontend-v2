@@ -6,6 +6,7 @@ import {
   Select,
   Slider,
   Stack,
+  SxProps,
   TextField,
   Typography
 } from '@mui/material'
@@ -20,7 +21,7 @@ import oneLed from './utils/oneLed'
 import setWledBrightness from './utils/setWledBrightness'
 import { getLedCount } from './utils/getLedCount'
 
-const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
+const Webcam = ({ colN, rowN, sx }: { colN: number; rowN: number; sx?: SxProps }) => {
   const webcamRef = useRef<any>(null)
   const pointsRef = useRef<any>(null)
   const setPoints = useStore((state) => state.setPoints)
@@ -146,7 +147,9 @@ const Webcam = ({ colN, rowN }: { colN: number; rowN: number }) => {
       direction="column"
       spacing={2}
       sx={{
-        width: 400
+        width: 400,
+        marginLeft: 4,
+        ...sx
       }}
     >
       {/* Note: Removed old className from this FormControl */}
