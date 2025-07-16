@@ -14,10 +14,10 @@ const Pixel = ({ classes, yzcolumn }: PixelProps) => {
   const devices = useStore((state) => state.devices)
 
   // Get all the state it needs for styling and logic directly from the context.
-  const { selectedGroup, isDragging, move } = useMatrixEditorContext()
+  const { selectedGroup, isDragging, dndMode } = useMatrixEditorContext()
 
   const isSelected = yzcolumn.group && yzcolumn.group === selectedGroup
-  const isGroupActive = move && isSelected
+  const isGroupActive = dndMode === 'group' && isSelected
 
   const getDynamicStyles = () => {
     // Start with the base styles from the classes prop.
@@ -39,14 +39,14 @@ const Pixel = ({ classes, yzcolumn }: PixelProps) => {
     // --- Opacity Logic ---
     if (isDragging) {
       // If any drag is happening...
-      if (move) {
+      if (dndMode === 'group') {
         // In group move mode, make the selected group stand out.
         styles.opacity = isSelected ? 1 : 0.2
       } else {
         // In single pixel move mode, just fade everything slightly.
         styles.opacity = 0.6
       }
-    } else if (move && selectedGroup) {
+    } else if (dndMode === 'group' && selectedGroup) {
       // If not dragging, but in move mode with a selection, highlight the active group.
       styles.opacity = isSelected ? 1 : 0.4
     }

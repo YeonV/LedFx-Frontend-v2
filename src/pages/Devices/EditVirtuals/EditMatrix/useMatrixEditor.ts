@@ -20,7 +20,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
       : Array(rowN).fill(Array(colN).fill(MCell))
   )
   const [selectedGroup, setSelectedGroup] = useState<string>('')
-  const [move, setMove] = useState<boolean>(false)
+  const [dndMode, setDndMode] = useState<'pixel' | 'group'>('pixel')
   const [dnd, setDnd] = useState<boolean>(false)
   const [isDragging, setIsDragging] = useState(false)
   const [hoveringCell, setHoveringCell] = useState<[number, number]>([-1, -1])
@@ -92,7 +92,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
       setIsDragging(true)
-      if (move) {
+      if (dndMode === 'group') {
         const [col, row] = (event.active.id as string).split('-').map(Number)
         if (!isNaN(row) && !isNaN(col)) {
           const groupId = m[row][col]?.group
@@ -102,7 +102,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
         }
       }
     },
-    [move, m]
+    [dndMode, m]
   )
 
   const handleDragEnd = useCallback(
@@ -113,7 +113,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
       const [startCol, startRow] = (active.id as string).split('-').map(Number)
       const [endCol, endRow] = (over.id as string).split('-').map(Number)
       if (isNaN(startCol) || isNaN(startRow) || isNaN(endCol) || isNaN(endRow)) return
-      if (move) {
+      if (dndMode === 'group') {
         const groupId = m[startRow][startCol]?.group
         if (groupId) {
           const rowOffset = endRow - startRow
@@ -131,7 +131,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
         )
       }
     },
-    [move, m, executeGroupMove]
+    [dndMode, m, executeGroupMove]
   )
 
   const handleDragOver = useCallback((event: DragOverEvent) => {
@@ -268,12 +268,14 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
     colN,
     selectedGroup,
     dnd,
-    move,
     isDragging,
     hoveringCell,
     uniqueGroups,
     showPixelGraph,
     pixelGroups,
+    error,
+    dndMode,
+    setDndMode,
     clearPixel,
     clearPixelGroup,
     handleDragStart,
@@ -283,7 +285,6 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
     setColNumber: handleSetColNumber,
     setSelectedGroup,
     setDnd,
-    setMove,
     setShowPixelGraph,
     transposeMatrix,
     swapVertical,
@@ -293,7 +294,6 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
     saveMatrix,
     setM,
     setPixelGroups,
-    error,
     setError
   }
 }

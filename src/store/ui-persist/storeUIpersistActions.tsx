@@ -11,7 +11,8 @@ const storeUIPersistActions = (set: any) => ({
       | 'matrix'
       | 'camera'
       | 'matrixGroups'
-      | 'pixelMode',
+      | 'pixelMode'
+      | 'groupMode',
     val: boolean
   ): void =>
     set(

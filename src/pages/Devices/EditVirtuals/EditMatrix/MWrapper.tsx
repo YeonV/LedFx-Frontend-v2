@@ -5,6 +5,7 @@ const MWrapper = ({ children, move }: any) => {
     <Box
       sx={[
         {
+          padding: 0,
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'flex-start',

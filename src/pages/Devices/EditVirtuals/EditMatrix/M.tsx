@@ -96,19 +96,19 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           direction="column"
           spacing={2}
           sx={{
-            overflowY: 'scroll',
             height: '100%',
             overflowX: 'hidden',
-            minWidth: 440,
+            flex: '0 0 480px',
             paddingTop: '1rem',
-            bgcolor: 'action.disabledBackground'
+            bgcolor: 'action.disabledBackground',
+            p: 0
           }}
         >
           <MControls virtual={virtual} />
         </Stack>
         <Box sx={{ flexGrow: 1, overflow: 'hidden', height: '100%' }}>
           <TransformWrapper
-            disabled={matrixEditorApi.dnd || matrixEditorApi.move}
+            disabled={matrixEditorApi.dnd || matrixEditorApi.dndMode === 'group'}
             centerZoomedOut
             minScale={0.1}
           >
@@ -138,7 +138,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
                               handleContextMenu(e, currentColIndex, currentRowIndex)
                             }
                             onClick={() => {
-                              if (matrixEditorApi.move && yzcolumn.deviceId === '') {
+                              if (matrixEditorApi.dndMode === 'group' && yzcolumn.deviceId === '') {
                                 matrixEditorApi.setSelectedGroup('')
                               }
                             }}

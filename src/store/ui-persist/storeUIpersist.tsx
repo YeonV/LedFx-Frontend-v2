@@ -16,7 +16,8 @@ const storeUIPersist = () => ({
     matrix: true,
     camera: true,
     matrixGroups: true,
-    pixelMode: true
+    pixelMode: true,
+    groupMode: true
   },
   expander: {
     scenesRecent: false,
