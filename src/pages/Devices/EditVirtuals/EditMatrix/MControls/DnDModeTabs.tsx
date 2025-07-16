@@ -8,27 +8,12 @@ import TabPanel from '@mui/lab/TabPanel'
 import { IMCell } from '../M.utils'
 import useStore from '../../../../../store/useStore'
 import BladeIcon from '../../../../../components/Icons/BladeIcon/BladeIcon'
+import { useMatrixEditorContext } from '../MatrixEditorContext'
 
-const DnDModeTabs = ({
-  m,
-  move,
-  dnd,
-  setMove,
-  setDnd,
-  selectedGroup,
-  setSelectedGroup
-}: {
-  m: any
-  setM: any
-  move: boolean
-  dnd: boolean
-  setMove: any
-  setDnd: any
-  selectedGroup: string
-  setSelectedGroup: any
-}) => {
+const DnDModeTabs = () => {
+  const { m, move, dnd, setMove, setDnd, selectedGroup, setSelectedGroup } =
+    useMatrixEditorContext()
   const [tab, setTab] = useState('1')
-
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
 

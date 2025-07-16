@@ -6,7 +6,7 @@ function Droppable({
   id,
   children,
   cell,
-  bg,
+  bg = 'transparent',
   opacity = 1,
   onContextMenu,
   onClick

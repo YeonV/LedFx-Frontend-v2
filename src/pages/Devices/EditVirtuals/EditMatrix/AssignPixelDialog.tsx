@@ -4,59 +4,48 @@ import BladeFrame from '../../../../components/SchemaForm/components/BladeFrame'
 import MSwitch from './MSwitch'
 import MFillSelector from './MFillSelector'
 import MSlider from './MSlider'
-import assignPixels from './Actions/assignPixels'
-import { IDir } from './M.utils'
 import useStore from '../../../../store/useStore'
+import { useMatrixEditorContext } from './MatrixEditorContext'
+import { useAssignPixelDialog } from './useAssignPixelDialog'
 
-const AssignPixelDialog = ({
-  open,
-  closeClear,
-  currentCell,
-  m,
-  currentDevice,
-  setCurrentDevice,
-  deviceRef,
-  group,
-  setGroup,
-  direction,
-  handleDirectionChange,
-  selectedPixel,
-  handleSliderChange,
-  rowN,
-  colN,
-  setM,
-  pixelGroups,
-  setPixelGroups,
-  clearPixel
-}: {
-  open: boolean
-  closeClear: any
-  currentCell: [number, number]
-  m: any
-  currentDevice: string
-  setCurrentDevice: any
-  deviceRef: any
-  group: boolean
-  setGroup: any
-  direction: IDir
-  handleDirectionChange: any
-  selectedPixel: number | number[]
-  handleSliderChange: any
-  rowN: number
-  colN: number
-  setM: any
-  pixelGroups: any
-  setPixelGroups: any
-  clearPixel: any
-}) => {
+// Define the type for the props, which is the return type of our hook
+type AssignPixelDialogApi = ReturnType<typeof useAssignPixelDialog>
+
+interface AssignPixelDialogProps {
+  dialogApi: AssignPixelDialogApi
+}
+
+const AssignPixelDialog = ({ dialogApi }: AssignPixelDialogProps) => {
+  // Destructure the API object passed in via props
+  const {
+    isOpen,
+    closeDialog,
+    currentCell,
+    currentDevice,
+    setCurrentDevice,
+    deviceRef,
+    isGroupMode,
+    setIsGroupMode,
+    direction,
+    handleDirectionChange,
+    selectedPixel,
+    handleSliderChange,
+    save,
+    handleClear
+  } = dialogApi
+
+  // These are for populating the device list, they can stay here.
   const devices = useStore((state) => state.devices)
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
+  const { m } = useMatrixEditorContext() // Get matrix for the title
+
+  if (!isOpen) return null // Render nothing if the dialog is not open
 
   return (
     <Dialog
-      onClose={() => closeClear()}
-      open={open}
+      onClose={closeDialog}
+      open={isOpen}
       PaperProps={{ sx: { width: '100%', maxWidth: 320 } }}
     >
       <MDialogTitle currentCell={currentCell} m={m} />
@@ -81,8 +70,8 @@ const AssignPixelDialog = ({
                       )
                 )
                 .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
-                .map((d: any, i: number) => (
-                  <MenuItem value={devices[d].id} key={i}>
+                .map((d: any) => (
+                  <MenuItem value={devices[d].id} key={devices[d].id}>
                     {devices[d].config.name}
                   </MenuItem>
                 ))}
@@ -90,10 +79,12 @@ const AssignPixelDialog = ({
         </BladeFrame>
         {currentDevice && (
           <>
-            <MSwitch group={group} setGroup={setGroup} />
-            {group && <MFillSelector direction={direction} onChange={handleDirectionChange} />}
+            <MSwitch group={isGroupMode} setGroup={setIsGroupMode} />
+            {isGroupMode && (
+              <MFillSelector direction={direction} onChange={handleDirectionChange} />
+            )}
             <MSlider
-              group={group}
+              group={isGroupMode}
               devices={devices}
               currentDevice={currentDevice}
               selectedPixel={selectedPixel}
@@ -103,28 +94,8 @@ const AssignPixelDialog = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => clearPixel()}>Clear</Button>
-        <Button
-          onClick={() => {
-            const newGroupId = `group-${pixelGroups}`
-            assignPixels({
-              m,
-              rowN,
-              colN,
-              currentCell,
-              currentDevice,
-              selectedPixel,
-              direction,
-              setM,
-              closeClear,
-              pixelGroups,
-              setPixelGroups,
-              newGroupId
-            })
-          }}
-        >
-          Save
-        </Button>
+        <Button onClick={handleClear}>Clear</Button>
+        <Button onClick={save}>Save</Button>
       </DialogActions>
     </Dialog>
   )

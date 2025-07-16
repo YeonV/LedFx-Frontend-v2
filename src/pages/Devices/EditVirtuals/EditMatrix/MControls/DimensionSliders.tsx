@@ -2,27 +2,14 @@ import { Box, Slider, Stack, Typography } from '@mui/material'
 import { Ledfx } from '../../../../../api/ledfx'
 import { processArray } from '../processMatrix'
 import useStore from '../../../../../store/useStore'
+import { useMatrixEditorContext } from '../MatrixEditorContext'
 
-const DimensionSliders = ({
-  rowN,
-  colN,
-  setRowNumber,
-  setColNumber,
-  virtual,
-  m
-}: {
-  rowN: number
-  colN: number
-  setRowNumber: any
-  setColNumber: any
-  virtual: any
-  m: any
-}) => {
+const DimensionSliders = ({ virtual }: { virtual: any }) => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getDevices = useStore((state) => state.getDevices)
-
   const addVirtual = useStore((state) => state.addVirtual)
   const virtual2dLimit = useStore((state) => state.ui.virtual2dLimit)
+  const { rowN, colN, setRowNumber, setColNumber, m } = useMatrixEditorContext()
 
   return (
     <Stack

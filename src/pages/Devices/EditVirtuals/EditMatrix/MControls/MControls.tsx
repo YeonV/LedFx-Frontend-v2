@@ -1,53 +1,16 @@
 import { EmergencyRecording } from '@mui/icons-material'
 import { Button, Collapse, Stack } from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { IMCell } from '../M.utils'
 import useStore from '../../../../../store/useStore'
 import Webcam from '../../../../../components/Webcam/Webcam'
 import GroupControls from './GroupControls'
 import LayoutTools from './LayoutTools'
 import DimensionSliders from './DimensionSliders'
 import DnDModeTabs from './DnDModeTabs'
+import { useMatrixEditorContext } from '../MatrixEditorContext'
 
-const MControls = ({
-  rowN,
-  colN,
-  setRowNumber,
-  setColNumber,
-  virtual,
-  m,
-  setM,
-  move,
-  dnd,
-  setMove,
-  setDnd,
-  selectedGroup,
-  setError,
-  showPixelGraph,
-  setPixelGroups,
-  setSelectedGroup,
-  setShowPixelGraph
-}: {
-  rowN: number
-  colN: number
-  setRowNumber: any
-  setColNumber: any
-  virtual: any
-  m: any
-  setM: any
-  move: boolean
-  dnd: boolean
-  setMove: any
-  setDnd: any
-  selectedGroup: string
-  setError: any
-  showPixelGraph?: boolean
-  pixelGroups?: any
-  setPixelGroups?: any
-  setShowPixelGraph: (_show: boolean) => void
-  setSelectedGroup: any
-}) => {
+const MControls = ({ virtual }: { virtual: any }) => {
   const [camMapper, setCamMapper] = useState(false)
   const getDevices = useStore((state) => state.getDevices)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
@@ -58,15 +21,7 @@ const MControls = ({
   const showGaps = useStore((state) => state.showGaps)
   const features = useStore((state) => state.features)
 
-  const uniqueGroups = useMemo(() => {
-    const groups = new Set<string>()
-    m.flat().forEach((cell: IMCell) => {
-      if (cell.group && typeof cell.group === 'string' && cell.group !== '0-0') {
-        groups.add(cell.group)
-      }
-    })
-    return Array.from(groups)
-  }, [m])
+  const { rowN, colN, showPixelGraph, uniqueGroups } = useMatrixEditorContext()
 
   useEffect(() => {
     if (virtual.id && showPixelGraph) {
@@ -107,46 +62,11 @@ const MControls = ({
           alignItems="flex-start"
           sx={{ '& .MuiButton-root': { minWidth: 0 } }}
         >
-          <DimensionSliders
-            rowN={rowN}
-            colN={colN}
-            setRowNumber={setRowNumber}
-            setColNumber={setColNumber}
-            virtual={virtual}
-            m={m}
-          />
-          <LayoutTools
-            rowN={rowN}
-            colN={colN}
-            m={m}
-            setM={setM}
-            virtual={virtual}
-            setPixelGroups={setPixelGroups}
-            showPixelGraph={showPixelGraph}
-            setShowPixelGraph={setShowPixelGraph}
-          />
+          <DimensionSliders virtual={virtual} />
+          <LayoutTools virtual={virtual} />
         </Stack>
-        <DnDModeTabs
-          m={m}
-          setM={setM}
-          move={move}
-          setMove={setMove}
-          dnd={dnd}
-          setDnd={setDnd}
-          selectedGroup={selectedGroup}
-          setSelectedGroup={setSelectedGroup}
-        />
-        {uniqueGroups.length > 0 && (
-          <GroupControls
-            m={m}
-            rowN={rowN}
-            colN={colN}
-            selectedGroup={selectedGroup}
-            setSelectedGroup={setSelectedGroup}
-            setM={setM}
-            setError={setError}
-          />
-        )}
+        <DnDModeTabs />
+        {uniqueGroups.length > 0 && <GroupControls />}
       </Collapse>
       {features.matrix_cam && (
         <Button

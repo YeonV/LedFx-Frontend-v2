@@ -1,44 +1,15 @@
-import { useMemo } from 'react'
 import { ArrowBack, ArrowDownward, ArrowForward, ArrowUpward, Cancel } from '@mui/icons-material'
 import { Box, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from '@mui/material'
-import { IMCell } from '../M.utils'
 import moveSelectedGroupUp from '../Actions/moveSelectedGroupUp'
 import moveSelectedGroupLeft from '../Actions/moveSelectedGroupLeft'
 import moveSelectedGroupRight from '../Actions/moveSelectedGroupRight'
 import moveSelectedGroupDown from '../Actions/moveSelectedGroupDown'
+import { useMatrixEditorContext } from '../MatrixEditorContext'
 
-// Define a clear, specific props interface
-interface GroupControlsProps {
-  m: IMCell[][]
-  rowN: number
-  colN: number
-  selectedGroup: string
-  setSelectedGroup: (_group: string) => void
-  setM: (_m: IMCell[][]) => void
-  setError: (_error: { row: number; col: number }[]) => void
-}
+const GroupControls = () => {
+  const { m, rowN, colN, selectedGroup, setSelectedGroup, setM, setError, uniqueGroups } =
+    useMatrixEditorContext()
 
-const GroupControls = ({
-  m,
-  rowN,
-  colN,
-  selectedGroup,
-  setSelectedGroup,
-  setM,
-  setError
-}: GroupControlsProps) => {
-  // The logic for finding unique groups now lives here, where it's used.
-  const uniqueGroups = useMemo(() => {
-    const groups = new Set<string>()
-    m.flat().forEach((cell) => {
-      if (cell.group && typeof cell.group === 'string' && cell.group !== '0-0') {
-        groups.add(cell.group)
-      }
-    })
-    return Array.from(groups)
-  }, [m])
-
-  // If there are no groups, this component renders nothing.
   if (uniqueGroups.length === 0) {
     return null
   }
