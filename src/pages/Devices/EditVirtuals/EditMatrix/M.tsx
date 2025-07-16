@@ -4,7 +4,6 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers'
 import { MCell, clone } from './M.utils'
-import type { IMCell } from './M.utils'
 import useStore from '../../../../store/useStore'
 import useStyles from './M.styles'
 import MWrapper from './MWrapper'
@@ -64,6 +63,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
   // --- LIFECYCLE EFFECTS ---
   useEffect(() => {
     matrixEditorApi.setM(Array(matrixEditorApi.rowN).fill(Array(matrixEditorApi.colN).fill(MCell)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matrixEditorApi.rowN, matrixEditorApi.colN, matrixEditorApi.setM])
 
   useEffect(() => {
@@ -86,6 +86,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
         matrixEditorApi.setM(updatedM)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [points, matrixEditorApi.colN, matrixEditorApi.rowN, matrixEditorApi.m, matrixEditorApi.setM])
 
   return (
