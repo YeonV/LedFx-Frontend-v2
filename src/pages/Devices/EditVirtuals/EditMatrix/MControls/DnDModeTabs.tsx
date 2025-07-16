@@ -1,14 +1,5 @@
 import { AdsClick, ControlCamera, Gamepad, InfoOutlined, Mouse, PanTool } from '@mui/icons-material'
-import {
-  Alert,
-  Box,
-  Collapse,
-  Grid,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography
-} from '@mui/material'
+import { Alert, Box, Collapse, Grid, Stack, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
@@ -29,12 +20,7 @@ const DnDModeTabs = () => {
   const uniqueGroups = useMemo(() => {
     const groups = new Set<string>()
     m.flat().forEach((cell: IMCell) => {
-      if (
-        cell.group &&
-        typeof cell.group === 'string' &&
-        cell.group !== '' &&
-        cell.group !== '0-0'
-      ) {
+      if (cell.group && typeof cell.group === 'string' && cell.group !== '0-0') {
         groups.add(cell.group)
       }
     })
@@ -44,6 +30,7 @@ const DnDModeTabs = () => {
   useEffect(() => {
     setInfoAlerts('groupMode', true)
   }, [])
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     if (newValue === '1') {
       setDnd(false)
@@ -77,10 +64,12 @@ const DnDModeTabs = () => {
       setSelectedGroup('')
     }
     if (!uniqueGroups || uniqueGroups.length === 0) {
-      setDnd(false)
-      setTab('1')
+      if (tab !== '1') {
+        setDnd(false)
+        setTab('1')
+      }
     }
-  }, [selectedGroup, uniqueGroups, setSelectedGroup, setDnd])
+  }, [selectedGroup, uniqueGroups, setSelectedGroup, setDnd, tab])
 
   return (
     <TabContext value={tab}>
@@ -145,7 +134,6 @@ const DnDModeTabs = () => {
                 Pan & Inspect Mode
               </Typography>
               <Stack spacing={2}>
-                {/* --- Zoom Row --- */}
                 <Grid container spacing={2} alignItems="flex-start">
                   <Grid size={{ xs: 4 }}>
                     <Stack direction="row" spacing={1} alignItems="center">
@@ -157,11 +145,10 @@ const DnDModeTabs = () => {
                   </Grid>
                   <Grid size={{ xs: 8 }}>
                     <Typography variant="body1" color="text.secondary">
-                      Use your Mouse Wheel to zoom in and out.
+                      Use your Mouse Wheel to zoom in and out of the matrix.
                     </Typography>
                   </Grid>
                 </Grid>
-                {/* --- Pan Row --- */}
                 <Grid container spacing={2} alignItems="flex-start">
                   <Grid size={{ xs: 4 }}>
                     <Stack direction="row" spacing={1} alignItems="center">
@@ -173,11 +160,10 @@ const DnDModeTabs = () => {
                   </Grid>
                   <Grid size={{ xs: 8 }}>
                     <Typography variant="body1" color="text.secondary">
-                      Click & Drag with the Left Mouse Button to move around.
+                      Click and Drag with your Left Mouse Button to move your view.
                     </Typography>
                   </Grid>
                 </Grid>
-                {/* --- Quick Actions Row --- */}
                 <Grid container spacing={2} alignItems="flex-start">
                   <Grid size={{ xs: 4 }}>
                     <Stack direction="row" spacing={1} alignItems="center">
@@ -189,7 +175,8 @@ const DnDModeTabs = () => {
                   </Grid>
                   <Grid size={{ xs: 8 }}>
                     <Typography variant="body1" color="text.secondary">
-                      Right-Click any cell for more options.
+                      <strong>Right-Click</strong> empty cell to assign a pixel, or pixel to open
+                      its context menu.
                     </Typography>
                   </Grid>
                 </Grid>
@@ -225,7 +212,6 @@ const DnDModeTabs = () => {
                   Pixel Drag Mode
                 </Typography>
                 <Stack spacing={2}>
-                  {/* --- Move Pixel Row --- */}
                   <Grid container spacing={2} alignItems="flex-start">
                     <Grid size={{ xs: 4 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -237,11 +223,10 @@ const DnDModeTabs = () => {
                     </Grid>
                     <Grid size={{ xs: 8 }}>
                       <Typography variant="body1" color="text.secondary">
-                        Drag & Drop a single pixel onto any empty cell.
+                        Drag & Drop a single pixel onto any empty cell to move it across the matrix.
                       </Typography>
                     </Grid>
                   </Grid>
-                  {/* --- Quick Actions Row --- */}
                   <Grid container spacing={2} alignItems="flex-start">
                     <Grid size={{ xs: 4 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -253,11 +238,11 @@ const DnDModeTabs = () => {
                     </Grid>
                     <Grid size={{ xs: 8 }}>
                       <Typography variant="body1" color="text.secondary">
-                        Right-Click is still available for editing.
+                        The Right-Click menu is still available in this mode for cell-specific
+                        actions.
                       </Typography>
                     </Grid>
                   </Grid>
-                  {/* --- Info Row --- */}
                   <Grid container spacing={2} alignItems="flex-start">
                     <Grid size={{ xs: 4 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -269,7 +254,9 @@ const DnDModeTabs = () => {
                     </Grid>
                     <Grid size={{ xs: 8 }}>
                       <Typography variant="body1" color="text.secondary">
-                        <em>Pan & Zoom are disabled in this mode.</em>
+                        <em>
+                          For precise placement, Pan & Zoom are temporarily disabled in this mode.
+                        </em>
                       </Typography>
                     </Grid>
                   </Grid>
@@ -305,7 +292,6 @@ const DnDModeTabs = () => {
                   Group Drag Mode
                 </Typography>
                 <Stack spacing={2}>
-                  {/* --- Move Group Row --- */}
                   <Grid container spacing={2} alignItems="flex-start">
                     <Grid size={{ xs: 4 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -317,11 +303,10 @@ const DnDModeTabs = () => {
                     </Grid>
                     <Grid size={{ xs: 8 }}>
                       <Typography variant="body1" color="text.secondary">
-                        Drag any pixel to move its entire group.
+                        Click and Drag any pixel to move the entire group across the matrix.
                       </Typography>
                     </Grid>
                   </Grid>
-                  {/* --- Manual Nudge Row --- */}
                   <Grid container spacing={2} alignItems="flex-start">
                     <Grid size={{ xs: 4 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -337,7 +322,6 @@ const DnDModeTabs = () => {
                       </Typography>
                     </Grid>
                   </Grid>
-                  {/* --- Quick Actions Row --- */}
                   <Grid container spacing={2} alignItems="flex-start">
                     <Grid size={{ xs: 4 }}>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -349,7 +333,7 @@ const DnDModeTabs = () => {
                     </Grid>
                     <Grid size={{ xs: 8 }}>
                       <Typography variant="body1" color="text.secondary">
-                        Right-Click is always available.
+                        The Right-Click context menu is always available for other cell actions.
                       </Typography>
                     </Grid>
                   </Grid>
@@ -362,4 +346,5 @@ const DnDModeTabs = () => {
     </TabContext>
   )
 }
+
 export default DnDModeTabs
