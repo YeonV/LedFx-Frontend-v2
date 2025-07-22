@@ -58,13 +58,16 @@ const EffectSchemaForm = ({
             case 'string':
               {
                 const complex = ['mask', 'foreground', 'background']
-                if (selectedType === 'blender' && complex.includes(s.id))
+                if (
+                  (selectedType === 'blender' && complex.includes(s.id)) ||
+                  (selectedType === 'radial' && s.id === 'source_virtual')
+                )
                   return (
                     <VirtualPickerSchemaForm
                       title={s.title}
                       id={s.id}
                       model={model}
-                      hide={blenderAutomagic}
+                      hide={selectedType === 'blender' && blenderAutomagic}
                       handleEffectConfig={handleEffectConfig}
                     />
                   )
