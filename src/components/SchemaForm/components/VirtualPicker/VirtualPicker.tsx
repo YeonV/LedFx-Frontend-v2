@@ -15,7 +15,7 @@ const VirtualPicker = ({
   onChange?: (value: string) => void
 }) => {
   const virtuals = useStore((state) => state.virtuals)
-
+  const complex = ['mask', 'foreground', 'background']
   return (
     <BladeFrame
       title={title}
@@ -38,7 +38,11 @@ const VirtualPicker = ({
           .filter((v) =>
             showAll
               ? true
-              : typeof virtuals[v].is_device === 'string' && virtuals[v].is_device !== '' && v
+              : typeof virtuals[v].is_device === 'string' &&
+                virtuals[v].is_device !== '' &&
+                v &&
+                !complex.some((c) => v.endsWith(c)) &&
+                !v.startsWith('gap-')
           )
           .map((v) => {
             return (
