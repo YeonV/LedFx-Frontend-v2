@@ -105,7 +105,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     },
-    [isValidFullConfig, setDialogOpenFileDrop, showSnackbar, setPendingMatrixLayout, virtualOrder]
+    [isValidFullConfig, setDialogOpenFileDrop, showSnackbar, virtualOrder]
   )
 
   const handleDrop = useCallback(
