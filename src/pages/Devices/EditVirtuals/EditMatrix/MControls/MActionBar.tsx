@@ -116,9 +116,7 @@ const MActionBar = ({
   useEffect(() => {
     const handleEditorUpdate = (event: MessageEvent) => {
       const matrixStudioOrigin =
-        process.env.NODE_ENV === 'production'
-          ? 'https://yeonv.github.io/matrix-studio'
-          : 'http://localhost:5173'
+        process.env.NODE_ENV === 'production' ? 'https://yeonv.github.io' : 'http://localhost:5173'
 
       // Security: Check the origin
       if (!(event.origin === matrixStudioOrigin || event.origin === window.location.origin)) {
