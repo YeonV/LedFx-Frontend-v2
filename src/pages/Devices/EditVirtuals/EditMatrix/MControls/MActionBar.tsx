@@ -121,19 +121,21 @@ const MActionBar = ({
           : 'http://localhost:5173'
 
       // Security: Check the origin
-      if (event.origin !== matrixStudioOrigin) {
+      if (!(event.origin === matrixStudioOrigin || event.origin === window.location.origin)) {
         console.warn(
           'Received message from unknown origin:',
           event.origin,
-          '. supported origin is:',
-          matrixStudioOrigin
+          '. supported origins are:',
+          matrixStudioOrigin,
+          window.location.origin
         )
-        // return
+        return
       }
 
       const data = event.data
+
       // Validate it's a layout file
-      if (data && Array.isArray(data.matrixData)) {
+      if (data && Array.isArray(data.matrixData) && event.data.source === 'MatrixStudio') {
         // console.log('Received updated layout from MatrixStudio:', data)
 
         // --- UPDATE YOUR LEDFX STATE ---
