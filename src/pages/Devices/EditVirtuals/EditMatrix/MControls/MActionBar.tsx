@@ -290,6 +290,7 @@ const MActionBar = ({
                 <BladeIcon name="yz:logo2" />
               </IconButton>
             </Tooltip>
+            <Divider orientation="vertical" flexItem />
           </Stack>
 
           <Stack direction="row" spacing={0.5}>
