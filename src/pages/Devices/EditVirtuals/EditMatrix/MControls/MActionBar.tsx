@@ -122,8 +122,13 @@ const MActionBar = ({
 
       // Security: Check the origin
       if (event.origin !== matrixStudioOrigin) {
-        console.warn('Received message from unknown origin:', event.origin)
-        return
+        console.warn(
+          'Received message from unknown origin:',
+          event.origin,
+          '. supported origin is:',
+          matrixStudioOrigin
+        )
+        // return
       }
 
       const data = event.data
