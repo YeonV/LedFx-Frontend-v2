@@ -98,13 +98,13 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           sx={{
             height: '100%',
             overflowX: 'hidden',
-            flex: '0 0 480px',
+            flex: '0 0 510px',
             paddingTop: '1rem',
             bgcolor: 'action.disabledBackground',
             p: 0
           }}
         >
-          <MControls virtual={virtual} />
+          <MControls virtual={virtual} m={matrixEditorApi.m} setM={matrixEditorApi.setM} />
         </Stack>
         <Box sx={{ flexGrow: 1, overflow: 'hidden', height: '100%' }}>
           <TransformWrapper
