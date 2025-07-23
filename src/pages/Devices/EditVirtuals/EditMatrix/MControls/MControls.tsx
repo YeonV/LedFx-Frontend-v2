@@ -48,7 +48,7 @@ const MControls = ({ virtual, m, setM }: { virtual: any; m: any; setM: any }) =>
   ])
 
   return (
-    <Stack width={510} height={'100%'} direction="column" spacing={2} p={0}>
+    <Stack width={480} height={'100%'} direction="column" spacing={2} p={0}>
       <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 1 }}>
         <Collapse in={!camMapper}>
           <DnDModeTabs />

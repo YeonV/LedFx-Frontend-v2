@@ -98,7 +98,7 @@ const EditMatrix: FC<{ virtual: any }> = ({ virtual }) => {
           sx={{
             height: '100%',
             overflowX: 'hidden',
-            flex: '0 0 510px',
+            flex: '0 0 480px',
             paddingTop: '1rem',
             bgcolor: 'action.disabledBackground',
             p: 0
