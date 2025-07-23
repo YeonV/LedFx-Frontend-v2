@@ -6,7 +6,7 @@ import DnDModeTabs from './DnDModeTabs'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 import MActionBar from './MActionBar'
 
-const MControls = ({ virtual }: { virtual: any }) => {
+const MControls = ({ virtual, m, setM }: { virtual: any; m: any; setM: any }) => {
   const [camMapper, setCamMapper] = useState(false)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const graphs = useStore((state) => state.graphs)
@@ -48,13 +48,19 @@ const MControls = ({ virtual }: { virtual: any }) => {
   ])
 
   return (
-    <Stack width={480} height={'100%'} direction="column" spacing={2} p={0}>
+    <Stack width={510} height={'100%'} direction="column" spacing={2} p={0}>
       <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 1 }}>
         <Collapse in={!camMapper}>
           <DnDModeTabs />
         </Collapse>
       </Box>
-      <MActionBar virtual={virtual} camMapper={camMapper} setCamMapper={setCamMapper} />
+      <MActionBar
+        virtual={virtual}
+        camMapper={camMapper}
+        setCamMapper={setCamMapper}
+        m={m}
+        setM={setM}
+      />
     </Stack>
   )
 }

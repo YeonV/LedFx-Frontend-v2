@@ -1,3 +1,5 @@
+// src/MActionBar.tsx
+
 import {
   Settings,
   Loop,
@@ -7,24 +9,31 @@ import {
   Delete,
   Cancel,
   EmergencyRecording,
-  Gamepad
+  Gamepad,
+  FileDownload,
+  FileUpload
 } from '@mui/icons-material'
-import { Box, Collapse, IconButton, Stack, Tooltip } from '@mui/material'
+import { Box, Button, Collapse, Divider, IconButton, Stack, Tooltip } from '@mui/material'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 import DimensionSliders from './DimensionSliders'
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import useStore from '../../../../../store/useStore'
 import Webcam from '../../../../../components/Webcam/Webcam'
 import GroupControls from './GroupControls'
+import BladeIcon from '../../../../../components/Icons/BladeIcon/BladeIcon'
 
 const MActionBar = ({
   virtual,
   camMapper,
-  setCamMapper
+  setCamMapper,
+  m,
+  setM
 }: {
   virtual: any
   camMapper: boolean
   setCamMapper: any
+  m: any
+  setM: any
 }) => {
   const {
     showPixelGraph,
@@ -42,6 +51,101 @@ const MActionBar = ({
 
   const features = useStore((state) => state.features)
   const getDevices = useStore((state) => state.getDevices)
+  const devices = useStore((state) => state.devices)
+
+  const pendingMatrixLayout = useStore((state) => state.ui.pendingMatrixLayout)
+  const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
+
+  const exportToYzMatrixEditor = {
+    name: virtual.id,
+    matrixData: m,
+    deviceList: Object.entries(devices)
+      .map(([id, device]) => ({
+        id,
+        count: device.config.pixel_count
+      }))
+      .filter(
+        (d) =>
+          !d.id.startsWith('gap-') &&
+          ['mask', 'foreground', 'background'].every((suffix) => !d.id.endsWith(suffix))
+      )
+  }
+
+  const isValidMatrixLayout = (data: any): boolean => {
+    return Array.isArray(data.matrixData)
+  }
+
+  const handleJsonFile = useCallback(
+    (file: File) => {
+      const reader = new FileReader()
+      reader.readAsText(file, 'UTF-8')
+      reader.onload = (event: any) => {
+        try {
+          const data = JSON.parse(event.target.result)
+          if (isValidMatrixLayout(data)) {
+            setPendingMatrixLayout(data)
+            showSnackbar('success', `Layout '${data.name || 'Untitled'}' is ready to import.`)
+          } else {
+            showSnackbar('error', 'Unrecognized matrix layout format')
+          }
+        } catch (_error) {
+          showSnackbar('error', 'Failed to parse JSON')
+        }
+      }
+    },
+    [setPendingMatrixLayout, showSnackbar]
+  )
+
+  const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) handleJsonFile(file)
+    if (event.target) event.target.value = ''
+  }
+
+  useEffect(() => {
+    if (pendingMatrixLayout) {
+      setM(pendingMatrixLayout.matrixData)
+      showSnackbar('success', 'Matrix layout imported!')
+      setPendingMatrixLayout(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingMatrixLayout])
+  let newWindow: Window | null = null
+
+  useEffect(() => {
+    const handleEditorUpdate = (event: MessageEvent) => {
+      const matrixStudioOrigin =
+        process.env.NODE_ENV === 'production'
+          ? 'https://yeonv.github.io/matrix-studio'
+          : 'http://localhost:5173'
+
+      // Security: Check the origin
+      if (event.origin !== matrixStudioOrigin) {
+        console.warn('Received message from unknown origin:', event.origin)
+        return
+      }
+
+      const data = event.data
+      // Validate it's a layout file
+      if (data && Array.isArray(data.matrixData)) {
+        // console.log('Received updated layout from MatrixStudio:', data)
+
+        // --- UPDATE YOUR LEDFX STATE ---
+        setM(data.matrixData)
+        // You would also call your action to update the device list here
+        // importDevices(data.deviceList);
+
+        showSnackbar('success', 'Matrix layout updated!')
+      }
+    }
+
+    window.addEventListener('message', handleEditorUpdate)
+
+    return () => {
+      window.removeEventListener('message', handleEditorUpdate)
+    }
+  }, [setM, showSnackbar])
 
   return (
     <Box>
@@ -126,6 +230,61 @@ const MActionBar = ({
                 </Tooltip>
               </>
             )}
+            <Divider orientation="vertical" flexItem />
+            <Tooltip title="Export to YZ Matrix Editor">
+              <IconButton
+                size="large"
+                onClick={() => {
+                  const dataStr = JSON.stringify(exportToYzMatrixEditor, null, 2)
+                  const blob = new Blob([dataStr], { type: 'application/json' })
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `${virtual.id}.json`
+                  document.body.appendChild(a)
+                  a.click()
+                  document.body.removeChild(a)
+                  URL.revokeObjectURL(url)
+                }}
+              >
+                <FileDownload />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Import from YZ Matrix Editor">
+              <Button
+                component="label"
+                role={undefined}
+                tabIndex={-1}
+                sx={{ minWidth: '40px', p: '8px', border: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                <FileUpload />
+                <input type="file" onChange={handleFileSelected} hidden accept=".json" />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Edit in MatrixStudio">
+              <IconButton
+                size="large"
+                onClick={() => {
+                  const url =
+                    process.env.NODE_ENV === 'production'
+                      ? 'https://yeonv.github.io/matrix-studio'
+                      : 'http://localhost:5173'
+                  newWindow = window.open(url, '_blank')
+                  setTimeout(() => {
+                    if (newWindow) {
+                      newWindow?.postMessage({ ...exportToYzMatrixEditor, source: 'LedFx' }, url)
+                    } else {
+                      showSnackbar('error', 'Failed to open MatrixStudio')
+                    }
+                  }, 500)
+                }}
+              >
+                <BladeIcon name="yz:logo2" />
+              </IconButton>
+            </Tooltip>
           </Stack>
 
           <Stack direction="row" spacing={0.5}>

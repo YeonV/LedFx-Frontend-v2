@@ -295,6 +295,15 @@ const storeUI = (set: any) => ({
       }),
       false,
       'ui/settingsExpanded'
+    ),
+  pendingMatrixLayout: null as any,
+  setPendingMatrixLayout: (layout: any): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.pendingMatrixLayout = layout
+      }),
+      false,
+      'ui/pendingMatrixLayout'
     )
 })
 
