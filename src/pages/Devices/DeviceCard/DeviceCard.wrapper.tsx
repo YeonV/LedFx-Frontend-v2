@@ -200,7 +200,7 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
         online={devices[Object.keys(devices).find((d) => d === virtual) || '']?.online}
         lastEffect={
           virtuals[virtual]?.last_effect
-            ? schemas.effects[virtuals[virtual]?.last_effect].name
+            ? schemas.effects[virtuals[virtual]?.last_effect]?.name
             : null
         }
         virtId={virtual}
