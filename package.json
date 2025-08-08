@@ -33,7 +33,7 @@
     "@webcam/react": "^1.0.1",
     "@yudiel/react-qr-scanner": "^2.3.1",
     "@yz-dev/matrix-studio": "^0.0.1",
-    "@yz-dev/react-dynamic-module": "^0.0.6",
+    "@yz-dev/react-dynamic-module": "^0.0.7",
     "axios": "^1.9.0",
     "base32-decode": "^1.0.0",
     "base32-encode": "2.0.0",

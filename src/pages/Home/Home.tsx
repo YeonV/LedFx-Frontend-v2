@@ -1,12 +1,10 @@
 import { useState, useCallback } from 'react'
 import { useSnackbar } from 'notistack'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import useStore from '../../store/useStore'
 import Dashboard from './Dashboard'
 import DashboardDetailed from './DashboardDetailed'
 import IntroDialog from '../../components/Dialogs/IntroDialog'
-import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
-import { DynamicModule } from '@yz-dev/react-dynamic-module'
-import type { MatrixStudioProps } from '@yz-dev/matrix-studio'
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -62,19 +60,7 @@ export default function Home() {
     features.dashboardDetailed ? (
       <DashboardDetailed />
     ) : (
-      <>
-        <Dashboard />
-        {/* <LazyMatrixStudio /> */}
-        <DynamicModule<MatrixStudioProps>
-          import="MatrixStudio"
-          from="YzMatrixStudio"
-          src="/premium/yz-matrix-studio.js"
-          // so heftig
-          defaultValue={[]}
-          deviceList={[]}
-          onSave={(e: any) => console.log('Save clicked', e)}
-        />
-      </>
+      <Dashboard />
     )
   ) : (
     <IntroDialog scanning={scanning} handleScan={handleScan} setScanning={setScanning} />

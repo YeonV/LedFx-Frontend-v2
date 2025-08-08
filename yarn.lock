@@ -1338,9 +1338,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -3941,10 +3941,10 @@
   resolved "https://registry.yarnpkg.com/@yz-dev/matrix-studio/-/matrix-studio-0.0.1.tgz#ee9a4ad73410c84ddd8eb6d581409ce058c272db"
   integrity sha512-5zXiko+/e7E1D+Dz7AtFRrFdDx4gkKVtUXpcsyfUPOPMTm16t6YdJpXOxMl6MAGkfqC9v1La1ICGRHMYmAFf3w==
 
-"@yz-dev/react-dynamic-module@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@yz-dev/react-dynamic-module/-/react-dynamic-module-0.0.6.tgz#731b72bcaf8b424f97fe8dc791e92dc8af710a95"
-  integrity sha512-NmpyvfK4MJfkc+eSW+/WnqxfBJRr4MTukhPVfNp4ZbguiRkG5Xg4/nLFFQyYebKXLQfcB75L04QYHCsxOv47rw==
+"@yz-dev/react-dynamic-module@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@yz-dev/react-dynamic-module/-/react-dynamic-module-0.0.7.tgz#c8d6a90df268ee5e9388cc07921200a880137f30"
+  integrity sha512-iXrlwgQ/cIRoSnA67s+eeyeH09mxvfBKsDcvitH4u5gOTZ8kswMjqStF9ZHOKSEf46vHMNgTg+G99EgvzmRQgA==
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.6"
@@ -4924,9 +4924,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001702, caniuse-lite@^1.0.30001726:
-  version "1.0.30001731"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001731.tgz#277c07416ea4613ec564e5b0ffb47e7b60f32e2f"
-  integrity sha512-lDdp2/wrOmTRWuoB5DpfNkC0rJDU8DqRa6nYL6HK6sytw70QMopt/NIc/9SM7ylItlBWfACXk0tEn37UWM/+mg==
+  version "1.0.30001733"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001733.tgz#918405ed6647a62840fb328832cf5a03f986974b"
+  integrity sha512-e4QKw/O2Kavj2VQTKZWrwzkt3IxOmIlU6ajRb6LP64LHpBo1J67k2Hi4Vu/TgJWsNtynurfS0uK3MaUTCPfu5Q==
 
 case-sensitive-paths-webpack-plugin@^2.4.0:
   version "2.4.0"
@@ -6193,9 +6193,9 @@ electron-store@10.0.1:
     type-fest "^4.20.0"
 
 electron-to-chromium@^1.5.173:
-  version "1.5.198"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.198.tgz#ac12b539ac1bb3dece1a4cd2d8882d0349c71c55"
-  integrity sha512-G5COfnp3w+ydVu80yprgWSfmfQaYRh9DOxfhAxstLyetKaLyl55QrNjx8C38Pc/C+RaDmb1M0Lk8wPEMQ+bGgQ==
+  version "1.5.199"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.199.tgz#4d8be9c78362c05f095eb7392e9a54f1fb14fd3a"
+  integrity sha512-3gl0S7zQd88kCAZRO/DnxtBKuhMO4h0EaQIN3YgZfV6+pW+5+bf2AdQeHNESCoaQqo/gjGVYEf2YM4O5HJQqpQ==
 
 electron@*:
   version "37.2.6"
@@ -9436,9 +9436,9 @@ language-tags@^1.0.9:
     language-subtag-registry "^0.3.20"
 
 launch-editor@^2.6.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/launch-editor/-/launch-editor-2.11.0.tgz#1ec15b3ed249b04763453661a9785428b38d5b33"
-  integrity sha512-R/PIF14L6e2eHkhvQPu7jDRCr0msfCYCxbYiLgkkAGi0dVPWuM+RrsPu0a5dpuNe0KWGL3jpAkOlv53xGfPheQ==
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/launch-editor/-/launch-editor-2.11.1.tgz#61a0b7314a42fd84a6cbb564573d9e9ffcf3d72b"
+  integrity sha512-SEET7oNfgSaB6Ym0jufAdCeo3meJVeCaaDyzRygy0xsp2BFKCprcfHljTq4QkzTLUxEKkFK6OK4811YM2oSrRg==
   dependencies:
     picocolors "^1.1.1"
     shell-quote "^1.8.3"
@@ -11618,16 +11618,16 @@ react-rnd@^10.4.14:
     tslib "2.6.2"
 
 react-router-dom@^7.5.3:
-  version "7.7.1"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.7.1.tgz#456d1053dda5e1c1328a2b6b2359f6a1c47072fc"
-  integrity sha512-bavdk2BA5r3MYalGKZ01u8PGuDBloQmzpBZVhDLrOOv1N943Wq6dcM9GhB3x8b7AbqPMEezauv4PeGkAJfy7FQ==
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.8.0.tgz#8c5e6f86e6c1f82037586124130df5926fdab10c"
+  integrity sha512-ntInsnDVnVRdtSu6ODmTQ41cbluak/ENeTif7GBce0L6eztFg6/e1hXAysFQI8X25C8ipKmT9cClbJwxx3Kaqw==
   dependencies:
-    react-router "7.7.1"
+    react-router "7.8.0"
 
-react-router@7.7.1:
-  version "7.7.1"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.7.1.tgz#c12ebbad162da655951dd79325f205f7238d609e"
-  integrity sha512-jVKHXoWRIsD/qS6lvGveckwb862EekvapdHJN/cGmzw40KnJH5gg53ujOJ4qX6EKIK9LSBfFed/xiQ5yeXNrUA==
+react-router@7.8.0:
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.8.0.tgz#2bc07e0a9ff74d88ee38c2f27897e968b8f59170"
+  integrity sha512-r15M3+LHKgM4SOapNmsH3smAizWds1vJ0Z9C4mWaKnT9/wD7+d/0jYcj6LmOvonkrO4Rgdyp4KQ/29gWN2i1eg==
   dependencies:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
