@@ -21,6 +21,7 @@ import useStore from '../../../../../store/useStore'
 import Webcam from '../../../../../components/Webcam/Webcam'
 import GroupControls from './GroupControls'
 import BladeIcon from '../../../../../components/Icons/BladeIcon/BladeIcon'
+import MatrixStudio from '../MatrixStudio'
 
 const MActionBar = ({
   virtual,
@@ -290,6 +291,7 @@ const MActionBar = ({
                 <BladeIcon name="yz:logo2" />
               </IconButton>
             </Tooltip>
+            <MatrixStudio />
             <Divider orientation="vertical" flexItem />
           </Stack>
 
