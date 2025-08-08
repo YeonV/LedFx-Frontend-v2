@@ -1,4 +1,4 @@
-async function createImageFromData(imageData: Uint8Array) {
+async function createImageFromData(imageData: any) {
   const blob = new Blob([imageData], { type: 'image/webp' })
   const url = URL.createObjectURL(blob)
   const img = new Image()
