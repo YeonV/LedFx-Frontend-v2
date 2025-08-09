@@ -171,6 +171,7 @@ const MActionBar = ({
         resetMatrix()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [m])
 
   return (
