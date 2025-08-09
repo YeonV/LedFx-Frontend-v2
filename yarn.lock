@@ -1338,9 +1338,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -3936,15 +3936,10 @@
     barcode-detector "3.0.3"
     webrtc-adapter "9.0.3"
 
-"@yz-dev/matrix-studio@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@yz-dev/matrix-studio/-/matrix-studio-0.0.1.tgz#ee9a4ad73410c84ddd8eb6d581409ce058c272db"
-  integrity sha512-5zXiko+/e7E1D+Dz7AtFRrFdDx4gkKVtUXpcsyfUPOPMTm16t6YdJpXOxMl6MAGkfqC9v1La1ICGRHMYmAFf3w==
-
-"@yz-dev/react-dynamic-module@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@yz-dev/react-dynamic-module/-/react-dynamic-module-0.0.7.tgz#c8d6a90df268ee5e9388cc07921200a880137f30"
-  integrity sha512-iXrlwgQ/cIRoSnA67s+eeyeH09mxvfBKsDcvitH4u5gOTZ8kswMjqStF9ZHOKSEf46vHMNgTg+G99EgvzmRQgA==
+"@yz-dev/react-dynamic-module@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@yz-dev/react-dynamic-module/-/react-dynamic-module-0.1.0.tgz#79d5f589639bf8eeef029cde85cf673abebb539d"
+  integrity sha512-Oawf0obmTMgJYzEDrgJnFSK7E7UB5GXnBU2s+ioFAVNYIslo0g3xqqkR3j9viXx2Is0FC0ryGUbTahIifg/xXQ==
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.6"
