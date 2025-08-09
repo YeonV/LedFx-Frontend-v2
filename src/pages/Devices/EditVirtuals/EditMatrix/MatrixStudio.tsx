@@ -1,11 +1,11 @@
-import type { MatrixStudioProps } from '@yz-dev/matrix-studio'
 import { forwardRef, useState } from 'react'
 import { TransitionProps } from '@mui/material/transitions'
-import { DynamicModule } from '@yz-dev/react-dynamic-module'
+import { useDynamicModule } from '@yz-dev/react-dynamic-module'
 import Dialog from '@mui/material/Dialog'
 import Slide from '@mui/material/Slide'
 import IconButton from '@mui/material/IconButton'
 import BladeIcon from '../../../../components/Icons/BladeIcon/BladeIcon'
+import { IDevice, IMCell, MatrixStudioProps } from './M.utils'
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -16,7 +16,13 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-const MatrixStudio = () => {
+const MatrixStudioButton = ({
+  defaultValue,
+  deviceList
+}: {
+  defaultValue?: IMCell[][] | undefined
+  deviceList?: IDevice[] | undefined
+}) => {
   const [open, setOpen] = useState(false)
 
   const handleClickOpen = () => {
@@ -31,6 +37,15 @@ const MatrixStudio = () => {
     setOpen(false)
   }
 
+  const { status, as: MatrixStudio } = useDynamicModule<MatrixStudioProps>({
+    src: '/modules/yz-matrix-studio.js',
+    from: 'YzMatrixStudio',
+    import: 'MatrixStudio'
+  })
+
+  if (!MatrixStudio || status !== 'available') {
+    return null
+  }
   return (
     <>
       <IconButton size="large" onClick={handleClickOpen}>
@@ -44,12 +59,9 @@ const MatrixStudio = () => {
           transition: Transition
         }}
       >
-        <DynamicModule<MatrixStudioProps>
-          import="MatrixStudio"
-          from="YzMatrixStudio"
-          src="/modules/yz-matrix-studio.js"
-          defaultValue={[]}
-          deviceList={[]}
+        <MatrixStudio
+          defaultValue={defaultValue}
+          deviceList={deviceList}
           onSave={handleSaveAndClose}
         />
       </Dialog>
@@ -57,4 +69,4 @@ const MatrixStudio = () => {
   )
 }
 
-export default MatrixStudio
+export default MatrixStudioButton

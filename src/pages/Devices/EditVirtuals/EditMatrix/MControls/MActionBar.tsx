@@ -16,12 +16,12 @@ import {
 import { Box, Button, Collapse, Divider, IconButton, Stack, Tooltip } from '@mui/material'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 import DimensionSliders from './DimensionSliders'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import useStore from '../../../../../store/useStore'
 import Webcam from '../../../../../components/Webcam/Webcam'
 import GroupControls from './GroupControls'
 import BladeIcon from '../../../../../components/Icons/BladeIcon/BladeIcon'
-import MatrixStudio from '../MatrixStudio'
+import MatrixStudioButton from '../MatrixStudio'
 
 const MActionBar = ({
   virtual,
@@ -58,20 +58,24 @@ const MActionBar = ({
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
-  const exportToYzMatrixEditor = {
-    name: virtual.id,
-    matrixData: m,
-    deviceList: Object.entries(devices)
-      .map(([id, device]) => ({
-        id,
-        count: device.config.pixel_count
-      }))
-      .filter(
-        (d) =>
-          !d.id.startsWith('gap-') &&
-          ['mask', 'foreground', 'background'].every((suffix) => !d.id.endsWith(suffix))
-      )
-  }
+  const studioData = useMemo(
+    () => ({
+      name: virtual.id,
+      matrixData: m,
+      deviceList: Object.entries(devices)
+        .filter(
+          ([id, device]) =>
+            device.config.pixel_count !== undefined &&
+            !id.startsWith('gap-') &&
+            ['mask', 'foreground', 'background'].every((suffix) => !id.endsWith(suffix))
+        )
+        .map(([id, device]) => ({
+          deviceId: id,
+          count: device.config.pixel_count!
+        }))
+    }),
+    [virtual.id, m, devices]
+  )
 
   const isValidMatrixLayout = (data: any): boolean => {
     return Array.isArray(data.matrixData)
@@ -152,6 +156,22 @@ const MActionBar = ({
       window.removeEventListener('message', handleEditorUpdate)
     }
   }, [setM, showSnackbar])
+
+  const mountTimeRef = useRef<number>(Date.now())
+
+  useEffect(() => {
+    const uptime = Date.now() - mountTimeRef.current
+
+    if (uptime > 3000) {
+      return
+    }
+    if (m.length > 0 && m[0]?.length > 0) {
+      const matrixIsEmpty = m?.every((row: any) => row.every((cell: any) => cell.deviceId === ''))
+      if (matrixIsEmpty) {
+        resetMatrix()
+      }
+    }
+  }, [m])
 
   return (
     <Box>
@@ -241,7 +261,7 @@ const MActionBar = ({
               <IconButton
                 size="large"
                 onClick={() => {
-                  const dataStr = JSON.stringify(exportToYzMatrixEditor, null, 2)
+                  const dataStr = JSON.stringify(studioData, null, 2)
                   const blob = new Blob([dataStr], { type: 'application/json' })
                   const url = URL.createObjectURL(blob)
                   const a = document.createElement('a')
@@ -270,18 +290,18 @@ const MActionBar = ({
                 <input type="file" onChange={handleFileSelected} hidden accept=".json" />
               </Button>
             </Tooltip>
-            <Tooltip title="Edit in MatrixStudio">
+            <Tooltip title="Edit in MatrixStudio (external)">
               <IconButton
                 size="large"
                 onClick={() => {
                   const url =
                     process.env.NODE_ENV === 'production'
-                      ? 'https://yeonv.github.io/matrix-studio'
+                      ? 'https://studio.ledfx.stream'
                       : 'http://localhost:5173'
                   newWindow = window.open(url, '_blank')
                   setTimeout(() => {
                     if (newWindow) {
-                      newWindow?.postMessage({ ...exportToYzMatrixEditor, source: 'LedFx' }, url)
+                      newWindow?.postMessage({ ...studioData, source: 'LedFx' }, url)
                     } else {
                       showSnackbar('error', 'Failed to open MatrixStudio')
                     }
@@ -291,7 +311,14 @@ const MActionBar = ({
                 <BladeIcon name="yz:logo2" />
               </IconButton>
             </Tooltip>
-            <MatrixStudio />
+            <Tooltip title="Edit in MatrixStudio (internal)">
+              <div>
+                <MatrixStudioButton
+                  defaultValue={studioData?.matrixData}
+                  deviceList={studioData?.deviceList}
+                />
+              </div>
+            </Tooltip>
             <Divider orientation="vertical" flexItem />
           </Stack>
 

@@ -1,3 +1,5 @@
+import { Theme } from '@mui/material'
+
 export type IDir =
   | 'right'
   | 'right-snake'
@@ -23,6 +25,48 @@ export type IMCell = {
 }
 
 export const MCell: IMCell = { deviceId: '', pixel: 0, group: '0-0' }
+
+export interface IDevice {
+  deviceId: string
+  count: number
+}
+
+/**
+ * The main props for the MatrixStudio component.
+ * This component operates in "uncontrolled" mode, managing its own state internally.
+ */
+export interface MatrixStudioProps {
+  /**
+   * The initial matrix data to load into the editor.
+   * @example
+   * const initialLayout = [
+   *   [{ deviceId: 'my-strip', pixel: 0, group: 'A' }, {}],
+   *   [{}, { deviceId: 'my-strip', pixel: 1, group: 'A' }]
+   * ];
+   */
+  defaultValue?: IMCell[][]
+
+  /**
+   * An initial list of available devices, including their ID and pixel count.
+   * This populates the device selectors in the UI.
+   * @example
+   * const initialDevices = [{ id: 'my-strip', count: 150 }];
+   */
+  deviceList?: IDevice[]
+
+  /**
+   * Callback fired when the user clicks the "Save & Close" button.
+   * It receives the final, complete matrix data. This is the primary
+   * method for getting data out of the component.
+   */
+  onSave?: (data: IMCell[][]) => void
+
+  /**
+   * Optional MUI theme object to override the component's default dark theme.
+   * This allows for seamless visual integration into a host application.
+   */
+  theme?: Theme
+}
 
 /**
  * Calculates the maximum available pixel given the input data
