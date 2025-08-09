@@ -23,7 +23,12 @@ jobs:
           node-version: 20.x
       - name: Install NPM packages
         run: yarn install
-
+      - name: Fetch Latest Matrix Studio Module
+        run: |
+          mkdir -p public/modules
+          curl -L -o public/modules/yz-matrix-studio.js \
+            -H "Authorization: token ${{ secrets.MATRIX_STUDIO_ACCESS_TOKEN }}" \
+            "https://github.com/YeonV/matrix-studio/releases/latest/download/yz-matrix-studio.js"
       - name: Build project
         run: |
           yarn buildgh

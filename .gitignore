@@ -48,3 +48,4 @@ public/preload.cjs
 public/renderer.js
 src/api/docs/*
 docs/*
+public/modules/*
