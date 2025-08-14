@@ -121,10 +121,18 @@ const MActionBar = ({
   useEffect(() => {
     const handleEditorUpdate = (event: MessageEvent) => {
       const matrixStudioOrigin =
-        process.env.NODE_ENV === 'production' ? 'https://yeonv.github.io' : 'http://localhost:5173'
+        process.env.NODE_ENV === 'production'
+          ? 'https://studio.ledfx.stream'
+          : 'http://localhost:5173'
 
       // Security: Check the origin
-      if (!(event.origin === matrixStudioOrigin || event.origin === window.location.origin)) {
+      if (
+        !(
+          event.origin === matrixStudioOrigin ||
+          event.origin === window.location.origin ||
+          event.origin === 'https://yeonv.github.io'
+        )
+      ) {
         console.warn(
           'Received message from unknown origin:',
           event.origin,
@@ -312,14 +320,10 @@ const MActionBar = ({
                 <BladeIcon name="yz:logo2" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit in MatrixStudio (internal)">
-              <div>
-                <MatrixStudioButton
-                  defaultValue={studioData?.matrixData}
-                  deviceList={studioData?.deviceList}
-                />
-              </div>
-            </Tooltip>
+            <MatrixStudioButton
+              defaultValue={studioData?.matrixData}
+              deviceList={studioData?.deviceList}
+            />
             <Divider orientation="vertical" flexItem />
           </Stack>
 
