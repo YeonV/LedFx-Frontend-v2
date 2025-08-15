@@ -9,11 +9,11 @@ import {
   Delete,
   Cancel,
   EmergencyRecording,
-  Gamepad,
-  FileDownload,
-  FileUpload
+  Gamepad
+  // FileDownload,
+  // FileUpload
 } from '@mui/icons-material'
-import { Box, Button, Collapse, Divider, IconButton, Stack, Tooltip } from '@mui/material'
+import { Box, Collapse, Divider, IconButton, Stack, Tooltip } from '@mui/material'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 import DimensionSliders from './DimensionSliders'
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
@@ -59,6 +59,10 @@ const MActionBar = ({
   const pendingMatrixLayout = useStore((state) => state.ui.pendingMatrixLayout)
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
+  const virtualEditorIsDirty = useStore((state) => state.virtualEditorIsDirty)
+  const setExternalEditorOpen = useStore((state) => state.setExternalEditorOpen)
+
+  const setExternalStudioRef = useStore((state) => state.setExternalStudioRef)
 
   const studioData = useMemo(() => {
     const deviceIdToVirtualIdMap = new Map<string, string>()
@@ -136,7 +140,6 @@ const MActionBar = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingMatrixLayout])
-  let newWindow: Window | null = null
 
   useEffect(() => {
     const handleEditorUpdate = (event: MessageEvent) => {
@@ -144,46 +147,32 @@ const MActionBar = ({
         process.env.NODE_ENV === 'production'
           ? 'https://studio.ledfx.stream'
           : 'http://localhost:5173'
-
-      // Security: Check the origin
       if (
         !(
           event.origin === matrixStudioOrigin ||
           event.origin === window.location.origin ||
-          event.origin === 'https://yeonv.github.io'
+          event.origin === 'https://yeonv.github.io' ||
+          event.origin === 'https://studio.ledfx.stream'
         )
       ) {
         console.warn(
-          'Received message from unknown origin:',
-          event.origin,
-          '. supported origins are:',
-          matrixStudioOrigin,
-          window.location.origin
+          `Received message from unknown origin: ${event.origin}. Expected: ${matrixStudioOrigin}`
         )
         return
       }
+      // console.log('Received message from MatrixStudio:', event.data)
 
       const data = event.data
-
-      // Validate it's a layout file
-      if (data && Array.isArray(data.matrixData) && event.data.source === 'MatrixStudio') {
-        // console.log('Received updated layout from MatrixStudio:', data)
-
-        // --- UPDATE YOUR LEDFX STATE ---
+      if (data && Array.isArray(data.matrixData) && data.source === 'MatrixStudio') {
         setM(data.matrixData)
-        // You would also call your action to update the device list here
-        // importDevices(data.deviceList);
-
         showSnackbar('success', 'Matrix layout updated!')
+        // --- When data is received, the session is over. Unlock the UI. ---
+        setExternalEditorOpen(false)
       }
     }
-
     window.addEventListener('message', handleEditorUpdate)
-
-    return () => {
-      window.removeEventListener('message', handleEditorUpdate)
-    }
-  }, [setM, showSnackbar])
+    return () => window.removeEventListener('message', handleEditorUpdate)
+  }, [setM, showSnackbar, setExternalEditorOpen])
 
   const mountTimeRef = useRef<number>(Date.now())
 
@@ -286,7 +275,7 @@ const MActionBar = ({
               </>
             )}
             <Divider orientation="vertical" flexItem />
-            <Tooltip title="Export to YZ Matrix Editor">
+            {/* <Tooltip title="Export to YZ Matrix Editor">
               <IconButton
                 size="large"
                 onClick={() => {
@@ -318,21 +307,28 @@ const MActionBar = ({
                 <FileUpload />
                 <input type="file" onChange={handleFileSelected} hidden accept=".json" />
               </Button>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Edit in MatrixStudio (external)">
               <IconButton
                 size="large"
                 onClick={() => {
                   const url =
-                    process.env.NODE_ENV === 'production'
+                    process.env.NODE_ENV === 'production' // quickly reversed logic for testing
                       ? 'https://studio.ledfx.stream'
                       : 'http://localhost:5173'
-                  newWindow = window.open(url, '_blank')
+                  setExternalEditorOpen(true)
+                  const newWindow = window.open(url, '_blank')
                   setTimeout(() => {
                     if (newWindow) {
-                      newWindow?.postMessage({ ...studioData, source: 'LedFx' }, url)
+                      setExternalStudioRef(newWindow)
+                      newWindow.postMessage({ ...studioData, source: 'LedFx' }, url)
                     } else {
-                      showSnackbar('error', 'Failed to open MatrixStudio')
+                      showSnackbar(
+                        'error',
+                        'Failed to open MatrixStudio. Please check your popup blocker.'
+                      )
+                      // If it fails to open, immediately reset the flag.
+                      setExternalEditorOpen(false)
                     }
                   }, 500)
                 }}
@@ -364,7 +360,11 @@ const MActionBar = ({
               </IconButton>
             </Tooltip>
             <Tooltip title="Save Changes">
-              <IconButton color="primary" size="large" onClick={saveMatrix}>
+              <IconButton
+                color={virtualEditorIsDirty ? 'error' : 'inherit'}
+                size="large"
+                onClick={saveMatrix}
+              >
                 <Save />
               </IconButton>
             </Tooltip>

@@ -32,6 +32,7 @@ import storeUIPersistActions from './ui-persist/storeUIpersistActions'
 import storeSongDectector from './ui/storeSongDectector'
 import { frontendConfig, log } from '../utils/helpers'
 import { migrations, MigrationState } from './migrate'
+import storeMatrix from './ui/storeMatrix'
 
 const useStore = create(
   devtools(
@@ -46,6 +47,7 @@ const useStore = create(
           spotify: storeSpotify(),
           qlc: storeQLC(),
           user: storeUser(set),
+          ...storeMatrix(set),
           ...storeUIPersistActions(set),
           ...storePad(set),
           ...storeMidi(set, get),
@@ -90,7 +92,15 @@ const useStore = create(
         partialize: (state) =>
           Object.fromEntries(
             Object.entries(state).filter(
-              ([key]) => !['dialogs', 'disconnected', 'ui', 'spotify', 'pixelGraphs'].includes(key)
+              ([key]) =>
+                ![
+                  'dialogs',
+                  'disconnected',
+                  'ui',
+                  'spotify',
+                  'pixelGraphs',
+                  'externalStudioRef'
+                ].includes(key)
             )
           )
       }
