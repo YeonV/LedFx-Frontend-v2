@@ -29,6 +29,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
   const [error, setError] = useState<{ row: number; col: number }[]>([])
 
   const devices = useStore((state) => state.devices)
+  const initialMatrixSnapshot = useStore((state) => state.virtualEditorSnapshot)
 
   // Zustand hooks for external actions
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -145,13 +146,40 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
   }, [])
 
   const saveMatrix = useCallback(() => {
-    Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-      segments: processArray(m.flat(), virtual.id)
-    }).then(() => {
-      getVirtuals()
-      getDevices()
-    })
-  }, [m, virtual.id, getVirtuals, getDevices])
+    const currentRows = m.length
+    const currentCols = m[0]?.length || 0
+
+    // --- THE FIX: Compare against the correct snapshot from the store ---
+    const initialRows = initialMatrixSnapshot?.length || 0
+    const initialCols = initialMatrixSnapshot?.[0]?.length || 0
+
+    const dimensionsChanged = currentRows !== initialRows || currentCols !== initialCols
+
+    if (dimensionsChanged) {
+      console.log('Dimensions changed. Performing two-step save...')
+      addVirtual({
+        id: virtual.id,
+        config: { ...virtual.config, rows: currentRows }
+      })
+        .then(() => {
+          return Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+            segments: processArray(m.flat(), virtual.id)
+          })
+        })
+        .then(() => {
+          getVirtuals()
+          getDevices()
+        })
+    } else {
+      console.log('Dimensions unchanged. Performing standard save...')
+      Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
+        segments: processArray(m.flat(), virtual.id)
+      }).then(() => {
+        getVirtuals()
+        getDevices()
+      })
+    }
+  }, [m, virtual, initialMatrixSnapshot, addVirtual, getVirtuals, getDevices])
 
   const handleSetRowNumber = useCallback(
     (n: number) => {

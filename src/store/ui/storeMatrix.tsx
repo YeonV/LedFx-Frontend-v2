@@ -1,10 +1,11 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
+import { IMCell } from '../../pages/Devices/EditVirtuals/EditMatrix/M.utils'
 
 const storeMatrix = (set: any) => ({
   isExternalEditorOpen: false,
   virtualEditorIsDirty: false,
-  virtualEditorSnapshot: null,
+  virtualEditorSnapshot: null as IMCell[][] | null,
   externalStudioRef: null as Window | null,
   setExternalEditorOpen: (isOpen: boolean) =>
     set(
