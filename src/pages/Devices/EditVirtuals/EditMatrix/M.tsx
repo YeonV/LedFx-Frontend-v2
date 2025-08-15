@@ -68,7 +68,6 @@ const ExternalEditorPlaceholder = () => {
             windowToClose.postMessage({ source: 'LedFx', action: 'close' }, matrixStudioOrigin)
           }
           setExternalEditorOpen(false)
-          setExternalStudioRef(null)
         }}
       >
         Force Close & Discard External Changes

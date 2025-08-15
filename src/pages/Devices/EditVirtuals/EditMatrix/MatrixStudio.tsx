@@ -18,10 +18,12 @@ const Transition = forwardRef(function Transition(
 
 const MatrixStudioButton = ({
   defaultValue,
-  deviceList
+  deviceList,
+  handleSave
 }: {
   defaultValue?: IMCell[][] | undefined
   deviceList?: IDevice[] | undefined
+  handleSave?: (data: any) => void
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -33,7 +35,10 @@ const MatrixStudioButton = ({
     setOpen(false)
   }
   const handleSaveAndClose = (e: any) => {
-    console.log('Save clicked', e)
+    // console.log('Save clicked', e)
+    if (handleSave) {
+      handleSave(e)
+    }
     setOpen(false)
   }
 

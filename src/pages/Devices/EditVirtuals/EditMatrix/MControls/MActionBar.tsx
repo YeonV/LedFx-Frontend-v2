@@ -16,7 +16,7 @@ import {
 import { Box, Collapse, Divider, IconButton, Stack, Tooltip } from '@mui/material'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 import DimensionSliders from './DimensionSliders'
-import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import useStore from '../../../../../store/useStore'
 import Webcam from '../../../../../components/Webcam/Webcam'
 import GroupControls from './GroupControls'
@@ -60,6 +60,7 @@ const MActionBar = ({
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const virtualEditorIsDirty = useStore((state) => state.virtualEditorIsDirty)
+  const setVirtualEditorIsDirty = useStore((state) => state.setVirtualEditorIsDirty)
   const setExternalEditorOpen = useStore((state) => state.setExternalEditorOpen)
 
   const setExternalStudioRef = useStore((state) => state.setExternalStudioRef)
@@ -101,36 +102,36 @@ const MActionBar = ({
     }
   }, [virtual.id, m, devices, virtualOrder, virtuals])
 
-  const isValidMatrixLayout = (data: any): boolean => {
-    return Array.isArray(data.matrixData)
-  }
+  // const isValidMatrixLayout = (data: any): boolean => {
+  //   return Array.isArray(data.matrixData)
+  // }
 
-  const handleJsonFile = useCallback(
-    (file: File) => {
-      const reader = new FileReader()
-      reader.readAsText(file, 'UTF-8')
-      reader.onload = (event: any) => {
-        try {
-          const data = JSON.parse(event.target.result)
-          if (isValidMatrixLayout(data)) {
-            setPendingMatrixLayout(data)
-            showSnackbar('success', `Layout '${data.name || 'Untitled'}' is ready to import.`)
-          } else {
-            showSnackbar('error', 'Unrecognized matrix layout format')
-          }
-        } catch (_error) {
-          showSnackbar('error', 'Failed to parse JSON')
-        }
-      }
-    },
-    [setPendingMatrixLayout, showSnackbar]
-  )
+  // const handleJsonFile = useCallback(
+  //   (file: File) => {
+  //     const reader = new FileReader()
+  //     reader.readAsText(file, 'UTF-8')
+  //     reader.onload = (event: any) => {
+  //       try {
+  //         const data = JSON.parse(event.target.result)
+  //         if (isValidMatrixLayout(data)) {
+  //           setPendingMatrixLayout(data)
+  //           showSnackbar('success', `Layout '${data.name || 'Untitled'}' is ready to import.`)
+  //         } else {
+  //           showSnackbar('error', 'Unrecognized matrix layout format')
+  //         }
+  //       } catch (_error) {
+  //         showSnackbar('error', 'Failed to parse JSON')
+  //       }
+  //     }
+  //   },
+  //   [setPendingMatrixLayout, showSnackbar]
+  // )
 
-  const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) handleJsonFile(file)
-    if (event.target) event.target.value = ''
-  }
+  // const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0]
+  //   if (file) handleJsonFile(file)
+  //   if (event.target) event.target.value = ''
+  // }
 
   useEffect(() => {
     if (pendingMatrixLayout) {
@@ -164,6 +165,7 @@ const MActionBar = ({
 
       const data = event.data
       if (data && Array.isArray(data.matrixData) && data.source === 'MatrixStudio') {
+        setExternalStudioRef(null)
         setM(data.matrixData)
         showSnackbar('success', 'Matrix layout updated!')
         // --- When data is received, the session is over. Unlock the UI. ---
@@ -172,7 +174,7 @@ const MActionBar = ({
     }
     window.addEventListener('message', handleEditorUpdate)
     return () => window.removeEventListener('message', handleEditorUpdate)
-  }, [setM, showSnackbar, setExternalEditorOpen])
+  }, [setM, showSnackbar, setExternalEditorOpen, setExternalStudioRef])
 
   const mountTimeRef = useRef<number>(Date.now())
 
@@ -339,6 +341,9 @@ const MActionBar = ({
             <MatrixStudioButton
               defaultValue={studioData?.matrixData}
               deviceList={studioData?.deviceList}
+              handleSave={(data) => {
+                setM(data)
+              }}
             />
             <Divider orientation="vertical" flexItem />
           </Stack>
@@ -363,7 +368,10 @@ const MActionBar = ({
               <IconButton
                 color={virtualEditorIsDirty ? 'error' : 'inherit'}
                 size="large"
-                onClick={saveMatrix}
+                onClick={() => {
+                  setVirtualEditorIsDirty(false)
+                  saveMatrix()
+                }}
               >
                 <Save />
               </IconButton>
