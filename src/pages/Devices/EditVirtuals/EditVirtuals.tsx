@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
-
 import {
+  Badge,
   ListItemIcon,
   MenuItem,
   Slide,
   IconButton,
   ToggleButtonGroup,
   ToggleButton,
-  Tooltip
+  Tooltip,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material'
 import { GridOn, Settings, Visibility, VisibilityOff } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
@@ -24,14 +28,44 @@ import AddSegmentDialog from '../../../components/Dialogs/_AddSegmentDialog'
 import Segment from './Segment'
 
 import useEditVirtualsStyles from './EditVirtuals.styles'
-import EditMatrix from './EditMatrix/M'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import Tour2dVirtual from '../../../components/Tours/Tour2dVirtual'
 import AddExistingSegmentDialog from '../../../components/Dialogs/AddExistingSegmentDialog'
+// import { useMatrixEditorContext } from './EditMatrix/MatrixEditorContext'
+import EditMatrix, { type EditMatrixRef } from './EditMatrix/M'
+
+const UnsavedChangesDialog = ({
+  open,
+  onSave,
+  onDiscard,
+  onCancel
+}: {
+  open: boolean
+  onSave: () => void
+  onDiscard: () => void
+  onCancel: () => void
+}) => (
+  <Dialog open={open} onClose={onCancel}>
+    <DialogTitle>Unsaved Changes</DialogTitle>
+    <DialogContent>
+      <DialogContentText>
+        You have unsaved changes. Are you sure you want to leave?
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={onCancel}>Stay</Button>
+      <Button onClick={onDiscard}>Discard Changes</Button>
+      <Button onClick={onSave} variant="contained" autoFocus>
+        Save Changes
+      </Button>
+    </DialogActions>
+  </Dialog>
+)
 
 const Transition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...(props as any)} />
 })
+
 type Props = {
   _?: never
   children?: any
@@ -68,29 +102,75 @@ export default function EditVirtuals({
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const getDevices = useStore((state) => state.getDevices)
   const virtuals = useStore((state) => state.virtuals)
-  // const editVirtual = useStore((state) => state.dialogs.editVirtual);
   const setDialogOpenEditVirtual = useStore((state) => state.setDialogOpenEditVirtual)
   const activeSegment = useStore((state) => state.activeSegment)
   const highlightSegment = useStore((state) => state.highlightSegment)
+  const isExternalEditorOpen = useStore((state) => state.isExternalEditorOpen)
+
+  const isDirty = useStore((state) => state.virtualEditorIsDirty)
+  const setVirtualEditorIsDirty = useStore((state) => state.setVirtualEditorIsDirty)
+
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+  const [nextAction, setNextAction] = useState<(() => void) | null>(null)
 
   const virtual = virtuals[currentVirtual || virtId]
   const [open, setOpen] = React.useState(!!currentVirtual || false)
   const [calib, setCalib] = React.useState(true)
+
+  const matrixEditorRef = useRef<EditMatrixRef>(null)
+
+  const closeAndReset = () => {
+    setOpen(false)
+    setDialogOpenEditVirtual(false)
+    setCurrentVirtual(null)
+    onClick()
+  }
+
+  const handleSaveAndExit = () => {
+    console.log('saveVirtual', virtual.id)
+    if (matrixEditorRef.current) {
+      matrixEditorRef.current.saveMatrix()
+    }
+    setVirtualEditorIsDirty(false)
+    setShowUnsavedDialog(false)
+    if (nextAction) {
+      nextAction()
+    } else {
+      closeAndReset()
+    }
+  }
+
+  const handleDiscardAndExit = () => {
+    setVirtualEditorIsDirty(false)
+    setShowUnsavedDialog(false)
+    if (nextAction) {
+      nextAction()
+    } else {
+      closeAndReset()
+    }
+  }
+
+  const handleCancelExit = () => {
+    setShowUnsavedDialog(false)
+    setNextAction(null)
+  }
 
   const handleClickOpen = () => {
     setOpen(true)
   }
 
   const handleClose = () => {
+    if (isDirty) {
+      setNextAction(() => closeAndReset)
+      setShowUnsavedDialog(true)
+      return
+    }
     const output = getOverlapping(virtual.segments)
     const overlap = Object.keys(output).find((k) => output[k].overlap)
     if (overlap) {
       showSnackbar('warning', `Overlapping in ${overlap} detected! Please Check your config`)
     } else {
-      setOpen(false)
-      setDialogOpenEditVirtual(false)
-      setCurrentVirtual(null)
-      onClick()
+      closeAndReset()
     }
   }
 
@@ -102,17 +182,14 @@ export default function EditVirtuals({
     if (currentVirtual && type === 'hidden') {
       setOpen(true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentVirtual])
+  }, [currentVirtual, type])
 
   useEffect(() => {
     if (virtual?.id && open) calibrationMode(virtual?.id, 'on')
-
     return () => {
       if (virtual?.id && open) calibrationMode(virtual?.id, 'off')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtual?.id, open])
+  }, [virtual?.id, open, calibrationMode])
 
   useEffect(() => {
     if (matrix) {
@@ -120,16 +197,12 @@ export default function EditVirtuals({
     }
   }, [matrix])
 
-  // useEffect(() => {
-  //   const unloadCallback = (event: any) => {
-  //     event.preventDefault()
-  //     if (virtual?.id) calibrationMode(virtual?.id, 'off')
-  //     return ''
-  //   }
+  useEffect(() => {
+    if (isExternalEditorOpen && !matrix) {
+      setMatrix(true)
+    }
+  }, [isExternalEditorOpen, matrix])
 
-  //   window.addEventListener('beforeunload', unloadCallback)
-  //   return () => window.removeEventListener('beforeunload', unloadCallback)
-  // }, [])
   return virtual && virtual.config ? (
     <>
       {type === 'menuItem' ? (
@@ -150,7 +223,6 @@ export default function EditVirtuals({
           startIcon={startIcon}
           color={color}
           onClick={() => {
-            // onClick(e);
             handleClickOpen()
           }}
           size="small"
@@ -169,17 +241,36 @@ export default function EditVirtuals({
               variant="contained"
               startIcon={<NavigateBeforeIcon />}
               onClick={handleClose}
-              style={{ marginRight: '1rem' }}
+              style={{ marginRight: '1rem', paddingRight: '1rem' }}
+              disabled={isExternalEditorOpen}
             >
-              back
+              Back
+              {isDirty && (
+                <Badge
+                  color="error"
+                  badgeContent=" "
+                  variant="dot"
+                  sx={{ marginLeft: 1, marginTop: -2 }}
+                >
+                  {' '}
+                </Badge>
+              )}
             </Button>
             {(virtual.config.rows || 1) > 1 && (
               <ToggleButtonGroup
                 value={matrix}
+                disabled={isExternalEditorOpen}
                 style={{ marginRight: '1rem' }}
                 size="small"
                 exclusive
-                onChange={() => setMatrix(!matrix)}
+                onChange={() => {
+                  if (isDirty) {
+                    setNextAction(() => () => setMatrix(!matrix))
+                    setShowUnsavedDialog(true)
+                  } else {
+                    setMatrix(!matrix)
+                  }
+                }}
                 aria-label="mode"
               >
                 <ToggleButton value={false}>
@@ -188,13 +279,8 @@ export default function EditVirtuals({
                 <ToggleButton value>
                   <GridOn />
                 </ToggleButton>
-                {/* <ToggleButton disabled value="3d">
-                <BladeIcon name="mdi:cube-outline" />
-              </ToggleButton> */}
               </ToggleButtonGroup>
             )}
-
-            {/* {matrix ? '2D matrix' : '1D Strip'} */}
             <Typography variant="h6" className={classes.title}>
               {virtual.config.name}{' '}
             </Typography>
@@ -222,7 +308,7 @@ export default function EditVirtuals({
           </Toolbar>
         </AppBar>
         {matrix ? (
-          <EditMatrix virtual={virtual} />
+          <EditMatrix virtual={virtual} ref={matrixEditorRef} />
         ) : (
           <>
             <div className={classes.segmentTitle}>
@@ -246,6 +332,13 @@ export default function EditVirtuals({
           </>
         )}
       </Dialog>
+      <UnsavedChangesDialog
+        open={showUnsavedDialog}
+        onSave={handleSaveAndExit}
+        onDiscard={handleDiscardAndExit}
+        onCancel={handleCancelExit}
+        // isExternalOpen={false} // This is now always false
+      />
     </>
   ) : null
 }
