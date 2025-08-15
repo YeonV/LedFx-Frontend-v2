@@ -53,13 +53,27 @@ const MActionBar = ({
   const features = useStore((state) => state.features)
   const getDevices = useStore((state) => state.getDevices)
   const devices = useStore((state) => state.devices)
+  const virtuals = useStore((state) => state.virtuals)
+  const virtualOrder = useStore((state) => state.virtualOrder)
 
   const pendingMatrixLayout = useStore((state) => state.ui.pendingMatrixLayout)
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
-  const studioData = useMemo(
-    () => ({
+  const studioData = useMemo(() => {
+    const deviceIdToVirtualIdMap = new Map<string, string>()
+    Object.values(virtuals).forEach((v: any) => {
+      if (v.is_device) {
+        deviceIdToVirtualIdMap.set(v.is_device, v.id)
+      }
+    })
+
+    const virtualIdToOrderMap = new Map<string, number>()
+    virtualOrder.forEach((vo: any) => {
+      virtualIdToOrderMap.set(vo.virtId, vo.order)
+    })
+
+    return {
       name: virtual.id,
       matrixData: m,
       deviceList: Object.entries(devices)
@@ -69,13 +83,19 @@ const MActionBar = ({
             !id.startsWith('gap-') &&
             ['mask', 'foreground', 'background'].every((suffix) => !id.endsWith(suffix))
         )
-        .map(([id, device]) => ({
-          deviceId: id,
-          count: device.config.pixel_count!
-        }))
-    }),
-    [virtual.id, m, devices]
-  )
+        .map(([id, device]) => {
+          const virtualId = deviceIdToVirtualIdMap.get(id)
+          const order = virtualId ? virtualIdToOrderMap.get(virtualId) : undefined
+
+          return {
+            deviceId: id,
+            count: device.config.pixel_count!,
+            name: device.config.name || id,
+            order
+          }
+        })
+    }
+  }, [virtual.id, m, devices, virtualOrder, virtuals])
 
   const isValidMatrixLayout = (data: any): boolean => {
     return Array.isArray(data.matrixData)
