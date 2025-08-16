@@ -134,5 +134,50 @@ export const migrations: Migrations = {
   23: produce((draft) => {
     draft.config = draft.config || {}
     draft.config.startup_scene_id = ''
+  }),
+  // Migration 24: Adds the `hosts` array to the main config object.
+  24: produce((draft) => {
+    if (draft.config) {
+      draft.config.hosts = draft.config.hosts || []
+    }
+  }),
+
+  // Migration 25: Adds the `groupMode` flag for the matrix editor assistant.
+  25: produce((draft) => {
+    if (draft.uiPersist && draft.uiPersist.assistant) {
+      // Set a sensible default.
+      draft.uiPersist.assistant.groupMode = true
+    }
+  }),
+
+  // Migration 26: Adds state for the new QR Connector feature.
+  26: produce((draft) => {
+    if (draft.dialogs) {
+      draft.dialogs.qrConnector = { open: false, edit: false }
+    }
+    draft.userClosedQrConnector = false
+  }),
+
+  // Migration 27: Normalizes the shape of cleared effects in virtuals.
+  // This prevents bugs by ensuring old, empty effects match the new format.
+  27: produce((draft) => {
+    if (draft.virtuals) {
+      for (const virtId in draft.virtuals) {
+        const effect = draft.virtuals[virtId]?.effect
+        // Check for the old format: { type: '', name: '', config: {} }
+        if (effect && effect.type === '' && Object.keys(effect.config).length === 0) {
+          draft.virtuals[virtId].effect.type = null
+          draft.virtuals[virtId].effect.config = null
+        }
+      }
+    }
+  }),
+
+  // Migration 28: Adds the new state properties for the Matrix Editor workflow.
+  28: produce((draft) => {
+    draft.isExternalEditorOpen = false
+    draft.virtualEditorIsDirty = false
+    draft.virtualEditorSnapshot = null
+    // `externalStudioRef` is correctly not included as it's not persisted.
   })
 }
