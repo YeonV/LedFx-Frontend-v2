@@ -245,10 +245,24 @@ const MActionBar = ({
       >
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" spacing={0.5}>
-            <Tooltip title={showSliders ? 'Exit Resize' : 'Resize Matrix'}>
-              <IconButton size="large" onClick={() => setShowSliders(!showSliders)}>
-                {showSliders ? <Cancel /> : <Settings />}
-              </IconButton>
+            <Tooltip
+              title={
+                showSliders
+                  ? 'Exit Resize'
+                  : virtualEditorIsDirty
+                    ? 'Cannot Resize with Unsaved Changes'
+                    : 'Resize Matrix'
+              }
+            >
+              <div>
+                <IconButton
+                  size="large"
+                  onClick={() => setShowSliders(!showSliders)}
+                  disabled={virtualEditorIsDirty}
+                >
+                  {showSliders ? <Cancel /> : <Settings />}
+                </IconButton>
+              </div>
             </Tooltip>
 
             {features.matrix_cam && (
@@ -355,7 +369,7 @@ const MActionBar = ({
               </IconButton>
             </Tooltip>
             <Tooltip title="Reset to last saved state">
-              <IconButton size="large" onClick={resetMatrix}>
+              <IconButton size="large" onClick={resetMatrix} disabled={!virtualEditorIsDirty}>
                 <Loop />
               </IconButton>
             </Tooltip>
