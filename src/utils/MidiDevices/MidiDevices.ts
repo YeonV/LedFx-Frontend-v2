@@ -7,9 +7,7 @@ import { LaunchkeyMiniMK3 } from './LaunchkeyMiniMK3/LaunchkeyMiniMK3'
 export const Launchpad = {
   X: LaunchpadX,
   MK2: LaunchpadMK2,
-  S: LaunchpadS,
-  MK3: LaunchkeyMK3,
-  MiniMK3: LaunchkeyMiniMK3
+  S: LaunchpadS
 }
 
 export const Launchkey = {
@@ -18,5 +16,6 @@ export const Launchkey = {
 }
 
 export const MidiDevices = {
-  Launchpad
+  Launchpad,
+  Launchkey
 }

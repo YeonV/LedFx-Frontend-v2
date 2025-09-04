@@ -1,5 +1,6 @@
 import { LaunchkeyMiniMK3Device } from '../LaunchkeyDevice'
 import { lpColors, lpCommonColors } from '../LaunchpadX/lpColors'
+import { createLedFunctions } from '../fnFactory'
 
 export const LaunchkeyMiniMK3: LaunchkeyMiniMK3Device = {
   buttonNumbers: [
@@ -31,30 +32,6 @@ export const LaunchkeyMiniMK3: LaunchkeyMiniMK3Device = {
     ledPulse: [0x9b, 'buttonNumber', 'color']
   },
   fn: {
-    ledOff: (buttonNumber: number) => [0x99, buttonNumber, 0x00],
-    ledOn: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number,
-      mode: 'solid' | 'flash' | 'pulse' = 'solid'
-    ) => [
-      mode === 'pulse' ? 0x9b : mode === 'flash' ? 0x9a : 0x99,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    ledSolid: (buttonNumber: number, color: keyof typeof lpColors | number) => [
-      0x99,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    ledFlash: (buttonNumber: number, color: keyof typeof lpColors | number) => [
-      0x9a,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    ledPulse: (buttonNumber: number, color: keyof typeof lpColors | number) => [
-      0x9b,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ]
+    ...createLedFunctions(0x99, 0x9a, 0x9b, lpColors)
   }
 }

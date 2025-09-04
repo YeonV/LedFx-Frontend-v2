@@ -1,7 +1,5 @@
 import { MidiDevices } from './MidiDevices'
 
-export type IColor = keyof (typeof MidiDevices)['Launchpad']['X']['colors']
-
 // Helper function to zero-pad hex values
 export const zeroPadHex = (value: number | string | undefined) => {
   if (value === undefined) {
@@ -56,7 +54,7 @@ export const hexToHSL = (hex: string) => {
 }
 
 // Helper function to sort colors by HSL values, prioritizing hue and saturation, then lightness
-export const sortColorsByHSL = (colors: IColor[]) => {
+export const sortColorsByHSL = (colors: string[]) => {
   return colors.sort((a, b) => {
     const [hA, sA, lA] = hexToHSL(a)
     const [hB, sB, lB] = hexToHSL(b)
