@@ -1,5 +1,6 @@
 import { LaunchpadXDevice } from '../LaunchPadDevice'
 import { lpColors, lpCommonColors } from './lpColors'
+import { createLedFunctions, rgbFunction, textFunction } from '../fnFactory'
 
 export const LaunchpadX: LaunchpadXDevice = {
   buttonNumbers: [
@@ -39,62 +40,8 @@ export const LaunchpadX: LaunchpadXDevice = {
     stopText: [240, 0, 32, 41, 2, 12, 7, 247]
   },
   fn: {
-    ledOff: (buttonNumber: number) => [0x90, buttonNumber, 0x00],
-    ledOn: (
-      buttonNumber: number,
-      color: keyof typeof lpColors | number,
-      mode: 'solid' | 'flash' | 'pulse' = 'solid'
-    ) => [
-      mode === 'pulse' ? 0x92 : mode === 'flash' ? 0x91 : 0x90,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    ledSolid: (buttonNumber: number, color: keyof typeof lpColors | number) => [
-      0x90,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    ledFlash: (buttonNumber: number, color: keyof typeof lpColors | number) => [
-      0x91,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    ledPulse: (buttonNumber: number, color: keyof typeof lpColors | number) => [
-      0x92,
-      buttonNumber,
-      typeof color === 'number' ? color : lpColors[color]
-    ],
-    rgb: (buttonNumber: number, r: number, g: number, b: number) => [
-      240,
-      0,
-      32,
-      41,
-      2,
-      12,
-      3,
-      3,
-      buttonNumber,
-      Math.floor(r / 2),
-      Math.floor(g / 2),
-      Math.floor(b / 2),
-      247
-    ],
-    text: (text: string, r: number, g: number, b: number, loop?: boolean, speed: number = 7) => [
-      240,
-      0,
-      32,
-      41,
-      2,
-      12,
-      7,
-      loop ? 1 : 0,
-      speed,
-      1,
-      Math.floor(r / 2),
-      Math.floor(g / 2),
-      Math.floor(b / 2),
-      ...text.split('').map((char) => char.charCodeAt(0)),
-      247
-    ]
+    ...createLedFunctions(0x90, 0x91, 0x92, lpColors),
+    rgb: rgbFunction,
+    text: textFunction
   }
 }

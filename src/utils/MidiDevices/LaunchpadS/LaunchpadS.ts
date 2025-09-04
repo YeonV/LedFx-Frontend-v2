@@ -1,5 +1,6 @@
 import { LaunchpadSDevice } from '../LaunchPadDevice'
 import { lpsColors, lpsCommonColors } from './lpsColors'
+import { createLaunchpadSFn } from '../fnFactory'
 
 export const LaunchpadS: LaunchpadSDevice = {
   buttonNumbers: [
@@ -26,12 +27,5 @@ export const LaunchpadS: LaunchpadSDevice = {
   command: {
     ledOn: [0x90, 'buttonNumber', 'color']
   },
-  fn: {
-    ledOff: (buttonNumber: number) => [0x90, buttonNumber, 0x0c],
-    ledOn: (buttonNumber: number, color: keyof typeof lpsColors | number) => [
-      0x90,
-      buttonNumber,
-      typeof color === 'number' ? color : lpsColors[color]
-    ]
-  }
+  fn: createLaunchpadSFn(lpsColors)
 }

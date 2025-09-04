@@ -1,19 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { lpsColors } from './LaunchpadS/lpsColors'
 import { lpColors } from './LaunchpadX/lpColors'
+import { BaseDevice } from './BaseDevice'
 
-export interface LaunchpadXDevice {
-  buttonNumbers: number[][]
-  colors: Record<string, number>
-  commonColors: Record<string, number>
-  globalColors: {
-    sceneActiveType: string
-    sceneActiveColor: string
-    sceneInactiveType: string
-    sceneInactiveColor: string
-    commandType: string
-    commandColor: string
-  }
+export interface LaunchpadXDevice extends BaseDevice {
   command: {
     programmer: number[]
     live: number[]
@@ -48,18 +38,7 @@ export interface LaunchpadXDevice {
   }
 }
 
-export interface LaunchpadSDevice {
-  buttonNumbers: number[][]
-  colors: Record<string, number>
-  commonColors: Record<string, number>
-  globalColors: {
-    sceneActiveType: string
-    sceneActiveColor: string
-    sceneInactiveType: string
-    sceneInactiveColor: string
-    commandType: string
-    commandColor: string
-  }
+export interface LaunchpadSDevice extends BaseDevice {
   command: {
     ledOn: (number | string)[]
   }
@@ -69,18 +48,7 @@ export interface LaunchpadSDevice {
   }
 }
 
-export interface LaunchpadMK2Device {
-  buttonNumbers: number[][]
-  colors: Record<string, number>
-  commonColors: Record<string, number>
-  globalColors: {
-    sceneActiveType: string
-    sceneActiveColor: string
-    sceneInactiveType: string
-    sceneInactiveColor: string
-    commandType: string
-    commandColor: string
-  }
+export interface LaunchpadMK2Device extends BaseDevice {
   command: {
     programmer: number[]
     live: number[]

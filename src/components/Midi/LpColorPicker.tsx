@@ -2,19 +2,11 @@ import { useState, useEffect } from 'react'
 import { Box, Grid, Paper, Typography, Popover, Button, useTheme } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { darken } from '@mui/material/styles'
-import { IColor, rgbValues, sortColorsByHSL, zeroPadHex } from '../../utils/MidiDevices/colorHelper'
+import { rgbValues, sortColorsByHSL, zeroPadHex } from '../../utils/MidiDevices/colorHelper'
 import useStore from '../../store/useStore'
 import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ReactGPicker from 'react-gcolor-picker'
 import { WebMidi } from 'webmidi'
-
-interface LpColorPickerProps {
-  onColorSelect: (_color: string) => void
-  defaultColor?: IColor | string
-  midiButtonNumber?: number
-  type: string
-  height?: number
-}
 
 const LpColorPicker = ({
   onColorSelect,
@@ -22,14 +14,23 @@ const LpColorPicker = ({
   midiButtonNumber,
   type = '90',
   height = 32
-}: LpColorPickerProps) => {
-  const [selectedColor, setSelectedColor] = useState<IColor | string | null>(null)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const theme = useTheme()
-  const midiOutput = useStore((state) => state.midiOutput)
+}: {
+  onColorSelect: (_color: string) => void
+  defaultColor?: string
+  midiButtonNumber?: number
+  type: string
+  height?: number
+}) => {
   const midiType = useStore((state) => state.midiType)
   const midiModel = useStore((state) => state.midiModel)
   const colors = MidiDevices[midiType][midiModel].colors
+  type ColorKey = keyof typeof colors
+
+  const [selectedColor, setSelectedColor] = useState<ColorKey | string | null>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const theme = useTheme()
+  const midiOutput = useStore((state) => state.midiOutput)
+
   const getColorFromValue = useStore((state) => state.getColorFromValue)
   const output =
     WebMidi.enabled &&
@@ -42,17 +43,19 @@ const LpColorPicker = ({
       setSelectedColor(defaultColor as string)
     } else {
       if (defaultColor && colors[defaultColor as keyof typeof colors]) {
-        setSelectedColor(defaultColor as IColor)
+        setSelectedColor(defaultColor as ColorKey)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultColor])
 
-  const handleColorClick = (color: IColor) => {
+  const handleColorClick = (color: ColorKey | string) => {
     setSelectedColor(color)
     if (onColorSelect) {
       onColorSelect(
-        isRgb && color.startsWith('rgb') ? color : zeroPadHex(colors[color as keyof typeof colors])
+        isRgb && typeof color === 'string' && color.startsWith('rgb')
+          ? color
+          : zeroPadHex(colors[color as ColorKey])
       )
     }
     setAnchorEl(null)
@@ -63,12 +66,12 @@ const LpColorPicker = ({
   }
 
   const handleClose = () => {
-    if (isRgb && selectedColor?.startsWith('rgb')) {
-      handleColorClick(selectedColor as string)
+    if (isRgb && typeof selectedColor === 'string' && selectedColor.startsWith('rgb')) {
+      handleColorClick(selectedColor)
     }
     setAnchorEl(null)
   }
-  const sortedColors = sortColorsByHSL(Object.keys(colors) as IColor[])
+  const sortedColors = sortColorsByHSL(Object.keys(colors))
   const open = Boolean(anchorEl)
   const id = open ? 'color-popover' : undefined
 
@@ -87,18 +90,16 @@ const LpColorPicker = ({
             (selectedColor || defaultColor || '#000000') as string
           ),
           '&:hover': {
-            backgroundColor: darken(selectedColor || defaultColor || '#ffffff', 0.2)
+            backgroundColor: darken((selectedColor || defaultColor || '#ffffff') as string, 0.2)
           }
         }}
       >
-        {isRgb && selectedColor?.startsWith('rgb')
+        {isRgb && typeof selectedColor === 'string' && selectedColor.startsWith('rgb')
           ? ''
           : selectedColor
-            ? zeroPadHex(colors[selectedColor as keyof typeof colors])
+            ? zeroPadHex(colors[selectedColor as ColorKey])
             : zeroPadHex((colors as any)[defaultColor || '#FF0000']) || ''}
-        {/* : zeroPadHex(((colors as any)[(defaultColor || '#FF0000')]).toString(16).toUpperCase())  || ''} */}
       </Button>
-      {/* <LpRgbColorPicker value={selectedColor || defaultColor || '#000000'} onChange={onColorSelect} /> */}
       <Popover
         id={id}
         open={open}
@@ -153,7 +154,7 @@ const LpColorPicker = ({
           ) : (
             <Box sx={{ maxHeight: 300, overflowY: 'auto', p: 1, width: 200 }}>
               <Grid container spacing={1}>
-                {sortedColors.map((color: IColor) => (
+                {sortedColors.map((color) => (
                   <Grid key={color} size={3}>
                     <Paper
                       sx={[
@@ -181,7 +182,7 @@ const LpColorPicker = ({
                           color: theme.palette.getContrastText(color as string)
                         }}
                       >
-                        {zeroPadHex(colors[color as keyof typeof colors])}
+                        {zeroPadHex(colors[color as ColorKey])}
                       </Typography>
                     </Paper>
                   </Grid>

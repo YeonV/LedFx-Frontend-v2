@@ -1,18 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { lpColors } from './LaunchpadX/lpColors'
+import { BaseDevice } from './BaseDevice'
 
-export interface LaunchkeyMK3Device {
-  buttonNumbers: number[][]
-  colors: Record<string, number>
-  commonColors: Record<string, number>
-  globalColors: {
-    sceneActiveType: string
-    sceneActiveColor: string
-    sceneInactiveType: string
-    sceneInactiveColor: string
-    commandType: string
-    commandColor: string
-  }
+export interface LaunchkeyMK3Device extends BaseDevice {
   command: {
     standalone: number[]
     daw: number[]
@@ -36,18 +26,7 @@ export interface LaunchkeyMK3Device {
   }
 }
 
-export interface LaunchkeyMiniMK3Device {
-  buttonNumbers: number[][]
-  colors: Record<string, number>
-  commonColors: Record<string, number>
-  globalColors: {
-    sceneActiveType: string
-    sceneActiveColor: string
-    sceneInactiveType: string
-    sceneInactiveColor: string
-    commandType: string
-    commandColor: string
-  }
+export interface LaunchkeyMiniMK3Device extends BaseDevice {
   command: {
     standalone: number[]
     daw: number[]
