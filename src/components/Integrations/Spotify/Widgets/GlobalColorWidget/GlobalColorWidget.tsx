@@ -5,7 +5,7 @@ import GradientPicker from '../../../../SchemaForm/components/GradientPicker/Gra
 import { styled } from '@mui/material/styles'
 import useStore from '../../../../../store/useStore'
 import { useEffect } from 'react'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/shallow'
 
 const Root = styled('div')({
   width: 300,
@@ -14,7 +14,7 @@ const Root = styled('div')({
 
 const GlobalColorWidget = ({ close }: { close?: () => void }) => {
   const { virtuals, updateEffect, getVirtuals, colors, getColors, addColor, showHex } = useStore(
-    (state) => ({
+    useShallow((state) => ({
       virtuals: state.virtuals,
       updateEffect: state.updateEffect,
       getVirtuals: state.getVirtuals,
@@ -22,8 +22,7 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
       getColors: state.getColors,
       addColor: state.addColor,
       showHex: state.uiPersist.showHex,
-    }),
-    shallow
+    }))
   )
 
   const sendColorToVirtuals = (e: any, title: string) => {
@@ -33,7 +32,14 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
           if (virtual.effect.config.gradient !== undefined) {
             updateEffect(virtual.id, virtual.effect.type, { gradient: e }, false)
           } else if (virtual.effect.config.color !== undefined) {
-            updateEffect(virtual.id, virtual.effect.type, { color: e }, false)
+            let color = e
+            if (typeof e === 'string' && e.startsWith('linear-gradient')) {
+              const match = e.match(/#([0-9a-f]{3,6})/i)
+              if (match) {
+                color = match[0]
+              }
+            }
+            updateEffect(virtual.id, virtual.effect.type, { color: color }, false)
           }
         } else {
           updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false)
