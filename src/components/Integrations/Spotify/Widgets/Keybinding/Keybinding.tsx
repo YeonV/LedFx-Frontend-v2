@@ -37,6 +37,10 @@ const keybindings = [
     keys: 'ctrl+alt+f',
     description: 'Show/Hide FPS Viewer'
   },
+  {
+    keys: 'ctrl+alt+c',
+    description: 'Global Color Widget'
+  },
   // {
   //   keys: 'ctrl+alt+d',
   //   description: 'MP'
