@@ -9,7 +9,7 @@ import { useShallow } from 'zustand/shallow'
 
 const Root = styled('div')({
   width: 300,
-  background: '#111',
+  background: '#111'
 })
 
 const GlobalColorWidget = ({ close }: { close?: () => void }) => {
@@ -21,7 +21,7 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
       colors: state.colors,
       getColors: state.getColors,
       addColor: state.addColor,
-      showHex: state.uiPersist.showHex,
+      showHex: state.uiPersist.showHex
     }))
   )
 
@@ -39,7 +39,7 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
                 color = match[0]
               }
             }
-            updateEffect(virtual.id, virtual.effect.type, { color: color }, false)
+            updateEffect(virtual.id, virtual.effect.type, { color }, false)
           }
         } else {
           updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false)
