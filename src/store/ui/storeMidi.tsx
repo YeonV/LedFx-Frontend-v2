@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import type { IStore } from '../useStore'
-import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 
 export interface IMidiMapping {
   command?: string
@@ -51,7 +51,8 @@ const storeMidi = (set: any, get: any) => ({
   getColorFromValue: (value: string) => {
     if (value === 'undefined') return undefined
     const state = get() as IStore
-    const colors = MidiDevices[state.midiType][state.midiModel].colors
+    const midiDevice = MidiDevices[state.midiType][state.midiModel] as IMidiDevice
+    const colors = midiDevice.colors
     const numericValue = parseInt(value, 16)
     return (
       Object.keys(colors).find((key) => colors[key as keyof typeof colors] === numericValue) ||
@@ -60,14 +61,11 @@ const storeMidi = (set: any, get: any) => ({
   },
   getUiBtnNo: (inputInt: number): number | null => {
     const state = get() as IStore
-    for (let i = 0; i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length; i++) {
-      for (
-        let j = 0;
-        j < MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length;
-        j++
-      ) {
-        if (MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] === inputInt) {
-          return MidiDevices.Launchpad.X.buttonNumbers[i][j]
+    const midiDevice = MidiDevices[state.midiType][state.midiModel] as IMidiDevice
+    for (let i = 0; i < midiDevice.buttonNumbers.length; i++) {
+      for (let j = 0; j < midiDevice.buttonNumbers[i].length; j++) {
+        if (midiDevice.buttonNumbers[i][j] === inputInt) {
+          return midiDevice.buttonNumbers[i][j]
         }
       }
     }

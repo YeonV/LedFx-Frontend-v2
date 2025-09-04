@@ -42,7 +42,7 @@ import LaunchpadButton from './LaunchpadButton'
 import { defaultMapping, IMapping } from '../../store/ui/storeMidi'
 import LaunchpadColors from './LaunchpadColors'
 import { download } from '../../utils/helpers'
-import { Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import LaunchpadSettings from './LaunchpadSettings'
 import { commandIcons } from '../../utils/commandIcons'
 
@@ -102,7 +102,7 @@ const LaunchpadButtonMap = ({
   const matrix = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => 0))
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-  const lp = MidiDevices[midiType][midiModel]
+  const lp = MidiDevices[midiType][midiModel] as IMidiDevice
   const isRgb = 'rgb' in lp.fn && lp.fn.rgb
 
   const output =
@@ -248,7 +248,9 @@ const LaunchpadButtonMap = ({
     switch (mode) {
       case 'programmer':
         if ('programmer' in lp.command)
-          output.send(lp.command?.programmer ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x0e, 0x01, 0xf7])
+          output.send(
+            lp.command?.programmer ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x0e, 0x01, 0xf7]
+          )
         break
       case 'live':
         if ('live' in lp.command)
@@ -256,7 +258,9 @@ const LaunchpadButtonMap = ({
         break
       case 'standalone':
         if ('standalone' in lp.command)
-          output.send(lp.command?.standalone ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x10, 0x00, 0xf7])
+          output.send(
+            lp.command?.standalone ?? [0xf0, 0x00, 0x20, 0x29, 0x02, 0x0c, 0x10, 0x00, 0xf7]
+          )
         break
       case 'daw':
         if ('daw' in lp.command)
@@ -309,15 +313,11 @@ const LaunchpadButtonMap = ({
             {'programmer' in lp.command && (
               <Button onClick={() => setMode('programmer')}>Programmer</Button>
             )}
-            {'live' in lp.command && (
-              <Button onClick={() => setMode('live')}>Live</Button>
-            )}
+            {'live' in lp.command && <Button onClick={() => setMode('live')}>Live</Button>}
             {'standalone' in lp.command && (
               <Button onClick={() => setMode('standalone')}>Standalone</Button>
             )}
-            {'daw' in lp.command && (
-              <Button onClick={() => setMode('daw')}>DAW</Button>
-            )}
+            {'daw' in lp.command && <Button onClick={() => setMode('daw')}>DAW</Button>}
           </Stack>
         </Stack>
         <Stack direction={'row'} alignItems={'center'} spacing={0}>
@@ -481,10 +481,7 @@ const LaunchpadButtonMap = ({
                       <MenuItem
                         key={model}
                         onClick={() => {
-                          const lp =
-                            MidiDevices[mType as keyof typeof MidiDevices][
-                              model as keyof (typeof MidiDevices)[keyof typeof MidiDevices]
-                            ]
+                          const lp = MidiDevices[midiType][midiModel] as IMidiDevice
 
                           setMidiMappingButtonNumbers(lp.buttonNumbers)
                           setMidiType(mType as keyof typeof MidiDevices)

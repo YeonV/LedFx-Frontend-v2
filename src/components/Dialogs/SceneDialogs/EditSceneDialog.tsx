@@ -39,7 +39,7 @@ import TooltipMidi from './TooltipMidi'
 import MidiInputDialog from '../../Midi/MidiInputDialog'
 import { IMapping } from '../../../store/ui/storeMidi'
 import { WebMidi } from 'webmidi'
-import { MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 
 const EditSceneDialog = () => {
   const theme = useTheme()
@@ -244,7 +244,7 @@ const EditSceneDialog = () => {
       const currentBtnNumber = parseInt(
         scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
       )
-      const lp = MidiDevices[midiType][midiModel].fn
+      const lp = (MidiDevices[midiType][midiModel] as IMidiDevice).fn
       if (currentBtnNumber > -1) {
         setTimeout(() => {
           if ('ledPulse' in lp) {
@@ -266,7 +266,7 @@ const EditSceneDialog = () => {
         scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
       )
       const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1])
-      const lp = MidiDevices[midiType][midiModel].fn
+      const lp = (MidiDevices[midiType][midiModel] as IMidiDevice).fn
       if (newBtnNumber > -1) {
         setTimeout(() => {
           if (!currentBtnNumber) {
