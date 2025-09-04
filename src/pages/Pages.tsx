@@ -32,6 +32,7 @@ import Keybinding from '../components/Integrations/Spotify/Widgets/Keybinding/Ke
 import OneEffect from '../components/Gamepad/OneEffect'
 import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
 import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widgets/PixelGraphSettings/PixelGraphSettingsFloating'
+import GlobalColorWidget from '../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
 
 const Routings = () => {
   const theme = useTheme()
@@ -48,6 +49,8 @@ const Routings = () => {
   const setPgs = useStore((state) => state.ui.setPgs)
   const sd = useStore((state) => state.ui.sd)
   const setSd = useStore((state) => state.ui.setSd)
+  const globalColorWidget = useStore((state) => state.ui.globalColorWidget)
+  const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
@@ -63,6 +66,7 @@ const Routings = () => {
   useHotkeys(['ctrl+alt+f'], () => setFpsViewer(!fpsViewer))
   useHotkeys(['ctrl+alt+m'], () => setMg(!mg))
   useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
+  useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!globalColorWidget))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
   useHotkeys(['ctrl+alt+g'], () => {
     if (window.localStorage.getItem('guestmode') === 'activated') {
@@ -166,6 +170,7 @@ const Routings = () => {
         {sd && <SongDetectorFloating close={() => setSd(false)} />}
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
+        {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
         <OneEffect noButton />
         <NoHostDialog />
         {isElect && <HostManager />}

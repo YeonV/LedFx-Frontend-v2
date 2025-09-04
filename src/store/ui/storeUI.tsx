@@ -157,6 +157,33 @@ const storeUI = (set: any) => ({
       false,
       'ui/sd'
     ),
+  globalColorWidgetX: 50,
+  setGlobalColorWidgetX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.globalColorWidgetX = x
+      }),
+      false,
+      'ui/globalColorWidgetX'
+    ),
+  globalColorWidgetY: 200,
+  setGlobalColorWidgetY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.globalColorWidgetY = y
+      }),
+      false,
+      'ui/globalColorWidgetY'
+    ),
+  globalColorWidget: false,
+  setGlobalColorWidget: (globalColorWidget: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.globalColorWidget = globalColorWidget
+      }),
+      false,
+      'ui/globalColorWidget'
+    ),
   changeTheme: false,
   reloadTheme: (): void =>
     set(
