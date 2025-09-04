@@ -3,6 +3,8 @@ import { LaunchpadS } from './LaunchpadS/LaunchpadS'
 import { LaunchpadX } from './LaunchpadX/LaunchpadX'
 import { LaunchkeyMK3 } from './LaunchkeyMK3/LaunchkeyMK3'
 import { LaunchkeyMiniMK3 } from './LaunchkeyMiniMK3/LaunchkeyMiniMK3'
+import { LaunchkeyDevice } from './LaunchkeyDevice'
+import { LaunchpadDevice } from './LaunchPadDevice'
 
 export const Launchpad = {
   X: LaunchpadX,
@@ -19,3 +21,5 @@ export const MidiDevices = {
   Launchpad,
   Launchkey
 }
+
+export type IMidiDevice = LaunchkeyDevice | LaunchpadDevice

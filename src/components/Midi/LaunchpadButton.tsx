@@ -15,7 +15,7 @@ import LpColorPicker from './LpColorPicker'
 import Assign from '../Gamepad/Assign'
 import useStore from '../../store/useStore'
 import { Autorenew, Save } from '@mui/icons-material'
-import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ColorTypePicker from './ColorTypePicker'
 import { executeCommand } from '../../utils/commandHandler'
 
@@ -67,7 +67,7 @@ const LaunchpadButton = ({
   const [midiButtonNumber, setMidiButtonNumber] = useState(currentMapping.buttonNumber || 0)
   const [midiRecord, setMidiRecord] = useState(false)
 
-  const lp = MidiDevices[midiType][midiModel]
+  const lp = MidiDevices[midiType][midiModel] as IMidiDevice
   const isRgb = 'rgb' in lp.fn
 
   const handleColorSelect = (type: string, color: string | number) => {

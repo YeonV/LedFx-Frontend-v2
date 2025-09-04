@@ -18,7 +18,7 @@ import { ColorLens } from '@mui/icons-material'
 import ReactGPicker from 'react-gcolor-picker'
 import useStyles from '../SchemaForm/components/GradientPicker/GradientPicker.styles'
 import useClickOutside from '../../utils/useClickOutside'
-import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ColorTypePicker from './ColorTypePicker'
 
 const LaunchpadColors = ({ component = 'Button' }: { component?: 'Button' | 'MenuItem' }) => {
@@ -43,7 +43,7 @@ const LaunchpadColors = ({ component = 'Button' }: { component?: 'Button' | 'Men
   const setMidiSceneActiveType = useStore((state) => state.setMidiSceneActiveType)
   const setMidiSceneInactiveType = useStore((state) => state.setMidiSceneInactiveType)
 
-  const lp = MidiDevices[midiType][midiModel]
+  const lp = MidiDevices[midiType][midiModel] as IMidiDevice
   const isRgb = 'rgb' in lp.fn
 
   const [anchorEl, setAnchorEl] = useState(null)

@@ -1,4 +1,4 @@
-import { MidiDevices } from './MidiDevices'
+import { IMidiDevice } from './MidiDevices'
 
 // Helper function to zero-pad hex values
 export const zeroPadHex = (value: number | string | undefined) => {
@@ -67,7 +67,7 @@ export const sortColorsByHSL = (colors: string[]) => {
 export const rgbValues = (rgbString: string) => rgbString.match(/\d+/g)?.map(Number)
 
 export const sendMidiMessageHelper = (
-  fn: (typeof MidiDevices)[keyof typeof MidiDevices][keyof (typeof MidiDevices)[keyof typeof MidiDevices]]['fn'],
+  fn: IMidiDevice['fn'],
   output: any,
   buttonNumber: number,
   color: string,

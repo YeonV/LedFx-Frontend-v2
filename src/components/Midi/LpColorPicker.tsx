@@ -4,7 +4,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { darken } from '@mui/material/styles'
 import { rgbValues, sortColorsByHSL, zeroPadHex } from '../../utils/MidiDevices/colorHelper'
 import useStore from '../../store/useStore'
-import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import ReactGPicker from 'react-gcolor-picker'
 import { WebMidi } from 'webmidi'
 
@@ -23,7 +23,8 @@ const LpColorPicker = ({
 }) => {
   const midiType = useStore((state) => state.midiType)
   const midiModel = useStore((state) => state.midiModel)
-  const colors = MidiDevices[midiType][midiModel].colors
+  const lp = MidiDevices[midiType][midiModel] as IMidiDevice
+  const colors = lp.colors
   type ColorKey = keyof typeof colors
 
   const [selectedColor, setSelectedColor] = useState<ColorKey | string | null>(null)
@@ -35,7 +36,7 @@ const LpColorPicker = ({
   const output =
     WebMidi.enabled &&
     (midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1])
-  const lp = MidiDevices[midiType][midiModel]
+
   const isRgb = 'rgb' in lp.fn
 
   useEffect(() => {

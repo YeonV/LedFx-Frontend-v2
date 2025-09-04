@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react'
 import { WebMidi, Input, Output } from 'webmidi'
-import { MidiDevices } from '../../utils/MidiDevices/MidiDevices'
+import { IMidiDevice, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import { sendMidiMessageHelper } from '../../utils/MidiDevices/colorHelper'
 import useStore from '../../store/useStore'
 import { executeCommand } from '../../utils/commandHandler'
@@ -32,7 +32,7 @@ const MIDIListener = () => {
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
   const sceneDialogOpen = useStore((state) => state.dialogs.addScene.sceneKey !== '')
-  const lp = MidiDevices[midiType][midiModel]
+  const lp = MidiDevices[midiType][midiModel] as IMidiDevice
   const fn = lp.fn
 
   function handleButtonPress(command: string, payload?: any) {
@@ -222,9 +222,10 @@ const MIDIListener = () => {
           if (midiOutput === '') setMidiOutput(outputs[outputs.length - 1]?.name)
 
           const output = outputs[outputs.length - 1]
-          const lp = MidiDevices[midiType][midiModel].fn
+          const midiDevice = MidiDevices[midiType][midiModel] as IMidiDevice
+          const lp = midiDevice.fn
 
-          type midiMap = { buttonNumber: number, command: string|undefined }
+          type midiMap = { buttonNumber: number; command: string | undefined }
 
           function setMap(value: midiMap) {
             const buttonNumber = value.buttonNumber
@@ -238,10 +239,9 @@ const MIDIListener = () => {
               }
             }
           }
-          Object.values(midiMapping)
-          .forEach((value: midiMap|{ [k: number]: midiMap }) => {
+          Object.values(midiMapping).forEach((value: midiMap | { [k: number]: midiMap }) => {
             if (!('buttonNumber' in value)) {
-              Object.values(value).forEach(setMap);
+              Object.values(value).forEach(setMap)
             } else {
               setMap(value)
             }
