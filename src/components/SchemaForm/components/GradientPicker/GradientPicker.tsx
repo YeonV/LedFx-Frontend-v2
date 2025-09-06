@@ -200,7 +200,11 @@ const GradientPicker = ({
                 />
               }
               confirmDisabled={name.length === 0}
-              onConfirm={() => handleAddGradient(name)}
+              onConfirm={() => {
+                handleAddGradient(name, pickerBgColor)
+                setName('')
+                setAnchorEl(null)
+              }}
               startIcon=""
               size="medium"
               icon={<Add />}

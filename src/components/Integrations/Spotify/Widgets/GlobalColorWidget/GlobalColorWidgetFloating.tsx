@@ -26,6 +26,7 @@ const GlobalColorWidgetFloating = ({ children }: any) => {
         setGlobalColorWidgetY(d.y)
       }}
       style={{ zIndex: 1050 }}
+      dragHandleClassName="drag-handle"
     >
       {children}
     </Rnd>

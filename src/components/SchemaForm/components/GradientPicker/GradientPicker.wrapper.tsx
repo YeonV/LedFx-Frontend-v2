@@ -36,8 +36,8 @@ const GradientPickerWrapper = ({
     }
   }
 
-  const handleAddGradient = (name: string) => {
-    addColor({ [name]: pickerBgColor }).then(() => {
+  const handleAddGradient = (name: string, color: string) => {
+    addColor({ [name]: color }).then(() => {
       getColors()
     })
   }
