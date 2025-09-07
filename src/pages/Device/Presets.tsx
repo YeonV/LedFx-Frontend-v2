@@ -30,6 +30,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const theme = useTheme()
+  const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const setEffect = useStore((state) => state.setEffect)
   const activatePreset = useStore((state) => state.activatePreset)
   const addPreset = useStore((state) => state.addPreset)
@@ -62,22 +63,33 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
     const exists = await existing.data
     const eff = await cloud.get(`effects?ledfx_id=${effectType}`)
 
+    if (!eff.data || eff.data.length === 0) {
+      showSnackbar('error', 'Effect not found in cloud, cannot upload preset')
+      return
+    }
+
     const effId = await eff.data[0].id
     // console.log(exists, existing)
-    if (exists.length && exists.length > 0) {
-      cloud.put(`presets/${exists[0].id}`, {
-        Name: list[preset].name,
-        config: virtual.effect.config,
-        effect: effId,
-        user: localStorage.getItem('ledfx-cloud-userid')
-      })
-    } else {
-      cloud.post('presets', {
-        Name: list[preset].name,
-        config: virtual.effect.config,
-        effect: effId,
-        user: localStorage.getItem('ledfx-cloud-userid')
-      })
+    try {
+      if (exists.length && exists.length > 0) {
+        cloud.put(`presets/${exists[0].id}`, {
+          Name: list[preset].name,
+          config: virtual.effect.config,
+          effect: effId,
+          user: localStorage.getItem('ledfx-cloud-userid')
+        })
+      } else {
+        cloud.post('presets', {
+          Name: list[preset].name,
+          config: virtual.effect.config,
+          effect: effId,
+          user: localStorage.getItem('ledfx-cloud-userid')
+        })
+      }
+      showSnackbar('success', 'Preset uploaded to cloud')
+    } catch (error) {
+      console.log(error)
+      showSnackbar('error', 'Failed to upload preset to cloud')
     }
   }
 
