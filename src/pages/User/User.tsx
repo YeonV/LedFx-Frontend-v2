@@ -262,7 +262,8 @@ const User = () => {
             minWidth: 350
           }}
         >
-          {localStorage.getItem('ledfx-cloud-role') === 'creator' ? (
+          {localStorage.getItem('ledfx-cloud-role') === 'creator' &&
+          localStorage.getItem('username') === 'YeonV' ? (
             <AvatarPicker storage="cloud" />
           ) : (
             <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />

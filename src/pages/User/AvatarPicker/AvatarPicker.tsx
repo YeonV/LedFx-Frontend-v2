@@ -90,6 +90,7 @@ const AvatarPicker = ({
     if (
       isLogged &&
       localStorage.getItem('ledfx-cloud-role') === 'creator' &&
+      localStorage.getItem('username') === 'YeonV' &&
       newStorage === 'cloud'
     ) {
       try {
