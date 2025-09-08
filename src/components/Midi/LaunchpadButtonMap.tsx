@@ -33,7 +33,6 @@ import {
   Typography,
   useTheme
 } from '@mui/material'
-import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
 import { useEffect, useRef, useState } from 'react'
@@ -45,6 +44,7 @@ import { download } from '../../utils/helpers'
 import { IMidiDevice, Launchpad, MidiDevices } from '../../utils/MidiDevices/MidiDevices'
 import LaunchpadSettings from './LaunchpadSettings'
 import { commandIcons } from '../../utils/commandIcons'
+import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 
 const LaunchpadButtonMap = ({
   toggleSidebar,
@@ -481,7 +481,10 @@ const LaunchpadButtonMap = ({
                       <MenuItem
                         key={model}
                         onClick={() => {
-                          const lp = MidiDevices[midiType][midiModel] as IMidiDevice
+                          // Use the selected type/model, not the current ones!
+                          const lp = MidiDevices[mType as keyof typeof MidiDevices][
+                            model as keyof (typeof MidiDevices)[keyof typeof MidiDevices]
+                          ] as IMidiDevice
 
                           setMidiMappingButtonNumbers(lp.buttonNumbers)
                           setMidiType(mType as keyof typeof MidiDevices)
@@ -505,9 +508,10 @@ const LaunchpadButtonMap = ({
                 ))}
               </Select>
             </Stack>
-            {localStorage.getItem('ledfx-cloud-role') === 'creator' && (
-              <LaunchpadSettings onClick={() => {}} />
-            )}
+            {localStorage.getItem('ledfx-cloud-role') === 'creator' &&
+              localStorage.getItem('username') === 'YeonV' && (
+                <LaunchpadSettings onClick={() => {}} />
+              )}
             <Divider />
             <MenuItem
               onClick={() => {
@@ -670,6 +674,7 @@ const LaunchpadButtonMap = ({
               ))}
             </Box>
             <Stack direction={'row'}>
+              hallo!
               {Object.keys(Launchpad.X.command).length && (
                 <Select
                   variant="outlined"

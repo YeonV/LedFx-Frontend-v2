@@ -221,7 +221,9 @@ const TopBar = () => {
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
 
   const hosts = useStore((state) => state.config.hosts) || []
-  const isCreator = localStorage.getItem('ledfx-cloud-role') === 'creator'
+  const isCreator =
+    localStorage.getItem('ledfx-cloud-role') === 'creator' &&
+    localStorage.getItem('username') === 'YeonV'
 
   const { isConnected } = useWebSocket()
   const disconnected = useStore((state) => state.disconnected)
