@@ -34,14 +34,13 @@ const DevicesSection = () => {
         checked={graphsMulti}
         onChange={() => toggleGraphsMulti()}
       />
-      {features.beta && (
-        <SettingsRow
-          disabled={!graphs}
-          title="Show Matrix on Devices page (beta)"
-          checked={showMatrix}
-          onChange={() => toggleShowMatrix()}
-        />
-      )}
+
+      <SettingsRow
+        disabled={!graphs}
+        title="Show Matrix on Devices page (beta)"
+        checked={showMatrix}
+        onChange={() => toggleShowMatrix()}
+      />
       <SettingsRow
         title="Show complex devices"
         checked={showComplex}
