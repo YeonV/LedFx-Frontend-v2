@@ -118,7 +118,7 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
               sendColorToVirtuals={(e: any) => sendGlobalPartial('background_color', e)}
               handleAddGradient={(name: string) => handleAddGradient(name, '#000000')}
             />
-            <BladeFrame title="Brightness" style={{ padding: '6px 12px' }}>
+            <BladeFrame title="Global Brightness" style={{ padding: '6px 12px' }}>
               <Slider
                 size="small"
                 value={brightness}
@@ -129,6 +129,17 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
                 onChangeCommitted={(_e, val) =>
                   setSystemSetting('global_brightness', typeof val === 'number' ? val / 100 : 0)
                 }
+              />
+            </BladeFrame>
+            <BladeFrame title="Brightness" style={{ padding: '6px 12px' }}>
+              <Slider
+                size="small"
+                defaultValue={100}
+                valueLabelDisplay="auto"
+                onChange={(_, value) => sendGlobalPartial('brightness', value)}
+                step={0.01}
+                min={0}
+                max={1}
               />
             </BladeFrame>
             <BladeFrame title="BG Brightness" style={{ padding: '6px 12px' }}>
