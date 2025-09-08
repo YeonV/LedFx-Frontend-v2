@@ -8,7 +8,6 @@ const DevicesSection = () => {
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const showMatrix = useStore((state) => state.showMatrix)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
-  const features = useStore((state) => state.features)
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const showComplex = useStore((state) => state.showComplex)
