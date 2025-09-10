@@ -111,8 +111,15 @@ const LedFxFlow = () => {
       reconciledNodes = [...reconciledNodes, ...newVirtualNodes];
 
       reconciledNodes.forEach(node => {
-        if (node.type?.startsWith('sender')) {
+        if (node.type === 'sender') {
           node.data = { ...node.data, onPlay: () => handlePlay(node.id) };
+        }
+        if (node.type === 'sendereffect') {
+          node.data = {
+            ...node.data,
+            isSyncing: node.data.isSyncing || false,
+            onNodeDataChange: onNodeDataChange
+          };
         }
       });
 
@@ -185,6 +192,17 @@ const LedFxFlow = () => {
     [setEdges]
   )
 
+  const onNodeDataChange = (nodeId: string, data: any) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          node.data = { ...node.data, ...data };
+        }
+        return node;
+      })
+    );
+  };
+
   useEffect(() => {
     localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
     localStorage.setItem('ledfx-flow-edges', JSON.stringify(edges));
@@ -213,7 +231,10 @@ const LedFxFlow = () => {
         x: 100,
         y: 100 + (Object.keys(nodes).length + 1) * 50
       },
-      data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
+      data: {
+        isSyncing: false,
+        onNodeDataChange: onNodeDataChange
+      }
     }
     setNodes((nds) => nds.concat(newNode))
   }
