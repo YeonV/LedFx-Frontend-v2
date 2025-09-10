@@ -1,6 +1,6 @@
 import { Handle, Position, useEdges } from '@xyflow/react'
 import { Box, IconButton, Paper } from '@mui/material'
-import { PlayArrow } from '@mui/icons-material'
+import { PlayArrow, HdrAuto } from '@mui/icons-material'
 import EffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import useStore from '../../store/useStore'
 import { orderEffectProperties } from '../Device/Effects'
@@ -8,13 +8,16 @@ import EffectDropDown from '../../components/SchemaForm/components/DropDown/Drop
 import { useEffect, useRef } from 'react'
 import { deepEqual } from '../../utils/helpers'
 
-const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void } }) => {
+const SenderNodeEffect = ({ id, data }: { id: string; data: { isSyncing: boolean, onNodeDataChange: (id: string, data: any) => void } }) => {
+  const { isSyncing, onNodeDataChange } = data;
   const edges = useEdges()
   const effects = useStore((state) => state.schemas.effects)
   const virtuals = useStore((state) => state.virtuals)
   const features = useStore((state) => state.features)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const setEffect = useStore((state) => state.setEffect)
+  const copyTo = useStore((state) => state.copyTo)
+  const effectRef = useRef<any>(null)
 
   const outgoingEdges = edges.filter((edge) => edge.source === id)
   const connectedVirtualIds = outgoingEdges.map((edge) => edge.target)
@@ -22,11 +25,15 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void
   const targetVirtualIds = connectedVirtualIds.slice(1)
 
   const virtual = primaryVirtualId ? virtuals[primaryVirtualId] : null
-  const copyTo = useStore((state) => state.copyTo)
-  const effectRef = useRef<any>(null)
+
+  const handleManualCopy = () => {
+    if (primaryVirtualId && targetVirtualIds.length > 0) {
+      copyTo(primaryVirtualId, targetVirtualIds).then(() => getVirtuals())
+    }
+  }
 
   useEffect(() => {
-    if (targetVirtualIds.length > 0) {
+    if (isSyncing && targetVirtualIds.length > 0) {
       if (!deepEqual(effectRef.current, virtual?.effect)) {
         if (effectRef.current !== null) {
           copyTo(primaryVirtualId, targetVirtualIds).then(() => getVirtuals())
@@ -34,7 +41,7 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void
         effectRef.current = virtual?.effect
       }
     }
-  }, [virtual?.effect, copyTo, getVirtuals, primaryVirtualId, targetVirtualIds])
+  }, [virtual?.effect, copyTo, getVirtuals, primaryVirtualId, targetVirtualIds, isSyncing])
 
   const effectType = virtual && virtual.effect.type
   const orderedProperties =
@@ -54,7 +61,18 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void
         minHeight: 60
       }}
     >
-      <IconButton sx={{ position: 'absolute', top: 5, right: 15 }} onClick={data.onPlay}>
+      <IconButton
+        sx={{ position: 'absolute', top: 5, right: 45 }}
+        onClick={() => onNodeDataChange(id, { isSyncing: !isSyncing })}
+        color={isSyncing ? 'primary' : 'inherit'}
+      >
+        <HdrAuto />
+      </IconButton>
+      <IconButton
+        sx={{ position: 'absolute', top: 5, right: 15 }}
+        onClick={handleManualCopy}
+        disabled={isSyncing}
+      >
         <PlayArrow />
       </IconButton>
       {!virtual && <div style={{ color: 'red' }}>No virtuals found</div>}
