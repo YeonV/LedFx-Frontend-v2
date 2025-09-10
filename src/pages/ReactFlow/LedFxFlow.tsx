@@ -17,7 +17,7 @@ import useStore from '../../store/useStore'
 import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
-import { Button } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 
 const nodeTypes = {
   sender: SenderNodeOmni,
@@ -38,6 +38,8 @@ const LedFxFlow = () => {
 
   const [nodes, setNodes] = useState<Node[]>([])
   const [edges, setEdges] = useState<Edge[]>([])
+  const [dialogState, setDialogState] = useState({ open: false, nodeType: '' });
+  const [newNodeName, setNewNodeName] = useState('');
 
   const nodesRef = useRef(nodes);
   nodesRef.current = nodes;
@@ -112,12 +114,18 @@ const LedFxFlow = () => {
 
       reconciledNodes.forEach(node => {
         if (node.type === 'sender') {
-          node.data = { ...node.data, onPlay: () => handlePlay(node.id) };
+          node.data = {
+            ...node.data,
+            isCollapsed: node.data.isCollapsed || false,
+            onNodeDataChange: onNodeDataChange,
+            onPlay: () => handlePlay(node.id)
+          };
         }
         if (node.type === 'sendereffect') {
           node.data = {
             ...node.data,
             isSyncing: node.data.isSyncing ?? true,
+            isCollapsed: node.data.isCollapsed || false,
             onNodeDataChange: onNodeDataChange
           };
         }
@@ -214,35 +222,47 @@ const LedFxFlow = () => {
     localStorage.setItem('ledfx-flow-edges', JSON.stringify(edges));
   }, [nodes, edges]);
 
-  const addSenderNodeOmni = () => {
-    senderId++
-    const newNode = {
-      id: `sender-${senderId}`,
-      type: 'sender',
-      position: {
-        x: 100,
-        y: 100 + (Object.keys(nodes).length + 1) * 50
-      },
-      data: { onPlay: () => handlePlay(`sender-${senderId}`) }
-    }
-    setNodes((nds) => nds.concat(newNode))
-  }
+  const handleOpenDialog = (nodeType: string) => {
+    setDialogState({ open: true, nodeType });
+  };
 
-  const addSenderNodeEffect = () => {
+  const handleCloseDialog = () => {
+    setDialogState({ open: false, nodeType: '' });
+    setNewNodeName('');
+  };
+
+  const handleNameSubmit = () => {
     senderId++
+    const nodeType = dialogState.nodeType;
+    const baseName = nodeType === 'sender' ? 'Omni Sender' : 'Effect Sender';
+    const name = newNodeName.trim() === '' ? `${baseName}: ${senderId}` : newNodeName.trim();
+
     const newNode = {
-      id: `sendereffect-${senderId}`,
-      type: 'sendereffect',
+      id: `${nodeType}-${senderId}`,
+      type: nodeType,
       position: {
         x: 100,
         y: 100 + (Object.keys(nodes).length + 1) * 50
       },
       data: {
-        isSyncing: true,
-        onNodeDataChange: onNodeDataChange
+        name: name,
+        isSyncing: true, // Only relevant for sendereffect, but harmless for sender
+        isCollapsed: false, // Only relevant for sendereffect
+        onNodeDataChange: onNodeDataChange,
+        onPlay: nodeType === 'sender' ? () => handlePlay(`${nodeType}-${senderId}`) : undefined
       }
-    }
-    setNodes((nds) => nds.concat(newNode))
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+    handleCloseDialog();
+  };
+
+  const addSenderNodeOmni = () => {
+    handleOpenDialog('sender');
+  }
+
+  const addSenderNodeEffect = () => {
+    handleOpenDialog('sendereffect');
   }
 
   const handleClear = () => {
@@ -263,6 +283,27 @@ const LedFxFlow = () => {
         Clear
       </Button>
 
+      <Dialog open={dialogState.open} onClose={handleCloseDialog}>
+        <DialogTitle>Name Your Node</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Node Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newNodeName}
+            onChange={(e) => setNewNodeName(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleNameSubmit}>Add</Button>
+        </DialogActions>
+      </Dialog>
       <ReactFlow
         nodes={nodes}
         edges={edges}

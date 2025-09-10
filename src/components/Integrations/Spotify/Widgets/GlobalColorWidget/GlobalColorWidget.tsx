@@ -21,10 +21,16 @@ const Root = styled('div')({
 
 const GlobalColorWidget = ({
   close,
-  variant = 'default'
+  variant = 'default',
+  name = 'Omni FX',
+  isCollapsed,
+  onToggleCollapse,
 }: {
   close?: () => void
   variant?: 'default' | 'floating'
+  name?: string
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
 }) => {
   const {
     colors,
@@ -49,7 +55,6 @@ const GlobalColorWidget = ({
   )
 
   const [brightness, setBrightness] = useState((globalBrightness || 1) * 100)
-  const [expanded, setExpanded] = useState(false)
 
   const setSystemSetting = (setting: string, value: any) => {
     setSystemConfig({ [setting]: value }).then(() => getSystemConfig())
@@ -96,13 +101,12 @@ const GlobalColorWidget = ({
           <Stack direction="row" spacing={1} alignItems="center">
             <IconButton
               size="small"
-              onClick={() => {
-                setExpanded(!expanded)
-              }}
+              onClick={onToggleCollapse}
+              sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
             >
               <ArrowDropDown />
             </IconButton>
-            <Typography>Omni FX</Typography>
+            <Typography>{name}</Typography>
             <Tooltip title="Apply partial effect settings to all active effects.">
               <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
             </Tooltip>
@@ -117,14 +121,14 @@ const GlobalColorWidget = ({
           <Stack spacing={2}>
             <GradientPicker
               pickerBgColor={'linear-gradient(90deg, rgb(0, 255, 255) 0%, rgb(0, 0, 255) 100%)'}
-              title={expanded ? 'color' : ''}
+              title={!isCollapsed ? 'color' : ''}
               isGradient={true}
               colors={colors}
               showHex={showHex}
               sendColorToVirtuals={(e: any) => sendGlobalPartial('gradient', e)}
               handleAddGradient={(name: string) => handleAddGradient(name, '#ff0000')}
             />
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <Collapse in={!isCollapsed} timeout="auto" unmountOnExit>
               <GradientPicker
                 pickerBgColor={'#000000'}
                 title={'background_color'}

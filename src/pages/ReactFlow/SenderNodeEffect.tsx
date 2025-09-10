@@ -1,6 +1,6 @@
 import { Handle, Position, useEdges } from '@xyflow/react'
-import { Box, IconButton, Paper } from '@mui/material'
-import { PlayArrow, HdrAuto } from '@mui/icons-material'
+import { Box, IconButton, Paper, Collapse } from '@mui/material'
+import { PlayArrow, HdrAuto, ArrowDropDown } from '@mui/icons-material'
 import EffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import useStore from '../../store/useStore'
 import { orderEffectProperties } from '../Device/Effects'
@@ -8,8 +8,8 @@ import EffectDropDown from '../../components/SchemaForm/components/DropDown/Drop
 import { useEffect, useRef } from 'react'
 import { deepEqual } from '../../utils/helpers'
 
-const SenderNodeEffect = ({ id, data }: { id: string; data: { isSyncing: boolean, onNodeDataChange: (id: string, data: any) => void } }) => {
-  const { isSyncing, onNodeDataChange } = data;
+const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSyncing: boolean, isCollapsed: boolean, onNodeDataChange: (id: string, data: any) => void } }) => {
+  const { name, isSyncing, isCollapsed, onNodeDataChange } = data;
   const edges = useEdges()
   const effects = useStore((state) => state.schemas.effects)
   const virtuals = useStore((state) => state.virtuals)
@@ -80,8 +80,15 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { isSyncing: boolean
       {!virtual?.effect?.config && <div style={{ color: 'orange' }}>No effect config</div>}
       {virtual?.effect?.config && (
         <Paper sx={{ width: '480px' }}>
-          <Box sx={{ p: 1, bgcolor: '#090909', mb: 2 }} textAlign="center">
-            <strong>Effect Sender</strong>
+          <Box sx={{ p: 1, bgcolor: '#090909', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconButton
+              size="small"
+              onClick={() => onNodeDataChange(id, { isCollapsed: !isCollapsed })}
+              sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
+            >
+              <ArrowDropDown />
+            </IconButton>
+            <strong>{name}</strong>
           </Box>
           {virtual && (
             <EffectDropDown
@@ -92,12 +99,14 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { isSyncing: boolean
               setEffect={setEffect}
             />
           )}
-          <EffectSchemaForm
-            virtId={virtual ? virtual.id : ''}
-            schemaProperties={orderedProperties}
-            model={virtual.effect.config as Record<string, unknown>}
-            selectedType={effectType}
-          />
+          <Collapse in={!isCollapsed}>
+            <EffectSchemaForm
+              virtId={virtual ? virtual.id : ''}
+              schemaProperties={orderedProperties}
+              model={virtual.effect.config as Record<string, unknown>}
+              selectedType={effectType}
+            />
+          </Collapse>
         </Paper>
       )}
       <Handle type="source" position={Position.Right} />
