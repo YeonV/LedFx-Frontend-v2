@@ -468,7 +468,9 @@ const LaunchpadButtonMap = ({
             <Divider />
             <MenuItem sx={{ position: 'absolute', pointerEvents: 'none' }}>
               <ListItemIcon>
-                <BladeIcon name={midiType === 'Launchpad' ? 'launchpad' : 'midi'} />
+                <BladeIcon
+                  name={midiType === 'Launchpad' || midiType === 'Launchkey' ? 'launchpad' : 'midi'}
+                />
               </ListItemIcon>
               <ListItemText primary={midiType + ' ' + midiModel} />
             </MenuItem>
@@ -497,7 +499,10 @@ const LaunchpadButtonMap = ({
                           setMidiSceneActiveType(lp.globalColors.sceneActiveType)
                           setMidiSceneInactiveType(lp.globalColors.sceneInactiveType)
                           setMidiCommandType(lp.globalColors.commandType)
-                          initMidi()
+                          setTimeout(() => {
+                            initMidi()
+                          }, 100)
+                          handleClose()
                         }}
                         value={model}
                       >
@@ -674,7 +679,6 @@ const LaunchpadButtonMap = ({
               ))}
             </Box>
             <Stack direction={'row'}>
-              hallo!
               {Object.keys(Launchpad.X.command).length && (
                 <Select
                   variant="outlined"
