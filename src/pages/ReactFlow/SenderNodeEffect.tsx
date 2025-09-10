@@ -1,21 +1,23 @@
-import { Handle, Position } from '@xyflow/react'
+import { Handle, Position, useEdges } from '@xyflow/react'
 import { Box, IconButton, Paper } from '@mui/material'
 import { PlayArrow } from '@mui/icons-material'
 import EffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import useStore from '../../store/useStore'
 import { orderEffectProperties } from '../Device/Effects'
+import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
 
-const SenderNodeEffect = ({ data }: { data: { onPlay: () => void } }) => {
+const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void } }) => {
+  const edges = useEdges()
   const effects = useStore((state) => state.schemas.effects)
   const virtuals = useStore((state) => state.virtuals)
-  // pick first virtual of the record virtuals. its an object not an array
-  const virtual = virtuals
-    ? virtuals[
-        Object.keys(virtuals).find((k) => virtuals[k].id === 'logo-ii-top') ||
-          Object.keys(virtuals)[0]
-      ]
-    : null
-  console.log(virtual)
+  const features = useStore((state) => state.features)
+  const getVirtuals = useStore((state) => state.getVirtuals)
+  const setEffect = useStore((state) => state.setEffect)
+
+  const outgoingEdge = edges.find((edge) => edge.source === id)
+  const connectedVirtualId = outgoingEdge?.target
+
+  const virtual = connectedVirtualId ? virtuals[connectedVirtualId] : null
   const effectType = virtual && virtual.effect.type
   const orderedProperties =
     effects &&
@@ -45,6 +47,15 @@ const SenderNodeEffect = ({ data }: { data: { onPlay: () => void } }) => {
           <Box sx={{ p: 1, bgcolor: '#090909', mb: 2 }} textAlign="center">
             <strong>Effect Sender</strong>
           </Box>
+          {virtual && (
+            <EffectDropDown
+              effects={effects}
+              virtual={virtual}
+              features={features}
+              getVirtuals={getVirtuals}
+              setEffect={setEffect}
+            />
+          )}
           <EffectSchemaForm
             virtId={virtual ? virtual.id : ''}
             schemaProperties={orderedProperties}
