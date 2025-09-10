@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { SelectChangeEvent } from '@mui/material/Select'
-import VirtualsFlow from './VirtualsFlow'
 import LedFxFlow from './LedFxFlow'
 
 const ReactFlowPage = () => {
-  const [selectedView, setSelectedView] = useState('virtuals')
+  const [selectedView, setSelectedView] = useState('ledfx')
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedView(event.target.value as string)
   }
@@ -21,12 +20,10 @@ const ReactFlowPage = () => {
           label="Select View"
           onChange={handleChange}
         >
-          <MenuItem value="virtuals">Virtuals</MenuItem>
           <MenuItem value="ledfx">LedFx Control</MenuItem>
         </Select>
       </FormControl>
 
-      {selectedView === 'virtuals' && <VirtualsFlow />}
       {selectedView === 'ledfx' && <LedFxFlow />}
     </div>
   )
