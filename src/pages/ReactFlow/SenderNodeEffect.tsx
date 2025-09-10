@@ -5,6 +5,8 @@ import EffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/Effe
 import useStore from '../../store/useStore'
 import { orderEffectProperties } from '../Device/Effects'
 import EffectDropDown from '../../components/SchemaForm/components/DropDown/DropDown.wrapper'
+import { useEffect, useRef } from 'react'
+import { deepEqual } from '../../utils/helpers'
 
 const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void } }) => {
   const edges = useEdges()
@@ -14,10 +16,26 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { onPlay: () => void
   const getVirtuals = useStore((state) => state.getVirtuals)
   const setEffect = useStore((state) => state.setEffect)
 
-  const outgoingEdge = edges.find((edge) => edge.source === id)
-  const connectedVirtualId = outgoingEdge?.target
+  const outgoingEdges = edges.filter((edge) => edge.source === id)
+  const connectedVirtualIds = outgoingEdges.map((edge) => edge.target)
+  const primaryVirtualId = connectedVirtualIds[0]
+  const targetVirtualIds = connectedVirtualIds.slice(1)
 
-  const virtual = connectedVirtualId ? virtuals[connectedVirtualId] : null
+  const virtual = primaryVirtualId ? virtuals[primaryVirtualId] : null
+  const copyTo = useStore((state) => state.copyTo)
+  const effectRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (targetVirtualIds.length > 0) {
+      if (!deepEqual(effectRef.current, virtual?.effect)) {
+        if (effectRef.current !== null) {
+          copyTo(primaryVirtualId, targetVirtualIds).then(() => getVirtuals())
+        }
+        effectRef.current = virtual?.effect
+      }
+    }
+  }, [virtual?.effect, copyTo, getVirtuals, primaryVirtualId, targetVirtualIds])
+
   const effectType = virtual && virtual.effect.type
   const orderedProperties =
     effects &&
