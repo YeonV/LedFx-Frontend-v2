@@ -67,8 +67,8 @@ const LedFxFlow = () => {
     const VIRTUAL_NODE_WIDTH = 400;
     const VIRTUAL_NODE_HEIGHT = 160;
     const HORIZONTAL_SPACING = 50;
-    const VERTICAL_SPACING = 50;
-    const SENDER_AREA_WIDTH = 400;
+    const VERTICAL_SPACING = 20;
+    const SENDER_AREA_WIDTH = 500;
     const COLUMNS = 3;
 
     const filteredVirtuals = virtuals
@@ -131,12 +131,6 @@ const LedFxFlow = () => {
           type: 'sender',
           position: { x: 100, y: 100 },
           data: { onPlay: () => handlePlay(`sender-${senderId}`) }
-        },
-        {
-          id: `sendereffect-${senderId}`,
-          type: 'sendereffect',
-          position: { x: 100, y: 450 },
-          data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
         },
         ...filteredVirtuals.map((virtual, index) => {
           const row = Math.floor(index / COLUMNS);
@@ -210,19 +204,6 @@ const LedFxFlow = () => {
     setNodes((nds) => nds.concat(newNode))
   }
 
-  const addSenderNodeEffect = () => {
-    senderId++
-    const newNode = {
-      id: `sendereffect-${senderId}`,
-      type: 'sendereffect',
-      position: {
-        x: 100,
-        y: 100 + (Object.keys(nodes).length + 1) * 50
-      },
-      data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
-    }
-    setNodes((nds) => nds.concat(newNode))
-  }
 
   const handleClear = () => {
     localStorage.removeItem('ledfx-flow-nodes');
@@ -234,9 +215,6 @@ const LedFxFlow = () => {
     <div style={{ height: 'calc(100vh - 208px)', overflow: 'hidden' }}>
       <Button onClick={addSenderNodeOmni} variant="contained">
         Add Sender Omni
-      </Button>
-      <Button onClick={addSenderNodeEffect} variant="contained">
-        Add Sender Effect
       </Button>
       <Button onClick={handleClear} variant="contained" color="secondary">
         Clear
