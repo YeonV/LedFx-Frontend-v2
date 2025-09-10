@@ -116,7 +116,7 @@ const LedFxFlow = () => {
         if (node.type === 'sender') {
           node.data = {
             ...node.data,
-            isCollapsed: node.data.isCollapsed || false,
+            isCollapsed: node.data.isCollapsed ?? true,
             onNodeDataChange: onNodeDataChange,
             onPlay: () => handlePlay(node.id)
           };
@@ -125,7 +125,7 @@ const LedFxFlow = () => {
           node.data = {
             ...node.data,
             isSyncing: node.data.isSyncing ?? true,
-            isCollapsed: node.data.isCollapsed || false,
+            isCollapsed: node.data.isCollapsed ?? true,
             onNodeDataChange: onNodeDataChange
           };
         }
@@ -253,7 +253,7 @@ const LedFxFlow = () => {
         name: name,
         scope: 'scoped', // All user-added senders are scoped
         isSyncing: true,
-        isCollapsed: false,
+        isCollapsed: true,
         onNodeDataChange: onNodeDataChange
       }
     };

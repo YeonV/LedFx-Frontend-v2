@@ -75,22 +75,19 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
       >
         <PlayArrow />
       </IconButton>
-      {!virtual && <div style={{ color: 'red' }}>No virtuals found</div>}
-      {!effectType && <div style={{ color: 'orange' }}>No effect type</div>}
-      {!virtual?.effect?.config && <div style={{ color: 'orange' }}>No effect config</div>}
-      {virtual?.effect?.config && (
-        <Paper sx={{ width: '480px' }}>
-          <Box sx={{ p: 1, bgcolor: '#090909', mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconButton
-              size="small"
-              onClick={() => onNodeDataChange(id, { isCollapsed: !isCollapsed })}
-              sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
-            >
-              <ArrowDropDown />
-            </IconButton>
-            <strong>{name}</strong>
-          </Box>
-          {virtual && (
+      <Paper sx={{ width: '480px' }}>
+        <Box sx={{ p: 1, bgcolor: '#090909', mb: virtual ? 2 : 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <IconButton
+            size="small"
+            onClick={() => onNodeDataChange(id, { isCollapsed: !isCollapsed })}
+            sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
+          >
+            <ArrowDropDown />
+          </IconButton>
+          <strong>{name}</strong>
+        </Box>
+        {virtual && (
+          <>
             <EffectDropDown
               effects={effects}
               virtual={virtual}
@@ -98,17 +95,17 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
               getVirtuals={getVirtuals}
               setEffect={setEffect}
             />
-          )}
-          <Collapse in={!isCollapsed}>
-            <EffectSchemaForm
-              virtId={virtual ? virtual.id : ''}
-              schemaProperties={orderedProperties}
-              model={virtual.effect.config as Record<string, unknown>}
-              selectedType={effectType}
-            />
-          </Collapse>
-        </Paper>
-      )}
+            <Collapse in={!isCollapsed}>
+              <EffectSchemaForm
+                virtId={virtual.id}
+                schemaProperties={orderedProperties}
+                model={virtual.effect.config as Record<string, unknown>}
+                selectedType={effectType}
+              />
+            </Collapse>
+          </>
+        )}
+      </Paper>
       <Handle type="source" position={Position.Right} />
     </div>
   )
