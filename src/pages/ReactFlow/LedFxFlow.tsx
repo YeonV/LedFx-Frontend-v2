@@ -64,6 +64,13 @@ const LedFxFlow = () => {
     const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
     const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
 
+    const VIRTUAL_NODE_WIDTH = 400;
+    const VIRTUAL_NODE_HEIGHT = 160;
+    const HORIZONTAL_SPACING = 50;
+    const VERTICAL_SPACING = 50;
+    const SENDER_AREA_WIDTH = 400;
+    const COLUMNS = 3;
+
     const filteredVirtuals = virtuals
       ? Object.keys(virtuals)
           .filter((v) =>
@@ -76,28 +83,35 @@ const LedFxFlow = () => {
       : [];
 
     if (savedNodesJSON && savedNodesJSON !== '[]') {
-      const savedNodes = JSON.parse(savedNodesJSON);
-      const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) : [];
+      const savedNodes = JSON.parse(savedNodesJSON) as Node[];
+      const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) as Edge[] : [];
 
       const filteredVirtualIds = new Set(filteredVirtuals.map(v => v.id));
       const savedNodeIds = new Set(savedNodes.map(n => n.id));
 
       let reconciledNodes = savedNodes.filter(node =>
-        node.type.startsWith('sender') || filteredVirtualIds.has(node.id)
+        node.type?.startsWith('sender') || filteredVirtualIds.has(node.id)
       );
 
       const newVirtuals = filteredVirtuals.filter(v => !savedNodeIds.has(v.id));
-      const newVirtualNodes = newVirtuals.map((virtual, index) => ({
-        id: virtual.id,
-        type: 'virtual',
-        position: { x: 500, y: 100 + (filteredVirtuals.length + index) * 180 },
-        data: { label: virtual.config.name }
-      }));
+      const newVirtualNodes = newVirtuals.map((virtual, index) => {
+        const nodeIndex = reconciledNodes.filter(n => n.type === 'virtual').length + index;
+        const row = Math.floor(nodeIndex / COLUMNS);
+        const col = nodeIndex % COLUMNS;
+        const x = SENDER_AREA_WIDTH + col * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING);
+        const y = row * (VIRTUAL_NODE_HEIGHT + VERTICAL_SPACING);
+        return {
+          id: virtual.id,
+          type: 'virtual',
+          position: { x, y },
+          data: { label: virtual.config.name }
+        };
+      });
 
       reconciledNodes = [...reconciledNodes, ...newVirtualNodes];
 
       reconciledNodes.forEach(node => {
-        if (node.type.startsWith('sender')) {
+        if (node.type?.startsWith('sender')) {
           node.data = { ...node.data, onPlay: () => handlePlay(node.id) };
         }
       });
@@ -121,15 +135,21 @@ const LedFxFlow = () => {
         {
           id: `sendereffect-${senderId}`,
           type: 'sendereffect',
-          position: { x: 100, y: 250 },
+          position: { x: 100, y: 450 },
           data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
         },
-        ...filteredVirtuals.map((virtual, index) => ({
-          id: virtual.id,
-          type: 'virtual',
-          position: { x: 500, y: 100 + index * 180 },
-          data: { label: virtual.config.name }
-        }))
+        ...filteredVirtuals.map((virtual, index) => {
+          const row = Math.floor(index / COLUMNS);
+          const col = index % COLUMNS;
+          const x = SENDER_AREA_WIDTH + col * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING);
+          const y = row * (VIRTUAL_NODE_HEIGHT + VERTICAL_SPACING);
+          return {
+            id: virtual.id,
+            type: 'virtual',
+            position: { x, y },
+            data: { label: virtual.config.name }
+          };
+        })
       ];
       if (filteredVirtuals.length > 0 || (savedNodesJSON === '[]' && nodes.length === 0)) {
           setNodes(initialNodes);
