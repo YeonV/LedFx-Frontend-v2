@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import {
   ReactFlow,
   applyNodeChanges,
@@ -39,23 +39,31 @@ const LedFxFlow = () => {
   const [nodes, setNodes] = useState<Node[]>([])
   const [edges, setEdges] = useState<Edge[]>([])
 
-  const handlePlay = (senderId: string) => {
-    const senderNodeOmni = nodes.find((node) => node.id === senderId)
+  const nodesRef = useRef(nodes);
+  nodesRef.current = nodes;
+  const edgesRef = useRef(edges);
+  edgesRef.current = edges;
+
+  const handlePlay = useCallback((senderId: string) => {
+    const senderNodeOmni = nodesRef.current.find((node) => node.id === senderId)
     if (!senderNodeOmni) return
 
-    const connectedEdges = getConnectedEdges([senderNodeOmni], edges)
-    const outgoers = getOutgoers(senderNodeOmni, nodes, edges)
+    const connectedEdges = getConnectedEdges([senderNodeOmni], edgesRef.current)
+    const outgoers = getOutgoers(senderNodeOmni, nodesRef.current, edgesRef.current)
 
     console.log('Sender:', senderNodeOmni)
     console.log('Connected virtuals:', outgoers)
     console.log('Connected edges:', connectedEdges)
-  }
+  }, [])
 
   useEffect(() => {
     getVirtuals()
   }, [getVirtuals])
 
   useEffect(() => {
+    const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
+    const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
+
     const filteredVirtuals = virtuals
       ? Object.keys(virtuals)
           .filter((v) =>
@@ -65,30 +73,70 @@ const LedFxFlow = () => {
           )
           .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
           .map((v) => virtuals[v])
-      : []
+      : [];
 
-    const initialNodes: Node[] = [
-      {
-        id: `sender-${senderId}`,
-        type: 'sender',
-        position: { x: 100, y: 100 },
-        data: { onPlay: () => handlePlay(`sender-${senderId}`) }
-      },
-      {
-        id: `sendereffect-${senderId}`,
-        type: 'sendereffect',
-        position: { x: 100, y: 100 + (Object.keys(nodes).length + 1) * 50 },
-        data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
-      },
-      ...filteredVirtuals.map((virtual, index) => ({
+    if (savedNodesJSON && savedNodesJSON !== '[]') {
+      const savedNodes = JSON.parse(savedNodesJSON);
+      const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) : [];
+
+      const filteredVirtualIds = new Set(filteredVirtuals.map(v => v.id));
+      const savedNodeIds = new Set(savedNodes.map(n => n.id));
+
+      let reconciledNodes = savedNodes.filter(node =>
+        node.type.startsWith('sender') || filteredVirtualIds.has(node.id)
+      );
+
+      const newVirtuals = filteredVirtuals.filter(v => !savedNodeIds.has(v.id));
+      const newVirtualNodes = newVirtuals.map((virtual, index) => ({
         id: virtual.id,
         type: 'virtual',
-        position: { x: 500, y: 100 + index * 180 },
+        position: { x: 500, y: 100 + (filteredVirtuals.length + index) * 180 },
         data: { label: virtual.config.name }
-      }))
-    ]
-    setNodes(initialNodes)
-  }, [virtuals, showComplex, showGaps])
+      }));
+
+      reconciledNodes = [...reconciledNodes, ...newVirtualNodes];
+
+      reconciledNodes.forEach(node => {
+        if (node.type.startsWith('sender')) {
+          node.data = { ...node.data, onPlay: () => handlePlay(node.id) };
+        }
+      });
+
+      setNodes(reconciledNodes);
+
+      const reconciledNodeIds = new Set(reconciledNodes.map(n => n.id));
+      const reconciledEdges = savedEdges.filter(edge =>
+        reconciledNodeIds.has(edge.source) && reconciledNodeIds.has(edge.target)
+      );
+      setEdges(reconciledEdges);
+
+    } else {
+      const initialNodes: Node[] = [
+        {
+          id: `sender-${senderId}`,
+          type: 'sender',
+          position: { x: 100, y: 100 },
+          data: { onPlay: () => handlePlay(`sender-${senderId}`) }
+        },
+        {
+          id: `sendereffect-${senderId}`,
+          type: 'sendereffect',
+          position: { x: 100, y: 250 },
+          data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
+        },
+        ...filteredVirtuals.map((virtual, index) => ({
+          id: virtual.id,
+          type: 'virtual',
+          position: { x: 500, y: 100 + index * 180 },
+          data: { label: virtual.config.name }
+        }))
+      ];
+      if (filteredVirtuals.length > 0 || (savedNodesJSON === '[]' && nodes.length === 0)) {
+          setNodes(initialNodes);
+          setEdges([]);
+      }
+    }
+  }, [virtuals, showComplex, showGaps, handlePlay]);
 
   useEffect(() => {
     if (graphs && graphsMulti) {
@@ -123,6 +171,11 @@ const LedFxFlow = () => {
     [setEdges]
   )
 
+  useEffect(() => {
+    localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
+    localStorage.setItem('ledfx-flow-edges', JSON.stringify(edges));
+  }, [nodes, edges]);
+
   const addSenderNodeOmni = () => {
     senderId++
     const newNode = {
@@ -151,6 +204,12 @@ const LedFxFlow = () => {
     setNodes((nds) => nds.concat(newNode))
   }
 
+  const handleClear = () => {
+    localStorage.removeItem('ledfx-flow-nodes');
+    localStorage.removeItem('ledfx-flow-edges');
+    window.location.reload();
+  }
+
   return (
     <div style={{ height: 'calc(100vh - 208px)', overflow: 'hidden' }}>
       <Button onClick={addSenderNodeOmni} variant="contained">
@@ -158,6 +217,9 @@ const LedFxFlow = () => {
       </Button>
       <Button onClick={addSenderNodeEffect} variant="contained">
         Add Sender Effect
+      </Button>
+      <Button onClick={handleClear} variant="contained" color="secondary">
+        Clear
       </Button>
 
       <ReactFlow
