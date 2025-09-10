@@ -204,6 +204,19 @@ const LedFxFlow = () => {
     setNodes((nds) => nds.concat(newNode))
   }
 
+  const addSenderNodeEffect = () => {
+    senderId++
+    const newNode = {
+      id: `sendereffect-${senderId}`,
+      type: 'sendereffect',
+      position: {
+        x: 100,
+        y: 100 + (Object.keys(nodes).length + 1) * 50
+      },
+      data: { onPlay: () => handlePlay(`sendereffect-${senderId}`) }
+    }
+    setNodes((nds) => nds.concat(newNode))
+  }
 
   const handleClear = () => {
     localStorage.removeItem('ledfx-flow-nodes');
@@ -215,6 +228,9 @@ const LedFxFlow = () => {
     <div style={{ height: 'calc(100vh - 208px)', overflow: 'hidden' }}>
       <Button onClick={addSenderNodeOmni} variant="contained">
         Add Sender Omni
+      </Button>
+      <Button onClick={addSenderNodeEffect} variant="contained">
+        Add Sender Effect
       </Button>
       <Button onClick={handleClear} variant="contained" color="secondary">
         Clear
