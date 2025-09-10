@@ -142,10 +142,15 @@ const LedFxFlow = () => {
     } else {
       const initialNodes: Node[] = [
         {
-          id: `sender-${senderId}`,
+          id: 'sender-global',
           type: 'sender',
           position: { x: 100, y: 100 },
-          data: { onPlay: () => handlePlay(`sender-${senderId}`) }
+          data: {
+            name: 'Omni FX',
+            scope: 'global',
+            isCollapsed: false,
+            onNodeDataChange: onNodeDataChange
+          }
         },
         ...filteredVirtuals.map((virtual, index) => {
           const row = Math.floor(index / COLUMNS);
@@ -246,10 +251,10 @@ const LedFxFlow = () => {
       },
       data: {
         name: name,
-        isSyncing: true, // Only relevant for sendereffect, but harmless for sender
-        isCollapsed: false, // Only relevant for sendereffect
-        onNodeDataChange: onNodeDataChange,
-        onPlay: nodeType === 'sender' ? () => handlePlay(`${nodeType}-${senderId}`) : undefined
+        scope: 'scoped', // All user-added senders are scoped
+        isSyncing: true,
+        isCollapsed: false,
+        onNodeDataChange: onNodeDataChange
       }
     };
 
@@ -274,7 +279,7 @@ const LedFxFlow = () => {
   return (
     <div style={{ height: 'calc(100vh - 208px)', overflow: 'hidden' }}>
       <Button onClick={addSenderNodeOmni} variant="contained">
-        Add Sender Omni
+        Add Scoped Omni Sender
       </Button>
       <Button onClick={addSenderNodeEffect} variant="contained">
         Add Sender Effect

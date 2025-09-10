@@ -1,22 +1,31 @@
-import { Handle, Position } from '@xyflow/react'
+import { Handle, Position, useEdges } from '@xyflow/react'
 import GlobalColorWidget from '../../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
-import { IconButton } from '@mui/material'
-import { PlayArrow } from '@mui/icons-material'
 
-const SenderNodeOmni = ({ id, data }: { id: string, data: { name: string, isCollapsed: boolean, onNodeDataChange: (id: string, data: any) => void, onPlay: () => void } }) => {
-  const { name, isCollapsed, onNodeDataChange, onPlay } = data;
+const SenderNodeOmni = ({ id, data }: { id: string, data: { name: string, scope: 'global' | 'scoped', isCollapsed: boolean, onNodeDataChange: (id: string, data: any) => void } }) => {
+  const { name, scope, isCollapsed, onNodeDataChange } = data;
+  const edges = useEdges();
+
+  const outgoingEdges = edges.filter((edge) => edge.source === id);
+  const connectedVirtualIds = outgoingEdges.map((edge) => edge.target);
+  const isConnected = connectedVirtualIds.length > 0;
+
+  const handleToggleCollapse = () => {
+    if (scope === 'global' || isConnected) {
+      onNodeDataChange(id, { isCollapsed: !isCollapsed });
+    }
+  };
+
   return (
     <div style={{ position: 'relative' }}>
-      <IconButton sx={{ position: 'absolute', top: 5, right: 15 }} onClick={onPlay}>
-        <PlayArrow />
-      </IconButton>
       <GlobalColorWidget
         name={name}
         isCollapsed={isCollapsed}
-        onToggleCollapse={() => onNodeDataChange(id, { isCollapsed: !isCollapsed })}
+        onToggleCollapse={handleToggleCollapse}
+        targetIds={scope === 'scoped' ? connectedVirtualIds : undefined}
       />
-      {/* <Handle type="source" position={Position.Left} /> */}
-      <Handle type="source" position={Position.Right} />
+      {scope === 'scoped' && (
+        <Handle type="source" position={Position.Right} />
+      )}
     </div>
   )
 }

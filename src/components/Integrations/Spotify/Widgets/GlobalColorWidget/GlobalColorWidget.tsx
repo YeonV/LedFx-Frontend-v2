@@ -25,12 +25,14 @@ const GlobalColorWidget = ({
   name = 'Omni FX',
   isCollapsed,
   onToggleCollapse,
+  targetIds,
 }: {
   close?: () => void
   variant?: 'default' | 'floating'
   name?: string
   isCollapsed?: boolean
   onToggleCollapse?: () => void
+  targetIds?: string[]
 }) => {
   const {
     colors,
@@ -64,12 +66,16 @@ const GlobalColorWidget = ({
     setBrightness((globalBrightness || 0) * 100)
   }, [globalBrightness])
 
-  const sendGlobalPartial = async (key: string, value: any) => {
-    await Ledfx('/api/effects', 'PUT', {
-      action: 'apply_global',
-      [key]: value
-    })
-    getVirtuals()
+  const sendPartial = async (key: string, value: any) => {
+    const payload: any = { [key]: value };
+    if (targetIds && targetIds.length > 0) {
+      payload.action = 'apply_partial';
+      payload.targets = targetIds;
+    } else {
+      payload.action = 'apply_global';
+    }
+    await Ledfx('/api/effects', 'PUT', payload);
+    getVirtuals();
   }
 
   const handleAddGradient = (name: string, color: string) => {
@@ -125,7 +131,7 @@ const GlobalColorWidget = ({
               isGradient={true}
               colors={colors}
               showHex={showHex}
-              sendColorToVirtuals={(e: any) => sendGlobalPartial('gradient', e)}
+              sendColorToVirtuals={(e: any) => sendPartial('gradient', e)}
               handleAddGradient={(name: string) => handleAddGradient(name, '#ff0000')}
             />
             <Collapse in={!isCollapsed} timeout="auto" unmountOnExit>
@@ -135,7 +141,7 @@ const GlobalColorWidget = ({
                 isGradient={false}
                 colors={colors}
                 showHex={showHex}
-                sendColorToVirtuals={(e: any) => sendGlobalPartial('background_color', e)}
+                sendColorToVirtuals={(e: any) => sendPartial('background_color', e)}
                 handleAddGradient={(name: string) => handleAddGradient(name, '#000000')}
               />
               <BladeFrame title="Global Brightness" style={{ padding: '6px 12px' }}>
@@ -156,7 +162,7 @@ const GlobalColorWidget = ({
                   size="small"
                   defaultValue={100}
                   valueLabelDisplay="auto"
-                  onChange={(_, value) => sendGlobalPartial('brightness', value)}
+                  onChange={(_, value) => sendPartial('brightness', value)}
                   step={0.01}
                   min={0}
                   max={1}
@@ -167,20 +173,20 @@ const GlobalColorWidget = ({
                   size="small"
                   defaultValue={100}
                   valueLabelDisplay="auto"
-                  onChange={(_, value) => sendGlobalPartial('background_brightness', value)}
+                  onChange={(_, value) => sendPartial('background_brightness', value)}
                   step={0.01}
                   min={0}
                   max={1}
                 />
               </BladeFrame>
               <BladeFrame title="Flip" style={{ padding: '6px 12px' }}>
-                <Toggle title="Flip" onChange={(value) => sendGlobalPartial('flip', value)} />
+                <Toggle title="Flip" onChange={(value) => sendPartial('flip', value)} />
               </BladeFrame>
               <BladeFrame title="Mirror" style={{ padding: '6px 12px' }}>
-                <Toggle title="Mirror" onChange={(value) => sendGlobalPartial('mirror', value)} />
+                <Toggle title="Mirror" onChange={(value) => sendPartial('mirror', value)} />
               </BladeFrame>
               <BladeFrame title="Blur" style={{ padding: '6px 12px' }}>
-                <Toggle title="Blur" onChange={(value) => sendGlobalPartial('blur', value)} />
+                <Toggle title="Blur" onChange={(value) => sendPartial('blur', value)} />
               </BladeFrame>
             </Collapse>
           </Stack>
