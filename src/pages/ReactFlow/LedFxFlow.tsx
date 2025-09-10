@@ -117,7 +117,7 @@ const LedFxFlow = () => {
         if (node.type === 'sendereffect') {
           node.data = {
             ...node.data,
-            isSyncing: node.data.isSyncing || false,
+            isSyncing: node.data.isSyncing ?? true,
             onNodeDataChange: onNodeDataChange
           };
         }
@@ -196,12 +196,18 @@ const LedFxFlow = () => {
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === nodeId) {
-          node.data = { ...node.data, ...data };
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              ...data
+            }
+          }
         }
-        return node;
+        return node
       })
-    );
-  };
+    )
+  }
 
   useEffect(() => {
     localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
@@ -232,7 +238,7 @@ const LedFxFlow = () => {
         y: 100 + (Object.keys(nodes).length + 1) * 50
       },
       data: {
-        isSyncing: false,
+        isSyncing: true,
         onNodeDataChange: onNodeDataChange
       }
     }
