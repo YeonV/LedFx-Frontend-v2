@@ -33,6 +33,7 @@ import OneEffect from '../components/Gamepad/OneEffect'
 import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
 import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widgets/PixelGraphSettings/PixelGraphSettingsFloating'
 import GlobalColorWidget from '../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
+import ReactFlowPage from './ReactFlow/ReactFlowPage'
 
 const Routings = () => {
   const theme = useTheme()
@@ -152,6 +153,7 @@ const Routings = () => {
                 <Route path="/settings" element={<Settings />} />
               )}
               <Route path="/user" element={<User />} />
+              <Route path="/reactflow" element={<ReactFlowPage />} />
               <Route
                 path="*"
                 element={
