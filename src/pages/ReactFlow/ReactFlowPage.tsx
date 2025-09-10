@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import VirtualsFlow from './VirtualsFlow';
-import LedFxFlow from './LedFxFlow';
+import React, { useState } from 'react'
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { SelectChangeEvent } from '@mui/material/Select'
+import VirtualsFlow from './VirtualsFlow'
+import LedFxFlow from './LedFxFlow'
 
 const ReactFlowPage = () => {
-  const [selectedView, setSelectedView] = useState('virtuals');
-
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedView(event.target.value as string);
-  };
+  const [selectedView, setSelectedView] = useState('virtuals')
+  const handleChange = (event: SelectChangeEvent) => {
+    setSelectedView(event.target.value as string)
+  }
 
   return (
     <div style={{ padding: '20px' }}>
@@ -29,7 +29,7 @@ const ReactFlowPage = () => {
       {selectedView === 'virtuals' && <VirtualsFlow />}
       {selectedView === 'ledfx' && <LedFxFlow />}
     </div>
-  );
-};
+  )
+}
 
-export default ReactFlowPage;
+export default ReactFlowPage

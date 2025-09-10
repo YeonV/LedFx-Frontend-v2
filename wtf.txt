@@ -1,0 +1,812 @@
+diff --git a/src/store/api/storeConfig.tsx b/src/store/api/storeConfig.tsx
+index cffc8123..4c2c7879 100644
+--- a/src/store/api/storeConfig.tsx
++++ b/src/store/api/storeConfig.tsx
+@@ -1,7 +1,7 @@
+ import { produce } from 'immer'
+ import { Ledfx } from '../../api/ledfx'
+ import type { IStore } from '../useStore'
+-import { EffectConfig } from './storeVirtuals'
++import { EffectConfig } from '../../api/ledfx.types'
+ 
+ export interface Schema {
+   type: string
+@@ -31,14 +31,14 @@ export interface IPresets {
+   user_presets: Record<string, IPreset>
+ }
+ 
+-export interface IDevice {
+-  config: Record<string, any>
+-  id: string
+-  type: string
+-  online?: boolean
+-  virtuals?: string[]
+-  active_virtuals?: string[]
+-}
++// export interface IDevice {
++//   config: Record<string, any>
++//   id: string
++//   type: string
++//   online?: boolean
++//   virtuals?: string[]
++//   active_virtuals?: string[]
++// }
+ 
+ export interface ISystemConfig {
+   integrations: undefined
+@@ -72,6 +72,7 @@ export interface ISystemConfig {
+   global_transitions: boolean
+   virtuals: undefined
+   host: string
++  hosts?: string[]
+   visualisation_maxlen: number
+   port_s: number
+   user_presets: Record<string, Record<string, IPreset>>
+@@ -176,11 +177,9 @@ const storeConfig = (set: any) => ({
+       'api/getUserPresets'
+     )
+   },
+-  setSystemConfig: async (config: any) =>
+-    await Ledfx('/api/config', 'PUT', config),
++  setSystemConfig: async (config: any) => await Ledfx('/api/config', 'PUT', config),
+   deleteSystemConfig: async () => await Ledfx('/api/config', 'DELETE'),
+-  importSystemConfig: async (config: any) =>
+-    await Ledfx('/api/config', 'POST', config)
++  importSystemConfig: async (config: any) => await Ledfx('/api/config', 'POST', config)
+ })
+ 
+ export default storeConfig
+diff --git a/src/store/api/storeDevices.tsx b/src/store/api/storeDevices.tsx
+index 2f7979bf..a63cc1e7 100644
+--- a/src/store/api/storeDevices.tsx
++++ b/src/store/api/storeDevices.tsx
+@@ -1,10 +1,10 @@
+ import { produce } from 'immer'
+ import { Ledfx } from '../../api/ledfx'
+ import type { IStore, IOpenRgbDevice } from '../useStore'
+-import type { IDevice } from './storeConfig'
++import { Device } from '../../api/ledfx.types'
+ 
+ const storeDevices = (set: any) => ({
+-  devices: {} as Record<string, IDevice>,
++  devices: {} as Record<string, Device>,
+   openRgbDevices: [] as IOpenRgbDevice[],
+   launchpadDevice: '' as string,
+   getDevices: async () => {
+@@ -12,7 +12,7 @@ const storeDevices = (set: any) => ({
+     if (resp && resp.devices) {
+       set(
+         produce((state: IStore) => {
+-          state.devices = resp.devices as Record<string, IDevice>
++          state.devices = resp.devices as Record<string, Device>
+         }),
+         false,
+         'api/gotDevices'
+diff --git a/src/store/api/storeIntegrationsSpotify.tsx b/src/store/api/storeIntegrationsSpotify.tsx
+index 9d110e76..d3b3bd47 100644
+--- a/src/store/api/storeIntegrationsSpotify.tsx
++++ b/src/store/api/storeIntegrationsSpotify.tsx
+@@ -16,12 +16,7 @@ const storeIntegrationsSpotify = (set: any) => ({
+       )
+     }
+   },
+-  addSpSongTrigger: async ({
+-    scene_id,
+-    song_id,
+-    song_name,
+-    song_position
+-  }: any) => {
++  addSpSongTrigger: async ({ scene_id, song_id, song_name, song_position }: any) => {
+     await Ledfx('/api/integrations/spotify/spotify', 'POST', {
+       scene_id,
+       song_id,
+@@ -29,12 +24,7 @@ const storeIntegrationsSpotify = (set: any) => ({
+       song_position
+     })
+   },
+-  editSpSongTrigger: async ({
+-    scene_id,
+-    song_id,
+-    song_name,
+-    song_position
+-  }: any) => {
++  editSpSongTrigger: async ({ scene_id, song_id, song_name, song_position }: any) => {
+     await Ledfx('/api/integrations/spotify/spotify', 'PUT', {
+       scene_id,
+       song_id,
+diff --git a/src/store/api/storePresets.tsx b/src/store/api/storePresets.tsx
+index dd96be81..8eb260a4 100644
+--- a/src/store/api/storePresets.tsx
++++ b/src/store/api/storePresets.tsx
+@@ -20,12 +20,7 @@ const storePresets = (set: any) => ({
+   },
+   addPreset: async (effectId: string, name: string) =>
+     await Ledfx(`/api/virtuals/${effectId}/presets`, 'POST', { name }),
+-  activatePreset: async (
+-    virtId: string,
+-    category: string,
+-    effectType: string,
+-    presetId: string
+-  ) =>
++  activatePreset: async (virtId: string, category: string, effectType: string, presetId: string) =>
+     await Ledfx(`/api/virtuals/${virtId}/presets`, 'PUT', {
+       category,
+       effect_id: effectType,
+diff --git a/src/store/api/storeScenes.tsx b/src/store/api/storeScenes.tsx
+index 1599a61e..fda49aed 100644
+--- a/src/store/api/storeScenes.tsx
++++ b/src/store/api/storeScenes.tsx
+@@ -33,12 +33,9 @@ const storeScenes = (set: any) => ({
+   setSceneOrderUp: (sceneId: string) => {
+     let target = null
+     const sceneOrder = useStore.getState().sceneOrder
+-    const current =
+-      sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
++    const current = sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
+     if (!current || current.order < 1) return
+-    target =
+-      sceneOrder.find((s: ISceneOrder) => s.order === current?.order - 1) ||
+-      null
++    target = sceneOrder.find((s: ISceneOrder) => s.order === current?.order - 1) || null
+     if (!target) return
+     // console.log('Move up', sceneId, current, target)
+ 
+@@ -64,12 +61,9 @@ const storeScenes = (set: any) => ({
+   setSceneOrderDown: (sceneId: string) => {
+     let target = null
+     const sceneOrder = useStore.getState().sceneOrder
+-    const current =
+-      sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
++    const current = sceneOrder.find((s: ISceneOrder) => s.sceneId === sceneId) || null
+     if (!current || current.order >= sceneOrder.length - 1) return
+-    target =
+-      sceneOrder.find((s: ISceneOrder) => s.order === current?.order + 1) ||
+-      null
++    target = sceneOrder.find((s: ISceneOrder) => s.order === current?.order + 1) || null
+     if (!target) return
+     // console.log('Move down', sceneId, current, target)
+ 
+@@ -149,6 +143,15 @@ const storeScenes = (set: any) => ({
+       'setMostUsedScenes'
+     )
+   },
++  clearMostUsedScenes: () => {
++    set(
++      produce((s: IStore) => {
++        s.mostUsedScenes = {}
++      }),
++      false,
++      'clearMostUsedScenes'
++    )
++  },
+   setScenePL: (scenes: string[]) => {
+     set(
+       produce((s: IStore) => {
+@@ -292,8 +295,7 @@ const storeScenes = (set: any) => ({
+       action: 'activate_in',
+       ms
+     }),
+-  deleteScene: async (name: string) =>
+-    await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
++  deleteScene: async (name: string) => await Ledfx('/api/scenes', 'DELETE', { data: { id: name } }),
+ 
+   captivateScene: async (scene_puturl: string, scene_payload: string) =>
+     await Ledfx(scene_puturl, 'PUT', JSON.parse(scene_payload))
+diff --git a/src/store/api/storeVirtuals.tsx b/src/store/api/storeVirtuals.tsx
+index eb2c1275..bfce7739 100644
+--- a/src/store/api/storeVirtuals.tsx
++++ b/src/store/api/storeVirtuals.tsx
+@@ -1,111 +1,107 @@
+ import { produce } from 'immer'
+ import { Ledfx } from '../../api/ledfx'
+ import type { IStore } from '../useStore'
++import { Effect, EffectConfig, Virtual } from '../../api/ledfx.types'
+ 
+ export interface IVirtualOrder {
+   virtId: string
+   order: number
+ }
+ 
+-export type Segment = [
+-  device: string,
+-  start: number,
+-  end: number,
+-  reverse: boolean
+-]
++export type Segment = [device: string, start: number, end: number, reverse: boolean]
+ 
+-export interface EffectConfig {
+-  background_brightness?: number
+-  background_color?: string
+-  beat_skip?: 'none' | 'odd' | 'even'
+-  blur?: number
+-  brightness?: number
+-  color?: string
+-  color_correction?: boolean
+-  color_step?: number
+-  decay?: number
+-  ease_method?: string
+-  flip?: boolean
+-  frequency_range?: string
+-  gradient?: string
+-  gradient_name?: string
+-  gradient_repeat?: number
+-  gradient_roll?: number
+-  invert_roll?: boolean
+-  mirror?: boolean
+-  mode?: string
+-  multiplier?: number
+-  skip_every?: number
+-  solid_color?: boolean
+-  advanced?: boolean
+-  beat_frames?: string
+-  flip_horizontal?: boolean
+-  flip_vertical?: boolean
+-  force_aspect?: boolean
+-  force_fit?: boolean
+-  gif_at?: string
+-  ping_pong?: boolean
+-  skip_frames?: string
+-  strech_hor?: number
+-  strech_ver?: number
+-  diag?: boolean
+-  diag2?: boolean
+-  dump?: boolean
+-  fake_beat?: boolean
+-  rotate?: number
+-  test?: string | boolean
+-  speed_x?: number
+-  size_x?: number
+-  pulse_period?: number
+-  pulse_ratio?: number
+-  flash_color?: string
+-  capture?: boolean
+-  cpu_secs?: number
+-  v_density?: number
+-  twist?: number
+-  radius?: number
+-  density?: number
+-  lower?: number
+-  text?: string
+-  speed_option_1?: number
+-  text_color?: string
+-  font?: string
+-  mask?: string
+-  foreground?: string
+-  background?: string
+-}
++// export interface EffectConfig {
++//   background_brightness?: number
++//   background_color?: string
++//   beat_skip?: 'none' | 'odd' | 'even'
++//   blur?: number
++//   brightness?: number
++//   color?: string
++//   color_correction?: boolean
++//   color_step?: number
++//   decay?: number
++//   ease_method?: string
++//   flip?: boolean
++//   frequency_range?: string
++//   gradient?: string
++//   gradient_name?: string
++//   gradient_repeat?: number
++//   gradient_roll?: number
++//   invert_roll?: boolean
++//   mirror?: boolean
++//   mode?: string
++//   multiplier?: number
++//   skip_every?: number
++//   solid_color?: boolean
++//   advanced?: boolean
++//   beat_frames?: string
++//   flip_horizontal?: boolean
++//   flip_vertical?: boolean
++//   force_aspect?: boolean
++//   force_fit?: boolean
++//   gif_at?: string
++//   ping_pong?: boolean
++//   skip_frames?: string
++//   strech_hor?: number
++//   strech_ver?: number
++//   diag?: boolean
++//   diag2?: boolean
++//   dump?: boolean
++//   fake_beat?: boolean
++//   rotate?: number
++//   test?: string | boolean
++//   speed_x?: number
++//   size_x?: number
++//   pulse_period?: number
++//   pulse_ratio?: number
++//   flash_color?: string
++//   capture?: boolean
++//   cpu_secs?: number
++//   v_density?: number
++//   twist?: number
++//   radius?: number
++//   density?: number
++//   lower?: number
++//   text?: string
++//   speed_option_1?: number
++//   text_color?: string
++//   font?: string
++//   mask?: string
++//   foreground?: string
++//   background?: string
++// }
+ 
+-export interface Effect {
+-  config: EffectConfig
+-  name: string
+-  type: string
+-}
++// export interface Effect {
++//   config: EffectConfig
++//   name: string
++//   type: string
++// }
+ 
+-export interface Virtual {
+-  config: {
+-    center_offset: number
+-    frequency_max: number
+-    frequency_min: number
+-    icon_name: string
+-    mapping: string
+-    max_brightness: number
+-    name: string
+-    preview_only: boolean
+-    rows: number
+-    transition_mode: string
+-    transition_time: number
+-  }
+-  id: string
+-  is_device: string
+-  auto_generated: boolean
+-  segments: Segment[]
+-  pixel_count: number
+-  active: boolean
+-  effect: Effect
+-  effects: Effect[]
+-  last_effect?: null | string
+-  streaming?: boolean
+-}
++// export interface Virtual {
++//   config: {
++//     center_offset: number
++//     frequency_max: number
++//     frequency_min: number
++//     icon_name: string
++//     mapping: string
++//     max_brightness: number
++//     name: string
++//     preview_only: boolean
++//     rows: number
++//     transition_mode: string
++//     transition_time: number
++//   }
++//   id: string
++//   is_device: string
++//   auto_generated: boolean
++//   segments: Segment[]
++//   pixel_count: number
++//   active: boolean
++//   effect: Effect
++//   effects: Effect[]
++//   last_effect?: null | string
++//   streaming?: boolean
++// }
+ 
+ const storeVirtuals = (set: any) => ({
+   virtualOrder: [] as IVirtualOrder[],
+@@ -167,14 +163,11 @@ const storeVirtuals = (set: any) => ({
+       }
+     }
+   },
+-  addVirtual: async (config: any) =>
+-    await Ledfx('/api/virtuals', 'POST', config),
++  addVirtual: async (config: any) => await Ledfx('/api/virtuals', 'POST', config),
+   updateVirtual: async (virtId: string, active: boolean) =>
+     await Ledfx(`/api/virtuals/${virtId}`, 'PUT', { active }),
+-  deleteVirtual: async (virtId: string) =>
+-    await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
+-  clearEffect: async (virtId: string) =>
+-    await Ledfx(`/api/virtuals/${virtId}/effects`, 'DELETE'),
++  deleteVirtual: async (virtId: string) => await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
++  clearEffect: async (virtId: string) => await Ledfx(`/api/virtuals/${virtId}/effects`, 'DELETE'),
+   setEffect: async (
+     virtId: string,
+     type: string,
+@@ -193,9 +186,9 @@ const storeVirtuals = (set: any) => ({
+       set(
+         produce((state: IStore) => {
+           state.virtuals[virtId].effect = {
+-            type: (resp.effect as Effect).type,
+-            name: (resp.effect as Effect).name,
+-            config: (resp.effect as Effect).config
++            type: resp.effect.type,
++            name: resp.effect.name,
++            config: resp.effect.config
+           }
+         }),
+         false,
+@@ -213,9 +206,9 @@ const storeVirtuals = (set: any) => ({
+     set(
+       produce((state: IStore) => {
+         state.virtuals[virtId].effect = {
+-          type: '',
++          type: null,
+           name: '',
+-          config: {}
++          config: null
+         }
+       }),
+       false,
+@@ -320,13 +313,8 @@ const storeVirtuals = (set: any) => ({
+     }
+     return false
+   },
+-  oneShotAll: async (
+-    color: string,
+-    ramp: number,
+-    hold: number,
+-    fade: number
+-  ) => {
+-    const resp = await Ledfx('/api/virtuals_tools', 'PUT', {
++  oneShotAll: async (color: string, ramp: number, hold: number, fade: number) => {
++    const resp = await Ledfx('/api/virtuals_tools', 'POST', {
+       tool: 'oneshot',
+       color,
+       ramp,
+@@ -338,13 +326,7 @@ const storeVirtuals = (set: any) => ({
+     }
+     return false
+   },
+-  oneShot: async (
+-    virtId: string,
+-    color: string,
+-    ramp: number,
+-    hold: number,
+-    fade: number
+-  ) => {
++  oneShot: async (virtId: string, color: string, ramp: number, hold: number, fade: number) => {
+     const resp = await Ledfx(`/api/virtuals_tools/${virtId}`, 'PUT', {
+       tool: 'oneshot',
+       color,
+diff --git a/src/store/ui-persist/storeUIpersist.tsx b/src/store/ui-persist/storeUIpersist.tsx
+index 9881471f..12b35e53 100644
+--- a/src/store/ui-persist/storeUIpersist.tsx
++++ b/src/store/ui-persist/storeUIpersist.tsx
+@@ -16,7 +16,8 @@ const storeUIPersist = () => ({
+     matrix: true,
+     camera: true,
+     matrixGroups: true,
+-    pixelMode: true
++    pixelMode: true,
++    groupMode: true
+   },
+   expander: {
+     scenesRecent: false,
+diff --git a/src/store/ui-persist/storeUIpersistActions.tsx b/src/store/ui-persist/storeUIpersistActions.tsx
+index 3d53b310..3c50d5b5 100644
+--- a/src/store/ui-persist/storeUIpersistActions.tsx
++++ b/src/store/ui-persist/storeUIpersistActions.tsx
+@@ -11,7 +11,8 @@ const storeUIPersistActions = (set: any) => ({
+       | 'matrix'
+       | 'camera'
+       | 'matrixGroups'
+-      | 'pixelMode',
++      | 'pixelMode'
++      | 'groupMode',
+     val: boolean
+   ): void =>
+     set(
+diff --git a/src/store/ui/storeDialogs.tsx b/src/store/ui/storeDialogs.tsx
+index c47fc5b8..aef89147 100644
+--- a/src/store/ui/storeDialogs.tsx
++++ b/src/store/ui/storeDialogs.tsx
+@@ -11,7 +11,20 @@ const storeDialogs = (set: any) => ({
+       false,
+       'api/dialog/nohost'
+     ),
++  userClosedQrConnector: false,
++  setUserClosedQrConnector: (closed: boolean) =>
++    set(
++      produce((state: IStore) => {
++        state.userClosedQrConnector = closed
++      }),
++      false,
++      'api/dialog/QrScanner'
++    ),
+   dialogs: {
++    qrConnector: {
++      open: false,
++      edit: false
++    },
+     nohost: {
+       open: false,
+       edit: false
+@@ -60,10 +73,7 @@ const storeDialogs = (set: any) => ({
+     openRgb: true,
+     launchpad: true
+   },
+-  setAssistant: (
+-    kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad',
+-    val: boolean
+-  ) =>
++  setAssistant: (kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad', val: boolean) =>
+     set(
+       produce((state: IStore) => {
+         state.assistant[kind] = val
+@@ -92,6 +102,17 @@ const storeDialogs = (set: any) => ({
+       false,
+       'api/dialog/nohost'
+     ),
++  setDialogOpenQrConnector: (open: boolean, edit?: boolean) =>
++    set(
++      produce((state: IStore) => {
++        state.dialogs.qrConnector = {
++          open,
++          edit: edit || false
++        }
++      }),
++      false,
++      'api/dialog/QrConnector'
++    ),
+   setDialogOpenFileDrop: (open: boolean, edit?: boolean) =>
+     set(
+       produce((state: IStore) => {
+diff --git a/src/store/ui/storeGeneral.tsx b/src/store/ui/storeGeneral.tsx
+index b900c26e..ca41dc11 100644
+--- a/src/store/ui/storeGeneral.tsx
++++ b/src/store/ui/storeGeneral.tsx
+@@ -11,11 +11,8 @@ const storeGeneral = (set: any) => ({
+       ? window?.location?.href?.split('#')[0]
+       : 'http://localhost:8888',
+   setHost: (host: any) => {
+-    if (isBrowser)
+-      window?.localStorage?.setItem(
+-        'ledfx-host',
+-        host.title ? host.title : host
+-      )
++    console.log('setHost', host)
++    if (isBrowser) window?.localStorage?.setItem('ledfx-host', host.title ? host.title : host)
+     return set(
+       produce((state: IStore) => {
+         state.host = host
+diff --git a/src/store/ui/storeMatrix.tsx b/src/store/ui/storeMatrix.tsx
+new file mode 100644
+index 00000000..52651aed
+--- /dev/null
++++ b/src/store/ui/storeMatrix.tsx
+@@ -0,0 +1,37 @@
++import { produce } from 'immer'
++import type { IStore } from '../useStore'
++import { IMCell } from '../../pages/Devices/EditVirtuals/EditMatrix/M.utils'
++
++const storeMatrix = (set: any) => ({
++  isExternalEditorOpen: false,
++  virtualEditorIsDirty: false,
++  virtualEditorSnapshot: null as IMCell[][] | null,
++  externalStudioRef: null as Window | null,
++  setExternalEditorOpen: (isOpen: boolean) =>
++    set(
++      produce((state: IStore) => {
++        state.isExternalEditorOpen = isOpen
++      }),
++      false,
++      'setExternalEditorOpen'
++    ),
++  setVirtualEditorIsDirty: (isDirty: boolean) =>
++    set(
++      produce((state: IStore) => {
++        state.virtualEditorIsDirty = isDirty
++      }),
++      false,
++      'setVirtualEditorIsDirty'
++    ),
++  setVirtualEditorSnapshot: (snapshot: any) =>
++    set(
++      produce((state: IStore) => {
++        state.virtualEditorSnapshot = snapshot
++      }),
++      false,
++      'setVirtualEditorSnapshot'
++    ),
++  setExternalStudioRef: (win: Window | null) => set({ externalStudioRef: win })
++})
++
++export default storeMatrix
+diff --git a/src/store/ui/storeMidi.tsx b/src/store/ui/storeMidi.tsx
+index f8eb9367..5f67b341 100644
+--- a/src/store/ui/storeMidi.tsx
++++ b/src/store/ui/storeMidi.tsx
+@@ -54,28 +54,19 @@ const storeMidi = (set: any, get: any) => ({
+     const colors = MidiDevices[state.midiType][state.midiModel].colors
+     const numericValue = parseInt(value, 16)
+     return (
+-      Object.keys(colors).find(
+-        (key) => colors[key as keyof typeof colors] === numericValue
+-      ) || undefined
++      Object.keys(colors).find((key) => colors[key as keyof typeof colors] === numericValue) ||
++      undefined
+     )
+   },
+   getUiBtnNo: (inputInt: number): number | null => {
+     const state = get() as IStore
+-    for (
+-      let i = 0;
+-      i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length;
+-      i++
+-    ) {
++    for (let i = 0; i < MidiDevices[state.midiType][state.midiModel].buttonNumbers.length; i++) {
+       for (
+         let j = 0;
+-        j <
+-        MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length;
++        j < MidiDevices[state.midiType][state.midiModel].buttonNumbers[i].length;
+         j++
+       ) {
+-        if (
+-          MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] ===
+-          inputInt
+-        ) {
++        if (MidiDevices[state.midiType][state.midiModel].buttonNumbers[i][j] === inputInt) {
+           return MidiDevices.Launchpad.X.buttonNumbers[i][j]
+         }
+       }
+@@ -233,10 +224,7 @@ const storeMidi = (set: any, get: any) => ({
+   setMidiMappingButtonNumbers: (inputArray: number[][]): void =>
+     set(
+       produce((state: IStore) => {
+-        if (
+-          inputArray.length !== 9 ||
+-          !inputArray.every((row) => row.length === 9)
+-        ) {
++        if (inputArray.length !== 9 || !inputArray.every((row) => row.length === 9)) {
+           throw new Error('Input must be a 9x9 array')
+         }
+         const updatedMapping = { ...state.midiMapping }
+diff --git a/src/store/ui/storeQLCActions.tsx b/src/store/ui/storeQLCActions.tsx
+index 742ee059..46d9ec65 100644
+--- a/src/store/ui/storeQLCActions.tsx
++++ b/src/store/ui/storeQLCActions.tsx
+@@ -52,9 +52,7 @@ const storeQLCActions = (set: any) => ({
+   removeQLCActTriggers: async (id: string) => {
+     set(
+       produce((state: IStore) => {
+-        state.qlc.QLCActTriggers = state.qlc.QLCActTriggers.filter(
+-          (f: any) => f.id !== id
+-        )
++        state.qlc.QLCActTriggers = state.qlc.QLCActTriggers.filter((f: any) => f.id !== id)
+       }),
+       false,
+       'qlc/delTriggers'
+diff --git a/src/store/ui/storeSpotify.tsx b/src/store/ui/storeSpotify.tsx
+index 4255554f..35f92ee7 100644
+--- a/src/store/ui/storeSpotify.tsx
++++ b/src/store/ui/storeSpotify.tsx
+@@ -2,8 +2,7 @@ import { spDevice } from './SpState'
+ import { SpotifyState } from './SpotifyState'
+ 
+ const storeSpotify = () => ({
+-  spotifyEmbedUrl:
+-    'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
++  spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
+   spotifyAuthToken: '',
+   player: null as any,
+   swSize: 'small',
+diff --git a/src/store/ui/storeSpotifyActions.tsx b/src/store/ui/storeSpotifyActions.tsx
+index 2706cdea..00f148d1 100644
+--- a/src/store/ui/storeSpotifyActions.tsx
++++ b/src/store/ui/storeSpotifyActions.tsx
+@@ -147,9 +147,7 @@ const storeSpotifyActions = (set: any) => ({
+   removeSpActTriggers: async (id: string) => {
+     set(
+       produce((state: IStore) => {
+-        state.spotify.spActTriggers = state.spotify.spActTriggers.filter(
+-          (f: any) => f.id !== id
+-        )
++        state.spotify.spActTriggers = state.spotify.spActTriggers.filter((f: any) => f.id !== id)
+       }),
+       false,
+       'spotify/delTriggers'
+@@ -173,8 +171,8 @@ const storeSpotifyActions = (set: any) => ({
+             //   ...state.spotify.spTriggersList,
+             //   newTrigger,
+             // ];
+-            state.spotify.spTriggersList = state.spotify.spTriggersList.map(
+-              (each: any) => (each.id === newTrigger.id ? newTrigger : each)
++            state.spotify.spTriggersList = state.spotify.spTriggersList.map((each: any) =>
++              each.id === newTrigger.id ? newTrigger : each
+             )
+           }),
+           false,
+diff --git a/src/store/ui/storeUI.tsx b/src/store/ui/storeUI.tsx
+index 6aafa3f1..3a3f10e5 100644
+--- a/src/store/ui/storeUI.tsx
++++ b/src/store/ui/storeUI.tsx
+@@ -253,9 +253,7 @@ const storeUI = (set: any) => ({
+         if (state.ui.bars.bottomBar.indexOf(page) === -1) {
+           state.ui.bars.bottomBar = [...state.ui.bars.bottomBar, page]
+         } else {
+-          state.ui.bars.bottomBar = state.ui.bars.bottomBar.filter(
+-            (p: any) => p !== page
+-          )
++          state.ui.bars.bottomBar = state.ui.bars.bottomBar.filter((p: any) => p !== page)
+         }
+       }),
+       false,
+@@ -297,6 +295,15 @@ const storeUI = (set: any) => ({
+       }),
+       false,
+       'ui/settingsExpanded'
++    ),
++  pendingMatrixLayout: null as any,
++  setPendingMatrixLayout: (layout: any): void =>
++    set(
++      produce((state: IStore) => {
++        state.ui.pendingMatrixLayout = layout
++      }),
++      false,
++      'ui/pendingMatrixLayout'
+     )
+ })
+ 
+diff --git a/src/store/ui/storeYoutube.tsx b/src/store/ui/storeYoutube.tsx
+index 67a026f1..57d07d1c 100644
+--- a/src/store/ui/storeYoutube.tsx
++++ b/src/store/ui/storeYoutube.tsx
+@@ -1,8 +1,7 @@
+ import { produce } from 'immer'
+ 
+ const storeYoutube = (set: any) => ({
+-  youtubeURL:
+-    'https://www.youtube.com/watch?v=s6Yyb3N9IuA&list=PLD579BDF7F8D8BFE0',
++  youtubeURL: 'https://www.youtube.com/watch?v=s6Yyb3N9IuA&list=PLD579BDF7F8D8BFE0',
+   setYoutubeURL: (url: string) => {
+     set(
+       produce((state: any) => {
+diff --git a/src/store/useStore.ts b/src/store/useStore.ts
+index d9d1c735..b87a8102 100644
+--- a/src/store/useStore.ts
++++ b/src/store/useStore.ts
+@@ -32,6 +32,7 @@ import storeUIPersistActions from './ui-persist/storeUIpersistActions'
+ import storeSongDectector from './ui/storeSongDectector'
+ import { frontendConfig, log } from '../utils/helpers'
+ import { migrations, MigrationState } from './migrate'
++import storeMatrix from './ui/storeMatrix'
+ 
+ const useStore = create(
+   devtools(
+@@ -46,6 +47,7 @@ const useStore = create(
+           spotify: storeSpotify(),
+           qlc: storeQLC(),
+           user: storeUser(set),
++          ...storeMatrix(set),
+           ...storeUIPersistActions(set),
+           ...storePad(set),
+           ...storeMidi(set, get),
+@@ -77,10 +79,7 @@ const useStore = create(
+         name: 'ledfx-storage',
+         version: frontendConfig,
+         migrate: (persistedState, version) => {
+-          log(
+-            'infoConfig Migrator',
+-            `Migrating from version ${version} to ${frontendConfig}`
+-          )
++          log('infoConfig Migrator', `Migrating from version ${version} to ${frontendConfig}`)
+           let state = persistedState as MigrationState
+           for (let i = version + 1; i <= frontendConfig; i++) {
+             if (migrations[i]) {
+@@ -99,7 +98,8 @@ const useStore = create(
+                   'disconnected',
+                   'ui',
+                   'spotify',
+-                  'pixelGraphs'
++                  'pixelGraphs',
++                  'externalStudioRef'
+                 ].includes(key)
+             )
+           )

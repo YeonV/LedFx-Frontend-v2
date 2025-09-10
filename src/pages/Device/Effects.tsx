@@ -34,7 +34,7 @@ import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
-const orderEffectProperties = (
+export const orderEffectProperties = (
   schema: Schema,
   hidden_keys?: string[],
   advanced_keys?: string[],
