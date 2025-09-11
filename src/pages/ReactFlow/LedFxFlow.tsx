@@ -40,6 +40,7 @@ const LedFxFlow = () => {
   const [edges, setEdges] = useState<Edge[]>([])
   const [dialogState, setDialogState] = useState({ open: false, nodeType: '' });
   const [newNodeName, setNewNodeName] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const nodesRef = useRef(nodes);
   nodesRef.current = nodes;
@@ -62,10 +63,7 @@ const LedFxFlow = () => {
     getVirtuals()
   }, [getVirtuals])
 
-  useEffect(() => {
-    const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
-    const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
-
+  const reconcileAndSetFlow = useCallback((loadedNodes: Node[] | null, loadedEdges: Edge[] | null) => {
     const VIRTUAL_NODE_WIDTH = 400;
     const VIRTUAL_NODE_HEIGHT = 160;
     const HORIZONTAL_SPACING = 50;
@@ -84,9 +82,9 @@ const LedFxFlow = () => {
           .map((v) => virtuals[v])
       : [];
 
-    if (savedNodesJSON && savedNodesJSON !== '[]') {
-      const savedNodes = JSON.parse(savedNodesJSON) as Node[];
-      const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) as Edge[] : [];
+    if (loadedNodes && loadedNodes.length > 0) {
+      const savedNodes = loadedNodes;
+      const savedEdges = loadedEdges || [];
 
       const filteredVirtualIds = new Set(filteredVirtuals.map(v => v.id));
       const savedNodeIds = new Set(savedNodes.map(n => n.id));
@@ -165,12 +163,30 @@ const LedFxFlow = () => {
           };
         })
       ];
-      if (filteredVirtuals.length > 0 || (savedNodesJSON === '[]' && nodes.length === 0)) {
+      if (filteredVirtuals.length > 0 || !loadedNodes) {
           setNodes(initialNodes);
           setEdges([]);
       }
     }
-  }, [virtuals, showComplex, showGaps, handlePlay]);
+  }, [virtuals, showComplex, showGaps, handlePlay, onNodeDataChange]);
+
+  useEffect(() => {
+    const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
+    const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
+
+    if (savedNodesJSON) {
+        try {
+            const savedNodes = JSON.parse(savedNodesJSON) as Node[];
+            const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) as Edge[] : [];
+            reconcileAndSetFlow(savedNodes, savedEdges);
+        } catch (e) {
+            console.error("Failed to parse saved flow data:", e);
+            reconcileAndSetFlow(null, null);
+        }
+    } else {
+        reconcileAndSetFlow(null, null);
+    }
+  }, [reconcileAndSetFlow]);
 
   useEffect(() => {
     if (graphs && graphsMulti) {
@@ -205,7 +221,7 @@ const LedFxFlow = () => {
     [setEdges]
   )
 
-  const onNodeDataChange = (nodeId: string, data: any) => {
+  const onNodeDataChange = useCallback((nodeId: string, data: any) => {
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === nodeId) {
@@ -220,7 +236,7 @@ const LedFxFlow = () => {
         return node
       })
     )
-  }
+  }, [setNodes])
 
   useEffect(() => {
     localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
@@ -270,11 +286,54 @@ const LedFxFlow = () => {
     handleOpenDialog('sendereffect');
   }
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result;
+        if (typeof text !== 'string') throw new Error("File is not readable");
+        const data = JSON.parse(text);
+
+        if (data.flowdata && data.flowdata.nodes && data.flowdata.edges) {
+          reconcileAndSetFlow(data.flowdata.nodes, data.flowdata.edges);
+        } else {
+          // You could add a user notification here that the file is invalid
+          console.error("Invalid flow data file format.");
+        }
+      } catch (error) {
+        console.error("Error reading or parsing flow data file:", error);
+      }
+    };
+    reader.readAsText(file);
+
+    // Reset file input value to allow loading the same file again
+    event.target.value = '';
+  };
+
   const handleClear = () => {
     localStorage.removeItem('ledfx-flow-nodes');
     localStorage.removeItem('ledfx-flow-edges');
     window.location.reload();
   }
+
+  const handleSave = () => {
+    const flowData = {
+      flowdata: {
+        nodes: nodes,
+        edges: edges,
+      },
+    };
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(flowData, null, 2)
+    )}`;
+    const link = document.createElement('a');
+    link.href = jsonString;
+    link.download = 'ledfx-flow.json';
+    link.click();
+  };
 
   return (
     <div style={{ height: 'calc(100vh - 208px)', overflow: 'hidden' }}>
@@ -287,6 +346,19 @@ const LedFxFlow = () => {
       <Button onClick={handleClear} variant="contained" color="secondary">
         Clear
       </Button>
+      <Button onClick={handleSave} variant="contained">
+        Save
+      </Button>
+      <Button onClick={() => fileInputRef.current?.click()} variant="contained">
+        Load
+      </Button>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept=".json"
+        onChange={handleFileChange}
+      />
 
       <Dialog open={dialogState.open} onClose={handleCloseDialog}>
         <DialogTitle>Name Your Node</DialogTitle>
