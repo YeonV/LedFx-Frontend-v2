@@ -319,17 +319,27 @@ const LedFxFlow = () => {
   const handleSave = () => {
     const flowData = {
       flowdata: {
-        nodes: nodes.map(({ id, type, position, data }) => ({
-          id,
-          type,
-          position,
-          data: {
-            name: data.name,
-            scope: data.scope,
-            isSyncing: data.isSyncing,
-            isCollapsed: data.isCollapsed,
+        nodes: nodes.map(({ id, type, position, data }) => {
+          let sanitizedData: any = {};
+          if (type === 'virtual') {
+            sanitizedData = { label: data.label };
+          } else { // for 'sender' and 'sendereffect'
+            sanitizedData = {
+              name: data.name,
+              scope: data.scope,
+              isSyncing: data.isSyncing,
+              isCollapsed: data.isCollapsed,
+            };
           }
-        })),
+          // This is a failsafe, if label is missing, try to get it from store
+          if (type === 'virtual' && !sanitizedData.label) {
+            const virtualFromStore = virtuals[id];
+            if (virtualFromStore) {
+              sanitizedData.label = virtualFromStore.config.name;
+            }
+          }
+          return { id, type, position, data: sanitizedData };
+        }),
         edges: edges,
       },
     };
