@@ -1,6 +1,6 @@
 import { Handle, Position, useEdges } from '@xyflow/react'
 import GlobalColorWidget from '../../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
-import { Paper, Box } from '@mui/material'
+import { Paper, Box, Typography } from '@mui/material'
 
 const SenderNodeOmni = ({ id, data }: { id: string, data: { name: string, scope: 'global' | 'scoped', isCollapsed: boolean, onNodeDataChange: (id: string, data: any) => void } }) => {
   const { name, scope, isCollapsed, onNodeDataChange } = data;
@@ -30,6 +30,9 @@ const SenderNodeOmni = ({ id, data }: { id: string, data: { name: string, scope:
            <Box sx={{ p: 1, bgcolor: '#111', height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <strong>{name}</strong>
           </Box>
+          <Typography sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>
+            Connect to enable
+          </Typography>
         </Paper>
       )}
 

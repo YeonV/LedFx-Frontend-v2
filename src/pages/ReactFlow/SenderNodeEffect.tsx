@@ -1,5 +1,5 @@
 import { Handle, Position, useEdges } from '@xyflow/react'
-import { Box, IconButton, Paper, Collapse } from '@mui/material'
+import { Box, IconButton, Paper, Collapse, Typography } from '@mui/material'
 import { PlayArrow, HdrAuto, ArrowDropDown } from '@mui/icons-material'
 import EffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import useStore from '../../store/useStore'
@@ -76,7 +76,7 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
         <PlayArrow />
       </IconButton>
       <Paper sx={{ width: '480px' }}>
-        <Box sx={{ p: 1, bgcolor: '#090909', mb: virtual ? 2 : 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ p: 1, bgcolor: '#090909', mb: virtual ? 2 : 0, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
           <IconButton
             size="small"
             onClick={() => onNodeDataChange(id, { isCollapsed: !isCollapsed })}
@@ -86,7 +86,7 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
           </IconButton>
           <strong>{name}</strong>
         </Box>
-        {virtual && (
+        {virtual ? (
           <>
             <EffectDropDown
               effects={effects}
@@ -104,6 +104,10 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
               />
             </Collapse>
           </>
+        ) : (
+          <Typography sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>
+            Connect to enable
+          </Typography>
         )}
       </Paper>
       <Handle type="source" position={Position.Right} />

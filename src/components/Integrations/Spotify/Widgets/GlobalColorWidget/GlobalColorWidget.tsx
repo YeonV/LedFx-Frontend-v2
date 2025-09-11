@@ -113,9 +113,11 @@ const GlobalColorWidget = ({
               <ArrowDropDown />
             </IconButton>
             <Typography>{name}</Typography>
-            <Tooltip title="Apply partial effect settings to all active effects.">
-              <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
-            </Tooltip>
+            {variant === 'floating' && (
+              <Tooltip title="Apply partial effect settings to all active effects.">
+                <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
+              </Tooltip>
+            )}
           </Stack>
           {close && (
             <IconButton onClick={() => close && close()}>
