@@ -148,7 +148,7 @@ const LedFxFlow = () => {
           data: {
             name: 'Omni FX',
             scope: 'global',
-            isCollapsed: false,
+            isCollapsed: true,
             onNodeDataChange: onNodeDataChange
           }
         },
