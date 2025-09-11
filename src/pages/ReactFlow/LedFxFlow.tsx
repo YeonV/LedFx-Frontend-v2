@@ -47,6 +47,23 @@ const LedFxFlow = () => {
   const edgesRef = useRef(edges);
   edgesRef.current = edges;
 
+  const onNodeDataChange = useCallback((nodeId: string, data: any) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              ...data
+            }
+          }
+        }
+        return node
+      })
+    )
+  }, [setNodes])
+
   const handlePlay = useCallback((senderId: string) => {
     const senderNodeOmni = nodesRef.current.find((node) => node.id === senderId)
     if (!senderNodeOmni) return
@@ -58,10 +75,6 @@ const LedFxFlow = () => {
     console.log('Connected virtuals:', outgoers)
     console.log('Connected edges:', connectedEdges)
   }, [])
-
-  useEffect(() => {
-    getVirtuals()
-  }, [getVirtuals])
 
   const reconcileAndSetFlow = useCallback((loadedNodes: Node[] | null, loadedEdges: Edge[] | null) => {
     const VIRTUAL_NODE_WIDTH = 400;
@@ -116,7 +129,7 @@ const LedFxFlow = () => {
             ...node.data,
             isCollapsed: node.data.isCollapsed ?? true,
             onNodeDataChange: onNodeDataChange,
-            onPlay: () => handlePlay(node.id)
+            onPlay: node.data.scope === 'global' ? () => handlePlay(node.id) : undefined
           };
         }
         if (node.type === 'sendereffect') {
@@ -171,6 +184,10 @@ const LedFxFlow = () => {
   }, [virtuals, showComplex, showGaps, handlePlay, onNodeDataChange]);
 
   useEffect(() => {
+    getVirtuals()
+  }, [getVirtuals]);
+
+  useEffect(() => {
     const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
     const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
 
@@ -221,23 +238,6 @@ const LedFxFlow = () => {
     [setEdges]
   )
 
-  const onNodeDataChange = useCallback((nodeId: string, data: any) => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === nodeId) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              ...data
-            }
-          }
-        }
-        return node
-      })
-    )
-  }, [setNodes])
-
   useEffect(() => {
     localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
     localStorage.setItem('ledfx-flow-edges', JSON.stringify(edges));
@@ -267,7 +267,7 @@ const LedFxFlow = () => {
       },
       data: {
         name: name,
-        scope: 'scoped', // All user-added senders are scoped
+        scope: 'scoped',
         isSyncing: true,
         isCollapsed: true,
         onNodeDataChange: onNodeDataChange
@@ -300,7 +300,6 @@ const LedFxFlow = () => {
         if (data.flowdata && data.flowdata.nodes && data.flowdata.edges) {
           reconcileAndSetFlow(data.flowdata.nodes, data.flowdata.edges);
         } else {
-          // You could add a user notification here that the file is invalid
           console.error("Invalid flow data file format.");
         }
       } catch (error) {
@@ -308,8 +307,6 @@ const LedFxFlow = () => {
       }
     };
     reader.readAsText(file);
-
-    // Reset file input value to allow loading the same file again
     event.target.value = '';
   };
 
@@ -322,7 +319,17 @@ const LedFxFlow = () => {
   const handleSave = () => {
     const flowData = {
       flowdata: {
-        nodes: nodes,
+        nodes: nodes.map(({ id, type, position, data }) => ({
+          id,
+          type,
+          position,
+          data: {
+            name: data.name,
+            scope: data.scope,
+            isSyncing: data.isSyncing,
+            isCollapsed: data.isCollapsed,
+          }
+        })),
         edges: edges,
       },
     };
