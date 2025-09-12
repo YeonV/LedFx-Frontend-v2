@@ -17,7 +17,7 @@ import useStore from '../../store/useStore'
 import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography } from '@mui/material'
 
 const nodeTypes = {
   sender: SenderNodeOmni,
@@ -41,6 +41,9 @@ const LedFxFlow = () => {
   const [dialogState, setDialogState] = useState({ open: false, nodeType: '' });
   const [newNodeName, setNewNodeName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [savedLayouts, setSavedLayouts] = useState<string[]>([]);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [layoutName, setLayoutName] = useState('');
 
   const nodesRef = useRef(nodes);
   nodesRef.current = nodes;
@@ -185,24 +188,11 @@ const LedFxFlow = () => {
 
   useEffect(() => {
     getVirtuals()
+    updateSavedLayoutsState();
   }, [getVirtuals]);
 
   useEffect(() => {
-    const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
-    const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
-
-    if (savedNodesJSON) {
-        try {
-            const savedNodes = JSON.parse(savedNodesJSON) as Node[];
-            const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) as Edge[] : [];
-            reconcileAndSetFlow(savedNodes, savedEdges);
-        } catch (e) {
-            console.error("Failed to parse saved flow data:", e);
-            reconcileAndSetFlow(null, null);
-        }
-    } else {
-        reconcileAndSetFlow(null, null);
-    }
+    reconcileAndSetFlow(null, null);
   }, [reconcileAndSetFlow]);
 
   useEffect(() => {
@@ -237,11 +227,6 @@ const LedFxFlow = () => {
     (connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   )
-
-  useEffect(() => {
-    localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
-    localStorage.setItem('ledfx-flow-edges', JSON.stringify(edges));
-  }, [nodes, edges]);
 
   const handleOpenDialog = (nodeType: string) => {
     setDialogState({ open: true, nodeType });
@@ -310,13 +295,51 @@ const LedFxFlow = () => {
     event.target.value = '';
   };
 
+  const getSavedLayouts = () => {
+    const layouts = localStorage.getItem('ledfx-saved-flows');
+    return layouts ? JSON.parse(layouts) : {};
+  };
+
+  const updateSavedLayoutsState = () => {
+    const layouts = getSavedLayouts();
+    setSavedLayouts(Object.keys(layouts));
+  };
+
+  const handleSaveLayout = () => {
+    if (layoutName.trim() === '') return;
+    const layouts = getSavedLayouts();
+    const currentFlow = {
+      nodes: nodes,
+      edges: edges,
+    };
+    layouts[layoutName.trim()] = currentFlow;
+    localStorage.setItem('ledfx-saved-flows', JSON.stringify(layouts));
+    updateSavedLayoutsState();
+    setSaveDialogOpen(false);
+    setLayoutName('');
+  };
+
+  const handleLoadLayout = (name: string) => {
+    const layouts = getSavedLayouts();
+    const layout = layouts[name];
+    if (layout) {
+      reconcileAndSetFlow(layout.nodes, layout.edges);
+    }
+  };
+
+  const handleDeleteLayout = (name: string) => {
+    const layouts = getSavedLayouts();
+    delete layouts[name];
+    localStorage.setItem('ledfx-saved-flows', JSON.stringify(layouts));
+    updateSavedLayoutsState();
+  };
+
   const handleClear = () => {
-    localStorage.removeItem('ledfx-flow-nodes');
-    localStorage.removeItem('ledfx-flow-edges');
+    localStorage.removeItem('ledfx-saved-flows');
     window.location.reload();
   }
 
-  const handleSave = () => {
+  const handleExport = () => {
     const flowData = {
       flowdata: {
         nodes: nodes.map(({ id, type, position, data }) => {
@@ -363,12 +386,29 @@ const LedFxFlow = () => {
       <Button onClick={handleClear} variant="contained" color="secondary">
         Clear
       </Button>
-      <Button onClick={handleSave} variant="contained">
+      <Button onClick={() => setSaveDialogOpen(true)} variant="contained">
         Save
       </Button>
-      <Button onClick={() => fileInputRef.current?.click()} variant="contained">
-        Load
+      <Button onClick={handleSave} variant="contained">
+        Export
       </Button>
+      <Button onClick={() => fileInputRef.current?.click()} variant="contained">
+        Import
+      </Button>
+      <Box sx={{ p: 1, mt: 1, border: '1px solid grey', borderRadius: 1 }}>
+        <Typography variant="subtitle2">Saved Layouts (Right-click to delete)</Typography>
+        {savedLayouts.map(name => (
+          <Button
+            key={name}
+            size="small"
+            onClick={() => handleLoadLayout(name)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              handleDeleteLayout(name);
+            }}
+          >{name}</Button>
+        ))}
+      </Box>
       <input
         type="file"
         ref={fileInputRef}
@@ -377,6 +417,27 @@ const LedFxFlow = () => {
         onChange={handleFileChange}
       />
 
+      <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
+        <DialogTitle>Save Layout</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="layout-name"
+            label="Layout Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={layoutName}
+            onChange={(e) => setLayoutName(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSaveLayout()}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleSaveLayout}>Save</Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={dialogState.open} onClose={handleCloseDialog}>
         <DialogTitle>Name Your Node</DialogTitle>
         <DialogContent>
