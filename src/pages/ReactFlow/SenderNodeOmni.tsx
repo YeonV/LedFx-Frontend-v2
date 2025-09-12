@@ -15,12 +15,13 @@ const SenderNodeOmni = ({ id, data }: { id: string, data: { name: string, scope:
   };
 
   const showWidget = scope === 'global' || isConnected;
+  const displayName = (isCollapsed || scope === 'global') ? name : `Omni Sender: ${name}`;
 
   return (
     <div style={{ position: 'relative' }}>
       {showWidget ? (
         <GlobalColorWidget
-          name={name}
+          name={displayName}
           isCollapsed={isCollapsed}
           onToggleCollapse={handleToggleCollapse}
           targetIds={scope === 'scoped' ? connectedVirtualIds : undefined}
