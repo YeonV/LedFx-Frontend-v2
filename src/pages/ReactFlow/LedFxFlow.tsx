@@ -10,14 +10,15 @@ import {
   OnEdgesChange,
   OnConnect,
   getConnectedEdges,
-  getOutgoers
+  getOutgoers,
+  useReactFlow
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import useStore from '../../store/useStore'
 import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider } from '@mui/material'
 
 const nodeTypes = {
   sender: SenderNodeOmni,
@@ -44,6 +45,11 @@ const LedFxFlow = () => {
   const [savedLayouts, setSavedLayouts] = useState<string[]>([]);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [layoutName, setLayoutName] = useState('');
+  const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number; } | null>(null);
+  const [senderMenuAnchorEl, setSenderMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [recieverMenuAnchorEl, setRecieverMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [loadMenuAnchorEl, setLoadMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const { screenToFlowPosition } = useReactFlow();
 
   const nodesRef = useRef(nodes);
   nodesRef.current = nodes;
@@ -271,6 +277,26 @@ const LedFxFlow = () => {
     handleOpenDialog('sendereffect');
   }
 
+  const addVirtualNode = (virtualId: string) => {
+    const virtual = virtuals[virtualId];
+    if (!virtual) return;
+
+    const position = screenToFlowPosition({
+      x: contextMenu?.mouseX || 0,
+      y: contextMenu?.mouseY || 0,
+    });
+
+    const newNode = {
+      id: virtual.id,
+      type: 'virtual',
+      position,
+      data: { label: virtual.config.name },
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+    setContextMenu(null);
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -337,6 +363,18 @@ const LedFxFlow = () => {
   const handleClear = () => {
     reconcileAndSetFlow(null, null);
   }
+
+  const handlePaneContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX + 2,
+            mouseY: event.clientY - 6,
+          }
+        : null,
+    );
+  };
 
   const handleExport = () => {
     const flowData = {
@@ -458,6 +496,61 @@ const LedFxFlow = () => {
           <Button onClick={handleNameSubmit}>Add</Button>
         </DialogActions>
       </Dialog>
+      <Menu
+        open={contextMenu !== null}
+        onClose={() => setContextMenu(null)}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={(e) => setSenderMenuAnchorEl(e.currentTarget)}>Sender</MenuItem>
+        <MenuItem onClick={(e) => setRecieverMenuAnchorEl(e.currentTarget)}>Reciever</MenuItem>
+        <Divider />
+        <MenuItem onClick={() => { setSaveDialogOpen(true); setContextMenu(null); }}>Save</MenuItem>
+        <MenuItem onClick={(e) => setLoadMenuAnchorEl(e.currentTarget)}>Load</MenuItem>
+        <Divider />
+        <MenuItem onClick={() => { handleClear(); setContextMenu(null); }}>Reset</MenuItem>
+        <MenuItem onClick={() => { handleExport(); setContextMenu(null); }}>Export</MenuItem>
+        <MenuItem onClick={() => { fileInputRef.current?.click(); setContextMenu(null); }}>Import</MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={loadMenuAnchorEl}
+        open={Boolean(loadMenuAnchorEl)}
+        onClose={() => setLoadMenuAnchorEl(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        {savedLayouts.map(name => (
+          <MenuItem key={name} onClick={() => { handleLoadLayout(name); setLoadMenuAnchorEl(null); setContextMenu(null); }}>{name}</MenuItem>
+        ))}
+      </Menu>
+      <Menu
+        anchorEl={recieverMenuAnchorEl}
+        open={Boolean(recieverMenuAnchorEl)}
+        onClose={() => setRecieverMenuAnchorEl(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        {Object.values(virtuals)
+          .filter(v => !nodes.some(n => n.id === v.id))
+          .map(v => (
+            <MenuItem key={v.id} onClick={() => { addVirtualNode(v.id); setRecieverMenuAnchorEl(null); }}>{v.config.name}</MenuItem>
+          ))
+        }
+      </Menu>
+      <Menu
+        anchorEl={senderMenuAnchorEl}
+        open={Boolean(senderMenuAnchorEl)}
+        onClose={() => setSenderMenuAnchorEl(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <MenuItem onClick={() => { handleOpenDialog('sender'); setSenderMenuAnchorEl(null); setContextMenu(null); }}>Scoped Omni</MenuItem>
+        <MenuItem onClick={() => { handleOpenDialog('sendereffect'); setSenderMenuAnchorEl(null); setContextMenu(null); }}>Effect</MenuItem>
+      </Menu>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -465,6 +558,7 @@ const LedFxFlow = () => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        onPaneContextMenu={handlePaneContextMenu}
         fitView
       />
     </div>
