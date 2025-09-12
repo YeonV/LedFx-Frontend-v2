@@ -335,8 +335,7 @@ const LedFxFlow = () => {
   };
 
   const handleClear = () => {
-    localStorage.removeItem('ledfx-saved-flows');
-    window.location.reload();
+    reconcileAndSetFlow(null, null);
   }
 
   const handleExport = () => {
@@ -389,7 +388,7 @@ const LedFxFlow = () => {
       <Button onClick={() => setSaveDialogOpen(true)} variant="contained">
         Save
       </Button>
-      <Button onClick={handleSave} variant="contained">
+      <Button onClick={handleExport} variant="contained">
         Export
       </Button>
       <Button onClick={() => fileInputRef.current?.click()} variant="contained">
