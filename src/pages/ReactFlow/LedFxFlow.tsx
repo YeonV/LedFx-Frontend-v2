@@ -384,7 +384,7 @@ const LedFxFlow = () => {
     reconcileAndSetFlow(null, null);
   }
 
-  const handlePaneContextMenu = (event: React.MouseEvent) => {
+  const handlePaneContextMenu = (event: MouseEvent | React.MouseEvent<Element, MouseEvent>) => {
     event.preventDefault();
     setContextMenu(
       contextMenu === null
@@ -452,20 +452,18 @@ const LedFxFlow = () => {
       <Button onClick={() => fileInputRef.current?.click()} variant="contained">
         Import
       </Button>
-      <Box sx={{ p: 1, mt: 1, border: '1px solid grey', borderRadius: 1 }}>
-        <Typography variant="subtitle2">Saved Layouts (Right-click to delete)</Typography>
-        {savedLayouts.map(name => (
-          <Button
-            key={name}
-            size="small"
-            onClick={() => handleLoadLayout(name)}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              handleDeleteLayout(name);
-            }}
-          >{name}</Button>
-        ))}
-      </Box>
+      {savedLayouts.map(name => (
+        <Button
+          key={name}
+          size="small"
+          variant="outlined"
+          onClick={() => handleLoadLayout(name)}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            handleDeleteLayout(name);
+          }}
+        >{name}</Button>
+      ))}
       <input
         type="file"
         ref={fileInputRef}

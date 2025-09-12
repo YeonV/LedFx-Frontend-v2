@@ -84,7 +84,7 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
           >
             <ArrowDropDown />
           </IconButton>
-          <strong>{name}</strong>
+          <strong>{isCollapsed ? name : `Effect Sender: ${name}`}</strong>
         </Box>
         {virtual ? (
           <>

@@ -67,12 +67,12 @@ const GlobalColorWidget = ({
   }, [globalBrightness])
 
   const sendPartial = async (key: string, value: any) => {
-    const payload: any = { [key]: value };
+    const payload: any = {
+      action: 'apply_global',
+      [key]: value
+    };
     if (targetIds && targetIds.length > 0) {
-      payload.action = 'apply_partial';
-      payload.targets = targetIds;
-    } else {
-      payload.action = 'apply_global';
+      payload.virtuals = targetIds;
     }
     await Ledfx('/api/effects', 'PUT', payload);
     getVirtuals();
