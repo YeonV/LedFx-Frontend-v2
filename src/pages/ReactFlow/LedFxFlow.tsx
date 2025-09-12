@@ -18,8 +18,8 @@ import useStore from '../../store/useStore'
 import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider, ListItemIcon } from '@mui/material'
-import { Save, FolderOpen, RestartAlt, FileUpload, FileDownload, AddCircleOutline, Input } from '@mui/icons-material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider, ListItemIcon, Collapse, IconButton } from '@mui/material'
+import { Save, FolderOpen, RestartAlt, FileUpload, FileDownload, AddCircleOutline, Input, Menu as MenuIcon, ChevronLeft, ChevronRight } from '@mui/icons-material';
 
 const nodeTypes = {
   sender: SenderNodeOmni,
@@ -50,6 +50,7 @@ const LedFxFlow = () => {
   const [senderMenuAnchorEl, setSenderMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [recieverMenuAnchorEl, setRecieverMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [loadMenuAnchorEl, setLoadMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [actionsExpanded, setActionsExpanded] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
 
   const nodesRef = useRef(nodes);
@@ -434,36 +435,48 @@ const LedFxFlow = () => {
 
   return (
     <div style={{ height: 'calc(100vh - 208px)', overflow: 'hidden' }}>
-      <Button onClick={addSenderNodeOmni} variant="contained">
-        Add Scoped Omni Sender
-      </Button>
-      <Button onClick={addSenderNodeEffect} variant="contained">
-        Add Sender Effect
-      </Button>
-      <Button onClick={handleClear} variant="contained" color="secondary">
-        Clear
-      </Button>
-      <Button onClick={() => setSaveDialogOpen(true)} variant="contained">
-        Save
-      </Button>
-      <Button onClick={handleExport} variant="contained">
-        Export
-      </Button>
-      <Button onClick={() => fileInputRef.current?.click()} variant="contained">
-        Import
-      </Button>
-      {savedLayouts.map(name => (
-        <Button
-          key={name}
-          size="small"
-          variant="outlined"
-          onClick={() => handleLoadLayout(name)}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            handleDeleteLayout(name);
-          }}
-        >{name}</Button>
-      ))}
+      <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+        <IconButton onClick={(e) => handlePaneContextMenu(e)} size="small">
+          <MenuIcon />
+        </IconButton>
+        <IconButton onClick={() => setActionsExpanded(!actionsExpanded)} size="small">
+          {actionsExpanded ? <ChevronLeft /> : <ChevronRight />}
+        </IconButton>
+        <Collapse in={actionsExpanded} orientation="horizontal">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap' }}>
+            <Button onClick={addSenderNodeOmni} variant="contained">
+              Add Scoped Omni Sender
+            </Button>
+            <Button onClick={addSenderNodeEffect} variant="contained">
+              Add Sender Effect
+            </Button>
+            <Button onClick={handleClear} variant="contained" color="secondary">
+              Clear
+            </Button>
+            <Button onClick={() => setSaveDialogOpen(true)} variant="contained">
+              Save
+            </Button>
+            <Button onClick={handleExport} variant="contained">
+              Export
+            </Button>
+            <Button onClick={() => fileInputRef.current?.click()} variant="contained">
+              Import
+            </Button>
+          </Box>
+        </Collapse>
+        {savedLayouts.map(name => (
+          <Button
+            key={name}
+            size="small"
+            variant="outlined"
+            onClick={() => handleLoadLayout(name)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              handleDeleteLayout(name);
+            }}
+          >{name}</Button>
+        ))}
+      </Box>
       <input
         type="file"
         ref={fileInputRef}
