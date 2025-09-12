@@ -18,7 +18,8 @@ import useStore from '../../store/useStore'
 import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider, ListItemIcon } from '@mui/material'
+import { Save, FolderOpen, RestartAlt, FileUpload, FileDownload, AddCircleOutline, Input } from '@mui/icons-material';
 
 const nodeTypes = {
   sender: SenderNodeOmni,
@@ -198,7 +199,21 @@ const LedFxFlow = () => {
   }, [getVirtuals]);
 
   useEffect(() => {
-    reconcileAndSetFlow(null, null);
+    const savedNodesJSON = localStorage.getItem('ledfx-flow-nodes');
+    const savedEdgesJSON = localStorage.getItem('ledfx-flow-edges');
+
+    if (savedNodesJSON) {
+        try {
+            const savedNodes = JSON.parse(savedNodesJSON) as Node[];
+            const savedEdges = savedEdgesJSON ? JSON.parse(savedEdgesJSON) as Edge[] : [];
+            reconcileAndSetFlow(savedNodes, savedEdges);
+        } catch (e) {
+            console.error("Failed to parse saved flow data:", e);
+            reconcileAndSetFlow(null, null);
+        }
+    } else {
+        reconcileAndSetFlow(null, null);
+    }
   }, [reconcileAndSetFlow]);
 
   useEffect(() => {
@@ -233,6 +248,11 @@ const LedFxFlow = () => {
     (connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   )
+
+  useEffect(() => {
+    localStorage.setItem('ledfx-flow-nodes', JSON.stringify(nodes));
+    localStorage.setItem('ledfx-flow-edges', JSON.stringify(edges));
+  }, [nodes, edges]);
 
   const handleOpenDialog = (nodeType: string) => {
     setDialogState({ open: true, nodeType });
@@ -506,15 +526,15 @@ const LedFxFlow = () => {
             : undefined
         }
       >
-        <MenuItem onClick={(e) => setSenderMenuAnchorEl(e.currentTarget)}>Sender</MenuItem>
-        <MenuItem onClick={(e) => setRecieverMenuAnchorEl(e.currentTarget)}>Reciever</MenuItem>
+        <MenuItem onClick={(e) => setSenderMenuAnchorEl(e.currentTarget)}><ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>Sender</MenuItem>
+        <MenuItem onClick={(e) => setRecieverMenuAnchorEl(e.currentTarget)}><ListItemIcon><Input fontSize="small" /></ListItemIcon>Reciever</MenuItem>
         <Divider />
-        <MenuItem onClick={() => { setSaveDialogOpen(true); setContextMenu(null); }}>Save</MenuItem>
-        <MenuItem onClick={(e) => setLoadMenuAnchorEl(e.currentTarget)}>Load</MenuItem>
+        <MenuItem onClick={() => { setSaveDialogOpen(true); setContextMenu(null); }}><ListItemIcon><Save fontSize="small" /></ListItemIcon>Save</MenuItem>
+        <MenuItem onClick={(e) => setLoadMenuAnchorEl(e.currentTarget)}><ListItemIcon><FolderOpen fontSize="small" /></ListItemIcon>Load</MenuItem>
         <Divider />
-        <MenuItem onClick={() => { handleClear(); setContextMenu(null); }}>Reset</MenuItem>
-        <MenuItem onClick={() => { handleExport(); setContextMenu(null); }}>Export</MenuItem>
-        <MenuItem onClick={() => { fileInputRef.current?.click(); setContextMenu(null); }}>Import</MenuItem>
+        <MenuItem onClick={() => { handleClear(); setContextMenu(null); }}><ListItemIcon><RestartAlt fontSize="small" /></ListItemIcon>Reset</MenuItem>
+        <MenuItem onClick={() => { handleExport(); setContextMenu(null); }}><ListItemIcon><FileUpload fontSize="small" /></ListItemIcon>Export</MenuItem>
+        <MenuItem onClick={() => { fileInputRef.current?.click(); setContextMenu(null); }}><ListItemIcon><FileDownload fontSize="small" /></ListItemIcon>Import</MenuItem>
       </Menu>
       <Menu
         anchorEl={loadMenuAnchorEl}
@@ -548,8 +568,8 @@ const LedFxFlow = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
       >
-        <MenuItem onClick={() => { handleOpenDialog('sender'); setSenderMenuAnchorEl(null); setContextMenu(null); }}>Scoped Omni</MenuItem>
-        <MenuItem onClick={() => { handleOpenDialog('sendereffect'); setSenderMenuAnchorEl(null); setContextMenu(null); }}>Effect</MenuItem>
+        <MenuItem onClick={() => { handleOpenDialog('sender'); setSenderMenuAnchorEl(null); setContextMenu(null); }}><ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>Scoped Omni</MenuItem>
+        <MenuItem onClick={() => { handleOpenDialog('sendereffect'); setSenderMenuAnchorEl(null); setContextMenu(null); }}><ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>Effect</MenuItem>
       </Menu>
       <ReactFlow
         nodes={nodes}
