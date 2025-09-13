@@ -18,19 +18,22 @@ import useStore from '../../store/useStore'
 import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
+import SceneNode from './SceneNode'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider, ListItemIcon, Collapse, IconButton } from '@mui/material'
 import { Save, FolderOpen, RestartAlt, FileUpload, FileDownload, AddCircleOutline, Input, Menu as MenuIcon, ChevronLeft, ChevronRight } from '@mui/icons-material';
 
 const nodeTypes = {
   sender: SenderNodeOmni,
   sendereffect: SenderNodeEffect,
-  virtual: VirtualNode
+  virtual: VirtualNode,
+  scene: SceneNode
 }
 
 let senderId = 1
 
 const LedFxFlow = () => {
   const virtuals = useStore((state) => state.virtuals)
+  const scenes = useStore((state) => state.scenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
@@ -50,6 +53,7 @@ const LedFxFlow = () => {
   const [senderMenuAnchorEl, setSenderMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [recieverMenuAnchorEl, setRecieverMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [loadMenuAnchorEl, setLoadMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [sceneMenuAnchorEl, setSceneMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [actionsExpanded, setActionsExpanded] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
 
@@ -114,8 +118,11 @@ const LedFxFlow = () => {
       const savedNodeIds = new Set(savedNodes.map(n => n.id));
 
       let reconciledNodes = savedNodes.filter(node =>
-        node.type?.startsWith('sender') || filteredVirtualIds.has(node.id)
+        node.type?.startsWith('sender') || node.type === 'scene' || filteredVirtualIds.has(node.id)
       );
+
+      const allSceneIds = new Set(Object.keys(scenes));
+      const newScenes = Object.values(scenes).filter(s => !savedNodeIds.has(s.id));
 
       const newVirtuals = filteredVirtuals.filter(v => !savedNodeIds.has(v.id));
       const newVirtualNodes = newVirtuals.map((virtual, index) => {
@@ -132,7 +139,14 @@ const LedFxFlow = () => {
         };
       });
 
-      reconciledNodes = [...reconciledNodes, ...newVirtualNodes];
+      const newSceneNodes = newScenes.map((scene, index) => ({
+        id: scene.id,
+        type: 'scene',
+        position: { x: SENDER_AREA_WIDTH + (COLUMNS) * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING) + 100, y: (reconciledNodes.filter(n => n.type === 'scene').length + index) * 200 },
+        data: {}
+      }));
+
+      reconciledNodes = [...reconciledNodes, ...newVirtualNodes, ...newSceneNodes];
 
       reconciledNodes.forEach(node => {
         if (node.type === 'sender') {
@@ -185,7 +199,13 @@ const LedFxFlow = () => {
             position: { x, y },
             data: { label: virtual.config.name }
           };
-        })
+        }),
+        ...Object.values(scenes).map((scene, index) => ({
+            id: scene.id,
+            type: 'scene',
+            position: { x: SENDER_AREA_WIDTH + (COLUMNS) * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING) + 100, y: index * 200 },
+            data: {}
+        }))
       ];
       if (filteredVirtuals.length > 0 || !loadedNodes) {
           setNodes(initialNodes);
@@ -296,6 +316,26 @@ const LedFxFlow = () => {
 
   const addSenderNodeEffect = () => {
     handleOpenDialog('sendereffect');
+  }
+
+  const addSceneNode = (sceneId: string) => {
+    const scene = scenes[sceneId];
+    if (!scene) return;
+
+    const position = screenToFlowPosition({
+      x: contextMenu?.mouseX || 0,
+      y: contextMenu?.mouseY || 0,
+    });
+
+    const newNode = {
+      id: scene.id,
+      type: 'scene',
+      position,
+      data: {},
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+    setContextMenu(null);
   }
 
   const addVirtualNode = (virtualId: string) => {
@@ -443,7 +483,7 @@ const LedFxFlow = () => {
           {actionsExpanded ? <ChevronLeft /> : <ChevronRight />}
         </IconButton>
         <Collapse in={actionsExpanded} orientation="horizontal">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
             <Button onClick={addSenderNodeOmni} variant="contained">
               Add Scoped Omni Sender
             </Button>
@@ -581,6 +621,18 @@ const LedFxFlow = () => {
       >
         <MenuItem onClick={() => { handleOpenDialog('sender'); setSenderMenuAnchorEl(null); setContextMenu(null); }}><ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>Scoped Omni</MenuItem>
         <MenuItem onClick={() => { handleOpenDialog('sendereffect'); setSenderMenuAnchorEl(null); setContextMenu(null); }}><ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>Effect</MenuItem>
+        <MenuItem onClick={(e) => { setSceneMenuAnchorEl(e.currentTarget); }}><ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>Scene</MenuItem>
+      </Menu>
+      <Menu
+        anchorEl={sceneMenuAnchorEl}
+        open={Boolean(sceneMenuAnchorEl)}
+        onClose={() => setSceneMenuAnchorEl(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        {Object.values(scenes).map(scene => (
+          <MenuItem key={scene.id} onClick={() => { addSceneNode(scene.id); setSceneMenuAnchorEl(null); setSenderMenuAnchorEl(null); setContextMenu(null); }}>{scene.name}</MenuItem>
+        ))}
       </Menu>
       <ReactFlow
         nodes={nodes}
