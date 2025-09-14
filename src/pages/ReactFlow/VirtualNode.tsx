@@ -20,13 +20,10 @@ const VirtualNode = ({ data }: { data: { label: string } }) => {
 
   const virtual = filteredVirtuals.find((v) => v.config.name === data.label)?.id || ''
 
-  // console.log('VirtualNode data:', data, virtual)
   return (
     <div style={{ width: '400px' }}>
       <DeviceCard virtual={virtual} index={0} />
       <Handle type="target" position={Position.Left} />
-      {/* <Handle type="target" position={Position.Right} style={{ right: -15, top: 55 }} />
-      <Handle type="source" position={Position.Right} style={{ right: -15, top: 65 }} /> */}
     </div>
   )
 }

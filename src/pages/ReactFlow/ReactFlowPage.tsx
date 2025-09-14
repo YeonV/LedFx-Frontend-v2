@@ -1,4 +1,3 @@
-import React from 'react'
 import { ReactFlowProvider } from '@xyflow/react'
 import LedFxFlow from './LedFxFlow'
 
