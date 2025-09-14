@@ -8,8 +8,19 @@ import EffectDropDown from '../../components/SchemaForm/components/DropDown/Drop
 import { useEffect, useRef } from 'react'
 import { deepEqual } from '../../utils/helpers'
 
-const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSyncing: boolean, isCollapsed: boolean, onNodeDataChange: (id: string, data: any) => void } }) => {
-  const { name, isSyncing, isCollapsed, onNodeDataChange } = data;
+const SenderNodeEffect = ({
+  id,
+  data
+}: {
+  id: string
+  data: {
+    name: string
+    isSyncing: boolean
+    isCollapsed: boolean
+    onNodeDataChange: (id: string, data: any) => void
+  }
+}) => {
+  const { name, isSyncing, isCollapsed, onNodeDataChange } = data
   const edges = useEdges()
   const effects = useStore((state) => state.schemas.effects)
   const virtuals = useStore((state) => state.virtuals)
@@ -76,11 +87,23 @@ const SenderNodeEffect = ({ id, data }: { id: string; data: { name: string, isSy
         <PlayArrow />
       </IconButton>
       <Paper sx={{ width: '480px' }}>
-        <Box sx={{ p: 1, bgcolor: '#090909', mb: virtual ? 2 : 0, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+        <Box
+          sx={{
+            p: 1,
+            bgcolor: '#090909',
+            mb: virtual ? 2 : 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+          }}
+        >
           <IconButton
             size="small"
             onClick={() => onNodeDataChange(id, { isCollapsed: !isCollapsed })}
-            sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
+            sx={{
+              transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+              transition: 'transform 0.2s'
+            }}
           >
             <ArrowDropDown />
           </IconButton>
