@@ -1,6 +1,6 @@
-import { Box, IconButton, Slider, Stack, Tooltip, Typography } from '@mui/material'
+import { Box, Collapse, IconButton, Slider, Stack, Tooltip, Typography } from '@mui/material'
 import GlobalColorWidgetFloating from './GlobalColorWidgetFloating'
-import { Close, InfoOutline } from '@mui/icons-material'
+import { ArrowDropDown, Close, InfoOutline } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import { styled } from '@mui/material/styles'
 import useStore from '../../../../../store/useStore'
@@ -19,7 +19,21 @@ const Root = styled('div')({
   userSelect: 'none'
 })
 
-const GlobalColorWidget = ({ close }: { close?: () => void }) => {
+const GlobalColorWidget = ({
+  close,
+  variant = 'default',
+  name = 'Omni FX',
+  isCollapsed,
+  onToggleCollapse,
+  targetIds,
+}: {
+  close?: () => void
+  variant?: 'default' | 'floating'
+  name?: string
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
+  targetIds?: string[]
+}) => {
   const {
     colors,
     getColors,
@@ -52,12 +66,16 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
     setBrightness((globalBrightness || 0) * 100)
   }, [globalBrightness])
 
-  const sendGlobalPartial = async (key: string, value: any) => {
-    await Ledfx('/api/effects', 'PUT', {
+  const sendPartial = async (key: string, value: any) => {
+    const payload: any = {
       action: 'apply_global',
       [key]: value
-    })
-    getVirtuals()
+    };
+    if (targetIds && targetIds.length > 0) {
+      payload.virtuals = targetIds;
+    }
+    await Ledfx('/api/effects', 'PUT', payload);
+    getVirtuals();
   }
 
   const handleAddGradient = (name: string, color: string) => {
@@ -72,7 +90,7 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
   }, [])
 
   return (
-    <Box component={GlobalColorWidgetFloating}>
+    <Box component={variant === 'floating' ? GlobalColorWidgetFloating : Box}>
       <Root>
         <Stack
           direction={'row'}
@@ -80,17 +98,26 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
           bgcolor="#111"
           height={50}
           alignItems="center"
-          justifyContent={close ? 'space-between' : 'center'}
+          justifyContent={'space-between'}
           display="flex"
           className="drag-handle"
           sx={{ cursor: 'move' }}
         >
           {close && <span />}
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography>Omni FX</Typography>
-            <Tooltip title="Apply partial effect settings to all active effects.">
-              <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
-            </Tooltip>
+            <IconButton
+              size="small"
+              onClick={onToggleCollapse}
+              sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
+            >
+              <ArrowDropDown />
+            </IconButton>
+            <Typography>{name}</Typography>
+            {variant === 'floating' && (
+              <Tooltip title="Apply partial effect settings to all active effects.">
+                <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
+              </Tooltip>
+            )}
           </Stack>
           {close && (
             <IconButton onClick={() => close && close()}>
@@ -102,66 +129,68 @@ const GlobalColorWidget = ({ close }: { close?: () => void }) => {
           <Stack spacing={2}>
             <GradientPicker
               pickerBgColor={'linear-gradient(90deg, rgb(0, 255, 255) 0%, rgb(0, 0, 255) 100%)'}
-              title={'color'}
+              title={!isCollapsed ? 'color' : ''}
               isGradient={true}
               colors={colors}
               showHex={showHex}
-              sendColorToVirtuals={(e: any) => sendGlobalPartial('gradient', e)}
+              sendColorToVirtuals={(e: any) => sendPartial('gradient', e)}
               handleAddGradient={(name: string) => handleAddGradient(name, '#ff0000')}
             />
-            <GradientPicker
-              pickerBgColor={'#000000'}
-              title={'background_color'}
-              isGradient={false}
-              colors={colors}
-              showHex={showHex}
-              sendColorToVirtuals={(e: any) => sendGlobalPartial('background_color', e)}
-              handleAddGradient={(name: string) => handleAddGradient(name, '#000000')}
-            />
-            <BladeFrame title="Global Brightness" style={{ padding: '6px 12px' }}>
-              <Slider
-                size="small"
-                value={brightness}
-                onChange={(_e, val) => typeof val === 'number' && setBrightness(val)}
-                step={1}
-                min={0}
-                max={100}
-                onChangeCommitted={(_e, val) =>
-                  setSystemSetting('global_brightness', typeof val === 'number' ? val / 100 : 0)
-                }
+            <Collapse in={!isCollapsed} timeout="auto" unmountOnExit>
+              <GradientPicker
+                pickerBgColor={'#000000'}
+                title={'background_color'}
+                isGradient={false}
+                colors={colors}
+                showHex={showHex}
+                sendColorToVirtuals={(e: any) => sendPartial('background_color', e)}
+                handleAddGradient={(name: string) => handleAddGradient(name, '#000000')}
               />
-            </BladeFrame>
-            <BladeFrame title="Brightness" style={{ padding: '6px 12px' }}>
-              <Slider
-                size="small"
-                defaultValue={100}
-                valueLabelDisplay="auto"
-                onChange={(_, value) => sendGlobalPartial('brightness', value)}
-                step={0.01}
-                min={0}
-                max={1}
-              />
-            </BladeFrame>
-            <BladeFrame title="BG Brightness" style={{ padding: '6px 12px' }}>
-              <Slider
-                size="small"
-                defaultValue={100}
-                valueLabelDisplay="auto"
-                onChange={(_, value) => sendGlobalPartial('background_brightness', value)}
-                step={0.01}
-                min={0}
-                max={1}
-              />
-            </BladeFrame>
-            <BladeFrame title="Flip" style={{ padding: '6px 12px' }}>
-              <Toggle title="Flip" onChange={(value) => sendGlobalPartial('flip', value)} />
-            </BladeFrame>
-            <BladeFrame title="Mirror" style={{ padding: '6px 12px' }}>
-              <Toggle title="Mirror" onChange={(value) => sendGlobalPartial('mirror', value)} />
-            </BladeFrame>
-            <BladeFrame title="Blur" style={{ padding: '6px 12px' }}>
-              <Toggle title="Blur" onChange={(value) => sendGlobalPartial('blur', value)} />
-            </BladeFrame>
+              <BladeFrame title="Global Brightness" style={{ padding: '6px 12px' }}>
+                <Slider
+                  size="small"
+                  value={brightness}
+                  onChange={(_e, val) => typeof val === 'number' && setBrightness(val)}
+                  step={1}
+                  min={0}
+                  max={100}
+                  onChangeCommitted={(_e, val) =>
+                    setSystemSetting('global_brightness', typeof val === 'number' ? val / 100 : 0)
+                  }
+                />
+              </BladeFrame>
+              <BladeFrame title="Brightness" style={{ padding: '6px 12px' }}>
+                <Slider
+                  size="small"
+                  defaultValue={100}
+                  valueLabelDisplay="auto"
+                  onChange={(_, value) => sendPartial('brightness', value)}
+                  step={0.01}
+                  min={0}
+                  max={1}
+                />
+              </BladeFrame>
+              <BladeFrame title="BG Brightness" style={{ padding: '6px 12px' }}>
+                <Slider
+                  size="small"
+                  defaultValue={100}
+                  valueLabelDisplay="auto"
+                  onChange={(_, value) => sendPartial('background_brightness', value)}
+                  step={0.01}
+                  min={0}
+                  max={1}
+                />
+              </BladeFrame>
+              <BladeFrame title="Flip" style={{ padding: '6px 12px' }}>
+                <Toggle title="Flip" onChange={(value) => sendPartial('flip', value)} />
+              </BladeFrame>
+              <BladeFrame title="Mirror" style={{ padding: '6px 12px' }}>
+                <Toggle title="Mirror" onChange={(value) => sendPartial('mirror', value)} />
+              </BladeFrame>
+              <BladeFrame title="Blur" style={{ padding: '6px 12px' }}>
+                <Toggle title="Blur" onChange={(value) => sendPartial('blur', value)} />
+              </BladeFrame>
+            </Collapse>
           </Stack>
         </Box>
       </Root>

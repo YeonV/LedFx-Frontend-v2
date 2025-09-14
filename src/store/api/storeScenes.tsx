@@ -8,8 +8,20 @@ export interface ISceneOrder {
   order: number
 }
 
+export interface IScene {
+  id: string
+  name: string
+  scene_image?: string | null
+  scene_tags?: string | null
+  scene_puturl?: string | null
+  scene_payload?: string | null
+  scene_midiactivate?: string | null
+  virtuals?: Record<string, any>
+  [key: string]: any
+}
+
 const storeScenes = (set: any) => ({
-  scenes: {} as Record<string, Record<string, any>>,
+  scenes: {} as Record<string, Omit<IScene, 'id'>>,
   mostUsedScenes: {} as any,
   recentScenes: [] as string[],
   count: {} as any,

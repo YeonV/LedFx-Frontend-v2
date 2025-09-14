@@ -1,33 +1,17 @@
 import { useEffect } from 'react'
-
-import {
-  Card,
-  CardActionArea,
-  CardActions,
-  Typography,
-  Chip,
-  useTheme,
-  Alert,
-  Collapse,
-  useMediaQuery,
-  Grid,
-  Box,
-  Stack
-} from '@mui/material'
+import { Chip, Alert, Collapse, useMediaQuery, Grid, Box, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
 // import ScenesTable from './ScenesTable';
 import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
-import ScenesMenu from './ScenesMenu'
 import useStyles from './Scenes.styles'
-import SceneImage from './ScenesImage'
 import { ISceneOrder } from '../../store/api/storeScenes'
+import SceneCard from './SceneCard'
 
 const Scenes = () => {
   const classes = useStyles()
-  const theme = useTheme()
 
   const getScenes = useStore((state) => state.getScenes)
   const scenes = useStore((state) => state.scenes)
@@ -144,11 +128,11 @@ const Scenes = () => {
                   .flatMap((s) =>
                     !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
                       ? scenes[s].scene_tags.split(',')
-                      : null
+                      : []
                   )
-                  .filter((n: string) => !!n && n.trim())
+                  .filter((n) => !!n && n.trim())
                   .filter((v, i, a) => a.indexOf(v) === i && v)
-                  .map((t: string) => {
+                  .map((t) => {
                     return (
                       <Chip
                         variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}
@@ -185,62 +169,15 @@ const Scenes = () => {
                   .filter(sceneBlenderFilter)
                   .map((s, i) => {
                     return (
-                      <Grid
+                      <SceneCard
                         key={i}
-                        mt={['0.5rem', '0.5rem', 0, 0, 0]}
-                        p="8px !important"
+                        sceneId={s}
+                        scene={scenes[s]}
                         order={sceneOrder.find((o) => o.sceneId === s)?.order || 0}
-                      >
-                        <Card
-                          className={classes.root}
-                          sx={{
-                            border: '1px solid',
-                            borderColor: theme.palette.divider
-                          }}
-                        >
-                          <CardActionArea
-                            style={{
-                              background: theme.palette.background.default
-                            }}
-                            onClick={() => handleActivateScene(s)}
-                          >
-                            <SceneImage iconName={scenes[s].scene_image || 'Wallpaper'} />
-                            <div style={{ position: 'absolute', top: 0, right: 0 }}>
-                              {scenes[s].scene_tags?.split(',').map(
-                                (t: string) =>
-                                  t.length > 0 &&
-                                  features.scenechips && (
-                                    <Chip
-                                      variant="filled"
-                                      label={t}
-                                      key={t}
-                                      sx={{
-                                        cursor: 'pointer',
-                                        backgroundColor: theme.palette.background.paper,
-                                        border: '1px solid',
-                                        borderColor: theme.palette.text.disabled
-                                      }}
-                                    />
-                                  )
-                              )}
-                            </div>
-                          </CardActionArea>
-                          <CardActions
-                            style={{
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              width: '100%'
-                            }}
-                          >
-                            <Typography className={classes.sceneTitle} variant="h5" component="h2">
-                              {scenes[s].name || s}
-                            </Typography>
-                            {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                              <ScenesMenu sceneId={s} />
-                            )}
-                          </CardActions>
-                        </Card>
-                      </Grid>
+                        handleActivateScene={handleActivateScene}
+                        features={features}
+                        classes={classes}
+                      />
                     )
                   })
               ) : (
