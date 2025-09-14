@@ -84,7 +84,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     if (v) setVirtual(v)
   }, [JSON.stringify(virtuals[virtId])])
 
-  const effectType = virtual && virtual.effect.type
+  const effectType = virtual && virtual.effect?.type
   const [theModel, setTheModel] = useState(virtual?.effect?.config)
   const orderedProperties =
     effects &&
@@ -108,17 +108,26 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
   useEffect(() => {
     getVirtuals()
     getSchemas()
-    if (Object.keys(virtuals[virtId].effect).length === 0) {
+    if (virtuals[virtId].effect && Object.keys(virtuals[virtId].effect).length === 0) {
       Ledfx('/api/config').then((resp) => {
         const v = resp.virtuals.find((v: any) => v.id === virtId)
-        console.log(v)
+        // console.log(v)
         if (!v) return
         if (!v.effects) return
-        const ent: any = Object.entries(v.effects)
-        if (!ent) return
-        const [type, config] = ent[ent.last_effect]
-        // console.log(v)
-        if (type && (config as any).config) setEffect(virtId, type, (config as any).config, true)
+        // console.log(v.effects)
+        // const ent: any = Object.entries(v.effects)
+        // console.log(ent)
+        // if (!ent || !ent.last_effect) return
+        // console.log(v.effects, v.last_effect)
+        if (!v.last_effect) return
+        if (!v.effects[v.last_effect]) return
+        // console.log(v.effects[v.last_effect])
+        const { type, config } = v.effects[v.last_effect]
+        // console.log(config, type)
+        if (type && config) {
+          // console.log('YES')
+          setEffect(virtId, type, config, true)
+        }
       })
     }
   }, [effectType])
@@ -129,7 +138,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
       virtuals[virtId]?.effect?.config &&
       JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId].effect.config)
     ) {
-      setTheModel(virtual?.effect.config)
+      setTheModel(virtual?.effect?.config)
     }
   }, [
     virtuals,
@@ -138,7 +147,7 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     JSON.stringify(virtuals[virtId]?.effect?.config),
     virtual,
     virtual?.effect,
-    virtual?.effect.config,
+    virtual?.effect?.config,
     effectType
   ])
 
