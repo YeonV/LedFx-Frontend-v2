@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import {
   ReactFlow,
   applyNodeChanges,
@@ -35,6 +35,13 @@ const LedFxFlow = () => {
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
+
+  const scenesArray = useMemo(() => {
+    return Object.entries(scenes).map(([id, sceneData]) => ({
+      id,
+      ...(sceneData as object),
+    }));
+  }, [scenes]);
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
@@ -121,8 +128,8 @@ const LedFxFlow = () => {
         node.type?.startsWith('sender') || node.type === 'scene' || filteredVirtualIds.has(node.id)
       );
 
-      const allSceneIds = new Set(Object.keys(scenes));
-      const newScenes = Object.values(scenes).filter(s => !savedNodeIds.has(s.id));
+      const allSceneIds = new Set(scenesArray.map(s => s.id));
+      const newScenes = scenesArray.filter(s => !savedNodeIds.has(s.id));
 
       const newVirtuals = filteredVirtuals.filter(v => !savedNodeIds.has(v.id));
       const newVirtualNodes = newVirtuals.map((virtual, index) => {
@@ -200,7 +207,7 @@ const LedFxFlow = () => {
             data: { label: virtual.config.name }
           };
         }),
-        ...Object.values(scenes).map((scene, index) => ({
+        ...scenesArray.map((scene, index) => ({
             id: scene.id,
             type: 'scene',
             position: { x: SENDER_AREA_WIDTH + (COLUMNS) * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING) + 100, y: index * 200 },
@@ -331,7 +338,7 @@ const LedFxFlow = () => {
       id: scene.id,
       type: 'scene',
       position,
-      data: {},
+      data: { name: scene.name },
     };
 
     setNodes((nds) => nds.concat(newNode));
@@ -444,6 +451,8 @@ const LedFxFlow = () => {
           let sanitizedData: any = {};
           if (type === 'virtual') {
             sanitizedData = { label: data.label };
+          } else if (type === 'scene') {
+            sanitizedData = { name: data.name };
           } else { // for 'sender' and 'sendereffect'
             sanitizedData = {
               name: data.name,
@@ -630,7 +639,7 @@ const LedFxFlow = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
       >
-        {Object.values(scenes).map(scene => (
+        {scenesArray.map(scene => (
           <MenuItem key={scene.id} onClick={() => { addSceneNode(scene.id); setSceneMenuAnchorEl(null); setSenderMenuAnchorEl(null); setContextMenu(null); }}>{scene.name}</MenuItem>
         ))}
       </Menu>

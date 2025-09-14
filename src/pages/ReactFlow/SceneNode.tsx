@@ -4,7 +4,7 @@ import SceneCard from '../Scenes/SceneCard'
 import useStyles from '../Scenes/Scenes.styles'
 import { IScene } from '../../store/api/storeScenes'
 
-const SceneNode = ({ id }: { id: string }) => {
+const SceneNode = ({ id, data }: { id:string, data: { name: string } }) => {
   const classes = useStyles()
   const scene = useStore((state) => state.scenes[id])
   const features = useStore((state) => state.features)
@@ -17,7 +17,9 @@ const SceneNode = ({ id }: { id: string }) => {
       captivateScene(scene.scene_puturl, scene.scene_payload)
   }
 
-  if (!scene) {
+  const sceneData = scene ? { ...scene, name: data.name || scene.name } : { id, name: data.name };
+
+  if (!sceneData) {
     return <div>Scene not found</div>;
   }
 
@@ -25,7 +27,7 @@ const SceneNode = ({ id }: { id: string }) => {
     <div style={{ width: 250 }}>
       <SceneCard
         sceneId={id}
-        scene={scene as IScene}
+        scene={sceneData as IScene}
         order={0}
         handleActivateScene={handleActivateScene}
         features={features}
