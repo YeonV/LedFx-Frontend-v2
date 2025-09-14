@@ -364,7 +364,7 @@ const LedFxFlow = () => {
     })
 
     const newNode = {
-      id: scene.id,
+      id: sceneId,
       type: 'scene',
       position,
       data: { name: scene.name }
@@ -779,7 +779,9 @@ const LedFxFlow = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
       >
-        {scenesArray.map((scene) => (
+        {scenesArray
+          .filter((scene) => !nodes.some((node) => node.id === scene.id))
+          .map((scene) => (
           <MenuItem
             key={scene.id}
             onClick={() => {

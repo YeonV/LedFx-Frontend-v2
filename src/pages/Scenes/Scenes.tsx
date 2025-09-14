@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Chip, Alert, Collapse, useMediaQuery, Grid, Box, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
+// import ScenesTable from './ScenesTable';
 import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
