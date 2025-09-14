@@ -21,7 +21,7 @@ export interface IScene {
 }
 
 const storeScenes = (set: any) => ({
-  scenes: {} as Record<string, IScene>,
+  scenes: {} as Record<string, Omit<IScene, 'id'>>,
   mostUsedScenes: {} as any,
   recentScenes: [] as string[],
   count: {} as any,

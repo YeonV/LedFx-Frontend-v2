@@ -20,7 +20,7 @@ const VirtualNode = ({ data }: { data: { label: string } }) => {
 
   const virtual = filteredVirtuals.find((v) => v.config.name === data.label)?.id || ''
 
-  console.log('VirtualNode data:', data, virtual)
+  // console.log('VirtualNode data:', data, virtual)
   return (
     <div style={{ width: '400px' }}>
       <DeviceCard virtual={virtual} index={0} />
