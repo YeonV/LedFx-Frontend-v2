@@ -1,4 +1,4 @@
-import { HashRouter as Router, BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -33,9 +33,11 @@ import OneEffect from '../components/Gamepad/OneEffect'
 import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
 import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widgets/PixelGraphSettings/PixelGraphSettingsFloating'
 import GlobalColorWidget from '../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
+import ReactFlowPage from './ReactFlow/ReactFlowPage'
 
 const Routings = () => {
   const theme = useTheme()
+  const navigate = useNavigate()
   const isElect = isElectron()
   const keybinding = useStore((state) => state.ui.keybinding)
   const setKeybinding = useStore((state) => state.ui.setKeybinding)
@@ -68,6 +70,7 @@ const Routings = () => {
   useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
   useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!globalColorWidget))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
+  useHotkeys(['ctrl+alt+n'], () => navigate('/reactflow'))
   useHotkeys(['ctrl+alt+g'], () => {
     if (window.localStorage.getItem('guestmode') === 'activated') {
       window.localStorage.removeItem('guestmode')
@@ -152,6 +155,7 @@ const Routings = () => {
                 <Route path="/settings" element={<Settings />} />
               )}
               <Route path="/user" element={<User />} />
+              <Route path="/reactflow" element={<ReactFlowPage />} />
               <Route
                 path="*"
                 element={
