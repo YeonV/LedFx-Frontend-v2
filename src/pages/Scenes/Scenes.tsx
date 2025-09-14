@@ -1,34 +1,16 @@
 import { useEffect } from 'react'
-
-import {
-  Card,
-  CardActionArea,
-  CardActions,
-  Typography,
-  Chip,
-  useTheme,
-  Alert,
-  Collapse,
-  useMediaQuery,
-  Grid,
-  Box,
-  Stack
-} from '@mui/material'
+import { Chip, Alert, Collapse, useMediaQuery, Grid, Box, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
-// import ScenesTable from './ScenesTable';
 import ScenesRecent from './ScenesRecent'
 import ScenesMostUsed from './ScenesMostUsed'
 import ScenesPlaylist from './ScenesPlaylist'
-import ScenesMenu from './ScenesMenu'
 import useStyles from './Scenes.styles'
-import SceneImage from './ScenesImage'
 import { ISceneOrder } from '../../store/api/storeScenes'
 import SceneCard from './SceneCard'
 
 const Scenes = () => {
   const classes = useStyles()
-  const theme = useTheme()
 
   const getScenes = useStore((state) => state.getScenes)
   const scenes = useStore((state) => state.scenes)
@@ -145,11 +127,11 @@ const Scenes = () => {
                   .flatMap((s) =>
                     !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
                       ? scenes[s].scene_tags.split(',')
-                      : null
+                      : []
                   )
-                  .filter((n: string) => !!n && n.trim())
+                  .filter((n) => !!n && n.trim())
                   .filter((v, i, a) => a.indexOf(v) === i && v)
-                  .map((t: string) => {
+                  .map((t) => {
                     return (
                       <Chip
                         variant={sceneActiveTags.includes(t) ? 'filled' : 'outlined'}

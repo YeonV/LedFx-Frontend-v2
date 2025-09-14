@@ -238,7 +238,7 @@ const EditSceneDialog = () => {
   }, [midiEvent, features.scenemidi])
 
   useEffect(() => {
-    if (features.scenemidi && open) {
+    if (features.scenemidi && open && scenes[sceneId].scene_midiactivate) {
       initMidi()
       const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(
@@ -259,7 +259,7 @@ const EditSceneDialog = () => {
   }, [open, features.scenemidi])
 
   useEffect(() => {
-    if (features.scenemidi && open) {
+    if (features.scenemidi && open && scenes[sceneId].scene_midiactivate) {
       setBlockMidiHandler(true)
       const output = midiOutput !== '' ? WebMidi.getOutputByName(midiOutput) : WebMidi.outputs[1]
       const currentBtnNumber = parseInt(
@@ -322,8 +322,10 @@ const EditSceneDialog = () => {
         Object.keys(user_presets[effectId])
           .map(
             (k) =>
+              scenes[sceneId].virtuals &&
               JSON.stringify(ordered((user_presets[effectId][k] as any).config)) ===
-                JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) && k
+                JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) &&
+              k
           )
           .filter((n) => !!n)
       const userPreset = userPresets && userPresets.length === 1 && userPresets[0]
@@ -953,7 +955,7 @@ const EditSceneDialog = () => {
           sceneId &&
           scenes[sceneId] &&
           Object.keys(sVirtuals)
-            .filter((d) => !!scenes[sceneId].virtuals[d].type)
+            .filter((d) => !!scenes[sceneId].virtuals?.[d].type)
             .map((dev, i) => (
               <div
                 key={i}
@@ -976,13 +978,13 @@ const EditSceneDialog = () => {
                     alignItems: 'center'
                   }}
                 >
-                  {renderEffects(scenes[sceneId].virtuals[dev].type, dev)}
+                  {renderEffects(scenes[sceneId].virtuals?.[dev].type, dev)}
                   <span style={{ width: 180, textAlign: 'right' }}>
                     {ledfx_presets &&
                       renderPresets(
-                        ledfx_presets[scenes[sceneId].virtuals[dev].type],
+                        ledfx_presets[scenes[sceneId].virtuals?.[dev].type],
                         dev,
-                        scenes[sceneId].virtuals[dev].type
+                        scenes[sceneId].virtuals?.[dev].type
                       )}
                   </span>
                   <Box
@@ -1031,7 +1033,7 @@ const EditSceneDialog = () => {
             const newMapping = deepCopy(midiMapping) as IMapping
             const newBtnNumber = parseInt(midiActivate?.split('buttonNumber: ')[1])
             const currentBtnNumber = parseInt(
-              scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1]
+              scenes[sceneId].scene_midiactivate?.split('buttonNumber: ')[1] || '-1'
             )
             const item = parseInt(
               Object.keys(newMapping[0]).find(

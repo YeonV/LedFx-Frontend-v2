@@ -1,13 +1,4 @@
-import React from 'react'
-import {
-  Card,
-  CardActionArea,
-  CardActions,
-  Typography,
-  Chip,
-  useTheme,
-  Grid,
-} from '@mui/material'
+import { Card, CardActionArea, CardActions, Typography, Chip, useTheme, Grid } from '@mui/material'
 import ScenesMenu from './ScenesMenu'
 import SceneImage from './ScenesImage'
 import { IScene } from '../../store/api/storeScenes'
@@ -18,24 +9,19 @@ const SceneCard = ({
   order,
   handleActivateScene,
   features,
-  classes,
+  classes
 }: {
   sceneId: string
-  scene: IScene
+  scene: Omit<IScene, 'id'>
   order: number
-  handleActivateScene: (id: string) => void
+  handleActivateScene: (_id: string) => void
   features: any
   classes: any
 }) => {
   const theme = useTheme()
 
   return (
-    <Grid
-      key={sceneId}
-      mt={['0.5rem', '0.5rem', 0, 0, 0]}
-      p="8px !important"
-      order={order}
-    >
+    <Grid key={sceneId} mt={['0.5rem', '0.5rem', 0, 0, 0]} p="8px !important" order={order}>
       <Card
         className={classes.root}
         sx={{
