@@ -111,11 +111,13 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     if (Object.keys(virtuals[virtId].effect).length === 0) {
       Ledfx('/api/config').then((resp) => {
         const v = resp.virtuals.find((v: any) => v.id === virtId)
+        console.log(v)
         if (!v) return
         if (!v.effects) return
-        const ent = Object.entries(v.effects)
+        const ent: any = Object.entries(v.effects)
         if (!ent) return
-        const [type, config] = ent[0]
+        const [type, config] = ent[ent.last_effect]
+        // console.log(v)
         if (type && (config as any).config) setEffect(virtId, type, (config as any).config, true)
       })
     }
