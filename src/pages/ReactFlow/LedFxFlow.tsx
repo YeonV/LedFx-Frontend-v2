@@ -162,22 +162,22 @@ const LedFxFlow = () => {
             filteredVirtualIds.has(node.id)
         )
 
-        const newVirtuals = filteredVirtuals.filter((v) => !savedNodeIds.has(v.id))
-        const newVirtualNodes = newVirtuals.map((virtual, index) => {
-          const nodeIndex = reconciledNodes.filter((n) => n.type === 'virtual').length + index
-          const row = Math.floor(nodeIndex / COLUMNS)
-          const col = nodeIndex % COLUMNS
-          const x = SENDER_AREA_WIDTH + col * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING)
-          const y = row * (VIRTUAL_NODE_HEIGHT + VERTICAL_SPACING)
-          return {
-            id: virtual.id,
-            type: 'virtual',
-            position: { x, y },
-            data: { label: virtual.config.name }
-          }
-        })
+        // const newVirtuals = filteredVirtuals.filter((v) => !savedNodeIds.has(v.id))
+        // const newVirtualNodes = newVirtuals.map((virtual, index) => {
+        //   const nodeIndex = reconciledNodes.filter((n) => n.type === 'virtual').length + index
+        //   const row = Math.floor(nodeIndex / COLUMNS)
+        //   const col = nodeIndex % COLUMNS
+        //   const x = SENDER_AREA_WIDTH + col * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING)
+        //   const y = row * (VIRTUAL_NODE_HEIGHT + VERTICAL_SPACING)
+        //   return {
+        //     id: virtual.id,
+        //     type: 'virtual',
+        //     position: { x, y },
+        //     data: { label: virtual.config.name }
+        //   }
+        // })
 
-        reconciledNodes = [...reconciledNodes, ...newVirtualNodes]
+        // reconciledNodes = [...reconciledNodes, ...newVirtualNodes]
 
         reconciledNodes.forEach((node) => {
           if (node.type === 'sender') {
@@ -782,18 +782,18 @@ const LedFxFlow = () => {
         {scenesArray
           .filter((scene) => !nodes.some((node) => node.id === scene.id))
           .map((scene) => (
-            <MenuItem
-              key={scene.id}
-              onClick={() => {
-                addSceneNode(scene.id)
-                setSceneMenuAnchorEl(null)
-                setSenderMenuAnchorEl(null)
-                setContextMenu(null)
-              }}
-            >
-              {scene.name}
-            </MenuItem>
-          ))}
+          <MenuItem
+            key={scene.id}
+            onClick={() => {
+              addSceneNode(scene.id)
+              setSceneMenuAnchorEl(null)
+              setSenderMenuAnchorEl(null)
+              setContextMenu(null)
+            }}
+          >
+            {scene.name}
+          </MenuItem>
+        ))}
       </Menu>
       <ReactFlow
         nodes={nodes}

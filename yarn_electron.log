@@ -1,2 +1,0 @@
-yarn run v1.22.22
-$ wait-on http://127.0.0.1:3000 && concurrently "npx tsc --project tsconfig.electron.json --watch" "wait-on public/electron.js && electron ."
