@@ -19,6 +19,7 @@ import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
 import SceneNode from './SceneNode'
+import { IScene } from '../../store/api/storeScenes'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Menu, MenuItem, Divider, ListItemIcon, Collapse, IconButton } from '@mui/material'
 import { Save, FolderOpen, RestartAlt, FileUpload, FileDownload, AddCircleOutline, Input, Menu as MenuIcon, ChevronLeft, ChevronRight } from '@mui/icons-material';
 
@@ -36,12 +37,12 @@ const LedFxFlow = () => {
   const scenes = useStore((state) => state.scenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
-  const scenesArray = useMemo(() => {
+  const scenesArray: IScene[] = useMemo(() => {
     return Object.entries(scenes).map(([id, sceneData]) => ({
       id,
-      ...(sceneData as object),
-    }));
-  }, [scenes]);
+      ...sceneData,
+    }))
+  }, [scenes])
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
@@ -128,9 +129,6 @@ const LedFxFlow = () => {
         node.type?.startsWith('sender') || node.type === 'scene' || filteredVirtualIds.has(node.id)
       );
 
-      const allSceneIds = new Set(scenesArray.map(s => s.id));
-      const newScenes = scenesArray.filter(s => !savedNodeIds.has(s.id));
-
       const newVirtuals = filteredVirtuals.filter(v => !savedNodeIds.has(v.id));
       const newVirtualNodes = newVirtuals.map((virtual, index) => {
         const nodeIndex = reconciledNodes.filter(n => n.type === 'virtual').length + index;
@@ -146,14 +144,7 @@ const LedFxFlow = () => {
         };
       });
 
-      const newSceneNodes = newScenes.map((scene, index) => ({
-        id: scene.id,
-        type: 'scene',
-        position: { x: SENDER_AREA_WIDTH + (COLUMNS) * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING) + 100, y: (reconciledNodes.filter(n => n.type === 'scene').length + index) * 200 },
-        data: {}
-      }));
-
-      reconciledNodes = [...reconciledNodes, ...newVirtualNodes, ...newSceneNodes];
+      reconciledNodes = [...reconciledNodes, ...newVirtualNodes];
 
       reconciledNodes.forEach(node => {
         if (node.type === 'sender') {
@@ -211,7 +202,7 @@ const LedFxFlow = () => {
             id: scene.id,
             type: 'scene',
             position: { x: SENDER_AREA_WIDTH + (COLUMNS) * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING) + 100, y: index * 200 },
-            data: {}
+            data: { name: scene.name }
         }))
       ];
       if (filteredVirtuals.length > 0 || !loadedNodes) {
@@ -499,12 +490,6 @@ const LedFxFlow = () => {
             <Button onClick={addSenderNodeEffect} variant="contained">
               Add Sender Effect
             </Button>
-            <Button onClick={handleClear} variant="contained" color="secondary">
-              Clear
-            </Button>
-            <Button onClick={() => setSaveDialogOpen(true)} variant="contained">
-              Save
-            </Button>
             <Button onClick={handleExport} variant="contained">
               Export
             </Button>
@@ -513,6 +498,11 @@ const LedFxFlow = () => {
             </Button>
           </Box>
         </Collapse>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={handleClear}
+        >Default</Button>
         {savedLayouts.map(name => (
           <Button
             key={name}
@@ -525,6 +515,11 @@ const LedFxFlow = () => {
             }}
           >{name}</Button>
         ))}
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setSaveDialogOpen(true)}
+        >+</Button>
       </Box>
       <input
         type="file"
