@@ -782,18 +782,18 @@ const LedFxFlow = () => {
         {scenesArray
           .filter((scene) => !nodes.some((node) => node.id === scene.id))
           .map((scene) => (
-          <MenuItem
-            key={scene.id}
-            onClick={() => {
-              addSceneNode(scene.id)
-              setSceneMenuAnchorEl(null)
-              setSenderMenuAnchorEl(null)
-              setContextMenu(null)
-            }}
-          >
-            {scene.name}
-          </MenuItem>
-        ))}
+            <MenuItem
+              key={scene.id}
+              onClick={() => {
+                addSceneNode(scene.id)
+                setSceneMenuAnchorEl(null)
+                setSenderMenuAnchorEl(null)
+                setContextMenu(null)
+              }}
+            >
+              {scene.name}
+            </MenuItem>
+          ))}
       </Menu>
       <ReactFlow
         nodes={nodes}
