@@ -153,31 +153,31 @@ const LedFxFlow = () => {
         const savedEdges = loadedEdges || []
 
         const filteredVirtualIds = new Set(filteredVirtuals.map((v) => v.id))
-        const savedNodeIds = new Set(savedNodes.map((n) => n.id))
+        // const savedNodeIds = new Set(savedNodes.map((n) => n.id))
 
-        let reconciledNodes = savedNodes.filter(
+        const reconciledNodes = savedNodes.filter(
           (node) =>
             node.type?.startsWith('sender') ||
             node.type === 'scene' ||
             filteredVirtualIds.has(node.id)
         )
 
-        const newVirtuals = filteredVirtuals.filter((v) => !savedNodeIds.has(v.id))
-        const newVirtualNodes = newVirtuals.map((virtual, index) => {
-          const nodeIndex = reconciledNodes.filter((n) => n.type === 'virtual').length + index
-          const row = Math.floor(nodeIndex / COLUMNS)
-          const col = nodeIndex % COLUMNS
-          const x = SENDER_AREA_WIDTH + col * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING)
-          const y = row * (VIRTUAL_NODE_HEIGHT + VERTICAL_SPACING)
-          return {
-            id: virtual.id,
-            type: 'virtual',
-            position: { x, y },
-            data: { label: virtual.config.name }
-          }
-        })
+        // const newVirtuals = filteredVirtuals.filter((v) => !savedNodeIds.has(v.id))
+        // const newVirtualNodes = newVirtuals.map((virtual, index) => {
+        //   const nodeIndex = reconciledNodes.filter((n) => n.type === 'virtual').length + index
+        //   const row = Math.floor(nodeIndex / COLUMNS)
+        //   const col = nodeIndex % COLUMNS
+        //   const x = SENDER_AREA_WIDTH + col * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING)
+        //   const y = row * (VIRTUAL_NODE_HEIGHT + VERTICAL_SPACING)
+        //   return {
+        //     id: virtual.id,
+        //     type: 'virtual',
+        //     position: { x, y },
+        //     data: { label: virtual.config.name }
+        //   }
+        // })
 
-        reconciledNodes = [...reconciledNodes, ...newVirtualNodes]
+        // reconciledNodes = [...reconciledNodes, ...newVirtualNodes]
 
         reconciledNodes.forEach((node) => {
           if (node.type === 'sender') {
