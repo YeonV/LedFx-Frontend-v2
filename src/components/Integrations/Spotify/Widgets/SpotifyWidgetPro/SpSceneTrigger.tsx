@@ -79,7 +79,7 @@ export default function SpSceneTrigger() {
                 {scenes &&
                   Object.keys(scenes).length &&
                   Object.keys(scenes).map((s: any, i: number) => (
-                    <MenuItem key={i} value={scenes[s].id || s}>
+                    <MenuItem key={i} value={s}>
                       {scenes[s]?.name || s}
                     </MenuItem>
                   ))}

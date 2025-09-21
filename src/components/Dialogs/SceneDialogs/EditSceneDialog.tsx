@@ -312,10 +312,11 @@ const EditSceneDialog = () => {
       const ledfxPreset =
         current_ledfx_presets &&
         Object.keys(current_ledfx_presets).length > 0 &&
-        Object.keys(current_ledfx_presets).find(
-          (k) =>
-            JSON.stringify(ordered((current_ledfx_presets[k] as any).config)) ===
-            JSON.stringify(ordered(sVirtuals[dev].config))
+        Object.keys(current_ledfx_presets).find((k) =>
+          JSON.stringify(ordered((current_ledfx_presets[k] as any).config)) ===
+          sVirtuals[dev].config
+            ? JSON.stringify(ordered(sVirtuals[dev].config))
+            : ''
         )
       const userPresets =
         user_presets[effectId] &&
@@ -324,7 +325,8 @@ const EditSceneDialog = () => {
             (k) =>
               scenes[sceneId].virtuals &&
               JSON.stringify(ordered((user_presets[effectId][k] as any).config)) ===
-                JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) &&
+                scenes[sceneId].virtuals[dev].config &&
+              JSON.stringify(ordered(scenes[sceneId].virtuals[dev].config)) &&
               k
           )
           .filter((n) => !!n)
@@ -345,6 +347,7 @@ const EditSceneDialog = () => {
 
             return (
               e.target.value &&
+              sVirtuals[dev].type &&
               activatePreset(dev, category, sVirtuals[dev].type, e.target.value).then(() =>
                 getVirtuals()
               )
@@ -395,6 +398,7 @@ const EditSceneDialog = () => {
 
             return (
               e.target.value &&
+              sVirtuals[dev]?.type &&
               activatePreset(dev, category, sVirtuals[dev].type, e.target.value).then(() =>
                 getVirtuals()
               )
@@ -978,9 +982,11 @@ const EditSceneDialog = () => {
                     alignItems: 'center'
                   }}
                 >
-                  {renderEffects(scenes[sceneId].virtuals?.[dev].type, dev)}
+                  {scenes[sceneId].virtuals?.[dev]?.type &&
+                    renderEffects(scenes[sceneId].virtuals?.[dev].type, dev)}
                   <span style={{ width: 180, textAlign: 'right' }}>
                     {ledfx_presets &&
+                      scenes[sceneId].virtuals?.[dev]?.type &&
                       renderPresets(
                         ledfx_presets[scenes[sceneId].virtuals?.[dev].type],
                         dev,
