@@ -19,7 +19,6 @@ import SenderNodeOmni from './SenderNodeOmni'
 import SenderNodeEffect from './SenderNodeEffect'
 import VirtualNode from './VirtualNode'
 import SceneNode from './SceneNode'
-import { IScene } from '../../store/api/storeScenes'
 import {
   Button,
   Dialog,
@@ -62,10 +61,9 @@ const LedFxFlow = () => {
   const scenes = useStore((state) => state.scenes)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
-  const scenesArray: IScene[] = useMemo(() => {
+  const scenesArray = useMemo(() => {
     return Object.entries(scenes).map(([id, sceneData]) => ({
       id,
-      name: sceneData.name ?? '',
       ...sceneData
     }))
   }, [scenes])

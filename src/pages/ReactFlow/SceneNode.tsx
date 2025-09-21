@@ -1,7 +1,6 @@
 import useStore from '../../store/useStore'
 import SceneCard from '../Scenes/SceneCard'
 import useStyles from '../Scenes/Scenes.styles'
-import { IScene } from '../../store/api/storeScenes'
 
 const SceneNode = ({ id, data }: { id: string; data: { name: string } }) => {
   const classes = useStyles()
@@ -26,7 +25,7 @@ const SceneNode = ({ id, data }: { id: string; data: { name: string } }) => {
     <div style={{ width: 250 }}>
       <SceneCard
         sceneId={id}
-        scene={sceneData as IScene}
+        scene={sceneData}
         order={0}
         handleActivateScene={handleActivateScene}
         features={features}

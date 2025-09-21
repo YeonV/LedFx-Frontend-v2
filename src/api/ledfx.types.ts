@@ -158,10 +158,15 @@ export interface ArtnetDeviceConfig extends BaseDeviceConfig {
    */
   even_packet_size?: boolean;
   /**
-   * Output mode for RGB or RGBW data
-   * @default 'OutputMode.RGB'
+   * RGB data order mode, supported for physical hardware that just doesn't play by the rules
+   * @default 'RGB'
    */
-  output_mode?: string;
+  rgb_order?: string;
+  /**
+   * White channel handling mode, if RGB leave as None. Commonly written as RGBW or RGBA
+   * @default 'None'
+   */
+  white_mode?: string;
   /**
    * port
    * @default 6454
@@ -500,7 +505,6 @@ export interface DeviceConfig {
   ip_address?: string;
   minimise_traffic?: boolean;
   name?: string;
-  output_mode?: string;
   packet_priority?: number;
   packet_size?: number;
   path?: string;
@@ -510,6 +514,7 @@ export interface DeviceConfig {
   post_amble?: string;
   pre_amble?: string;
   refresh_rate?: number /* FPS */;
+  rgb_order?: string;
   send_type?: string;
   starting_addr?: number;
   stretch_to_fit?: boolean;
@@ -519,6 +524,7 @@ export interface DeviceConfig {
   udp_port?: number;
   universe?: number;
   universe_size?: number;
+  white_mode?: string;
 }
 
 // Specific Effect Configurations (for Discriminated Union)
@@ -838,6 +844,59 @@ export interface CloneEffectConfig {
 }
 
 /**
+ * Specific configuration for the 'concentric' effect.
+ * @category EffectSpecificConfigs
+ */
+export interface ConcentricEffectConfig {
+  type: "concentric";
+  /**
+   * Frequency range for beat detection
+   * @default 'Lows (beat+bass)'
+   */
+  frequency_range?: "Beat" | "Bass" | "Lows (beat+bass)" | "Mids" | "High";
+  /**
+   * Invert propagation direction
+   * @default False
+   */
+  invert?: boolean;
+  /**
+   * Frequency range's power multiplier
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  power_multiplier?: number;
+  /**
+   * Scales the gradient
+   * @default 1
+   * @minimum 0.1
+   * @maximum 10.0
+   */
+  gradient_scale?: number;
+  /**
+   * Stretches the gradient vertically
+   * @default 1
+   * @minimum 0.1
+   * @maximum 5.0
+   */
+  stretch_height?: number;
+  /**
+   * Soften the center point
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 5.0
+   */
+  center_smoothing?: number;
+  /**
+   * Idle motion speed
+   * @default 1
+   * @minimum 0.0
+   * @maximum 1
+   */
+  idle_speed?: number;
+}
+
+/**
  * Specific configuration for the 'crawler' effect.
  * @category EffectSpecificConfigs
  */
@@ -1062,6 +1121,11 @@ export interface Equalizer2dEffectConfig {
    */
   peak_marks?: boolean;
   /**
+   * Peak mark color
+   * @default '#FFFFFF'
+   */
+  peak_color?: string /* Color */;
+  /**
    * Center the equalizer bar
    * @default False
    */
@@ -1107,6 +1171,11 @@ export interface Equalizer2dEffectConfig {
    * @maximum 0.3
    */
   spin_decay?: number;
+  /**
+   * flip the image vertically
+   * @default True
+   */
+  flip_vertical?: boolean;
 }
 
 /**
@@ -1125,32 +1194,123 @@ export interface FadeEffectConfig {
 }
 
 /**
+ * Specific configuration for the 'filter' effect.
+ * @category EffectSpecificConfigs
+ */
+export interface FilterEffectConfig {
+  type: "filter";
+  /**
+   * Simple color selector
+   * @default '#FF0000'
+   */
+  color?: string /* Color */;
+  /**
+   * Frequency range for derived brightness
+   * @default 'Lows (beat+bass)'
+   */
+  frequency_range?: "Beat" | "Bass" | "Lows (beat+bass)" | "Mids" | "High";
+  /**
+   * Use gradient instead of color
+   * @default False
+   */
+  use_gradient?: boolean;
+  /**
+   * 0= no gradient roll, range 60 secs to 1 sec
+   * @default 0.0
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  roll_speed?: number;
+  /**
+   * Boost the brightness of the effect on a parabolic curve
+   * @default 0.0
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  boost?: number;
+}
+
+/**
  * Specific configuration for the 'fire' effect.
  * @category EffectSpecificConfigs
  */
 export interface FireEffectConfig {
   type: "fire";
   /**
-   * Effect Speed modifier
    * @default 0.04
    * @minimum 1e-05
    * @maximum 0.5
    */
   speed?: number;
   /**
-   * Fire color
    * @default 0.15
    * @minimum 0
    * @maximum 1
    */
   color_shift?: number;
   /**
-   * Fire intensity
    * @default 8
    * @minimum 1
    * @maximum 30
    */
   intensity?: number;
+  /**
+   * @default 0.5
+   * @minimum 0.05
+   * @maximum 1.0
+   */
+  fade_chance?: number;
+}
+
+/**
+ * Specific configuration for the 'flame2d' effect.
+ * @category EffectSpecificConfigs
+ */
+export interface Flame2dEffectConfig {
+  type: "flame2d";
+  /**
+   * Particles spawn rate
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  spawn_rate?: number;
+  /**
+   * Trips to top per second
+   * @default 0.3
+   * @minimum 0.1
+   * @maximum 1.0
+   */
+  velocity?: number;
+  /**
+   * Application of the audio power input
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  intensity?: number;
+  /**
+   * Blur radius in pixels
+   * @default 2
+   * @minimum 0
+   * @maximum 5
+   */
+  blur_amount?: number;
+  /**
+   * low band flame
+   * @default '#FF0000'
+   */
+  low_band?: string /* Color */;
+  /**
+   * mid band flame
+   * @default '#00FF00'
+   */
+  mid_band?: string /* Color */;
+  /**
+   * high band flame
+   * @default '#0000FF'
+   */
+  high_band?: string /* Color */;
 }
 
 /**
@@ -1264,6 +1424,57 @@ export interface GradientEffectConfig {
    * @maximum 10
    */
   speed?: number;
+}
+
+/**
+ * Specific configuration for the 'hierarchy' effect.
+ * @category EffectSpecificConfigs
+ */
+export interface HierarchyEffectConfig {
+  type: "hierarchy";
+  /**
+   * Color of low, bassy sounds
+   * @default '#FF0000'
+   */
+  color_lows?: string /* Color */;
+  /**
+   * Color of midrange sounds
+   * @default '#00FF00'
+   */
+  color_mids?: string /* Color */;
+  /**
+   * Color of high sounds
+   * @default '#0000FF'
+   */
+  color_high?: string /* Color */;
+  /**
+   * Boost the brightness of the effect on a parabolic curve
+   * @default 0.0
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  brightness_boost?: number;
+  /**
+   * If Lows are below this value, Mids are used.
+   * @default 0.05
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  threshold_lows?: number;
+  /**
+   * If Mids are below this value, Highs are used
+   * @default 0.05
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  threshold_mids?: number;
+  /**
+   * Time Lows/Mids have to be below threshold before switch
+   * @default 0.1
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  switch_time?: number;
 }
 
 /**
@@ -1692,11 +1903,6 @@ export interface Noise2dEffectConfig {
    * @maximum 4.0
    */
   multiplier?: number;
-  /**
-   * Add soap smear to noise
-   * @default False
-   */
-  soap?: boolean;
 }
 
 /**
@@ -1775,6 +1981,11 @@ export interface PixelsEffectConfig {
    * @default False
    */
   build_up?: boolean;
+  /**
+   * Restart effect on color change, for transitions
+   * @default False
+   */
+  color_blend?: boolean;
 }
 
 /**
@@ -1910,6 +2121,78 @@ export interface PowerEffectConfig {
    * @maximum 1
    */
   sparks_decay_rate?: number;
+}
+
+/**
+ * Specific configuration for the 'radial' effect.
+ * @category EffectSpecificConfigs
+ */
+export interface RadialEffectConfig {
+  type: "radial";
+  /**
+   * The virtual from which to source the 1d pixels
+   * @default 'unknown'
+   */
+  source_virtual?: any;
+  /**
+   * Edges count of mapping
+   * @default 0
+   * @minimum 0
+   * @maximum 8
+   */
+  edges?: number;
+  /**
+   * X offset for center point
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  x_offset?: number;
+  /**
+   * Y offset for center point
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  y_offset?: number;
+  /**
+   * twist that thing
+   * @default 0
+   * @minimum -4
+   * @maximum 4
+   */
+  twist?: number;
+  /**
+   * Use polygonal or radial lobes
+   * @default True
+   */
+  polygon?: boolean;
+  /**
+   * static rotation
+   * @default 0
+   * @minimum -0.5
+   * @maximum 0.5
+   */
+  rotation?: number;
+  /**
+   * Spin the radial effect to the audio impulse
+   * @default 0.0
+   * @minimum -1.0
+   * @maximum 1.0
+   */
+  spin?: number;
+  /**
+   * Frequency range for the spin impulse
+   * @default 'Lows (beat+bass)'
+   */
+  frequency_range?: "Beat" | "Bass" | "Lows (beat+bass)" | "Mids" | "High";
+  /**
+   * pull polygon points to star shape
+   * @default 0.0
+   * @minimum -1.0
+   * @maximum 1.0
+   */
+  star?: number;
 }
 
 /**
@@ -2150,11 +2433,6 @@ export interface ScanEffectConfig {
    */
   full_grad?: boolean;
   /**
-   * enable advanced options
-   * @default False
-   */
-  advanced?: boolean;
-  /**
    * Number of scan to render
    * @default 1
    * @minimum 1
@@ -2327,11 +2605,6 @@ export interface ScanMultiEffectConfig {
    */
   use_grad?: boolean;
   /**
-   * enable advanced options
-   * @default True
-   */
-  advanced?: boolean;
-  /**
    * Audio processing source for low, mid, high
    * @default 'Power'
    */
@@ -2480,6 +2753,40 @@ export interface SinglecolorEffectConfig {
    * @default '#FF0000'
    */
   color?: string /* Color */;
+}
+
+/**
+ * Specific configuration for the 'soap2d' effect.
+ * @category EffectSpecificConfigs
+ */
+export interface Soap2dEffectConfig {
+  type: "soap2d";
+  /**
+   * Smear amplitude [0..1]
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  density?: number;
+  /**
+   * Motion speed (time-invariant) [0..1]
+   * @default 0.5
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  speed?: number;
+  /**
+   * Audio injection to speed [0..2] 0 = free run
+   * @default 1.0
+   * @minimum 0.0
+   * @maximum 2.0
+   */
+  intensity?: number;
+  /**
+   * Frequency range for the audio impulse
+   * @default 'Lows (beat+bass)'
+   */
+  frequency_range?: "Beat" | "Bass" | "Lows (beat+bass)" | "Mids" | "High";
 }
 
 /**
@@ -2772,13 +3079,13 @@ export interface WavelengthEffectConfig {
  * Literal union of all known effect type strings
  * @category Types
  */
-export type EffectType = "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "fire" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength";
+export type EffectType = "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "soap2d" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength";
 
 /**
  * Effect specific configurations
  * @category Specific
  */
-export type EffectSpecificConfig = BandsEffectConfig | BandsMatrixEffectConfig | BarEffectConfig | BladePowerPlusEffectConfig | BleepEffectConfig | BlenderEffectConfig | BlockReflectionsEffectConfig | BlocksEffectConfig | CloneEffectConfig | CrawlerEffectConfig | Digitalrain2dEffectConfig | EnergyEffectConfig | Energy2EffectConfig | EqualizerEffectConfig | Equalizer2dEffectConfig | FadeEffectConfig | FireEffectConfig | GameOfLifeEffectConfig | GifplayerEffectConfig | GlitchEffectConfig | GradientEffectConfig | ImagespinEffectConfig | Keybeat2dEffectConfig | LavaLampEffectConfig | MagnitudeEffectConfig | MarchingEffectConfig | MeltEffectConfig | MeltAndSparkleEffectConfig | MetroEffectConfig | MultibarEffectConfig | Noise2dEffectConfig | PitchspectrumEffectConfig | PixelsEffectConfig | Plasma2dEffectConfig | PlasmawledEffectConfig | PowerEffectConfig | RainEffectConfig | RainbowEffectConfig | RandomFlashEffectConfig | RealStrobeEffectConfig | ScanEffectConfig | ScanAndFlareEffectConfig | ScanMultiEffectConfig | ScrollEffectConfig | ScrollPlusEffectConfig | SinglecolorEffectConfig | SpectrumEffectConfig | StrobeEffectConfig | Texter2dEffectConfig | VumeterEffectConfig | WaterEffectConfig | Waterfall2dEffectConfig | WavelengthEffectConfig;
+export type EffectSpecificConfig = BandsEffectConfig | BandsMatrixEffectConfig | BarEffectConfig | BladePowerPlusEffectConfig | BleepEffectConfig | BlenderEffectConfig | BlockReflectionsEffectConfig | BlocksEffectConfig | CloneEffectConfig | ConcentricEffectConfig | CrawlerEffectConfig | Digitalrain2dEffectConfig | EnergyEffectConfig | Energy2EffectConfig | EqualizerEffectConfig | Equalizer2dEffectConfig | FadeEffectConfig | FilterEffectConfig | FireEffectConfig | Flame2dEffectConfig | GameOfLifeEffectConfig | GifplayerEffectConfig | GlitchEffectConfig | GradientEffectConfig | HierarchyEffectConfig | ImagespinEffectConfig | Keybeat2dEffectConfig | LavaLampEffectConfig | MagnitudeEffectConfig | MarchingEffectConfig | MeltEffectConfig | MeltAndSparkleEffectConfig | MetroEffectConfig | MultibarEffectConfig | Noise2dEffectConfig | PitchspectrumEffectConfig | PixelsEffectConfig | Plasma2dEffectConfig | PlasmawledEffectConfig | PowerEffectConfig | RadialEffectConfig | RainEffectConfig | RainbowEffectConfig | RandomFlashEffectConfig | RealStrobeEffectConfig | ScanEffectConfig | ScanAndFlareEffectConfig | ScanMultiEffectConfig | ScrollEffectConfig | ScrollPlusEffectConfig | SinglecolorEffectConfig | Soap2dEffectConfig | SpectrumEffectConfig | StrobeEffectConfig | Texter2dEffectConfig | VumeterEffectConfig | WaterEffectConfig | Waterfall2dEffectConfig | WavelengthEffectConfig;
 
 /**
  * Universal interface merging all possible *optional* effect properties.
@@ -2794,6 +3101,7 @@ export interface EffectConfig {
   alpha?: boolean;
   attack?: number;
   background?: string;
+  background_brightness?: number;
   background_color?: string /* Color */;
   background_stretch?: string;
   band_count?: number;
@@ -2811,15 +3119,21 @@ export interface EffectConfig {
   bilinear?: boolean;
   block_count?: number;
   blur?: number;
+  blur_amount?: number;
+  boost?: number;
   bounce?: boolean;
+  brightness?: number;
+  brightness_boost?: number;
   build_up?: boolean;
   capture?: boolean;
   center?: boolean;
   center_horizontal?: number;
+  center_smoothing?: number;
   center_vertical?: number;
   chop?: number;
   clip?: boolean;
   color?: string /* Color */;
+  color_blend?: boolean;
   color_cycler?: boolean;
   color_high?: string /* Color */;
   color_intensity?: boolean;
@@ -2847,12 +3161,16 @@ export interface EffectConfig {
   draw?: string;
   drop_secs?: number;
   ease_method?: string;
+  edges?: number;
+  fade_chance?: number;
   fade_rate?: number;
   fake_beat?: boolean;
   filter?: boolean;
   flash_color?: string /* Color */;
+  flip?: boolean;
   flip_gradient?: boolean;
   flip_horizontal?: boolean;
+  flip_vertical?: boolean;
   font?: string;
   force_fit?: boolean;
   foreground?: string;
@@ -2864,11 +3182,13 @@ export interface EffectConfig {
   grad_power?: boolean;
   gradient?: string /* Gradient */;
   gradient_repeat?: number;
+  gradient_scale?: number;
   half_beat?: boolean;
   health_check_interval?: number;
   health_checks?: string;
   height?: number;
   height_percent?: number;
+  high_band?: string /* Color */;
   high_color?: string /* Color */;
   high_sensitivity?: number;
   high_size?: number;
@@ -2876,15 +3196,18 @@ export interface EffectConfig {
   hit_duration?: number;
   hit_probability_per_sec?: number;
   hit_relative_size?: number;
+  idle_speed?: number;
   image_brightness?: number;
   image_location?: string;
   image_source?: string;
   impulse_decay?: number;
   input_source?: string;
   intensity?: number;
+  invert?: boolean;
   invert_mask?: boolean;
   keep_aspect_ratio?: boolean;
   lava_width?: number;
+  low_band?: string /* Color */;
   lower?: number;
   lows_color?: string /* Color */;
   lows_sensitivity?: number;
@@ -2893,6 +3216,7 @@ export interface EffectConfig {
   mask_stretch?: string;
   max_volume?: number;
   max_vs_mean?: boolean;
+  mid_band?: string /* Color */;
   mids_color?: string /* Color */;
   mids_sensitivity?: number;
   mids_size?: number;
@@ -2905,6 +3229,7 @@ export interface EffectConfig {
   option_1?: boolean;
   option_2?: boolean;
   pattern?: boolean;
+  peak_color?: string /* Color */;
   peak_decay?: number;
   peak_marks?: boolean;
   peak_percent?: number;
@@ -2913,6 +3238,8 @@ export interface EffectConfig {
   pixel_color?: string /* Color */;
   pixels?: number;
   points?: number;
+  polygon?: boolean;
+  power_multiplier?: number;
   pulse_period?: number;
   pulse_ratio?: number;
   pulse_strip?: string;
@@ -2923,6 +3250,8 @@ export interface EffectConfig {
   responsiveness?: number;
   rgb_mix?: number;
   ring?: boolean;
+  roll_speed?: number;
+  rotation?: number;
   run_seconds?: number;
   saturation_threshold?: number;
   scan_width?: number;
@@ -2934,22 +3263,25 @@ export interface EffectConfig {
   size_multiplication?: number;
   skip_every?: number;
   skip_frames?: string;
-  soap?: boolean;
+  source_virtual?: any;
   sparkles_max?: number;
   sparkles_size?: number;
   sparkles_threshold?: number;
   sparkles_time?: number;
   sparks_color?: string /* Color */;
   sparks_decay_rate?: number;
+  spawn_rate?: number;
   speed?: number;
   speed_multiplication?: number;
   speed_option_1?: number;
-  spin?: boolean;
+  spin?: any;
   spin_decay?: number;
   spin_multiplier?: number;
+  star?: number;
   step_period?: number;
   steps?: number;
   stretch?: number;
+  stretch_height?: number;
   stretch_horizontal?: number;
   stretch_vertical?: number;
   strobe_blur?: number;
@@ -2962,18 +3294,24 @@ export interface EffectConfig {
   strobe_threshold?: number;
   strobe_width?: number;
   sway?: number;
+  switch_time?: number;
   tail?: number;
   text?: string;
   text_color?: string /* Color */;
   text_effect?: string;
   threshold?: number;
+  threshold_lows?: number;
+  threshold_mids?: number;
   twist?: number;
   use_grad?: boolean;
   use_gradient?: boolean;
   value_option_1?: number;
+  velocity?: number;
   vertical_shift?: number;
   viscosity?: number;
   width?: number;
+  x_offset?: number;
+  y_offset?: number;
   zoom?: number;
 }
 
@@ -2999,7 +3337,7 @@ export type Segment = [
 export interface EffectSpecific {
   config: EffectSpecificConfig;
   name: string;
-  type: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "fire" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength";
+  type: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "soap2d" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength";
 }
 /**
  * Convenience type for effect details using the universal EffectConfig.
@@ -3008,7 +3346,7 @@ export interface EffectSpecific {
 export interface Effect {
   config: EffectConfig | null;
   name: string;
-  type: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "fire" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength" | null;
+  type: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "soap2d" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength" | null;
 }
 
 /**
@@ -3025,7 +3363,7 @@ export interface Effect {
   pixel_count: number;
   active: boolean;
   streaming: boolean;
-  last_effect?: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "fire" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength" | null;
+  last_effect?: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "soap2d" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength" | null;
   effect: Partial<EffectSpecific>; 
 }
 /**
@@ -3116,6 +3454,93 @@ export interface Device {
   active_virtuals: string[]; 
 }
 
+// Scene Configuration
+export interface SceneConfig {
+  /**
+   * Name of the scene
+   */
+  name: string;
+  /**
+   * Image or icon to display
+   * @default 'Wallpaper'
+   */
+  scene_image?: string;
+  /**
+   * Tags for filtering
+   */
+  scene_tags?: string;
+  /**
+   * On Scene Activate, URL to PUT too
+   */
+  scene_puturl?: string;
+  /**
+   * On Scene Activate, send this payload to scene_puturl
+   */
+  scene_payload?: string;
+  /**
+   * On MIDI key/note, Activate a scene
+   */
+  scene_midiactivate?: string;
+  /**
+   * The effects of these virtuals will be saved
+   */
+  virtuals: any;
+}
+
+// Scene API Response Types
+/**
+ * Represents the effect configuration stored in a scene for a virtual.
+ * @category Scenes
+ */
+export interface SceneVirtualEffect {
+  type?: EffectType;
+  config?: EffectConfig;
+}
+
+/**
+ * Represents a stored scene configuration with actual effect data.
+ * This is the structure used in the API responses and storage.
+ * @category Scenes
+ */
+export interface StoredSceneConfig {
+  name: string;
+  scene_image?: string;
+  scene_tags?: string;
+  scene_puturl?: string;
+  scene_payload?: string;
+  scene_midiactivate?: string;
+  virtuals?: Record<string, SceneVirtualEffect>; // virtual_id -> effect config
+}
+
+/**
+ * Represents a single Scene with its effect configurations.
+ * @category Scenes
+ */
+export interface Scene {
+  id: string;
+  config: StoredSceneConfig;
+}
+
+/**
+ * Response for GET /api/scenes.
+ * @category REST
+ */
+export interface GetScenesApiResponse {
+  status: "success" | "error";
+  scenes: Record<string, StoredSceneConfig>;
+  message?: string;
+}
+
+/**
+ * Response for POST /api/scenes (scene creation).
+ * @category REST
+ */
+export interface CreateSceneApiResponse {
+  status: "success" | "error";
+  scene?: Scene;
+  message?: string;
+}
+
 // Convenience Type Aliases using Universal Configs
 /**
  * Convenience type for the API response containing multiple Virtual objects.
@@ -3127,4 +3552,9 @@ export type Virtuals = Omit<GetVirtualsApiResponse, 'virtuals'> & { virtuals: Re
  * @category General
  */
 export type Devices = Omit<GetDevicesApiResponse, 'devices'> & { devices: Record<string, Device> };
+/**
+ * Convenience type for the API response containing multiple Scene objects.
+ * @category General
+ */
+export type Scenes = GetScenesApiResponse;
 

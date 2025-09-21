@@ -2,26 +2,15 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 import useStore from '../useStore'
+import { GetScenesApiResponse, StoredSceneConfig } from '../../api/ledfx.types'
 
 export interface ISceneOrder {
   sceneId: string
   order: number
 }
 
-export interface IScene {
-  id: string
-  name: string
-  scene_image?: string | null
-  scene_tags?: string | null
-  scene_puturl?: string | null
-  scene_payload?: string | null
-  scene_midiactivate?: string | null
-  virtuals?: Record<string, any>
-  [key: string]: any
-}
-
 const storeScenes = (set: any) => ({
-  scenes: {} as Record<string, Omit<IScene, 'id'>>,
+  scenes: {} as Record<string, StoredSceneConfig>,
   mostUsedScenes: {} as any,
   recentScenes: [] as string[],
   count: {} as any,
@@ -201,7 +190,7 @@ const storeScenes = (set: any) => ({
     )
   },
   getScenes: async () => {
-    const resp = await Ledfx('/api/scenes')
+    const resp: GetScenesApiResponse = await Ledfx('/api/scenes')
     if (resp && resp.scenes) {
       set(
         produce((s: IStore) => {

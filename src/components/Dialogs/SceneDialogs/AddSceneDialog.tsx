@@ -30,7 +30,7 @@ const AddSceneDialog = () => {
     if (!invalid) {
       addScene(name).then(async () => {
         const newScenes = await getScenes()
-        const sceneId = Object.keys(newScenes).find((s) => newScenes[s].name === name)
+        const sceneId = newScenes && Object.keys(newScenes).find((s) => newScenes[s].name === name)
         setName('')
         if (sceneId) setDialogOpenAddScene(true, true, sceneId, newScenes[sceneId])
       })

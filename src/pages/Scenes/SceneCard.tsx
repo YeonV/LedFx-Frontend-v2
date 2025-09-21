@@ -1,7 +1,7 @@
 import { Card, CardActionArea, CardActions, Typography, Chip, useTheme, Grid } from '@mui/material'
 import ScenesMenu from './ScenesMenu'
 import SceneImage from './ScenesImage'
-import { IScene } from '../../store/api/storeScenes'
+import { StoredSceneConfig } from '../../api/ledfx.types'
 
 const SceneCard = ({
   sceneId,
@@ -12,7 +12,7 @@ const SceneCard = ({
   classes
 }: {
   sceneId: string
-  scene: Omit<IScene, 'id'>
+  scene: StoredSceneConfig
   order: number
   handleActivateScene: (_id: string) => void
   features: any
