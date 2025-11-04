@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -22,13 +22,11 @@ import {
   FormControlLabel,
   Tooltip,
   LinearProgress,
-  useMediaQuery,
   List,
   ListItem,
   ListItemText,
   ListItemIcon,
   ListItemSecondaryAction,
-  Autocomplete,
   Divider,
   Paper
 } from '@mui/material'
@@ -43,13 +41,10 @@ import {
   Delete,
   Shuffle,
   Repeat,
-  Timer,
-  Settings,
   Save,
   Close,
   PlaylistPlay,
   QueueMusic,
-  DragIndicator,
   RemoveCircle,
   AddCircle,
   KeyboardArrowUp,
@@ -59,16 +54,16 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
-import type { PlaylistConfig, PlaylistItem, PlaylistTiming } from '../../api/ledfx.types'
+import type { PlaylistConfig, PlaylistItem } from '../../api/ledfx.types'
 
 interface BackendPlaylistProps {
   scenes: Record<string, any>
+  // eslint-disable-next-line no-unused-vars
   activateScene: (sceneId: string) => void
 }
 
 export default function BackendPlaylist({ scenes, activateScene }: BackendPlaylistProps) {
   const theme = useTheme()
-  const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
   // Store hooks
   const playlists = useStore((state) => state.playlists)
@@ -86,7 +81,6 @@ export default function BackendPlaylist({ scenes, activateScene }: BackendPlayli
   const nextPlaylistItem = useStore((state) => state.nextPlaylistItem)
   const previousPlaylistItem = useStore((state) => state.previousPlaylistItem)
   const getPlaylistState = useStore((state) => state.getPlaylistState)
-  const updatePlaylistMode = useStore((state) => state.updatePlaylistMode)
   const startPlaylistWithMode = useStore((state) => state.startPlaylistWithMode)
 
   // Local state
@@ -160,14 +154,6 @@ export default function BackendPlaylist({ scenes, activateScene }: BackendPlayli
       setEditDialogOpen(false)
       getPlaylists()
     }
-  }
-
-  const handleToggleMode = async () => {
-    if (!selectedPlaylist || !currentPlaylistConfig) return
-
-    const newMode = currentPlaylistConfig.mode === 'sequence' ? 'shuffle' : 'sequence'
-    await updatePlaylist(selectedPlaylist, { mode: newMode })
-    getPlaylists()
   }
 
   const handleToggleRuntimeMode = async () => {
@@ -320,7 +306,6 @@ export default function BackendPlaylist({ scenes, activateScene }: BackendPlayli
       renderCell: (params: GridRenderCellParams) => {
         const sceneData = scenes[params.row.scene_id]
         const isActive = currentSceneIndex === params.row.index && (isPlaying || isPaused)
-        const isCurrentScene = playlistRuntimeState?.scene_id === params.row.scene_id
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
