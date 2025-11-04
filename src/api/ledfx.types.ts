@@ -104,6 +104,13 @@ export interface VirtualConfig {
    * @default 1
    */
   rows?: number;
+  /**
+   * 90 Degree rotations
+   * @default 0
+   * @minimum 0
+   * @maximum 3
+   */
+  rotate?: number;
 }
 
 /**
@@ -190,6 +197,13 @@ export interface DdpDeviceConfig extends BaseDeviceConfig {
    * @maximum 65535
    */
   port: number;
+  /**
+   * DDP destination ID (1=default, 2-249=custom, 250=config, 251=status, 254=DMX, 255=all)
+   * @default 1
+   * @minimum 1
+   * @maximum 255
+   */
+  destination_id?: number;
 }
 
 /**
@@ -496,6 +510,7 @@ export interface DeviceConfig {
   channel_offset?: number;
   color_order?: string;
   create_segments?: boolean;
+  destination_id?: number;
   dmx_start_address?: number;
   even_packet_size?: boolean;
   gpio_pin?: number;
@@ -1171,11 +1186,6 @@ export interface Equalizer2dEffectConfig {
    * @maximum 0.3
    */
   spin_decay?: number;
-  /**
-   * flip the image vertically
-   * @default True
-   */
-  flip_vertical?: boolean;
 }
 
 /**
@@ -3170,7 +3180,6 @@ export interface EffectConfig {
   flip?: boolean;
   flip_gradient?: boolean;
   flip_horizontal?: boolean;
-  flip_vertical?: boolean;
   font?: string;
   force_fit?: boolean;
   foreground?: string;
@@ -3487,6 +3496,107 @@ export interface SceneConfig {
   virtuals: any;
 }
 
+// Fallback Timing Jitter Config
+export interface TimingJitter { enabled?: boolean; factor_min?: number; factor_max?: number; }
+
+// Playlist Timing Configuration
+export interface PlaylistTiming {
+  /**
+   * @default {}
+   */
+  jitter?: {
+    /**
+     * @default (computed)
+     */
+    enabled?: boolean;
+    /**
+     * @default (computed)
+     * @minimum 0.0
+     */
+    factor_min?: number;
+    /**
+     * @default (computed)
+     * @minimum 0.0
+     */
+    factor_max?: number;
+  };
+}
+
+// Playlist Item Configuration
+export interface PlaylistItem {
+  /**
+   * ID of the scene to activate
+   */
+  scene_id: string;
+  /**
+   * Duration in milliseconds to display this item
+   * @minimum 500
+   */
+  duration_ms?: number;
+}
+
+// Playlist Configuration
+export interface PlaylistConfig {
+  /**
+   * Unique playlist identifier
+   */
+  id: string;
+  /**
+   * Human readable name for the playlist
+   */
+  name: string;
+  /**
+   * Ordered list of items (scene_id + optional duration). Empty list = dynamic 'all scenes' resolved at start time.
+   */
+  items: PlaylistItem[];
+  /**
+   * Default duration (ms) applied to items that omit duration
+   * @default 500
+   * @minimum 500
+   */
+  default_duration_ms?: number;
+  /**
+   * Playback mode: 'sequence' or 'shuffle'
+   * @default 'sequence'
+   */
+  mode?: "sequence" | "shuffle";
+  /**
+   * Advanced timing settings
+   * @default {}
+   */
+  timing?: {
+    /**
+     * @default (computed)
+     */
+    jitter?: {
+    /**
+     * @default (computed)
+     */
+    enabled?: boolean;
+    /**
+     * @default (computed)
+     * @minimum 0.0
+     */
+    factor_min?: number;
+    /**
+     * @default (computed)
+     * @minimum 0.0
+     */
+    factor_max?: number;
+  };
+  };
+  /**
+   * Tags for filtering or grouping playlists
+   * @default []
+   */
+  tags?: any;
+  /**
+   * Image or icon to display for the playlist
+   * @default 'Wallpaper'
+   */
+  image?: any;
+}
+
 // Scene API Response Types
 /**
  * Represents the effect configuration stored in a scene for a virtual.
@@ -3541,6 +3651,133 @@ export interface CreateSceneApiResponse {
   message?: string;
 }
 
+// Playlist API Response Types
+/**
+ * Runtime state of an active playlist (ephemeral data).
+ * @category Playlists
+ */
+export interface PlaylistRuntimeState {
+  active_playlist: string;
+  index: number;
+  order: number[];
+  scenes: string[];
+  scene_id: string;
+  mode: 'sequence' | 'shuffle';
+  paused: boolean;
+  remaining_ms: number;
+  effective_duration_ms: number;
+  timing: PlaylistTiming;
+}
+
+/**
+ * Represents a single Playlist with its configuration.
+ * @category Playlists
+ */
+export interface Playlist {
+  id: string;
+  config: PlaylistConfig;
+}
+
+/**
+ * Response for GET /api/playlists.
+ * @category REST
+ */
+export interface GetPlaylistsApiResponse {
+  status: "success" | "error";
+  playlists: Record<string, PlaylistConfig>;
+  message?: string;
+}
+
+/**
+ * Response for GET /api/playlists/{id}.
+ * @category REST
+ */
+export interface GetSinglePlaylistApiResponse {
+  status: "success" | "error";
+  data?: { playlist: PlaylistConfig };
+  message?: string;
+}
+
+/**
+ * Response for POST /api/playlists (playlist creation/replacement).
+ * @category REST
+ */
+export interface CreatePlaylistApiResponse {
+  status: "success" | "error";
+  data?: { playlist: PlaylistConfig };
+  payload?: {
+    type: "success" | "error";
+    reason: string;
+  };
+  message?: string;
+}
+
+/**
+ * Request body for playlist control actions via PUT /api/playlists.
+ * @category REST
+ */
+export type PlaylistControlRequest = 
+  | {
+      action: "start";
+      id: string;
+      mode?: 'sequence' | 'shuffle';
+      timing?: PlaylistTiming;
+    }
+  | { action: "stop" }
+  | { action: "pause" }
+  | { action: "resume" }
+  | { action: "next" }
+  | { action: "prev" }
+  | { action: "state" };
+
+/**
+ * Response for PUT /api/playlists control actions.
+ * @category REST
+ */
+export interface PlaylistControlApiResponse {
+  status: "success" | "error";
+  data?: { state: PlaylistRuntimeState };
+  payload?: {
+    type: "success" | "error";
+    reason: string;
+  };
+  message?: string;
+}
+
+/**
+ * Request body for DELETE /api/playlists.
+ * @category REST
+ */
+export interface DeletePlaylistRequest {
+  id: string;
+}
+
+/**
+ * Response for DELETE /api/playlists.
+ * @category REST
+ */
+export interface DeletePlaylistApiResponse {
+  status: "success" | "error";
+  payload?: {
+    type: "success" | "error";
+    reason: string;
+  };
+  message?: string;
+}
+
+// Playlist Event Types
+/**
+ * Base payload for playlist events.
+ * @category Events
+ */
+export interface PlaylistEventPayload {
+  playlist_id: string;
+  index?: number;
+  scene_id?: string;
+  effective_duration_ms?: number;
+  remaining_ms?: number;
+}
+
 // Convenience Type Aliases using Universal Configs
 /**
  * Convenience type for the API response containing multiple Virtual objects.
@@ -3557,4 +3794,9 @@ export type Devices = Omit<GetDevicesApiResponse, 'devices'> & { devices: Record
  * @category General
  */
 export type Scenes = GetScenesApiResponse;
+/**
+ * Convenience type for the API response containing multiple Playlist objects.
+ * @category General
+ */
+export type Playlists = GetPlaylistsApiResponse;
 

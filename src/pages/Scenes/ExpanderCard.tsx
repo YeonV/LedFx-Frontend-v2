@@ -44,12 +44,14 @@ const ExpanderCard = ({
   title,
   cardKey,
   children,
-  onContextMenu
+  onContextMenu,
+  expandedHeight
 }: {
   title: string
   cardKey: string
   children: React.ReactNode
   onContextMenu?: any
+  expandedHeight?: number
 }) => {
   const theme = useTheme()
   const setExpander = useStore((state) => state.setExpander)
@@ -88,7 +90,16 @@ const ExpanderCard = ({
         </ExpandMore>
       </Typography>
       <Collapse in={expander[cardKey]}>
-        <Box sx={{ height: 298, width: '100%', maxWidth: '470px', m: '0 auto' }}>{children}</Box>
+        <Box
+          sx={{
+            height: expandedHeight || 298,
+            width: '100%',
+            maxWidth: '470px',
+            m: '0 auto'
+          }}
+        >
+          {children}
+        </Box>
       </Collapse>
     </Card>
   )
