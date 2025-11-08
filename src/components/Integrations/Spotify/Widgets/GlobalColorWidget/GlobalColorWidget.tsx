@@ -25,7 +25,7 @@ const GlobalColorWidget = ({
   name = 'Omni FX',
   isCollapsed,
   onToggleCollapse,
-  targetIds,
+  targetIds
 }: {
   close?: () => void
   variant?: 'default' | 'floating'
@@ -70,12 +70,12 @@ const GlobalColorWidget = ({
     const payload: any = {
       action: 'apply_global',
       [key]: value
-    };
-    if (targetIds && targetIds.length > 0) {
-      payload.virtuals = targetIds;
     }
-    await Ledfx('/api/effects', 'PUT', payload);
-    getVirtuals();
+    if (targetIds && targetIds.length > 0) {
+      payload.virtuals = targetIds
+    }
+    await Ledfx('/api/effects', 'PUT', payload)
+    getVirtuals()
   }
 
   const handleAddGradient = (name: string, color: string) => {
@@ -108,7 +108,10 @@ const GlobalColorWidget = ({
             <IconButton
               size="small"
               onClick={onToggleCollapse}
-              sx={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
+              sx={{
+                transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+                transition: 'transform 0.2s'
+              }}
             >
               <ArrowDropDown />
             </IconButton>

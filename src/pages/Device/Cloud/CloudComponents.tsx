@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import { jwtDecode } from 'jwt-decode'
 import isElectron from 'is-electron'
@@ -62,7 +64,7 @@ cloud.interceptors.request.use(async (config) => {
 
           config.headers.Authorization = `Bearer ${newJwt}`
           return config
-        } catch (error) {
+        } catch (_error) {
           // Refresh failed, trigger auto re-login
           handleAutoRelogin()
           return Promise.reject(new Error('JWT refresh failed - auto re-login triggered'))

@@ -11,5 +11,6 @@ export interface BaseDevice {
     commandColor: string
   }
   command: Record<string, (number | string)[] | number[]>
+  // eslint-disable-next-line no-unused-vars
   fn: Record<string, (...args: any[]) => any>
 }

@@ -32,20 +32,54 @@ export const createLedFunctions = (
 })
 
 export const rgbFunction = (buttonNumber: number, r: number, g: number, b: number) => [
-  240, 0, 32, 41, 2, 12, 3, 3, buttonNumber,
-  Math.floor(r / 2), Math.floor(g / 2), Math.floor(b / 2),
+  240,
+  0,
+  32,
+  41,
+  2,
+  12,
+  3,
+  3,
+  buttonNumber,
+  Math.floor(r / 2),
+  Math.floor(g / 2),
+  Math.floor(b / 2),
   247
 ]
 
-export const textFunction = (text: string, r: number, g: number, b: number, loop?: boolean, speed: number = 7) => [
-  240, 0, 32, 41, 2, 12, 7, loop ? 1 : 0, speed, 1,
-  Math.floor(r / 2), Math.floor(g / 2), Math.floor(b / 2),
+export const textFunction = (
+  text: string,
+  r: number,
+  g: number,
+  b: number,
+  loop?: boolean,
+  speed: number = 7
+) => [
+  240,
+  0,
+  32,
+  41,
+  2,
+  12,
+  7,
+  loop ? 1 : 0,
+  speed,
+  1,
+  Math.floor(r / 2),
+  Math.floor(g / 2),
+  Math.floor(b / 2),
   ...text.split('').map((char) => char.charCodeAt(0)),
   247
 ]
 
 export const launchkeyTextFunction = (text: string) => [
-  240, 0, 32, 41, 2, 15, 4,
+  240,
+  0,
+  32,
+  41,
+  2,
+  15,
+  4,
   ...text.split('').map((char) => char.charCodeAt(0)),
   247
 ]

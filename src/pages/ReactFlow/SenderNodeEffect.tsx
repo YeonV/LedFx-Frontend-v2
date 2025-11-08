@@ -17,6 +17,7 @@ const SenderNodeEffect = ({
     name: string
     isSyncing: boolean
     isCollapsed: boolean
+    // eslint-disable-next-line no-unused-vars
     onNodeDataChange: (id: string, data: any) => void
   }
 }) => {

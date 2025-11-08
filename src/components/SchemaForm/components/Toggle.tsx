@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import * as React from 'react'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
@@ -27,7 +29,7 @@ function Toggle({
       onChange={handleChange}
       aria-label="Platform"
       size="small"
-      sx={{ flex: 1}}
+      sx={{ flex: 1 }}
     >
       <ToggleButton sx={{ flex: 1 }} value="on">
         On
