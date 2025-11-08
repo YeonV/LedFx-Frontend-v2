@@ -179,5 +179,23 @@ export const migrations: Migrations = {
     draft.virtualEditorIsDirty = false
     draft.virtualEditorSnapshot = null
     // `externalStudioRef` is correctly not included as it's not persisted.
+  }),
+
+  // Migration 29: Adds playlist feature state
+  29: produce((draft) => {
+    // Initialize playlist state
+    draft.playlists = {}
+    draft.currentPlaylist = null
+    draft.playlistRuntimeState = null
+    draft.playlistOrder = []
+  }),
+
+  // Migration 30: Adds global color widget UI state
+  30: produce((draft) => {
+    if (draft.ui) {
+      draft.ui.globalColorWidgetX = 50
+      draft.ui.globalColorWidgetY = 200
+      draft.ui.globalColorWidget = false
+    }
   })
 }

@@ -11,15 +11,15 @@ const login = async (search: string) => {
     })
     .then((res) => res.json())
     .then(async (res) => {
-      localStorage.setItem('jwt', res.jwt)
-      localStorage.setItem('username', res.user.username)
+      localStorage.setItem('ledfx-cloud-jwt', res.jwt)
+      localStorage.setItem('ledfx-cloud-username', res.user.username)
 
       // Decode the JWT and get the expiry time
       const decodedJwt = jwtDecode(res.jwt)
       const expiryTime = decodedJwt.exp || 0
 
       // Store the expiry time
-      localStorage.setItem('jwtExpiry', expiryTime.toString())
+      localStorage.setItem('ledfx-cloud-jwt-expiry', expiryTime.toString())
 
       const me = await cloud.get('users/me')
       const user = await me.data

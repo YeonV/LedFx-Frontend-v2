@@ -63,8 +63,8 @@ const AvatarPicker = ({
   const [rotation, setRotation] = useState(0)
   const [zoom, setZoom] = useState(initialZoom)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
-  const userName = localStorage.getItem('username')
-  const isLogged = !!localStorage.getItem('jwt')
+  const userName = localStorage.getItem('ledfx-cloud-username')
+  const isLogged = !!localStorage.getItem('ledfx-cloud-jwt')
   const [avatarSrc, setAvatarSrc] = useState<null | string>(null)
 
   const onCropComplete = (_croppedArea: Area, newcroppedAreaPixels: Area) => {
@@ -73,7 +73,7 @@ const AvatarPicker = ({
   const getUserDetails = async () => {
     try {
       const response = await cloud.get(
-        `user-details?user.username=${localStorage.getItem('username')}`
+        `user-details?user.username=${localStorage.getItem('ledfx-cloud-username')}`
       )
       if (response.status !== 200) {
         alert('No Access')
@@ -90,15 +90,17 @@ const AvatarPicker = ({
     if (
       isLogged &&
       localStorage.getItem('ledfx-cloud-role') === 'creator' &&
-      localStorage.getItem('username') === 'YeonV' &&
+      localStorage.getItem('ledfx-cloud-username') === 'YeonV' &&
       newStorage === 'cloud'
     ) {
       try {
-        cloud.get(`user-details?user.username=${userName}`).then((res: any) => {
-          if (res.data.length > 0 && res.data[0].avatarUrl) {
-            setAvatarSrc(`${backendUrl}${res.data[0].avatarUrl.url}`)
-          }
-        })
+        cloud
+          .get(`user-details?user.username=${localStorage.getItem('ledfx-cloud-username')}`)
+          .then((res: any) => {
+            if (res.data.length > 0 && res.data[0].avatarUrl) {
+              setAvatarSrc(`${backendUrl}${res.data[0].avatarUrl.url}`)
+            }
+          })
       } catch (e) {
         console.error(e)
       }
