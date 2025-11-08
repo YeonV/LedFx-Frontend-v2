@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core'
 import { produce } from 'immer'
@@ -81,6 +82,7 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
           for (const pixel of groupPixels) {
             const targetRow = pixel.oldRow + rowOffset
             const targetCol = pixel.oldCol + colOffset
+            // eslint-disable-next-line no-unused-vars
             const { oldRow, oldCol, ...pixelData } = pixel
             draft[targetRow][targetCol] = pixelData as IMCell
           }

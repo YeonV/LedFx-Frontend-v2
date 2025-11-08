@@ -23,6 +23,7 @@ const MatrixStudioButton = ({
 }: {
   defaultValue?: IMCell[][] | undefined
   deviceList?: IDevice[] | undefined
+  // eslint-disable-next-line no-unused-vars
   handleSave?: (data: any) => void
 }) => {
   const [open, setOpen] = useState(false)

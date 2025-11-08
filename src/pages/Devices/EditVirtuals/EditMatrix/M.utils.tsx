@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Theme } from '@mui/material'
 
 export type IDir =
