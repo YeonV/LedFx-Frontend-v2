@@ -514,7 +514,7 @@ const LaunchpadButtonMap = ({
               </Select>
             </Stack>
             {localStorage.getItem('ledfx-cloud-role') === 'creator' &&
-              localStorage.getItem('username') === 'YeonV' && (
+              localStorage.getItem('ledfx-cloud-username') === 'YeonV' && (
                 <LaunchpadSettings onClick={() => {}} />
               )}
             <Divider />

@@ -71,7 +71,7 @@ const User = () => {
   const scenePL = useStore((state) => state.scenePL)
   const setScenePL = useStore((state) => state.setScenePL)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
-  const userName = localStorage.getItem('username')
+  const userName = localStorage.getItem('ledfx-cloud-username')
 
   const filteredCloudEffects = {} as any
   Object.keys(cloudEffects).forEach((effectGroup) => {
@@ -110,7 +110,9 @@ const User = () => {
   }
 
   const getCloudConfigs = async () => {
-    const response = await cloud.get(`configs?user.username=${localStorage.getItem('username')}`)
+    const response = await cloud.get(
+      `configs?user.username=${localStorage.getItem('ledfx-cloud-username')}`
+    )
     if (response.status !== 200) {
       alert('No Access')
       return
@@ -122,7 +124,7 @@ const User = () => {
   const getCloudPlaylists = async () => {
     try {
       const response = await cloud.get(
-        `playlists?user.username=${localStorage.getItem('username')}`
+        `playlists?user.username=${localStorage.getItem('ledfx-cloud-username')}`
       )
       if (response.status !== 200) {
         alert('No Access')
@@ -152,7 +154,7 @@ const User = () => {
   const deleteCloudConfig = async (name: string, date: any) => {
     try {
       const existing = await cloud.get(
-        `configs?user.username=${localStorage.getItem('username')}&Name=${name}&Date=${date}`
+        `configs?user.username=${localStorage.getItem('ledfx-cloud-username')}&Name=${name}&Date=${date}`
       )
       const exists = await existing.data
       if (exists.length && exists.length > 0) {
@@ -166,7 +168,7 @@ const User = () => {
   const deleteCloudPlaylist = async (name: string, date: any) => {
     try {
       const existing = await cloud.get(
-        `playlists?user.username=${localStorage.getItem('username')}&Name=${name}&Date=${date}`
+        `playlists?user.username=${localStorage.getItem('ledfx-cloud-username')}&Name=${name}&Date=${date}`
       )
       const exists = await existing.data
       if (exists.length && exists.length > 0) {
@@ -263,7 +265,7 @@ const User = () => {
           }}
         >
           {localStorage.getItem('ledfx-cloud-role') === 'creator' &&
-          localStorage.getItem('username') === 'YeonV' ? (
+          localStorage.getItem('ledfx-cloud-username') === 'YeonV' ? (
             <AvatarPicker storage="cloud" />
           ) : (
             <GitHub sx={{ fontSize: 'min(25vw, 25vh, 150px)' }} />

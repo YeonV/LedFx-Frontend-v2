@@ -44,7 +44,9 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   const getFullConfig = useStore((state) => state.getFullConfig)
   const getCloudConfigs = async () => {
     try {
-      const response = await cloud.get(`configs?user.username=${localStorage.getItem('username')}`)
+      const response = await cloud.get(
+        `configs?user.username=${localStorage.getItem('ledfx-cloud-username')}`
+      )
       if (response.status !== 200) {
         alert('No Access')
         return
@@ -58,7 +60,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
   const uploadPresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
-      `presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`
+      `presets?user.username=${localStorage.getItem('ledfx-cloud-username')}&Name=${list[preset].name}`
     )
     const exists = await existing.data
     const eff = await cloud.get(`effects?ledfx_id=${effectType}`)
@@ -95,7 +97,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
 
   const deletePresetCloud = async (list: any, preset: any) => {
     const existing = await cloud.get(
-      `presets?user.username=${localStorage.getItem('username')}&Name=${list[preset].name}`
+      `presets?user.username=${localStorage.getItem('ledfx-cloud-username')}&Name=${list[preset].name}`
     )
     const exists = await existing.data
     if (exists.length && exists.length > 0) {
@@ -202,7 +204,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
   }, [getVirtuals, effectType])
 
   useEffect(() => {
-    if (features.cloud && !!localStorage.getItem('jwt') && isLogged) {
+    if (features.cloud && isLogged) {
       getCloudPresets()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -341,7 +343,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: any) => {
               Long-Press or right-click to open context-menu
             </Typography>
           </div>
-          {features.cloud && !!localStorage.getItem('jwt') && isLogged && (
+          {features.cloud && isLogged && (
             <>
               <Divider style={{ margin: '0.5rem 0' }} />
               <Stack direction="row" spacing={2}>

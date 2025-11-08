@@ -175,7 +175,7 @@ const Title = (
     return virtuals[pathname.split('/')[2]]?.config.name
   }
   if (pathname === '/User') {
-    return `LedFx Cloud ${localStorage.getItem('username') !== 'YeonV' ? 'Free' : ''} User`
+    return `LedFx Cloud ${localStorage.getItem('ledfx-cloud-username') !== 'YeonV' ? 'Free' : ''} User`
   }
   return pathname.split('/').pop()
 }
@@ -279,8 +279,11 @@ const TopBar = () => {
 
   const logout = (e: React.MouseEvent<HTMLLIElement>) => {
     e.preventDefault()
-    localStorage.removeItem('jwt')
-    localStorage.removeItem('username')
+    localStorage.removeItem('ledfx-cloud-jwt')
+    localStorage.removeItem('ledfx-cloud-jwt-expiry')
+    localStorage.removeItem('ledfx-cloud-refresh-token')
+    localStorage.removeItem('ledfx-cloud-username')
+    localStorage.removeItem('ledfx-cloud-userid')
     localStorage.removeItem('ledfx-cloud-role')
     setIsLogged(false)
   }
@@ -316,7 +319,7 @@ const TopBar = () => {
   }, [])
 
   useEffect(() => {
-    setIsLogged(!!localStorage.getItem('jwt'))
+    setIsLogged(!!localStorage.getItem('ledfx-cloud-jwt'))
   }, [pathname, setIsLogged])
 
   const getUpdateInfo = useStore((state) => state.getUpdateInfo)
@@ -546,7 +549,7 @@ const TopBar = () => {
                       </StyledBadge>
                     </ListItemIcon>
                     <div>
-                      <div>{localStorage.getItem('username')}</div>
+                      <div>{localStorage.getItem('ledfx-cloud-username')}</div>
                     </div>
                   </MenuItem>
                 )}
