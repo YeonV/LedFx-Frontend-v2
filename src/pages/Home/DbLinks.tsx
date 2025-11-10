@@ -1,6 +1,6 @@
 import { Button, useTheme, Stack, SvgIcon } from '@mui/material'
-import { GitHub } from '@mui/icons-material'
-
+import { GitHub, MenuBook } from '@mui/icons-material'
+import { SiTypescript } from 'react-icons/si'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 
 const DbLinks = () => {
@@ -36,7 +36,28 @@ const DbLinks = () => {
             }
           }}
         >
-          Core
+          Core Repo
+        </Button>
+        <Button
+          onClick={() =>
+            window.open(
+              'https://docs.ledfx.app/en/latest/developer/developer.html',
+              '_blank',
+              'noopener,noreferrer'
+            )
+          }
+          variant="text"
+          startIcon={<MenuBook />}
+          size="large"
+          sx={{
+            textTransform: 'none',
+            justifyContent: 'flex-start',
+            '& .MuiButton-startIcon': {
+              mr: 3
+            }
+          }}
+        >
+          Core Docs
         </Button>
         <Button
           onClick={() =>
@@ -57,7 +78,39 @@ const DbLinks = () => {
             }
           }}
         >
-          Client
+          Client Repo
+        </Button>
+        <Button
+          onClick={() => window.open('https://docs.ledfx.stream', '_blank', 'noopener,noreferrer')}
+          variant="text"
+          startIcon={<MenuBook />}
+          size="large"
+          sx={{
+            textTransform: 'none',
+            justifyContent: 'flex-start',
+            '& .MuiButton-startIcon': {
+              mr: 3
+            }
+          }}
+        >
+          Client Docs
+        </Button>
+        <Button
+          onClick={() =>
+            window.open('https://typedoc.ledfx.stream/', '_blank', 'noopener,noreferrer')
+          }
+          variant="text"
+          startIcon={<SiTypescript />}
+          size="large"
+          sx={{
+            textTransform: 'none',
+            justifyContent: 'flex-start',
+            '& .MuiButton-startIcon': {
+              mr: 3
+            }
+          }}
+        >
+          Type Docs
         </Button>
         <Button
           onClick={() =>
