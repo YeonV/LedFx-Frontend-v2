@@ -12,7 +12,7 @@ import {
   AlertTitle
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { DeleteForever, GitHub } from '@mui/icons-material'
+import { DeleteForever, GitHub, MenuBook } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, sleep } from '../../utils/helpers'
 import Gauge from './Gauge'
@@ -24,6 +24,7 @@ import MGraph from '../../components/MGraph'
 import openrgbLogo from '../../icons/png/openrgb.png'
 import fx from '../../components/Icons/FX.svg'
 import { Device, Virtual } from '../../api/ledfx.types'
+import { SiTypescript } from 'react-icons/si'
 
 const Dashboard = () => {
   const theme = useTheme()
@@ -172,7 +173,7 @@ const Dashboard = () => {
         )}
 
         {db ? <SmartBar direct /> : <SmartBar direct />}
-        <Stack spacing={2} direction={smallHeight ? 'row' : 'column'}>
+        <Stack spacing={2} direction={smallHeight ? 'row' : 'column'} alignItems="center">
           <Stack spacing={2} direction="row">
             <Tooltip title="Startup Assistant">
               <Fab
@@ -338,7 +339,7 @@ const Dashboard = () => {
             </Tooltip>
           </Stack>
           <Stack spacing={2} direction="row" justifyContent="center">
-            <Tooltip title="Github Core">
+            <Tooltip title="Core Github">
               <Fab
                 aria-label="github"
                 onClick={() =>
@@ -365,7 +366,38 @@ const Dashboard = () => {
                 <GitHub />
               </Fab>
             </Tooltip>
-            <Tooltip title="Github Client">
+            <Tooltip title="Core Docs">
+              <Fab
+                aria-label="github"
+                onClick={() =>
+                  window.open(
+                    'https://docs.ledfx.app/en/latest/developer/developer.html',
+                    '_blank',
+                    'noopener,noreferrer'
+                  )
+                }
+                style={{
+                  margin: '8px',
+                  zIndex: 0
+                }}
+                sx={(theme) => ({
+                  color: theme.palette.primary.contrastText,
+
+                  bgcolor: theme.palette.primary.light,
+
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.main
+                  },
+
+                  ...theme.applyStyles('dark', {
+                    bgcolor: theme.palette.primary.dark
+                  })
+                })}
+              >
+                <MenuBook />
+              </Fab>
+            </Tooltip>
+            <Tooltip title="Client Github">
               <Fab
                 aria-label="github"
                 onClick={() =>
@@ -394,6 +426,60 @@ const Dashboard = () => {
                 })}
               >
                 <GitHub />
+              </Fab>
+            </Tooltip>
+            <Tooltip title="Client Docs">
+              <Fab
+                aria-label="github"
+                onClick={() =>
+                  window.open('https://docs.ledfx.stream', '_blank', 'noopener,noreferrer')
+                }
+                style={{
+                  margin: '8px',
+                  zIndex: 0
+                }}
+                sx={(theme) => ({
+                  color: theme.palette.primary.contrastText,
+
+                  bgcolor: theme.palette.primary.light,
+
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.main
+                  },
+
+                  ...theme.applyStyles('dark', {
+                    bgcolor: theme.palette.primary.dark
+                  })
+                })}
+              >
+                <MenuBook />
+              </Fab>
+            </Tooltip>
+            <Tooltip title="Type Docs">
+              <Fab
+                aria-label="github"
+                onClick={() =>
+                  window.open('https://typedoc.ledfx.stream/', '_blank', 'noopener,noreferrer')
+                }
+                style={{
+                  margin: '8px',
+                  zIndex: 0
+                }}
+                sx={(theme) => ({
+                  color: theme.palette.primary.contrastText,
+
+                  bgcolor: theme.palette.primary.light,
+
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.main
+                  },
+
+                  ...theme.applyStyles('dark', {
+                    bgcolor: theme.palette.primary.dark
+                  })
+                })}
+              >
+                <SiTypescript />
               </Fab>
             </Tooltip>
             <Tooltip title="Discord">
