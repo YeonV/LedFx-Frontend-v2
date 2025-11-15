@@ -47,8 +47,8 @@ import {
   Close,
   PlaylistPlay,
   QueueMusic,
-  RemoveCircle,
-  AddCircle,
+  // RemoveCircle,
+  // AddCircle,
   KeyboardArrowUp,
   KeyboardArrowDown
 } from '@mui/icons-material'
@@ -206,33 +206,15 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const getPlaylistItemsToDisplay = () => {
     if (!currentPlaylistConfig) return []
 
-    let items: any[] = []
-
-    // If items array is empty, use dynamic "all scenes" from runtime state
+    // Always use configured items - no fallback to "all scenes"
     if (!currentPlaylistConfig.items || currentPlaylistConfig.items.length === 0) {
-      if (playlistRuntimeState?.scenes) {
-        items = playlistRuntimeState.scenes.map((sceneId: string, index: number) => ({
-          scene_id: sceneId,
-          duration_ms: currentPlaylistConfig.default_duration_ms,
-          index // This is the key - proper index mapping
-        }))
-      } else {
-        // Fallback to all available scenes if no runtime state
-        items = Object.keys(scenes).map((sceneId: string, index: number) => ({
-          scene_id: sceneId,
-          duration_ms: currentPlaylistConfig.default_duration_ms,
-          index
-        }))
-      }
-    } else {
-      // Use configured items
-      items = currentPlaylistConfig.items.map((item: PlaylistItem, index: number) => ({
-        ...item,
-        index
-      }))
+      return []
     }
 
-    return items
+    return currentPlaylistConfig.items.map((item: PlaylistItem, index: number) => ({
+      ...item,
+      index
+    }))
   }
 
   const playlistItemsToDisplay = getPlaylistItemsToDisplay()
@@ -688,23 +670,11 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   >
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                       <Typography variant="h6">Playlist Items</Typography>
-                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                        {!currentPlaylistConfig.items ||
-                        currentPlaylistConfig.items.length === 0 ? (
-                          <Chip
-                            label="Dynamic (All Scenes)"
-                            size="small"
-                            color="info"
-                            variant="outlined"
-                          />
-                        ) : (
-                          <Chip
-                            label={`${currentPlaylistConfig.items.length} scenes`}
-                            size="small"
-                            variant="outlined"
-                          />
-                        )}
-                      </Stack>
+                      <Chip
+                        label={`${currentPlaylistConfig?.items?.length || 0} scenes`}
+                        size="small"
+                        variant="outlined"
+                      />
                     </Stack>
                   </Box>
                 )}
@@ -714,9 +684,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   {' '}
                   {/* Increased from 400 to 600 */}
                   <DataGrid
-                    rows={playlistItemsToDisplay.map((item, index) => ({
-                      id: index,
-                      index,
+                    rows={playlistItemsToDisplay.map((item) => ({
+                      id: item.scene_id,
                       ...item
                     }))}
                     columns={columns}
@@ -796,7 +765,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             setCreateDialogOpen(false)
             setEditDialogOpen(false)
           }}
-          maxWidth="lg" // Changed from "md" to "lg" for more space
+          maxWidth="sm" // Changed from "md" to "lg" for more space
           fullWidth
         >
           <DialogTitle>{createDialogOpen ? 'Create New Playlist' : 'Edit Playlist'}</DialogTitle>
@@ -830,6 +799,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 <FormControl sx={{ minWidth: 150 }}>
                   <InputLabel>Default Mode</InputLabel>
                   <Select
+                    variant="outlined"
                     value={newPlaylist.mode || 'sequence'}
                     onChange={(e) =>
                       setNewPlaylist({
@@ -855,7 +825,6 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 </FormControl>
               </Stack>
 
-              <Divider />
               <TextField
                 margin="dense"
                 id="scene_image"
@@ -874,59 +843,14 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 onChange={(e) => setNewPlaylist({ ...newPlaylist, image: e.target.value })}
                 fullWidth
               />
+
               {/* Playlist Items Management */}
               <Box>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  sx={{ mb: 2 }}
-                >
-                  <Typography variant="h6">Playlist Items</Typography>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Chip
-                      label={
-                        Array.isArray(newPlaylist.items)
-                          ? `${newPlaylist.items.length} items`
-                          : 'Dynamic (All Scenes)'
-                      }
-                      size="small"
-                      variant="outlined"
-                    />
-                    <Button
-                      size="small"
-                      onClick={() => setNewPlaylist({ ...newPlaylist, items: [] })}
-                      variant={
-                        !newPlaylist.items || newPlaylist.items.length === 0
-                          ? 'contained'
-                          : 'outlined'
-                      }
-                    >
-                      Dynamic
-                    </Button>
-                    <Button
-                      size="small"
-                      onClick={() => {
-                        if (!newPlaylist.items || newPlaylist.items.length === 0) {
-                          setNewPlaylist({ ...newPlaylist, items: [] })
-                        }
-                      }}
-                      variant={
-                        newPlaylist.items && newPlaylist.items.length > 0 ? 'contained' : 'outlined'
-                      }
-                    >
-                      Custom
-                    </Button>
-                  </Stack>
-                </Stack>
-
                 {/* Scene Selector */}
-
-                {/* Scene Selector - Changed from Autocomplete to Select */}
                 <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                  {/* <InputLabel>Add Scene to Playlist</InputLabel> */}
                   <Select
                     variant="outlined"
+                    sx={{ height: 56 }}
                     value="" // Always empty to allow repeated selections
                     onChange={(e) => {
                       if (e.target.value) {
@@ -944,7 +868,6 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                         })
                       }
                     }}
-                    //   label="Add Scene to Playlist"
                     displayEmpty
                   >
                     <MenuItem value="" disabled>
@@ -953,7 +876,11 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                     {Object.entries(scenes).map(([sceneId, scene]) => (
                       <MenuItem key={sceneId} value={sceneId}>
                         <Stack direction="row" alignItems="center" spacing={1}>
-                          <SceneImage iconName={scene.scene_image || 'Wallpaper'} list />
+                          <SceneImage
+                            iconName={scene.scene_image || 'Wallpaper'}
+                            list
+                            sx={{ height: 50, width: 50 }}
+                          />
                           <Typography>{scene.name || sceneId}</Typography>
                         </Stack>
                       </MenuItem>
@@ -1026,7 +953,11 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
 
                             {/* Scene Icon */}
                             <ListItemIcon sx={{ mr: 2 }}>
-                              <SceneImage iconName={sceneData?.scene_image || 'Wallpaper'} list />
+                              <SceneImage
+                                iconName={sceneData?.scene_image || 'Wallpaper'}
+                                list
+                                sx={{ height: 50, width: 50 }}
+                              />
                             </ListItemIcon>
 
                             {/* Scene Name and ID */}
@@ -1106,70 +1037,62 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   >
                     <QueueMusic sx={{ fontSize: 48, color: 'action.disabled', mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
-                      {!newPlaylist.items || newPlaylist.items.length === 0
-                        ? 'Dynamic playlist - will include all available scenes'
-                        : 'No items added yet'}
+                      No scenes added yet
                     </Typography>
-                    {(!newPlaylist.items || newPlaylist.items.length === 0) && (
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ mt: 1, display: 'block' }}
-                      >
-                        Scenes will be resolved when the playlist starts
-                      </Typography>
-                    )}
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ mt: 1, display: 'block' }}
+                    >
+                      Use the dropdown above or "Add All Scenes" button to get started
+                    </Typography>
                   </Box>
                 )}
 
-                {/* Quick Actions */}
-                {Array.isArray(newPlaylist.items) && (
-                  <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-                    <Button
-                      size="small"
-                      startIcon={<AddCircle />}
-                      onClick={() => {
-                        // Add all scenes
-                        const allSceneItems: PlaylistItem[] = Object.keys(scenes).map(
-                          (sceneId) => ({
-                            scene_id: sceneId,
-                            duration_ms: newPlaylist.default_duration_ms || 5000
-                          })
-                        )
-                        setNewPlaylist({ ...newPlaylist, items: allSceneItems })
-                      }}
-                      variant="outlined"
-                    >
-                      Add All Scenes
-                    </Button>
+                {/* Quick Actions - removed "Dynamic" button */}
+                {/* <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+                  <Button
+                    size="small"
+                    startIcon={<AddCircle />}
+                    onClick={() => {
+                      // Add all scenes
+                      const allSceneItems: PlaylistItem[] = Object.keys(scenes).map((sceneId) => ({
+                        scene_id: sceneId,
+                        duration_ms: newPlaylist.default_duration_ms || 5000
+                      }))
+                      setNewPlaylist({ ...newPlaylist, items: allSceneItems })
+                    }}
+                    variant="outlined"
+                  >
+                    Add All Scenes
+                  </Button>
 
-                    <Button
-                      size="small"
-                      startIcon={<Shuffle />}
-                      onClick={() => {
-                        if (newPlaylist.items && newPlaylist.items.length > 0) {
-                          const shuffled = [...newPlaylist.items].sort(() => Math.random() - 0.5)
-                          setNewPlaylist({ ...newPlaylist, items: shuffled })
-                        }
-                      }}
-                      variant="outlined"
-                      disabled={!newPlaylist.items || newPlaylist.items.length === 0}
-                    >
-                      Shuffle Order
-                    </Button>
+                  <Button
+                    size="small"
+                    startIcon={<Shuffle />}
+                    onClick={() => {
+                      if (newPlaylist.items && newPlaylist.items.length > 0) {
+                        const shuffled = [...newPlaylist.items].sort(() => Math.random() - 0.5)
+                        setNewPlaylist({ ...newPlaylist, items: shuffled })
+                      }
+                    }}
+                    variant="outlined"
+                    disabled={!newPlaylist.items || newPlaylist.items.length === 0}
+                  >
+                    Shuffle Order
+                  </Button>
 
-                    <Button
-                      size="small"
-                      startIcon={<RemoveCircle />}
-                      onClick={() => setNewPlaylist({ ...newPlaylist, items: [] })}
-                      variant="outlined"
-                      color="error"
-                      disabled={!newPlaylist.items || newPlaylist.items.length === 0}
-                    >
-                      Clear All
-                    </Button>
-                  </Stack>
-                )}
+                  <Button
+                    size="small"
+                    startIcon={<RemoveCircle />}
+                    onClick={() => setNewPlaylist({ ...newPlaylist, items: [] })}
+                    variant="outlined"
+                    color="error"
+                    disabled={!newPlaylist.items || newPlaylist.items.length === 0}
+                  >
+                    Clear All
+                  </Button>
+                </Stack> */}
               </Box>
 
               <Divider />
