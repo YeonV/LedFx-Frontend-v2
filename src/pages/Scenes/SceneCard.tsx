@@ -26,7 +26,7 @@ const SceneCard = ({
         className={classes.root}
         sx={{
           border: '1px solid',
-          borderColor: theme.palette.divider
+          borderColor: scene.active ? theme.palette.primary.main : theme.palette.divider
         }}
       >
         <CardActionArea
