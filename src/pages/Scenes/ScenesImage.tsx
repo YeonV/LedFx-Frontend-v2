@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import isElectron from 'is-electron'
-import { CardMedia } from '@mui/material'
+import { CardMedia, SxProps } from '@mui/material'
 import useStore from '../../store/useStore'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
-const SceneImage = ({ iconName, list }: { iconName: string; list?: boolean }) => {
+const SceneImage = ({ iconName, list, sx }: { iconName: string; list?: boolean; sx?: SxProps }) => {
   const classes = useStyles()
   const [imageData, setImageData] = useState(null)
   const getImage = useStore((state) => state.getImage)
@@ -26,14 +26,14 @@ const SceneImage = ({ iconName, list }: { iconName: string; list?: boolean }) =>
         className={classes.media}
         image={iconName.split('image:')[1]}
         title="Contemplative Reptile"
-        sx={{ width: '100%', height: '100%' }}
+        sx={{ width: '100%', height: '100%', ...sx }}
       />
     ) : (
       <div
         className={classes.media}
         style={{
-          height: 140,
-          width: '100%',
+          height: (sx as any)?.height || 140,
+          width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
           backgroundSize: 'cover',
           backgroundImage: `url("data:image/png;base64,${imageData}")`
@@ -47,6 +47,7 @@ const SceneImage = ({ iconName, list }: { iconName: string; list?: boolean }) =>
       className={list ? classes.iconMediaList : classes.iconMedia}
       name={iconName}
       list={list}
+      sx={{ ...sx }}
     />
   )
 }

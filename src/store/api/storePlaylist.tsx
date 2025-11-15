@@ -10,7 +10,6 @@ import {
   CreatePlaylistApiResponse,
   PlaylistControlRequest,
   PlaylistControlApiResponse,
-  DeletePlaylistRequest,
   DeletePlaylistApiResponse,
   PlaylistTiming,
   PlaylistItem
@@ -92,8 +91,8 @@ const storePlaylist = (set: any) => ({
     return resp
   },
 
-  updatePlaylist: async (playlistId: string, config: Partial<PlaylistConfig>) => {
-    const updatedConfig = { ...config, id: playlistId }
+  updatePlaylist: async (playlistId: string, name: string, config: Partial<PlaylistConfig>) => {
+    const updatedConfig = { ...config, name, id: playlistId }
     const resp: CreatePlaylistApiResponse = await Ledfx('/api/playlists', 'POST', updatedConfig)
     if (resp && resp.data?.playlist) {
       set(
@@ -108,8 +107,7 @@ const storePlaylist = (set: any) => ({
   },
 
   deletePlaylist: async (playlistId: string) => {
-    const deleteRequest: DeletePlaylistRequest = { id: playlistId }
-    const resp: DeletePlaylistApiResponse = await Ledfx('/api/playlists', 'DELETE', deleteRequest)
+    const resp: DeletePlaylistApiResponse = await Ledfx(`/api/playlists/${playlistId}`, 'DELETE')
     if (resp && resp.status === 'success') {
       set(
         produce((state: IStore) => {
@@ -255,7 +253,7 @@ const storePlaylist = (set: any) => ({
 
     const updatedItems = Array.isArray(playlist.items) ? [...playlist.items, item] : [item]
 
-    return state.updatePlaylist(playlistId, {
+    return state.updatePlaylist(playlistId, playlist.name, {
       items: updatedItems
     })
   },
@@ -267,7 +265,7 @@ const storePlaylist = (set: any) => ({
 
     const updatedItems = playlist.items.filter((_, index) => index !== itemIndex)
 
-    return state.updatePlaylist(playlistId, {
+    return state.updatePlaylist(playlistId, playlist.name, {
       items: updatedItems
     })
   },
@@ -281,7 +279,7 @@ const storePlaylist = (set: any) => ({
     const [movedItem] = items.splice(fromIndex, 1)
     items.splice(toIndex, 0, movedItem)
 
-    return state.updatePlaylist(playlistId, {
+    return state.updatePlaylist(playlistId, playlist.name, {
       items
     })
   },
@@ -292,7 +290,7 @@ const storePlaylist = (set: any) => ({
     const playlist = state.playlists[playlistId]
     if (!playlist) return null
 
-    return state.updatePlaylist(playlistId, { mode })
+    return state.updatePlaylist(playlistId, playlist.name, { mode })
   },
 
   // Add method to start playlist with runtime mode override
