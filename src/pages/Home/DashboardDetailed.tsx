@@ -12,6 +12,7 @@ import DbScenesBackendPL from './DbScenesBackendPL'
 
 const DashboardDetailed = () => {
   const getScenes = useStore((state) => state.getScenes)
+  const features = useStore((state) => state.features)
 
   useEffect(() => {
     getScenes()
@@ -25,7 +26,7 @@ const DashboardDetailed = () => {
           <Stack>
             <DbScenes />
             <DbScenesPL />
-            <DbScenesBackendPL />
+            {features.scenePlaylistBackend && <DbScenesBackendPL />}
           </Stack>
           <DbDevices />
           <Stack>

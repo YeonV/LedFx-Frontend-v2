@@ -19,6 +19,7 @@ import ScenesSection from './ScenesSection'
 import MidiCard from './MidiCard'
 import EffectsSettingsCard from './EffectsCard'
 import PixelGraphsSettingsCard from './PixelGraphsSettingsCard'
+import BetaCoreFeatures from './BetaCoreFeatures'
 // import IntegrationsSection from './IntegrationsSection'
 
 const Settings = () => {
@@ -58,6 +59,21 @@ const Settings = () => {
           <AudioCard className={`${classes.audioCard} step-settings-one`} />
         </>
       </SettingsAccordion>
+
+      {features.beta && (
+        <>
+          <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
+            <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
+              <Typography>Core Features</Typography>
+            </AccordionSummary>
+          </Accordion>
+          {features.beta && (
+            <SettingsAccordion title="Beta" accId="2y2" icon="mdi:emoticon-devil">
+              <BetaCoreFeatures />
+            </SettingsAccordion>
+          )}
+        </>
+      )}
 
       <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
         <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
