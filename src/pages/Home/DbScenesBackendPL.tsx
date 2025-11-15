@@ -1,9 +1,9 @@
 import { useTheme, Stack } from '@mui/material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import useStore from '../../store/useStore'
-import ScenesPlaylist from '../Scenes/ScenesPlaylist'
+import BackendPlaylist from '../Scenes/BackendPlaylist'
 
-const DbScenesPL = () => {
+const DbScenesBackendPL = () => {
   const theme = useTheme()
   const scenes = useStore((state) => state.scenes)
   const captivateScene = useStore((state) => state.captivateScene)
@@ -25,13 +25,13 @@ const DbScenesPL = () => {
         padding: 20,
         minWidth: 280
       }}
-      title="Scenes Playlist (Client)"
+      title="Scenes Playlist (Core)"
     >
       <Stack width="100%">
-        <ScenesPlaylist title="Playlist" scenes={scenes} activateScene={handleActivateScene} db />
+        <BackendPlaylist maxWidth={388} scenes={scenes} activateScene={handleActivateScene} />
       </Stack>
     </BladeFrame>
   )
 }
 
-export default DbScenesPL
+export default DbScenesBackendPL
