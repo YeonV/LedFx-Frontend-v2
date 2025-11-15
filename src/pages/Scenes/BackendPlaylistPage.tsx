@@ -3,7 +3,7 @@ import BackendPlaylist from './BackendPlaylist'
 
 export default function BackendPlaylistPage() {
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+    <Container sx={{ py: 3, maxWidth: '1672px !important' }}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Backend Playlists
