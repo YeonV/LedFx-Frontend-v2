@@ -413,6 +413,18 @@ export interface RpiWs281xDeviceConfig extends BaseDeviceConfig {
 }
 
 /**
+ * Configuration for device type: twinkly_squares
+ * @category DeviceSpecificConfigs
+ */
+export interface TwinklySquaresDeviceConfig extends BaseDeviceConfig {
+  /**
+   * Number of 8x8 Twinkly Squares panels
+   * @minimum 1
+   */
+  panel_count: number;
+}
+
+/**
  * Configuration for device type: udp
  * @category DeviceSpecificConfigs
  */
@@ -490,13 +502,13 @@ export interface ZengeeDeviceConfig extends BaseDeviceConfig {
  * Literal union of all known device type strings
  * @category Types
  */
-export type DeviceType = "adalight" | "artnet" | "ddp" | "dummy" | "e131" | "govee" | "hue" | "launchpad" | "lifx" | "nanoleaf" | "open_pixel_control" | "openrgb" | "osc" | "rpi_ws281x" | "udp" | "wled" | "zengee";
+export type DeviceType = "adalight" | "artnet" | "ddp" | "dummy" | "e131" | "govee" | "hue" | "launchpad" | "lifx" | "nanoleaf" | "open_pixel_control" | "openrgb" | "osc" | "rpi_ws281x" | "twinkly_squares" | "udp" | "wled" | "zengee";
 
 /**
  * Device specific configurations
  * @category Specific
  */
-export type DeviceSpecificConfig = ArtnetDeviceConfig | DdpDeviceConfig | DummyDeviceConfig | E131DeviceConfig | GoveeDeviceConfig | HueDeviceConfig | LifxDeviceConfig | NanoleafDeviceConfig | OpenPixelControlDeviceConfig | OscDeviceConfig | RpiWs281xDeviceConfig | UdpDeviceConfig | WledDeviceConfig | ZengeeDeviceConfig;
+export type DeviceSpecificConfig = ArtnetDeviceConfig | DdpDeviceConfig | DummyDeviceConfig | E131DeviceConfig | GoveeDeviceConfig | HueDeviceConfig | LifxDeviceConfig | NanoleafDeviceConfig | OpenPixelControlDeviceConfig | OscDeviceConfig | RpiWs281xDeviceConfig | TwinklySquaresDeviceConfig | UdpDeviceConfig | WledDeviceConfig | ZengeeDeviceConfig;
 
 /**
  * Universal interface merging all possible *optional* device properties (using snake_case)
@@ -522,6 +534,7 @@ export interface DeviceConfig {
   name?: string;
   packet_priority?: number;
   packet_size?: number;
+  panel_count?: number;
   path?: string;
   pixel_count?: number;
   pixels_per_device?: number;
@@ -1965,7 +1978,7 @@ export interface PixelsEffectConfig {
   /**
    * Time between each pixel step to light up
    * @default 1.0
-   * @minimum 0.1
+   * @minimum 0.01
    * @maximum 5.0
    */
   step_period?: number;
@@ -3068,6 +3081,13 @@ export interface Waterfall2dEffectConfig {
    * @maximum 10.0
    */
   drop_secs?: number;
+  /**
+   * Fade out the waterfall effect
+   * @default 0.0
+   * @minimum 0.0
+   * @maximum 1.0
+   */
+  fade_out?: number;
 }
 
 /**
@@ -3173,6 +3193,7 @@ export interface EffectConfig {
   ease_method?: string;
   edges?: number;
   fade_chance?: number;
+  fade_out?: number;
   fade_rate?: number;
   fake_beat?: boolean;
   filter?: boolean;
@@ -3433,7 +3454,7 @@ export interface Effect {
 export interface DeviceSpecific {
   config: DeviceSpecificConfig;
   id: string;
-  type: "adalight" | "artnet" | "ddp" | "dummy" | "e131" | "govee" | "hue" | "launchpad" | "lifx" | "nanoleaf" | "open_pixel_control" | "openrgb" | "osc" | "rpi_ws281x" | "udp" | "wled" | "zengee";
+  type: "adalight" | "artnet" | "ddp" | "dummy" | "e131" | "govee" | "hue" | "launchpad" | "lifx" | "nanoleaf" | "open_pixel_control" | "openrgb" | "osc" | "rpi_ws281x" | "twinkly_squares" | "udp" | "wled" | "zengee";
   online: boolean;
   virtuals: string[]; 
   active_virtuals: string[]; 
@@ -3457,7 +3478,7 @@ export interface DeviceSpecific {
 export interface Device {
   config: DeviceConfig;
   id: string;
-  type: "adalight" | "artnet" | "ddp" | "dummy" | "e131" | "govee" | "hue" | "launchpad" | "lifx" | "nanoleaf" | "open_pixel_control" | "openrgb" | "osc" | "rpi_ws281x" | "udp" | "wled" | "zengee";
+  type: "adalight" | "artnet" | "ddp" | "dummy" | "e131" | "govee" | "hue" | "launchpad" | "lifx" | "nanoleaf" | "open_pixel_control" | "openrgb" | "osc" | "rpi_ws281x" | "twinkly_squares" | "udp" | "wled" | "zengee";
   online: boolean;
   virtuals: string[]; 
   active_virtuals: string[]; 
@@ -3620,15 +3641,17 @@ export interface StoredSceneConfig {
   scene_payload?: string;
   scene_midiactivate?: string;
   virtuals?: Record<string, SceneVirtualEffect>; // virtual_id -> effect config
+  active?: boolean;
 }
 
 /**
- * Represents a single Scene with its effect configurations.
+ * Represents a single Scene with its effect configurations including ID and active state.
  * @category Scenes
  */
 export interface Scene {
   id: string;
   config: StoredSceneConfig;
+  active: boolean;
 }
 
 /**
