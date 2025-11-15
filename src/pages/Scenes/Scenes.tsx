@@ -9,6 +9,7 @@ import ScenesPlaylist from './ScenesPlaylist'
 import useStyles from './Scenes.styles'
 import { ISceneOrder } from '../../store/api/storeScenes'
 import SceneCard from './SceneCard'
+import BackendPlaylist from './BackendPlaylist'
 
 const Scenes = () => {
   const classes = useStyles()
@@ -117,6 +118,11 @@ const Scenes = () => {
                     activateScene={handleActivateScene}
                     title="Playlist"
                   />
+                </Box>
+              )}
+              {features.scenePlaylistBackend && (
+                <Box maxWidth={mediumScreen ? '100%' : 450} paddingBottom={0}>
+                  <BackendPlaylist maxWidth={mediumScreen ? '100%' : 450} />
                 </Box>
               )}
             </Stack>

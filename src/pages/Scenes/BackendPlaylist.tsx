@@ -28,7 +28,9 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   Divider,
-  Paper
+  Paper,
+  Grid,
+  InputAdornment
 } from '@mui/material'
 import {
   PlayArrow,
@@ -55,22 +57,21 @@ import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
 import type { PlaylistConfig, PlaylistItem } from '../../api/ledfx.types'
+import { useNavigate } from 'react-router-dom'
+import PlaylistCard from './PlaylistCard'
+import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
 
 interface BackendPlaylistProps {
-  scenes: Record<string, any>
   maxWidth?: string | number
-  // eslint-disable-next-line no-unused-vars
-  activateScene: (sceneId: string) => void
+  cards?: boolean
 }
 
-export default function BackendPlaylist({
-  scenes,
-  activateScene,
-  maxWidth = 486
-}: BackendPlaylistProps) {
+export default function BackendPlaylist({ maxWidth = 486, cards = false }: BackendPlaylistProps) {
   const theme = useTheme()
+  const navigate = useNavigate()
 
   // Store hooks
+  const scenes = useStore((state) => state.scenes)
   const playlists = useStore((state) => state.playlists)
   const currentPlaylist = useStore((state) => state.currentPlaylist)
   const setCurrentPlaylist = useStore((state) => state.setCurrentPlaylist)
@@ -87,11 +88,11 @@ export default function BackendPlaylist({
   const previousPlaylistItem = useStore((state) => state.previousPlaylistItem)
   const getPlaylistState = useStore((state) => state.getPlaylistState)
   const startPlaylistWithMode = useStore((state) => state.startPlaylistWithMode)
+  const activateScene = useStore((state) => state.activateScene)
 
-  // Local state
-  const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editingPlaylistId, setEditingPlaylistId] = useState<string | null>(null) // ADD THIS
   const [newPlaylist, setNewPlaylist] = useState<Partial<PlaylistConfig>>({
     name: '',
     items: [],
@@ -108,24 +109,16 @@ export default function BackendPlaylist({
     getPlaylistState()
   }, [getPlaylists, getPlaylistState])
 
-  // Sync selectedPlaylist with currentPlaylist from store
   useEffect(() => {
-    if (currentPlaylist && playlists[currentPlaylist]) {
-      setSelectedPlaylist(currentPlaylist)
-    } else if (!selectedPlaylist && Object.keys(playlists).length > 0) {
+    if (!currentPlaylist && Object.keys(playlists).length > 0) {
       const firstPlaylistId = Object.keys(playlists)[0]
-      setSelectedPlaylist(firstPlaylistId)
       setCurrentPlaylist(firstPlaylistId)
     }
-  }, [playlists, currentPlaylist, selectedPlaylist, setCurrentPlaylist])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playlists])
 
-  // Update store when selectedPlaylist changes
-  useEffect(() => {
-    if (selectedPlaylist !== currentPlaylist) {
-      setCurrentPlaylist(selectedPlaylist)
-    }
-  }, [selectedPlaylist, currentPlaylist, setCurrentPlaylist])
-
+  // Use currentPlaylist directly instead of selectedPlaylist
+  const selectedPlaylist = currentPlaylist
   const currentPlaylistConfig = selectedPlaylist ? playlists[selectedPlaylist] : null
   const isPlaying =
     playlistRuntimeState?.active_playlist === selectedPlaylist && !playlistRuntimeState?.paused
@@ -152,11 +145,12 @@ export default function BackendPlaylist({
   }
 
   const handleEditPlaylist = async () => {
-    if (!selectedPlaylist || !newPlaylist.name) return
+    if (!editingPlaylistId || !newPlaylist.name) return // USE editingPlaylistId
 
-    const result = await updatePlaylist(selectedPlaylist, newPlaylist)
+    const result = await updatePlaylist(editingPlaylistId, newPlaylist.name, newPlaylist) // USE editingPlaylistId
     if (result?.status === 'success') {
       setEditDialogOpen(false)
+      setEditingPlaylistId(null) // CLEAR IT
       getPlaylists()
     }
   }
@@ -286,7 +280,11 @@ export default function BackendPlaylist({
       duration_ms: Math.max(500, newDuration) // Ensure minimum 500ms
     }
 
-    await updatePlaylist(selectedPlaylist, { items: updatedItems })
+    // Spread the entire config to preserve all fields
+    await updatePlaylist(selectedPlaylist, currentPlaylistConfig.name, {
+      ...currentPlaylistConfig,
+      items: updatedItems
+    })
     getPlaylists()
   }
 
@@ -298,8 +296,12 @@ export default function BackendPlaylist({
       renderCell: (params: GridRenderCellParams) => {
         const sceneData = scenes[params.row.scene_id]
         return (
-          <Box width={24}>
-            <SceneImage iconName={sceneData?.scene_image || 'Wallpaper'} list />
+          <Box>
+            <SceneImage
+              iconName={sceneData?.scene_image || 'Wallpaper'}
+              list
+              sx={{ height: 50, width: 50 }}
+            />
           </Box>
         )
       }
@@ -444,94 +446,140 @@ export default function BackendPlaylist({
     const updatedItems: PlaylistItem[] = currentPlaylistConfig.items.filter(
       (_: PlaylistItem, index: number) => index !== itemIndex
     )
-    await updatePlaylist(selectedPlaylist, { items: updatedItems })
+
+    // Spread the entire config here too
+    await updatePlaylist(selectedPlaylist, currentPlaylistConfig.name, {
+      ...currentPlaylistConfig,
+      items: updatedItems
+    })
     getPlaylists()
   }
 
-  // Add handler for adding scenes
-  const handleAddScene = async (sceneId: string) => {
-    if (!selectedPlaylist || !currentPlaylistConfig) return
+  // Track previous progress to detect scene changes
+  const [prevProgress, setPrevProgress] = useState(0)
+  const isSceneChange = progress < prevProgress - 50 // Detect big jumps backwards
 
-    const newItem: PlaylistItem = {
-      scene_id: sceneId,
-      duration_ms: currentPlaylistConfig.default_duration_ms
-    }
+  useEffect(() => {
+    setPrevProgress(progress)
+  }, [progress])
 
-    const updatedItems = Array.isArray(currentPlaylistConfig.items)
-      ? [...currentPlaylistConfig.items, newItem]
-      : [newItem]
-
-    await updatePlaylist(selectedPlaylist, { items: updatedItems })
-    getPlaylists()
-  }
-
-  return (
-    <Box maxWidth={maxWidth}>
-      <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={950}>
-        <Card sx={{ background: 'transparent', borderColor: 'transparent' }}>
+  const renderWidget = () => {
+    return (
+      <>
+        <Card sx={{ background: 'transparent', borderColor: 'transparent', minWidth: '400px' }}>
           {/* Increase the max width and remove height constraints */}
           <Box sx={{ width: '100%', maxWidth: '800px', m: '0 auto' }}>
             {/* Playlist Selector */}
-            <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <FormControl size="small" sx={{ minWidth: 200, flex: 1 }}>
-                  <InputLabel>Select Playlist</InputLabel>
-                  <Select
-                    disableUnderline
-                    value={selectedPlaylist || ''}
-                    onChange={(e) => setSelectedPlaylist(e.target.value)}
-                    label="Select Playlist"
-                  >
-                    {Object.entries(playlists).map(([id, playlist]) => (
-                      <MenuItem key={id} value={id}>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                          <SceneImage iconName={playlist.image || 'QueueMusic'} list />
-                          <Typography>{playlist.name}</Typography>
-                        </Stack>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                <Tooltip title="Create New Playlist">
-                  <IconButton onClick={() => setCreateDialogOpen(true)} color="primary">
-                    <Add />
-                  </IconButton>
-                </Tooltip>
-
-                {selectedPlaylist && (
-                  <Tooltip title="Edit Playlist">
-                    <IconButton
-                      onClick={() => {
-                        setNewPlaylist(currentPlaylistConfig!)
-                        setEditDialogOpen(true)
-                      }}
+            {!cards && (
+              <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <FormControl size="small" sx={{ minWidth: 200, flex: 1 }}>
+                    <InputLabel>Select Playlist</InputLabel>
+                    <Select
+                      disableUnderline
+                      value={currentPlaylist || ''}
+                      onChange={(e) => setCurrentPlaylist(e.target.value)}
+                      label="Select Playlist"
                     >
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                )}
+                      {Object.entries(playlists).map(([id, playlist]) => (
+                        <MenuItem key={id} value={id}>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <SceneImage iconName={playlist.image || 'QueueMusic'} list />
+                            <Typography>{playlist.name}</Typography>
+                          </Stack>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
 
-                {selectedPlaylist && (
-                  <Tooltip title="Delete Playlist">
-                    <IconButton onClick={() => deletePlaylist(selectedPlaylist)} color="error">
-                      <Delete />
+                  <Tooltip title="Create New Playlist">
+                    <IconButton onClick={() => setCreateDialogOpen(true)} color="primary">
+                      <Add />
                     </IconButton>
                   </Tooltip>
-                )}
-              </Stack>
-            </Box>
+
+                  {selectedPlaylist && (
+                    <Tooltip title="Edit Playlist">
+                      <IconButton
+                        onClick={() => {
+                          setEditingPlaylistId(selectedPlaylist) // SET IT
+                          setNewPlaylist(currentPlaylistConfig!)
+                          setEditDialogOpen(true)
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+
+                  {selectedPlaylist && (
+                    <Tooltip title="Delete Playlist">
+                      <IconButton onClick={() => deletePlaylist(selectedPlaylist)} color="error">
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              </Box>
+            )}
 
             {/* Playback Controls */}
-            {selectedPlaylist && (
-              <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
-                  <IconButton onClick={handlePrevious} disabled={!playlistRuntimeState}>
+            {
+              <Box
+                sx={{
+                  ...(cards
+                    ? {
+                        border: '1px solid #444',
+                        borderRadius: 1,
+                        mt: 1,
+                        mb: 2,
+                        py: 1
+                      }
+                    : {
+                        borderBottom: `1px solid ${theme.palette.divider}`,
+                        p: 2
+                      })
+                }}
+              >
+                <Box
+                  sx={{
+                    height: 360,
+                    width: 360,
+                    margin: '16px auto'
+                  }}
+                >
+                  <SceneImage
+                    iconName={
+                      selectedPlaylist
+                        ? playlists[selectedPlaylist].image || 'QueueMusic'
+                        : 'yz:logo2'
+                    }
+                    sx={{
+                      height: '100%',
+                      color: selectedPlaylist
+                        ? theme.palette.text.primary
+                        : theme.palette.text.disabled
+                    }}
+                  />
+                </Box>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  justifyContent="center"
+                  width={'100%'}
+                  mt={2}
+                >
+                  <IconButton
+                    onClick={handlePrevious}
+                    disabled={!selectedPlaylist || !playlistRuntimeState}
+                  >
                     <SkipPrevious />
                   </IconButton>
 
                   <IconButton
                     onClick={handlePlayPause}
+                    disabled={!selectedPlaylist}
                     sx={{
                       bgcolor: theme.palette.primary.main + '20',
                       '&:hover': { bgcolor: theme.palette.primary.main + '40' }
@@ -540,11 +588,17 @@ export default function BackendPlaylist({
                     {isPlaying ? <Pause /> : <PlayArrow />}
                   </IconButton>
 
-                  <IconButton onClick={handleStop} disabled={!playlistRuntimeState}>
+                  <IconButton
+                    onClick={handleStop}
+                    disabled={!selectedPlaylist || !playlistRuntimeState}
+                  >
                     <Stop />
                   </IconButton>
 
-                  <IconButton onClick={handleNext} disabled={!playlistRuntimeState}>
+                  <IconButton
+                    onClick={handleNext}
+                    disabled={!selectedPlaylist || !playlistRuntimeState}
+                  >
                     <SkipNext />
                   </IconButton>
 
@@ -552,6 +606,7 @@ export default function BackendPlaylist({
                   {playlistRuntimeState && (
                     <Tooltip title={`Toggle Runtime Mode (Current: ${runtimeMode})`}>
                       <IconButton
+                        disabled={!selectedPlaylist || !playlistRuntimeState}
                         onClick={handleToggleRuntimeMode}
                         sx={{
                           bgcolor:
@@ -571,87 +626,88 @@ export default function BackendPlaylist({
                     </Tooltip>
                   )}
                 </Stack>
-
-                {/* Show both stored and runtime mode if different */}
-                {/* {playlistRuntimeState &&
-                currentPlaylistConfig &&
-                playlistRuntimeState.mode !== currentPlaylistConfig.mode && (
-                  <Box sx={{ mt: 1, textAlign: 'center' }}>
-                    <Typography variant="caption" color="text.secondary">
-                      Stored: {currentPlaylistConfig.mode} → Runtime: {playlistRuntimeState.mode}
-                    </Typography>
-                  </Box>
-                )} */}
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  sx={{ mt: 1, mb: 0.5, fontWeight: 'bold' }}
+                  color={selectedPlaylist ? 'textPrimary' : 'textDisabled'}
+                >
+                  {selectedPlaylist ? playlists[selectedPlaylist].name : 'No Playlist Selected'}
+                </Typography>
 
                 {/* Progress Bar */}
-                {playlistRuntimeState && isPlaying && (
-                  <Box sx={{ mt: 2 }}>
+                {playlistRuntimeState && selectedPlaylist && playlists[selectedPlaylist].name && (
+                  <Box sx={{ mt: 2, mx: 3 }}>
                     <LinearProgress
                       variant="determinate"
                       value={progress}
-                      sx={{ height: 8, borderRadius: 4 }}
+                      sx={{
+                        height: 8,
+                        borderRadius: 4,
+                        '& .MuiLinearProgress-bar': {
+                          // Disable transition on scene change (backward jump)
+                          transition: isSceneChange ? 'none' : 'transform 0.9s linear'
+                        }
+                      }}
                     />
                     <Stack direction="row" justifyContent="space-between" sx={{ mt: 1 }}>
                       <Typography variant="caption">
-                        {formatTime(
-                          playlistRuntimeState.effective_duration_ms -
-                            playlistRuntimeState.remaining_ms
-                        )}
+                        {playlistRuntimeState.effective_duration_ms
+                          ? formatTime(
+                              playlistRuntimeState.effective_duration_ms -
+                                playlistRuntimeState.remaining_ms
+                            )
+                          : ''}
                       </Typography>
-                      <Typography variant="caption" color="primary">
-                        Scene {currentSceneIndex + 1} of {playlistRuntimeState.scenes?.length || 0}
+                      <Typography variant="caption" color={isPlaying ? 'primary' : 'textDisabled'}>
+                        {isPlaying
+                          ? `Scene ${currentSceneIndex + 1} of ${playlistRuntimeState.scenes?.length || 0}`
+                          : 'not playing'}
                       </Typography>
                       <Typography variant="caption">
-                        {formatTime(playlistRuntimeState.effective_duration_ms)}
+                        {playlistRuntimeState.effective_duration_ms
+                          ? formatTime(playlistRuntimeState.effective_duration_ms)
+                          : ''}
                       </Typography>
                     </Stack>
                   </Box>
                 )}
               </Box>
-            )}
+            }
 
             {/* Playlist Items */}
             {selectedPlaylist && currentPlaylistConfig && (
               <Box>
                 {/* Header with info */}
-                <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h6">Playlist Items</Typography>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                      {!currentPlaylistConfig.items || currentPlaylistConfig.items.length === 0 ? (
-                        <Chip
-                          label="Dynamic (All Scenes)"
-                          size="small"
-                          color="info"
-                          variant="outlined"
-                        />
-                      ) : (
-                        <Chip
-                          label={`${currentPlaylistConfig.items.length} scenes`}
-                          size="small"
-                          variant="outlined"
-                        />
-                      )}
-
-                      {/* Add Scene Button */}
-                      {/* <Tooltip title="Add Scene to Playlist">
-                        <IconButton
-                          size="small"
-                          onClick={() => {
-                            const sceneIds = Object.keys(scenes)
-                            if (sceneIds.length > 0) {
-                              const randomSceneId = sceneIds[0]
-                              handleAddScene(randomSceneId)
-                            }
-                          }}
-                          color="primary"
-                        >
-                          <Add fontSize="small" />
-                        </IconButton>
-                      </Tooltip> */}
+                {!cards && (
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderBottom: `1px solid ${theme.palette.divider}`
+                    }}
+                  >
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Typography variant="h6">Playlist Items</Typography>
+                      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        {!currentPlaylistConfig.items ||
+                        currentPlaylistConfig.items.length === 0 ? (
+                          <Chip
+                            label="Dynamic (All Scenes)"
+                            size="small"
+                            color="info"
+                            variant="outlined"
+                          />
+                        ) : (
+                          <Chip
+                            label={`${currentPlaylistConfig.items.length} scenes`}
+                            size="small"
+                            variant="outlined"
+                          />
+                        )}
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Box>
+                  </Box>
+                )}
 
                 {/* Enhanced DataGrid with larger height */}
                 <Box sx={{ height: 600 }}>
@@ -717,7 +773,7 @@ export default function BackendPlaylist({
                       )}
                     </Typography>
 
-                    {playlistRuntimeState && (
+                    {playlistRuntimeState && playlistRuntimeState.scene_id && (
                       <Stack direction="row" spacing={2} alignItems="center">
                         <Typography variant="caption" color="primary">
                           Playing: {playlistRuntimeState.scene_id}
@@ -733,7 +789,6 @@ export default function BackendPlaylist({
             )}
           </Box>
         </Card>
-
         {/* Enhanced Create/Edit Dialog */}
         <Dialog
           open={createDialogOpen || editDialogOpen}
@@ -801,7 +856,24 @@ export default function BackendPlaylist({
               </Stack>
 
               <Divider />
-
+              <TextField
+                margin="dense"
+                id="scene_image"
+                label="Image"
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <TooltipImage />
+                      </InputAdornment>
+                    )
+                  }
+                }}
+                type="text"
+                value={newPlaylist.image || ''}
+                onChange={(e) => setNewPlaylist({ ...newPlaylist, image: e.target.value })}
+                fullWidth
+              />
               {/* Playlist Items Management */}
               <Box>
                 <Stack
@@ -1182,6 +1254,75 @@ export default function BackendPlaylist({
             </Button>
           </DialogActions>
         </Dialog>
+      </>
+    )
+  }
+  return cards ? (
+    <Stack direction="row" spacing={1} alignItems="start" sx={{ mb: 2 }}>
+      {renderWidget()}
+      <Box sx={{ mt: 4, textAlign: 'center', width: '100%' }}>
+        {Object.keys(playlists).length === 0 && (
+          <Typography variant="body1" color="text.secondary">
+            No playlists available. Please create a playlist to get started.
+          </Typography>
+        )}
+        {Object.values(playlists).map((playlist) => (
+          <PlaylistCard
+            key={playlist.id}
+            playlistId={playlist.id}
+            playlist={playlist}
+            order={0} // You might want to set the order dynamically
+            handleStartPlaylist={setCurrentPlaylist}
+            handleEditPlaylist={(plId: string) => {
+              setEditingPlaylistId(plId) // SET IT HERE TOO
+              setNewPlaylist(playlists[plId])
+              setEditDialogOpen(true)
+            }}
+            isActive={currentPlaylist === playlist.id}
+            classes={{ root: '' }} // You can pass your custom classes here
+          />
+        ))}
+        <Grid key={'add-playlist'} mt={['0.5rem', '0.5rem', 0, 0, 0]} p="8px !important" order={99}>
+          <Card
+            sx={{
+              border: '1px solid',
+              borderColor: theme.palette.divider,
+              bgcolor: 'transparent',
+              position: 'relative',
+              maxWidth: 400,
+              py: 1,
+              cursor: 'pointer',
+              '&:hover': { bgcolor: theme.palette.background.paper }
+            }}
+            onClick={() => {
+              setNewPlaylist({})
+              setCreateDialogOpen(true)
+            }}
+          >
+            Add Playlist
+          </Card>
+        </Grid>
+      </Box>
+    </Stack>
+  ) : (
+    <Box maxWidth={maxWidth}>
+      <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={950}>
+        {renderWidget()}
+        <Button
+          variant="outlined"
+          sx={{
+            height: 55,
+            bgcolor: 'black',
+            width: '100%',
+            textTransform: 'none',
+            borderColor: '#666'
+          }}
+          onClick={() => {
+            navigate('/playlist')
+          }}
+        >
+          POC: Playlist Page
+        </Button>
       </ExpanderCard>
     </Box>
   )
