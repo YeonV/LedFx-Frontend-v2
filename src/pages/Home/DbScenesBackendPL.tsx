@@ -14,12 +14,12 @@ const DbScenesBackendPL = () => {
       style={{
         borderColor: theme.palette.primary.main,
         padding: 20,
-        minWidth: 280
+        minWidth: 488
       }}
       title="Scenes Playlist (Core)"
     >
       <Stack width="100%">
-        <BackendPlaylist maxWidth={388} />
+        <BackendPlaylist maxWidth={488} />
       </Stack>
     </BladeFrame>
   )

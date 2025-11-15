@@ -27,7 +27,13 @@ const PlaylistCard = ({
   const theme = useTheme()
 
   return (
-    <Grid key={playlistId} mt={['0.5rem', '0.5rem', 0, 0, 0]} p="8px !important" order={order}>
+    <Grid
+      key={playlistId}
+      mt={['0.5rem', '0.5rem', 0, 0, 0]}
+      p="8px !important"
+      width={400}
+      order={order}
+    >
       <Card
         className={classes.root}
         sx={{

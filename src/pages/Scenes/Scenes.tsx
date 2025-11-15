@@ -23,9 +23,9 @@ const Scenes = () => {
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
-  const xsmallScreen = useMediaQuery('(max-width: 475px)')
+  // const xsmallScreen = useMediaQuery('(max-width: 475px)')
   const mediumScreen = useMediaQuery('(max-width: 870px)')
-  const largeScreen = useMediaQuery('(min-width: 1480px)')
+  // const largeScreen = useMediaQuery('(min-width: 1480px)')
 
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const captivateScene = useStore((state) => state.captivateScene)
@@ -83,16 +83,12 @@ const Scenes = () => {
         </Collapse>
 
         <Stack
-          direction={mediumScreen || largeScreen ? 'column' : 'row'}
+          direction={'row'}
           // justifyContent={'center'}
-          alignItems={mediumScreen || largeScreen ? 'center' : 'flex-start'}
+          alignItems={'flex-start'}
         >
           {scenes && Object.keys(scenes).length && (
-            <Stack
-              direction={largeScreen ? 'row' : 'column'}
-              spacing={2}
-              p={!xsmallScreen && !mediumScreen && !largeScreen ? 2 : 0}
-            >
+            <Stack direction={'column'} spacing={2} p={2}>
               {features.sceneRecent && (
                 <Box maxWidth={mediumScreen ? '100%' : 450} paddingBottom={0}>
                   <ScenesRecent

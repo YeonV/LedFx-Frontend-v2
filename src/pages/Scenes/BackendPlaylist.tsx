@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
   useTheme,
-  Chip,
+  // Chip,
   FormControl,
   InputLabel,
   Select,
@@ -50,7 +50,9 @@ import {
   // RemoveCircle,
   // AddCircle,
   KeyboardArrowUp,
-  KeyboardArrowDown
+  KeyboardArrowDown,
+  AddCircleOutline,
+  DeleteOutline
 } from '@mui/icons-material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import useStore from '../../store/useStore'
@@ -282,7 +284,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             <SceneImage
               iconName={sceneData?.scene_image || 'Wallpaper'}
               list
-              sx={{ height: 50, width: 50 }}
+              sx={{ height: 50, width: 60 }}
             />
           </Box>
         )
@@ -394,7 +396,13 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
       headerName: '',
       width: 80,
       renderCell: (params: GridRenderCellParams) => (
-        <Stack direction="row" spacing={0.5}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          justifyContent="center"
+          alignItems="center"
+          height={'100%'}
+        >
           <Tooltip title="Jump to Scene">
             <IconButton
               size="small"
@@ -412,7 +420,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   onClick={() => handleRemoveItem(params.row.index)}
                   color="error"
                 >
-                  <Delete fontSize="small" />
+                  <DeleteOutline fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}
@@ -456,17 +464,19 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
               <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
                 <Stack direction="row" spacing={2} alignItems="center">
                   <FormControl size="small" sx={{ minWidth: 200, flex: 1 }}>
-                    <InputLabel>Select Playlist</InputLabel>
                     <Select
                       disableUnderline
                       value={currentPlaylist || ''}
                       onChange={(e) => setCurrentPlaylist(e.target.value)}
-                      label="Select Playlist"
                     >
                       {Object.entries(playlists).map(([id, playlist]) => (
                         <MenuItem key={id} value={id}>
                           <Stack direction="row" alignItems="center" spacing={1}>
-                            <SceneImage iconName={playlist.image || 'QueueMusic'} list />
+                            <SceneImage
+                              iconName={playlist.image || 'QueueMusic'}
+                              list
+                              sx={{ height: 30, width: 50 }}
+                            />
                             <Typography>{playlist.name}</Typography>
                           </Stack>
                         </MenuItem>
@@ -660,28 +670,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             {/* Playlist Items */}
             {selectedPlaylist && currentPlaylistConfig && (
               <Box>
-                {/* Header with info */}
-                {!cards && (
-                  <Box
-                    sx={{
-                      p: 2,
-                      borderBottom: `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                      <Typography variant="h6">Playlist Items</Typography>
-                      <Chip
-                        label={`${currentPlaylistConfig?.items?.length || 0} scenes`}
-                        size="small"
-                        variant="outlined"
-                      />
-                    </Stack>
-                  </Box>
-                )}
-
                 {/* Enhanced DataGrid with larger height */}
-                <Box sx={{ height: 600 }}>
-                  {' '}
+                <Box sx={{ height: 400 }}>
                   {/* Increased from 400 to 600 */}
                   <DataGrid
                     rows={playlistItemsToDisplay.map((item) => ({
@@ -691,6 +681,9 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                     columns={columns}
                     hideFooter
                     disableColumnSorting
+                    slots={{
+                      columnHeaders: () => null
+                    }}
                     disableColumnMenu
                     disableRowSelectionOnClick
                     getRowClassName={(params) =>
@@ -778,116 +771,120 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 onChange={(e) => setNewPlaylist({ ...newPlaylist, name: e.target.value })}
                 fullWidth
               />
-
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  label="Default Duration (seconds)"
-                  type="number"
-                  value={(newPlaylist.default_duration_ms || 5000) / 1000}
-                  onChange={(e) =>
-                    setNewPlaylist({
-                      ...newPlaylist,
-                      default_duration_ms: Math.max(0.5, parseFloat(e.target.value)) * 1000
-                    })
-                  }
-                  InputProps={{
-                    inputProps: { min: 0.5, step: 0.5 }
-                  }}
-                  sx={{ flex: 1 }}
-                />
-
-                <FormControl sx={{ minWidth: 150 }}>
-                  <InputLabel>Default Mode</InputLabel>
-                  <Select
-                    variant="outlined"
-                    value={newPlaylist.mode || 'sequence'}
-                    onChange={(e) =>
-                      setNewPlaylist({
-                        ...newPlaylist,
-                        mode: e.target.value as 'sequence' | 'shuffle'
-                      })
-                    }
-                    label="Default Mode"
-                  >
-                    <MenuItem value="sequence">
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Repeat fontSize="small" />
-                        <Typography>Sequence</Typography>
-                      </Stack>
-                    </MenuItem>
-                    <MenuItem value="shuffle">
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Shuffle fontSize="small" />
-                        <Typography>Shuffle</Typography>
-                      </Stack>
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Stack>
-
-              <TextField
-                margin="dense"
-                id="scene_image"
-                label="Image"
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <TooltipImage />
-                      </InputAdornment>
-                    )
-                  }
-                }}
-                type="text"
-                value={newPlaylist.image || ''}
-                onChange={(e) => setNewPlaylist({ ...newPlaylist, image: e.target.value })}
-                fullWidth
-              />
-
-              {/* Playlist Items Management */}
-              <Box>
-                {/* Scene Selector */}
-                <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                  <Select
-                    variant="outlined"
-                    sx={{ height: 56 }}
-                    value="" // Always empty to allow repeated selections
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        const sceneId = e.target.value as string
-                        const newItem: PlaylistItem = {
-                          scene_id: sceneId,
-                          duration_ms: newPlaylist.default_duration_ms || 5000
-                        }
-                        const currentItems = Array.isArray(newPlaylist.items)
-                          ? newPlaylist.items
-                          : []
+              <Stack direction="row" spacing={0} justifyContent={'space-between'}>
+                <Box width="75%">
+                  <Stack direction="row" spacing={2}>
+                    <TextField
+                      label="Default Duration (seconds)"
+                      type="number"
+                      value={(newPlaylist.default_duration_ms || 5000) / 1000}
+                      onChange={(e) =>
                         setNewPlaylist({
                           ...newPlaylist,
-                          items: [...currentItems, newItem]
+                          default_duration_ms: Math.max(0.5, parseFloat(e.target.value)) * 1000
                         })
                       }
-                    }}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      <Typography color="text.secondary">Select a scene to add...</Typography>
-                    </MenuItem>
-                    {Object.entries(scenes).map(([sceneId, scene]) => (
-                      <MenuItem key={sceneId} value={sceneId}>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                          <SceneImage
-                            iconName={scene.scene_image || 'Wallpaper'}
-                            list
-                            sx={{ height: 50, width: 50 }}
-                          />
-                          <Typography>{scene.name || sceneId}</Typography>
-                        </Stack>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                      InputProps={{
+                        inputProps: { min: 0.5, step: 0.5 }
+                      }}
+                      sx={{ flex: 1 }}
+                    />
 
+                    <FormControl sx={{ minWidth: 150 }}>
+                      <InputLabel>Default Mode</InputLabel>
+                      <Select
+                        variant="outlined"
+                        value={newPlaylist.mode || 'sequence'}
+                        onChange={(e) =>
+                          setNewPlaylist({
+                            ...newPlaylist,
+                            mode: e.target.value as 'sequence' | 'shuffle'
+                          })
+                        }
+                        label="Default Mode"
+                      >
+                        <MenuItem value="sequence">
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Repeat fontSize="small" />
+                            <Typography>Sequence</Typography>
+                          </Stack>
+                        </MenuItem>
+                        <MenuItem value="shuffle">
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Shuffle fontSize="small" />
+                            <Typography>Shuffle</Typography>
+                          </Stack>
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Stack>
+
+                  <TextField
+                    margin="dense"
+                    id="scene_image"
+                    label="Image (400x400 px recommended)"
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <TooltipImage />
+                          </InputAdornment>
+                        )
+                      }
+                    }}
+                    sx={{ mt: 2 }}
+                    type="text"
+                    value={newPlaylist.image || ''}
+                    onChange={(e) => setNewPlaylist({ ...newPlaylist, image: e.target.value })}
+                    fullWidth
+                  />
+                </Box>
+                <SceneImage
+                  iconName={newPlaylist.image || 'QueueMusic'}
+                  sx={{ height: 128, width: 128 }}
+                />
+              </Stack>
+              {/* Scene Selector */}
+              <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                <Select
+                  variant="outlined"
+                  sx={{ height: 56 }}
+                  value="" // Always empty to allow repeated selections
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const sceneId = e.target.value as string
+                      const newItem: PlaylistItem = {
+                        scene_id: sceneId,
+                        duration_ms: newPlaylist.default_duration_ms || 5000
+                      }
+                      const currentItems = Array.isArray(newPlaylist.items) ? newPlaylist.items : []
+                      setNewPlaylist({
+                        ...newPlaylist,
+                        items: [...currentItems, newItem]
+                      })
+                    }
+                  }}
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    <Typography color="text.secondary">Select a scene to add...</Typography>
+                  </MenuItem>
+                  {Object.entries(scenes).map(([sceneId, scene]) => (
+                    <MenuItem key={sceneId} value={sceneId}>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <SceneImage
+                          iconName={scene.scene_image || 'Wallpaper'}
+                          list
+                          sx={{ height: 50, width: 100 }}
+                        />
+                        <Typography>{scene.name || sceneId}</Typography>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Box>
                 {/* Playlist Items List */}
                 {Array.isArray(newPlaylist.items) && newPlaylist.items.length > 0 ? (
                   <Paper variant="outlined" sx={{ maxHeight: 300, overflow: 'auto' }}>
@@ -956,7 +953,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                               <SceneImage
                                 iconName={sceneData?.scene_image || 'Wallpaper'}
                                 list
-                                sx={{ height: 50, width: 50 }}
+                                sx={{ height: 50, width: 100 }}
                               />
                             </ListItemIcon>
 
@@ -1044,7 +1041,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                       color="text.secondary"
                       sx={{ mt: 1, display: 'block' }}
                     >
-                      Use the dropdown above or "Add All Scenes" button to get started
+                      Use the dropdown above to get started
                     </Typography>
                   </Box>
                 )}
@@ -1189,47 +1186,78 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             No playlists available. Please create a playlist to get started.
           </Typography>
         )}
-        {Object.values(playlists).map((playlist) => (
-          <PlaylistCard
-            key={playlist.id}
-            playlistId={playlist.id}
-            playlist={playlist}
-            order={0} // You might want to set the order dynamically
-            handleStartPlaylist={setCurrentPlaylist}
-            handleEditPlaylist={(plId: string) => {
-              setEditingPlaylistId(plId) // SET IT HERE TOO
-              setNewPlaylist(playlists[plId])
-              setEditDialogOpen(true)
-            }}
-            isActive={currentPlaylist === playlist.id}
-            classes={{ root: '' }} // You can pass your custom classes here
-          />
-        ))}
-        <Grid key={'add-playlist'} mt={['0.5rem', '0.5rem', 0, 0, 0]} p="8px !important" order={99}>
-          <Card
-            sx={{
-              border: '1px solid',
-              borderColor: theme.palette.divider,
-              bgcolor: 'transparent',
-              position: 'relative',
-              maxWidth: 400,
-              py: 1,
-              cursor: 'pointer',
-              '&:hover': { bgcolor: theme.palette.background.paper }
-            }}
-            onClick={() => {
-              setNewPlaylist({})
-              setCreateDialogOpen(true)
-            }}
+        <Grid container justifyContent="start" spacing={1}>
+          {Object.values(playlists).map((playlist) => (
+            <PlaylistCard
+              key={playlist.id}
+              playlistId={playlist.id}
+              playlist={playlist}
+              order={0} // You might want to set the order dynamically
+              handleStartPlaylist={setCurrentPlaylist}
+              handleEditPlaylist={(plId: string) => {
+                setEditingPlaylistId(plId) // SET IT HERE TOO
+                setNewPlaylist(playlists[plId])
+                setEditDialogOpen(true)
+              }}
+              isActive={currentPlaylist === playlist.id}
+              classes={{ root: '' }} // You can pass your custom classes here
+            />
+          ))}
+          <Grid
+            key={'add-playlist'}
+            mt={['0.5rem', '0.5rem', 0, 0, 0]}
+            p="8px !important"
+            order={99}
+            width={400}
           >
-            Add Playlist
-          </Card>
+            <Card
+              sx={{
+                border: '1px solid',
+                borderColor: theme.palette.divider,
+                bgcolor: 'transparent',
+                position: 'relative',
+                width: 384,
+                height: 190,
+                cursor: 'pointer',
+                '&:hover': { bgcolor: theme.palette.background.paper }
+              }}
+              onClick={() => {
+                setNewPlaylist({})
+                setCreateDialogOpen(true)
+              }}
+            >
+              <Box
+                sx={{
+                  height: 140,
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: theme.palette.background.default
+                }}
+              >
+                <AddCircleOutline color="disabled" sx={{ fontSize: 64, opacity: 0.5 }} />
+              </Box>
+              <Box
+                sx={{
+                  height: 48,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  bgcolor: '#282829',
+                  p: 1
+                }}
+              >
+                <Typography variant="h5">Add Playlist</Typography>
+              </Box>
+            </Card>
+          </Grid>
         </Grid>
       </Box>
     </Stack>
   ) : (
     <Box maxWidth={maxWidth}>
-      <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={950}>
+      <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={1135}>
         {renderWidget()}
         <Button
           variant="outlined"
