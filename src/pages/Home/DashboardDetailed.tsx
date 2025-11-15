@@ -8,6 +8,7 @@ import DbGlobalActions from './DbGlobalActions'
 import DbScenes from './DbScenes'
 import DbScenesPL from './DbScenesPL'
 import DbDevices from './DbDevices'
+import DbScenesBackendPL from './DbScenesBackendPL'
 
 const DashboardDetailed = () => {
   const getScenes = useStore((state) => state.getScenes)
@@ -24,6 +25,7 @@ const DashboardDetailed = () => {
           <Stack>
             <DbScenes />
             <DbScenesPL />
+            <DbScenesBackendPL />
           </Stack>
           <DbDevices />
           <Stack>
