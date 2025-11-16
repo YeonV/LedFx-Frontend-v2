@@ -157,7 +157,8 @@ const Routings = () => {
               )}
               <Route path="/user" element={<User />} />
               <Route path="/reactflow" element={<ReactFlowPage />} />
-              <Route path="/playlist" element={<BackendPlaylistPage />} />
+              <Route path="/YZflow" element={<ReactFlowPage />} />
+              <Route path="/playlists" element={<BackendPlaylistPage />} />
 
               <Route
                 path="*"

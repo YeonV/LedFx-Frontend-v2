@@ -68,7 +68,7 @@ const Settings = () => {
             </AccordionSummary>
           </Accordion>
           {features.beta && (
-            <SettingsAccordion title="Beta" accId="2y2" icon="mdi:emoticon-devil">
+            <SettingsAccordion title="Beta" accId="corebeta" icon="mdi:emoticon-devil">
               <BetaCoreFeatures />
             </SettingsAccordion>
           )}

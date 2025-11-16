@@ -13,6 +13,11 @@ const BetaCoreFeatures = () => {
         checked={features.scenePlaylistBackend}
         onChange={() => setFeatures('scenePlaylistBackend', !features.scenePlaylistBackend)}
       />
+      <SettingsRow
+        title="Show Playlist in Bottom Bar"
+        checked={features.showPlaylistInBottomBar}
+        onChange={() => setFeatures('showPlaylistInBottomBar', !features.showPlaylistInBottomBar)}
+      />
     </>
   )
 }
