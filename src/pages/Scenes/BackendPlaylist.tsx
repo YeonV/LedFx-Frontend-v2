@@ -47,12 +47,12 @@ import {
   Close,
   PlaylistPlay,
   QueueMusic,
-  // RemoveCircle,
-  // AddCircle,
+  RemoveCircle,
+  AddCircle,
   KeyboardArrowUp,
   KeyboardArrowDown,
-  AddCircleOutline,
-  DeleteOutline
+  AddCircleOutline
+  // DeleteOutline
 } from '@mui/icons-material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import useStore from '../../store/useStore'
@@ -431,20 +431,20 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   ]
 
   // Add handler for removing items
-  const handleRemoveItem = async (itemIndex: number) => {
-    if (!selectedPlaylist || !currentPlaylistConfig?.items) return
+  // const handleRemoveItem = async (itemIndex: number) => {
+  //   if (!selectedPlaylist || !currentPlaylistConfig?.items) return
 
-    const updatedItems: PlaylistItem[] = currentPlaylistConfig.items.filter(
-      (_: PlaylistItem, index: number) => index !== itemIndex
-    )
+  //   const updatedItems: PlaylistItem[] = currentPlaylistConfig.items.filter(
+  //     (_: PlaylistItem, index: number) => index !== itemIndex
+  //   )
 
-    // Spread the entire config here too
-    await updatePlaylist(selectedPlaylist, currentPlaylistConfig.name, {
-      ...currentPlaylistConfig,
-      items: updatedItems
-    })
-    getPlaylists()
-  }
+  //   // Spread the entire config here too
+  //   await updatePlaylist(selectedPlaylist, currentPlaylistConfig.name, {
+  //     ...currentPlaylistConfig,
+  //     items: updatedItems
+  //   })
+  //   getPlaylists()
+  // }
 
   // Track previous progress to detect scene changes
   const [prevProgress, setPrevProgress] = useState(0)
@@ -1045,7 +1045,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 )}
 
                 {/* Quick Actions - removed "Dynamic" button */}
-                {/* <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+                <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                   <Button
                     size="small"
                     startIcon={<AddCircle />}
@@ -1087,7 +1087,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   >
                     Clear All
                   </Button>
-                </Stack> */}
+                </Stack>
               </Box>
 
               <Divider />

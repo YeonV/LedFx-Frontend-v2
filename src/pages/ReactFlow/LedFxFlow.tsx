@@ -46,12 +46,14 @@ import {
   ChevronLeft,
   ChevronRight
 } from '@mui/icons-material'
+import PlaylistNode from './PlaylistNode'
 
 const nodeTypes = {
   sender: SenderNodeOmni,
   sendereffect: SenderNodeEffect,
   virtual: VirtualNode,
-  scene: SceneNode
+  scene: SceneNode,
+  playlist: PlaylistNode
 }
 
 let senderId = 1
@@ -59,6 +61,7 @@ let senderId = 1
 const LedFxFlow = () => {
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
+  const playlists = useStore((state) => state.playlists)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
   const scenesArray = useMemo(() => {
@@ -67,6 +70,11 @@ const LedFxFlow = () => {
       ...sceneData
     }))
   }, [scenes])
+
+  const playlistsArray = useMemo(() => {
+    return Object.values(playlists)
+  }, [playlists])
+
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
@@ -86,6 +94,7 @@ const LedFxFlow = () => {
   const [recieverMenuAnchorEl, setRecieverMenuAnchorEl] = useState<null | HTMLElement>(null)
   const [loadMenuAnchorEl, setLoadMenuAnchorEl] = useState<null | HTMLElement>(null)
   const [sceneMenuAnchorEl, setSceneMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const [playlistMenuAnchorEl, setPlaylistMenuAnchorEl] = useState<null | HTMLElement>(null)
   const [actionsExpanded, setActionsExpanded] = useState(false)
   const { screenToFlowPosition } = useReactFlow()
 
@@ -236,6 +245,18 @@ const LedFxFlow = () => {
               y: index * 200
             },
             data: { name: scene.name }
+          })),
+          ...playlistsArray.map((playlist, index) => ({
+            id: `pl-${playlist.id}`, // PREFIX HERE
+            type: 'playlist',
+            position: {
+              x: SENDER_AREA_WIDTH + COLUMNS * (VIRTUAL_NODE_WIDTH + HORIZONTAL_SPACING) + 600,
+              y: index * 200
+            },
+            data: {
+              name: playlist.name,
+              playlistId: playlist.id // Store original ID
+            }
           }))
         ]
         if (filteredVirtuals.length > 0 || !loadedNodes) {
@@ -244,7 +265,7 @@ const LedFxFlow = () => {
         }
       }
     },
-    [virtuals, showComplex, showGaps, scenesArray, handlePlay, onNodeDataChange]
+    [virtuals, showComplex, showGaps, scenesArray, playlistsArray, handlePlay, onNodeDataChange]
   )
 
   useEffect(() => {
@@ -372,6 +393,28 @@ const LedFxFlow = () => {
     setContextMenu(null)
   }
 
+  const addPlaylistNode = (playlistId: string) => {
+    const playlist = playlists[playlistId]
+    if (!playlist) return
+
+    const position = screenToFlowPosition({
+      x: contextMenu?.mouseX || 0,
+      y: contextMenu?.mouseY || 0
+    })
+    const newNode = {
+      id: `pl-${playlistId}`, // PREFIX HERE
+      type: 'playlist',
+      position,
+      data: {
+        name: playlist.name,
+        playlistId // Store original ID in data
+      }
+    }
+
+    setNodes((nds) => nds.concat(newNode))
+    setContextMenu(null)
+  }
+
   const addVirtualNode = (virtualId: string) => {
     const virtual = virtuals[virtualId]
     if (!virtual) return
@@ -480,6 +523,11 @@ const LedFxFlow = () => {
             sanitizedData = { label: data.label }
           } else if (type === 'scene') {
             sanitizedData = { name: data.name }
+          } else if (type === 'playlist') {
+            sanitizedData = {
+              name: data.name,
+              playlistId: data.playlistId // Include original ID
+            }
           } else {
             // for 'sender' and 'sendereffect'
             sanitizedData = {
@@ -769,6 +817,16 @@ const LedFxFlow = () => {
           </ListItemIcon>
           Scene
         </MenuItem>
+        <MenuItem
+          onClick={(e) => {
+            setPlaylistMenuAnchorEl(e.currentTarget)
+          }}
+        >
+          <ListItemIcon>
+            <AddCircleOutline fontSize="small" />
+          </ListItemIcon>
+          Playlist
+        </MenuItem>
       </Menu>
       <Menu
         anchorEl={sceneMenuAnchorEl}
@@ -790,6 +848,29 @@ const LedFxFlow = () => {
               }}
             >
               {scene.name}
+            </MenuItem>
+          ))}
+      </Menu>
+      <Menu
+        anchorEl={playlistMenuAnchorEl}
+        open={Boolean(playlistMenuAnchorEl)}
+        onClose={() => setPlaylistMenuAnchorEl(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        {playlistsArray
+          .filter((playlist) => !nodes.some((node) => node.id === `pl-${playlist.id}`)) // CHECK WITH PREFIX
+          .map((playlist) => (
+            <MenuItem
+              key={playlist.id}
+              onClick={() => {
+                addPlaylistNode(playlist.id) // Pass original ID
+                setPlaylistMenuAnchorEl(null)
+                setSenderMenuAnchorEl(null)
+                setContextMenu(null)
+              }}
+            >
+              {playlist.name}
             </MenuItem>
           ))}
       </Menu>
