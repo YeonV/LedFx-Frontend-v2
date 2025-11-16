@@ -36,6 +36,8 @@ export type IFeatures =
   | 'sceneRecent'
   | 'sceneScroll'
   | 'scenePlaylistBackend'
+  | 'showPlaylistInBottomBar'
+  | 'showFlowInBottomBar'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -72,7 +74,9 @@ const storeFeatures = (set: any) => ({
     scenePlaylist: false,
     sceneRecent: false,
     sceneScroll: false,
-    scenePlaylistBackend: false
+    scenePlaylistBackend: false,
+    showPlaylistInBottomBar: false,
+    showFlowInBottomBar: false
   },
   showFeatures: {
     dev: false,
@@ -108,7 +112,9 @@ const storeFeatures = (set: any) => ({
     scenePlaylist: false,
     sceneRecent: false,
     sceneScroll: false,
-    scenePlaylistBackend: false
+    scenePlaylistBackend: false,
+    showPlaylistInBottomBar: false,
+    showFlowInBottomBar: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

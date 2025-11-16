@@ -7,7 +7,9 @@ import {
   // SettingsInputSvideo,
   // SettingsInputComponent,
   Dashboard,
-  ElectricalServices
+  ElectricalServices,
+  QueueMusic,
+  AccountTree
 } from '@mui/icons-material'
 import { useLocation, Link } from 'react-router-dom'
 import useStore from '../../store/useStore'
@@ -169,6 +171,23 @@ export default function BarBottom() {
             icon={features.dashboard ? <Dashboard /> : <Home />}
           />
         )}
+        {features.showFlowInBottomBar &&
+          !(window.localStorage.getItem('guestmode') === 'activated') && (
+            <BottomNavigationAction
+              label="YZ-Flow"
+              value="/YZflow"
+              component={Link}
+              to="/YZflow"
+              icon={<AccountTree />}
+              style={
+                bottomBarOpen.indexOf('yzflow') > -1 ? { color: theme.palette.primary.main } : {}
+              }
+              // onContextMenu={(e: any) => {
+              //   e.preventDefault();
+              //   setBottomBarOpen('Integrations');
+              // }}
+            />
+          )}
         <BottomNavigationAction
           label="Devices"
           value="/Devices"
@@ -193,6 +212,24 @@ export default function BarBottom() {
           //   setBottomBarOpen('Scenes');
           // }}
         />
+
+        {features.showPlaylistInBottomBar &&
+          !(window.localStorage.getItem('guestmode') === 'activated') && (
+            <BottomNavigationAction
+              label="Playlists"
+              value="/Playlists"
+              component={Link}
+              to="/Playlists"
+              icon={<QueueMusic />}
+              style={
+                bottomBarOpen.indexOf('Playlists') > -1 ? { color: theme.palette.primary.main } : {}
+              }
+              // onContextMenu={(e: any) => {
+              //   e.preventDefault();
+              //   setBottomBarOpen('Integrations');
+              // }}
+            />
+          )}
 
         {features.integrations && !(window.localStorage.getItem('guestmode') === 'activated') && (
           <BottomNavigationAction
