@@ -62,6 +62,7 @@ import type { PlaylistConfig, PlaylistItem } from '../../api/ledfx.types'
 import { useNavigate } from 'react-router-dom'
 import PlaylistCard from './PlaylistCard'
 import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
+import Popover from '../../components/Popover/Popover'
 
 interface BackendPlaylistProps {
   maxWidth?: string | number
@@ -412,7 +413,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
               <PlayArrow fontSize="small" />
             </IconButton>
           </Tooltip>
-          {Array.isArray(currentPlaylistConfig?.items) &&
+          {/* {Array.isArray(currentPlaylistConfig?.items) &&
             currentPlaylistConfig.items.length > 0 && (
               <Tooltip title="Remove from Playlist">
                 <IconButton
@@ -423,7 +424,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   <DeleteOutline fontSize="small" />
                 </IconButton>
               </Tooltip>
-            )}
+            )} */}
         </Stack>
       )
     }
@@ -581,7 +582,11 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   </IconButton>
 
                   <IconButton
-                    onClick={handleStop}
+                    onClick={async () => {
+                      const pl = selectedPlaylist
+                      await handleStop()
+                      setCurrentPlaylist(pl)
+                    }}
                     disabled={!selectedPlaylist || !playlistRuntimeState}
                   >
                     <Stop />
@@ -998,24 +1003,17 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
 
                             {/* Remove Button */}
                             <ListItemSecondaryAction>
-                              <IconButton
+                              <Popover
                                 size="small"
-                                onClick={() => {
+                                type="iconbutton"
+                                color="error"
+                                onConfirm={() => {
                                   const updatedItems = newPlaylist.items!.filter(
                                     (_, i) => i !== index
                                   )
                                   setNewPlaylist({ ...newPlaylist, items: updatedItems })
                                 }}
-                                color="error"
-                                sx={{
-                                  '&:hover': {
-                                    bgcolor: 'error.main',
-                                    color: 'error.contrastText'
-                                  }
-                                }}
-                              >
-                                <Delete fontSize="small" />
-                              </IconButton>
+                              />
                             </ListItemSecondaryAction>
                           </ListItem>
                         )
@@ -1193,7 +1191,12 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
               playlistId={playlist.id}
               playlist={playlist}
               order={0} // You might want to set the order dynamically
-              handleStartPlaylist={setCurrentPlaylist}
+              handleStartPlaylist={async (playlistId) => {
+                await stopPlaylist()
+                await startPlaylist(playlistId)
+                setCurrentPlaylist(playlistId)
+                getPlaylistState()
+              }}
               handleEditPlaylist={(plId: string) => {
                 setEditingPlaylistId(plId) // SET IT HERE TOO
                 setNewPlaylist(playlists[plId])
