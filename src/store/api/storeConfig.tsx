@@ -25,20 +25,6 @@ export interface IPreset {
   name: string
   config: EffectConfig
 }
-export interface IPresets {
-  effect: string
-  ledfx_presets: Record<string, IPreset>
-  user_presets: Record<string, IPreset>
-}
-
-// export interface IDevice {
-//   config: Record<string, any>
-//   id: string
-//   type: string
-//   online?: boolean
-//   virtuals?: string[]
-//   active_virtuals?: string[]
-// }
 
 export interface ISystemConfig {
   integrations: undefined

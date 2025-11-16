@@ -336,7 +336,7 @@ const EditSceneDialog = () => {
         <Select
           defaultValue={ledfxPreset || userPreset}
           onChange={(e) => {
-            let category = 'ledfx_presets'
+            let category: 'ledfx_presets' | 'user_presets' = 'ledfx_presets'
             if (
               user_presets &&
               user_presets[effectId] &&
@@ -387,7 +387,7 @@ const EditSceneDialog = () => {
         <Select
           defaultValue="Not saved as Preset"
           onChange={(e) => {
-            let category = 'ledfx_presets'
+            let category: 'ledfx_presets' | 'user_presets' = 'ledfx_presets'
             if (
               user_presets &&
               user_presets[effectId] &&

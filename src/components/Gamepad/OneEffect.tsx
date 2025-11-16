@@ -79,7 +79,7 @@ const OneEffect = ({ initialPayload, setPayload, noButton }: any) => {
 
   useEffect(() => {
     if (virtId && type && virtId !== '' && type !== '') {
-      getPresets(type)
+      getPresets(virtId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtId, type])
