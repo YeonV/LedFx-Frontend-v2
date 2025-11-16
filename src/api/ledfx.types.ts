@@ -3768,15 +3768,7 @@ export interface PlaylistControlApiResponse {
 }
 
 /**
- * Request body for DELETE /api/playlists.
- * @category REST
- */
-export interface DeletePlaylistRequest {
-  id: string;
-}
-
-/**
- * Response for DELETE /api/playlists.
+ * Response for DELETE /api/playlists/{id}.
  * @category REST
  */
 export interface DeletePlaylistApiResponse {
@@ -3799,6 +3791,86 @@ export interface PlaylistEventPayload {
   scene_id?: string;
   effective_duration_ms?: number;
   remaining_ms?: number;
+}
+
+// Virtual Presets API Response Types
+/**
+ * Represents a single preset with its configuration and active status.
+ * @category Presets
+ */
+export interface Preset {
+  name: string;
+  config: EffectConfig;
+  active: boolean;
+}
+
+/**
+ * Response for GET /api/virtuals/{virtual_id}/presets.
+ * @category REST
+ */
+export interface GetVirtualPresetsApiResponse {
+  status: "success" | "error";
+  virtual: string;
+  effect: EffectType;
+  ledfx_presets: Record<string, Preset>;
+  user_presets: Record<string, Preset>;
+  message?: string;
+}
+
+/**
+ * Request body for PUT /api/virtuals/{virtual_id}/presets.
+ * @category REST
+ */
+export interface SetVirtualPresetRequest {
+  category: "ledfx_presets" | "user_presets";
+  effect_id: EffectType;
+  preset_id: string; // Use "reset" with ledfx_presets to reset to defaults
+}
+
+/**
+ * Response for PUT /api/virtuals/{virtual_id}/presets.
+ * @category REST
+ */
+export interface SetVirtualPresetApiResponse {
+  status: "success" | "error";
+  effect: {
+    config: EffectConfig;
+    name: string;
+    type: EffectType;
+  };
+  message?: string;
+}
+
+/**
+ * Request body for POST /api/virtuals/{virtual_id}/presets.
+ * @category REST
+ */
+export interface CreateVirtualPresetRequest {
+  name: string;
+}
+
+/**
+ * Response for POST /api/virtuals/{virtual_id}/presets.
+ * @category REST
+ */
+export interface CreateVirtualPresetApiResponse {
+  status: "success" | "error";
+  preset: {
+    id: string;
+    name: string;
+    config: EffectConfig;
+  };
+  message?: string;
+}
+
+/**
+ * Response for DELETE /api/virtuals/{virtual_id}/presets.
+ * @category REST
+ */
+export interface DeleteVirtualPresetApiResponse {
+  status: "success" | "error";
+  effect: {};
+  message?: string;
 }
 
 // Convenience Type Aliases using Universal Configs
