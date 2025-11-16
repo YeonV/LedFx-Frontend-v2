@@ -49,7 +49,7 @@ const PlaylistCard = ({
           }}
           onClick={() => handleStartPlaylist(playlistId)}
         >
-          <SceneImage iconName={playlist.image || 'QueueMusic'} />
+          <SceneImage iconName={playlist?.image || 'QueueMusic'} />
 
           {/* Active/Playing indicator */}
           {/* {isActive && (
@@ -128,7 +128,7 @@ const PlaylistCard = ({
           }}
         >
           <Typography className={classes.sceneTitle} variant="h5" component="h2">
-            {playlist.name || playlistId}
+            {playlist?.name || playlistId}
           </Typography>
           {!(window.localStorage.getItem('guestmode') === 'activated') && (
             <PlaylistCardMenu
