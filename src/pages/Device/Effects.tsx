@@ -82,6 +82,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [loading, setLoading] = useState(false)
 
   const getVirtuals = useStore((state) => state.getVirtuals)
+  const getPresets = useStore((state) => state.getPresets)
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
@@ -106,6 +107,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fullScreen, setFullScreen] = useState(false)
 
   useSubscription('effect_set', getVirtuals)
+  useSubscription('effect_set', () => getPresets(virtId))
 
   const getV = () => {
     for (const prop in virtuals) {
@@ -154,14 +156,19 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
 
   const handleEffectConfig = (config: Effect['config']) => {
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
-      updateEffect(virtId, effectType, config, false).then(() => {
+      updateEffect(virtId, effectType, config, false).then(async () => {
         getVirtuals()
+        await getPresets(virtId)
       })
     }
   }
 
   const handlePlayPause = () => {
-    if (virtual) updateVirtual(virtual.id, !virtual.active).then(() => getVirtuals())
+    if (virtual)
+      updateVirtual(virtual.id, !virtual.active).then(async () => {
+        getVirtuals()
+        await getPresets(virtId)
+      })
   }
 
   useEffect(() => {
