@@ -203,6 +203,13 @@ const storeScenes = (set: any) => ({
     }
     return null
   },
+  getScene: async (id: string) => {
+    const resp: any = await Ledfx('/api/scenes/' + id)
+    if (resp && resp.scene) {
+      return resp.scene
+    }
+    return null
+  },
   addScene: async (
     name: string,
     scene_image?: string | null,
