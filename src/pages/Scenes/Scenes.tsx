@@ -30,8 +30,11 @@ const Scenes = () => {
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const captivateScene = useStore((state) => state.captivateScene)
 
-  const handleActivateScene = (e: string) => {
-    activateScene(e)
+  const handleActivateScene = async (e: string) => {
+    await activateScene(e)
+    setTimeout(async () => {
+      await getScenes()
+    }, 400)
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
       captivateScene(scenes[e]?.scene_puturl, scenes[e]?.scene_payload)
   }
