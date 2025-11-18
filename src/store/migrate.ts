@@ -197,5 +197,40 @@ export const migrations: Migrations = {
       draft.ui.globalColorWidgetY = 200
       draft.ui.globalColorWidget = false
     }
+  }),
+
+  // Migration 31: Updates preset structure and adds new store methods
+  31: produce((draft) => {
+    // Update presets structure to match new API response
+    if (draft.presets) {
+      // If old structure exists, migrate it
+      if (draft.presets.default_presets || draft.presets.custom_presets) {
+        draft.presets.ledfx_presets = draft.presets.default_presets || {}
+        draft.presets.user_presets = draft.presets.custom_presets || {}
+      } else {
+        // Initialize new structure
+        draft.presets.ledfx_presets = {}
+        draft.presets.user_presets = {}
+      }
+    } else {
+      // Initialize if presets doesn't exist
+      draft.presets = {
+        ledfx_presets: {},
+        user_presets: {}
+      }
+    }
+
+    // Add new feature flags
+    if (draft.features) {
+      draft.features.scenePlaylistBackend = false
+      draft.features.showPlaylistInBottomBar = false
+      draft.features.showFlowInBottomBar = false
+    }
+
+    if (draft.showFeatures) {
+      draft.showFeatures.scenePlaylistBackend = false
+      draft.showFeatures.showPlaylistInBottomBar = false
+      draft.showFeatures.showFlowInBottomBar = false
+    }
   })
 }
