@@ -138,24 +138,85 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   }
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'development' || !dialogOpen) return
+    // if (process.env.NODE_ENV !== 'development' || !dialogOpen) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault() // Prevent default navigation
       setKeyPresses((prev) => {
         const newPresses = [
           {
-            key: e.key,
-            code: e.code,
-            keyCode: e.keyCode
+            key: e.key || 'undefined',
+            code: e.code || 'undefined',
+            keyCode: e.keyCode,
+            type: 'keydown',
+            timestamp: new Date().toLocaleTimeString()
           },
           ...prev
-        ].slice(0, 10) // Keep only last 10 key presses
+        ].slice(0, 15) // Keep more history
         return newPresses
       })
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    const handleKeyUp = (e: KeyboardEvent) => {
+      setKeyPresses((prev) => {
+        const newPresses = [
+          {
+            key: e.key || 'undefined',
+            code: e.code || 'undefined',
+            keyCode: e.keyCode,
+            type: 'keyup',
+            timestamp: new Date().toLocaleTimeString()
+          },
+          ...prev
+        ].slice(0, 15)
+        return newPresses
+      })
+    }
+
+    // Android TV/Fire TV might use these events
+    const handleClick = (e: MouseEvent) => {
+      setKeyPresses((prev) => {
+        const newPresses = [
+          {
+            key: 'CLICK',
+            code: `button: ${e.button}`,
+            keyCode: e.button,
+            type: 'click',
+            timestamp: new Date().toLocaleTimeString()
+          },
+          ...prev
+        ].slice(0, 15)
+        return newPresses
+      })
+    }
+
+    const handleFocus = (e: FocusEvent) => {
+      setKeyPresses((prev) => {
+        const newPresses = [
+          {
+            key: 'FOCUS',
+            code: (e.target as HTMLElement)?.tagName || 'unknown',
+            type: 'focus',
+            timestamp: new Date().toLocaleTimeString()
+          },
+          ...prev
+        ].slice(0, 15)
+        return newPresses
+      })
+    }
+
+    // Add all event listeners
+    window.addEventListener('keydown', handleKeyDown, true) // Use capture phase
+    window.addEventListener('keyup', handleKeyUp, true)
+    window.addEventListener('click', handleClick, true)
+    document.addEventListener('focusin', handleFocus, true)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true)
+      window.removeEventListener('keyup', handleKeyUp, true)
+      window.removeEventListener('click', handleClick, true)
+      document.removeEventListener('focusin', handleFocus, true)
+    }
   }, [dialogOpen])
 
   return (
