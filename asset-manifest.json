@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/LedFx-Frontend-v2/static/css/main.12b64d82.css",
-    "main.js": "/LedFx-Frontend-v2/static/js/main.d0b3da14.js",
+    "main.js": "/LedFx-Frontend-v2/static/js/main.e3db5fce.js",
     "static/js/429.748331ac.chunk.js": "/LedFx-Frontend-v2/static/js/429.748331ac.chunk.js",
     "static/js/83.4c315b9f.chunk.js": "/LedFx-Frontend-v2/static/js/83.4c315b9f.chunk.js",
     "static/js/464.4c315b9f.chunk.js": "/LedFx-Frontend-v2/static/js/464.4c315b9f.chunk.js",
@@ -41,7 +41,7 @@
     "static/media/right-snake.svg": "/LedFx-Frontend-v2/static/media/right-snake.48646339a693661b2cbfb01036d4347d.svg",
     "static/media/bottom-snake.svg": "/LedFx-Frontend-v2/static/media/bottom-snake.9b9a83d44ad5de6f52df46864a7815b8.svg",
     "static/media/left-snake-flip.svg": "/LedFx-Frontend-v2/static/media/left-snake-flip.866a1a9f220801e888735cdfa6f22698.svg",
-    "main.d0b3da14.js.map": "/LedFx-Frontend-v2/static/js/main.d0b3da14.js.map",
+    "main.e3db5fce.js.map": "/LedFx-Frontend-v2/static/js/main.e3db5fce.js.map",
     "429.748331ac.chunk.js.map": "/LedFx-Frontend-v2/static/js/429.748331ac.chunk.js.map",
     "83.4c315b9f.chunk.js.map": "/LedFx-Frontend-v2/static/js/83.4c315b9f.chunk.js.map",
     "464.4c315b9f.chunk.js.map": "/LedFx-Frontend-v2/static/js/464.4c315b9f.chunk.js.map",
@@ -50,6 +50,6 @@
   },
   "entrypoints": [
     "static/css/main.12b64d82.css",
-    "static/js/main.d0b3da14.js"
+    "static/js/main.e3db5fce.js"
   ]
 }
