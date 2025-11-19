@@ -23,9 +23,11 @@ import {
   Avatar,
   useMediaQuery,
   Autocomplete,
-  CircularProgress
+  CircularProgress,
+  Tooltip,
+  Box
 } from '@mui/material'
-import { NavigateBefore, MusicNote } from '@mui/icons-material'
+import { NavigateBefore, MusicNote, InfoOutlined } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
 import isElectron from 'is-electron'
 import useStore from '../../../store/useStore'
@@ -903,7 +905,31 @@ const EditSceneDialog = () => {
               <span style={{ width: 'calc(100% - 500px - 3rem)' }}>Device</span>
               <span style={{ width: '200px' }}>Effect</span>
               <span style={{ width: '200px' }}>Preset</span>
-              <span style={{ width: '100px' }}>Action</span>
+              <span style={{ width: '100px' }}>
+                Action
+                <Tooltip
+                  title={
+                    <Box>
+                      <Typography variant="body2">Activate</Typography>
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        activates the selected effect and preset.
+                      </Typography>
+                      <Typography variant="body2">Ignore</Typography>
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        does not touch this virtuals
+                      </Typography>
+                      <Typography variant="body2">Turn Off</Typography>
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        actively sends black.
+                      </Typography>
+                      <Typography variant="body2">Release</Typography>
+                      <Typography variant="body2">stop any effect and return to WLED</Typography>
+                    </Box>
+                  }
+                >
+                  <InfoOutlined fontSize="small" sx={{ ml: 0.5, verticalAlign: 'middle' }} />
+                </Tooltip>
+              </span>
             </div>
             <Divider sx={{ margin: '0 auto', maxWidth: '960px' }} />
             {scenes &&
@@ -938,7 +964,8 @@ const EditSceneDialog = () => {
                       maxWidth: '960px',
                       gap: '1rem',
                       opacity: isIgnored ? 0.5 : 1, // Dim ignored virtuals
-                      textDecoration: isIgnored ? 'line-through' : 'none'
+                      textDecoration: 'none'
+                      // textDecoration: isIgnored ? 'line-through' : 'none'
                     }}
                   >
                     {/* Column 1: Device Name */}
@@ -947,7 +974,7 @@ const EditSceneDialog = () => {
                       sx={{
                         width: 'calc(100% - 500px - 3rem)',
                         color:
-                          !vData.type || vData.action !== 'activate'
+                          !vData.type || vData.action === 'ignore'
                             ? 'text.disabled'
                             : 'text.primary'
                       }}
@@ -956,71 +983,80 @@ const EditSceneDialog = () => {
                     </Typography>
 
                     {/* Column 2: Effect Type Selector */}
-                    <FormControl sx={{ width: '200px' }} size="small">
-                      <Select
-                        disableUnderline
-                        value={vData.type || ''}
-                        onChange={(e) => handleEffectTypeChange(virtualId, e.target.value)}
-                        displayEmpty
-                        disabled={vData.action !== 'activate'} // Disable if action is not 'activate'
-                      >
-                        <MenuItem value="" disabled>
-                          {vData.action !== 'activate' ? 'N/A' : 'Select Effect'}
-                        </MenuItem>
-                        {effects &&
-                          Object.keys(effects)
-                            .sort()
-                            .map((effectType) => (
-                              <MenuItem key={effectType} value={effectType}>
-                                {effectType}
+                    {!vData.type || vData.action !== 'activate' ? null : (
+                      <FormControl sx={{ width: '200px' }} size="small">
+                        <Select
+                          disableUnderline
+                          value={vData.type || ''}
+                          onChange={(e) => handleEffectTypeChange(virtualId, e.target.value)}
+                          displayEmpty
+                          disabled={vData.action !== 'activate'} // Disable if action is not 'activate'
+                        >
+                          <MenuItem value="" disabled>
+                            {vData.action !== 'activate' ? 'N/A' : 'Select Effect'}
+                          </MenuItem>
+                          {effects &&
+                            Object.keys(effects)
+                              .sort()
+                              .map((effectType) => (
+                                <MenuItem key={effectType} value={effectType}>
+                                  {effectType}
+                                </MenuItem>
+                              ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                    {/* Column 3: Preset Selector */}
+                    {/* Hide if no effect type OR action is not 'activate' */}
+                    {!vData.type || vData.action !== 'activate' ? null : (
+                      <FormControl sx={{ width: '200px' }} size="small">
+                        <Select
+                          disableUnderline
+                          value={
+                            vData.preset && vData.preset_category
+                              ? `${vData.preset_category}:${vData.preset}`
+                              : ''
+                          }
+                          onChange={(e) => {
+                            const [category, presetId] = e.target.value.split(':')
+                            handlePresetChange(
+                              virtualId,
+                              presetId,
+                              category as 'ledfx_presets' | 'user_presets'
+                            )
+                          }}
+                          displayEmpty
+                          disabled={!vData.type || vData.action !== 'activate'}
+                        >
+                          <MenuItem value="">
+                            <em>{vData.action !== 'activate' ? 'N/A' : 'Not saved as Preset'}</em>
+                          </MenuItem>
+
+                          {/* LedFx Presets */}
+                          {ledfx_presets[vData.type] && (
+                            <ListSubheader>LedFx Presets</ListSubheader>
+                          )}
+                          {ledfx_presets[vData.type] &&
+                            Object.keys(ledfx_presets[vData.type]).map((presetId) => (
+                              <MenuItem
+                                key={`ledfx:${presetId}`}
+                                value={`ledfx_presets:${presetId}`}
+                              >
+                                {ledfx_presets[vData.type][presetId].name || presetId}
                               </MenuItem>
                             ))}
-                      </Select>
-                    </FormControl>
 
-                    {/* Column 3: Preset Selector */}
-                    <FormControl sx={{ width: '200px' }} size="small">
-                      <Select
-                        disableUnderline
-                        value={
-                          vData.preset && vData.preset_category
-                            ? `${vData.preset_category}:${vData.preset}`
-                            : ''
-                        }
-                        onChange={(e) => {
-                          const [category, presetId] = e.target.value.split(':')
-                          handlePresetChange(
-                            virtualId,
-                            presetId,
-                            category as 'ledfx_presets' | 'user_presets'
-                          )
-                        }}
-                        displayEmpty
-                        disabled={!vData.type || vData.action !== 'activate'} // Disable if no effect type OR action is not 'activate'
-                      >
-                        <MenuItem value="">
-                          <em>{vData.action !== 'activate' ? 'N/A' : 'Not saved as Preset'}</em>
-                        </MenuItem>
-
-                        {/* LedFx Presets */}
-                        {ledfx_presets[vData.type] && <ListSubheader>LedFx Presets</ListSubheader>}
-                        {ledfx_presets[vData.type] &&
-                          Object.keys(ledfx_presets[vData.type]).map((presetId) => (
-                            <MenuItem key={`ledfx:${presetId}`} value={`ledfx_presets:${presetId}`}>
-                              {ledfx_presets[vData.type][presetId].name || presetId}
-                            </MenuItem>
-                          ))}
-
-                        {/* User Presets */}
-                        {user_presets[vData.type] && <ListSubheader>User Presets</ListSubheader>}
-                        {user_presets[vData.type] &&
-                          Object.keys(user_presets[vData.type]).map((presetId) => (
-                            <MenuItem key={`user:${presetId}`} value={`user_presets:${presetId}`}>
-                              {user_presets[vData.type][presetId].name || presetId}
-                            </MenuItem>
-                          ))}
-                      </Select>
-                    </FormControl>
+                          {/* User Presets */}
+                          {user_presets[vData.type] && <ListSubheader>User Presets</ListSubheader>}
+                          {user_presets[vData.type] &&
+                            Object.keys(user_presets[vData.type]).map((presetId) => (
+                              <MenuItem key={`user:${presetId}`} value={`user_presets:${presetId}`}>
+                                {user_presets[vData.type][presetId].name || presetId}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                    )}
 
                     {/* Column 4: Action Selector */}
                     <FormControl
@@ -1034,7 +1070,7 @@ const EditSceneDialog = () => {
                         value={vData.action || 'activate'}
                         sx={{
                           color:
-                            !vData.type || vData.action !== 'activate'
+                            !vData.type || vData.action === 'ignore'
                               ? 'text.disabled'
                               : 'text.primary'
                         }}
@@ -1058,6 +1094,22 @@ const EditSceneDialog = () => {
                             }))
                           } else {
                             handleActionChange(virtualId, newAction)
+                          }
+                          // If changing to turn_off set effect type to singleColor and  config to
+                          // {
+                          //     "color": "#000000"
+                          // }
+                          if (newAction === 'turn_off') {
+                            setSceneVirtuals((prev) => ({
+                              ...prev,
+                              [virtualId]: {
+                                type: 'singleColor',
+                                config: {
+                                  color: '#000000'
+                                },
+                                action: 'turn_off'
+                              }
+                            }))
                           }
                         }}
                       >

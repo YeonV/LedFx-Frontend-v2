@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Typography, Paper, Button, Stack } from '@mui/material'
+import { useVirtualCursor } from '../../hooks/useVirtualCursor'
+import VirtualCursor from '../VirtualCursor'
 
 interface RemoteEvent {
   key: string
@@ -16,11 +18,28 @@ declare global {
     }
   }
 }
+/**
+ * Fire TV codes:
+ * Via Debug Menu:
+ * ArrowRight code: ArrowRight keyCode: 39
+ * ArrowDown code: ArrowDown keyCode: 40
+ * ArrowLeft code: ArrowLeft keyCode: 37
+ * ArrowUp code: ArrowLeft ArrowUp: 38
+ * MediaRewind code: MediaRewind keycode: 227
+ * MediaPlayPause code: MediaPlayPause keycode: 179
+ * MediaFastForward code: MediaFastForward keycode: 228
+ * Enter code: NumpadEnter keyCode: 13
+ * Via Remote:
+ * Menu code: KEYCODE_MENU keyCode: 82
+ */
 
 const RemoteDebugger: React.FC = () => {
   const [events, setEvents] = useState<RemoteEvent[]>([])
   const [activeKeys, setActiveKeys] = useState<Set<string>>(new Set())
   const [isCustomMode, setIsCustomMode] = useState(false)
+
+  // Add virtual cursor
+  const { cursorPos } = useVirtualCursor(isCustomMode)
 
   useEffect(() => {
     const handleRemoteEvent = (e: Event) => {
@@ -40,6 +59,12 @@ const RemoteDebugger: React.FC = () => {
         ].slice(0, 15)
       )
 
+      // Handle MENU button to toggle custom mode
+      if (keyCode === 82) {
+        // MENU button
+        toggleNavigationMode()
+      }
+
       // Show active state
       setActiveKeys((prev) => new Set(prev).add(key))
       setTimeout(() => {
@@ -53,7 +78,8 @@ const RemoteDebugger: React.FC = () => {
 
     window.addEventListener('androidremote', handleRemoteEvent)
     return () => window.removeEventListener('androidremote', handleRemoteEvent)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCustomMode])
 
   const toggleNavigationMode = () => {
     const newMode = !isCustomMode
@@ -68,106 +94,111 @@ const RemoteDebugger: React.FC = () => {
   }
 
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        mt: 2,
-        p: 2,
-        backgroundColor: 'rgba(33, 150, 243, 0.1)',
-        border: '1px solid #2196F3'
-      }}
-    >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-        <Typography variant="h6" color="#2196F3">
-          📱 Fire TV Remote Debug
-        </Typography>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={toggleNavigationMode}
-          sx={{
-            backgroundColor: isCustomMode ? '#4CAF50' : '#FF9800',
-            '&:hover': {
-              backgroundColor: isCustomMode ? '#45a049' : '#F57C00'
-            },
-            fontWeight: 'bold',
-            fontSize: '0.75rem',
-            px: 2
-          }}
-        >
-          {isCustomMode ? '🎯 Custom' : '🎮 Native'}
-        </Button>
-      </Stack>
+    <>
+      {/* Virtual Cursor Overlay */}
+      <VirtualCursor x={cursorPos.x} y={cursorPos.y} visible={isCustomMode} />
 
-      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
-        Mode: {isCustomMode ? 'Custom Cursor Navigation' : 'Native Focus Navigation'}
-      </Typography>
-
-      {/* Event Log */}
-      <Box>
-        <Typography variant="subtitle2" color="#2196F3">
-          Recent Events:
-        </Typography>
-        <Box
-          sx={{
-            mt: 1,
-            p: 1,
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            borderRadius: 1,
-            maxHeight: 150,
-            overflowY: 'auto',
-            fontFamily: 'monospace',
-            fontSize: '0.85rem'
-          }}
-        >
-          {events.length === 0 ? (
-            <Typography variant="caption" color="text.secondary">
-              Waiting for remote input...
-            </Typography>
-          ) : (
-            events.map((evt, idx) => (
-              <Box key={idx} sx={{ mb: 0.5 }}>
-                <span style={{ color: '#64B5F6' }}>{evt.key}</span>
-                <span style={{ color: '#888', marginLeft: 8 }}>code: {evt.code}</span>
-                <span style={{ color: '#888', marginLeft: 8 }}>keyCode: {evt.keyCode}</span>
-                <span style={{ color: '#666', marginLeft: 8, fontSize: '0.75rem' }}>
-                  {evt.timestamp}
-                </span>
-              </Box>
-            ))
-          )}
-        </Box>
-      </Box>
-
-      {/* Visual Remote Buttons */}
-      <Box
+      <Paper
+        elevation={3}
         sx={{
-          mb: 2,
           mt: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-          alignItems: 'center'
+          p: 2,
+          backgroundColor: 'rgba(33, 150, 243, 0.1)',
+          border: '1px solid #2196F3'
         }}
       >
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 60px)', gap: 1 }}>
-          <Box /> {/* Empty cell */}
-          <RemoteButton label="UP" isActive={activeKeys.has('ArrowUp')} />
-          <Box />
-          <RemoteButton label="LEFT" isActive={activeKeys.has('ArrowLeft')} />
-          <RemoteButton label="OK" isActive={activeKeys.has('Enter')} />
-          <RemoteButton label="RIGHT" isActive={activeKeys.has('ArrowRight')} />
-          <Box />
-          <RemoteButton label="DOWN" isActive={activeKeys.has('ArrowDown')} />
-          <Box />
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+          <Typography variant="h6" color="#2196F3">
+            📱 Fire TV Remote Debug
+          </Typography>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={toggleNavigationMode}
+            sx={{
+              backgroundColor: isCustomMode ? '#4CAF50' : '#FF9800',
+              '&:hover': {
+                backgroundColor: isCustomMode ? '#45a049' : '#F57C00'
+              },
+              fontWeight: 'bold',
+              fontSize: '0.75rem',
+              px: 2
+            }}
+          >
+            {isCustomMode ? '🎯 Custom' : '🎮 Native'}
+          </Button>
+        </Stack>
+
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
+          Mode: {isCustomMode ? 'Custom Cursor Navigation' : 'Native Focus Navigation'}
+        </Typography>
+
+        {/* Event Log */}
+        <Box>
+          <Typography variant="subtitle2" color="#2196F3">
+            Recent Events:
+          </Typography>
+          <Box
+            sx={{
+              mt: 1,
+              p: 1,
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              borderRadius: 1,
+              maxHeight: 150,
+              overflowY: 'auto',
+              fontFamily: 'monospace',
+              fontSize: '0.85rem'
+            }}
+          >
+            {events.length === 0 ? (
+              <Typography variant="caption" color="text.secondary">
+                Waiting for remote input...
+              </Typography>
+            ) : (
+              events.map((evt, idx) => (
+                <Box key={idx} sx={{ mb: 0.5 }}>
+                  <span style={{ color: '#64B5F6' }}>{evt.key}</span>
+                  <span style={{ color: '#888', marginLeft: 8 }}>code: {evt.code}</span>
+                  <span style={{ color: '#888', marginLeft: 8 }}>keyCode: {evt.keyCode}</span>
+                  <span style={{ color: '#666', marginLeft: 8, fontSize: '0.75rem' }}>
+                    {evt.timestamp}
+                  </span>
+                </Box>
+              ))
+            )}
+          </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-          <RemoteButton label="MENU" isActive={activeKeys.has('Menu')} />
-          <RemoteButton label="BACK" isActive={activeKeys.has('Escape')} />
-          <RemoteButton label="PLAY" isActive={activeKeys.has('MediaPlayPause')} />
+
+        {/* Visual Remote Buttons */}
+        <Box
+          sx={{
+            mb: 2,
+            mt: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            alignItems: 'center'
+          }}
+        >
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 60px)', gap: 1 }}>
+            <Box /> {/* Empty cell */}
+            <RemoteButton label="UP" isActive={activeKeys.has('ArrowUp')} />
+            <Box />
+            <RemoteButton label="LEFT" isActive={activeKeys.has('ArrowLeft')} />
+            <RemoteButton label="OK" isActive={activeKeys.has('Enter')} />
+            <RemoteButton label="RIGHT" isActive={activeKeys.has('ArrowRight')} />
+            <Box />
+            <RemoteButton label="DOWN" isActive={activeKeys.has('ArrowDown')} />
+            <Box />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+            <RemoteButton label="MENU" isActive={activeKeys.has('Menu')} />
+            <RemoteButton label="BACK" isActive={activeKeys.has('Escape')} />
+            <RemoteButton label="PLAY" isActive={activeKeys.has('MediaPlayPause')} />
+          </Box>
         </Box>
-      </Box>
-    </Paper>
+      </Paper>
+    </>
   )
 }
 
