@@ -56,7 +56,7 @@ export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>((props, ref) =>
   const { icon = <Send fontSize="small" />, name = 'MenuItem', description = '', action } = props
   const theme = useTheme()
   return (
-    <MenuItem onClick={action} ref={ref}>
+    <MenuItem onClick={action} ref={ref} tabIndex={0}>
       <Stack direction="column" mt={1}>
         <Stack direction="row" spacing={2}>
           <ListItemIcon>{icon}</ListItemIcon>
