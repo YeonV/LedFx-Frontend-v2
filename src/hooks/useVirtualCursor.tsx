@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 interface CursorPosition {
   x: number
@@ -11,72 +11,123 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
     y: window.innerHeight / 2
   })
 
-  const moveCursor = useCallback((keyCode: number) => {
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
+  const isLongPress = useRef(false)
+
+  const moveCursor = useCallback((keyCode: number, isKeyUp = false) => {
     setCursorPos((prev) => {
       let { x, y } = prev
       const speed = 20 // Adjust for sensitivity
 
       switch (keyCode) {
         case 38: // ArrowUp
-          y -= speed
+          if (!isKeyUp) y -= speed
           break
         case 40: // ArrowDown
-          y += speed
+          if (!isKeyUp) y += speed
           break
         case 37: // ArrowLeft
-          x -= speed
+          if (!isKeyUp) x -= speed
           break
         case 39: // ArrowRight
-          x += speed
+          if (!isKeyUp) x += speed
           break
         case 13: {
           // Enter/OK - Click at cursor position
-          let element = document.elementFromPoint(x, y) as HTMLElement
-
-          // Find the nearest clickable parent if current element is not clickable
-          while (element && typeof element.click !== 'function') {
-            element = element.parentElement as HTMLElement
-          }
-
-          if (element && typeof element.click === 'function') {
-            console.log('Virtual cursor click on:', element)
-
-            // Dispatch both mouse and click events for better compatibility
-            const mouseDownEvent = new MouseEvent('mousedown', {
-              bubbles: true,
-              cancelable: true,
-              view: window
-            })
-            const mouseUpEvent = new MouseEvent('mouseup', {
-              bubbles: true,
-              cancelable: true,
-              view: window
-            })
-            const clickEvent = new MouseEvent('click', {
-              bubbles: true,
-              cancelable: true,
-              view: window
-            })
-
-            element.dispatchEvent(mouseDownEvent)
-            element.dispatchEvent(mouseUpEvent)
-            element.dispatchEvent(clickEvent)
-
-            // Try native click as fallback
-            try {
-              element.click()
-            } catch (e) {
-              console.warn('Native click failed, using event dispatch only', e)
+          if (isKeyUp) {
+            // Clear long press timer on key up
+            if (longPressTimer.current) {
+              clearTimeout(longPressTimer.current)
+              longPressTimer.current = null
             }
 
-            // Visual feedback
-            const originalOutline = element.style.outline
-            element.style.outline = '2px solid #2196F3'
-            setTimeout(() => {
-              element.style.outline = originalOutline
-            }, 200)
+            // Only fire click if it wasn't a long press
+            if (!isLongPress.current) {
+              let element = document.elementFromPoint(x, y) as HTMLElement
+
+              // Find the nearest clickable parent if current element is not clickable
+              while (element && typeof element.click !== 'function') {
+                element = element.parentElement as HTMLElement
+              }
+
+              if (element && typeof element.click === 'function') {
+                console.log('Virtual cursor click on:', element)
+
+                // Dispatch both mouse and click events for better compatibility
+                const mouseDownEvent = new MouseEvent('mousedown', {
+                  bubbles: true,
+                  cancelable: true,
+                  view: window
+                })
+                const mouseUpEvent = new MouseEvent('mouseup', {
+                  bubbles: true,
+                  cancelable: true,
+                  view: window
+                })
+                const clickEvent = new MouseEvent('click', {
+                  bubbles: true,
+                  cancelable: true,
+                  view: window
+                })
+
+                element.dispatchEvent(mouseDownEvent)
+                element.dispatchEvent(mouseUpEvent)
+                element.dispatchEvent(clickEvent)
+
+                // Try native click as fallback
+                try {
+                  element.click()
+                } catch (e) {
+                  console.warn('Native click failed, using event dispatch only')
+                }
+
+                // Visual feedback
+                const originalOutline = element.style.outline
+                element.style.outline = '2px solid #2196F3'
+                setTimeout(() => {
+                  element.style.outline = originalOutline
+                }, 200)
+              } else {
+                console.warn('No clickable element found at cursor position')
+              }
+            }
+
+            // Reset long press flag
+            isLongPress.current = false
           } else {
-            console.warn('No clickable element found at cursor position')
+            // Key down - start long press timer
+            longPressTimer.current = setTimeout(() => {
+              isLongPress.current = true
+
+              let element = document.elementFromPoint(x, y) as HTMLElement
+
+              // Find the nearest element
+              while (element && typeof element.dispatchEvent !== 'function') {
+                element = element.parentElement as HTMLElement
+              }
+
+              if (element) {
+                console.log('Virtual cursor LONG PRESS on:', element)
+
+                // Dispatch touch/context menu events
+                const contextMenuEvent = new MouseEvent('contextmenu', {
+                  bubbles: true,
+                  cancelable: true,
+                  view: window,
+                  clientX: x,
+                  clientY: y
+                })
+
+                element.dispatchEvent(contextMenuEvent)
+
+                // Visual feedback for long press
+                const originalOutline = element.style.outline
+                element.style.outline = '3px solid #FF9800'
+                setTimeout(() => {
+                  element.style.outline = originalOutline
+                }, 400)
+              }
+            }, 500) // 500ms for long press
           }
           return prev // Don't update position on click
         }
@@ -106,7 +157,22 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
         e.stopPropagation()
       }
 
-      moveCursor(keyCode)
+      moveCursor(keyCode, false)
+    },
+    [isCustomMode, moveCursor]
+  )
+
+  // Handle key up events for Enter button
+  const handleRemoteCursorUp = useCallback(
+    (e: Event) => {
+      if (!isCustomMode) return
+
+      const customEvent = e as CustomEvent<{ key: string; code: string; keyCode: number }>
+      const { keyCode } = customEvent.detail
+
+      if (keyCode === 13) {
+        moveCursor(keyCode, true)
+      }
     },
     [isCustomMode, moveCursor]
   )
@@ -120,7 +186,18 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
       if ([37, 38, 39, 40, 13].includes(e.keyCode)) {
         e.preventDefault() // Prevent page scrolling and default navigation
         e.stopPropagation() // Stop event from bubbling
-        moveCursor(e.keyCode)
+        moveCursor(e.keyCode, false)
+      }
+    },
+    [isCustomMode, moveCursor]
+  )
+
+  const handleKeyboardCursorUp = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isCustomMode) return
+
+      if (e.keyCode === 13) {
+        moveCursor(e.keyCode, true)
       }
     },
     [isCustomMode, moveCursor]
@@ -129,13 +206,22 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
   useEffect(() => {
     // Use capture phase to intercept events before they bubble
     window.addEventListener('androidremote', handleRemoteCursor, true)
+    window.addEventListener('androidremoteup', handleRemoteCursorUp, true)
     window.addEventListener('keydown', handleKeyboardCursor, true)
+    window.addEventListener('keyup', handleKeyboardCursorUp, true)
 
     return () => {
       window.removeEventListener('androidremote', handleRemoteCursor, true)
+      window.removeEventListener('androidremoteup', handleRemoteCursorUp, true)
       window.removeEventListener('keydown', handleKeyboardCursor, true)
+      window.removeEventListener('keyup', handleKeyboardCursorUp, true)
+
+      // Clean up timer on unmount
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current)
+      }
     }
-  }, [handleRemoteCursor, handleKeyboardCursor])
+  }, [handleRemoteCursor, handleRemoteCursorUp, handleKeyboardCursor, handleKeyboardCursorUp])
 
   return { cursorPos }
 }
