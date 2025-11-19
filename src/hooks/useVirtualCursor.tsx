@@ -66,7 +66,7 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
             try {
               element.click()
             } catch (e) {
-              console.warn('Native click failed, using event dispatch only')
+              console.warn('Native click failed, using event dispatch only', e)
             }
 
             // Visual feedback

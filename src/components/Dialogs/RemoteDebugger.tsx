@@ -14,6 +14,7 @@ interface RemoteEvent {
 declare global {
   interface Window {
     AndroidRemoteControl?: {
+      // eslint-disable-next-line no-unused-vars
       setCustomNavigation: (enabled: boolean) => void
     }
   }
