@@ -56,6 +56,10 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const isLandscape = useMediaQuery('(orientation: landscape)')
   // const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
 
+  const [keyPresses, setKeyPresses] = useState<
+    Array<{ key: string; code: string; keyCode?: number }>
+  >([])
+
   useEffect(() => {
     const isValidHttpUrl = (host: string) => {
       return /^https?:\/\/[^ "]+$/.test(host)
@@ -97,8 +101,10 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   }
 
   useSubscription('client_connected', () => {
-    navigate('/Devices')
-    handleCloseDialog()
+    if (dialogOpen) {
+      navigate('/Devices')
+      handleCloseDialog()
+    }
   })
 
   useEffect(() => {
@@ -130,6 +136,27 @@ const QrConnector: React.FC<QrConnectorProps> = ({
       }, rotationInterval)
     }
   }
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development' || !dialogOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      setKeyPresses((prev) => {
+        const newPresses = [
+          {
+            key: e.key,
+            code: e.code,
+            keyCode: e.keyCode
+          },
+          ...prev
+        ].slice(0, 10) // Keep only last 10 key presses
+        return newPresses
+      })
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [dialogOpen])
 
   return (
     <>
@@ -270,6 +297,116 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                   </ListItem>
                 ))}
               </List>
+              {/* DEV DEBUG SECTION */}
+              <Paper
+                elevation={3}
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                  border: '1px solid orange'
+                }}
+              >
+                <Typography variant="h6" color="orange" gutterBottom>
+                  🔧 DEBUG INFO
+                </Typography>
+
+                {/* Key Logger */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" color="orange">
+                    Recent Key Presses:
+                  </Typography>
+                  <Box
+                    sx={{
+                      mt: 1,
+                      p: 1,
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                      borderRadius: 1,
+                      maxHeight: 100,
+                      overflowY: 'auto',
+                      fontFamily: 'monospace',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    {keyPresses.length === 0 ? (
+                      <Typography variant="caption" color="text.secondary">
+                        Press any key...
+                      </Typography>
+                    ) : (
+                      keyPresses.map((kp, idx) => (
+                        <Box key={idx} sx={{ mb: 0.5 }}>
+                          <span style={{ color: '#4CAF50' }}>{kp.key}</span>
+                          <span style={{ color: '#888', marginLeft: 8 }}>code: {kp.code}</span>
+                          {kp.keyCode && (
+                            <span style={{ color: '#888', marginLeft: 8 }}>
+                              keyCode: {kp.keyCode}
+                            </span>
+                          )}
+                        </Box>
+                      ))
+                    )}
+                  </Box>
+                </Box>
+
+                {/* System Info */}
+                <Box>
+                  <Typography variant="subtitle2" color="orange">
+                    System Info:
+                  </Typography>
+                  <Box
+                    component="table"
+                    sx={{
+                      mt: 1,
+                      width: '100%',
+                      '& td': {
+                        padding: '4px 8px',
+                        fontSize: '0.85rem',
+                        fontFamily: 'monospace'
+                      },
+                      '& td:first-of-type': {
+                        color: '#FFB74D',
+                        fontWeight: 'bold',
+                        width: '40%'
+                      }
+                    }}
+                  >
+                    <tbody>
+                      <tr>
+                        <td>User Agent:</td>
+                        <td>{navigator.userAgent}</td>
+                      </tr>
+                      <tr>
+                        <td>Platform:</td>
+                        <td>{navigator.platform}</td>
+                      </tr>
+                      <tr>
+                        <td>Is Android:</td>
+                        <td>{process.env.REACT_APP_LEDFX_ANDROID === 'true' ? 'true' : 'false'}</td>
+                      </tr>
+                      <tr>
+                        <td>Screen Size:</td>
+                        <td>{`${window.screen.width}x${window.screen.height}`}</td>
+                      </tr>
+                      <tr>
+                        <td>Window Size:</td>
+                        <td>{`${window.innerWidth}x${window.innerHeight}`}</td>
+                      </tr>
+                      <tr>
+                        <td>Orientation:</td>
+                        <td>{isLandscape ? 'Landscape' : 'Portrait'}</td>
+                      </tr>
+                      <tr>
+                        <td>Touch Support:</td>
+                        <td>{('ontouchstart' in window).toString()}</td>
+                      </tr>
+                      <tr>
+                        <td>Port:</td>
+                        <td>{port}</td>
+                      </tr>
+                    </tbody>
+                  </Box>
+                </Box>
+              </Paper>
             </Box>
           ) : (
             <Box sx={{ p: 3, textAlign: 'center' }}>
