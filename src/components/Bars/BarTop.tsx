@@ -53,6 +53,7 @@ import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 import QrConnector from '../Dialogs/QrConnector'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
+import FireTvController from '../Dialogs/FireTvController'
 
 interface FrontendConfig {
   updateUrl: string
@@ -466,6 +467,7 @@ const TopBar = () => {
               noWrap
               style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
             >
+              <FireTvController />
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
               <QrConnector hosts={[...hosts]} />
             </Typography>
