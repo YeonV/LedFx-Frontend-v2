@@ -3,7 +3,7 @@ import { IconButton } from '@mui/material'
 import { useVirtualCursor } from '../../hooks/useVirtualCursor'
 import VirtualCursor from '../VirtualCursor'
 import { TbDeviceRemoteFilled } from 'react-icons/tb'
-import { BsFillDpadFill } from 'react-icons/bs'
+import { BsDpad } from 'react-icons/bs'
 
 // Declare the interface for TypeScript
 declare global {
@@ -11,6 +11,7 @@ declare global {
     AndroidRemoteControl?: {
       // eslint-disable-next-line no-unused-vars
       setCustomNavigation: (enabled: boolean) => void
+      exitApp: () => void
     }
   }
 }
@@ -67,10 +68,21 @@ const FireTvController: React.FC = () => {
     <>
       <VirtualCursor x={cursorPos.x} y={cursorPos.y} visible={isCustomMode} />
       <IconButton size="small" onClick={toggleNavigationMode}>
-        {isCustomMode ? <TbDeviceRemoteFilled fill="inherit" /> : <BsFillDpadFill fill="inherit" />}
+        {isCustomMode ? <TbDeviceRemoteFilled fill="inherit" /> : <BsDpad fill="inherit" />}
       </IconButton>
     </>
   )
+}
+
+export const handleExit = () => {
+  if (window.AndroidRemoteControl) {
+    // Optionally show a confirmation dialog
+    if (window.confirm('Are you sure you want to exit the app?')) {
+      window.AndroidRemoteControl.exitApp()
+    }
+  } else {
+    console.warn('AndroidRemoteControl not available (not running on Android)')
+  }
 }
 
 export default FireTvController
