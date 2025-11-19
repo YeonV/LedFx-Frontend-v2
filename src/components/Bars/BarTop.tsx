@@ -53,7 +53,7 @@ import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 import QrConnector from '../Dialogs/QrConnector'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
-import FireTvController from '../Dialogs/FireTvController'
+import FireTvController, { handleExit } from '../Dialogs/FireTvController'
 
 interface FrontendConfig {
   updateUrl: string
@@ -503,7 +503,22 @@ const TopBar = () => {
                   </IconButton>
                 </Box>
               ) : (
-                <GlobalActionBar className="hideHd" />
+                <>
+                  {window.AndroidRemoteControl && (
+                    <Button
+                      variant="text"
+                      size="small"
+                      color="inherit"
+                      onClick={() => handleExit()}
+                      startIcon={
+                        <BladeIcon style={{ position: 'relative' }} name="mdi:exit-to-app" />
+                      }
+                    >
+                      Stop & Exit
+                    </Button>
+                  )}
+                  <GlobalActionBar className="hideHd" />
+                </>
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <IconButton

@@ -16,6 +16,7 @@ declare global {
     AndroidRemoteControl?: {
       // eslint-disable-next-line no-unused-vars
       setCustomNavigation: (enabled: boolean) => void
+      exitApp: () => void
     }
   }
 }
