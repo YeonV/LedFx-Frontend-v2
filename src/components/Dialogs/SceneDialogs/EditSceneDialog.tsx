@@ -59,7 +59,7 @@ const EditSceneDialog = () => {
           type: string
           preset?: string
           preset_category?: 'ledfx_presets' | 'user_presets'
-          action?: 'activate' | 'ignore' | 'turn_off' | 'release'
+          action?: 'activate' | 'ignore' | 'forceblack' | 'stop'
         }
       | object
     >
@@ -338,7 +338,7 @@ const EditSceneDialog = () => {
 
   const handleActionChange = (
     virtualId: string,
-    newAction: 'activate' | 'ignore' | 'turn_off' | 'release'
+    newAction: 'activate' | 'ignore' | 'forceblack' | 'stop'
   ) => {
     setSceneVirtuals((prev) => ({
       ...prev,
@@ -372,7 +372,7 @@ const EditSceneDialog = () => {
         type: string
         preset?: string
         preset_category?: 'ledfx_presets' | 'user_presets'
-        action?: 'activate' | 'ignore' | 'turn_off' | 'release'
+        action?: 'activate' | 'ignore' | 'forceblack' | 'stop'
       }
 
       // Get the preset's config
@@ -918,11 +918,11 @@ const EditSceneDialog = () => {
                       <Typography variant="body2" sx={{ mb: 1 }}>
                         does not touch this virtuals
                       </Typography>
-                      <Typography variant="body2">Turn Off</Typography>
+                      <Typography variant="body2">Turn Black</Typography>
                       <Typography variant="body2" sx={{ mb: 1 }}>
                         actively sends black.
                       </Typography>
-                      <Typography variant="body2">Release</Typography>
+                      <Typography variant="body2">Stop</Typography>
                       <Typography variant="body2">stop any effect and return to WLED</Typography>
                     </Box>
                   }
@@ -950,7 +950,7 @@ const EditSceneDialog = () => {
                       type: string
                       preset?: string
                       preset_category?: 'ledfx_presets' | 'user_presets'
-                      action?: 'activate' | 'ignore' | 'turn_off' | 'release'
+                      action?: 'activate' | 'ignore' | 'forceblack' | 'stop'
                     })
 
                 return (
@@ -1078,8 +1078,8 @@ const EditSceneDialog = () => {
                           const newAction = e.target.value as
                             | 'activate'
                             | 'ignore'
-                            | 'turn_off'
-                            | 'release'
+                            | 'forceblack'
+                            | 'stop'
 
                           // If changing FROM ignore TO something else, need to restore virtual data
                           if (isIgnored && newAction !== 'ignore') {
@@ -1095,11 +1095,11 @@ const EditSceneDialog = () => {
                           } else {
                             handleActionChange(virtualId, newAction)
                           }
-                          // If changing to turn_off set effect type to singleColor and  config to
+                          // If changing to forceblack set effect type to singleColor and  config to
                           // {
                           //     "color": "#000000"
                           // }
-                          if (newAction === 'turn_off') {
+                          if (newAction === 'forceblack') {
                             setSceneVirtuals((prev) => ({
                               ...prev,
                               [virtualId]: {
@@ -1107,7 +1107,7 @@ const EditSceneDialog = () => {
                                 config: {
                                   color: '#000000'
                                 },
-                                action: 'turn_off'
+                                action: 'forceblack'
                               }
                             }))
                           }
@@ -1115,8 +1115,8 @@ const EditSceneDialog = () => {
                       >
                         <MenuItem value="activate">Activate</MenuItem>
                         <MenuItem value="ignore">Ignore</MenuItem>
-                        <MenuItem value="turn_off">Turn Off</MenuItem>
-                        <MenuItem value="release">Release</MenuItem>
+                        <MenuItem value="forceblack">Turn Black</MenuItem>
+                        <MenuItem value="stop">Stop</MenuItem>
                       </Select>
                     </FormControl>
                   </div>

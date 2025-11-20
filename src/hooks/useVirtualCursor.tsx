@@ -50,35 +50,61 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
                 element = element.parentElement as HTMLElement
               }
 
-              if (element && typeof element.click === 'function') {
+              if (element) {
                 console.log('Virtual cursor click on:', element)
 
-                // Dispatch both mouse and click events for better compatibility
-                const mouseDownEvent = new MouseEvent('mousedown', {
-                  bubbles: true,
-                  cancelable: true,
-                  view: window
-                })
-                const mouseUpEvent = new MouseEvent('mouseup', {
-                  bubbles: true,
-                  cancelable: true,
-                  view: window
-                })
-                const clickEvent = new MouseEvent('click', {
-                  bubbles: true,
-                  cancelable: true,
-                  view: window
-                })
+                // Check if it's an input element or has an input child
+                const inputElement =
+                  element.tagName === 'INPUT' || element.tagName === 'TEXTAREA'
+                    ? element
+                    : (element.querySelector('input, textarea') as HTMLElement)
 
-                element.dispatchEvent(mouseDownEvent)
-                element.dispatchEvent(mouseUpEvent)
-                element.dispatchEvent(clickEvent)
+                if (inputElement) {
+                  // For input elements, focus them to trigger keyboard
+                  console.log('Focusing input element:', inputElement)
+                  inputElement.focus()
 
-                // Try native click as fallback
-                try {
-                  element.click()
-                } catch (e) {
-                  console.warn('Native click failed, using event dispatch only')
+                  // Dispatch focus event
+                  const focusEvent = new FocusEvent('focus', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                  })
+                  inputElement.dispatchEvent(focusEvent)
+                } else {
+                  // For other elements, dispatch mouse events
+                  const mouseDownEvent = new MouseEvent('mousedown', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    clientX: x,
+                    clientY: y
+                  })
+                  const mouseUpEvent = new MouseEvent('mouseup', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    clientX: x,
+                    clientY: y
+                  })
+                  const clickEvent = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    clientX: x,
+                    clientY: y
+                  })
+
+                  element.dispatchEvent(mouseDownEvent)
+                  element.dispatchEvent(mouseUpEvent)
+                  element.dispatchEvent(clickEvent)
+
+                  // Try native click as fallback
+                  try {
+                    element.click()
+                  } catch (e) {
+                    console.warn('Native click failed, using event dispatch only')
+                  }
                 }
 
                 // Visual feedback
