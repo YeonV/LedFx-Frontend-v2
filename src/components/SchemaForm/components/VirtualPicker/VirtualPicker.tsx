@@ -11,7 +11,6 @@ const VirtualPicker = ({
   title?: string
   value?: string
   showAll?: boolean
-  // eslint-disable-next-line no-unused-vars
   onChange?: (value: string) => void
 }) => {
   const virtuals = useStore((state) => state.virtuals)

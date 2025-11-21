@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-globals */
+/// <reference lib="webworker" />
+
 interface WorkerMessageTimer {
   action: 'start' | 'stop'
   interval: number

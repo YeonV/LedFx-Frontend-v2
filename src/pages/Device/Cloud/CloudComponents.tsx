@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import React from 'react'
 import { jwtDecode } from 'jwt-decode'
 import isElectron from 'is-electron'

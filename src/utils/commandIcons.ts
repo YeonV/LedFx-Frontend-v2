@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 type DynamicIconResolver = (args: { paused?: boolean; fallback?: any }) => string
 
 export const commandIcons: Record<string, string | DynamicIconResolver> = {

@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-globals */
+/// <reference lib="webworker" />
+
 interface Pixel {
   r: number
   g: number

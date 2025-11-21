@@ -34,7 +34,6 @@ type StoreApi = ReturnType<typeof useStore.getState>
 // --- Command Strategies ---
 // Each strategy takes the payload and the entire store's state/actions object
 const commandStrategies: {
-  // eslint-disable-next-line no-unused-vars
   [command: string]: (payload: any, store: StoreApi) => void
 } = {
   scene: (payload: ScenePayload, store) => {
