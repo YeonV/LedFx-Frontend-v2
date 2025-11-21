@@ -96,6 +96,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const getPlaylistState = useStore((state) => state.getPlaylistState)
   const startPlaylistWithMode = useStore((state) => state.startPlaylistWithMode)
   const activateScene = useStore((state) => state.activateScene)
+  const features = useStore((state) => state.features)
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
@@ -204,7 +205,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   }
 
   useFireTv({
-    enabled: !!selectedPlaylist && isPlaylistPage,
+    enabled: features.firetv && !!selectedPlaylist && isPlaylistPage,
     play: {
       label: isPlaying ? 'Pause Playlist' : 'Play Playlist',
       action: selectedPlaylist ? () => handlePlayPause() : undefined

@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Box, Stack, styled, Portal } from '@mui/material'
 import { useFireTvStore } from './useFireTvStore'
-import useStore from '../../store/useStore'
 import {
   BUTTON_ICONS,
   BUTTON_KEYCODES,
@@ -49,17 +48,8 @@ const StyledButton = styled(Box, {
 const FireTvBar: React.FC = () => {
   const buttons = useFireTvStore((state) => state.buttons)
   const setBarHeight = useFireTvStore((state) => state.setBarHeight)
-  const features = useStore((state) => state.features)
   const [highlighted, setHighlighted] = useState<number | null>(null)
   const barRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!features.firetv) {
-      setBarHeight(0)
-    }
-  }, [features.firetv, setBarHeight])
-
-  // Don't render if FireTV feature is disabled
 
   useEffect(() => {
     const handlePress = (e: Event) => {
@@ -74,12 +64,9 @@ const FireTvBar: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (!features.firetv) {
-      setBarHeight(0)
-    } else {
-      setBarHeight(42)
-    }
-  }, [features.firetv, setBarHeight])
+    setBarHeight(42)
+    return () => setBarHeight(0)
+  }, [setBarHeight])
 
   const hasAnyButtons = Object.keys(buttons).length > 0
 
@@ -88,10 +75,6 @@ const FireTvBar: React.FC = () => {
       setBarHeight(0)
     }
   }, [hasAnyButtons, setBarHeight])
-
-  if (!features.firetv) {
-    return null
-  }
 
   if (!hasAnyButtons) return null
 

@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { FireTvBarState } from './FireTv.props'
+import { setAndroidCustomNavigation } from './android.bridge'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useFireTvStore = create<FireTvBarState>((set, get) => ({
+export const useFireTvStore = create<FireTvBarState>((set) => ({
   buttons: { menu: true },
   defaultButtons: { menu: true },
   barHeight: 0,
@@ -20,7 +20,7 @@ export const useFireTvStore = create<FireTvBarState>((set, get) => ({
 
   clearButtons: () =>
     set((state) => ({
-      buttons: state.defaultButtons // Reset to defaults instead of just menu
+      buttons: state.defaultButtons
     })),
 
   setBarHeight: (height) => set({ barHeight: height }),
@@ -31,10 +31,8 @@ export const useFireTvStore = create<FireTvBarState>((set, get) => ({
     set((state) => {
       const newMode = !state.isCustomMode
 
-      if (window.AndroidRemoteControl) {
-        window.AndroidRemoteControl.setCustomNavigation(newMode)
-        console.log(`Navigation mode: ${newMode ? 'CUSTOM (cursor)' : 'NATIVE (focus)'}`)
-      }
+      setAndroidCustomNavigation(newMode)
+      console.log(`Navigation mode: ${newMode ? 'CUSTOM (cursor)' : 'NATIVE (focus)'}`)
 
       return { isCustomMode: newMode }
     })

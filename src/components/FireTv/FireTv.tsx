@@ -1,21 +1,11 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { IconButton } from '@mui/material'
 import { useVirtualCursor } from './useVirtualCursor'
 import VirtualCursor from './VirtualCursor'
 import { TbDeviceRemoteFilled } from 'react-icons/tb'
 import { BsDpad } from 'react-icons/bs'
 import { useFireTvStore } from './useFireTvStore'
-import useStore from '../../store/useStore'
 import { FireTvButtonConfig } from './FireTv.props'
-
-declare global {
-  interface Window {
-    AndroidRemoteControl?: {
-      setCustomNavigation: (enabled: boolean) => void
-      exitApp: () => void
-    }
-  }
-}
 
 const KEYCODES = {
   MENU: 82,
@@ -32,15 +22,11 @@ const KEYCODES = {
 }
 
 const FireTv: React.FC = () => {
-  const features = useStore((state) => state.features)
   const isCustomMode = useFireTvStore((state) => state.isCustomMode)
   const toggleCustomMode = useFireTvStore((state) => state.toggleCustomMode)
   const buttons = useFireTvStore((state) => state.buttons)
 
-  // Default global actions
-  const togglePause = useStore((state) => state.togglePause)
-
-  const { cursorPos } = useVirtualCursor(isCustomMode && features.firetv)
+  const { cursorPos } = useVirtualCursor(isCustomMode)
 
   useEffect(() => {
     const handleRemoteEvent = (e: Event) => {
@@ -73,12 +59,8 @@ const FireTv: React.FC = () => {
 
         if (buttonConfig && typeof buttonConfig === 'object') {
           const config = buttonConfig as FireTvButtonConfig
-          if (config.action) {
-            // Execute component-specific action
+          if (typeof config === 'object' && config.action) {
             config.action()
-          } else if (buttonName === 'play') {
-            // Default: toggle global pause if no action defined
-            togglePause()
           }
         }
       }
@@ -86,12 +68,7 @@ const FireTv: React.FC = () => {
 
     window.addEventListener('androidremote', handleRemoteEvent)
     return () => window.removeEventListener('androidremote', handleRemoteEvent)
-  }, [toggleCustomMode, buttons, togglePause])
-
-  // Don't render if FireTV feature is disabled
-  if (!features.firetv) {
-    return null
-  }
+  }, [toggleCustomMode, buttons])
 
   return (
     <>
@@ -101,16 +78,6 @@ const FireTv: React.FC = () => {
       </IconButton>
     </>
   )
-}
-
-export const handleExit = () => {
-  if (window.AndroidRemoteControl) {
-    if (window.confirm('Are you sure you want to exit the app?')) {
-      window.AndroidRemoteControl.exitApp()
-    }
-  } else {
-    console.warn('AndroidRemoteControl not available (not running on Android)')
-  }
 }
 
 export default FireTv

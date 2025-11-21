@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import { useFireTvStore } from './useFireTvStore'
-import useStore from '../../store/useStore'
 import { FireTvButton, FireTvButtonConfig } from './FireTv.props'
 
 type FireTvButtonsConfig = {
@@ -11,16 +10,12 @@ type FireTvButtonsConfig = {
 export const useFireTv = (config: FireTvButtonsConfig) => {
   const setButtons = useFireTvStore((state) => state.setButtons)
   const clearButtons = useFireTvStore((state) => state.clearButtons)
-  const features = useStore((state) => state.features)
 
   const { enabled = true, ...buttonConfig } = config
 
-  // Check if FireTV feature is enabled globally
-  const isFireTvEnabled = features.firetv
-
   // Memoize the config to prevent infinite loops
   const configWithMenu = useMemo(() => {
-    if (!enabled || !isFireTvEnabled) return {} // Disabled if either flag is false
+    if (!enabled) return {} // Only check local enabled flag
 
     const normalized: Partial<Record<FireTvButton, FireTvButtonConfig | boolean | string>> = {
       menu: true,
@@ -39,17 +34,17 @@ export const useFireTv = (config: FireTvButtonsConfig) => {
 
     return normalized as Partial<Record<FireTvButton, FireTvButtonConfig | boolean>>
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(buttonConfig), enabled, isFireTvEnabled])
+  }, [JSON.stringify(buttonConfig), enabled])
 
   useEffect(() => {
-    if (enabled && isFireTvEnabled) {
+    if (enabled) {
       setButtons(configWithMenu)
     } else {
       clearButtons()
     }
 
     return () => {
-      clearButtons()
+      clearButtons() // ✅ Cleanup when unmounting
     }
-  }, [configWithMenu, enabled, isFireTvEnabled, setButtons, clearButtons])
+  }, [configWithMenu, enabled, setButtons, clearButtons])
 }

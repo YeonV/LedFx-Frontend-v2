@@ -275,7 +275,7 @@ export default function App() {
                   }}
                 />
                 <Pages />
-                <FireTvBar />
+                {features.firetv && <FireTvBar />}
               </FiledropProvider>
             </SpotifyProvider>
           </WebSocketProvider>

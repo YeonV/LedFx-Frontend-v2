@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Portal } from '@mui/material'
 
 interface VirtualCursorProps {
