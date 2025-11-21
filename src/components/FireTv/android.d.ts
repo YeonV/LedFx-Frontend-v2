@@ -3,6 +3,10 @@ declare global {
     AndroidRemoteControl?: {
       setCustomNavigation: (enabled: boolean) => void
       exitApp: () => void
+      getCpuAbi?: () => string
+      getAllSupportedAbis?: () => string
+      downloadAndInstallApk: (url: string) => void
+      getAppVersion: () => string
     }
   }
 }
