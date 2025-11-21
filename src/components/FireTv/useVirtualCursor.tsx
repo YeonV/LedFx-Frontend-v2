@@ -53,6 +53,30 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
               if (element) {
                 console.log('Virtual cursor click on:', element)
 
+                // Check for MUI Switch - look for the hidden checkbox input
+                const switchInput = element
+                  .closest('.MuiSwitch-root')
+                  ?.querySelector('input[type="checkbox"]') as HTMLInputElement
+
+                if (switchInput) {
+                  console.log('Clicking MUI Switch:', switchInput)
+
+                  // Trigger the switch by clicking the input
+                  switchInput.click()
+
+                  // Visual feedback on the switch root
+                  const switchRoot = element.closest('.MuiSwitch-root') as HTMLElement
+                  if (switchRoot) {
+                    const originalOutline = switchRoot.style.outline
+                    switchRoot.style.outline = '2px solid #2196F3'
+                    setTimeout(() => {
+                      switchRoot.style.outline = originalOutline
+                    }, 200)
+                  }
+
+                  return prev
+                }
+
                 // Check if it's an input element or has an input child
                 const inputElement =
                   element.tagName === 'INPUT' || element.tagName === 'TEXTAREA'
