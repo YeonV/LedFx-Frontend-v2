@@ -7,9 +7,9 @@ interface PlaylistCardProps {
   playlistId: string
   playlist: PlaylistConfig
   order: number
-  // eslint-disable-next-line no-unused-vars
+
   handleStartPlaylist: (id: string) => void
-  // eslint-disable-next-line no-unused-vars
+
   handleEditPlaylist: (id: string) => void
   isActive?: boolean
   classes: any

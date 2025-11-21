@@ -303,7 +303,6 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
         try {
           const new_player = new (window as any).Spotify.Player({
             name: 'LedFX Web Player',
-            // eslint-disable-next-line no-unused-vars
             getOAuthToken: (cb: (accessToken: string) => void) => {
               log.purple('Spotify', 'getOAuthToken called by SDK, providing token.')
               cb(tokenArg) // Use the token passed into createWebPlayer

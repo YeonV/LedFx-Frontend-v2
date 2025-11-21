@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { lpsColors } from './LaunchpadS/lpsColors'
 import { lpColors } from './LaunchpadX/lpColors'
 import { BaseDevice } from './BaseDevice'

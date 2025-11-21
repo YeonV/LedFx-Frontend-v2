@@ -205,7 +205,7 @@ export const SettingsRow = ({
   step?: string
   title: string
   checked?: boolean
-  // eslint-disable-next-line no-unused-vars
+
   onChange?: (e: any) => void
   children?: any
   style?: any

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // --- Configuration ---
 const colorStyles = {
   // Use 'as const' for stricter key inference if needed, but Record is fine

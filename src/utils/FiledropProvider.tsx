@@ -100,7 +100,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           } else {
             showSnackbar('error', 'Unrecognized JSON file format')
           }
-          // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           showSnackbar('error', 'Failed to parse JSON')
         }

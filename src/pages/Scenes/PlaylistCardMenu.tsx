@@ -9,7 +9,7 @@ const PlaylistCardMenu = ({
   editPlaylist
 }: {
   playlistId: string
-  // eslint-disable-next-line no-unused-vars
+
   editPlaylist: (id: string) => void
 }) => {
   const deletePlaylist = useStore((state) => state.deletePlaylist)

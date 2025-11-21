@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import { IMCell } from './M.utils'
 
