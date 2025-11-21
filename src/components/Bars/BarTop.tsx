@@ -53,7 +53,8 @@ import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 import QrConnector from '../Dialogs/QrConnector'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
-import FireTv, { handleExit } from '../FireTv/FireTv'
+import FireTv from '../FireTv/FireTv'
+import { exitAndroidApp, isAndroidApp } from '../FireTv/android.bridge'
 
 interface FrontendConfig {
   updateUrl: string
@@ -471,7 +472,7 @@ const TopBar = () => {
               noWrap
               style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
             >
-              <FireTv />
+              {features.firetv && <FireTv />}
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
               <QrConnector hosts={[...hosts]} />
             </Typography>
@@ -508,12 +509,12 @@ const TopBar = () => {
                 </Box>
               ) : (
                 <>
-                  {window.AndroidRemoteControl && (
+                  {isAndroidApp() && (
                     <Button
                       variant="text"
                       size="small"
                       color="inherit"
-                      onClick={() => handleExit()}
+                      onClick={() => exitAndroidApp()}
                       startIcon={
                         <BladeIcon style={{ position: 'relative' }} name="mdi:exit-to-app" />
                       }

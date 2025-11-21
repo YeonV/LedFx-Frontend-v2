@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Typography, Paper, Button, Stack } from '@mui/material'
 import { useVirtualCursor } from './useVirtualCursor'
 import VirtualCursor from './VirtualCursor'
+import { setAndroidCustomNavigation } from './android.bridge'
 
 interface RemoteEvent {
   key: string
@@ -10,15 +11,6 @@ interface RemoteEvent {
   timestamp: string
 }
 
-// Declare the interface for TypeScript
-declare global {
-  interface Window {
-    AndroidRemoteControl?: {
-      setCustomNavigation: (enabled: boolean) => void
-      exitApp: () => void
-    }
-  }
-}
 /**
  * Fire TV codes:
  * Via Debug Menu:
@@ -86,12 +78,8 @@ const FireTvDebugger: React.FC = () => {
     const newMode = !isCustomMode
     setIsCustomMode(newMode)
 
-    if (window.AndroidRemoteControl) {
-      window.AndroidRemoteControl.setCustomNavigation(newMode)
-      console.log(`Navigation mode: ${newMode ? 'CUSTOM (cursor)' : 'NATIVE (focus)'}`)
-    } else {
-      console.warn('AndroidRemoteControl interface not available')
-    }
+    setAndroidCustomNavigation(newMode)
+    console.log(`Navigation mode: ${newMode ? 'CUSTOM (cursor)' : 'NATIVE (focus)'}`)
   }
 
   return (

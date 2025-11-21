@@ -3,14 +3,19 @@ module.exports = {
     configure: (webpackConfig, { env, paths }) => {
       // Add rule to ignore source maps from node_modules
       webpackConfig.module.rules.push({
-        // js and ts files
         test: /\.(js|ts|mjs|cjs|tsx|jsx|mts|cts)$/,
         enforce: 'pre',
         use: ['source-map-loader'],
         exclude: /node_modules/
       })
-      // Tell Webpack to still generate source maps for your own code
-      webpackConfig.devtool = 'source-map'
+      
+      // Set source maps based on environment
+      if (env === 'production') {
+        webpackConfig.devtool = false  // No source maps in production
+      } else {
+        webpackConfig.devtool = 'source-map'  // Full source maps in dev
+      }
+      
       // Ignore warnings from source-map-loader for node_modules
       webpackConfig.ignoreWarnings = [
         function ignoreSourcemapsloaderWarnings(warning) {
