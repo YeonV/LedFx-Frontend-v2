@@ -3,9 +3,6 @@ import { BottomNavigation, BottomNavigationAction, Backdrop, useTheme } from '@m
 import {
   Settings,
   Home,
-  // Wallpaper,
-  // SettingsInputSvideo,
-  // SettingsInputComponent,
   Dashboard,
   ElectricalServices,
   QueueMusic,
@@ -28,6 +25,7 @@ import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import AddWledDialog from '../Dialogs/AddWledDialog'
 import Gamepad from '../Gamepad/Gamepad'
 import SmartBar from '../Dialogs/SmartBar'
+import { useFireTvStore } from '../FireTv/useFireTvStore'
 
 export default function BarBottom() {
   const theme = useTheme()
@@ -44,6 +42,8 @@ export default function BarBottom() {
   const smartBarPadOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBarPad.open)
   const setSmartBarPadOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarPadOpen)
   const scenes = useStore((state) => state.scenes)
+  const fireTvBarHeight = useFireTvStore((state) => state.barHeight)
+
   const handleActivateScene = (e: string) => {
     activateScene(e)
     if (scenes[e]?.scene_puturl && scenes[e]?.scene_payload)
@@ -76,8 +76,15 @@ export default function BarBottom() {
     if (youtubeExpanded) {
       height += 220
     }
-    setBotHeight(height)
-  }, [spotifyEnabled, spotifyExpanded, youtubeEnabled, youtubeExpanded])
+    setBotHeight(height + (features.firetv ? fireTvBarHeight : 0)) // Use 0 when disabled
+  }, [
+    spotifyEnabled,
+    spotifyExpanded,
+    youtubeEnabled,
+    youtubeExpanded,
+    fireTvBarHeight,
+    features.firetv
+  ])
 
   useEffect(() => {
     setValue(pathname)
@@ -90,7 +97,7 @@ export default function BarBottom() {
         sx={[
           {
             position: 'fixed',
-            bottom: 0,
+            bottom: fireTvBarHeight,
             zIndex: 4,
             backdropFilter: 'blur(20px)'
           },
@@ -182,10 +189,6 @@ export default function BarBottom() {
               style={
                 bottomBarOpen.indexOf('yzflow') > -1 ? { color: theme.palette.primary.main } : {}
               }
-              // onContextMenu={(e: any) => {
-              //   e.preventDefault();
-              //   setBottomBarOpen('Integrations');
-              // }}
             />
           )}
         <BottomNavigationAction
@@ -195,10 +198,6 @@ export default function BarBottom() {
           to="/Devices"
           icon={<BladeIcon name="mdi:led-strip-variant" />}
           style={bottomBarOpen.indexOf('Devices') > -1 ? { color: theme.palette.primary.main } : {}}
-          // onContextMenu={(e: any) => {
-          //   e.preventDefault();
-          //   setBottomBarOpen('Devices');
-          // }}
         />
         <BottomNavigationAction
           component={Link}
@@ -207,10 +206,6 @@ export default function BarBottom() {
           value="/Scenes"
           icon={<BladeIcon name="mdi:image" />}
           style={bottomBarOpen.indexOf('Scenes') > -1 ? { color: theme.palette.primary.main } : {}}
-          // onContextMenu={(e: any) => {
-          //   e.preventDefault();
-          //   setBottomBarOpen('Scenes');
-          // }}
         />
 
         {features.showPlaylistInBottomBar &&
@@ -224,10 +219,6 @@ export default function BarBottom() {
               style={
                 bottomBarOpen.indexOf('Playlists') > -1 ? { color: theme.palette.primary.main } : {}
               }
-              // onContextMenu={(e: any) => {
-              //   e.preventDefault();
-              //   setBottomBarOpen('Integrations');
-              // }}
             />
           )}
 
@@ -243,10 +234,6 @@ export default function BarBottom() {
                 ? { color: theme.palette.primary.main }
                 : {}
             }
-            // onContextMenu={(e: any) => {
-            //   e.preventDefault();
-            //   setBottomBarOpen('Integrations');
-            // }}
           />
         )}
 
@@ -260,10 +247,6 @@ export default function BarBottom() {
             style={
               bottomBarOpen.indexOf('Settings') > -1 ? { color: theme.palette.primary.main } : {}
             }
-            // onContextMenu={(e: any) => {
-            //   e.preventDefault();
-            //   setBottomBarOpen('Settings');
-            // }}
           />
         )}
       </BottomNavigation>
@@ -306,7 +289,7 @@ export default function BarBottom() {
           setSpotifyExpanded={setSpotifyExpanded}
         />
       )}
-      {<MIDIListener />}
+      <MIDIListener />
       <AddSceneDialog />
       <AddDeviceDialog />
       <AddWledDialog />
