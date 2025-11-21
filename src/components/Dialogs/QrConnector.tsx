@@ -19,7 +19,7 @@ import {
   useMediaQuery
 } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
-import { QrCode2 as QrCodeIcon, ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
+import { QrCode2 as QrCodeIcon, ArrowBackIos, ArrowForwardIos, Download } from '@mui/icons-material'
 import ledfxLogoForQr from '../../assets/logo.png'
 import QrCodeWithLogo from '../QrScanner/QrCodeWithLogo'
 import { useNavigate } from 'react-router-dom'
@@ -28,6 +28,7 @@ import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import FireTvDebugger from '../FireTv/FireTvDebugger'
 import { SiDevdotto } from 'react-icons/si'
 import { useFireTvStore } from '../FireTv/useFireTvStore'
+import { useAndroidUpdateChecker } from '../FireTv/useAndroidUpdateChecker'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -61,7 +62,9 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const isCustomMode = useFireTvStore((state) => state.isCustomMode)
   const setDefaultButtons = useFireTvStore((state) => state.setDefaultButtons)
   const isLandscape = useMediaQuery('(orientation: landscape)')
-
+  const { updateAvailable, downloading, handleUpdate, latestVersion } = useAndroidUpdateChecker({
+    enabled: features.firetv
+  })
   const SCROLL_AMOUNT = window.innerHeight * 0.6 // 60% of viewport height
 
   // Set the default buttons only if FireTV is enabled
@@ -301,6 +304,21 @@ const QrConnector: React.FC<QrConnectorProps> = ({
               >
                 Back
               </Button>
+              {features.firetv && updateAvailable && (
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={handleUpdate}
+                  disabled={downloading}
+                  startIcon={
+                    downloading ? <CircularProgress size={16} color="inherit" /> : <Download />
+                  }
+                  sx={{ padding: '2px 20px', borderRadius: '8px' }}
+                >
+                  {downloading ? 'Downloading...' : `Update APK (${latestVersion})`}
+                </Button>
+              )}
               <Typography
                 variant="h6"
                 sx={{
