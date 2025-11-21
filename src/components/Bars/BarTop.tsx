@@ -328,6 +328,7 @@ const TopBar = () => {
   const getUpdateInfo = useStore((state) => state.getUpdateInfo)
 
   useEffect(() => {
+    if (isAndroidApp()) return
     const checkForUpdates = async () => {
       const updateInfo = await getUpdateInfo(false)
       if (updateInfo?.status === 'success' && updateInfo?.payload?.type === 'warning') {
@@ -351,6 +352,7 @@ const TopBar = () => {
   }, [updateNotificationInterval, getUpdateInfo, latestTag])
 
   useEffect(() => {
+    if (isAndroidApp()) return
     if (frConfig?.updateUrl) {
       const latest = async () => {
         try {
@@ -465,6 +467,25 @@ const TopBar = () => {
           >
             <div style={{ position: 'absolute', top: 0, left: 16 }}>
               {LeftButtons(pathname, history, open, handleLeftBarOpen)}
+
+              {isAndroidApp() && (
+                <Button
+                  variant="text"
+                  size="small"
+                  color="inherit"
+                  onClick={() => exitAndroidApp()}
+                  sx={{
+                    position: 'absolute',
+                    top: 13,
+                    left: 30,
+                    width: 170,
+                    textTransform: 'none'
+                  }}
+                  startIcon={<BladeIcon style={{ position: 'relative' }} name="mdi:exit-to-app" />}
+                >
+                  Stop Service & Exit
+                </Button>
+              )}
             </div>
 
             <Typography
@@ -508,22 +529,7 @@ const TopBar = () => {
                   </IconButton>
                 </Box>
               ) : (
-                <>
-                  {isAndroidApp() && (
-                    <Button
-                      variant="text"
-                      size="small"
-                      color="inherit"
-                      onClick={() => exitAndroidApp()}
-                      startIcon={
-                        <BladeIcon style={{ position: 'relative' }} name="mdi:exit-to-app" />
-                      }
-                    >
-                      Stop & Exit
-                    </Button>
-                  )}
-                  <GlobalActionBar className="hideHd" />
-                </>
+                <GlobalActionBar className="hideHd" />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <IconButton
