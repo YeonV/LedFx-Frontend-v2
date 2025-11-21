@@ -25,8 +25,9 @@ import QrCodeWithLogo from '../QrScanner/QrCodeWithLogo'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../../store/useStore'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
-import RemoteDebugger from './RemoteDebugger'
+import FireTvDebugger from '../FireTv/FireTvDebugger'
 import { SiDevdotto } from 'react-icons/si'
+import { useFireTvStore } from '../FireTv/useFireTvStore'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -54,9 +55,49 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const navigate = useNavigate()
   const port = useStore((state) => state.config.port || 8888)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  // check landscape mode
+  const paused = useStore((state) => state.paused)
+  const togglePause = useStore((state) => state.togglePause)
+  const features = useStore((state) => state.features)
+  const isCustomMode = useFireTvStore((state) => state.isCustomMode)
+  const setDefaultButtons = useFireTvStore((state) => state.setDefaultButtons)
   const isLandscape = useMediaQuery('(orientation: landscape)')
-  // const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
+
+  const SCROLL_AMOUNT = window.innerHeight * 0.6 // 60% of viewport height
+
+  // Set the default buttons only if FireTV is enabled
+  useEffect(() => {
+    if (!features.firetv) return
+
+    setDefaultButtons({
+      menu: true,
+      play: {
+        label: paused ? 'Play' : 'Pause',
+        action: () => togglePause()
+      },
+      ...(isCustomMode && {
+        rewind: {
+          label: 'Scroll Up',
+          action: () => {
+            if (window.scrollY > 0) {
+              window.scrollBy({ top: -SCROLL_AMOUNT, behavior: 'smooth' })
+            }
+          }
+        },
+        forward: {
+          label: 'Scroll Down',
+          action: () => {
+            window.scrollBy({ top: SCROLL_AMOUNT, behavior: 'smooth' })
+          }
+        }
+      }),
+      dpad: {
+        label: isCustomMode ? 'Pointer' : 'D-Pad'
+      },
+      home: {
+        label: 'Minimize'
+      }
+    })
+  }, [paused, isCustomMode, togglePause, setDefaultButtons, features.firetv, SCROLL_AMOUNT])
 
   const [devMode, setDevMode] = useState(false)
   const tooggleDev = () => {
@@ -380,7 +421,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
 
               {devMode && (
                 <Stack direction={'row'}>
-                  <RemoteDebugger />
+                  <FireTvDebugger />
 
                   <Paper
                     elevation={3}

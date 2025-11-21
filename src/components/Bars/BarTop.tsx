@@ -53,7 +53,7 @@ import useWakeLock from '../../utils/useWakeLook'
 import OrderListDialog from '../DnD/OrderListDialog'
 import QrConnector from '../Dialogs/QrConnector'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
-import FireTvController, { handleExit } from '../Dialogs/FireTvController'
+import FireTv, { handleExit } from '../FireTv/FireTv'
 
 interface FrontendConfig {
   updateUrl: string
@@ -220,6 +220,7 @@ const TopBar = () => {
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
   const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
+  const setFeatures = useStore((state) => state.setFeatures)
 
   const hosts = useStore((state) => state.config.hosts) || []
   const isCreator =
@@ -395,8 +396,11 @@ const TopBar = () => {
   const slug = pathname.split('/')[1]
 
   useEffect(() => {
-    if (isTv) setQrConnectOpen(true)
-  }, [isTv, userClosedQrConnector, setQrConnectOpen])
+    if (isTv) {
+      setQrConnectOpen(true)
+      setFeatures('firetv', true)
+    }
+  }, [isTv, userClosedQrConnector, setQrConnectOpen, setFeatures])
 
   return (
     <>
@@ -467,7 +471,7 @@ const TopBar = () => {
               noWrap
               style={{ margin: '0 auto', display: 'flex', alignItems: 'center' }}
             >
-              <FireTvController />
+              <FireTv />
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
               <QrConnector hosts={[...hosts]} />
             </Typography>

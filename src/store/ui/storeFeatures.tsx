@@ -38,6 +38,7 @@ export type IFeatures =
   | 'scenePlaylistBackend'
   | 'showPlaylistInBottomBar'
   | 'showFlowInBottomBar'
+  | 'firetv'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -76,7 +77,8 @@ const storeFeatures = (set: any) => ({
     sceneScroll: false,
     scenePlaylistBackend: false,
     showPlaylistInBottomBar: false,
-    showFlowInBottomBar: false
+    showFlowInBottomBar: false,
+    firetv: false
   },
   showFeatures: {
     dev: false,
@@ -114,7 +116,8 @@ const storeFeatures = (set: any) => ({
     sceneScroll: false,
     scenePlaylistBackend: false,
     showPlaylistInBottomBar: false,
-    showFlowInBottomBar: false
+    showFlowInBottomBar: false,
+    firetv: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

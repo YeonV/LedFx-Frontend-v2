@@ -1,9 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { createTheme, ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
-import { CssBaseline, GlobalStyles } from '@mui/material'
 import Cookies from 'universal-cookie'
 import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
@@ -20,6 +19,8 @@ import FiledropProvider from './utils/FiledropProvider'
 import FpsViewer from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer'
 import { useSubscription, WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
+import FireTvBar from './components/FireTv/FireTvBar'
+import { useFireTvStore } from './components/FireTv/useFireTvStore'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -35,7 +36,6 @@ export default function App() {
   const getSchemas = useStore((state) => state.getSchemas)
   const shutdown = useStore((state) => state.shutdown)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
-  // const darkMode = useStore((state) => state.ui.darkMode)
   const setCoreParams = useStore((state) => state.setCoreParams)
   const setCoreStatus = useStore((state) => state.setCoreStatus)
   const changeTheme = useStore((state) => state.ui.changeTheme)
@@ -47,6 +47,9 @@ export default function App() {
   const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
   const activateScene = useStore((state) => state.activateScene)
   const fpsViewer = useStore((state) => state.ui.fpsViewer)
+
+  // Get FireTV bottom bar height
+  const fireTvBarHeight = useFireTvStore((state) => state.barHeight)
 
   const handleNext = () => {
     const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
@@ -260,7 +263,7 @@ export default function App() {
                 <CssBaseline />
                 <FpsViewer
                   open={fpsViewer}
-                  bottom={60}
+                  bottom={60 + fireTvBarHeight}
                   left={5}
                   color={theme.palette.primary.main}
                 />
@@ -272,6 +275,7 @@ export default function App() {
                   }}
                 />
                 <Pages />
+                <FireTvBar />
               </FiledropProvider>
             </SpotifyProvider>
           </WebSocketProvider>

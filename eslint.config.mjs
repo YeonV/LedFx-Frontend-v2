@@ -69,10 +69,15 @@ export default [
     },
     rules: {
       'no-unused-directive': 'off',
-      'no-unused-vars': [
-        'warn',
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
         {
-          argsIgnorePattern: '^_'
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "ignoreRestSiblings": true,
+          // Add this:
+          "args": "after-used" // Only flag unused args AFTER they're used
         }
       ],
       'react-hooks/rules-of-hooks': 'warn',

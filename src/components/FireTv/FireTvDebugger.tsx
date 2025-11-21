@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Typography, Paper, Button, Stack } from '@mui/material'
-import { useVirtualCursor } from '../../hooks/useVirtualCursor'
-import VirtualCursor from '../VirtualCursor'
+import { useVirtualCursor } from './useVirtualCursor'
+import VirtualCursor from './VirtualCursor'
 
 interface RemoteEvent {
   key: string
@@ -14,7 +14,6 @@ interface RemoteEvent {
 declare global {
   interface Window {
     AndroidRemoteControl?: {
-      // eslint-disable-next-line no-unused-vars
       setCustomNavigation: (enabled: boolean) => void
       exitApp: () => void
     }
@@ -35,7 +34,7 @@ declare global {
  * Menu code: KEYCODE_MENU keyCode: 82
  */
 
-const RemoteDebugger: React.FC = () => {
+const FireTvDebugger: React.FC = () => {
   const [events, setEvents] = useState<RemoteEvent[]>([])
   const [activeKeys, setActiveKeys] = useState<Set<string>>(new Set())
   const [isCustomMode, setIsCustomMode] = useState(false)
@@ -226,4 +225,4 @@ const RemoteButton: React.FC<{ label: string; isActive: boolean }> = ({ label, i
   </Box>
 )
 
-export default RemoteDebugger
+export default FireTvDebugger

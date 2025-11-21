@@ -59,10 +59,11 @@ import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
 import type { PlaylistConfig, PlaylistItem } from '../../api/ledfx.types'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import PlaylistCard from './PlaylistCard'
 import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
 import Popover from '../../components/Popover/Popover'
+import { useFireTv } from '../../components/FireTv/useFireTv'
 
 interface BackendPlaylistProps {
   maxWidth?: string | number
@@ -72,6 +73,9 @@ interface BackendPlaylistProps {
 export default function BackendPlaylist({ maxWidth = 486, cards = false }: BackendPlaylistProps) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const isPlaylistPage = location.pathname === '/Playlists'
 
   // Store hooks
   const scenes = useStore((state) => state.scenes)
@@ -198,6 +202,22 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
     await previousPlaylistItem()
     getPlaylistState()
   }
+
+  useFireTv({
+    enabled: !!selectedPlaylist && isPlaylistPage,
+    play: {
+      label: isPlaying ? 'Pause Playlist' : 'Play Playlist',
+      action: selectedPlaylist ? () => handlePlayPause() : undefined
+    },
+    rewind: {
+      label: 'Previous Scene',
+      action: playlistRuntimeState ? () => handlePrevious() : undefined
+    },
+    forward: {
+      label: 'Next Scene',
+      action: playlistRuntimeState ? () => handleNext() : undefined
+    }
+  })
 
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000)

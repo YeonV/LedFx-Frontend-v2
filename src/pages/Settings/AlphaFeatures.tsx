@@ -49,6 +49,11 @@ const AlphaFeatures = () => {
           onChange={() => setFeatures('wled', !features.wled)}
         />
       )}
+      <SettingsRow
+        title="Fire TV Integration"
+        checked={features.firetv}
+        onChange={() => setFeatures('firetv', !features.firetv)}
+      />
     </>
   )
 }
