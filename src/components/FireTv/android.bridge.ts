@@ -11,3 +11,11 @@ export const setAndroidCustomNavigation = (enabled: boolean) => {
 }
 
 export const isAndroidApp = () => !!window.AndroidRemoteControl
+
+export const getAndroidAbi = (): string => {
+  if (window.AndroidRemoteControl?.getCpuAbi) {
+    return window.AndroidRemoteControl.getCpuAbi()
+  }
+
+  return 'unknown'
+}
