@@ -53,37 +53,110 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
               if (element) {
                 console.log('Virtual cursor click on:', element)
 
-                // Check for MUI Switch - look for the hidden checkbox input
-                const switchInput = element
-                  .closest('.MuiSwitch-root')
-                  ?.querySelector('input[type="checkbox"]') as HTMLInputElement
+                // ✅ CHECK IF ELEMENT IS MUI SWITCH INPUT OR HAS MUI SWITCH PARENT
+                const isMuiSwitchInput =
+                  element.classList.contains('MuiSwitch-input') ||
+                  element.classList.contains('PrivateSwitchBase-input')
 
-                if (switchInput) {
-                  console.log('Clicking MUI Switch:', switchInput)
+                const switchRoot = isMuiSwitchInput
+                  ? (element.closest('.MuiSwitch-root') as HTMLElement)
+                  : (element.closest('.MuiSwitch-root') as HTMLElement)
 
-                  // Trigger the switch by clicking the input
-                  switchInput.click()
+                if (switchRoot || isMuiSwitchInput) {
+                  const switchInput = isMuiSwitchInput
+                    ? (element as HTMLInputElement)
+                    : (switchRoot?.querySelector('input[type="checkbox"]') as HTMLInputElement)
 
-                  // Visual feedback on the switch root
-                  const switchRoot = element.closest('.MuiSwitch-root') as HTMLElement
-                  if (switchRoot) {
-                    const originalOutline = switchRoot.style.outline
-                    switchRoot.style.outline = '2px solid #2196F3'
-                    setTimeout(() => {
-                      switchRoot.style.outline = originalOutline
-                    }, 200)
+                  if (switchInput) {
+                    console.log('Clicking MUI Switch:', switchInput)
+
+                    // Get the current checked state
+                    const currentChecked = switchInput.checked
+
+                    // Change the checked state
+                    switchInput.checked = !currentChecked
+
+                    // Dispatch React synthetic events in the correct order
+                    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                      window.HTMLInputElement.prototype,
+                      'checked'
+                    )?.set
+
+                    if (nativeInputValueSetter) {
+                      nativeInputValueSetter.call(switchInput, !currentChecked)
+                    }
+
+                    // Dispatch input and change events that React listens to
+                    const inputEvent = new Event('input', { bubbles: true })
+                    const changeEvent = new Event('change', { bubbles: true })
+
+                    switchInput.dispatchEvent(inputEvent)
+                    switchInput.dispatchEvent(changeEvent)
+
+                    // Also dispatch click event as backup
+                    const clickEvent = new MouseEvent('click', { bubbles: true })
+                    switchInput.dispatchEvent(clickEvent)
+
+                    // Visual feedback on the switch root (not the input)
+                    const root = switchRoot || (element.closest('.MuiSwitch-root') as HTMLElement)
+                    if (root) {
+                      const originalOutline = root.style.outline
+                      root.style.outline = '2px solid #2196F3'
+                      setTimeout(() => {
+                        root.style.outline = originalOutline
+                      }, 200)
+                    }
+
+                    return prev // Early return - don't process further
                   }
-
-                  return prev
                 }
 
-                // Check if it's an input element or has an input child
+                // Check for MUI Checkbox
+                const isMuiCheckboxInput =
+                  element.classList.contains('MuiCheckbox-input') ||
+                  (element.classList.contains('PrivateSwitchBase-input') &&
+                    element.closest('.MuiCheckbox-root'))
+
+                const checkboxRoot = isMuiCheckboxInput
+                  ? (element.closest('.MuiCheckbox-root') as HTMLElement)
+                  : (element.closest('.MuiCheckbox-root') as HTMLElement)
+
+                if (checkboxRoot || isMuiCheckboxInput) {
+                  const checkboxInput = isMuiCheckboxInput
+                    ? (element as HTMLInputElement)
+                    : (checkboxRoot?.querySelector('input[type="checkbox"]') as HTMLInputElement)
+
+                  if (checkboxInput) {
+                    console.log('Clicking MUI Checkbox:', checkboxInput)
+                    checkboxInput.click()
+
+                    const root =
+                      checkboxRoot || (element.closest('.MuiCheckbox-root') as HTMLElement)
+                    if (root) {
+                      const originalOutline = root.style.outline
+                      root.style.outline = '2px solid #2196F3'
+                      setTimeout(() => {
+                        root.style.outline = originalOutline
+                      }, 200)
+                    }
+
+                    return prev
+                  }
+                }
+
+                // Check if it's a regular input element (not MUI component)
                 const inputElement =
                   element.tagName === 'INPUT' || element.tagName === 'TEXTAREA'
                     ? element
-                    : (element.querySelector('input, textarea') as HTMLElement)
+                    : (element.querySelector(
+                        'input:not(.MuiSwitch-input):not(.PrivateSwitchBase-input), textarea'
+                      ) as HTMLElement)
 
-                if (inputElement) {
+                if (
+                  inputElement &&
+                  !inputElement.classList.contains('MuiSwitch-input') &&
+                  !inputElement.classList.contains('PrivateSwitchBase-input')
+                ) {
                   // For input elements, focus them to trigger keyboard
                   console.log('Focusing input element:', inputElement)
                   inputElement.focus()
@@ -131,12 +204,14 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
                   }
                 }
 
-                // Visual feedback
-                const originalOutline = element.style.outline
-                element.style.outline = '2px solid #2196F3'
-                setTimeout(() => {
-                  element.style.outline = originalOutline
-                }, 200)
+                // Visual feedback (only if not already handled by MUI components)
+                if (!switchRoot && !checkboxRoot && !isMuiSwitchInput && !isMuiCheckboxInput) {
+                  const originalOutline = element.style.outline
+                  element.style.outline = '2px solid #2196F3'
+                  setTimeout(() => {
+                    element.style.outline = originalOutline
+                  }, 200)
+                }
               } else {
                 console.warn('No clickable element found at cursor position')
               }
@@ -181,6 +256,12 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
           }
           return prev // Don't update position on click
         }
+        // ✅ Add these cases to pass through media buttons
+        case 227: // Rewind
+        case 228: // Forward
+        case 179: // Play/Pause
+          // Don't handle these - let them bubble up to FireTvBar
+          return prev
         default:
           return prev
       }
@@ -201,10 +282,15 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
       const customEvent = e as CustomEvent<{ key: string; code: string; keyCode: number }>
       const { keyCode } = customEvent.detail
 
-      // Prevent default behavior for navigation keys in custom mode
+      // ✅ Only prevent default for navigation keys, NOT media buttons
       if ([37, 38, 39, 40, 13].includes(keyCode)) {
         e.preventDefault()
         e.stopPropagation()
+      }
+
+      // ✅ Don't call moveCursor for media buttons - let them bubble
+      if ([227, 228, 179].includes(keyCode)) {
+        return
       }
 
       moveCursor(keyCode, false)

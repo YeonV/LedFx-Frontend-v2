@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { compareVersions } from 'compare-versions'
-import { getAndroidAbi, downloadAndInstallApk, isAndroidApp } from './android.bridge'
+import { downloadAndInstallApk, isAndroidApp } from './android.bridge'
 import pkg from '../../../package.json'
 
 interface AndroidUpdateConfig {
@@ -26,9 +26,7 @@ export const useAndroidUpdateChecker = ({
     const checkForUpdate = async () => {
       setChecking(true)
       try {
-        const res = await fetch(
-          `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`
-        )
+        const res = await fetch('https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest')
         if (!res.ok) {
           console.error(`Failed to fetch latest APK version: ${res.status}`)
           return
@@ -60,22 +58,12 @@ export const useAndroidUpdateChecker = ({
   const handleUpdate = () => {
     if (!latestVersion) return
 
-    const abi = getAndroidAbi()
-    if (abi === 'unknown') {
-      console.error('Cannot determine CPU architecture')
-      return
-    }
-
-    // Build download URL
-    // Format: https://github.com/YeonV/LedFx-Builds/releases/download/v2.1.3-b12/LedFx_CC-v2.1.3-b12--android-armeabi-v7a-release.apk
-    const apkUrl = `https://github.com/${repoOwner}/${repoName}/releases/download/${latestVersion}/LedFx_CC-${latestVersion}--android-${abi}-release.apk`
-
-    console.log(`Downloading APK from: ${apkUrl}`)
+    const apkUrl = `https://github.com/YeonV/LedFx-Builds/releases/download/${latestVersion}/LedFx_CC-${latestVersion}--android-armeabi-v7a-release.apk`
     setDownloading(true)
     downloadAndInstallApk(apkUrl)
 
     // Reset downloading state after a delay (download happens in background)
-    setTimeout(() => setDownloading(false), 3000)
+    setTimeout(() => setDownloading(false), 30000)
   }
 
   return {

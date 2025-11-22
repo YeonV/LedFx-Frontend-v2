@@ -38,13 +38,18 @@ export interface FireTvButtonConfig {
   icon?: ReactNode
 }
 
+export type FireTvButtonsConfig = {
+  [K in FireTvButton]?: FireTvButtonConfig | boolean
+}
+
 export interface FireTvBarState {
-  buttons: Partial<Record<FireTvButton, FireTvButtonConfig | boolean>>
-  defaultButtons: Partial<Record<FireTvButton, FireTvButtonConfig | boolean>>
+  buttons: FireTvButtonsConfig
+  defaultButtons: FireTvButtonsConfig
   barHeight: number
   isCustomMode: boolean
-  setButtons: (buttons: Partial<Record<FireTvButton, FireTvButtonConfig | boolean>>) => void
-  setDefaultButtons: (buttons: Partial<Record<FireTvButton, FireTvButtonConfig | boolean>>) => void
+  hasPageButtons: boolean
+  setButtons: (config: FireTvButtonsConfig) => void
+  setDefaultButtons: (config: FireTvButtonsConfig) => void
   clearButtons: () => void
   setBarHeight: (height: number) => void
   setCustomMode: (enabled: boolean) => void
