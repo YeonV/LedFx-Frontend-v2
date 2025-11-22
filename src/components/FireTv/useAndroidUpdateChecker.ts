@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { compareVersions } from 'compare-versions'
-import { downloadAndInstallApk, isAndroidApp } from './android.bridge'
+import { getAndroidAbi, downloadAndInstallApk, isAndroidApp } from './android.bridge'
 import pkg from '../../../package.json'
 
 interface AndroidUpdateConfig {
@@ -57,8 +57,12 @@ export const useAndroidUpdateChecker = ({
 
   const handleUpdate = () => {
     if (!latestVersion) return
-
-    const apkUrl = `https://github.com/YeonV/LedFx-Builds/releases/download/${latestVersion}/LedFx_CC-${latestVersion}--android-armeabi-v7a-release.apk`
+    let abi = getAndroidAbi()
+    if (abi === 'unknown') {
+      console.error('Cannot determine CPU architecture')
+      abi = 'armeabi-v7a'
+    }
+    const apkUrl = `https://github.com/YeonV/LedFx-Builds/releases/download/${latestVersion}/LedFx_CC-${latestVersion}--android-${abi}-release.apk`
     setDownloading(true)
     downloadAndInstallApk(apkUrl)
 
