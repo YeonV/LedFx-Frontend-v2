@@ -23,6 +23,35 @@ class ErrorBoundary extends Component<Props, State> {
     console.warn(error, errorInfo)
   }
 
+  handleHardRefresh = async () => {
+    // 1. Clear the Cache Storage API
+    if ('caches' in window) {
+      try {
+        const keys = await caches.keys()
+        await Promise.all(keys.map((key) => caches.delete(key)))
+      } catch (err) {
+        console.error('Failed to clear caches:', err)
+      }
+    }
+
+    // 2. Unregister Service Workers
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations()
+        for (const registration of registrations) {
+          await registration.unregister()
+        }
+      } catch (err) {
+        console.error('Failed to unregister service workers:', err)
+      }
+    }
+
+    // 3. Force Reload with Timestamp
+    const url = new URL(window.location.href)
+    url.searchParams.set('hard_refresh', Date.now().toString())
+    window.location.href = url.toString()
+  }
+
   render() {
     if (this.state.hasError) {
       return (
@@ -41,7 +70,8 @@ class ErrorBoundary extends Component<Props, State> {
           }}
           sx={{
             '& button:hover': {
-              backgroundColor: '#0dbedc'
+              backgroundColor: '#0dbedc !important',
+              color: '#000 !important'
             }
           }}
         >
@@ -57,37 +87,75 @@ class ErrorBoundary extends Component<Props, State> {
               margin: '0 auto'
             }}
           >
-            <h1>Sorry</h1>
-            <p style={{ fontSize: 18, marginBottom: '60px' }}>
-              Try refresh first. If the problem persists, clear your browser data.
+            <h1>Client issue detected</h1>
+            <p style={{ fontSize: 18, marginBottom: '40px' }}>
+              Please try these recovery options in order
             </p>
+            {/* BUTTON 1: Standard Refresh */}
             <button
               type="button"
               style={{
                 height: 50,
                 borderRadius: 10,
                 color: '#000',
-                backgroundColor: '#transparent',
+                backgroundColor: '#fff',
                 cursor: 'pointer',
                 fontSize: 18,
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                border: 'none',
+                marginBottom: '15px'
               }}
               onClick={() => {
                 window.location.reload()
               }}
             >
-              REFRESH
+              Step1: Reload
             </button>
-            <br />
+            {/* BUTTON 2: Hard Refresh */}
             <button
               type="button"
               style={{
                 height: 50,
                 borderRadius: 10,
                 color: '#000',
+                backgroundColor: '#ffeb3b',
                 cursor: 'pointer',
                 fontSize: 18,
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                border: 'none'
+              }}
+              onClick={this.handleHardRefresh}
+            >
+              Step2: Repair
+            </button>
+            {/* DIVIDER SECTION */}
+            <div
+              style={{
+                margin: '20px 0',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              <div style={{ width: '100%', height: '1px', backgroundColor: '#333' }}></div>
+              <span style={{ fontSize: '14px', color: '#aaa', padding: '5px 0' }}>
+                Step3: Press CTRL+F5
+              </span>
+              <div style={{ width: '100%', height: '1px', backgroundColor: '#333' }}></div>
+            </div>
+            {/* BUTTON 3: Clear Data */}
+            <button
+              type="button"
+              style={{
+                height: 50,
+                borderRadius: 10,
+                color: '#fff',
+                backgroundColor: '#d32f2f',
+                cursor: 'pointer',
+                fontSize: 18,
+                fontWeight: 'bold',
+                border: 'none'
               }}
               onClick={() => {
                 window.localStorage.removeItem('undefined')
@@ -104,8 +172,19 @@ class ErrorBoundary extends Component<Props, State> {
                 window.location.reload()
               }}
             >
-              CLEAR BROWSER DATA
+              Step4: Nuke*
             </button>
+            {/* WARNING TEXT */}
+            <p
+              style={{
+                fontSize: '12px',
+                color: '#aaa',
+                marginTop: '10px',
+                fontStyle: 'italic'
+              }}
+            >
+              *resets client settings. (backend won't be affected)
+            </p>
           </div>
         </Box>
       )
