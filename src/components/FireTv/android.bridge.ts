@@ -19,10 +19,20 @@ export const getAndroidAbi = (): string => {
 
   // Fallback: try to detect from user agent
   const userAgent = navigator.userAgent.toLowerCase()
-  if (userAgent.includes('arm64') || userAgent.includes('aarch64')) {
+  if (
+    userAgent.includes('arm64') ||
+    userAgent.includes('aarch64') ||
+    navigator.platform.includes('arm64') ||
+    navigator.platform.includes('aarch64')
+  ) {
     return 'arm64-v8a'
   }
-  if (userAgent.includes('armv7') || userAgent.includes('armeabi')) {
+  if (
+    userAgent.includes('armv') ||
+    userAgent.includes('armeabi') ||
+    navigator.platform.includes('armv') ||
+    navigator.platform.includes('armeabi')
+  ) {
     return 'armeabi-v7a'
   }
 
