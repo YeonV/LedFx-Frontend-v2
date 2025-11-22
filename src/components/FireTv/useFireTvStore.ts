@@ -7,20 +7,25 @@ export const useFireTvStore = create<FireTvBarState>((set) => ({
   defaultButtons: { menu: true },
   barHeight: 0,
   isCustomMode: false,
+  hasPageButtons: false, // ✅ Track if a page has set custom buttons
 
   setButtons: (config) =>
     set({
-      buttons: config
+      buttons: config,
+      hasPageButtons: true // ✅ Mark that a page is managing buttons
     }),
 
   setDefaultButtons: (config) =>
-    set({
-      defaultButtons: config
-    }),
+    set((state) => ({
+      defaultButtons: config,
+      // ✅ Only update active buttons if no page is managing them
+      buttons: state.hasPageButtons ? state.buttons : config
+    })),
 
   clearButtons: () =>
     set((state) => ({
-      buttons: state.defaultButtons
+      buttons: state.defaultButtons,
+      hasPageButtons: false // ✅ Clear the flag
     })),
 
   setBarHeight: (height) => set({ barHeight: height }),
