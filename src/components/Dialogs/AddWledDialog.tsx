@@ -90,11 +90,13 @@ const AddWledDialog = () => {
     })
 
     Promise.all(promises)
-      .then((results) => {
-        if (results.every((res) => res !== 'failed')) {
-          getDevices()
-          getVirtuals()
-        }
+      .then((_results) => {
+        // if (results.every((res) => res !== 'failed')) {
+        //   getDevices()
+        //   getVirtuals()
+        // }
+        getDevices()
+        getVirtuals()
       })
       .catch((_error) => {
         // console.log('Error: ', error)

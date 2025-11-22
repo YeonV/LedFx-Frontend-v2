@@ -53,10 +53,36 @@ export const useVirtualCursor = (isCustomMode: boolean) => {
               if (element) {
                 console.log('Virtual cursor click on:', element)
 
-                // ✅ CHECK IF ELEMENT IS MUI SWITCH INPUT OR HAS MUI SWITCH PARENT
+                // ✅ CHECK FOR DATAGRID CHECKBOX FIRST (before Switch detection!)
+                const isDataGridCheckbox =
+                  element.classList.contains('PrivateSwitchBase-input') &&
+                  element.closest('.MuiDataGrid-checkboxInput')
+
+                if (isDataGridCheckbox) {
+                  const checkboxInput = element as HTMLInputElement
+                  console.log('Clicking DataGrid Checkbox:', checkboxInput)
+
+                  // Just click it - DataGrid handles the rest
+                  checkboxInput.click()
+
+                  // Visual feedback on the cell
+                  const cell = element.closest('.MuiDataGrid-cell') as HTMLElement
+                  if (cell) {
+                    const originalOutline = cell.style.outline
+                    cell.style.outline = '2px solid #2196F3'
+                    setTimeout(() => {
+                      cell.style.outline = originalOutline
+                    }, 200)
+                  }
+
+                  return prev // Early return
+                }
+
+                // ✅ NOW check for MUI Switch (exclude DataGrid checkboxes)
                 const isMuiSwitchInput =
-                  element.classList.contains('MuiSwitch-input') ||
-                  element.classList.contains('PrivateSwitchBase-input')
+                  (element.classList.contains('MuiSwitch-input') ||
+                    element.classList.contains('PrivateSwitchBase-input')) &&
+                  !element.closest('.MuiDataGrid-checkboxInput') // ❌ Exclude DataGrid
 
                 const switchRoot = isMuiSwitchInput
                   ? (element.closest('.MuiSwitch-root') as HTMLElement)

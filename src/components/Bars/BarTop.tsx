@@ -55,6 +55,7 @@ import QrConnector from '../Dialogs/QrConnector'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 import FireTv from '../FireTv/FireTv'
 import { exitAndroidApp, isAndroidApp } from '../FireTv/android.bridge'
+import CrashButton from '../CrashButton'
 
 interface FrontendConfig {
   updateUrl: string
@@ -487,6 +488,7 @@ const TopBar = () => {
                 </Button>
               )}
             </div>
+            {process.env.NODE_ENV === 'development' && <CrashButton />}
 
             <Typography
               variant="h6"
