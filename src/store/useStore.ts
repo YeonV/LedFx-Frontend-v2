@@ -74,7 +74,7 @@ const useStore = create(
           ...storeActions(set),
           ...storeIntegrationsSpotify(set),
           ...storePlaylist(set),
-          ...storeAssets(),
+          ...storeAssets(set),
 
           ...storeCloud(set)
         })
