@@ -478,7 +478,7 @@ const TopBar = () => {
                   sx={{
                     position: 'absolute',
                     top: 13,
-                    left: 30,
+                    left: 90,
                     width: 170,
                     textTransform: 'none'
                   }}
