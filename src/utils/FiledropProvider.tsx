@@ -1,6 +1,14 @@
 // src/FiledropProvider.tsx
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField
+} from '@mui/material'
 import { useCallback, useState } from 'react'
 import isElectron from 'is-electron'
 import useStore from '../store/useStore'
@@ -8,6 +16,9 @@ import useStore from '../store/useStore'
 const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const [title, setTitle] = useState('LedFx JSON detected')
   const [newData, setNewData] = useState<any>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageName, setImageName] = useState('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const open = useStore((state) => state.dialogs.filedrop.open)
   const virtualOrder = useStore((state) => state.virtualOrder)
@@ -17,6 +28,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const setScenePLintervals = useStore((state) => state.setScenePLintervals)
   const importSystemConfig = useStore((state) => state.importSystemConfig)
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
+  const uploadAsset = useStore((state) => state.uploadAsset)
 
   const isValidFullConfig = useCallback((data: any) => {
     const requiredConfigKeys = [
@@ -116,9 +128,21 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
       if (file && file.type === 'application/json') {
         console.log('file', file)
         handleJsonFile({ target: { files: [file] } })
+      } else if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (ev) => {
+          setImagePreview(ev.target?.result as string)
+          setImageFile(file)
+          const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '')
+          setImageName(nameWithoutExt)
+          setTitle('Image Asset detected')
+          setNewData({ type: 'image', file })
+          setDialogOpenFileDrop(true)
+        }
+        reader.readAsDataURL(file)
       }
     },
-    [handleJsonFile]
+    [handleJsonFile, setDialogOpenFileDrop]
   )
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -126,12 +150,22 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   }
   const handleClose = () => {
     setDialogOpenFileDrop(false)
+    setImagePreview(null)
+    setImageFile(null)
+    setImageName('')
   }
 
   const handleSave = () => {
     showSnackbar('info', 'Importing...')
     if (newData) {
       switch (newData.type) {
+        case 'image':
+          if (imageFile) {
+            uploadAsset(imageFile, imageName).then(() => {
+              showSnackbar('success', 'Image uploaded successfully')
+            })
+          }
+          break
         case 'matrixLayout':
           setPendingMatrixLayout(newData.data)
           showSnackbar('success', 'Matrix layout imported successfully')
@@ -158,6 +192,9 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
     setDialogOpenFileDrop(false)
+    setImagePreview(null)
+    setImageFile(null)
+    setImageName('')
   }
 
   return (
@@ -170,7 +207,32 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       <Dialog open={open}>
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent>Would you like to import it and overwrite current data?</DialogContent>
+        <DialogContent>
+          {imagePreview ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 400 }}>
+              <Box
+                component="img"
+                src={imagePreview}
+                alt="Preview"
+                sx={{ maxWidth: '100%', maxHeight: 300, objectFit: 'contain' }}
+              />
+              <Box>
+                <strong>Type:</strong> {imageFile?.type}
+              </Box>
+              <Box>
+                <strong>Size:</strong> {((imageFile?.size || 0) / 1024).toFixed(2)} KB
+              </Box>
+              <TextField
+                fullWidth
+                label="Asset Name"
+                value={imageName}
+                onChange={(e) => setImageName(e.target.value)}
+              />
+            </Box>
+          ) : (
+            'Would you like to import it and overwrite current data?'
+          )}
+        </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
           <Button onClick={handleSave}>Yes</Button>
