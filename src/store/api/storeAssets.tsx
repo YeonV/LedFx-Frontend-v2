@@ -32,17 +32,16 @@ const storeAssets = (set: any) => ({
       'api/getAssets'
     )
 
-    // Uncomment when backend is ready:
-    // const resp = await Ledfx('/api/assets')
-    // if (resp && resp.assets) {
-    //   set(
-    //     produce((state: IStore) => {
-    //       state.assets = resp.assets
-    //     }),
-    //     false,
-    //     'api/getAssets'
-    //   )
-    // }
+    const resp = await Ledfx('/api/assets')
+    if (resp && resp.assets) {
+      set(
+        produce((state: IStore) => {
+          state.assets = resp.assets
+        }),
+        false,
+        'api/getAssets'
+      )
+    }
   },
 
   uploadAsset: async (file: File, filename: string) => {
