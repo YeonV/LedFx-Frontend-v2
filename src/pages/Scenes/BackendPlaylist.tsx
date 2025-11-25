@@ -136,18 +136,19 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const handleCreatePlaylist = async () => {
     if (!newPlaylist.name) return
 
-    const result = await createPlaylist(newPlaylist as PlaylistConfig)
+    const defaultPlaylist: Partial<PlaylistConfig> = {
+      name: '',
+      items: [],
+      default_duration_ms: 5000,
+      mode: 'sequence',
+      timing: { jitter: { enabled: false, factor_min: 0.8, factor_max: 1.2 } },
+      tags: [],
+      image: 'QueueMusic'
+    }
+    const result = await createPlaylist({ ...defaultPlaylist, ...newPlaylist } as PlaylistConfig)
     if (result?.status === 'success') {
       setCreateDialogOpen(false)
-      setNewPlaylist({
-        name: '',
-        items: [],
-        default_duration_ms: 5000,
-        mode: 'sequence',
-        timing: { jitter: { enabled: false, factor_min: 0.8, factor_max: 1.2 } },
-        tags: [],
-        image: 'QueueMusic'
-      })
+      setNewPlaylist(defaultPlaylist)
       getPlaylists()
     }
   }
@@ -565,7 +566,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   <SceneImage
                     iconName={
                       selectedPlaylist
-                        ? playlists[selectedPlaylist].image || 'QueueMusic'
+                        ? playlists[selectedPlaylist]?.image || 'QueueMusic'
                         : 'yz:logo2'
                     }
                     sx={{
@@ -650,11 +651,11 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   sx={{ mt: 1, mb: 0.5, fontWeight: 'bold' }}
                   color={selectedPlaylist ? 'textPrimary' : 'textDisabled'}
                 >
-                  {selectedPlaylist ? playlists[selectedPlaylist].name : 'No Playlist Selected'}
+                  {selectedPlaylist ? playlists[selectedPlaylist]?.name : 'No Playlist Selected'}
                 </Typography>
 
                 {/* Progress Bar */}
-                {playlistRuntimeState && selectedPlaylist && playlists[selectedPlaylist].name && (
+                {playlistRuntimeState && selectedPlaylist && playlists[selectedPlaylist]?.name && (
                   <Box sx={{ mt: 2, mx: 3 }}>
                     <LinearProgress
                       variant="determinate"
@@ -1053,14 +1054,14 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   >
                     <QueueMusic sx={{ fontSize: 48, color: 'action.disabled', mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
-                      No scenes added yet
+                      No scenes selected
                     </Typography>
                     <Typography
                       variant="caption"
                       color="text.secondary"
                       sx={{ mt: 1, display: 'block' }}
                     >
-                      Use the dropdown above to get started
+                      all availables scenes will be used
                     </Typography>
                   </Box>
                 )}
@@ -1083,31 +1084,33 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                     Add All Scenes
                   </Button>
 
-                  <Button
-                    size="small"
-                    startIcon={<Shuffle />}
-                    onClick={() => {
-                      if (newPlaylist.items && newPlaylist.items.length > 0) {
-                        const shuffled = [...newPlaylist.items].sort(() => Math.random() - 0.5)
-                        setNewPlaylist({ ...newPlaylist, items: shuffled })
-                      }
-                    }}
-                    variant="outlined"
-                    disabled={!newPlaylist.items || newPlaylist.items.length === 0}
-                  >
-                    Shuffle Order
-                  </Button>
+                  {!newPlaylist.items || newPlaylist.items.length === 0 ? null : (
+                    <>
+                      <Button
+                        size="small"
+                        startIcon={<Shuffle />}
+                        onClick={() => {
+                          if (newPlaylist.items && newPlaylist.items.length > 0) {
+                            const shuffled = [...newPlaylist.items].sort(() => Math.random() - 0.5)
+                            setNewPlaylist({ ...newPlaylist, items: shuffled })
+                          }
+                        }}
+                        variant="outlined"
+                      >
+                        Shuffle Order
+                      </Button>
 
-                  <Button
-                    size="small"
-                    startIcon={<RemoveCircle />}
-                    onClick={() => setNewPlaylist({ ...newPlaylist, items: [] })}
-                    variant="outlined"
-                    color="error"
-                    disabled={!newPlaylist.items || newPlaylist.items.length === 0}
-                  >
-                    Clear All
-                  </Button>
+                      <Button
+                        size="small"
+                        startIcon={<RemoveCircle />}
+                        onClick={() => setNewPlaylist({ ...newPlaylist, items: [] })}
+                        variant="outlined"
+                        color="error"
+                      >
+                        Clear All
+                      </Button>
+                    </>
+                  )}
                 </Stack>
               </Box>
 
