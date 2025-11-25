@@ -64,6 +64,7 @@ import PlaylistCard from './PlaylistCard'
 import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
 import Popover from '../../components/Popover/Popover'
 import { useFireTv } from '../../components/FireTv/useFireTv'
+import AssetPicker from '../../components/AssetPicker/AssetPicker'
 
 interface BackendPlaylistProps {
   maxWidth?: string | number
@@ -854,6 +855,19 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                         endAdornment: (
                           <InputAdornment position="end">
                             <TooltipImage />
+                            <AssetPicker
+                              value={
+                                (newPlaylist.image || '').includes('\\.ledfx\\assets\\')
+                                  ? (newPlaylist.image || '').split('\\.ledfx\\assets\\')[1]
+                                  : newPlaylist.image || ''
+                              }
+                              onChange={(filename) =>
+                                setNewPlaylist({
+                                  ...newPlaylist,
+                                  image: `image:file:///${filename}`
+                                })
+                              }
+                            />
                           </InputAdornment>
                         )
                       }
