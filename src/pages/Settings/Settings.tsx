@@ -20,6 +20,7 @@ import MidiCard from './MidiCard'
 import EffectsSettingsCard from './EffectsCard'
 import PixelGraphsSettingsCard from './PixelGraphsSettingsCard'
 import BetaCoreFeatures from './BetaCoreFeatures'
+import AssetManager from '../../components/Dialogs/AssetManager'
 // import IntegrationsSection from './IntegrationsSection'
 
 const Settings = () => {
@@ -42,6 +43,7 @@ const Settings = () => {
 
   return (
     <div className={classes.card} style={{ marginBottom: '3rem' }}>
+      <AssetManager />
       <Accordion disabled sx={{ backgroundColor: 'transparent !important' }}>
         <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
           <Typography>Core Settings</Typography>
