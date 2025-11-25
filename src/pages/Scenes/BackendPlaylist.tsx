@@ -699,10 +699,9 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
               <Box>
                 {/* Enhanced DataGrid with larger height */}
                 <Box sx={{ height: 400 }}>
-                  {/* Increased from 400 to 600 */}
                   <DataGrid
                     rows={playlistItemsToDisplay.map((item) => ({
-                      id: item.scene_id,
+                      id: item.scene_id + '_' + item.index,
                       ...item
                     }))}
                     columns={columns}
