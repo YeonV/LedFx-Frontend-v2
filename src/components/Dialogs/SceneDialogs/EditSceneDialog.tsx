@@ -39,6 +39,7 @@ import MidiInputDialog from '../../Midi/MidiInputDialog'
 import { IMapping } from '../../../store/ui/storeMidi'
 import { WebMidi } from 'webmidi'
 import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
+import AssetPicker from '../../AssetPicker/AssetPicker'
 
 const EditSceneDialog = () => {
   const [name, setName] = useState('')
@@ -575,12 +576,19 @@ const EditSceneDialog = () => {
                         endAdornment: (
                           <InputAdornment position="end">
                             <TooltipImage />
+                            <AssetPicker
+                              value={image?.replace('image:file:///', '')}
+                              onChange={(filename) => setImage(`image:file:///${filename}`)}
+                            />
                           </InputAdornment>
                         )
                       }
                     }}
                     type="text"
-                    value={image
+                    value={(image.includes('\\.ledfx\\assets\\')
+                      ? image.split('\\.ledfx\\assets\\')[1]
+                      : image
+                    )
                       ?.replace('image:file:///', '')
                       ?.replace('image:https://', '')
                       ?.replace('mdi:', '')}

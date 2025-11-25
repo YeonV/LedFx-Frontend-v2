@@ -29,6 +29,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const importSystemConfig = useStore((state) => state.importSystemConfig)
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const uploadAsset = useStore((state) => state.uploadAsset)
+  const getAssets = useStore((state) => state.getAssets)
 
   const isValidFullConfig = useCallback((data: any) => {
     const requiredConfigKeys = [
@@ -161,7 +162,15 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
       switch (newData.type) {
         case 'image':
           if (imageFile) {
-            uploadAsset(imageFile, imageName).then(() => {
+            // Get original file extension
+            const extension = imageFile.name.match(/\.[^/.]+$/)?.[0] || ''
+            // Ensure filename has extension
+            const filenameWithExt = imageName.endsWith(extension)
+              ? imageName
+              : imageName + extension
+
+            uploadAsset(imageFile, filenameWithExt).then(() => {
+              getAssets()
               showSnackbar('success', 'Image uploaded successfully')
             })
           }

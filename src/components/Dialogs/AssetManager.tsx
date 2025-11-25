@@ -4,6 +4,7 @@ import { Close, PermMedia } from '@mui/icons-material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import useStore from '../../store/useStore'
 import Popover from '../Popover/Popover'
+import SceneImage from '../../pages/Scenes/ScenesImage'
 
 const AssetManager = () => {
   const theme = useTheme()
@@ -24,10 +25,8 @@ const AssetManager = () => {
       headerName: 'Preview',
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
-        <Box
-          component="img"
-          src={params.row.url}
-          alt={params.row.filename}
+        <SceneImage
+          iconName={`image:file:///${params.row.path}`}
           sx={{
             width: 60,
             height: 60,
@@ -67,7 +66,7 @@ const AssetManager = () => {
           type="iconbutton"
           variant="text"
           color="inherit"
-          onConfirm={() => deleteAsset(params.row.id)}
+          onConfirm={() => deleteAsset(params.row.filename)}
           text={`Delete ${params.row.filename}?`}
         />
       )
