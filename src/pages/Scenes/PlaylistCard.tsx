@@ -31,7 +31,6 @@ const PlaylistCard = ({
       key={playlistId}
       mt={['0.5rem', '0.5rem', 0, 0, 0]}
       p="8px !important"
-      width={400}
       order={order}
     >
       <Card
@@ -39,8 +38,7 @@ const PlaylistCard = ({
         sx={{
           border: '1px solid',
           borderColor: isActive ? theme.palette.primary.main : theme.palette.divider,
-          position: 'relative',
-          maxWidth: 400
+          position: 'relative'
         }}
       >
         <CardActionArea
