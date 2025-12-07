@@ -14,7 +14,12 @@ export const initialSubscriptions = [
   { event_type: 'effect_set', id: 9004 },
   { event_type: 'client_connected', id: 9005 },
   { event_type: 'client_disconnected', id: 9006 },
-  { event_type: 'client_sync', id: 9007 }
+  { event_type: 'client_sync', id: 9007 },
+  { event_type: 'playlist_started', id: 9008 },
+  { event_type: 'playlist_advanced', id: 9009 },
+  { event_type: 'playlist_stopped', id: 9010 },
+  { event_type: 'playlist_paused', id: 9011 },
+  { event_type: 'playlist_resumed', id: 9012 }
 ]
 
 // A declarative "recipe" for how to handle incoming events.
@@ -39,6 +44,39 @@ export const handlerConfig = {
     scene_id: data.scene_id
   }),
   virtual_diag: (data: any) => ({ data }),
+
+  // Playlist events
+  playlist_started: (data: any) => ({
+    playlist_id: data.playlist_id,
+    index: data.index,
+    scene_id: data.scene_id,
+    effective_duration_ms: data.effective_duration_ms
+  }),
+  playlist_advanced: (data: any) => ({
+    playlist_id: data.playlist_id,
+    index: data.index,
+    scene_id: data.scene_id,
+    effective_duration_ms: data.effective_duration_ms
+  }),
+  playlist_stopped: (data: any) => ({
+    playlist_id: data.playlist_id,
+    effective_duration_ms: data.effective_duration_ms,
+    remaining_ms: data.remaining_ms
+  }),
+  playlist_paused: (data: any) => ({
+    playlist_id: data.playlist_id,
+    index: data.index,
+    scene_id: data.scene_id,
+    effective_duration_ms: data.effective_duration_ms,
+    remaining_ms: data.remaining_ms
+  }),
+  playlist_resumed: (data: any) => ({
+    playlist_id: data.playlist_id,
+    index: data.index,
+    scene_id: data.scene_id,
+    effective_duration_ms: data.effective_duration_ms,
+    remaining_ms: data.remaining_ms
+  }),
 
   // Rule: `true` means pass the entire `data` object as the `detail` payload.
   graph_update: true,

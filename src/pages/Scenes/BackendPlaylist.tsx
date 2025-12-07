@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   Box,
   Button,
@@ -32,6 +32,7 @@ import {
   Grid,
   InputAdornment
 } from '@mui/material'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import {
   PlayArrow,
   Pause,
@@ -98,6 +99,19 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const startPlaylistWithMode = useStore((state) => state.startPlaylistWithMode)
   const activateScene = useStore((state) => state.activateScene)
   const features = useStore((state) => state.features)
+  const onPlaylistStarted = useStore((state) => state.onPlaylistStarted)
+  const onPlaylistAdvanced = useStore((state) => state.onPlaylistAdvanced)
+  const onPlaylistStopped = useStore((state) => state.onPlaylistStopped)
+  const onPlaylistPaused = useStore((state) => state.onPlaylistPaused)
+  const onPlaylistResumed = useStore((state) => state.onPlaylistResumed)
+  const sceneStartTime = useStore((state) => state.sceneStartTime)
+
+  // Subscribe to playlist events following the MSC pattern
+  useSubscription('playlist_started', onPlaylistStarted)
+  useSubscription('playlist_advanced', onPlaylistAdvanced)
+  useSubscription('playlist_stopped', onPlaylistStopped)
+  useSubscription('playlist_paused', onPlaylistPaused)
+  useSubscription('playlist_resumed', onPlaylistResumed)
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
@@ -133,6 +147,21 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
     playlistRuntimeState?.active_playlist === selectedPlaylist && !playlistRuntimeState?.paused
   const isPaused =
     playlistRuntimeState?.active_playlist === selectedPlaylist && playlistRuntimeState?.paused
+
+  // Calculate elapsed time based on scene start time from store
+  const [localElapsedMs, setLocalElapsedMs] = useState<number>(0)
+
+  // Timer that calculates elapsed from scene start time
+  useEffect(() => {
+    if (!isPlaying) return
+
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - sceneStartTime
+      setLocalElapsedMs(elapsed)
+    }, 100)
+
+    return () => clearInterval(interval)
+  }, [isPlaying, sceneStartTime])
 
   const handleCreatePlaylist = async () => {
     if (!newPlaylist.name) return
@@ -228,7 +257,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
     return `${minutes}:${(seconds % 60).toString().padStart(2, '0')}`
   }
 
-  // Enhanced playlist items logic
+  // Enhanced playlist items logic - use runtime order when playing
   const getPlaylistItemsToDisplay = () => {
     if (!currentPlaylistConfig) return []
 
@@ -237,6 +266,27 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
       return []
     }
 
+    // If playlist is active and we have runtime state with scenes order, use that
+    if (
+      playlistRuntimeState?.active_playlist === selectedPlaylist &&
+      playlistRuntimeState?.scenes &&
+      playlistRuntimeState?.order
+    ) {
+      // Map runtime scenes order to playlist items
+      return playlistRuntimeState.scenes.map((sceneId: string, runtimeIndex: number) => {
+        // Find the item in the config that matches this scene_id
+        const configItem = currentPlaylistConfig.items.find(
+          (item: PlaylistItem) => item.scene_id === sceneId
+        )
+        return {
+          scene_id: sceneId,
+          duration_ms: configItem?.duration_ms,
+          index: runtimeIndex // Use runtime index for display order
+        }
+      })
+    }
+
+    // Otherwise show configured order
     return currentPlaylistConfig.items.map((item: PlaylistItem, index: number) => ({
       ...item,
       index
@@ -246,37 +296,20 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const playlistItemsToDisplay = getPlaylistItemsToDisplay()
   const currentSceneIndex = playlistRuntimeState?.index || 0
 
-  // Enhanced progress calculation with null checks
+  // Enhanced progress calculation with null checks - use local elapsed timer
   const progress =
-    playlistRuntimeState?.effective_duration_ms && playlistRuntimeState?.remaining_ms
+    playlistRuntimeState?.effective_duration_ms
       ? Math.max(
           0,
           Math.min(
             100,
-            ((playlistRuntimeState.effective_duration_ms - playlistRuntimeState.remaining_ms) /
-              playlistRuntimeState.effective_duration_ms) *
-              100
+            (localElapsedMs / playlistRuntimeState.effective_duration_ms) * 100
           )
         )
       : 0
 
   const runtimeMode = playlistRuntimeState?.mode || currentPlaylistConfig?.mode
 
-  // Add a polling effect to update state regularly when playing
-  useEffect(() => {
-    let interval: NodeJS.Timeout
-
-    if (isPlaying) {
-      // Poll every second to update progress
-      interval = setInterval(() => {
-        getPlaylistState()
-      }, 1000)
-    }
-
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [isPlaying, getPlaylistState])
 
   // Add handler for updating individual item duration
   const handleUpdateItemDuration = async (itemIndex: number, newDuration: number) => {
@@ -665,18 +698,15 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                         height: 8,
                         borderRadius: 4,
                         '& .MuiLinearProgress-bar': {
-                          // Disable transition on scene change (backward jump)
-                          transition: isSceneChange ? 'none' : 'transform 0.9s linear'
+                          // Disable transition on scene change (backward jump), otherwise use immediate transition
+                          transition: isSceneChange ? 'none' : 'transform 0.1s linear'
                         }
                       }}
                     />
                     <Stack direction="row" justifyContent="space-between" sx={{ mt: 1 }}>
                       <Typography variant="caption">
                         {playlistRuntimeState.effective_duration_ms
-                          ? formatTime(
-                              playlistRuntimeState.effective_duration_ms -
-                                playlistRuntimeState.remaining_ms
-                            )
+                          ? formatTime(localElapsedMs)
                           : ''}
                       </Typography>
                       <Typography variant="caption" color={isPlaying ? 'primary' : 'textDisabled'}>
