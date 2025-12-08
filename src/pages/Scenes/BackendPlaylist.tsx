@@ -261,12 +261,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const getPlaylistItemsToDisplay = () => {
     if (!currentPlaylistConfig) return []
 
-    // Always use configured items - no fallback to "all scenes"
-    if (!currentPlaylistConfig.items || currentPlaylistConfig.items.length === 0) {
-      return []
-    }
-
     // If playlist is active and we have runtime state with scenes order, use that
+    // This handles both normal playlists AND empty playlists (which resolve to all scenes at runtime)
     if (
       playlistRuntimeState?.active_playlist === selectedPlaylist &&
       playlistRuntimeState?.scenes &&
@@ -274,8 +270,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
     ) {
       // Map runtime scenes order to playlist items
       return playlistRuntimeState.scenes.map((sceneId: string, runtimeIndex: number) => {
-        // Find the item in the config that matches this scene_id
-        const configItem = currentPlaylistConfig.items.find(
+        // Find the item in the config that matches this scene_id (if it exists)
+        const configItem = currentPlaylistConfig.items?.find(
           (item: PlaylistItem) => item.scene_id === sceneId
         )
         return {
@@ -284,6 +280,12 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
           index: runtimeIndex // Use runtime index for display order
         }
       })
+    }
+
+    // If no runtime state, check if we have configured items
+    if (!currentPlaylistConfig.items || currentPlaylistConfig.items.length === 0) {
+      // Empty playlist (dynamic "all scenes") - no items to show when not running
+      return []
     }
 
     // Otherwise show configured order
@@ -390,59 +392,53 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
       renderCell: (params: GridRenderCellParams) => {
         const duration = params.value || currentPlaylistConfig?.default_duration_ms || 5000
         const isActive = currentSceneIndex === params.row.index && (isPlaying || isPaused)
-        const isConfiguredItem =
-          Array.isArray(currentPlaylistConfig?.items) && currentPlaylistConfig.items.length > 0
+        
+        // Check if jitter is enabled (either from runtime state or config)
+        const jitterEnabled = 
+          playlistRuntimeState?.timing?.jitter?.enabled || 
+          currentPlaylistConfig?.timing?.jitter?.enabled || 
+          false
+        
+        // For active scene, use effective_duration_ms from runtime state
+        const displayDuration = isActive && playlistRuntimeState?.effective_duration_ms
+          ? playlistRuntimeState.effective_duration_ms
+          : duration
+
+        const durationInSeconds = Math.floor(displayDuration / 1000)
 
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: '100%' }}>
-            {isConfiguredItem ? (
-              <TextField
-                size="small"
-                type="number"
-                value={duration / 1000} // Show in seconds
-                onChange={(e) => {
-                  const newDurationMs = Math.max(0.5, parseFloat(e.target.value)) * 1000
-                  handleUpdateItemDuration(params.row.index, newDurationMs)
-                }}
-                onBlur={(e) => {
-                  // Ensure minimum on blur
-                  const newDurationMs = Math.max(500, parseFloat(e.target.value) * 1000)
-                  if (newDurationMs !== duration) {
-                    handleUpdateItemDuration(params.row.index, newDurationMs)
-                  }
-                }}
-                inputProps={{
-                  min: 0.5,
-                  step: 0.5,
-                  style: {
-                    textAlign: 'center',
-                    color: isActive ? theme.palette.primary.main : 'inherit',
-                    fontWeight: isActive ? 'bold' : 'normal'
-                  }
-                }}
-                sx={{
-                  width: 70,
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: isActive ? 'primary.main' : 'divider'
-                    }
-                  }
-                }}
-              />
-            ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'flex-end', width: '100%', height: '100%' }}>
+            {jitterEnabled && !isActive && (
               <Typography
                 variant="body2"
                 sx={{
-                  color: isActive ? 'primary.main' : 'text.secondary',
-                  fontWeight: isActive ? 'bold' : 'normal',
-                  fontStyle: 'italic'
+                  color: 'text.secondary',
+                  fontWeight: isActive ? 'bold' : 'normal'
                 }}
               >
-                {formatTime(duration)}
+                ~
               </Typography>
             )}
-            <Typography variant="caption" color="text.secondary">
-              {isConfiguredItem ? 's' : '(default)'}
+            <Typography
+              variant="body2"
+              sx={{
+                color: isActive ? 'primary.main' : 'text.secondary',
+                fontWeight: isActive ? 'bold' : 'normal',
+                fontStyle: isActive ? 'normal' : 'italic',
+                minWidth: '3ch',
+                textAlign: 'right'
+              }}
+            >
+              {durationInSeconds}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                fontWeight: isActive ? 'bold' : 'normal'
+              }}
+            >
+              s
             </Typography>
           </Box>
         )
@@ -638,11 +634,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   </IconButton>
 
                   <IconButton
-                    onClick={async () => {
-                      const pl = selectedPlaylist
-                      await handleStop()
-                      setCurrentPlaylist(pl)
-                    }}
+                    onClick={handleStop}
                     disabled={!selectedPlaylist || !playlistRuntimeState}
                   >
                     <Stop />
