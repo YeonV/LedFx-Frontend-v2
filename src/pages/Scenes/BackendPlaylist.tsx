@@ -66,6 +66,7 @@ import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
 import Popover from '../../components/Popover/Popover'
 import { useFireTv } from '../../components/FireTv/useFireTv'
 import AssetPicker from '../../components/AssetPicker/AssetPicker'
+import useStyles from './Scenes.styles'
 
 interface BackendPlaylistProps {
   maxWidth?: string | number
@@ -74,6 +75,7 @@ interface BackendPlaylistProps {
 
 export default function BackendPlaylist({ maxWidth = 486, cards = false }: BackendPlaylistProps) {
   const theme = useTheme()
+  const classes = useStyles()
   const location = useLocation()
 
   const isPlaylistPage = location.pathname === '/Playlists'
@@ -1269,12 +1271,12 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 getPlaylistState()
               }}
               handleEditPlaylist={(plId: string) => {
-                setEditingPlaylistId(plId) // SET IT HERE TOO
+                setEditingPlaylistId(plId)
                 setNewPlaylist(playlists[plId])
                 setEditDialogOpen(true)
               }}
               isActive={currentPlaylist === playlist.id}
-              classes={{ root: '' }} // You can pass your custom classes here
+              classes={classes}
             />
           ))}
           <Grid
@@ -1282,16 +1284,14 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             mt={['0.5rem', '0.5rem', 0, 0, 0]}
             p="8px !important"
             order={99}
-            width={400}
           >
             <Card
+              className={classes.root}
               sx={{
                 border: '1px solid',
                 borderColor: theme.palette.divider,
                 bgcolor: 'transparent',
                 position: 'relative',
-                width: 384,
-                height: 190,
                 cursor: 'pointer',
                 '&:hover': { bgcolor: theme.palette.background.paper }
               }}
