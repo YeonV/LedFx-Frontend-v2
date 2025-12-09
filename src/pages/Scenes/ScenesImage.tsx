@@ -5,15 +5,32 @@ import useStore from '../../store/useStore'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
-const SceneImage = ({ iconName, list, sx }: { iconName: string; list?: boolean; sx?: SxProps }) => {
+const SceneImage = ({
+  iconName,
+  list,
+  thumbnail,
+  sx
+}: {
+  iconName: string
+  list?: boolean
+  thumbnail?: boolean
+  sx?: SxProps
+}) => {
   const classes = useStyles()
-  const [imageData, setImageData] = useState(null)
+  const [imageData, setImageData] = useState<string | null>(null)
   const getImage = useStore((state) => state.getImage)
-  const fetchImage = useCallback(async (ic: string) => {
-    const result = await getImage(ic.split('image:')[1]?.replaceAll('file:///', ''))
-    if (result?.image) setImageData(result.image)
+
+  const fetchImage = useCallback(
+    async (ic: string) => {
+      const result = await getImage(ic.split('image:')[1], thumbnail)
+      if (result?.image) {
+        setImageData(result.image)
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    [thumbnail]
+  )
+
   useEffect(() => {
     if (iconName?.startsWith('image:')) {
       fetchImage(iconName)
@@ -36,7 +53,7 @@ const SceneImage = ({ iconName, list, sx }: { iconName: string; list?: boolean; 
           width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
           backgroundSize: 'cover',
-          backgroundImage: `url("data:image/png;base64,${imageData}")`
+          backgroundImage: imageData ? `url("data:image/png;base64,${imageData}")` : undefined
         }}
         title="SceneImage"
       />

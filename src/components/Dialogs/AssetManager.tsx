@@ -49,7 +49,9 @@ const AssetManager = () => {
   const [open, setOpen] = useState(false)
   const [tabValue, setTabValue] = useState(0)
   const assets = useStore((state) => state.assets)
+  const assetsFixed = useStore((state) => state.assetsFixed)
   const getAssets = useStore((state) => state.getAssets)
+  const getAssetsFixed = useStore((state) => state.getAssetsFixed)
   const deleteAsset = useStore((state) => state.deleteAsset)
   const cacheStats = useStore((state) => state.cacheStats)
   const getCacheStats = useStore((state) => state.getCacheStats)
@@ -60,11 +62,13 @@ const AssetManager = () => {
     if (open) {
       if (tabValue === 0) {
         getAssets()
+      } else if (tabValue === 1) {
+        getAssetsFixed()
       } else {
         getCacheStats()
       }
     }
-  }, [open, tabValue, getAssets, getCacheStats])
+  }, [open, tabValue, getAssets, getAssetsFixed, getCacheStats])
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
@@ -77,6 +81,7 @@ const AssetManager = () => {
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage
+          thumbnail={!params.row.is_animated}
           iconName={`image:file:///${params.row.path}`}
           sx={{
             width: 60,
@@ -90,14 +95,14 @@ const AssetManager = () => {
       filterable: false
     },
     {
-      field: 'filename',
-      headerName: 'Filename',
+      field: 'path',
+      headerName: 'Path',
       flex: 1,
       minWidth: 200
     },
     {
-      field: 'type',
-      headerName: 'Type',
+      field: 'format',
+      headerName: 'Format',
       width: 150
     },
     {
@@ -105,6 +110,12 @@ const AssetManager = () => {
       headerName: 'Size',
       width: 120,
       valueFormatter: (value: number) => `${(value / 1024).toFixed(2)} KB`
+    },
+    {
+      field: 'dimensions',
+      headerName: 'Dimensions',
+      width: 120,
+      valueGetter: (value, row) => `${row.width}x${row.height}`
     },
     {
       field: 'actions',
@@ -124,6 +135,67 @@ const AssetManager = () => {
     }
   ]
 
+  const fixedAssetColumns: GridColDef[] = [
+    {
+      field: 'preview',
+      headerName: 'Preview',
+      width: 100,
+      renderCell: (params: GridRenderCellParams) => (
+        <SceneImage
+          iconName={`image:builtin://${params.row.path}`}
+          sx={{
+            width: 60,
+            height: 60,
+            objectFit: 'cover',
+            borderRadius: 1
+          }}
+        />
+      ),
+      sortable: false,
+      filterable: false
+    },
+    {
+      field: 'path',
+      headerName: 'Path',
+      flex: 1,
+      minWidth: 250
+    },
+    {
+      field: 'format',
+      headerName: 'Format',
+      width: 100
+    },
+    {
+      field: 'size',
+      headerName: 'Size',
+      width: 120,
+      valueFormatter: (value: number) => `${(value / 1024).toFixed(2)} KB`
+    },
+    {
+      field: 'dimensions',
+      headerName: 'Dimensions',
+      width: 120,
+      valueGetter: (value, row) => `${row.width}x${row.height}`
+    },
+    {
+      field: 'n_frames',
+      headerName: 'Frames',
+      width: 100
+    },
+    {
+      field: 'is_animated',
+      headerName: 'Animated',
+      width: 100,
+      valueFormatter: (value: boolean) => (value ? 'Yes' : 'No')
+    },
+    {
+      field: 'modified',
+      headerName: 'Modified',
+      width: 180,
+      valueFormatter: (value: string) => new Date(value).toLocaleString()
+    }
+  ]
+
   const cacheColumns: GridColDef[] = [
     {
       field: 'preview',
@@ -131,6 +203,7 @@ const AssetManager = () => {
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage
+          thumbnail
           iconName={`image:${params.row.url}`}
           sx={{
             width: 60,
@@ -258,8 +331,9 @@ const AssetManager = () => {
                 onChange={handleTabChange}
                 aria-label="asset and cache manager tabs"
               >
-                <Tab label="Assets" {...a11yProps(0)} />
-                <Tab label="Cache" {...a11yProps(1)} />
+                <Tab label="User Assets" {...a11yProps(0)} />
+                <Tab label="Built-in Assets" {...a11yProps(1)} />
+                <Tab label="Cache" {...a11yProps(2)} />
               </Tabs>
             </Box>
 
@@ -268,6 +342,7 @@ const AssetManager = () => {
                 <DataGrid
                   rows={assets}
                   columns={assetColumns}
+                  getRowId={(row) => row.filename || row.path}
                   rowHeight={80}
                   disableRowSelectionOnClick
                   sx={{
@@ -281,6 +356,24 @@ const AssetManager = () => {
             </TabPanel>
 
             <TabPanel value={tabValue} index={1}>
+              <Box sx={{ height: 'calc(100vh - 200px)', width: '100%' }}>
+                <DataGrid
+                  rows={assetsFixed}
+                  columns={fixedAssetColumns}
+                  getRowId={(row) => row.path}
+                  rowHeight={80}
+                  disableRowSelectionOnClick
+                  sx={{
+                    '& .MuiDataGrid-cell': {
+                      display: 'flex',
+                      alignItems: 'center'
+                    }
+                  }}
+                />
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={2}>
               <Box sx={{ height: 'calc(100vh - 200px)', width: '100%' }}>
                 <DataGrid
                   rows={cacheStats?.entries || []}
