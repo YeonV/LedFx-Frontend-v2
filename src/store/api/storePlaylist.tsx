@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 import useStore from '../useStore'
-import {
+import type {
   PlaylistConfig,
   PlaylistRuntimeState,
   GetPlaylistsApiResponse,
