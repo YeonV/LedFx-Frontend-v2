@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { IconButton, Menu, MenuItem, Box, Typography, useTheme } from '@mui/material'
+import { IconButton, Menu, MenuItem, Typography, useTheme } from '@mui/material'
 import { Image } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import SceneImage from '../../pages/Scenes/ScenesImage'

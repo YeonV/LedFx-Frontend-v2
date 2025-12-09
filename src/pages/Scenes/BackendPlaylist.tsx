@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -60,7 +60,7 @@ import useStore from '../../store/useStore'
 import SceneImage from './ScenesImage'
 import ExpanderCard from './ExpanderCard'
 import type { PlaylistConfig, PlaylistItem } from '../../api/ledfx.types'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import PlaylistCard from './PlaylistCard'
 import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
 import Popover from '../../components/Popover/Popover'
@@ -74,7 +74,6 @@ interface BackendPlaylistProps {
 
 export default function BackendPlaylist({ maxWidth = 486, cards = false }: BackendPlaylistProps) {
   const theme = useTheme()
-  const navigate = useNavigate()
   const location = useLocation()
 
   const isPlaylistPage = location.pathname === '/Playlists'
@@ -164,7 +163,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   }, [isPlaying, sceneStartTime])
 
   const handleCreatePlaylist = async () => {
-    if (!newPlaylist.name) return
+    if (!newPlaylist?.name) return
 
     const defaultPlaylist: Partial<PlaylistConfig> = {
       name: '',
@@ -184,7 +183,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   }
 
   const handleEditPlaylist = async () => {
-    if (!editingPlaylistId || !newPlaylist.name) return // USE editingPlaylistId
+    if (!editingPlaylistId || !newPlaylist?.name) return // USE editingPlaylistId
 
     const result = await updatePlaylist(editingPlaylistId, newPlaylist.name, newPlaylist) // USE editingPlaylistId
     if (result?.status === 'success') {
@@ -299,37 +298,32 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   const currentSceneIndex = playlistRuntimeState?.index || 0
 
   // Enhanced progress calculation with null checks - use local elapsed timer
-  const progress =
-    playlistRuntimeState?.effective_duration_ms
-      ? Math.max(
-          0,
-          Math.min(
-            100,
-            (localElapsedMs / playlistRuntimeState.effective_duration_ms) * 100
-          )
-        )
-      : 0
+  const progress = playlistRuntimeState?.effective_duration_ms
+    ? Math.max(
+        0,
+        Math.min(100, (localElapsedMs / playlistRuntimeState.effective_duration_ms) * 100)
+      )
+    : 0
 
   const runtimeMode = playlistRuntimeState?.mode || currentPlaylistConfig?.mode
 
-
   // Add handler for updating individual item duration
-  const handleUpdateItemDuration = async (itemIndex: number, newDuration: number) => {
-    if (!selectedPlaylist || !currentPlaylistConfig?.items) return
+  // const handleUpdateItemDuration = async (itemIndex: number, newDuration: number) => {
+  //   if (!selectedPlaylist || !currentPlaylistConfig?.items) return
 
-    const updatedItems = [...currentPlaylistConfig.items]
-    updatedItems[itemIndex] = {
-      ...updatedItems[itemIndex],
-      duration_ms: Math.max(500, newDuration) // Ensure minimum 500ms
-    }
+  //   const updatedItems = [...currentPlaylistConfig.items]
+  //   updatedItems[itemIndex] = {
+  //     ...updatedItems[itemIndex],
+  //     duration_ms: Math.max(500, newDuration) // Ensure minimum 500ms
+  //   }
 
-    // Spread the entire config to preserve all fields
-    await updatePlaylist(selectedPlaylist, currentPlaylistConfig.name, {
-      ...currentPlaylistConfig,
-      items: updatedItems
-    })
-    getPlaylists()
-  }
+  //   // Spread the entire config to preserve all fields
+  //   await updatePlaylist(selectedPlaylist, currentPlaylistConfig.name, {
+  //     ...currentPlaylistConfig,
+  //     items: updatedItems
+  //   })
+  //   getPlaylists()
+  // }
 
   const columns: GridColDef[] = [
     {
@@ -392,22 +386,32 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
       renderCell: (params: GridRenderCellParams) => {
         const duration = params.value || currentPlaylistConfig?.default_duration_ms || 5000
         const isActive = currentSceneIndex === params.row.index && (isPlaying || isPaused)
-        
+
         // Check if jitter is enabled (either from runtime state or config)
-        const jitterEnabled = 
-          playlistRuntimeState?.timing?.jitter?.enabled || 
-          currentPlaylistConfig?.timing?.jitter?.enabled || 
+        const jitterEnabled =
+          playlistRuntimeState?.timing?.jitter?.enabled ||
+          currentPlaylistConfig?.timing?.jitter?.enabled ||
           false
-        
+
         // For active scene, use effective_duration_ms from runtime state
-        const displayDuration = isActive && playlistRuntimeState?.effective_duration_ms
-          ? playlistRuntimeState.effective_duration_ms
-          : duration
+        const displayDuration =
+          isActive && playlistRuntimeState?.effective_duration_ms
+            ? playlistRuntimeState.effective_duration_ms
+            : duration
 
         const durationInSeconds = Math.floor(displayDuration / 1000)
 
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'flex-end', width: '100%', height: '100%' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5,
+              justifyContent: 'flex-end',
+              width: '100%',
+              height: '100%'
+            }}
+          >
             {jitterEnabled && !isActive && (
               <Typography
                 variant="body2"
@@ -507,6 +511,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   }, [progress])
 
   const renderWidget = () => {
+    console.log(selectedPlaylist, currentPlaylistConfig)
+    console.log(newPlaylist)
     return (
       <>
         <Card sx={{ background: 'transparent', borderColor: 'transparent', minWidth: '400px' }}>
@@ -516,11 +522,12 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             {!cards && (
               <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                  <FormControl size="small" sx={{ minWidth: 200, flex: 1 }}>
+                  <FormControl size="small" sx={{ minWidth: 200, flex: 1, minHeight: 56 }}>
                     <Select
                       disableUnderline
                       value={currentPlaylist || ''}
                       onChange={(e) => setCurrentPlaylist(e.target.value)}
+                      sx={{ height: 56 }}
                     >
                       {Object.entries(playlists).map(([id, playlist]) => (
                         <MenuItem key={id} value={id}>
@@ -528,24 +535,21 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                             <SceneImage
                               iconName={playlist.image || 'QueueMusic'}
                               list
-                              sx={{ height: 30, width: 50 }}
+                              sx={{ height: 56, width: 50 }}
                             />
-                            <Typography>{playlist.name}</Typography>
+                            <Typography>{playlist?.name}</Typography>
                           </Stack>
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
 
-                  <Tooltip title="Create New Playlist">
-                    <IconButton onClick={() => setCreateDialogOpen(true)} color="primary">
-                      <Add />
-                    </IconButton>
-                  </Tooltip>
-
                   {selectedPlaylist && (
                     <Tooltip title="Edit Playlist">
                       <IconButton
+                        disabled={
+                          !currentPlaylistConfig?.items || currentPlaylistConfig?.items.length === 0
+                        }
                         onClick={() => {
                           setEditingPlaylistId(selectedPlaylist) // SET IT
                           setNewPlaylist(currentPlaylistConfig!)
@@ -564,6 +568,12 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                       </IconButton>
                     </Tooltip>
                   )}
+
+                  <Tooltip title="Create New Playlist">
+                    <IconButton onClick={() => setCreateDialogOpen(true)} color="primary">
+                      <Add />
+                    </IconButton>
+                  </Tooltip>
                 </Stack>
               </Box>
             )}
@@ -816,7 +826,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
               {/* Basic Settings */}
               <TextField
                 label="Playlist Name"
-                value={newPlaylist.name || ''}
+                value={newPlaylist?.name || ''}
                 onChange={(e) => setNewPlaylist({ ...newPlaylist, name: e.target.value })}
                 fullWidth
               />
@@ -826,7 +836,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                     <TextField
                       label="Default Duration (seconds)"
                       type="number"
-                      value={(newPlaylist.default_duration_ms || 5000) / 1000}
+                      value={(newPlaylist?.default_duration_ms || 5000) / 1000}
                       onChange={(e) =>
                         setNewPlaylist({
                           ...newPlaylist,
@@ -843,7 +853,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                       <InputLabel>Default Mode</InputLabel>
                       <Select
                         variant="outlined"
-                        value={newPlaylist.mode || 'sequence'}
+                        value={newPlaylist?.mode || 'sequence'}
                         onChange={(e) =>
                           setNewPlaylist({
                             ...newPlaylist,
@@ -879,9 +889,9 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                             <TooltipImage />
                             <AssetPicker
                               value={
-                                (newPlaylist.image || '').includes('\\.ledfx\\assets\\')
-                                  ? (newPlaylist.image || '').split('\\.ledfx\\assets\\')[1]
-                                  : newPlaylist.image || ''
+                                (newPlaylist?.image || '').includes('\\.ledfx\\assets\\')
+                                  ? (newPlaylist?.image || '').split('\\.ledfx\\assets\\')[1]
+                                  : newPlaylist?.image || ''
                               }
                               onChange={(filename) =>
                                 setNewPlaylist({
@@ -896,13 +906,13 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                     }}
                     sx={{ mt: 2 }}
                     type="text"
-                    value={newPlaylist.image || ''}
+                    value={newPlaylist?.image || ''}
                     onChange={(e) => setNewPlaylist({ ...newPlaylist, image: e.target.value })}
                     fullWidth
                   />
                 </Box>
                 <SceneImage
-                  iconName={newPlaylist.image || 'QueueMusic'}
+                  iconName={newPlaylist?.image || 'QueueMusic'}
                   sx={{ height: 128, width: 128 }}
                 />
               </Stack>
@@ -917,9 +927,11 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                       const sceneId = e.target.value as string
                       const newItem: PlaylistItem = {
                         scene_id: sceneId,
-                        duration_ms: newPlaylist.default_duration_ms || 5000
+                        duration_ms: newPlaylist?.default_duration_ms || 5000
                       }
-                      const currentItems = Array.isArray(newPlaylist.items) ? newPlaylist.items : []
+                      const currentItems = Array.isArray(newPlaylist?.items)
+                        ? newPlaylist?.items
+                        : []
                       setNewPlaylist({
                         ...newPlaylist,
                         items: [...currentItems, newItem]
@@ -939,7 +951,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                           list
                           sx={{ height: 50, width: 100 }}
                         />
-                        <Typography>{scene.name || sceneId}</Typography>
+                        <Typography>{scene?.name || sceneId}</Typography>
                       </Stack>
                     </MenuItem>
                   ))}
@@ -948,7 +960,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
 
               <Box>
                 {/* Playlist Items List */}
-                {Array.isArray(newPlaylist.items) && newPlaylist.items.length > 0 ? (
+                {Array.isArray(newPlaylist?.items) && newPlaylist?.items.length > 0 ? (
                   <Paper variant="outlined" sx={{ maxHeight: 300, overflow: 'auto' }}>
                     <List dense>
                       {newPlaylist.items.map((item, index) => {
@@ -987,8 +999,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                                 <IconButton
                                   size="small"
                                   onClick={() => {
-                                    if (index < newPlaylist.items!.length - 1) {
-                                      const updatedItems = [...newPlaylist.items!]
+                                    if (index < (newPlaylist?.items || []).length - 1) {
+                                      const updatedItems = [...(newPlaylist?.items || [])]
                                       const temp = updatedItems[index]
                                       updatedItems[index] = updatedItems[index + 1]
                                       updatedItems[index + 1] = temp
@@ -1065,7 +1077,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                                 type="iconbutton"
                                 color="error"
                                 onConfirm={() => {
-                                  const updatedItems = newPlaylist.items!.filter(
+                                  const updatedItems = (newPlaylist?.items || []).filter(
                                     (_, i) => i !== index
                                   )
                                   setNewPlaylist({ ...newPlaylist, items: updatedItems })
@@ -1119,7 +1131,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                     Add All Scenes
                   </Button>
 
-                  {!newPlaylist.items || newPlaylist.items.length === 0 ? null : (
+                  {!newPlaylist?.items || newPlaylist?.items.length === 0 ? null : (
                     <>
                       <Button
                         size="small"
@@ -1156,7 +1168,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={newPlaylist.timing?.jitter?.enabled || false}
+                      checked={newPlaylist?.timing?.jitter?.enabled || false}
                       onChange={(e) =>
                         setNewPlaylist({
                           ...newPlaylist,
@@ -1174,7 +1186,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   label="Enable Timing Jitter"
                 />
 
-                {newPlaylist.timing?.jitter?.enabled && (
+                {newPlaylist?.timing?.jitter?.enabled && (
                   <Box sx={{ mt: 2 }}>
                     <Typography gutterBottom>Jitter Range</Typography>
                     <Slider
@@ -1224,7 +1236,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
             <Button
               onClick={createDialogOpen ? handleCreatePlaylist : handleEditPlaylist}
               variant="contained"
-              disabled={!newPlaylist.name}
+              disabled={!newPlaylist?.name}
             >
               <Save sx={{ mr: 1 }} />
               {createDialogOpen ? 'Create' : 'Save'}
@@ -1319,23 +1331,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
     </Stack>
   ) : (
     <Box maxWidth={maxWidth}>
-      <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={1135}>
+      <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={1085}>
         {renderWidget()}
-        <Button
-          variant="outlined"
-          sx={{
-            height: 55,
-            bgcolor: 'black',
-            width: '100%',
-            textTransform: 'none',
-            borderColor: '#666'
-          }}
-          onClick={() => {
-            navigate('/playlist')
-          }}
-        >
-          POC: Playlist Page
-        </Button>
       </ExpanderCard>
     </Box>
   )
