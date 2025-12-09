@@ -119,10 +119,39 @@ const storeActions = (set: any) => ({
   getUpdateInfo: async (snackbar: boolean) =>
     await Ledfx('/api/check_for_updates', 'GET', {}, snackbar),
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),
-  getImage: async (path_url: string) =>
-    await Ledfx('/api/get_image', 'POST', {
-      path_url
-    }),
+
+  getImage: async (path_url: string, thumbnail: boolean = false) => {
+    // Handle file:/// and builtin:// paths
+    if (path_url.includes('file:///') || path_url.includes('builtin://')) {
+      const path = path_url.replaceAll('file:///', '')
+
+      // Get the blob response
+      const blob = await Ledfx(
+        `api/assets/${thumbnail ? 'thumbnail' : 'download'}`,
+        'POST',
+        { path },
+        false,
+        'blob'
+      )
+
+      if (blob) {
+        return new Promise((resolve) => {
+          const reader = new FileReader()
+          reader.onloadend = () => {
+            const base64data = reader.result as string
+            // Extract just the base64 part (remove data:image/xxx;base64, prefix)
+            const base64 = base64data.split(',')[1]
+            resolve({ image: base64, type: blob.type || 'image/png' })
+          }
+          reader.readAsDataURL(blob)
+        })
+      }
+    } else {
+      // Handle external URLs (old format)
+      return await Ledfx('/api/get_image', 'POST', { path_url })
+    }
+  },
+
   getGifFrames: async (path_url: string) =>
     await Ledfx('/api/get_gif_frames', 'POST', {
       path_url

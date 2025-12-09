@@ -100,7 +100,9 @@ const EditSceneDialog = () => {
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const fetchImage = useCallback(async (ic: string) => {
     const result = await getImage(ic.split('image:')[1]?.replaceAll('file:///', ''))
-    setImageData(result.image)
+    if (result?.image) {
+      setImageData(result.image)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -356,8 +358,7 @@ const EditSceneDialog = () => {
       [virtualId]: {
         ...prev[virtualId],
         type: newEffectType,
-        preset: undefined, // Clear preset when effect type changes
-        preset_category: undefined
+        preset: undefined // Clear preset when effect type changes
       }
     }))
   }

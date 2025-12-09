@@ -24,8 +24,20 @@ interface CacheStats {
   entries: CacheEntry[]
 }
 
+interface Asset {
+  path: string
+  size: number
+  modified: string
+  width: number
+  height: number
+  format: string | null
+  n_frames: number
+  is_animated: boolean
+}
+
 const storeAssets = (set: any) => ({
-  assets: [] as any[],
+  assets: [] as Asset[],
+  assetsFixed: [] as Asset[],
   cacheStats: null as CacheStats | null,
 
   getAssets: async () => {
@@ -39,6 +51,20 @@ const storeAssets = (set: any) => ({
         'api/getAssets'
       )
     }
+  },
+
+  getAssetsFixed: async () => {
+    const resp = await Ledfx('/api/assets_fixed')
+    if (resp && resp.assets) {
+      set(
+        produce((state: IStore) => {
+          state.assetsFixed = resp.assets
+        }),
+        false,
+        'api/getAssetsFixed'
+      )
+    }
+    return resp
   },
 
   uploadAsset: async (file: File, filename: string) => {

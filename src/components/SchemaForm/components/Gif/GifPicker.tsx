@@ -3,13 +3,10 @@ import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
-import { Button, DialogActions, useTheme } from '@mui/material'
-import fx from '../../../Icons/FX.svg'
-
-interface Gif {
-  name: string
-  url: string
-}
+import { Box, Button, DialogActions, useTheme } from '@mui/material'
+import { Gif } from '@mui/icons-material'
+import useStore from '../../../../store/useStore'
+import SceneImage from '../../../../pages/Scenes/ScenesImage'
 
 interface GifPickerProps {
   onChange: (_url: string) => void
@@ -17,10 +14,20 @@ interface GifPickerProps {
 
 const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
   const theme = useTheme()
-  const [gifs, setGifs] = useState<Gif[]>([])
   const [filter, setFilter] = useState('')
   const [open, setOpen] = useState(false)
   const [selectedGif, setSelectedGif] = useState<string | null>(null)
+
+  const assetsFixed = useStore((state) => state.assetsFixed)
+  const getAssetsFixed = useStore((state) => state.getAssetsFixed)
+
+  useEffect(() => {
+    if (open) {
+      getAssetsFixed()
+    }
+  }, [open, getAssetsFixed])
+
+  const gifs = assetsFixed.filter((asset) => asset.is_animated)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -30,38 +37,10 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
     setOpen(false)
   }
 
-  const baseUrl = 'https://assets.ledfx.app/gifs/'
-  useEffect(() => {
-    if (open)
-      fetch(baseUrl)
-        .then((response) => response.text())
-        .then((data) => {
-          const parser = new DOMParser()
-          const doc = parser.parseFromString(data, 'text/html')
-          const links = doc.querySelectorAll('pre a')
-          const files = Array.from(links)
-            .filter((link) => link.textContent?.endsWith('.gif'))
-            .map((link: any) => ({
-              name: link.textContent?.replace('.gif', ''),
-              url: baseUrl + link.href.split('/').pop()
-            }))
-          setGifs(files)
-        })
-  }, [open])
-
   return (
     <>
       <Button onClick={handleClickOpen} sx={{ alignSelf: 'center' }}>
-        <img
-          width={50}
-          height="24px"
-          src={fx}
-          alt="wled"
-          style={{
-            filter: `invert(${theme.palette.mode === 'dark' ? 1 : 0}) brightness(2)`,
-            objectFit: 'cover'
-          }}
-        />
+        <Gif />
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>GIF Picker</DialogTitle>
@@ -72,37 +51,76 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter GIFs..."
           />
-          {gifs
-            .filter((gif) => gif.name.includes(filter))
-            .map((gif, i) => (
-              <img
-                key={gif.name}
-                src={gif.url}
-                alt={gif.name}
-                style={{
-                  height: '100px',
-                  marginRight: '10px',
-                  border: '2px solid',
-                  cursor: 'pointer',
-                  borderColor: selectedGif === gif.url ? theme.palette.primary.main : 'transparent'
-                }}
-                tabIndex={i + 1}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleClose()
-                  }
-                }}
-                onClick={() => {
-                  if (selectedGif !== gif.url) {
-                    setSelectedGif(gif.url)
-                  } else {
-                    setSelectedGif(null)
-                  }
-                  onChange(gif.url)
-                  //   handleClose()
-                }}
-              />
-            ))}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {gifs
+              .filter((gif) => gif.path.toLowerCase().includes(filter.toLowerCase()))
+              .map((gif, i) => {
+                const gifUrl = `builtin://${gif.path}`
+                return (
+                  <>
+                    <Box
+                      key={gif.path}
+                      onClick={() => {
+                        if (selectedGif !== gifUrl) {
+                          setSelectedGif(gifUrl)
+                        } else {
+                          setSelectedGif(null)
+                        }
+                        onChange(gifUrl)
+                      }}
+                      tabIndex={i + 1}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleClose()
+                        }
+                      }}
+                      sx={{
+                        borderRadius: 1,
+                        border: '2px solid',
+                        cursor: 'pointer',
+                        borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray'
+                      }}
+                    >
+                      <SceneImage
+                        iconName={`image:builtin://${gif.path}`}
+                        sx={{
+                          width: 100,
+                          height: 60,
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </Box>
+                    {/* <img
+                    key={gif.path}
+                    src={`http://localhost:8888/api/assets/thumbnail?path=${encodeURIComponent(gifUrl)}`}
+                    alt={gif.path}
+                    style={{
+                      height: '100px',
+                      marginRight: '10px',
+                      border: '2px solid',
+                      cursor: 'pointer',
+                      borderColor:
+                        selectedGif === gifUrl ? theme.palette.primary.main : 'transparent'
+                    }}
+                    tabIndex={i + 1}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleClose()
+                      }
+                    }}
+                    onClick={() => {
+                      if (selectedGif !== gifUrl) {
+                        setSelectedGif(gifUrl)
+                      } else {
+                        setSelectedGif(null)
+                      }
+                      onChange(gifUrl)
+                    }}
+                  /> */}
+                  </>
+                )
+              })}
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>OK</Button>

@@ -67,7 +67,7 @@ const AssetPicker = ({ value, onChange }: AssetPickerProps) => {
         ) : (
           assets.map((asset) => (
             <MenuItem
-              key={asset.filename}
+              key={asset.path}
               onClick={() => handleSelect(asset.path)}
               selected={value === asset.path}
               sx={{
@@ -93,7 +93,7 @@ const AssetPicker = ({ value, onChange }: AssetPickerProps) => {
                   whiteSpace: 'nowrap'
                 }}
               >
-                {asset.filename}
+                {asset.path}
               </Typography>
             </MenuItem>
           ))
