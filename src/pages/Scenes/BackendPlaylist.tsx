@@ -513,8 +513,6 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
   }, [progress])
 
   const renderWidget = () => {
-    console.log(selectedPlaylist, currentPlaylistConfig)
-    console.log(newPlaylist)
     return (
       <>
         <Card sx={{ background: 'transparent', borderColor: 'transparent', minWidth: '400px' }}>
