@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 import useStore from '../useStore'
-import {
+import type {
   PlaylistConfig,
   PlaylistRuntimeState,
   GetPlaylistsApiResponse,
@@ -15,6 +15,45 @@ import {
   PlaylistItem
 } from '../../api/ledfx.types'
 
+// Event-driven state update helpers
+const handlePlaylistStartedEvent = (state: IStore, data: any) => {
+  state.currentPlaylist = data.playlist_id
+  if (!state.playlistRuntimeState) {
+    state.playlistRuntimeState = {} as PlaylistRuntimeState
+  }
+  state.playlistRuntimeState.active_playlist = data.playlist_id
+  state.playlistRuntimeState.index = data.index
+  state.playlistRuntimeState.scene_id = data.scene_id
+  state.playlistRuntimeState.effective_duration_ms = data.effective_duration_ms
+  state.playlistRuntimeState.paused = false
+  state.sceneStartTime = Date.now() // Record when scene started
+}
+
+const handlePlaylistAdvancedEvent = (state: IStore, data: any) => {
+  if (!state.playlistRuntimeState) return
+  state.playlistRuntimeState.index = data.index
+  state.playlistRuntimeState.scene_id = data.scene_id
+  state.playlistRuntimeState.effective_duration_ms = data.effective_duration_ms
+  state.sceneStartTime = Date.now() // Record when new scene started
+}
+
+const handlePlaylistStoppedEvent = (state: IStore) => {
+  state.currentPlaylist = null
+  state.playlistRuntimeState = null
+}
+
+const handlePlaylistPausedEvent = (state: IStore, data: any) => {
+  if (!state.playlistRuntimeState) return
+  state.playlistRuntimeState.paused = true
+  state.playlistRuntimeState.remaining_ms = data.remaining_ms
+}
+
+const handlePlaylistResumedEvent = (state: IStore, data: any) => {
+  if (!state.playlistRuntimeState) return
+  state.playlistRuntimeState.paused = false
+  state.playlistRuntimeState.remaining_ms = data.remaining_ms
+}
+
 export interface IPlaylistOrder {
   playlistId: string
   order: number
@@ -26,6 +65,64 @@ const storePlaylist = (set: any) => ({
   currentPlaylist: null as string | null,
   playlistRuntimeState: null as PlaylistRuntimeState | null,
   playlistOrder: [] as IPlaylistOrder[],
+  sceneStartTime: Date.now() as number, // Timestamp when current scene started
+
+  // Event handlers for WebSocket events
+  onPlaylistStarted: (data: any) => {
+    set(
+      produce((state: IStore) => {
+        handlePlaylistStartedEvent(state, data)
+      }),
+      false,
+      'playlist/started'
+    )
+    // Request full state to get scenes order per MSC
+    useStore.getState().getPlaylistState()
+  },
+
+  onPlaylistAdvanced: (data: any) => {
+    set(
+      produce((state: IStore) => {
+        handlePlaylistAdvancedEvent(state, data)
+      }),
+      false,
+      'playlist/advanced'
+    )
+    // If index hits 0, we're in a new cycle - request state to get new order
+    if (data.index === 0) {
+      useStore.getState().getPlaylistState()
+    }
+  },
+
+  onPlaylistStopped: () => {
+    set(
+      produce((state: IStore) => {
+        handlePlaylistStoppedEvent(state)
+      }),
+      false,
+      'playlist/stopped'
+    )
+  },
+
+  onPlaylistPaused: (data: any) => {
+    set(
+      produce((state: IStore) => {
+        handlePlaylistPausedEvent(state, data)
+      }),
+      false,
+      'playlist/paused'
+    )
+  },
+
+  onPlaylistResumed: (data: any) => {
+    set(
+      produce((state: IStore) => {
+        handlePlaylistResumedEvent(state, data)
+      }),
+      false,
+      'playlist/resumed'
+    )
+  },
 
   // Playlist Order Management
   setPlaylistOrder: (order: IPlaylistOrder[]) => {
