@@ -79,12 +79,12 @@ const storeAssets = (set: any) => ({
 
   deleteAsset: async (filename: string) => {
     const encodedFilename = encodeURIComponent(filename)
-    const resp = await Ledfx(`/api/assets/${encodedFilename}`, 'DELETE')
+    const resp = await Ledfx(`/api/assets?path=${encodedFilename}`, 'DELETE')
     if (resp) {
       console.log('Asset deleted:', filename)
       set(
         produce((state: IStore) => {
-          state.assets = state.assets.filter((asset: any) => asset.filename !== filename)
+          state.assets = state.assets.filter((asset: any) => asset.path !== filename)
         }),
         false,
         'api/deleteAsset'
