@@ -81,7 +81,7 @@ const AssetManager = () => {
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage
-          thumbnail={!params.row.is_animated}
+          thumbnail
           iconName={`image:file:///${params.row.path}`}
           sx={{
             width: 60,
@@ -142,6 +142,7 @@ const AssetManager = () => {
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage
+          thumbnail
           iconName={`image:builtin://${params.row.path}`}
           sx={{
             width: 60,
