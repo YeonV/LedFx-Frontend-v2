@@ -2,11 +2,13 @@ import { TextField, Dialog, Typography, Paper, InputAdornment } from '@mui/mater
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
+import { useNavigate } from 'react-router-dom'
 import { LocalPlay } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
 const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
   const theme = useTheme()
+  const navigate = useNavigate()
   const virtuals = useStore((state) => state.virtuals)
   const scenes = useStore((state) => state.scenes)
   const activateScene = useStore((state) => state.activateScene)
@@ -15,11 +17,29 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
   const features = useStore((state) => state.features)
   const setViewMode = useStore((state) => state.setViewMode)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)
+  const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
+
+  // Define navigation pages
+  const navigationPages = [
+    { name: 'Home', path: '/', is_page: true },
+    { name: 'Devices', path: '/Devices', is_page: true },
+    { name: 'Scenes', path: '/Scenes', is_page: true },
+    { name: 'Settings', path: '/Settings', is_page: true },
+    { name: 'YZ-Flow', path: '/YZflow', is_page: true },
+    { name: 'Playlists', path: '/Playlists', is_page: true },
+    { name: 'Integrations', path: '/Integrations', is_page: true }
+  ]
+
   const filterOptions = createFilterOptions({
-    stringify: (option: any) =>
-      Object.keys(option).indexOf('is_device') > -1
-        ? `device ${option.config.name}`
-        : `scene ${option.name}`
+    stringify: (option: any) => {
+      if (Object.keys(option).indexOf('is_device') > -1) {
+        return `device ${option.config.name}`
+      } else if (Object.keys(option).indexOf('is_page') > -1) {
+        return `page ${option.name}`
+      } else {
+        return `scene ${option.name}`
+      }
+    }
   })
 
   return (
@@ -39,23 +59,35 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
         disableCloseOnSelect={direct}
         id="smartbar-autocomplete"
         sx={{ width: '100%', maxWidth: maxWidth || 480, height: 50 }}
-        options={[...Object.values(virtuals), ...Object.values(scenes)]}
+        options={[...navigationPages, ...Object.values(virtuals), ...Object.values(scenes)]}
         popupIcon={null}
         filterOptions={filterOptions}
-        getOptionLabel={(option: any) =>
-          Object.keys(option).indexOf('is_device') > -1 ? option.config.name : option.name
-        }
+        getOptionLabel={(option: any) => {
+          if (Object.keys(option).indexOf('is_device') > -1) {
+            return option.config.name
+          } else if (Object.keys(option).indexOf('is_page') > -1) {
+            return option.name
+          } else {
+            return option.name
+          }
+        }}
         onChange={(_event, value: any, _reason, _details) => {
+          console.log('SmartBar selected value:', value)
           if (value && typeof value === 'object') {
             if (Object.keys(value).indexOf('is_device') > -1) {
-              window.location.href = `${window.location.origin}/#/device/${value.id}`
+              navigate(`/device/${value.id}`)
+              if (!direct) handleClose()
+            } else if (Object.keys(value).indexOf('is_page') > -1) {
+              setSmartBarOpen(false)
+              navigate(value.path)
+              if (!direct) handleClose()
             } else {
               activateScene(
                 Object.entries(scenes).filter(([_k, v]: any) => v.name === value.name)[0][0]
               )
+              if (!direct) handleClose()
             }
           }
-          if (!direct) handleClose()
         }}
         onInputChange={(event, value) => {
           if (value === 'HackedByBlade!') {
@@ -168,36 +200,43 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             window.location.reload()
           }
         }}
-        renderOption={(props, option: any) => (
-          <Box
-            component="li"
-            {...props}
-            sx={{
-              color: theme.palette.text.secondary,
-              width: '100%',
-              padding: '5px 50px',
-              '&&&': { justifyContent: 'space-between' }
-            }}
-          >
-            <Typography variant="body1"> {option.config?.name || option.name} </Typography>
-            <div>
-              <Typography style={{ opacity: 0.6 }} variant="caption">
-                {Object.keys(option).indexOf('is_device') > -1 ? 'jump to ' : 'activate '}
-              </Typography>
-              <Typography
-                style={{
-                  opacity: 0.6,
-                  border: '1px solid',
-                  borderRadius: 5,
-                  padding: '2px 5px'
-                }}
-                variant="caption"
-              >
-                {Object.keys(option).indexOf('is_device') > -1 ? 'Device' : 'Scene'}
-              </Typography>
-            </div>
-          </Box>
-        )}
+        renderOption={(props, option: any) => {
+          const isDevice = Object.keys(option).indexOf('is_device') > -1
+          const isPage = Object.keys(option).indexOf('is_page') > -1
+          const actionText = isDevice ? 'jump to ' : isPage ? 'jump to ' : 'activate '
+          const typeText = isDevice ? 'Device' : isPage ? 'Page' : 'Scene'
+
+          return (
+            <Box
+              component="li"
+              {...props}
+              sx={{
+                color: theme.palette.text.secondary,
+                width: '100%',
+                padding: '5px 50px',
+                '&&&': { justifyContent: 'space-between' }
+              }}
+            >
+              <Typography variant="body1"> {option.config?.name || option.name} </Typography>
+              <div>
+                <Typography style={{ opacity: 0.6 }} variant="caption">
+                  {actionText}
+                </Typography>
+                <Typography
+                  style={{
+                    opacity: 0.6,
+                    border: '1px solid',
+                    borderRadius: 5,
+                    padding: '2px 5px'
+                  }}
+                  variant="caption"
+                >
+                  {typeText}
+                </Typography>
+              </div>
+            </Box>
+          )
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -212,7 +251,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
               },
               htmlInput: {
                 ...params.inputProps,
-                autoComplete: 'off' // disable autocomplete and autofill
+                autoComplete: 'off'
               }
             }}
             inputRef={inputRef}
@@ -220,7 +259,7 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             color="primary"
             style={{ borderRadius: '50%' }}
             label="SmartBar"
-            placeholder="Jump to device / Activate scene"
+            placeholder="Jump to page / device or activate scene"
           />
         )}
         slots={{
@@ -257,6 +296,7 @@ const SmartBar = ({
   inputRef?: any
 }) => {
   const handleClose = () => {
+    console.log('Closing SmartBar')
     if (setOpen !== undefined) setOpen(false)
   }
 
