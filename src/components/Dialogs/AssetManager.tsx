@@ -128,7 +128,7 @@ const AssetManager = () => {
           type="iconbutton"
           variant="text"
           color="inherit"
-          onConfirm={() => deleteAsset(params.row.filename)}
+          onConfirm={() => deleteAsset(params.row.path)}
           text={`Delete ${params.row.filename}?`}
         />
       )
@@ -378,7 +378,7 @@ const AssetManager = () => {
                 <DataGrid
                   rows={cacheStats?.entries || []}
                   columns={cacheColumns}
-                  getRowId={(row) => row.url}
+                  getRowId={(row) => row.url || row.path}
                   rowHeight={80}
                   disableRowSelectionOnClick
                   sx={{
