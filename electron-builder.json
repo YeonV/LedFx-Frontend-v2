@@ -4,7 +4,7 @@
         "url": "https://github.com/YeonV/LedFx-Frontend-v2"
     },
     "productName": "LedFx-Client",
-    "appId": "com.ledfx.app",
+    "appId": "M349WJSL2N.com.blade.ledfx",
     "directories": {
         "buildResources": "buildResources",
         "output": "dist"
@@ -28,7 +28,14 @@
             "zip"
         ],
         "icon": "build/icon.png",
-        "artifactName": "LedFx_client-v${version}--${os}-${arch}.${ext}"
+        "artifactName": "LedFx_client-v${version}--${os}-${arch}.${ext}",
+        "category": "public.app-category.utilities",
+        "hardenedRuntime": true,
+        "gatekeeperAssess": false,
+        "entitlements": "entitlements.mac.plist",
+        "entitlementsInherit": "entitlements.mac.inherit.plist",
+        "type": "distribution",
+        "identity": "CEE631E9774D506963ECC20D6BFA8213FB07B2B1"
     },
     "dmg": {
         "background": "src/assets/DMG_BG.jpg",
