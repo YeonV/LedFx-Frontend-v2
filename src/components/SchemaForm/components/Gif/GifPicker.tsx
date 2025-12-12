@@ -65,10 +65,10 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
                     onClick={() => {
                       if (selectedGif !== gifUrl) {
                         setSelectedGif(gifUrl)
+                        onChange(gif.path)
                       } else {
                         setSelectedGif(null)
                       }
-                      onChange(gifUrl)
                     }}
                     tabIndex={i + 1}
                     onKeyDown={(e) => {
@@ -107,10 +107,10 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange }: any) => {
                     onClick={() => {
                       if (selectedGif !== gifUrl) {
                         setSelectedGif(gifUrl)
+                        onChange(gifUrl)
                       } else {
                         setSelectedGif(null)
                       }
-                      onChange(gifUrl)
                     }}
                     tabIndex={i + 1}
                     onKeyDown={(e) => {
