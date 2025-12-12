@@ -49,3 +49,4 @@ public/renderer.js
 src/api/docs/*
 docs/*
 public/modules/*
+.env

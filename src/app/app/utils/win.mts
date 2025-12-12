@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createWindow(win?: any, args = {}) {
+function createWindow(win?: any, args: any = {}) {
   initialize()
   // Create the browser window.
   win = new BrowserWindow({
@@ -19,6 +19,7 @@ function createWindow(win?: any, args = {}) {
     titleBarOverlay:
       process.platform === 'darwin' ? false : { color: '#333', symbolColor: '#ffffff' },
     frame: process.platform === 'darwin',
+    show: args.show !== undefined ? args.show : true, // Default to true, but respect explicit false
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true,
@@ -29,7 +30,7 @@ function createWindow(win?: any, args = {}) {
       preload: isDev
         ? path.join(__dirname, '../../preload.cjs')
         : path.join(__dirname, '../../preload.cjs'),
-      ...args
+      additionalArguments: args.additionalArguments || []
     }
   })
 

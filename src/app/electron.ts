@@ -4,13 +4,15 @@ import { app, nativeTheme, BrowserWindow, ipcMain, shell, session } from 'electr
 import { EventEmitter } from 'events'
 import { fileURLToPath } from 'node:url'
 import { handleProtocol, setupProtocol } from './app/protocol.mjs'
-import { closeAllSubs, startInstance } from './app/instances.mjs'
+import { closeAllSubs } from './app/instances.mjs'
 import { createTray } from './app/utils/tray.mjs'
 import { handlers } from './app/handlers.mjs'
 import isCC from './app/utils/isCC.mjs'
 import createWindow from './app/utils/win.mjs'
 import getReduxPath from './app/utils/getReduxPath.mjs'
 import createLedfxFolder from './app/utils/createLedFxFolder.mjs'
+import { executeCCStartup } from './app/utils/startupFlow.mjs'
+import { disableAudio } from './app/utils/audioSetup.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -30,11 +32,19 @@ const reduxDevtoolsPath = getReduxPath()
 
 const ready = () =>
   app.whenReady().then(async () => {
+    // Load Redux DevTools in dev mode
     if (isDev && reduxDevtoolsPath) {
       await session.defaultSession.loadExtension(reduxDevtoolsPath)
     }
     nativeTheme.themeSource = 'dark'
     const thePath = process.env.PORTABLE_EXECUTABLE_DIR || path.resolve('.')
+
+    // Execute CC-specific startup flow (splash, audio, server startup)
+    if (isCC()) {
+      await executeCCStartup(subprocesses)
+    }
+
+    // Create main window (after server is ready for CC builds)
     wind = isCC()
       ? createWindow(win, { additionalArguments: ['integratedCore'] })
       : createWindow(win)
@@ -53,7 +63,7 @@ const ready = () =>
         }
         return { action: 'allow' }
       })
-      if (isCC()) startInstance(wind, 'instance1', subprocesses)
+
       createTray(isCC(), wind, thePath, __dirname)
     }
 
@@ -62,7 +72,12 @@ const ready = () =>
       async (event, parameters) => wind && handlers(wind, subprocesses, event, parameters)
     )
     if (wind) {
-      wind.on('close', () => {
+      wind.on('close', async () => {
+        // Disable audio device on close for macOS CC builds
+        if (isCC() && process.platform === 'darwin') {
+          await disableAudio()
+        }
+
         if (wind) {
           closeAllSubs(wind, subpy, subprocesses)
           wind = null

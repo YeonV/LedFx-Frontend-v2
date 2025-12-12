@@ -47,7 +47,9 @@ function startCore(
       )
     }
     store.set('coreParams', coreParams)
-    wind.webContents.send('fromMain', ['coreParams', coreParams[process.platform]])
+    if (!wind.isDestroyed()) {
+      wind.webContents.send('fromMain', ['coreParams', coreParams[process.platform]])
+    }
     if (subpy !== null) {
       subpy.on('stdout', (data) => {
         console.log(`stdout: ${data}`)
@@ -57,7 +59,9 @@ function startCore(
       })
       subpy.stderr.on('data', (data) => {
         console.log(`stderr: ${data}`)
-        wind.webContents.send('fromMain', ['snackbar', data.toString()])
+        if (!wind.isDestroyed()) {
+          wind.webContents.send('fromMain', ['snackbar', data.toString()])
+        }
       })
       subpy.on('exit', (code, signal) => {
         console.log(`Child process exited with code ${code} and signal ${signal}`)

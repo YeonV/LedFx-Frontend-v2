@@ -7,6 +7,22 @@ import coreParams from './utils/coreParams.mjs'
 import defaultCoreParams from './utils/defaultCoreParams.mjs'
 import store from './utils/store.mjs'
 import isCC from './utils/isCC.mjs'
+import {
+  installDriver,
+  uninstallDriver,
+  getDriverStatus,
+  listAudioDevices
+} from './utils/audioDriver.mjs'
+import {
+  enableAudioDevice,
+  disableAudioDevice,
+  getAudioManagerStatus,
+  getVolume,
+  setVolume,
+  volumeUp,
+  volumeDown,
+  toggleMute
+} from './utils/audioManager.mjs'
 
 export const handlers = async (
   wind: BrowserWindow,
@@ -120,6 +136,190 @@ export const handlers = async (
           nativeTheme.themeSource = 'dark'
         }
         return nativeTheme.shouldUseDarkColors
+      case 'install-driver': {
+        if (process.platform === 'darwin') {
+          // Install driver and enable audio device in single sudo command
+          const result = await installDriver()
+          if (result.success) {
+            // Send message to frontend to trigger audio config reload
+            wind.webContents.send('fromMain', ['reload-audio-config'])
+          }
+          wind.webContents.send('fromMain', ['driver-install-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'driver-install-result',
+            { success: false, message: 'Driver installation is only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'uninstall-driver': {
+        if (process.platform === 'darwin') {
+          // Disable audio device and uninstall driver in single sudo command
+          const result = await uninstallDriver()
+          if (result.success) {
+            // Clear the driver installed flag
+            store.set('ledfx-driver-installed', false)
+            // Send message to frontend to trigger audio config reload
+            wind.webContents.send('fromMain', ['reload-audio-config'])
+          }
+          wind.webContents.send('fromMain', ['driver-uninstall-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'driver-uninstall-result',
+            { success: false, message: 'Driver uninstallation is only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'get-driver-preference': {
+        if (process.platform === 'darwin') {
+          const dontAskAgain = store.get('driver-dont-ask-again', false)
+          const autoInstall = store.get('driver-auto-install', false)
+          
+          let preference = 'ask'
+          if (dontAskAgain) {
+            preference = autoInstall ? 'always' : 'never'
+          }
+          
+          wind.webContents.send('fromMain', ['driver-preference', preference])
+        }
+        break
+      }
+      case 'set-driver-preference': {
+        if (process.platform === 'darwin') {
+          const preference = parameters.preference
+          
+          if (preference === 'ask') {
+            store.set('driver-dont-ask-again', false)
+            store.set('driver-auto-install', false)
+          } else if (preference === 'always') {
+            store.set('driver-dont-ask-again', true)
+            store.set('driver-auto-install', true)
+          } else if (preference === 'never') {
+            store.set('driver-dont-ask-again', true)
+            store.set('driver-auto-install', false)
+          }
+        }
+        break
+      }
+      case 'get-driver-status': {
+        if (process.platform === 'darwin') {
+          const status = await getDriverStatus()
+          wind.webContents.send('fromMain', ['driver-status', status])
+        } else {
+          wind.webContents.send('fromMain', [
+            'driver-status',
+            { installed: false, resourcePath: 'N/A (macOS only)' }
+          ])
+        }
+        break
+      }
+      case 'list-audio-devices': {
+        if (process.platform === 'darwin') {
+          const devices = await listAudioDevices()
+          wind.webContents.send('fromMain', ['audio-devices', devices])
+        } else {
+          wind.webContents.send('fromMain', ['audio-devices', 'Only supported on macOS'])
+        }
+        break
+      }
+      case 'enable-audio-device': {
+        if (process.platform === 'darwin') {
+          const result = await enableAudioDevice()
+          wind.webContents.send('fromMain', ['audio-device-enable-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'audio-device-enable-result',
+            { success: false, message: 'Audio device management only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'disable-audio-device': {
+        if (process.platform === 'darwin') {
+          const result = await disableAudioDevice()
+          wind.webContents.send('fromMain', ['audio-device-disable-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'audio-device-disable-result',
+            { success: false, message: 'Audio device management only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'get-audio-manager-status': {
+        if (process.platform === 'darwin') {
+          const status = await getAudioManagerStatus()
+          wind.webContents.send('fromMain', ['audio-manager-status', status])
+        } else {
+          wind.webContents.send('fromMain', [
+            'audio-manager-status',
+            { exists: false, path: 'N/A (macOS only)', executable: false }
+          ])
+        }
+        break
+      }
+      case 'get-volume': {
+        if (process.platform === 'darwin') {
+          const result = await getVolume()
+          wind.webContents.send('fromMain', ['volume-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'volume-result',
+            { success: false, message: 'Volume control only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'set-volume': {
+        if (process.platform === 'darwin') {
+          const result = await setVolume(parameters.volume)
+          wind.webContents.send('fromMain', ['volume-set-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'volume-set-result',
+            { success: false, message: 'Volume control only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'volume-up': {
+        if (process.platform === 'darwin') {
+          const result = await volumeUp()
+          wind.webContents.send('fromMain', ['volume-up-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'volume-up-result',
+            { success: false, message: 'Volume control only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'volume-down': {
+        if (process.platform === 'darwin') {
+          const result = await volumeDown()
+          wind.webContents.send('fromMain', ['volume-down-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'volume-down-result',
+            { success: false, message: 'Volume control only supported on macOS' }
+          ])
+        }
+        break
+      }
+      case 'toggle-mute': {
+        if (process.platform === 'darwin') {
+          const result = await toggleMute()
+          wind.webContents.send('fromMain', ['toggle-mute-result', result])
+        } else {
+          wind.webContents.send('fromMain', [
+            'toggle-mute-result',
+            { success: false, message: 'Mute control only supported on macOS' }
+          ])
+        }
+        break
+      }
       default:
         console.log('Command not recognized')
         break
