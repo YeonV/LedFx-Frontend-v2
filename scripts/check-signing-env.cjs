@@ -89,11 +89,11 @@ entitlementsFiles.forEach(file => {
   }
 });
 
-// Check extraResources/LedFx.app
+// Check extraResources/LedFx_core.app
 console.log('\n--- Extra Resources ---');
-const ledfxAppPath = path.join(process.cwd(), 'extraResources', 'LedFx.app');
+const ledfxAppPath = path.join(process.cwd(), 'extraResources', 'LedFx_core.app');
 if (fs.existsSync(ledfxAppPath)) {
-  console.log(`✅ extraResources/LedFx.app exists`);
+  console.log(`✅ extraResources/LedFx_core.app exists`);
   
   // Check if it's already signed
   try {
@@ -108,7 +108,7 @@ if (fs.existsSync(ledfxAppPath)) {
     console.log('   ⚠️  Not currently signed or signature check failed');
   }
 } else {
-  console.log(`⚠️  extraResources/LedFx.app NOT FOUND (will be created during build)`);
+  console.log(`⚠️  extraResources/LedFx_core.app NOT FOUND (will be created during build)`);
 }
 
 console.log('\n=================================================================');

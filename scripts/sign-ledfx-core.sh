@@ -3,7 +3,7 @@
 set -e
 
 IDENTITY="${CODESIGN_IDENTITY:-CEE631E9774D506963ECC20D6BFA8213FB07B2B1}"
-APP_PATH="extraResources/LedFx.app"
+APP_PATH="extraResources/LedFx_core.app"
 
 echo "🔐 Signing LedFx Core with identity: $IDENTITY"
 
