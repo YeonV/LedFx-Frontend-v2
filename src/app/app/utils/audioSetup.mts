@@ -8,6 +8,12 @@ import { showDriverChoice, hideDriverChoice } from './splash.mjs'
  * @returns Promise<boolean> - success status
  */
 export const setupAudioDriver = async (): Promise<boolean> => {
+  // Only for macOS
+  if (process.platform !== 'darwin') {
+    console.log('Audio driver setup skipped - not macOS')
+    return true
+  }
+
   // Check if driver is actually installed
   const actuallyInstalled = await isDriverInstalled()
 
@@ -76,6 +82,12 @@ export const setupAudioDriver = async (): Promise<boolean> => {
  * @returns Promise<boolean> - success status
  */
 export const enableAudio = async (): Promise<boolean> => {
+  // Only for macOS
+  if (process.platform !== 'darwin') {
+    console.log('Audio enable skipped - not macOS')
+    return true
+  }
+
   console.log('Enabling LedFx audio device...')
   const result = await enableAudioDevice()
   if (result.success) {
@@ -92,6 +104,12 @@ export const enableAudio = async (): Promise<boolean> => {
  * @returns Promise<boolean> - success status
  */
 export const disableAudio = async (): Promise<boolean> => {
+  // Only for macOS
+  if (process.platform !== 'darwin') {
+    console.log('Audio disable skipped - not macOS')
+    return true
+  }
+
   console.log('Disabling LedFx audio device...')
   const result = await disableAudioDevice()
   if (result.success) {

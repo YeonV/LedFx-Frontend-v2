@@ -17,26 +17,27 @@ import { waitForServer } from './serverPolling.mjs'
  * @returns Promise<void>
  */
 export const executeCCStartup = async (subprocesses: Subprocesses): Promise<void> => {
-  // Step 1: Show splash screen
-  if (process.platform === 'darwin') {
-    createSplashWindow()
-    updateSplashStatus('Initializing...')
+  // Step 1: Show splash screen on all platforms
+  createSplashWindow()
+  updateSplashStatus('Initializing...')
 
-    // Step 2: Install driver if first time
+  // Step 2: Audio setup (macOS only)
+  if (process.platform === 'darwin') {
+    // Install driver if first time
     updateSplashStatus('Installing audio driver...')
     await setupAudioDriver()
 
-    // Step 3: Enable audio device
+    // Enable audio device
     updateSplashStatus('Configuring audio device...')
     await enableAudio()
   }
 
-  // Step 4: Start LedFx core
+  // Step 3: Start LedFx core
   updateSplashStatus('Starting LedFx core...')
   const tempWin = new BrowserWindow({ show: false, width: 1, height: 1 })
   startInstance(tempWin, 'instance1', subprocesses)
 
-  // Step 5: Wait for server to be ready
+  // Step 4: Wait for server to be ready
   updateSplashStatus('Waiting for LedFx core...')
   const serverReady = await waitForServer('http://localhost:8888')
 
@@ -53,6 +54,6 @@ export const executeCCStartup = async (subprocesses: Subprocesses): Promise<void
   // Give a brief moment to show the final status
   await new Promise((resolve) => setTimeout(resolve, 500))
 
-  // Step 6: Close splash before creating main window
+  // Step 5: Close splash before creating main window
   closeSplash()
 }
