@@ -55,6 +55,7 @@ export const showDriverChoice = (): Promise<{ install: boolean; remember: boolea
       splashInstance.webContents.send('show-driver-choice')
 
       // Listen for user's choice
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handleChoice = (_event: any, data: { install: boolean; remember: boolean }) => {
         ipcMain.removeListener('driver-choice-response', handleChoice)
         resolve(data)

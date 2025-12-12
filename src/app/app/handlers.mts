@@ -176,12 +176,12 @@ export const handlers = async (
         if (process.platform === 'darwin') {
           const dontAskAgain = store.get('driver-dont-ask-again', false)
           const autoInstall = store.get('driver-auto-install', false)
-          
+
           let preference = 'ask'
           if (dontAskAgain) {
             preference = autoInstall ? 'always' : 'never'
           }
-          
+
           wind.webContents.send('fromMain', ['driver-preference', preference])
         }
         break
@@ -189,7 +189,7 @@ export const handlers = async (
       case 'set-driver-preference': {
         if (process.platform === 'darwin') {
           const preference = parameters.preference
-          
+
           if (preference === 'ask') {
             store.set('driver-dont-ask-again', false)
             store.set('driver-auto-install', false)
