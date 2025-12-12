@@ -25,6 +25,12 @@ export const poll = async (
   name: string,
   p: string
 ) => {
+  // Stop polling if window is destroyed
+  if (wind.isDestroyed()) {
+    console.log('Window destroyed, stopping poll')
+    return
+  }
+
   console.log('Polling core', name, 'on port', p)
   if (!p) return
   try {
@@ -35,7 +41,10 @@ export const poll = async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.log('Polling core ...')
-    setTimeout(() => poll(wind, subprocesses, name, p), 1000)
+    // Check again before scheduling next poll
+    if (!wind.isDestroyed()) {
+      setTimeout(() => poll(wind, subprocesses, name, p), 1000)
+    }
   }
 }
 
@@ -72,27 +81,27 @@ export function startInstance(
         if (subprocesses[name]) {
           subprocesses[name].running = false
         }
-        try {
-          if (wind && wind.webContents && !wind.isDestroyed() && subprocesses) {
-            // `subprocesses` is defined, proceed with calling `sendStatus`
-            try {
-              sendStatus(wind, subprocesses, false, name)
-            } catch (error) {
-              console.error(error)
-            }
-          } else {
-            // `subprocesses` is not defined, handle this case as needed
-            console.error('subprocesses is not defined')
+        // Don't try to send status if window is destroyed
+        if (wind && !wind.isDestroyed()) {
+          try {
+            sendStatus(wind, subprocesses, false, name)
+          } catch {
+            console.log('Window destroyed during exit handler')
           }
-        } catch (error) {
-          console.error('Error accessing window or subprocesses:', error)
         }
       })
       subpy.on('error', () => {
         if (subprocesses[name]) {
           subprocesses[name].running = false
         }
-        sendStatus(wind, subprocesses, false, name)
+        // Don't try to send status if window is destroyed
+        if (wind && !wind.isDestroyed()) {
+          try {
+            sendStatus(wind, subprocesses, false, name)
+          } catch {
+            console.log('Window destroyed during error handler')
+          }
+        }
       })
     }
   } catch (error) {
@@ -111,6 +120,12 @@ export function sendStatus(
   // Check if `wind` is an instance of `BrowserWindow`
   if (!(wind instanceof BrowserWindow)) {
     console.error('wind is not an instance of BrowserWindow')
+    return
+  }
+
+  // Check if window is destroyed
+  if (wind.isDestroyed()) {
+    console.log('Window destroyed, skipping sendStatus')
     return
   }
 
@@ -142,7 +157,15 @@ export function sendStatus(
 }
 
 export function closeAllSubs(wind: BrowserWindow, subpy: Subprocess, subprocesses: Subprocesses) {
-  if (wind && wind.webContents && !wind.isDestroyed()) wind.webContents.send('fromMain', 'shutdown')
+  // Safely try to send shutdown message
+  try {
+    if (wind && wind.webContents && !wind.isDestroyed()) {
+      wind.webContents.send('fromMain', 'shutdown')
+    }
+  } catch {
+    console.log('Window already destroyed, skipping shutdown message')
+  }
+
   if (subpy !== null) kills(subpy)
   if (subprocesses && Object.keys(subprocesses).length > 0) {
     Object.values(subprocesses).forEach((sub) => {
