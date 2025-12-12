@@ -19,6 +19,7 @@ export default [
   {
     ignores: [
       '**/build/*',
+      '**/dist/*',
       '**/*.js',
       '**/*.jsx',
       '**/*.mjs',

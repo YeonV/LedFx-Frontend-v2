@@ -32,7 +32,6 @@ const AudioCard = ({ className }: any) => {
   const [driverLoading, setDriverLoading] = useState(false)
   const [volume, setVolume] = useState(50)
   const [volumeLoading, setVolumeLoading] = useState(false)
-  const [statusMessage, setStatusMessage] = useState('')
   const [isMacOS, setIsMacOS] = useState(false)
   const [driverPreference, setDriverPreference] = useState<string>('ask')
   const setSystemConfig = useStore((state) => state.setSystemConfig)
@@ -66,8 +65,6 @@ const AudioCard = ({ className }: any) => {
       args[0] === 'driver-uninstall-result' ||
       args[0] === 'volume-set-result'
     ) {
-      setStatusMessage(args[1].message)
-      setTimeout(() => setStatusMessage(''), 3000)
       // Refresh driver status
       if (args[0] !== 'volume-set-result') {
         window.api?.send('toMain', { command: 'get-driver-status' })
