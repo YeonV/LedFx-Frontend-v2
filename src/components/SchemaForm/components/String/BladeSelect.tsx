@@ -280,7 +280,6 @@ const BladeSelect = ({
             <GifPicker
               onChange={(gif: string) => {
                 onChange(model_id, gif)
-                inputRef.current.value = gif
               }}
             />
           )}
