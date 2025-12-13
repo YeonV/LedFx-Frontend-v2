@@ -19,6 +19,7 @@ import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
+import AssetPicker from '../../../AssetPicker/AssetPicker'
 
 /**
  * ## String
@@ -281,6 +282,14 @@ const BladeSelect = ({
               onChange={(gif: string) => {
                 onChange(model_id, gif)
                 inputRef.current.value = gif
+              }}
+            />
+          )}
+          {schema.id === 'image_source' && (
+            <AssetPicker
+              value={(model && model_id && model[model_id]) || ''}
+              onChange={(filename: string) => {
+                onChange(model_id, filename)
               }}
             />
           )}
