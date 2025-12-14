@@ -121,8 +121,11 @@ const storeActions = (set: any) => ({
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),
 
   getImage: async (path_url: string, thumbnail: boolean = false) => {
-    // Handle file:/// and builtin:// paths
-    if (path_url.includes('file:///') || path_url.includes('builtin://')) {
+    // Handle file:///, builtin://, and HTTP/HTTPS paths through asset endpoints
+    // The backend will check the cache for HTTP URLs and return animated content
+    if (path_url.includes('file:///') || path_url.includes('builtin://') || 
+        path_url.startsWith('http://') || path_url.startsWith('https://')) {
+      
       const path = path_url.replaceAll('file:///', '')
 
       // Get the blob response
@@ -147,7 +150,7 @@ const storeActions = (set: any) => ({
         })
       }
     } else {
-      // Handle external URLs (old format)
+      // Fallback for any other format
       return await Ledfx('/api/get_image', 'POST', { path_url })
     }
   },

@@ -9,12 +9,14 @@ const SceneImage = ({
   iconName,
   list,
   thumbnail,
-  sx
+  sx,
+  title
 }: {
   iconName: string
   list?: boolean
   thumbnail?: boolean
   sx?: SxProps
+  title?: string
 }) => {
   const classes = useStyles()
   const [imageData, setImageData] = useState<string | null>(null)
@@ -42,7 +44,7 @@ const SceneImage = ({
       <CardMedia
         className={classes.media}
         image={iconName.split('image:')[1]}
-        title="Contemplative Reptile"
+        title={title || ''}
         sx={{ width: '100%', height: '100%', ...sx }}
       />
     ) : (
@@ -55,7 +57,7 @@ const SceneImage = ({
           backgroundSize: 'cover',
           backgroundImage: imageData ? `url("data:image/png;base64,${imageData}")` : undefined
         }}
-        title="SceneImage"
+        title={title || ''}
       />
     )
   ) : (

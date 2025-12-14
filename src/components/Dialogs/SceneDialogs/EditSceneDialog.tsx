@@ -39,7 +39,7 @@ import MidiInputDialog from '../../Midi/MidiInputDialog'
 import { IMapping } from '../../../store/ui/storeMidi'
 import { WebMidi } from 'webmidi'
 import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
-import AssetPicker from '../../AssetPicker/AssetPicker'
+import GifPicker from '../../SchemaForm/components/Gif/GifPicker'
 
 const EditSceneDialog = () => {
   const [name, setName] = useState('')
@@ -577,9 +577,15 @@ const EditSceneDialog = () => {
                         endAdornment: (
                           <InputAdornment position="end">
                             <TooltipImage />
-                            <AssetPicker
-                              value={image?.replace('image:file:///', '')}
-                              onChange={(filename) => setImage(`image:file:///${filename}`)}
+                            <GifPicker
+                              mode="both"
+                              onChange={(filename) =>
+                                setImage(
+                                  filename.startsWith('builtin://') || filename.startsWith('http')
+                                    ? `image:${filename}`
+                                    : `image:file:///${filename}`
+                                )
+                              }
                             />
                           </InputAdornment>
                         )
