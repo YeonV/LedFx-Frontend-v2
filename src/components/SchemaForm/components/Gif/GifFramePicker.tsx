@@ -31,25 +31,30 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
   const [imageData, setImageData] = useState<string[]>([])
   const getGifFrames = useStore((state) => state.getGifFrames)
   const [currentFrame, setCurrentFrame] = useState(0)
+  const [loadedImageLocation, setLoadedImageLocation] = useState<string | null>(null)
+  const [workingBeatFrames, setWorkingBeatFrames] = useState<string>('')
 
-  const handleClickOpen = () => {
+  const handleClickOpen = async () => {
+    // Initialize working state from model when opening
+    setWorkingBeatFrames(model.beat_frames || '')
+    
+    // Only fetch frames if not loaded or if image_location changed
+    if (!loadedImageLocation || loadedImageLocation !== model.image_location) {
+      if (model.image_location) {
+        const result = await getGifFrames(model.image_location)
+        setImageData(result.frames)
+        setLoadedImageLocation(model.image_location)
+        setCurrentFrame(0) // Reset to first frame when loading new GIF
+      }
+    }
     setOpen(true)
   }
 
   const handleClose = () => {
+    // Write the final state on close
+    onChange(workingBeatFrames)
     setOpen(false)
   }
-
-  const fetchImage = useCallback(async (ic: string) => {
-    const result = await getGifFrames(ic)
-    setImageData(result.frames)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    fetchImage(model.image_location)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
@@ -89,21 +94,20 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                 <GifFrame image={imageData[currentFrame - 1]} />
                 <GifFrame
                   image={imageData[currentFrame]}
-                  selected={model.beat_frames.split(' ').includes(currentFrame.toString())}
+                  selected={workingBeatFrames.split(' ').filter(Boolean).includes(currentFrame.toString())}
                   onClick={() => {
+                    const currentFrames = workingBeatFrames.split(' ').filter(Boolean)
                     let output = ''
-                    if (model.beat_frames.split(' ').includes(currentFrame.toString())) {
-                      output = model.beat_frames
-                        .split(' ')
+                    if (currentFrames.includes(currentFrame.toString())) {
+                      output = currentFrames
                         .filter((b: string) => b !== currentFrame.toString())
                         .join(' ')
                     } else {
-                      output = model.beat_frames
-                        .concat([` ${currentFrame.toString()}`])
-                        .split(' ')
+                      output = [...currentFrames, currentFrame.toString()]
                         .sort((a: string, b: string) => parseInt(a, 10) - parseInt(b, 10))
                         .join(' ')
                     }
+                    setWorkingBeatFrames(output)
                     onChange(output)
                   }}
                 />
@@ -134,9 +138,9 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                   aria-label="Default"
                   valueLabelDisplay="auto"
                   step={1}
-                  marks={model.beat_frames.split(' ').map((b: number) => ({
-                    value: b,
-                    label: b.toString()
+                  marks={workingBeatFrames.split(' ').filter(Boolean).map((b: string) => ({
+                    value: parseInt(b, 10),
+                    label: b
                   }))}
                   min={0}
                   max={imageData.length - 1 || 0}
@@ -150,6 +154,14 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
           )}
         </DialogContent>
         <DialogActions>
+          <Button 
+            onClick={() => {
+              setWorkingBeatFrames('')
+              onChange('')
+            }}
+          >
+            Clear Beat Frames
+          </Button>
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
