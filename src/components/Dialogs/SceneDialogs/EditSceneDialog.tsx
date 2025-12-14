@@ -1030,8 +1030,13 @@ const EditSceneDialog = () => {
                         <Select
                           disableUnderline
                           value={
-                            vData.preset && vData.preset_category
-                              ? `${vData.preset_category}:${vData.preset}`
+                            vData.preset && vData.preset_category && vData.type
+                              ? (() => {
+                                  // Check if preset exists in the loaded presets
+                                  const presetSource = vData.preset_category === 'ledfx_presets' ? ledfx_presets : user_presets
+                                  const presetExists = presetSource[vData.type]?.[vData.preset]
+                                  return presetExists ? `${vData.preset_category}:${vData.preset}` : ''
+                                })()
                               : ''
                           }
                           onChange={(e) => {
