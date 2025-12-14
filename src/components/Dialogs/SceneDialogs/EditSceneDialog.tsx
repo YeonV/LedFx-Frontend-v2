@@ -88,6 +88,7 @@ const EditSceneDialog = () => {
   const getScenes = useStore((state) => state.getScenes)
   const getScene = useStore((state) => state.getScene)
   const [imageData, setImageData] = useState(null)
+  const [contentType, setContentType] = useState('image/png')
   const midiEvent = useStore((state) => state.midiEvent)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiType = useStore((state) => state.midiType)
@@ -99,9 +100,10 @@ const EditSceneDialog = () => {
 
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const fetchImage = useCallback(async (ic: string) => {
-    const result = await getImage(ic.split('image:')[1]?.replaceAll('file:///', ''))
+    const result = await getImage(ic.split('image:')[1])
     if (result?.image) {
       setImageData(result.image)
+      setContentType(result.type || 'image/png')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -142,7 +144,7 @@ const EditSceneDialog = () => {
             width: small ? '100%' : 334,
             marginTop: '1rem',
             backgroundSize: 'cover',
-            backgroundImage: `url("data:image/png;base64,${imageData}")`
+            backgroundImage: `url("data:${contentType};base64,${imageData}")`
           }}
           title="SceneImage"
         />
