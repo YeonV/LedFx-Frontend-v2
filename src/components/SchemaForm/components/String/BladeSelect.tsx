@@ -19,7 +19,6 @@ import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
-import AssetPicker from '../../../AssetPicker/AssetPicker'
 
 /**
  * ## String
