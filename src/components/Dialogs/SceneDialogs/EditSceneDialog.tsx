@@ -581,6 +581,7 @@ const EditSceneDialog = () => {
                             <TooltipImage />
                             <GifPicker
                               mode="both"
+                              value={image?.replace('image:', '').replace('file:///', '') || ''}
                               onChange={(filename) =>
                                 setImage(
                                   filename.startsWith('builtin://') || filename.startsWith('http')

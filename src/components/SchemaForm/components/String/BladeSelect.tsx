@@ -279,6 +279,7 @@ const BladeSelect = ({
           )}
           {schema.id === 'image_location' && (
             <GifPicker
+              value={model && model_id ? model[model_id] : ''}
               onChange={(gif: string) => {
                 onChange(model_id, gif)
               }}
@@ -287,6 +288,7 @@ const BladeSelect = ({
           {schema.id === 'image_source' && (
             <GifPicker
               mode="static"
+              value={model && model_id ? model[model_id] : ''}
               onChange={(filename: string) => {
                 onChange(model_id, filename)
               }}
