@@ -297,11 +297,12 @@ const BladeSelect = ({
             <GifFramePicker
               model={model}
               onChange={(gif: string) => {
-                onChange(model_id, gif)
                 if (inputRef.current) {
                   inputRef.current.value = gif
                   // Trigger blur to ensure the change is committed
                   inputRef.current.dispatchEvent(new Event('blur', { bubbles: true }))
+                } else {
+                  onChange(model_id, gif)
                 }
               }}
             />
