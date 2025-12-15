@@ -533,6 +533,17 @@ const EditSceneDialog = () => {
                     input: {
                       endAdornment: (
                         <InputAdornment position="end">
+                          <GifPicker
+                            mode="both"
+                            value={image?.replace('image:', '').replace('file:///', '') || ''}
+                            onChange={(filename) =>
+                              setImage(
+                                filename.startsWith('builtin://') || filename.startsWith('http')
+                                  ? `image:${filename}`
+                                  : `image:file:///${filename}`
+                              )
+                            }
+                          />
                           <TooltipImage />
                         </InputAdornment>
                       )
@@ -579,17 +590,6 @@ const EditSceneDialog = () => {
                         endAdornment: (
                           <InputAdornment position="end">
                             <TooltipImage />
-                            <GifPicker
-                              mode="both"
-                              value={image?.replace('image:', '').replace('file:///', '') || ''}
-                              onChange={(filename) =>
-                                setImage(
-                                  filename.startsWith('builtin://') || filename.startsWith('http')
-                                    ? `image:${filename}`
-                                    : `image:file:///${filename}`
-                                )
-                              }
-                            />
                           </InputAdornment>
                         )
                       }
