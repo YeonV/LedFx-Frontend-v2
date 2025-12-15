@@ -1,4 +1,4 @@
-import React, { useState, FC, useCallback, useEffect } from 'react'
+import { useState, FC, useEffect } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -9,17 +9,12 @@ import {
   IconButton,
   Slider,
   Stack,
-  TextField,
+  // TextField,
   Typography
 } from '@mui/material'
 import { Colorize, ArrowLeft, ArrowRight } from '@mui/icons-material'
 import useStore from '../../../../store/useStore'
 import GifFrame from './GifFrame'
-
-// interface Gif {
-//   name: string
-//   url: string
-// }
 
 interface GifFramePickerProps {
   onChange: (_url: string) => void
@@ -32,12 +27,13 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
   const getGifFrames = useStore((state) => state.getGifFrames)
   const [currentFrame, setCurrentFrame] = useState(0)
   const [loadedImageLocation, setLoadedImageLocation] = useState<string | null>(null)
-  const [workingBeatFrames, setWorkingBeatFrames] = useState<string>('')
+  const [workingBeatFrames, setWorkingBeatFrames] = useState<string>(model.beat_frames || '')
+
+  useEffect(() => {
+    setWorkingBeatFrames(model.beat_frames || '')
+  }, [model])
 
   const handleClickOpen = async () => {
-    // Initialize working state from model when opening
-    setWorkingBeatFrames(model.beat_frames || '')
-    
     // Only fetch frames if not loaded or if image_location changed
     if (!loadedImageLocation || loadedImageLocation !== model.image_location) {
       if (model.image_location) {
@@ -51,6 +47,9 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
   }
 
   const handleClose = () => {
+    setOpen(false)
+  }
+  const handleSave = () => {
     // Write the final state on close
     onChange(workingBeatFrames)
     setOpen(false)
@@ -70,15 +69,15 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
         <DialogContent sx={{ minWidth: 332, width: '100%' }}>
           {imageData && (
             <>
-              {false && (
+              {/* {
                 <TextField
                   disabled
                   label="Selected Beat Frames"
-                  value={model.beat_frames}
-                  onChange={(e) => onChange(e.target.value)}
+                  value={workingBeatFrames}
+                  onChange={(e) => setWorkingBeatFrames(e.target.value)}
                   sx={{ margin: '20px 0', minWidth: '522px' }}
                 />
-              )}
+              } */}
               <Box>
                 <Typography variant="h6" color="GrayText" align="center" mb={1}>
                   Click on image to select/deselect
@@ -94,7 +93,10 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                 <GifFrame image={imageData[currentFrame - 1]} />
                 <GifFrame
                   image={imageData[currentFrame]}
-                  selected={workingBeatFrames.split(' ').filter(Boolean).includes(currentFrame.toString())}
+                  selected={workingBeatFrames
+                    .split(' ')
+                    .filter(Boolean)
+                    .includes(currentFrame.toString())}
                   onClick={() => {
                     const currentFrames = workingBeatFrames.split(' ').filter(Boolean)
                     let output = ''
@@ -108,7 +110,7 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                         .join(' ')
                     }
                     setWorkingBeatFrames(output)
-                    onChange(output)
+                    // onChange(output)
                   }}
                 />
                 <GifFrame image={imageData[currentFrame + 1]} />
@@ -138,10 +140,13 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                   aria-label="Default"
                   valueLabelDisplay="auto"
                   step={1}
-                  marks={workingBeatFrames.split(' ').filter(Boolean).map((b: string) => ({
-                    value: parseInt(b, 10),
-                    label: b
-                  }))}
+                  marks={workingBeatFrames
+                    .split(' ')
+                    .filter(Boolean)
+                    .map((b: string) => ({
+                      value: parseInt(b, 10),
+                      label: b
+                    }))}
                   min={0}
                   max={imageData.length - 1 || 0}
                   onChange={(e, v) => {
@@ -154,15 +159,17 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
           )}
         </DialogContent>
         <DialogActions>
-          <Button 
+          <Button
+            sx={{ mr: 6 }}
             onClick={() => {
               setWorkingBeatFrames('')
-              onChange('')
+              // onChange('')
             }}
           >
             Clear Beat Frames
           </Button>
-          <Button onClick={handleClose}>Close</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
     </>
