@@ -9,15 +9,18 @@ const SceneImage = ({
   iconName,
   list,
   thumbnail,
-  sx
+  sx,
+  title
 }: {
   iconName: string
   list?: boolean
   thumbnail?: boolean
   sx?: SxProps
+  title?: string
 }) => {
   const classes = useStyles()
   const [imageData, setImageData] = useState<string | null>(null)
+  const [contentType, setContentType] = useState<string>('image/png')
   const getImage = useStore((state) => state.getImage)
 
   const fetchImage = useCallback(
@@ -25,6 +28,7 @@ const SceneImage = ({
       const result = await getImage(ic.split('image:')[1], thumbnail)
       if (result?.image) {
         setImageData(result.image)
+        setContentType(result.type || 'image/png')
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +46,7 @@ const SceneImage = ({
       <CardMedia
         className={classes.media}
         image={iconName.split('image:')[1]}
-        title="Contemplative Reptile"
+        title={title || ''}
         sx={{ width: '100%', height: '100%', ...sx }}
       />
     ) : (
@@ -53,9 +57,9 @@ const SceneImage = ({
           width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
           backgroundSize: 'cover',
-          backgroundImage: imageData ? `url("data:image/png;base64,${imageData}")` : undefined
+          backgroundImage: imageData ? `url("data:${contentType};base64,${imageData}")` : undefined
         }}
-        title="SceneImage"
+        title={title || ''}
       />
     )
   ) : (

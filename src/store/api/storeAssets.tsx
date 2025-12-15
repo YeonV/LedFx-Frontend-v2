@@ -9,6 +9,11 @@ interface CacheEntry {
   access_count: number
   file_size: number
   content_type: string
+  width: number
+  height: number
+  format: string | null
+  n_frames: number
+  is_animated: boolean
 }
 
 interface CacheStats {
