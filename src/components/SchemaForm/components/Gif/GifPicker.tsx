@@ -105,7 +105,6 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
     setOpen(false)
   }
 
-
   return (
     <>
       <IconButton
@@ -179,9 +178,10 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                   .filter((cached) => cached.url.toLowerCase().includes(filter.toLowerCase()))
                   .map((cached, i) => {
                     const gifUrl = cached.url
-                    const displayUrl = gifUrl.length > 60 
-                      ? `${gifUrl.substring(0, 30)}...${gifUrl.substring(gifUrl.length - 27)}`
-                      : gifUrl
+                    const displayUrl =
+                      gifUrl.length > 60
+                        ? `${gifUrl.substring(0, 30)}...${gifUrl.substring(gifUrl.length - 27)}`
+                        : gifUrl
                     return (
                       <Box
                         key={cached.url}
@@ -254,7 +254,9 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                   >
                     <SceneImage
                       iconName={`image:builtin://${gif.path}`}
-                      thumbnail                      title={`Source: Built-in\nPath: ${gif.path}\nSize: ${gif.width}x${gif.height}${gif.is_animated ? `\nFrames: ${gif.n_frames}` : ''}`}                      sx={{
+                      thumbnail
+                      title={`Source: Built-in\nPath: ${gif.path}\nSize: ${gif.width}x${gif.height}${gif.is_animated ? `\nFrames: ${gif.n_frames}` : ''}`}
+                      sx={{
                         width: 100,
                         height: 60,
                         objectFit: 'cover'

@@ -123,9 +123,12 @@ const storeActions = (set: any) => ({
   getImage: async (path_url: string, thumbnail: boolean = false) => {
     // Handle file:///, builtin://, and HTTP/HTTPS paths through asset endpoints
     // The backend will check the cache for HTTP URLs and return animated content
-    if (path_url.includes('file:///') || path_url.includes('builtin://') || 
-        path_url.startsWith('http://') || path_url.startsWith('https://')) {
-      
+    if (
+      path_url.includes('file:///') ||
+      path_url.includes('builtin://') ||
+      path_url.startsWith('http://') ||
+      path_url.startsWith('https://')
+    ) {
       const path = path_url.replaceAll('file:///', '')
 
       // Get the blob response

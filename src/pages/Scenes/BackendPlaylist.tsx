@@ -889,7 +889,10 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                             <TooltipImage />
                             <GifPicker
                               mode="both"
-                              value={newPlaylist?.image?.replace('image:', '').replace('file:///', '') || ''}
+                              value={
+                                newPlaylist?.image?.replace('image:', '').replace('file:///', '') ||
+                                ''
+                              }
                               onChange={(filename) =>
                                 setNewPlaylist({
                                   ...newPlaylist,
