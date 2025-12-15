@@ -13,9 +13,10 @@ type PickerMode = 'animated' | 'static' | 'both'
 interface GifPickerProps {
   onChange: (_url: string) => void
   mode?: PickerMode
+  value?: string
 }
 
-const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated' }: any) => {
+const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', value }: any) => {
   const theme = useTheme()
   const [filter, setFilter] = useState('')
   const [open, setOpen] = useState(false)
@@ -95,6 +96,8 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated' }: an
   }
 
   const handleClickOpen = () => {
+    // Initialize selection from current value when opening
+    setSelectedGif(value || null)
     setOpen(true)
   }
 
@@ -129,7 +132,7 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated' }: an
             {gifsUser
               .filter((gif) => gif.path.toLowerCase().includes(filter.toLowerCase()))
               .map((gif, i) => {
-                const gifUrl = `file:///${gif.path}`
+                const gifUrl = gif.path
                 return (
                   <Box
                     key={gif.path}

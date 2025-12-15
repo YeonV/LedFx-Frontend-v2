@@ -581,6 +581,7 @@ const EditSceneDialog = () => {
                             <TooltipImage />
                             <GifPicker
                               mode="both"
+                              value={image?.replace('image:', '').replace('file:///', '') || ''}
                               onChange={(filename) =>
                                 setImage(
                                   filename.startsWith('builtin://') || filename.startsWith('http')
@@ -1033,9 +1034,14 @@ const EditSceneDialog = () => {
                             vData.preset && vData.preset_category && vData.type
                               ? (() => {
                                   // Check if preset exists in the loaded presets
-                                  const presetSource = vData.preset_category === 'ledfx_presets' ? ledfx_presets : user_presets
+                                  const presetSource =
+                                    vData.preset_category === 'ledfx_presets'
+                                      ? ledfx_presets
+                                      : user_presets
                                   const presetExists = presetSource[vData.type]?.[vData.preset]
-                                  return presetExists ? `${vData.preset_category}:${vData.preset}` : ''
+                                  return presetExists
+                                    ? `${vData.preset_category}:${vData.preset}`
+                                    : ''
                                 })()
                               : ''
                           }

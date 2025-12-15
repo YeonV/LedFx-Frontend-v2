@@ -24,7 +24,7 @@ const GifFrame: FC<GifFrameProps> = ({
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
-        backgroundImage: `url("data:image/png;base64,${image}")`,
+        backgroundImage: image ? `url("data:image/png;base64,${image}")` : 'none',
         border: onClick === undefined ? 0 : '4px solid',
         cursor: onClick === undefined ? 'default' : 'pointer',
         borderColor: selected ? theme.palette.primary.main : '#9999',

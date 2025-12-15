@@ -19,7 +19,6 @@ import { BladeSelectProps } from './BladeSelect.props'
 import { Ledfx } from '../../../../api/ledfx'
 import GifPicker from '../Gif/GifPicker'
 import GifFramePicker from '../Gif/GifFramePicker'
-import AssetPicker from '../../../AssetPicker/AssetPicker'
 
 /**
  * ## String
@@ -279,6 +278,7 @@ const BladeSelect = ({
           )}
           {schema.id === 'image_location' && (
             <GifPicker
+              value={model && model_id ? model[model_id] : ''}
               onChange={(gif: string) => {
                 onChange(model_id, gif)
               }}
@@ -287,6 +287,7 @@ const BladeSelect = ({
           {schema.id === 'image_source' && (
             <GifPicker
               mode="static"
+              value={model && model_id ? model[model_id] : ''}
               onChange={(filename: string) => {
                 onChange(model_id, filename)
               }}
@@ -297,7 +298,11 @@ const BladeSelect = ({
               model={model}
               onChange={(gif: string) => {
                 onChange(model_id, gif)
-                inputRef.current.value = gif
+                if (inputRef.current) {
+                  inputRef.current.value = gif
+                  // Trigger blur to ensure the change is committed
+                  inputRef.current.dispatchEvent(new Event('blur', { bubbles: true }))
+                }
               }}
             />
           )}
