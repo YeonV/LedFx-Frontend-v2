@@ -39,7 +39,7 @@ import MidiInputDialog from '../../Midi/MidiInputDialog'
 import { IMapping } from '../../../store/ui/storeMidi'
 import { WebMidi } from 'webmidi'
 import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
-import AssetPicker from '../../AssetPicker/AssetPicker'
+import GifPicker from '../../SchemaForm/components/Gif/GifPicker'
 
 const EditSceneDialog = () => {
   const [name, setName] = useState('')
@@ -88,6 +88,7 @@ const EditSceneDialog = () => {
   const getScenes = useStore((state) => state.getScenes)
   const getScene = useStore((state) => state.getScene)
   const [imageData, setImageData] = useState(null)
+  const [contentType, setContentType] = useState('image/png')
   const midiEvent = useStore((state) => state.midiEvent)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiType = useStore((state) => state.midiType)
@@ -99,9 +100,10 @@ const EditSceneDialog = () => {
 
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
   const fetchImage = useCallback(async (ic: string) => {
-    const result = await getImage(ic.split('image:')[1]?.replaceAll('file:///', ''))
+    const result = await getImage(ic.split('image:')[1])
     if (result?.image) {
       setImageData(result.image)
+      setContentType(result.type || 'image/png')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -142,7 +144,7 @@ const EditSceneDialog = () => {
             width: small ? '100%' : 334,
             marginTop: '1rem',
             backgroundSize: 'cover',
-            backgroundImage: `url("data:image/png;base64,${imageData}")`
+            backgroundImage: `url("data:${contentType};base64,${imageData}")`
           }}
           title="SceneImage"
         />
@@ -531,6 +533,17 @@ const EditSceneDialog = () => {
                     input: {
                       endAdornment: (
                         <InputAdornment position="end">
+                          <GifPicker
+                            mode="both"
+                            value={image?.replace('image:', '').replace('file:///', '') || ''}
+                            onChange={(filename) =>
+                              setImage(
+                                filename.startsWith('builtin://') || filename.startsWith('http')
+                                  ? `image:${filename}`
+                                  : `image:file:///${filename}`
+                              )
+                            }
+                          />
                           <TooltipImage />
                         </InputAdornment>
                       )
@@ -577,10 +590,6 @@ const EditSceneDialog = () => {
                         endAdornment: (
                           <InputAdornment position="end">
                             <TooltipImage />
-                            <AssetPicker
-                              value={image?.replace('image:file:///', '')}
-                              onChange={(filename) => setImage(`image:file:///${filename}`)}
-                            />
                           </InputAdornment>
                         )
                       }
@@ -1022,8 +1031,18 @@ const EditSceneDialog = () => {
                         <Select
                           disableUnderline
                           value={
-                            vData.preset && vData.preset_category
-                              ? `${vData.preset_category}:${vData.preset}`
+                            vData.preset && vData.preset_category && vData.type
+                              ? (() => {
+                                  // Check if preset exists in the loaded presets
+                                  const presetSource =
+                                    vData.preset_category === 'ledfx_presets'
+                                      ? ledfx_presets
+                                      : user_presets
+                                  const presetExists = presetSource[vData.type]?.[vData.preset]
+                                  return presetExists
+                                    ? `${vData.preset_category}:${vData.preset}`
+                                    : ''
+                                })()
                               : ''
                           }
                           onChange={(e) => {

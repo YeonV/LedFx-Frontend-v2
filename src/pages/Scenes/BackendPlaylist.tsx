@@ -65,7 +65,7 @@ import PlaylistCard from './PlaylistCard'
 import TooltipImage from '../../components/Dialogs/SceneDialogs/TooltipImage'
 import Popover from '../../components/Popover/Popover'
 import { useFireTv } from '../../components/FireTv/useFireTv'
-import AssetPicker from '../../components/AssetPicker/AssetPicker'
+import GifPicker from '../../components/SchemaForm/components/Gif/GifPicker'
 import useStyles from './Scenes.styles'
 
 interface BackendPlaylistProps {
@@ -887,16 +887,19 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                         endAdornment: (
                           <InputAdornment position="end">
                             <TooltipImage />
-                            <AssetPicker
+                            <GifPicker
+                              mode="both"
                               value={
-                                (newPlaylist?.image || '').includes('\\.ledfx\\assets\\')
-                                  ? (newPlaylist?.image || '').split('\\.ledfx\\assets\\')[1]
-                                  : newPlaylist?.image || ''
+                                newPlaylist?.image?.replace('image:', '').replace('file:///', '') ||
+                                ''
                               }
                               onChange={(filename) =>
                                 setNewPlaylist({
                                   ...newPlaylist,
-                                  image: `image:file:///${filename}`
+                                  image:
+                                    filename.startsWith('builtin://') || filename.startsWith('http')
+                                      ? `image:${filename}`
+                                      : `image:file:///${filename}`
                                 })
                               }
                             />

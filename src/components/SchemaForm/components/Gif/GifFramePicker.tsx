@@ -1,4 +1,4 @@
-import React, { useState, FC, useCallback, useEffect } from 'react'
+import { useState, FC, useEffect } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -9,17 +9,12 @@ import {
   IconButton,
   Slider,
   Stack,
-  TextField,
+  // TextField,
   Typography
 } from '@mui/material'
 import { Colorize, ArrowLeft, ArrowRight } from '@mui/icons-material'
 import useStore from '../../../../store/useStore'
 import GifFrame from './GifFrame'
-
-// interface Gif {
-//   name: string
-//   url: string
-// }
 
 interface GifFramePickerProps {
   onChange: (_url: string) => void
@@ -31,25 +26,34 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
   const [imageData, setImageData] = useState<string[]>([])
   const getGifFrames = useStore((state) => state.getGifFrames)
   const [currentFrame, setCurrentFrame] = useState(0)
+  const [loadedImageLocation, setLoadedImageLocation] = useState<string | null>(null)
+  const [workingBeatFrames, setWorkingBeatFrames] = useState<string>(model.beat_frames || '')
 
-  const handleClickOpen = () => {
+  useEffect(() => {
+    setWorkingBeatFrames(model.beat_frames || '')
+  }, [model])
+
+  const handleClickOpen = async () => {
+    // Only fetch frames if not loaded or if image_location changed
+    if (!loadedImageLocation || loadedImageLocation !== model.image_location) {
+      if (model.image_location) {
+        const result = await getGifFrames(model.image_location)
+        setImageData(result.frames)
+        setLoadedImageLocation(model.image_location)
+        setCurrentFrame(0) // Reset to first frame when loading new GIF
+      }
+    }
     setOpen(true)
   }
 
   const handleClose = () => {
     setOpen(false)
   }
-
-  const fetchImage = useCallback(async (ic: string) => {
-    const result = await getGifFrames(ic)
-    setImageData(result.frames)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    fetchImage(model.image_location)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleSave = () => {
+    // Write the final state on close
+    onChange(workingBeatFrames)
+    setOpen(false)
+  }
 
   return (
     <>
@@ -65,15 +69,15 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
         <DialogContent sx={{ minWidth: 332, width: '100%' }}>
           {imageData && (
             <>
-              {false && (
+              {/* {
                 <TextField
                   disabled
                   label="Selected Beat Frames"
-                  value={model.beat_frames}
-                  onChange={(e) => onChange(e.target.value)}
+                  value={workingBeatFrames}
+                  onChange={(e) => setWorkingBeatFrames(e.target.value)}
                   sx={{ margin: '20px 0', minWidth: '522px' }}
                 />
-              )}
+              } */}
               <Box>
                 <Typography variant="h6" color="GrayText" align="center" mb={1}>
                   Click on image to select/deselect
@@ -89,22 +93,24 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                 <GifFrame image={imageData[currentFrame - 1]} />
                 <GifFrame
                   image={imageData[currentFrame]}
-                  selected={model.beat_frames.split(' ').includes(currentFrame.toString())}
+                  selected={workingBeatFrames
+                    .split(' ')
+                    .filter(Boolean)
+                    .includes(currentFrame.toString())}
                   onClick={() => {
+                    const currentFrames = workingBeatFrames.split(' ').filter(Boolean)
                     let output = ''
-                    if (model.beat_frames.split(' ').includes(currentFrame.toString())) {
-                      output = model.beat_frames
-                        .split(' ')
+                    if (currentFrames.includes(currentFrame.toString())) {
+                      output = currentFrames
                         .filter((b: string) => b !== currentFrame.toString())
                         .join(' ')
                     } else {
-                      output = model.beat_frames
-                        .concat([` ${currentFrame.toString()}`])
-                        .split(' ')
+                      output = [...currentFrames, currentFrame.toString()]
                         .sort((a: string, b: string) => parseInt(a, 10) - parseInt(b, 10))
                         .join(' ')
                     }
-                    onChange(output)
+                    setWorkingBeatFrames(output)
+                    // onChange(output)
                   }}
                 />
                 <GifFrame image={imageData[currentFrame + 1]} />
@@ -134,10 +140,13 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
                   aria-label="Default"
                   valueLabelDisplay="auto"
                   step={1}
-                  marks={model.beat_frames.split(' ').map((b: number) => ({
-                    value: b,
-                    label: b.toString()
-                  }))}
+                  marks={workingBeatFrames
+                    .split(' ')
+                    .filter(Boolean)
+                    .map((b: string) => ({
+                      value: parseInt(b, 10),
+                      label: b
+                    }))}
                   min={0}
                   max={imageData.length - 1 || 0}
                   onChange={(e, v) => {
@@ -150,7 +159,17 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
+          <Button
+            sx={{ mr: 6 }}
+            onClick={() => {
+              setWorkingBeatFrames('')
+              // onChange('')
+            }}
+          >
+            Clear Beat Frames
+          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
     </>
