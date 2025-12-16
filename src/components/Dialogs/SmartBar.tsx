@@ -152,6 +152,9 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             if (value === 'BladeAlpha') {
               setShowFeatures('alpha', true)
             }
+            if (value === 'BladeAlpha!') {
+              setShowFeatures('alpha', false)
+            }
             if (
               value.startsWith('theme:') &&
               [

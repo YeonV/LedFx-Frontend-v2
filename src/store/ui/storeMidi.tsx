@@ -116,6 +116,15 @@ const storeMidi = (set: any, get: any) => ({
       false,
       'setMidiOutputs'
     ),
+  midiOpen: false,
+  setMidiOpen: (open: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.midiOpen = open
+      }),
+      false,
+      'setMidiOpen'
+    ),
   midiInput: '',
   setMidiInput: (input: string) =>
     set(

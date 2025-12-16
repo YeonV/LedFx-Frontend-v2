@@ -7,44 +7,22 @@ import {
   Box,
   useTheme,
   Tabs,
-  Tab
+  Tab,
+  Button,
+  BottomNavigationAction
 } from '@mui/material'
 import { Close, PermMedia, Refresh } from '@mui/icons-material'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
-import useStore from '../../store/useStore'
-import Popover from '../Popover/Popover'
-import SceneImage from '../../pages/Scenes/ScenesImage'
+import useStore from '../../../store/useStore'
+import Popover from '../../Popover/Popover'
+import SceneImage from '../../../pages/Scenes/ScenesImage'
+import { a11yProps, TabPanel } from './AssetManager.components'
 
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`manager-tabpanel-${index}`}
-      aria-labelledby={`manager-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ height: '100%' }}>{children}</Box>}
-    </div>
-  )
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `manager-tab-${index}`,
-    'aria-controls': `manager-tabpanel-${index}`
-  }
-}
-
-const AssetManager = () => {
+const AssetManager = ({
+  variant = 'iconbutton'
+}: {
+  variant?: 'button' | 'iconbutton' | 'navitem' | 'tile'
+}) => {
   const theme = useTheme()
   const [open, setOpen] = useState(false)
   const [tabValue, setTabValue] = useState(0)
@@ -281,18 +259,59 @@ const AssetManager = () => {
 
   return (
     <>
-      <IconButton
-        color="inherit"
-        onClick={() => setOpen(true)}
-        sx={{
-          color: theme.palette.mode === 'light' ? '#000' : '#fff',
-          '&:hover': {
-            color: theme.palette.primary.main
-          }
-        }}
-      >
-        <PermMedia />
-      </IconButton>
+      {variant === 'iconbutton' && (
+        <IconButton
+          color="inherit"
+          onClick={() => setOpen(true)}
+          sx={{
+            color: theme.palette.mode === 'light' ? '#000' : '#fff',
+            '&:hover': {
+              color: theme.palette.primary.main
+            }
+          }}
+        >
+          <PermMedia />
+        </IconButton>
+      )}
+      {variant === 'button' && (
+        <Button startIcon={<PermMedia />} onClick={() => setOpen(true)}>
+          Asset Manager
+        </Button>
+      )}
+      {variant === 'navitem' && (
+        <BottomNavigationAction
+          label="Assets"
+          value="/AssetManager"
+          icon={<PermMedia />}
+          onClick={() => setOpen(true)}
+          sx={{
+            color: open ? theme.palette.primary.main : 'inherit',
+            pt: 0,
+            '& .MuiBottomNavigationAction-label': {
+              opacity: 1
+            }
+          }}
+        />
+      )}
+      {variant === 'tile' && (
+        <Button
+          variant="outlined"
+          onClick={() => setOpen(true)}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 2,
+            gap: 1,
+            width: '100%',
+            height: '100%'
+          }}
+        >
+          <PermMedia fontSize="large" />
+          Asset Manager
+        </Button>
+      )}
 
       <Dialog
         open={open}

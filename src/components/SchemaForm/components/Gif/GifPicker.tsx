@@ -3,10 +3,19 @@ import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
-import { Box, IconButton, DialogActions, Divider, useTheme, Button } from '@mui/material'
+import {
+  Box,
+  IconButton,
+  DialogActions,
+  Divider,
+  useTheme,
+  Button,
+  Typography
+} from '@mui/material'
 import { Gif, Image } from '@mui/icons-material'
 import useStore from '../../../../store/useStore'
 import SceneImage from '../../../../pages/Scenes/ScenesImage'
+import AssetManager from '../../../Dialogs/AssetManager/AssetManager'
 
 type PickerMode = 'animated' | 'static' | 'both'
 
@@ -127,52 +136,68 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
             onChange={(e) => setFilter(e.target.value)}
             placeholder={getPlaceholder()}
           />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px', mb: 1 }}>
-            {gifsUser
-              .filter((gif) => gif.path.toLowerCase().includes(filter.toLowerCase()))
-              .map((gif, i) => {
-                const gifUrl = gif.path
-                return (
-                  <Box
-                    key={gif.path}
-                    onClick={() => {
-                      if (selectedGif !== gifUrl) {
-                        setSelectedGif(gifUrl)
-                        onChange(gif.path)
-                      } else {
-                        setSelectedGif(null)
-                      }
-                    }}
-                    tabIndex={i + 1}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleClose()
-                      }
-                    }}
-                    sx={{
-                      borderRadius: 1,
-                      border: '2px solid',
-                      cursor: 'pointer',
-                      borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray'
-                    }}
-                  >
-                    <SceneImage
-                      iconName={`image:file:///${gif.path}`}
-                      thumbnail
-                      title={`Source: User Asset\nPath: ${gif.path}\nSize: ${gif.width}x${gif.height}${gif.is_animated ? `\nFrames: ${gif.n_frames}` : ''}`}
-                      sx={{
-                        width: 100,
-                        height: 60,
-                        objectFit: 'cover'
-                      }}
-                    />
-                  </Box>
-                )
-              })}
-          </Box>
+
+          {gifsUser.length > 0 && (
+            <>
+              <Divider sx={{ margin: '16px 0' }}>
+                <Typography variant="caption" color="GrayText">
+                  User Assets ({gifsUser.length})
+                </Typography>
+              </Divider>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px', mb: 1 }}>
+                {gifsUser
+                  .filter((gif) => gif.path.toLowerCase().includes(filter.toLowerCase()))
+                  .map((gif, i) => {
+                    const gifUrl = gif.path
+                    return (
+                      <Box
+                        key={gif.path}
+                        onClick={() => {
+                          if (selectedGif !== gifUrl) {
+                            setSelectedGif(gifUrl)
+                            onChange(gif.path)
+                          } else {
+                            setSelectedGif(null)
+                          }
+                        }}
+                        tabIndex={i + 1}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleClose()
+                          }
+                        }}
+                        sx={{
+                          borderRadius: 1,
+                          border: '2px solid',
+                          cursor: 'pointer',
+                          borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray',
+                          opacity: selectedGif === gifUrl ? 1 : 0.3,
+                          '&:hover': { opacity: 1 }
+                        }}
+                      >
+                        <SceneImage
+                          iconName={`image:file:///${gif.path}`}
+                          thumbnail
+                          title={`Source: User Asset\nPath: ${gif.path}\nSize: ${gif.width}x${gif.height}${gif.is_animated ? `\nFrames: ${gif.n_frames}` : ''}`}
+                          sx={{
+                            width: 100,
+                            height: 60,
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </Box>
+                    )
+                  })}
+              </Box>
+            </>
+          )}
           {gifsCached.length > 0 && (
             <>
-              <Divider sx={{ margin: '16px 0' }} />
+              <Divider sx={{ margin: '16px 0' }}>
+                <Typography variant="caption" color="GrayText">
+                  Cached Assets ({gifsCached.length})
+                </Typography>
+              </Divider>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {gifsCached
                   .filter((cached) => cached.url.toLowerCase().includes(filter.toLowerCase()))
@@ -203,7 +228,9 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                           borderRadius: 1,
                           border: '2px solid',
                           cursor: 'pointer',
-                          borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray'
+                          borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray',
+                          opacity: selectedGif === gifUrl ? 1 : 0.3,
+                          '&:hover': { opacity: 1 }
                         }}
                       >
                         <SceneImage
@@ -222,7 +249,11 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
               </Box>
             </>
           )}
-          <Divider sx={{ margin: '16px 0' }} />
+          <Divider sx={{ margin: '16px 0' }}>
+            <Typography variant="caption" color="GrayText">
+              Built-in Assets ({gifsBuiltin.length})
+            </Typography>
+          </Divider>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {gifsBuiltin
               .filter((gif) => gif.path.toLowerCase().includes(filter.toLowerCase()))
@@ -249,7 +280,9 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                       borderRadius: 1,
                       border: '2px solid',
                       cursor: 'pointer',
-                      borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray'
+                      borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray',
+                      opacity: selectedGif === gifUrl ? 1 : 0.3,
+                      '&:hover': { opacity: 1 }
                     }}
                   >
                     <SceneImage
@@ -267,7 +300,11 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
               })}
           </Box>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ p: '20px' }}>
+          <Box sx={{}}>
+            <AssetManager variant="button" />
+          </Box>
+          <Box sx={{ flexGrow: 1 }} />
           <Button onClick={handleClose}>OK</Button>
         </DialogActions>
       </Dialog>

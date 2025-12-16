@@ -26,6 +26,8 @@ import AddWledDialog from '../Dialogs/AddWledDialog'
 import Gamepad from '../Gamepad/Gamepad'
 import SmartBar from '../Dialogs/SmartBar'
 import { useFireTvStore } from '../FireTv/useFireTvStore'
+import AssetManager from '../Dialogs/AssetManager/AssetManager'
+import MidiInputDialog from '../Midi/MidiInputDialog'
 
 export default function BarBottom() {
   const theme = useTheme()
@@ -236,6 +238,10 @@ export default function BarBottom() {
             }
           />
         )}
+
+        {features.showAssetManagerInBottomBar && <AssetManager variant="navitem" />}
+        {features.showMidiInBottomBar && <MidiInputDialog variant="navitem" />}
+        {features.showGamepadInBottomBar && <Gamepad bottom={botHeight + 56} variant="navitem" />}
 
         {!(window.localStorage.getItem('guestmode') === 'activated') && (
           <BottomNavigationAction
