@@ -6,7 +6,7 @@ import ScrollToTop from '../utils/scrollToTop'
 import '../App.css'
 
 import LeftBar from '../components/Bars/BarLeft'
-import TopBar from '../components/Bars/BarTop'
+import TopBar from '../components/Bars/BarTop/BarTop'
 import BottomBar from '../components/Bars/BarBottom'
 import MessageBar from '../components/Bars/BarMessage'
 import NoHostDialog from '../components/Dialogs/NoHostDialog'

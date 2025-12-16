@@ -1,6 +1,7 @@
 import { SportsEsports, SportsEsportsOutlined } from '@mui/icons-material'
 import {
   Alert,
+  BottomNavigationAction,
   Box,
   Button,
   // Button,
@@ -15,7 +16,8 @@ import {
   Stack,
   Tab,
   Tabs,
-  Tooltip
+  Tooltip,
+  useTheme
 } from '@mui/material'
 import { useState, SyntheticEvent as ev, useEffect, useRef } from 'react'
 import { useGamepads } from 'react-gamepads'
@@ -32,13 +34,13 @@ import MuiSwitch from '../MuiSwitch'
 import { executeCommand } from '../../utils/commandHandler'
 import { log } from '../../utils/log'
 
-const Gamepad = ({ bottom }: any) => {
+const Gamepad = ({ bottom, variant = 'fab' }: any) => {
+  const theme = useTheme()
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
   const setFeatures = useStore((state) => state.setFeatures)
   const prevButtonStatesRef = useRef<Record<number, boolean[]>>({})
 
-  const [open, setOpen] = useState<boolean>(false)
   const [pad0, setPad0] = useState<any>()
   const [pad1, setPad1] = useState<any>()
   const [pad2, setPad2] = useState<any>()
@@ -47,6 +49,8 @@ const Gamepad = ({ bottom }: any) => {
   const [currentPad, setCurrentPad] = useState<number>(0)
 
   const mapping = useStore((state) => state.mapping)
+  const open = useStore((state) => state.gamepadOpen)
+  const setOpen = useStore((state) => state.setGamepadOpen)
   const setMapping = useStore((state) => state.setMapping)
   const analogBrightness = useStore((state) => state.analogBrightness)
   const setAnalogBrightness = useStore((state) => state.setAnalogBrightness)
@@ -134,7 +138,7 @@ const Gamepad = ({ bottom }: any) => {
           })
 
           if (command === 'padscreen') {
-            setOpen((prevOpen) => !prevOpen)
+            setOpen(!open)
           } else {
             const finalPayload = { ...payloadFromMapping }
             executeCommand(command, finalPayload)
@@ -205,13 +209,32 @@ const Gamepad = ({ bottom }: any) => {
     setOpen // For 'padscreen' command
   ])
 
-  return gp ? (
-    <div style={{ position: 'fixed', left: '1rem', bottom }}>
-      <Tooltip title="Gamepad detected">
-        <Fab color="primary" aria-label="gamepad" onClick={() => setOpen(true)}>
-          <SportsEsports />
-        </Fab>
-      </Tooltip>
+  return (
+    <>
+      {gp && variant === 'fab' && (
+        <div style={{ position: 'fixed', left: '1rem', bottom }}>
+          <Tooltip title="Gamepad detected">
+            <Fab color="primary" aria-label="gamepad" onClick={() => setOpen(true)}>
+              <SportsEsports />
+            </Fab>
+          </Tooltip>
+        </div>
+      )}
+      {variant === 'navitem' ? (
+        <BottomNavigationAction
+          label="Gamepad"
+          value="/Gamepad"
+          icon={<SportsEsports />}
+          onClick={() => setOpen(true)}
+          sx={{
+            color: open ? theme.palette.primary.main : 'inherit',
+            pt: 0,
+            '& .MuiBottomNavigationAction-label': {
+              opacity: 1
+            }
+          }}
+        />
+      ) : null}
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
@@ -376,8 +399,8 @@ const Gamepad = ({ bottom }: any) => {
           ))}
         </DialogContent>
       </Dialog>
-    </div>
-  ) : null
+    </>
+  )
 }
 
 export default Gamepad

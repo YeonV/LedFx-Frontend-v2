@@ -11,7 +11,7 @@ const CrashButton = () => {
   return (
     <button
       onClick={() => setShouldCrash(true)}
-      style={{ padding: '5px 15px', background: 'red', color: 'white', marginLeft: '2rem' }}
+      style={{ padding: '5px 15px', background: 'red', color: 'white', marginLeft: '6rem' }}
     >
       ☢ Crash App
     </button>

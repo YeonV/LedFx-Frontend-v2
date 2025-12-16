@@ -38,6 +38,9 @@ export type IFeatures =
   | 'scenePlaylistBackend'
   | 'showPlaylistInBottomBar'
   | 'showFlowInBottomBar'
+  | 'showAssetManagerInBottomBar'
+  | 'showMidiInBottomBar'
+  | 'showGamepadInBottomBar'
   | 'firetv'
 
 const storeFeatures = (set: any) => ({
@@ -78,6 +81,9 @@ const storeFeatures = (set: any) => ({
     scenePlaylistBackend: false,
     showPlaylistInBottomBar: false,
     showFlowInBottomBar: false,
+    showAssetManagerInBottomBar: false,
+    showMidiInBottomBar: false,
+    showGamepadInBottomBar: false,
     firetv: false
   },
   showFeatures: {
@@ -117,6 +123,9 @@ const storeFeatures = (set: any) => ({
     scenePlaylistBackend: false,
     showPlaylistInBottomBar: false,
     showFlowInBottomBar: false,
+    showAssetManagerInBottomBar: false,
+    showMidiInBottomBar: false,
+    showGamepadInBottomBar: false,
     firetv: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>

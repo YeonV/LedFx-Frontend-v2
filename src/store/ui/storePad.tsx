@@ -35,6 +35,7 @@ interface IMapping {
 }
 
 const storePad = (set: any) => ({
+  gamepadOpen: false,
   mapping: {
     0: defaultMapping,
     1: defaultMapping,
@@ -48,6 +49,14 @@ const storePad = (set: any) => ({
     3: false
   },
   blocked: false,
+  setGamepadOpen: (open: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.gamepadOpen = open
+      }),
+      false,
+      'setGamepadOpen'
+    ),
   setMapping: (mapping: IMapping): void =>
     set(
       produce((state: IStore) => {

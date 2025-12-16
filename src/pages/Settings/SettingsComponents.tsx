@@ -242,9 +242,9 @@ export const SettingsRow = ({
           </Typography>
         )}
       </label>
-      {alpha && <Chip label="alpha" />}
-      {beta && <Chip label="beta" />}
-      {expert && <Chip label="expert" />}
+      {alpha && <Chip size="small" label="alpha" disabled />}
+      {beta && <Chip size="small" label="beta" disabled />}
+      {expert && <Chip size="small" label="expert" disabled />}
       <div
         style={{
           display: 'flex',

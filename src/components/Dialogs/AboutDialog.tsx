@@ -8,16 +8,22 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Input,
   Link
 } from '@mui/material'
 import GitInfo from 'react-git-info/macro'
 import useStore from '../../store/useStore'
 import fversion from '../../../package.json'
+import { SettingsRow, SettingsSlider } from '../../pages/Settings/SettingsComponents'
+import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 
 export default function AboutDialog({ className, children, startIcon }: any) {
+  const sliderClasses = useSliderStyles()
   const config = useStore((state) => state.config)
   const getInfo = useStore((state) => state.getInfo)
   const getUpdateInfo = useStore((state) => state.getUpdateInfo)
+  const updateNotificationInterval = useStore((state) => state.updateNotificationInterval)
+  const setUpdateNotificationInterval = useStore((state) => state.setUpdateNotificationInterval)
 
   const [open, setOpen] = useState(false)
   const [bcommit, setLedFxSHA] = useState('')
@@ -79,7 +85,7 @@ export default function AboutDialog({ className, children, startIcon }: any) {
       >
         <DialogTitle id="about-dialog-title">About LedFx</DialogTitle>
         <DialogContent>
-          <div style={{ minWidth: 250 }}>
+          <div style={{ minWidth: 400 }}>
             <Card style={{ marginBottom: '1rem' }}>
               <CardHeader title="Backend" />
               <CardContent style={{ paddingTop: 0 }}>
@@ -125,6 +131,35 @@ export default function AboutDialog({ className, children, startIcon }: any) {
                 </div>
               </CardContent>
             </Card>
+
+            <SettingsRow title="Update Notification: wait min">
+              <SettingsSlider
+                value={updateNotificationInterval}
+                step={1}
+                min={1}
+                max={4320}
+                onChange={(_e: any, val: number) => setUpdateNotificationInterval(val)}
+              />
+              <Input
+                disableUnderline
+                className={sliderClasses.input}
+                style={{ width: 70 }}
+                value={updateNotificationInterval}
+                margin="dense"
+                onChange={(e) => {
+                  setUpdateNotificationInterval(parseInt(e.target.value, 10))
+                }}
+                sx={{
+                  '& input': { textAlign: 'right' }
+                }}
+                inputProps={{
+                  min: 1,
+                  max: 4320,
+                  type: 'number',
+                  'aria-labelledby': 'input-slider'
+                }}
+              />
+            </SettingsRow>
           </div>
         </DialogContent>
         <DialogActions>

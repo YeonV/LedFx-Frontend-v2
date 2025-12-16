@@ -20,7 +20,7 @@ import MidiCard from './MidiCard'
 import EffectsSettingsCard from './EffectsCard'
 import PixelGraphsSettingsCard from './PixelGraphsSettingsCard'
 import BetaCoreFeatures from './BetaCoreFeatures'
-import AssetManager from '../../components/Dialogs/AssetManager'
+import SettingsNew from './SettingsNew'
 // import IntegrationsSection from './IntegrationsSection'
 
 const Settings = () => {
@@ -43,55 +43,57 @@ const Settings = () => {
 
   return (
     <div className={classes.card} style={{ marginBottom: '3rem' }}>
-      <AssetManager />
-      <Accordion disabled sx={{ backgroundColor: 'transparent !important' }}>
-        <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
-          <Typography>Core Settings</Typography>
-        </AccordionSummary>
-      </Accordion>
-      <SettingsAccordion title="General" accId="3" icon="Settings">
-        <GeneralCard />
-      </SettingsAccordion>
-      <SettingsAccordion title="Audio" accId="1a" icon="Speaker">
+      <SettingsNew />
+      {false && (
         <>
-          {features.webaudio && (
-            <Webaudio style={{ position: 'absolute', right: '3.5rem', top: '0.3rem' }} />
-          )}
-          <ClientAudioCard />
-          <AudioCard className={`${classes.audioCard} step-settings-one`} />
-        </>
-      </SettingsAccordion>
-
-      {features.beta && (
-        <>
-          <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
+          <Accordion disabled sx={{ backgroundColor: 'transparent !important' }}>
             <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
-              <Typography>Core Features</Typography>
+              <Typography>Core Settings</Typography>
             </AccordionSummary>
           </Accordion>
-          {features.beta && (
-            <SettingsAccordion title="Beta" accId="corebeta" icon="mdi:emoticon-devil">
-              <BetaCoreFeatures />
-            </SettingsAccordion>
-          )}
-        </>
-      )}
+          <SettingsAccordion title="General" accId="3" icon="Settings">
+            <GeneralCard />
+          </SettingsAccordion>
+          <SettingsAccordion title="Audio" accId="1a" icon="Speaker">
+            <>
+              {features.webaudio && (
+                <Webaudio style={{ position: 'absolute', right: '3.5rem', top: '0.3rem' }} />
+              )}
+              <ClientAudioCard />
+              <AudioCard className={`${classes.audioCard} step-settings-one`} />
+            </>
+          </SettingsAccordion>
 
-      <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
-        <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
-          <Typography>Client Settings</Typography>
-        </AccordionSummary>
-      </Accordion>
-      <SettingsAccordion title="Home" accId="1db" icon="Home">
-        <DashboardCard />
-      </SettingsAccordion>
-      <SettingsAccordion title="Devices" accId="devices" icon="mdi:led-strip-variant">
-        <DevicesSection />
-      </SettingsAccordion>
-      <SettingsAccordion title="Scenes" accId="scenes" icon="Image">
-        <ScenesSection />
-      </SettingsAccordion>
-      {/* {viewMode !== 'user' && features.integrations && (
+          {features.beta && (
+            <>
+              <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
+                <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
+                  <Typography>Core Features</Typography>
+                </AccordionSummary>
+              </Accordion>
+              {features.beta && (
+                <SettingsAccordion title="Beta" accId="corebeta" icon="mdi:emoticon-devil">
+                  <BetaCoreFeatures />
+                </SettingsAccordion>
+              )}
+            </>
+          )}
+
+          <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
+            <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
+              <Typography>Client Settings</Typography>
+            </AccordionSummary>
+          </Accordion>
+          <SettingsAccordion title="Home" accId="1db" icon="Home">
+            <DashboardCard />
+          </SettingsAccordion>
+          <SettingsAccordion title="Devices" accId="devices" icon="mdi:led-strip-variant">
+            <DevicesSection />
+          </SettingsAccordion>
+          <SettingsAccordion title="Scenes" accId="scenes" icon="Image">
+            <ScenesSection />
+          </SettingsAccordion>
+          {/* {viewMode !== 'user' && features.integrations && (
         <SettingsAccordion
           title="Integrations"
           accId="integrationsSection"
@@ -101,54 +103,56 @@ const Settings = () => {
         </SettingsAccordion>
       )} */}
 
-      {features.scenemidi && (
-        <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
-          <MidiCard />
-        </SettingsAccordion>
-      )}
-      <SettingsAccordion title="Effects" accId="effects" icon="LensBlur">
-        <EffectsSettingsCard />
-      </SettingsAccordion>
-      <SettingsAccordion title="Pixel Graphs" accId="2aaa" icon="BarChart">
-        <PixelGraphsSettingsCard />
-      </SettingsAccordion>
-      <SettingsAccordion title="UI Mode" accId="uimode" icon="Widgets">
-        <UICard />
-      </SettingsAccordion>
-
-      {viewMode !== 'user' && (
-        <>
-          <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
-            <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
-              <Typography>Client Features</Typography>
-            </AccordionSummary>
-          </Accordion>
-
-          <SettingsAccordion title="Expert" accId="2y3" icon="Star">
-            <ExpertFeatures />
+          {features.scenemidi && (
+            <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
+              <MidiCard />
+            </SettingsAccordion>
+          )}
+          <SettingsAccordion title="Effects" accId="effects" icon="LensBlur">
+            <EffectsSettingsCard />
           </SettingsAccordion>
-          {features.beta && (
-            <SettingsAccordion title="Beta" accId="2y2" icon="mdi:emoticon-devil">
-              <BetaFeatures />
+          <SettingsAccordion title="Pixel Graphs" accId="2aaa" icon="BarChart">
+            <PixelGraphsSettingsCard />
+          </SettingsAccordion>
+          <SettingsAccordion title="UI Mode" accId="uimode" icon="Widgets">
+            <UICard />
+          </SettingsAccordion>
+
+          {viewMode !== 'user' && (
+            <>
+              <Accordion disabled sx={{ backgroundColor: 'transparent !important', pt: 3 }}>
+                <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
+                  <Typography>Client Features</Typography>
+                </AccordionSummary>
+              </Accordion>
+
+              <SettingsAccordion title="Expert" accId="2y3" icon="Star">
+                <ExpertFeatures />
+              </SettingsAccordion>
+              {features.beta && (
+                <SettingsAccordion title="Beta" accId="2y2" icon="mdi:emoticon-devil">
+                  <BetaFeatures />
+                </SettingsAccordion>
+              )}
+              {features.alpha && showFeatures.alpha && (
+                <SettingsAccordion title="Alpha" accId="2y1" icon="mdi:emoticon-devil-outline">
+                  <AlphaFeatures />
+                </SettingsAccordion>
+              )}
+            </>
+          )}
+
+          {features.wled && (
+            <SettingsAccordion title="WLED" accId="4">
+              <div>
+                <WledCard className={`${classes.card} step-settings-five`} />
+              </div>
             </SettingsAccordion>
           )}
-          {features.alpha && showFeatures.alpha && (
-            <SettingsAccordion title="Alpha" accId="2y1" icon="mdi:emoticon-devil-outline">
-              <AlphaFeatures />
-            </SettingsAccordion>
-          )}
+          <div style={{ height: '1rem' }} />
+          <SmartBar direct maxWidth={540} />
         </>
       )}
-
-      {features.wled && (
-        <SettingsAccordion title="WLED" accId="4">
-          <div>
-            <WledCard className={`${classes.card} step-settings-five`} />
-          </div>
-        </SettingsAccordion>
-      )}
-      <div style={{ height: '1rem' }} />
-      <SmartBar direct maxWidth={540} />
     </div>
   )
 }

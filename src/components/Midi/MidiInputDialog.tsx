@@ -1,10 +1,20 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip } from '@mui/material'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Tooltip,
+  BottomNavigationAction,
+  useTheme
+} from '@mui/material'
 import { useState } from 'react'
 import useStore from '../../store/useStore'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import LaunchpadButtonMap from './LaunchpadButtonMap'
+import { SettingsInputComponent } from '@mui/icons-material'
 
-const MidiInputDialog = () => {
+const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 'navitem' }) => {
+  const theme = useTheme()
   const midiInput = useStore((state) => state.midiInput)
   const [fullScreen, setFullScreen] = useState(false)
   const [open, setOpen] = useState<boolean>(false)
@@ -13,11 +23,28 @@ const MidiInputDialog = () => {
 
   return (
     <div style={{ alignSelf: 'center' }}>
-      <Tooltip title="MIDI Input Configuration">
-        <IconButton onClick={() => setOpen(true)}>
-          <BladeIcon name="mdi:midi" />
-        </IconButton>
-      </Tooltip>
+      {variant === 'iconbutton' && (
+        <Tooltip title="MIDI Input Configuration">
+          <IconButton onClick={() => setOpen(true)}>
+            <BladeIcon name="mdi:midi" />
+          </IconButton>
+        </Tooltip>
+      )}
+      {variant === 'navitem' && (
+        <BottomNavigationAction
+          label="MIDI"
+          value="/MIDI"
+          icon={<SettingsInputComponent />}
+          onClick={() => setOpen(true)}
+          sx={{
+            color: open ? theme.palette.primary.main : 'inherit',
+            pt: 0,
+            '& .MuiBottomNavigationAction-label': {
+              opacity: 1
+            }
+          }}
+        />
+      )}
       <Dialog
         fullScreen={fullScreen}
         open={open}
