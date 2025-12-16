@@ -1331,7 +1331,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
       </Box>
     </Stack>
   ) : (
-    <Box maxWidth={maxWidth}>
+    <Box maxWidth={maxWidth} className="step-scenes-six">
       <ExpanderCard title="Backend Playlists" cardKey="backendPlaylist" expandedHeight={1085}>
         {renderWidget()}
       </ExpanderCard>
