@@ -141,7 +141,14 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           reader.onload = (ev) => {
             setImagePreview(ev.target?.result as string)
             setImageFile(file)
-            const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '')
+            
+            // Generate unique name for generic filenames (e.g., download.jpg from browser drags)
+            let nameWithoutExt = file.name.replace(/\.[^/.]+$/, '')
+            if (nameWithoutExt === 'download' || nameWithoutExt === 'image') {
+              const timestamp = Date.now()
+              nameWithoutExt = `${nameWithoutExt}_${timestamp}`
+            }
+            
             setImageName(nameWithoutExt)
             setTitle('Image Asset detected')
             setNewData({ type: 'image', file })
