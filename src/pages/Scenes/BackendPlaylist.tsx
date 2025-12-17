@@ -1144,7 +1144,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
 
                   {!newPlaylist?.items || newPlaylist?.items.length === 0 ? null : (
                     <>
-                      <Button
+                      {/* <Button
                         size="small"
                         startIcon={<Shuffle />}
                         onClick={() => {
@@ -1156,7 +1156,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                         variant="outlined"
                       >
                         Shuffle Order
-                      </Button>
+                      </Button> */}
 
                       <Button
                         size="small"

@@ -553,8 +553,17 @@ const EditSceneDialog = () => {
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
                   fullWidth
+                  helperText={`Type: ${
+                    image?.startsWith('image:file:///')
+                      ? 'Local file path'
+                      : image?.startsWith('image:https://')
+                        ? 'External URL'
+                        : image?.startsWith('mdi:')
+                          ? 'Material Design Icon'
+                          : 'MUI Icon'
+                  }`}
                 />
-                <Stack direction="row" gap={1}>
+                {/* <Stack direction="row" gap={1}>
                   <FormControl sx={{ mt: 1, minWidth: 120 }} disabled>
                     <InputLabel id="scene_image">Image Type</InputLabel>
                     <Select
@@ -605,7 +614,7 @@ const EditSceneDialog = () => {
                     onChange={(e) => setImage(e.target.value)}
                     fullWidth
                   />
-                </Stack>
+                </Stack> */}
 
                 <Autocomplete
                   onChange={(e, a) => setTags(a.join(','))}
