@@ -96,6 +96,17 @@ const AssetManager = ({
       valueGetter: (value, row) => `${row.width}x${row.height}`
     },
     {
+      field: 'n_frames',
+      headerName: 'Frames',
+      width: 100
+    },
+    {
+      field: 'modified',
+      headerName: 'Modified',
+      width: 180,
+      valueFormatter: (value: string) => new Date(value).toLocaleString()
+    },
+    {
       field: 'actions',
       headerName: 'Actions',
       width: 100,
@@ -160,18 +171,6 @@ const AssetManager = ({
       field: 'n_frames',
       headerName: 'Frames',
       width: 100
-    },
-    {
-      field: 'is_animated',
-      headerName: 'Animated',
-      width: 100,
-      valueFormatter: (value: boolean) => (value ? 'Yes' : 'No')
-    },
-    {
-      field: 'modified',
-      headerName: 'Modified',
-      width: 180,
-      valueFormatter: (value: string) => new Date(value).toLocaleString()
     }
   ]
 
@@ -202,15 +201,26 @@ const AssetManager = ({
       minWidth: 300
     },
     {
-      field: 'content_type',
-      headerName: 'Type',
-      width: 150
+      field: 'format',
+      headerName: 'Format',
+      width: 100
     },
     {
       field: 'file_size',
       headerName: 'Size',
       width: 120,
       valueFormatter: (value: number) => `${(value / 1024).toFixed(2)} KB`
+    },
+    {
+      field: 'dimensions',
+      headerName: 'Dimensions',
+      width: 120,
+      valueGetter: (value, row) => `${row.width}x${row.height}`
+    },
+    {
+      field: 'n_frames',
+      headerName: 'Frames',
+      width: 100
     },
     {
       field: 'access_count',
@@ -249,7 +259,10 @@ const AssetManager = ({
             type="iconbutton"
             variant="text"
             color="inherit"
-            onConfirm={() => clearCache(params.row.url)}
+            onConfirm={async () => {
+              await clearCache(params.row.url)
+              await getCacheStats()
+            }}
             text={'Clear cache for this image?'}
           />
         </Box>
