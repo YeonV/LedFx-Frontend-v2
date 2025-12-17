@@ -171,7 +171,7 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                           border: '2px solid',
                           cursor: 'pointer',
                           borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray',
-                          opacity: selectedGif === gifUrl ? 1 : 0.3,
+                          opacity: selectedGif === gifUrl ? 1 : 1,
                           '&:hover': { opacity: 1 }
                         }}
                       >
@@ -229,7 +229,7 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                           border: '2px solid',
                           cursor: 'pointer',
                           borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray',
-                          opacity: selectedGif === gifUrl ? 1 : 0.3,
+                          opacity: selectedGif === gifUrl ? 1 : 1,
                           '&:hover': { opacity: 1 }
                         }}
                       >
@@ -281,7 +281,7 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
                       border: '2px solid',
                       cursor: 'pointer',
                       borderColor: selectedGif === gifUrl ? theme.palette.primary.main : 'gray',
-                      opacity: selectedGif === gifUrl ? 1 : 0.3,
+                      opacity: selectedGif === gifUrl ? 1 : 1,
                       '&:hover': { opacity: 1 }
                     }}
                   >
