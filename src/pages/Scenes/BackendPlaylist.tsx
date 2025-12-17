@@ -463,13 +463,15 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
           height={'100%'}
         >
           <Tooltip title="Jump to Scene">
-            <IconButton
-              size="small"
-              onClick={() => activateScene(params.row.scene_id)}
-              disabled={isPlaying}
-            >
-              <PlayArrow fontSize="small" />
-            </IconButton>
+            <span>
+              <IconButton
+                size="small"
+                onClick={() => activateScene(params.row.scene_id)}
+                disabled={isPlaying}
+              >
+                <PlayArrow fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
           {/* {Array.isArray(currentPlaylistConfig?.items) &&
             currentPlaylistConfig.items.length > 0 && (
@@ -546,18 +548,20 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
 
                   {selectedPlaylist && (
                     <Tooltip title="Edit Playlist">
-                      <IconButton
-                        disabled={
-                          !currentPlaylistConfig?.items || currentPlaylistConfig?.items.length === 0
-                        }
-                        onClick={() => {
-                          setEditingPlaylistId(selectedPlaylist) // SET IT
-                          setNewPlaylist(currentPlaylistConfig!)
-                          setEditDialogOpen(true)
-                        }}
-                      >
-                        <Edit />
-                      </IconButton>
+                      <span>
+                        <IconButton
+                          disabled={
+                            !currentPlaylistConfig?.items || currentPlaylistConfig?.items.length === 0
+                          }
+                          onClick={() => {
+                            setEditingPlaylistId(selectedPlaylist) // SET IT
+                            setNewPlaylist(currentPlaylistConfig!)
+                            setEditDialogOpen(true)
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   )}
 
@@ -660,24 +664,26 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                   {/* Runtime Mode Toggle (only when playing) */}
                   {playlistRuntimeState && (
                     <Tooltip title={`Toggle Runtime Mode (Current: ${runtimeMode})`}>
-                      <IconButton
-                        disabled={!selectedPlaylist || !playlistRuntimeState}
-                        onClick={handleToggleRuntimeMode}
-                        sx={{
-                          bgcolor:
-                            runtimeMode === 'shuffle'
-                              ? theme.palette.warning.main + '20'
-                              : theme.palette.info.main + '20',
-                          '&:hover': {
+                      <span>
+                        <IconButton
+                          disabled={!selectedPlaylist || !playlistRuntimeState}
+                          onClick={handleToggleRuntimeMode}
+                          sx={{
                             bgcolor:
                               runtimeMode === 'shuffle'
-                                ? theme.palette.warning.main + '40'
-                                : theme.palette.info.main + '40'
-                          }
-                        }}
-                      >
-                        {runtimeMode === 'shuffle' ? <Shuffle /> : <Repeat />}
-                      </IconButton>
+                                ? theme.palette.warning.main + '20'
+                                : theme.palette.info.main + '20',
+                            '&:hover': {
+                              bgcolor:
+                                runtimeMode === 'shuffle'
+                                  ? theme.palette.warning.main + '40'
+                                  : theme.palette.info.main + '40'
+                            }
+                          }}
+                        >
+                          {runtimeMode === 'shuffle' ? <Shuffle /> : <Repeat />}
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   )}
                 </Stack>
@@ -819,6 +825,7 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
           }}
           maxWidth="sm" // Changed from "md" to "lg" for more space
           fullWidth
+          disableRestoreFocus
         >
           <DialogTitle>{createDialogOpen ? 'Create New Playlist' : 'Edit Playlist'}</DialogTitle>
           <DialogContent>
