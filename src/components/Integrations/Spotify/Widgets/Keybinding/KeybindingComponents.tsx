@@ -20,7 +20,7 @@ const KeybindingComponent = ({ singleKey }: { singleKey: string }) => {
     return singleKey
   }
 
-  return <>{renderKey(singleKey)}</>
+  return <>{singleKey === 'y' ? <>{renderKey('y/z')}</> : renderKey(singleKey)}</>
 }
 
 export const keyButtons = (text: string) => (
@@ -37,6 +37,7 @@ export const KeysRow = ({ keys, description }: { keys: string; description: stri
   const match = description.match(/(.*?)(\s*\(.*?\))/)
   const mainText = match ? match[1] : description
   const bracketText = match ? match[2] : ''
+  console.log(bracketText)
   return (
     <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <Stack direction={'row'} alignItems={'center'}>

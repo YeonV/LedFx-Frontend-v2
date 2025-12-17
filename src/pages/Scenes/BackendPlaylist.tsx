@@ -551,7 +551,8 @@ export default function BackendPlaylist({ maxWidth = 486, cards = false }: Backe
                       <span>
                         <IconButton
                           disabled={
-                            !currentPlaylistConfig?.items || currentPlaylistConfig?.items.length === 0
+                            !currentPlaylistConfig?.items ||
+                            currentPlaylistConfig?.items.length === 0
                           }
                           onClick={() => {
                             setEditingPlaylistId(selectedPlaylist) // SET IT

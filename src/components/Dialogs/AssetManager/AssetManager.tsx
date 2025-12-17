@@ -12,11 +12,12 @@ import {
   BottomNavigationAction
 } from '@mui/material'
 import { Close, PermMedia, Refresh } from '@mui/icons-material'
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import useStore from '../../../store/useStore'
 import Popover from '../../Popover/Popover'
 import SceneImage from '../../../pages/Scenes/ScenesImage'
 import { a11yProps, TabPanel } from './AssetManager.components'
+import AssetDataGrid from './AssetDataGrid'
 
 const AssetManager = ({
   variant = 'iconbutton'
@@ -371,57 +372,15 @@ const AssetManager = ({
             </Box>
 
             <TabPanel value={tabValue} index={0}>
-              <Box sx={{ height: 'calc(100vh - 200px)', width: '100%' }}>
-                <DataGrid
-                  rows={assets}
-                  columns={assetColumns}
-                  getRowId={(row) => row.filename || row.path}
-                  rowHeight={80}
-                  disableRowSelectionOnClick
-                  sx={{
-                    '& .MuiDataGrid-cell': {
-                      display: 'flex',
-                      alignItems: 'center'
-                    }
-                  }}
-                />
-              </Box>
+              <AssetDataGrid rows={assets} columns={assetColumns} type="user" />
             </TabPanel>
 
             <TabPanel value={tabValue} index={1}>
-              <Box sx={{ height: 'calc(100vh - 200px)', width: '100%' }}>
-                <DataGrid
-                  rows={assetsFixed}
-                  columns={fixedAssetColumns}
-                  getRowId={(row) => row.path}
-                  rowHeight={80}
-                  disableRowSelectionOnClick
-                  sx={{
-                    '& .MuiDataGrid-cell': {
-                      display: 'flex',
-                      alignItems: 'center'
-                    }
-                  }}
-                />
-              </Box>
+              <AssetDataGrid rows={assetsFixed} columns={fixedAssetColumns} type="builtin" />
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
-              <Box sx={{ height: 'calc(100vh - 200px)', width: '100%' }}>
-                <DataGrid
-                  rows={cacheStats?.entries || []}
-                  columns={cacheColumns}
-                  getRowId={(row) => row.url || row.path}
-                  rowHeight={80}
-                  disableRowSelectionOnClick
-                  sx={{
-                    '& .MuiDataGrid-cell': {
-                      display: 'flex',
-                      alignItems: 'center'
-                    }
-                  }}
-                />
-              </Box>
+              <AssetDataGrid rows={cacheStats?.entries || []} columns={cacheColumns} type="cache" />
             </TabPanel>
           </Box>
         </DialogContent>
