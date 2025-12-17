@@ -125,23 +125,38 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
-      const file = e.dataTransfer.files[0]
-      if (file && file.type === 'application/json') {
-        console.log('file', file)
-        handleJsonFile({ target: { files: [file] } })
-      } else if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader()
-        reader.onload = (ev) => {
-          setImagePreview(ev.target?.result as string)
-          setImageFile(file)
-          const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '')
-          setImageName(nameWithoutExt)
-          setTitle('Image Asset detected')
-          setNewData({ type: 'image', file })
-          setDialogOpenFileDrop(true)
+      
+      // Capture files reference immediately (React synthetic event pooling)
+      const files = e.dataTransfer.files
+      // Force synchronous access to ensure files are populated for cross-browser drag
+      const fileCount = files.length
+      
+      setTimeout(() => {
+        const file = fileCount > 0 ? files[0] : null
+        
+        if (file && file.type === 'application/json') {
+          handleJsonFile({ target: { files: [file] } })
+        } else if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader()
+          reader.onload = (ev) => {
+            setImagePreview(ev.target?.result as string)
+            setImageFile(file)
+            
+            // Generate unique name for generic filenames (e.g., download.jpg from browser drags)
+            let nameWithoutExt = file.name.replace(/\.[^/.]+$/, '')
+            if (nameWithoutExt === 'download' || nameWithoutExt === 'image') {
+              const timestamp = Date.now()
+              nameWithoutExt = `${nameWithoutExt}_${timestamp}`
+            }
+            
+            setImageName(nameWithoutExt)
+            setTitle('Image Asset detected')
+            setNewData({ type: 'image', file })
+            setDialogOpenFileDrop(true)
+          }
+          reader.readAsDataURL(file)
         }
-        reader.readAsDataURL(file)
-      }
+      }, 0)
     },
     [handleJsonFile, setDialogOpenFileDrop]
   )
