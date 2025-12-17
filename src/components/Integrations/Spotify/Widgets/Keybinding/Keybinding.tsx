@@ -9,16 +9,12 @@ const keybindings = [
     keys: 'ctrl+space',
     description: 'Keybindings (this screen)'
   },
-  {
-    keys: 'ctrl+alt+k',
-    description: 'Keybindings (this screen)'
-  },
+  // {
+  //   keys: 'ctrl+alt+k',
+  //   description: 'Keybindings (this screen)'
+  // },
   {
     keys: 'ctrl+alt+y',
-    description: 'SmartBar'
-  },
-  {
-    keys: 'ctrl+alt+z',
     description: 'SmartBar'
   },
   {
