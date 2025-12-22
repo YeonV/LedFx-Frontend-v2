@@ -239,6 +239,11 @@ const BladeSelect = ({
                     }
                   : { disableUnderline: true }
             }}
+            key={
+              schema.id === 'beat_frames'
+                ? `beat_frames-${model?.beat_frames || 'empty'}`
+                : undefined
+            }
             defaultValue={
               (model && model_id && model[model_id]) ||
               (schema.enum && schema.enum[0]) ||
