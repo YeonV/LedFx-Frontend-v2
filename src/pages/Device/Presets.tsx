@@ -151,7 +151,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
   }
 
   const handleRemovePreset = (presetId: string) => async () => {
-    await deletePreset(virtual.id, presetId)
+    await deletePreset(effectType, presetId)
     await getPresets(virtual.id)
   }
 
