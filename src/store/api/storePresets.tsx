@@ -72,11 +72,8 @@ const storePresets = (set: any) => ({
     return resp
   },
 
-  deletePreset: async (virtId: string, presetId: string) => {
-    const resp = (await Ledfx(`/api/virtuals/${virtId}/presets`, 'DELETE', {
-      preset_id: presetId,
-      category: 'user_presets'
-    })) as DeleteVirtualPresetApiResponse
+  deletePreset: async (effectId: string, presetId: string) => {
+    const resp = (await Ledfx(`/api/effects/${effectId}/presets/${presetId}`, 'DELETE')) as DeleteVirtualPresetApiResponse
     return resp
   }
 })
