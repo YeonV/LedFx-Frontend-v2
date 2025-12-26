@@ -36,6 +36,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
   const [cloudEffects, setCloudEffects] = useState<any>([])
   const [cloudConfigs, setCloudConfigs] = useState<any>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [presetOpen, setPresetOpen] = useState(false)
 
   const theme = useTheme()
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
@@ -148,6 +149,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
     await getPresets(virtual.id)
     await getFullConfig()
     setName('')
+    setPresetOpen(false) // This will now close the popover
   }
 
   const handleRemovePreset = (presetId: string) => async () => {
@@ -188,7 +190,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
   ) => {
     if (!presetsList || Object.keys(presetsList).length === 0) {
       return (
-        <Button style={{ margin: '1rem 0 0.5rem 1rem' }} size="medium" disabled>
+        <Button style={{ margin: '0 0 0.5rem 0' }} size="medium" disabled>
           No {category === 'ledfx_presets' ? 'LedFx' : 'User'} Presets
         </Button>
       )
@@ -286,6 +288,8 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
               color="primary"
               variant="outlined"
               onSingleClick={() => {}}
+              open={presetOpen}
+              onOpenChange={setPresetOpen}
               content={
                 <TextField
                   autoFocus

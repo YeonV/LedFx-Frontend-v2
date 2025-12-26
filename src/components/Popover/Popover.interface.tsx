@@ -133,6 +133,10 @@ export interface PopoverProps {
    * JSX style
    */
   wrapperStyle?: Record<string, unknown>
+  /**
+   * Callback when open state changes
+   */
+  onOpenChange?: (open: boolean) => void
 }
 
 export const PopoverDefaults: PopoverProps = {
