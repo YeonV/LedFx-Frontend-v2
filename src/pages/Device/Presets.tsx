@@ -288,6 +288,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
               onSingleClick={() => {}}
               content={
                 <TextField
+                  autoFocus
                   onKeyDown={(e: any) => e.key === 'Enter' && handleAddPreset()}
                   error={checkPresetNameExists(name)}
                   size="small"
