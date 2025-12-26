@@ -36,8 +36,6 @@ const TopBarMenu = ({ slug, invisible }: TopBarMenuProps) => {
   const setCurrentTheme = useStore((state) => state.ui.setCurrentTheme)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const setHostManager = useStore((state) => state.setHostManager)
-  const toggleGraphs = useStore((state) => state.toggleGraphs)
-  const graphs = useStore((state) => state.graphs)
   const isLogged = useStore((state) => state.isLogged)
   const setIsLogged = useStore((state) => state.setIsLogged)
   const reloadTheme = useStore((state) => state.ui.reloadTheme)

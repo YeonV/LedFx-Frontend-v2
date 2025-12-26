@@ -8,7 +8,6 @@ interface ContextMenuItemsProps {
 }
 
 export const ContextMenuItems = ({ slug, onClose }: ContextMenuItemsProps) => {
-  // STORE ACCESS - DO NOT MODIFY
   const toggleGraphs = useStore((state) => state.toggleGraphs)
   const toggleGraphsMulti = useStore((state) => state.toggleGraphsMulti)
   const toggleShowMatrix = useStore((state) => state.toggleShowMatrix)
@@ -226,7 +225,10 @@ export const ContextMenuItems = ({ slug, onClose }: ContextMenuItemsProps) => {
             key="home-audio-graph"
             icon={<BladeIcon name={'mdi:waveform'} />}
             text={`${features.melbankGraph ? 'Hide' : 'Show'} Audio Graph`}
-            onClick={() => setFeatures('melbankGraph', !features.melbankGraph)}
+            onClick={() => {
+              setFeatures('melbankGraph', !features.melbankGraph)
+              onClose()
+            }}
           />
         </>
       )
