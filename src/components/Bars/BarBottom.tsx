@@ -346,7 +346,7 @@ export default function BarBottom() {
                   })
                 })
           }}
-          className="step-four"
+          className="step-four step-scenes-two"
         />
       )}
       <Backdrop style={{ zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} open={backdrop} />
