@@ -62,6 +62,7 @@ const SceneCard = ({
             alignItems: 'center',
             width: '100%'
           }}
+          className="step-scenes-five"
         >
           <Typography className={classes.sceneTitle} variant="h5" component="h2">
             {scene.name || sceneId}

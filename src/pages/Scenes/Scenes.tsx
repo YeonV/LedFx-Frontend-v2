@@ -91,7 +91,7 @@ const Scenes = () => {
           alignItems={'flex-start'}
         >
           {scenes && Object.keys(scenes).length && (
-            <Stack direction={'column'} spacing={2} p={2}>
+            <Stack direction={'column'} spacing={2} p={2} className="step-scenes-four">
               {features.sceneRecent && (
                 <Box maxWidth={mediumScreen ? '100%' : 450} paddingBottom={0}>
                   <ScenesRecent
@@ -128,7 +128,7 @@ const Scenes = () => {
           )}
           <Box justifyContent={'center'} textAlign={'center'}>
             {scenes && Object.keys(scenes).length && features.scenechips ? (
-              <div>
+              <div className="step-scenes-three">
                 {Object.keys(scenes)
                   .flatMap((s) =>
                     !!scenes[s].scene_tags && scenes[s].scene_tags !== ''
@@ -160,6 +160,7 @@ const Scenes = () => {
               spacing={[0, 0, 2, 2, 2]}
               justifyContent={'center'}
               m={['0 auto', '0 auto', '0.5rem', '0.5rem', '0.5rem']}
+              className="step-scenes-one"
               sx={{
                 maxWidth: '100%',
                 overflowY: features.sceneScroll ? 'auto' : 'unset',
