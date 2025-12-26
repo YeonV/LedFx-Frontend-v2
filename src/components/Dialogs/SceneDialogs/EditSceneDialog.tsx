@@ -628,7 +628,8 @@ const EditSceneDialog = () => {
                   }
                   defaultValue={tags?.split(',').filter((n) => !!n) || []}
                   freeSolo
-                  renderTags={(value: readonly string[], getTagProps) =>
+                  autoSelect
+                  renderValue={(value: readonly string[], getTagProps) =>
                     value.map(
                       (option: string, index: number) =>
                         option &&
