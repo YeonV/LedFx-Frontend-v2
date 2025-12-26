@@ -35,6 +35,13 @@ export default [
     'plugin:@typescript-eslint/recommended',
   ),
   {
+    files: ['**/workers/**/*.ts'],
+    linterOptions: {
+      reportUnusedDisableDirectives: false
+    }
+  },
+  {
+    
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -69,7 +76,7 @@ export default [
       // 'react-hooks': reactHooks
     },
     rules: {
-      'no-unused-directive': 'off',
+      // 'no-unused-directive': 'off',
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",

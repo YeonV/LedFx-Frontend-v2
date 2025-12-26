@@ -125,15 +125,15 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
-      
+
       // Capture files reference immediately (React synthetic event pooling)
       const files = e.dataTransfer.files
       // Force synchronous access to ensure files are populated for cross-browser drag
       const fileCount = files.length
-      
+
       setTimeout(() => {
         const file = fileCount > 0 ? files[0] : null
-        
+
         if (file && file.type === 'application/json') {
           handleJsonFile({ target: { files: [file] } })
         } else if (file && file.type.startsWith('image/')) {
@@ -141,14 +141,14 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           reader.onload = (ev) => {
             setImagePreview(ev.target?.result as string)
             setImageFile(file)
-            
+
             // Generate unique name for generic filenames (e.g., download.jpg from browser drags)
             let nameWithoutExt = file.name.replace(/\.[^/.]+$/, '')
             if (nameWithoutExt === 'download' || nameWithoutExt === 'image') {
               const timestamp = Date.now()
               nameWithoutExt = `${nameWithoutExt}_${timestamp}`
             }
-            
+
             setImageName(nameWithoutExt)
             setTitle('Image Asset detected')
             setNewData({ type: 'image', file })
