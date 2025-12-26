@@ -45,15 +45,18 @@ const Popover = ({
   wrapperStyle,
   type = 'button',
   open = false,
+  onOpenChange, // Add this new prop
   children
 }: PopoverProps): ReactElement<any, any> => {
   const theme = useTheme()
   const [anchorEl, setAnchorEl] = useState<any>(null)
   const openPopover = (event: any) => {
     setAnchorEl(() => event.currentTarget || event.target)
+    onOpenChange?.(true) // Notify parent
   }
   const handleClose = () => {
     setAnchorEl(null)
+    onOpenChange?.(false) // Notify parent
   }
   const longPress = useLongPress((e) => openPopover(e), {
     onCancel: (e) => {
@@ -66,7 +69,9 @@ const Popover = ({
   const id = opened ? 'simple-popover' : undefined
 
   useEffect(() => {
-    setAnchorEl(null)
+    if (!open) {
+      setAnchorEl(null)
+    }
   }, [open])
 
   return (
@@ -222,7 +227,7 @@ const Popover = ({
             onClick={(e) => {
               e.preventDefault()
               if (onConfirm) onConfirm(e)
-              setAnchorEl(null)
+              handleClose() // Use handleClose instead of setAnchorEl(null)
             }}
           >
             {confirmContent || <Check />}
@@ -233,7 +238,7 @@ const Popover = ({
             onClick={(e) => {
               e.preventDefault()
               if (onCancel) onCancel(e)
-              setAnchorEl(null)
+              handleClose() // Use handleClose instead of setAnchorEl(null)
             }}
           >
             <Close />
