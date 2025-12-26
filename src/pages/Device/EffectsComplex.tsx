@@ -97,6 +97,9 @@ const EffectsComplex = ({ virtId, initMatix }: { virtId: string; initMatix?: boo
     )
 
   const handleEffectConfig = (config: EffectConfig, vId: string) => {
+    // Optimistically update theModel immediately to prevent flickering
+    setTheModel((prev: any) => ({ ...prev, ...config }))
+
     if (updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(vId, effectType, config, false).then(() => {
         getVirtuals()
