@@ -22,13 +22,15 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
   const toggleSidebar = () => setSideBarOpen(!sideBarOpen)
 
   return (
-    <div style={{ alignSelf: 'center' }}>
+    <>
       {variant === 'iconbutton' && (
-        <Tooltip title="MIDI Input Configuration">
-          <IconButton onClick={() => setOpen(true)}>
-            <BladeIcon name="mdi:midi" />
-          </IconButton>
-        </Tooltip>
+        <div style={{ alignSelf: 'center' }}>
+          <Tooltip title="MIDI Input Configuration">
+            <IconButton onClick={() => setOpen(true)}>
+              <BladeIcon name="mdi:midi" />
+            </IconButton>
+          </Tooltip>
+        </div>
       )}
       {variant === 'navitem' && (
         <BottomNavigationAction
@@ -37,12 +39,12 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
           icon={<SettingsInputComponent />}
           onClick={() => setOpen(true)}
           sx={{
-            color: open ? theme.palette.primary.main : 'inherit',
             pt: 0,
             '& .MuiBottomNavigationAction-label': {
               opacity: 1
             }
           }}
+          style={open ? { color: theme.palette.primary.main } : {}}
         />
       )}
       <Dialog
@@ -82,7 +84,7 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
           />
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   )
 }
 
