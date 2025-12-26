@@ -155,6 +155,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   }
 
   const handleEffectConfig = (config: Effect['config']) => {
+    // Optimistically update theModel immediately to prevent flickering
+    setTheModel((prev: any) => ({ ...prev, ...config }))
+
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(virtId, effectType, config, false).then(async () => {
         getVirtuals()
