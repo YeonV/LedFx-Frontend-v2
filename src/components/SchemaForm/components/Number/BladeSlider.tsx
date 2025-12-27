@@ -69,7 +69,7 @@ const BladeSliderInner = ({
     )
   }, [model, model_id, schema.default])
 
-  return schema.maximum && !textfield ? (
+  return typeof schema.maximum === 'number' && !textfield ? (
     <>
       <div style={{ width: '100%' }}>
         <Slider
