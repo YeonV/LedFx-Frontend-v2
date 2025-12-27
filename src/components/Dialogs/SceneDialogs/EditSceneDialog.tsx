@@ -1011,7 +1011,9 @@ const EditSceneDialog = () => {
                     </Typography>
 
                     {/* Column 2: Effect Type Selector */}
-                    {!vData.type || vData.action !== 'activate' ? null : (
+                    {vData.action !== 'activate' ? (
+                      <Box sx={{ width: '200px' }} />
+                    ) : (
                       <FormControl sx={{ width: '200px' }} size="small">
                         <Select
                           disableUnderline
@@ -1036,7 +1038,9 @@ const EditSceneDialog = () => {
                     )}
                     {/* Column 3: Preset Selector */}
                     {/* Hide if no effect type OR action is not 'activate' */}
-                    {!vData.type || vData.action !== 'activate' ? null : (
+                    {!vData.type || vData.action !== 'activate' ? (
+                      <Box sx={{ width: '200px' }} />
+                    ) : (
                       <FormControl sx={{ width: '200px' }} size="small">
                         <Select
                           disableUnderline
