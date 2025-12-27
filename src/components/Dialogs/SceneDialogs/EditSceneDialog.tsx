@@ -1171,7 +1171,8 @@ const EditSceneDialog = () => {
             Object.entries(sceneVirtuals).some(([_, vData]) => {
               if (Object.keys(vData).length === 0) return false // Ignored is OK
               const data = vData as any
-              return !data.type && data.action !== 'ignore' // Must have effect type unless ignored
+              // Only 'activate' action requires an effect type
+              return data.action === 'activate' && !data.type
             })
           }
           onClick={() => {
