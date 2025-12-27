@@ -30,6 +30,7 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const uploadAsset = useStore((state) => state.uploadAsset)
   const getAssets = useStore((state) => state.getAssets)
+  const assets = useStore((state) => state.assets)
 
   const isValidFullConfig = useCallback((data: any) => {
     const requiredConfigKeys = [
@@ -171,6 +172,14 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
     setImageName('')
   }
 
+  const assetNameExsists = useCallback((): boolean => {
+    if (!imageName) return false
+    return Object.values(assets).some((asset: any) => {
+      const assetNameWithoutExt = asset.path.replace(`.${asset.format.toLowerCase()}`, '')
+      return assetNameWithoutExt === imageName
+    })
+  }, [imageName, assets])
+
   const handleSave = () => {
     showSnackbar('info', 'Importing...')
     if (newData) {
@@ -248,9 +257,19 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
               </Box>
               <TextField
                 fullWidth
+                autoFocus
                 label="Asset Name"
                 value={imageName}
                 onChange={(e) => setImageName(e.target.value)}
+                error={assetNameExsists()}
+                helperText={assetNameExsists() ? 'Asset with this name already exists' : ' '}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !assetNameExsists()) {
+                    handleSave()
+                  } else if (e.key === 'Escape') {
+                    handleClose()
+                  }
+                }}
               />
             </Box>
           ) : (
@@ -258,8 +277,10 @@ const FiledropProvider = ({ children }: { children: React.ReactNode }) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleSave}>Yes</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button disabled={assetNameExsists()} onClick={handleSave}>
+            Import
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
