@@ -118,7 +118,8 @@ const EditSceneDialog = () => {
 
   useEffect(() => {
     getVirtuals()
-  }, [getVirtuals])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onDrop = useCallback((acceptedFiles: any) => {
     acceptedFiles.forEach((file: any) => {
@@ -190,9 +191,6 @@ const EditSceneDialog = () => {
       if (!sceneId) return
 
       setIsLoadingScene(true)
-
-      // Ensure virtuals are loaded
-      await getVirtuals()
 
       const result = await getScene(sceneId)
       if (result) {
