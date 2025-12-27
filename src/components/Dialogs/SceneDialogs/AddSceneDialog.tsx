@@ -12,16 +12,19 @@ import useStore from '../../../store/useStore'
 
 const AddSceneDialog = () => {
   const [name, setName] = useState('')
-  const [invalid, setInvalid] = useState(false)
 
   const addScene = useStore((state) => state.addScene)
   const getScenes = useStore((state) => state.getScenes)
+  const scenes = useStore((state) => state.scenes)
   const open = useStore((state) => state.dialogs.addScene?.open || false)
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
-  useEffect(() => {
-    setInvalid(false)
-  }, [])
+
+  const nameExists = Object.values(scenes).some(
+    (scene: any) => scene.name.toLowerCase() === name.trim().toLowerCase()
+  )
+
+  const invalid = name.trim() === '' || nameExists
 
   const handleClose = () => {
     setDialogOpenAddScene(false)
@@ -55,11 +58,17 @@ const AddSceneDialog = () => {
           onKeyDown={(e) => e.key === 'Enter' && handleAddScene()}
           required
           fullWidth
+          error={nameExists && name.trim() !== ''}
+          helperText={
+            nameExists && name.trim() !== '' ? 'A scene with this name already exists' : ' '
+          }
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleAddScene}>Add & Configure</Button>
+        <Button disabled={invalid} onClick={handleAddScene}>
+          Add & Configure
+        </Button>
       </DialogActions>
     </Dialog>
   )
