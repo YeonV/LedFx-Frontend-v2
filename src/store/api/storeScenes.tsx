@@ -237,6 +237,12 @@ const storeScenes = (set: any) => ({
           scene_payload,
           scene_midiactivate
         }),
+  overrideScene: async (id: string, name: string) =>
+    await Ledfx('/api/scenes', 'POST', {
+      id,
+      name,
+      snapshot: true
+    }),
   updateScene: async (
     name: string,
     id: string,

@@ -40,6 +40,7 @@ import { IMapping } from '../../../store/ui/storeMidi'
 import { WebMidi } from 'webmidi'
 import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 import GifPicker from '../../SchemaForm/components/Gif/GifPicker'
+import Popover from '../../Popover/Popover'
 
 const EditSceneDialog = () => {
   const [name, setName] = useState('')
@@ -87,6 +88,7 @@ const EditSceneDialog = () => {
   const updateScene = useStore((state) => state.updateScene)
   const getScenes = useStore((state) => state.getScenes)
   const getScene = useStore((state) => state.getScene)
+  const getVirtuals = useStore((state) => state.getVirtuals)
   const [imageData, setImageData] = useState(null)
   const [contentType, setContentType] = useState('image/png')
   const midiEvent = useStore((state) => state.midiEvent)
@@ -113,6 +115,10 @@ const EditSceneDialog = () => {
       fetchImage(image)
     }
   }, [image, fetchImage])
+
+  useEffect(() => {
+    getVirtuals()
+  }, [getVirtuals])
 
   const onDrop = useCallback((acceptedFiles: any) => {
     acceptedFiles.forEach((file: any) => {
@@ -184,6 +190,10 @@ const EditSceneDialog = () => {
       if (!sceneId) return
 
       setIsLoadingScene(true)
+
+      // Ensure virtuals are loaded
+      await getVirtuals()
+
       const result = await getScene(sceneId)
       if (result) {
         console.log('Loaded scene:', result)
@@ -219,7 +229,38 @@ const EditSceneDialog = () => {
           },
           {} as typeof sceneVirtuals
         )
-        setSceneVirtuals(virtualsWithActions)
+
+        // Add missing virtuals that exist in the system but not in the scene
+        const enrichedVirtuals = Object.entries(virtuals).reduce(
+          (acc, [virtualId, virtualData]) => {
+            // Skip if this virtual is already in virtualsWithActions
+            if (virtualId in virtualsWithActions) {
+              return acc
+            }
+
+            // Check if virtual has an active effect
+            if (virtualData.effect && Object.keys(virtualData.effect).length > 0) {
+              acc[virtualId] = {
+                config: virtualData.effect.config || {},
+                type: virtualData.effect.type || '',
+                action: 'ignore' as const
+              }
+            } else {
+              // No effect - create empty virtual with ignore action
+              acc[virtualId] = {
+                config: {},
+                type: '',
+                action: 'ignore' as const
+              }
+            }
+
+            return acc
+          },
+          { ...virtualsWithActions } as typeof sceneVirtuals
+        )
+
+        console.log('Enriched virtuals:', enrichedVirtuals)
+        setSceneVirtuals(enrichedVirtuals)
       }
       setIsLoadingScene(false)
     }
@@ -227,10 +268,23 @@ const EditSceneDialog = () => {
     if (open && sceneId) {
       theScene()
     }
-  }, [sceneId, getScene, open])
+  }, [sceneId, getScene, open, getVirtuals, virtuals])
 
   const handleClose = () => {
     setDialogOpenAddScene(false, false)
+  }
+  const overrideScene = useStore((state) => state.overrideScene)
+  const handleOverride = () => {
+    if (Object.keys(sceneVirtuals).length > 0) {
+      overrideScene(sceneId, name)
+        .then(async () => {
+          await getScenes()
+          handleClose()
+        })
+        .catch((err) => {
+          console.error('Error creating scene for override:', err)
+        })
+    }
   }
 
   const handleEditSceneWithVirtuals = () => {
@@ -1168,6 +1222,22 @@ const EditSceneDialog = () => {
         )}
       </DialogContent>
       <DialogActions>
+        <Popover
+          onConfirm={handleOverride}
+          noIcon
+          variant="outlined"
+          color="error"
+          label="Overwrite"
+          content={
+            <Box p={2}>
+              <Typography variant="h6">Overwrite with current settings?</Typography>
+              <Typography variant="body2">
+                This will replace the scene's settings with the <br />
+                current active settings on all devices. This action cannot be undone.
+              </Typography>
+            </Box>
+          }
+        />
         <Button onClick={handleClose}>Cancel</Button>
         <Button
           disabled={
