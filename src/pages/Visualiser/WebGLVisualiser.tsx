@@ -15,10 +15,35 @@ import {
   hexToRgb,
   matrixRainShader,
   terrainShader,
-  geometricShader
+  geometricShader,
+  // Matrix Effects
+  gameOfLifeShader,
+  digitalRainShader,
+  flameShader,
+  plasma2dShader,
+  equalizer2dShader,
+  noise2dShader,
+  // Additional Matrix Effects
+  blenderShader,
+  cloneShader,
+  bandsShader,
+  bandsMatrixShader,
+  blocksShader,
+  keybeat2dShader,
+  texterShader,
+  plasmaWled2dShader,
+  radialShader,
+  soapShader,
+  waterfallShader,
+  imageShader
 } from './shaders'
 
-export type WebGLVisualisationType = 'bars3d' | 'particles' | 'waveform3d' | 'radial3d' | 'bleep' | 'concentric' | 'gif' | 'matrix' | 'terrain' | 'geometric'
+export type WebGLVisualisationType =
+  | 'bars3d' | 'particles' | 'waveform3d' | 'radial3d'
+  | 'bleep' | 'concentric' | 'gif' | 'matrix' | 'terrain' | 'geometric'
+  | 'gameoflife' | 'digitalrain' | 'flame' | 'plasma2d' | 'equalizer2d' | 'noise2d'
+  | 'blender' | 'clone' | 'bands' | 'bandsmatrix' | 'blocks'
+  | 'keybeat2d' | 'texter' | 'plasmawled2d' | 'radial' | 'soap' | 'waterfall' | 'image'
 
 interface WebGLVisualiserProps {
   audioData: number[]
@@ -30,6 +55,11 @@ interface WebGLVisualiserProps {
     isBeat: boolean
     beatIntensity: number
     bpm: number
+  }
+  frequencyBands?: {
+    bass: number
+    mid: number
+    high: number
   }
 }
 
@@ -51,7 +81,8 @@ export const WebGLVisualiser = ({
   visualType,
   config,
   customShader,
-  beatData
+  beatData,
+  frequencyBands
 }: WebGLVisualiserProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const glRef = useRef<WebGLRenderingContext | null>(null)
@@ -115,6 +146,60 @@ export const WebGLVisualiser = ({
       } else if (visualType === 'geometric') {
         vertexSource = quadVertexShader
         fragmentSource = geometricShader
+      } else if (visualType === 'gameoflife') {
+        vertexSource = quadVertexShader
+        fragmentSource = gameOfLifeShader
+      } else if (visualType === 'digitalrain') {
+        vertexSource = quadVertexShader
+        fragmentSource = digitalRainShader
+      } else if (visualType === 'flame') {
+        vertexSource = quadVertexShader
+        fragmentSource = flameShader
+      } else if (visualType === 'plasma2d') {
+        vertexSource = quadVertexShader
+        fragmentSource = plasma2dShader
+      } else if (visualType === 'equalizer2d') {
+        vertexSource = quadVertexShader
+        fragmentSource = equalizer2dShader
+      } else if (visualType === 'noise2d') {
+        vertexSource = quadVertexShader
+        fragmentSource = noise2dShader
+      } else if (visualType === 'blender') {
+        vertexSource = quadVertexShader
+        fragmentSource = blenderShader
+      } else if (visualType === 'clone') {
+        vertexSource = quadVertexShader
+        fragmentSource = cloneShader
+      } else if (visualType === 'bands') {
+        vertexSource = quadVertexShader
+        fragmentSource = bandsShader
+      } else if (visualType === 'bandsmatrix') {
+        vertexSource = quadVertexShader
+        fragmentSource = bandsMatrixShader
+      } else if (visualType === 'blocks') {
+        vertexSource = quadVertexShader
+        fragmentSource = blocksShader
+      } else if (visualType === 'keybeat2d') {
+        vertexSource = quadVertexShader
+        fragmentSource = keybeat2dShader
+      } else if (visualType === 'texter') {
+        vertexSource = quadVertexShader
+        fragmentSource = texterShader
+      } else if (visualType === 'plasmawled2d') {
+        vertexSource = quadVertexShader
+        fragmentSource = plasmaWled2dShader
+      } else if (visualType === 'radial') {
+        vertexSource = quadVertexShader
+        fragmentSource = radialShader
+      } else if (visualType === 'soap') {
+        vertexSource = quadVertexShader
+        fragmentSource = soapShader
+      } else if (visualType === 'waterfall') {
+        vertexSource = quadVertexShader
+        fragmentSource = waterfallShader
+      } else if (visualType === 'image') {
+        vertexSource = quadVertexShader
+        fragmentSource = imageShader
       }
     } else {
        // If custom shader, assume it's a quad shader (fullscreen effect)
@@ -703,23 +788,23 @@ export const WebGLVisualiser = ({
     [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config]
   )
 
-  // Draw Custom / GIF
+  // Draw Custom / GIF / Matrix Effects
   const drawCustom = useCallback(
     (gl: WebGLRenderingContext, data: number[], width: number, height: number) => {
       const program = programRef.current
       if (!program) return
-      
+
       const avg = data.reduce((a, b) => a + b, 0) / data.length
-      
+
       // Common uniforms from config
       const rotation = config.rotate ? config.rotate * (Math.PI / 180) : 0
       const brightness = config.brightness ?? 1.0
       const fps = config.gif_fps ?? 30
-      const speed = fps / 30.0 
+      const speed = fps / 30.0
 
       // Full screen quad
       const vertices = [ -1, -1, 1, -1, -1, 1, 1, 1 ]
-      
+
       const positionBuffer = gl.createBuffer()
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
@@ -734,7 +819,7 @@ export const WebGLVisualiser = ({
 
       const timeLoc = gl.getUniformLocation(program, 'u_time')
       gl.uniform1f(timeLoc, ((Date.now() - startTimeRef.current) / 1000) * speed)
-      
+
       const energyLoc = gl.getUniformLocation(program, 'u_energy')
       if (energyLoc) gl.uniform1f(energyLoc, avg * sensitivity)
 
@@ -747,10 +832,10 @@ export const WebGLVisualiser = ({
          }
          gl.uniform1f(beatLoc, beatRef.current)
       }
-      
+
       const rotateLoc = gl.getUniformLocation(program, 'u_rotate')
       if (rotateLoc) gl.uniform1f(rotateLoc, rotation)
-        
+
       const brightnessLoc = gl.getUniformLocation(program, 'u_brightness')
       if (brightnessLoc) gl.uniform1f(brightnessLoc, brightness)
 
@@ -761,11 +846,175 @@ export const WebGLVisualiser = ({
       gl.uniform3f(primaryColorLoc, ...primaryRgb)
       gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
 
+      // Frequency band uniforms (for new Matrix effects)
+      const bass = frequencyBands?.bass ?? avg
+      const mid = frequencyBands?.mid ?? avg
+      const high = frequencyBands?.high ?? avg
+
+      const bassLoc = gl.getUniformLocation(program, 'u_bass')
+      if (bassLoc) gl.uniform1f(bassLoc, bass * sensitivity)
+
+      const midLoc = gl.getUniformLocation(program, 'u_mid')
+      if (midLoc) gl.uniform1f(midLoc, mid * sensitivity)
+
+      const highLoc = gl.getUniformLocation(program, 'u_high')
+      if (highLoc) gl.uniform1f(highLoc, high * sensitivity)
+
+      // Effect-specific uniforms
+      // Game of Life
+      const cellSizeLoc = gl.getUniformLocation(program, 'u_cellSize')
+      if (cellSizeLoc) gl.uniform1f(cellSizeLoc, config.cell_size ?? 8.0)
+
+      const injectBeatLoc = gl.getUniformLocation(program, 'u_injectBeat')
+      if (injectBeatLoc) gl.uniform1f(injectBeatLoc, (beatData?.isBeat && config.beat_inject !== false) ? 1.0 : 0.0)
+
+      // Digital Rain
+      const densityLoc = gl.getUniformLocation(program, 'u_density')
+      if (densityLoc) gl.uniform1f(densityLoc, config.density ?? 1.0)
+
+      const speedLoc = gl.getUniformLocation(program, 'u_speed')
+      if (speedLoc) gl.uniform1f(speedLoc, config.speed ?? 1.5)
+
+      const tailLengthLoc = gl.getUniformLocation(program, 'u_tailLength')
+      if (tailLengthLoc) gl.uniform1f(tailLengthLoc, config.tail_length ?? 0.5)
+
+      const glowIntensityLoc = gl.getUniformLocation(program, 'u_glowIntensity')
+      if (glowIntensityLoc) gl.uniform1f(glowIntensityLoc, config.glow_intensity ?? 1.0)
+
+      // Flame
+      const intensityLoc = gl.getUniformLocation(program, 'u_intensity')
+      if (intensityLoc) gl.uniform1f(intensityLoc, config.intensity ?? 1.0)
+
+      const wobbleLoc = gl.getUniformLocation(program, 'u_wobble')
+      if (wobbleLoc) gl.uniform1f(wobbleLoc, config.wobble ?? 0.5)
+
+      const lowColorLoc = gl.getUniformLocation(program, 'u_lowColor')
+      if (lowColorLoc) {
+        const lowColor = hexToRgb(config.low_color ?? '#FF4400')
+        gl.uniform3f(lowColorLoc, ...lowColor)
+      }
+
+      const midColorLoc = gl.getUniformLocation(program, 'u_midColor')
+      if (midColorLoc) {
+        const midColor = hexToRgb(config.mid_color ?? '#FFAA00')
+        gl.uniform3f(midColorLoc, ...midColor)
+      }
+
+      const highColorLoc = gl.getUniformLocation(program, 'u_highColor')
+      if (highColorLoc) {
+        const highColor = hexToRgb(config.high_color ?? '#FFFF00')
+        gl.uniform3f(highColorLoc, ...highColor)
+      }
+
+      // Plasma
+      const twistLoc = gl.getUniformLocation(program, 'u_twist')
+      if (twistLoc) gl.uniform1f(twistLoc, config.twist ?? 0.1)
+
+      // Equalizer
+      const bandsLoc = gl.getUniformLocation(program, 'u_bands')
+      if (bandsLoc) gl.uniform1f(bandsLoc, config.bands ?? 32.0)
+
+      const ringModeLoc = gl.getUniformLocation(program, 'u_ringMode')
+      if (ringModeLoc) gl.uniform1f(ringModeLoc, config.ring_mode ? 1.0 : 0.0)
+
+      const centerModeLoc = gl.getUniformLocation(program, 'u_centerMode')
+      if (centerModeLoc) gl.uniform1f(centerModeLoc, config.center_mode ? 1.0 : 0.0)
+
+      const spinLoc = gl.getUniformLocation(program, 'u_spin')
+      if (spinLoc) {
+        // Accumulate spin based on bass
+        if (config.spin_enabled) {
+          beatRef.current += bass * 0.05
+        }
+        gl.uniform1f(spinLoc, beatRef.current)
+      }
+
+      // Create and bind melbank texture for equalizer
+      const melBankLoc = gl.getUniformLocation(program, 'u_melbank')
+      if (melBankLoc && data.length > 0) {
+        const texture = gl.createTexture()
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, texture)
+
+        // Create texture data from audio data
+        const texData = new Uint8Array(data.length)
+        for (let i = 0; i < data.length; i++) {
+          texData[i] = Math.min(255, Math.max(0, data[i] * 255 * sensitivity))
+        }
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, data.length, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, texData)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+        gl.uniform1i(melBankLoc, 0)
+      }
+
+      // Noise
+      const zoomLoc = gl.getUniformLocation(program, 'u_zoom')
+      if (zoomLoc) gl.uniform1f(zoomLoc, config.zoom ?? 3.0)
+
+      const audioZoomLoc = gl.getUniformLocation(program, 'u_audioZoom')
+      if (audioZoomLoc) gl.uniform1f(audioZoomLoc, config.audio_zoom ?? 1.0)
+
+      // Blender
+      const blurLoc = gl.getUniformLocation(program, 'u_blur')
+      if (blurLoc) gl.uniform1f(blurLoc, config.blur ?? 0.5)
+
+      // Clone
+      const mirrorsLoc = gl.getUniformLocation(program, 'u_mirrors')
+      if (mirrorsLoc) gl.uniform1f(mirrorsLoc, config.mirrors ?? 2.0)
+
+      // Bands
+      const flipLoc = gl.getUniformLocation(program, 'u_flip')
+      if (flipLoc) gl.uniform1f(flipLoc, config.flip ? 1.0 : 0.0)
+
+      // Blocks
+      const blockSizeLoc = gl.getUniformLocation(program, 'u_blockSize')
+      if (blockSizeLoc) gl.uniform1f(blockSizeLoc, config.block_size ?? 10.0)
+
+      // Keybeat
+      const keysLoc = gl.getUniformLocation(program, 'u_keys')
+      if (keysLoc) gl.uniform1f(keysLoc, config.keys ?? 16.0)
+
+      // Image effect uniforms
+      const bgColorLoc = gl.getUniformLocation(program, 'u_bgColor')
+      if (bgColorLoc) {
+        const bgColor = hexToRgb(config.bg_color ?? '#000000')
+        gl.uniform3f(bgColorLoc, ...bgColor)
+      }
+
+      const backgroundBrightnessLoc = gl.getUniformLocation(program, 'u_backgroundBrightness')
+      if (backgroundBrightnessLoc) gl.uniform1f(backgroundBrightnessLoc, config.background_brightness ?? 1.0)
+
+      const multiplierLoc = gl.getUniformLocation(program, 'u_multiplier')
+      if (multiplierLoc) gl.uniform1f(multiplierLoc, config.multiplier ?? 0.5)
+
+      const minSizeLoc = gl.getUniformLocation(program, 'u_minSize')
+      if (minSizeLoc) gl.uniform1f(minSizeLoc, config.min_size ?? 0.3)
+
+      const frequencyRangeLoc = gl.getUniformLocation(program, 'u_frequencyRange')
+      if (frequencyRangeLoc) {
+        // frequency_range: 0=lows, 1=mids, 2=highs
+        const freqRange = typeof config.frequency_range === 'number' ? config.frequency_range : 0.0
+        gl.uniform1f(frequencyRangeLoc, freqRange)
+      }
+
+      const clipLoc = gl.getUniformLocation(program, 'u_clip')
+      if (clipLoc) gl.uniform1f(clipLoc, config.clip ? 1.0 : 0.0)
+
+      // For Image effect, use u_spin differently (as boolean for spinning, not accumulated)
+      const spinImageLoc = gl.getUniformLocation(program, 'u_spin')
+      if (spinImageLoc && visualType === 'image') {
+        gl.uniform1f(spinImageLoc, config.spin ? 1.0 : 0.0)
+      }
+
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-      
+
       gl.deleteBuffer(positionBuffer)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config]
+    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config, frequencyBands, beatData, visualType]
   )
 
   // Main draw function
@@ -814,6 +1063,24 @@ export const WebGLVisualiser = ({
         case 'matrix':
         case 'terrain':
         case 'geometric':
+        case 'gameoflife':
+        case 'digitalrain':
+        case 'flame':
+        case 'plasma2d':
+        case 'equalizer2d':
+        case 'noise2d':
+        case 'blender':
+        case 'clone':
+        case 'bands':
+        case 'bandsmatrix':
+        case 'blocks':
+        case 'keybeat2d':
+        case 'texter':
+        case 'plasmawled2d':
+        case 'radial':
+        case 'soap':
+        case 'waterfall':
+        case 'image':
           drawCustom(gl, smoothedData, width, height)
           break
       }
