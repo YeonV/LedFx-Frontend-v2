@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import { useTheme } from '@mui/material/styles'
 import {
   createShader,
@@ -116,8 +116,22 @@ export const WebGLVisualiser = ({
   const particlesRef = useRef<Particle[]>([])
   const historyRef = useRef<number[]>(new Array(128).fill(0))
   const beatRef = useRef<number>(0)
+  const audioDataRef = useRef<number[]>([])
+  const isDrawingRef = useRef<boolean>(false)
+  const themeColorsRef = useRef({ primary: [0, 0, 0], secondary: [0, 0, 0] })
 
   const theme = useTheme()
+
+  // Update refs in useEffect to avoid recreating callbacks
+  useEffect(() => {
+    themeColorsRef.current = {
+      primary: hexToRgb(theme.palette.primary.main),
+      secondary: hexToRgb(theme.palette.secondary.main)
+    }
+  }, [theme.palette.primary.main, theme.palette.secondary.main])
+
+  // Update audio data ref in render (no useEffect needed)
+  audioDataRef.current = audioData
 
   // Extract common config with defaults
   const sensitivity = config.sensitivity ?? 1.0
@@ -364,10 +378,10 @@ export const WebGLVisualiser = ({
 
       const primaryColorLoc = gl.getUniformLocation(program, 'u_primaryColor')
       const secondaryColorLoc = gl.getUniformLocation(program, 'u_secondaryColor')
-      const primaryRgb = hexToRgb(theme.palette.primary.main)
-      const secondaryRgb = hexToRgb(theme.palette.secondary.main)
-      gl.uniform3f(primaryColorLoc, ...primaryRgb)
-      gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
+      const [r1, g1, b1] = themeColorsRef.current.primary
+      const [r2, g2, b2] = themeColorsRef.current.secondary
+      gl.uniform3f(primaryColorLoc, r1, g1, b1)
+      gl.uniform3f(secondaryColorLoc, r2, g2, b2)
 
       // Draw
       gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2)
@@ -377,7 +391,7 @@ export const WebGLVisualiser = ({
       gl.deleteBuffer(amplitudeBuffer)
       gl.deleteBuffer(indexBuffer)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main]
+    [sensitivity]
   )
 
   // Draw particles
@@ -416,6 +430,11 @@ export const WebGLVisualiser = ({
 
         return p.life < 1 && p.y > 0 && p.x > 0 && p.x < width
       })
+
+      // Safety: Force limit if somehow exceeded
+      if (particlesRef.current.length > MAX_PARTICLES) {
+        particlesRef.current = particlesRef.current.slice(0, MAX_PARTICLES)
+      }
 
       if (particlesRef.current.length === 0) return
 
@@ -496,10 +515,10 @@ export const WebGLVisualiser = ({
 
       const primaryColorLoc = gl.getUniformLocation(program, 'u_primaryColor')
       const secondaryColorLoc = gl.getUniformLocation(program, 'u_secondaryColor')
-      const primaryRgb = hexToRgb(theme.palette.primary.main)
-      const secondaryRgb = hexToRgb(theme.palette.secondary.main)
-      gl.uniform3f(primaryColorLoc, ...primaryRgb)
-      gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
+      const [r1, g1, b1] = themeColorsRef.current.primary
+      const [r2, g2, b2] = themeColorsRef.current.secondary
+      gl.uniform3f(primaryColorLoc, r1, g1, b1)
+      gl.uniform3f(secondaryColorLoc, r2, g2, b2)
 
       // Draw points
       gl.drawArrays(gl.POINTS, 0, particlesRef.current.length)
@@ -511,7 +530,7 @@ export const WebGLVisualiser = ({
       gl.deleteBuffer(sizeBuffer)
       gl.deleteBuffer(amplitudeBuffer)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main]
+    [sensitivity]
   )
 
   // Draw radial visualization
@@ -628,7 +647,6 @@ export const WebGLVisualiser = ({
         const x1 = i * sliceWidth
         const x2 = (i + 1) * sliceWidth
         const y1 = centerY + (amplitude1 - 0.5) * height * 0.8
-        const y2 = centerY + (amplitude2 - 0.5) * height * 0.8
 
         // Create quad for filled waveform
         vertices.push(x1, centerY, x1, y1, x2, y1)
@@ -680,10 +698,10 @@ export const WebGLVisualiser = ({
 
       const primaryColorLoc = gl.getUniformLocation(program, 'u_primaryColor')
       const secondaryColorLoc = gl.getUniformLocation(program, 'u_secondaryColor')
-      const primaryRgb = hexToRgb(theme.palette.primary.main)
-      const secondaryRgb = hexToRgb(theme.palette.secondary.main)
-      gl.uniform3f(primaryColorLoc, ...primaryRgb)
-      gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
+      const [r1, g1, b1] = themeColorsRef.current.primary
+      const [r2, g2, b2] = themeColorsRef.current.secondary
+      gl.uniform3f(primaryColorLoc, r1, g1, b1)
+      gl.uniform3f(secondaryColorLoc, r2, g2, b2)
 
       // Draw
       gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2)
@@ -693,7 +711,7 @@ export const WebGLVisualiser = ({
       gl.deleteBuffer(amplitudeBuffer)
       gl.deleteBuffer(indexBuffer)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main]
+    [sensitivity]
   )
 
   // Draw Bleep
@@ -762,17 +780,17 @@ export const WebGLVisualiser = ({
 
       const primaryColorLoc = gl.getUniformLocation(program, 'u_primaryColor')
       const secondaryColorLoc = gl.getUniformLocation(program, 'u_secondaryColor')
-      const primaryRgb = hexToRgb(theme.palette.primary.main)
-      const secondaryRgb = hexToRgb(theme.palette.secondary.main)
-      gl.uniform3f(primaryColorLoc, ...primaryRgb)
-      gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
+      const [r1, g1, b1] = themeColorsRef.current.primary
+      const [r2, g2, b2] = themeColorsRef.current.secondary
+      gl.uniform3f(primaryColorLoc, r1, g1, b1)
+      gl.uniform3f(secondaryColorLoc, r2, g2, b2)
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
       gl.deleteBuffer(positionBuffer)
       gl.deleteTexture(texture)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config]
+    [sensitivity, config]
   )
 
   // Draw Concentric
@@ -816,16 +834,16 @@ export const WebGLVisualiser = ({
 
       const primaryColorLoc = gl.getUniformLocation(program, 'u_primaryColor')
       const secondaryColorLoc = gl.getUniformLocation(program, 'u_secondaryColor')
-      const primaryRgb = hexToRgb(theme.palette.primary.main)
-      const secondaryRgb = hexToRgb(theme.palette.secondary.main)
-      gl.uniform3f(primaryColorLoc, ...primaryRgb)
-      gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
+      const [r1, g1, b1] = themeColorsRef.current.primary
+      const [r2, g2, b2] = themeColorsRef.current.secondary
+      gl.uniform3f(primaryColorLoc, r1, g1, b1)
+      gl.uniform3f(secondaryColorLoc, r2, g2, b2)
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
       gl.deleteBuffer(positionBuffer)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config]
+    [sensitivity, config, beatData]
   )
 
   // Draw Custom / GIF / Matrix Effects
@@ -881,10 +899,10 @@ export const WebGLVisualiser = ({
 
       const primaryColorLoc = gl.getUniformLocation(program, 'u_primaryColor')
       const secondaryColorLoc = gl.getUniformLocation(program, 'u_secondaryColor')
-      const primaryRgb = hexToRgb(theme.palette.primary.main)
-      const secondaryRgb = hexToRgb(theme.palette.secondary.main)
-      gl.uniform3f(primaryColorLoc, ...primaryRgb)
-      gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
+      const [r1, g1, b1] = themeColorsRef.current.primary
+      const [r2, g2, b2] = themeColorsRef.current.secondary
+      gl.uniform3f(primaryColorLoc, r1, g1, b1)
+      gl.uniform3f(secondaryColorLoc, r2, g2, b2)
 
       // Frequency band uniforms (for new Matrix effects)
       const bass = frequencyBands?.bass ?? avg
@@ -1066,22 +1084,14 @@ export const WebGLVisualiser = ({
 
       gl.deleteBuffer(positionBuffer)
     },
-    [
-      sensitivity,
-      theme.palette.primary.main,
-      theme.palette.secondary.main,
-      config,
-      frequencyBands,
-      beatData,
-      visualType
-    ]
+    [sensitivity, config, frequencyBands, beatData, visualType]
   )
 
   // Main draw function
   const draw = useCallback(() => {
     const gl = glRef.current
     const canvas = canvasRef.current
-    if (!gl || !canvas) return
+    if (!gl || !canvas || !isDrawingRef.current) return
 
     const width = canvas.width
     const height = canvas.height
@@ -1090,12 +1100,14 @@ export const WebGLVisualiser = ({
     gl.clearColor(0, 0, 0, 0.15)
     gl.clear(gl.COLOR_BUFFER_BIT)
 
-    if (audioData.length === 0) {
+    // Use ref for audio data to avoid dependency
+    const currentAudioData = audioDataRef.current
+    if (currentAudioData.length === 0) {
       animationRef.current = requestAnimationFrame(draw)
       return
     }
 
-    const smoothedData = getSmoothData(audioData)
+    const smoothedData = getSmoothData(currentAudioData)
 
     if (customShader) {
       drawCustom(gl, smoothedData, width, height)
@@ -1148,7 +1160,6 @@ export const WebGLVisualiser = ({
 
     animationRef.current = requestAnimationFrame(draw)
   }, [
-    audioData,
     visualType,
     getSmoothData,
     drawBars3D,
@@ -1167,14 +1178,34 @@ export const WebGLVisualiser = ({
       const success = initWebGL()
       if (success) {
         startTimeRef.current = Date.now()
+        isDrawingRef.current = true
+        // Reset refs
+        particlesRef.current = []
+        historyRef.current = new Array(128).fill(0)
+        beatRef.current = 0
         draw()
       }
+    } else {
+      isDrawingRef.current = false
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = undefined
+      }
+      // Clear memory
+      particlesRef.current = []
+      historyRef.current = new Array(128).fill(0)
     }
 
     return () => {
+      isDrawingRef.current = false
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
+        animationRef.current = undefined
       }
+      // Clear memory on unmount
+      particlesRef.current = []
+      historyRef.current = new Array(128).fill(0)
+      previousDataRef.current = []
     }
   }, [isPlaying, initWebGL, draw])
 
@@ -1203,9 +1234,23 @@ export const WebGLVisualiser = ({
   // Reinitialize when visual type changes
   useEffect(() => {
     if (isPlaying && glRef.current) {
-      initWebGL()
+      // Stop current animation before reinitializing
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = undefined
+      }
+      // Clear memory
+      particlesRef.current = []
+      historyRef.current = new Array(128).fill(0)
+      beatRef.current = 0
+      previousDataRef.current = []
+
+      const success = initWebGL()
+      if (success) {
+        draw()
+      }
     }
-  }, [visualType, isPlaying, initWebGL, customShader])
+  }, [visualType, isPlaying, initWebGL, customShader, draw])
 
   return (
     <canvas

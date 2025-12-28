@@ -937,29 +937,25 @@ const Visualiser = () => {
 
   // Auto Change Logic - Beat Detection for Mic
   const lastBeatChangeRef = useRef(0)
+  const prevBeatRef = useRef(false)
 
   useEffect(() => {
-    if (!autoChange || !isPlaying || audioSource !== 'mic') return
+    if (!autoChange || !isPlaying || audioSource !== 'mic') {
+      prevBeatRef.current = false
+      return
+    }
 
-    const now = Date.now()
-    if (now - lastAutoChangeRef.current < 5000) return // Min 5 seconds between changes
-
-    if (micData.isBeat && micData.beatIntensity > 0.8) {
-      // Debounce: only trigger once per beat
-      if (now - lastBeatChangeRef.current > 300) {
+    // Only trigger on beat edge (false -> true transition)
+    if (micData.isBeat && !prevBeatRef.current && micData.beatIntensity > 0.8) {
+      const now = Date.now()
+      if (now - lastAutoChangeRef.current >= 5000 && now - lastBeatChangeRef.current > 300) {
         lastBeatChangeRef.current = now
-        // Schedule state update to avoid cascading renders
-        queueMicrotask(() => triggerRandomVisual())
+        setTimeout(() => triggerRandomVisual(), 0)
       }
     }
-  }, [
-    autoChange,
-    isPlaying,
-    audioSource,
-    micData.isBeat,
-    micData.beatIntensity,
-    triggerRandomVisual
-  ])
+
+    prevBeatRef.current = micData.isBeat
+  })
 
   // Auto Change Logic - Random Timer for Backend
   useEffect(() => {
