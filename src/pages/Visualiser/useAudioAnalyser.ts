@@ -8,7 +8,7 @@
  * - Energy levels (bass, mid, high)
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Meyda from 'meyda'
 
 export interface AudioAnalyserData {
@@ -19,10 +19,10 @@ export interface AudioAnalyserData {
   // Time domain waveform data
   waveformData: number[]
   // Energy levels
-  bass: number       // 20-250 Hz
-  mid: number        // 250-4000 Hz
-  high: number       // 4000-20000 Hz
-  overall: number    // Overall energy (RMS)
+  bass: number // 20-250 Hz
+  mid: number // 250-4000 Hz
+  high: number // 4000-20000 Hz
+  overall: number // Overall energy (RMS)
   // Beat detection
   isBeat: boolean
   beatIntensity: number
@@ -98,7 +98,7 @@ class BeatHistory {
     const histogram = new Map<number, number>()
     const binSize = 50 // 50ms bins
 
-    intervals.forEach(interval => {
+    intervals.forEach((interval) => {
       const bin = Math.round(interval / binSize) * binSize
       histogram.set(bin, (histogram.get(bin) || 0) + 1)
     })
@@ -118,7 +118,7 @@ class BeatHistory {
 
     // Calculate BPM from interval
     let bpm = Math.round(60000 / mostCommonInterval)
-    
+
     // Simple harmonic correction: prefer 90-180 range
     if (bpm < 90 && bpm > 0) bpm *= 2
 
@@ -133,7 +133,7 @@ class BeatHistory {
 }
 
 export function useAudioAnalyser(config: AudioAnalyserConfig = {}) {
-  const cfg = { ...DEFAULT_CONFIG, ...config }
+  const cfg = useMemo(() => ({ ...DEFAULT_CONFIG, ...config }), [config])
 
   const [isInitialized, setIsInitialized] = useState(false)
   const [isListening, setIsListening] = useState(false)
@@ -163,6 +163,7 @@ export function useAudioAnalyser(config: AudioAnalyserConfig = {}) {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const animationRef = useRef<number | null>(null)
+  const processAudioRef = useRef<() => void>(() => {})
 
   // Beat detection state
   const energyHistoryRef = useRef<number[]>([])
@@ -170,160 +171,166 @@ export function useAudioAnalyser(config: AudioAnalyserConfig = {}) {
   const lastBeatTimeRef = useRef<number>(0)
   const beatThresholdRef = useRef<number>(0)
   const peakEnergyRef = useRef<number>(0)
-  
+
   // Build-up detection state
-  const buildUpHistoryRef = useRef<{rms: number, centroid: number}[]>([])
+  const buildUpHistoryRef = useRef<{ rms: number; centroid: number }[]>([])
 
-  const processAudio = useCallback(() => {
-    const analyser = analyserRef.current
-    if (!analyser) return
+  useEffect(() => {
+    processAudioRef.current = () => {
+      const analyser = analyserRef.current
+      if (!analyser) return
 
-    const bufferLength = analyser.frequencyBinCount
-    const frequencyData = new Uint8Array(bufferLength)
-    const waveformData = new Uint8Array(bufferLength)
+      const bufferLength = analyser.frequencyBinCount
+      const frequencyData = new Uint8Array(bufferLength)
+      const waveformData = new Uint8Array(bufferLength)
 
-    analyser.getByteFrequencyData(frequencyData)
-    analyser.getByteTimeDomainData(waveformData)
+      analyser.getByteFrequencyData(frequencyData)
+      analyser.getByteTimeDomainData(waveformData)
 
-    // Convert to arrays and normalize
-    const freqArray = Array.from(frequencyData)
-    const normalizedFreq = freqArray.map(v => v / 255)
-    // Waveform -1 to 1 for Meyda
-    const waveArray = Array.from(waveformData).map(v => (v - 128) / 128)
+      // Convert to arrays and normalize
+      const freqArray = Array.from(frequencyData)
+      const normalizedFreq = freqArray.map((v) => v / 255)
+      // Waveform -1 to 1 for Meyda
+      const waveArray = Array.from(waveformData).map((v) => (v - 128) / 128)
 
-    // Calculate frequency bins for bass, mid, high
-    const binWidth = 44100 / cfg.fftSize
-    const bassEnd = Math.floor(250 / binWidth)
-    const midEnd = Math.floor(4000 / binWidth)
+      // Calculate frequency bins for bass, mid, high
+      const binWidth = 44100 / cfg.fftSize
+      const bassEnd = Math.floor(250 / binWidth)
+      const midEnd = Math.floor(4000 / binWidth)
 
-    // Calculate energy levels manually (still useful for bands)
-    let bassSum = 0, midSum = 0, highSum = 0
-    for (let i = 0; i < bufferLength; i++) {
-      const value = normalizedFreq[i]
-      if (i < bassEnd) {
-        bassSum += value
-      } else if (i < midEnd) {
-        midSum += value
-      } else {
-        highSum += value
+      // Calculate energy levels manually (still useful for bands)
+      let bassSum = 0
+      let midSum = 0
+      let highSum = 0
+      for (let i = 0; i < bufferLength; i++) {
+        const value = normalizedFreq[i]
+        if (i < bassEnd) {
+          bassSum += value
+        } else if (i < midEnd) {
+          midSum += value
+        } else {
+          highSum += value
+        }
       }
-    }
 
-    const bass = bassEnd > 0 ? bassSum / bassEnd : 0
-    const mid = (midEnd - bassEnd) > 0 ? midSum / (midEnd - bassEnd) : 0
-    const high = (bufferLength - midEnd) > 0 ? highSum / (bufferLength - midEnd) : 0
-    
-    // Extract Meyda features (RMS, Centroid, etc.)
-    let spectralCentroid = 0
-    let spectralFlatness = 0
-    let rms = 0
+      const bass = bassEnd > 0 ? bassSum / bassEnd : 0
+      const mid = midEnd - bassEnd > 0 ? midSum / (midEnd - bassEnd) : 0
+      const high = bufferLength - midEnd > 0 ? highSum / (bufferLength - midEnd) : 0
 
-    try {
-       // Note: Meyda expects a power of 2 buffer size. 
-       // We requested fftSize (2048), so frequencyBinCount is 1024. 
-       // TimeDomainData is fftSize (2048).
-       // So we can pass waveArray (length 2048) to Meyda.
-       const features = Meyda.extract(['rms', 'spectralCentroid', 'spectralFlatness'], waveArray as any)
-       if (features) {
+      // Extract Meyda features (RMS, Centroid, etc.)
+      let spectralCentroid = 0
+      let spectralFlatness = 0
+      let rms = 0
+
+      try {
+        // Note: Meyda expects a power of 2 buffer size.
+        // We requested fftSize (2048), so frequencyBinCount is 1024.
+        // TimeDomainData is fftSize (2048).
+        // So we can pass waveArray (length 2048) to Meyda.
+        const features = Meyda.extract(
+          ['rms', 'spectralCentroid', 'spectralFlatness'],
+          waveArray as any
+        )
+        if (features) {
           rms = features.rms || 0
           spectralCentroid = features.spectralCentroid || 0
           spectralFlatness = features.spectralFlatness || 0
-       }
-    } catch (e) {
-       // console.warn('Meyda error', e)
-    }
+        }
+      } catch {
+        // console.warn('Meyda error')
+      }
 
-    const overall = rms > 0 ? rms * 2 : (bass * 2 + mid + high * 0.5) / 3.5
+      const overall = rms > 0 ? rms * 2 : (bass * 2 + mid + high * 0.5) / 3.5
 
-    // Beat detection using energy comparison
-    const energyHistory = energyHistoryRef.current
-    energyHistory.push(bass)
-    if (energyHistory.length > 43) { // ~1 second at 43fps
-      energyHistory.shift()
-    }
+      // Beat detection using energy comparison
+      const energyHistory = energyHistoryRef.current
+      energyHistory.push(bass)
+      if (energyHistory.length > 43) {
+        // ~1 second at 43fps
+        energyHistory.shift()
+      }
 
-    // Calculate average energy
-    const avgEnergy = energyHistory.reduce((a, b) => a + b, 0) / energyHistory.length
-    const now = performance.now()
+      // Calculate average energy
+      const avgEnergy = energyHistory.reduce((a, b) => a + b, 0) / energyHistory.length
+      const now = performance.now()
 
-    // Dynamic threshold
-    if (overall > peakEnergyRef.current) {
-      peakEnergyRef.current = overall
-    }
-    peakEnergyRef.current *= 0.999 // Slow decay
+      // Dynamic threshold
+      if (overall > peakEnergyRef.current) {
+        peakEnergyRef.current = overall
+      }
+      peakEnergyRef.current *= 0.999 // Slow decay
 
-    // Beat detection
-    const beatThreshold = avgEnergy * cfg.beatThreshold
-    const isBeat = bass > beatThreshold &&
-                   bass > 0.2 &&
-                   (now - lastBeatTimeRef.current) > 200 // Minimum 200ms between beats
+      // Beat detection
+      const beatThreshold = avgEnergy * cfg.beatThreshold
+      const isBeat = bass > beatThreshold && bass > 0.2 && now - lastBeatTimeRef.current > 200 // Minimum 200ms between beats
 
-    if (isBeat) {
-      lastBeatTimeRef.current = now
-      beatHistoryRef.current.add(now)
-      beatThresholdRef.current = 1
-    }
+      if (isBeat) {
+        lastBeatTimeRef.current = now
+        beatHistoryRef.current.add(now)
+        beatThresholdRef.current = 1
+      }
 
-    // Beat intensity decay
-    beatThresholdRef.current *= cfg.beatDecay
-    const beatIntensity = beatThresholdRef.current
+      // Beat intensity decay
+      beatThresholdRef.current *= cfg.beatDecay
+      const beatIntensity = beatThresholdRef.current
 
-    // Get BPM
-    const { bpm, confidence } = beatHistoryRef.current.getBPM()
+      // Get BPM
+      const { bpm, confidence } = beatHistoryRef.current.getBPM()
 
-    // Peak detection (for visual effects)
-    const isPeak = overall > peakEnergyRef.current * 0.9
-    const peakIntensity = isPeak ? overall / Math.max(peakEnergyRef.current, 0.01) : 0
+      // Peak detection (for visual effects)
+      const isPeak = overall > peakEnergyRef.current * 0.9
+      const peakIntensity = isPeak ? overall / Math.max(peakEnergyRef.current, 0.01) : 0
 
-    // Build-up Detection
-    const buildUpHistory = buildUpHistoryRef.current
-    buildUpHistory.push({ rms: overall, centroid: spectralCentroid })
-    if (buildUpHistory.length > 200) buildUpHistory.shift()
+      // Build-up Detection
+      const buildUpHistory = buildUpHistoryRef.current
+      buildUpHistory.push({ rms: overall, centroid: spectralCentroid })
+      if (buildUpHistory.length > 200) buildUpHistory.shift()
 
-    let isBuildUp = false
-    let buildUpConfidence = 0
+      let isBuildUp = false
+      let buildUpConfidence = 0
 
-    if (buildUpHistory.length > 100) {
-       const start = buildUpHistory.slice(0, 20)
-       const end = buildUpHistory.slice(-20)
-       
-       const startRms = start.reduce((a, b) => a + b.rms, 0) / 20
-       const endRms = end.reduce((a, b) => a + b.rms, 0) / 20
-       
-       const startCentroid = start.reduce((a, b) => a + b.centroid, 0) / 20
-       const endCentroid = end.reduce((a, b) => a + b.centroid, 0) / 20
-       
-       const rmsSlope = endRms - startRms
-       const centroidSlope = endCentroid - startCentroid
-       
-       // Thresholds: RMS increase > 0.05, Centroid increase > 2
-       if (rmsSlope > 0.05 && centroidSlope > 2) {
+      if (buildUpHistory.length > 100) {
+        const start = buildUpHistory.slice(0, 20)
+        const end = buildUpHistory.slice(-20)
+
+        const startRms = start.reduce((a, b) => a + b.rms, 0) / 20
+        const endRms = end.reduce((a, b) => a + b.rms, 0) / 20
+
+        const startCentroid = start.reduce((a, b) => a + b.centroid, 0) / 20
+        const endCentroid = end.reduce((a, b) => a + b.centroid, 0) / 20
+
+        const rmsSlope = endRms - startRms
+        const centroidSlope = endCentroid - startCentroid
+
+        // Thresholds: RMS increase > 0.05, Centroid increase > 2
+        if (rmsSlope > 0.05 && centroidSlope > 2) {
           isBuildUp = true
-          buildUpConfidence = Math.min((rmsSlope * 5 + centroidSlope * 0.1), 1)
-       }
+          buildUpConfidence = Math.min(rmsSlope * 5 + centroidSlope * 0.1, 1)
+        }
+      }
+
+      setData({
+        frequencyData: freqArray,
+        normalizedFrequency: normalizedFreq,
+        waveformData: waveArray,
+        bass,
+        mid,
+        high,
+        overall,
+        isBeat,
+        beatIntensity,
+        bpm,
+        confidence,
+        isPeak,
+        peakIntensity,
+        spectralCentroid,
+        spectralFlatness,
+        isBuildUp,
+        buildUpConfidence
+      })
+
+      animationRef.current = requestAnimationFrame(processAudioRef.current)
     }
-
-    setData({
-      frequencyData: freqArray,
-      normalizedFrequency: normalizedFreq,
-      waveformData: waveArray,
-      bass,
-      mid,
-      high,
-      overall,
-      isBeat,
-      beatIntensity,
-      bpm,
-      confidence,
-      isPeak,
-      peakIntensity,
-      spectralCentroid,
-      spectralFlatness,
-      isBuildUp,
-      buildUpConfidence
-    })
-
-    animationRef.current = requestAnimationFrame(processAudio)
   }, [cfg.fftSize, cfg.beatThreshold, cfg.beatDecay])
 
   const startListening = useCallback(async () => {
@@ -361,13 +368,12 @@ export function useAudioAnalyser(config: AudioAnalyserConfig = {}) {
       // Start processing
       setIsInitialized(true)
       setIsListening(true)
-      processAudio()
-
+      processAudioRef.current()
     } catch (err: any) {
       console.error('Failed to start audio analyser:', err)
       setError(err.message || 'Failed to access microphone')
     }
-  }, [cfg, processAudio])
+  }, [cfg])
 
   const stopListening = useCallback(() => {
     // Stop animation
@@ -384,7 +390,7 @@ export function useAudioAnalyser(config: AudioAnalyserConfig = {}) {
 
     // Stop stream tracks
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop())
+      streamRef.current.getTracks().forEach((track) => track.stop())
       streamRef.current = null
     }
 
