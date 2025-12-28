@@ -112,7 +112,7 @@ const SettingsNew = () => {
         />
         <Tile
           client
-          beta
+          alpha
           icon={<Equalizer fontSize="large" />}
           text="Visualiser"
           onClick={() => navigate('/visualiser')}
