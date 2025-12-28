@@ -33,6 +33,11 @@ const BetaFeatures = () => {
         <></>
       )}
       <SettingsRow
+        title="Audio Visualiser"
+        checked={features.visualiser}
+        onChange={() => setFeatures('visualiser', !features.visualiser)}
+      />
+      <SettingsRow
         title="Show Flow in Bottom Bar"
         checked={features.showFlowInBottomBar}
         onChange={() => setFeatures('showFlowInBottomBar', !features.showFlowInBottomBar)}
