@@ -38,7 +38,7 @@ const BottomBarCard = () => {
         onChange={() => setFeatures('showMidiInBottomBar', !features.showMidiInBottomBar)}
       />
       <SettingsRow
-        beta
+        alpha
         title="Audio Visualiser"
         checked={features.showVisualiserInBottomBar}
         onChange={() =>
