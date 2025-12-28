@@ -39,11 +39,34 @@ import {
 } from './shaders'
 
 export type WebGLVisualisationType =
-  | 'bars3d' | 'particles' | 'waveform3d' | 'radial3d'
-  | 'bleep' | 'concentric' | 'gif' | 'matrix' | 'terrain' | 'geometric'
-  | 'gameoflife' | 'digitalrain' | 'flame' | 'plasma2d' | 'equalizer2d' | 'noise2d'
-  | 'blender' | 'clone' | 'bands' | 'bandsmatrix' | 'blocks'
-  | 'keybeat2d' | 'texter' | 'plasmawled2d' | 'radial' | 'soap' | 'waterfall' | 'image'
+  | 'bars3d'
+  | 'particles'
+  | 'waveform3d'
+  | 'radial3d'
+  | 'bleep'
+  | 'concentric'
+  | 'gif'
+  | 'matrix'
+  | 'terrain'
+  | 'geometric'
+  | 'gameoflife'
+  | 'digitalrain'
+  | 'flame'
+  | 'plasma2d'
+  | 'equalizer2d'
+  | 'noise2d'
+  | 'blender'
+  | 'clone'
+  | 'bands'
+  | 'bandsmatrix'
+  | 'blocks'
+  | 'keybeat2d'
+  | 'texter'
+  | 'plasmawled2d'
+  | 'radial'
+  | 'soap'
+  | 'waterfall'
+  | 'image'
 
 interface WebGLVisualiserProps {
   audioData: number[]
@@ -202,8 +225,8 @@ export const WebGLVisualiser = ({
         fragmentSource = imageShader
       }
     } else {
-       // If custom shader, assume it's a quad shader (fullscreen effect)
-       vertexSource = quadVertexShader
+      // If custom shader, assume it's a quad shader (fullscreen effect)
+      vertexSource = quadVertexShader
     }
 
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource)
@@ -264,23 +287,35 @@ export const WebGLVisualiser = ({
         // Front face (2 triangles)
         // BL, BR, TR, BL, TR, TL
         vertices.push(
-          x, height,
-          x + w, height,
-          x + w, height - barHeight,
-          x, height,
-          x + w, height - barHeight,
-          x, height - barHeight
+          x,
+          height,
+          x + w,
+          height,
+          x + w,
+          height - barHeight,
+          x,
+          height,
+          x + w,
+          height - barHeight,
+          x,
+          height - barHeight
         )
 
         // Top/Depth face (2 triangles)
         // TL, TR, TR_D, TL, TR_D, TL_D
         vertices.push(
-          x, height - barHeight,
-          x + w, height - barHeight,
-          x + w + depth, height - barHeight - depth,
-          x, height - barHeight,
-          x + w + depth, height - barHeight - depth,
-          x + depth, height - barHeight - depth
+          x,
+          height - barHeight,
+          x + w,
+          height - barHeight,
+          x + w + depth,
+          height - barHeight - depth,
+          x,
+          height - barHeight,
+          x + w + depth,
+          height - barHeight - depth,
+          x + depth,
+          height - barHeight - depth
         )
 
         for (let j = 0; j < 12; j++) {
@@ -678,12 +713,7 @@ export const WebGLVisualiser = ({
       }
 
       // Full screen quad
-      const vertices = [
-        -1, -1,
-        1, -1,
-        -1, 1,
-        1, 1,
-      ]
+      const vertices = [-1, -1, 1, -1, -1, 1, 1, 1]
 
       const positionBuffer = gl.createBuffer()
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
@@ -697,14 +727,24 @@ export const WebGLVisualiser = ({
       const texture = gl.createTexture()
       gl.activeTexture(gl.TEXTURE0)
       gl.bindTexture(gl.TEXTURE_2D, texture)
-      
+
       // Fill texture with history
       const textureData = new Uint8Array(historyRef.current.length)
-      for(let i=0; i<historyRef.current.length; i++) {
+      for (let i = 0; i < historyRef.current.length; i++) {
         textureData[i] = Math.min(255, Math.max(0, historyRef.current[i] * 255))
       }
-      
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, historyRef.current.length, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, textureData)
+
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.LUMINANCE,
+        historyRef.current.length,
+        1,
+        0,
+        gl.LUMINANCE,
+        gl.UNSIGNED_BYTE,
+        textureData
+      )
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
@@ -713,9 +753,9 @@ export const WebGLVisualiser = ({
       // Uniforms
       const resolutionLoc = gl.getUniformLocation(program, 'u_resolution')
       gl.uniform2f(resolutionLoc, width, height)
-      
+
       const timeLoc = gl.getUniformLocation(program, 'u_time')
-      gl.uniform1f(timeLoc, (Date.now() - startTimeRef.current) / 1000 * speed)
+      gl.uniform1f(timeLoc, ((Date.now() - startTimeRef.current) / 1000) * speed)
 
       const historyLoc = gl.getUniformLocation(program, 'u_history')
       gl.uniform1i(historyLoc, 0)
@@ -728,7 +768,7 @@ export const WebGLVisualiser = ({
       gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-      
+
       gl.deleteBuffer(positionBuffer)
       gl.deleteTexture(texture)
     },
@@ -740,7 +780,7 @@ export const WebGLVisualiser = ({
     (gl: WebGLRenderingContext, data: number[], width: number, height: number) => {
       const program = programRef.current
       if (!program) return
-      
+
       const scale = config.gradient_scale ?? 1.0
 
       const avg = data.reduce((a, b) => a + b, 0) / data.length
@@ -751,8 +791,8 @@ export const WebGLVisualiser = ({
       }
 
       // Full screen quad
-      const vertices = [ -1, -1, 1, -1, -1, 1, 1, 1 ]
-      
+      const vertices = [-1, -1, 1, -1, -1, 1, 1, 1]
+
       const positionBuffer = gl.createBuffer()
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
@@ -767,7 +807,7 @@ export const WebGLVisualiser = ({
 
       const timeLoc = gl.getUniformLocation(program, 'u_time')
       gl.uniform1f(timeLoc, (Date.now() - startTimeRef.current) / 1000)
-      
+
       const beatLoc = gl.getUniformLocation(program, 'u_beat')
       gl.uniform1f(beatLoc, beatRef.current)
 
@@ -782,7 +822,7 @@ export const WebGLVisualiser = ({
       gl.uniform3f(secondaryColorLoc, ...secondaryRgb)
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-      
+
       gl.deleteBuffer(positionBuffer)
     },
     [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config]
@@ -803,7 +843,7 @@ export const WebGLVisualiser = ({
       const speed = fps / 30.0
 
       // Full screen quad
-      const vertices = [ -1, -1, 1, -1, -1, 1, 1, 1 ]
+      const vertices = [-1, -1, 1, -1, -1, 1, 1, 1]
 
       const positionBuffer = gl.createBuffer()
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
@@ -825,12 +865,12 @@ export const WebGLVisualiser = ({
 
       const beatLoc = gl.getUniformLocation(program, 'u_beat')
       if (beatLoc) {
-         if (beatData) {
-            beatRef.current += beatData.beatIntensity * 0.2
-         } else {
-            beatRef.current += avg * sensitivity * 0.1
-         }
-         gl.uniform1f(beatLoc, beatRef.current)
+        if (beatData) {
+          beatRef.current += beatData.beatIntensity * 0.2
+        } else {
+          beatRef.current += avg * sensitivity * 0.1
+        }
+        gl.uniform1f(beatLoc, beatRef.current)
       }
 
       const rotateLoc = gl.getUniformLocation(program, 'u_rotate')
@@ -866,7 +906,8 @@ export const WebGLVisualiser = ({
       if (cellSizeLoc) gl.uniform1f(cellSizeLoc, config.cell_size ?? 8.0)
 
       const injectBeatLoc = gl.getUniformLocation(program, 'u_injectBeat')
-      if (injectBeatLoc) gl.uniform1f(injectBeatLoc, (beatData?.isBeat && config.beat_inject !== false) ? 1.0 : 0.0)
+      if (injectBeatLoc)
+        gl.uniform1f(injectBeatLoc, beatData?.isBeat && config.beat_inject !== false ? 1.0 : 0.0)
 
       // Digital Rain
       const densityLoc = gl.getUniformLocation(program, 'u_density')
@@ -942,7 +983,17 @@ export const WebGLVisualiser = ({
           texData[i] = Math.min(255, Math.max(0, data[i] * 255 * sensitivity))
         }
 
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, data.length, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, texData)
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.LUMINANCE,
+          data.length,
+          1,
+          0,
+          gl.LUMINANCE,
+          gl.UNSIGNED_BYTE,
+          texData
+        )
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
@@ -986,7 +1037,8 @@ export const WebGLVisualiser = ({
       }
 
       const backgroundBrightnessLoc = gl.getUniformLocation(program, 'u_backgroundBrightness')
-      if (backgroundBrightnessLoc) gl.uniform1f(backgroundBrightnessLoc, config.background_brightness ?? 1.0)
+      if (backgroundBrightnessLoc)
+        gl.uniform1f(backgroundBrightnessLoc, config.background_brightness ?? 1.0)
 
       const multiplierLoc = gl.getUniformLocation(program, 'u_multiplier')
       if (multiplierLoc) gl.uniform1f(multiplierLoc, config.multiplier ?? 0.5)
@@ -1014,7 +1066,15 @@ export const WebGLVisualiser = ({
 
       gl.deleteBuffer(positionBuffer)
     },
-    [sensitivity, theme.palette.primary.main, theme.palette.secondary.main, config, frequencyBands, beatData, visualType]
+    [
+      sensitivity,
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      config,
+      frequencyBands,
+      beatData,
+      visualType
+    ]
   )
 
   // Main draw function
@@ -1038,7 +1098,7 @@ export const WebGLVisualiser = ({
     const smoothedData = getSmoothData(audioData)
 
     if (customShader) {
-       drawCustom(gl, smoothedData, width, height)
+      drawCustom(gl, smoothedData, width, height)
     } else {
       switch (visualType) {
         case 'bars3d':
@@ -1087,7 +1147,19 @@ export const WebGLVisualiser = ({
     }
 
     animationRef.current = requestAnimationFrame(draw)
-  }, [audioData, visualType, getSmoothData, drawBars3D, drawParticles, drawWaveform3D, drawRadial3D, drawBleep, drawConcentric, drawCustom, customShader])
+  }, [
+    audioData,
+    visualType,
+    getSmoothData,
+    drawBars3D,
+    drawParticles,
+    drawWaveform3D,
+    drawRadial3D,
+    drawBleep,
+    drawConcentric,
+    drawCustom,
+    customShader
+  ])
 
   // Initialize and cleanup
   useEffect(() => {

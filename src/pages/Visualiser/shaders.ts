@@ -143,7 +143,11 @@ export const spectrumFragmentShader = `
 `
 
 // Utility functions
-export function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
+export function createShader(
+  gl: WebGLRenderingContext,
+  type: number,
+  source: string
+): WebGLShader | null {
   const shader = gl.createShader(type)
   if (!shader) return null
 
