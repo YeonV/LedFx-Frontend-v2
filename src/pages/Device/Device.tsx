@@ -131,7 +131,7 @@ const Device = () => {
     if (fPixels < 256) setSystemSetting('visualisation_maxlen', 256)
     getVirtuals()
     getSchemas()
-    if (virtId) {
+    if (virtId && virtuals[virtId]?.effect.type) {
       getPresets(virtId)
     }
   }, [effectType, virtId])

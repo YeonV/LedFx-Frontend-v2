@@ -222,7 +222,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
 
   useEffect(() => {
     getVirtuals()
-    if (virtual.id) getPresets(virtual.id)
+    if (virtual.id && effectType) getPresets(virtual.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [virtual.id, effectType])
 
@@ -254,7 +254,7 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
       })
 
       await Promise.all(promises)
-      await getPresets(virtual.id)
+      if (virtual.id && virtual.effect.type) await getPresets(virtual.id)
       await getSystemConfig()
       setIsLoading(false)
     }
