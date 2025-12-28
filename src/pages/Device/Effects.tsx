@@ -107,7 +107,9 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fullScreen, setFullScreen] = useState(false)
 
   useSubscription('effect_set', getVirtuals)
-  useSubscription('effect_set', () => getPresets(virtId))
+  useSubscription('effect_set', () => {
+    if (virtuals[virtId].effect.type) getPresets(virtId)
+  })
 
   const getV = () => {
     for (const prop in virtuals) {
@@ -161,7 +163,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
       updateEffect(virtId, effectType, config, false).then(async () => {
         getVirtuals()
-        await getPresets(virtId)
+        if (virtId && effectType) await getPresets(virtId)
       })
     }
   }
@@ -170,7 +172,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (virtual)
       updateVirtual(virtual.id, !virtual.active).then(async () => {
         getVirtuals()
-        await getPresets(virtId)
+        if (virtId && virtuals[virtId]?.effect.type) await getPresets(virtId)
       })
   }
 
