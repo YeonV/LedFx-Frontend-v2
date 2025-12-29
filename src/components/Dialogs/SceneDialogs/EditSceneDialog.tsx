@@ -598,11 +598,13 @@ const EditSceneDialog = () => {
                   helperText={`Type: ${
                     image?.startsWith('image:file:///')
                       ? 'Local file path'
-                      : image?.startsWith('image:https://')
-                        ? 'External URL'
-                        : image?.startsWith('mdi:')
-                          ? 'Material Design Icon'
-                          : 'MUI Icon'
+                      : image?.startsWith('image:builtin://')
+                        ? 'Built-in asset'
+                        : image?.startsWith('image:https://') || image?.startsWith('image:http://')
+                          ? 'External URL'
+                          : image?.startsWith('mdi:')
+                            ? 'Material Design Icon'
+                            : 'MUI Icon'
                   }`}
                 />
                 {/* <Stack direction="row" gap={1}>
