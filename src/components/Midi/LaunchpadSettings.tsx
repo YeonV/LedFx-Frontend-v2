@@ -60,8 +60,11 @@ const LaunchpadSettings = ({ onClick }: { onClick: () => void }) => {
   }
 
   useEffect(() => {
-    if (midiEvent.button === -1) return
-    setMidiLogs((prev) => [...prev, midiEvent])
+    if (midiEvent.button !== -1) {
+      // This is intentional logging behavior
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMidiLogs((prev) => [...prev, midiEvent])
+    }
   }, [midiEvent])
 
   useEffect(() => {

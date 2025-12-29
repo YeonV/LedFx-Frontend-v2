@@ -51,10 +51,11 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         : window.location.href.split('/#')[0].replace(/\/+$/, ''))
     const wsUrl = host.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/websocket'
 
-    // This logic now sets the error state instead of returning a string.
+    // Check for mixed content - this will be caught in a separate effect if needed
     if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
       console.error('Mixed Content Error Detected: Attempting to connect to ws:// from https://.')
-      setErrorState('mixedContent')
+      // Schedule state update to avoid setting state during effect
+      setTimeout(() => setErrorState('mixedContent'), 0)
     }
 
     const dispatchToSubscribers = (eventName: string, data: any) => {

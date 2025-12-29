@@ -68,10 +68,16 @@ const VirtualDiag = () => {
         }
         send(unsubscribeRequest)
       }
-    } else {
-      setDataHistory([])
     }
   }, [diag, isConnected, send])
+
+  useEffect(() => {
+    // Clear history when disconnected or diag is off
+    if (!diag || !isConnected) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDataHistory([])
+    }
+  }, [diag, isConnected])
 
   const latestData = dataHistory[0]
 

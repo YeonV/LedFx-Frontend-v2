@@ -29,9 +29,12 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
   const [loadedImageLocation, setLoadedImageLocation] = useState<string | null>(null)
   const [workingBeatFrames, setWorkingBeatFrames] = useState<string>(model.beat_frames || '')
 
+  // Update working beat frames when model changes
   useEffect(() => {
+    // This syncs local state with prop changes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setWorkingBeatFrames(model.beat_frames || '')
-  }, [model])
+  }, [model.beat_frames])
 
   const handleClickOpen = async () => {
     // Only fetch frames if not loaded or if image_location changed

@@ -396,27 +396,14 @@ const Instances = ({
           </>
         }
         icon={<Add />}
-        confirmDisabled={instances.includes(
-          portRef.current?.value ? parseInt(portRef.current?.value, 10) : newPort
-        )}
+        confirmDisabled={instances.includes(newPort)}
         variant={variant === 'line' ? 'text' : 'outlined'}
         style={variant === 'line' ? { minWidth: '32px', width: '32px' } : {}}
         aria-label="delete"
         onConfirm={(e) => {
-          handleStartCore(
-            e,
-            (portRef.current?.value ? parseInt(portRef.current?.value, 10) : newPort) ||
-              parseInt(port, 10) ||
-              8888
-          )
-          if (portRef.current?.value) {
-            portRef.current.value = `${parseInt(portRef.current.value, 10) + 1}`
-            setNewPort(parseInt(portRef.current?.value, 10))
-          }
-          handleSave(
-            `http://localhost:${(parseInt(portRef.current!.value, 10) || newPort) - 1}`,
-            false
-          )
+          handleStartCore(e, newPort || parseInt(port, 10) || 8888)
+          setNewPort(newPort + 1)
+          handleSave(`http://localhost:${newPort}`, false)
         }}
       />
       {/* <Popover
