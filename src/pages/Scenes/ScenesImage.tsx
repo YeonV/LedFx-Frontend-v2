@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
 import isElectron from 'is-electron'
 import { CardMedia, SxProps } from '@mui/material'
-import useStore from '../../store/useStore'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
@@ -19,33 +17,22 @@ const SceneImage = ({
   title?: string
 }) => {
   const classes = useStyles()
-  const [imageData, setImageData] = useState<string | null>(null)
-  const [contentType, setContentType] = useState<string>('image/png')
-  const getImage = useStore((state) => state.getImage)
 
-  const fetchImage = useCallback(
-    async (ic: string) => {
-      const result = await getImage(ic.split('image:')[1], thumbnail)
-      if (result?.image) {
-        setImageData(result.image)
-        setContentType(result.type || 'image/png')
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [thumbnail]
-  )
+  const getImageUrl = (path: string) => {
+    const baseURL = window.localStorage.getItem('ledfx-host') || window.location.origin
+    // Only strip file:/// for user assets, keep builtin:// and http(s):// as-is
+    const cleanPath = path.startsWith('file:///') ? path.replace('file:///', '') : path
+    const endpoint = thumbnail ? 'thumbnail' : 'download'
+    return `${baseURL}/api/assets/${endpoint}?path=${encodeURIComponent(cleanPath)}`
+  }
 
-  useEffect(() => {
-    if (iconName?.startsWith('image:')) {
-      fetchImage(iconName)
-    }
-  }, [iconName, fetchImage])
+  const imagePath = iconName?.startsWith('image:') ? iconName.split('image:')[1] : null
 
   return iconName && iconName.startsWith('image:') ? (
     isElectron() ? (
       <CardMedia
         className={classes.media}
-        image={iconName.split('image:')[1]}
+        image={imagePath!}
         title={title || ''}
         sx={{ width: '100%', height: '100%', ...sx }}
       />
@@ -57,7 +44,7 @@ const SceneImage = ({
           width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
           backgroundSize: 'cover',
-          backgroundImage: imageData ? `url("data:${contentType};base64,${imageData}")` : undefined
+          backgroundImage: `url("${getImageUrl(imagePath!)}")`
         }}
         title={title || ''}
       />
