@@ -37,6 +37,14 @@ const BottomBarCard = () => {
         checked={features.showMidiInBottomBar}
         onChange={() => setFeatures('showMidiInBottomBar', !features.showMidiInBottomBar)}
       />
+      <SettingsRow
+        alpha
+        title="Audio Visualiser"
+        checked={features.showVisualiserInBottomBar}
+        onChange={() =>
+          setFeatures('showVisualiserInBottomBar', !features.showVisualiserInBottomBar)
+        }
+      />
     </>
   )
 }

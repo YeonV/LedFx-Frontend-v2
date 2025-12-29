@@ -34,15 +34,17 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
   const assets = useStore((state) => state.assets)
   const assetsFixed = useStore((state) => state.assetsFixed)
   const cacheStats = useStore((state) => state.cacheStats)
+  const getAssets = useStore((state) => state.getAssets)
   const getAssetsFixed = useStore((state) => state.getAssetsFixed)
   const getCacheStats = useStore((state) => state.getCacheStats)
 
   useEffect(() => {
     if (open) {
+      getAssets()
       getAssetsFixed()
       getCacheStats()
     }
-  }, [open, getAssetsFixed, getCacheStats])
+  }, [open, getAssets, getAssetsFixed, getCacheStats])
 
   // Filter assets based on mode
   const filterByMode = (asset: any) => {

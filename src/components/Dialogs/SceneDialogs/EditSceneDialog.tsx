@@ -41,6 +41,7 @@ import { WebMidi } from 'webmidi'
 import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 import GifPicker from '../../SchemaForm/components/Gif/GifPicker'
 import Popover from '../../Popover/Popover'
+import { getImageUrl } from '../../../utils/imageUrl'
 
 const EditSceneDialog = () => {
   const [name, setName] = useState('')
@@ -82,15 +83,12 @@ const EditSceneDialog = () => {
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
-  const getImage = useStore((state) => state.getImage)
   const getLedFxPresets = useStore((state) => state.getLedFxPresets)
   const getUserPresets = useStore((state) => state.getUserPresets)
   const updateScene = useStore((state) => state.updateScene)
   const getScenes = useStore((state) => state.getScenes)
   const getScene = useStore((state) => state.getScene)
   const getVirtuals = useStore((state) => state.getVirtuals)
-  const [imageData, setImageData] = useState(null)
-  const [contentType, setContentType] = useState('image/png')
   const midiEvent = useStore((state) => state.midiEvent)
   const midiOutput = useStore((state) => state.midiOutput)
   const midiType = useStore((state) => state.midiType)
@@ -99,22 +97,7 @@ const EditSceneDialog = () => {
 
   const setBlockMidiHandler = useStore((state) => state.setBlockMidiHandler)
   const getFullConfig = useStore((state) => state.getFullConfig)
-
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
-  const fetchImage = useCallback(async (ic: string) => {
-    const result = await getImage(ic.split('image:')[1])
-    if (result?.image) {
-      setImageData(result.image)
-      setContentType(result.type || 'image/png')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (image?.startsWith('image:')) {
-      fetchImage(image)
-    }
-  }, [image, fetchImage])
 
   useEffect(() => {
     getVirtuals()
@@ -144,15 +127,16 @@ const EditSceneDialog = () => {
           />
         </div>
       ) : (
-        <div
+        <img
           style={{
             height: tags?.split(',')[0].length > 0 ? 140 : 125,
             maxWidth: 334,
             width: small ? '100%' : 334,
             marginTop: '1rem',
-            backgroundSize: 'cover',
-            backgroundImage: `url("data:${contentType};base64,${imageData}")`
+            objectFit: 'cover'
           }}
+          src={getImageUrl(iconName?.split('image:')[1] || '')}
+          alt="SceneImage"
           title="SceneImage"
         />
       )
@@ -608,11 +592,13 @@ const EditSceneDialog = () => {
                   helperText={`Type: ${
                     image?.startsWith('image:file:///')
                       ? 'Local file path'
-                      : image?.startsWith('image:https://')
-                        ? 'External URL'
-                        : image?.startsWith('mdi:')
-                          ? 'Material Design Icon'
-                          : 'MUI Icon'
+                      : image?.startsWith('image:builtin://')
+                        ? 'Built-in asset'
+                        : image?.startsWith('image:https://') || image?.startsWith('image:http://')
+                          ? 'External URL'
+                          : image?.startsWith('mdi:')
+                            ? 'Material Design Icon'
+                            : 'MUI Icon'
                   }`}
                 />
                 {/* <Stack direction="row" gap={1}>
