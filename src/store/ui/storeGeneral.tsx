@@ -126,7 +126,7 @@ const storeGeneral = (set: any) => ({
       'general/toggleGraphsMulti'
     )
   },
-  showMatrix: false,
+  showMatrix: true,
   toggleShowMatrix: () => {
     set(
       produce((state: IStore) => {
