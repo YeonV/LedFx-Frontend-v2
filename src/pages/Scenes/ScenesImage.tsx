@@ -25,20 +25,21 @@ const SceneImage = ({
     isElectron() ? (
       <CardMedia
         className={classes.media}
-        image={imagePath!}
+        src={getImageUrl(imagePath!, thumbnail)}
         title={title || ''}
         sx={{ width: '100%', height: '100%', ...sx }}
       />
     ) : (
-      <div
+      <img
         className={classes.media}
         style={{
           height: (sx as any)?.height || 140,
           width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
-          backgroundSize: 'cover',
-          backgroundImage: `url("${getImageUrl(imagePath!, thumbnail)}")`
+          objectFit: 'cover'
         }}
+        src={getImageUrl(imagePath!, thumbnail)}
+        alt={title || ''}
         title={title || ''}
       />
     )

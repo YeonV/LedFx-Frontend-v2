@@ -127,15 +127,16 @@ const EditSceneDialog = () => {
           />
         </div>
       ) : (
-        <div
+        <img
           style={{
             height: tags?.split(',')[0].length > 0 ? 140 : 125,
             maxWidth: 334,
             width: small ? '100%' : 334,
             marginTop: '1rem',
-            backgroundSize: 'cover',
-            backgroundImage: `url("${getImageUrl(iconName?.split('image:')[1] || '')}")`
+            objectFit: 'cover'
           }}
+          src={getImageUrl(iconName?.split('image:')[1] || '')}
+          alt="SceneImage"
           title="SceneImage"
         />
       )
