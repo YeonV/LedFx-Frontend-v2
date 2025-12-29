@@ -105,10 +105,12 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   )
   const handle = useFullScreenHandle()
   const [fullScreen, setFullScreen] = useState(false)
+  const getVirtual = useStore((state) => state.getVirtual)
 
-  useSubscription('effect_set', getVirtuals)
-  useSubscription('effect_set', () => {
-    if (virtuals[virtId].effect.type) getPresets(virtId)
+  useSubscription('effect_set', (data: any) => {
+    if (data.virtual_id === virtId) {
+      getVirtual(virtId)
+    }
   })
 
   const getV = () => {
@@ -161,19 +163,13 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     setTheModel((prev: any) => ({ ...prev, ...config }))
 
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
-      updateEffect(virtId, effectType, config, false).then(async () => {
-        getVirtuals()
-        if (virtId && effectType) await getPresets(virtId)
-      })
+      // No need to refetch - WebSocket event will update state, and parent already has presets
+      updateEffect(virtId, effectType, config, false)
     }
   }
 
   const handlePlayPause = () => {
-    if (virtual)
-      updateVirtual(virtual.id, !virtual.active).then(async () => {
-        getVirtuals()
-        if (virtId && virtuals[virtId]?.effect.type) await getPresets(virtId)
-      })
+    if (virtual) updateVirtual(virtual.id, !virtual.active)
   }
 
   useEffect(() => {

@@ -18,6 +18,7 @@ const Device = () => {
   const navigate = useNavigate()
   const { virtId } = useParams()
   const getVirtuals = useStore((state) => state.getVirtuals)
+  const getVirtual = useStore((state) => state.getVirtual)
   const getPresets = useStore((state) => state.getPresets)
   const addDevice = useStore((state) => state.addDevice)
   const getSchemas = useStore((state) => state.getSchemas)
@@ -127,10 +128,15 @@ const Device = () => {
     await Promise.all(promises)
   }
 
+  // Initial data load on mount
   useEffect(() => {
     if (fPixels < 256) setSystemSetting('visualisation_maxlen', 256)
-    getVirtuals()
+    if (virtId) getVirtual(virtId)
     getSchemas()
+  }, [virtId])
+
+  // Load presets when effect type changes
+  useEffect(() => {
     if (virtId && virtuals[virtId]?.effect.type) {
       getPresets(virtId)
     }
@@ -153,7 +159,6 @@ const Device = () => {
       addDevices()
         .then(() => {
           getDevices()
-          getVirtuals()
         })
         .catch((error) => {
           console.error('Error adding devices:', error)
@@ -205,8 +210,6 @@ const Device = () => {
   }, [devices, virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
 
   useEffect(() => {
-    getVirtuals()
-    getSchemas()
     if (graphs && virtId) {
       if (blenderAutomagic && virtId && virtuals[virtId]?.effect?.type === 'blender') {
         setPixelGraphs([virtId, `${virtId}-mask`, `${virtId}-foreground`, `${virtId}-background`])
