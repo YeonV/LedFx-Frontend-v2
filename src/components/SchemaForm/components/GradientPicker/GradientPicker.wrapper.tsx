@@ -30,9 +30,8 @@ const GradientPickerWrapper = ({
 
   const sendColorToVirtuals = (e: any) => {
     if (virtual && virtual.effect && virtual.effect.type) {
-      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false).then(() => {
-        getVirtuals()
-      })
+      // No need to refetch - WebSocket event will update state
+      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false)
     }
   }
 
@@ -43,7 +42,10 @@ const GradientPickerWrapper = ({
   }
 
   useEffect(() => {
-    getColors()
+    // Only fetch colors if not already loaded
+    if (!colors || Object.keys(colors).length === 0) {
+      getColors()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

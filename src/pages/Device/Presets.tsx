@@ -221,12 +221,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
   }
 
   useEffect(() => {
-    getVirtuals()
-    if (virtual.id && effectType) getPresets(virtual.id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtual.id, effectType])
-
-  useEffect(() => {
     if (features.cloud && isLogged) {
       getCloudPresets()
     }
