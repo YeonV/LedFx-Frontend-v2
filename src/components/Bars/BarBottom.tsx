@@ -242,21 +242,6 @@ export default function BarBottom() {
         {features.showAssetManagerInBottomBar && <AssetManager variant="navitem" />}
         {features.showMidiInBottomBar && <MidiInputDialog variant="navitem" />}
         {features.showGamepadInBottomBar && <Gamepad bottom={botHeight + 56} variant="navitem" />}
-        {features.showVisualiserInBottomBar &&
-          !(window.localStorage.getItem('guestmode') === 'activated') && (
-            <BottomNavigationAction
-              label="Visualiser"
-              value="/visualiser"
-              component={Link}
-              to="/visualiser"
-              icon={<BladeIcon name="mdi:equalizer" />}
-              style={
-                bottomBarOpen.indexOf('visualiser') > -1
-                  ? { color: theme.palette.primary.main }
-                  : {}
-              }
-            />
-          )}
 
         {!(window.localStorage.getItem('guestmode') === 'activated') && (
           <BottomNavigationAction
