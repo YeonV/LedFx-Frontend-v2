@@ -32,12 +32,15 @@ import {
   Mic,
   Cloud,
   AutoAwesome,
-  MusicNote
+  MusicNote,
+  Cast,
+  CastConnected
 } from '@mui/icons-material'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from '../../utils/Websocket/WebSocketProvider'
-import WebGLVisualiser, { WebGLVisualisationType } from './WebGLVisualiser'
+import WebGLVisualiser, { WebGLVisualisationType, WebGLVisualiserRef } from './WebGLVisualiser'
+import { useCast, CastProvider } from '../../utils/Cast/CastProvider'
 import BladeEffectSchemaForm from '../../components/SchemaForm/EffectsSchemaForm/EffectSchemaForm'
 import { gifFragmentShader } from './shaders'
 import useAudioAnalyser from './useAudioAnalyser'
@@ -732,11 +735,21 @@ const orderEffectProperties = (
     .sort((a) => (a.id === 'gradient' ? -1 : 1))
 }
 
-const Visualiser = () => {
+const VisualiserContent = () => {
   const fullscreenHandle = useFullScreenHandle()
   const { send, isConnected } = useWebSocket()
   const getSchemas = useStore((state) => state.getSchemas)
   const effects = useStore((state) => state.schemas.effects)
+
+  // Cast hook
+  const { isConnected: isCastConnected, isConnecting, deviceName, startCasting, stopCasting } = useCast()
+  const visualiserRef = useRef<WebGLVisualiserRef>(null)
+
+  // Global visualiser state (synced with scenes)
+  const globalVisualiser = useStore((state) => state.visualiser)
+  const setVisualiserType = useStore((state) => state.setVisualiserType)
+  const setVisualiserConfig = useStore((state) => state.setVisualiserConfig)
+  const setVisualiserAudioSource = useStore((state) => state.setVisualiserAudioSource)
 
   // Audio Analyser (Mic)
   const {
@@ -747,14 +760,20 @@ const Visualiser = () => {
     error: micError
   } = useAudioAnalyser()
 
-  // Local state
+  // Local state - initialized from global store
   const [isPlaying, setIsPlaying] = useState(true)
   const [fullScreen, setFullScreen] = useState(false)
-  const [visualType, setVisualType] = useState<WebGLVisualisationType>('gif')
-  const [config, setConfig] = useState<Record<string, any>>(DEFAULT_CONFIGS.gif)
+  const [visualType, setVisualType] = useState<WebGLVisualisationType>(
+    (globalVisualiser?.type as WebGLVisualisationType) || 'gif'
+  )
+  const [config, setConfig] = useState<Record<string, any>>(
+    globalVisualiser?.config || DEFAULT_CONFIGS.gif
+  )
   const [audioData, setAudioData] = useState<number[]>([])
 
-  const [audioSource, setAudioSource] = useState<'backend' | 'mic'>('backend')
+  const [audioSource, setAudioSource] = useState<'backend' | 'mic'>(
+    globalVisualiser?.audioSource || 'backend'
+  )
   const [autoChange, setAutoChange] = useState(false)
 
   // Shader Editor State
@@ -764,6 +783,31 @@ const Visualiser = () => {
 
   const subscribedRef = useRef(false)
   const lastAutoChangeRef = useRef(0)
+
+  // Sync from global store when scene is activated (store changes externally)
+  useEffect(() => {
+    if (globalVisualiser) {
+      const newType = globalVisualiser.type as WebGLVisualisationType
+      const newConfig = globalVisualiser.config
+      const newAudioSource = globalVisualiser.audioSource || 'backend'
+
+      // Only update if different to avoid infinite loops
+      if (newType !== visualType) {
+        setVisualType(newType)
+      }
+      if (JSON.stringify(newConfig) !== JSON.stringify(config)) {
+        setConfig(newConfig)
+      }
+      if (newAudioSource !== audioSource) {
+        setAudioSource(newAudioSource)
+        if (newAudioSource === 'mic') {
+          startListening()
+        } else {
+          stopListening()
+        }
+      }
+    }
+  }, [globalVisualiser?.type, globalVisualiser?.audioSource, JSON.stringify(globalVisualiser?.config)])
 
   useEffect(() => {
     getSchemas()
@@ -806,6 +850,7 @@ const Visualiser = () => {
   ) => {
     if (newSource !== null) {
       setAudioSource(newSource)
+      setVisualiserAudioSource(newSource) // Sync to global store
       if (newSource === 'mic') {
         startListening()
       } else {
@@ -815,17 +860,21 @@ const Visualiser = () => {
   }
 
   const handleEffectConfig = (newConfig: any) => {
-    setConfig((prev) => ({ ...prev, ...newConfig }))
+    const updatedConfig = { ...config, ...newConfig }
+    setConfig(updatedConfig)
+    setVisualiserConfig(updatedConfig) // Sync to global store
   }
 
   const handleTypeChange = useCallback(
     (type: WebGLVisualisationType) => {
       setVisualType(type)
+      setVisualiserType(type) // Sync to global store
 
       // Try to get defaults from backend schema if available
       const backendEffectType = VISUAL_TO_BACKEND_EFFECT[type]
       const backendSchema = effects && backendEffectType && effects[backendEffectType]?.schema
 
+      let newConfig: Record<string, any>
       if (backendSchema?.properties) {
         // Build config from backend schema defaults
         const backendDefaults: Record<string, any> = {}
@@ -836,19 +885,33 @@ const Visualiser = () => {
           }
         })
         // Merge with our local defaults (local takes precedence for visualiser-specific settings)
-        setConfig({ ...backendDefaults, ...(DEFAULT_CONFIGS[type] || {}), developer_mode: false })
+        newConfig = { ...backendDefaults, ...(DEFAULT_CONFIGS[type] || {}), developer_mode: false }
       } else {
-        setConfig(DEFAULT_CONFIGS[type] || {})
+        newConfig = DEFAULT_CONFIGS[type] || {}
       }
+
+      setConfig(newConfig)
+      setVisualiserConfig(newConfig) // Sync to global store
 
       setActiveCustomShader(undefined)
       setShowCode(false)
     },
-    [effects]
+    [effects, setVisualiserType, setVisualiserConfig]
   )
 
   const handleApplyShader = () => {
     setActiveCustomShader(shaderCode)
+  }
+
+  const handleCastToggle = () => {
+    if (isCastConnected) {
+      stopCasting()
+    } else {
+      const canvas = visualiserRef.current?.getCanvas()
+      if (canvas) {
+        startCasting(canvas)
+      }
+    }
   }
 
   const activeAudioData = audioSource === 'mic' ? micData.normalizedFrequency : audioData
@@ -1110,6 +1173,17 @@ const Visualiser = () => {
                     <Fullscreen />
                   </Button>
                 </Tooltip>
+                <Tooltip title={isCastConnected ? `Casting to ${deviceName}` : 'Cast to TV'}>
+                  <Button
+                    onClick={handleCastToggle}
+                    variant="outlined"
+                    color={isCastConnected ? 'primary' : 'inherit'}
+                    sx={{ minWidth: '40px' }}
+                    disabled={isConnecting}
+                  >
+                    {isCastConnected ? <CastConnected /> : <Cast />}
+                  </Button>
+                </Tooltip>
               </Box>
             </Box>
 
@@ -1143,6 +1217,7 @@ const Visualiser = () => {
                   onDoubleClick={fullScreen ? fullscreenHandle.exit : fullscreenHandle.enter}
                 >
                   <WebGLVisualiser
+                    ref={visualiserRef}
                     audioData={activeAudioData}
                     isPlaying={isPlaying}
                     visualType={visualType}
@@ -1415,5 +1490,12 @@ const Visualiser = () => {
     </Grid>
   )
 }
+
+// Wrapper component with CastProvider
+const Visualiser = () => (
+  <CastProvider>
+    <VisualiserContent />
+  </CastProvider>
+)
 
 export default Visualiser

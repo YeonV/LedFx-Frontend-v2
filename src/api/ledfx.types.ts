@@ -3629,6 +3629,16 @@ export interface SceneVirtualEffect {
 }
 
 /**
+ * Visualiser settings stored with a scene.
+ * @category Scenes
+ */
+export interface SceneVisualiserSettings {
+  type: string;
+  config: Record<string, any>;
+  audioSource?: 'backend' | 'mic';
+}
+
+/**
  * Represents a stored scene configuration with actual effect data.
  * This is the structure used in the API responses and storage.
  * @category Scenes
@@ -3641,6 +3651,7 @@ export interface StoredSceneConfig {
   scene_payload?: string;
   scene_midiactivate?: string;
   virtuals?: Record<string, SceneVirtualEffect>; // virtual_id -> effect config
+  visualiser?: SceneVisualiserSettings; // Visualiser settings
   active?: boolean;
 }
 

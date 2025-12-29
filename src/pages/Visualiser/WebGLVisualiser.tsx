@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { useTheme } from '@mui/material/styles'
 import {
   createShader,
@@ -86,6 +86,11 @@ interface WebGLVisualiserProps {
   }
 }
 
+// Exposed ref interface for external access (e.g., Chromecast)
+export interface WebGLVisualiserRef {
+  getCanvas: () => HTMLCanvasElement | null
+}
+
 interface Particle {
   x: number
   y: number
@@ -98,7 +103,7 @@ interface Particle {
 
 const MAX_PARTICLES = 2000
 
-export const WebGLVisualiser = ({
+export const WebGLVisualiser = forwardRef<WebGLVisualiserRef, WebGLVisualiserProps>(({
   audioData,
   isPlaying,
   visualType,
@@ -106,8 +111,13 @@ export const WebGLVisualiser = ({
   customShader,
   beatData,
   frequencyBands
-}: WebGLVisualiserProps) => {
+}, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // Expose canvas ref for external access (e.g., Chromecast)
+  useImperativeHandle(ref, () => ({
+    getCanvas: () => canvasRef.current
+  }), [])
   const glRef = useRef<WebGLRenderingContext | null>(null)
   const programRef = useRef<WebGLProgram | null>(null)
   const animationRef = useRef<number | undefined>(undefined)
@@ -1263,6 +1273,9 @@ export const WebGLVisualiser = ({
       }}
     />
   )
-}
+})
+
+// Display name for debugging
+WebGLVisualiser.displayName = 'WebGLVisualiser'
 
 export default WebGLVisualiser

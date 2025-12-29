@@ -2,7 +2,11 @@ import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
 import useStore from '../useStore'
-import { GetScenesApiResponse, StoredSceneConfig } from '../../api/ledfx.types'
+import {
+  GetScenesApiResponse,
+  StoredSceneConfig,
+  SceneVisualiserSettings
+} from '../../api/ledfx.types'
 
 export interface ISceneOrder {
   sceneId: string
@@ -217,26 +221,21 @@ const storeScenes = (set: any) => ({
     scene_puturl?: string | null,
     scene_payload?: string | null,
     scene_midiactivate?: string | null,
-    virtuals?: Record<string, any>
-  ) =>
-    virtuals
-      ? await Ledfx('/api/scenes', 'POST', {
-          name,
-          scene_image,
-          scene_tags,
-          scene_puturl,
-          scene_payload,
-          scene_midiactivate,
-          virtuals
-        })
-      : await Ledfx('/api/scenes', 'POST', {
-          name,
-          scene_image,
-          scene_tags,
-          scene_puturl,
-          scene_payload,
-          scene_midiactivate
-        }),
+    virtuals?: Record<string, any>,
+    visualiser?: SceneVisualiserSettings | null
+  ) => {
+    const payload: Record<string, any> = {
+      name,
+      scene_image,
+      scene_tags,
+      scene_puturl,
+      scene_payload,
+      scene_midiactivate
+    }
+    if (virtuals) payload.virtuals = virtuals
+    if (visualiser) payload.visualiser = visualiser
+    return await Ledfx('/api/scenes', 'POST', payload)
+  },
   overrideScene: async (id: string, name: string) =>
     await Ledfx('/api/scenes', 'POST', {
       id,
@@ -251,28 +250,22 @@ const storeScenes = (set: any) => ({
     scene_puturl?: string | null,
     scene_payload?: string | null,
     scene_midiactivate?: string | null,
-    virtuals?: Record<string, any>
-  ) =>
-    virtuals
-      ? await Ledfx('/api/scenes', 'POST', {
-          name,
-          id,
-          scene_image,
-          scene_tags,
-          scene_puturl,
-          scene_payload,
-          scene_midiactivate,
-          virtuals
-        })
-      : await Ledfx('/api/scenes', 'POST', {
-          name,
-          id,
-          scene_image,
-          scene_tags,
-          scene_puturl,
-          scene_payload,
-          scene_midiactivate
-        }),
+    virtuals?: Record<string, any>,
+    visualiser?: SceneVisualiserSettings | null
+  ) => {
+    const payload: Record<string, any> = {
+      name,
+      id,
+      scene_image,
+      scene_tags,
+      scene_puturl,
+      scene_payload,
+      scene_midiactivate
+    }
+    if (virtuals) payload.virtuals = virtuals
+    if (visualiser) payload.visualiser = visualiser
+    return await Ledfx('/api/scenes', 'POST', payload)
+  },
   renameScene: async (name: string, id: string) =>
     await Ledfx('/api/scenes', 'PUT', {
       name,
@@ -280,6 +273,7 @@ const storeScenes = (set: any) => ({
       action: 'rename'
     }),
   activateScene: async (id: string) => {
+    // Update recent scenes
     set(
       produce((s: IStore) => {
         s.recentScenes = s.recentScenes
@@ -291,6 +285,7 @@ const storeScenes = (set: any) => ({
       false,
       'setScenes'
     )
+    // Update usage count
     set(
       produce((s: IStore) => {
         s.count[id] = (s.count[id] || 0) + 1
@@ -298,6 +293,24 @@ const storeScenes = (set: any) => ({
       false,
       'setScenes'
     )
+
+    // Apply visualiser settings if present in the scene
+    const scenes = useStore.getState().scenes
+    const scene = scenes[id]
+    if (scene?.visualiser) {
+      set(
+        produce((s: IStore) => {
+          s.visualiser = {
+            type: scene.visualiser!.type,
+            config: scene.visualiser!.config,
+            audioSource: scene.visualiser!.audioSource || 'backend'
+          }
+        }),
+        false,
+        'activateScene/visualiser'
+      )
+    }
+
     return await Ledfx('/api/scenes', 'PUT', {
       id,
       action: 'activate'

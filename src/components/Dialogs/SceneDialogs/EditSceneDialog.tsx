@@ -25,7 +25,9 @@ import {
   Autocomplete,
   CircularProgress,
   Tooltip,
-  Box
+  Box,
+  FormControlLabel,
+  Switch
 } from '@mui/material'
 import { NavigateBefore, MusicNote, InfoOutlined } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
@@ -53,6 +55,7 @@ const EditSceneDialog = () => {
   const [ledfx_presets, setLedFxPresets] = useState({} as any)
   const [user_presets, setUserPresets] = useState({} as any)
   const [isLoadingScene, setIsLoadingScene] = useState(false)
+  const [includeVisualiser, setIncludeVisualiser] = useState(false)
   const [sceneVirtuals, setSceneVirtuals] = useState<
     Record<
       string,
@@ -80,6 +83,7 @@ const EditSceneDialog = () => {
   const sceneId = useStore((state: any) => state.dialogs.addScene?.sceneKey)
   const features = useStore((state) => state.features)
   const sceneActiveTags = useStore((state) => state.ui.sceneActiveTags)
+  const visualiser = useStore((state) => state.visualiser)
 
   const setDialogOpenAddScene = useStore((state) => state.setDialogOpenAddScene)
   const getImage = useStore((state) => state.getImage)
@@ -201,6 +205,8 @@ const EditSceneDialog = () => {
         setUrl(result.config.scene_puturl)
         setPayload(result.config.scene_payload)
         setMIDIActivate(result.config.scene_midiactivate)
+        // Load visualiser settings if scene has them
+        setIncludeVisualiser(!!result.config.visualiser)
 
         // Load scene virtuals with proper action initialization
         const virtualsWithActions = Object.entries(result.config.virtuals || {}).reduce(
@@ -298,7 +304,16 @@ const EditSceneDialog = () => {
       return acc
     }, {} as any)
 
-    updateScene(name, sceneId, image, tags, url, payload, midiActivate, virtualsToSave).then(() => {
+    // Build visualiser settings if toggle is enabled
+    const visualiserToSave = includeVisualiser && visualiser
+      ? {
+          type: visualiser.type,
+          config: visualiser.config,
+          audioSource: visualiser.audioSource
+        }
+      : null
+
+    updateScene(name, sceneId, image, tags, url, payload, midiActivate, virtualsToSave, visualiserToSave).then(() => {
       getScenes()
     })
 
@@ -907,6 +922,29 @@ const EditSceneDialog = () => {
                   </>
                 ) : (
                   <></>
+                )}
+                {features && features.showVisualiserInBottomBar && (
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={includeVisualiser}
+                        onChange={(e) => setIncludeVisualiser(e.target.checked)}
+                      />
+                    }
+                    label={
+                      <Stack direction="row" alignItems="center" gap={1}>
+                        <span>Include Visualiser Settings</span>
+                        {includeVisualiser && visualiser && (
+                          <Chip
+                            size="small"
+                            label={visualiser.type}
+                            variant="outlined"
+                          />
+                        )}
+                      </Stack>
+                    }
+                    sx={{ mt: 1 }}
+                  />
                 )}
               </div>
               <div

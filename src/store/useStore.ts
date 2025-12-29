@@ -35,6 +35,7 @@ import { migrations, MigrationState } from './migrate'
 import storeMatrix from './ui/storeMatrix'
 import storePlaylist from './api/storePlaylist'
 import storeAssets from './api/storeAssets'
+import storeVisualiser from './ui/storeVisualiser'
 
 const useStore = create(
   devtools(
@@ -75,6 +76,7 @@ const useStore = create(
           ...storeIntegrationsSpotify(set),
           ...storePlaylist(set),
           ...storeAssets(set),
+          ...storeVisualiser(set),
 
           ...storeCloud(set)
         })
