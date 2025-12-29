@@ -2,6 +2,7 @@ import isElectron from 'is-electron'
 import { CardMedia, SxProps } from '@mui/material'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import { getImageUrl } from '../../utils/imageUrl'
 
 const SceneImage = ({
   iconName,
@@ -17,14 +18,6 @@ const SceneImage = ({
   title?: string
 }) => {
   const classes = useStyles()
-
-  const getImageUrl = (path: string) => {
-    const baseURL = window.localStorage.getItem('ledfx-host') || window.location.origin
-    // Only strip file:/// for user assets, keep builtin:// and http(s):// as-is
-    const cleanPath = path.startsWith('file:///') ? path.replace('file:///', '') : path
-    const endpoint = thumbnail ? 'thumbnail' : 'download'
-    return `${baseURL}/api/assets/${endpoint}?path=${encodeURIComponent(cleanPath)}`
-  }
 
   const imagePath = iconName?.startsWith('image:') ? iconName.split('image:')[1] : null
 
@@ -44,7 +37,7 @@ const SceneImage = ({
           width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
           backgroundSize: 'cover',
-          backgroundImage: `url("${getImageUrl(imagePath!)}")`
+          backgroundImage: `url("${getImageUrl(imagePath!, thumbnail)}")`
         }}
         title={title || ''}
       />

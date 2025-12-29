@@ -41,6 +41,7 @@ import { WebMidi } from 'webmidi'
 import { IMidiDevice, MidiDevices } from '../../../utils/MidiDevices/MidiDevices'
 import GifPicker from '../../SchemaForm/components/Gif/GifPicker'
 import Popover from '../../Popover/Popover'
+import { getImageUrl } from '../../../utils/imageUrl'
 
 const EditSceneDialog = () => {
   const [name, setName] = useState('')
@@ -97,14 +98,6 @@ const EditSceneDialog = () => {
   const setBlockMidiHandler = useStore((state) => state.setBlockMidiHandler)
   const getFullConfig = useStore((state) => state.getFullConfig)
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
-
-  // Get API base URL for direct image URLs
-  const getImageUrl = (path: string) => {
-    const baseURL = window.localStorage.getItem('ledfx-host') || window.location.origin
-    // Only strip file:/// for user assets, keep builtin:// and http(s):// as-is
-    const cleanPath = path.startsWith('file:///') ? path.replace('file:///', '') : path
-    return `${baseURL}/api/assets/download?path=${encodeURIComponent(cleanPath)}`
-  }
 
   useEffect(() => {
     getVirtuals()
