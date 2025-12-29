@@ -9,14 +9,18 @@ interface TileProps {
   component?: ReactNode
   client?: boolean
   beta?: boolean
+  alpha?: boolean
 }
 
-const Tile = ({ icon, text, onClick, component, client, beta }: TileProps) => {
+const Tile = ({ icon, text, onClick, component, client, beta, alpha }: TileProps) => {
   const features = useStore((state) => state.features)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
 
   if (beta && !features.beta) {
+    return null
+  }
+  if (alpha && !features.alpha) {
     return null
   }
 
