@@ -34,9 +34,11 @@ const TooltipImage = () => (
               variant="subtitle1"
               style={{ wordBreak: 'break-all' }}
             >
-              <em>eg. image:file:///C:/Users/username/Pictures/scene.png</em> or
+              <em>eg. image:file:///my-scene.png</em> (from Assets Manager) or
               <br />
-              <em>image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg</em>
+              <em>image:builtin://sponge.gif</em> (built-in assets) or
+              <br />
+              <em>image:https://i.ytimg.com/vi/4G2unzNoOnY/maxresdefault.jpg</em> (external URL)
             </Typography>
           </li>
         </ul>

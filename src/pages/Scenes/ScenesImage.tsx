@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
 import isElectron from 'is-electron'
 import { CardMedia, SxProps } from '@mui/material'
-import useStore from '../../store/useStore'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import { getImageUrl } from '../../utils/imageUrl'
 
 const SceneImage = ({
   iconName,
@@ -19,46 +18,28 @@ const SceneImage = ({
   title?: string
 }) => {
   const classes = useStyles()
-  const [imageData, setImageData] = useState<string | null>(null)
-  const [contentType, setContentType] = useState<string>('image/png')
-  const getImage = useStore((state) => state.getImage)
 
-  const fetchImage = useCallback(
-    async (ic: string) => {
-      const result = await getImage(ic.split('image:')[1], thumbnail)
-      if (result?.image) {
-        setImageData(result.image)
-        setContentType(result.type || 'image/png')
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [thumbnail]
-  )
-
-  useEffect(() => {
-    if (iconName?.startsWith('image:')) {
-      fetchImage(iconName)
-    }
-  }, [iconName, fetchImage])
+  const imagePath = iconName?.startsWith('image:') ? iconName.split('image:')[1] : null
 
   return iconName && iconName.startsWith('image:') ? (
     isElectron() ? (
       <CardMedia
         className={classes.media}
-        image={iconName.split('image:')[1]}
+        src={getImageUrl(imagePath!, thumbnail)}
         title={title || ''}
         sx={{ width: '100%', height: '100%', ...sx }}
       />
     ) : (
-      <div
+      <img
         className={classes.media}
         style={{
           height: (sx as any)?.height || 140,
           width: (sx as any)?.width || '100%',
           maxWidth: 'calc(100% - 2px)',
-          backgroundSize: 'cover',
-          backgroundImage: imageData ? `url("data:${contentType};base64,${imageData}")` : undefined
+          objectFit: 'cover'
         }}
+        src={getImageUrl(imagePath!, thumbnail)}
+        alt={title || ''}
         title={title || ''}
       />
     )
