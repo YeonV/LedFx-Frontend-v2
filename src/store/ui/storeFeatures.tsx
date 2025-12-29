@@ -42,7 +42,6 @@ export type IFeatures =
   | 'showMidiInBottomBar'
   | 'showGamepadInBottomBar'
   | 'firetv'
-  | 'showVisualiserInBottomBar'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -85,8 +84,7 @@ const storeFeatures = (set: any) => ({
     showAssetManagerInBottomBar: false,
     showMidiInBottomBar: false,
     showGamepadInBottomBar: false,
-    firetv: false,
-    showVisualiserInBottomBar: false
+    firetv: false
   },
   showFeatures: {
     dev: false,
@@ -128,8 +126,7 @@ const storeFeatures = (set: any) => ({
     showAssetManagerInBottomBar: false,
     showMidiInBottomBar: false,
     showGamepadInBottomBar: false,
-    firetv: false,
-    showVisualiserInBottomBar: false
+    firetv: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

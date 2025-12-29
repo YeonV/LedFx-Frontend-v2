@@ -14,7 +14,6 @@ import UIRow from './UIRow'
 import BottomBarCard from './BottomBarCard'
 import {
   AccountTree,
-  Equalizer,
   Keyboard,
   QueueMusic,
   SettingsInputComponent,
@@ -109,13 +108,6 @@ const SettingsNew = () => {
           icon={<SettingsInputComponent fontSize="large" />}
           text="MIDI"
           onClick={() => setMidiOpen(true)}
-        />
-        <Tile
-          client
-          alpha
-          icon={<Equalizer fontSize="large" />}
-          text="Visualiser"
-          onClick={() => navigate('/visualiser')}
         />
       </Grid>
       {viewMode !== 'user' && (

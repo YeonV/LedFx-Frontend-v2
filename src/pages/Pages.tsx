@@ -35,7 +35,6 @@ import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widge
 import GlobalColorWidget from '../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
 import ReactFlowPage from './ReactFlow/ReactFlowPage'
 import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
-import Visualiser from './Visualiser/Visualiser'
 
 const Routings = () => {
   const theme = useTheme()
@@ -152,9 +151,6 @@ const Routings = () => {
               <Route path="/scenes" element={<Scenes />} />
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <Route path="/integrations" element={<Integrations />} />
-              )}
-              {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/visualiser" element={<Visualiser />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <Route path="/settings" element={<Settings />} />
