@@ -64,10 +64,8 @@ const GradientPicker = ({
   const id = open ? 'simple-popper' : undefined
 
   useEffect(() => {
-    setPickerBgColorInt(pickerBgColor)
-  }, [pickerBgColor, setPickerBgColorInt])
-
-  useEffect(() => {
+    // Sync with prop changes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPickerBgColorInt(pickerBgColor)
   }, [pickerBgColor, setPickerBgColorInt])
 

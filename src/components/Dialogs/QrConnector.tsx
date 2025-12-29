@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import {
   Dialog,
   AppBar,
@@ -52,7 +52,6 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const setDialogOpen = useStore((state) => state.setDialogOpenQrConnector)
   const setUserClosedQrConnector = useStore((state) => state.setUserClosedQrConnector)
   const [activeHostIndex, setActiveHostIndex] = useState(0)
-  const [formattedHosts, setFormattedHosts] = useState<string[]>([])
   const navigate = useNavigate()
   const port = useStore((state) => state.config.port || 8888)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -110,12 +109,12 @@ const QrConnector: React.FC<QrConnectorProps> = ({
     Array<{ key: string; code: string; keyCode?: number }>
   >([])
 
-  useEffect(() => {
+  const formattedHosts = useMemo(() => {
     const isValidHttpUrl = (host: string) => {
       return /^https?:\/\/[^ "]+$/.test(host)
     }
 
-    const processedHosts = rawHosts
+    return rawHosts
       .map((host) => {
         if (isValidHttpUrl(host)) {
           return host
@@ -127,14 +126,17 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         }
       })
       .filter((host) => host.startsWith('http://') || host.startsWith('https://'))
+  }, [rawHosts, port])
 
-    setFormattedHosts(processedHosts)
-    if (processedHosts.length > 0) {
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (formattedHosts.length > 0) {
       setActiveHostIndex(0)
     } else {
       setActiveHostIndex(-1)
     }
-  }, [rawHosts, port])
+  }, [formattedHosts])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const activeHost =
     formattedHosts.length > 0 && activeHostIndex >= 0 && activeHostIndex < formattedHosts.length

@@ -72,6 +72,9 @@ const Webcam = ({ colN, rowN, sx }: { colN: number; rowN: number; sx?: SxProps }
 
   useEffect(() => {
     setIp(wledIp)
+  }, [wledIp])
+
+  useEffect(() => {
     const getCount = async () => {
       if (wledIp && wledIp !== '') {
         const c = await getLedCount(wledIp)
