@@ -22,10 +22,6 @@
             ]
         }
     ],
-    "asarUnpack": [
-        "**/*.node",
-        "extraResources/LedFx_core.app/**/*"
-    ],
     "mac": {
         "target": [
             "dmg",
@@ -39,11 +35,7 @@
         "entitlements": "entitlements.mac.plist",
         "entitlementsInherit": "entitlements.mac.inherit.plist",
         "type": "distribution",
-        "identity": "CEE631E9774D506963ECC20D6BFA8213FB07B2B1",
-        "extendInfo": {
-            "NSAppleEventsUsageDescription": "LedFx needs to control audio devices",
-            "com.apple.security.cs.disable-library-validation": true
-        }
+        "identity": "CEE631E9774D506963ECC20D6BFA8213FB07B2B1"
     },
     "dmg": {
         "background": "src/assets/DMG_BG.jpg",
