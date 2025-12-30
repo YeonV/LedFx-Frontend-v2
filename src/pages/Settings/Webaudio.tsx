@@ -58,7 +58,6 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
   const [bit, setBit] = useState(16)
 
   // Update bit based on webAudType
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     // This is intentional configuration sync
     if (webAudType === 'audio_stream_data_udp') {
@@ -69,7 +68,6 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
       setBit(16)
     }
   }, [webAudType])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (!webAud || !isConnected) {
