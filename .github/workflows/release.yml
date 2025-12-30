@@ -43,6 +43,7 @@ jobs:
 
       - name: Download latest audio-visualiser module
         run: |
+          mkdir -p public/modules
           curl -L -o public/modules/yz-audio-visualiser.js "https://github.com/YeonV/audio-visualiser/releases/latest/download/yz-audio-visualiser.js"
           echo "Audio-visualiser module updated to latest release"
 
