@@ -14,7 +14,6 @@ import Home from './Home/Home'
 import Devices from './Devices/Devices'
 import Device from './Device/Device'
 import Scenes from './Scenes/Scenes'
-import Settings from './Settings/Settings'
 import Integrations from './Integrations/Integrations'
 import LoginRedirect from './Login/LoginRedirect'
 import SmartBar from '../components/Dialogs/SmartBar'
@@ -35,7 +34,8 @@ import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widge
 import GlobalColorWidget from '../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
 import ReactFlowPage from './ReactFlow/ReactFlowPage'
 import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
-import Visualiser from './Visualiser/Visualiser'
+import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
+import SettingsNew from './Settings/SettingsNew'
 
 const Routings = () => {
   const theme = useTheme()
@@ -157,7 +157,7 @@ const Routings = () => {
                 <Route path="/visualiser" element={<Visualiser />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/settings" element={<SettingsNew />} />
               )}
               <Route path="/user" element={<User />} />
               <Route path="/reactflow" element={<ReactFlowPage />} />
