@@ -43,10 +43,14 @@ const VirtualDiag = () => {
       if (eventData.data.virtual_id !== virtId) {
         return
       }
+      // Only add data if diag is enabled
+      if (!diag) {
+        return
+      }
       const newMessage = { data: eventData.data, timestamp: new Date() }
       setDataHistory((prev) => [newMessage, ...prev.slice(0, MAX_HISTORY - 1)])
     },
-    [virtId]
+    [virtId, diag]
   )
 
   useSubscription('virtual_diag', handleDiagPacket)
@@ -68,16 +72,11 @@ const VirtualDiag = () => {
         }
         send(unsubscribeRequest)
       }
-    }
-  }, [diag, isConnected, send])
-
-  useEffect(() => {
-    // Clear history when disconnected or diag is off
-    if (!diag || !isConnected) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+    } else {
+      // Clear history when diag is turned off or disconnected
       setDataHistory([])
     }
-  }, [diag, isConnected])
+  }, [diag, isConnected, send])
 
   const latestData = dataHistory[0]
 

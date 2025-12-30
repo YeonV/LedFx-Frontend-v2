@@ -223,7 +223,6 @@ const TopBar = () => {
     }
   }, [isTv, userClosedQrConnector, setQrConnectOpen])
 
-  console.log('yz:', typeof slug)
   return (
     <>
       {isElectron() && platform !== 'darwin' && (

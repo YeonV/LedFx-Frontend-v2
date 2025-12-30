@@ -41,6 +41,11 @@ jobs:
         run: |
           yarn install
 
+      - name: Download latest audio-visualiser module
+        run: |
+          curl -L -o public/modules/yz-audio-visualiser.js "https://github.com/YeonV/audio-visualiser/releases/latest/download/yz-audio-visualiser.js"
+          echo "Audio-visualiser module updated to latest release"
+
       - name: Build project
         env:
           release_version: ${{ steps.package-version.outputs.current-version}}
@@ -132,57 +137,3 @@ jobs:
           asset_path: ./ledfx_frontend_hass.zip
           asset_name: ledfx_frontend_hass.zip
           asset_content_type: application/zip
-
-      # - name: Build project Android
-      #   env:
-      #     release_version: ${{ steps.package-version.outputs.current-version}}
-      #     REACT_APP_VERSION: ${{ steps.package-version.outputs.current-version}}
-      #   run: yarn buildandroid
-      # - name: Preparing Archive
-      #   run: |
-      #     mv build ledfx_frontend_android
-      #     printf "${{ env.MESSAGES }}" >> ledfx_frontend_android/messages.md
-      # - name: Create Archive
-      #   uses: thedoctor0/zip-release@master
-      #   with:
-      #     filename: 'ledfx_frontend_android.zip'
-      #     path: 'ledfx_frontend_android'
-      #     exclusions: '*.git* /*node_modules/* .editorconfig'
-
-      # - name: Upload Release Asset Android
-      #   id: upload-release-asset-android
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-      #     asset_path: ./ledfx_frontend_android.zip
-      #     asset_name: ledfx_frontend_android.zip
-      #     asset_content_type: application/zip
-
-      # - name: Prepare Trigger Android
-      #   id: get-version
-      #   run: |
-      #     id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f3)
-      #     echo "::set-output name=id::$id"
-      # - name: Trigger Build
-      #   uses: benc-uk/workflow-dispatch@v1
-      #   with:
-      #     workflow: LedFx BuildPipeline Android
-      #     repo: YeonV/LedFx-Builds
-      #     token: ${{ secrets.FRONTEND_TOKEN }}
-      #     inputs: '{ "fversion": "${{ steps.get-version.outputs.id}}", "release": "${{ startsWith(github.event.head_commit.message, ''Beta'') && ''No'' || ''Yes'' }}", "upload_url": "${{ steps.create_release.outputs.upload_url }}" }'
-
-      # - name: Prepare Trigger Hass
-      #   id: hass
-      #   run: |
-      #     id=$(echo ${{steps.package-version.outputs.current-version}} | cut -d. -f1,2,3)
-      #     echo "::set-output name=id::$id"
-      # - name: Trigger Hass
-      #   uses: benc-uk/workflow-dispatch@v1
-      #   with:
-      #     workflow: Builder
-      #     repo: YeonV/home-assistant-addons
-      #     ref: refs/heads/master
-      #     token: ${{ secrets.LEDFX_HOMEASSISTANT_ADDON }}
-      #     inputs: '{ "version": "${{ steps.hass.outputs.id}}" }'
