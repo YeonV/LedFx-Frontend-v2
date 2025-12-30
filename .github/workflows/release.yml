@@ -41,6 +41,7 @@ jobs:
         run: |
           yarn install
 
+
       - name: Download latest audio-visualiser module
         run: |
           mkdir -p public/modules
