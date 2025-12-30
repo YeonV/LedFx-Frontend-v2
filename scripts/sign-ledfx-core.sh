@@ -7,6 +7,14 @@ APP_PATH="extraResources/LedFx_core.app"
 
 echo "🔐 Signing LedFx Core with identity: $IDENTITY"
 
+# Fix .dylibs folders (they break macOS bundle format)
+echo "🧹 Fixing .dylibs folder names..."
+find "$APP_PATH" -type d -name ".dylibs" 2>/dev/null | while read dir; do
+    parent=$(dirname "$dir")
+    mv "$dir" "$parent/dylibs"
+    echo "   Renamed: $dir -> $parent/dylibs"
+done
+
 # Remove any existing signatures first
 echo "📝 Removing existing signatures..."
 codesign --remove-signature "$APP_PATH" 2>/dev/null || true
