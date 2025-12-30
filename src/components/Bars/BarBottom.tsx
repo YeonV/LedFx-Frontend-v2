@@ -16,7 +16,6 @@ import AddVirtualDialog from '../Dialogs/AddVirtualDialog'
 import AddIntegrationDialog from '../Dialogs/AddIntegrationDialog'
 import SpotifyFabFree from '../Integrations/Spotify/SpotifyFabFree'
 import AddButton from '../AddButton/AddButton'
-import YoutubeWidget from '../Integrations/Youtube/YoutubeWidget'
 import SpotifyFabPro from '../Integrations/Spotify/SpotifyFabPro'
 import MIDIListener from '../Midi/MidiListener'
 import { drawerWidth, ios } from '../../utils/helpers'
@@ -56,11 +55,6 @@ export default function BarBottom() {
   const spotifyURL = useStore((state) => state.spotify.spotifyEmbedUrl)
   const setSpotifyURL = useStore((state) => state.setSpEmbedUrl)
 
-  const [youtubeEnabled, setYoutubeEnabled] = useState(false)
-  const [youtubeExpanded, setYoutubeExpanded] = useState(false)
-  const youtubeURL = useStore((state) => state.youtubeURL)
-  const setYoutubeURL = useStore((state) => state.setYoutubeURL)
-
   const [botHeight, setBotHeight] = useState(0)
   const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
 
@@ -72,21 +66,8 @@ export default function BarBottom() {
     if (spotifyExpanded) {
       height += 220
     }
-    if (youtubeEnabled) {
-      height += 80
-    }
-    if (youtubeExpanded) {
-      height += 220
-    }
     setBotHeight(height + (features.firetv ? fireTvBarHeight : 0)) // Use 0 when disabled
-  }, [
-    spotifyEnabled,
-    spotifyExpanded,
-    youtubeEnabled,
-    youtubeExpanded,
-    fireTvBarHeight,
-    features.firetv
-  ])
+  }, [spotifyEnabled, spotifyExpanded, fireTvBarHeight, features.firetv])
 
   useEffect(() => {
     setValue(pathname)
@@ -280,8 +261,6 @@ export default function BarBottom() {
           spotifyURL={spotifyURL}
           setSpotifyURL={setSpotifyURL}
           botHeight={botHeight}
-          setYoutubeEnabled={setYoutubeEnabled}
-          setYoutubeExpanded={setYoutubeExpanded}
         />
       )}
       {integrations.spotify?.active && spAuthenticated && (
@@ -293,21 +272,6 @@ export default function BarBottom() {
           spotifyURL={spotifyURL}
           setSpotifyURL={setSpotifyURL}
           botHeight={botHeight}
-          setYoutubeEnabled={setYoutubeEnabled}
-          setYoutubeExpanded={setYoutubeExpanded}
-        />
-      )}
-      {features.youtube && (
-        <YoutubeWidget
-          youtubeEnabled={youtubeEnabled}
-          setYoutubeEnabled={setYoutubeEnabled}
-          youtubeExpanded={youtubeExpanded}
-          setYoutubeExpanded={setYoutubeExpanded}
-          youtubeURL={youtubeURL}
-          setYoutubeURL={setYoutubeURL}
-          botHeight={botHeight}
-          setSpotifyEnabled={setSpotifyEnabled}
-          setSpotifyExpanded={setSpotifyExpanded}
         />
       )}
       <MIDIListener />
