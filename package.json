@@ -155,7 +155,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build-typedoc": "npx --yes -p typedoc -p typedoc-material-theme typedoc ./src/api/ledfx.types.ts --plugin typedoc-material-theme --themeColor '#800000' --options ./src/api/typedoc.json",
-    "predistcc:darwin": "bash scripts/predistcc-darwin.sh",
+    "predistcc:darwin": "test -f scripts/predistcc-darwin.sh && bash scripts/predistcc-darwin.sh || node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "predistcc:win32": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "predistcc:default": "node -e \"let pkg=require('./package.json'); pkg.homepage='.'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));\"",
     "postdistcc": "run-script-os",
