@@ -65,7 +65,6 @@ const GradientPicker = ({
 
   useEffect(() => {
     // Sync with prop changes
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPickerBgColorInt(pickerBgColor)
   }, [pickerBgColor, setPickerBgColorInt])
 

@@ -19,7 +19,6 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
 
   useEffect(() => {
     // Sync range with prop changes
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRange([s[1], s[2]])
   }, [s])
 
