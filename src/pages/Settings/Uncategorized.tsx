@@ -5,9 +5,24 @@ import { SettingsRow } from './SettingsComponents'
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
+  const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
+  const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
+  const showComplex = useStore((state) => state.showComplex)
+  const setShowComplex = useStore((state) => state.setShowComplex)
 
   return (
     <>
+      <SettingsRow
+        title="Show complex devices"
+        checked={showComplex}
+        onChange={() => setShowComplex(!showComplex)}
+      />
+      <SettingsRow
+        alpha
+        title="Use Blender Automagic"
+        checked={blenderAutomagic}
+        onChange={() => setBlenderAutomagic(!blenderAutomagic)}
+      />
       <SettingsRow
         beta
         title="Wakelock"

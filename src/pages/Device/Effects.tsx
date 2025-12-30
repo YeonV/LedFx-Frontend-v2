@@ -100,7 +100,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
         virtuals[virtId]?.config?.rows &&
         virtuals[virtId]?.config?.rows > 7 &&
         virtuals[virtId]?.pixel_count > 100 &&
-        virtuals[virtId].effect.type === 'blender'
+        virtuals[virtId]?.effect?.type === 'blender'
       )
   )
   const handle = useFullScreenHandle()
@@ -176,7 +176,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     if (
       virtuals &&
       virtuals[virtId]?.effect?.config &&
-      JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId].effect.config)
+      JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId]?.effect?.config)
     ) {
       setTheModel(virtual?.effect.config)
     }
@@ -196,14 +196,14 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       showMatrix ||
         ((virtuals[virtId]?.config?.rows || 1) > 7 &&
           virtuals[virtId]?.pixel_count > 100 &&
-          virtuals[virtId].effect.type === 'blender')
+          virtuals[virtId]?.effect?.type === 'blender')
     )
-  }, [virtuals[virtId].effect.type])
+  }, [virtuals[virtId]?.effect?.type])
 
   const actives = devices[
     Object.keys(devices).find((d) => d === virtId) || ''
   ]?.active_virtuals?.filter((value, index, self) => self.indexOf(value) === index)
-  const streaming = actives && actives.length > 0 && actives?.some((a) => virtuals[a].active)
+  const streaming = actives && actives.length > 0 && actives?.some((a) => virtuals[a]?.active)
 
   const running = virtual && virtual.effect && virtual.effect.type
 
@@ -299,7 +299,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                           () => {
                             setLoading(false)
                           },
-                          (virtuals[virtId].config.transition_time || 0) * 1000
+                          (virtuals[virtId]?.config?.transition_time || 0) * 1000
                         )
                       }}
                     >
