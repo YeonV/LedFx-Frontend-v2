@@ -8,7 +8,6 @@ export type IFeatures =
   | 'integrations'
   | 'spotify'
   | 'spotifypro'
-  | 'youtube'
   | 'webaudio'
   | 'waves'
   | 'streamto'
@@ -52,7 +51,6 @@ const storeFeatures = (set: any) => ({
     integrations: false,
     spotify: false,
     spotifypro: false,
-    youtube: false,
     webaudio: false,
     waves: false,
     streamto: false,
@@ -95,7 +93,6 @@ const storeFeatures = (set: any) => ({
     integrations: true,
     spotify: false,
     spotifypro: false,
-    youtube: false,
     webaudio: false,
     waves: false,
     streamto: false,
