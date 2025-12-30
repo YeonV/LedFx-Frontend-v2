@@ -203,9 +203,9 @@ const Device = () => {
       devices[`${virtId}-background`] &&
       virtuals[virtId]?.effect?.type !== 'blender'
     ) {
-      if (virtuals[`${virtId}-mask`].effect.config) clearEffect(`${virtId}-mask`)
-      if (virtuals[`${virtId}-foreground`].effect.config) clearEffect(`${virtId}-foreground`)
-      if (virtuals[`${virtId}-background`].effect.config) clearEffect(`${virtId}-background`)
+      if (virtuals[`${virtId}-mask`]?.effect?.config) clearEffect(`${virtId}-mask`)
+      if (virtuals[`${virtId}-foreground`]?.effect?.config) clearEffect(`${virtId}-foreground`)
+      if (virtuals[`${virtId}-background`]?.effect?.config) clearEffect(`${virtId}-background`)
     }
   }, [devices, virtId && virtuals[virtId]?.effect?.type, blenderAutomagic])
 
