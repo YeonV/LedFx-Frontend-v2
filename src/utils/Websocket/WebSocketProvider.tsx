@@ -93,22 +93,6 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
           payload = rule
         }
 
-        // ⚠️ DEBUG ONLY - REMOVE BEFORE PRODUCTION - START
-        if (eventType === 'visualisation_update') {
-          const now = performance.now()
-          if (lastVisualisationUpdate.current > 0) {
-            const gap = now - lastVisualisationUpdate.current
-            // Log if gap exceeds 2x normal frame time (30fps = ~33ms, so log if > 66ms)
-            if (gap > 66) {
-              console.warn(
-                `⚠️ Visualisation update gap: ${gap.toFixed(1)}ms at ${now.toFixed(1)}ms (expected ~33ms)`
-              )
-            }
-          }
-          lastVisualisationUpdate.current = now
-        }
-        // ⚠️ DEBUG ONLY - REMOVE BEFORE PRODUCTION - END
-
         dispatchToSubscribers(eventType, payload)
       },
       onclose: () => {
