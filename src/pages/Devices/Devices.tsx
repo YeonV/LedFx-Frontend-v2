@@ -106,36 +106,7 @@ const Devices = () => {
 
   // Apply batched updates immediately when scene activates
   useSubscription('scene_activated', () => {
-    performance.mark('scene_activated_received')
-    const effectCount = pendingUpdates.current.length
-    const startTime = performance.now()
     flushPendingUpdates()
-    const endTime = performance.now()
-    performance.mark('flush_complete')
-
-    console.log(
-      `🎬 v4: Flush initiated at ${startTime.toFixed(1)}ms, completed at ${endTime.toFixed(1)}ms`
-    )
-
-    try {
-      performance.measure('effect_collection', 'effect_set_start', 'scene_activated_received')
-      performance.measure('flush_duration', 'scene_activated_received', 'flush_complete')
-
-      const collection = performance.getEntriesByName('effect_collection')[0]
-      const flush = performance.getEntriesByName('flush_duration')[0]
-
-      console.log('🎬 Scene Activation Performance v6 (immediate batch):', {
-        totalEffects: effectCount,
-        collectionTime: `${collection.duration.toFixed(2)}ms`,
-        flushTime: `${flush.duration.toFixed(2)}ms`,
-        totalTime: `${(collection.duration + flush.duration).toFixed(2)}ms`
-      })
-
-      performance.clearMarks()
-      performance.clearMeasures()
-    } catch (e) {
-      // Performance marks might not exist in some cases
-    }
   })
 
   // Apply batched updates when scene activates (single state update)
