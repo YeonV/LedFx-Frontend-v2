@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.1.3-b35",
+  "version": "2.1.3-b36",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -242,12 +242,29 @@
     "webpack": "^5.104.1"
   },
   "build": {
+    "files": [
+      "build/**/*"
+    ],
     "extraResources": [
       {
         "from": "./extraResources/",
         "to": "extraResources",
         "filter": [
           "**/*"
+        ]
+      },
+      {
+        "from": "./public/",
+        "to": "./",
+        "filter": [
+          "splash.html"
+        ]
+      },
+      {
+        "from": "./src/icons/png/",
+        "to": "./",
+        "filter": [
+          "banner.png"
         ]
       }
     ],

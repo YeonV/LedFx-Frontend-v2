@@ -1,10 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import isDev from 'electron-is-dev'
-import { fileURLToPath } from 'node:url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 let splashInstance: BrowserWindow | null = null
 
@@ -24,7 +20,7 @@ export const createSplashWindow = (): BrowserWindow => {
 
   const splashPath = isDev
     ? `file://${path.join(process.cwd(), 'public', 'splash.html')}`
-    : `file://${path.join(__dirname, '../../../splash.html')}`
+    : `file://${path.join(process.resourcesPath, 'splash.html')}`
 
   splashWindow.loadURL(splashPath)
   splashWindow.center()
