@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.1.3-b33",
+  "version": "2.1.3-b34",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -280,7 +280,10 @@
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.inherit.plist",
       "type": "distribution",
-      "identity": "CEE631E9774D506963ECC20D6BFA8213FB07B2B1"
+      "identity": "CEE631E9774D506963ECC20D6BFA8213FB07B2B1",
+      "signIgnore": [
+        "extraResources/LedFx_core.app"
+      ]
     },
     "dmg": {
       "background": "src/assets/DMG_BG.jpg",
