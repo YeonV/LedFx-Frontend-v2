@@ -99,11 +99,6 @@ const EditSceneDialog = () => {
   const getFullConfig = useStore((state) => state.getFullConfig)
   const toggletSceneActiveTag = useStore((state) => state.ui.toggletSceneActiveTag)
 
-  useEffect(() => {
-    getVirtuals()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const onDrop = useCallback((acceptedFiles: any) => {
     acceptedFiles.forEach((file: any) => {
       setImage(`image:file:///${file.path.replaceAll('\\', '/')}`)
