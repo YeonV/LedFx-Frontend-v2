@@ -17,7 +17,6 @@ import VirtualDiag from '../../components/Debug/VirtualDiag'
 const Device = () => {
   const navigate = useNavigate()
   const { virtId } = useParams()
-  const getVirtuals = useStore((state) => state.getVirtuals)
   const getVirtual = useStore((state) => state.getVirtual)
   const getPresets = useStore((state) => state.getPresets)
   const addDevice = useStore((state) => state.addDevice)
