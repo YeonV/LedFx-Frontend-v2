@@ -6,6 +6,7 @@ import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
 import { useNavigate } from 'react-router-dom'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
+import { IVirtualEventUpdate } from '../../store/api/storeVirtuals'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -48,7 +49,7 @@ const Devices = () => {
   const navigate = useNavigate()
 
   // Batch effect_set updates to avoid blocking the main thread
-  const pendingUpdates = useRef<Array<any>>([])
+  const pendingUpdates = useRef<Array<IVirtualEventUpdate>>([])
   const flushTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Flush pending updates (called by timer or scene_activated)
@@ -80,7 +81,7 @@ const Devices = () => {
   useSubscription('devices_updated', getDevices)
 
   // Collect effect_set events with fallback timer
-  useSubscription('effect_set', (data: any) => {
+  useSubscription('effect_set', (data: IVirtualEventUpdate) => {
     if (pendingUpdates.current.length === 0) {
       performance.mark('effect_set_start')
     }

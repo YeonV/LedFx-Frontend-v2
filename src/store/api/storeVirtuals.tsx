@@ -8,6 +8,14 @@ export interface IVirtualOrder {
   order: number
 }
 
+export interface IVirtualEventUpdate {
+  virtual_id: string
+  effect_name: string
+  effect_type: string | null
+  active: boolean
+  streaming: boolean
+}
+
 export type Segment = [device: string, start: number, end: number, reverse: boolean]
 
 const storeVirtuals = (set: any) => ({
@@ -84,13 +92,7 @@ const storeVirtuals = (set: any) => ({
     }
   },
   // Update a single virtual's lightweight fields from WebSocket event
-  updateVirtualFromEvent: (data: {
-    virtual_id: string
-    effect_name: string
-    effect_type: string | null
-    active: boolean
-    streaming: boolean
-  }) =>
+  updateVirtualFromEvent: (data: IVirtualEventUpdate) =>
     set(
       produce((state: IStore) => {
         const virtual = state.virtuals[data.virtual_id]
