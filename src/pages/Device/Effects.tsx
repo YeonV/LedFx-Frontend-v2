@@ -31,6 +31,7 @@ import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { Effect, Virtual } from '../../api/ledfx.types'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
+import { IVirtualEventUpdate } from '../../store/api/storeVirtuals'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -82,7 +83,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [loading, setLoading] = useState(false)
 
   const getVirtuals = useStore((state) => state.getVirtuals)
-  const getPresets = useStore((state) => state.getPresets)
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
@@ -107,7 +107,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [fullScreen, setFullScreen] = useState(false)
   const getVirtual = useStore((state) => state.getVirtual)
 
-  useSubscription('effect_set', (data: any) => {
+  useSubscription('effect_set', (data: IVirtualEventUpdate) => {
     if (data.virtual_id === virtId) {
       getVirtual(virtId)
     }
