@@ -26,9 +26,6 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   const [errorState, setErrorState] = useState<string | null>(null)
   const subscribers = useRef(new Map<string, Set<(_data: any) => void>>())
 
-  // ⚠️ DEBUG ONLY - REMOVE BEFORE PRODUCTION
-  const lastVisualisationUpdate = useRef<number>(0)
-
   const send = useCallback((data: any) => {
     ws.current?.send(JSON.stringify(data))
   }, [])

@@ -56,9 +56,9 @@ export const MenuLine = forwardRef<HTMLLIElement, MenuLineProps>((props, ref) =>
   const { icon = <Send fontSize="small" />, name = 'MenuItem', description = '', action } = props
   const theme = useTheme()
   return (
-    <MenuItem 
-      onClick={action} 
-      ref={ref} 
+    <MenuItem
+      onClick={action}
+      ref={ref}
       tabIndex={0}
       className={name === 'Add Scene' ? 'step-scenes-two' : ''}
     >
