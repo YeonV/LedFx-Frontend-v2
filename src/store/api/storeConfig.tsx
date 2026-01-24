@@ -69,6 +69,8 @@ export interface ISystemConfig {
   flush_on_deactivate: boolean
   ui_brightness_boost: number
   startup_scene_id: string
+  lifx_broadcast_address?: string
+  lifx_discovery_timeout?: number
 }
 
 const storeConfig = (set: any) => ({
