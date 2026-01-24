@@ -5,13 +5,19 @@ import {
   DialogContent,
   Stack,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  TextField
   // useTheme,
 } from '@mui/material'
 import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
 import Button from '@mui/material/Button'
-import { CheckCircleOutlineOutlined, ChevronLeft, ChevronRight } from '@mui/icons-material'
+import {
+  CheckCircleOutlineOutlined,
+  ChevronLeft,
+  ChevronRight,
+  Lightbulb
+} from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import logoCircle from '../../icons/png/128x128.png'
 import banner from '../../icons/png/banner.png'
@@ -31,6 +37,14 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
   // const virtuals = useStore((state) => state.virtuals)
   const scanForOpenRgbDevices = useStore((state) => state.scanForOpenRgbDevices)
   const scanForLaunchpadDevices = useStore((state) => state.scanForLaunchpadDevices)
+  const scanForLifxDevices = useStore((state) => state.scanForLifxDevices)
+  const config = useStore((state) => state.config)
+  const [lifxBroadcastAddress, setLifxBroadcastAddress] = useState(
+    config.lifx_broadcast_address || '255.255.255.255'
+  )
+  const [lifxDiscoveryTimeout, setLifxDiscoveryTimeout] = useState(
+    config.lifx_discovery_timeout || 30
+  )
   const setIntro = useStore((state) => state.setIntro)
   const setTour = useStore((state) => state.setTour)
   const setTourOpen = useStore((state) => state.setTourOpen)
@@ -87,6 +101,14 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Sync LIFX settings with config when dialog opens or config changes
+  useEffect(() => {
+    if (intro) {
+      setLifxBroadcastAddress(config.lifx_broadcast_address || '255.255.255.255')
+      setLifxDiscoveryTimeout(config.lifx_discovery_timeout || 30)
+    }
+  }, [intro, config.lifx_broadcast_address, config.lifx_discovery_timeout])
 
   const [s, setS] = useState({} as Record<string, 'left' | 'right'>)
 
@@ -187,10 +209,19 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
           setTour('home')
           handleNext()
         },
-        action_right: () => {
+        action_right: async () => {
           onSystemSettingsChange('create_segments', assistant.wledSegments)
           if (assistant.launchpad) scanForLaunchpadDevices()
           if (assistant.openRgb) scanForOpenRgbDevices()
+          if (assistant.lifx) {
+            // Save LIFX settings before scanning
+            await setSystemConfig({
+              lifx_broadcast_address: lifxBroadcastAddress,
+              lifx_discovery_timeout: lifxDiscoveryTimeout
+            })
+            getSystemConfig()
+            scanForLifxDevices(lifxBroadcastAddress, lifxDiscoveryTimeout)
+          }
           if (assistant.wled) setScanning(0)
           if (assistant.wled) handleScan()
           handleNext()
@@ -260,7 +291,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
 
     setSteps(ste)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s, graphsMulti, assistant])
+  }, [s, graphsMulti, assistant, lifxBroadcastAddress, lifxDiscoveryTimeout])
 
   return (
     <Dialog
@@ -563,6 +594,37 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                       checked={assistant.launchpad}
                       onChange={() => setAssistant('launchpad', !assistant.launchpad)}
                       style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                    />
+                  </Stack>
+                )}
+                <Stack direction="row" alignItems="center">
+                  <Lightbulb sx={{ width: 32, height: 'auto' }} />
+                  <SettingsRow
+                    title="LIFX"
+                    checked={assistant.lifx}
+                    onChange={() => setAssistant('lifx', !assistant.lifx)}
+                    style={{ fontSize: 16, paddingLeft: '0.75rem' }}
+                  />
+                </Stack>
+                {assistant.lifx && (
+                  <Stack direction="row" gap={2} sx={{ ml: 5, mt: 1 }}>
+                    <TextField
+                      size="small"
+                      label="Broadcast Address"
+                      value={lifxBroadcastAddress}
+                      onChange={(e) => setLifxBroadcastAddress(e.target.value)}
+                      placeholder="255.255.255.255"
+                      sx={{ width: 150 }}
+                    />
+                    <TextField
+                      size="small"
+                      label="Timeout (s)"
+                      type="number"
+                      value={lifxDiscoveryTimeout}
+                      onChange={(e) => setLifxDiscoveryTimeout(Number(e.target.value))}
+                      placeholder="30"
+                      sx={{ width: 100 }}
+                      inputProps={{ min: 1, max: 120 }}
                     />
                   </Stack>
                 )}
