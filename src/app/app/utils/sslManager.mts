@@ -147,8 +147,48 @@ export const enableSsl = async (): Promise<{ success: boolean; message: string }
       }
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
+    } else if (process.platform === 'darwin') {
+      // macOS: Two-step process to allow GUI authorization
+      console.log('Executing SSL enable script (macOS two-step process)...')
+
+      // Make script executable
+      await execAsync(`chmod +x "${scriptPath}"`)
+
+      // Step 1: Generate certs and add to keychain (will show GUI password prompt)
+      // Run without sudo so the security command can show its GUI dialog
+      try {
+        const { stdout, stderr } = await execAsync(`"${scriptPath}"`, {
+          timeout: 60000
+        })
+        
+        if (stderr && !stderr.includes('password') && !stderr.includes('authorization')) {
+          console.warn('SSL enable stderr:', stderr)
+        }
+        if (stdout) {
+          console.log('SSL enable stdout:', stdout)
+        }
+      } catch (error: any) {
+        // If script fails, it might be because it tried to modify /etc/hosts without sudo
+        // Check if certificates were at least created
+        const certsExist = await isSslInstalled()
+        if (!certsExist) {
+          throw error // Real failure
+        }
+        console.log('Certificates created, continuing to hosts file step...')
+      }
+
+      // Step 2: Modify hosts file with sudo (only if needed)
+      const hostsAlreadyConfigured = await isHostsFileConfigured()
+      if (!hostsAlreadyConfigured) {
+        console.log('Adding ledfx.local to hosts file...')
+        await sudoExec(`bash -c 'grep -q "ledfx.local" /etc/hosts || echo "127.0.0.1 ledfx.local" >> /etc/hosts'`, { 
+          name: 'LedFx Hosts File' 
+        })
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     } else {
-      // macOS/Linux: Use sudo-prompt
+      // Linux: Use sudo-prompt
       console.log('Executing SSL enable script with sudo...')
 
       // Make script executable
