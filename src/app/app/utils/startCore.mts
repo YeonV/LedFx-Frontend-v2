@@ -45,7 +45,7 @@ function startCore(
         const baseParams = ['-p', httpPort, '-c', configPath]
         if (platform !== 'darwin') baseParams.push('--no-tray')
 
-        if (sslEnabled && platform === 'win32') {
+        if (sslEnabled) {
           baseParams.splice(2, 0, '-p_s', httpsPort)
         }
 
@@ -55,7 +55,7 @@ function startCore(
         const existingParams = [...coreParams[platform][instance]]
         const psIndex = existingParams.indexOf('-p_s')
 
-        if (sslEnabled && platform === 'win32' && psIndex === -1) {
+        if (sslEnabled && psIndex === -1) {
           // Add SSL port
           existingParams.splice(2, 0, '-p_s', '8889')
         } else if (!sslEnabled && psIndex !== -1) {
@@ -77,7 +77,7 @@ function startCore(
       const baseParams = ['-p', usePort, '-c', configPath]
       if (platform !== 'darwin') baseParams.push('--no-tray')
 
-      if (sslEnabled && platform === 'win32') {
+      if (sslEnabled) {
         baseParams.splice(2, 0, '-p_s', useHttpsPort)
       }
 

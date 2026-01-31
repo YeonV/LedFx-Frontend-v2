@@ -34,13 +34,11 @@ export const executeCCStartup = async (subprocesses: Subprocesses): Promise<void
     await enableAudio()
   }
 
-  // Step 3: SSL setup (Windows only)
-  if (process.platform === 'win32') {
-    updateSplashStatus('Checking SSL configuration...')
-    const sslResult = await setupSsl()
-    if (sslResult) {
-      updateSplashStatus('SSL configuration complete')
-    }
+  // Step 3: SSL setup (all platforms)
+  updateSplashStatus('Checking SSL configuration...')
+  const sslResult = await setupSsl()
+  if (sslResult) {
+    updateSplashStatus('SSL configuration complete')
   }
 
   // Step 4: Start LedFx core

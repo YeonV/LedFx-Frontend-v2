@@ -81,8 +81,8 @@ export const showSslChoice = (): Promise<{ enable: boolean; remember: boolean }>
       splashInstance.setSize(400, 480)
       splashInstance.center()
 
-      // Show the choice dialog
-      splashInstance.webContents.send('show-ssl-choice')
+      // Show the choice dialog with platform info
+      splashInstance.webContents.send('show-ssl-choice', { platform: process.platform })
 
       // Listen for user's choice
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

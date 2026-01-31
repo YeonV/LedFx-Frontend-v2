@@ -268,8 +268,7 @@ const GeneralCard = () => {
           />
         </Tooltip>
       </div>
-      {/* WINDOWS SSL CONFIGURATION SECTION */}
-      {isWindows && isCC && (
+      {isCC && (
         <>
           <Divider style={{ margin: '20px 0 10px' }} />
           <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
