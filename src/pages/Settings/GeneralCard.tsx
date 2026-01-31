@@ -38,7 +38,6 @@ const GeneralCard = () => {
   // SSL state management
   const [sslEnabled, setSslEnabled] = useState(false)
   const [sslLoading, setSslLoading] = useState(false)
-  const [isWindows, setIsWindows] = useState(false)
   const [sslPreference, setSslPreference] = useState<string>('ask')
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
@@ -58,9 +57,7 @@ const GeneralCard = () => {
 
   // Listen for electron messages
   window.api?.receive('fromMain', (args: any) => {
-    if (args[0] === 'platform') {
-      setIsWindows(args[1] === 'win32')
-    } else if (args[0] === 'ssl-status') {
+    if (args[0] === 'ssl-status') {
       setSslEnabled(args[1].enabled)
     } else if (args[0] === 'ssl-preference') {
       setSslPreference(args[1])
@@ -76,8 +73,7 @@ const GeneralCard = () => {
 
   useEffect(() => {
     if (window.api) {
-      // Check platform and SSL status
-      window.api.send('toMain', { command: 'get-platform' })
+      // Check SSL status
       window.api.send('toMain', { command: 'get-ssl-status' })
       window.api.send('toMain', { command: 'get-ssl-preference' })
     }
@@ -117,7 +113,10 @@ const GeneralCard = () => {
       deleteSystemConfig().then(() => {
         if (!isAndroid) {
           setTimeout(() => {
-            window.localStorage.setItem('ledfx-host', 'http://localhost:8888')
+            // Use SSL-aware default host
+            const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+            const defaultHost = sslEnabled ? 'https://ledfx.local:8889' : 'http://localhost:8888'
+            window.localStorage.setItem('ledfx-host', defaultHost)
             window.location.reload()
             setIntro(true)
           }, 500)
