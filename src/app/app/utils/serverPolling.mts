@@ -1,4 +1,5 @@
 import http from 'http'
+import https from 'https'
 
 export const waitForServer = (
   url: string,
@@ -7,9 +8,12 @@ export const waitForServer = (
 ): Promise<boolean> => {
   const startTime = Date.now()
 
+  // Use https module for https:// URLs, http for http://
+  const protocol = url.startsWith('https://') ? https : http
+
   return new Promise((resolve) => {
     const checkServer = () => {
-      const req = http.get(url, () => {
+      const req = protocol.get(url, { rejectUnauthorized: false }, () => {
         resolve(true)
         req.destroy()
       })
