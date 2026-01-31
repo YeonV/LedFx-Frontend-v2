@@ -23,7 +23,15 @@ export const setupSsl = async (): Promise<boolean> => {
   const dontAskAgain = store.get('ssl-dont-ask-again', false)
   const autoEnable = store.get('ssl-auto-enable', false)
 
-  if (dontAskAgain) {
+  // Always show dialog if certificates don't exist, even if preference is set
+  // This handles the case where user deleted certificates manually
+  if (dontAskAgain && actuallyInstalled === false && autoEnable === false) {
+    console.log('Certificates missing but user previously chose to skip - showing dialog again')
+    store.delete('ssl-dont-ask-again')
+    store.delete('ssl-auto-enable')
+  }
+
+  if (dontAskAgain && (actuallyInstalled || !autoEnable)) {
     // User previously made a choice with "remember"
     if (autoEnable) {
       console.log('Auto-enabling SSL per user preference...')
