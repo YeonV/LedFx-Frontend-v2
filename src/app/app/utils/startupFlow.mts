@@ -11,7 +11,7 @@ import store from './store.mjs'
  * 1. Show splash screen
  * 2. Install driver (first time only) - macOS
  * 3. Enable audio device - macOS
- * 4. Setup SSL (optional) - Windows
+ * 4. Setup SSL (optional) - All platforms
  * 5. Start LedFx core
  * 6. Wait for server
  * 7. Close splash
