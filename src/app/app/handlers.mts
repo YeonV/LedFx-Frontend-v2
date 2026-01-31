@@ -333,6 +333,22 @@ export const handlers = async (
         const result = await disableSsl()
         if (result.success) {
           store.set('ledfx-ssl-enabled', false)
+
+          // Reset host configuration to HTTP defaults
+          wind.webContents
+            .executeJavaScript(
+              `
+            localStorage.removeItem('ledfx-host');
+            const hosts = JSON.parse(localStorage.getItem('ledfx-hosts') || '[]');
+            const filteredHosts = hosts.filter(h => !h.includes('8889') && !h.includes('https'));
+            if (filteredHosts.length === 0) {
+              filteredHosts.push('http://localhost:8888');
+            }
+            localStorage.setItem('ledfx-hosts', JSON.stringify(filteredHosts));
+            localStorage.setItem('ledfx-host', 'http://localhost:8888');
+          `
+            )
+            .catch((err) => console.error('Failed to reset host config:', err))
         }
         wind.webContents.send('fromMain', ['ssl-disable-result', result])
         break
