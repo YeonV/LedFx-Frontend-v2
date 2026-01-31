@@ -8,43 +8,89 @@ import coreParams from './coreParams.mjs'
 import store from './store.mjs'
 import { ChildProcessWithoutNullStreams } from 'child_process'
 
+function getNextAvailablePorts(platform: 'darwin' | 'linux' | 'win32') {
+  const existingPorts = (Object.values(coreParams[platform]) as string[][])
+    .map((params: string[]) => {
+      const pIndex = params.indexOf('-p')
+      return pIndex !== -1 ? parseInt(params[pIndex + 1]) : 0
+    })
+    .filter((port) => port > 0)
+
+  const highestPort = existingPorts.length > 0 ? Math.max(...existingPorts) : 8888
+  const nextHttpPort = highestPort + 2
+  const nextHttpsPort = nextHttpPort + 1
+
+  return { httpPort: nextHttpPort, httpsPort: nextHttpsPort }
+}
+
 function startCore(
   wind: BrowserWindow,
   platform: 'darwin' | 'linux' | 'win32',
   instance = 'instance1',
-  port = '8888'
+  port?: string
 ) {
   let subpy: ChildProcessWithoutNullStreams | null = null
+  const sslEnabled = store.get('ledfx-ssl-enabled', false) as boolean
 
   if (fs.existsSync(corePath(coreFile[platform]))) {
     if (coreParams[platform] && instance && coreParams[platform][instance]) {
+      // Instance exists - use existing config
       if (instance !== 'instance1') {
-        coreParams[platform][instance] = [
-          '-p',
-          port,
-          '-c',
-          path.join(app.getPath('userData'), '.ledfx-cc', instance)
-        ]
+        const httpPort =
+          port || coreParams[platform][instance][coreParams[platform][instance].indexOf('-p') + 1]
+        const httpsPort = (parseInt(httpPort) + 1).toString()
+        const configPath = path.join(app.getPath('userData'), '.ledfx-cc', instance)
+
+        // Rebuild params with current SSL state
+        const baseParams = ['-p', httpPort, '-c', configPath]
+        if (platform !== 'darwin') baseParams.push('--no-tray')
+
+        if (sslEnabled && platform === 'win32') {
+          baseParams.splice(2, 0, '-p_s', httpsPort)
+        }
+
+        coreParams[platform][instance] = baseParams
+      } else {
+        // instance1 - update SSL flag only
+        const existingParams = [...coreParams[platform][instance]]
+        const psIndex = existingParams.indexOf('-p_s')
+
+        if (sslEnabled && platform === 'win32' && psIndex === -1) {
+          // Add SSL port
+          existingParams.splice(2, 0, '-p_s', '8889')
+        } else if (!sslEnabled && psIndex !== -1) {
+          // Remove SSL port
+          existingParams.splice(psIndex, 2)
+        }
+
+        coreParams[platform][instance] = existingParams
       }
       console.log('Starting core with params', platform, instance, coreParams[platform][instance])
       subpy = runCore(coreFile[platform], coreParams[platform][instance])
     } else {
-      coreParams[platform][`instance${Object.keys(coreParams[platform]).length + 1}`] = [
-        '-p',
-        port,
-        '-c',
-        path.join(app.getPath('userData'), '.ledfx-cc', instance)
-      ]
+      // New instance - calculate next available ports
+      const { httpPort } = getNextAvailablePorts(platform)
+      const usePort = port || httpPort.toString()
+      const useHttpsPort = (parseInt(usePort) + 1).toString()
+      const configPath = path.join(app.getPath('userData'), '.ledfx-cc', instance)
+
+      const baseParams = ['-p', usePort, '-c', configPath]
+      if (platform !== 'darwin') baseParams.push('--no-tray')
+
+      if (sslEnabled && platform === 'win32') {
+        baseParams.splice(2, 0, '-p_s', useHttpsPort)
+      }
+
+      const instanceKey = instance || `instance${Object.keys(coreParams[platform]).length + 1}`
+      coreParams[platform][instanceKey] = baseParams
+
       console.log(
         'Creating core with params',
         platform,
-        Object.keys(coreParams[platform]).length,
-        coreParams[platform][`instance${Object.keys(coreParams[platform]).length}`]
+        instanceKey,
+        coreParams[platform][instanceKey]
       )
-      subpy = runCore(
-        coreFile[platform],
-        coreParams[platform][`instance${Object.keys(coreParams[platform]).length}`]
-      )
+      subpy = runCore(coreFile[platform], coreParams[platform][instanceKey])
     }
     store.set('coreParams', coreParams)
     if (!wind.isDestroyed()) {
