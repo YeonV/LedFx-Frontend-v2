@@ -312,33 +312,37 @@
         document.querySelector('.spinner').style.display = 'block';
       });
 
-      ipcRenderer.on('show-ssl-choice', () => {
+      ipcRenderer.on('show-ssl-choice', (event, data) => {
         document.getElementById('status').style.display = 'none';
         document.querySelector('.loader').style.display = 'none';
         document.querySelector('.spinner').style.display = 'none';
         document.getElementById('sslDialog').classList.add('visible');
         
-        // Show countdown and start timer
-        sslSecondsRemaining = 7;
-        const countdownSpan = document.getElementById('skipSslCountdown');
-        countdownSpan.style.display = 'inline';
-        countdownSpan.textContent = ` (${sslSecondsRemaining})`;
-        
-        // Update countdown every second
-        sslCountdownInterval = setInterval(() => {
-          sslSecondsRemaining--;
+        // Only show countdown and auto-skip for non-macOS platforms
+        const platform = data?.platform || 'unknown';
+        if (platform !== 'darwin') {
+          // Show countdown and start timer
+          sslSecondsRemaining = 7;
+          const countdownSpan = document.getElementById('skipSslCountdown');
+          countdownSpan.style.display = 'inline';
           countdownSpan.textContent = ` (${sslSecondsRemaining})`;
           
-          if (sslSecondsRemaining <= 0) {
-            clearInterval(sslCountdownInterval);
-            sslCountdownInterval = null;
-          }
-        }, 1000);
-        
-        // Auto-click "Use HTTP" after 7 seconds
-        sslAutoSkipTimer = setTimeout(() => {
-          document.getElementById('skipSslBtn').click();
-        }, 7000);
+          // Update countdown every second
+          sslCountdownInterval = setInterval(() => {
+            sslSecondsRemaining--;
+            countdownSpan.textContent = ` (${sslSecondsRemaining})`;
+            
+            if (sslSecondsRemaining <= 0) {
+              clearInterval(sslCountdownInterval);
+              sslCountdownInterval = null;
+            }
+          }, 1000);
+          
+          // Auto-click "Use HTTP" after 7 seconds
+          sslAutoSkipTimer = setTimeout(() => {
+            document.getElementById('skipSslBtn').click();
+          }, 7000);
+        }
       });
 
       ipcRenderer.on('hide-ssl-choice', () => {
