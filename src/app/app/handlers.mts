@@ -338,44 +338,36 @@ export const handlers = async (
         break
       }
       case 'get-ssl-status': {
-        if (process.platform === 'win32') {
-          const status = await getSslStatus()
-          wind.webContents.send('fromMain', ['ssl-status', { enabled: status.installed }])
-        } else {
-          wind.webContents.send('fromMain', ['ssl-status', { enabled: false }])
-        }
+        const status = await getSslStatus()
+        wind.webContents.send('fromMain', ['ssl-status', { enabled: status.installed }])
         break
       }
       case 'get-ssl-preference': {
-        if (process.platform === 'win32') {
-          const dontAskAgain = store.get('ssl-dont-ask-again', false)
-          const autoEnable = store.get('ssl-auto-enable', false)
+        const dontAskAgain = store.get('ssl-dont-ask-again', false)
+        const autoEnable = store.get('ssl-auto-enable', false)
 
-          let preference = 'ask'
-          if (dontAskAgain && autoEnable) {
-            preference = 'auto'
-          } else if (dontAskAgain && !autoEnable) {
-            preference = 'never'
-          }
-
-          wind.webContents.send('fromMain', ['ssl-preference', preference])
+        let preference = 'ask'
+        if (dontAskAgain && autoEnable) {
+          preference = 'auto'
+        } else if (dontAskAgain && !autoEnable) {
+          preference = 'never'
         }
+
+        wind.webContents.send('fromMain', ['ssl-preference', preference])
         break
       }
       case 'set-ssl-preference': {
-        if (process.platform === 'win32') {
-          const preference = parameters.preference
+        const preference = parameters.preference
 
-          if (preference === 'ask') {
-            store.set('ssl-dont-ask-again', false)
-            store.set('ssl-auto-enable', false)
-          } else if (preference === 'auto') {
-            store.set('ssl-dont-ask-again', true)
-            store.set('ssl-auto-enable', true)
-          } else if (preference === 'never') {
-            store.set('ssl-dont-ask-again', true)
-            store.set('ssl-auto-enable', false)
-          }
+        if (preference === 'ask') {
+          store.set('ssl-dont-ask-again', false)
+          store.set('ssl-auto-enable', false)
+        } else if (preference === 'auto') {
+          store.set('ssl-dont-ask-again', true)
+          store.set('ssl-auto-enable', true)
+        } else if (preference === 'never') {
+          store.set('ssl-dont-ask-again', true)
+          store.set('ssl-auto-enable', false)
         }
         break
       }
