@@ -7,12 +7,6 @@ import { showSslChoice, hideSslChoice, updateSplashStatus } from './splash.mjs'
  * @returns Promise<boolean> - success status
  */
 export const setupSsl = async (): Promise<boolean> => {
-  // Only for Windows
-  if (process.platform !== 'win32') {
-    console.log('SSL setup skipped - not Windows')
-    return true
-  }
-
   // Check if SSL is actually installed
   console.log('Checking if SSL is already installed...')
   const actuallyInstalled = await isSslInstalled()
@@ -100,7 +94,7 @@ export const shouldUseSsl = (): boolean => {
  */
 export const getLedfxUrl = (): string => {
   const useSsl = shouldUseSsl()
-  if (useSsl && process.platform === 'win32') {
+  if (useSsl) {
     return 'https://ledfx.local:8889'
   }
   return 'http://localhost:8888'

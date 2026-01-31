@@ -5,49 +5,81 @@ import { promisify } from 'util'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
+import sudo from 'sudo-prompt'
 
 const execAsync = promisify(exec)
+const sudoExec = (command: string, options: any): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    sudo.exec(command, options, (error: any, stdout: any, stderr: any) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve({ stdout, stderr })
+      }
+    })
+  })
+}
 
 /**
  * Get the SSL directory path where certificates are stored
  */
 export const getSslDirectory = (): string => {
-  const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming')
-  return path.join(appData, '.ledfx', 'ssl')
+  if (process.platform === 'win32') {
+    const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming')
+    return path.join(appData, '.ledfx', 'ssl')
+  } else {
+    return path.join(os.homedir(), '.ledfx', 'ssl')
+  }
 }
 
 /**
- * Get the path to the enable SSL PowerShell script in extraResources
+ * Get the path to the enable SSL script in extraResources
  */
 export const getEnableSslScriptPath = (): string => {
   const isDev = !app.isPackaged
-  if (isDev) {
-    // In dev, reference the extraResources folder in frontend
-    return path.join(process.cwd(), 'extraResources', 'enable_ledfx_ssl.ps1')
+  const platform = process.platform
+
+  let scriptName: string
+  if (platform === 'win32') {
+    scriptName = 'enable_ledfx_ssl.ps1'
+  } else if (platform === 'darwin') {
+    scriptName = 'enable_ledfx_ssl_mac.sh'
+  } else {
+    scriptName = 'enable_ledfx_ssl_linux.sh'
   }
-  return path.join(process.resourcesPath, 'extraResources', 'enable_ledfx_ssl.ps1')
+
+  if (isDev) {
+    return path.join(process.cwd(), 'extraResources', scriptName)
+  }
+  return path.join(process.resourcesPath, 'extraResources', scriptName)
 }
 
 /**
- * Get the path to the disable SSL PowerShell script in extraResources
+ * Get the path to the disable SSL script in extraResources
  */
 export const getDisableSslScriptPath = (): string => {
   const isDev = !app.isPackaged
-  if (isDev) {
-    // In dev, reference the extraResources folder in frontend
-    return path.join(process.cwd(), 'extraResources', 'disable_ledfx_ssl.ps1')
+  const platform = process.platform
+
+  let scriptName: string
+  if (platform === 'win32') {
+    scriptName = 'disable_ledfx_ssl.ps1'
+  } else if (platform === 'darwin') {
+    scriptName = 'disable_ledfx_ssl_mac.sh'
+  } else {
+    scriptName = 'disable_ledfx_ssl_linux.sh'
   }
-  return path.join(process.resourcesPath, 'extraResources', 'disable_ledfx_ssl.ps1')
+
+  if (isDev) {
+    return path.join(process.cwd(), 'extraResources', scriptName)
+  }
+  return path.join(process.resourcesPath, 'extraResources', scriptName)
 }
 
 /**
  * Check if SSL certificates are currently installed
  */
 export const isSslInstalled = async (): Promise<boolean> => {
-  if (process.platform !== 'win32') {
-    return false // Only Windows for now
-  }
-
   const sslDir = getSslDirectory()
   const fullchainPath = path.join(sslDir, 'fullchain.pem')
   const privkeyPath = path.join(sslDir, 'privkey.pem')
@@ -67,12 +99,10 @@ export const isSslInstalled = async (): Promise<boolean> => {
  * Check if hosts file contains ledfx.local entry
  */
 export const isHostsFileConfigured = async (): Promise<boolean> => {
-  if (process.platform !== 'win32') {
-    return false
-  }
-
   try {
-    const hostsPath = 'C:\\Windows\\System32\\drivers\\etc\\hosts'
+    const hostsPath =
+      process.platform === 'win32' ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
+
     const content = await fs.promises.readFile(hostsPath, 'utf-8')
     const hasEntry = /ledfx\.local/i.test(content)
     console.log('Hosts file check:', hasEntry ? 'ledfx.local found' : 'ledfx.local NOT found')
@@ -84,13 +114,9 @@ export const isHostsFileConfigured = async (): Promise<boolean> => {
 }
 
 /**
- * Enable SSL by running PowerShell script with elevation
+ * Enable SSL - cross-platform implementation
  */
 export const enableSsl = async (): Promise<{ success: boolean; message: string }> => {
-  if (process.platform !== 'win32') {
-    return { success: false, message: 'SSL setup is only available on Windows' }
-  }
-
   const scriptPath = getEnableSslScriptPath()
 
   // Check if script exists
@@ -101,27 +127,37 @@ export const enableSsl = async (): Promise<{ success: boolean; message: string }
   }
 
   try {
-    // Run PowerShell with elevation - remove -WindowStyle Hidden from inner arguments
-    // because it conflicts with UAC elevation
-    const command = `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass -NoProfile -File \\"${scriptPath}\\"' -Wait"`
+    if (process.platform === 'win32') {
+      // Windows: Use PowerShell with UAC elevation
+      const command = `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass -NoProfile -File \\"${scriptPath}\\"' -Wait"`
 
-    console.log('Executing SSL enable script with elevation...')
-    console.log('Command:', command)
-    const { stdout, stderr } = await execAsync(command, {
-      timeout: 60000, // 60 second timeout
-      windowsHide: true
-    })
+      console.log('Executing SSL enable script with elevation...')
+      console.log('Command:', command)
+      const { stdout, stderr } = await execAsync(command, {
+        timeout: 60000,
+        windowsHide: true
+      })
 
-    if (stderr) {
-      console.error('SSL enable stderr:', stderr)
+      if (stderr) {
+        console.error('SSL enable stderr:', stderr)
+      }
+
+      if (stdout) {
+        console.log('SSL enable stdout:', stdout)
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+    } else {
+      // macOS/Linux: Use sudo-prompt
+      console.log('Executing SSL enable script with sudo...')
+
+      // Make script executable
+      await execAsync(`chmod +x "${scriptPath}"`)
+
+      await sudoExec(`"${scriptPath}"`, { name: 'LedFx SSL Setup' })
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
-
-    if (stdout) {
-      console.log('SSL enable stdout:', stdout)
-    }
-
-    // Give Windows time to complete file operations and certificate store updates
-    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Verify installation
     console.log('Verifying SSL installation...')
@@ -150,9 +186,8 @@ export const enableSsl = async (): Promise<{ success: boolean; message: string }
   } catch (error: any) {
     console.error('SSL enable error:', error)
 
-    // Check if timeout
     if (error.killed && error.signal === 'SIGTERM') {
-      return { success: false, message: 'SSL installation timed out after 60 seconds' }
+      return { success: false, message: 'SSL installation timed out' }
     }
 
     return { success: false, message: error.message || 'Failed to enable SSL' }
@@ -160,13 +195,9 @@ export const enableSsl = async (): Promise<{ success: boolean; message: string }
 }
 
 /**
- * Disable SSL by running PowerShell script with elevation
+ * Disable SSL - cross-platform implementation
  */
 export const disableSsl = async (): Promise<{ success: boolean; message: string }> => {
-  if (process.platform !== 'win32') {
-    return { success: false, message: 'SSL cleanup is only available on Windows' }
-  }
-
   const scriptPath = getDisableSslScriptPath()
 
   try {
@@ -176,16 +207,28 @@ export const disableSsl = async (): Promise<{ success: boolean; message: string 
   }
 
   try {
-    const command = `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File \\"${scriptPath}\\"' -Wait -WindowStyle Hidden"`
+    if (process.platform === 'win32') {
+      // Windows: Use PowerShell with UAC elevation
+      const command = `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass -NoProfile -File \\"${scriptPath}\\"' -Wait"`
 
-    console.log('Executing SSL disable script with elevation...')
-    await execAsync(command, {
-      timeout: 30000,
-      windowsHide: true
-    })
+      console.log('Executing SSL disable script with elevation...')
+      await execAsync(command, {
+        timeout: 30000,
+        windowsHide: true
+      })
 
-    // Give Windows a moment to complete file operations
-    await new Promise((resolve) => setTimeout(resolve, 500))
+      await new Promise((resolve) => setTimeout(resolve, 500))
+    } else {
+      // macOS/Linux: Use sudo-prompt
+      console.log('Executing SSL disable script with sudo...')
+
+      // Make script executable
+      await execAsync(`chmod +x "${scriptPath}"`)
+
+      await sudoExec(`"${scriptPath}"`, { name: 'LedFx SSL Cleanup' })
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
+    }
 
     // Verify removal
     const installed = await isSslInstalled()
@@ -198,7 +241,7 @@ export const disableSsl = async (): Promise<{ success: boolean; message: string 
     console.error('SSL disable error:', error)
 
     if (error.killed && error.signal === 'SIGTERM') {
-      return { success: false, message: 'SSL cleanup timed out after 30 seconds' }
+      return { success: false, message: 'SSL cleanup timed out' }
     }
 
     return { success: false, message: error.message || 'Failed to disable SSL' }
