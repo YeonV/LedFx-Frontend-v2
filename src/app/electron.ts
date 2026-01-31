@@ -39,6 +39,17 @@ const ready = () =>
     nativeTheme.themeSource = 'dark'
     const thePath = process.env.PORTABLE_EXECUTABLE_DIR || path.resolve('.')
 
+    // Disable certificate validation for self-signed SSL certificates
+    // This allows ledfx.local and localhost with self-signed certs to work
+    app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+      // Allow self-signed certificates for ledfx.local and localhost
+      const isTrusted = url.includes('ledfx.local') || url.includes('localhost')
+      if (isTrusted) {
+        event.preventDefault()
+      }
+      callback(isTrusted)
+    })
+
     // Execute CC-specific startup flow (splash, audio, server startup)
     if (isCC()) {
       await executeCCStartup(subprocesses)
