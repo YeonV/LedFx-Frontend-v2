@@ -74,10 +74,10 @@ export interface ISystemConfig {
 
 const storeConfig = (set: any) => ({
   schemas: {} as any,
-  getSchemas: async () => {
-    // Cache check: skip if already loaded
+  getSchemas: async (forceRefresh = false) => {
+    // Cache check: skip if already loaded (unless force refresh)
     const currentSchemas = useStore.getState().schemas
-    if (currentSchemas && Object.keys(currentSchemas).length > 0) {
+    if (!forceRefresh && currentSchemas && Object.keys(currentSchemas).length > 0) {
       return
     }
 
