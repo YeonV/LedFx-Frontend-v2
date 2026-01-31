@@ -1,20 +1,23 @@
 /* eslint-disable no-self-assign */
+import { useEffect, useState } from 'react'
 import {
   CloudUpload,
   CloudDownload,
   PowerSettingsNew,
   Delete,
   Refresh,
-  Info
+  Info,
+  Lock,
+  LockOpen
 } from '@mui/icons-material'
 import isElectron from 'is-electron'
-import { Divider, MenuItem, Select, Tooltip } from '@mui/material'
+import { Divider, MenuItem, Select, Tooltip, Box, Chip, Button } from '@mui/material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, download } from '../../utils/helpers'
 import PopoverSure from '../../components/Popover/Popover'
 
 import AboutDialog from '../../components/Dialogs/AboutDialog'
-import { useStyles, SettingsButton, SettingsSwitch } from './SettingsComponents'
+import { useStyles, SettingsButton, SettingsSwitch, SettingsRow } from './SettingsComponents'
 import { navigateToRoot } from '../../utils/navigateToRoot'
 
 const GeneralCard = () => {
@@ -32,6 +35,14 @@ const GeneralCard = () => {
   const setIntro = useStore((state) => state.setIntro)
   const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
 
+  // SSL state management
+  const [sslEnabled, setSslEnabled] = useState(false)
+  const [sslLoading, setSslLoading] = useState(false)
+  const [isWindows, setIsWindows] = useState(false)
+  const [sslPreference, setSslPreference] = useState<string>('ask')
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
+
   const isAndroidBridgeAvailable = (): boolean => {
     return typeof (window as any).LedFxAndroidBridge !== 'undefined'
   }
@@ -43,6 +54,57 @@ const GeneralCard = () => {
     } else {
       download(content, 'config.json', contentType)
     }
+  }
+
+  // Listen for electron messages
+  window.api?.receive('fromMain', (args: any) => {
+    if (args[0] === 'platform') {
+      setIsWindows(args[1] === 'win32')
+    } else if (args[0] === 'ssl-status') {
+      setSslEnabled(args[1].enabled)
+    } else if (args[0] === 'ssl-preference') {
+      setSslPreference(args[1])
+    } else if (args[0] === 'ssl-enable-result' || args[0] === 'ssl-disable-result') {
+      // Refresh SSL status
+      window.api?.send('toMain', { command: 'get-ssl-status' })
+      // Restart core to apply SSL changes
+      if (args[1].success) {
+        setTimeout(() => restart(), 500)
+      }
+    }
+  })
+
+  useEffect(() => {
+    if (window.api) {
+      // Check platform and SSL status
+      window.api.send('toMain', { command: 'get-platform' })
+      window.api.send('toMain', { command: 'get-ssl-status' })
+      window.api.send('toMain', { command: 'get-ssl-preference' })
+    }
+  }, [])
+
+  const handleEnableSSL = () => {
+    setSslLoading(true)
+    window.api?.send('toMain', { command: 'enable-ssl' })
+    // Set preference to "always enable" when enabling
+    window.api?.send('toMain', { command: 'set-ssl-preference', preference: 'always' })
+    setSslPreference('always')
+    setTimeout(() => setSslLoading(false), 5000)
+  }
+
+  const handleDisableSSL = () => {
+    setSslLoading(true)
+    window.api?.send('toMain', { command: 'disable-ssl' })
+    // Reset preference to "ask on startup" when disabling
+    window.api?.send('toMain', { command: 'set-ssl-preference', preference: 'ask' })
+    setSslPreference('ask')
+    setTimeout(() => setSslLoading(false), 3000)
+  }
+
+  const handleSslPreferenceChange = (event: any) => {
+    const value = event.target.value
+    setSslPreference(value)
+    window.api?.send('toMain', { command: 'set-ssl-preference', preference: value })
   }
 
   const configDownload = async () => {
@@ -206,6 +268,73 @@ const GeneralCard = () => {
           />
         </Tooltip>
       </div>
+      {/* WINDOWS SSL CONFIGURATION SECTION */}
+      {isWindows && isCC && (
+        <>
+          <Divider style={{ margin: '20px 0 10px' }} />
+          <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+            <SettingsRow title="LedFx SSL Configuration">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Chip
+                  label={sslEnabled ? 'Enabled' : 'Disabled'}
+                  color={sslEnabled ? 'success' : 'default'}
+                  size="small"
+                  icon={sslEnabled ? <Lock /> : <LockOpen />}
+                />
+                {!sslEnabled ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={handleEnableSSL}
+                    disabled={sslLoading}
+                    startIcon={<Lock />}
+                  >
+                    {sslLoading ? 'Installing...' : 'Enable HTTPS'}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={handleDisableSSL}
+                    disabled={sslLoading}
+                    startIcon={<LockOpen />}
+                  >
+                    {sslLoading ? 'Uninstalling...' : 'Disable HTTPS'}
+                  </Button>
+                )}
+              </Box>
+            </SettingsRow>
+
+            <SettingsRow title="SSL Preference">
+              <Select
+                value={sslPreference}
+                onChange={handleSslPreferenceChange}
+                size="small"
+                sx={{ minWidth: 150 }}
+              >
+                <MenuItem value="ask">Ask on startup</MenuItem>
+                <MenuItem value="auto">Enable automatically</MenuItem>
+                <MenuItem value="never">Never enable</MenuItem>
+              </Select>
+            </SettingsRow>
+
+            {sslEnabled && (
+              <Box sx={{ mt: 2, p: 1.5, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 1 }}>
+                <Tooltip title="LedFx is accessible via HTTPS at https://ledfx.local:8889">
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Info fontSize="small" color="success" />
+                    <span style={{ fontSize: '0.875rem' }}>
+                      HTTPS enabled • Access at <strong>https://ledfx.local:8889</strong>
+                    </span>
+                  </Box>
+                </Tooltip>
+              </Box>
+            )}
+          </Box>
+        </>
+      )}
     </div>
   )
 }
