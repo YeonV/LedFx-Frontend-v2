@@ -41,11 +41,18 @@ export default function HostManager() {
   const coreStatus = useStore((state) => state.coreStatus)
   const setHost = useStore((state) => state.setHost)
   const storedURL = window.localStorage.getItem('ledfx-host')
+
+  const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+  const defaultHost = sslEnabled ? 'https://ledfx.local:8889' : 'http://localhost:8888'
+  const defaultHosts = sslEnabled
+    ? ['https://ledfx.local:8889', 'http://localhost:8888']
+    : ['http://localhost:8888']
+
   const storedURLs = JSON.parse(
-    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(['http://localhost:8888'])
+    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(defaultHosts)
   )
-  const [hosts, setHosts] = useState(['http://localhost:8888'])
-  const [hostvalue, setHostvalue] = useState('http://localhost:8888')
+  const [hosts, setHosts] = useState(defaultHosts)
+  const [hostvalue, setHostvalue] = useState(defaultHost)
 
   const handleClose = () => {
     setDialogOpen(false)

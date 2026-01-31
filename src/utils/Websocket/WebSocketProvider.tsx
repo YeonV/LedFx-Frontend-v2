@@ -44,11 +44,15 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   }, [])
 
   useEffect(() => {
-    const host =
-      window.localStorage.getItem('ledfx-host') ||
-      (isElectron()
-        ? 'http://localhost:8888'
-        : window.location.href.split('/#')[0].replace(/\/+$/, ''))
+    const getDefaultHost = () => {
+      if (isElectron()) {
+        const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+        return sslEnabled ? 'https://ledfx.local:8889' : 'http://localhost:8888'
+      }
+      return window.location.href.split('/#')[0].replace(/\/+$/, '')
+    }
+
+    const host = window.localStorage.getItem('ledfx-host') || getDefaultHost()
     const wsUrl = host.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/websocket'
 
     // Check for mixed content - this will be caught in a separate effect if needed

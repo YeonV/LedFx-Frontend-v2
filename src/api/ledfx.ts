@@ -8,8 +8,19 @@ import type { IStore } from '../store/useStore'
 
 const isBrowser = typeof window !== 'undefined'
 
+const getElectronBaseURL = () => {
+  // Check localStorage for SSL preference (set by electron main process on startup)
+  if (isBrowser) {
+    const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+    if (sslEnabled) {
+      return 'https://ledfx.local:8889'
+    }
+  }
+  return 'http://localhost:8888'
+}
+
 const baseURL = isElectron()
-  ? 'http://localhost:8888'
+  ? getElectronBaseURL()
   : (isBrowser && window.location.href.split('/#')[0].replace(/\/+$/, '')) ||
     'http://localhost:8888'
 

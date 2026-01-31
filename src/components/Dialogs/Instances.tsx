@@ -41,6 +41,21 @@ const Instances = ({
   const portRef = useRef<HTMLInputElement>(null)
   const active = window.localStorage.getItem('ledfx-host')?.includes(`localhost:${port}`) || false
 
+  // SSL-aware URL construction
+  const getDefaultPort = () => {
+    const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+    return sslEnabled ? 8889 : 8888
+  }
+
+  const buildHostUrl = (portNum: number) => {
+    const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+    // If port matches SSL pattern (odd numbers starting from 8889), use HTTPS
+    const useHttps = sslEnabled && portNum >= 8889 && portNum % 2 === 1
+    const protocol = useHttps ? 'https' : 'http'
+    const hostname = useHttps ? 'ledfx.local' : 'localhost'
+    return `${protocol}://${hostname}:${portNum}`
+  }
+
   const handleStartCore = (e: any, p: number) => {
     e.stopPropagation()
     window.api.send('toMain', {
@@ -78,8 +93,10 @@ const Instances = ({
     <>
       <div
         onDoubleClick={() => {
-          if (coreStatus[instance] === 'running')
-            handleSave(`http://localhost:${newPort}` || parseInt(port, 10) || 8888, true)
+          if (coreStatus[instance] === 'running') {
+            const finalPort = newPort || parseInt(port, 10) || getDefaultPort()
+            handleSave(buildHostUrl(finalPort), true)
+          }
         }}
         key={port}
         style={{
@@ -218,7 +235,7 @@ const Instances = ({
                 sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="delete"
                 onClick={(e) => {
-                  handleStartCore(e, newPort || parseInt(port, 10) || 8888)
+                  handleStartCore(e, newPort || parseInt(port, 10) || getDefaultPort())
                 }}
               >
                 <PlayArrow />
@@ -234,7 +251,7 @@ const Instances = ({
                 sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="stop"
                 onClick={(e) => {
-                  handleStopCore(e, newPort || parseInt(port, 10) || 8888)
+                  handleStopCore(e, newPort || parseInt(port, 10) || getDefaultPort())
                 }}
               >
                 <Stop />
@@ -250,7 +267,8 @@ const Instances = ({
                 sx={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 aria-label="connect"
                 onClick={() => {
-                  handleSave(`http://localhost:${newPort}` || parseInt(port, 10) || 8888, true)
+                  const finalPort = newPort || parseInt(port, 10) || getDefaultPort()
+                  handleSave(buildHostUrl(finalPort), true)
                 }}
               >
                 <Cable />
@@ -287,7 +305,10 @@ const Instances = ({
                 style={variant === 'line' ? { minWidth: '32px', width: '32px' } : { height: 40 }}
                 variant={variant === 'line' ? 'text' : 'outlined'}
                 onConfirm={(e) =>
-                  handleDelete(e, parseInt(`${port}` || portRef.current?.value || '', 10) || 8888)
+                  handleDelete(
+                    e,
+                    parseInt(`${port}` || portRef.current?.value || '', 10) || getDefaultPort()
+                  )
                 }
               />
             </span>

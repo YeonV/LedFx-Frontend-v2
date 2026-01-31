@@ -4,6 +4,7 @@ import { setupAudioDriver, enableAudio } from './audioSetup.mjs'
 import { setupSsl } from './sslSetup.mjs'
 import { startInstance, Subprocesses } from '../instances.mjs'
 import { waitForServer } from './serverPolling.mjs'
+import store from './store.mjs'
 
 /**
  * Execute the complete CC startup flow:
@@ -48,7 +49,9 @@ export const executeCCStartup = async (subprocesses: Subprocesses): Promise<void
 
   // Step 5: Wait for server to be ready
   updateSplashStatus('Waiting for LedFx core...')
-  const serverReady = await waitForServer('http://localhost:8888')
+  const sslEnabled = store.get('ledfx-ssl-enabled', false) as boolean
+  const serverUrl = sslEnabled ? 'https://ledfx.local:8889' : 'http://localhost:8888'
+  const serverReady = await waitForServer(serverUrl)
 
   if (serverReady) {
     updateSplashStatus('Ready!')

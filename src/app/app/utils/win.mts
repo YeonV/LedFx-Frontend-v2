@@ -3,6 +3,7 @@ import path from 'path'
 import isDev from 'electron-is-dev'
 import { initialize } from '@electron/remote/main/index.js'
 import { fileURLToPath } from 'node:url'
+import store from './store.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -37,6 +38,14 @@ function createWindow(win?: any, args: any = {}) {
   win.loadURL(
     isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../../index.html')}`
   )
+
+  // Set SSL preference in localStorage for renderer process
+  win.webContents.on('did-finish-load', () => {
+    const sslEnabled = store.get('ledfx-ssl-enabled', false)
+    win.webContents.executeJavaScript(
+      `window.localStorage.setItem('ledfx-ssl-enabled', '${sslEnabled}')`
+    )
+  })
 
   return win
 }
