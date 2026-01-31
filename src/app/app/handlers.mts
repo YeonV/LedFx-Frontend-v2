@@ -322,33 +322,19 @@ export const handlers = async (
         break
       }
       case 'enable-ssl': {
-        if (process.platform === 'win32') {
-          const result = await enableSsl()
-          if (result.success) {
-            store.set('ledfx-ssl-enabled', true)
-          }
-          wind.webContents.send('fromMain', ['ssl-enable-result', result])
-        } else {
-          wind.webContents.send('fromMain', [
-            'ssl-enable-result',
-            { success: false, message: 'SSL setup is only supported on Windows' }
-          ])
+        const result = await enableSsl()
+        if (result.success) {
+          store.set('ledfx-ssl-enabled', true)
         }
+        wind.webContents.send('fromMain', ['ssl-enable-result', result])
         break
       }
       case 'disable-ssl': {
-        if (process.platform === 'win32') {
-          const result = await disableSsl()
-          if (result.success) {
-            store.set('ledfx-ssl-enabled', false)
-          }
-          wind.webContents.send('fromMain', ['ssl-disable-result', result])
-        } else {
-          wind.webContents.send('fromMain', [
-            'ssl-disable-result',
-            { success: false, message: 'SSL removal is only supported on Windows' }
-          ])
+        const result = await disableSsl()
+        if (result.success) {
+          store.set('ledfx-ssl-enabled', false)
         }
+        wind.webContents.send('fromMain', ['ssl-disable-result', result])
         break
       }
       case 'get-ssl-status': {
