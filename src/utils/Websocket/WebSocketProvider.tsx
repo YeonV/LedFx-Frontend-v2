@@ -82,6 +82,13 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         const eventType = data?.event_type
         if (!eventType) return
 
+        // Handle colors_updated centrally to avoid duplicate calls from multiple component subscriptions
+        if (eventType === 'colors_updated') {
+          useStore.getState().getColors()
+          // Don't dispatch to component subscribers - handled centrally
+          return
+        }
+
         const rule = handlerConfig[eventType as keyof typeof handlerConfig]
         let payload = data
 

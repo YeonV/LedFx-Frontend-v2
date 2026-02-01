@@ -32,10 +32,12 @@ const storeColors = (set: any) => ({
       'POST',
       { ...config } // { 'name': 'string' }
     ),
-  deleteColors: async (colorkey: string[]) =>
-    await Ledfx('/api/colors', 'DELETE', {
-      data: colorkey
-    })
+  deleteColors: async (colorkey: string[]) => {
+    const results = await Promise.all(
+      colorkey.map((color) => Ledfx(`/api/colors/${encodeURIComponent(color)}`, 'DELETE'))
+    )
+    return results
+  }
 })
 
 export default storeColors
