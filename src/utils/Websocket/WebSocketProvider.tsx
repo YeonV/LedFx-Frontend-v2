@@ -70,8 +70,9 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         setIsConnected(true)
         setErrorState(null) // Clear any previous errors on a successful connection
         useStore.getState().setDisconnected(false)
-        // Refresh schemas on reconnect (backend may have restarted with new plugins/effects)
+        // Refresh schemas and colors on reconnect (backend may have restarted with new plugins/effects/colors)
         useStore.getState().getSchemas(true)
+        useStore.getState().getColors()
         initialSubscriptions.forEach((sub) => {
           send({ ...sub, type: 'subscribe_event' })
         })
