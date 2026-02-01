@@ -183,18 +183,20 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         },
         action_right: handleNext
       },
-      isCC ?? {
+      isCC && {
         key: 'theme',
         title: 'Choose your Theme',
         label_left: 'Lightmode',
         label_right: 'Darkmode',
         action_left: () => {
           window.localStorage.setItem('ledfx-theme', 'LightBw')
+          window.api.send('toMain', { command: 'set-lightmode' })
           reloadTheme()
           handleNext()
         },
         action_right: () => {
           window.localStorage.setItem('ledfx-theme', 'DarkBw')
+          window.api.send('toMain', { command: 'set-darkmode' })
           reloadTheme()
           handleNext()
         }
@@ -268,7 +270,7 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         key: 'audio',
         title: 'Adjust some Settings',
         icon: 'tune',
-        label_right: graphsMulti ? 'Go to Devices' : 'Confirm',
+        label_right: 'Confirm',
         action_left: (): any => false,
         action_right: () => handleNext()
       },

@@ -1,6 +1,7 @@
 import path from 'path'
 import isDev from 'electron-is-dev'
 import { app, nativeTheme, BrowserWindow, ipcMain, shell, session } from 'electron'
+import Store from 'electron-store'
 import { EventEmitter } from 'events'
 import { fileURLToPath } from 'node:url'
 import { handleProtocol, setupProtocol } from './app/protocol.mjs'
@@ -36,7 +37,9 @@ const ready = () =>
     if (isDev && reduxDevtoolsPath) {
       await session.defaultSession.loadExtension(reduxDevtoolsPath)
     }
-    nativeTheme.themeSource = 'dark'
+    // Use Electron Store to persist theme
+    const store = new Store()
+    nativeTheme.themeSource = store.get('mode') === 'light' ? 'light' : 'dark'
     const thePath = process.env.PORTABLE_EXECUTABLE_DIR || path.resolve('.')
 
     // Disable certificate validation for self-signed SSL certificates

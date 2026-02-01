@@ -1,6 +1,7 @@
+import { Theme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
-const useStyle = makeStyles(() => ({
+const useStyle = makeStyles((theme: Theme) => ({
   virtualCardPortraitW: {
     margin: '0.5rem',
     display: 'flex',
@@ -49,7 +50,7 @@ const useStyle = makeStyles(() => ({
     transition: 'transform 0.3s ease-in-out',
     transitionDelay: '0s',
     '&.extended': {
-      transform: 'scale(1.7) translateY(-4px);',
+      transform: 'scale(1.7) translateY(3px);',
       transformOrigin: 'top left',
       transition: 'transform 0.3s ease-in-out',
       transitionDelay: '0s'
@@ -115,8 +116,8 @@ const useStyle = makeStyles(() => ({
     display: 'flex',
     margin: 0,
     padding: '0.5rem 80px 0.5rem 0.5rem',
-    background: 'rgba(0,0,0,0.93)',
-    color: '#fff',
+    background: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.93)' : 'rgba(240,240,240,1)',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#000',
     '& > div, & > button': {
       flexGrow: 1,
       flexBasis: '30%'

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Typography, Toolbar, AppBar, Dialog, Button, Grid } from '@mui/material'
 import { Settings, NavigateBefore, Add } from '@mui/icons-material'
+import isElectron from 'is-electron'
 import { MuiMenuItem, QLCScreenDefaultProps, QLCScreenProps, Transition } from './QLCScreen.props'
 import useEditVirtualsStyles from '../../../Devices/EditVirtuals/EditVirtuals.styles'
 import QLCTriggerTable from '../../../../components/Integrations/QLC/QLCTriggerTable'
@@ -23,6 +24,7 @@ export default function QLCScreen({
   const classes = useEditVirtualsStyles()
   const [open, setOpen] = React.useState(false)
   const integrations = useStore((state) => state.integrations)
+  const platform = useStore((state) => state.platform)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -61,7 +63,17 @@ export default function QLCScreen({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        PaperProps={{
+          sx: {
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+          }
+        }}
+      >
         <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button

@@ -17,6 +17,7 @@ import useEditVirtualsStyles from '../../Devices/EditVirtuals/EditVirtuals.style
 import useStore from '../../../store/useStore'
 
 import { cloud, Transition, MuiMenuItem } from './CloudComponents'
+import isElectron from 'is-electron'
 
 export default function CloudScreen({
   virtId,
@@ -41,6 +42,7 @@ export default function CloudScreen({
   const getPresets = useStore((state) => state.getPresets)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const virtuals = useStore((state) => state.virtuals)
+  const platform = useStore((state) => state.platform)
   const getV = () => {
     for (const prop in virtuals) {
       if (virtuals[prop].id === virtId) {
@@ -129,7 +131,17 @@ export default function CloudScreen({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        PaperProps={{
+          sx: {
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+          }
+        }}
+      >
         <AppBar enableColorOnDark className={classes.appBar}>
           <Toolbar>
             <Button

@@ -315,7 +315,7 @@ const DbDevices = () => {
       headerName: 'Type',
       width: 100,
       renderCell: (params: GridRenderCellParams) => (
-        <Chip label={params.row.is_device ? 'Device' : 'Virtual'} />
+        <Chip label={params.row.is_device ? 'Device' : 'Virtual'} sx={{ alignSelf: 'center' }} />
       )
     },
     {

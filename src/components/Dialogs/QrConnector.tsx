@@ -29,6 +29,7 @@ import FireTvDebugger from '../FireTv/FireTvDebugger'
 import { SiDevdotto } from 'react-icons/si'
 import { useFireTvStore } from '../FireTv/useFireTvStore'
 import { useAndroidUpdateChecker } from '../FireTv/useAndroidUpdateChecker'
+import isElectron from 'is-electron'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -65,6 +66,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
     enabled: features.firetv
   })
   const SCROLL_AMOUNT = window.innerHeight * 0.6 // 60% of viewport height
+  const platform = useStore((state) => state.platform)
 
   // Set the default buttons only if FireTV is enabled
   useEffect(() => {
@@ -284,6 +286,11 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         open={dialogOpen}
         onClose={handleCloseDialog}
         TransitionComponent={Transition}
+        PaperProps={{
+          sx: {
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+          }
+        }}
       >
         <AppBar sx={{ position: 'relative', background: 'rgba(0,0,0,0.8)' }}>
           <Toolbar sx={{ minHeight: '40px !important' }}>

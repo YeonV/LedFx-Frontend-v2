@@ -5,8 +5,8 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Typography
-  // useTheme
+  Typography,
+  useTheme
 } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { ArrowDropDown, Search } from '@mui/icons-material'
@@ -16,6 +16,7 @@ import BladeFrame from '../SchemaForm/components/BladeFrame'
 
 const EffectTypeDialog = ({ value, onChange, groups, showFilter, title }: EffectDropDownProps) => {
   const [dialogOpen, setDialogOpen] = useState(false)
+  const theme = useTheme()
   const handleClose = () => {
     setDialogOpen(false)
   }
@@ -123,7 +124,9 @@ const EffectTypeDialog = ({ value, onChange, groups, showFilter, title }: Effect
                 overflowY: 'auto'
               },
               '& .MuiAutocomplete-groupLabel': {
-                backgroundColor: '#3f3f41 !important'
+                backgroundColor: theme.palette.mode === 'dark' ? '#3f3f41' : '#e0e0e0',
+                color: theme.palette.mode === 'dark' ? '#fff' : '#222',
+                fontWeight: 600
               },
               '& .MuiAutocomplete-popper': {
                 height: 'calc(100% - 56px)'
