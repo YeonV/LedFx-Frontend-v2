@@ -146,13 +146,13 @@ const Popover = ({
           className={className}
           style={style}
           sx={{
-            ...sxButton,
-            color: theme.palette.mode === 'light' ? '#000' : '#fff',
-            bgcolor: 'transparent',
-            '&:hover': {
-              color: theme.palette.mode === 'light' ? '#fff' : '#000',
-              bgcolor: theme.palette.primary.main
-            }
+            ...sxButton
+            // color: theme.palette.mode === 'light' ? '#000' : '#fff',
+            // bgcolor: 'transparent',
+            // '&:hover': {
+            //   color: theme.palette.mode === 'light' ? '#fff' : '#000',
+            //   bgcolor: theme.palette.primary.main
+            // }
           }}
           startIcon={!noIcon && startIcon}
           disabled={disabled}

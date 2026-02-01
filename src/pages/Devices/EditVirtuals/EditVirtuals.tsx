@@ -33,6 +33,7 @@ import Tour2dVirtual from '../../../components/Tours/Tour2dVirtual'
 import AddExistingSegmentDialog from '../../../components/Dialogs/AddExistingSegmentDialog'
 // import { useMatrixEditorContext } from './EditMatrix/MatrixEditorContext'
 import EditMatrix, { type EditMatrixRef } from './EditMatrix/M'
+import isElectron from 'is-electron'
 
 const UnsavedChangesDialog = ({
   open,
@@ -92,7 +93,8 @@ export default function EditVirtuals({
   color = 'inherit',
   variant = 'contained',
   onClick = () => {},
-  innerKey
+  innerKey,
+  sx
 }: any) {
   const [matrix, setMatrix] = useState(false)
   const currentVirtual = useStore((state) => state.currentVirtual)
@@ -106,6 +108,7 @@ export default function EditVirtuals({
   const activeSegment = useStore((state) => state.activeSegment)
   const highlightSegment = useStore((state) => state.highlightSegment)
   const isExternalEditorOpen = useStore((state) => state.isExternalEditorOpen)
+  const platform = useStore((state) => state.platform)
 
   const isDirty = useStore((state) => state.virtualEditorIsDirty)
   const setVirtualEditorIsDirty = useStore((state) => state.setVirtualEditorIsDirty)
@@ -227,12 +230,23 @@ export default function EditVirtuals({
           }}
           size="small"
           className={className}
+          sx={sx}
         >
           {label}
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        PaperProps={{
+          sx: {
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+          }
+        }}
+      >
         <AppBar enableColorOnDark color="secondary" className={classes.appBar}>
           <Toolbar>
             <Button

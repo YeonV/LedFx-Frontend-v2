@@ -137,6 +137,20 @@ export const handlers = async (
           nativeTheme.themeSource = 'dark'
         }
         return nativeTheme.shouldUseDarkColors
+      case 'set-darkmode': {
+        const Store = (await import('electron-store')).default
+        const store = new Store()
+        store.set('mode', 'dark')
+        nativeTheme.themeSource = 'dark'
+        return nativeTheme.shouldUseDarkColors
+      }
+      case 'set-lightmode': {
+        const Store = (await import('electron-store')).default
+        const store = new Store()
+        store.set('mode', 'light')
+        nativeTheme.themeSource = 'light'
+        return nativeTheme.shouldUseDarkColors
+      }
       case 'install-driver': {
         if (process.platform === 'darwin') {
           // Install driver and enable audio device in single sudo command

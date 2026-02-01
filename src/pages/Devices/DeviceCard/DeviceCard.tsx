@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { Delete, Pause, PestControl, PlayArrow, Stop, SyncProblem } from '@mui/icons-material'
-import { Box, CircularProgress, Stack, Theme } from '@mui/material'
+import { Box, CircularProgress, Fade, Stack, Theme } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph/PixelGraph'
@@ -64,11 +64,16 @@ const DeviceCard = ({
   const [isActive, setIsActive] = useState(isEffectSet || isStreaming)
   const [loading, setLoading] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const [hasExpandedOnce, setHasExpandedOnce] = useState(false)
   const virtuals = useStore((state) => state.virtuals)
   const color = 'inherit'
 
   const handleExpandClick = () => {
-    setExpanded(!expanded)
+    setExpanded((prev) => {
+      const next = !prev
+      if (next) setHasExpandedOnce(true)
+      return next
+    })
   }
 
   // Derive active state directly from props
@@ -105,23 +110,30 @@ const DeviceCard = ({
               style={{
                 zIndex: 3,
                 opacity: online ? 1 : 0.3,
-                color: expanded ? '#fff' : ''
+                color: expanded ? (theme.palette.mode === 'dark' ? '#fff' : '#000') : ''
               }}
               card
             />
           </div>
 
           <div className={classes.virtualSubline}>
-            <Typography
-              variant="h6"
-              style={{
-                lineHeight: 1,
-                color: colorIndicator ? theme.palette.primary.light : 'inherit',
-                opacity: online ? 1 : 0.3
-              }}
+            <Fade
+              in={!expanded}
+              timeout={400}
+              style={{ transitionDelay: !expanded ? '300ms' : '0ms', display: 'block' }}
             >
-              {deviceName}
-            </Typography>
+              <Typography
+                variant="h6"
+                style={{
+                  lineHeight: 1,
+                  color: colorIndicator ? theme.palette.primary.light : 'inherit',
+                  opacity: online ? 1 : 0.3,
+                  visibility: !expanded ? 'visible' : 'hidden'
+                }}
+              >
+                {deviceName}
+              </Typography>
+            </Fade>
             {!online ? (
               <Typography
                 variant="body1"
@@ -164,67 +176,82 @@ const DeviceCard = ({
                 </Button>
               </Typography>
             ) : effectName ? (
-              <Typography
-                component={'div'}
-                variant="body1"
-                color="textSecondary"
-                style={{ height: 25, display: 'flex', alignItems: 'center' }}
+              <Fade
+                in={!expanded}
+                timeout={hasExpandedOnce ? 400 : 0}
+                style={{
+                  transitionDelay: hasExpandedOnce ? (!expanded ? '300ms' : '0ms') : '0ms',
+                  display: 'block'
+                }}
               >
-                {effectName}
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handlePlayPause()
-                  }}
+                <Typography
+                  component={'div'}
+                  variant="body1"
+                  color="textSecondary"
                   style={{
-                    color: '#999',
-                    minWidth: 'unset',
-                    zIndex: expanded ? 1 : 3
+                    height: 25,
+                    display: 'flex',
+                    alignItems: 'center',
+                    visibility: !expanded ? 'visible' : 'hidden'
                   }}
                 >
-                  {isPlaying ? <Pause /> : <PlayArrow />}
-                </Button>
-
-                <Box sx={{ m: 1, position: 'relative' }}>
-                  <Button
-                    size="small"
-                    variant="text"
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleClearEffect(virtId)
-                      setLoading(true)
-                      setTimeout(
-                        () => {
-                          setLoading(false)
-                        },
-                        (virtuals[virtId].config.transition_time || 0) * 1000
-                      )
-                    }}
-                    style={{
-                      color: '#999',
-                      minWidth: 'unset',
-                      zIndex: expanded ? 1 : 3
-                    }}
-                  >
-                    <Stop />
-                  </Button>
-                  {loading && (
-                    <CircularProgress
-                      size={24}
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        marginTop: '-12px',
-                        marginLeft: '-12px'
+                  {effectName}
+                  <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    <Button
+                      variant="text"
+                      size="small"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handlePlayPause()
                       }}
-                    />
-                  )}
-                </Box>
-              </Typography>
+                      style={{
+                        color: '#999',
+                        minWidth: 'unset',
+                        zIndex: expanded ? 1 : 3
+                      }}
+                    >
+                      {isPlaying ? <Pause /> : <PlayArrow />}
+                    </Button>
+                    <Box sx={{ m: 1, position: 'relative' }}>
+                      <Button
+                        size="small"
+                        variant="text"
+                        disabled={loading}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          handleClearEffect(virtId)
+                          setLoading(true)
+                          setTimeout(
+                            () => {
+                              setLoading(false)
+                            },
+                            (virtuals[virtId].config.transition_time || 0) * 1000
+                          )
+                        }}
+                        style={{
+                          color: '#999',
+                          minWidth: 'unset',
+                          zIndex: expanded ? 1 : 3
+                        }}
+                      >
+                        <Stop />
+                      </Button>
+                      {loading && (
+                        <CircularProgress
+                          size={24}
+                          sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            marginTop: '-12px',
+                            marginLeft: '-12px'
+                          }}
+                        />
+                      )}
+                    </Box>
+                  </span>
+                </Typography>
+              </Fade>
             ) : isStreaming ? (
               <Typography variant="body1" color="textSecondary" style={{ height: 25 }}>
                 Streaming...
@@ -397,37 +424,100 @@ const DeviceCard = ({
               onClick={(e) => e.preventDefault()}
             >
               <div />
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  justifyContent: 'center'
-                }}
-              >
-                <Popover
-                  variant="text"
-                  startIcon={<Delete />}
-                  label="delete"
-                  color={color}
-                  onConfirm={() => {
-                    handleDeleteDevice(virtId)
-                    handleExpandClick()
+              <Fade in={expanded} timeout={500}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-end',
+                    justifyContent: 'center'
                   }}
-                  className={`step-devices-three-${index}`}
-                  style={{ width: '100%' }}
-                />
+                >
+                  <Popover
+                    variant="text"
+                    startIcon={<Delete />}
+                    label="delete"
+                    color={color}
+                    onConfirm={() => {
+                      handleDeleteDevice(virtId)
+                      handleExpandClick()
+                    }}
+                    className={`step-devices-three-${index}`}
+                    style={{ width: '100%' }}
+                  />
 
-                {isDevice ? (
+                  {isDevice ? (
+                    <Button
+                      variant="text"
+                      color={color}
+                      size="small"
+                      startIcon={<BuildIcon />}
+                      className={`step-devices-four-${index}`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handleEditDevice(isDevice)
+                        handleExpandClick()
+                      }}
+                      sx={(theme) => ({
+                        color: '#fff',
+                        bgcolor: 'transparent',
+
+                        '&:hover': {
+                          color: '#000',
+                          bgcolor: theme.palette.primary.main,
+
+                          ...theme.applyStyles('light', {
+                            color: '#fff'
+                          })
+                        },
+
+                        ...theme.applyStyles('light', {
+                          color: '#000'
+                        })
+                      })}
+                    >
+                      Edit Device
+                    </Button>
+                  ) : (
+                    <EditVirtuals
+                      label="Edit Virtual"
+                      variant="text"
+                      color={color}
+                      virtId={virtId}
+                      icon={undefined}
+                      className="step-devices-six"
+                      startIcon={<TuneIcon />}
+                      type={undefined}
+                      innerKey={undefined}
+                      onClick={() => handleExpandClick()}
+                      sx={(theme: Theme) => ({
+                        color: '#fff',
+                        bgcolor: 'transparent',
+
+                        '&:hover': {
+                          color: '#000',
+                          bgcolor: theme.palette.primary.main,
+
+                          ...theme.applyStyles('light', {
+                            color: '#fff'
+                          })
+                        },
+
+                        ...theme.applyStyles('light', {
+                          color: '#000'
+                        })
+                      })}
+                    />
+                  )}
                   <Button
                     variant="text"
-                    color={color}
                     size="small"
-                    startIcon={<BuildIcon />}
-                    className={`step-devices-four-${index}`}
+                    startIcon={<SettingsIcon />}
+                    color={color}
+                    className={`step-devices-five-${index}`}
                     onClick={(e) => {
                       e.preventDefault()
-                      handleEditDevice(isDevice)
+                      handleEditVirtual(virtId)
                       handleExpandClick()
                     }}
                     sx={(theme) => ({
@@ -448,71 +538,10 @@ const DeviceCard = ({
                       })
                     })}
                   >
-                    Edit Device
+                    Settings
                   </Button>
-                ) : (
-                  <EditVirtuals
-                    label="Edit Virtual"
-                    variant="text"
-                    color={color}
-                    virtId={virtId}
-                    icon={undefined}
-                    className="step-devices-six"
-                    startIcon={<TuneIcon />}
-                    type={undefined}
-                    innerKey={undefined}
-                    onClick={() => handleExpandClick()}
-                    sx={(theme: Theme) => ({
-                      color: '#fff',
-                      bgcolor: 'transparent',
-
-                      '&:hover': {
-                        color: '#000',
-                        bgcolor: theme.palette.primary.main,
-
-                        ...theme.applyStyles('light', {
-                          color: '#fff'
-                        })
-                      },
-
-                      ...theme.applyStyles('light', {
-                        color: '#000'
-                      })
-                    })}
-                  />
-                )}
-                <Button
-                  variant="text"
-                  size="small"
-                  startIcon={<SettingsIcon />}
-                  color={color}
-                  className={`step-devices-five-${index}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleEditVirtual(virtId)
-                    handleExpandClick()
-                  }}
-                  sx={(theme) => ({
-                    color: '#fff',
-                    bgcolor: 'transparent',
-
-                    '&:hover': {
-                      color: '#000',
-                      bgcolor: theme.palette.primary.main,
-
-                      ...theme.applyStyles('light', {
-                        color: '#fff'
-                      })
-                    },
-
-                    ...theme.applyStyles('light', {
-                      color: '#000'
-                    })
-                  })}
-                >
-                  Settings
-                </Button>
-              </div>
+                </div>
+              </Fade>
             </div>
           </Collapse>
         </div>

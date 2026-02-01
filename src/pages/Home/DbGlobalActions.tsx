@@ -1,4 +1,12 @@
-import { useTheme, Stack, Box, Button, TextField, CircularProgress } from '@mui/material'
+import {
+  useTheme,
+  Stack,
+  Box,
+  Button,
+  TextField,
+  CircularProgress,
+  InputAdornment
+} from '@mui/material'
 import { useState, useEffect } from 'react'
 import { Lightbulb } from '@mui/icons-material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
@@ -186,26 +194,34 @@ const DbGlobalActions = () => {
           style={{ padding: '11px', marginLeft: '0rem', flex: 1 }}
           wrapperStyle={{ display: 'flex' }}
           content={
-            <Box sx={{ p: 2 }}>
-              <Box sx={{ mb: 1, fontSize: '0.875rem' }}>Broadcast Address</Box>
+            <Stack direction={'row'} spacing={2} pl={1} pr={2} py={1}>
               <TextField
                 size="small"
+                label="Broadcast Address"
                 value={lifxBroadcastAddress}
                 onChange={(e) => setLifxBroadcastAddress(e.target.value)}
                 placeholder="255.255.255.255"
-                sx={{ width: 150, mb: 2 }}
+                sx={{ width: 170 }}
               />
-              <Box sx={{ mb: 1, fontSize: '0.875rem' }}>Discovery Timeout (seconds)</Box>
               <TextField
                 size="small"
                 type="number"
+                label="Discovery Time"
                 value={lifxDiscoveryTimeout}
                 onChange={(e) => setLifxDiscoveryTimeout(Number(e.target.value))}
                 placeholder="30"
-                sx={{ width: 150 }}
-                inputProps={{ min: 1, max: 120 }}
+                slotProps={{
+                  input: {
+                    endAdornment: <InputAdornment position="end">s</InputAdornment>
+                  },
+                  htmlInput: {
+                    min: 1,
+                    max: 120
+                  }
+                }}
+                sx={{ width: 120 }}
               />
-            </Box>
+            </Stack>
           }
           onConfirm={handleScanLifx}
         >
