@@ -110,14 +110,6 @@ const Devices = () => {
     flushPendingUpdates()
   })
 
-  // Apply batched updates when scene activates (single state update)
-  useSubscription('scene_activated', () => {
-    if (pendingUpdates.current.length > 0) {
-      batchUpdateVirtuals(pendingUpdates.current)
-      pendingUpdates.current = []
-    }
-  })
-
   useEffect(() => {
     if (graphs && graphsMulti) {
       setPixelGraphs(
