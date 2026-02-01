@@ -37,15 +37,11 @@ const GradientPickerWrapper = ({
   }
 
   const handleAddGradient = (name: string, color: string) => {
-    addColor({ [name]: color }).then(() => {
-      getColors()
-    })
+    // No need to call getColors() - backend sends colors_updated event which triggers refresh
+    addColor({ [name]: color })
   }
 
-  // Refresh colors when backend notifies of changes (from other clients or API)
-  useSubscription('colors_updated', () => {
-    getColors()
-  })
+  // colors_updated is now handled centrally in WebSocketProvider
 
   useEffect(() => {
     // Only fetch colors if not already loaded

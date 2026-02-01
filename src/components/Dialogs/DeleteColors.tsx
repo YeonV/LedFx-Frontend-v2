@@ -51,7 +51,8 @@ const DeleteColorsDialog = ({
   }
 
   const handleDelete = () => {
-    deleteColors(colorsToDelete).then(() => getColors())
+    // No need to call getColors() - backend sends colors_updated event which triggers refresh
+    deleteColors(colorsToDelete)
     setColorsToDelete([])
     setDialogOpen(false)
   }

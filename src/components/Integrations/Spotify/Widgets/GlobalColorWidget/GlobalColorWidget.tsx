@@ -80,15 +80,11 @@ const GlobalColorWidget = ({
   }
 
   const handleAddGradient = (name: string, color: string) => {
-    addColor({ [name]: color }).then(() => {
-      getColors()
-    })
+    // No need to call getColors() - backend sends colors_updated event which triggers refresh
+    addColor({ [name]: color })
   }
 
-  // Refresh colors when backend notifies of changes (from other clients or API)
-  useSubscription('colors_updated', () => {
-    getColors()
-  })
+  // colors_updated is now handled centrally in WebSocketProvider
 
   useEffect(() => {
     getColors()
@@ -124,7 +120,7 @@ const GlobalColorWidget = ({
             <Typography>{name}</Typography>
             {variant === 'floating' && (
               <Tooltip title="Apply partial effect settings to all active effects.">
-                <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
+                <InfoOutlined fontSize="small" sx={{ cursor: 'help' }} />
               </Tooltip>
             )}
           </Stack>
