@@ -1,6 +1,6 @@
 import { Box, Collapse, IconButton, Slider, Stack, Tooltip, Typography } from '@mui/material'
 import GlobalColorWidgetFloating from './GlobalColorWidgetFloating'
-import { ArrowDropDown, Close, InfoOutline } from '@mui/icons-material'
+import { ArrowDropDown, Close, InfoOutlined } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import { styled } from '@mui/material/styles'
 import useStore from '../../../../../store/useStore'
@@ -9,6 +9,7 @@ import { useShallow } from 'zustand/shallow'
 import { Ledfx } from '../../../../../api/ledfx'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import Toggle from '../../../../SchemaForm/components/Toggle'
+import { useSubscription } from '../../../../../utils/Websocket/WebSocketProvider'
 
 const Root = styled('div')({
   width: 300,
@@ -83,6 +84,11 @@ const GlobalColorWidget = ({
       getColors()
     })
   }
+
+  // Refresh colors when backend notifies of changes (from other clients or API)
+  useSubscription('colors_updated', () => {
+    getColors()
+  })
 
   useEffect(() => {
     getColors()

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import useStore from '../../../../store/useStore'
 import GradientPicker from './GradientPicker'
+import { useSubscription } from '../../../../utils/Websocket/WebSocketProvider'
 
 const GradientPickerWrapper = ({
   pickerBgColor,
@@ -40,6 +41,11 @@ const GradientPickerWrapper = ({
       getColors()
     })
   }
+
+  // Refresh colors when backend notifies of changes (from other clients or API)
+  useSubscription('colors_updated', () => {
+    getColors()
+  })
 
   useEffect(() => {
     // Only fetch colors if not already loaded
