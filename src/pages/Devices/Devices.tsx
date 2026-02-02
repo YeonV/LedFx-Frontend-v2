@@ -106,6 +106,18 @@ const Devices = () => {
     flushPendingUpdates()
   })
 
+  // Cleanup: flush pending updates and clear timer on unmount
+  useEffect(() => {
+    return () => {
+      if (flushTimerRef.current) {
+        clearTimeout(flushTimerRef.current)
+      }
+      if (pendingUpdates.current.length > 0) {
+        batchUpdateVirtuals(pendingUpdates.current)
+      }
+    }
+  }, [batchUpdateVirtuals])
+
   useEffect(() => {
     if (graphs && graphsMulti) {
       setPixelGraphs(
