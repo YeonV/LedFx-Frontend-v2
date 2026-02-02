@@ -71,7 +71,7 @@ const TopBarMenu = ({ slug, invisible }: TopBarMenuProps) => {
       setLogginIn(false)
       logout(e)
     } else if (window.location.pathname.includes('hassio_ingress')) {
-      // eslint-disable-next-line react-hooks/immutability
+      // eslint-disable-next-line
       window.location.href = `${backendUrl}/connect/github?callback=${window.location.origin}`
     } else if (isElectron()) {
       window.open(
