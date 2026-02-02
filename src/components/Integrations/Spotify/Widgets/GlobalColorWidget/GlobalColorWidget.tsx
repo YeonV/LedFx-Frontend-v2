@@ -9,7 +9,6 @@ import { useShallow } from 'zustand/shallow'
 import { Ledfx } from '../../../../../api/ledfx'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import Toggle from '../../../../SchemaForm/components/Toggle'
-import { useSubscription } from '../../../../../utils/Websocket/WebSocketProvider'
 
 const Root = styled('div')({
   width: 300,
