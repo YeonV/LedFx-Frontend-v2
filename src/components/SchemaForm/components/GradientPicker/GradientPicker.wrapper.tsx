@@ -11,7 +11,6 @@ const GradientPickerWrapper = ({
   wrapperStyle
 }: any) => {
   const updateEffect = useStore((state) => state.updateEffect)
-  const getVirtuals = useStore((state) => state.getVirtuals)
   const virtuals = useStore((state) => state.virtuals)
   const colors = useStore((state) => state.colors)
   const getColors = useStore((state) => state.getColors)
