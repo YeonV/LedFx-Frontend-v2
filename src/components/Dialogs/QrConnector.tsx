@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import {
   Dialog,
   AppBar,
@@ -29,6 +29,7 @@ import FireTvDebugger from '../FireTv/FireTvDebugger'
 import { SiDevdotto } from 'react-icons/si'
 import { useFireTvStore } from '../FireTv/useFireTvStore'
 import { useAndroidUpdateChecker } from '../FireTv/useAndroidUpdateChecker'
+import isElectron from 'is-electron'
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -52,7 +53,6 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const setDialogOpen = useStore((state) => state.setDialogOpenQrConnector)
   const setUserClosedQrConnector = useStore((state) => state.setUserClosedQrConnector)
   const [activeHostIndex, setActiveHostIndex] = useState(0)
-  const [formattedHosts, setFormattedHosts] = useState<string[]>([])
   const navigate = useNavigate()
   const port = useStore((state) => state.config.port || 8888)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -66,6 +66,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
     enabled: features.firetv
   })
   const SCROLL_AMOUNT = window.innerHeight * 0.6 // 60% of viewport height
+  const platform = useStore((state) => state.platform)
 
   // Set the default buttons only if FireTV is enabled
   useEffect(() => {
@@ -110,12 +111,12 @@ const QrConnector: React.FC<QrConnectorProps> = ({
     Array<{ key: string; code: string; keyCode?: number }>
   >([])
 
-  useEffect(() => {
+  const formattedHosts = useMemo(() => {
     const isValidHttpUrl = (host: string) => {
       return /^https?:\/\/[^ "]+$/.test(host)
     }
 
-    const processedHosts = rawHosts
+    return rawHosts
       .map((host) => {
         if (isValidHttpUrl(host)) {
           return host
@@ -127,6 +128,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         }
       })
       .filter((host) => host.startsWith('http://') || host.startsWith('https://'))
+  }, [rawHosts, port])
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormattedHosts(processedHosts)
@@ -135,7 +137,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
     } else {
       setActiveHostIndex(-1)
     }
-  }, [rawHosts, port])
+  }, [formattedHosts])
 
   const activeHost =
     formattedHosts.length > 0 && activeHostIndex >= 0 && activeHostIndex < formattedHosts.length
@@ -285,6 +287,11 @@ const QrConnector: React.FC<QrConnectorProps> = ({
         open={dialogOpen}
         onClose={handleCloseDialog}
         TransitionComponent={Transition}
+        PaperProps={{
+          sx: {
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+          }
+        }}
       >
         <AppBar sx={{ position: 'relative', background: 'rgba(0,0,0,0.8)' }}>
           <Toolbar sx={{ minHeight: '40px !important' }}>

@@ -65,7 +65,15 @@ const TopBar = () => {
   const setDialogOpen = useStore((state) => state.setDialogOpen)
   const features = useStore((state) => state.features)
   const platform = useStore((state) => state.platform)
-  const hosts = useStore((state) => state.config.hosts) || []
+  const sslEnabled = isElectron()
+    ? window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+    : false
+  const defaultHosts = sslEnabled
+    ? ['https://ledfx.local:8889', 'http://localhost:8888']
+    : ['http://localhost:8888']
+  const hosts = JSON.parse(
+    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(defaultHosts)
+  )
 
   const { isConnected } = useWebSocket()
   const disconnected = useStore((state) => state.disconnected)
@@ -223,11 +231,18 @@ const TopBar = () => {
     }
   }, [isTv, userClosedQrConnector, setQrConnectOpen])
 
-  console.log('yz:', typeof slug)
   return (
     <>
       {isElectron() && platform !== 'darwin' && (
-        <div className="titlebar">
+        <div
+          className="titlebar"
+          style={{
+            backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f0f0f0',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+            fontSize: 14,
+            fontWeight: 500
+          }}
+        >
           <div className="titlebarLogo" />
           LedFx
         </div>

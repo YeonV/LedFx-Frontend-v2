@@ -1,10 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import isDev from 'electron-is-dev'
-import { fileURLToPath } from 'node:url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 let splashInstance: BrowserWindow | null = null
 
@@ -24,7 +20,7 @@ export const createSplashWindow = (): BrowserWindow => {
 
   const splashPath = isDev
     ? `file://${path.join(process.cwd(), 'public', 'splash.html')}`
-    : `file://${path.join(__dirname, '../../../splash.html')}`
+    : `file://${path.join(process.resourcesPath, 'splash.html')}`
 
   splashWindow.loadURL(splashPath)
   splashWindow.center()
@@ -75,6 +71,40 @@ export const hideDriverChoice = () => {
     splashInstance.setSize(400, 350)
     splashInstance.center()
     splashInstance.webContents.send('hide-driver-choice')
+  }
+}
+
+export const showSslChoice = (): Promise<{ enable: boolean; remember: boolean }> => {
+  return new Promise((resolve) => {
+    if (splashInstance && !splashInstance.isDestroyed()) {
+      // Resize splash window for dialog
+      splashInstance.setSize(400, 480)
+      splashInstance.center()
+
+      // Show the choice dialog with platform info
+      splashInstance.webContents.send('show-ssl-choice', { platform: process.platform })
+
+      // Listen for user's choice
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const handleChoice = (_event: any, data: { enable: boolean; remember: boolean }) => {
+        ipcMain.removeListener('ssl-choice-response', handleChoice)
+        resolve(data)
+      }
+
+      ipcMain.on('ssl-choice-response', handleChoice)
+    } else {
+      // Fallback if splash is not available
+      resolve({ enable: false, remember: false })
+    }
+  })
+}
+
+export const hideSslChoice = () => {
+  if (splashInstance && !splashInstance.isDestroyed()) {
+    // Reset splash window size
+    splashInstance.setSize(400, 350)
+    splashInstance.center()
+    splashInstance.webContents.send('hide-ssl-choice')
   }
 }
 

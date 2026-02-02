@@ -10,7 +10,7 @@ if (!appleApiKeyId || !appleApiIssuer || !appleApiKeyPath) {
   process.exit(1);
 }
 
-const appPath = './dist/mac-arm64/LedFx CC.app';
+const appPath = './dist/mac-arm64/LedFx-CC.app';
 
 console.log(`Notarizing ${appPath}...`);
 console.log(`Using Apple API Key ID: ${appleApiKeyId}`);

@@ -11,7 +11,6 @@ import storeSpotify from './ui/storeSpotify'
 import storeQLC from './ui/storeQLC'
 import storeWebAudio from './ui/storeWebAudio'
 import storeCloud from './ui/storeCloud'
-import storeYoutube from './ui/storeYoutube'
 import storeDevices from './api/storeDevices'
 import storeVirtuals from './api/storeVirtuals'
 import storeScenes from './api/storeScenes'
@@ -62,7 +61,6 @@ const useStore = create(
           ...storeDialogs(set),
           ...storeFeatures(set),
           ...storeWebAudio(set),
-          ...storeYoutube(set),
           ...storeSongDectector(set),
           ...storeColors(set),
           ...storeDevices(set),

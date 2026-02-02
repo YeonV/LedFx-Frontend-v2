@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { Close, PermMedia, Refresh } from '@mui/icons-material'
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import isElectron from 'is-electron'
 import useStore from '../../../store/useStore'
 import Popover from '../../Popover/Popover'
 import SceneImage from '../../../pages/Scenes/ScenesImage'
@@ -28,6 +29,7 @@ const AssetManager = ({
   const [open, setOpen] = useState(false)
   const [tabValue, setTabValue] = useState(0)
   const assets = useStore((state) => state.assets)
+  const platform = useStore((state) => state.platform)
   const assetsFixed = useStore((state) => state.assetsFixed)
   const getAssets = useStore((state) => state.getAssets)
   const getAssetsFixed = useStore((state) => state.getAssetsFixed)
@@ -334,7 +336,8 @@ const AssetManager = ({
         fullScreen
         PaperProps={{
           sx: {
-            bgcolor: theme.palette.background.default
+            bgcolor: theme.palette.background.default,
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
           }
         }}
       >

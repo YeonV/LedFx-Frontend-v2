@@ -9,8 +9,6 @@ const SpotifyFabFree = ({
   setSpotifyExpanded,
   spotifyURL,
   setSpotifyURL,
-  setYoutubeExpanded,
-  setYoutubeEnabled,
   botHeight
 }: any) => {
   return (
@@ -19,8 +17,6 @@ const SpotifyFabFree = ({
         size="small"
         color="secondary"
         onClick={() => {
-          setYoutubeEnabled(false)
-          setYoutubeExpanded(false)
           if (spotifyEnabled && spotifyExpanded) {
             setSpotifyExpanded(false)
           }

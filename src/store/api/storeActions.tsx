@@ -90,6 +90,23 @@ const storeActions = (set: any) => ({
       )
     }
   },
+  scanForLifxDevices: async (
+    broadcastAddress: string = '255.255.255.255',
+    timeout: number = 30
+  ) => {
+    const addr = encodeURIComponent(broadcastAddress)
+    const params = `method=both&discovery_timeout=${timeout}&add=true&broadcast_address=${addr}`
+    const resp = await Ledfx(`/api/find_lifx?${params}`, 'GET')
+    if (!(resp && resp.status === 'success')) {
+      set(
+        produce((state: IStore) => {
+          state.dialogs.nohost.open = true
+        }),
+        false,
+        'api/scanForLifxDevices'
+      )
+    }
+  },
 
   paused: false,
   togglePause: async () => {

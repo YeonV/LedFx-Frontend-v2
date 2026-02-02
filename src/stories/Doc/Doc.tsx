@@ -8,6 +8,8 @@ import Slide from '@mui/material/Slide'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import { ListItemIcon, MenuItem, useTheme } from '@mui/material'
 import { MenuBook } from '@mui/icons-material'
+import isElectron from 'is-electron'
+import useStore from '../../store/useStore'
 // import { API } from '@stoplight/elements';
 import { TransitionProps } from '@mui/material/transitions'
 import '@stoplight/elements/styles.min.css'
@@ -72,6 +74,7 @@ export default function Doc({
 }: any) {
   const [open, setOpen] = React.useState(false)
   const theme = useTheme()
+  const platform = useStore((state) => state.platform)
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -111,7 +114,17 @@ export default function Doc({
           {!startIcon && icon}
         </Button>
       )}
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        PaperProps={{
+          sx: {
+            paddingTop: isElectron() && platform !== 'darwin' ? '32px' : 0
+          }
+        }}
+      >
         <AppBar
           enableColorOnDark
           sx={{
