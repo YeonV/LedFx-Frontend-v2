@@ -3,8 +3,12 @@ import isElectron from 'is-electron'
 export const getBaseURL = () => {
   if (isElectron()) {
     // In Electron, check if we're running on HTTPS (SSL enabled)
-    if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
-      return 'https://ledfx.local:8889'
+    if (
+      typeof window !== 'undefined' &&
+      (window.localStorage.getItem('ledfx-host')?.startsWith('https') ||
+        window.location.href.startsWith('https'))
+    ) {
+      return 'https://127.0.0.1:8889'
     }
     return 'http://localhost:8888'
   }
@@ -13,7 +17,7 @@ export const getBaseURL = () => {
 
 const calculateRedirectUrl = () => {
   const productionBase = getBaseURL()
-  const developmentBase = isElectron() ? productionBase : 'http://localhost:3000'
+  const developmentBase = isElectron() ? productionBase : 'https://localhost:3000'
 
   const finalBase = process.env.NODE_ENV === 'production' ? productionBase : developmentBase
 
