@@ -44,7 +44,6 @@ const DeleteColorsDialog = ({
 
   const colors = useStore((state) => state.colors)
   const deleteColors = useStore((state) => state.deleteColors)
-  const getColors = useStore((state) => state.getColors)
 
   const handleClose = () => {
     setDialogOpen(false)
