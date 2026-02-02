@@ -31,7 +31,6 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
 
   // Update working beat frames when model changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setWorkingBeatFrames(model.beat_frames || '')
   }, [model.beat_frames])
 

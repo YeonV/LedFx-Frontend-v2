@@ -29,7 +29,6 @@ const GlobalActionBar = ({
 
   // Update brightness when globalBrightness changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBrightness((globalBrightness || 0) * 100)
   }, [globalBrightness])
 
