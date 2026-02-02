@@ -54,6 +54,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     // This logic now sets the error state instead of returning a string.
     if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
       console.error('Mixed Content Error Detected: Attempting to connect to ws:// from https://.')
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setErrorState('mixedContent')
     }
 

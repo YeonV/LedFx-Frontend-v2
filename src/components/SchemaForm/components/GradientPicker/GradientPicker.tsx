@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useRef, useEffect } from 'react'
 import Popper from '@mui/material/Popper'
 import ReactGPicker from 'react-gcolor-picker'

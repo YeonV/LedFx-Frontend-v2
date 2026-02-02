@@ -396,9 +396,7 @@ const Instances = ({
           </>
         }
         icon={<Add />}
-        confirmDisabled={instances.includes(
-          portRef.current?.value ? parseInt(portRef.current?.value, 10) : newPort
-        )}
+        confirmDisabled={instances.includes(newPort)}
         variant={variant === 'line' ? 'text' : 'outlined'}
         style={variant === 'line' ? { minWidth: '32px', width: '32px' } : {}}
         aria-label="delete"

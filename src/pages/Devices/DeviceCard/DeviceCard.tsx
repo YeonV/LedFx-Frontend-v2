@@ -72,6 +72,7 @@ const DeviceCard = ({
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsActive(isEffectSet || isStreaming)
   }, [isEffectSet, isStreaming])
 
