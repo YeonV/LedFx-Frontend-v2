@@ -128,6 +128,7 @@ const QrConnector: React.FC<QrConnectorProps> = ({
       })
       .filter((host) => host.startsWith('http://') || host.startsWith('https://'))
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormattedHosts(processedHosts)
     if (processedHosts.length > 0) {
       setActiveHostIndex(0)

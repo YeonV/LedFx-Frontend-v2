@@ -58,6 +58,7 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
   const [bit, setBit] = useState(16)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (webAudType === 'audio_stream_data_udp') setBit(8)
     else if (webAudType === 'audio_stream_data_v1') setBit(32)
     else setBit(16)

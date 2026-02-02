@@ -69,6 +69,7 @@ const VirtualDiag = () => {
         send(unsubscribeRequest)
       }
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDataHistory([])
     }
   }, [diag, isConnected, send])

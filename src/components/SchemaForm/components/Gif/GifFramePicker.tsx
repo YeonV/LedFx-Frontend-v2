@@ -30,6 +30,7 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
   const [workingBeatFrames, setWorkingBeatFrames] = useState<string>(model.beat_frames || '')
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setWorkingBeatFrames(model.beat_frames || '')
   }, [model])
 
