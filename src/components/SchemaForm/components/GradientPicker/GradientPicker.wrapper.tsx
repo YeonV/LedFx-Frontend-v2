@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import useStore from '../../../../store/useStore'
 import GradientPicker from './GradientPicker'
-import { useSubscription } from '../../../../utils/Websocket/WebSocketProvider'
 
 const GradientPickerWrapper = ({
   pickerBgColor,

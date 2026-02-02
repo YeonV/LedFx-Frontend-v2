@@ -82,10 +82,6 @@ const Devices = () => {
 
   // Collect effect_set events with fallback timer
   useSubscription('effect_set', (data: IVirtualEventUpdate) => {
-    if (pendingUpdates.current.length === 0) {
-      performance.mark('effect_set_start')
-    }
-
     pendingUpdates.current.push({
       virtual_id: data.virtual_id,
       effect_name: data.effect_name,
