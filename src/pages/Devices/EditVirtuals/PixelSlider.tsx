@@ -18,7 +18,6 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
   const throttled = useThrottledCallback(handleChange, 100)
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRange([s[1], s[2]])
   }, [s])
 
