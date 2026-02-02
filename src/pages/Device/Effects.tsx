@@ -31,6 +31,7 @@ import { Schema } from '../../components/SchemaForm/SchemaForm/SchemaForm.props'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { Effect, Virtual } from '../../api/ledfx.types'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
+import { IVirtualEventUpdate } from '../../store/api/storeVirtuals'
 
 const configOrder = ['color', 'number', 'integer', 'string', 'boolean']
 
@@ -82,7 +83,6 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
   const [loading, setLoading] = useState(false)
 
   const getVirtuals = useStore((state) => state.getVirtuals)
-  const getPresets = useStore((state) => state.getPresets)
   const clearEffect = useStore((state) => state.clearEffect)
   const setEffect = useStore((state) => state.setEffect)
   const updateEffect = useStore((state) => state.updateEffect)
@@ -100,15 +100,17 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
         virtuals[virtId]?.config?.rows &&
         virtuals[virtId]?.config?.rows > 7 &&
         virtuals[virtId]?.pixel_count > 100 &&
-        virtuals[virtId].effect.type === 'blender'
+        virtuals[virtId]?.effect?.type === 'blender'
       )
   )
   const handle = useFullScreenHandle()
   const [fullScreen, setFullScreen] = useState(false)
+  const getVirtual = useStore((state) => state.getVirtual)
 
-  useSubscription('effect_set', getVirtuals)
-  useSubscription('effect_set', () => {
-    if (virtuals[virtId].effect.type) getPresets(virtId)
+  useSubscription('effect_set', (data: IVirtualEventUpdate) => {
+    if (data.virtual_id === virtId) {
+      getVirtual(virtId)
+    }
   })
 
   const getV = () => {
@@ -161,26 +163,20 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
     setTheModel((prev: any) => ({ ...prev, ...config }))
 
     if (config && updateEffect && getVirtuals !== undefined && effectType) {
-      updateEffect(virtId, effectType, config, false).then(async () => {
-        getVirtuals()
-        if (virtId && effectType) await getPresets(virtId)
-      })
+      // No need to refetch - WebSocket event will update state, and parent already has presets
+      updateEffect(virtId, effectType, config, false)
     }
   }
 
   const handlePlayPause = () => {
-    if (virtual)
-      updateVirtual(virtual.id, !virtual.active).then(async () => {
-        getVirtuals()
-        if (virtId && virtuals[virtId]?.effect.type) await getPresets(virtId)
-      })
+    if (virtual) updateVirtual(virtual.id, !virtual.active)
   }
 
   useEffect(() => {
     if (
       virtuals &&
       virtuals[virtId]?.effect?.config &&
-      JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId].effect.config)
+      JSON.stringify(theModel) !== JSON.stringify(virtuals[virtId]?.effect?.config)
     ) {
       setTheModel(virtual?.effect.config)
     }
@@ -200,14 +196,14 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
       showMatrix ||
         ((virtuals[virtId]?.config?.rows || 1) > 7 &&
           virtuals[virtId]?.pixel_count > 100 &&
-          virtuals[virtId].effect.type === 'blender')
+          virtuals[virtId]?.effect?.type === 'blender')
     )
-  }, [virtuals[virtId].effect.type])
+  }, [virtuals[virtId]?.effect?.type])
 
   const actives = devices[
     Object.keys(devices).find((d) => d === virtId) || ''
   ]?.active_virtuals?.filter((value, index, self) => self.indexOf(value) === index)
-  const streaming = actives && actives.length > 0 && actives?.some((a) => virtuals[a].active)
+  const streaming = actives && actives.length > 0 && actives?.some((a) => virtuals[a]?.active)
 
   const running = virtual && virtual.effect && virtual.effect.type
 
@@ -303,7 +299,7 @@ const EffectsCard = ({ virtId }: { virtId: string }) => {
                           () => {
                             setLoading(false)
                           },
-                          (virtuals[virtId].config.transition_time || 0) * 1000
+                          (virtuals[virtId]?.config?.transition_time || 0) * 1000
                         )
                       }}
                     >

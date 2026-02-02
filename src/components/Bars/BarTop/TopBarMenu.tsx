@@ -71,7 +71,8 @@ const TopBarMenu = ({ slug, invisible }: TopBarMenuProps) => {
       setLogginIn(false)
       logout(e)
     } else if (window.location.pathname.includes('hassio_ingress')) {
-      window.location.replace(`${backendUrl}/connect/github?callback=${window.location.origin}`)
+      // eslint-disable-next-line
+      window.location.href = `${backendUrl}/connect/github?callback=${window.location.origin}`
     } else if (isElectron()) {
       window.open(
         `${backendUrl}/connect/github?callback=ledfx://auth/github/`,

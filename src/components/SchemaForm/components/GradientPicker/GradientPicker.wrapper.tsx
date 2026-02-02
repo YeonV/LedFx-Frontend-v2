@@ -11,7 +11,6 @@ const GradientPickerWrapper = ({
   wrapperStyle
 }: any) => {
   const updateEffect = useStore((state) => state.updateEffect)
-  const getVirtuals = useStore((state) => state.getVirtuals)
   const virtuals = useStore((state) => state.virtuals)
   const colors = useStore((state) => state.colors)
   const getColors = useStore((state) => state.getColors)
@@ -30,20 +29,23 @@ const GradientPickerWrapper = ({
 
   const sendColorToVirtuals = (e: any) => {
     if (virtual && virtual.effect && virtual.effect.type) {
-      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false).then(() => {
-        getVirtuals()
-      })
+      // No need to refetch - WebSocket event will update state
+      updateEffect(virtual.id, virtual.effect.type, { [title]: e }, false)
     }
   }
 
   const handleAddGradient = (name: string, color: string) => {
-    addColor({ [name]: color }).then(() => {
-      getColors()
-    })
+    // No need to call getColors() - backend sends colors_updated event which triggers refresh
+    addColor({ [name]: color })
   }
 
+  // colors_updated is now handled centrally in WebSocketProvider
+
   useEffect(() => {
-    getColors()
+    // Only fetch colors if not already loaded
+    if (!colors || Object.keys(colors).length === 0) {
+      getColors()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

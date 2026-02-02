@@ -160,7 +160,7 @@ export const enableSsl = async (): Promise<{ success: boolean; message: string }
         const { stdout, stderr } = await execAsync(`"${scriptPath}"`, {
           timeout: 60000
         })
-        
+
         if (stderr && !stderr.includes('password') && !stderr.includes('authorization')) {
           console.warn('SSL enable stderr:', stderr)
         }
@@ -181,9 +181,12 @@ export const enableSsl = async (): Promise<{ success: boolean; message: string }
       const hostsAlreadyConfigured = await isHostsFileConfigured()
       if (!hostsAlreadyConfigured) {
         console.log('Adding ledfx.local to hosts file...')
-        await sudoExec(`bash -c 'grep -q "ledfx.local" /etc/hosts || echo "127.0.0.1 ledfx.local" >> /etc/hosts'`, { 
-          name: 'LedFx Hosts File' 
-        })
+        await sudoExec(
+          `bash -c 'grep -q "ledfx.local" /etc/hosts || echo "127.0.0.1 ledfx.local" >> /etc/hosts'`,
+          {
+            name: 'LedFx Hosts File'
+          }
+        )
       }
 
       await new Promise((resolve) => setTimeout(resolve, 1000))

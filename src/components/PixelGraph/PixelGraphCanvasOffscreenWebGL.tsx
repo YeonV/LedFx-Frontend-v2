@@ -75,7 +75,7 @@ const PixelGraphCanvasOffscreenWebGL = ({
   }, [virtId, virtuals, pixelGraphs, devices, graphs, config, showMatrix])
 
   const render =
-    (virtuals[virtId].active && virtuals[virtId].effect?.name) || virtuals[virtId].streaming
+    (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) || virtuals[virtId]?.streaming
 
   if (!(graphs || intGraphs)) {
     return null

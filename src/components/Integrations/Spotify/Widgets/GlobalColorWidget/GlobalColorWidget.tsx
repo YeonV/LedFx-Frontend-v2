@@ -1,6 +1,6 @@
 import { Box, Collapse, IconButton, Slider, Stack, Tooltip, Typography } from '@mui/material'
 import GlobalColorWidgetFloating from './GlobalColorWidgetFloating'
-import { ArrowDropDown, Close, InfoOutline } from '@mui/icons-material'
+import { ArrowDropDown, Close, InfoOutlined } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import { styled } from '@mui/material/styles'
 import useStore from '../../../../../store/useStore'
@@ -79,10 +79,11 @@ const GlobalColorWidget = ({
   }
 
   const handleAddGradient = (name: string, color: string) => {
-    addColor({ [name]: color }).then(() => {
-      getColors()
-    })
+    // No need to call getColors() - backend sends colors_updated event which triggers refresh
+    addColor({ [name]: color })
   }
+
+  // colors_updated is now handled centrally in WebSocketProvider
 
   useEffect(() => {
     getColors()
@@ -118,7 +119,7 @@ const GlobalColorWidget = ({
             <Typography>{name}</Typography>
             {variant === 'floating' && (
               <Tooltip title="Apply partial effect settings to all active effects.">
-                <InfoOutline fontSize="small" sx={{ cursor: 'help' }} />
+                <InfoOutlined fontSize="small" sx={{ cursor: 'help' }} />
               </Tooltip>
             )}
           </Stack>

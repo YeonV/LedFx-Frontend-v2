@@ -1,6 +1,7 @@
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
+import useStore from '../useStore'
 import { EffectConfig } from '../../api/ledfx.types'
 
 export interface Schema {
@@ -75,7 +76,13 @@ export interface ISystemConfig {
 
 const storeConfig = (set: any) => ({
   schemas: {} as any,
-  getSchemas: async () => {
+  getSchemas: async (forceRefresh = false) => {
+    // Cache check: skip if already loaded (unless force refresh)
+    const currentSchemas = useStore.getState().schemas
+    if (!forceRefresh && currentSchemas && Object.keys(currentSchemas).length > 0) {
+      return
+    }
+
     const resp = await Ledfx('/api/schema')
     if (resp) {
       set(

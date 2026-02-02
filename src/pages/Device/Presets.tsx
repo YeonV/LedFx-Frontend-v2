@@ -44,7 +44,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
   const activatePreset = useStore((state) => state.activatePreset)
   const addPreset = useStore((state) => state.addPreset)
   const getPresets = useStore((state) => state.getPresets)
-  const getVirtuals = useStore((state) => state.getVirtuals)
   const deletePreset = useStore((state) => state.deletePreset)
   const isLogged = useStore((state) => state.isLogged)
   const features = useStore((state) => state.features)
@@ -219,12 +218,6 @@ const PresetsCard = ({ virtual, effectType, presets, style }: PresetsCardProps) 
       </Grid>
     ))
   }
-
-  useEffect(() => {
-    getVirtuals()
-    if (virtual.id && effectType) getPresets(virtual.id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtual.id, effectType])
 
   useEffect(() => {
     if (features.cloud && isLogged) {

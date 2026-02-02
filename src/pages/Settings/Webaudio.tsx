@@ -59,14 +59,9 @@ const Webaudio = ({ style }: { style: CSSProperties }) => {
 
   // Update bit based on webAudType
   useEffect(() => {
-    // This is intentional configuration sync
-    if (webAudType === 'audio_stream_data_udp') {
-      setBit(8)
-    } else if (webAudType === 'audio_stream_data_v1') {
-      setBit(32)
-    } else {
-      setBit(16)
-    }
+    if (webAudType === 'audio_stream_data_udp') setBit(8)
+    else if (webAudType === 'audio_stream_data_v1') setBit(32)
+    else setBit(16)
   }, [webAudType])
 
   useEffect(() => {

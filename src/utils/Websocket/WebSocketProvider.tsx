@@ -58,8 +58,8 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     // Check for mixed content - this will be caught in a separate effect if needed
     if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
       console.error('Mixed Content Error Detected: Attempting to connect to ws:// from https://.')
-      // Schedule state update to avoid setting state during effect
-      setTimeout(() => setErrorState('mixedContent'), 0)
+
+      setErrorState('mixedContent')
     }
 
     const dispatchToSubscribers = (eventName: string, data: any) => {
@@ -75,6 +75,9 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         setIsConnected(true)
         setErrorState(null) // Clear any previous errors on a successful connection
         useStore.getState().setDisconnected(false)
+        // Refresh schemas and colors on reconnect (backend may have restarted with new plugins/effects/colors)
+        useStore.getState().getSchemas(true)
+        useStore.getState().getColors()
         initialSubscriptions.forEach((sub) => {
           send({ ...sub, type: 'subscribe_event' })
         })
@@ -83,6 +86,13 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         const data = JSON.parse(event.data)
         const eventType = data?.event_type
         if (!eventType) return
+
+        // Handle colors_updated centrally to avoid duplicate calls from multiple component subscriptions
+        if (eventType === 'colors_updated') {
+          useStore.getState().getColors()
+          // Don't dispatch to component subscribers - handled centrally
+          return
+        }
 
         const rule = handlerConfig[eventType as keyof typeof handlerConfig]
         let payload = data

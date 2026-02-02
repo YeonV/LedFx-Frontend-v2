@@ -31,7 +31,6 @@ const GifFramePicker: FC<GifFramePickerProps> = ({ onChange, model }: GifFramePi
 
   // Update working beat frames when model changes
   useEffect(() => {
-    // This syncs local state with prop changes
     setWorkingBeatFrames(model.beat_frames || '')
   }, [model.beat_frames])
 

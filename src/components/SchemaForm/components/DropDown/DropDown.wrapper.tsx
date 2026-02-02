@@ -15,7 +15,6 @@ const EffectDropDown = ({
   virtual,
   features,
   setEffect,
-  getVirtuals,
   ommit,
   title = 'Effect Type'
 }: EffectDropDownProps) => {
@@ -37,9 +36,8 @@ const EffectDropDown = ({
     }, {})
 
   const onEffectTypeChange = (e: any) =>
-    setEffect(virtual.id, e.target.value).then(() => {
-      getVirtuals()
-    })
+    // Parent components handle refetch via useEffect dependencies
+    setEffect(virtual.id, e.target.value)
 
   return (
     <DropDown

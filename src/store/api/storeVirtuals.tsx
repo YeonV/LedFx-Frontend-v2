@@ -8,6 +8,14 @@ export interface IVirtualOrder {
   order: number
 }
 
+export interface IVirtualEventUpdate {
+  virtual_id: string
+  effect_name: string
+  effect_type: string | null
+  active: boolean
+  streaming: boolean
+}
+
 export type Segment = [device: string, start: number, end: number, reverse: boolean]
 
 const storeVirtuals = (set: any) => ({
@@ -70,6 +78,69 @@ const storeVirtuals = (set: any) => ({
       }
     }
   },
+  // Get a single virtual's full config (for editing)
+  getVirtual: async (virtId: string) => {
+    const resp = await Ledfx(`/api/virtuals/${virtId}`)
+    if (resp && resp[virtId]) {
+      set(
+        produce((state: IStore) => {
+          state.virtuals[virtId] = resp[virtId] as Virtual
+        }),
+        false,
+        'api/gotSingleVirtual'
+      )
+    }
+  },
+  // Update a single virtual's lightweight fields from WebSocket event
+  updateVirtualFromEvent: (data: IVirtualEventUpdate) =>
+    set(
+      produce((state: IStore) => {
+        const virtual = state.virtuals[data.virtual_id]
+        if (virtual) {
+          virtual.effect.name = data.effect_name
+          virtual.effect.type = data.effect_type as any
+          virtual.active = data.active
+          // Update last_effect to track the effect type
+          if (data.effect_type) {
+            virtual.last_effect = data.effect_type as any
+          }
+          // Update streaming state via devices if this is a device
+          if (virtual.is_device && state.devices[data.virtual_id]) {
+            // Streaming state is tracked in devices, not directly on virtuals
+            // The UI reads from devices[virtual]?.active_virtuals.length > 0
+          }
+        }
+      }),
+      false,
+      'ws/updateVirtualFromEvent'
+    ),
+  // Batch update multiple virtuals at once (more efficient than multiple individual updates)
+  batchUpdateVirtuals: (
+    updates: Array<{
+      virtual_id: string
+      effect_name: string
+      effect_type: string | null
+      active: boolean
+      streaming: boolean
+    }>
+  ) =>
+    set(
+      produce((state: IStore) => {
+        updates.forEach((data) => {
+          const virtual = state.virtuals[data.virtual_id]
+          if (virtual) {
+            virtual.effect.name = data.effect_name
+            virtual.effect.type = data.effect_type as any
+            virtual.active = data.active
+            if (data.effect_type) {
+              virtual.last_effect = data.effect_type as any
+            }
+          }
+        })
+      }),
+      false,
+      'ws/batchUpdateVirtuals'
+    ),
   addVirtual: async (config: any) => await Ledfx('/api/virtuals', 'POST', config),
   updateVirtual: async (virtId: string, active: boolean) =>
     await Ledfx(`/api/virtuals/${virtId}`, 'PUT', { active }),

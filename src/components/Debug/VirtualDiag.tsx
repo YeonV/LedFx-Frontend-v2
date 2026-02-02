@@ -73,7 +73,6 @@ const VirtualDiag = () => {
         send(unsubscribeRequest)
       }
     } else {
-      // Clear history when diag is turned off or disconnected
       setDataHistory([])
     }
   }, [diag, isConnected, send])

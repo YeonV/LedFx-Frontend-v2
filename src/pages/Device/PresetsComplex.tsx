@@ -35,10 +35,10 @@ const PresetsComplex = ({ virtId }: { virtId: string }) => {
   const handleAddScene = () => {
     if (!virtId || name.length === 0) return
     addScene(`${virtId}-${name}`, 'yz:logo3', 'blender', null, null, null, {
-      [virtId]: virtuals[virtId].effect,
-      [`${virtId}-mask`]: virtuals[`${virtId}-mask`].effect,
-      [`${virtId}-foreground`]: virtuals[`${virtId}-foreground`].effect,
-      [`${virtId}-background`]: virtuals[`${virtId}-background`].effect
+      [virtId]: virtuals[virtId]?.effect,
+      [`${virtId}-mask`]: virtuals[`${virtId}-mask`]?.effect,
+      [`${virtId}-foreground`]: virtuals[`${virtId}-foreground`]?.effect,
+      [`${virtId}-background`]: virtuals[`${virtId}-background`]?.effect
     }).then(() => {
       getScenes()
     })

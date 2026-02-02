@@ -97,7 +97,7 @@ const PixelGraphCanvas = ({
   useSubscription('visualisation_update', handleVisualisationUpdate)
 
   const render =
-    (virtuals[virtId].active && virtuals[virtId].effect?.name) || virtuals[virtId].streaming
+    (virtuals[virtId]?.active && virtuals[virtId]?.effect?.name) || virtuals[virtId]?.streaming
 
   if (!(graphs || intGraphs)) {
     return null

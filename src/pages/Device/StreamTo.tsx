@@ -101,7 +101,7 @@ const StreamToCard = ({
           >
             {Object.keys(virtuals).map((name) => (
               <MenuItem key={name} value={name}>
-                {virtuals[name].config.name || name}
+                {virtuals[name]?.config?.name || name}
               </MenuItem>
             ))}
           </Select>

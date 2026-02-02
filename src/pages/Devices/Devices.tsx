@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
 import { Alert, Collapse } from '@mui/material'
 import useStore from '../../store/useStore'
@@ -6,6 +6,7 @@ import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
 import { useNavigate } from 'react-router-dom'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
+import { IVirtualEventUpdate } from '../../store/api/storeVirtuals'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -43,8 +44,26 @@ const Devices = () => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const infoAlerts = useStore((state) => state.uiPersist.infoAlerts)
   const setInfoAlerts = useStore((state) => state.setInfoAlerts)
+  const batchUpdateVirtuals = useStore((state) => state.batchUpdateVirtuals)
   // const fPixels = useStore((state) => state.config.visualisation_maxlen)
   const navigate = useNavigate()
+
+  // Batch effect_set updates to avoid blocking the main thread
+  const pendingUpdates = useRef<Array<IVirtualEventUpdate>>([])
+  const flushTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Flush pending updates (called by timer or scene_activated)
+  const flushPendingUpdates = () => {
+    if (pendingUpdates.current.length > 0) {
+      const updates = pendingUpdates.current
+      pendingUpdates.current = []
+      batchUpdateVirtuals(updates)
+    }
+    if (flushTimerRef.current) {
+      clearTimeout(flushTimerRef.current)
+      flushTimerRef.current = null
+    }
+  }
 
   useEffect(() => {
     if (blenderAutomagic && newBlender !== '') {
@@ -60,6 +79,44 @@ const Devices = () => {
   }, [getDevices, getVirtuals])
 
   useSubscription('devices_updated', getDevices)
+
+  // Collect effect_set events with fallback timer
+  useSubscription('effect_set', (data: IVirtualEventUpdate) => {
+    pendingUpdates.current.push({
+      virtual_id: data.virtual_id,
+      effect_name: data.effect_name,
+      effect_type: data.effect_type,
+      active: data.active,
+      streaming: data.streaming
+    })
+
+    // Clear existing timer
+    if (flushTimerRef.current) {
+      clearTimeout(flushTimerRef.current)
+    }
+
+    // Set fallback timer: flush after 250ms if no scene_activated event
+    flushTimerRef.current = setTimeout(() => {
+      flushPendingUpdates()
+    }, 250)
+  })
+
+  // Apply batched updates immediately when scene activates
+  useSubscription('scene_activated', () => {
+    flushPendingUpdates()
+  })
+
+  // Cleanup: flush pending updates and clear timer on unmount
+  useEffect(() => {
+    return () => {
+      if (flushTimerRef.current) {
+        clearTimeout(flushTimerRef.current)
+      }
+      if (pendingUpdates.current.length > 0) {
+        batchUpdateVirtuals(pendingUpdates.current)
+      }
+    }
+  }, [batchUpdateVirtuals])
 
   useEffect(() => {
     if (graphs && graphsMulti) {
