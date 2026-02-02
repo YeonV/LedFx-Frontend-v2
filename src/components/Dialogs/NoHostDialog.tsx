@@ -37,11 +37,17 @@ export default function NoHostDialog() {
   // const coreParams = useStore((state) => state.coreParams);
   const setHost = useStore((state) => state.setHost)
   const storedURL = window.localStorage.getItem('ledfx-host')
+  const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+
+  const defaultHosts = sslEnabled
+    ? ['https://localhost:8889', 'http://localhost:8888']
+    : ['http://localhost:8888']
+
   const storedURLs = JSON.parse(
-    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(['http://localhost:8888'])
+    window.localStorage.getItem('ledfx-hosts') || JSON.stringify(defaultHosts)
   )
-  const [hosts, setHosts] = useState(['http://localhost:8888'])
-  const [hostvalue, setHostvalue] = useState('http://localhost:8888')
+  const [hosts, setHosts] = useState(defaultHosts)
+  const [hostvalue, setHostvalue] = useState(defaultHosts[0])
   const [qrScannerOpen, setQrScannerOpen] = useState(false)
 
   const cc = isElectron() && window.process?.argv.indexOf('integratedCore') !== -1
@@ -108,8 +114,18 @@ export default function NoHostDialog() {
   }, [storedURL, setHosts, JSON.stringify(storedURLs)])
 
   useEffect(() => {
+    // Add HTTPS host if SSL is enabled and it's not already in the list
+    if (sslEnabled && !hosts.includes('https://localhost:8889')) {
+      const updatedHosts = ['https://localhost:8889', ...hosts]
+      setHosts(updatedHosts)
+      window.localStorage.setItem('ledfx-hosts', JSON.stringify(updatedHosts))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sslEnabled])
+
+  useEffect(() => {
     if (!storedURL) {
-      const defaultHost = 'http://localhost:8888'
+      const defaultHost = sslEnabled ? 'https://localhost:8889' : 'http://localhost:8888'
       const baseHost = getBaseUrl(window.location.href)
       const newHost = isElectron()
         ? defaultHost

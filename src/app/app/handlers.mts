@@ -23,6 +23,7 @@ import {
   volumeDown,
   toggleMute
 } from './utils/audioManager.mjs'
+import { enableSsl, disableSsl, getSslStatus } from './utils/sslManager.mjs'
 
 export const handlers = async (
   wind: BrowserWindow,
@@ -136,6 +137,20 @@ export const handlers = async (
           nativeTheme.themeSource = 'dark'
         }
         return nativeTheme.shouldUseDarkColors
+      case 'set-darkmode': {
+        const Store = (await import('electron-store')).default
+        const store = new Store()
+        store.set('mode', 'dark')
+        nativeTheme.themeSource = 'dark'
+        return nativeTheme.shouldUseDarkColors
+      }
+      case 'set-lightmode': {
+        const Store = (await import('electron-store')).default
+        const store = new Store()
+        store.set('mode', 'light')
+        nativeTheme.themeSource = 'light'
+        return nativeTheme.shouldUseDarkColors
+      }
       case 'install-driver': {
         if (process.platform === 'darwin') {
           // Install driver and enable audio device in single sudo command
@@ -317,6 +332,72 @@ export const handlers = async (
             'toggle-mute-result',
             { success: false, message: 'Mute control only supported on macOS' }
           ])
+        }
+        break
+      }
+      case 'enable-ssl': {
+        const result = await enableSsl()
+        if (result.success) {
+          store.set('ledfx-ssl-enabled', true)
+        }
+        wind.webContents.send('fromMain', ['ssl-enable-result', result])
+        break
+      }
+      case 'disable-ssl': {
+        const result = await disableSsl()
+        if (result.success) {
+          store.set('ledfx-ssl-enabled', false)
+
+          // Reset host configuration to HTTP defaults
+          wind.webContents
+            .executeJavaScript(
+              `
+            localStorage.removeItem('ledfx-host');
+            const hosts = JSON.parse(localStorage.getItem('ledfx-hosts') || '[]');
+            const filteredHosts = hosts.filter(h => !h.includes('8889') && !h.includes('https'));
+            if (filteredHosts.length === 0) {
+              filteredHosts.push('http://localhost:8888');
+            }
+            localStorage.setItem('ledfx-hosts', JSON.stringify(filteredHosts));
+            localStorage.setItem('ledfx-host', 'http://localhost:8888');
+          `
+            )
+            .catch((err) => console.error('Failed to reset host config:', err))
+        }
+        wind.webContents.send('fromMain', ['ssl-disable-result', result])
+        break
+      }
+      case 'get-ssl-status': {
+        const status = await getSslStatus()
+        wind.webContents.send('fromMain', ['ssl-status', { enabled: status.installed }])
+        break
+      }
+      case 'get-ssl-preference': {
+        const dontAskAgain = store.get('ssl-dont-ask-again', false)
+        const autoEnable = store.get('ssl-auto-enable', false)
+
+        let preference = 'ask'
+        if (dontAskAgain && autoEnable) {
+          preference = 'auto'
+        } else if (dontAskAgain && !autoEnable) {
+          preference = 'never'
+        }
+
+        wind.webContents.send('fromMain', ['ssl-preference', preference])
+        break
+      }
+      case 'set-ssl-preference': {
+        const preference = parameters.preference
+
+        if (preference === 'ask') {
+          store.set('ssl-dont-ask-again', false)
+          store.set('ssl-auto-enable', false)
+        } else if (preference === 'auto') {
+          store.set('ssl-dont-ask-again', true)
+          store.set('ssl-auto-enable', true)
+        } else if (preference === 'never') {
+          store.set('ssl-dont-ask-again', true)
+          store.set('ssl-auto-enable', false)
         }
         break
       }

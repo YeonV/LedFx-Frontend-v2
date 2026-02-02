@@ -80,7 +80,6 @@ const Uncategorized = () => {
         checked={features.spotify}
         onChange={() => setFeatures('spotify', !features.spotify)}
       />
-
       <SettingsRow
         title="BG Waves (eats performance)"
         checked={features.waves}

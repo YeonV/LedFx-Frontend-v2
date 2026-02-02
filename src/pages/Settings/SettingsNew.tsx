@@ -82,7 +82,7 @@ const SettingsNew = () => {
           <Typography>Tools</Typography>
         </AccordionSummary>
       </Accordion>
-      <Grid container spacing={2} sx={{ mb: 2 }}>
+      <Grid container spacing={2} sx={{ my: 2 }}>
         <Tile component={<AssetManager variant="tile" />} />
         <Tile
           icon={<QueueMusic fontSize="large" />}
@@ -128,7 +128,7 @@ const SettingsNew = () => {
           <Typography>Widgets</Typography>
         </AccordionSummary>
       </Accordion>
-      <Grid container spacing={2} sx={{ mb: 2 }}>
+      <Grid container spacing={2} sx={{ my: 2 }}>
         <Tile
           icon={<Keyboard fontSize="large" />}
           text="Keybindings"

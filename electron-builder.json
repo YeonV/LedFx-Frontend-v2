@@ -14,6 +14,40 @@
         "node_modules/",
         "package.json"
     ],
+    "extraResources": [
+        {
+            "from": "extraResources/enable_ledfx_ssl.ps1",
+            "to": "extraResources/enable_ledfx_ssl.ps1"
+        },
+        {
+            "from": "extraResources/disable_ledfx_ssl.ps1",
+            "to": "extraResources/disable_ledfx_ssl.ps1"
+        },
+        {
+            "from": "extraResources/enable_ledfx_ssl_mac.sh",
+            "to": "extraResources/enable_ledfx_ssl_mac.sh"
+        },
+        {
+            "from": "extraResources/disable_ledfx_ssl_mac.sh",
+            "to": "extraResources/disable_ledfx_ssl_mac.sh"
+        },
+        {
+            "from": "extraResources/enable_ledfx_ssl_linux.sh",
+            "to": "extraResources/enable_ledfx_ssl_linux.sh"
+        },
+        {
+            "from": "extraResources/disable_ledfx_ssl_linux.sh",
+            "to": "extraResources/disable_ledfx_ssl_linux.sh"
+        },
+        {
+            "from": "public/splash.html",
+            "to": "splash.html"
+        },
+        {
+            "from": "public/banner.png",
+            "to": "banner.png"
+        }
+    ],
     "protocols": [
         {
             "name": "LedFx",

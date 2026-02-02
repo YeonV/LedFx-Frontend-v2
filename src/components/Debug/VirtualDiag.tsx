@@ -43,10 +43,14 @@ const VirtualDiag = () => {
       if (eventData.data.virtual_id !== virtId) {
         return
       }
+      // Only add data if diag is enabled
+      if (!diag) {
+        return
+      }
       const newMessage = { data: eventData.data, timestamp: new Date() }
       setDataHistory((prev) => [newMessage, ...prev.slice(0, MAX_HISTORY - 1)])
     },
-    [virtId]
+    [virtId, diag]
   )
 
   useSubscription('virtual_diag', handleDiagPacket)

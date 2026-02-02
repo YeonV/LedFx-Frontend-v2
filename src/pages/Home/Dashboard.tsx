@@ -9,10 +9,11 @@ import {
   Tooltip,
   useMediaQuery,
   Alert,
-  AlertTitle
+  AlertTitle,
+  TextField
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { DeleteForever, GitHub, MenuBook } from '@mui/icons-material'
+import { DeleteForever, GitHub, MenuBook, Lightbulb } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import { deleteFrontendConfig, sleep } from '../../utils/helpers'
 import Gauge from './Gauge'
@@ -33,6 +34,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const scanForDevices = useStore((state) => state.scanForDevices)
   const scanForOpenRgbDevices = useStore((state) => state.scanForOpenRgbDevices)
+  const scanForLifxDevices = useStore((state) => state.scanForLifxDevices)
   const setIntro = useStore((state) => state.setIntro)
 
   const devices = useStore((state) => state.devices)
@@ -48,6 +50,13 @@ const Dashboard = () => {
 
   const getScenes = useStore((state) => state.getScenes)
   const [scanning, setScanning] = useState(-1)
+  const [scanningLifx, setScanningLifx] = useState(false)
+  const [lifxBroadcastAddress, setLifxBroadcastAddress] = useState(
+    config.lifx_broadcast_address || '255.255.255.255'
+  )
+  const [lifxDiscoveryTimeout, setLifxDiscoveryTimeout] = useState(
+    config.lifx_discovery_timeout || 30
+  )
   const filterDevDevices = (obj: Record<string, Device | Virtual>) =>
     Object.keys(obj).filter(
       (key) =>
@@ -94,10 +103,42 @@ const Dashboard = () => {
       })
   }
 
+  const handleScanLifx = async () => {
+    setScanningLifx(true)
+    // Save LIFX settings before scanning
+    await setSystemConfig({
+      lifx_broadcast_address: lifxBroadcastAddress,
+      lifx_discovery_timeout: lifxDiscoveryTimeout
+    })
+    getSystemConfig()
+    scanForLifxDevices(lifxBroadcastAddress, lifxDiscoveryTimeout)
+      .then(async () => {
+        for (let sec = 1; sec <= lifxDiscoveryTimeout; sec++) {
+          await sleep(1000).then(() => {
+            getDevices()
+            getVirtuals()
+          })
+        }
+      })
+      .then(() => {
+        setScanningLifx(false)
+      })
+  }
+
   useEffect(() => {
     getScenes()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Initialize LIFX settings from config
+  useEffect(() => {
+    if (config.lifx_broadcast_address) {
+      setLifxBroadcastAddress(config.lifx_broadcast_address)
+    }
+    if (config.lifx_discovery_timeout) {
+      setLifxDiscoveryTimeout(config.lifx_discovery_timeout)
+    }
+  }, [config.lifx_broadcast_address, config.lifx_discovery_timeout])
 
   return (
     <div className="Content">
@@ -275,6 +316,60 @@ const Dashboard = () => {
                     }}
                   />
                 </Fab>
+              </Tooltip>
+            )}
+            {!isAndroid && (
+              <Tooltip title="Scan for LIFX Devices" sx={{ '&': { marginLeft: '0 !important' } }}>
+                <Box
+                  sx={{
+                    m: 0,
+                    position: 'relative',
+                    zIndex: 0,
+                    marginLeft: '0 !important'
+                  }}
+                >
+                  <Popover
+                    type="fab"
+                    noIcon
+                    disabled={scanningLifx}
+                    content={
+                      <Box sx={{ p: 2 }}>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          Broadcast Address
+                        </Typography>
+                        <TextField
+                          size="small"
+                          value={lifxBroadcastAddress}
+                          onChange={(e) => setLifxBroadcastAddress(e.target.value)}
+                          placeholder="255.255.255.255"
+                          sx={{ width: 150, mb: 2 }}
+                        />
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          Discovery Timeout (seconds)
+                        </Typography>
+                        <TextField
+                          size="small"
+                          type="number"
+                          value={lifxDiscoveryTimeout}
+                          onChange={(e) => setLifxDiscoveryTimeout(Number(e.target.value))}
+                          placeholder="30"
+                          sx={{ width: 150 }}
+                          inputProps={{ min: 1, max: 120 }}
+                        />
+                      </Box>
+                    }
+                    onConfirm={handleScanLifx}
+                  >
+                    {scanningLifx ? (
+                      <CircularProgress5
+                        size={24}
+                        sx={{ color: theme.palette.primary.contrastText }}
+                      />
+                    ) : (
+                      <Lightbulb sx={{ color: theme.palette.primary.contrastText }} />
+                    )}
+                  </Popover>
+                </Box>
               </Tooltip>
             )}
             {/* <Tooltip title="Play / Pause LedFx Effect-streaming">

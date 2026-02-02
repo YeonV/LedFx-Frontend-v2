@@ -73,6 +73,9 @@ const Webcam = ({ colN, rowN, sx }: { colN: number; rowN: number; sx?: SxProps }
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIp(wledIp)
+  }, [wledIp])
+
+  useEffect(() => {
     const getCount = async () => {
       if (wledIp && wledIp !== '') {
         const c = await getLedCount(wledIp)

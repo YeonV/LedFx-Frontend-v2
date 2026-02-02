@@ -4,12 +4,19 @@ import type { IStore } from '../useStore'
 
 const isBrowser = typeof window !== 'undefined'
 
+const getDefaultHost = () => {
+  if (isElectron()) {
+    if (isBrowser) {
+      const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+      return sslEnabled ? 'https://ledfx.local:8889' : 'http://localhost:8888'
+    }
+    return 'http://localhost:8888'
+  }
+  return isBrowser ? window?.location?.href?.split('#')[0] : 'http://localhost:8888'
+}
+
 const storeGeneral = (set: any) => ({
-  host: isElectron()
-    ? 'http://localhost:8888'
-    : isBrowser
-      ? window?.location?.href?.split('#')[0]
-      : 'http://localhost:8888',
+  host: getDefaultHost(),
   setHost: (host: any) => {
     console.log('setHost', host)
     if (isBrowser) window?.localStorage?.setItem('ledfx-host', host.title ? host.title : host)

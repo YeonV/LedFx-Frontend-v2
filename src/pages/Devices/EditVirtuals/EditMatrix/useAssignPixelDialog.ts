@@ -114,7 +114,7 @@ export const useAssignPixelDialog = (dependencies: DialogDependencies) => {
     setPixelGroups
   ])
 
-  // Sync up isGroupMode and selectedPixel range
+  // Sync up isGroupMode and selectedPixel range - only when mode changes
   useEffect(() => {
     if (isGroupMode && typeof selectedPixel === 'number') {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -122,7 +122,8 @@ export const useAssignPixelDialog = (dependencies: DialogDependencies) => {
     } else if (!isGroupMode && typeof selectedPixel !== 'number') {
       setSelectedPixel(selectedPixel[0])
     }
-  }, [isGroupMode, selectedPixel])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGroupMode])
 
   // The public API of our hook, to be passed as a prop
   return {

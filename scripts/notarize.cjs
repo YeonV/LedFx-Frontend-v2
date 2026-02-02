@@ -26,6 +26,12 @@ exports.default = async function notarizing(context) {
   console.log(`Using Apple API Key ID: ${appleApiKeyId}`);
   console.log(`Using Apple API Key Path: ${appleApiKeyPath}`);
   console.log(`Using Apple API Issuer: ${appleApiIssuer}`);
+  
+  console.log('DEBUG: Environment variables:');
+  console.log('  APPLE_API_KEY:', process.env.APPLE_API_KEY);
+  console.log('  APPLE_API_KEY_ID:', process.env.APPLE_API_KEY_ID);
+  console.log('  APPLE_API_KEY_PATH:', process.env.APPLE_API_KEY_PATH);
+  console.log('  APPLE_API_ISSUER:', process.env.APPLE_API_ISSUER);
 
   try {
     await notarize({

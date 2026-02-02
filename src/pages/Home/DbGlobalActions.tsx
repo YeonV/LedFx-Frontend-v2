@@ -1,5 +1,14 @@
-import { useTheme, Stack, Box, Button } from '@mui/material'
-import { useState } from 'react'
+import {
+  useTheme,
+  Stack,
+  Box,
+  Button,
+  TextField,
+  CircularProgress,
+  InputAdornment
+} from '@mui/material'
+import { useState, useEffect } from 'react'
+import { Lightbulb } from '@mui/icons-material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
 import DbButton from './DbButton'
 import GlobalActionBar from '../../components/GlobalActionBar'
@@ -13,9 +22,18 @@ import fx from '../../components/Icons/FX.svg'
 const DbGlobalActions = () => {
   const theme = useTheme()
   const [scanning, setScanning] = useState(-1)
+  const [scanningLifx, setScanningLifx] = useState(false)
+  const config = useStore((state) => state.config)
+  const [lifxBroadcastAddress, setLifxBroadcastAddress] = useState(
+    config.lifx_broadcast_address || '255.255.255.255'
+  )
+  const [lifxDiscoveryTimeout, setLifxDiscoveryTimeout] = useState(
+    config.lifx_discovery_timeout || 30
+  )
   const paused = useStore((state) => state.paused)
   const togglePause = useStore((state) => state.togglePause)
   const scanForDevices = useStore((state) => state.scanForDevices)
+  const scanForLifxDevices = useStore((state) => state.scanForLifxDevices)
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
@@ -43,6 +61,37 @@ const DbGlobalActions = () => {
         setScanning(-1)
       })
   }
+
+  const handleScanLifx = async () => {
+    setScanningLifx(true)
+    // Save LIFX settings before scanning
+    await setSystemConfig({
+      lifx_broadcast_address: lifxBroadcastAddress,
+      lifx_discovery_timeout: lifxDiscoveryTimeout
+    })
+    getSystemConfig()
+    scanForLifxDevices(lifxBroadcastAddress, lifxDiscoveryTimeout)
+      .then(async () => {
+        for (let sec = 1; sec <= lifxDiscoveryTimeout; sec++) {
+          await sleep(1000).then(() => {
+            getDevices()
+            getVirtuals()
+          })
+        }
+      })
+      .then(() => {
+        setScanningLifx(false)
+      })
+  }
+
+  useEffect(() => {
+    if (config.lifx_broadcast_address) {
+      setLifxBroadcastAddress(config.lifx_broadcast_address)
+    }
+    if (config.lifx_discovery_timeout) {
+      setLifxDiscoveryTimeout(config.lifx_discovery_timeout)
+    }
+  }, [config.lifx_broadcast_address, config.lifx_discovery_timeout])
 
   return (
     <BladeFrame
@@ -137,6 +186,63 @@ const DbGlobalActions = () => {
             Scan for OpenRGB devices
           </Box>
         </Button>
+        <Popover
+          noIcon
+          variant="text"
+          color="inherit"
+          disabled={scanningLifx}
+          style={{ padding: '11px', marginLeft: '0rem', flex: 1 }}
+          wrapperStyle={{ display: 'flex' }}
+          content={
+            <Stack direction={'row'} spacing={2} pl={1} pr={2} py={1}>
+              <TextField
+                size="small"
+                label="Broadcast Address"
+                value={lifxBroadcastAddress}
+                onChange={(e) => setLifxBroadcastAddress(e.target.value)}
+                placeholder="255.255.255.255"
+                sx={{ width: 170 }}
+              />
+              <TextField
+                size="small"
+                type="number"
+                label="Discovery Time"
+                value={lifxDiscoveryTimeout}
+                onChange={(e) => setLifxDiscoveryTimeout(Number(e.target.value))}
+                placeholder="30"
+                slotProps={{
+                  input: {
+                    endAdornment: <InputAdornment position="end">s</InputAdornment>
+                  },
+                  htmlInput: {
+                    min: 1,
+                    max: 120
+                  }
+                }}
+                sx={{ width: 120 }}
+              />
+            </Stack>
+          }
+          onConfirm={handleScanLifx}
+        >
+          <Box
+            sx={{
+              fontSize: '0.8125rem',
+              lineHeight: '1.75',
+              width: '100%',
+              display: 'flex',
+              textTransform: 'none',
+              alignItems: 'center'
+            }}
+          >
+            {scanningLifx ? (
+              <CircularProgress size={24} sx={{ mr: 2.5, ml: 0.5 }} />
+            ) : (
+              <Lightbulb sx={{ mr: 2.5, ml: 0.5 }} />
+            )}
+            {scanningLifx ? 'Scanning...' : 'Scan for LIFX devices'}
+          </Box>
+        </Popover>
         <Popover
           noIcon
           variant="text"

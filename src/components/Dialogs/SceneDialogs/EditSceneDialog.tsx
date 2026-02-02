@@ -93,6 +93,7 @@ const EditSceneDialog = () => {
   const midiOutput = useStore((state) => state.midiOutput)
   const midiType = useStore((state) => state.midiType)
   const midiModel = useStore((state) => state.midiModel)
+  const platform = useStore((state) => state.platform)
   const lastButton = useRef(-1)
 
   const setBlockMidiHandler = useStore((state) => state.setBlockMidiHandler)
@@ -446,6 +447,14 @@ const EditSceneDialog = () => {
       open={open}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
+      PaperProps={{
+        sx: {
+          paddingTop:
+            isElectron() && platform !== 'darwin' && Object.keys(sceneVirtuals).length > 0
+              ? '32px'
+              : 0
+        }
+      }}
     >
       <AppBar
         enableColorOnDark

@@ -44,14 +44,18 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   }, [])
 
   useEffect(() => {
-    const host =
-      window.localStorage.getItem('ledfx-host') ||
-      (isElectron()
-        ? 'http://localhost:8888'
-        : window.location.href.split('/#')[0].replace(/\/+$/, ''))
+    const getDefaultHost = () => {
+      if (isElectron()) {
+        const sslEnabled = window.localStorage.getItem('ledfx-ssl-enabled') === 'true'
+        return sslEnabled ? 'https://ledfx.local:8889' : 'http://localhost:8888'
+      }
+      return window.location.href.split('/#')[0].replace(/\/+$/, '')
+    }
+
+    const host = window.localStorage.getItem('ledfx-host') || getDefaultHost()
     const wsUrl = host.replace('https://', 'wss://').replace('http://', 'ws://') + '/api/websocket'
 
-    // This logic now sets the error state instead of returning a string.
+    // Check for mixed content - this will be caught in a separate effect if needed
     if (window.location.protocol === 'https:' && wsUrl.startsWith('ws://')) {
       console.error('Mixed Content Error Detected: Attempting to connect to ws:// from https://.')
       // eslint-disable-next-line react-hooks/set-state-in-effect

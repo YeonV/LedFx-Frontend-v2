@@ -105,7 +105,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
               setShowFeatures('wled', false)
               setShowFeatures('integrations', false)
               setShowFeatures('spotify', false)
-              setShowFeatures('youtube', false)
               setShowFeatures('webaudio', false)
               setFeatures('streamto', false)
               setFeatures('waves', false)
@@ -133,9 +132,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             }
             if (value === 'BladeSpotify') {
               setShowFeatures('spotify', true)
-            }
-            if (value === 'BladeYoutube') {
-              setShowFeatures('youtube', true)
             }
             if (value === 'BladeWebaudio') {
               setShowFeatures('webaudio', true)
@@ -184,7 +180,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             setShowFeatures('wled', true)
             setShowFeatures('integrations', true)
             setShowFeatures('spotify', true)
-            setShowFeatures('youtube', true)
             setShowFeatures('webaudio', true)
             setShowFeatures('alpha', true)
             setShowFeatures('beta', true)
