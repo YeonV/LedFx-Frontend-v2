@@ -15,7 +15,6 @@ const EffectDropDown = ({
   virtual,
   features,
   setEffect,
-  getVirtuals,
   ommit,
   title = 'Effect Type'
 }: EffectDropDownProps) => {
