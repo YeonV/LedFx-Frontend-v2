@@ -9,6 +9,7 @@ import useStore from '../../../../../store/useStore'
 import SpLayoutButtons from './SpLayoutButtons'
 import SpFloating from './SpFloating'
 import SpTexter from './SpTexter'
+import SpAlbumArt from './SpAlbumArt'
 
 const SpotifyWidgetPro = ({ drag = false }: { drag?: boolean }) => {
   const classes = useStyle()
@@ -25,6 +26,7 @@ const SpotifyWidgetPro = ({ drag = false }: { drag?: boolean }) => {
               {drag && <SpLayoutButtons />}
               <SpSceneTrigger />
               <SpTexter />
+              <SpAlbumArt />
             </Stack>
             <SpVolume />
           </Stack>

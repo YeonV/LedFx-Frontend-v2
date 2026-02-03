@@ -1,5 +1,4 @@
-import isElectron from 'is-electron'
-import { CardMedia, SxProps } from '@mui/material'
+import { SxProps } from '@mui/material'
 import useStyles from './Scenes.styles'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import { getImageUrl } from '../../utils/imageUrl'
@@ -22,27 +21,18 @@ const SceneImage = ({
   const imagePath = iconName?.startsWith('image:') ? iconName.split('image:')[1] : null
 
   return iconName && iconName.startsWith('image:') ? (
-    isElectron() ? (
-      <CardMedia
-        className={classes.media}
-        src={getImageUrl(imagePath!, thumbnail)}
-        title={title || ''}
-        sx={{ width: '100%', height: '100%', ...sx }}
-      />
-    ) : (
-      <img
-        className={classes.media}
-        style={{
-          height: (sx as any)?.height || 140,
-          width: (sx as any)?.width || '100%',
-          maxWidth: 'calc(100% - 2px)',
-          objectFit: 'cover'
-        }}
-        src={getImageUrl(imagePath!, thumbnail)}
-        alt={title || ''}
-        title={title || ''}
-      />
-    )
+    <img
+      className={classes.media}
+      style={{
+        height: (sx as any)?.height || 140,
+        width: (sx as any)?.width || '100%',
+        maxWidth: 'calc(100% - 2px)',
+        objectFit: 'cover'
+      }}
+      src={getImageUrl(imagePath!, thumbnail)}
+      alt={title || ''}
+      title={title || ''}
+    />
   ) : (
     <BladeIcon
       scene
