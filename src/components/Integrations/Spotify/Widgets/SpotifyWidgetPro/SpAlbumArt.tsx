@@ -19,7 +19,7 @@ const SpAlbumArt = () => {
           name="Image"
           sx={[
             {
-              color: 'GrayText'
+              color: 'inherit'
             }
           ]}
         />

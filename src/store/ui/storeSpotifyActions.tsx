@@ -351,6 +351,22 @@ const storeSpotifyActions = (set: any) => ({
       }),
       false,
       'spotify/setSpTexterValue'
+    ),
+  setSpotifyAlbumArtGradientVirtuals: (virtuals: string[]) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyAlbumArtGradientVirtuals = virtuals
+      }),
+      false,
+      'spotify/setSpotifyAlbumArtGradientVirtuals'
+    ),
+  setSpotifyAlbumArtImageVirtuals: (virtuals: string[]) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.spotifyAlbumArtImageVirtuals = virtuals
+      }),
+      false,
+      'spotify/setSpotifyAlbumArtImageVirtuals'
     )
 })
 

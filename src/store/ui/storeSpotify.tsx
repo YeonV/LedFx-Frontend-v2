@@ -25,6 +25,8 @@ const storeSpotify = () => ({
   spotify: null as any,
   currentTrack: '',
   sendSpotifyTrack: false,
+  spotifyAlbumArtGradientVirtuals: [] as string[],
+  spotifyAlbumArtImageVirtuals: [] as string[],
   spotifyTexter: {
     fallback: true,
     gradient:

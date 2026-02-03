@@ -25,7 +25,7 @@ const SpTexter = () => {
                   color: theme.palette.primary.main
                 }
               : {
-                  color: 'GrayText'
+                  color: 'inherit'
                 }
           ]}
         />

@@ -58,6 +58,7 @@ export default function SpSceneTrigger() {
       confirmDisabled={spotifyScene === 0}
       confirmContent="Set Now"
       icon={<BladeIcon name="mdi:timer-music-outline" />}
+      color="inherit"
       onConfirm={() => onConfirmHandler(spotifyTriggerData)}
       content={
         <div>

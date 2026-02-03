@@ -20,13 +20,18 @@ const SpAlbumArtForm = () => {
   const spotifyCtx = useContext(SpotifyStateContext)
   const spCtx = useContext(SpStateContext)
 
-  const [selectedVirtuals, setSelectedVirtuals] = useState<string[]>([])
+  const gradientVirtuals = useStore((state) => state.spotify.spotifyAlbumArtGradientVirtuals)
+  const imageVirtuals = useStore((state) => state.spotify.spotifyAlbumArtImageVirtuals)
+  const setGradientVirtuals = useStore((state) => state.setSpotifyAlbumArtGradientVirtuals)
+  const setImageVirtuals = useStore((state) => state.setSpotifyAlbumArtImageVirtuals)
+
   const [colors, setColors] = useState<string[]>([])
   const [albumArtUrl, setAlbumArtUrl] = useState<string>('')
   const [gradients, setGradients] = useState<string[]>([])
   const [selectedGradient, setSelectedGradient] = useState<number | null>(null)
   const [isActive, setIsActive] = useState(false)
   const prevColorsRef = useRef<string>('')
+  const prevAlbumArtRef = useRef<string>('')
 
   // Get album art URL
   useEffect(() => {
@@ -66,20 +71,35 @@ const SpAlbumArtForm = () => {
     return filtered
   }
 
-  const applyGradient = useCallback(
+  const applyBoth = useCallback(
     async (once: boolean = false) => {
-      if (selectedGradient === null || selectedVirtuals.length === 0) return
+      const promises: Promise<any>[] = []
 
-      const payload: any = {
-        action: 'apply_global',
-        gradient: gradients[selectedGradient]
+      if (selectedGradient !== null && gradientVirtuals.length > 0) {
+        promises.push(
+          Ledfx('/api/effects', 'PUT', {
+            action: 'apply_global',
+            gradient: gradients[selectedGradient],
+            virtuals: gradientVirtuals
+          })
+        )
       }
 
-      if (selectedVirtuals.length > 0) {
-        payload.virtuals = selectedVirtuals
+      if (albumArtUrl && imageVirtuals.length > 0) {
+        promises.push(
+          Ledfx('/api/effects', 'PUT', {
+            action: 'apply_global_effect',
+            type: 'imagespin',
+            config: {
+              image_source: albumArtUrl,
+              min_size: 1
+            },
+            virtuals: imageVirtuals
+          })
+        )
       }
 
-      await Ledfx('/api/effects', 'PUT', payload)
+      await Promise.all(promises)
       getVirtuals()
 
       if (once) {
@@ -88,7 +108,7 @@ const SpAlbumArtForm = () => {
         setIsActive(true)
       }
     },
-    [selectedGradient, selectedVirtuals, gradients, getVirtuals]
+    [selectedGradient, gradientVirtuals, gradients, albumArtUrl, imageVirtuals, getVirtuals]
   )
 
   // Extract colors from album art
@@ -222,31 +242,68 @@ const SpAlbumArtForm = () => {
 
     setGradients(generatedGradients)
 
+    // Auto-select first gradient if none selected
+    if (selectedGradient === null && generatedGradients.length > 0) {
+      setSelectedGradient(0)
+    }
+
     // Auto-reapply gradient when song changes (if currently active)
     const colorsKey = colors.join(',')
     if (
       colorsKey !== prevColorsRef.current &&
       isActive &&
       selectedGradient !== null &&
-      selectedVirtuals.length > 0 &&
+      gradientVirtuals.length > 0 &&
       generatedGradients[selectedGradient]
     ) {
       // Directly call API without toggling isActive
       const payload: any = {
         action: 'apply_global',
-        gradient: generatedGradients[selectedGradient]
-      }
-      if (selectedVirtuals.length > 0) {
-        payload.virtuals = selectedVirtuals
+        gradient: generatedGradients[selectedGradient],
+        virtuals: gradientVirtuals
       }
       Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
     }
     prevColorsRef.current = colorsKey
-  }, [colors, isActive, selectedGradient, selectedVirtuals, getVirtuals])
+  }, [colors, isActive, selectedGradient, gradientVirtuals, getVirtuals])
 
-  const handleVirtualChange = (event: any) => {
+  // Auto-reapply image when song changes (if currently active)
+  useEffect(() => {
+    if (
+      albumArtUrl &&
+      albumArtUrl !== prevAlbumArtRef.current &&
+      isActive &&
+      imageVirtuals.length > 0
+    ) {
+      // Directly call API without toggling isActive
+      const payload: any = {
+        action: 'apply_global_effect',
+        type: 'imagespin',
+        config: {
+          image_source: albumArtUrl,
+          min_size: 1
+        },
+        virtuals: imageVirtuals
+      }
+      Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
+    }
+    prevAlbumArtRef.current = albumArtUrl
+  }, [albumArtUrl, isActive, imageVirtuals, getVirtuals])
+
+  const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
-    setSelectedVirtuals(typeof value === 'string' ? value.split(',') : value)
+    const selected = typeof value === 'string' ? value.split(',') : value
+    // Remove from image virtuals if present
+    setImageVirtuals(imageVirtuals.filter((v) => !selected.includes(v)))
+    setGradientVirtuals(selected)
+  }
+
+  const handleImageVirtualChange = (event: any) => {
+    const value = event.target.value
+    const selected = typeof value === 'string' ? value.split(',') : value
+    // Remove from gradient virtuals if present
+    setGradientVirtuals(gradientVirtuals.filter((v) => !selected.includes(v)))
+    setImageVirtuals(selected)
   }
 
   return (
@@ -313,42 +370,77 @@ const SpAlbumArtForm = () => {
         </Box>
       )}
 
-      {/* Virtual Selection */}
-      <Select
-        label="Send Gradient To"
-        multiple
-        fullWidth
-        value={selectedVirtuals}
-        onChange={handleVirtualChange}
-        input={<OutlinedInput />}
-        renderValue={(selected) => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((value) => (
-              <Chip key={value} label={value} size="small" />
-            ))}
-          </Box>
-        )}
-      >
-        {Object.keys(virtuals).map((vId) => (
-          <MenuItem key={vId} value={vId}>
-            <Checkbox checked={selectedVirtuals.indexOf(vId) > -1} />
-            <ListItemText primary={vId} />
-          </MenuItem>
-        ))}
-      </Select>
+      {/* Gradient Virtual Selection */}
+      <Box>
+        <Box sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 'bold' }}>Send Gradient To:</Box>
+        <Select
+          multiple
+          fullWidth
+          value={gradientVirtuals}
+          onChange={handleGradientVirtualChange}
+          input={<OutlinedInput />}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} size="small" />
+              ))}
+            </Box>
+          )}
+        >
+          {Object.keys(virtuals).map((vId) => (
+            <MenuItem key={vId} value={vId} disabled={imageVirtuals.includes(vId)}>
+              <Checkbox checked={gradientVirtuals.indexOf(vId) > -1} />
+              <ListItemText primary={vId} />
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+
+      {/* Image Virtual Selection */}
+      <Box>
+        <Box sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 'bold' }}>Send Image To:</Box>
+        <Select
+          multiple
+          fullWidth
+          value={imageVirtuals}
+          onChange={handleImageVirtualChange}
+          input={<OutlinedInput />}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} size="small" />
+              ))}
+            </Box>
+          )}
+        >
+          {Object.keys(virtuals).map((vId) => (
+            <MenuItem key={vId} value={vId} disabled={gradientVirtuals.includes(vId)}>
+              <Checkbox checked={imageVirtuals.indexOf(vId) > -1} />
+              <ListItemText primary={vId} />
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
 
       {/* Action Buttons */}
-      {selectedGradient !== null && selectedVirtuals.length > 0 && (
+      {((selectedGradient !== null && gradientVirtuals.length > 0) ||
+        (albumArtUrl && imageVirtuals.length > 0)) && (
         <Stack direction="row" spacing={1}>
           <Button
             fullWidth
             variant="contained"
             color={isActive ? 'primary' : 'inherit'}
-            onClick={() => applyGradient(false)}
+            onClick={() => {
+              if (isActive) {
+                setIsActive(false)
+              } else {
+                applyBoth(false)
+              }
+            }}
           >
             {isActive ? 'Stop' : 'Play'}
           </Button>
-          <Button fullWidth variant="outlined" onClick={() => applyGradient(true)}>
+          <Button fullWidth variant="outlined" onClick={() => applyBoth(true)}>
             Test Once
           </Button>
         </Stack>
