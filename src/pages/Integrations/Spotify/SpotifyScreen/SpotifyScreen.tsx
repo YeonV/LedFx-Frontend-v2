@@ -19,6 +19,7 @@ import SpAudioFeatures from '../../../../components/Integrations/Spotify/Widgets
 import SpotifyTriggerTable from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpTriggerTable'
 import SpPlaylist from '../../../../components/Integrations/Spotify/Widgets/SpotifyWidgetPro/SpPlaylist'
 import { SpotifyStateContext } from '../../../../components/Integrations/Spotify/SpotifyProvider'
+import useStore from '../../../../store/useStore'
 
 export default function SpotifyScreen({
   className,
@@ -37,6 +38,7 @@ export default function SpotifyScreen({
   const [open, setOpen] = React.useState(false)
   const spotifyCtx = useContext(SpotifyStateContext)
   const premium = spotifyCtx?.track_window?.current_track?.album.name
+  const platform = useStore((state) => state.platform)
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -79,14 +81,16 @@ export default function SpotifyScreen({
         fullScreen
         open={open}
         onClose={handleClose}
-        TransitionComponent={Transition}
-        PaperProps={{
-          style: {
-            backgroundColor: theme.palette.background.default
+        slots={{ transition: Transition }}
+        slotProps={{
+          paper: {
+            sx: {
+              marginTop: isElectron() && platform !== 'darwin' ? '63px' : 0
+            }
           }
         }}
       >
-        <AppBar enableColorOnDark className={classes.appBar}>
+        <AppBar enableColorOnDark className={classes.appBar} color="default">
           <Toolbar>
             <Button
               autoFocus
@@ -103,7 +107,12 @@ export default function SpotifyScreen({
             </Typography>
           </Toolbar>
         </AppBar>
-        <div style={{ margin: '1rem' }}>
+        <div
+          style={{
+            margin: '1rem',
+            backgroundColor: theme.palette.background.default
+          }}
+        >
           <SpotifyWidgetPro />
           <div style={{ marginTop: '1rem' }} />
           <Grid
