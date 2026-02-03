@@ -14,6 +14,9 @@ export const getBaseURL = () => {
         if (window.location.href.startsWith('https')) {
           return 'https://127.0.0.1:8889'
         }
+        if (e) {
+          return 'http://localhost:8888'
+        }
       }
     }
     return 'http://localhost:8888'

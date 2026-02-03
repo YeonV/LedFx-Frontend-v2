@@ -130,6 +130,9 @@ async function waitForAccessToken(timeout: number): Promise<string | null> {
       }
     } catch (e) {
       // Fallthrough to electron-store
+      if (e) {
+        console.log()
+      }
     }
 
     // Try electron-store as backup
