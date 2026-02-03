@@ -89,24 +89,69 @@ interface TransferPlaybackBody {
 
 const cookieOptions = { path: '/' }
 
-// Helper function to wait for the access_token cookie
-function waitForAccessToken(timeout: number): Promise<string | null> {
-  // log('infoSpotify', 'waitForAccessToken called'); // Reduce noise? Only log on failure?
-  return new Promise((resolve) => {
-    const startTime = Date.now()
-    const interval = setInterval(() => {
-      const cookies = new Cookies(null, { path: '/' })
-      const access_token = cookies.get('access_token')
-      if (access_token) {
-        clearInterval(interval)
-        resolve(access_token)
-      } else if (Date.now() - startTime >= timeout) {
-        clearInterval(interval)
-        log('errorSpotify', 'Access Token not defined after waiting timeout')
+// Helper function to get access token from electron-store (for Electron builds)
+async function getTokenFromElectronStore(key: string): Promise<string | null> {
+  if (!(window as any).api) return null
+
+  return new Promise<string | null>((resolve) => {
+    let resolved = false
+    const handler = (...args: any[]) => {
+      const [message] = args
+      const [messageType, data] = message
+      if (messageType === 'store-value' && data?.key === key && !resolved) {
+        resolved = true
+        resolve(data.value)
+      }
+    }
+    ;(window as any).api.receive('fromMain', handler)
+    ;(window as any).api.send('toMain', {
+      command: 'get-store-value',
+      key,
+      defaultValue: null
+    })
+    setTimeout(() => {
+      if (!resolved) {
+        resolved = true
         resolve(null)
       }
-    }, 100)
+    }, 1000)
   })
+}
+
+// Helper function to wait for the access_token cookie, with electron-store fallback
+async function waitForAccessToken(timeout: number): Promise<string | null> {
+  // In Electron, check Zustand state first (faster than IPC)
+  if ((window as any).api) {
+    try {
+      const { default: useStore } = await import('../store/useStore')
+      const token = useStore.getState().spotify.spotifyAuthToken
+      if (token) {
+        return token
+      }
+    } catch (e) {
+      // Fallthrough to electron-store
+    }
+
+    // Try electron-store as backup
+    const storeToken = await getTokenFromElectronStore('spotify-access-token')
+    if (storeToken) return storeToken
+  }
+
+  // For web version, try cookies with timeout
+  const startTime = Date.now()
+  let access_token: string | null = null
+
+  while (!access_token && Date.now() - startTime < timeout) {
+    const cookies = new Cookies(null, { path: '/' })
+    access_token = cookies.get('access_token')
+    if (access_token) {
+      return access_token
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+
+  log('errorSpotify', 'Access Token not defined after waiting timeout')
+  return null
 }
 
 // Helper to handle common API call logic (get token, make request)
@@ -222,7 +267,53 @@ export const finishAuth = async (code: string | null): Promise<FinishAuthResult>
     log('errorSpotify', 'finishAuth called without a code.')
     return { success: false, error: 'Authorization code missing' }
   }
-  const verifier = cookies.get('verifier')
+
+  let verifier = cookies.get('verifier')
+
+  // For Electron, try to get verifier from electron-store if cookie is missing
+  if (!verifier && (window as any).api) {
+    try {
+      verifier = await new Promise<string | null>((resolve) => {
+        let resolved = false
+        const handler = (...args: any[]) => {
+          const [message] = args
+          const [messageType, data] = message
+          if (messageType === 'store-value' && data?.key === 'pkce-verifier' && !resolved) {
+            resolved = true
+            resolve(data.value)
+          }
+        }
+        ;(window as any).api.receive('fromMain', handler)
+
+        // Send the request
+        ;(window as any).api.send('toMain', {
+          command: 'get-store-value',
+          key: 'pkce-verifier',
+          defaultValue: null
+        })
+
+        // Set a timeout in case no response
+        setTimeout(() => {
+          if (!resolved) {
+            resolved = true
+            resolve(null)
+          }
+        }, 2000)
+      })
+
+      // Clear the stored verifier after use
+      if (verifier) {
+        ;(window as any).api.send('toMain', {
+          command: 'set-store-value',
+          key: 'pkce-verifier',
+          value: null
+        })
+      }
+    } catch (e) {
+      console.log('Error retrieving PKCE verifier from electron-store:', e)
+    }
+  }
+
   if (!verifier) {
     log('errorSpotify', 'finishAuth: PKCE verifier cookie missing.')
     return { success: false, error: 'Security verifier missing.' }
@@ -265,6 +356,21 @@ export const finishAuth = async (code: string | null): Promise<FinishAuthResult>
       ...cookieOptions,
       expires: refreshExpDate
     })
+
+    // For Electron, also store tokens in electron-store for persistence
+    if ((window as any).api) {
+      ;(window as any).api.send('toMain', {
+        command: 'set-store-value',
+        key: 'spotify-access-token',
+        value: res.data.access_token
+      })
+      ;(window as any).api.send('toMain', {
+        command: 'set-store-value',
+        key: 'spotify-refresh-token',
+        value: res.data.refresh_token
+      })
+    }
+
     return { success: true, accessToken: res.data.access_token }
   } catch (error: any) {
     const axiosError = error as AxiosError<{ error_description?: string }>
@@ -281,7 +387,13 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
   // ... (Implementation remains the same as your last version, using cookieOptions) ...
   log('successSpotify', 'Attempting refreshAuth')
   const cookies = new Cookies(null, cookieOptions)
-  const refresh_token = cookies.get('refresh_token')
+  let refresh_token = cookies.get('refresh_token')
+
+  // If no refresh token in cookies and we're in Electron, try electron-store
+  if (!refresh_token && (window as any).api) {
+    refresh_token = await getTokenFromElectronStore('spotify-refresh-token')
+  }
+
   if (!refresh_token) {
     log('errorSpotify', 'refreshAuth failed: Refresh Token cookie is missing.')
     return { success: false, error: 'Missing refresh token' }
@@ -309,6 +421,16 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
       ...cookieOptions,
       expires: expDate
     })
+
+    // Update electron-store with new access token
+    if ((window as any).api) {
+      ;(window as any).api.send('toMain', {
+        command: 'set-store-value',
+        key: 'spotify-access-token',
+        value: newAccessToken
+      })
+    }
+
     if (res.data.refresh_token) {
       log('infoSpotify', 'Received new refresh token from Spotify.')
       const refreshExpDate = new Date()
@@ -318,6 +440,15 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
         ...cookieOptions,
         expires: refreshExpDate
       })
+
+      // Update electron-store with new refresh token
+      if ((window as any).api) {
+        ;(window as any).api.send('toMain', {
+          command: 'set-store-value',
+          key: 'spotify-refresh-token',
+          value: res.data.refresh_token
+        })
+      }
     }
     cookies.set('logout', false, cookieOptions)
     return { success: true, newAccessToken }

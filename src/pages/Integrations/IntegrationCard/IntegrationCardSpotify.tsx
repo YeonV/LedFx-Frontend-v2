@@ -25,6 +25,7 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
   const setMe = useStore((state) => state.setMe)
   const me = useStore((state) => state.spotify.me)
   const spAuthenticated = useStore((state) => state.spotify.spAuthenticated)
+  const spotifyAuthToken = useStore((state) => state.spotify.spotifyAuthToken)
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration)
   const player = useStore((state) => state.spotify.player)
 
@@ -68,8 +69,9 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
       }
     }
     // Check Zustand state and integration status
-    if (spAuthenticated && integrations[integration]?.active) {
-      // Use .active? Assuming status===1 means active
+    // Also verify spotifyAuthToken exists (not just spAuthenticated flag)
+    // Check status === 1 (not .active) to match the UI display condition
+    if (spAuthenticated && spotifyAuthToken && integrations[integration]?.status === 1) {
       getMe()
     } else {
       // console.log(
@@ -83,8 +85,9 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     spAuthenticated,
+    spotifyAuthToken,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    integrations[integration]?.active,
+    integrations[integration]?.status,
     setMe,
     integration,
     getIntegrations
@@ -187,7 +190,9 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               variant={variant}
               color={color}
               className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !spAuthenticated}
+              disabled={
+                integrations[integration].status !== 1 || !spAuthenticated || !spotifyAuthToken
+              }
             />
           </div>
         </div>
@@ -215,7 +220,9 @@ const IntegrationCardSpotify = ({ integration }: { integration: string }) => {
               variant={variant}
               color={color}
               className={classes.editButton}
-              disabled={integrations[integration].status !== 1 || !spAuthenticated}
+              disabled={
+                integrations[integration].status !== 1 || !spAuthenticated || !spotifyAuthToken
+              }
             />
           </div>
         </Collapse>

@@ -7,6 +7,8 @@ import {
   useCallback, // Import useCallback
   type JSX
 } from 'react'
+import isElectron from 'is-electron'
+import Cookies from 'universal-cookie'
 
 // Assuming SpotifyState is the type from the Web Playback SDK's player_state_changed event
 import { SpotifyState } from '../../../store/ui/SpotifyState'
@@ -87,6 +89,103 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
   const spotifyAuthToken = useStore((state) => state.spotify.spotifyAuthToken)
   const setSpotifyAuthToken = useStore((state) => state.setSpAuthToken)
   const setSpAuthenticated = useStore((state) => state.setSpAuthenticated)
+
+  // --- Effect: Load tokens from electron-store on mount (for Electron) ---
+  useEffect(() => {
+    if (isElectron() && (window as any).api) {
+      const loadTokens = async () => {
+        try {
+          const cookies = new Cookies()
+
+          // Check if cookies already have tokens
+          if (cookies.get('access_token')) {
+            setSpotifyAuthToken(cookies.get('access_token'))
+            setSpAuthenticated(true)
+            return
+          }
+
+          // Try to get from electron-store
+          const accessToken = await new Promise<string | null>((resolve) => {
+            let resolved = false
+            const handler = (...args: any[]) => {
+              const [message] = args
+              const [messageType, data] = message
+              if (
+                messageType === 'store-value' &&
+                data?.key === 'spotify-access-token' &&
+                !resolved
+              ) {
+                resolved = true
+                console.log(
+                  '[SpotifyProvider] Got access token from store:',
+                  data.value ? 'YES' : 'NO'
+                )
+                resolve(data.value)
+              }
+            }
+            ;(window as any).api.receive('fromMain', handler)
+            ;(window as any).api.send('toMain', {
+              command: 'get-store-value',
+              key: 'spotify-access-token',
+              defaultValue: null
+            })
+            setTimeout(() => {
+              if (!resolved) {
+                resolved = true
+                resolve(null)
+              }
+            }, 1000)
+          })
+
+          if (!accessToken) return
+
+          const refreshToken = await new Promise<string | null>((resolve) => {
+            let resolved = false
+            const handler = (...args: any[]) => {
+              const [message] = args
+              const [messageType, data] = message
+              if (
+                messageType === 'store-value' &&
+                data?.key === 'spotify-refresh-token' &&
+                !resolved
+              ) {
+                resolved = true
+                console.log(
+                  '[SpotifyProvider] Got refresh token from store:',
+                  data.value ? 'YES' : 'NO'
+                )
+                resolve(data.value)
+              }
+            }
+            ;(window as any).api.receive('fromMain', handler)
+            ;(window as any).api.send('toMain', {
+              command: 'get-store-value',
+              key: 'spotify-refresh-token',
+              defaultValue: null
+            })
+            setTimeout(() => {
+              if (!resolved) {
+                resolved = true
+                console.log('[SpotifyProvider] Timeout waiting for refresh token')
+                resolve(null)
+              }
+            }, 1000)
+          })
+
+          if (accessToken && refreshToken) {
+            // In Electron file:// protocol, cookies don't persist
+            // So we directly set Zustand state from electron-store tokens
+            console.log('[SpotifyProvider] Found tokens in electron-store, setting Zustand state')
+            setSpotifyAuthToken(accessToken)
+            setSpAuthenticated(true)
+          }
+        } catch (e) {
+          console.log('[SpotifyProvider] Error loading tokens from electron-store:', e)
+        }
+      }
+      loadTokens()
+    }
+  }, [setSpotifyAuthToken, setSpAuthenticated])
 
   // --- Memoized Controls ---
   const controlSp: ControlSpotify = useMemo(

@@ -1,4 +1,5 @@
 import { HashRouter as Router, BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -63,6 +64,34 @@ const Routings = () => {
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open)
+
+  // Check for stored protocol callback on mount (for Electron production builds)
+  useEffect(() => {
+    if (isElect) {
+      let handled = false
+      const handler = (...args: any[]) => {
+        if (handled) return
+        const [message] = args
+        const [messageType, data] = message
+        if (messageType === 'store-value' && data?.key === 'protocol-callback') {
+          if (data.value && typeof data.value === 'string' && data.value.startsWith('ledfx://')) {
+            handled = true
+            navigate('/callback')
+          }
+        }
+      }
+      window.api.receive('fromMain', handler)
+
+      // Request the value after handler is set up
+      setTimeout(() => {
+        window.api.send('toMain', {
+          command: 'get-store-value',
+          key: 'protocol-callback',
+          defaultValue: null
+        })
+      }, 100)
+    }
+  }, [isElect, navigate])
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
   useHotkeys(['ctrl+alt+d'], () => setMp(!mp))

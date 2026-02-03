@@ -7,6 +7,7 @@ import logoAsset from '../../../assets/logo.png'
 import BladeIcon from '../../../components/Icons/BladeIcon/BladeIcon'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../../../store/useStore' // Import useStore
+import isElectron from 'is-electron'
 
 const Circle = () => (
   <div
@@ -29,9 +30,67 @@ const SpotifyLoginRedirect = () => {
 
   useEffect(() => {
     const processAuth = async () => {
-      // Extract code directly from URL search params
-      const params = new URLSearchParams(window.location.search)
-      const code = params.get('code')
+      let code: string | null = null
+
+      // Check if we're in Electron and have a stored protocol callback
+      if (isElectron()) {
+        try {
+          // Request the stored callback from electron-store via IPC
+          const storeValueReceived = new Promise<string | null>((resolve) => {
+            let resolved = false
+            const handler = (...args: any[]) => {
+              const [message] = args
+              const [messageType, data] = message
+              if (messageType === 'store-value' && data?.key === 'protocol-callback' && !resolved) {
+                resolved = true
+                resolve(data.value)
+              }
+            }
+            window.api.receive('fromMain', handler)
+
+            // Set a timeout in case no response
+            setTimeout(() => {
+              if (!resolved) {
+                resolved = true
+                resolve(null)
+              }
+            }, 1000)
+          })
+
+          window.api.send('toMain', {
+            command: 'get-store-value',
+            key: 'protocol-callback',
+            defaultValue: null
+          })
+
+          const storedCallback = await storeValueReceived
+
+          if (
+            storedCallback &&
+            typeof storedCallback === 'string' &&
+            storedCallback.startsWith('ledfx://')
+          ) {
+            console.log('Found stored protocol callback:', storedCallback)
+            // Extract code from the stored URL
+            const url = new URL(storedCallback.replace('ledfx://', 'https://dummy/'))
+            code = url.searchParams.get('code')
+            // Clear the stored callback
+            window.api.send('toMain', {
+              command: 'set-store-value',
+              key: 'protocol-callback',
+              value: null
+            })
+          }
+        } catch (e) {
+          console.log('Error reading protocol callback from store:', e)
+        }
+      }
+
+      // If no code from electron store, extract from URL search params
+      if (!code) {
+        const params = new URLSearchParams(window.location.search)
+        code = params.get('code')
+      }
 
       if (!code) {
         setStatus('error')

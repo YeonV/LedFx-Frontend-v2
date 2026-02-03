@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Cookies from 'universal-cookie'
 import getPkce from 'oauth-pkce'
 import { Login, Logout } from '@mui/icons-material'
+import isElectron from 'is-electron'
 import useStore from '../../../store/useStore'
 import { logoutAuth } from '../../../utils/spotifyProxies'
 import useIntegrationCardStyles from '../../../pages/Integrations/IntegrationCard/IntegrationCard.styles'
@@ -39,6 +40,14 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   }, [])
   const beginAuth = () => {
     cookies.set('verifier', (codes as any).verifier)
+    // For Electron, also store in electron-store since cookies won't persist across protocol redirect
+    if (isElectron()) {
+      window.api.send('toMain', {
+        command: 'set-store-value',
+        key: 'pkce-verifier',
+        value: (codes as any).verifier
+      })
+    }
     const authURL =
       'https://accounts.spotify.com/authorize/' +
       '?response_type=code' +
@@ -52,13 +61,38 @@ const SpotifyAuthButton = ({ disabled = false }: any) => {
   }
 
   useEffect(() => {
+    // Priority: 1) Zustand state, 2) electron-store (if Electron), 3) cookies
+
+    // First check if Zustand already has the token (from SpotifyProvider)
+    const storeToken = useStore.getState().spotify.spotifyAuthToken
+    if (storeToken) {
+      // Already have token in Zustand, no need to check elsewhere
+      setspAuthenticated(true)
+      return
+    }
+
+    // If Electron, check electron-store before cookies
+    if (isElectron() && (window as any).api) {
+      // SpotifyProvider handles electron-store loading, don't interfere
+      // Just check current Zustand state
+      const authState = useStore.getState().spotify.spAuthenticated
+      if (authState) {
+        setspAuthenticated(true)
+        return
+      }
+    }
+
+    // Fallback to cookies (for web builds)
     const token = cookies.get('access_token')
     if (token) {
       setspAuthenticated(true)
       setSpotifyAuthToken(token)
     } else {
-      setspAuthenticated(false)
-      // setSpotifyAuthToken(null)
+      // Only set to false if we're sure there's no token anywhere
+      const zustandAuth = useStore.getState().spotify.spAuthenticated
+      if (!zustandAuth) {
+        setspAuthenticated(false)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cookies])

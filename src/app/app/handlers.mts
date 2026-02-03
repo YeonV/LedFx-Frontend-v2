@@ -35,6 +35,19 @@ export const handlers = async (
 
   try {
     switch (parameters.command) {
+      case 'get-store-value':
+        {
+          const value = store.get(parameters.key, parameters.defaultValue)
+          wind.webContents.send('fromMain', ['store-value', { key: parameters.key, value }])
+        }
+        break
+      case 'set-store-value':
+        store.set(parameters.key, parameters.value)
+        wind.webContents.send('fromMain', [
+          'store-value-set',
+          { key: parameters.key, success: true }
+        ])
+        break
       case 'close-others':
         BrowserWindow.getAllWindows().forEach((win) => {
           if (win !== wind) {
