@@ -19,6 +19,7 @@ const PlaylistNode = ({ id }: { id: string }) => {
   return (
     <div style={{ width: 250 }}>
       <PlaylistCard
+        flow
         classes={{}}
         order={0}
         playlist={playlist}

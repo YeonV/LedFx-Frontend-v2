@@ -28,7 +28,11 @@ const Title = (
             LedFx
           </Typography>
         </Tooltip>
-        {!process.env.MS_STORE && newVerOnline && frConfig?.updateUrl && frConfig.releaseUrl ? (
+        {!process.env.MS_STORE &&
+        newVerOnline &&
+        frConfig?.updateUrl &&
+        frConfig.releaseUrl &&
+        window.location.origin !== 'https://ledfx.stream' ? (
           <Button
             color={t && ['DarkBw', 'LightBw'].includes(t) ? 'primary' : 'error'}
             variant="contained"
@@ -38,7 +42,9 @@ const Title = (
             New Update
           </Button>
         ) : null}
-        {!process.env.MS_STORE && updateAvailable ? (
+        {!process.env.MS_STORE &&
+        updateAvailable &&
+        window.location.origin !== 'https://ledfx.stream' ? (
           <Button
             color="error"
             variant="contained"

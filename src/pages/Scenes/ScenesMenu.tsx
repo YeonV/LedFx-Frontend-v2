@@ -4,7 +4,7 @@ import { PlaylistAdd, Edit, MoreVert, ChevronLeft, ChevronRight } from '@mui/ico
 import Popover from '../../components/Popover/Popover'
 import useStore from '../../store/useStore'
 
-const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
+const ScenesMenu = ({ sceneId, flow }: { sceneId: string; flow?: boolean }) => {
   const deleteScene = useStore((state) => state.deleteScene)
   const getScenes = useStore((state) => state.getScenes)
   const scenes = useStore((state) => state.scenes)
@@ -53,38 +53,42 @@ const ScenesMenu = ({ sceneId }: { sceneId: string }) => {
             <Edit />
           </ListItemIcon>
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            addScene2PL(sceneId)
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-        </MenuItem>
-        <MenuItem
-          disabled={order < 1}
-          onClick={() => {
-            setSceneOrderUp(sceneId)
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <ChevronLeft />
-          </ListItemIcon>
-        </MenuItem>
-        <MenuItem
-          disabled={order >= sceneOrder.length - 1}
-          onClick={() => {
-            setSceneOrderDown(sceneId)
-            handleClose()
-          }}
-        >
-          <ListItemIcon>
-            <ChevronRight />
-          </ListItemIcon>
-        </MenuItem>
+        {!flow && (
+          <>
+            <MenuItem
+              onClick={() => {
+                addScene2PL(sceneId)
+                handleClose()
+              }}
+            >
+              <ListItemIcon>
+                <PlaylistAdd />
+              </ListItemIcon>
+            </MenuItem>
+            <MenuItem
+              disabled={order < 1}
+              onClick={() => {
+                setSceneOrderUp(sceneId)
+                handleClose()
+              }}
+            >
+              <ListItemIcon>
+                <ChevronLeft />
+              </ListItemIcon>
+            </MenuItem>
+            <MenuItem
+              disabled={order >= sceneOrder.length - 1}
+              onClick={() => {
+                setSceneOrderDown(sceneId)
+                handleClose()
+              }}
+            >
+              <ListItemIcon>
+                <ChevronRight />
+              </ListItemIcon>
+            </MenuItem>
+          </>
+        )}
         <Popover
           type="menuItem"
           onConfirm={() => {

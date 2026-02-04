@@ -1,6 +1,6 @@
 import { useTheme, Stack } from '@mui/material'
 import BladeFrame from '../../components/SchemaForm/components/BladeFrame'
-import BackendPlaylist from '../Scenes/BackendPlaylist'
+import BackendPlaylist from '../Scenes/BackendPlaylist/BackendPlaylist'
 
 const DbScenesBackendPL = () => {
   const theme = useTheme()

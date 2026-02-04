@@ -24,6 +24,7 @@ const SceneNode = ({ id, data }: { id: string; data: { name: string } }) => {
   return (
     <div style={{ width: 250 }}>
       <SceneCard
+        flow
         sceneId={id}
         scene={sceneData}
         order={0}

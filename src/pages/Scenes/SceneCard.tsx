@@ -2,6 +2,8 @@ import { Card, CardActionArea, CardActions, Typography, Chip, useTheme, Grid } f
 import ScenesMenu from './ScenesMenu'
 import SceneImage from './ScenesImage'
 import { StoredSceneConfig } from '../../api/ledfx.types'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import { Stack } from '@mui/system'
 
 const SceneCard = ({
   sceneId,
@@ -9,7 +11,8 @@ const SceneCard = ({
   order,
   handleActivateScene,
   features,
-  classes
+  classes,
+  flow
 }: {
   sceneId: string
   scene: StoredSceneConfig
@@ -17,6 +20,7 @@ const SceneCard = ({
   handleActivateScene: (_id: string) => void
   features: any
   classes: any
+  flow?: boolean
 }) => {
   const theme = useTheme()
 
@@ -64,11 +68,14 @@ const SceneCard = ({
           }}
           className="step-scenes-five"
         >
-          <Typography className={classes.sceneTitle} variant="h5" component="h2">
-            {scene.name || sceneId}
-          </Typography>
+          <Stack direction="row" spacing={1}>
+            {flow && <BladeIcon name={'Wallpaper'} />}
+            <Typography className={classes.sceneTitle} variant="h5" component="h2">
+              {scene.name || sceneId}
+            </Typography>
+          </Stack>
           {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <ScenesMenu sceneId={sceneId} />
+            <ScenesMenu sceneId={sceneId} flow />
           )}
         </CardActions>
       </Card>

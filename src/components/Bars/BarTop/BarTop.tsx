@@ -330,7 +330,9 @@ const TopBar = () => {
             >
               {features.firetv && <FireTv />}
               {Title(pathname, latestTag, updateAvailable, virtuals, frConfig)}
-              <QrConnector hosts={[...hosts]} />
+              {window.location.origin !== 'https://ledfx.stream' && (
+                <QrConnector hosts={[...hosts]} />
+              )}
             </Typography>
             <div
               style={{

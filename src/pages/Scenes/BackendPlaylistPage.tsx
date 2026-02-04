@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from '@mui/material'
-import BackendPlaylist from './BackendPlaylist'
+import BackendPlaylist from './BackendPlaylist/BackendPlaylist'
 
 export default function BackendPlaylistPage() {
   return (

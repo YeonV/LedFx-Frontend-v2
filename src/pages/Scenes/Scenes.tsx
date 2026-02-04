@@ -9,7 +9,7 @@ import ScenesPlaylist from './ScenesPlaylist'
 import useStyles from './Scenes.styles'
 import { ISceneOrder } from '../../store/api/storeScenes'
 import SceneCard from './SceneCard'
-import BackendPlaylist from './BackendPlaylist'
+import BackendPlaylist from './BackendPlaylist/BackendPlaylist'
 
 const Scenes = () => {
   const classes = useStyles()

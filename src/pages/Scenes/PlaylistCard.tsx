@@ -2,6 +2,8 @@ import { Card, CardActionArea, CardActions, Typography, useTheme, Grid } from '@
 import SceneImage from './ScenesImage'
 import { PlaylistConfig } from '../../api/ledfx.types'
 import PlaylistCardMenu from './PlaylistCardMenu'
+import { Stack } from '@mui/system'
+import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 
 interface PlaylistCardProps {
   playlistId: string
@@ -13,6 +15,7 @@ interface PlaylistCardProps {
   handleEditPlaylist: (id: string) => void
   isActive?: boolean
   classes: any
+  flow?: boolean
 }
 
 const PlaylistCard = ({
@@ -22,7 +25,8 @@ const PlaylistCard = ({
   handleStartPlaylist,
   handleEditPlaylist,
   isActive = false,
-  classes
+  classes,
+  flow
 }: PlaylistCardProps) => {
   const theme = useTheme()
 
@@ -120,9 +124,12 @@ const PlaylistCard = ({
             width: '100%'
           }}
         >
-          <Typography className={classes.sceneTitle} variant="h5" component="h2">
-            {playlist?.name || playlistId}
-          </Typography>
+          <Stack direction="row" spacing={1}>
+            {flow && <BladeIcon name={'PlaylistPlay'} />}
+            <Typography className={classes.sceneTitle} variant="h5" component="h2">
+              {playlist?.name || playlistId}
+            </Typography>
+          </Stack>
           {!(window.localStorage.getItem('guestmode') === 'activated') && (
             <PlaylistCardMenu
               playlistId={playlistId}
