@@ -24,6 +24,14 @@ import {
   toggleMute
 } from './utils/audioManager.mjs'
 import { enableSsl, disableSsl, getSslStatus } from './utils/sslManager.mjs'
+import {
+  deleteSongDetector,
+  downloadSongDetector,
+  getSongDetectorStatus,
+  isSongDetectorInstalled,
+  startSongDetector,
+  stopSongDetector
+} from './utils/songDetector.mjs'
 
 export const handlers = async (
   wind: BrowserWindow,
@@ -411,6 +419,83 @@ export const handlers = async (
         } else if (preference === 'never') {
           store.set('ssl-dont-ask-again', true)
           store.set('ssl-auto-enable', false)
+        }
+        break
+      }
+      case 'check-song-detector': {
+        console.log('[Handler] Checking song detector installation...')
+        const installed = await isSongDetectorInstalled()
+        const isRunning = !!(subprocesses.songDetector && subprocesses.songDetector.running)
+        console.log('[Handler] Song detector installed:', installed, 'running:', isRunning)
+        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning }])
+        break
+      }
+      case 'get-song-detector-status': {
+        console.log('[Handler] Getting song detector status...')
+        const status = await getSongDetectorStatus()
+        console.log('[Handler] Song detector status:', status)
+        wind.webContents.send('fromMain', ['song-detector-status', status])
+        break
+      }
+      case 'start-song-detector': {
+        const deviceName = parameters.deviceName || 'ledfxcc'
+        console.log('[Handler] Starting song detector with device:', deviceName)
+
+        // Check if already running
+        if (subprocesses.songDetector && subprocesses.songDetector.running) {
+          console.log('[Handler] Song detector already running, skipping start')
+          wind.webContents.send('fromMain', ['song-detector-already-running', { deviceName }])
+          break
+        }
+
+        const songDetectorProcess = startSongDetector(wind, deviceName)
+        if (songDetectorProcess) {
+          subprocesses.songDetector = songDetectorProcess
+          console.log('[Handler] Song detector process started')
+        } else {
+          console.log('[Handler] Failed to start song detector process')
+        }
+        break
+      }
+      case 'download-song-detector': {
+        console.log('[Handler] Downloading song detector...')
+        try {
+          await downloadSongDetector(wind)
+          // After download, check availability again
+          const installed = await isSongDetectorInstalled()
+          const isRunning = !!(subprocesses.songDetector && subprocesses.songDetector.running)
+          wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning }])
+        } catch (error) {
+          console.error('[Handler] Download failed:', error)
+        }
+        break
+      }
+      case 'delete-song-detector': {
+        console.log('[Handler] Deleting song detector...')
+        // Stop it first if running
+        if (subprocesses.songDetector) {
+          stopSongDetector(subprocesses.songDetector, wind)
+          delete subprocesses.songDetector
+        }
+        await deleteSongDetector(wind)
+        // After delete, check availability again
+        const installed = await isSongDetectorInstalled()
+        const isRunning = !!(subprocesses.songDetector && subprocesses.songDetector.running)
+        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning }])
+        break
+      }
+      case 'stop-song-detector': {
+        console.log('[Handler] Stopping song detector...')
+        if (subprocesses.songDetector) {
+          const success = stopSongDetector(subprocesses.songDetector, wind)
+          if (success) {
+            delete subprocesses.songDetector
+            console.log('[Handler] Song detector stopped successfully')
+          } else {
+            console.log('[Handler] Failed to stop song detector')
+          }
+        } else {
+          console.log('[Handler] No song detector subprocess found')
         }
         break
       }

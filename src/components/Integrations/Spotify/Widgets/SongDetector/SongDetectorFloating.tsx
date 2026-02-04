@@ -21,7 +21,7 @@ const SongDetectorFloating = ({ close }: { close?: () => void }) => {
           display="flex"
         >
           {close && <span />}
-          <Typography>Song Detector</Typography>
+          <Typography>Song Detector (CTRL+ALT+T)</Typography>
           {close && (
             <IconButton onClick={() => close()}>
               <Close />

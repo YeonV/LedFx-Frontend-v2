@@ -16,6 +16,7 @@ import {
   AccountTree,
   Equalizer,
   Keyboard,
+  LibraryMusic,
   QueueMusic,
   SettingsInputComponent,
   SportsEsports
@@ -34,6 +35,7 @@ const SettingsNew = () => {
   const setKeybinding = useStore((state) => state.ui.setKeybinding)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const setPgs = useStore((state) => state.ui.setPgs)
+  const setSd = useStore((state) => state.ui.setSd)
   const loc = useLocation()
 
   useEffect(() => {
@@ -88,6 +90,13 @@ const SettingsNew = () => {
           icon={<QueueMusic fontSize="large" />}
           text="Scene Playlists"
           onClick={() => navigate('/playlists')}
+        />
+        <Tile
+          client
+          beta
+          icon={<LibraryMusic fontSize="large" />}
+          text="Song Detector"
+          onClick={() => setSd(true)}
         />
         <Tile
           client
