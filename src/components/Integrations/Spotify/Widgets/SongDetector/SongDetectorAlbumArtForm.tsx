@@ -238,6 +238,7 @@ const SongDetectorAlbumArtForm = () => {
     setGradients(generatedGradients)
 
     // Auto-select first gradient if none selected
+    const gradientToUse = selectedGradient !== null ? selectedGradient : 0
     if (selectedGradient === null && generatedGradients.length > 0) {
       setSelectedGradient(0)
     }
@@ -247,13 +248,13 @@ const SongDetectorAlbumArtForm = () => {
     if (
       colorsKey !== prevColorsRef.current &&
       isActive &&
-      selectedGradient !== null &&
       gradientVirtuals.length > 0 &&
-      generatedGradients[selectedGradient]
+      generatedGradients.length > 0 &&
+      generatedGradients[gradientToUse]
     ) {
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global',
-        gradient: generatedGradients[selectedGradient],
+        gradient: generatedGradients[gradientToUse],
         virtuals: gradientVirtuals
       }).then(() => getVirtuals())
     }
