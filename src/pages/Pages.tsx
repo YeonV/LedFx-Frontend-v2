@@ -75,6 +75,10 @@ const Routings = () => {
         const [messageType, data] = message
         if (messageType === 'store-value' && data?.key === 'protocol-callback') {
           if (data.value && typeof data.value === 'string' && data.value.startsWith('ledfx://')) {
+            // Ignore song detector calls - they're handled in App.tsx
+            if (data.value.startsWith('ledfx://song/')) {
+              return
+            }
             handled = true
             navigate('/callback')
           }

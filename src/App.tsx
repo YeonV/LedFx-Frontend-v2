@@ -144,105 +144,152 @@ export default function App() {
   }
   useEffect(() => {
     if (protoCall !== '') {
+      // Early exit for song protocol to avoid any side effects
+      if (protoCall.startsWith('ledfx://song/')) {
+        // Parse protocol URL more carefully to preserve paths with slashes
+        const urlWithoutProtocol = protoCall.replace('ledfx://', '')
+        const parts = urlWithoutProtocol.split('/')
+        const domain = parts[0]
+
+        if (domain === 'song' && parts.length >= 3) {
+          const device = parts[1]
+          const songTitle = parts[2]
+          const thumbnailPath = parts.slice(3).join('/') // Rejoin remaining parts for full path
+
+          console.table({
+            Domain: domain,
+            Action: device,
+            Payload: songTitle,
+            Extra: thumbnailPath || 'none'
+          })
+
+          const thumbnail = thumbnailPath ? decodeURIComponent(thumbnailPath) : null
+          console.log(
+            'Song detector - Device:',
+            device,
+            'Song:',
+            songTitle,
+            'Thumbnail:',
+            thumbnail
+          )
+
+          if (device === 'ledfxcc' && songTitle.length > 3) {
+            setCurrentTrack(songTitle)
+            // Store thumbnail path for album art form
+            if (thumbnail) {
+              useStore.getState().setThumbnailPath(thumbnail)
+            }
+          } else {
+            const virtual = Object.keys(virtuals).find((virt) => virtuals[virt].id === device)
+            if (virtual && songTitle.length > 3) {
+              setEffect(
+                device,
+                'texter2d',
+                {
+                  gradient:
+                    'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)',
+                  option_2: false,
+                  flip: false,
+                  blur: 0,
+                  flip_horizontal: false,
+                  speed_option_1: 3,
+                  resize_method: 'Fast',
+                  gradient_roll: 0,
+                  alpha: false,
+                  value_option_1: 0.5,
+                  font: 'Blade-5x8',
+                  use_gradient: false,
+                  diag: false,
+                  test: false,
+                  impulse_decay: 0.1,
+                  mirror: false,
+                  flip_vertical: false,
+                  text_effect: 'Side Scroll',
+                  multiplier: 1,
+                  brightness: 1,
+                  text_color: '#ff0000',
+                  background_brightness: 1,
+                  rotate: 0,
+                  dump: false,
+                  option_1: false,
+                  height_percent: 50,
+                  background_color: '#000000',
+                  text: songTitle
+                },
+                true,
+                true
+              )
+            }
+          }
+          setProtoCall('')
+          return // Exit early for song protocol
+        }
+      }
+
       // showSnackbar('info', `External call: ${protoCall}`)
-      const proto = protoCall.split('/').filter((n) => n)
+
+      // Parse protocol URL more carefully to preserve paths with slashes
+      const urlWithoutProtocol = protoCall.replace('ledfx://', '')
+      const parts = urlWithoutProtocol.split('/')
+      const domain = parts[0]
+
+      // For other protocols, use the old parsing method
+      const proto = urlWithoutProtocol.split('/').filter((n) => n)
 
       console.table({
-        Domain: proto[1],
-        Action: proto[2],
-        Payload: proto[3]
+        Domain: proto[0],
+        Action: proto[1],
+        Payload: proto[2],
+        Extra: proto[3]
       })
-      if (proto[1] === 'callback') {
+      if (proto[0] === 'callback') {
         const cookies = new Cookies()
         const expDate = new Date()
         expDate.setHours(expDate.getHours() + 1)
         cookies.remove('access_token', { path: '/integrations' })
         cookies.set(
           'access_token',
-          proto[2].replace('?code=', '').replace('#%2FIntegrations%3F', ''),
+          proto[1].replace('?code=', '').replace('#%2FIntegrations%3F', ''),
           {
             expires: expDate
           }
         )
-      } else if (proto[1] === 'auth') {
+      } else if (proto[0] === 'auth') {
         login(proto.join().split('redirect?')[1]).then(() => {
           window.location.reload()
         })
-      } else if (proto[1] === 'command') {
-        if (proto[2] === 'theme') {
-          if (proto[3] === 'light') {
+      } else if (proto[0] === 'command') {
+        if (proto[1] === 'theme') {
+          if (proto[2] === 'light') {
             window.localStorage.setItem('ledfx-theme', 'LightBw')
             reloadTheme()
           }
-          if (proto[3] === 'dark') {
+          if (proto[2] === 'dark') {
             window.localStorage.setItem('ledfx-theme', 'DarkBw')
             reloadTheme()
           }
-          if (proto[3] === 'reset') {
+          if (proto[2] === 'reset') {
             window.localStorage.setItem('ledfx-theme', 'DarkOrange')
             reloadTheme()
           }
-        } else if (proto[2] === 'playlist') {
-          if (proto[3] === 'next') {
+        } else if (proto[1] === 'playlist') {
+          if (proto[2] === 'next') {
             handleNext()
             showSnackbar('info', 'Next playlist')
-          } else if (proto[3] === 'previous' || proto[3] === 'prev') {
+          } else if (proto[2] === 'previous' || proto[2] === 'prev') {
             handlePrev()
             showSnackbar('info', 'Previous playlist')
-          } else if (proto[3] === 'play' || proto[3] === 'stop' || proto[3] === 'pause') {
+          } else if (proto[2] === 'play' || proto[2] === 'stop' || proto[2] === 'pause') {
             toggleScenePLplay()
             showSnackbar('info', 'Toggle playlist')
-          } else if (proto[3] === 'repeat') {
+          } else if (proto[2] === 'repeat') {
             toggleScenePLrepeat()
             showSnackbar('info', 'Pause playlist')
           }
         }
-      } else if (proto[1] === 'song') {
-        const v = proto[2]
-        if (v === 'ledfxcc' && proto[3].length > 3) {
-          setCurrentTrack(proto[3])
-        } else {
-          const virtual = Object.keys(virtuals).find((virt) => virtuals[virt].id === v)
-          if (virtual && proto[3].length > 3) {
-            setEffect(
-              v,
-              'texter2d',
-              {
-                gradient:
-                  'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)',
-                option_2: false,
-                flip: false,
-                blur: 0,
-                flip_horizontal: false,
-                speed_option_1: 2,
-                resize_method: 'Fast',
-                gradient_roll: 0,
-                alpha: false,
-                value_option_1: 0.5,
-                font: 'Blade-5x8',
-                use_gradient: false,
-                diag: false,
-                test: false,
-                impulse_decay: 0.1,
-                mirror: false,
-                flip_vertical: false,
-                text_effect: 'Side Scroll',
-                multiplier: 1,
-                brightness: 1,
-                text_color: '#ff0000',
-                background_brightness: 1,
-                rotate: 0,
-                dump: false,
-                option_1: false,
-                height_percent: 100,
-                background_color: '#000000',
-                text: proto[3]
-              },
-              true,
-              true
-            )
-          }
-        }
+      } else if (proto[0] === 'song') {
+        // This block should not be reached as song is handled above
+        console.warn('Song protocol reached fallback handler - this should not happen')
       } else {
         showSnackbar('info', `External call: ${protoCall.replace('ledfx://', '')}`)
       }

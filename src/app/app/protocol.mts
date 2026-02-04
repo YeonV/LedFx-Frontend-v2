@@ -49,25 +49,28 @@ export const handleProtocol = (
               console.log('Received protocol callback:', protocolUrl)
               store.set('protocol-callback', protocolUrl)
 
-              if (isDev) {
-                // In dev mode, navigate to the app's main page
-                let sslEnabled = false
-                try {
-                  const envPath = path.join(__dirname, '../../.env')
-                  if (fs.existsSync(envPath)) {
-                    const envContent = fs.readFileSync(envPath, 'utf-8')
-                    sslEnabled = envContent.includes('HTTPS=true')
+              // Skip page reload for song detector calls - just store and send the message
+              if (!protocolUrl.startsWith('ledfx://song/')) {
+                if (isDev) {
+                  // In dev mode, navigate to the app's main page
+                  let sslEnabled = false
+                  try {
+                    const envPath = path.join(__dirname, '../../.env')
+                    if (fs.existsSync(envPath)) {
+                      const envContent = fs.readFileSync(envPath, 'utf-8')
+                      sslEnabled = envContent.includes('HTTPS=true')
+                    }
+                  } catch (e) {
+                    console.log(e)
                   }
-                } catch (e) {
-                  console.log(e)
+                  const protocol = sslEnabled ? 'https' : 'http'
+                  wind.loadURL(`${protocol}://localhost:3000`)
+                } else {
+                  // In production, load the app's main page from build folder
+                  const appPath = app.getAppPath()
+                  const indexPath = path.join(appPath, 'build', 'index.html')
+                  wind.loadURL(`file://${indexPath}`)
                 }
-                const protocol = sslEnabled ? 'https' : 'http'
-                wind.loadURL(`${protocol}://localhost:3000`)
-              } else {
-                // In production, load the app's main page from build folder
-                const appPath = app.getAppPath()
-                const indexPath = path.join(appPath, 'build', 'index.html')
-                wind.loadURL(`file://${indexPath}`)
               }
             }
 
@@ -88,25 +91,28 @@ export const handleProtocol = (
           console.log('Received protocol callback:', url)
           store.set('protocol-callback', url)
 
-          if (isDev) {
-            // In dev mode, load the app's main page
-            let sslEnabled = false
-            try {
-              const envPath = path.join(__dirname, '../../.env')
-              if (fs.existsSync(envPath)) {
-                const envContent = fs.readFileSync(envPath, 'utf-8')
-                sslEnabled = envContent.includes('HTTPS=true')
+          // Skip page reload for song detector calls - just store and focus the window
+          if (!url.startsWith('ledfx://song/')) {
+            if (isDev) {
+              // In dev mode, load the app's main page
+              let sslEnabled = false
+              try {
+                const envPath = path.join(__dirname, '../../.env')
+                if (fs.existsSync(envPath)) {
+                  const envContent = fs.readFileSync(envPath, 'utf-8')
+                  sslEnabled = envContent.includes('HTTPS=true')
+                }
+              } catch (e) {
+                console.log('Error reading .env file for SSL check:', e)
               }
-            } catch (e) {
-              console.log('Error reading .env file for SSL check:', e)
+              const protocol = sslEnabled ? 'https' : 'http'
+              wind.loadURL(`${protocol}://localhost:3000`)
+            } else {
+              // In production, load the app's main page from build folder
+              const appPath = app.getAppPath()
+              const indexPath = path.join(appPath, 'build', 'index.html')
+              wind.loadURL(`file://${indexPath}`)
             }
-            const protocol = sslEnabled ? 'https' : 'http'
-            wind.loadURL(`${protocol}://localhost:3000`)
-          } else {
-            // In production, load the app's main page from build folder
-            const appPath = app.getAppPath()
-            const indexPath = path.join(appPath, 'build', 'index.html')
-            wind.loadURL(`file://${indexPath}`)
           }
           wind.focus()
         }

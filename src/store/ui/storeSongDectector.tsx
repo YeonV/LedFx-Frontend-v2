@@ -2,6 +2,7 @@ import { produce } from 'immer'
 
 const storeSongDectector = (set: any) => ({
   song: '',
+  thumbnailPath: '',
   setSong: (url: string) => {
     set(
       produce((state: any) => {
@@ -9,6 +10,15 @@ const storeSongDectector = (set: any) => ({
       }),
       false,
       'songDetector/setSong'
+    )
+  },
+  setThumbnailPath: (path: string) => {
+    set(
+      produce((state: any) => {
+        state.thumbnailPath = path
+      }),
+      false,
+      'songDetector/setThumbnailPath'
     )
   }
 })

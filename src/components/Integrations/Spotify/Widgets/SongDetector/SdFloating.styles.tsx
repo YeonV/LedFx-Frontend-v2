@@ -5,7 +5,7 @@ const useStyles = makeStyles(() => ({
     padding: 0,
     overflow: 'hidden',
     borderRadius: 16,
-    width: 500,
+    width: 900,
     maxWidth: '100%',
     minHeight: 400,
     margin: '0',
@@ -13,14 +13,19 @@ const useStyles = makeStyles(() => ({
     zIndex: 1,
     backgroundColor: '#2229',
     backdropFilter: 'blur(40px)',
+    '@media (max-width: 960px)': {
+      '&&': {
+        width: 700
+      }
+    },
     '@media (max-width: 720px)': {
       '&&': {
-        width: 400
+        width: 500
       }
     },
     '&.small': {
       '&&': {
-        width: 400
+        width: 700
       }
     }
   }

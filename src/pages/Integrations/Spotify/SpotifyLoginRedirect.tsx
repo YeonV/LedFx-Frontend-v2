@@ -65,21 +65,28 @@ const SpotifyLoginRedirect = () => {
 
           const storedCallback = await storeValueReceived
 
-          if (
-            storedCallback &&
-            typeof storedCallback === 'string' &&
-            storedCallback.startsWith('ledfx://')
-          ) {
-            console.log('Found stored protocol callback:', storedCallback)
-            // Extract code from the stored URL
-            const url = new URL(storedCallback.replace('ledfx://', 'https://dummy/'))
-            code = url.searchParams.get('code')
-            // Clear the stored callback
-            window.api.send('toMain', {
-              command: 'set-store-value',
-              key: 'protocol-callback',
-              value: null
-            })
+          if (storedCallback && typeof storedCallback === 'string') {
+            // If it's a song detector call, just clear it and ignore
+            if (storedCallback.startsWith('ledfx://song/')) {
+              console.log('Ignoring song detector callback:', storedCallback)
+              window.api.send('toMain', {
+                command: 'set-store-value',
+                key: 'protocol-callback',
+                value: null
+              })
+            } else if (storedCallback.startsWith('ledfx://')) {
+              // Process legitimate auth callbacks
+              console.log('Found stored protocol callback:', storedCallback)
+              // Extract code from the stored URL
+              const url = new URL(storedCallback.replace('ledfx://', 'https://dummy/'))
+              code = url.searchParams.get('code')
+              // Clear the stored callback
+              window.api.send('toMain', {
+                command: 'set-store-value',
+                key: 'protocol-callback',
+                value: null
+              })
+            }
           }
         } catch (e) {
           console.log('Error reading protocol callback from store:', e)
