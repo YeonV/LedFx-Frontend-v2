@@ -230,8 +230,6 @@ export default function App() {
 
       // Parse protocol URL more carefully to preserve paths with slashes
       const urlWithoutProtocol = protoCall.replace('ledfx://', '')
-      const parts = urlWithoutProtocol.split('/')
-      const domain = parts[0]
 
       // For other protocols, use the old parsing method
       const proto = urlWithoutProtocol.split('/').filter((n) => n)

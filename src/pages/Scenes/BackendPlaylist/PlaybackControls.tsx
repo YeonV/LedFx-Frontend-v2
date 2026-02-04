@@ -16,7 +16,6 @@ export default function PlaybackControls({
   playlistName,
   playlistImage,
   isPlaying,
-  isPaused,
   playlistRuntimeState,
   runtimeMode,
   onPlayPause,

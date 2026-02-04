@@ -31,8 +31,6 @@ const SpTexterForm = () => {
   const sendSpotifyTrack = useStore((state) => state.spotify.sendSpotifyTrack)
   const colors = useStore((state) => state.colors)
 
-  const setSpTexterFallback = useStore((state) => state.setSpTexterFallback)
-  const setSendSpotifyTrack = useStore((state) => state.setSendSpotifyTrack)
   const setSpTexterTextColor = useStore((state) => state.setSpTexterTextColor)
   const setSpTexterFlipVertical = useStore((state) => state.setSpTexterFlipVertical)
   const setSpTexterFlipHorizontal = useStore((state) => state.setSpTexterFlipHorizontal)

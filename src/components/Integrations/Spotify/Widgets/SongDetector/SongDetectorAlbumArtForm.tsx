@@ -28,7 +28,6 @@ const SongDetectorAlbumArtForm = () => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const currentTrack = useStore((state) => state.spotify.currentTrack)
   const thumbnailPath = useStore((state) => state.thumbnailPath)
-  const setEffect = useStore((state) => state.setEffect)
 
   const [gradientVirtuals, setGradientVirtuals] = useState<string[]>([])
   const [imageVirtuals, setImageVirtuals] = useState<string[]>([])
@@ -85,7 +84,7 @@ const SongDetectorAlbumArtForm = () => {
   }
 
   // Helper: Filter similar colors
-  const filterSimilarColors = (colorList: string[], threshold = 50): string[] => {
+  const filterSimilarColors = useCallback((colorList: string[], threshold = 50): string[] => {
     const filtered: string[] = []
     for (const color of colorList) {
       if (filtered.every((c) => colorDistance(c, color) > threshold)) {
@@ -93,7 +92,7 @@ const SongDetectorAlbumArtForm = () => {
       }
     }
     return filtered
-  }
+  }, [])
 
   const applyBoth = useCallback(
     async (once: boolean = false) => {
@@ -195,7 +194,7 @@ const SongDetectorAlbumArtForm = () => {
     img.onerror = () => {
       console.error('Failed to load album art from:', albumArtUrl)
     }
-  }, [albumArtUrl])
+  }, [albumArtUrl, filterSimilarColors])
 
   // Generate multiple gradient variations from colors
   useEffect(() => {
