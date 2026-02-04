@@ -58,6 +58,7 @@ jobs:
           overwrite: true
           update_latest_release: true
 
+
       # - name: Prepare Trigger Hass
       #   id: hass
       #   run: |
