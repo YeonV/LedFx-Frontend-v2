@@ -38,7 +38,6 @@ const GeneralCard = () => {
   // SSL state management
   const [sslEnabled, setSslEnabled] = useState(false)
   const [sslLoading, setSslLoading] = useState(false)
-  const [sslPreference, setSslPreference] = useState<string>('ask')
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
 
@@ -59,8 +58,6 @@ const GeneralCard = () => {
   window.api?.receive('fromMain', (args: any) => {
     if (args[0] === 'ssl-status') {
       setSslEnabled(args[1].enabled)
-    } else if (args[0] === 'ssl-preference') {
-      setSslPreference(args[1])
     } else if (args[0] === 'ssl-enable-result' || args[0] === 'ssl-disable-result') {
       // Refresh SSL status
       window.api?.send('toMain', { command: 'get-ssl-status' })
@@ -75,32 +72,19 @@ const GeneralCard = () => {
     if (window.api) {
       // Check SSL status
       window.api.send('toMain', { command: 'get-ssl-status' })
-      window.api.send('toMain', { command: 'get-ssl-preference' })
     }
   }, [])
 
   const handleEnableSSL = () => {
     setSslLoading(true)
     window.api?.send('toMain', { command: 'enable-ssl' })
-    // Set preference to "always enable" when enabling
-    window.api?.send('toMain', { command: 'set-ssl-preference', preference: 'always' })
-    setSslPreference('always')
     setTimeout(() => setSslLoading(false), 5000)
   }
 
   const handleDisableSSL = () => {
     setSslLoading(true)
     window.api?.send('toMain', { command: 'disable-ssl' })
-    // Reset preference to "ask on startup" when disabling
-    window.api?.send('toMain', { command: 'set-ssl-preference', preference: 'ask' })
-    setSslPreference('ask')
     setTimeout(() => setSslLoading(false), 3000)
-  }
-
-  const handleSslPreferenceChange = (event: any) => {
-    const value = event.target.value
-    setSslPreference(value)
-    window.api?.send('toMain', { command: 'set-ssl-preference', preference: value })
   }
 
   const configDownload = async () => {
@@ -303,19 +287,6 @@ const GeneralCard = () => {
                   </Button>
                 )}
               </Box>
-            </SettingsRow>
-
-            <SettingsRow title="SSL Preference">
-              <Select
-                value={sslPreference}
-                onChange={handleSslPreferenceChange}
-                size="small"
-                sx={{ minWidth: 150 }}
-              >
-                <MenuItem value="ask">Ask on startup</MenuItem>
-                <MenuItem value="auto">Enable automatically</MenuItem>
-                <MenuItem value="never">Never enable</MenuItem>
-              </Select>
             </SettingsRow>
 
             {sslEnabled && (

@@ -1,6 +1,5 @@
 import store from './store.mjs'
-import { enableSsl, isSslInstalled, isHostsFileConfigured } from './sslManager.mjs'
-import { showSslChoice, hideSslChoice, updateSplashStatus } from './splash.mjs'
+import { isSslInstalled, isHostsFileConfigured } from './sslManager.mjs'
 
 /**
  * Perform SSL setup based on user preference
@@ -14,80 +13,15 @@ export const setupSsl = async (): Promise<boolean> => {
   console.log('SSL check results - installed:', actuallyInstalled, 'hosts:', hostsConfigured)
 
   if (actuallyInstalled && hostsConfigured) {
-    console.log('SSL already configured, skipping installation')
+    console.log('SSL already configured, enabling HTTPS')
     store.set('ledfx-ssl-enabled', true)
     return true
   }
 
-  // Check if user previously chose "don't ask again"
-  const dontAskAgain = store.get('ssl-dont-ask-again', false)
-  const autoEnable = store.get('ssl-auto-enable', false)
-
-  // Always show dialog if certificates don't exist, even if preference is set
-  // This handles the case where user deleted certificates manually
-  if (dontAskAgain && actuallyInstalled === false && autoEnable === false) {
-    console.log('Certificates missing but user previously chose to skip - showing dialog again')
-    store.delete('ssl-dont-ask-again')
-    store.delete('ssl-auto-enable')
-  }
-
-  if (dontAskAgain && (actuallyInstalled || !autoEnable)) {
-    // User previously made a choice with "remember"
-    if (autoEnable) {
-      console.log('Auto-enabling SSL per user preference...')
-      // Set the flag IMMEDIATELY (optimistically) so core.js can read it
-      store.set('ledfx-ssl-enabled', true)
-
-      updateSplashStatus('Installing SSL certificates...')
-      const result = await enableSsl()
-      if (result.success) {
-        console.log('SSL enabled successfully')
-        return true
-      } else {
-        console.error('SSL setup failed:', result.message)
-        // Revert on failure
-        store.set('ledfx-ssl-enabled', false)
-        return false
-      }
-    } else {
-      console.log('Skipping SSL setup per user preference')
-      store.set('ledfx-ssl-enabled', false)
-      return true
-    }
-  }
-
-  // Show choice dialog to user
-  console.log('SSL not detected - asking user for choice...')
-  const choice = await showSslChoice()
-  hideSslChoice()
-
-  // Save preference if user checked "remember"
-  if (choice.remember) {
-    store.set('ssl-dont-ask-again', true)
-    store.set('ssl-auto-enable', choice.enable)
-  }
-
-  if (choice.enable) {
-    console.log('User chose to enable SSL')
-    // Set the flag IMMEDIATELY (optimistically) so core.js can read it
-    store.set('ledfx-ssl-enabled', true)
-
-    updateSplashStatus('Installing SSL certificates...')
-    const result = await enableSsl()
-    if (result.success) {
-      console.log('SSL enabled successfully')
-      return true
-    } else {
-      console.error('SSL setup failed:', result.message)
-      // Revert on failure
-      store.set('ledfx-ssl-enabled', false)
-      return false
-    }
-  } else {
-    console.log('User chose to continue without SSL')
-    store.set('ledfx-ssl-enabled', false)
-    return true
-  }
+  // SSL not installed - continue without SSL
+  console.log('SSL not installed - continuing with HTTP')
+  store.set('ledfx-ssl-enabled', false)
+  return true
 }
 
 /**

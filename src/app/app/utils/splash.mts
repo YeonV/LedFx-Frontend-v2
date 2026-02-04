@@ -74,40 +74,6 @@ export const hideDriverChoice = () => {
   }
 }
 
-export const showSslChoice = (): Promise<{ enable: boolean; remember: boolean }> => {
-  return new Promise((resolve) => {
-    if (splashInstance && !splashInstance.isDestroyed()) {
-      // Resize splash window for dialog
-      splashInstance.setSize(400, 480)
-      splashInstance.center()
-
-      // Show the choice dialog with platform info
-      splashInstance.webContents.send('show-ssl-choice', { platform: process.platform })
-
-      // Listen for user's choice
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handleChoice = (_event: any, data: { enable: boolean; remember: boolean }) => {
-        ipcMain.removeListener('ssl-choice-response', handleChoice)
-        resolve(data)
-      }
-
-      ipcMain.on('ssl-choice-response', handleChoice)
-    } else {
-      // Fallback if splash is not available
-      resolve({ enable: false, remember: false })
-    }
-  })
-}
-
-export const hideSslChoice = () => {
-  if (splashInstance && !splashInstance.isDestroyed()) {
-    // Reset splash window size
-    splashInstance.setSize(400, 350)
-    splashInstance.center()
-    splashInstance.webContents.send('hide-ssl-choice')
-  }
-}
-
 export const closeSplash = () => {
   if (splashInstance && !splashInstance.isDestroyed()) {
     splashInstance.close()

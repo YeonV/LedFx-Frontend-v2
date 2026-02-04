@@ -1,4 +1,4 @@
-import { Box, TextField, Grid, Typography } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import useStore from '../../../../../store/useStore'
 import SpTexterForm from '../SpotifyWidgetPro/SpTexterForm'
 import SongDetectorAlbumArtForm from './SongDetectorAlbumArtForm'
@@ -14,17 +14,23 @@ const SongDetector = () => {
             <Typography variant="h6" sx={{ mb: 2 }}>
               Text Display
             </Typography>
-            <TextField
-              label="Song"
-              disabled
-              value={currentTrack}
-              multiline
-              rows={2}
-              sx={{ marginBottom: 2, minHeight: 83 }}
-              fullWidth
-            />
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <SpTexterForm />
+            <Box
+              sx={{
+                flexGrow: 1,
+                textAlign: 'center',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mb: 2,
+                mx: 2,
+                fontSize: '1.2rem'
+              }}
+            >
+              {currentTrack}
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 256 }}>
+              <SpTexterForm generalDetector={true} />
             </Box>
           </Grid>
 

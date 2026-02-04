@@ -173,6 +173,15 @@ export default function App() {
             thumbnail
           )
 
+          // Ignore "Unknown" payloads
+          if (
+            songTitle === 'Unknown - Unknown' ||
+            songTitle === 'Unknown - No media is currently playing'
+          ) {
+            setProtoCall('')
+            return
+          }
+
           if (device === 'ledfxcc' && songTitle.length > 3) {
             setCurrentTrack(songTitle)
             // Store thumbnail path for album art form

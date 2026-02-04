@@ -35,7 +35,7 @@ const storeSpotify = () => ({
     flip: false,
     blur: 0,
     flip_horizontal: false,
-    speed_option_1: 2,
+    speed_option_1: 3,
     resize_method: 'Fast',
     gradient_roll: 0,
     alpha: false,
@@ -55,7 +55,7 @@ const storeSpotify = () => ({
     rotate: 0,
     dump: false,
     option_1: false,
-    height_percent: 100,
+    height_percent: 40,
     background_color: '#000000'
   }
 })

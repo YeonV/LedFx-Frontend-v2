@@ -23,7 +23,7 @@ import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import useStore from '../../../../../store/useStore'
 import { Ledfx } from '../../../../../api/ledfx'
 
-const SpTexterForm = () => {
+const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const currentTrack = useStore((state) => state.spotify.currentTrack)
@@ -54,7 +54,9 @@ const SpTexterForm = () => {
   const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
 
   useEffect(() => {
-    if (sendSpotifyTrack && currentTrack !== '' && textVirtuals.length > 0) {
+    console.log('EY', sendSpotifyTrack, currentTrack, textVirtuals)
+    const shouldApply = generalDetector ? isActive : sendSpotifyTrack
+    if (shouldApply && currentTrack !== '' && textVirtuals.length > 0) {
       setTimeout(() => {
         Ledfx('/api/effects', 'PUT', {
           action: 'apply_global_effect',
@@ -63,7 +65,7 @@ const SpTexterForm = () => {
           fallback: spotifyTexter.fallback,
           virtuals: textVirtuals
         }).then(() => getVirtuals())
-      }, 100)
+      }, 200)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack, sendSpotifyTrack, spotifyTexter, textVirtuals])

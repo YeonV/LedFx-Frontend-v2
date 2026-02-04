@@ -2,6 +2,7 @@ import { compareVersions } from 'compare-versions'
 import { Typography, Button, Stack, Tooltip } from '@mui/material'
 
 import pkg from '../../../../package.json'
+import isElectron from 'is-electron'
 
 interface FrontendConfig {
   updateUrl: string
@@ -43,6 +44,7 @@ const Title = (
           </Button>
         ) : null}
         {!process.env.MS_STORE &&
+        !isElectron() &&
         updateAvailable &&
         window.location.origin !== 'https://ledfx.stream' ? (
           <Button
