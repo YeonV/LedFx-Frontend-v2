@@ -491,11 +491,15 @@ export const handlers = async (
           if (success) {
             delete subprocesses.songDetector
             console.log('[Handler] Song detector stopped successfully')
+            // Clear running state
+            store.set('song-detector-running', false)
           } else {
             console.log('[Handler] Failed to stop song detector')
           }
         } else {
           console.log('[Handler] No song detector subprocess found')
+          // Clear running state anyway
+          store.set('song-detector-running', false)
         }
         break
       }

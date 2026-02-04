@@ -14,6 +14,7 @@ import getReduxPath from './app/utils/getReduxPath.mjs'
 import createLedfxFolder from './app/utils/createLedFxFolder.mjs'
 import { executeCCStartup } from './app/utils/startupFlow.mjs'
 import { disableAudio } from './app/utils/audioSetup.mjs'
+import { autoStartSongDetector } from './app/utils/songDetector.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -67,6 +68,12 @@ const ready = () =>
 
     if (wind) {
       remoteMain.enable(wind.webContents)
+
+      // Auto-start song detector if it was running before
+      setTimeout(() => {
+        autoStartSongDetector(wind!, store, subprocesses)
+      }, 2000) // Wait 2 seconds for app to be fully initialized
+
       wind.webContents.setWindowOpenHandler(({ url }) => {
         if (
           url.includes(' https://accounts.spotify.com/authorize')

@@ -21,6 +21,7 @@ import { useSubscription, WebSocketProvider } from './utils/Websocket/WebSocketP
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
 import { useFireTvStore } from './components/FireTv/useFireTvStore'
+import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -28,6 +29,9 @@ export default function App() {
   const features = useStore((state) => state.features)
   const protoCall = useStore((state) => state.protoCall)
   const setEffect = useStore((state) => state.setEffect)
+
+  // Mount global song detector auto-apply hook
+  useSongDetectorAutoApply()
   const setCurrentTrack = useStore((state) => state.setCurrentTrack)
   const setProtoCall = useStore((state) => state.setProtoCall)
   const setPlatform = useStore((state) => state.setPlatform)

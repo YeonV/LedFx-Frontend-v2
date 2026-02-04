@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { app, BrowserWindow } from 'electron'
 import { spawn } from 'child_process'
 import path from 'path'
@@ -139,6 +140,36 @@ export const stopSongDetector = (subprocess: Subprocess | null, wind: BrowserWin
   } catch (error) {
     console.error('Failed to stop song detector:', error)
     return false
+  }
+}
+
+/**
+ * Auto-start song detector if it was running before
+ */
+export const autoStartSongDetector = async (
+  wind: BrowserWindow,
+  store: any,
+  subprocesses: any
+): Promise<void> => {
+  const wasRunning = store.get('song-detector-running', false)
+  const deviceName = store.get('song-detector-device-name', 'ledfxcc')
+
+  if (wasRunning) {
+    const installed = await isSongDetectorInstalled()
+    if (installed) {
+      console.log('[Song Detector] Auto-starting detector with device:', deviceName)
+      const songDetectorProcess = startSongDetector(wind, deviceName)
+      if (songDetectorProcess) {
+        subprocesses.songDetector = songDetectorProcess
+        console.log('[Song Detector] Auto-start successful')
+      } else {
+        console.log('[Song Detector] Auto-start failed')
+        store.set('song-detector-running', false)
+      }
+    } else {
+      console.log('[Song Detector] Binary not found, cannot auto-start')
+      store.set('song-detector-running', false)
+    }
   }
 }
 

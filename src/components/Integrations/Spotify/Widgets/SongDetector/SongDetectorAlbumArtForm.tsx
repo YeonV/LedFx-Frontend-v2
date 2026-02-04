@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -26,73 +26,36 @@ import { Ledfx } from '../../../../../api/ledfx'
 const SongDetectorAlbumArtForm = () => {
   const virtuals = useStore((state) => state.virtuals)
   const getVirtuals = useStore((state) => state.getVirtuals)
-  const currentTrack = useStore((state) => state.spotify.currentTrack)
   const thumbnailPath = useStore((state) => state.thumbnailPath)
 
-  const [gradientVirtuals, setGradientVirtuals] = useState<string[]>([])
-  const [imageVirtuals, setImageVirtuals] = useState<string[]>([])
-  const [colors, setColors] = useState<string[]>([])
-  const [albumArtUrl, setAlbumArtUrl] = useState<string>('')
-  const [gradients, setGradients] = useState<string[]>([])
-  const [selectedGradient, setSelectedGradient] = useState<number | null>(null)
-  const [isActive, setIsActive] = useState(false)
-  const prevColorsRef = useRef<string>('')
-  const prevAlbumArtRef = useRef<string>('')
+  // Use global state for gradient and image auto-apply
+  const gradientVirtualsGlobal = useStore((state) => state.gradientVirtuals)
+  const imageVirtualsGlobal = useStore((state) => state.imageVirtuals)
+  const selectedGradientGlobal = useStore((state) => state.selectedGradient)
+  const gradientsGlobal = useStore((state) => state.gradients)
+  const extractedColors = useStore((state) => state.extractedColors)
+  const gradientAutoApply = useStore((state) => state.gradientAutoApply)
+  const imageAutoApply = useStore((state) => state.imageAutoApply)
+  const imageConfigGlobal = useStore((state) => state.imageConfig)
 
-  // Image effect configuration
-  const [imageConfig, setImageConfig] = useState({
-    background_brightness: 1,
-    background_color: '#000000',
-    blur: 0,
-    brightness: 1,
-    clip: false,
-    flip_horizontal: false,
-    flip_vertical: false,
-    min_size: 1
-  })
+  const setGradientVirtualsGlobal = useStore((state) => state.setGradientVirtuals)
+  const setImageVirtualsGlobal = useStore((state) => state.setImageVirtuals)
+  const setSelectedGradientGlobal = useStore((state) => state.setSelectedGradient)
+  const setGradientAutoApply = useStore((state) => state.setGradientAutoApply)
+  const setImageAutoApply = useStore((state) => state.setImageAutoApply)
+  const setImageConfigGlobal = useStore((state) => state.setImageConfig)
 
-  // Use thumbnail path from store - trigger re-render when song changes
-  useEffect(() => {
-    if (thumbnailPath) {
-      // Convert Windows path to file:// URL with timestamp to force reload
-      const normalizedPath = thumbnailPath.replace(/\\/g, '/')
-      const timestamp = new Date().getTime()
-      const fileUrl = `file:///${normalizedPath}?t=${timestamp}`
-      setAlbumArtUrl(fileUrl)
-      // Reset colors and gradients for new song
-      setColors([])
-      setGradients([])
-      setSelectedGradient(null)
-    }
-  }, [thumbnailPath, currentTrack])
+  // Use global state directly
+  const gradientVirtuals = gradientVirtualsGlobal
+  const imageVirtuals = imageVirtualsGlobal
+  const selectedGradient = selectedGradientGlobal
+  const gradients = gradientsGlobal
+  const imageConfig = imageConfigGlobal
 
-  // Helper: Calculate color distance (Euclidean distance in RGB space)
-  const colorDistance = (hex1: string, hex2: string): number => {
-    const rgb1 = {
-      r: parseInt(hex1.slice(1, 3), 16),
-      g: parseInt(hex1.slice(3, 5), 16),
-      b: parseInt(hex1.slice(5, 7), 16)
-    }
-    const rgb2 = {
-      r: parseInt(hex2.slice(1, 3), 16),
-      g: parseInt(hex2.slice(3, 5), 16),
-      b: parseInt(hex2.slice(5, 7), 16)
-    }
-    return Math.sqrt(
-      Math.pow(rgb1.r - rgb2.r, 2) + Math.pow(rgb1.g - rgb2.g, 2) + Math.pow(rgb1.b - rgb2.b, 2)
-    )
-  }
-
-  // Helper: Filter similar colors
-  const filterSimilarColors = useCallback((colorList: string[], threshold = 50): string[] => {
-    const filtered: string[] = []
-    for (const color of colorList) {
-      if (filtered.every((c) => colorDistance(c, color) > threshold)) {
-        filtered.push(color)
-      }
-    }
-    return filtered
-  }, [])
+  // Compute album art URL for display purposes
+  const albumArtUrl = thumbnailPath
+    ? `file:///${thumbnailPath.replace(/\\/g, '/')}?t=${new Date().getTime()}`
+    : ''
 
   const applyBoth = useCallback(
     async (once: boolean = false) => {
@@ -126,9 +89,11 @@ const SongDetectorAlbumArtForm = () => {
       getVirtuals()
 
       if (once) {
-        setIsActive(false)
+        setGradientAutoApply(false)
+        setImageAutoApply(false)
       } else {
-        setIsActive(true)
+        setGradientAutoApply(true)
+        setImageAutoApply(true)
       }
     },
     [
@@ -139,164 +104,26 @@ const SongDetectorAlbumArtForm = () => {
       imageVirtuals,
       thumbnailPath,
       imageConfig,
-      getVirtuals
+      getVirtuals,
+      setGradientAutoApply,
+      setImageAutoApply
     ]
   )
-
-  // Extract colors from album art
-  useEffect(() => {
-    if (!albumArtUrl) return
-
-    const img = new Image()
-    img.crossOrigin = 'Anonymous'
-    img.src = albumArtUrl
-
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return
-
-      canvas.width = img.width
-      canvas.height = img.height
-      ctx.drawImage(img, 0, 0)
-
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-      const data = imageData.data
-
-      const colorMap: { [key: string]: number } = {}
-
-      // Sample every 10th pixel for performance
-      for (let i = 0; i < data.length; i += 40) {
-        const r = data[i]
-        const g = data[i + 1]
-        const b = data[i + 2]
-        const a = data[i + 3]
-
-        if (a < 128) continue // Skip transparent pixels
-
-        // Skip near-black and near-white colors
-        if (r + g + b < 50 || r + g + b > 700) continue
-
-        const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
-        colorMap[hex] = (colorMap[hex] || 0) + 1
-      }
-
-      // Sort by frequency
-      const sortedColors = Object.entries(colorMap)
-        .sort((a, b) => b[1] - a[1])
-        .map(([color]) => color)
-
-      // Filter similar colors and take top colors
-      const uniqueColors = filterSimilarColors(sortedColors, 50).slice(0, 8)
-      setColors(uniqueColors)
-    }
-
-    img.onerror = () => {
-      console.error('Failed to load album art from:', albumArtUrl)
-    }
-  }, [albumArtUrl, filterSimilarColors])
-
-  // Generate multiple gradient variations from colors
-  useEffect(() => {
-    if (colors.length < 2) return
-
-    const createGradient = (colorSet: string[]) => {
-      const stops = colorSet.map((color, idx) => `${color} ${(idx / (colorSet.length - 1)) * 100}%`)
-      return `linear-gradient(90deg, ${stops.join(', ')})`
-    }
-
-    const generatedGradients: string[] = []
-
-    // Gradient 1: All colors
-    generatedGradients.push(createGradient(colors))
-
-    // Gradient 2: Every other color
-    if (colors.length >= 4) {
-      generatedGradients.push(createGradient(colors.filter((_, i) => i % 2 === 0)))
-    }
-
-    // Gradient 3: First half
-    if (colors.length >= 4) {
-      generatedGradients.push(createGradient(colors.slice(0, Math.ceil(colors.length / 2))))
-    }
-
-    // Gradient 4: Second half
-    if (colors.length >= 4) {
-      generatedGradients.push(createGradient(colors.slice(Math.floor(colors.length / 2))))
-    }
-
-    // Gradient 5: Reversed
-    generatedGradients.push(createGradient([...colors].reverse()))
-
-    // Gradient 6: First and last 2 colors
-    if (colors.length >= 4) {
-      const firstTwo = colors.slice(0, 2)
-      const lastTwo = colors.slice(-2)
-      generatedGradients.push(createGradient([...firstTwo, ...lastTwo]))
-    }
-
-    setGradients(generatedGradients)
-
-    // Auto-select first gradient if none selected
-    const gradientToUse = selectedGradient !== null ? selectedGradient : 0
-    if (selectedGradient === null && generatedGradients.length > 0) {
-      setSelectedGradient(0)
-    }
-
-    // Auto-reapply gradient when song changes (if currently active)
-    const colorsKey = colors.join(',')
-    if (
-      colorsKey !== prevColorsRef.current &&
-      isActive &&
-      gradientVirtuals.length > 0 &&
-      generatedGradients.length > 0 &&
-      generatedGradients[gradientToUse]
-    ) {
-      Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global',
-        gradient: generatedGradients[gradientToUse],
-        virtuals: gradientVirtuals
-      }).then(() => getVirtuals())
-    }
-    prevColorsRef.current = colorsKey
-  }, [colors, isActive, selectedGradient, gradientVirtuals, getVirtuals])
-
-  // Auto-reapply image when song changes (if currently active)
-  useEffect(() => {
-    if (
-      albumArtUrl &&
-      albumArtUrl !== prevAlbumArtRef.current &&
-      isActive &&
-      imageVirtuals.length > 0 &&
-      thumbnailPath
-    ) {
-      Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global_effect',
-        type: 'imagespin',
-        config: {
-          image_source: 'current_album_art.jpg',
-          ...imageConfig
-        },
-        virtuals: imageVirtuals
-      }).then(() => getVirtuals())
-    }
-    prevAlbumArtRef.current = albumArtUrl
-  }, [albumArtUrl, isActive, imageVirtuals, thumbnailPath, imageConfig, getVirtuals])
 
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
     const selected = typeof value === 'string' ? value.split(',') : value
     // Remove from image virtuals if present
-    setImageVirtuals(imageVirtuals.filter((v) => !selected.includes(v)))
-    setGradientVirtuals(selected)
+    setImageVirtualsGlobal(imageVirtuals.filter((v) => !selected.includes(v)))
+    setGradientVirtualsGlobal(selected)
   }
 
   const handleImageVirtualChange = (event: any) => {
     const value = event.target.value
     const selected = typeof value === 'string' ? value.split(',') : value
     // Remove from gradient virtuals if present
-    setGradientVirtuals(gradientVirtuals.filter((v) => !selected.includes(v)))
-    setImageVirtuals(selected)
+    setGradientVirtualsGlobal(gradientVirtuals.filter((v) => !selected.includes(v)))
+    setImageVirtualsGlobal(selected)
   }
 
   return (
@@ -341,7 +168,7 @@ const SongDetectorAlbumArtForm = () => {
                     {gradients.map((gradient, idx) => (
                       <Box
                         key={idx}
-                        onClick={() => setSelectedGradient(idx)}
+                        onClick={() => setSelectedGradientGlobal(idx)}
                         sx={{
                           width: 60,
                           height: 60,
@@ -358,10 +185,10 @@ const SongDetectorAlbumArtForm = () => {
               )}
 
               {/* Color Palette Display */}
-              {colors.length > 0 && (
+              {extractedColors.length > 0 && (
                 <BladeFrame title="Extracted Colors">
                   <Stack direction="row" flexWrap="wrap" gap={1}>
-                    {colors.map((color, idx) => (
+                    {extractedColors.map((color: string, idx: number) => (
                       <Box
                         key={idx}
                         sx={{
@@ -393,7 +220,8 @@ const SongDetectorAlbumArtForm = () => {
                         valueLabelDisplay="auto"
                         value={imageConfig.brightness}
                         onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfig({ ...imageConfig, brightness: v })
+                          typeof v === 'number' &&
+                          setImageConfigGlobal({ ...imageConfig, brightness: v })
                         }
                       />
                     </Box>
@@ -409,7 +237,7 @@ const SongDetectorAlbumArtForm = () => {
                         value={imageConfig.background_brightness}
                         onChange={(_e, v) =>
                           typeof v === 'number' &&
-                          setImageConfig({ ...imageConfig, background_brightness: v })
+                          setImageConfigGlobal({ ...imageConfig, background_brightness: v })
                         }
                       />
                     </Box>
@@ -427,7 +255,7 @@ const SongDetectorAlbumArtForm = () => {
                         valueLabelDisplay="auto"
                         value={imageConfig.blur}
                         onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfig({ ...imageConfig, blur: v })
+                          typeof v === 'number' && setImageConfigGlobal({ ...imageConfig, blur: v })
                         }
                       />
                     </Box>
@@ -442,7 +270,8 @@ const SongDetectorAlbumArtForm = () => {
                         valueLabelDisplay="auto"
                         value={imageConfig.min_size}
                         onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfig({ ...imageConfig, min_size: v })
+                          typeof v === 'number' &&
+                          setImageConfigGlobal({ ...imageConfig, min_size: v })
                         }
                       />
                     </Box>
@@ -450,11 +279,11 @@ const SongDetectorAlbumArtForm = () => {
 
                   <GradientPicker
                     isGradient={false}
-                    colors={colors}
+                    colors={extractedColors}
                     title="BG Color"
                     pickerBgColor={imageConfig.background_color}
                     sendColorToVirtuals={(v: string) =>
-                      setImageConfig({ ...imageConfig, background_color: v })
+                      setImageConfigGlobal({ ...imageConfig, background_color: v })
                     }
                   />
 
@@ -463,7 +292,7 @@ const SongDetectorAlbumArtForm = () => {
                       <Typography variant="caption">Clip</Typography>
                       <Switch
                         checked={imageConfig.clip}
-                        onChange={(_e, b) => setImageConfig({ ...imageConfig, clip: b })}
+                        onChange={(_e, b) => setImageConfigGlobal({ ...imageConfig, clip: b })}
                         color="primary"
                       />
                     </Box>
@@ -471,7 +300,9 @@ const SongDetectorAlbumArtForm = () => {
                       <Typography variant="caption">Flip H</Typography>
                       <Switch
                         checked={imageConfig.flip_horizontal}
-                        onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_horizontal: b })}
+                        onChange={(_e, b) =>
+                          setImageConfigGlobal({ ...imageConfig, flip_horizontal: b })
+                        }
                         color="primary"
                       />
                     </Box>
@@ -479,7 +310,9 @@ const SongDetectorAlbumArtForm = () => {
                       <Typography variant="caption">Flip V</Typography>
                       <Switch
                         checked={imageConfig.flip_vertical}
-                        onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_vertical: b })}
+                        onChange={(_e, b) =>
+                          setImageConfigGlobal({ ...imageConfig, flip_vertical: b })
+                        }
                         color="primary"
                       />
                     </Box>
@@ -538,23 +371,30 @@ const SongDetectorAlbumArtForm = () => {
             disabled={
               (gradientVirtuals.length === 0 && imageVirtuals.length === 0) ||
               (gradientVirtuals.length > 0 && selectedGradient === null) ||
-              colors.length === 0
+              extractedColors.length === 0
             }
           >
             Apply Once
           </Button>
           <Button
             variant="contained"
-            color={isActive ? 'secondary' : 'primary'}
+            color={gradientAutoApply || imageAutoApply ? 'secondary' : 'primary'}
             fullWidth
-            onClick={() => (isActive ? setIsActive(false) : applyBoth(false))}
+            onClick={() => {
+              if (gradientAutoApply || imageAutoApply) {
+                setGradientAutoApply(false)
+                setImageAutoApply(false)
+              } else {
+                applyBoth(false)
+              }
+            }}
             disabled={
               (gradientVirtuals.length === 0 && imageVirtuals.length === 0) ||
               (gradientVirtuals.length > 0 && selectedGradient === null) ||
-              colors.length === 0
+              extractedColors.length === 0
             }
           >
-            {isActive ? 'Stop Auto' : 'Apply Auto'}
+            {gradientAutoApply || imageAutoApply ? 'Stop Auto' : 'Apply Auto'}
           </Button>
         </Stack>
       </Stack>

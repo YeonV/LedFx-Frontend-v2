@@ -11,6 +11,7 @@ import {
   Typography,
   IconButton,
   Button,
+  Tooltip,
   useTheme
 } from '@mui/material'
 import { styled } from '@mui/styles'
@@ -27,6 +28,7 @@ import FireTv from '../../FireTv/FireTv'
 import { exitAndroidApp, isAndroidApp } from '../../FireTv/android.bridge'
 import CrashButton from '../../CrashButton'
 import BladeIcon from '../../Icons/BladeIcon/BladeIcon'
+import useSongDetector from '../../../hooks/useSongDetector'
 import LeftButtons from './LeftButtons'
 import Title from './Title'
 import TopBarMenu from './TopBarMenu'
@@ -78,6 +80,8 @@ const TopBar = () => {
   const { isConnected } = useWebSocket()
   const disconnected = useStore((state) => state.disconnected)
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
+  const { isAvailable, isRunning, startDetector, stopDetector } = useSongDetector()
+  const setSd = useStore((state) => state.ui.setSd)
 
   useEffect(() => {
     if (disconnected === false) {
@@ -366,7 +370,34 @@ const TopBar = () => {
                   </IconButton>
                 </Box>
               ) : (
-                <GlobalActionBar className="hideHd" />
+                <>
+                  {/* Song Detector Status IconButton - opens widget */}
+                  {isElectron() && isAvailable && (
+                    <Tooltip
+                      title={
+                        isRunning
+                          ? 'Song Detector: Running - Click to open'
+                          : 'Song Detector: Stopped - Click to open'
+                      }
+                    >
+                      <IconButton
+                        aria-label="song detector status"
+                        edge="end"
+                        color="inherit"
+                        onClick={() => setSd(true)}
+                      >
+                        <BladeIcon
+                          style={{
+                            position: 'relative',
+                            color: isRunning ? '#4caf50' : 'rgba(255,255,255,0.3)'
+                          }}
+                          name="mdi:music-circle"
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  <GlobalActionBar className="hideHd" />
+                </>
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <TopBarMenu slug={slug} invisible={invisible()} />

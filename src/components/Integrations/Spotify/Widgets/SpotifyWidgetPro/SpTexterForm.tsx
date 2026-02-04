@@ -48,8 +48,19 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const setSpTexterTextEffect = useStore((state) => state.setSpTexterTextEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
 
-  const [textVirtuals, setTextVirtuals] = useState<string[]>([])
-  const [isActive, setIsActive] = useState(false)
+  // Use global state for song detector
+  const textAutoApplyGlobal = useStore((state) => state.textAutoApply)
+  const textVirtualsGlobal = useStore((state) => state.textVirtuals)
+  const setTextAutoApply = useStore((state) => state.setTextAutoApply)
+  const setTextVirtuals = useStore((state) => state.setTextVirtuals)
+
+  // Local state for non-song-detector mode
+  const [textVirtualsLocal, setTextVirtualsLocal] = useState<string[]>([])
+  const [isActiveLocal, setIsActiveLocal] = useState(false)
+
+  // Determine which state to use based on generalDetector prop
+  const textVirtuals = generalDetector ? textVirtualsGlobal : textVirtualsLocal
+  const isActive = generalDetector ? textAutoApplyGlobal : isActiveLocal
 
   const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
 
@@ -73,7 +84,11 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const handleTextVirtualChange = (event: any) => {
     const value = event.target.value
     const selected = typeof value === 'string' ? value.split(',') : value
-    setTextVirtuals(selected)
+    if (generalDetector) {
+      setTextVirtuals(selected)
+    } else {
+      setTextVirtualsLocal(selected)
+    }
   }
 
   const applyText = async (once: boolean = false) => {
@@ -87,9 +102,17 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       })
       getVirtuals()
       if (once) {
-        setIsActive(false)
+        if (generalDetector) {
+          setTextAutoApply(false)
+        } else {
+          setIsActiveLocal(false)
+        }
       } else {
-        setIsActive(true)
+        if (generalDetector) {
+          setTextAutoApply(true)
+        } else {
+          setIsActiveLocal(true)
+        }
       }
     }
   }
@@ -303,7 +326,17 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           variant="contained"
           color={isActive ? 'secondary' : 'primary'}
           fullWidth
-          onClick={() => (isActive ? setIsActive(false) : applyText(false))}
+          onClick={() => {
+            if (isActive) {
+              if (generalDetector) {
+                setTextAutoApply(false)
+              } else {
+                setIsActiveLocal(false)
+              }
+            } else {
+              applyText(false)
+            }
+          }}
           disabled={textVirtuals.length === 0}
         >
           {isActive ? 'Stop Auto' : 'Apply Auto'}
