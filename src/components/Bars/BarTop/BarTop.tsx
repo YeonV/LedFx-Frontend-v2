@@ -80,7 +80,7 @@ const TopBar = () => {
   const { isConnected } = useWebSocket()
   const disconnected = useStore((state) => state.disconnected)
   const clearSnackbar = useStore((state) => state.ui.clearSnackbar)
-  const { isAvailable, isRunning, startDetector, stopDetector } = useSongDetector()
+  const { isAvailable, isRunning } = useSongDetector()
   const setSd = useStore((state) => state.ui.setSd)
 
   useEffect(() => {
