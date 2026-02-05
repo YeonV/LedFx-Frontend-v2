@@ -26,6 +26,10 @@ const keybindings = [
     description: 'Song Texter (needs Spotify or Song Detector)'
   },
   {
+    keys: 'ctrl+alt+s',
+    description: 'Song Detector Plus'
+  },
+  {
     keys: 'ctrl+alt+e',
     description: 'One Shoot Effect (WIP)'
   },

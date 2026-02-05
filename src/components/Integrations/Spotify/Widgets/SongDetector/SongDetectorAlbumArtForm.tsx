@@ -4,9 +4,9 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   Checkbox,
   FormControl,
+  IconButton,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -15,15 +15,16 @@ import {
   Slider,
   Stack,
   Switch,
+  Tooltip,
   Typography
 } from '@mui/material'
-import { ExpandMore } from '@mui/icons-material'
+import { ExpandMore, PlayArrow, Stop } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import useStore from '../../../../../store/useStore'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import { Ledfx } from '../../../../../api/ledfx'
 
-const SongDetectorAlbumArtForm = () => {
+const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => {
   const virtuals = useStore((state) => state.virtuals)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const thumbnailPath = useStore((state) => state.thumbnailPath)
@@ -57,58 +58,49 @@ const SongDetectorAlbumArtForm = () => {
     ? `file:///${thumbnailPath.replace(/\\/g, '/')}?t=${new Date().getTime()}`
     : ''
 
-  const applyBoth = useCallback(
-    async (once: boolean = false) => {
-      const promises: Promise<any>[] = []
-
-      if (selectedGradient !== null && gradientVirtuals.length > 0) {
-        promises.push(
-          Ledfx('/api/effects', 'PUT', {
-            action: 'apply_global',
-            gradient: gradients[selectedGradient],
-            virtuals: gradientVirtuals
-          })
-        )
-      }
-
-      if (albumArtUrl && imageVirtuals.length > 0 && thumbnailPath) {
-        promises.push(
-          Ledfx('/api/effects', 'PUT', {
-            action: 'apply_global_effect',
-            type: 'imagespin',
-            config: {
-              image_source: 'current_album_art.jpg',
-              ...imageConfig
-            },
-            virtuals: imageVirtuals
-          })
-        )
-      }
-
-      await Promise.all(promises)
+  const applyGradient = useCallback(async () => {
+    if (selectedGradient !== null && gradientVirtuals.length > 0) {
+      await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global',
+        gradient: gradients[selectedGradient],
+        virtuals: gradientVirtuals
+      })
       getVirtuals()
+    }
+  }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
 
-      if (once) {
-        setGradientAutoApply(false)
-        setImageAutoApply(false)
-      } else {
-        setGradientAutoApply(true)
-        setImageAutoApply(true)
-      }
-    },
-    [
-      selectedGradient,
-      gradientVirtuals,
-      gradients,
-      albumArtUrl,
-      imageVirtuals,
-      thumbnailPath,
-      imageConfig,
-      getVirtuals,
-      setGradientAutoApply,
-      setImageAutoApply
-    ]
-  )
+  const applyImage = useCallback(async () => {
+    if (albumArtUrl && imageVirtuals.length > 0 && thumbnailPath) {
+      await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global_effect',
+        type: 'imagespin',
+        config: {
+          image_source: 'current_album_art.jpg',
+          ...imageConfig
+        },
+        virtuals: imageVirtuals
+      })
+      getVirtuals()
+    }
+  }, [albumArtUrl, imageVirtuals, thumbnailPath, imageConfig, getVirtuals])
+
+  const toggleGradientAutoApply = useCallback(() => {
+    if (gradientAutoApply) {
+      setGradientAutoApply(false)
+    } else {
+      applyGradient()
+      setGradientAutoApply(true)
+    }
+  }, [gradientAutoApply, setGradientAutoApply, applyGradient])
+
+  const toggleImageAutoApply = useCallback(() => {
+    if (imageAutoApply) {
+      setImageAutoApply(false)
+    } else {
+      applyImage()
+      setImageAutoApply(true)
+    }
+  }, [imageAutoApply, setImageAutoApply, applyImage])
 
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
@@ -130,7 +122,7 @@ const SongDetectorAlbumArtForm = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Stack direction="column" spacing={2} sx={{ flex: 1, display: 'flex' }}>
         {/* Album Art Thumbnail */}
-        {albumArtUrl && (
+        {albumArtUrl && preview && (
           <Box
             sx={{
               display: 'flex',
@@ -164,14 +156,15 @@ const SongDetectorAlbumArtForm = () => {
             <Stack direction="column" spacing={2}>
               {gradients.length > 0 && (
                 <BladeFrame title="Gradient Options">
-                  <Stack direction="row" flexWrap="wrap" gap={1}>
+                  <Stack direction="row" flexWrap="wrap" gap={1} sx={{ width: '100%' }}>
                     {gradients.map((gradient, idx) => (
                       <Box
                         key={idx}
                         onClick={() => setSelectedGradientGlobal(idx)}
                         sx={{
-                          width: 60,
-                          height: 60,
+                          flex: 1,
+                          minWidth: 60,
+                          height: 40,
                           background: gradient,
                           borderRadius: 1,
                           cursor: 'pointer',
@@ -187,12 +180,13 @@ const SongDetectorAlbumArtForm = () => {
               {/* Color Palette Display */}
               {extractedColors.length > 0 && (
                 <BladeFrame title="Extracted Colors">
-                  <Stack direction="row" flexWrap="wrap" gap={1}>
+                  <Stack direction="row" flexWrap="wrap" gap={1} sx={{ width: '100%' }}>
                     {extractedColors.map((color: string, idx: number) => (
                       <Box
                         key={idx}
                         sx={{
-                          width: 40,
+                          flex: 1,
+                          minWidth: 40,
                           height: 40,
                           backgroundColor: color,
                           borderRadius: 1,
@@ -207,12 +201,9 @@ const SongDetectorAlbumArtForm = () => {
 
               {/* Image Effect Configuration */}
               <BladeFrame title="Image Effect Settings">
-                <Stack direction="column" spacing={2}>
-                  <Stack direction="row" spacing={1}>
-                    <Box sx={{ width: '50%' }}>
-                      <Typography variant="caption" gutterBottom>
-                        Brightness
-                      </Typography>
+                <Stack direction="column" spacing={2} flex={1} pt={2}>
+                  <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
+                    <BladeFrame title="Brightness" style={{ flex: 1 }}>
                       <Slider
                         min={0}
                         max={1}
@@ -224,11 +215,8 @@ const SongDetectorAlbumArtForm = () => {
                           setImageConfigGlobal({ ...imageConfig, brightness: v })
                         }
                       />
-                    </Box>
-                    <Box sx={{ width: '50%' }}>
-                      <Typography variant="caption" gutterBottom>
-                        BG Brightness
-                      </Typography>
+                    </BladeFrame>
+                    <BladeFrame title="BG Brightness" style={{ flex: 1 }}>
                       <Slider
                         min={0}
                         max={1}
@@ -240,14 +228,11 @@ const SongDetectorAlbumArtForm = () => {
                           setImageConfigGlobal({ ...imageConfig, background_brightness: v })
                         }
                       />
-                    </Box>
+                    </BladeFrame>
                   </Stack>
 
-                  <Stack direction="row" spacing={1}>
-                    <Box sx={{ width: '50%' }}>
-                      <Typography variant="caption" gutterBottom>
-                        Blur
-                      </Typography>
+                  <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
+                    <BladeFrame title="Blur" style={{ flex: 1 }}>
                       <Slider
                         min={0}
                         max={10}
@@ -258,11 +243,8 @@ const SongDetectorAlbumArtForm = () => {
                           typeof v === 'number' && setImageConfigGlobal({ ...imageConfig, blur: v })
                         }
                       />
-                    </Box>
-                    <Box sx={{ width: '50%' }}>
-                      <Typography variant="caption" gutterBottom>
-                        Min Size
-                      </Typography>
+                    </BladeFrame>
+                    <BladeFrame title="Min Size" style={{ flex: 1 }}>
                       <Slider
                         min={1}
                         max={100}
@@ -274,7 +256,7 @@ const SongDetectorAlbumArtForm = () => {
                           setImageConfigGlobal({ ...imageConfig, min_size: v })
                         }
                       />
-                    </Box>
+                    </BladeFrame>
                   </Stack>
 
                   <GradientPicker
@@ -287,17 +269,15 @@ const SongDetectorAlbumArtForm = () => {
                     }
                   />
 
-                  <Stack direction="row" spacing={1} justifyContent="space-around">
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="caption">Clip</Typography>
+                  <Stack direction="row" spacing={1} sx={{ flex: 1 }}>
+                    <BladeFrame style={{ flex: 1 }} title="Clip">
                       <Switch
                         checked={imageConfig.clip}
                         onChange={(_e, b) => setImageConfigGlobal({ ...imageConfig, clip: b })}
                         color="primary"
                       />
-                    </Box>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="caption">Flip H</Typography>
+                    </BladeFrame>
+                    <BladeFrame style={{ flex: 1 }} title="Flip H">
                       <Switch
                         checked={imageConfig.flip_horizontal}
                         onChange={(_e, b) =>
@@ -305,9 +285,8 @@ const SongDetectorAlbumArtForm = () => {
                         }
                         color="primary"
                       />
-                    </Box>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography variant="caption">Flip V</Typography>
+                    </BladeFrame>
+                    <BladeFrame style={{ flex: 1 }} title="Flip V">
                       <Switch
                         checked={imageConfig.flip_vertical}
                         onChange={(_e, b) =>
@@ -315,7 +294,7 @@ const SongDetectorAlbumArtForm = () => {
                         }
                         color="primary"
                       />
-                    </Box>
+                    </BladeFrame>
                   </Stack>
                 </Stack>
               </BladeFrame>
@@ -325,77 +304,70 @@ const SongDetectorAlbumArtForm = () => {
 
         {/* Virtual Device Selectors */}
         <Box sx={{ flexGrow: 1 }} />
-        <FormControl fullWidth>
-          <InputLabel>Gradient Virtuals</InputLabel>
-          <Select
-            multiple
-            value={gradientVirtuals}
-            onChange={handleGradientVirtualChange}
-            input={<OutlinedInput label="Gradient Virtuals" />}
-            renderValue={(selected) => selected.join(', ')}
-          >
-            {Object.keys(virtuals).map((vId) => (
-              <MenuItem key={vId} value={vId}>
-                <Checkbox checked={gradientVirtuals.includes(vId)} />
-                <ListItemText primary={vId} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel>Image Virtuals</InputLabel>
-          <Select
-            multiple
-            value={imageVirtuals}
-            onChange={handleImageVirtualChange}
-            input={<OutlinedInput label="Image Virtuals" />}
-            renderValue={(selected) => selected.join(', ')}
-          >
-            {Object.keys(virtuals).map((vId) => (
-              <MenuItem key={vId} value={vId}>
-                <Checkbox checked={imageVirtuals.includes(vId)} />
-                <ListItemText primary={vId} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Apply Buttons */}
-        <Stack direction="row" spacing={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={() => applyBoth(true)}
-            disabled={
-              (gradientVirtuals.length === 0 && imageVirtuals.length === 0) ||
-              (gradientVirtuals.length > 0 && selectedGradient === null) ||
-              extractedColors.length === 0
-            }
-          >
-            Apply Once
-          </Button>
-          <Button
-            variant="contained"
-            color={gradientAutoApply || imageAutoApply ? 'secondary' : 'primary'}
-            fullWidth
-            onClick={() => {
-              if (gradientAutoApply || imageAutoApply) {
-                setGradientAutoApply(false)
-                setImageAutoApply(false)
-              } else {
-                applyBoth(false)
+        <Stack direction="row" spacing={1} alignItems="center">
+          <FormControl fullWidth>
+            <InputLabel>Gradient Virtuals</InputLabel>
+            <Select
+              multiple
+              value={gradientVirtuals}
+              onChange={handleGradientVirtualChange}
+              input={<OutlinedInput label="Gradient Virtuals" />}
+              renderValue={(selected) => selected.join(', ')}
+            >
+              {Object.keys(virtuals).map((vId) => (
+                <MenuItem key={vId} value={vId}>
+                  <Checkbox checked={gradientVirtuals.includes(vId)} />
+                  <ListItemText primary={vId} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Tooltip title={gradientAutoApply ? 'Stop Auto' : 'Start Auto'}>
+            <IconButton
+              onClick={toggleGradientAutoApply}
+              disabled={
+                gradientVirtuals.length === 0 ||
+                selectedGradient === null ||
+                extractedColors.length === 0
               }
-            }}
-            disabled={
-              (gradientVirtuals.length === 0 && imageVirtuals.length === 0) ||
-              (gradientVirtuals.length > 0 && selectedGradient === null) ||
-              extractedColors.length === 0
-            }
-          >
-            {gradientAutoApply || imageAutoApply ? 'Stop Auto' : 'Apply Auto'}
-          </Button>
+              sx={{
+                color: gradientAutoApply ? 'success.main' : 'primary.main'
+              }}
+            >
+              {gradientAutoApply ? <Stop /> : <PlayArrow />}
+            </IconButton>
+          </Tooltip>
+        </Stack>
+
+        <Stack direction="row" spacing={1} alignItems="center">
+          <FormControl fullWidth>
+            <InputLabel>Image Virtuals</InputLabel>
+            <Select
+              multiple
+              value={imageVirtuals}
+              onChange={handleImageVirtualChange}
+              input={<OutlinedInput label="Image Virtuals" />}
+              renderValue={(selected) => selected.join(', ')}
+            >
+              {Object.keys(virtuals).map((vId) => (
+                <MenuItem key={vId} value={vId}>
+                  <Checkbox checked={imageVirtuals.includes(vId)} />
+                  <ListItemText primary={vId} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Tooltip title={imageAutoApply ? 'Stop Auto' : 'Start Auto'}>
+            <IconButton
+              onClick={toggleImageAutoApply}
+              disabled={imageVirtuals.length === 0 || extractedColors.length === 0}
+              sx={{
+                color: imageAutoApply ? 'success.main' : 'primary.main'
+              }}
+            >
+              {imageAutoApply ? <Stop /> : <PlayArrow />}
+            </IconButton>
+          </Tooltip>
         </Stack>
       </Stack>
     </Box>

@@ -423,78 +423,89 @@ export const handlers = async (
         break
       }
       case 'check-song-detector': {
-        console.log('[Handler] Checking song detector installation...')
-        const installed = await isSongDetectorInstalled()
-        const isRunning = !!(subprocesses.songDetector && subprocesses.songDetector.running)
-        console.log('[Handler] Song detector installed:', installed, 'running:', isRunning)
-        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning }])
+        const plus = parameters.plus || false
+        console.log('[Handler] Checking song detector installation, plus:', plus)
+        const installed = await isSongDetectorInstalled(plus)
+        const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
+        const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
+        console.log('[Handler] Song detector installed:', installed, 'running:', isRunning, 'plus:', plus)
+        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning, plus }])
         break
       }
       case 'get-song-detector-status': {
-        console.log('[Handler] Getting song detector status...')
-        const status = await getSongDetectorStatus()
+        const plus = parameters.plus || false
+        console.log('[Handler] Getting song detector status, plus:', plus)
+        const status = await getSongDetectorStatus(plus)
         console.log('[Handler] Song detector status:', status)
-        wind.webContents.send('fromMain', ['song-detector-status', status])
+        wind.webContents.send('fromMain', ['song-detector-status', { ...status, plus }])
         break
       }
       case 'start-song-detector': {
         const deviceName = parameters.deviceName || 'ledfxcc'
-        console.log('[Handler] Starting song detector with device:', deviceName)
+        const plus = parameters.plus || false
+        const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
+        console.log('[Handler] Starting song detector with device:', deviceName, 'plus:', plus)
 
         // Check if already running
-        if (subprocesses.songDetector && subprocesses.songDetector.running) {
-          console.log('[Handler] Song detector already running, skipping start')
-          wind.webContents.send('fromMain', ['song-detector-already-running', { deviceName }])
+        if (subprocesses[detectorKey] && subprocesses[detectorKey].running) {
+          console.log('[Handler] Song detector already running, skipping start, plus:', plus)
+          wind.webContents.send('fromMain', ['song-detector-already-running', { deviceName, plus }])
           break
         }
 
-        const songDetectorProcess = startSongDetector(wind, deviceName)
+        const songDetectorProcess = startSongDetector(wind, deviceName, plus)
         if (songDetectorProcess) {
-          subprocesses.songDetector = songDetectorProcess
-          console.log('[Handler] Song detector process started')
+          subprocesses[detectorKey] = songDetectorProcess
+          console.log('[Handler] Song detector process started, plus:', plus)
         } else {
-          console.log('[Handler] Failed to start song detector process')
+          console.log('[Handler] Failed to start song detector process, plus:', plus)
         }
         break
       }
       case 'download-song-detector': {
-        console.log('[Handler] Downloading song detector...')
+        const plus = parameters.plus || false
+        console.log('[Handler] Downloading song detector, plus:', plus)
         try {
-          await downloadSongDetector(wind)
+          await downloadSongDetector(wind, plus)
           // After download, check availability again
-          const installed = await isSongDetectorInstalled()
-          const isRunning = !!(subprocesses.songDetector && subprocesses.songDetector.running)
-          wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning }])
+          const installed = await isSongDetectorInstalled(plus)
+          const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
+          const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
+          wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning, plus }])
         } catch (error) {
           console.error('[Handler] Download failed:', error)
         }
         break
       }
       case 'delete-song-detector': {
-        console.log('[Handler] Deleting song detector...')
+        const plus = parameters.plus || false
+        const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
+        console.log('[Handler] Deleting song detector, plus:', plus)
         // Stop it first if running
-        if (subprocesses.songDetector) {
-          stopSongDetector(subprocesses.songDetector, wind)
-          delete subprocesses.songDetector
+        if (subprocesses[detectorKey]) {
+          stopSongDetector(subprocesses[detectorKey], wind, plus)
+          delete subprocesses[detectorKey]
         }
-        await deleteSongDetector(wind)
+        await deleteSongDetector(wind, plus)
         // After delete, check availability again
-        const installed = await isSongDetectorInstalled()
-        const isRunning = !!(subprocesses.songDetector && subprocesses.songDetector.running)
-        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning }])
+        const installed = await isSongDetectorInstalled(plus)
+        const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
+        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning, plus }])
         break
       }
       case 'stop-song-detector': {
-        console.log('[Handler] Stopping song detector...')
-        if (subprocesses.songDetector) {
-          const success = stopSongDetector(subprocesses.songDetector, wind)
+        const plus = parameters.plus || false
+        const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
+        console.log('[Handler] Stopping song detector, plus:', plus)
+        if (subprocesses[detectorKey]) {
+          const success = stopSongDetector(subprocesses[detectorKey], wind, plus)
           if (success) {
-            delete subprocesses.songDetector
-            console.log('[Handler] Song detector stopped successfully')
+            delete subprocesses[detectorKey]
+            console.log('[Handler] Song detector stopped successfully, plus:', plus)
             // Clear running state
             store.set('song-detector-running', false)
           } else {
-            console.log('[Handler] Failed to stop song detector')
+            console.log('[Handler] Failed to stop song detector, plus:', plus)
           }
         } else {
           console.log('[Handler] No song detector subprocess found')

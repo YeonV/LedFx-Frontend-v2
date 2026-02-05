@@ -157,6 +157,42 @@ const storeUI = (set: any) => ({
       false,
       'ui/sd'
     ),
+  sdPlusX: 50,
+  setSdPlusX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.sdPlusX = x
+      }),
+      false,
+      'ui/sdPlusX'
+    ),
+  sdPlusY: 200,
+  setSdPlusY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.sdPlusY = y
+      }),
+      false,
+      'ui/sdPlusY'
+    ),
+  sdPlus: false,
+  setSdPlus: (sdPlus: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.sdPlus = sdPlus
+      }),
+      false,
+      'ui/sdPlus'
+    ),
+  songDetectorScreenOpen: false,
+  setSongDetectorScreenOpen: (open: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.songDetectorScreenOpen = open
+      }),
+      false,
+      'ui/setSongDetectorScreenOpen'
+    ),
   globalColorWidgetX: 50,
   setGlobalColorWidgetX: (x: number): void =>
     set(

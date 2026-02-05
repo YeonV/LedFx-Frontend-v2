@@ -1,16 +1,15 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
-
-import useStyle from './SdFloating.styles'
-import SdFloating from './SdFloating'
 import { Close } from '@mui/icons-material'
-import SongDetector from './SongDetector'
+import useStyle from './SdFloating.styles'
+import SdPlusFloating from './SdPlusFloating'
+import SongDetectorContent from './SongDetectorContent'
 
-const SongDetectorFloating = ({ close }: { close?: () => void }) => {
+const SongDetectorPlusFloating = ({ close }: { close?: () => void }) => {
   const classes = useStyle()
 
   return (
-    <Box component={SdFloating}>
-      <div className={classes.Widget}>
+    <Box component={SdPlusFloating}>
+      <div className={classes.Widget} style={{ width: 1150, maxWidth: '95vw' }}>
         <Stack
           direction={'row'}
           p={2}
@@ -21,17 +20,19 @@ const SongDetectorFloating = ({ close }: { close?: () => void }) => {
           display="flex"
         >
           {close && <span />}
-          <Typography>Song Detector</Typography>
+          <Typography>Song Detector Plus</Typography>
           {close && (
             <IconButton onClick={() => close()}>
               <Close />
             </IconButton>
           )}
         </Stack>
-        <SongDetector />
+        <Box sx={{ p: 2, maxHeight: 'calc(100vh - 100px)', overflow: 'auto' }}>
+          <SongDetectorContent />
+        </Box>
       </div>
     </Box>
   )
 }
 
-export default SongDetectorFloating
+export default SongDetectorPlusFloating

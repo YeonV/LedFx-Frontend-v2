@@ -1,8 +1,60 @@
 import { produce } from 'immer'
 
+interface SongDetectorTrigger {
+  id: string
+  songName: string
+  songHash: string
+  duration: number
+  position: number
+  sceneId: string
+  createdAt: number
+}
+
+const STORAGE_KEY = 'songDetector_triggers'
+
+// Load triggers from localStorage
+const loadTriggers = (): SongDetectorTrigger[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch (e) {
+    console.error('Failed to load song detector triggers:', e)
+    return []
+  }
+}
+
+// Save triggers to localStorage
+const saveTriggers = (triggers: SongDetectorTrigger[]) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(triggers))
+  } catch (e) {
+    console.error('Failed to save song detector triggers:', e)
+  }
+}
+
+// Simple hash function for song matching (normalized name + rounded duration)
+export const generateSongHash = (songName: string, duration: number): string => {
+  const normalized = songName.toLowerCase().trim()
+  const roundedDuration = Math.round(duration)
+  const str = `${normalized}:${roundedDuration}`
+  // Simple hash using string charCodeAt
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(36)
+}
+
 const storeSongDectector = (set: any) => ({
   song: '',
   thumbnailPath: '',
+  // Position tracking (from song-detector-plus)
+  position: null as number | null,
+  duration: null as number | null,
+  playing: false,
+  timestamp: null as number | null,
   setSong: (url: string) => {
     set(
       produce((state: any) => {
@@ -19,6 +71,23 @@ const storeSongDectector = (set: any) => ({
       }),
       false,
       'songDetector/setThumbnailPath'
+    )
+  },
+  setPositionData: (data: {
+    position: number | null
+    duration: number | null
+    playing: boolean
+    timestamp: number | null
+  }) => {
+    set(
+      produce((state: any) => {
+        state.position = data.position
+        state.duration = data.duration
+        state.playing = data.playing
+        state.timestamp = data.timestamp
+      }),
+      false,
+      'songDetector/setPositionData'
     )
   },
   // Text auto-apply state
@@ -131,6 +200,68 @@ const storeSongDectector = (set: any) => ({
       }),
       false,
       'songDetector/setImageConfig'
+    )
+  },
+  // Scene triggers
+  triggers: loadTriggers() as SongDetectorTrigger[],
+  sceneTriggerActive: false,
+  triggerLatencyMs: 0,
+  setSceneTriggerActive: (active: boolean) => {
+    set(
+      produce((state: any) => {
+        state.sceneTriggerActive = active
+      }),
+      false,
+      'songDetector/setSceneTriggerActive'
+    )
+  },
+  setTriggerLatencyMs: (latencyMs: number) => {
+    set(
+      produce((state: any) => {
+        state.triggerLatencyMs = latencyMs
+      }),
+      false,
+      'songDetector/setTriggerLatencyMs'
+    )
+  },
+  addTrigger: (trigger: Omit<SongDetectorTrigger, 'id' | 'createdAt'>) => {
+    set(
+      produce((state: any) => {
+        // Use position in ID to allow multiple triggers per song
+        const positionMs = Math.round(trigger.position * 1000)
+        const newTrigger: SongDetectorTrigger = {
+          ...trigger,
+          id: `${trigger.songHash}_${positionMs}`,
+          createdAt: Date.now()
+        }
+        state.triggers.push(newTrigger)
+        saveTriggers(state.triggers)
+      }),
+      false,
+      'songDetector/addTrigger'
+    )
+  },
+  updateTrigger: (id: string, changes: Partial<SongDetectorTrigger>) => {
+    set(
+      produce((state: any) => {
+        const index = state.triggers.findIndex((t: SongDetectorTrigger) => t.id === id)
+        if (index !== -1) {
+          state.triggers[index] = { ...state.triggers[index], ...changes }
+          saveTriggers(state.triggers)
+        }
+      }),
+      false,
+      'songDetector/updateTrigger'
+    )
+  },
+  deleteTrigger: (id: string) => {
+    set(
+      produce((state: any) => {
+        state.triggers = state.triggers.filter((t: SongDetectorTrigger) => t.id !== id)
+        saveTriggers(state.triggers)
+      }),
+      false,
+      'songDetector/deleteTrigger'
     )
   }
 })

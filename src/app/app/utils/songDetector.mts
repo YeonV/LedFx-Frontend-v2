@@ -9,17 +9,19 @@ import { Subprocess } from '../instances.mjs'
 /**
  * Get the path to song-detector executable in extraResources
  */
-export const getSongDetectorPath = (): string => {
+export const getSongDetectorPath = (plus: boolean = false): string => {
   const isDev = !app.isPackaged
   const platform = process.platform
 
   let binaryName: string
+  const baseName = plus ? 'song-detector-plus' : 'song-detector'
+
   if (platform === 'win32') {
-    binaryName = 'song-detector.exe'
+    binaryName = `${baseName}.exe`
   } else if (platform === 'darwin') {
-    binaryName = 'song-detector-macos'
+    binaryName = `${baseName}-macos`
   } else {
-    binaryName = 'song-detector-linux'
+    binaryName = `${baseName}-linux`
   }
 
   if (isDev) {
@@ -37,8 +39,8 @@ export const getSongDetectorPath = (): string => {
 /**
  * Check if song-detector binary exists
  */
-export const isSongDetectorInstalled = async (): Promise<boolean> => {
-  const detectorPath = getSongDetectorPath()
+export const isSongDetectorInstalled = async (plus: boolean = false): Promise<boolean> => {
+  const detectorPath = getSongDetectorPath(plus)
   return fs.promises
     .access(detectorPath, fs.constants.X_OK)
     .then(() => true)
@@ -48,13 +50,15 @@ export const isSongDetectorInstalled = async (): Promise<boolean> => {
 /**
  * Get song-detector status information
  */
-export const getSongDetectorStatus = async (): Promise<{
+export const getSongDetectorStatus = async (
+  plus: boolean = false
+): Promise<{
   installed: boolean
   path: string
   platform: string
 }> => {
-  const installed = await isSongDetectorInstalled()
-  const detectorPath = getSongDetectorPath()
+  const installed = await isSongDetectorInstalled(plus)
+  const detectorPath = getSongDetectorPath(plus)
 
   return {
     installed,
@@ -68,14 +72,16 @@ export const getSongDetectorStatus = async (): Promise<{
  */
 export const startSongDetector = (
   wind: BrowserWindow,
-  deviceName: string = 'ledfxcc'
+  deviceName: string = 'ledfxcc',
+  plus: boolean = false
 ): Subprocess | null => {
-  const detectorPath = getSongDetectorPath()
+  const detectorPath = getSongDetectorPath(plus)
 
   // Check if file exists
   if (!fs.existsSync(detectorPath)) {
     console.error('Song detector not found at:', detectorPath)
-    wind.webContents.send('fromMain', ['song-detector-error', 'Song detector binary not found'])
+    const errorMsg = plus ? 'Song detector Plus binary not found' : 'Song detector binary not found'
+    wind.webContents.send('fromMain', ['song-detector-error', { message: errorMsg, plus }])
     return null
   }
 
@@ -99,19 +105,19 @@ export const startSongDetector = (
   songDetectorProcess.on('exit', (code, signal) => {
     console.log(`Song detector exited with code ${code} and signal ${signal}`)
     if (!wind.isDestroyed()) {
-      wind.webContents.send('fromMain', ['song-detector-stopped', { code, signal }])
+      wind.webContents.send('fromMain', ['song-detector-stopped', { code, signal, plus }])
     }
   })
 
   songDetectorProcess.on('error', (err) => {
     console.error('Failed to start song detector:', err)
     if (!wind.isDestroyed()) {
-      wind.webContents.send('fromMain', ['song-detector-error', err.message])
+      wind.webContents.send('fromMain', ['song-detector-error', { message: err.message, plus }])
     }
   })
 
   if (!wind.isDestroyed()) {
-    wind.webContents.send('fromMain', ['song-detector-started', { deviceName }])
+    wind.webContents.send('fromMain', ['song-detector-started', { deviceName, plus }])
   }
 
   return subprocess
@@ -120,7 +126,11 @@ export const startSongDetector = (
 /**
  * Stop the song detector subprocess
  */
-export const stopSongDetector = (subprocess: Subprocess | null, wind: BrowserWindow): boolean => {
+export const stopSongDetector = (
+  subprocess: Subprocess | null,
+  wind: BrowserWindow,
+  plus: boolean = false
+): boolean => {
   if (!subprocess) {
     return false
   }
@@ -140,7 +150,7 @@ export const stopSongDetector = (subprocess: Subprocess | null, wind: BrowserWin
 
     subprocess.running = false
     if (!wind.isDestroyed()) {
-      wind.webContents.send('fromMain', ['song-detector-stopped', { manual: true }])
+      wind.webContents.send('fromMain', ['song-detector-stopped', { manual: true, plus }])
     }
     return true
   } catch (error) {
@@ -182,14 +192,17 @@ export const autoStartSongDetector = async (
 /**
  * Delete the song-detector binary
  */
-export const deleteSongDetector = async (wind: BrowserWindow): Promise<boolean> => {
-  const detectorPath = getSongDetectorPath()
+export const deleteSongDetector = async (
+  wind: BrowserWindow,
+  plus: boolean = false
+): Promise<boolean> => {
+  const detectorPath = getSongDetectorPath(plus)
 
   try {
     if (fs.existsSync(detectorPath)) {
       fs.unlinkSync(detectorPath)
       console.log('Song detector deleted:', detectorPath)
-      wind.webContents.send('fromMain', ['song-detector-deleted', { path: detectorPath }])
+      wind.webContents.send('fromMain', ['song-detector-deleted', { path: detectorPath, plus }])
       return true
     } else {
       console.log('Song detector not found, nothing to delete')
@@ -197,7 +210,10 @@ export const deleteSongDetector = async (wind: BrowserWindow): Promise<boolean> 
     }
   } catch (error) {
     console.error('Failed to delete song detector:', error)
-    wind.webContents.send('fromMain', ['song-detector-delete-error', (error as Error).message])
+    wind.webContents.send('fromMain', [
+      'song-detector-delete-error',
+      { message: (error as Error).message, plus }
+    ])
     return false
   }
 }
@@ -205,20 +221,24 @@ export const deleteSongDetector = async (wind: BrowserWindow): Promise<boolean> 
 /**
  * Download song-detector binary from GitHub releases
  */
-export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean> => {
+export const downloadSongDetector = async (
+  wind: BrowserWindow,
+  plus: boolean = false
+): Promise<boolean> => {
   const platform = process.platform
   let binaryName: string
+  const baseName = plus ? 'song-detector-plus' : 'song-detector'
 
   if (platform === 'win32') {
-    binaryName = 'song-detector.exe'
+    binaryName = `${baseName}.exe`
   } else if (platform === 'darwin') {
-    binaryName = 'song-detector-macos'
+    binaryName = `${baseName}-macos`
   } else {
-    binaryName = 'song-detector-linux'
+    binaryName = `${baseName}-linux`
   }
 
   const downloadUrl = `https://github.com/YeonV/LedFx-Builds/releases/latest/download/${binaryName}`
-  const detectorPath = getSongDetectorPath()
+  const detectorPath = getSongDetectorPath(plus)
   const detectorDir = path.dirname(detectorPath)
 
   console.log('Downloading song detector from:', downloadUrl)
@@ -256,7 +276,10 @@ export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean
             fs.unlink(detectorPath, () => {})
             const error = `Download failed with status: ${response.statusCode}`
             console.error(error)
-            wind.webContents.send('fromMain', ['song-detector-download-error', error])
+            wind.webContents.send('fromMain', [
+              'song-detector-download-error',
+              { message: error, plus }
+            ])
             reject(new Error(error))
             return
           }
@@ -268,7 +291,10 @@ export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean
           response.on('data', (chunk) => {
             downloadedSize += chunk.length
             const progress = totalSize > 0 ? (downloadedSize / totalSize) * 100 : 0
-            wind.webContents.send('fromMain', ['song-detector-download-progress', { progress }])
+            wind.webContents.send('fromMain', [
+              'song-detector-download-progress',
+              { progress, plus }
+            ])
           })
 
           response.pipe(file)
@@ -295,7 +321,7 @@ export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean
 
               wind.webContents.send('fromMain', [
                 'song-detector-download-complete',
-                { path: detectorPath }
+                { path: detectorPath, plus }
               ])
               resolve(true)
             })
@@ -304,14 +330,20 @@ export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean
           file.on('error', (err) => {
             console.error('File write error:', err)
             fs.unlink(detectorPath, () => {})
-            wind.webContents.send('fromMain', ['song-detector-download-error', err.message])
+            wind.webContents.send('fromMain', [
+              'song-detector-download-error',
+              { message: err.message, plus }
+            ])
             reject(err)
           })
         })
         .on('error', (err) => {
           console.error('Download error:', err)
           fs.unlink(detectorPath, () => {})
-          wind.webContents.send('fromMain', ['song-detector-download-error', err.message])
+          wind.webContents.send('fromMain', [
+            'song-detector-download-error',
+            { message: err.message, plus }
+          ])
           reject(err)
         })
     }

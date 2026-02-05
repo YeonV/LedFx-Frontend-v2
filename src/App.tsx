@@ -152,7 +152,10 @@ export default function App() {
       if (protoCall.startsWith('ledfx://song/')) {
         // Parse protocol URL more carefully to preserve paths with slashes
         const urlWithoutProtocol = protoCall.replace('ledfx://', '')
-        const parts = urlWithoutProtocol.split('/')
+        
+        // Split query string if present
+        const [pathPart, queryString] = urlWithoutProtocol.split('?')
+        const parts = pathPart.split('/')
         const domain = parts[0]
 
         if (domain === 'song' && parts.length >= 3) {
@@ -160,11 +163,22 @@ export default function App() {
           const songTitle = parts[2]
           const thumbnailPath = parts.slice(3).join('/') // Rejoin remaining parts for full path
 
+          // Parse query parameters for position tracking (song-detector-plus)
+          const queryParams = new URLSearchParams(queryString || '')
+          const position = queryParams.has('position') ? parseFloat(queryParams.get('position')!) : null
+          const duration = queryParams.has('duration') ? parseFloat(queryParams.get('duration')!) : null
+          const playing = queryParams.get('playing') === 'true'
+          const timestamp = queryParams.has('timestamp') ? parseFloat(queryParams.get('timestamp')!) : null
+
           console.table({
             Domain: domain,
             Action: device,
             Payload: songTitle,
-            Extra: thumbnailPath || 'none'
+            Extra: thumbnailPath || 'none',
+            Position: position !== null ? `${position.toFixed(1)}s` : 'N/A',
+            Duration: duration !== null ? `${duration.toFixed(1)}s` : 'N/A',
+            Playing: playing,
+            Timestamp: timestamp !== null ? new Date(timestamp * 1000).toLocaleTimeString() : 'N/A'
           })
 
           const thumbnail = thumbnailPath ? decodeURIComponent(thumbnailPath) : null
@@ -174,7 +188,13 @@ export default function App() {
             'Song:',
             songTitle,
             'Thumbnail:',
-            thumbnail
+            thumbnail,
+            'Position:',
+            position,
+            'Duration:',
+            duration,
+            'Playing:',
+            playing
           )
 
           // Ignore "Unknown" payloads
@@ -191,6 +211,15 @@ export default function App() {
             // Store thumbnail path for album art form
             if (thumbnail) {
               useStore.getState().setThumbnailPath(thumbnail)
+            }
+            // Store position data if available (from song-detector-plus)
+            if (position !== null || duration !== null) {
+              useStore.getState().setPositionData({
+                position,
+                duration,
+                playing,
+                timestamp
+              })
             }
           } else {
             const virtual = Object.keys(virtuals).find((virt) => virtuals[virt].id === device)

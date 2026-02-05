@@ -4,9 +4,9 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   Checkbox,
   FormControl,
+  IconButton,
   InputLabel,
   ListItemText,
   MenuItem,
@@ -15,9 +15,10 @@ import {
   Slider,
   Stack,
   Switch,
+  Tooltip,
   Typography
 } from '@mui/material'
-import { ExpandMore } from '@mui/icons-material'
+import { ExpandMore, PlayArrow, Stop } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import useStore from '../../../../../store/useStore'
@@ -91,7 +92,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
   }
 
-  const applyText = async (once: boolean = false) => {
+  const applyText = async () => {
     if (textVirtuals.length > 0 && currentTrack) {
       await Ledfx('/api/effects', 'PUT', {
         action: 'apply_global_effect',
@@ -101,24 +102,36 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
         virtuals: textVirtuals
       })
       getVirtuals()
-      if (once) {
-        if (generalDetector) {
-          setTextAutoApply(false)
-        } else {
-          setIsActiveLocal(false)
-        }
+    }
+  }
+
+  const toggleAutoApply = () => {
+    if (isActive) {
+      if (generalDetector) {
+        setTextAutoApply(false)
       } else {
-        if (generalDetector) {
-          setTextAutoApply(true)
-        } else {
-          setIsActiveLocal(true)
-        }
+        setIsActiveLocal(false)
+      }
+    } else {
+      applyText()
+      if (generalDetector) {
+        setTextAutoApply(true)
+      } else {
+        setIsActiveLocal(true)
       }
     }
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
+        flex: 1
+      }}
+    >
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Text Configuration</Typography>
@@ -294,53 +307,36 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
-      <Box sx={{ flexGrow: 1 }} />
-      <FormControl fullWidth sx={{ mt: 2 }}>
-        <InputLabel>Text Virtuals</InputLabel>
-        <Select
-          multiple
-          value={textVirtuals}
-          onChange={handleTextVirtualChange}
-          input={<OutlinedInput label="Text Virtuals" />}
-          renderValue={(selected) => selected.join(', ')}
-        >
-          {matrix.map((vId) => (
-            <MenuItem key={vId} value={vId}>
-              <Checkbox checked={textVirtuals.includes(vId)} />
-              <ListItemText primary={vId} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <Stack direction="row" spacing={2} mt={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={() => applyText(true)}
-          disabled={textVirtuals.length === 0}
-        >
-          Apply Once
-        </Button>
-        <Button
-          variant="contained"
-          color={isActive ? 'secondary' : 'primary'}
-          fullWidth
-          onClick={() => {
-            if (isActive) {
-              if (generalDetector) {
-                setTextAutoApply(false)
-              } else {
-                setIsActiveLocal(false)
-              }
-            } else {
-              applyText(false)
-            }
-          }}
-          disabled={textVirtuals.length === 0}
-        >
-          {isActive ? 'Stop Auto' : 'Apply Auto'}
-        </Button>
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2, flex: 1 }}>
+        <FormControl fullWidth>
+          <InputLabel>Text Virtuals</InputLabel>
+          <Select
+            multiple
+            value={textVirtuals}
+            onChange={handleTextVirtualChange}
+            input={<OutlinedInput label="Text Virtuals" />}
+            renderValue={(selected) => selected.join(', ')}
+          >
+            {matrix.map((vId) => (
+              <MenuItem key={vId} value={vId}>
+                <Checkbox checked={textVirtuals.includes(vId)} />
+                <ListItemText primary={vId} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
+          <IconButton
+            onClick={toggleAutoApply}
+            disabled={textVirtuals.length === 0}
+            sx={{
+              color: isActive ? 'success.main' : 'primary.main',
+              py: 2
+            }}
+          >
+            {isActive ? <Stop /> : <PlayArrow />}
+          </IconButton>
+        </Tooltip>
       </Stack>
     </Box>
   )

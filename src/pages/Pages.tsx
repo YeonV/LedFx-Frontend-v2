@@ -31,6 +31,8 @@ import MGraphFloating from '../components/Integrations/Spotify/Widgets/MGraphFlo
 import Keybinding from '../components/Integrations/Spotify/Widgets/Keybinding/Keybinding'
 import OneEffect from '../components/Gamepad/OneEffect'
 import SongDetectorFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorFloating'
+import SongDetectorPlusFloating from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorPlusFloating'
+import SongDetectorScreen from '../components/Integrations/Spotify/Widgets/SongDetector/SongDetectorScreen'
 import PixelGraphSettingsFloating from '../components/Integrations/Spotify/Widgets/PixelGraphSettings/PixelGraphSettingsFloating'
 import GlobalColorWidget from '../components/Integrations/Spotify/Widgets/GlobalColorWidget/GlobalColorWidget'
 import ReactFlowPage from './ReactFlow/ReactFlowPage'
@@ -54,6 +56,8 @@ const Routings = () => {
   const setPgs = useStore((state) => state.ui.setPgs)
   const sd = useStore((state) => state.ui.sd)
   const setSd = useStore((state) => state.ui.setSd)
+  const sdPlus = useStore((state) => state.ui.sdPlus)
+  const setSdPlus = useStore((state) => state.ui.setSdPlus)
   const globalColorWidget = useStore((state) => state.ui.globalColorWidget)
   const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
   const features = useStore((state) => state.features)
@@ -103,6 +107,7 @@ const Routings = () => {
   useHotkeys(['ctrl+alt+f'], () => setFpsViewer(!fpsViewer))
   useHotkeys(['ctrl+alt+m'], () => setMg(!mg))
   useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
+  useHotkeys(['ctrl+alt+s'], () => setSdPlus(!sdPlus))
   useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!globalColorWidget))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
   useHotkeys(['ctrl+alt+n'], () => navigate('/reactflow'))
@@ -213,9 +218,11 @@ const Routings = () => {
         {mp && <Mp />}
         {pgs && <PixelGraphSettingsFloating close={() => setPgs(false)} />}
         {sd && <SongDetectorFloating close={() => setSd(false)} />}
+        {sdPlus && <SongDetectorPlusFloating close={() => setSdPlus(false)} />}
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
+        <SongDetectorScreen />
         <OneEffect noButton />
         <NoHostDialog />
         {isElect && <HostManager />}
