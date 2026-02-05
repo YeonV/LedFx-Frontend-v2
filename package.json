@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.1.4-b6",
+  "version": "2.1.4-b7",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -310,7 +310,8 @@
       "type": "distribution",
       "identity": "CEE631E9774D506963ECC20D6BFA8213FB07B2B1",
       "signIgnore": [
-        "extraResources/LedFx_core.app"
+        "extraResources/LedFx_core.app",
+        "extraResources/song-detector-macos"
       ]
     },
     "dmg": {

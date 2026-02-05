@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { app, BrowserWindow } from 'electron'
-import { spawn } from 'child_process'
+import { spawn, execSync } from 'child_process'
 import path from 'path'
 import fs from 'fs'
 import https from 'https'
@@ -17,7 +17,7 @@ export const getSongDetectorPath = (): string => {
   if (platform === 'win32') {
     binaryName = 'song-detector.exe'
   } else if (platform === 'darwin') {
-    binaryName = 'song-detector-mac'
+    binaryName = 'song-detector-macos'
   } else {
     binaryName = 'song-detector-linux'
   }
@@ -25,6 +25,12 @@ export const getSongDetectorPath = (): string => {
   if (isDev) {
     return path.join(process.cwd(), 'extraResources', binaryName)
   }
+
+  // On macOS, store outside the .app bundle in userData
+  if (platform === 'darwin') {
+    return path.join(app.getPath('userData'), 'extraResources', binaryName)
+  }
+
   return path.join(process.resourcesPath, 'extraResources', binaryName)
 }
 
@@ -206,7 +212,7 @@ export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean
   if (platform === 'win32') {
     binaryName = 'song-detector.exe'
   } else if (platform === 'darwin') {
-    binaryName = 'song-detector-mac'
+    binaryName = 'song-detector-macos'
   } else {
     binaryName = 'song-detector-linux'
   }
@@ -275,6 +281,16 @@ export const downloadSongDetector = async (wind: BrowserWindow): Promise<boolean
               // Make executable on Unix
               if (platform !== 'win32') {
                 fs.chmodSync(detectorPath, 0o755)
+              }
+
+              // Remove quarantine attribute on macOS to avoid Gatekeeper issues
+              if (platform === 'darwin') {
+                try {
+                  execSync(`xattr -d com.apple.quarantine "${detectorPath}"`, { stdio: 'ignore' })
+                  console.log('Removed quarantine attribute from song detector')
+                } catch (err) {
+                  console.log('Could not remove quarantine attribute (may not exist):', err)
+                }
               }
 
               wind.webContents.send('fromMain', [

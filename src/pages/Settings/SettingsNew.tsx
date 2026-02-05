@@ -36,6 +36,10 @@ const SettingsNew = () => {
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const setPgs = useStore((state) => state.ui.setPgs)
   const setSd = useStore((state) => state.ui.setSd)
+  const coreParams = useStore((state) => state.coreParams)
+
+  const isCC = coreParams && Object.keys(coreParams).length > 0
+
   const loc = useLocation()
 
   useEffect(() => {
@@ -91,13 +95,15 @@ const SettingsNew = () => {
           text="Scene Playlists"
           onClick={() => navigate('/playlists')}
         />
-        <Tile
-          client
-          beta
-          icon={<LibraryMusic fontSize="large" />}
-          text="Song Detector"
-          onClick={() => setSd(true)}
-        />
+        {isCC && (
+          <Tile
+            client
+            beta
+            icon={<LibraryMusic fontSize="large" />}
+            text="Song Detector"
+            onClick={() => setSd(true)}
+          />
+        )}
         <Tile
           client
           beta
