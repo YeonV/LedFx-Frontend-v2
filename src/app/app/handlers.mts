@@ -428,8 +428,18 @@ export const handlers = async (
         const installed = await isSongDetectorInstalled(plus)
         const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
         const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
-        console.log('[Handler] Song detector installed:', installed, 'running:', isRunning, 'plus:', plus)
-        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning, plus }])
+        console.log(
+          '[Handler] Song detector installed:',
+          installed,
+          'running:',
+          isRunning,
+          'plus:',
+          plus
+        )
+        wind.webContents.send('fromMain', [
+          'song-detector-available',
+          { installed, isRunning, plus }
+        ])
         break
       }
       case 'get-song-detector-status': {
@@ -471,7 +481,10 @@ export const handlers = async (
           const installed = await isSongDetectorInstalled(plus)
           const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
           const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
-          wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning, plus }])
+          wind.webContents.send('fromMain', [
+            'song-detector-available',
+            { installed, isRunning, plus }
+          ])
         } catch (error) {
           console.error('[Handler] Download failed:', error)
         }
@@ -490,7 +503,10 @@ export const handlers = async (
         // After delete, check availability again
         const installed = await isSongDetectorInstalled(plus)
         const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
-        wind.webContents.send('fromMain', ['song-detector-available', { installed, isRunning, plus }])
+        wind.webContents.send('fromMain', [
+          'song-detector-available',
+          { installed, isRunning, plus }
+        ])
         break
       }
       case 'stop-song-detector': {

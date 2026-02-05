@@ -152,7 +152,7 @@ export default function App() {
       if (protoCall.startsWith('ledfx://song/')) {
         // Parse protocol URL more carefully to preserve paths with slashes
         const urlWithoutProtocol = protoCall.replace('ledfx://', '')
-        
+
         // Split query string if present
         const [pathPart, queryString] = urlWithoutProtocol.split('?')
         const parts = pathPart.split('/')
@@ -165,10 +165,16 @@ export default function App() {
 
           // Parse query parameters for position tracking (song-detector-plus)
           const queryParams = new URLSearchParams(queryString || '')
-          const position = queryParams.has('position') ? parseFloat(queryParams.get('position')!) : null
-          const duration = queryParams.has('duration') ? parseFloat(queryParams.get('duration')!) : null
+          const position = queryParams.has('position')
+            ? parseFloat(queryParams.get('position')!)
+            : null
+          const duration = queryParams.has('duration')
+            ? parseFloat(queryParams.get('duration')!)
+            : null
           const playing = queryParams.get('playing') === 'true'
-          const timestamp = queryParams.has('timestamp') ? parseFloat(queryParams.get('timestamp')!) : null
+          const timestamp = queryParams.has('timestamp')
+            ? parseFloat(queryParams.get('timestamp')!)
+            : null
 
           console.table({
             Domain: domain,
