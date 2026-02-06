@@ -124,6 +124,9 @@ export const handleProtocol = (
       console.log('Received protocol callback:', url)
       store.set('protocol-callback', url)
 
+      // Send protocol callback to renderer
+      wind.webContents.send('fromMain', ['protocol', JSON.stringify({ url })])
+
       // Skip page reload for song detector calls - just store and focus the window
       if (!url.startsWith('ledfx://song/')) {
         if (isDev) {
