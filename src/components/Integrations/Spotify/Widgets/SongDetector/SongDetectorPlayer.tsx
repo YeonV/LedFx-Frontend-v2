@@ -8,7 +8,7 @@ import {
   IconButton
 } from '@mui/material'
 import { Pause as PauseIcon, PlayArrow, Settings, BarChart } from '@mui/icons-material'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import useStore from '../../../../../store/useStore'
 import { formatTime } from '../../../../../utils/helpers'
 import { generateSongHash } from '../../../../../store/ui/storeSongDectector'
@@ -35,6 +35,8 @@ const SongDetectorPlayer = ({
 
   const [currentPosition, setCurrentPosition] = useState<number | null>(null)
   const [cacheBuster, setCacheBuster] = useState(() => Date.now())
+  const [isSeekingBack, setIsSeekingBack] = useState(false)
+  const previousPositionRef = useRef<number | null>(null)
 
   // Update cache buster when track changes
   useEffect(() => {
@@ -44,6 +46,16 @@ const SongDetectorPlayer = ({
   // Interpolate position for smooth updates
   useEffect(() => {
     if (!position || !timestamp || !playing) {
+      // Detect backward seek (e.g., restart or seek back)
+      if (
+        previousPositionRef.current !== null &&
+        position !== null &&
+        position < previousPositionRef.current - 1
+      ) {
+        setIsSeekingBack(true)
+        setTimeout(() => setIsSeekingBack(false), 50)
+      }
+      previousPositionRef.current = position
       setCurrentPosition(position)
       return
     }
@@ -51,6 +63,13 @@ const SongDetectorPlayer = ({
     const updatePosition = () => {
       const elapsed = Date.now() / 1000 - timestamp!
       const interpolated = Math.min(position! + elapsed, duration || Infinity)
+
+      // Detect backward seek (e.g., restart or seek back)
+      if (previousPositionRef.current !== null && interpolated < previousPositionRef.current - 1) {
+        setIsSeekingBack(true)
+        setTimeout(() => setIsSeekingBack(false), 50)
+      }
+      previousPositionRef.current = interpolated
       setCurrentPosition(interpolated)
     }
 
@@ -74,7 +93,8 @@ const SongDetectorPlayer = ({
 
   const { artist, title } = currentTrack ? parseTrack(currentTrack) : { artist: '', title: '' }
 
-  const defaultImage = '/icon.png'
+  // Electron-compatible default image path (works on macOS file:// protocol)
+  const defaultImage = `${window.location.origin}/icon.png`
 
   // Get triggers for current song
   const currentSongHash = currentTrack && duration ? generateSongHash(currentTrack, duration) : null
@@ -176,7 +196,8 @@ const SongDetectorPlayer = ({
                       backgroundColor: 'rgba(255,255,255,0.1)',
                       '& .MuiLinearProgress-bar': {
                         borderRadius: 3,
-                        backgroundColor: 'success.main'
+                        backgroundColor: 'success.main',
+                        transition: isSeekingBack ? 'none' : undefined
                       }
                     }}
                   />
