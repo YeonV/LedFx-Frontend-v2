@@ -74,7 +74,7 @@ const SongDetectorPlayer = ({
 
   const { artist, title } = currentTrack ? parseTrack(currentTrack) : { artist: '', title: '' }
 
-  const defaultImage = 'https://github.com/LedFx/LedFx/raw/main/icons/discord.png'
+  const defaultImage = '/icon.png'
 
   // Get triggers for current song
   const currentSongHash = currentTrack && duration ? generateSongHash(currentTrack, duration) : null

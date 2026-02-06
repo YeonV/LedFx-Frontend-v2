@@ -116,7 +116,12 @@ export default function App() {
     }
     if (parameters[0] === 'protocol') {
       // console.log('protocol', parameters[1])
-      setProtoCall(JSON.parse(parameters[1]).commandLine.pop())
+      const protocolData = JSON.parse(parameters[1])
+      // Handle both Windows (commandLine array) and macOS (url string) formats
+      const protocolUrl = protocolData.url || protocolData.commandLine?.pop()
+      if (protocolUrl) {
+        setProtoCall(protocolUrl)
+      }
     }
     if (parameters[0] === 'snackbar') {
       showSnackbar('info', parameters[1])
