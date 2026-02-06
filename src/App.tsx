@@ -193,7 +193,8 @@ export default function App() {
             Timestamp: timestamp !== null ? new Date(timestamp * 1000).toLocaleTimeString() : 'N/A'
           })
 
-          const thumbnail = thumbnailPath ? decodeURIComponent(thumbnailPath) : null
+          // Backend serves thumbnails from ~/.ledfx/assets/ at /assets/ endpoint
+          const thumbnail = thumbnailPath ? `/assets/${decodeURIComponent(thumbnailPath)}` : null
           // console.log(
           //   'Song detector - Device:',
           //   device,
