@@ -388,7 +388,7 @@ export const finishAuth = async (code: string | null): Promise<FinishAuthResult>
 
 export async function refreshAuth(): Promise<RefreshAuthResult> {
   // ... (Implementation remains the same as your last version, using cookieOptions) ...
-  log('successSpotify', 'Attempting refreshAuth')
+  // log('successSpotify', 'Attempting refreshAuth')
   const cookies = new Cookies(null, cookieOptions)
   let refresh_token = cookies.get('refresh_token')
 
@@ -415,7 +415,7 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
       qs.stringify(postData),
       config
     )
-    log('successSpotify', 'Token refresh successful.')
+    // log('successSpotify', 'Token refresh successful.')
     const newAccessToken = res.data.access_token
     const expDate = new Date()
     expDate.setHours(expDate.getHours() + 1)
@@ -435,7 +435,7 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
     }
 
     if (res.data.refresh_token) {
-      log('infoSpotify', 'Received new refresh token from Spotify.')
+      log('successSpotify', 'Received new refresh token from Spotify.')
       const refreshExpDate = new Date()
       refreshExpDate.setDate(refreshExpDate.getDate() + 30)
       cookies.remove('refresh_token')
@@ -477,7 +477,7 @@ export async function refreshAuth(): Promise<RefreshAuthResult> {
 
 export function logoutAuth() {
   // ... (Implementation remains the same - simplified version) ...
-  log('successSpotify', 'starting logoutAuth')
+  // log('successSpotify', 'starting logoutAuth')
   const cookies = new Cookies(null, cookieOptions)
   cookies.remove('access_token')
   cookies.remove('refresh_token')

@@ -30,8 +30,17 @@ import {
   getSongDetectorStatus,
   isSongDetectorInstalled,
   startSongDetector,
-  stopSongDetector
+  stopSongDetector,
+  getShuttingDown
 } from './utils/songDetector.mjs'
+
+// ANSI color codes for logging
+const colors = {
+  reset: '\x1b[0m',
+  green: '\x1b[32m'
+}
+
+const log = (message: string) => `${colors.green}[Handler]  ${colors.reset}${message}`
 
 export const handlers = async (
   wind: BrowserWindow,
@@ -424,17 +433,12 @@ export const handlers = async (
       }
       case 'check-song-detector': {
         const plus = parameters.plus || false
-        console.log('[Handler] Checking song detector installation, plus:', plus)
+        console.log(log(`Checking song detector installation, plus: ${plus}`))
         const installed = await isSongDetectorInstalled(plus)
         const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
         const isRunning = !!(subprocesses[detectorKey] && subprocesses[detectorKey].running)
         console.log(
-          '[Handler] Song detector installed:',
-          installed,
-          'running:',
-          isRunning,
-          'plus:',
-          plus
+          log(`Song detector installed: ${installed} running: ${isRunning} plus: ${plus}`)
         )
         wind.webContents.send('fromMain', [
           'song-detector-available',
@@ -444,9 +448,9 @@ export const handlers = async (
       }
       case 'get-song-detector-status': {
         const plus = parameters.plus || false
-        console.log('[Handler] Getting song detector status, plus:', plus)
+        console.log(log(`Getting song detector status, plus: ${plus}`))
         const status = await getSongDetectorStatus(plus)
-        console.log('[Handler] Song detector status:', status)
+        console.log(log(`Song detector status: ${status}`))
         wind.webContents.send('fromMain', ['song-detector-status', { ...status, plus }])
         break
       }
@@ -454,11 +458,17 @@ export const handlers = async (
         const deviceName = parameters.deviceName || 'ledfxcc'
         const plus = parameters.plus || false
         const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
-        console.log('[Handler] Starting song detector with device:', deviceName, 'plus:', plus)
+        console.log(log(`Starting song detector with device: ${deviceName} plus: ${plus}`))
+
+        // Check if app is shutting down
+        if (getShuttingDown()) {
+          console.log(log(`App is shutting down, ignoring start request, plus: ${plus}`))
+          break
+        }
 
         // Check if already running
         if (subprocesses[detectorKey] && subprocesses[detectorKey].running) {
-          console.log('[Handler] Song detector already running, skipping start, plus:', plus)
+          console.log(log(`Song detector already running, skipping start, plus: ${plus}`))
           wind.webContents.send('fromMain', ['song-detector-already-running', { deviceName, plus }])
           break
         }
@@ -466,15 +476,19 @@ export const handlers = async (
         const songDetectorProcess = startSongDetector(wind, deviceName, plus)
         if (songDetectorProcess) {
           subprocesses[detectorKey] = songDetectorProcess
-          console.log('[Handler] Song detector process started, plus:', plus)
+          // Store running state with variant-specific key
+          const storeKey = plus ? 'song-detector-plus-running' : 'song-detector-running'
+          store.set(storeKey, true)
+          store.set('song-detector-device-name', deviceName)
+          console.log(log(`Song detector process started, plus: ${plus}`))
         } else {
-          console.log('[Handler] Failed to start song detector process, plus:', plus)
+          console.log(log(`Failed to start song detector process, plus: ${plus}`))
         }
         break
       }
       case 'download-song-detector': {
         const plus = parameters.plus || false
-        console.log('[Handler] Downloading song detector, plus:', plus)
+        console.log(log(`Downloading song detector, plus: ${plus}`))
         try {
           await downloadSongDetector(wind, plus)
           // After download, check availability again
@@ -486,14 +500,14 @@ export const handlers = async (
             { installed, isRunning, plus }
           ])
         } catch (error) {
-          console.error('[Handler] Download failed:', error)
+          console.error(log(`Download failed: ${error}`))
         }
         break
       }
       case 'delete-song-detector': {
         const plus = parameters.plus || false
         const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
-        console.log('[Handler] Deleting song detector, plus:', plus)
+        console.log(log(`Deleting song detector, plus: ${plus}`))
         // Stop it first if running
         if (subprocesses[detectorKey]) {
           stopSongDetector(subprocesses[detectorKey], wind, plus)
@@ -512,21 +526,23 @@ export const handlers = async (
       case 'stop-song-detector': {
         const plus = parameters.plus || false
         const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
-        console.log('[Handler] Stopping song detector, plus:', plus)
+        console.log(log(`Stopping song detector, plus: ${plus}`))
         if (subprocesses[detectorKey]) {
           const success = stopSongDetector(subprocesses[detectorKey], wind, plus)
           if (success) {
             delete subprocesses[detectorKey]
-            console.log('[Handler] Song detector stopped successfully, plus:', plus)
-            // Clear running state
-            store.set('song-detector-running', false)
+            console.log(log(`Song detector stopped successfully, plus: ${plus}`))
+            // Clear running state with variant-specific key
+            const storeKey = plus ? 'song-detector-plus-running' : 'song-detector-running'
+            store.set(storeKey, false)
           } else {
-            console.log('[Handler] Failed to stop song detector, plus:', plus)
+            console.log(log(`Failed to stop song detector, plus: ${plus}`))
           }
         } else {
-          console.log('[Handler] No song detector subprocess found')
-          // Clear running state anyway
-          store.set('song-detector-running', false)
+          console.log(log('No song detector subprocess found'))
+          // Clear running state anyway with variant-specific key
+          const storeKey = plus ? 'song-detector-plus-running' : 'song-detector-running'
+          store.set(storeKey, false)
         }
         break
       }

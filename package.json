@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.1.4-b9",
+  "version": "2.1.4-b10",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -147,7 +147,8 @@
     "distall:win32": "npx tsc --project tsconfig.electron.json && set GENERATE_SOURCEMAP=false && set CI=false && craco build && electron-builder && electron-builder --config electron-builder.json -w zip -w portable -w nsis",
     "distall:default": "npx tsc --project tsconfig.electron.json && GENERATE_SOURCEMAP=false CI=false craco build && electron-builder && electron-builder --config electron-builder.json",
     "dist-multi": "npx tsc --project tsconfig.electron.json && GENERATE_SOURCEMAP=false craco build && electron-builder -mwl",
-    "dev": "concurrently --kill-others \"cross-env BROWSER=none yarn start\" \"yarn electron\"",
+    "devold": "concurrently --kill-others \"cross-env BROWSER=none yarn start\" \"yarn electron\"",
+    "dev": "node scripts/dev-runner.cjs",
     "predevs": "echo HTTPS=true > .env",
     "devs": "concurrently --kill-others \"cross-env BROWSER=none yarn start\" \"yarn electrons\"",
     "postdevs": "del .env",

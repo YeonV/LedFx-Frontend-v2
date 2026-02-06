@@ -188,20 +188,20 @@ export default function App() {
           })
 
           const thumbnail = thumbnailPath ? decodeURIComponent(thumbnailPath) : null
-          console.log(
-            'Song detector - Device:',
-            device,
-            'Song:',
-            songTitle,
-            'Thumbnail:',
-            thumbnail,
-            'Position:',
-            position,
-            'Duration:',
-            duration,
-            'Playing:',
-            playing
-          )
+          // console.log(
+          //   'Song detector - Device:',
+          //   device,
+          //   'Song:',
+          //   songTitle,
+          //   'Thumbnail:',
+          //   thumbnail,
+          //   'Position:',
+          //   position,
+          //   'Duration:',
+          //   duration,
+          //   'Playing:',
+          //   playing
+          // )
 
           // Ignore "Unknown" payloads
           if (

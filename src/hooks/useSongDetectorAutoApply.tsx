@@ -74,8 +74,6 @@ const useSongDetectorAutoApply = () => {
 
     if (!thumbnailPath || (!trackChanged && !thumbnailChanged)) return
 
-    console.log('[Auto-Apply] Extracting colors for new track:', currentTrack)
-
     // Reset colors and gradients for new song
     setExtractedColors([])
     setGradients([])
@@ -128,12 +126,9 @@ const useSongDetectorAutoApply = () => {
       // Filter similar colors and take top colors
       const uniqueColors = filterSimilarColors(sortedColors, 50).slice(0, 8)
       setExtractedColors(uniqueColors)
-      console.log('[Auto-Apply] Extracted', uniqueColors.length, 'colors from album art')
     }
 
-    img.onerror = () => {
-      console.error('[Auto-Apply] Failed to load album art from:', fileUrl)
-    }
+    img.onerror = () => {}
 
     prevAlbumArtRef.current = thumbnailPath
     prevColorTrackRef.current = currentTrack
@@ -189,8 +184,6 @@ const useSongDetectorAutoApply = () => {
     if (selectedGradient === null && generatedGradients.length > 0) {
       setSelectedGradient(0)
     }
-
-    console.log('[Auto-Apply] Generated', generatedGradients.length, 'gradients')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extractedColors, selectedGradient])
 
@@ -203,7 +196,6 @@ const useSongDetectorAutoApply = () => {
       textVirtuals.length > 0 &&
       currentTrack !== prevTextTrackRef.current
     ) {
-      console.log('[Auto-Apply] Text effect triggered for:', currentTrack)
       setTimeout(() => {
         Ledfx('/api/effects', 'PUT', {
           action: 'apply_global_effect',
@@ -230,7 +222,6 @@ const useSongDetectorAutoApply = () => {
       gradientsKey !== prevGradientsRef.current &&
       gradientsKey !== '' // Ensure we have actual gradients, not empty array
     ) {
-      console.log('[Auto-Apply] Gradient effect triggered')
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global',
         gradient: gradients[selectedGradient],
@@ -250,7 +241,6 @@ const useSongDetectorAutoApply = () => {
       imageVirtuals.length > 0 &&
       thumbnailPath !== prevAlbumArtRef.current
     ) {
-      console.log('[Auto-Apply] Image effect triggered for:', thumbnailPath)
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global_effect',
         type: 'imagespin',

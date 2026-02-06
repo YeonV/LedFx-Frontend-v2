@@ -66,7 +66,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
 
   useEffect(() => {
-    console.log('EY', sendSpotifyTrack, currentTrack, textVirtuals)
+    // console.log('EY', sendSpotifyTrack, currentTrack, textVirtuals)
     const shouldApply = generalDetector ? isActive : sendSpotifyTrack
     if (shouldApply && currentTrack !== '' && textVirtuals.length > 0) {
       setTimeout(() => {

@@ -8,6 +8,12 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Import shutdown flag
+let isShuttingDown = false
+export const setProtocolShuttingDown = (value: boolean) => {
+  isShuttingDown = value
+}
+
 export const setupProtocol = () => {
   ;(async () => {
     const isSquirrelStartup = await import('electron-squirrel-startup')
@@ -41,13 +47,25 @@ export const handleProtocol = (
     app.on(
       'second-instance',
       (event: Electron.Event, commandLine: string[], workingDirectory: string) => {
+        // Ignore protocol callbacks during shutdown
+        if (isShuttingDown) {
+          console.log('[Protocol] Ignoring second-instance, app is shutting down')
+          return
+        }
+
         const wind = getWind()
         console.log(commandLine, wind)
         if (wind) {
-          if (wind.isMinimized()) wind.restore()
-
           // Check if this is a protocol callback (e.g., ledfx://callback)
           const protocolUrl = commandLine.find((arg) => arg.startsWith('ledfx://'))
+
+          // Only restore/focus for non-song-detector callbacks
+          const isSongDetector = protocolUrl?.startsWith('ledfx://song/')
+
+          if (!isSongDetector && wind.isMinimized()) {
+            wind.restore()
+          }
+
           if (protocolUrl) {
             // Store the callback URL in electron-store for the renderer to pick up
             console.log('Received protocol callback:', protocolUrl)
@@ -93,6 +111,12 @@ export const handleProtocol = (
 
   // macOS/Linux: handle protocol via open-url event
   app.on('open-url', (event: Electron.Event, url: string) => {
+    // Ignore protocol callbacks during shutdown
+    if (isShuttingDown) {
+      console.log('[Protocol] Ignoring open-url, app is shutting down')
+      return
+    }
+
     console.log('open-url event:', url)
     const wind = getWind()
     if (wind && url.startsWith('ledfx://')) {

@@ -1,7 +1,10 @@
 import { BrowserWindow } from 'electron'
 import coreParams from './utils/coreParams.mjs'
 import startCore from './utils/startCore.mjs'
-import { ChildProcessWithoutNullStreams } from 'child_process'
+import { ChildProcessWithoutNullStreams, execSync } from 'child_process'
+import { setShuttingDown } from './utils/songDetector.mjs'
+import { setProtocolShuttingDown } from './protocol.mjs'
+import Store from 'electron-store'
 
 export interface Subprocess extends ChildProcessWithoutNullStreams {
   running?: boolean
@@ -157,6 +160,33 @@ export function sendStatus(
 }
 
 export function closeAllSubs(wind: BrowserWindow, subpy: Subprocess, subprocesses: Subprocesses) {
+  // Set shutdown flags FIRST to prevent any restarts or protocol processing
+  setShuttingDown(true)
+  setProtocolShuttingDown(true)
+  console.log('[CloseAllSubs] Setting shutdown flags and cleaning up processes')
+
+  // Clear song detector running state from store to prevent auto-restart
+  try {
+    const store = new Store()
+    store.set('song-detector-running', false)
+    store.set('song-detector-plus-running', false)
+    console.log('Cleared song detector running state from store')
+  } catch (error) {
+    console.log('Failed to clear store:', error)
+  }
+
+  // FIRST: Kill all song-detector processes by name to catch any spawned children
+  if (process.platform === 'win32') {
+    try {
+      execSync('taskkill /IM song-detector.exe /F /T', { stdio: 'ignore' })
+      console.log('[CloseAllSubs] Killed all song-detector.exe by name')
+    } catch {}
+    try {
+      execSync('taskkill /IM song-detector-plus.exe /F /T', { stdio: 'ignore' })
+      console.log('[CloseAllSubs] Killed all song-detector-plus.exe by name')
+    } catch {}
+  }
+
   // Safely try to send shutdown message
   try {
     if (wind && wind.webContents && !wind.isDestroyed()) {
@@ -168,8 +198,26 @@ export function closeAllSubs(wind: BrowserWindow, subpy: Subprocess, subprocesse
 
   if (subpy !== null) kills(subpy)
   if (subprocesses && Object.keys(subprocesses).length > 0) {
-    Object.values(subprocesses).forEach((sub) => {
-      if (sub) kills(sub)
+    Object.keys(subprocesses).forEach((key) => {
+      const sub = subprocesses[key]
+      if (sub && sub.pid) {
+        // Use platform-specific kill for better reliability
+        try {
+          if (process.platform === 'win32') {
+            // Windows: SYNCHRONOUSLY force kill process tree
+            execSync(`taskkill /pid ${sub.pid} /T /F`, { stdio: 'ignore' })
+            console.log(`Killed subprocess ${key} (PID: ${sub.pid}) with taskkill`)
+          } else {
+            // Unix/Mac: use SIGTERM for cleaner shutdown than SIGINT
+            sub.kill('SIGTERM')
+            console.log(`Killed subprocess ${key} (PID: ${sub.pid}) with SIGTERM`)
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          // Process may already be killed by name-based kill above, this is expected
+          console.log(`Subprocess ${key} (PID: ${sub.pid}) already terminated`)
+        }
+      }
     })
   }
 }

@@ -6,6 +6,28 @@ import fs from 'fs'
 import https from 'https'
 import { Subprocess } from '../instances.mjs'
 
+// ANSI color codes for logging
+const colors = {
+  reset: '\x1b[0m',
+  dim: '\x1b[2m',
+  brightYellow: '\x1b[93m'
+}
+
+const logSD = (message: string) =>
+  `${colors.brightYellow}[Detector] ${colors.reset}${colors.dim}${message}${colors.reset}`
+
+// Shutdown flag to prevent restarts during app exit
+let isShuttingDown = false
+
+export const setShuttingDown = (value: boolean) => {
+  isShuttingDown = value
+  console.log(logSD(`Shutdown flag set to: ${value}`))
+}
+
+export const getShuttingDown = (): boolean => {
+  return isShuttingDown
+}
+
 /**
  * Get the path to song-detector executable in extraResources
  */
@@ -75,6 +97,12 @@ export const startSongDetector = (
   deviceName: string = 'ledfxcc',
   plus: boolean = false
 ): Subprocess | null => {
+  // Don't start if shutting down
+  if (isShuttingDown) {
+    console.log(logSD('Skipping start, app is shutting down'))
+    return null
+  }
+
   const detectorPath = getSongDetectorPath(plus)
 
   // Check if file exists
@@ -95,7 +123,7 @@ export const startSongDetector = (
   subprocess.running = true
 
   songDetectorProcess.stdout?.on('data', (data) => {
-    console.log(`[Song Detector] ${data}`)
+    console.log(logSD(data))
   })
 
   songDetectorProcess.stderr?.on('data', (data) => {
@@ -167,24 +195,51 @@ export const autoStartSongDetector = async (
   store: any,
   subprocesses: any
 ): Promise<void> => {
+  // Don't auto-start if shutting down
+  if (isShuttingDown) {
+    console.log(logSD('Skipping auto-start, app is shutting down'))
+    return
+  }
+
   const wasRunning = store.get('song-detector-running', false)
+  const wasRunningPlus = store.get('song-detector-plus-running', false)
   const deviceName = store.get('song-detector-device-name', 'ledfxcc')
 
+  // Auto-start standard version
   if (wasRunning) {
-    const installed = await isSongDetectorInstalled()
+    const installed = await isSongDetectorInstalled(false)
     if (installed) {
-      console.log('[Song Detector] Auto-starting detector with device:', deviceName)
-      const songDetectorProcess = startSongDetector(wind, deviceName)
+      console.log(logSD(`Auto-starting standard detector with device: ${deviceName}`))
+      const songDetectorProcess = startSongDetector(wind, deviceName, false)
       if (songDetectorProcess) {
         subprocesses.songDetector = songDetectorProcess
-        console.log('[Song Detector] Auto-start successful')
+        console.log(logSD('Auto-start successful'))
       } else {
-        console.log('[Song Detector] Auto-start failed')
+        console.log(logSD('Auto-start failed'))
         store.set('song-detector-running', false)
       }
     } else {
-      console.log('[Song Detector] Binary not found, cannot auto-start')
+      console.log(logSD('Binary not found, cannot auto-start'))
       store.set('song-detector-running', false)
+    }
+  }
+
+  // Auto-start plus version
+  if (wasRunningPlus) {
+    const installed = await isSongDetectorInstalled(true)
+    if (installed) {
+      console.log(logSD(`Auto-starting Plus detector with device: ${deviceName}`))
+      const songDetectorProcess = startSongDetector(wind, deviceName, true)
+      if (songDetectorProcess) {
+        subprocesses.songDetectorPlus = songDetectorProcess
+        console.log(logSD('Auto-start successful (Plus)'))
+      } else {
+        console.log(logSD('Auto-start failed (Plus)'))
+        store.set('song-detector-plus-running', false)
+      }
+    } else {
+      console.log(logSD('Binary not found, cannot auto-start (Plus)'))
+      store.set('song-detector-plus-running', false)
     }
   }
 }

@@ -8,6 +8,13 @@ import coreParams from './coreParams.mjs'
 import store from './store.mjs'
 import { ChildProcessWithoutNullStreams } from 'child_process'
 
+// ANSI color codes for consistent logging
+const colors = {
+  reset: '\x1b[0m',
+  dim: '\x1b[2m',
+  blue: '\x1b[34m'
+}
+
 function getNextAvailablePorts(platform: 'darwin' | 'linux' | 'win32') {
   const existingPorts = (Object.values(coreParams[platform]) as string[][])
     .map((params: string[]) => {
@@ -98,13 +105,28 @@ function startCore(
     }
     if (subpy !== null) {
       subpy.on('stdout', (data) => {
-        console.log(`stdout: ${data}`)
+        const message = data.toString().trim()
+        if (message) {
+          console.log(
+            `${colors.blue}[Core]     ${colors.reset}${colors.dim}${message}${colors.reset}`
+          )
+        }
       })
       subpy.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`)
+        const message = data.toString().trim()
+        if (message) {
+          console.log(
+            `${colors.blue}[Core]     ${colors.reset}${colors.dim}${message}${colors.reset}`
+          )
+        }
       })
       subpy.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`)
+        const message = data.toString().trim()
+        if (message) {
+          console.log(
+            `${colors.blue}[Core]     ${colors.reset}${colors.dim}${message}${colors.reset}`
+          )
+        }
         if (!wind.isDestroyed()) {
           wind.webContents.send('fromMain', ['snackbar', data.toString()])
         }

@@ -116,10 +116,6 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
                 !resolved
               ) {
                 resolved = true
-                console.log(
-                  '[SpotifyProvider] Got access token from store:',
-                  data.value ? 'YES' : 'NO'
-                )
                 resolve(data.value)
               }
             }
@@ -150,10 +146,6 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
                 !resolved
               ) {
                 resolved = true
-                console.log(
-                  '[SpotifyProvider] Got refresh token from store:',
-                  data.value ? 'YES' : 'NO'
-                )
                 resolve(data.value)
               }
             }
@@ -166,7 +158,6 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
             setTimeout(() => {
               if (!resolved) {
                 resolved = true
-                console.log('[SpotifyProvider] Timeout waiting for refresh token')
                 resolve(null)
               }
             }, 1000)
@@ -175,12 +166,13 @@ const SpotifyProvider = ({ children }: ISpotifyProviderProps) => {
           if (accessToken && refreshToken) {
             // In Electron file:// protocol, cookies don't persist
             // So we directly set Zustand state from electron-store tokens
-            console.log('[SpotifyProvider] Found tokens in electron-store, setting Zustand state')
             setSpotifyAuthToken(accessToken)
             setSpAuthenticated(true)
           }
         } catch (e) {
-          console.log('[SpotifyProvider] Error loading tokens from electron-store:', e)
+          if (e) {
+            //
+          }
         }
       }
       loadTokens()

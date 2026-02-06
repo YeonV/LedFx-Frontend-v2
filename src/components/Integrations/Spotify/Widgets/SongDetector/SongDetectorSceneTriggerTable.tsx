@@ -112,11 +112,11 @@ export default function SongDetectorSceneTriggerTable() {
 
   // Reset fired triggers when song changes
   useEffect(() => {
-    console.log('🎵 Song changed, resetting fired triggers:', {
-      currentTrack,
-      duration,
-      hash: currentSongHash
-    })
+    // console.log('🎵 Song changed, resetting fired triggers:', {
+    //   currentTrack,
+    //   duration,
+    //   hash: currentSongHash
+    // })
     setFiredTriggers(new Set())
   }, [currentSongHash, currentTrack, duration])
 
