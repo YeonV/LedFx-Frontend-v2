@@ -36,7 +36,7 @@ const LeftButtons = (pathname: any, history: any, open?: boolean, handleLeftBarO
       return (
         <Box
           style={{
-            backgroundImage: 'url(/icon.png)',
+            backgroundImage: 'url(./icon.png)',
             marginTop: 10,
             width: 32,
             height: 32,

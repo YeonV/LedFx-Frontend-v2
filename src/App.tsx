@@ -165,7 +165,8 @@ export default function App() {
 
         if (domain === 'song' && parts.length >= 3) {
           const device = parts[1]
-          const songTitle = parts[2]
+          // Decode song title only if it contains URL-encoded characters (macOS encodes, Windows doesn't)
+          const songTitle = parts[2].includes('%') ? decodeURIComponent(parts[2]) : parts[2]
           const thumbnailPath = parts.slice(3).join('/') // Rejoin remaining parts for full path
 
           // Parse query parameters for position tracking (song-detector-plus)

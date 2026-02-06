@@ -93,8 +93,8 @@ const SongDetectorPlayer = ({
 
   const { artist, title } = currentTrack ? parseTrack(currentTrack) : { artist: '', title: '' }
 
-  // Electron-compatible default image path (works on macOS file:// protocol)
-  const defaultImage = `${window.location.origin}/icon.png`
+  // Electron-compatible default image path (relative path works with file:// protocol)
+  const defaultImage = './icon.png'
 
   // Get triggers for current song
   const currentSongHash = currentTrack && duration ? generateSongHash(currentTrack, duration) : null
