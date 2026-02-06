@@ -39,12 +39,7 @@ export default function SongDetectorScreen() {
       slotProps={{
         paper: {
           sx: {
-            marginTop:
-              isElectron() && platform !== 'darwin'
-                ? process.env.NODE_ENV === 'development'
-                  ? '32px'
-                  : '63px'
-                : 0
+            marginTop: isElectron() && platform !== 'darwin' ? '32px' : 0
           }
         }
       }}
@@ -69,7 +64,7 @@ export default function SongDetectorScreen() {
       <Box
         sx={{
           backgroundColor: theme.palette.background.default,
-          height: 'calc(100vh - 64px)',
+          height: 'calc(100vh - 32px)',
           paddingTop: '1rem',
           paddingBottom: '3rem',
           overflow: 'auto',

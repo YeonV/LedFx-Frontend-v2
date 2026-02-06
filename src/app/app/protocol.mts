@@ -30,96 +30,105 @@ export const handleProtocol = (
   gotTheLock: boolean,
   ready: () => void
 ) => {
+  // Single instance lock - works on all platforms
+  if (!gotTheLock) {
+    app.quit()
+    return
+  }
+
+  // Windows-specific: handle protocol via second-instance event
   if (process.platform === 'win32') {
-    if (!gotTheLock) {
-      app.quit()
-    } else {
-      app.on(
-        'second-instance',
-        (event: Electron.Event, commandLine: string[], workingDirectory: string) => {
-          const wind = getWind()
-          console.log(commandLine, wind)
-          if (wind) {
-            if (wind.isMinimized()) wind.restore()
+    app.on(
+      'second-instance',
+      (event: Electron.Event, commandLine: string[], workingDirectory: string) => {
+        const wind = getWind()
+        console.log(commandLine, wind)
+        if (wind) {
+          if (wind.isMinimized()) wind.restore()
 
-            // Check if this is a protocol callback (e.g., ledfx://callback)
-            const protocolUrl = commandLine.find((arg) => arg.startsWith('ledfx://'))
-            if (protocolUrl) {
-              // Store the callback URL in electron-store for the renderer to pick up
-              console.log('Received protocol callback:', protocolUrl)
-              store.set('protocol-callback', protocolUrl)
+          // Check if this is a protocol callback (e.g., ledfx://callback)
+          const protocolUrl = commandLine.find((arg) => arg.startsWith('ledfx://'))
+          if (protocolUrl) {
+            // Store the callback URL in electron-store for the renderer to pick up
+            console.log('Received protocol callback:', protocolUrl)
+            store.set('protocol-callback', protocolUrl)
 
-              // Skip page reload for song detector calls - just store and send the message
-              if (!protocolUrl.startsWith('ledfx://song/')) {
-                if (isDev) {
-                  // In dev mode, navigate to the app's main page
-                  let sslEnabled = false
-                  try {
-                    const envPath = path.join(__dirname, '../../.env')
-                    if (fs.existsSync(envPath)) {
-                      const envContent = fs.readFileSync(envPath, 'utf-8')
-                      sslEnabled = envContent.includes('HTTPS=true')
-                    }
-                  } catch (e) {
-                    console.log(e)
+            // Skip page reload for song detector calls - just store and send the message
+            if (!protocolUrl.startsWith('ledfx://song/')) {
+              if (isDev) {
+                // In dev mode, navigate to the app's main page
+                let sslEnabled = false
+                try {
+                  const envPath = path.join(__dirname, '../../.env')
+                  if (fs.existsSync(envPath)) {
+                    const envContent = fs.readFileSync(envPath, 'utf-8')
+                    sslEnabled = envContent.includes('HTTPS=true')
                   }
-                  const protocol = sslEnabled ? 'https' : 'http'
-                  wind.loadURL(`${protocol}://localhost:3000`)
-                } else {
-                  // In production, load the app's main page from build folder
-                  const appPath = app.getAppPath()
-                  const indexPath = path.join(appPath, 'build', 'index.html')
-                  wind.loadURL(`file://${indexPath}`)
+                } catch (e) {
+                  console.log(e)
                 }
+                const protocol = sslEnabled ? 'https' : 'http'
+                wind.loadURL(`${protocol}://localhost:3000`)
+              } else {
+                // In production, load the app's main page from build folder
+                const appPath = app.getAppPath()
+                const indexPath = path.join(appPath, 'build', 'index.html')
+                wind.loadURL(`file://${indexPath}`)
               }
             }
+          }
 
-            wind.webContents.send('fromMain', [
-              'protocol',
-              JSON.stringify({ event, commandLine, workingDirectory })
-            ])
+          wind.webContents.send('fromMain', [
+            'protocol',
+            JSON.stringify({ event, commandLine, workingDirectory })
+          ])
+          // Only focus for non-song-detector callbacks
+          if (!protocolUrl || !protocolUrl.startsWith('ledfx://song/')) {
             wind.focus()
           }
         }
-      )
-      ready()
-      app.on('open-url', (event: Electron.Event, url: string) => {
-        console.log(event, url)
-        const wind = getWind()
-        if (wind && url.startsWith('ledfx://')) {
-          // Store the callback URL in electron-store for the renderer to pick up
-          console.log('Received protocol callback:', url)
-          store.set('protocol-callback', url)
-
-          // Skip page reload for song detector calls - just store and focus the window
-          if (!url.startsWith('ledfx://song/')) {
-            if (isDev) {
-              // In dev mode, load the app's main page
-              let sslEnabled = false
-              try {
-                const envPath = path.join(__dirname, '../../.env')
-                if (fs.existsSync(envPath)) {
-                  const envContent = fs.readFileSync(envPath, 'utf-8')
-                  sslEnabled = envContent.includes('HTTPS=true')
-                }
-              } catch (e) {
-                console.log('Error reading .env file for SSL check:', e)
-              }
-              const protocol = sslEnabled ? 'https' : 'http'
-              wind.loadURL(`${protocol}://localhost:3000`)
-            } else {
-              // In production, load the app's main page from build folder
-              const appPath = app.getAppPath()
-              const indexPath = path.join(appPath, 'build', 'index.html')
-              wind.loadURL(`file://${indexPath}`)
-            }
-          }
-          wind.focus()
-        }
-      })
-    }
-  } else {
-    ready()
-    app.on('open-url', (event: Electron.Event, url: string) => console.log(event, url))
+      }
+    )
   }
+
+  // macOS/Linux: handle protocol via open-url event
+  app.on('open-url', (event: Electron.Event, url: string) => {
+    console.log('open-url event:', url)
+    const wind = getWind()
+    if (wind && url.startsWith('ledfx://')) {
+      // Store the callback URL in electron-store for the renderer to pick up
+      console.log('Received protocol callback:', url)
+      store.set('protocol-callback', url)
+
+      // Skip page reload for song detector calls - just store and focus the window
+      if (!url.startsWith('ledfx://song/')) {
+        if (isDev) {
+          // In dev mode, load the app's main page
+          let sslEnabled = false
+          try {
+            const envPath = path.join(__dirname, '../../.env')
+            if (fs.existsSync(envPath)) {
+              const envContent = fs.readFileSync(envPath, 'utf-8')
+              sslEnabled = envContent.includes('HTTPS=true')
+            }
+          } catch (e) {
+            console.log('Error reading .env file for SSL check:', e)
+          }
+          const protocol = sslEnabled ? 'https' : 'http'
+          wind.loadURL(`${protocol}://localhost:3000`)
+        } else {
+          // In production, load the app's main page from build folder
+          const appPath = app.getAppPath()
+          const indexPath = path.join(appPath, 'build', 'index.html')
+          wind.loadURL(`file://${indexPath}`)
+        }
+      }
+      // Only focus for non-song-detector callbacks
+      if (!url.startsWith('ledfx://song/')) {
+        wind.focus()
+      }
+    }
+  })
+
+  ready()
 }
