@@ -26,6 +26,7 @@ const SongDetectorPlayer = ({
 }) => {
   const currentTrack = useStore((state) => state.spotify.currentTrack)
   const thumbnailPath = useStore((state) => state.thumbnailPath)
+  const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
   const position = useStore((state) => state.position)
   const duration = useStore((state) => state.duration)
   const playing = useStore((state) => state.playing)
@@ -34,14 +35,8 @@ const SongDetectorPlayer = ({
   const scenes = useStore((state) => state.scenes)
 
   const [currentPosition, setCurrentPosition] = useState<number | null>(null)
-  const [cacheBuster, setCacheBuster] = useState(() => Date.now())
   const [isSeekingBack, setIsSeekingBack] = useState(false)
   const previousPositionRef = useRef<number | null>(null)
-
-  // Update cache buster when track changes
-  useEffect(() => {
-    setCacheBuster(Date.now())
-  }, [currentTrack])
 
   // Interpolate position for smooth updates
   useEffect(() => {
@@ -148,7 +143,11 @@ const SongDetectorPlayer = ({
             }}
           >
             <img
-              src={thumbnailPath ? `${thumbnailPath}?t=${cacheBuster}` : defaultImage}
+              src={
+                thumbnailPath
+                  ? `${window.localStorage.getItem('ledfx-host') + '/api/assets/download?path=' + thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
+                  : defaultImage
+              }
               alt="Album Art"
               style={{
                 width: '100%',

@@ -50,6 +50,7 @@ export const generateSongHash = (songName: string, duration: number): string => 
 const storeSongDectector = (set: any) => ({
   song: '',
   thumbnailPath: '',
+  albumArtCacheBuster: 0,
   // Position tracking (from song-detector-plus)
   position: null as number | null,
   duration: null as number | null,
@@ -71,6 +72,15 @@ const storeSongDectector = (set: any) => ({
       }),
       false,
       'songDetector/setThumbnailPath'
+    )
+  },
+  incrementAlbumArtCache: () => {
+    set(
+      produce((state: any) => {
+        state.albumArtCacheBuster += 1
+      }),
+      false,
+      'songDetector/incrementAlbumArtCache'
     )
   },
   setPositionData: (data: {

@@ -52,10 +52,11 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   const selectedGradient = selectedGradientGlobal
   const gradients = gradientsGlobal
   const imageConfig = imageConfigGlobal
+  const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
 
-  // Compute album art URL for display purposes
+  // Compute album art URL using backend API endpoint
   const albumArtUrl = thumbnailPath
-    ? `file:///${thumbnailPath.replace(/\\/g, '/')}?t=${new Date().getTime()}`
+    ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
     : ''
 
   const applyGradient = useCallback(async () => {

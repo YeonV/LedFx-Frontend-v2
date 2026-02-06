@@ -74,19 +74,23 @@ const useSongDetectorAutoApply = () => {
 
     if (!thumbnailPath || (!trackChanged && !thumbnailChanged)) return
 
+    // Increment cache buster for new track
+    if (trackChanged) {
+      useStore.getState().incrementAlbumArtCache()
+    }
+
     // Reset colors and gradients for new song
     setExtractedColors([])
     setGradients([])
     setSelectedGradient(null)
 
-    // Convert Windows path to file:// URL with timestamp to force reload
-    const normalizedPath = thumbnailPath.replace(/\\/g, '/')
-    const timestamp = new Date().getTime()
-    const fileUrl = `file:///${normalizedPath}?t=${timestamp}`
+    // Use backend API to load image for color extraction with store cache buster
+    const cacheBuster = useStore.getState().albumArtCacheBuster
+    const imageUrl = `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${cacheBuster}`
 
     const img = new Image()
     img.crossOrigin = 'Anonymous'
-    img.src = fileUrl
+    img.src = imageUrl
 
     img.onload = () => {
       const canvas = document.createElement('canvas')
