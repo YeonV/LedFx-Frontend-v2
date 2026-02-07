@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import TextField from '@mui/material/TextField'
 
 interface NumberProps {
@@ -10,37 +10,63 @@ interface NumberProps {
 }
 
 const Number: React.FC<NumberProps> = ({ min, max, value, onChange, onBlur }) => {
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = parseFloat(e.target.value)
+  const [inputValue, setInputValue] = useState('')
+  const [isEditing, setIsEditing] = useState(false)
 
-    if (!isNaN(numericValue)) {
-      if (numericValue > max) {
+  const handleFocus = useCallback(() => {
+    setIsEditing(true)
+    setInputValue(String(value))
+  }, [value])
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const rawValue = e.target.value
+      setInputValue(rawValue)
+
+      // Only propagate valid numbers
+      if (rawValue !== '') {
+        const numericValue = parseFloat(rawValue)
+        if (!isNaN(numericValue)) {
+          onChange(e)
+        }
+      }
+    },
+    [onChange]
+  )
+
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      setIsEditing(false)
+      setInputValue('')
+
+      const numericValue = parseFloat(e.target.value)
+
+      // Validate and clamp on blur
+      if (isNaN(numericValue) || e.target.value === '') {
+        e.target.value = min.toString()
+        onChange(e)
+      } else if (numericValue > max) {
         e.target.value = max.toString()
+        onChange(e)
       } else if (numericValue < min) {
         e.target.value = min.toString()
+        onChange(e)
       }
-    }
-  }
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const numericValue = parseFloat(e.target.value)
-    if (isNaN(numericValue) || e.target.value === '') {
-      e.target.value = min.toString()
-      onChange(e)
-    }
-
-    if (onBlur) {
-      onBlur(e)
-    }
-  }
+      if (onBlur) {
+        onBlur(e)
+      }
+    },
+    [min, max, onChange, onBlur]
+  )
 
   return (
     <TextField
-      value={value}
+      value={isEditing ? inputValue : value}
       name="quantity"
       type="number"
-      onChange={onChange}
-      onInput={handleInput}
+      onChange={handleChange}
+      onFocus={handleFocus}
       onBlur={handleBlur}
       slotProps={{
         htmlInput: {

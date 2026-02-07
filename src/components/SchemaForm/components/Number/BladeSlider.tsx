@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material'
 import useStyles from './BladeSlider.styles'
 import { BladeSliderInnerProps, BladeSliderProps } from './BladeSlider.props'
@@ -28,38 +28,64 @@ const BladeSliderInner = ({
 
   const [value, setValue] = useState(computedValue)
 
-  const handleSliderChange = (_event: any, newValue: any) => {
-    if (newValue !== value) {
-      setValue(newValue)
-    }
-  }
-
-  const handleInputChange = (event: any) => {
-    if (value !== event.target.value) {
-      setValue(event.target.value === '' ? '' : Number(event.target.value))
-      if (event.target.value < schema.minimum) {
-        setValue(schema.minimum)
-      } else if (event.target.value > schema.maximum) {
-        setValue(schema.maximum)
+  const handleSliderChange = useCallback(
+    (_event: any, newValue: any) => {
+      if (newValue !== value) {
+        setValue(newValue)
       }
-      onChange(model_id, Number(event.target.value))
-    }
-  }
-  const handleBlur = () => {
-    if (value < schema.minimum) {
-      setValue(schema.minimum)
+    },
+    [value]
+  )
+
+  const handleInputChange = useCallback(
+    (event: any) => {
+      const rawValue = event.target.value
+
+      // Allow empty string temporarily
+      if (rawValue === '') {
+        setValue('')
+        return
+      }
+
+      const numValue = Number(rawValue)
+      // Clamp value to valid range
+      const clampedValue = Math.max(
+        schema.minimum ?? -Infinity,
+        Math.min(schema.maximum ?? Infinity, numValue)
+      )
+
+      setValue(clampedValue)
+      onChange(model_id, clampedValue)
+    },
+    [model_id, onChange, schema.minimum, schema.maximum]
+  )
+
+  const handleBlur = useCallback(() => {
+    // On blur, ensure value is within bounds (handles empty string case)
+    if (value === '' || value < schema.minimum) {
+      setValue(schema.minimum || 0)
+      onChange(model_id, schema.minimum || 0)
     } else if (value > schema.maximum) {
       setValue(schema.maximum)
+      onChange(model_id, schema.maximum)
     }
-  }
-  const handleTextChange = (event: any) => {
-    if (value < schema.minimum) {
-      setValue(schema.minimum)
-    } else if (value > schema.maximum) {
-      setValue(schema.maximum)
-    }
-    onChange(model_id, Number(event.target.value))
-  }
+  }, [value, schema.minimum, schema.maximum, model_id, onChange])
+
+  const handleTextChange = useCallback(
+    (event: any) => {
+      const rawValue = Number(event.target.value)
+
+      // Clamp to valid range before setting and sending
+      const clampedValue = Math.max(
+        schema.minimum ?? -Infinity,
+        Math.min(schema.maximum ?? Infinity, rawValue)
+      )
+
+      setValue(clampedValue)
+      onChange(model_id, clampedValue)
+    },
+    [model_id, onChange, schema.minimum, schema.maximum]
+  )
 
   useEffect(() => {
     setValue(computedValue)
