@@ -231,5 +231,83 @@ export const migrations: Migrations = {
       draft.showFeatures.showPlaylistInBottomBar = false
       draft.showFeatures.showFlowInBottomBar = false
     }
+  }),
+
+  // Migration 32: Add storeAssets state
+  32: produce((draft) => {
+    draft.assets = {}
+  }),
+
+  // Migration 33: Add LIFX device discovery assistant
+  33: produce((draft) => {
+    if (draft.assistant) {
+      draft.assistant.lifx = true
+    }
+  }),
+
+  // Migration 34: Add Song Detector Plus state
+  34: produce((draft) => {
+    draft.thumbnailPath = ''
+    draft.albumArtCacheBuster = 0
+    draft.position = null
+    draft.duration = null
+    draft.playing = false
+    draft.timestamp = null
+    draft.textAutoApply = false
+    draft.textVirtuals = []
+    draft.gradientAutoApply = false
+    draft.gradientVirtuals = []
+    draft.selectedGradient = null
+    draft.gradients = []
+    draft.extractedColors = []
+    draft.imageAutoApply = false
+    draft.imageVirtuals = []
+    draft.imageConfig = {
+      background_brightness: 1,
+      background_color: '#000000',
+      blur: 0,
+      brightness: 1,
+      clip: false,
+      flip_horizontal: false,
+      flip_vertical: false,
+      min_size: 1
+    }
+  }),
+
+  // Migration 35: Add Song Detector Plus UI state
+  35: produce((draft) => {
+    if (draft.ui) {
+      draft.ui.sdPlusX = 50
+      draft.ui.sdPlusY = 200
+      draft.ui.sdPlus = false
+      draft.ui.songDetectorScreenOpen = false
+    }
+  }),
+
+  // Migration 36: Update feature flags - remove YouTube and add new bottom bar features
+  36: produce((draft) => {
+    if (draft.features) {
+      delete draft.features.youtube
+      draft.features.showAssetManagerInBottomBar = false
+      draft.features.showMidiInBottomBar = false
+      draft.features.showGamepadInBottomBar = false
+      draft.features.showVisualiserInBottomBar = false
+    }
+
+    if (draft.showFeatures) {
+      delete draft.showFeatures.youtube
+      draft.showFeatures.showAssetManagerInBottomBar = false
+      draft.showFeatures.showMidiInBottomBar = false
+      draft.showFeatures.showGamepadInBottomBar = false
+      draft.showFeatures.showVisualiserInBottomBar = false
+    }
+  }),
+
+  // Migration 37: Change showMatrix default to true
+  37: produce((draft) => {
+    // Only update if showMatrix exists and is false (old default)
+    if (draft.showMatrix === false) {
+      draft.showMatrix = true
+    }
   })
 }
