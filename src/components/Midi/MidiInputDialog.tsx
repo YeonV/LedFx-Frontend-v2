@@ -5,7 +5,9 @@ import {
   IconButton,
   Tooltip,
   BottomNavigationAction,
-  useTheme
+  useTheme,
+  Stack,
+  Typography
 } from '@mui/material'
 import { useState } from 'react'
 import useStore from '../../store/useStore'
@@ -17,7 +19,8 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
   const theme = useTheme()
   const midiInput = useStore((state) => state.midiInput)
   const [fullScreen, setFullScreen] = useState(false)
-  const [open, setOpen] = useState<boolean>(false)
+  const midiOpen = useStore((state) => state.midiOpen)
+  const setMidiOpen = useStore((state) => state.setMidiOpen)
   const [sideBarOpen, setSideBarOpen] = useState(false)
   const toggleSidebar = () => setSideBarOpen(!sideBarOpen)
 
@@ -26,7 +29,7 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
       {variant === 'iconbutton' && (
         <div style={{ alignSelf: 'center' }}>
           <Tooltip title="MIDI Input Configuration">
-            <IconButton onClick={() => setOpen(true)}>
+            <IconButton onClick={() => setMidiOpen(true)}>
               <BladeIcon name="mdi:midi" />
             </IconButton>
           </Tooltip>
@@ -37,20 +40,20 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
           label="MIDI"
           value="/MIDI"
           icon={<SettingsInputComponent />}
-          onClick={() => setOpen(true)}
+          onClick={() => setMidiOpen(true)}
           sx={{
             pt: 0,
             '& .MuiBottomNavigationAction-label': {
               opacity: 1
             }
           }}
-          style={open ? { color: theme.palette.primary.main } : {}}
+          style={midiOpen ? { color: theme.palette.primary.main } : {}}
         />
       )}
       <Dialog
         fullScreen={fullScreen}
-        open={open}
-        onClose={() => setOpen(false)}
+        open={midiOpen}
+        onClose={() => setMidiOpen(false)}
         PaperProps={{
           sx: {
             maxWidth: fullScreen ? 'unset' : sideBarOpen ? 'min(95vw, 1060px)' : 'min(95vw, 742px)',
@@ -61,8 +64,22 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
       >
         {!fullScreen && (
           <DialogTitle display="flex" alignItems="center">
-            <BladeIcon name="mdi:midi" style={{ marginRight: '1rem' }} />{' '}
-            {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent={'space-between'}
+              sx={{ width: '100%' }}
+            >
+              <span>
+                <BladeIcon name="mdi:midi" style={{ marginRight: '1rem' }} />{' '}
+                {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
+              </span>
+              {(!midiInput || midiInput === '') && (
+                <Typography variant="body2" color="text.secondary">
+                  No MIDI device selected. Running in "Virtual MIDI Mode"
+                </Typography>
+              )}
+            </Stack>
           </DialogTitle>
         )}
         <DialogContent

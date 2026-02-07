@@ -74,14 +74,14 @@ const SettingsNew = () => {
         </>
       </SettingsAccordion>
 
-      {features.scenemidi && (
-        <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
-          <MidiCard />
-        </SettingsAccordion>
-      )}
       {viewMode !== 'user' && (
         <SettingsAccordion title="Features" accId="Features" icon="addTask">
           <Uncategorized />
+        </SettingsAccordion>
+      )}
+      {features.scenemidi && (
+        <SettingsAccordion title="MIDI" accId="2b" icon="mdi:midi">
+          <MidiCard />
         </SettingsAccordion>
       )}
       <Accordion disabled sx={{ backgroundColor: 'transparent !important' }}>
@@ -128,13 +128,14 @@ const SettingsNew = () => {
           text="Gamepad"
           onClick={() => setGamepadOpen(true)}
         />
-        <Tile
-          client
-          beta
-          icon={<SettingsInputComponent fontSize="large" />}
-          text="MIDI"
-          onClick={() => setMidiOpen(true)}
-        />
+        {features.scenemidi && (
+          <Tile
+            client
+            icon={<SettingsInputComponent fontSize="large" />}
+            text="MIDI"
+            onClick={() => setMidiOpen(true)}
+          />
+        )}
         <Tile
           client
           beta
