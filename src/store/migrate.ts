@@ -311,5 +311,10 @@ export const migrations: Migrations = {
     if (draft.showMatrix === false) {
       draft.showMatrix = true
     }
+  }),
+
+  // Migration 38: Set midiOpen to false
+  38: produce((draft) => {
+    draft.midiOpen = false
   })
 }
