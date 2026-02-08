@@ -1,5 +1,12 @@
-import { HashRouter as Router, BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import {
+  HashRouter as Router,
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation
+} from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -131,6 +138,27 @@ const Routings = () => {
     setShowFeatures('alpha', !features.alpha)
     setShowFeatures('beta', !features.beta)
   })
+  const { pathname } = useLocation()
+  const bgVisualiserBeforeRouteRef = useRef<boolean | null>(null)
+
+  useEffect(() => {
+    if (pathname === '/visualiser') {
+      // Save current state before disabling
+      if (features.bgvisualiser && bgVisualiserBeforeRouteRef.current === null) {
+        bgVisualiserBeforeRouteRef.current = true
+      }
+      // Disable background visualizer on route page
+      if (features.bgvisualiser) {
+        setFeatures('bgvisualiser', false)
+      }
+    } else {
+      // Restore if we had saved a true state
+      if (bgVisualiserBeforeRouteRef.current === true) {
+        setFeatures('bgvisualiser', true)
+        bgVisualiserBeforeRouteRef.current = null
+      }
+    }
+  }, [pathname, features.bgvisualiser, setFeatures])
 
   return (
     <>
@@ -192,7 +220,7 @@ const Routings = () => {
                 <Route path="/integrations" element={<Integrations />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/visualiser" element={<Visualiser />} />
+                <Route path="/visualiser" element={<Visualiser backgroundMode={false} />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <Route path="/settings" element={<SettingsNew />} />

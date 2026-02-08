@@ -11,9 +11,10 @@ export interface AudioVisualiserProps {
   backendAudioData?: number[]
   ConfigFormComponent?: React.ComponentType<any>
   onClose?: () => void
+  configData?: any
 }
 
-const Visualiser = () => {
+const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
   const [audioData, setAudioData] = useState<number[]>([])
   const audioDataRef = useRef<number[]>([])
   const lastUpdateRef = useRef(0)
@@ -23,24 +24,30 @@ const Visualiser = () => {
   const theme = useTheme()
   const effects = useStore((state) => state.schemas.effects)
   const { send, isConnected } = useWebSocket()
+  const sendRef = useRef(send)
+
+  // Keep sendRef up to date without triggering effects
+  useEffect(() => {
+    sendRef.current = send
+  }, [send])
 
   // Subscribe to audio data from backend
   useEffect(() => {
     if (isConnected && !subscribedRef.current) {
-      send({ event_type: 'graph_update', id: 9100, type: 'subscribe_event' })
+      sendRef.current({ event_type: 'graph_update', id: 9100, type: 'subscribe_event' })
       subscribedRef.current = true
-    } else if (subscribedRef.current) {
-      send({ event_type: 'graph_update', id: 9100, type: 'unsubscribe_event' })
+    } else if (!isConnected && subscribedRef.current) {
+      sendRef.current({ event_type: 'graph_update', id: 9100, type: 'unsubscribe_event' })
       subscribedRef.current = false
     }
 
     return () => {
       if (subscribedRef.current) {
-        send({ event_type: 'graph_update', id: 9100, type: 'unsubscribe_event' })
+        sendRef.current({ event_type: 'graph_update', id: 9100, type: 'unsubscribe_event' })
         subscribedRef.current = false
       }
     }
-  }, [isConnected, send])
+  }, [isConnected])
 
   // Handle graph updates - throttle to max 10 updates/sec to prevent infinite loop
   const handleGraphUpdate = useCallback((messageData: any) => {
@@ -90,6 +97,9 @@ const Visualiser = () => {
       theme={theme}
       effects={effects}
       backendAudioData={audioData}
+      configData={{
+        background: backgroundMode
+      }}
       ConfigFormComponent={BladeEffectSchemaForm}
     />
   )

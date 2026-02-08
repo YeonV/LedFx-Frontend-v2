@@ -65,6 +65,12 @@ const Uncategorized = () => {
         onChange={() => setFeatures('waves', !features.waves)}
       />
       <SettingsRow
+        beta
+        title="BG Visualiser (eats performance)"
+        checked={features.bgvisualiser}
+        onChange={() => setFeatures('bgvisualiser', !features.bgvisualiser)}
+      />
+      <SettingsRow
         alpha
         title="LedFx Cloud"
         checked={features.cloud}
