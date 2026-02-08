@@ -3,7 +3,7 @@
 import { IMCell } from '../pages/Devices/EditVirtuals/EditMatrix/M.utils'
 
 export const drawerWidth = 240
-export const frontendConfig = 37
+export const frontendConfig = 38
 
 export const formatTime = (dura: number) => {
   let seconds: string | number

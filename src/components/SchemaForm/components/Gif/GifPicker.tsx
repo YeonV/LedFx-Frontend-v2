@@ -53,8 +53,8 @@ const GifPicker: React.FC<GifPickerProps> = ({ onChange, mode = 'animated', valu
     return true // 'both' mode
   }
 
-  const gifsBuiltin = assetsFixed.filter(filterByMode)
-  const gifsUser = assets.filter(filterByMode)
+  const gifsBuiltin = (Array.isArray(assetsFixed) ? assetsFixed : []).filter(filterByMode)
+  const gifsUser = (Array.isArray(assets) ? assets : []).filter(filterByMode)
 
   // For cached assets, filter by mode
   const gifsCached = (cacheStats?.entries || [])

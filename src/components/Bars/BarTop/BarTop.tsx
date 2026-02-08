@@ -65,6 +65,7 @@ const TopBar = () => {
   const userClosedQrConnector = useStore((state) => state.userClosedQrConnector)
   const virtuals = useStore((state) => state.virtuals)
   const setDialogOpen = useStore((state) => state.setDialogOpen)
+  const setIsLogged = useStore((state) => state.setIsLogged)
   const features = useStore((state) => state.features)
   const platform = useStore((state) => state.platform)
   const sslEnabled = isElectron()
@@ -151,11 +152,8 @@ const TopBar = () => {
   }, [])
 
   useEffect(() => {
-    const token = localStorage.getItem('ledfx-cloud-jwt')
-    if (token) {
-      // Optionally, you can add logic here to validate the token or fetch user info
-    }
-  }, [pathname])
+    setIsLogged(!!localStorage.getItem('ledfx-cloud-jwt'))
+  }, [pathname, setIsLogged])
 
   const getUpdateInfo = useStore((state) => state.getUpdateInfo)
 

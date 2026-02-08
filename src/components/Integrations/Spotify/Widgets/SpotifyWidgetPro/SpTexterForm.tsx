@@ -16,7 +16,8 @@ import {
   Stack,
   Switch,
   Tooltip,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material'
 import { ExpandMore, PlayArrow, Stop } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
@@ -25,6 +26,7 @@ import useStore from '../../../../../store/useStore'
 import { Ledfx } from '../../../../../api/ledfx'
 
 const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
+  const theme = useTheme()
   const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const currentTrack = useStore((state) => state.spotify.currentTrack)
@@ -307,37 +309,45 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
-      <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2, flex: 1 }}>
-        <FormControl fullWidth>
-          <InputLabel>Text Virtuals</InputLabel>
-          <Select
-            multiple
-            value={textVirtuals}
-            onChange={handleTextVirtualChange}
-            input={<OutlinedInput label="Text Virtuals" />}
-            renderValue={(selected) => selected.join(', ')}
-          >
-            {matrix.map((vId) => (
-              <MenuItem key={vId} value={vId}>
-                <Checkbox checked={textVirtuals.includes(vId)} />
-                <ListItemText primary={vId} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
-          <IconButton
-            onClick={toggleAutoApply}
-            disabled={textVirtuals.length === 0}
-            sx={{
-              color: isActive ? 'success.main' : 'primary.main',
-              py: 2
-            }}
-          >
-            {isActive ? <Stop /> : <PlayArrow />}
-          </IconButton>
-        </Tooltip>
-      </Stack>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          p: 1,
+          borderRadius: 1
+        }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: 1 }}>
+          <FormControl fullWidth>
+            <InputLabel>Text Virtuals</InputLabel>
+            <Select
+              multiple
+              value={textVirtuals}
+              onChange={handleTextVirtualChange}
+              input={<OutlinedInput label="Text Virtuals" />}
+              renderValue={(selected) => selected.join(', ')}
+            >
+              {matrix.map((vId) => (
+                <MenuItem key={vId} value={vId}>
+                  <Checkbox checked={textVirtuals.includes(vId)} />
+                  <ListItemText primary={vId} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
+            <IconButton
+              onClick={toggleAutoApply}
+              disabled={textVirtuals.length === 0}
+              sx={{
+                color: isActive ? 'success.main' : 'primary.main',
+                py: 2
+              }}
+            >
+              {isActive ? <Stop /> : <PlayArrow />}
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Box>
     </Box>
   )
 }

@@ -235,7 +235,9 @@ export const migrations: Migrations = {
 
   // Migration 32: Add storeAssets state
   32: produce((draft) => {
-    draft.assets = {}
+    draft.assets = []
+    draft.assetsFixed = []
+    draft.cacheStats = null
   }),
 
   // Migration 33: Add LIFX device discovery assistant
@@ -309,5 +311,10 @@ export const migrations: Migrations = {
     if (draft.showMatrix === false) {
       draft.showMatrix = true
     }
+  }),
+
+  // Migration 38: Set midiOpen to false
+  38: produce((draft) => {
+    draft.midiOpen = false
   })
 }

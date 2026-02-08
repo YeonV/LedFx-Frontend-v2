@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useThrottledCallback } from 'use-debounce'
 import Slider from '@mui/material/Slider'
-import { Stack, TextField } from '@mui/material'
+import { Stack, TextField, Typography } from '@mui/material'
 import useStore from '../../../store/useStore'
 
 interface PixelSliderProps {
