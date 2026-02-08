@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import AppBar from '@mui/material/AppBar'
@@ -116,20 +116,23 @@ export default function EditVirtuals({
   const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
   const [nextAction, setNextAction] = useState<(() => void) | null>(null)
 
-  const virtual = virtuals[currentVirtual || virtId]
+  const virtual = useMemo(
+    () => virtuals[currentVirtual || virtId],
+    [virtuals, currentVirtual, virtId]
+  )
   const [open, setOpen] = React.useState(!!currentVirtual || false)
   const [calib, setCalib] = React.useState(true)
 
   const matrixEditorRef = useRef<EditMatrixRef>(null)
 
-  const closeAndReset = () => {
+  const closeAndReset = useCallback(() => {
     setOpen(false)
     setDialogOpenEditVirtual(false)
     setCurrentVirtual(null)
     onClick()
-  }
+  }, [setDialogOpenEditVirtual, setCurrentVirtual, onClick])
 
-  const handleSaveAndExit = () => {
+  const handleSaveAndExit = useCallback(() => {
     console.log('saveVirtual', virtual.id)
     if (matrixEditorRef.current) {
       matrixEditorRef.current.saveMatrix()
@@ -141,9 +144,9 @@ export default function EditVirtuals({
     } else {
       closeAndReset()
     }
-  }
+  }, [virtual?.id, nextAction, closeAndReset, setVirtualEditorIsDirty])
 
-  const handleDiscardAndExit = () => {
+  const handleDiscardAndExit = useCallback(() => {
     setVirtualEditorIsDirty(false)
     setShowUnsavedDialog(false)
     if (nextAction) {
@@ -151,31 +154,31 @@ export default function EditVirtuals({
     } else {
       closeAndReset()
     }
-  }
+  }, [nextAction, closeAndReset, setVirtualEditorIsDirty])
 
-  const handleCancelExit = () => {
+  const handleCancelExit = useCallback(() => {
     setShowUnsavedDialog(false)
     setNextAction(null)
-  }
+  }, [])
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true)
-  }
+  }, [])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isDirty) {
       setNextAction(() => closeAndReset)
       setShowUnsavedDialog(true)
       return
     }
-    const output = getOverlapping(virtual.segments)
+    const output = getOverlapping(virtual?.segments)
     const overlap = Object.keys(output).find((k) => output[k].overlap)
     if (overlap) {
       showSnackbar('warning', `Overlapping in ${overlap} detected! Please Check your config`)
     } else {
       closeAndReset()
     }
-  }
+  }, [isDirty, virtual?.segments, showSnackbar, closeAndReset])
 
   useEffect(() => {
     getDevices()
@@ -206,17 +209,44 @@ export default function EditVirtuals({
     }
   }, [isExternalEditorOpen, matrix])
 
+  const handleMenuItemClick = useCallback(
+    (e: any) => {
+      e.preventDefault()
+      handleClickOpen()
+    },
+    [handleClickOpen]
+  )
+
+  const handleToggleMatrix = useCallback(() => {
+    if (isDirty) {
+      setNextAction(() => () => setMatrix(!matrix))
+      setShowUnsavedDialog(true)
+    } else {
+      setMatrix(!matrix)
+    }
+  }, [isDirty, matrix])
+
+  const handleToggleCalibration = useCallback(() => {
+    calibrationMode(virtual.id, calib ? 'off' : 'on')
+    if (!calib && virtual.segments[activeSegment])
+      highlightSegment(
+        virtual.id,
+        virtual.segments[activeSegment][0],
+        virtual.segments[activeSegment][1],
+        virtual.segments[activeSegment][2],
+        virtual.segments[activeSegment][3]
+      )
+    setCalib(!calib)
+  }, [calibrationMode, virtual?.id, virtual?.segments, calib, activeSegment, highlightSegment])
+
+  const backButtonStyle = useMemo(() => ({ marginRight: '1rem', paddingRight: '1rem' }), [])
+
+  const toggleButtonGroupStyle = useMemo(() => ({ marginRight: '1rem' }), [])
+
   return virtual && virtual.config ? (
     <>
       {type === 'menuItem' ? (
-        <MuiMenuItem
-          key={innerKey}
-          className={className}
-          onClick={(e: any) => {
-            e.preventDefault()
-            handleClickOpen()
-          }}
-        >
+        <MuiMenuItem key={innerKey} className={className} onClick={handleMenuItemClick}>
           <ListItemIcon>{icon}</ListItemIcon>
           {label}
         </MuiMenuItem>
@@ -225,9 +255,7 @@ export default function EditVirtuals({
           variant={variant}
           startIcon={startIcon}
           color={color}
-          onClick={() => {
-            handleClickOpen()
-          }}
+          onClick={handleClickOpen}
           size="small"
           className={className}
           sx={sx}
@@ -255,7 +283,7 @@ export default function EditVirtuals({
               variant="contained"
               startIcon={<NavigateBeforeIcon />}
               onClick={handleClose}
-              style={{ marginRight: '1rem', paddingRight: '1rem' }}
+              style={backButtonStyle}
               disabled={isExternalEditorOpen}
             >
               Back
@@ -274,17 +302,10 @@ export default function EditVirtuals({
               <ToggleButtonGroup
                 value={matrix}
                 disabled={isExternalEditorOpen}
-                style={{ marginRight: '1rem' }}
+                style={toggleButtonGroupStyle}
                 size="small"
                 exclusive
-                onChange={() => {
-                  if (isDirty) {
-                    setNextAction(() => () => setMatrix(!matrix))
-                    setShowUnsavedDialog(true)
-                  } else {
-                    setMatrix(!matrix)
-                  }
-                }}
+                onChange={handleToggleMatrix}
                 aria-label="mode"
               >
                 <ToggleButton value={false}>
@@ -301,20 +322,7 @@ export default function EditVirtuals({
             {(virtual.config.rows || 1) > 1 && <Tour2dVirtual />}
             {!matrix && (
               <Tooltip title="Preview Effect">
-                <IconButton
-                  onClick={() => {
-                    calibrationMode(virtual?.id, calib ? 'off' : 'on')
-                    if (!calib && virtual.segments[activeSegment])
-                      highlightSegment(
-                        virtual.id,
-                        virtual.segments[activeSegment][0],
-                        virtual.segments[activeSegment][1],
-                        virtual.segments[activeSegment][2],
-                        virtual.segments[activeSegment][3]
-                      )
-                    setCalib(!calib)
-                  }}
-                >
+                <IconButton onClick={handleToggleCalibration}>
                   {calib ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </Tooltip>
@@ -333,7 +341,7 @@ export default function EditVirtuals({
                 <Segment
                   s={s}
                   i={i}
-                  key={i}
+                  key={`${virtual.id}-segment-${s[0]}-${i}`}
                   virtual={virtual}
                   segments={virtual.segments}
                   calib={calib}
