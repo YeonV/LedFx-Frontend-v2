@@ -39,7 +39,7 @@ const PixelSlider = ({ s, handleRangeSegment }: any) => {
     <Stack direction="row" spacing={5} alignItems="flex-start" flexBasis="100%">
       <Stack direction="column" spacing={1} alignItems="flex-start">
         <Typography color="textSecondary" marginTop={1} marginBottom={-1}>
-          {pixelRange[1] - pixelRange[0]} LEDs
+          {pixelRange[1] - pixelRange[0] + 1} LEDs
         </Typography>
         <Stack direction="row" spacing={1} alignItems="flex-start" alignSelf="flex-end">
           <TextField
