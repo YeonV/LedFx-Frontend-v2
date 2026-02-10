@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.1.5-b3",
+  "version": "2.1.5-b4",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -128,6 +128,7 @@
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
+    "get:visualiser": "curl -L https://github.com/mattallmighty/audio-visualiser/releases/latest/download/yz-audio-visualiser.js -o public/modules/yz-audio-visualiser.js && curl -L https://github.com/mattallmighty/audio-visualiser/releases/latest/download/yz-audio-visualiser.d.ts -o src/types/yz-audio-visualiser.d.ts",
     "lint": "eslint",
     "packs": "electron-builder --dir",
     "dist": "run-script-os",

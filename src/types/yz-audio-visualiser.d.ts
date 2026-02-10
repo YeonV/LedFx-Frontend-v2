@@ -1777,6 +1777,7 @@ export declare interface VisualiserWindowApi {
         name: string;
         index: number;
     };
+    getPresetNames: () => string[];
     toggleFullscreen: () => void;
     getVisualizerIds: () => string[];
     getVisualizerMetadata: (id: string) => any;
