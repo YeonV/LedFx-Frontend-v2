@@ -9,6 +9,23 @@ import DeleteColorsDialog from '../../../Dialogs/DeleteColors'
 import useStyles from './GradientPicker.styles'
 import { GradientPickerProps } from './GradientPicker.props'
 
+// Utility to normalize gradient strings to always use 90deg (left-to-right)
+const normalizeGradient = (colorStr: string): string => {
+  if (!colorStr || !colorStr.includes('linear-gradient')) {
+    return colorStr
+  }
+
+  // If it already has an explicit angle, keep it
+  if (colorStr.match(/linear-gradient\s*\(\s*\d+deg/)) {
+    return colorStr
+  }
+
+  // If no angle specified, add 90deg for left-to-right
+  // Match: linear-gradient(rgb(...), rgb(...))
+  // Replace with: linear-gradient(90deg, rgb(...), rgb(...))
+  return colorStr.replace(/linear-gradient\s*\(/, 'linear-gradient(90deg, ')
+}
+
 const GradientPicker = ({
   pickerBgColor = '#800000',
   title = 'Color',
@@ -64,8 +81,8 @@ const GradientPicker = ({
   const id = open ? 'simple-popper' : undefined
 
   useEffect(() => {
-    // Sync with prop changes
-    setPickerBgColorInt(pickerBgColor)
+    // Sync with prop changes and normalize gradient
+    setPickerBgColorInt(normalizeGradient(pickerBgColor))
   }, [pickerBgColor, setPickerBgColorInt])
 
   return (
@@ -125,8 +142,9 @@ const GradientPicker = ({
             gradient={isGradient}
             solid
             onChange={(c) => {
-              setPickerBgColorInt(c)
-              return sendColorToVirtuals(c)
+              const normalized = normalizeGradient(c)
+              setPickerBgColorInt(normalized)
+              return sendColorToVirtuals(normalized)
             }}
             popupWidth={288}
             showAlpha={false}

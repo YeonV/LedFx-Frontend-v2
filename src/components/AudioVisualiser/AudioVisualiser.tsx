@@ -3,7 +3,7 @@ import { useDynamicModule } from '@yz-dev/react-dynamic-module'
 import { useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from '../../utils/Websocket/WebSocketProvider'
-import BladeEffectSchemaForm from '../SchemaForm/EffectsSchemaForm/EffectSchemaForm'
+import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 
 export interface AudioVisualiserProps {
   theme: any
@@ -12,6 +12,44 @@ export interface AudioVisualiserProps {
   ConfigFormComponent?: React.ComponentType<any>
   onClose?: () => void
   configData?: any
+}
+
+// Exposed API from VisualiserIso (via window.visualiserApi)
+// Matches VisualiserWindowApi from @mattallmighty/audio-visualiser
+export interface VisualiserIsoRef {
+  // Preset control (Butterchurn)
+  loadPreset: (index: number) => void
+  loadPresetByName: (name: string) => void
+  getPresetNames: () => string[]
+  getCurrentPreset: () => { name: string; index: number }
+
+  // Navigation
+  nextVisual: () => void
+  prevVisual: () => void
+  setVisual: (type: string) => void
+  getCurrentVisual: () => string
+
+  // Playback control
+  togglePlay: () => void
+  toggleFullscreen: () => void
+
+  // UI state
+  toggleOverlays: () => void
+  getOverlaysVisible: () => boolean
+
+  // Registry-driven API (schema-first architecture)
+  getVisualizerConfig: (id: string) => any
+  setVisualizerConfig: (id: string, config: any) => void
+  getVisualizerIds: () => string[]
+  getVisualizerMetadata: (id: string) => any
+  getVisualizerRegistry: () => any
+}
+
+// Extend window to include visualiser API
+declare global {
+  interface Window {
+    visualiserApi?: VisualiserIsoRef
+  }
 }
 
 const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
@@ -69,19 +107,13 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
   const { status, as: AudioVisualiser } = useDynamicModule<AudioVisualiserProps>({
     src: '/modules/yz-audio-visualiser.js',
     from: 'YzAudioVisualiser',
-    import: 'AudioVisualiser'
+    import: 'default'
   })
 
   // Only log once when dialog opens with audio data
   const hasLoggedRef = useRef(false)
   useEffect(() => {
     if (audioData.length > 0 && !hasLoggedRef.current) {
-      console.log('AudioVisualiser opened with audio data:', {
-        audioDataLength: audioData.length,
-        audioDataMax: audioData.length > 0 ? Math.max(...audioData) : 0,
-        effects: effects ? Object.keys(effects).length : 0,
-        isConnected
-      })
       hasLoggedRef.current = true
     } else if (audioData.length === 0) {
       hasLoggedRef.current = false
@@ -100,7 +132,7 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
       configData={{
         background: backgroundMode
       }}
-      ConfigFormComponent={BladeEffectSchemaForm}
+      ConfigFormComponent={BladeSchemaForm}
     />
   )
 }

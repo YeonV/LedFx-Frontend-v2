@@ -1,7 +1,7 @@
 {
   "name": "ledfx",
-  "version": "2.1.5-b2",
-  "description": "LedFx v2 - BladeMOD!",
+  "version": "2.1.5-b3",
+  "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
   "main": "public/electron.js",
@@ -31,7 +31,7 @@
     "@typescript-eslint/parser": "^8.34.0",
     "@xyflow/react": "^12.8.4",
     "@yudiel/react-qr-scanner": "^2.3.1",
-    "@yz-dev/react-dynamic-module": "^0.1.0",
+    "@yz-dev/react-dynamic-module": "^0.2.0",
     "axios": "^1.9.0",
     "base32-decode": "^1.0.0",
     "base32-encode": "2.0.0",
