@@ -54,8 +54,7 @@ declare global {
 
 const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
   const [audioData, setAudioData] = useState<number[]>([])
-  const audioDataRef = useRef<number[]>([])
-  const lastUpdateRef = useRef(0)
+  const setVisualizerInitialized = useStore((state) => state.ui.setVisualizerInitialized)
   const subscribedRef = useRef(false)
 
   // Get data from store and theme
@@ -87,18 +86,10 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
     }
   }, [isConnected])
 
-  // Handle graph updates - throttle to max 10 updates/sec to prevent infinite loop
   const handleGraphUpdate = useCallback((messageData: any) => {
     if (!messageData) return
     if (messageData.melbank && Array.isArray(messageData.melbank)) {
-      audioDataRef.current = messageData.melbank
-
-      const now = Date.now()
-      if (now - lastUpdateRef.current >= 100) {
-        // Max 10 updates per second
-        lastUpdateRef.current = now
-        setAudioData([...messageData.melbank])
-      }
+      setAudioData([...messageData.melbank])
     }
   }, [])
 
@@ -110,15 +101,14 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
     import: 'default'
   })
 
-  // Only log once when dialog opens with audio data
-  const hasLoggedRef = useRef(false)
   useEffect(() => {
-    if (audioData.length > 0 && !hasLoggedRef.current) {
-      hasLoggedRef.current = true
-    } else if (audioData.length === 0) {
-      hasLoggedRef.current = false
+    if (status === 'available') {
+      setTimeout(() => {
+        setVisualizerInitialized(true)
+      }, 100)
     }
-  }, [audioData, effects, isConnected])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
 
   if (!AudioVisualiser || status !== 'available') {
     return null

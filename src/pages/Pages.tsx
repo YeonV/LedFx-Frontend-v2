@@ -138,72 +138,96 @@ const Routings = () => {
     setShowFeatures('alpha', !features.alpha)
     setShowFeatures('beta', !features.beta)
   })
-  const { pathname } = useLocation()
+  const location = useLocation()
+  const { pathname } = location
   const bgVisualiserBeforeRouteRef = useRef<boolean | null>(null)
+  // const showOverlaysBeforeDisplayRef = useRef<boolean | null>(null)
+
+  // Check for display mode (OBS-friendly clean UI) - works with HashRouter
+  const searchParams = new URLSearchParams(location.search)
+  const isDisplayMode = searchParams.get('display') === 'true'
 
   useEffect(() => {
     if (pathname === '/visualiser') {
-      // Save current state before disabling
-      if (features.bgvisualiser && bgVisualiserBeforeRouteRef.current === null) {
-        bgVisualiserBeforeRouteRef.current = true
-      }
-      // Disable background visualizer on route page
-      if (features.bgvisualiser) {
-        setFeatures('bgvisualiser', false)
+      // Entering /visualiser route - save current state and disable background
+      if (bgVisualiserBeforeRouteRef.current === null) {
+        bgVisualiserBeforeRouteRef.current = features.bgvisualiser
+        if (features.bgvisualiser) {
+          setFeatures('bgvisualiser', false)
+        }
       }
     } else {
-      // Restore if we had saved a true state
+      // Leaving /visualiser route - restore previous state
       if (bgVisualiserBeforeRouteRef.current === true) {
         setFeatures('bgvisualiser', true)
+      }
+      // Reset ref when leaving (whether it was true or false)
+      if (bgVisualiserBeforeRouteRef.current !== null) {
         bgVisualiserBeforeRouteRef.current = null
       }
     }
-  }, [pathname, features.bgvisualiser, setFeatures])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
 
   return (
     <>
       <ScrollToTop />
-      <MessageBar />
-      <TopBar />
-      <LeftBar />
+      {!isDisplayMode && <MessageBar />}
+      {!isDisplayMode && <TopBar />}
+      {!isDisplayMode && <LeftBar />}
       <Box
+        id="yz-main-content"
         sx={[
-          {
-            flexGrow: 1,
-            background: 'transparent',
-            padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
+          isDisplayMode
+            ? {
+                // Display mode: No padding, no margins, full viewport
+                flexGrow: 1,
+                background: 'transparent',
+                padding: 0,
+                margin: 0,
+                width: '100vw',
+                height: '100vh',
+                overflow: 'hidden'
+              }
+            : {
+                // Normal mode: Standard layout with transitions
+                flexGrow: 1,
+                background: 'transparent',
+                padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
 
-            transition: theme.transitions.create('margin', {
-              easing: leftBarOpen
-                ? theme.transitions.easing.easeOut
-                : theme.transitions.easing.sharp,
-              duration: leftBarOpen
-                ? theme.transitions.duration.enteringScreen
-                : theme.transitions.duration.leavingScreen
-            }),
+                transition: theme.transitions.create('margin', {
+                  easing: leftBarOpen
+                    ? theme.transitions.easing.easeOut
+                    : theme.transitions.easing.sharp,
+                  duration: leftBarOpen
+                    ? theme.transitions.duration.enteringScreen
+                    : theme.transitions.duration.leavingScreen
+                }),
 
-            '@media (max-width: 580px)': {
-              padding: '8px'
-            }
-          },
-          leftBarOpen
+                '@media (max-width: 580px)': {
+                  padding: '8px'
+                }
+              },
+          !isDisplayMode && leftBarOpen
             ? {
                 marginLeft: 0
               }
-            : {
+            : !isDisplayMode && {
                 marginLeft: `-${drawerWidth}px`
               }
         ]}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: theme.spacing(0, 1),
-            ...theme.mixins.toolbar
-          }}
-        />
+        {!isDisplayMode && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: theme.spacing(0, 1),
+              ...theme.mixins.toolbar
+            }}
+          />
+        )}
         <Routes>
           {window.localStorage.getItem('lock') === 'activated' && isElect ? (
             <Route path="*" element={<Lock />} />
@@ -220,7 +244,7 @@ const Routings = () => {
                 <Route path="/integrations" element={<Integrations />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/visualiser" element={<Visualiser backgroundMode={false} />} />
+                <Route path="/visualiser" element={<Visualiser backgroundMode={isDisplayMode} />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <Route path="/settings" element={<SettingsNew />} />
@@ -251,13 +275,17 @@ const Routings = () => {
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
         <SongDetectorScreen />
-        <OneEffect noButton />
-        <NoHostDialog />
-        {isElect && <HostManager />}
-        <FrontendPixelsTooSmall />
-        <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
+        {!isDisplayMode && <OneEffect noButton />}
+        {!isDisplayMode && <NoHostDialog />}
+        {!isDisplayMode && isElect && <HostManager />}
+        {!isDisplayMode && <FrontendPixelsTooSmall />}
+        {!isDisplayMode && (
+          <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
+        )}
       </Box>
-      {!(isElect && window.localStorage.getItem('lock') === 'activated') && <BottomBar />}
+      {!isDisplayMode && !(isElect && window.localStorage.getItem('lock') === 'activated') && (
+        <BottomBar />
+      )}
     </>
   )
 }
