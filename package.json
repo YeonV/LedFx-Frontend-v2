@@ -1,11 +1,11 @@
 {
   "name": "ledfx",
   "version": "2.1.5-b5",
-  "description": "LedFx v2 - BladeMOD",
+  "description": "LedFx v2 - BladeMOD!",
   "author": "YeonV aka Blade",
   "private": true,
   "main": "public/electron.js",
-  "homepage": "/",
+  "homepage": ".",
   "engines": {
     "node": ">=20"
   },
