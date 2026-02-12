@@ -11,6 +11,7 @@ interface SongDetectorCardProps {
     isDownloading: boolean
     downloadProgress: number
     status: any
+    updateAvailable: boolean
   }
   startDetector: (deviceName: string, isPlus: boolean) => void
   stopDetector: (isPlus: boolean) => void

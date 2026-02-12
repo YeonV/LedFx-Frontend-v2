@@ -274,11 +274,98 @@ export const deleteSongDetector = async (
 }
 
 /**
+ * Check if a song-detector update is available
+ * Rate limited to once per hour to avoid excessive API calls
+ */
+export const checkSongDetectorUpdate = async (
+  plus: boolean = false,
+  store: any
+): Promise<{ updateAvailable: boolean; latestDigest?: string; size?: number }> => {
+  try {
+    const timestampKey = plus
+      ? 'song-detector-plus-update-check-timestamp'
+      : 'song-detector-update-check-timestamp'
+    const cachedResultKey = plus
+      ? 'song-detector-plus-update-available'
+      : 'song-detector-update-available'
+
+    // Check if we have a recent check (within the last hour)
+    const lastCheckTimestamp = store.get(timestampKey, 0)
+    const now = Date.now()
+    const oneHour = 60 * 60 * 1000 // 1 hour in milliseconds
+
+    if (now - lastCheckTimestamp < oneHour) {
+      // Return cached result
+      const cachedResult = store.get(cachedResultKey, false)
+      console.log(
+        `Using cached update check result (checked ${Math.round((now - lastCheckTimestamp) / 1000 / 60)} minutes ago): ${cachedResult}`
+      )
+      return { updateAvailable: cachedResult }
+    }
+
+    const platform = process.platform
+    let binaryName: string
+    const baseName = plus ? 'song-detector-plus' : 'song-detector'
+
+    if (platform === 'win32') {
+      binaryName = `${baseName}.exe`
+    } else if (platform === 'darwin') {
+      binaryName = `${baseName}-macos`
+    } else {
+      binaryName = `${baseName}-linux`
+    }
+
+    // Fetch latest release info from GitHub API
+    const apiUrl = 'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
+    const response = await fetch(apiUrl)
+
+    if (!response.ok) {
+      console.error('Failed to fetch release info:', response.statusText)
+      return { updateAvailable: false }
+    }
+
+    const release = await response.json()
+    const asset = release.assets.find((a: any) => a.name === binaryName)
+
+    if (!asset || !asset.digest) {
+      console.error('Asset not found or missing digest:', binaryName)
+      return { updateAvailable: false }
+    }
+
+    const latestDigest = asset.digest
+    const storeKey = plus ? 'song-detector-plus-sha256' : 'song-detector-standard-sha256'
+    const storedDigest = store.get(storeKey)
+
+    console.log(`Latest digest: ${latestDigest}`)
+    console.log(`Stored digest: ${storedDigest}`)
+
+    if (!storedDigest) {
+      // No stored digest means first install or manual installation
+      store.set(timestampKey, now)
+      store.set(cachedResultKey, false)
+      return { updateAvailable: false, latestDigest, size: asset.size }
+    }
+
+    const updateAvailable = storedDigest !== latestDigest
+
+    // Cache the result and timestamp
+    store.set(timestampKey, now)
+    store.set(cachedResultKey, updateAvailable)
+
+    return { updateAvailable, latestDigest, size: asset.size }
+  } catch (error) {
+    console.error('Error checking for update:', error)
+    return { updateAvailable: false }
+  }
+}
+
+/**
  * Download song-detector binary from GitHub releases
  */
 export const downloadSongDetector = async (
   wind: BrowserWindow,
-  plus: boolean = false
+  plus: boolean = false,
+  store?: any
 ): Promise<boolean> => {
   const platform = process.platform
   let binaryName: string
@@ -355,7 +442,7 @@ export const downloadSongDetector = async (
           response.pipe(file)
 
           file.on('finish', () => {
-            file.close(() => {
+            file.close(async () => {
               const stats = fs.statSync(detectorPath)
               console.log(`Song detector downloaded successfully: ${stats.size} bytes`)
 
@@ -371,6 +458,33 @@ export const downloadSongDetector = async (
                   console.log('Removed quarantine attribute from song detector')
                 } catch (err) {
                   console.log('Could not remove quarantine attribute (may not exist):', err)
+                }
+              }
+
+              // Fetch and store SHA256 digest after successful download
+              if (store) {
+                try {
+                  const apiUrl = 'https://api.github.com/repos/YeonV/LedFx-Builds/releases/latest'
+                  const apiResponse = await fetch(apiUrl)
+                  if (apiResponse.ok) {
+                    const release = await apiResponse.json()
+                    const asset = release.assets.find((a: any) => a.name === binaryName)
+                    if (asset && asset.digest) {
+                      const storeKey = plus
+                        ? 'song-detector-plus-sha256'
+                        : 'song-detector-standard-sha256'
+                      store.set(storeKey, asset.digest)
+                      console.log(`Stored SHA256 digest: ${asset.digest}`)
+
+                      // Clear update check cache to force re-check
+                      const timestampKey = plus
+                        ? 'song-detector-plus-update-check-timestamp'
+                        : 'song-detector-update-check-timestamp'
+                      store.delete(timestampKey)
+                    }
+                  }
+                } catch (err) {
+                  console.error('Failed to store SHA256 digest:', err)
                 }
               }
 

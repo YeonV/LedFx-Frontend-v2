@@ -229,6 +229,33 @@ const storeUI = (set: any) => ({
       false,
       'ui/globalColorWidget'
     ),
+  storeInspectorX: 50,
+  setStoreInspectorX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.storeInspectorX = x
+      }),
+      false,
+      'ui/storeInspectorX'
+    ),
+  storeInspectorY: 200,
+  setStoreInspectorY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.storeInspectorY = y
+      }),
+      false,
+      'ui/storeInspectorY'
+    ),
+  storeInspector: false,
+  setStoreInspector: (storeInspector: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.storeInspector = storeInspector
+      }),
+      false,
+      'ui/storeInspector'
+    ),
   changeTheme: false,
   reloadTheme: (): void =>
     set(

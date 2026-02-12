@@ -46,6 +46,7 @@ import ReactFlowPage from './ReactFlow/ReactFlowPage'
 import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
+import ElectronStoreInspector from '../components/DevTools/ElectronStoreInspector'
 
 const Routings = () => {
   const theme = useTheme()
@@ -67,6 +68,8 @@ const Routings = () => {
   const setSdPlus = useStore((state) => state.ui.setSdPlus)
   const globalColorWidget = useStore((state) => state.ui.globalColorWidget)
   const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
+  const storeInspector = useStore((state) => state.ui.storeInspector)
+  const setStoreInspector = useStore((state) => state.ui.setStoreInspector)
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
@@ -116,6 +119,7 @@ const Routings = () => {
   useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
   useHotkeys(['ctrl+alt+s'], () => setSdPlus(!sdPlus))
   useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!globalColorWidget))
+  useHotkeys(['ctrl+alt+x'], () => setStoreInspector(!storeInspector))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
   useHotkeys(['ctrl+alt+n'], () => navigate('/reactflow'))
   useHotkeys(['ctrl+alt+g'], () => {
@@ -274,6 +278,9 @@ const Routings = () => {
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
+        {isElect && storeInspector && (
+          <ElectronStoreInspector close={() => setStoreInspector(false)} />
+        )}
         <SongDetectorScreen />
         {!isDisplayMode && <OneEffect noButton />}
         {!isDisplayMode && <NoHostDialog />}
