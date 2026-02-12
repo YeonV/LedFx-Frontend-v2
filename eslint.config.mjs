@@ -24,7 +24,9 @@ export default [
       '**/*.jsx',
       '**/*.mjs',
       '**/*.cjs',
-      'extraResources/**'
+      'extraResources/**',
+      '**/types/yz-audio-visualiser.d.ts', // Auto-generated declaration file
+      'public/modules/**/*.d.ts' // Auto-generated module declarations
     ]
   },
   ...compat.extends(

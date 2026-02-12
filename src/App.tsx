@@ -22,6 +22,8 @@ import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
 import { useFireTvStore } from './components/FireTv/useFireTvStore'
 import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
+import Visualiser from './components/AudioVisualiser/AudioVisualiser'
+import { Box } from '@mui/system'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
@@ -378,6 +380,21 @@ export default function App() {
                 {features.firetv && <FireTvBar />}
               </FiledropProvider>
             </SpotifyProvider>
+            {/* exclude for /visualiser */}
+            {features.bgvisualiser && (
+              <Box
+                sx={{
+                  width: '100vw',
+                  height: 'calc(100vh - 64px)',
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  zIndex: -1
+                }}
+              >
+                <Visualiser backgroundMode={true} />
+              </Box>
+            )}
           </WebSocketProvider>
           {features.waves && (
             <WaveLines

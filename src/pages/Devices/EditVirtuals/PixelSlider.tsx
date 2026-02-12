@@ -60,11 +60,11 @@ const PixelSlider = ({ s, handleRangeSegment }: PixelSliderProps) => {
           const clampedValue = Math.max(1, Math.min(range[1] + 1, parsedValue))
           const zeroIndexed = clampedValue - 1
           setRange([zeroIndexed, range[1]])
-          throttled(e, [zeroIndexed, range[1]])
+          handleChange(e, [zeroIndexed, range[1]])
         }
       }
     },
-    [range, throttled]
+    [range, handleChange]
   )
 
   const handleStartBlur = useCallback(() => {
@@ -76,9 +76,9 @@ const PixelSlider = ({ s, handleRangeSegment }: PixelSliderProps) => {
     if (newStart < 0 || newStart >= range[1]) {
       newStart = Math.max(0, Math.min(range[1] - 1, newStart))
       setRange([newStart, range[1]])
-      throttled(null, [newStart, range[1]])
+      handleChange(null, [newStart, range[1]])
     }
-  }, [range, throttled])
+  }, [range, handleChange])
 
   const handleEndFocus = useCallback(() => {
     setIsEditingEnd(true)
@@ -96,11 +96,11 @@ const PixelSlider = ({ s, handleRangeSegment }: PixelSliderProps) => {
           const clampedValue = Math.max(range[0] + 1, Math.min(pixelCount, parsedValue))
           const zeroIndexed = clampedValue - 1
           setRange([range[0], zeroIndexed])
-          throttled(e, [range[0], zeroIndexed])
+          handleChange(e, [range[0], zeroIndexed])
         }
       }
     },
-    [range, pixelCount, throttled]
+    [range, pixelCount, handleChange]
   )
 
   const handleEndBlur = useCallback(() => {
@@ -112,9 +112,9 @@ const PixelSlider = ({ s, handleRangeSegment }: PixelSliderProps) => {
     if (newEnd <= range[0] || newEnd >= pixelCount) {
       newEnd = Math.max(range[0] + 1, Math.min(pixelCount - 1, newEnd))
       setRange([range[0], newEnd])
-      throttled(null, [range[0], newEnd])
+      handleChange(null, [range[0], newEnd])
     }
-  }, [range, pixelCount, throttled])
+  }, [range, pixelCount, handleChange])
 
   const handleSliderChange = useCallback(
     (_event: Event, n: number | number[]) => {
@@ -131,39 +131,44 @@ const PixelSlider = ({ s, handleRangeSegment }: PixelSliderProps) => {
 
   return (
     <Stack direction="row" spacing={5} alignItems="flex-start" flexBasis="100%">
-      <Stack direction="row" spacing={1} alignItems="flex-start" alignSelf="flex-end">
-        <TextField
-          size="small"
-          type="number"
-          sx={{ minWidth: '80px' }}
-          slotProps={{
-            htmlInput: {
-              style: { padding: '4.5px 14px' },
-              min: 1,
-              max: pixelCount
-            }
-          }}
-          value={isEditingStart ? startInput : range[0] + 1}
-          onFocus={handleStartFocus}
-          onChange={handleStartChange}
-          onBlur={handleStartBlur}
-        />
-        <TextField
-          size="small"
-          type="number"
-          sx={{ minWidth: '80px' }}
-          slotProps={{
-            htmlInput: {
-              style: { padding: '4.5px 14px' },
-              min: range[0] + 1,
-              max: pixelCount
-            }
-          }}
-          value={isEditingEnd ? endInput : range[1] + 1}
-          onFocus={handleEndFocus}
-          onChange={handleEndChange}
-          onBlur={handleEndBlur}
-        />
+      <Stack direction="column" spacing={1} alignItems="flex-start">
+        <Typography color="textSecondary" marginTop={1} marginBottom={-1}>
+          {range[1] - range[0] + 1} LEDs
+        </Typography>
+        <Stack direction="row" spacing={1} alignItems="flex-start" alignSelf="flex-end">
+          <TextField
+            size="small"
+            type="number"
+            sx={{ minWidth: '90px' }}
+            slotProps={{
+              htmlInput: {
+                style: { padding: '4.5px 8px 4.5px 14px' },
+                min: 1,
+                max: pixelCount
+              }
+            }}
+            value={isEditingStart ? startInput : range[0] + 1}
+            onFocus={handleStartFocus}
+            onChange={handleStartChange}
+            onBlur={handleStartBlur}
+          />
+          <TextField
+            size="small"
+            type="number"
+            sx={{ minWidth: '90px' }}
+            slotProps={{
+              htmlInput: {
+                style: { padding: '4.5px 8px 4.5px 14px' },
+                min: range[0] + 1,
+                max: pixelCount
+              }
+            }}
+            value={isEditingEnd ? endInput : range[1] + 1}
+            onFocus={handleEndFocus}
+            onChange={handleEndChange}
+            onBlur={handleEndBlur}
+          />
+        </Stack>
       </Stack>
       <Slider
         sx={{ alignSelf: 'center' }}

@@ -1,6 +1,8 @@
 import useStore from '../../store/useStore'
 import LogColorFilterSelect from './LogFilterSelect'
 import { SettingsRow } from './SettingsComponents'
+// import VisualizerDevWidget from './VisualizerDevWidget'
+import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
@@ -64,6 +66,14 @@ const Uncategorized = () => {
         checked={features.waves}
         onChange={() => setFeatures('waves', !features.waves)}
       />
+      <SettingsRow
+        beta
+        title="BG Visualiser (eats performance)"
+        checked={features.bgvisualiser}
+        onChange={() => setFeatures('bgvisualiser', !features.bgvisualiser)}
+      />
+      {/* {features.bgvisualiser && <VisualizerDevWidget />} */}
+      {features.bgvisualiser && <VisualizerDevWidgetYZ />}
       <SettingsRow
         alpha
         title="LedFx Cloud"

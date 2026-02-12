@@ -31,7 +31,8 @@ import {
   isSongDetectorInstalled,
   startSongDetector,
   stopSongDetector,
-  getShuttingDown
+  getShuttingDown,
+  checkSongDetectorUpdate
 } from './utils/songDetector.mjs'
 
 // ANSI color codes for logging
@@ -454,6 +455,21 @@ export const handlers = async (
         wind.webContents.send('fromMain', ['song-detector-status', { ...status, plus }])
         break
       }
+      case 'check-song-detector-update': {
+        const plus = parameters.plus || false
+        console.log(log(`Checking for song detector update, plus: ${plus}`))
+        const updateInfo = await checkSongDetectorUpdate(plus, store)
+        console.log(
+          log(
+            `Update check result: ${updateInfo.updateAvailable ? 'Update available' : 'Up to date'}`
+          )
+        )
+        wind.webContents.send('fromMain', [
+          'song-detector-update-check',
+          { ...updateInfo, plus }
+        ])
+        break
+      }
       case 'start-song-detector': {
         const deviceName = parameters.deviceName || 'ledfxcc'
         const plus = parameters.plus || false
@@ -490,7 +506,7 @@ export const handlers = async (
         const plus = parameters.plus || false
         console.log(log(`Downloading song detector, plus: ${plus}`))
         try {
-          await downloadSongDetector(wind, plus)
+          await downloadSongDetector(wind, plus, store)
           // After download, check availability again
           const installed = await isSongDetectorInstalled(plus)
           const detectorKey = plus ? 'songDetectorPlus' : 'songDetector'
@@ -543,6 +559,51 @@ export const handlers = async (
           // Clear running state anyway with variant-specific key
           const storeKey = plus ? 'song-detector-plus-running' : 'song-detector-running'
           store.set(storeKey, false)
+        }
+        break
+      }
+      case 'get-electron-store': {
+        console.log(log('Getting electron store data'))
+        wind.webContents.send('fromMain', ['electron-store-data', store.store])
+        break
+      }
+      case 'set-electron-store-key': {
+        const { key, value } = parameters
+        console.log(log(`Setting electron store key: ${key}`))
+        try {
+          store.set(key, value)
+          wind.webContents.send('fromMain', ['electron-store-updated', { key, value }])
+          // Send updated full store
+          wind.webContents.send('fromMain', ['electron-store-data', store.store])
+        } catch (error) {
+          console.error(log(`Failed to set key: ${error}`))
+          wind.webContents.send('fromMain', ['electron-store-error', { error: String(error) }])
+        }
+        break
+      }
+      case 'delete-electron-store-key': {
+        const { key } = parameters
+        console.log(log(`Deleting electron store key: ${key}`))
+        try {
+          store.delete(key)
+          wind.webContents.send('fromMain', ['electron-store-updated', { key, deleted: true }])
+          // Send updated full store
+          wind.webContents.send('fromMain', ['electron-store-data', store.store])
+        } catch (error) {
+          console.error(log(`Failed to delete key: ${error}`))
+          wind.webContents.send('fromMain', ['electron-store-error', { error: String(error) }])
+        }
+        break
+      }
+      case 'clear-electron-store': {
+        console.log(log('Clearing electron store'))
+        try {
+          store.clear()
+          wind.webContents.send('fromMain', ['electron-store-cleared', {}])
+          wind.webContents.send('fromMain', ['electron-store-data', store.store])
+        } catch (error) {
+          console.error(log(`Failed to clear store: ${error}`))
+          wind.webContents.send('fromMain', ['electron-store-error', { error: String(error) }])
         }
         break
       }

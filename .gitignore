@@ -50,3 +50,4 @@ src/api/docs/*
 docs/*
 public/modules/*
 .env
+public/yz-audio-visualiser.js

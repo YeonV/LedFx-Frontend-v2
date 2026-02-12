@@ -147,7 +147,7 @@ const BladeSelect = ({
           >
             {children ||
               schema.enum.map((item: any, i: number) => (
-                <MenuItem key={`${i}-${i}`} value={item}>
+                <MenuItem key={`enum-${item}-${i}`} value={item}>
                   {item}
                 </MenuItem>
               ))}
@@ -185,7 +185,7 @@ const BladeSelect = ({
           onChange={(e) => onChange(model_id, e.target.value)}
         >
           {schema.enum.map((item: any, i: number) => (
-            <MenuItem key={i} value={item} style={menuItemStyle as any}>
+            <MenuItem key={`${item}-${i}`} value={item} style={menuItemStyle as any}>
               {item}
             </MenuItem>
           ))}
@@ -214,7 +214,7 @@ const BladeSelect = ({
           }
         >
           {Object.keys(schema.enum).map((item, i) => (
-            <MenuItem key={i} value={schema.enum[item]}>
+            <MenuItem key={`${item}-${i}`} value={schema.enum[item]}>
               {schema.enum[item]}
             </MenuItem>
           ))}

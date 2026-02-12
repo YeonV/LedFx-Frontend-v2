@@ -1,5 +1,12 @@
-import { HashRouter as Router, BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import {
+  HashRouter as Router,
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation
+} from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -39,6 +46,7 @@ import ReactFlowPage from './ReactFlow/ReactFlowPage'
 import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
+import ElectronStoreInspector from '../components/DevTools/ElectronStoreInspector'
 
 const Routings = () => {
   const theme = useTheme()
@@ -60,6 +68,8 @@ const Routings = () => {
   const setSdPlus = useStore((state) => state.ui.setSdPlus)
   const globalColorWidget = useStore((state) => state.ui.globalColorWidget)
   const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
+  const storeInspector = useStore((state) => state.ui.storeInspector)
+  const setStoreInspector = useStore((state) => state.ui.setStoreInspector)
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
@@ -109,6 +119,7 @@ const Routings = () => {
   useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
   useHotkeys(['ctrl+alt+s'], () => setSdPlus(!sdPlus))
   useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!globalColorWidget))
+  useHotkeys(['ctrl+alt+x'], () => setStoreInspector(!storeInspector))
   useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
   useHotkeys(['ctrl+alt+n'], () => navigate('/reactflow'))
   useHotkeys(['ctrl+alt+g'], () => {
@@ -131,51 +142,96 @@ const Routings = () => {
     setShowFeatures('alpha', !features.alpha)
     setShowFeatures('beta', !features.beta)
   })
+  const location = useLocation()
+  const { pathname } = location
+  const bgVisualiserBeforeRouteRef = useRef<boolean | null>(null)
+  // const showOverlaysBeforeDisplayRef = useRef<boolean | null>(null)
+
+  // Check for display mode (OBS-friendly clean UI) - works with HashRouter
+  const searchParams = new URLSearchParams(location.search)
+  const isDisplayMode = searchParams.get('display') === 'true'
+
+  useEffect(() => {
+    if (pathname === '/visualiser') {
+      // Entering /visualiser route - save current state and disable background
+      if (bgVisualiserBeforeRouteRef.current === null) {
+        bgVisualiserBeforeRouteRef.current = features.bgvisualiser
+        if (features.bgvisualiser) {
+          setFeatures('bgvisualiser', false)
+        }
+      }
+    } else {
+      // Leaving /visualiser route - restore previous state
+      if (bgVisualiserBeforeRouteRef.current === true) {
+        setFeatures('bgvisualiser', true)
+      }
+      // Reset ref when leaving (whether it was true or false)
+      if (bgVisualiserBeforeRouteRef.current !== null) {
+        bgVisualiserBeforeRouteRef.current = null
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
 
   return (
     <>
       <ScrollToTop />
-      <MessageBar />
-      <TopBar />
-      <LeftBar />
+      {!isDisplayMode && <MessageBar />}
+      {!isDisplayMode && <TopBar />}
+      {!isDisplayMode && <LeftBar />}
       <Box
+        id="yz-main-content"
         sx={[
-          {
-            flexGrow: 1,
-            background: 'transparent',
-            padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
+          isDisplayMode
+            ? {
+                // Display mode: No padding, no margins, full viewport
+                flexGrow: 1,
+                background: 'transparent',
+                padding: 0,
+                margin: 0,
+                width: '100vw',
+                height: '100vh',
+                overflow: 'hidden'
+              }
+            : {
+                // Normal mode: Standard layout with transitions
+                flexGrow: 1,
+                background: 'transparent',
+                padding: ios || xsmallScreen ? '0 !important' : theme.spacing(0),
 
-            transition: theme.transitions.create('margin', {
-              easing: leftBarOpen
-                ? theme.transitions.easing.easeOut
-                : theme.transitions.easing.sharp,
-              duration: leftBarOpen
-                ? theme.transitions.duration.enteringScreen
-                : theme.transitions.duration.leavingScreen
-            }),
+                transition: theme.transitions.create('margin', {
+                  easing: leftBarOpen
+                    ? theme.transitions.easing.easeOut
+                    : theme.transitions.easing.sharp,
+                  duration: leftBarOpen
+                    ? theme.transitions.duration.enteringScreen
+                    : theme.transitions.duration.leavingScreen
+                }),
 
-            '@media (max-width: 580px)': {
-              padding: '8px'
-            }
-          },
-          leftBarOpen
+                '@media (max-width: 580px)': {
+                  padding: '8px'
+                }
+              },
+          !isDisplayMode && leftBarOpen
             ? {
                 marginLeft: 0
               }
-            : {
+            : !isDisplayMode && {
                 marginLeft: `-${drawerWidth}px`
               }
         ]}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: theme.spacing(0, 1),
-            ...theme.mixins.toolbar
-          }}
-        />
+        {!isDisplayMode && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: theme.spacing(0, 1),
+              ...theme.mixins.toolbar
+            }}
+          />
+        )}
         <Routes>
           {window.localStorage.getItem('lock') === 'activated' && isElect ? (
             <Route path="*" element={<Lock />} />
@@ -192,7 +248,7 @@ const Routings = () => {
                 <Route path="/integrations" element={<Integrations />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/visualiser" element={<Visualiser />} />
+                <Route path="/visualiser" element={<Visualiser backgroundMode={isDisplayMode} />} />
               )}
               {!(window.localStorage.getItem('guestmode') === 'activated') && (
                 <Route path="/settings" element={<SettingsNew />} />
@@ -222,14 +278,21 @@ const Routings = () => {
         {mg && <MGraphFloating close={() => setMg(false)} />}
         {keybinding && <Keybinding close={() => setKeybinding(false)} />}
         {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
+        {isElect && storeInspector && (
+          <ElectronStoreInspector close={() => setStoreInspector(false)} />
+        )}
         <SongDetectorScreen />
-        <OneEffect noButton />
-        <NoHostDialog />
-        {isElect && <HostManager />}
-        <FrontendPixelsTooSmall />
-        <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
+        {!isDisplayMode && <OneEffect noButton />}
+        {!isDisplayMode && <NoHostDialog />}
+        {!isDisplayMode && isElect && <HostManager />}
+        {!isDisplayMode && <FrontendPixelsTooSmall />}
+        {!isDisplayMode && (
+          <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
+        )}
       </Box>
-      {!(isElect && window.localStorage.getItem('lock') === 'activated') && <BottomBar />}
+      {!isDisplayMode && !(isElect && window.localStorage.getItem('lock') === 'activated') && (
+        <BottomBar />
+      )}
     </>
   )
 }

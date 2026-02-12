@@ -4,6 +4,15 @@ import pkg from '../../../package.json'
 import type { IStore } from '../useStore'
 
 const storeUI = (set: any) => ({
+  visualizerInitialized: false,
+  setVisualizerInitialized: (initialized: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.visualizerInitialized = initialized
+      }),
+      false,
+      'ui/visualizerInitialized'
+    ),
   currentTheme: '',
   setCurrentTheme: (theme: string): void =>
     set(
@@ -219,6 +228,33 @@ const storeUI = (set: any) => ({
       }),
       false,
       'ui/globalColorWidget'
+    ),
+  storeInspectorX: 50,
+  setStoreInspectorX: (x: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.storeInspectorX = x
+      }),
+      false,
+      'ui/storeInspectorX'
+    ),
+  storeInspectorY: 200,
+  setStoreInspectorY: (y: number): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.storeInspectorY = y
+      }),
+      false,
+      'ui/storeInspectorY'
+    ),
+  storeInspector: false,
+  setStoreInspector: (storeInspector: boolean): void =>
+    set(
+      produce((state: IStore) => {
+        state.ui.storeInspector = storeInspector
+      }),
+      false,
+      'ui/storeInspector'
     ),
   changeTheme: false,
   reloadTheme: (): void =>

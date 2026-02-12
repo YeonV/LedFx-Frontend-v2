@@ -1,6 +1,6 @@
 import React from 'react'
 import { Stack, Fab, Tooltip, CircularProgress } from '@mui/material'
-import { PlayArrow, Stop, Delete, Download } from '@mui/icons-material'
+import { PlayArrow, Stop, Delete, Download, SystemUpdate } from '@mui/icons-material'
 
 interface SongDetectorControlsProps {
   detector: {
@@ -8,6 +8,7 @@ interface SongDetectorControlsProps {
     isRunning: boolean
     isDownloading: boolean
     downloadProgress: number
+    updateAvailable: boolean
   }
   isPlus: boolean
   startDetector: (deviceName: string, isPlus: boolean) => void
@@ -56,6 +57,28 @@ const SongDetectorControls: React.FC<SongDetectorControlsProps> = ({
               <Delete />
             </Fab>
           </Tooltip>
+          {detector.updateAvailable && (
+            <Tooltip title="Update Detector">
+              <Fab
+                size="small"
+                color="info"
+                onClick={() => downloadDetector(isPlus)}
+                disabled={detector.isRunning || detector.isDownloading}
+                sx={{ width: 40, height: 40, minHeight: 40 }}
+              >
+                {detector.isDownloading ? (
+                  <CircularProgress
+                    size={20}
+                    variant="determinate"
+                    value={detector.downloadProgress}
+                    sx={{ color: 'white' }}
+                  />
+                ) : (
+                  <SystemUpdate />
+                )}
+              </Fab>
+            </Tooltip>
+          )}
           {children}
         </>
       ) : (

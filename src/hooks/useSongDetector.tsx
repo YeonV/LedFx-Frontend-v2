@@ -12,6 +12,7 @@ interface DetectorState {
   isDownloading: boolean
   downloadProgress: number
   status: SongDetectorStatus | null
+  updateAvailable: boolean
 }
 
 export const useSongDetector = () => {
@@ -21,7 +22,8 @@ export const useSongDetector = () => {
     isRunning: false,
     isDownloading: false,
     downloadProgress: 0,
-    status: null
+    status: null,
+    updateAvailable: false
   })
 
   const [plus, setPlus] = useState<DetectorState>({
@@ -29,7 +31,8 @@ export const useSongDetector = () => {
     isRunning: false,
     isDownloading: false,
     downloadProgress: 0,
-    status: null
+    status: null,
+    updateAvailable: false
   })
 
   useEffect(() => {
@@ -37,6 +40,9 @@ export const useSongDetector = () => {
     if (window.api) {
       window.api.send('toMain', { command: 'check-song-detector', plus: false })
       window.api.send('toMain', { command: 'check-song-detector', plus: true })
+      // Also check for updates on mount
+      window.api.send('toMain', { command: 'check-song-detector-update', plus: false })
+      window.api.send('toMain', { command: 'check-song-detector-update', plus: true })
     }
 
     // Listen for status updates
@@ -87,6 +93,10 @@ export const useSongDetector = () => {
               downloadProgress: 0,
               isAvailable: true
             }))
+            // Re-check for updates after download to verify the new version
+            if (window.api) {
+              window.api.send('toMain', { command: 'check-song-detector-update', plus: isPlus })
+            }
             break
           case 'song-detector-download-error':
             setter((prev) => ({
@@ -106,6 +116,12 @@ export const useSongDetector = () => {
             break
           case 'song-detector-error':
             setter((prev) => ({ ...prev, isRunning: false }))
+            break
+          case 'song-detector-update-check':
+            setter((prev) => ({
+              ...prev,
+              updateAvailable: data.updateAvailable || false
+            }))
             break
         }
       }
@@ -159,6 +175,12 @@ export const useSongDetector = () => {
     }
   }
 
+  const checkForUpdate = (isPlus: boolean = false) => {
+    if (window.api) {
+      window.api.send('toMain', { command: 'check-song-detector-update', plus: isPlus })
+    }
+  }
+
   return {
     standard,
     plus,
@@ -166,7 +188,8 @@ export const useSongDetector = () => {
     stopDetector,
     getStatus,
     downloadDetector,
-    deleteDetector
+    deleteDetector,
+    checkForUpdate
   }
 }
 

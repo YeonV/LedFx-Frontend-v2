@@ -6,6 +6,7 @@ interface SongDetectorStatusChipsProps {
     isAvailable: boolean
     isRunning: boolean
     status: any
+    updateAvailable: boolean
   }
 }
 
@@ -20,6 +21,9 @@ const SongDetectorStatusChips: React.FC<SongDetectorStatusChipsProps> = ({ detec
             color={detector.isRunning ? 'success' : 'default'}
             size="small"
           />
+          {detector.updateAvailable && (
+            <Chip label="Update Available" color="info" size="small" variant="outlined" />
+          )}
         </>
       ) : (
         <Chip label="Not Installed" color="warning" size="small" />

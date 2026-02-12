@@ -111,6 +111,11 @@ export interface VirtualConfig {
    * @maximum 3
    */
   rotate?: number;
+  /**
+   * Whether the segments are complex (requires matrix editor)
+   * @default false
+   */
+  complex_segments?: boolean;
 }
 
 /**

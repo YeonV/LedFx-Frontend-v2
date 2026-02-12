@@ -7,7 +7,9 @@ import {
   ListSubheader,
   Switch,
   FormControlLabel,
-  Divider
+  Divider,
+  Autocomplete,
+  TextField
 } from '@mui/material'
 import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
@@ -16,6 +18,7 @@ import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
 import BladeFrame from '../components/BladeFrame'
+import GradientPicker from '../components/GradientPicker/GradientPicker'
 import { SchemaFormProps } from './SchemaForm.props'
 import useStore from '../../../store/useStore'
 
@@ -90,7 +93,7 @@ const SchemaForm = ({
                 return (
                   <BladeBoolean
                     hideDesc={hideDesc}
-                    key={i}
+                    key={s.id}
                     index={i}
                     model={model}
                     model_id={s.id}
@@ -128,7 +131,7 @@ const SchemaForm = ({
                 }
 
                 return audio_groups?.length ? (
-                  <BladeFrame key={i} style={{ order: -1 }} title="Audio Device" full>
+                  <BladeFrame key={s.id} style={{ order: -1 }} title="Audio Device" full>
                     <Select
                       value={(model && model.audio_device) || 0}
                       fullWidth
@@ -143,16 +146,17 @@ const SchemaForm = ({
                       className={classes.bladeSelect}
                       id="grouped-select"
                     >
-                      {audio_groups?.map((c: string, ind: number) => [
+                      {audio_groups?.flatMap((c: string, ind: number) => [
                         <ListSubheader
+                          key={`audio-header-${ind}`}
                           className={classes.FormListHeaders}
                           color="primary"
-                          key={ind}
                         >
                           {c}
                         </ListSubheader>,
-                        Object.keys(group[c]).map((e) => (
+                        ...Object.keys(group[c]).map((e) => (
                           <MenuItem
+                            key={e}
                             value={e}
                             // disabled={group[c][e].indexOf('[Loopback]') > -1}
                           >
@@ -188,7 +192,7 @@ const SchemaForm = ({
                       schema={s}
                       required={s.required}
                       model_id={s.id}
-                      key={i}
+                      key={s.id}
                       index={i}
                       onChange={(model_id: string, value: any) => {
                         const c: Record<string, unknown> = {}
@@ -208,7 +212,7 @@ const SchemaForm = ({
                     step={undefined}
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
-                    key={i}
+                    key={s.id}
                     model_id={s.id}
                     model={model}
                     required={s.required}
@@ -231,7 +235,7 @@ const SchemaForm = ({
                     hideDesc={hideDesc}
                     disabled={!s.permitted}
                     step={1}
-                    key={i}
+                    key={s.id}
                     model_id={s.id}
                     model={model}
                     required={s.required}
@@ -269,7 +273,7 @@ const SchemaForm = ({
                     disabled={!s.permitted}
                     marks={s?.enum}
                     step={undefined}
-                    key={i}
+                    key={s.id}
                     model_id={s.id}
                     model={model}
                     required={s.required}
@@ -291,7 +295,7 @@ const SchemaForm = ({
                     disabled={!s.permitted}
                     marks={s?.enum}
                     step={undefined}
-                    key={i}
+                    key={s.id}
                     model_id={s.id}
                     model={model}
                     required={s.required}
@@ -306,6 +310,69 @@ const SchemaForm = ({
                       }
                       return null
                     }}
+                  />
+                )
+              case 'color':
+                return (
+                  <GradientPicker
+                    key={s.id}
+                    pickerBgColor={model[s.id] || s.default || '#000000'}
+                    title={s.title}
+                    index={i}
+                    isGradient={s.isGradient || false}
+                    wrapperStyle={{ margin: '0.5rem 0', width: '49%' }}
+                    colors={undefined}
+                    handleAddGradient={() => {}}
+                    sendColorToVirtuals={(color: string) => {
+                      const c: Record<string, unknown> = {}
+                      c[s.id] = color
+                      if (onModelChange) {
+                        return onModelChange(c)
+                      }
+                      return null
+                    }}
+                    showHex={false}
+                  />
+                )
+              case 'autocomplete':
+                return (
+                  <Autocomplete
+                    key={s.id}
+                    size="medium"
+                    options={s.enum || []}
+                    value={model[s.id] || s.default || ''}
+                    onChange={(event, newValue) => {
+                      const c: Record<string, unknown> = {}
+                      c[s.id] = newValue || ''
+                      if (onModelChange) {
+                        onModelChange(c)
+                      }
+                    }}
+                    inputValue={model[s.id] || s.default || ''}
+                    onInputChange={(event, newInputValue) => {
+                      if (event?.type === 'change') {
+                        const c: Record<string, unknown> = {}
+                        c[s.id] = newInputValue
+                        if (onModelChange) {
+                          onModelChange(c)
+                        }
+                      }
+                    }}
+                    disabled={!s.permitted}
+                    freeSolo={s.freeSolo !== false}
+                    renderOption={(props, option, state) => (
+                      <li {...props} key={`${s.id}-option-${state.index}`}>
+                        {option}
+                      </li>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={s.title.toUpperCase()}
+                        helperText={!hideDesc && s.description ? s.description : undefined}
+                      />
+                    )}
+                    sx={{ width: '100%', mb: 1 }}
                   />
                 )
               default:
