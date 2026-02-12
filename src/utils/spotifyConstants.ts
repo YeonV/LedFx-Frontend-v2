@@ -25,7 +25,7 @@ export const getBaseURL = () => {
 }
 
 const calculateRedirectUrl = () => {
-  const productionBase = 'ledfx:/' // || getBaseURL()
+  const productionBase = isElectron() ? 'ledfx:/' : window.location.origin
   const developmentBase = isElectron() ? productionBase : 'https://localhost:3000'
 
   const finalBase = process.env.NODE_ENV === 'production' ? productionBase : developmentBase
