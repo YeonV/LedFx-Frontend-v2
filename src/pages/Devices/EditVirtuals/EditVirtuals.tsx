@@ -96,7 +96,6 @@ export default function EditVirtuals({
   innerKey,
   sx
 }: any) {
-  const [matrix, setMatrix] = useState(false)
   const currentVirtual = useStore((state) => state.currentVirtual)
   const setCurrentVirtual = useStore((state) => state.setCurrentVirtual)
   const calibrationMode = useStore((state) => state.calibrationMode)
@@ -120,6 +119,7 @@ export default function EditVirtuals({
     () => virtuals[currentVirtual || virtId],
     [virtuals, currentVirtual, virtId]
   )
+  const [matrix, setMatrix] = useState(virtual?.config?.complex_segments || false)
   const [open, setOpen] = React.useState(!!currentVirtual || false)
   const [calib, setCalib] = React.useState(true)
 
@@ -243,6 +243,18 @@ export default function EditVirtuals({
 
   const toggleButtonGroupStyle = useMemo(() => ({ marginRight: '1rem' }), [])
 
+  // Automatically switch to matrix editor for complex_segments virtuals
+  useEffect(() => {
+    if (open && virtual?.config?.complex_segments) {
+      setMatrix(true)
+    } else if (open && !virtual?.config?.complex_segments) {
+      setMatrix(false)
+    }
+  }, [virtual, open])
+
+  // Determine whether to show matrix editor - always use matrix for complex_segments
+  const showMatrix = virtual?.config?.complex_segments || matrix
+
   return virtual && virtual.config ? (
     <>
       {type === 'menuItem' ? (
@@ -301,7 +313,7 @@ export default function EditVirtuals({
             {(virtual.config.rows || 1) > 1 && (
               <ToggleButtonGroup
                 value={matrix}
-                disabled={isExternalEditorOpen}
+                disabled={isExternalEditorOpen || virtual.config.complex_segments}
                 style={toggleButtonGroupStyle}
                 size="small"
                 exclusive
@@ -329,7 +341,7 @@ export default function EditVirtuals({
             )}
           </Toolbar>
         </AppBar>
-        {matrix ? (
+        {showMatrix ? (
           <EditMatrix virtual={virtual} ref={matrixEditorRef} />
         ) : (
           <>
