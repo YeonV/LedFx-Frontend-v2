@@ -58,6 +58,11 @@ body {
   padding-bottom: 56px;
   overflow-x: hidden;
 }
+
+body.displayModeVisualiser #root {
+  max-height: 100vh;
+  overflow-y: auto;
+}
 /* fallback */
 @font-face {
   font-family: "Material Icons";
@@ -139,4 +144,4 @@ body {
   }
 }
 
-/*# sourceMappingURL=main.cf4bbedf.css.map*/
+/*# sourceMappingURL=main.c96b7e67.css.map*/
