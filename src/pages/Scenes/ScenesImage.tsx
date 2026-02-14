@@ -27,7 +27,7 @@ const SceneImage = ({
         height: (sx as any)?.height || 140,
         width: (sx as any)?.width || '100%',
         maxWidth: 'calc(100% - 2px)',
-        objectFit: 'cover'
+        objectFit: (sx as any)?.objectFit || 'cover'
       }}
       src={getImageUrl(imagePath!, thumbnail)}
       alt={title || ''}
