@@ -19,7 +19,6 @@ import { Ledfx } from '../../../api/ledfx'
 import SceneImage from '../../../pages/Scenes/ScenesImage'
 import { a11yProps, TabPanel } from './AssetManager.components'
 import AssetDataGrid from './AssetDataGrid'
-import AssetInfoDialog from './AssetInfoDialog'
 import AssetTableActions from './AssetTableActions'
 
 const AssetManager = ({
@@ -30,8 +29,6 @@ const AssetManager = ({
   const theme = useTheme()
   const [open, setOpen] = useState(false)
   const [tabValue, setTabValue] = useState(0)
-  const [selectedAsset, setSelectedAsset] = useState<any>(null)
-  const [infoOpen, setInfoOpen] = useState(false)
   const assets = useStore((state) => state.assets)
   const platform = useStore((state) => state.platform)
   const assetsFixed = useStore((state) => state.assetsFixed)
@@ -42,12 +39,6 @@ const AssetManager = ({
   const getCacheStats = useStore((state) => state.getCacheStats)
   const clearCache = useStore((state) => state.clearCache)
   const refreshCacheImage = useStore((state) => state.refreshCacheImage)
-
-  const handleShowAssetInfo = (asset: any, event: React.MouseEvent) => {
-    event.stopPropagation()
-    setSelectedAsset(asset)
-    setInfoOpen(true)
-  }
 
   const handleApplyGradient = async (asset: any, event: React.MouseEvent) => {
     event.stopPropagation()
@@ -139,7 +130,6 @@ const AssetManager = ({
         <AssetTableActions
           asset={params.row}
           type="user"
-          onShowInfo={handleShowAssetInfo}
           onApplyGradient={handleApplyGradient}
           onDelete={deleteAsset}
           filename={params.row.filename}
@@ -273,7 +263,6 @@ const AssetManager = ({
         <AssetTableActions
           asset={params.row}
           type="cache"
-          onShowInfo={handleShowAssetInfo}
           onApplyGradient={handleApplyGradient}
           onRefresh={refreshCacheImage}
           onClear={async (url: string) => {
@@ -400,8 +389,6 @@ const AssetManager = ({
           </Box>
         </DialogContent>
       </Dialog>
-
-      <AssetInfoDialog open={infoOpen} onClose={() => setInfoOpen(false)} asset={selectedAsset} />
     </>
   )
 }

@@ -1,11 +1,11 @@
 import { Box, IconButton } from '@mui/material'
-import { Info, ColorLens, Refresh } from '@mui/icons-material'
+import { ColorLens, Refresh } from '@mui/icons-material'
 import Popover from '../../Popover/Popover'
+import AssetInfoButton from './AssetInfoButton'
 
 interface AssetTableActionsProps {
   asset: any
   type: 'user' | 'cache'
-  onShowInfo: (asset: any, event: React.MouseEvent) => void
   onApplyGradient: (asset: any, event: React.MouseEvent) => void
   onDelete?: (path: string) => void
   onRefresh?: (url: string) => void
@@ -16,7 +16,6 @@ interface AssetTableActionsProps {
 const AssetTableActions = ({
   asset,
   type,
-  onShowInfo,
   onApplyGradient,
   onDelete,
   onRefresh,
@@ -25,14 +24,7 @@ const AssetTableActions = ({
 }: AssetTableActionsProps) => {
   return (
     <Box sx={{ display: 'flex', gap: 0.5 }}>
-      <IconButton
-        size="small"
-        color="info"
-        onClick={(e) => onShowInfo(asset, e)}
-        title="Show asset information"
-      >
-        <Info />
-      </IconButton>
+      <AssetInfoButton asset={asset} />
       <IconButton
         size="small"
         color="primary"

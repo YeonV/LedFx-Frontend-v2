@@ -1,5 +1,0 @@
-export { default } from './AssetManager'
-export { default as AssetInfoDialog } from './AssetInfoDialog'
-export { default as AssetTableActions } from './AssetTableActions'
-export { default as AssetDataGrid } from './AssetDataGrid'
-export * from './AssetManager.components'
