@@ -14,6 +14,12 @@ interface CacheEntry {
   format: string | null
   n_frames: number
   is_animated: boolean
+  gradients?: {
+    raw?: { gradient: string }
+    led_safe?: { gradient: string }
+    led_punchy?: { gradient: string }
+    metadata?: any
+  }
 }
 
 interface CacheStats {
@@ -38,6 +44,12 @@ interface Asset {
   format: string | null
   n_frames: number
   is_animated: boolean
+  gradients?: {
+    raw?: { gradient: string }
+    led_safe?: { gradient: string }
+    led_punchy?: { gradient: string }
+    metadata?: any
+  }
 }
 
 const storeAssets = (set: any) => ({

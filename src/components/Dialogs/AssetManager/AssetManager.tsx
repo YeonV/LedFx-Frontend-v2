@@ -11,14 +11,15 @@ import {
   Button,
   BottomNavigationAction
 } from '@mui/material'
-import { Close, PermMedia, Refresh } from '@mui/icons-material'
+import { Close, PermMedia } from '@mui/icons-material'
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import isElectron from 'is-electron'
 import useStore from '../../../store/useStore'
-import Popover from '../../Popover/Popover'
+import { Ledfx } from '../../../api/ledfx'
 import SceneImage from '../../../pages/Scenes/ScenesImage'
 import { a11yProps, TabPanel } from './AssetManager.components'
 import AssetDataGrid from './AssetDataGrid'
+import AssetTableActions from './AssetTableActions'
 
 const AssetManager = ({
   variant = 'iconbutton'
@@ -38,6 +39,16 @@ const AssetManager = ({
   const getCacheStats = useStore((state) => state.getCacheStats)
   const clearCache = useStore((state) => state.clearCache)
   const refreshCacheImage = useStore((state) => state.refreshCacheImage)
+
+  const handleApplyGradient = async (asset: any, event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (asset.gradients?.led_safe?.gradient) {
+      await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global',
+        gradient: asset.gradients.led_safe.gradient
+      })
+    }
+  }
 
   useEffect(() => {
     if (open) {
@@ -59,7 +70,7 @@ const AssetManager = ({
     {
       field: 'preview',
       headerName: 'Preview',
-      width: 100,
+      width: 80,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage
           thumbnail
@@ -112,16 +123,15 @@ const AssetManager = ({
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 100,
+      width: 150,
       sortable: false,
       filterable: false,
       renderCell: (params: GridRenderCellParams) => (
-        <Popover
-          type="iconbutton"
-          variant="text"
-          color="inherit"
-          onConfirm={() => deleteAsset(params.row.path)}
-          text={`Delete ${params.row.filename}?`}
+        <AssetTableActions
+          asset={params.row}
+          type="user"
+          onApplyGradient={handleApplyGradient}
+          onDelete={deleteAsset}
         />
       )
     }
@@ -181,7 +191,7 @@ const AssetManager = ({
     {
       field: 'preview',
       headerName: 'Preview',
-      width: 100,
+      width: 80,
       renderCell: (params: GridRenderCellParams) => (
         <SceneImage
           thumbnail
@@ -245,30 +255,20 @@ const AssetManager = ({
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 200,
       sortable: false,
       filterable: false,
       renderCell: (params: GridRenderCellParams) => (
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Popover
-            type="iconbutton"
-            variant="text"
-            color="inherit"
-            onConfirm={() => refreshCacheImage(params.row.url)}
-            text={'Refresh cache for this image?'}
-            icon={<Refresh />}
-          />
-          <Popover
-            type="iconbutton"
-            variant="text"
-            color="inherit"
-            onConfirm={async () => {
-              await clearCache(params.row.url)
-              await getCacheStats()
-            }}
-            text={'Clear cache for this image?'}
-          />
-        </Box>
+        <AssetTableActions
+          asset={params.row}
+          type="cache"
+          onApplyGradient={handleApplyGradient}
+          onRefresh={refreshCacheImage}
+          onClear={async (url: string) => {
+            await clearCache(url)
+            await getCacheStats()
+          }}
+        />
       )
     }
   ]
