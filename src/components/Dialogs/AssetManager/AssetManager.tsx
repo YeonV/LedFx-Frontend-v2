@@ -11,10 +11,11 @@ import {
   Button,
   BottomNavigationAction
 } from '@mui/material'
-import { Close, PermMedia, Refresh } from '@mui/icons-material'
+import { Close, PermMedia, Refresh, ColorLens } from '@mui/icons-material'
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import isElectron from 'is-electron'
 import useStore from '../../../store/useStore'
+import { Ledfx } from '../../../api/ledfx'
 import Popover from '../../Popover/Popover'
 import SceneImage from '../../../pages/Scenes/ScenesImage'
 import { a11yProps, TabPanel } from './AssetManager.components'
@@ -39,6 +40,29 @@ const AssetManager = ({
   const clearCache = useStore((state) => state.clearCache)
   const refreshCacheImage = useStore((state) => state.refreshCacheImage)
 
+  const handleApplyGradient = async (asset: any, event: React.MouseEvent) => {
+    event.stopPropagation()
+    try {
+      const gradient = asset.gradients?.led_safe?.gradient
+      if (!gradient) {
+        console.warn('No led_safe gradient found for asset:', asset.path)
+        return
+      }
+
+      console.log('Applying gradient to all active virtuals:', gradient)
+      const resp = await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global',
+        gradient
+      })
+
+      if (resp?.status === 'success') {
+        console.log('Gradient applied successfully:', resp.payload)
+      }
+    } catch (error) {
+      console.error('Failed to apply gradient:', error)
+    }
+  }
+
   useEffect(() => {
     if (open) {
       if (tabValue === 0) {
@@ -59,18 +83,29 @@ const AssetManager = ({
     {
       field: 'preview',
       headerName: 'Preview',
-      width: 100,
+      width: 140,
       renderCell: (params: GridRenderCellParams) => (
-        <SceneImage
-          thumbnail
-          iconName={`image:file:///${params.row.path}`}
-          sx={{
-            width: 60,
-            height: 60,
-            objectFit: 'cover',
-            borderRadius: 1
-          }}
-        />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SceneImage
+            thumbnail
+            iconName={`image:file:///${params.row.path}`}
+            sx={{
+              width: 60,
+              height: 60,
+              objectFit: 'cover',
+              borderRadius: 1
+            }}
+          />
+          <IconButton
+            size="small"
+            color="primary"
+            onClick={(e) => handleApplyGradient(params.row, e)}
+            disabled={!params.row.gradients?.led_safe?.gradient}
+            title="Apply gradient to all active virtuals"
+          >
+            <ColorLens />
+          </IconButton>
+        </Box>
       ),
       sortable: false,
       filterable: false
@@ -181,18 +216,29 @@ const AssetManager = ({
     {
       field: 'preview',
       headerName: 'Preview',
-      width: 100,
+      width: 140,
       renderCell: (params: GridRenderCellParams) => (
-        <SceneImage
-          thumbnail
-          iconName={`image:${params.row.url}`}
-          sx={{
-            width: 60,
-            height: 60,
-            objectFit: 'cover',
-            borderRadius: 1
-          }}
-        />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SceneImage
+            thumbnail
+            iconName={`image:${params.row.url}`}
+            sx={{
+              width: 60,
+              height: 60,
+              objectFit: 'cover',
+              borderRadius: 1
+            }}
+          />
+          <IconButton
+            size="small"
+            color="primary"
+            onClick={(e) => handleApplyGradient(params.row, e)}
+            disabled={!params.row.gradients?.led_safe?.gradient}
+            title="Apply gradient to all active virtuals"
+          >
+            <ColorLens />
+          </IconButton>
+        </Box>
       ),
       sortable: false,
       filterable: false
