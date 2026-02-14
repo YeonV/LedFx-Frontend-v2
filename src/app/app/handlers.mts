@@ -464,10 +464,7 @@ export const handlers = async (
             `Update check result: ${updateInfo.updateAvailable ? 'Update available' : 'Up to date'}`
           )
         )
-        wind.webContents.send('fromMain', [
-          'song-detector-update-check',
-          { ...updateInfo, plus }
-        ])
+        wind.webContents.send('fromMain', ['song-detector-update-check', { ...updateInfo, plus }])
         break
       }
       case 'start-song-detector': {

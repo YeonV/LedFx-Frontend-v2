@@ -78,7 +78,9 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
                   </Box>
                   <Box sx={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 1 }}>
                     <Box sx={{ fontWeight: 'bold' }}>Path:</Box>
-                    <Box sx={{ fontFamily: 'monospace', fontSize: '0.9em', wordBreak: 'break-all' }}>
+                    <Box
+                      sx={{ fontFamily: 'monospace', fontSize: '0.9em', wordBreak: 'break-all' }}
+                    >
                       {asset.path || asset.url}
                     </Box>
 
@@ -142,20 +144,22 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
                       Gradient Extraction Metadata
                     </Box>
                     <Box sx={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 1 }}>
-                      {Object.entries(asset.gradients.metadata).map(([key, value]: [string, any]) => (
-                        <Box key={key} sx={{ display: 'contents' }}>
-                          <Box sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
-                            {key.replace(/_/g, ' ')}:
+                      {Object.entries(asset.gradients.metadata).map(
+                        ([key, value]: [string, any]) => (
+                          <Box key={key} sx={{ display: 'contents' }}>
+                            <Box sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
+                              {key.replace(/_/g, ' ')}:
+                            </Box>
+                            <Box sx={{ fontFamily: 'monospace', fontSize: '0.9em' }}>
+                              {Array.isArray(value)
+                                ? `[${value.join(', ')}]`
+                                : typeof value === 'object'
+                                  ? JSON.stringify(value)
+                                  : String(value)}
+                            </Box>
                           </Box>
-                          <Box sx={{ fontFamily: 'monospace', fontSize: '0.9em' }}>
-                            {Array.isArray(value)
-                              ? `[${value.join(', ')}]`
-                              : typeof value === 'object'
-                                ? JSON.stringify(value)
-                                : String(value)}
-                          </Box>
-                        </Box>
-                      ))}
+                        )
+                      )}
                     </Box>
                   </Box>
                 )}
@@ -178,7 +182,9 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
                       if (key === 'metadata') return null
                       return (
                         <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Box sx={{ fontWeight: 'bold', minWidth: 100, textTransform: 'capitalize' }}>
+                          <Box
+                            sx={{ fontWeight: 'bold', minWidth: 100, textTransform: 'capitalize' }}
+                          >
                             {key.replace('_', ' ')}
                           </Box>
                           <Box
