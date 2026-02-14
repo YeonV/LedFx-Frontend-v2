@@ -19,8 +19,7 @@ const AssetTableActions = ({
   onApplyGradient,
   onDelete,
   onRefresh,
-  onClear,
-  filename
+  onClear
 }: AssetTableActionsProps) => {
   return (
     <Box sx={{ display: 'flex', gap: 0.5 }}>
@@ -41,7 +40,7 @@ const AssetTableActions = ({
           variant="text"
           color="inherit"
           onConfirm={() => onDelete(asset.path)}
-          text={`Delete ${filename}?`}
+          text={`Delete ${asset.path}?`}
         />
       )}
 

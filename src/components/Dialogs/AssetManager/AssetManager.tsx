@@ -132,7 +132,6 @@ const AssetManager = ({
           type="user"
           onApplyGradient={handleApplyGradient}
           onDelete={deleteAsset}
-          filename={params.row.filename}
         />
       )
     }
