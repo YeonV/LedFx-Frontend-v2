@@ -87,6 +87,11 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         const eventType = data?.event_type
         if (!eventType) return
 
+        // Capture client_id from server
+        if (eventType === 'client_id' && data.client_id) {
+          useStore.getState().setClientId(data.client_id)
+        }
+
         // Handle colors_updated centrally to avoid duplicate calls from multiple component subscriptions
         if (eventType === 'colors_updated') {
           useStore.getState().getColors()

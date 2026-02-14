@@ -20,7 +20,10 @@ export const initialSubscriptions = [
   { event_type: 'playlist_stopped', id: 9010 },
   { event_type: 'playlist_paused', id: 9011 },
   { event_type: 'playlist_resumed', id: 9012 },
-  { event_type: 'colors_updated', id: 9013 }
+  { event_type: 'colors_updated', id: 9013 },
+  { event_type: 'song_detected', id: 9014 },
+  { event_type: 'clients_updated', id: 9015 },
+  { event_type: 'client_broadcast', id: 9016 }
 ]
 
 // A declarative "recipe" for how to handle incoming events.
@@ -82,5 +85,12 @@ export const handlerConfig = {
   // Rule: `true` means pass the entire `data` object as the `detail` payload.
   graph_update: true,
   effect_set: true,
-  colors_updated: 'colors_updated'
+  colors_updated: 'colors_updated',
+  clients_updated: 'clients_updated',
+  client_broadcast: (data: any) => ({
+    broadcast_type: data.broadcast_type,
+    sender_id: data.sender_id,
+    sender_name: data.sender_name,
+    payload: data.payload
+  })
 }

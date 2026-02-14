@@ -18,6 +18,7 @@ import TopBar from '../components/Bars/BarTop/BarTop'
 import BottomBar from '../components/Bars/BarBottom'
 import MessageBar from '../components/Bars/BarMessage'
 import NoHostDialog from '../components/Dialogs/NoHostDialog'
+import ClientManagementDialog from '../components/Dialogs/ClientManagementDialog'
 import Home from './Home/Home'
 import Devices from './Devices/Devices'
 import Device from './Device/Device'
@@ -47,6 +48,7 @@ import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
 import ElectronStoreInspector from '../components/DevTools/ElectronStoreInspector'
+import { useWebSocket } from '../utils/Websocket/WebSocketProvider'
 
 const Routings = () => {
   const theme = useTheme()
@@ -74,6 +76,7 @@ const Routings = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
+  const { send } = useWebSocket()
 
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
@@ -150,6 +153,32 @@ const Routings = () => {
   // Check for display mode (OBS-friendly clean UI) - works with HashRouter
   const searchParams = new URLSearchParams(location.search)
   const isDisplayMode = searchParams.get('display') === 'true'
+  const clientName = searchParams.get('clientName')
+
+  useEffect(() => {
+    // Add/remove class for displayMode visualiser
+    const className = 'displayModeVisualiser'
+    if (isDisplayMode && pathname === '/visualiser') {
+      document.body.classList.add(className)
+    } else {
+      document.body.classList.remove(className)
+    }
+    if (isDisplayMode && pathname === '/visualiser' && send) {
+      setTimeout(() => {
+        console.log('Entering display mode - sending client info update')
+        send({
+          id: 10001,
+          type: 'update_client_info',
+          name: clientName || `Visualiser${Date.now()}`,
+          client_type: 'visualiser'
+        })
+      }, 1000)
+    }
+    // Clean up on unmount
+    return () => {
+      document.body.classList.remove(className)
+    }
+  }, [isDisplayMode, pathname, send, clientName])
 
   useEffect(() => {
     if (pathname === '/visualiser') {
@@ -284,6 +313,7 @@ const Routings = () => {
         <SongDetectorScreen />
         {!isDisplayMode && <OneEffect noButton />}
         {!isDisplayMode && <NoHostDialog />}
+        {!isDisplayMode && <ClientManagementDialog />}
         {!isDisplayMode && isElect && <HostManager />}
         {!isDisplayMode && <FrontendPixelsTooSmall />}
         {!isDisplayMode && (

@@ -206,6 +206,14 @@ export const ContextMenuItems = ({ slug, onClose }: ContextMenuItemsProps) => {
             text={`${showGaps ? 'Hide' : 'Show'} gaps`}
             onClick={() => setShowGaps(!showGaps)}
           />
+          <MenuLine
+            key="devices-visualisers"
+            icon={<BladeIcon name={features.showVisualisersOnDevicesPage ? 'tv' : 'tvOff'} />}
+            text={`${features.showVisualisersOnDevicesPage ? 'Hide' : 'Show'} Visualisers`}
+            onClick={() =>
+              setFeatures('showVisualisersOnDevicesPage', !features.showVisualisersOnDevicesPage)
+            }
+          />
         </>
       )
     case '':

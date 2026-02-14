@@ -43,6 +43,7 @@ export type IFeatures =
   | 'firetv'
   | 'showVisualiserInBottomBar'
   | 'bgvisualiser'
+  | 'showVisualisersOnDevicesPage'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -86,7 +87,8 @@ const storeFeatures = (set: any) => ({
     showGamepadInBottomBar: false,
     firetv: false,
     showVisualiserInBottomBar: false,
-    bgvisualiser: false
+    bgvisualiser: false,
+    showVisualisersOnDevicesPage: false
   },
   showFeatures: {
     dev: false,
@@ -129,7 +131,8 @@ const storeFeatures = (set: any) => ({
     showGamepadInBottomBar: false,
     firetv: false,
     showVisualiserInBottomBar: false,
-    bgvisualiser: false
+    bgvisualiser: false,
+    showVisualisersOnDevicesPage: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

@@ -316,5 +316,35 @@ export const migrations: Migrations = {
   // Migration 38: Set midiOpen to false
   38: produce((draft) => {
     draft.midiOpen = false
+  }),
+  // Migration 39: Add client management state
+  39: produce((draft) => {
+    // Add clientIdentity state
+    if (!draft.clientIdentity) {
+      draft.clientIdentity = {
+        deviceId: '',
+        name: '',
+        type: 'unknown',
+        clientId: undefined
+      }
+    }
+    // Add clients map
+    if (!draft.clients) {
+      draft.clients = {}
+    }
+    // Add client management dialog state
+    if (draft.dialogs && !draft.dialogs.clientManagement) {
+      draft.dialogs.clientManagement = { open: false }
+    }
+  }),
+
+  // Migration 40: Add 'showVisualisersOnDevicesPage' feature flag
+  40: produce((draft) => {
+    if (draft.features) {
+      draft.features.showVisualisersOnDevicesPage = false
+    }
+    if (draft.showFeatures) {
+      draft.showFeatures.showVisualisersOnDevicesPage = false
+    }
   })
 }

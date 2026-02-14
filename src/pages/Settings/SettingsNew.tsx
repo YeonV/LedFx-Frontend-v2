@@ -19,7 +19,8 @@ import {
   LibraryMusic,
   QueueMusic,
   SettingsInputComponent,
-  SportsEsports
+  SportsEsports,
+  People
 } from '@mui/icons-material'
 import Tile from '../../components/Tile'
 import Uncategorized from './Uncategorized'
@@ -37,6 +38,7 @@ const SettingsNew = () => {
   const setPgs = useStore((state) => state.ui.setPgs)
   const setSd = useStore((state) => state.ui.setSd)
   const setSongDetectorScreenOpen = useStore((state) => state.ui.setSongDetectorScreenOpen)
+  const setDialogOpenClientManagement = useStore((state) => state.setDialogOpenClientManagement)
   const coreParams = useStore((state) => state.coreParams)
 
   const isCC = coreParams && Object.keys(coreParams).length > 0
@@ -91,6 +93,11 @@ const SettingsNew = () => {
       </Accordion>
       <Grid container spacing={2} sx={{ my: 2 }}>
         <Tile component={<AssetManager variant="tile" />} />
+        <Tile
+          icon={<People fontSize="large" />}
+          text="Client Management"
+          onClick={() => setDialogOpenClientManagement(true)}
+        />
         <Tile
           icon={<QueueMusic fontSize="large" />}
           text="Scene Playlists"

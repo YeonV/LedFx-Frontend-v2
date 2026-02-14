@@ -4,6 +4,8 @@ import { useTheme } from '@mui/material'
 import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
+import VisualiserWsControl from './VisualiserWsControl'
+// import { useVStore, VState } from '../../hooks/vStore'
 
 export interface AudioVisualiserProps {
   theme: any
@@ -56,7 +58,7 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
   const [audioData, setAudioData] = useState<number[]>([])
   const setVisualizerInitialized = useStore((state) => state.ui.setVisualizerInitialized)
   const subscribedRef = useRef(false)
-
+  // const togglePlay = useVStore((state: VState) => state.togglePlay)
   // Get data from store and theme
   const theme = useTheme()
   const effects = useStore((state) => state.schemas.effects)
@@ -115,15 +117,18 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
   }
 
   return (
-    <AudioVisualiser
-      theme={theme}
-      effects={effects}
-      backendAudioData={audioData}
-      configData={{
-        background: backgroundMode
-      }}
-      ConfigFormComponent={BladeSchemaForm}
-    />
+    <>
+      <VisualiserWsControl />
+      <AudioVisualiser
+        theme={theme}
+        effects={effects}
+        backendAudioData={audioData}
+        configData={{
+          background: backgroundMode
+        }}
+        ConfigFormComponent={BladeSchemaForm}
+      />
+    </>
   )
 }
 

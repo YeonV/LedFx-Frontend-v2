@@ -65,6 +65,9 @@ const storeDialogs = (set: any) => ({
     filedrop: {
       open: false,
       edit: false
+    },
+    clientManagement: {
+      open: false
     }
   },
   assistant: {
@@ -208,6 +211,16 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/EffectType'
+    ),
+  setDialogOpenClientManagement: (open: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.clientManagement = {
+          open
+        }
+      }),
+      false,
+      'api/dialog/ClientManagement'
     )
 })
 

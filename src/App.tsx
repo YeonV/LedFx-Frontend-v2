@@ -40,6 +40,7 @@ export default function App() {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const getSchemas = useStore((state) => state.getSchemas)
+  const getClients = useStore((state) => state.getClients)
   const shutdown = useStore((state) => state.shutdown)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const setCoreParams = useStore((state) => state.setCoreParams)
@@ -85,7 +86,8 @@ export default function App() {
     getVirtuals()
     getSystemConfig()
     getSchemas()
-  }, [getVirtuals, getSystemConfig, getSchemas])
+    getClients()
+  }, [getVirtuals, getSystemConfig, getSchemas, getClients])
 
   useEffect(() => {
     initFrontendConfig()

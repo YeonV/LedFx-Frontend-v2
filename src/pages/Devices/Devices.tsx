@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import { Alert, Collapse } from '@mui/material'
+import { Alert, Collapse, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
 import { useNavigate } from 'react-router-dom'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import { IVirtualEventUpdate } from '../../store/api/storeVirtuals'
+import VisualizerCard from '../Settings/VisualizerCard'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -33,8 +34,10 @@ const Devices = () => {
   const classes = useStyles()
   const getDevices = useStore((state) => state.getDevices)
   const getVirtuals = useStore((state) => state.getVirtuals)
+  const clients = useStore((state) => state.clients)
   const virtuals = useStore((state) => state.virtuals)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
+  const features = useStore((state) => state.features)
   const graphs = useStore((state) => state.graphsMulti)
   const graphsMulti = useStore((state) => state.graphsMulti)
   const showComplex = useStore((state) => state.showComplex)
@@ -138,6 +141,7 @@ const Devices = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti, setPixelGraphs])
 
+  console.log(clients)
   return (
     <div
       style={{
@@ -174,6 +178,16 @@ const Devices = () => {
           <NoYet type="Device" />
         )}
       </div>
+
+      {features.showVisualisersOnDevicesPage && (
+        <Stack spacing={2}>
+          {clients &&
+            Object.entries(clients).length > 0 &&
+            Object.entries(clients).map(([clientId, data]) => (
+              <VisualizerCard selectedClients={[clientId]} name={data.name} />
+            ))}
+        </Stack>
+      )}
     </div>
   )
 }
