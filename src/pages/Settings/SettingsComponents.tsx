@@ -7,6 +7,8 @@ import {
   Chip,
   Slider,
   Switch,
+  type SxProps,
+  type Theme,
   Tooltip,
   Typography,
   useTheme
@@ -276,13 +278,15 @@ export const SettingsAccordion = ({
   title,
   accId,
   children,
-  icon = ''
+  icon = '',
+  sx
 }: {
   title: string
   accId: string
   children: any
 
   icon?: string
+  sx?: SxProps<Theme> | undefined
 }) => {
   const settingsExpanded = useStore((state) => state.ui.settingsExpanded)
   const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded)
@@ -294,6 +298,7 @@ export const SettingsAccordion = ({
       onDoubleClick={() => setSettingsExpanded('all')}
       expanded={settingsExpanded === 'all' || settingsExpanded === `panel${accId}`}
       onChange={(event, isExpanded) => handleExpanded(`panel${accId}`, event, isExpanded)}
+      sx={sx}
     >
       <AccordionSummary
         expandIcon={<ExpandMore />}

@@ -167,7 +167,13 @@ const Popover = ({
           {children}
         </Button>
       ) : type === 'iconbutton' ? (
-        <IconButton color={color} style={style} onClick={(e) => openPopover(e)} disabled={disabled}>
+        <IconButton
+          color={color}
+          style={style}
+          onClick={(e) => openPopover(e)}
+          disabled={disabled}
+          sx={sx}
+        >
           {!startIcon && !noIcon && icon}
         </IconButton>
       ) : (

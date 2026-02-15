@@ -27,9 +27,9 @@ const ClientManagementCard = () => {
   const clientIdentity = useStore((state) => state.clientIdentity)
   const clients = useStore((state) => state.clients)
   const getClients = useStore((state) => state.getClients)
-  const setClientName = useStore((state) => state.setClientName)
   const setClientType = useStore((state) => state.setClientType)
   const broadcastToClients = useStore((state) => state.broadcastToClients)
+  const setClientName = useStore((state) => state.setClientName)
   const { send } = useWebSocket()
 
   const [localName, setLocalName] = useState(clientIdentity?.name || '')
@@ -167,22 +167,22 @@ const ClientManagementCard = () => {
               {Object.entries(clients as ClientsMap).map(([uuid, client]) => (
                 <TableRow key={uuid}>
                   <TableCell>
-                    <Typography variant="body2">{client.name}</Typography>
+                    <Typography variant="body2">{client?.name}</Typography>
                     <Typography variant="caption" color="textSecondary">
                       {uuid.slice(0, 8)}...
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip label={client.type} color={getTypeColor(client.type)} size="small" />
+                    <Chip label={client?.type} color={getTypeColor(client?.type)} size="small" />
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{client.ip}</Typography>
+                    <Typography variant="body2">{client?.ip}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{formatTimestamp(client.connected_at)}</Typography>
+                    <Typography variant="body2">{formatTimestamp(client?.connected_at)}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{formatTimestamp(client.last_active)}</Typography>
+                    <Typography variant="body2">{formatTimestamp(client?.last_active)}</Typography>
                   </TableCell>
                 </TableRow>
               ))}
@@ -209,7 +209,7 @@ const ClientManagementCard = () => {
               {
                 broadcast_type: 'custom',
                 target: { mode: 'all' },
-                payload: { message: 'Test broadcast from ' + clientIdentity.name }
+                payload: { message: 'Test broadcast from ' + clientIdentity?.name }
               },
               clientIdentity.clientId
             )

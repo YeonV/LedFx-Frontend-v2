@@ -216,7 +216,7 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
           virtuals[virtual]?.config.icon_name &&
           virtuals[virtual]?.config.icon_name
         }
-        effectName={virtuals[virtual]?.effect.name}
+        effectName={virtuals[virtual]?.effect?.name}
         graphsActive={graphs && graphsMulti}
         graphsMulti={graphsMulti}
         showMatrix={showMatrix}

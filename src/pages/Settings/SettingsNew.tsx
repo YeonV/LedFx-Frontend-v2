@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Accordion, AccordionSummary, Grid, Typography } from '@mui/material'
+import { Accordion, AccordionSummary, Grid, Typography, useTheme } from '@mui/material'
 import { SettingsAccordion, useStyles } from './SettingsComponents'
 import useStore from '../../store/useStore'
 import AudioCard from './AudioCard'
@@ -28,6 +28,7 @@ import Uncategorized from './Uncategorized'
 const SettingsNew = () => {
   const classes = useStyles()
   const navigate = useNavigate()
+  const theme = useTheme()
   const viewMode = useStore((state) => state.viewMode)
   const features = useStore((state) => state.features)
   const setSettingsExpanded = useStore((state) => state.ui.setSettingsExpanded)
@@ -86,12 +87,29 @@ const SettingsNew = () => {
           <MidiCard />
         </SettingsAccordion>
       )}
-      <Accordion disabled sx={{ backgroundColor: 'transparent !important' }}>
+      <Accordion
+        disabled
+        sx={{
+          backgroundColor: theme.palette.background.paper + ' !important',
+          mt: 2,
+          opacity: 0.9
+        }}
+      >
         <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
           <Typography>Tools</Typography>
         </AccordionSummary>
       </Accordion>
-      <Grid container spacing={2} sx={{ my: 2 }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          m: 0,
+          backgroundColor: theme.palette.background.paper,
+          p: 2,
+          borderEndEndRadius: 1,
+          opacity: 0.9
+        }}
+      >
         <Tile component={<AssetManager variant="tile" />} />
         <Tile
           icon={<People fontSize="large" />}
@@ -152,16 +170,38 @@ const SettingsNew = () => {
         />
       </Grid>
       {viewMode !== 'user' && (
-        <SettingsAccordion title="Bottom Bar Visibility" accId="corebetaa" icon="mdi:eye">
+        <SettingsAccordion
+          title="Bottom Bar Visibility"
+          accId="corebetaa"
+          icon="mdi:eye"
+          sx={{ opacity: 0.9 }}
+        >
           <BottomBarCard />
         </SettingsAccordion>
       )}
-      <Accordion disabled sx={{ backgroundColor: 'transparent !important' }}>
+      <Accordion
+        disabled
+        sx={{
+          backgroundColor: theme.palette.background.paper + ' !important',
+          mt: 2,
+          opacity: 0.9
+        }}
+      >
         <AccordionSummary aria-controls="panel3a-content" id="panel3a-header">
           <Typography>Widgets</Typography>
         </AccordionSummary>
       </Accordion>
-      <Grid container spacing={2} sx={{ my: 2 }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          mb: 2,
+          backgroundColor: theme.palette.background.paper,
+          p: 2,
+          borderEndEndRadius: 1,
+          opacity: 0.9
+        }}
+      >
         <Tile
           icon={<Keyboard fontSize="large" />}
           text="Keybindings"

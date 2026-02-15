@@ -141,7 +141,6 @@ const Devices = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [graphs, graphsMulti, setPixelGraphs])
 
-  console.log(clients)
   return (
     <div
       style={{
@@ -184,7 +183,7 @@ const Devices = () => {
           {clients &&
             Object.entries(clients).length > 0 &&
             Object.entries(clients).map(([clientId, data]) => (
-              <VisualizerCard selectedClients={[clientId]} name={data.name} />
+              <VisualizerCard selectedClients={[clientId]} name={data?.name} type={data?.type} />
             ))}
         </Stack>
       )}

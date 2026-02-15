@@ -32,20 +32,41 @@ const getDeviceId = (): string => {
   return newId
 }
 
+const getSessionClientIdentity = (deviceId: string): ClientIdentity => {
+  const stored = sessionStorage.getItem('ledfx-client-identity')
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored)
+      // Always use the current deviceId
+      return { ...parsed, deviceId }
+    } catch {
+      // fallback
+    }
+  }
+  // Default
+  return {
+    deviceId,
+    name: `Client-${deviceId.slice(4, 12)}`,
+    type: 'unknown'
+  }
+}
+
+const setSessionClientIdentity = (identity: ClientIdentity) => {
+  sessionStorage.setItem('ledfx-client-identity', JSON.stringify(identity))
+}
+
 const storeClientIdentity = (set: any) => {
   const deviceId = getDeviceId()
+  const initialIdentity = getSessionClientIdentity(deviceId)
 
   return {
-    clientIdentity: {
-      deviceId,
-      name: `Client-${deviceId.slice(4, 12)}`,
-      type: 'unknown' as ClientType
-    } as ClientIdentity,
+    clientIdentity: initialIdentity as ClientIdentity,
 
     setClientName: (name: string) =>
       set(
         produce((state: IStore) => {
           state.clientIdentity.name = name
+          setSessionClientIdentity(state.clientIdentity)
         }),
         false,
         'clientIdentity/setClientName'
@@ -55,6 +76,7 @@ const storeClientIdentity = (set: any) => {
       set(
         produce((state: IStore) => {
           state.clientIdentity.type = type
+          setSessionClientIdentity(state.clientIdentity)
         }),
         false,
         'clientIdentity/setClientType'
@@ -64,6 +86,7 @@ const storeClientIdentity = (set: any) => {
       set(
         produce((state: IStore) => {
           Object.assign(state.clientIdentity, partial)
+          setSessionClientIdentity(state.clientIdentity)
         }),
         false,
         'clientIdentity/updateClientIdentity'
@@ -73,6 +96,7 @@ const storeClientIdentity = (set: any) => {
       set(
         produce((state: IStore) => {
           state.clientIdentity.clientId = clientId
+          setSessionClientIdentity(state.clientIdentity)
         }),
         false,
         'clientIdentity/setClientId'

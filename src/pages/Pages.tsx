@@ -75,6 +75,8 @@ const Routings = () => {
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
+  const setClientName = useStore((state) => state.setClientName)
+  const setClientType = useStore((state) => state.setClientType)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
   const { send } = useWebSocket()
 
@@ -164,12 +166,16 @@ const Routings = () => {
       document.body.classList.remove(className)
     }
     if (isDisplayMode && pathname === '/visualiser' && send) {
+      const nameToSet = clientName || `Visualiser${Date.now()}`
+      // Update Zustand/sessionStorage
+      setClientName(nameToSet)
+      setClientType('visualiser')
       setTimeout(() => {
         console.log('Entering display mode - sending client info update')
         send({
           id: 10001,
           type: 'update_client_info',
-          name: clientName || `Visualiser${Date.now()}`,
+          name: nameToSet,
           client_type: 'visualiser'
         })
       }, 1000)
@@ -178,7 +184,7 @@ const Routings = () => {
     return () => {
       document.body.classList.remove(className)
     }
-  }, [isDisplayMode, pathname, send, clientName])
+  }, [isDisplayMode, pathname, send, clientName, setClientName, setClientType])
 
   useEffect(() => {
     if (pathname === '/visualiser') {

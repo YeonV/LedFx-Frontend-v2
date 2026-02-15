@@ -36,6 +36,7 @@ import storePlaylist from './api/storePlaylist'
 import storeAssets from './api/storeAssets'
 import storeClientIdentity from './ui/storeClientIdentity'
 import storeClients from './api/storeClients'
+import storeVisualizerConfigOptimistic from './ui-persist/storeVisualizerConfigOptimistic'
 
 const useStore = create(
   devtools(
@@ -77,8 +78,8 @@ const useStore = create(
           ...storeAssets(set),
           ...storeClientIdentity(set),
           ...storeClients(set),
-
-          ...storeCloud(set)
+          ...storeCloud(set),
+          ...storeVisualizerConfigOptimistic(set)
         })
       ),
       {
@@ -105,7 +106,8 @@ const useStore = create(
                   'ui',
                   'spotify',
                   'pixelGraphs',
-                  'externalStudioRef'
+                  'externalStudioRef',
+                  'clientIdentity'
                 ].includes(key)
             )
           )

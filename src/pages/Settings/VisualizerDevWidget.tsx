@@ -56,8 +56,8 @@ const VisualizerDevWidget = () => {
                       alignItems="center"
                       width={'100%'}
                     >
-                      <Typography>{clients[selectedArray[0]].name}</Typography>
-                      <Chip label={clients[selectedArray[0]].type} size="small" />
+                      <Typography>{clients[selectedArray[0]]?.name}</Typography>
+                      <Chip label={clients[selectedArray[0]]?.type} size="small" />
                     </Stack>
                   )
                 }
@@ -76,10 +76,10 @@ const VisualizerDevWidget = () => {
                     width={'100%'}
                   >
                     <Typography>
-                      {client.name}
+                      {client?.name}
                       {clientId === clientIdentity.clientId ? ' (This instance)' : ''}
                     </Typography>
-                    <Chip label={client.type} size="small" />
+                    <Chip label={client?.type} size="small" />
                   </Stack>
                 </MenuItem>
               ))}

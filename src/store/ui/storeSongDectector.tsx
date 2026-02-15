@@ -103,6 +103,7 @@ const storeSongDectector = (set: any) => ({
   // Text auto-apply state
   textAutoApply: false,
   textVirtuals: [] as string[],
+  textVisualisers: [] as string[],
   setTextAutoApply: (active: boolean) => {
     set(
       produce((state: any) => {
@@ -119,6 +120,15 @@ const storeSongDectector = (set: any) => ({
       }),
       false,
       'songDetector/setTextVirtuals'
+    )
+  },
+  setTextVisualisers: (visualisers: string[]) => {
+    set(
+      produce((state: any) => {
+        state.textVisualisers = visualisers
+      }),
+      false,
+      'songDetector/setTextVisualisers'
     )
   },
   // Gradient auto-apply state

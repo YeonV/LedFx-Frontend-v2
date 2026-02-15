@@ -27,7 +27,7 @@ const Tile = ({ icon, text, onClick, component, client, beta, alpha }: TileProps
   return (
     <Grid
       sx={{
-        width: '169px',
+        width: '158px',
         height: '110px'
       }}
     >

@@ -346,5 +346,17 @@ export const migrations: Migrations = {
     if (draft.showFeatures) {
       draft.showFeatures.showVisualisersOnDevicesPage = false
     }
+  }),
+
+  // Migration 41: Remove clientIdentity from persisted state if present
+  41: produce((draft) => {
+    // Remove clientIdentity from persisted state if present
+    if (draft.clientIdentity) {
+      delete draft.clientIdentity
+    }
+    // Initialize visualizerConfigOptimistic if missing
+    if (typeof draft.visualizerConfigOptimistic === 'undefined') {
+      draft.visualizerConfigOptimistic = undefined
+    }
   })
 }
