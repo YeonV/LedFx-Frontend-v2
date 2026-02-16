@@ -15,9 +15,7 @@ interface CacheEntry {
   n_frames: number
   is_animated: boolean
   gradients?: {
-    raw?: { gradient: string }
-    led_safe?: { gradient: string }
-    led_punchy?: { gradient: string }
+    [key: string]: { gradient: string } | any
     metadata?: any
   }
 }
@@ -45,9 +43,7 @@ interface Asset {
   n_frames: number
   is_animated: boolean
   gradients?: {
-    raw?: { gradient: string }
-    led_safe?: { gradient: string }
-    led_punchy?: { gradient: string }
+    [key: string]: { gradient: string } | any
     metadata?: any
   }
 }
