@@ -6,11 +6,13 @@ import SongDetectorAlbumArtForm from './SongDetectorAlbumArtForm'
 import SongDetectorSceneTriggerTable from './SongDetectorSceneTriggerTable'
 import SongDetectorCard from './SongDetectorCard'
 import SongDetectorPlayerWithStats from './SongDetectorPlayerWithStats'
+import Lyrics from './Lyrics'
 
 const SongDetectorContent = () => {
   const { standard, plus, startDetector, stopDetector, downloadDetector, deleteDetector } =
     useSongDetector()
   const [settingsOpen, setSettingsOpen] = useState(!(plus.isAvailable && plus.isRunning))
+  const [lyricsOpen, setLyricsOpen] = useState(false)
 
   // Auto-open settings when detector is not available or not running
   useEffect(() => {
@@ -36,6 +38,8 @@ const SongDetectorContent = () => {
       <SongDetectorPlayerWithStats
         settingsOpen={settingsOpen}
         onToggleSettings={() => setSettingsOpen(!settingsOpen)}
+        lyricsOpen={lyricsOpen}
+        onToggleLyrics={() => setLyricsOpen(!lyricsOpen)}
       />
 
       {/* Scene Trigger Table */}

@@ -12,6 +12,11 @@ const SongDetectorStats = () => {
   const setTextAutoApply = useStore((state) => state.setTextAutoApply)
   const setImageAutoApply = useStore((state) => state.setImageAutoApply)
 
+  // Dedicated state for Auto-Text Visualisers (from store)
+  const isActiveVisualisers = useStore((state) => state.isActiveVisualisers)
+  const setIsActiveVisualisers = useStore((state) => state.setIsActiveVisualisers)
+  const toggleAutoApplyVisualisers = () => setIsActiveVisualisers(!isActiveVisualisers)
+
   const stats = [
     {
       label: 'Scene Triggers',
@@ -25,6 +30,11 @@ const SongDetectorStats = () => {
     },
     { label: 'Auto-Text', active: textAutoApply, toggle: () => setTextAutoApply(!textAutoApply) },
     {
+      label: 'Auto-Text Visualisers',
+      active: isActiveVisualisers,
+      toggle: toggleAutoApplyVisualisers
+    },
+    {
       label: 'Auto-Image',
       active: imageAutoApply,
       toggle: () => setImageAutoApply(!imageAutoApply)
@@ -32,9 +42,9 @@ const SongDetectorStats = () => {
   ]
 
   return (
-    <Card sx={{ width: '100%', height: '160px', display: 'flex', alignItems: 'center' }}>
+    <Card sx={{ width: '100%', height: '152px', display: 'flex', alignItems: 'center' }}>
       <CardContent sx={{ py: 0, px: 2, width: '100%', '&:last-child': { pb: 0 } }}>
-        <Stack direction="column" spacing={1} sx={{ height: '100%', justifyContent: 'center' }}>
+        <Stack direction="column" spacing={0.5} sx={{ height: '100%', justifyContent: 'center' }}>
           {stats.map((stat) => (
             <Stack
               key={stat.label}
@@ -59,14 +69,13 @@ const SongDetectorStats = () => {
                   sx={{
                     width: 20,
                     height: 20,
-                    color: 'primary.main',
                     p: 0
                   }}
                 >
                   {stat.active ? (
-                    <Stop sx={{ fontSize: 16 }} />
+                    <Stop color="inherit" sx={{ fontSize: 16 }} />
                   ) : (
-                    <PlayArrow sx={{ fontSize: 16 }} />
+                    <PlayArrow color="success" sx={{ fontSize: 16 }} />
                   )}
                 </IconButton>
               </Stack>

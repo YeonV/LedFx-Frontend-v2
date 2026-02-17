@@ -4,6 +4,30 @@ import type { IStore } from '../useStore'
 import { spDevice } from './SpState'
 
 const storeSpotifyActions = (set: any) => ({
+  setCleanTitles: (val: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.cleanTitles = val
+      }),
+      false,
+      'spotify/setCleanTitles'
+    ),
+  setCleanTitleRegex: (regex: string) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.cleanTitleRegex = regex
+      }),
+      false,
+      'spotify/setCleanTitleRegex'
+    ),
+  setCleanTitleList: (list: string[]) =>
+    set(
+      produce((state: IStore) => {
+        state.spotify.cleanTitleList = list
+      }),
+      false,
+      'spotify/setCleanTitleList'
+    ),
   setSpotifyState: (spState: SpotifyState) =>
     set(
       produce((state: IStore) => {
@@ -167,18 +191,15 @@ const storeSpotifyActions = (set: any) => ({
       case 'update':
         set(
           produce((state: IStore) => {
-            // state.spotify.spTriggersList = [
-            //   ...state.spotify.spTriggersList,
-            //   newTrigger,
-            // ];
             state.spotify.spTriggersList = state.spotify.spTriggersList.map((each: any) =>
               each.id === newTrigger.id ? newTrigger : each
             )
           }),
           false,
-          'spotify/addToTriggerList'
+          'spotify/updateTriggerList'
         )
         break
+      default:
     }
   },
   setPlaylist: (playerlist: any) =>
@@ -200,7 +221,34 @@ const storeSpotifyActions = (set: any) => ({
   setCurrentTrack: (track: string) =>
     set(
       produce((state: IStore) => {
-        state.spotify.currentTrack = track
+        const cleanTitles = state.spotify.cleanTitles ?? true
+        let cleaned = track || ''
+        if (cleanTitles && cleaned) {
+          let regex: RegExp | null = null
+          if (state.spotify.cleanTitleRegex && state.spotify.cleanTitleRegex.trim() !== '') {
+            try {
+              regex = new RegExp(state.spotify.cleanTitleRegex, 'gi')
+            } catch {
+              regex = null
+            }
+          }
+          if (regex) {
+            cleaned = cleaned.replace(regex, '')
+          } else if (
+            Array.isArray(state.spotify.cleanTitleList) &&
+            state.spotify.cleanTitleList.length > 0
+          ) {
+            const list = state.spotify.cleanTitleList
+            const pattern = `\\b(${list.map((x) => x.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')).join('|')})\\b`
+            regex = new RegExp(pattern, 'gi')
+            cleaned = cleaned.replace(regex, '')
+          }
+          // Remove extra dashes or whitespace
+          cleaned = cleaned.replace(/\\s*-\\s*$/, '')
+          cleaned = cleaned.replace(/\\s{2,}/g, ' ')
+          cleaned = cleaned.trim()
+        }
+        state.spotify.currentTrack = cleaned
       }),
       false,
       'spotify/setCurrentTrack'

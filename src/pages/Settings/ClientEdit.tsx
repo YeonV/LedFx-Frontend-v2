@@ -18,6 +18,8 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
   const [newName, setNewName] = useState(name || '')
   const [newType, setNewType] = useState<ClientType>(type || 'unknown')
   const setClientName = useStore((state) => state.setClientName)
+  const setClientType = useStore((state) => state.setClientType)
+  const renameVisualizerInstance = useStore((state) => state.renameVisualizerInstance)
   const { send } = useWebSocket()
 
   return (
@@ -60,13 +62,28 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
       }
       onConfirm={() => {
         if (newName && newName !== clientIdentity?.name) {
+          // Rename the instance key in the optimistic store
+          if (renameVisualizerInstance && clientIdentity?.name) {
+            renameVisualizerInstance(clientIdentity.name, newName)
+          }
           setClientName(newName)
           if (send) {
             send({
               id: 10001,
               type: 'update_client_info',
               name: newName,
-              client_type: clientIdentity?.type || 'unknown'
+              client_type: newType || clientIdentity?.type || 'unknown'
+            })
+          }
+        }
+        if (newType && newType !== clientIdentity?.type) {
+          setClientType(newType)
+          if (send) {
+            send({
+              id: 10001,
+              type: 'update_client_info',
+              name: newName || clientIdentity?.name || 'unknown-client',
+              client_type: newType
             })
           }
         }

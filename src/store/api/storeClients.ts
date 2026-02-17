@@ -26,6 +26,7 @@ export interface BroadcastTarget {
 }
 
 export interface BroadcastPayload {
+  sender_name?: string
   broadcast_type: 'visualiser_control' | 'scene_sync' | 'color_palette' | 'custom'
   target: BroadcastTarget
   payload: Record<string, any>

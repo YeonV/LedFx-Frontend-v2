@@ -5,6 +5,7 @@ import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import VisualiserWsControl from './VisualiserWsControl'
+// import '../../fonts.css'
 // import { useVStore, VState } from '../../hooks/vStore'
 
 export interface AudioVisualiserProps {

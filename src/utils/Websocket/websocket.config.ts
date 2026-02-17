@@ -87,6 +87,7 @@ export const handlerConfig = {
   effect_set: true,
   colors_updated: 'colors_updated',
   clients_updated: 'clients_updated',
+  song_detected: true,
   client_broadcast: (data: any) => ({
     broadcast_type: data.broadcast_type,
     sender_id: data.sender_id,

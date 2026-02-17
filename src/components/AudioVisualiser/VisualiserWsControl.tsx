@@ -1,6 +1,7 @@
+import { useEffect } from 'react'
 import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
-import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
+import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
 const VisualiserWsControl = () => {
   const clientIdentity = useStore((state) => state.clientIdentity)
@@ -15,10 +16,45 @@ const VisualiserWsControl = () => {
   const setVisualType = useVStore((state: VState) => state.setVisualType)
   const visualType = useVStore((state: VState) => state.visualType)
   const visualizers = useVStore((state: VState) => state.visualizers) || []
+  const visualizerConfigs = useVStore((state: VState) => state.visualizerConfigs)
+  const butterchurnConfig = useVStore((state: VState) => state.butterchurnConfig)
   const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
   const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
+  const broadcastToClients = useStore((state) => state.broadcastToClients)
+  const updateVisualizerConfigOptimistic = useStore(
+    (state) => state.updateVisualizerConfigOptimistic
+  )
+
+  const { send } = useWebSocket()
+
+  useEffect(() => {
+    // console.log(visualType, visualizerConfigs[visualType])
+    if (clientIdentity.clientId === undefined) return
+    // console.log('ey', clientIdentity)
+    broadcastToClients(
+      {
+        broadcast_type: 'custom',
+        target: { mode: 'all' },
+        payload: {
+          category: 'state-update',
+          visualType,
+          config: visualizerConfigs[visualType],
+          butterchurnConfig
+        }
+      },
+      clientIdentity.clientId
+    )
+  }, [
+    visualType,
+    butterchurnConfig,
+    send,
+    broadcastToClients,
+    visualizerConfigs,
+    clientIdentity.clientId
+  ])
 
   useSubscription('client_broadcast', (d) => {
+    // console.log('MAN', d)
     if (d.sender_id !== clientIdentity?.clientId && d.payload?.category === 'visualiser') {
       // console.log(clientIdentity?.clientId, d.payload?.target_uuids)
       if (d.payload?.target_uuids.includes(clientIdentity?.clientId)) {
@@ -78,6 +114,16 @@ const VisualiserWsControl = () => {
             break
         }
       }
+    }
+    if (d.sender_id !== clientIdentity?.clientId && d.payload?.category === 'state-update') {
+      updateVisualizerConfigOptimistic(d.sender_name, {
+        visualType: d.payload?.visualType,
+        configs: {
+          [d.payload?.visualType]: {
+            ...(d.payload?.butterchurnConfig ? d.payload?.butterchurnConfig : d.payload?.config)
+          }
+        }
+      })
     }
   })
 

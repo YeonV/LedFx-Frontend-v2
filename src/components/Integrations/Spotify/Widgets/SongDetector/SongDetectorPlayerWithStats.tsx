@@ -5,10 +5,14 @@ import SongDetectorStats from './SongDetectorStats'
 
 const SongDetectorPlayerWithStats = ({
   settingsOpen,
-  onToggleSettings
+  onToggleSettings,
+  lyricsOpen,
+  onToggleLyrics
 }: {
   settingsOpen?: boolean
   onToggleSettings?: () => void
+  lyricsOpen?: boolean
+  onToggleLyrics?: () => void
 }) => {
   const [statsOpen, setStatsOpen] = useState(true)
 
@@ -20,6 +24,8 @@ const SongDetectorPlayerWithStats = ({
           onToggleSettings={onToggleSettings}
           statsOpen={statsOpen}
           onToggleStats={() => setStatsOpen(!statsOpen)}
+          lyricsOpen={lyricsOpen}
+          onToggleLyrics={onToggleLyrics}
         />
       </Box>
       <Collapse in={statsOpen} orientation="horizontal">

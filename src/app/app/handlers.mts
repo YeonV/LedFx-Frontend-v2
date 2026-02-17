@@ -604,6 +604,13 @@ export const handlers = async (
         }
         break
       }
+      case 'open-external-link':
+        {
+          const url = parameters.url
+          console.log(log(`Opening external link: ${url}`))
+          shell.openExternal(url)
+        }
+        break
       default:
         console.log('Command not recognized')
         break

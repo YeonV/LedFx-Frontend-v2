@@ -4,31 +4,27 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Checkbox,
-  FormControl,
-  IconButton,
-  InputLabel,
-  ListItemText,
   MenuItem,
-  OutlinedInput,
   Select,
   Slider,
   Stack,
   Switch,
-  Tooltip,
-  Typography,
-  useTheme
+  Typography
 } from '@mui/material'
-import { ExpandMore, PlayArrow, Stop } from '@mui/icons-material'
+import { ExpandMore } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
+
 import useStore from '../../../../../store/useStore'
 import { Ledfx } from '../../../../../api/ledfx'
+import { useVStore, type VState } from '../../../../../hooks/vStore'
+import AutoApplySelector from './AutoApplySelector'
+import CardStack from '../SongDetector/CardStack'
 
 const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
-  const theme = useTheme()
   const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
+  const clients = useStore((state) => state.clients)
   const currentTrack = useStore((state) => state.spotify.currentTrack)
   const spotifyTexter = useStore((state) => state.spotify.spotifyTexter)
   const sendSpotifyTrack = useStore((state) => state.spotify.sendSpotifyTrack)
@@ -50,7 +46,11 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const setSpTexterFont = useStore((state) => state.setSpTexterFont)
   const setSpTexterTextEffect = useStore((state) => state.setSpTexterTextEffect)
   const getVirtuals = useStore((state) => state.getVirtuals)
-
+  const updateVisualizerConfigOptimistic = useStore(
+    (state) => state.updateVisualizerConfigOptimistic
+  )
+  // VStore actions for global/main instance
+  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
   // Use global state for song detector
   const textAutoApplyGlobal = useStore((state) => state.textAutoApply)
   const textVirtualsGlobal = useStore((state) => state.textVirtuals)
@@ -61,6 +61,22 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const [textVirtualsLocal, setTextVirtualsLocal] = useState<string[]>([])
   const [isActiveLocal, setIsActiveLocal] = useState(false)
 
+  // Visualiser selection state (Zustand store)
+  const visualisersGlobal = useStore((state) => state.textVisualisers || [])
+  const setTextVisualisers = useStore((state) => state.setTextVisualisers)
+  // Local visualiser state for non-global mode
+  const [visualisersLocal, setVisualisersLocal] = useState<string[]>([])
+
+  // Use global or local state for visualisers
+  const textVisualisers = generalDetector ? visualisersGlobal : visualisersLocal
+
+  // Dedicated isActive and toggle for visualisers (from store)
+  const isActiveVisualisers = useStore((state) => state.isActiveVisualisers)
+  const setIsActiveVisualisers = useStore((state) => state.setIsActiveVisualisers)
+  const toggleAutoApplyVisualisers = () => {
+    setIsActiveVisualisers(!isActiveVisualisers)
+  }
+
   // Determine which state to use based on generalDetector prop
   const textVirtuals = generalDetector ? textVirtualsGlobal : textVirtualsLocal
   const isActive = generalDetector ? textAutoApplyGlobal : isActiveLocal
@@ -68,9 +84,8 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
 
   useEffect(() => {
-    // console.log('EY', sendSpotifyTrack, currentTrack, textVirtuals)
-    const shouldApply = generalDetector ? isActive : sendSpotifyTrack
-    if (shouldApply && currentTrack !== '' && textVirtuals.length > 0) {
+    // Only apply if visualiser auto-apply is active
+    if (isActiveVisualisers && currentTrack !== '' && textVirtuals.length > 0) {
       setTimeout(() => {
         Ledfx('/api/effects', 'PUT', {
           action: 'apply_global_effect',
@@ -79,10 +94,33 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           fallback: spotifyTexter.fallback,
           virtuals: textVirtuals
         }).then(() => getVirtuals())
+        // Map selected names to IDs for isCurrentClient
+        // For each selected visualiser, update config (main and subs)
+        textVisualisers.forEach((name) => {
+          const id = nameToId[name]
+          const isCurrent = clientIdentity?.clientId === id
+          applyTextVisualiser(
+            { text: currentTrack, height_percent: 10, width_percent: 200 },
+            true,
+            isCurrent,
+            'texter',
+            'texter',
+            {
+              configs: {}
+            }
+          )
+        })
       }, 200)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, sendSpotifyTrack, spotifyTexter, textVirtuals])
+  }, [
+    currentTrack,
+    sendSpotifyTrack,
+    spotifyTexter,
+    textVirtuals,
+    isActiveVisualisers,
+    textVisualisers
+  ])
 
   const handleTextVirtualChange = (event: any) => {
     const value = event.target.value
@@ -106,6 +144,88 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       getVirtuals()
     }
   }
+  // Apply effect to selected visualisers (clients) using multi-client aware logic
+  const broadcastToClients = useStore((state) => state.broadcastToClients)
+  const clientIdentity = useStore((state) => state.clientIdentity)
+
+  const handleMultiClientAction = (
+    localAction: (() => void) | null,
+    remoteAction: string,
+    extraPayload: Record<string, any> = {}
+  ) => {
+    if (!clientIdentity || !clientIdentity.clientId) return
+    // Map selected names to IDs for all usages
+    const selectedIds = textVisualisers.map((name: string) => nameToId[name]).filter(Boolean)
+    // Local for current instance
+    if (selectedIds.includes(clientIdentity.clientId) && localAction) {
+      localAction()
+    }
+    // Broadcast for others
+    const otherClients = selectedIds.filter((id: string) => id !== clientIdentity.clientId)
+    if (otherClients.length && broadcastToClients) {
+      broadcastToClients(
+        {
+          broadcast_type: 'custom',
+          target: { mode: 'uuids', uuids: otherClients },
+          payload: {
+            category: 'visualiser',
+            action: remoteAction,
+            ...extraPayload
+          }
+        },
+        clientIdentity.clientId
+      )
+    }
+  }
+
+  // Apply effect to selected visualisers (clients)
+  // Apply effect to selected visualisers (clients)
+  const applyTextVisualiser = (
+    update: Record<string, any>,
+    single: boolean,
+    isCurrentClient: boolean,
+    visualType: string,
+    globalVisualType: string,
+    localState: any
+  ) => {
+    // Get the current name and id
+    const name = clientIdentity?.name || 'unknown-client'
+    // Main (current/global): use vstore for config update
+    if (single && isCurrentClient) {
+      updateVisualizerConfig(visualType, update)
+      // Always update optimistic config for main instance as well
+      updateVisualizerConfigOptimistic(name, {
+        configs: {
+          ...localState?.configs,
+          [visualType]: {
+            ...localState?.configs?.[visualType],
+            ...update
+          }
+        }
+      })
+    } else if (single && typeof name === 'string') {
+      // Sub: only update optimistic config and broadcast
+      updateVisualizerConfigOptimistic(name, {
+        configs: {
+          ...localState?.configs,
+          [visualType]: {
+            ...localState?.configs?.[visualType],
+            ...update
+          }
+        }
+      })
+      handleMultiClientAction(null, 'set_visual_config', {
+        visualizerId: visualType,
+        config: {
+          ...localState?.configs?.[visualType],
+          ...update
+        }
+      })
+    }
+  }
+
+  // Config change handler for main/global instance (not used, handled in applyTextVisualiser)
+  // const handleConfigChange = (visualizerId: string, update: any) => {}
 
   const toggleAutoApply = () => {
     if (isActive) {
@@ -116,11 +236,45 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       }
     } else {
       applyText()
+      // applyTextVisualiser()
       if (generalDetector) {
         setTextAutoApply(true)
       } else {
         setIsActiveLocal(true)
       }
+    }
+  }
+
+  // Build a name-to-id map for all current clients
+  const nameToId = clients
+    ? Object.entries(clients).reduce(
+        (acc, [id, data]) => {
+          if (data && data.name) acc[data.name] = id
+          return acc
+        },
+        {} as Record<string, string>
+      )
+    : {}
+
+  // textVisualisers now stores names instead of IDs
+  // Filter out stale names not in current clients
+  const filteredTextVisualisers = textVisualisers.filter((name: string) => nameToId[name])
+
+  // Auto-cleanup state if stale names are present
+  useEffect(() => {
+    if (filteredTextVisualisers.length !== textVisualisers.length) {
+      setTextVisualisers(filteredTextVisualisers)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clients, textVisualisers])
+
+  // Handler: convert selected names to state
+  const handleTextVisualiserChangeByName = (event: any) => {
+    const value = event.target.value
+    if (generalDetector) {
+      setTextVisualisers(typeof value === 'string' ? value.split(',') : value)
+    } else {
+      setVisualisersLocal(typeof value === 'string' ? value.split(',') : value)
     }
   }
 
@@ -136,7 +290,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     >
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography>Text Configuration</Typography>
+          <Typography>Text Configuration (virtuals only)</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Stack direction="column" spacing={2}>
@@ -309,45 +463,30 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          p: 1,
-          borderRadius: 1
-        }}
-      >
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: 1 }}>
-          <FormControl fullWidth>
-            <InputLabel>Text Virtuals</InputLabel>
-            <Select
-              multiple
-              value={textVirtuals}
-              onChange={handleTextVirtualChange}
-              input={<OutlinedInput label="Text Virtuals" />}
-              renderValue={(selected) => selected.join(', ')}
-            >
-              {matrix.map((vId) => (
-                <MenuItem key={vId} value={vId}>
-                  <Checkbox checked={textVirtuals.includes(vId)} />
-                  <ListItemText primary={vId} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Tooltip title={isActive ? 'Stop Auto' : 'Start Auto'}>
-            <IconButton
-              onClick={toggleAutoApply}
-              disabled={textVirtuals.length === 0}
-              sx={{
-                color: isActive ? 'success.main' : 'primary.main',
-                py: 2
-              }}
-            >
-              {isActive ? <Stop /> : <PlayArrow />}
-            </IconButton>
-          </Tooltip>
-        </Stack>
-      </Box>
+
+      <CardStack>
+        <AutoApplySelector
+          label="Text Virtuals"
+          options={matrix}
+          value={textVirtuals}
+          onChange={handleTextVirtualChange}
+          isActive={isActive}
+          onToggle={toggleAutoApply}
+          disabled={textVirtuals.length === 0}
+        />
+        <AutoApplySelector
+          label="Text Visualisers"
+          options={clients ? Object.entries(clients) : []}
+          value={generalDetector ? filteredTextVisualisers : textVisualisers}
+          onChange={handleTextVisualiserChangeByName}
+          isActive={isActiveVisualisers}
+          onToggle={toggleAutoApplyVisualisers}
+          disabled={textVisualisers.length === 0}
+          getOptionLabel={([, data]) => data?.name || ''}
+          getOptionValue={([, data]) => data?.name || ''}
+          renderValue={(selected) => selected.join(', ')}
+        />
+      </CardStack>
     </Box>
   )
 }
