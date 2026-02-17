@@ -39,6 +39,11 @@ const AssetDataGrid = ({
         rowHeight={80}
         disableRowSelectionOnClick
         onRowClick={(params) => handleRowClick(params, type)}
+        initialState={{
+          sorting: {
+            sortModel: type === 'cache' ? [{ field: 'cached_at', sort: 'desc' }] : []
+          }
+        }}
         sx={{
           '& .MuiDataGrid-cell': {
             display: 'flex',

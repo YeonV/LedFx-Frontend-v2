@@ -154,25 +154,6 @@ const storeAssets = (set: any) => ({
 
   refreshCacheImage: async (url: string) => {
     const resp = await Ledfx('/api/cache/images/refresh', 'POST', { url })
-    if (resp && resp.status === 'success') {
-      // Remove from cache stats if it was there
-      set(
-        produce((state: IStore) => {
-          if (state.cacheStats) {
-            state.cacheStats.entries = state.cacheStats.entries.filter(
-              (entry: CacheEntry) => entry.url !== url
-            )
-            state.cacheStats.total_count = state.cacheStats.entries.length
-            state.cacheStats.total_size = state.cacheStats.entries.reduce(
-              (sum: number, entry: CacheEntry) => sum + entry.file_size,
-              0
-            )
-          }
-        }),
-        false,
-        'api/refreshCacheImage'
-      )
-    }
     return resp
   }
 })
