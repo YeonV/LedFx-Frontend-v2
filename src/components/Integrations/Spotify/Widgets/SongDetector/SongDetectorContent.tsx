@@ -6,12 +6,15 @@ import SongDetectorAlbumArtForm from './SongDetectorAlbumArtForm'
 import SongDetectorSceneTriggerTable from './SongDetectorSceneTriggerTable'
 import SongDetectorCard from './SongDetectorCard'
 import SongDetectorPlayerWithStats from './SongDetectorPlayerWithStats'
+import useStore from '../../../../../store/useStore'
 
 const SongDetectorContent = () => {
   const { standard, plus, startDetector, stopDetector, downloadDetector, deleteDetector } =
     useSongDetector()
   const [settingsOpen, setSettingsOpen] = useState(!(plus.isAvailable && plus.isRunning))
   const [lyricsOpen, setLyricsOpen] = useState(false)
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
 
   // Auto-open settings when detector is not available or not running
   useEffect(() => {
@@ -22,17 +25,19 @@ const SongDetectorContent = () => {
 
   return (
     <>
-      <Collapse in={settingsOpen}>
-        <SongDetectorCard
-          type="plus"
-          detector={plus}
-          startDetector={startDetector}
-          stopDetector={stopDetector}
-          downloadDetector={downloadDetector}
-          deleteDetector={deleteDetector}
-          otherDetectorRunning={standard.isRunning}
-        />
-      </Collapse>
+      {isCC && (
+        <Collapse in={settingsOpen}>
+          <SongDetectorCard
+            type="plus"
+            detector={plus}
+            startDetector={startDetector}
+            stopDetector={stopDetector}
+            downloadDetector={downloadDetector}
+            deleteDetector={deleteDetector}
+            otherDetectorRunning={standard.isRunning}
+          />
+        </Collapse>
+      )}
       {/* Player and Stats */}
       <SongDetectorPlayerWithStats
         settingsOpen={settingsOpen}

@@ -48,6 +48,8 @@ const SongDetectorPlayer = ({
   const timestamp = useStore((state) => state.timestamp)
   const triggers = useStore((state) => state.triggers)
   const scenes = useStore((state) => state.scenes)
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
 
   const [currentPosition, setCurrentPosition] = useState<number | null>(null)
   const [isSeekingBack, setIsSeekingBack] = useState(false)
@@ -157,7 +159,7 @@ const SongDetectorPlayer = ({
             <BarChart />
           </IconButton>
         )}
-        {onToggleSettings && (
+        {isCC && onToggleSettings && (
           <IconButton
             onClick={onToggleSettings}
             sx={{
