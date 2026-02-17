@@ -90,7 +90,8 @@ const Lyrics = ({
       // startTime is in seconds from lrclib-api (confirmed via source check)
       // position is also in seconds in SongDetector components
       const startTime = line.startTime || 0
-      if (position >= startTime) {
+      // Offset by 500ms (0.5s) to make lyrics appear earlier as requested
+      if (position + 0.5 >= startTime) {
         index = i
       } else {
         break
