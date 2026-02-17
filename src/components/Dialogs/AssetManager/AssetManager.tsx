@@ -263,7 +263,10 @@ const AssetManager = ({
           asset={params.row}
           type="cache"
           onApplyGradient={handleApplyGradient}
-          onRefresh={refreshCacheImage}
+          onRefresh={async (url: string) => {
+            await refreshCacheImage(url)
+            await getCacheStats()
+          }}
           onClear={async (url: string) => {
             await clearCache(url)
             await getCacheStats()

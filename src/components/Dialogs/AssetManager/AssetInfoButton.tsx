@@ -27,7 +27,6 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
         action: 'apply_global',
         gradient
       })
-      handleClose()
     }
   }
 
@@ -38,7 +37,19 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
       </IconButton>
 
       {asset && (
-        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          maxWidth="md"
+          fullWidth
+          slotProps={{
+            backdrop: {
+              sx: {
+                pointerEvents: 'none'
+              }
+            }
+          }}
+        >
           <DialogTitle>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               Asset Information
@@ -47,8 +58,8 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
               </IconButton>
             </Box>
           </DialogTitle>
-          <DialogContent>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <DialogContent sx={{ overflow: 'visible' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, overflow: 'visible' }}>
               {/* Image Preview */}
               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, maxHeight: '300px' }}>
                 <SceneImage
@@ -177,11 +188,21 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
                   >
                     Extracted Gradients
                   </Box>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 2, overflow: 'visible' }}
+                  >
                     {Object.entries(asset.gradients).map(([key, value]: [string, any]) => {
                       if (key === 'metadata') return null
                       return (
-                        <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box
+                          key={key}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            overflow: 'visible'
+                          }}
+                        >
                           <Box
                             sx={{ fontWeight: 'bold', minWidth: 100, textTransform: 'capitalize' }}
                           >
@@ -197,7 +218,6 @@ const AssetInfoButton = ({ asset }: AssetInfoButtonProps) => {
                             }}
                           />
                           <IconButton
-                            size="small"
                             color="primary"
                             onClick={() => handleApplyGradient(value.gradient)}
                             title="Apply to all active virtuals"
