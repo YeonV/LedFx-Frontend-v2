@@ -305,12 +305,10 @@ const SongDetectorPlayer = ({
       <Collapse in={lyricsOpen} timeout="auto" unmountOnExit>
         <Card sx={{ width: '100%', position: 'relative' }}>
           <CardContent>
-            {duration && currentPosition && (
+            {duration && currentPosition !== null && (
               <Lyrics
-                currentTrack={currentTrack}
                 position={currentPosition}
                 duration={duration}
-                playing={playing}
                 artist={artist}
                 title={title}
               />

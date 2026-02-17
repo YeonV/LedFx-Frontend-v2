@@ -30,7 +30,7 @@ export const defaultVisualizerConfigOptimistic = (
 })
 
 // Rename an instance key in the optimistic state
-const renameVisualizerInstance = (oldName: string, newName: string) => (set: any, get: any) => {
+const renameVisualizerInstance = (oldName: string, newName: string) => (set: any, _get: any) => {
   set(
     produce((draft: IStore) => {
       if (!draft.visualizerConfigOptimistic) return

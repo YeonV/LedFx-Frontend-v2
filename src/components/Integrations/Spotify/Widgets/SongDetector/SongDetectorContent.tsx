@@ -6,7 +6,6 @@ import SongDetectorAlbumArtForm from './SongDetectorAlbumArtForm'
 import SongDetectorSceneTriggerTable from './SongDetectorSceneTriggerTable'
 import SongDetectorCard from './SongDetectorCard'
 import SongDetectorPlayerWithStats from './SongDetectorPlayerWithStats'
-import Lyrics from './Lyrics'
 
 const SongDetectorContent = () => {
   const { standard, plus, startDetector, stopDetector, downloadDetector, deleteDetector } =
