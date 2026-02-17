@@ -135,7 +135,7 @@ const SongDetectorPlayer = ({
               top: 8,
               right: 72,
               zIndex: 1,
-              color: statsOpen ? 'success.main' : 'text.secondary'
+              color: lyricsOpen ? 'success.main' : 'text.secondary'
             }}
             size="small"
           >

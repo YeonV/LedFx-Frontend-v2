@@ -68,7 +68,7 @@ const CleaningButtons = () => {
               top: 8,
               right: 152,
               zIndex: 1,
-              color: 'primary.main'
+              color: dialogOpen ? 'success.main' : 'text.secondary'
             }}
             size="small"
           >
