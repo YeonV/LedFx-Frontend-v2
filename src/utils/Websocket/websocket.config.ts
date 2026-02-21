@@ -14,7 +14,6 @@ export const initialSubscriptions = [
   { event_type: 'effect_set', id: 9004 },
   { event_type: 'client_connected', id: 9005 },
   { event_type: 'client_disconnected', id: 9006 },
-  { event_type: 'client_sync', id: 9007 },
   { event_type: 'playlist_started', id: 9008 },
   { event_type: 'playlist_advanced', id: 9009 },
   { event_type: 'playlist_stopped', id: 9010 },

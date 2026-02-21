@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { Edit } from '@mui/icons-material'
-import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 import { ClientType } from '../../store/ui/storeClientIdentity'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
@@ -20,7 +19,6 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
   const setClientName = useStore((state) => state.setClientName)
   const setClientType = useStore((state) => state.setClientType)
   const renameVisualizerInstance = useStore((state) => state.renameVisualizerInstance)
-  const { send } = useWebSocket()
 
   return (
     <Popover
@@ -67,31 +65,9 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
             renameVisualizerInstance(clientIdentity.name, newName)
           }
           setClientName(newName)
-          if (send) {
-            send({
-              id: 10001,
-              type: 'update_client_info',
-              data: {
-                device_id: clientIdentity.deviceId,
-                name: newName,
-                client_type: newType || clientIdentity?.type || 'unknown'
-              }
-            })
-          }
         }
         if (newType && newType !== clientIdentity?.type) {
           setClientType(newType)
-          if (send) {
-            send({
-              id: 10001,
-              type: 'update_client_info',
-              data: {
-                device_id: clientIdentity.deviceId,
-                name: newName || clientIdentity?.name || 'unknown-client',
-                client_type: newType
-              }
-            })
-          }
         }
       }}
     />

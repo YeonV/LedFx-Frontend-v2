@@ -48,7 +48,6 @@ import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
 import ElectronStoreInspector from '../components/DevTools/ElectronStoreInspector'
-import { useWebSocket } from '../utils/Websocket/WebSocketProvider'
 
 const Routings = () => {
   const theme = useTheme()
@@ -78,7 +77,6 @@ const Routings = () => {
   const setClientName = useStore((state) => state.setClientName)
   const setClientType = useStore((state) => state.setClientType)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
-  const { send } = useWebSocket()
 
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
@@ -168,35 +166,15 @@ const Routings = () => {
     if (isDisplayMode && pathname === '/visualiser') {
       const nameToSet = clientName || `Visualiser${Date.now()}`
       // Update Zustand/sessionStorage
+      // WebSocketManager will handle the actual WS update based on these store changes
       setClientName(nameToSet)
       setClientType('visualiser')
-      // setTimeout(() => {
-      //   console.log('Entering display mode - sending client info update')
-      //   // console.log('P: set_client_info', nameToSet, 'visualiser')
-      //   // send({
-      //   //   id: 10002,
-      //   //   type: 'set_client_info',
-      //   //   data: {
-      //   //     name: nameToSet,
-      //   //     client_type: 'visualiser'
-      //   //   }
-      //   // })
-      //   console.log('P: update_client_info', nameToSet, 'visualiser')
-      //   send({
-      //     id: 10001,
-      //     type: 'update_client_info',
-      //     data: {
-      //       name: nameToSet,
-      //       client_type: 'visualiser'
-      //     }
-      //   })
-      // }, 1000)
     }
     // Clean up on unmount
     return () => {
       document.body.classList.remove(className)
     }
-  }, [isDisplayMode, pathname, send, clientName, setClientName, setClientType])
+  }, [isDisplayMode, pathname, clientName, setClientName, setClientType])
 
   useEffect(() => {
     if (pathname === '/visualiser') {

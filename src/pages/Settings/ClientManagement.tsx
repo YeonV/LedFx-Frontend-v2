@@ -47,22 +47,10 @@ const ClientManagementCard = () => {
   // }, [clientIdentity])
 
   const handleUpdateInfo = () => {
-    console.log('CM: update_client_info:', localName, localType, clientIdentity)
-    // if (localName !== clientIdentity?.name || localType !== clientIdentity?.type) {
+    console.log('CM: update_client_info:', localName, localType)
+    // Update store only; WebSocketManager handles the websocket communication
     setClientName(localName)
     setClientType(localType)
-    if (send) {
-      send({
-        id: 10001,
-        type: 'update_client_info',
-        data: {
-          device_id: clientIdentity.deviceId,
-          name: localName,
-          client_type: localType
-        }
-      })
-    }
-    // }
   }
 
   const getTypeColor = (
