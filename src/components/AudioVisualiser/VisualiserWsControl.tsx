@@ -36,8 +36,12 @@ const VisualiserWsControl = () => {
         payload: {
           category: 'state-update',
           visualType,
-          config: visualizerConfigs[visualType],
-          butterchurnConfig
+          configs: {
+            [visualType]:
+              visualType === 'butterchurn'
+                ? butterchurnConfig || {}
+                : visualizerConfigs[visualType] || {}
+          }
         }
       },
       send
@@ -114,14 +118,10 @@ const VisualiserWsControl = () => {
         }
       }
     }
-    if (d.sender_id !== clientIdentity?.clientId && d.payload?.category === 'state-update') {
+    if (d.sender_uuid !== clientIdentity?.clientId && d.payload?.category === 'state-update') {
       updateVisualizerConfigOptimistic(d.sender_name, {
         visualType: d.payload?.visualType,
-        configs: {
-          [d.payload?.visualType]: {
-            ...(d.payload?.butterchurnConfig ? d.payload?.butterchurnConfig : d.payload?.config)
-          }
-        }
+        configs: d.payload?.configs
       })
     }
   })

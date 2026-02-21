@@ -33,12 +33,21 @@ export const defaultVisualizerConfigOptimistic = (
 const renameVisualizerInstance = (oldName: string, newName: string) => (set: any, _get: any) => {
   set(
     produce((draft: IStore) => {
-      if (!draft.visualizerConfigOptimistic) return
-      if (draft.visualizerConfigOptimistic[oldName]) {
+      if (draft.visualizerConfigOptimistic && draft.visualizerConfigOptimistic[oldName]) {
         draft.visualizerConfigOptimistic[newName] = {
           ...draft.visualizerConfigOptimistic[oldName]
         }
         delete draft.visualizerConfigOptimistic[oldName]
+      }
+
+      // Atomic identity update to prevent race conditions in VisualizerConfig useEffect
+      // If we are renaming our own client, we must update the identity in the same tick
+      // to avoid the useEffect re-creating the old key before the rename is fully realized.
+      if (draft.clientIdentity && draft.clientIdentity.name === oldName) {
+        draft.clientIdentity.name = newName
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('ledfx-client-identity', JSON.stringify(draft.clientIdentity))
+        }
       }
     }),
     false,
@@ -117,7 +126,17 @@ const storeVisualizerConfigOptimistic = (set: any) => ({
       'visualizerConfigOptimistic/reset'
     ),
   renameVisualizerInstance: (oldName: string, newName: string) =>
-    renameVisualizerInstance(oldName, newName)(set, null)
+    renameVisualizerInstance(oldName, newName)(set, null),
+  deleteVisualizerInstance: (name: string) =>
+    set(
+      produce((draft: IStore) => {
+        if (draft.visualizerConfigOptimistic && draft.visualizerConfigOptimistic[name]) {
+          delete draft.visualizerConfigOptimistic[name]
+        }
+      }),
+      false,
+      'visualizerConfigOptimistic/deleteInstance'
+    )
 })
 
 export default storeVisualizerConfigOptimistic

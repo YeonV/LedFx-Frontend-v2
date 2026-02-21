@@ -16,11 +16,17 @@ const VisualizerDevWidget = () => {
   const getClients = useStore((state) => state.getClients)
   const clients = useStore((state) => state.clients)
   const clientIdentity = useStore((state) => state.clientIdentity)
-  const [selectedClients, setSelectedClients] = useState<string[]>([clientIdentity?.clientId || ''])
+  const [selectedClients, setSelectedClients] = useState<string[]>(
+    clientIdentity?.clientId ? [clientIdentity.clientId] : []
+  )
 
   useEffect(() => {
     getClients()
-  }, [getClients])
+    // Update selected clients if it was empty and clientId becomes available
+    if (selectedClients.length === 0 && clientIdentity?.clientId) {
+      setSelectedClients([clientIdentity.clientId])
+    }
+  }, [getClients, clientIdentity?.clientId, selectedClients.length])
 
   return (
     <Box
@@ -77,7 +83,9 @@ const VisualizerDevWidget = () => {
                   >
                     <Typography>
                       {client?.name}
-                      {clientId === clientIdentity.clientId ? ' (This instance)' : ''}
+                      {clientIdentity?.clientId && clientId === clientIdentity.clientId
+                        ? ' (This instance)'
+                        : ''}
                     </Typography>
                     <Chip label={client?.type} size="small" />
                   </Stack>

@@ -60,17 +60,26 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
       onConfirm={() => {
         const updates: any = {}
         if (newName && newName !== clientIdentity?.name) {
-          // Rename the instance key in the optimistic store
+          // Rename the instance key in the optimistic store.
+          // This now also handles the clientIdentity.name update atomically
+          // to prevent race conditions during the rename process.
           if (renameVisualizerInstance && clientIdentity?.name) {
             renameVisualizerInstance(clientIdentity.name, newName)
           }
-          updates.name = newName
         }
         if (newType && newType !== clientIdentity?.type) {
           updates.type = newType
         }
         if (Object.keys(updates).length > 0) {
-          updateClientIdentity(updates)
+          // If we renamed, add a small delay to let the optimistic store rename settle
+          // and prevent race conditions with the backend name prop in VisualizerConfig.
+          if (newName && newName !== clientIdentity?.name) {
+            setTimeout(() => {
+              updateClientIdentity(updates)
+            }, 100)
+          } else {
+            updateClientIdentity(updates)
+          }
         }
       }}
     />
