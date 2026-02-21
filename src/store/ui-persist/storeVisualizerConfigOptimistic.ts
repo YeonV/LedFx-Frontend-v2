@@ -126,7 +126,17 @@ const storeVisualizerConfigOptimistic = (set: any) => ({
       'visualizerConfigOptimistic/reset'
     ),
   renameVisualizerInstance: (oldName: string, newName: string) =>
-    renameVisualizerInstance(oldName, newName)(set, null)
+    renameVisualizerInstance(oldName, newName)(set, null),
+  deleteVisualizerInstance: (name: string) =>
+    set(
+      produce((draft: IStore) => {
+        if (draft.visualizerConfigOptimistic && draft.visualizerConfigOptimistic[name]) {
+          delete draft.visualizerConfigOptimistic[name]
+        }
+      }),
+      false,
+      'visualizerConfigOptimistic/deleteInstance'
+    )
 })
 
 export default storeVisualizerConfigOptimistic

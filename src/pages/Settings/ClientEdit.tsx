@@ -71,7 +71,15 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
           updates.type = newType
         }
         if (Object.keys(updates).length > 0) {
-          updateClientIdentity(updates)
+          // If we renamed, add a small delay to let the optimistic store rename settle
+          // and prevent race conditions with the backend name prop in VisualizerConfig.
+          if (newName && newName !== clientIdentity?.name) {
+            setTimeout(() => {
+              updateClientIdentity(updates)
+            }, 100)
+          } else {
+            updateClientIdentity(updates)
+          }
         }
       }}
     />

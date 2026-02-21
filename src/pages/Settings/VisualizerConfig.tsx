@@ -64,6 +64,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
   const updateVisualizerConfigOptimistic = useStore(
     (state) => state.updateVisualizerConfigOptimistic
   )
+  const deleteVisualizerInstance = useStore((state) => state.deleteVisualizerInstance)
 
   // Helper: are we the main instance in single mode?
   const isCurrentClient = useMemo(
@@ -84,7 +85,21 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
   }, [isCurrentClient, clientIdentity?.name, name])
 
   useEffect(() => {
-    if (!visualizerConfigOptimistic || !visualizerConfigOptimistic[resolvedInstanceKey]) {
+    // Proactive cleanup: if we are the current client but the backend name prop is stale,
+    // ensure the old name doesn't stay in the optimistic store.
+    if (isCurrentClient && name && name !== clientIdentity?.name) {
+      if (visualizerConfigOptimistic && visualizerConfigOptimistic[name]) {
+        deleteVisualizerInstance?.(name)
+      }
+    }
+
+    // Only create if the key is missing AND it's not a stale name for the local client
+    const isStaleName =
+      isCurrentClient && name === resolvedInstanceKey && name !== clientIdentity?.name
+    if (
+      !isStaleName &&
+      (!visualizerConfigOptimistic || !visualizerConfigOptimistic[resolvedInstanceKey])
+    ) {
       setVisualizerConfigOptimistic({
         ...(visualizerConfigOptimistic || {}),
         ...defaultVisualizerConfigOptimistic(
@@ -99,10 +114,14 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
   }, [
     visualizerConfigOptimistic,
     setVisualizerConfigOptimistic,
+    deleteVisualizerInstance,
     globalVisualType,
     butterchurnConfig,
     visualizerConfigs,
-    resolvedInstanceKey
+    resolvedInstanceKey,
+    isCurrentClient,
+    name,
+    clientIdentity?.name
   ])
 
   const broadcastToClients = useStore((state) => state.broadcastToClients)
