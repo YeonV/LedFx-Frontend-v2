@@ -48,7 +48,6 @@ import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
 import ElectronStoreInspector from '../components/DevTools/ElectronStoreInspector'
-import { useWebSocket } from '../utils/Websocket/WebSocketProvider'
 
 const Routings = () => {
   const theme = useTheme()
@@ -75,10 +74,8 @@ const Routings = () => {
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
-  const setClientName = useStore((state) => state.setClientName)
-  const setClientType = useStore((state) => state.setClientType)
+  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
-  const { send } = useWebSocket()
 
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
@@ -167,36 +164,18 @@ const Routings = () => {
     }
     if (isDisplayMode && pathname === '/visualiser') {
       const nameToSet = clientName || `Visualiser${Date.now()}`
-      // Update Zustand/sessionStorage
-      setClientName(nameToSet)
-      setClientType('visualiser')
-      // setTimeout(() => {
-      //   console.log('Entering display mode - sending client info update')
-      //   // console.log('P: set_client_info', nameToSet, 'visualiser')
-      //   // send({
-      //   //   id: 10002,
-      //   //   type: 'set_client_info',
-      //   //   data: {
-      //   //     name: nameToSet,
-      //   //     client_type: 'visualiser'
-      //   //   }
-      //   // })
-      //   console.log('P: update_client_info', nameToSet, 'visualiser')
-      //   send({
-      //     id: 10001,
-      //     type: 'update_client_info',
-      //     data: {
-      //       name: nameToSet,
-      //       client_type: 'visualiser'
-      //     }
-      //   })
-      // }, 1000)
+      // Update Zustand/sessionStorage atomically
+      // WebSocketManager will handle the actual WS update based on these store changes
+      updateClientIdentity({
+        name: nameToSet,
+        type: 'visualiser'
+      })
     }
     // Clean up on unmount
     return () => {
       document.body.classList.remove(className)
     }
-  }, [isDisplayMode, pathname, send, clientName, setClientName, setClientType])
+  }, [isDisplayMode, pathname, clientName, updateClientIdentity])
 
   useEffect(() => {
     if (pathname === '/visualiser') {
