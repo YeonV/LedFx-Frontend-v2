@@ -36,13 +36,13 @@ import ClientEdit from './ClientEdit'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
 interface VisualizerConfigProps {
-  selectedClients: string[]
+  selectedClients?: string[]
   single?: boolean
   name?: string
   type?: ClientType
 }
 
-const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerConfigProps) => {
+const VisualizerConfig = ({ selectedClients = [], single, name, type }: VisualizerConfigProps) => {
   // Zustand store values
   const globalVisualType = useVStore((state: VState) => state.visualType) || 'butterchurn'
   const globalIsPlaying = useVStore((state: VState) => state.isPlaying) ?? false
@@ -95,7 +95,10 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
   const { send, isConnected } = useWebSocket()
   // Helper: are we the main instance in single mode?
   const isCurrentClient =
-    clientIdentity && selectedClients.length === 1 && selectedClients[0] === clientIdentity.clientId
+    !!clientIdentity &&
+    Array.isArray(selectedClients) &&
+    selectedClients.length === 1 &&
+    selectedClients[0] === clientIdentity.clientId
 
   // Use correct state for UI display
   // Always use the 'name' prop as the key for the main instance
@@ -159,7 +162,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
   const registry = api?.getVisualizerRegistry?.() || {}
 
   // Get visualizer list from store (computed once at module load)
-  const visualizerIds = visualizers.map((v: any) => v.id)
+  const visualizerIds = Array.isArray(visualizers) ? visualizers.map((v: any) => v.id) : []
 
   // Place helper just before return, after all hooks/vars
   const handleMultiClientAction = (
@@ -167,14 +170,14 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     remoteAction: string,
     extraPayload: Record<string, any> = {}
   ) => {
-    if (!clientIdentity || !clientIdentity.clientId) return
+    if (!clientIdentity || !clientIdentity.clientId || !Array.isArray(selectedClients)) return
     // Local for current instance
     if (selectedClients.includes(clientIdentity.clientId) && localAction) {
       localAction()
     }
     // Broadcast for others
     const otherClients = selectedClients.filter((id: string) => id !== clientIdentity.clientId)
-    if (otherClients.length && broadcastToClients && isConnected) {
+    if (otherClients && otherClients.length && broadcastToClients && isConnected) {
       broadcastToClients(
         {
           broadcast_type: 'custom',
@@ -660,7 +663,9 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
                 const clientIdentity = useStore.getState().clientIdentity
                 const isLocal =
                   totalClients < 2 ||
-                  (clientIdentity && selectedClients.includes(clientIdentity.clientId || ''))
+                  (clientIdentity &&
+                    Array.isArray(selectedClients) &&
+                    selectedClients.includes(clientIdentity.clientId || ''))
                 if (isLocal) {
                   setVisualType?.(newValue.id)
                 }
