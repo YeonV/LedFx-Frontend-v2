@@ -257,14 +257,11 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
       }
     }
 
-    // ALWAYS update optimistic store for the current instance/card using the latest state
-    // This prevents snapback in the UI for both local and remote cards
+    // ALWAYS update optimistic store for the current instance/card
+    // We only keep the config for the active visualizer to prevent pollution
     if (typeof instanceKey === 'string') {
-      const currentConfigs =
-        useStore.getState().visualizerConfigOptimistic?.[instanceKey]?.configs || {}
       updateVisualizerConfigOptimistic(instanceKey, {
         configs: {
-          ...currentConfigs,
           [visualizerId]: fullUpdate
         }
       })

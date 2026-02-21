@@ -17,16 +17,16 @@ The application uses two distinct state management systems:
 1.  **`useStore` (Global Store)**:
     - This is the main Zustand store for the entire application (`src/store/useStore.ts`).
     - It manages core application state: devices, virtuals, clients, UI settings, and features.
-    - It is persisted to `localStorage` (excluding some sensitive or non-serializable slices).
+    - **Optimistic State**: `storeVisualizerConfigOptimistic.ts` tracks the predicted state of multiple visualiser instances. To prevent pollution, it only maintains the configuration for the *currently active* visualizer type for each client.
 
 2.  **`useVStore` (Visualiser Store)**:
     - This hook (`src/hooks/vStore.ts`) provides access to the internal state of the dynamically loaded `YzAudioVisualiser` module.
     - It works by accessing `(window as any).YzAudioVisualiser.useStore`.
-    - It manages visualiser-specific state: current visual type, playback status, effects enabled, and configurations for individual visualizers (e.g., Butterchurn presets).
+    - It manages visualiser-specific state: current visual type, playback status, effects enabled, and configurations for individual visualizers.
     - If the module is not yet loaded, `useVStore` returns `undefined`.
 
 ## Communication and Control
 - **Dynamic Module Interface**: The `AudioVisualiser` component receives props like `theme`, `effects` (schemas), and `backendAudioData`.
 - **Window API**: The module exposes an imperative API via `window.visualiserApi` for functions like `toggleFullscreen`, `getVisualizerRegistry`, etc.
-- **WebSocket Synchronization**: `VisualiserWsControl.tsx` handles synchronizing the visualiser state across different clients. It listens for `client_broadcast` events and updates the local `useVStore` or optimistic store accordingly.
-- **Optimistic UI**: `storeVisualizerConfigOptimistic.ts` allows managing multiple visualiser instances (e.g., one on a remote display and one in the background) by tracking their state independently before they are fully synced via WebSockets.
+- **WebSocket Synchronization**: `VisualiserWsControl.tsx` handles synchronizing the visualiser state across different clients. It uses a scoped `configs` map in its broadcast payload to ensure that only relevant configuration data is transmitted and stored on remote clients.
+- **Optimistic UI**: Individual cards and the developer widget use the optimistic store to provide immediate feedback, ensuring that changes are reflected locally before the round-trip through the visualiser's WebSocket state update loop.
