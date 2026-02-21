@@ -114,10 +114,13 @@ const VisualiserWsControl = () => {
         }
       }
     }
-    if (d.sender_id !== clientIdentity?.clientId && d.payload?.category === 'state-update') {
+    if (d.sender_uuid !== clientIdentity?.clientId && d.payload?.category === 'state-update') {
+      const currentConfigs =
+        useStore.getState().visualizerConfigOptimistic?.[d.sender_name]?.configs || {}
       updateVisualizerConfigOptimistic(d.sender_name, {
         visualType: d.payload?.visualType,
         configs: {
+          ...currentConfigs,
           [d.payload?.visualType]: {
             ...(d.payload?.butterchurnConfig ? d.payload?.butterchurnConfig : d.payload?.config)
           }

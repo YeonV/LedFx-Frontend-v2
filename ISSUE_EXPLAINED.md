@@ -1,29 +1,31 @@
-# Issue Explained: TypeError: Cannot read properties of undefined (reading 'length')
+# Issue Explained: TypeError & Snapback in Visualizer
 
 ## The Problem
-When reloading the **Devices** page directly (without first navigating from the Visualizer DevWidget), the application crashes with a `TypeError: Cannot read properties of undefined (reading 'length')`. This issue only occurs in the production build.
+There are two distinct issues related to the audio visualiser:
+1.  **Crash on Reload**: When reloading the **Devices** page directly, the application crashes with a `TypeError: Cannot read properties of undefined (reading 'length')`.
+2.  **SchemaForm Snapback**: In the Visualizer DevWidget or individual visualizer cards, changing a configuration setting via the SchemaForm causes the UI to "snap back" to the previous value, even though the command is correctly sent to the visualiser.
 
 ## Root Cause Analysis
-The crash happens because certain visualiser-related data is not yet initialized or is in an unexpected state when the Devices page renders for the first time after a reload.
 
-Several components on the Devices page (via `VisualizerCard` -> `VisualizerConfig`) depend on props and store state that might be missing:
-1.  **`selectedClients` prop**: In `VisualizerConfig.tsx`, there are checks like `selectedClients.length === 1`. If `selectedClients` is somehow passed as `undefined` or `null`, this throws.
-2.  **`clients` store slice**: If the `clients` map is rehydrated as something other than an object, or if it's missing during the initial render before `getClients()` completes.
-3.  **`visualizerIds`**: This is derived from `visualizers` which comes from `useVStore`. While there is a fallback `|| []`, if `useVStore` is called before the dynamic module store is ready, it might return `undefined`.
+### 1. Crash on Reload
+The crash happens because certain visualiser-related data (like `selectedClients` prop or `visualizers` from `useVStore`) is not yet initialized when the Devices page renders for the first time after a reload. Defensive programming with safety checks for `.length` and `Array.isArray()` is required.
 
-In the production build, race conditions during module loading and store hydration are more likely to trigger these issues. Navigating from the DevWidget first avoids the crash because that path ensures the visualiser module is loaded and `getClients()` has been called.
+### 2. SchemaForm Snapback
+The snapback issue has multiple root causes in the state synchronization logic:
+
+-   **Incorrect Client Identification**: In `VisualiserWsControl.tsx`, the subscription for `state-update` used `d.sender_id` instead of `d.sender_uuid` to avoid self-updates. This likely caused instances to process their own state-update broadcasts.
+-   **State Overwriting**: When a `state-update` was received, it overwrote the entire `configs` map in the optimistic store with only the single visualizer config contained in the broadcast. This caused all other visualizer configurations for that client to be lost locally.
+-   **Stale Optimistic Updates**: In `VisualizerConfig.tsx`, the optimistic store was being updated using `localState` from the current render, which could be stale if multiple updates happened rapidly. Using `useStore.getState()` ensures the latest state is used for merging.
+-   **Missing Optimistic Updates in DevWidget**: The DevWidget (where `single` is false) was not updating the local optimistic store when changing configurations, causing it to fall back to potentially stale global state or initial values.
 
 ## Proposed Fix
-The fix involves adding defensive programming patterns to ensure that any variable where `.length` is accessed is guaranteed to be an array or string, or at least checked for existence.
 
-1.  **Safety in `VisualizerConfig.tsx`**:
-    - Add a default value `[]` for the `selectedClients` prop.
-    - Ensure `visualizerIds` is always an array before use.
-    - Add safety checks around `selectedClients.length` and `selectedClients.filter`.
-    - Ensure `visualizers` fallback is robust.
+### Fix for Crash
+-   Add default values for props (e.g., `selectedClients = []`).
+-   Use `Array.isArray()` checks before accessing `.length` or map/filter.
 
-2.  **Safety in `VisualizerDevWidget.tsx`**:
-    - Add checks to ensure `clientIdentity` and `clientIdentity.clientId` are available.
-    - Defensive checks for `clients` and `Object.keys(clients)`.
-
-By ensuring these basic data structures are always present (even if empty), we prevent the "reading 'length' of undefined" crash during the initial loading phase.
+### Fix for Snapback
+-   **Consistently use `sender_uuid`** in `VisualiserWsControl.tsx` to correctly filter out self-broadcasts.
+-   **Properly merge configs**: When receiving a `state-update`, merge the incoming configuration into the existing `configs` map for that client in the optimistic store.
+-   **Unified Optimistic Update**: In `VisualizerConfig.tsx`, ensure `handleConfigChange` always updates the optimistic store for the relevant `instanceKey`, using the most recent state from `useStore.getState()` to avoid stale data overwrites.
+-   **Simplify `onModelChange`**: Use the improved `handleConfigChange` for all model changes to ensure consistent logic for both local and remote clients.

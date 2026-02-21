@@ -201,6 +201,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     if (
       visualizerId === 'butterchurn' &&
       schema?.properties?.currentPresetName &&
+      Array.isArray(butterchurnPresetNames) &&
       butterchurnPresetNames.length > 0
     ) {
       schema.properties.currentPresetName.type = 'autocomplete'
@@ -223,7 +224,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     const fullUpdate = { ...update }
 
     // Butterchurn preset syncing
-    if (visualizerId === 'butterchurn') {
+    if (visualizerId === 'butterchurn' && Array.isArray(butterchurnPresetNames)) {
       if ('currentPresetName' in update && butterchurnPresetNames.length > 0) {
         const index = butterchurnPresetNames.findIndex(
           (name: string) => name === update.currentPresetName
@@ -241,62 +242,34 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     const allClients = useStore.getState().clients || {}
     const totalClients = Object.keys(allClients).length
 
-    // // Debug logging
-    // console.debug('[VisualizerConfig] handleConfigChange called', {
-    //   visualizerId,
-    //   update,
-    //   fullUpdate,
-    //   selectedClients,
-    //   clientIdentity,
-    //   clientId: clientIdentity?.clientId,
-    //   totalClients,
-    //   allClients
-    // })
-
     // Only execute local action if there is only one client in the system, or if the current instance is selected
     const isLocal =
       totalClients < 2 ||
-      (clientIdentity && selectedClients.includes(clientIdentity.clientId || ''))
-
-    // console.debug('[VisualizerConfig] Local action decision', {
-    //   isLocal,
-    //   reason:
-    //     totalClients < 2
-    //       ? 'totalClients < 2'
-    //       : clientIdentity && selectedClients.includes(clientIdentity.clientId || '')
-    //         ? 'current instance selected'
-    //         : 'not selected'
-    // })
+      (clientIdentity &&
+        Array.isArray(selectedClients) &&
+        selectedClients.includes(clientIdentity.clientId || ''))
 
     if (isLocal) {
-      // console.debug('[VisualizerConfig] Executing local update', { visualizerId, fullUpdate })
       if (visualizerId === 'butterchurn') {
         updateButterchurnConfig?.(fullUpdate)
       } else {
         updateVisualizerConfig?.(visualizerId, fullUpdate)
       }
-      // Always update optimistic store for main client as well
-      if (single && isCurrentClient && typeof name === 'string') {
-        updateVisualizerConfigOptimistic(name, {
-          configs: {
-            ...localState?.configs,
-            [visualizerId]: {
-              ...localState?.configs?.[visualizerId],
-              ...fullUpdate
-            }
-          }
-        })
-      }
-    } else {
-      // console.debug('[VisualizerConfig] Skipping local update (not selected)')
     }
 
-    // // Broadcast full config to other clients
-    // console.debug('[VisualizerConfig] Broadcasting to other clients (if any)', {
-    //   selectedClients,
-    //   clientIdentity,
-    //   clientId: clientIdentity?.clientId
-    // })
+    // ALWAYS update optimistic store for the current instance/card using the latest state
+    // This prevents snapback in the UI for both local and remote cards
+    if (typeof instanceKey === 'string') {
+      const currentConfigs =
+        useStore.getState().visualizerConfigOptimistic?.[instanceKey]?.configs || {}
+      updateVisualizerConfigOptimistic(instanceKey, {
+        configs: {
+          ...currentConfigs,
+          [visualizerId]: fullUpdate
+        }
+      })
+    }
+
     handleMultiClientAction(null, 'set_visual_config', { visualizerId, config: fullUpdate })
   }
 
@@ -709,27 +682,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
             }
             hideToggle
             onModelChange={(update) => {
-              if (single && !isCurrentClient && typeof name === 'string') {
-                updateVisualizerConfigOptimistic(instanceKey, {
-                  configs: {
-                    ...localState?.configs,
-                    [vtKey]: {
-                      ...localState?.configs?.[vtKey],
-                      ...update
-                    }
-                  }
-                })
-                // Also send config to remote instance
-                handleMultiClientAction(null, 'set_visual_config', {
-                  visualizerId: vtKey,
-                  config: {
-                    ...localState?.configs?.[vtKey],
-                    ...update
-                  }
-                })
-              } else {
-                handleConfigChange(single ? vtKey : globalVisualType, update)
-              }
+              handleConfigChange(vtKey, update)
             }}
           />
         )}
