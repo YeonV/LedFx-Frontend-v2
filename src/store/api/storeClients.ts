@@ -27,7 +27,7 @@ export interface BroadcastTarget {
 
 export interface BroadcastPayload {
   sender_name?: string
-  broadcast_type: 'visualiser_control' | 'scene_sync' | 'color_palette' | 'custom'
+  broadcast_type?: 'visualiser_control' | 'scene_sync' | 'color_palette' | 'custom'
   target: BroadcastTarget
   payload: Record<string, any>
 }
@@ -57,30 +57,21 @@ const storeClients = (set: any) => ({
       'clients/updateClients'
     ),
 
-  broadcastToClients: async (broadcastData: BroadcastPayload, senderId: string) => {
+  broadcastToClients: (broadcastData: BroadcastPayload, send: (data: any) => void) => {
     try {
-      const resp = await Ledfx('/api/clients', 'POST', {
-        action: 'broadcast',
-        sender_id: senderId,
-        ...broadcastData
+      send({
+        id: Date.now(), // unique integer per message
+        type: 'broadcast',
+        data: {
+          broadcast_type: broadcastData.broadcast_type,
+          target: broadcastData.target,
+          payload: broadcastData.payload
+        }
       })
-      return resp
+      return true
     } catch (error) {
       console.error('Broadcast failed:', error)
-      return null
-    }
-  },
-
-  syncClients: async (clientId: string) => {
-    try {
-      const resp = await Ledfx('/api/clients', 'POST', {
-        action: 'sync',
-        client_id: clientId
-      })
-      return resp
-    } catch (error) {
-      console.error('Sync failed:', error)
-      return null
+      return false
     }
   }
 })

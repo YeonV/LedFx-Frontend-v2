@@ -89,9 +89,15 @@ export const handlerConfig = {
   clients_updated: 'clients_updated',
   song_detected: true,
   client_broadcast: (data: any) => ({
+    type: data.type,
+    event_type: data.event_type,
     broadcast_type: data.broadcast_type,
+    // broadcast_id: data.broadcast_id,
+    sender_uuid: data.sender_uuid,
     sender_id: data.sender_id,
     sender_name: data.sender_name,
+    sender_type: data.sender_type,
+    target_uuids: data.target_uuids,
     payload: data.payload
   })
 }

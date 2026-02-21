@@ -33,6 +33,7 @@ import { defaultVisualizerConfigOptimistic } from '../../store/ui-persist/storeV
 import Popover from '../../components/Popover/Popover'
 import { ClientType } from '../../store/ui/storeClientIdentity'
 import ClientEdit from './ClientEdit'
+import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
 interface VisualizerConfigProps {
   selectedClients: string[]
@@ -91,7 +92,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
   ])
 
   const broadcastToClients = useStore((state) => state.broadcastToClients)
-
+  const { send, isConnected } = useWebSocket()
   // Helper: are we the main instance in single mode?
   const isCurrentClient =
     clientIdentity && selectedClients.length === 1 && selectedClients[0] === clientIdentity.clientId
@@ -173,7 +174,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     }
     // Broadcast for others
     const otherClients = selectedClients.filter((id: string) => id !== clientIdentity.clientId)
-    if (otherClients.length && broadcastToClients) {
+    if (otherClients.length && broadcastToClients && isConnected) {
       broadcastToClients(
         {
           broadcast_type: 'custom',
@@ -184,7 +185,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
             ...extraPayload
           }
         },
-        clientIdentity.clientId
+        send
       )
     }
   }
@@ -237,35 +238,35 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     const allClients = useStore.getState().clients || {}
     const totalClients = Object.keys(allClients).length
 
-    // Debug logging
-    console.debug('[VisualizerConfig] handleConfigChange called', {
-      visualizerId,
-      update,
-      fullUpdate,
-      selectedClients,
-      clientIdentity,
-      clientId: clientIdentity?.clientId,
-      totalClients,
-      allClients
-    })
+    // // Debug logging
+    // console.debug('[VisualizerConfig] handleConfigChange called', {
+    //   visualizerId,
+    //   update,
+    //   fullUpdate,
+    //   selectedClients,
+    //   clientIdentity,
+    //   clientId: clientIdentity?.clientId,
+    //   totalClients,
+    //   allClients
+    // })
 
     // Only execute local action if there is only one client in the system, or if the current instance is selected
     const isLocal =
       totalClients < 2 ||
       (clientIdentity && selectedClients.includes(clientIdentity.clientId || ''))
 
-    console.debug('[VisualizerConfig] Local action decision', {
-      isLocal,
-      reason:
-        totalClients < 2
-          ? 'totalClients < 2'
-          : clientIdentity && selectedClients.includes(clientIdentity.clientId || '')
-            ? 'current instance selected'
-            : 'not selected'
-    })
+    // console.debug('[VisualizerConfig] Local action decision', {
+    //   isLocal,
+    //   reason:
+    //     totalClients < 2
+    //       ? 'totalClients < 2'
+    //       : clientIdentity && selectedClients.includes(clientIdentity.clientId || '')
+    //         ? 'current instance selected'
+    //         : 'not selected'
+    // })
 
     if (isLocal) {
-      console.debug('[VisualizerConfig] Executing local update', { visualizerId, fullUpdate })
+      // console.debug('[VisualizerConfig] Executing local update', { visualizerId, fullUpdate })
       if (visualizerId === 'butterchurn') {
         updateButterchurnConfig?.(fullUpdate)
       } else {
@@ -284,15 +285,15 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
         })
       }
     } else {
-      console.debug('[VisualizerConfig] Skipping local update (not selected)')
+      // console.debug('[VisualizerConfig] Skipping local update (not selected)')
     }
 
-    // Broadcast full config to other clients
-    console.debug('[VisualizerConfig] Broadcasting to other clients (if any)', {
-      selectedClients,
-      clientIdentity,
-      clientId: clientIdentity?.clientId
-    })
+    // // Broadcast full config to other clients
+    // console.debug('[VisualizerConfig] Broadcasting to other clients (if any)', {
+    //   selectedClients,
+    //   clientIdentity,
+    //   clientId: clientIdentity?.clientId
+    // })
     handleMultiClientAction(null, 'set_visual_config', { visualizerId, config: fullUpdate })
   }
 

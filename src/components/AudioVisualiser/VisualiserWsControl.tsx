@@ -25,12 +25,10 @@ const VisualiserWsControl = () => {
     (state) => state.updateVisualizerConfigOptimistic
   )
 
-  const { send } = useWebSocket()
+  const { send, isConnected } = useWebSocket()
 
   useEffect(() => {
-    // console.log(visualType, visualizerConfigs[visualType])
-    if (clientIdentity.clientId === undefined) return
-    // console.log('ey', clientIdentity)
+    if (!isConnected || clientIdentity.clientId === undefined) return
     broadcastToClients(
       {
         broadcast_type: 'custom',
@@ -42,9 +40,10 @@ const VisualiserWsControl = () => {
           butterchurnConfig
         }
       },
-      clientIdentity.clientId
+      send
     )
   }, [
+    isConnected,
     visualType,
     butterchurnConfig,
     send,
@@ -54,10 +53,10 @@ const VisualiserWsControl = () => {
   ])
 
   useSubscription('client_broadcast', (d) => {
-    // console.log('MAN', d)
-    if (d.sender_id !== clientIdentity?.clientId && d.payload?.category === 'visualiser') {
-      // console.log(clientIdentity?.clientId, d.payload?.target_uuids)
-      if (d.payload?.target_uuids.includes(clientIdentity?.clientId)) {
+    // console.log('MAN', d, clientIdentity)
+    if (d.sender_uuid !== clientIdentity?.clientId && d.payload?.category === 'visualiser') {
+      // console.log(clientIdentity?.clientId, d)
+      if (d.target_uuids?.includes(clientIdentity?.clientId)) {
         // console.log('BOOOOM', d)
         switch (d.payload?.action) {
           case 'set_visual_type': {

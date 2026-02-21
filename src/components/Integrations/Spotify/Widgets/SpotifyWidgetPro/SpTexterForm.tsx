@@ -16,6 +16,7 @@ import GradientPicker from '../../../../SchemaForm/components/GradientPicker/Gra
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 
 import useStore from '../../../../../store/useStore'
+import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
 import { Ledfx } from '../../../../../api/ledfx'
 import { useVStore, type VState } from '../../../../../hooks/vStore'
 import AutoApplySelector from './AutoApplySelector'
@@ -145,8 +146,10 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
   }
   // Apply effect to selected visualisers (clients) using multi-client aware logic
+
   const broadcastToClients = useStore((state) => state.broadcastToClients)
   const clientIdentity = useStore((state) => state.clientIdentity)
+  const { send, isConnected } = useWebSocket()
 
   const handleMultiClientAction = (
     localAction: (() => void) | null,
@@ -162,10 +165,12 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
     // Broadcast for others
     const otherClients = selectedIds.filter((id: string) => id !== clientIdentity.clientId)
-    if (otherClients.length && broadcastToClients) {
+
+    if (otherClients.length && broadcastToClients && isConnected) {
       broadcastToClients(
         {
           broadcast_type: 'custom',
+          // target: { mode: 'all' },
           target: { mode: 'uuids', uuids: otherClients },
           payload: {
             category: 'visualiser',
@@ -173,7 +178,7 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
             ...extraPayload
           }
         },
-        clientIdentity.clientId
+        send
       )
     }
   }

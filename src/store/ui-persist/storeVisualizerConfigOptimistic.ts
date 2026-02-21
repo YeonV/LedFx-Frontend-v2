@@ -53,24 +53,24 @@ const storeVisualizerConfigOptimistic = (set: any) => ({
       produce((draft: IStore) => {
         draft.visualizerConfigOptimistic = state
         // Clever logging: print full state after set
-        if (typeof window !== 'undefined') {
-          console.log(
-            '[setVisualizerConfigOptimistic] New state:',
-            JSON.parse(JSON.stringify(state))
-          )
-          if (state) {
-            const keys = Object.keys(state)
-            if (!keys.includes('SUB')) {
-              console.warn('[setVisualizerConfigOptimistic] SUB key missing after set!', keys)
-            }
-          }
-        }
+        // if (typeof window !== 'undefined') {
+        //   console.log(
+        //     '[setVisualizerConfigOptimistic] New state:',
+        //     JSON.parse(JSON.stringify(state))
+        //   )
+        //   if (state) {
+        //     const keys = Object.keys(state)
+        //     if (!keys.includes('SUB')) {
+        //       console.warn('[setVisualizerConfigOptimistic] SUB key missing after set!', keys)
+        //     }
+        //   }
+        // }
       }),
       false,
       'visualizerConfigOptimistic/setAll'
     ),
   updateVisualizerConfigOptimistic: (name: string, partial: Partial<VisualizerInstanceConfig>) => {
-    console.log('[updateVisualizerConfigOptimistic] Updating for', name, partial)
+    // console.log('[updateVisualizerConfigOptimistic] Updating for', name, partial)
     return set(
       produce((draft: IStore) => {
         if (!draft.visualizerConfigOptimistic) return
@@ -87,18 +87,18 @@ const storeVisualizerConfigOptimistic = (set: any) => ({
           }
         }
         Object.assign(draft.visualizerConfigOptimistic[name], partial)
-        // Clever logging: print full state after update
-        if (typeof window !== 'undefined') {
-          const state = draft.visualizerConfigOptimistic
-          console.log(
-            '[updateVisualizerConfigOptimistic] State after update:',
-            JSON.parse(JSON.stringify(state))
-          )
-          const keys = Object.keys(state)
-          if (!keys.includes('SUB')) {
-            console.warn('[updateVisualizerConfigOptimistic] SUB key missing after update!', keys)
-          }
-        }
+        // // Clever logging: print full state after update
+        // if (typeof window !== 'undefined') {
+        //   const state = draft.visualizerConfigOptimistic
+        //   console.log(
+        //     '[updateVisualizerConfigOptimistic] State after update:',
+        //     JSON.parse(JSON.stringify(state))
+        //   )
+        //   const keys = Object.keys(state)
+        //   if (!keys.includes('SUB')) {
+        //     console.warn('[updateVisualizerConfigOptimistic] SUB key missing after update!', keys)
+        //   }
+        // }
       }),
       false,
       'visualizerConfigOptimistic/updatePartial'

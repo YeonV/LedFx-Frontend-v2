@@ -183,7 +183,12 @@ const Devices = () => {
           {clients &&
             Object.entries(clients).length > 0 &&
             Object.entries(clients).map(([clientId, data]) => (
-              <VisualizerCard selectedClients={[clientId]} name={data?.name} type={data?.type} />
+              <VisualizerCard
+                key={clientId}
+                selectedClients={[clientId]}
+                name={data?.name}
+                type={data?.type}
+              />
             ))}
         </Stack>
       )}
