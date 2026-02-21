@@ -2,6 +2,30 @@ import { spDevice } from './SpState'
 import { SpotifyState } from './SpotifyState'
 
 const storeSpotify = () => ({
+  cleanTitles: true,
+  cleanTitleRegex: '\\s*\\[[^\\]]*\\]|\\s*\\([^)]*\\)',
+  cleanTitleList: [
+    'official',
+    'music video',
+    'video',
+    '4k',
+    'remaster',
+    'remastered',
+    'hd',
+    'lyrics',
+    'audio',
+    'visualizer',
+    'mv',
+    'live',
+    'performance',
+    'explicit',
+    'clean',
+    'feat.',
+    'ft.',
+    'p',
+    'bit',
+    'hz'
+  ],
   spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/4sXMBGaUBF2EjPvrq2Z3US?',
   spotifyAuthToken: '',
   player: null as any,

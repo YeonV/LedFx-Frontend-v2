@@ -104,6 +104,16 @@ const storeSongDectector = (set: any) => ({
   textAutoApply: false,
   textVirtuals: [] as string[],
   textVisualisers: [] as string[],
+  isActiveVisualisers: false,
+  setIsActiveVisualisers: (active: boolean) => {
+    set(
+      produce((state: any) => {
+        state.isActiveVisualisers = active
+      }),
+      false,
+      'songDetector/setIsActiveVisualisers'
+    )
+  },
   setTextAutoApply: (active: boolean) => {
     set(
       produce((state: any) => {

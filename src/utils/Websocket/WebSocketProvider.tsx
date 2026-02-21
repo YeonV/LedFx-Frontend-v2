@@ -89,19 +89,19 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
 
         // Capture client_id from server
         if (eventType === 'client_id' && data.client_id) {
+          console.log('WS: Received client_id:', data.client_id)
           useStore.getState().setClientId(data.client_id)
         }
 
         // Sync client name/type from backend if updated (e.g., name conflict)
         if (eventType === 'client_info_updated' && data.client_id) {
-          if (data.name) {
-            useStore.getState().setClientName(data.name)
-          }
-          if (data.type) {
-            useStore.getState().setClientType(data.type)
-          }
-          // Always update clientId in case it changed
-          useStore.getState().setClientId(data.client_id)
+          console.log('WS: Received client_info_updated:', data.name, data.type, data.client_id)
+          const updates: any = { clientId: data.client_id }
+          if (data.name) updates.name = data.name
+          if (data.type) updates.type = data.type
+
+          // Use atomic update to prevent multiple re-renders and potential sync loops
+          useStore.getState().updateClientIdentity(updates)
         }
 
         // Handle colors_updated centrally to avoid duplicate calls from multiple component subscriptions

@@ -372,7 +372,7 @@ declare interface SoundWaveLayer extends AstrofoxLayerBase {
 
 declare const state: Omit<{
     version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
     showCode: boolean;
     shaderCode: string;
     activeCustomShader: undefined;
@@ -428,11 +428,19 @@ declare const state: Omit<{
     audioSource: "backend" | "mic" | "system";
     autoChange: boolean;
     isPlaying: boolean;
+    globalSmoothing: number;
+    whiteCircleFix: "original" | "energy" | "clamp";
+    outerGlowMode: "original" | "strengthened";
+    textAutoFit: boolean;
     setVisualType: (type: VisualisationType) => any;
     setAudioSource: (source: "backend" | "mic" | "system") => any;
     setAutoChange: (enabled: boolean) => any;
     setIsPlaying: (playing: boolean) => any;
     togglePlay: () => any;
+    setGlobalSmoothing: (value: number) => any;
+    setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+    setOuterGlowMode: (mode: "original" | "strengthened") => any;
+    setTextAutoFit: (enabled: boolean) => any;
 };
 
 export declare interface StoreConfigsActions {
@@ -515,6 +523,10 @@ export declare interface StoreVisualizerActions {
     setAutoChange: (enabled: boolean) => void;
     setIsPlaying: (playing: boolean) => void;
     togglePlay: () => void;
+    setGlobalSmoothing: (value: number) => void;
+    setWhiteCircleFix: (mode: 'original' | 'energy' | 'clamp') => void;
+    setOuterGlowMode: (mode: 'original' | 'strengthened') => void;
+    setTextAutoFit: (enabled: boolean) => void;
 }
 
 export declare interface StoreVisualizerState {
@@ -523,6 +535,10 @@ export declare interface StoreVisualizerState {
     audioSource: 'backend' | 'mic' | 'system';
     autoChange: boolean;
     isPlaying: boolean;
+    globalSmoothing: number;
+    whiteCircleFix: 'original' | 'energy' | 'clamp';
+    outerGlowMode: 'original' | 'strengthened';
+    textAutoFit: boolean;
 }
 
 declare interface StringProperty extends BaseProperty {
@@ -558,7 +574,7 @@ declare interface UIOptions {
 
 export declare const useStore: UseBoundStore<Omit<Omit<StoreApi<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -614,15 +630,23 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }>, "setState" | "devtools"> & {
 setState(partial: (Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -678,14 +702,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) | Partial<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -741,14 +773,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }> | ((state: Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -804,14 +844,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) => (Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -867,14 +915,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) | Partial<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -930,11 +986,19 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }>), replace?: false | undefined, action?: (string | {
 [x: string]: unknown;
 [x: number]: unknown;
@@ -943,7 +1007,7 @@ type: string;
 }) | undefined): void;
 setState(state: (Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -999,14 +1063,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) | ((state: Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1062,14 +1134,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) => Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1125,11 +1205,19 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }), replace: true, action?: (string | {
 [x: string]: unknown;
 [x: number]: unknown;
@@ -1142,7 +1230,7 @@ cleanup: () => void;
 }, "setState" | "persist"> & {
 setState(partial: (Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1198,14 +1286,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) | Partial<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1261,14 +1357,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }> | ((state: Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1324,14 +1428,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) => (Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1387,14 +1499,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) | Partial<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1450,11 +1570,19 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }>), replace?: false | undefined, action?: (string | {
 [x: string]: unknown;
 [x: number]: unknown;
@@ -1463,7 +1591,7 @@ type: string;
 }) | undefined): unknown;
 setState(state: (Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1519,14 +1647,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) | ((state: Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1582,14 +1718,22 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) => Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1645,11 +1789,19 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }), replace: true, action?: (string | {
 [x: string]: unknown;
 [x: number]: unknown;
@@ -1659,7 +1811,7 @@ type: string;
 persist: {
 setOptions: (options: Partial<PersistOptions<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1715,81 +1867,26 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
-}, Omit<{
-version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
-showCode: boolean;
-shaderCode: string;
-activeCustomShader: undefined;
-setShowCode: (show: boolean) => any;
-toggleShaderEditor: () => any;
-setShaderCode: (code: string) => any;
-setActiveCustomShader: (shader: string | undefined) => any;
-butterchurnConfig: ButterchurnConfig;
-butterchurnPresetNames: never[];
-astrofoxConfig: AstrofoxConfig;
-customAstrofoxPresets: any;
-visualizerConfigs: Record<string, any>;
-astrofoxReady: boolean;
-setButterchurnConfig: (config: ButterchurnConfig | ((prev: ButterchurnConfig) => ButterchurnConfig)) => any;
-updateButterchurnConfig: (partial: Partial<ButterchurnConfig>) => any;
-setButterchurnPresetNames: (names: string[]) => any;
-setAstrofoxConfig: (config: AstrofoxConfig | ((prev: AstrofoxConfig) => AstrofoxConfig)) => any;
-updateAstrofoxConfig: (partial: Partial<AstrofoxConfig>) => any;
-saveCustomAstrofoxPreset: (name: string, layers: AstrofoxLayer[], backgroundColor: string) => void;
-deleteCustomAstrofoxPreset: (name: string) => void;
-loadCustomAstrofoxPresets: () => void;
-setVisualizerConfig: (id: string, config: any) => any;
-updateVisualizerConfig: (id: string, partial: any) => any;
-setAstrofoxReady: (ready: boolean) => any;
-initializeConfigs: () => void;
-fxEnabled: boolean;
-ppConfig: PostProcessingConfig;
-glContext: WebGLRenderingContext | null;
-canvasSize: {
-width: number;
-height: number;
-};
-setFxEnabled: (enabled: boolean) => any;
-toggleFx: () => any;
-setPpConfig: (config: PostProcessingConfig) => any;
-updatePpConfig: (partial: Partial<PostProcessingConfig>) => any;
-setGlContext: (context: WebGLRenderingContext | null) => any;
-setCanvasSize: (size: {
-width: number;
-height: number;
-}) => any;
-showOverlays: boolean;
-fullScreen: boolean;
-showFxPanel: boolean;
-saveError: null;
-setShowOverlays: (show: boolean) => any;
-toggleOverlays: () => any;
-setFullScreen: (fullScreen: boolean) => any;
-setShowFxPanel: (show: boolean) => any;
-setSaveError: (error: string | null) => any;
-visualizers: (VisualizerOption | WebGLVisualizerOption)[];
-visualType: VisualisationType;
-audioSource: "backend" | "mic" | "system";
-autoChange: boolean;
-isPlaying: boolean;
-setVisualType: (type: VisualisationType) => any;
-setAudioSource: (source: "backend" | "mic" | "system") => any;
-setAutoChange: (enabled: boolean) => any;
-setIsPlaying: (playing: boolean) => any;
-togglePlay: () => any;
-}, unknown>>) => void;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
+}, any, unknown>>) => void;
 clearStorage: () => void;
 rehydrate: () => Promise<void> | void;
 hasHydrated: () => boolean;
 onHydrate: (fn: (state: Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1845,15 +1942,23 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) => void) => () => void;
 onFinishHydration: (fn: (state: Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1909,15 +2014,23 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
 }) => void) => () => void;
 getOptions: () => Partial<PersistOptions<Omit<{
 version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
+}, "isPlaying" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnConfig" | "butterchurnPresetNames" | "astrofoxConfig" | "customAstrofoxPresets" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "fxEnabled" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "showFxPanel" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "visualizers" | "visualType" | "audioSource" | "autoChange" | "globalSmoothing" | "whiteCircleFix" | "outerGlowMode" | "textAutoFit" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay" | "setGlobalSmoothing" | "setWhiteCircleFix" | "setOuterGlowMode" | "setTextAutoFit"> & {
 showCode: boolean;
 shaderCode: string;
 activeCustomShader: undefined;
@@ -1973,75 +2086,20 @@ visualType: VisualisationType;
 audioSource: "backend" | "mic" | "system";
 autoChange: boolean;
 isPlaying: boolean;
+globalSmoothing: number;
+whiteCircleFix: "original" | "energy" | "clamp";
+outerGlowMode: "original" | "strengthened";
+textAutoFit: boolean;
 setVisualType: (type: VisualisationType) => any;
 setAudioSource: (source: "backend" | "mic" | "system") => any;
 setAutoChange: (enabled: boolean) => any;
 setIsPlaying: (playing: boolean) => any;
 togglePlay: () => any;
-}, Omit<{
-version: number;
-}, "isPlaying" | "visualType" | "customAstrofoxPresets" | "visualizers" | "butterchurnConfig" | "autoChange" | "fxEnabled" | "showFxPanel" | "showCode" | "shaderCode" | "activeCustomShader" | "setShowCode" | "toggleShaderEditor" | "setShaderCode" | "setActiveCustomShader" | "butterchurnPresetNames" | "astrofoxConfig" | "visualizerConfigs" | "astrofoxReady" | "setButterchurnConfig" | "updateButterchurnConfig" | "setButterchurnPresetNames" | "setAstrofoxConfig" | "updateAstrofoxConfig" | "saveCustomAstrofoxPreset" | "deleteCustomAstrofoxPreset" | "loadCustomAstrofoxPresets" | "setVisualizerConfig" | "updateVisualizerConfig" | "setAstrofoxReady" | "initializeConfigs" | "ppConfig" | "glContext" | "canvasSize" | "setFxEnabled" | "toggleFx" | "setPpConfig" | "updatePpConfig" | "setGlContext" | "setCanvasSize" | "showOverlays" | "fullScreen" | "saveError" | "setShowOverlays" | "toggleOverlays" | "setFullScreen" | "setShowFxPanel" | "setSaveError" | "audioSource" | "setVisualType" | "setAudioSource" | "setAutoChange" | "setIsPlaying" | "togglePlay"> & {
-showCode: boolean;
-shaderCode: string;
-activeCustomShader: undefined;
-setShowCode: (show: boolean) => any;
-toggleShaderEditor: () => any;
-setShaderCode: (code: string) => any;
-setActiveCustomShader: (shader: string | undefined) => any;
-butterchurnConfig: ButterchurnConfig;
-butterchurnPresetNames: never[];
-astrofoxConfig: AstrofoxConfig;
-customAstrofoxPresets: any;
-visualizerConfigs: Record<string, any>;
-astrofoxReady: boolean;
-setButterchurnConfig: (config: ButterchurnConfig | ((prev: ButterchurnConfig) => ButterchurnConfig)) => any;
-updateButterchurnConfig: (partial: Partial<ButterchurnConfig>) => any;
-setButterchurnPresetNames: (names: string[]) => any;
-setAstrofoxConfig: (config: AstrofoxConfig | ((prev: AstrofoxConfig) => AstrofoxConfig)) => any;
-updateAstrofoxConfig: (partial: Partial<AstrofoxConfig>) => any;
-saveCustomAstrofoxPreset: (name: string, layers: AstrofoxLayer[], backgroundColor: string) => void;
-deleteCustomAstrofoxPreset: (name: string) => void;
-loadCustomAstrofoxPresets: () => void;
-setVisualizerConfig: (id: string, config: any) => any;
-updateVisualizerConfig: (id: string, partial: any) => any;
-setAstrofoxReady: (ready: boolean) => any;
-initializeConfigs: () => void;
-fxEnabled: boolean;
-ppConfig: PostProcessingConfig;
-glContext: WebGLRenderingContext | null;
-canvasSize: {
-width: number;
-height: number;
-};
-setFxEnabled: (enabled: boolean) => any;
-toggleFx: () => any;
-setPpConfig: (config: PostProcessingConfig) => any;
-updatePpConfig: (partial: Partial<PostProcessingConfig>) => any;
-setGlContext: (context: WebGLRenderingContext | null) => any;
-setCanvasSize: (size: {
-width: number;
-height: number;
-}) => any;
-showOverlays: boolean;
-fullScreen: boolean;
-showFxPanel: boolean;
-saveError: null;
-setShowOverlays: (show: boolean) => any;
-toggleOverlays: () => any;
-setFullScreen: (fullScreen: boolean) => any;
-setShowFxPanel: (show: boolean) => any;
-setSaveError: (error: string | null) => any;
-visualizers: (VisualizerOption | WebGLVisualizerOption)[];
-visualType: VisualisationType;
-audioSource: "backend" | "mic" | "system";
-autoChange: boolean;
-isPlaying: boolean;
-setVisualType: (type: VisualisationType) => any;
-setAudioSource: (source: "backend" | "mic" | "system") => any;
-setAutoChange: (enabled: boolean) => any;
-setIsPlaying: (playing: boolean) => any;
-togglePlay: () => any;
-}, unknown>>;
+setGlobalSmoothing: (value: number) => any;
+setWhiteCircleFix: (mode: "original" | "energy" | "clamp") => any;
+setOuterGlowMode: (mode: "original" | "strengthened") => any;
+setTextAutoFit: (enabled: boolean) => any;
+}, any, unknown>>;
 };
 }>;
 
@@ -2165,7 +2223,7 @@ export declare type WebGLVisualisationType = WebGLVisualiserId;
  * WebGL Visualizer Type
  * All available frontend-only GLSL shader visualizers
  */
-declare type WebGLVisualiserId = 'gif' | 'matrix' | 'terrain' | 'geometric' | 'concentric' | 'particles' | 'bars3d' | 'radial3d' | 'waveform3d' | 'bleep' | 'bands' | 'bandsmatrix' | 'blocks' | 'equalizer2d' | 'blender' | 'clone' | 'digitalrain' | 'flame' | 'gameoflife' | 'image' | 'keybeat2d' | 'noise2d' | 'plasma2d' | 'plasmawled2d' | 'radial' | 'soap' | 'texter' | 'waterfall';
+declare type WebGLVisualiserId = 'gif' | 'matrix' | 'terrain' | 'geometric' | 'concentric' | 'particles' | 'bars3d' | 'radial3d' | 'waveform3d' | 'bleep' | 'bands' | 'bandsmatrix' | 'blocks' | 'equalizer2d' | 'blender' | 'clone' | 'digitalrain' | 'flame' | 'gameoflife' | 'image' | 'keybeat2d' | 'noise2d' | 'plasma2d' | 'plasmawled2d' | 'radial' | 'soap' | 'texter' | 'bladeTexter' | 'waterfall';
 
 /**
  * WebGL Visualizer option for Autocomplete with category metadata

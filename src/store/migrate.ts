@@ -358,5 +358,65 @@ export const migrations: Migrations = {
     if (typeof draft.visualizerConfigOptimistic === 'undefined') {
       draft.visualizerConfigOptimistic = undefined
     }
+  }),
+
+  // Migration 42: Add Song Detector and visualizer config fields, migrate optimistic config structure
+  42: produce((draft) => {
+    // Song Detector: add isActiveVisualisers and textVisualisers if missing
+    if (typeof draft.isActiveVisualisers === 'undefined') {
+      draft.isActiveVisualisers = false
+    }
+    if (typeof draft.textVisualisers === 'undefined') {
+      draft.textVisualisers = []
+    }
+
+    // Migrate visualizerConfigOptimistic to new per-instance structure if needed
+    if (draft.visualizerConfigOptimistic && !Array.isArray(draft.visualizerConfigOptimistic)) {
+      // If old structure: was a flat object with per-visualType keys, not per-instance
+      // Detect if any keys are not instance names (e.g., 'butterchurn', 'matrix', etc.)
+      const old = draft.visualizerConfigOptimistic
+      const isOldShape = Object.values(old).some(
+        (v: any) =>
+          v &&
+          typeof v === 'object' &&
+          v.configs &&
+          typeof v.configs === 'object' &&
+          Object.keys(v.configs).length > 0 &&
+          Object.keys(v).some(
+            (k) =>
+              ['isPlaying', 'showOverlays', 'autoChange', 'fxEnabled', 'showFxPanel'].includes(k) &&
+              typeof v[k] === 'object'
+          )
+      )
+      if (isOldShape) {
+        // Convert to new shape: wrap under a default instance name (e.g., 'MAIN')
+        draft.visualizerConfigOptimistic = {
+          MAIN: {
+            visualType: old.visualType || 'butterchurn',
+            isPlaying:
+              old.isPlaying && typeof old.isPlaying === 'object'
+                ? Object.values(old.isPlaying)[0]
+                : false,
+            showOverlays:
+              old.showOverlays && typeof old.showOverlays === 'object'
+                ? Object.values(old.showOverlays)[0]
+                : true,
+            autoChange:
+              old.autoChange && typeof old.autoChange === 'object'
+                ? Object.values(old.autoChange)[0]
+                : false,
+            fxEnabled:
+              old.fxEnabled && typeof old.fxEnabled === 'object'
+                ? Object.values(old.fxEnabled)[0]
+                : false,
+            showFxPanel:
+              old.showFxPanel && typeof old.showFxPanel === 'object'
+                ? Object.values(old.showFxPanel)[0]
+                : false,
+            configs: old.configs || {}
+          }
+        }
+      }
+    }
   })
 }

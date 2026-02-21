@@ -1,10 +1,20 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from './WebSocketProvider'
 
 export const WebSocketManager = () => {
   const { send, isConnected } = useWebSocket()
-  const { virtuals, pixelGraphs, clientIdentity, getClients } = useStore()
+  const clientIdentity = useStore((state) => state.clientIdentity)
+  const virtuals = useStore((state) => state.virtuals)
+  const pixelGraphs = useStore((state) => state.pixelGraphs)
+  const getClients = useStore((state) => state.getClients)
+
+  const hasSentInitialInfo = useRef(false)
+  // Store the properties we actually sync to avoid reference-related loops
+  const lastSyncRef = useRef({
+    name: clientIdentity?.name,
+    type: clientIdentity?.type
+  })
 
   // Handle clients_updated event
   useSubscription('clients_updated', () => {
@@ -14,20 +24,48 @@ export const WebSocketManager = () => {
   // Handle client_broadcast event
   useSubscription('client_broadcast', (data) => {
     // Dispatch custom event for components to handle broadcasts
+    // console.log('YZ2', data)
     const event = new CustomEvent('ledfx:client_broadcast', { detail: data })
     window.dispatchEvent(event)
   })
 
-  // Send client info on connection
+  // Sync client info with backend
   useEffect(() => {
+    if (!isConnected) {
+      hasSentInitialInfo.current = false
+      return
+    }
+
     if (isConnected && clientIdentity) {
-      send({
-        id: 9999,
-        type: 'set_client_info',
-        device_id: clientIdentity.deviceId,
-        name: clientIdentity.name,
-        client_type: clientIdentity.type
-      })
+      const { name, type, deviceId } = clientIdentity
+
+      if (!hasSentInitialInfo.current) {
+        // Initial metadata registration
+        console.log('WSM: set_client_info', name, type)
+        send({
+          id: 10001,
+          type: 'set_client_info',
+          data: {
+            device_id: deviceId,
+            name,
+            type
+          }
+        })
+        hasSentInitialInfo.current = true
+        lastSyncRef.current = { name, type }
+      } else if (name !== lastSyncRef.current.name || type !== lastSyncRef.current.type) {
+        // Update metadata when identity changes in store
+        console.log('WSM: update_client_info', name, type)
+        send({
+          id: 10002,
+          type: 'update_client_info',
+          data: {
+            name,
+            type
+          }
+        })
+        lastSyncRef.current = { name, type }
+      }
     }
   }, [isConnected, send, clientIdentity])
 

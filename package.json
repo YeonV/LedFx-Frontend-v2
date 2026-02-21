@@ -1,6 +1,6 @@
 {
   "name": "ledfx",
-  "version": "2.1.5-b8",
+  "version": "2.1.6-b1",
   "description": "LedFx v2 - BladeMOD",
   "author": "YeonV aka Blade",
   "private": true,
@@ -49,6 +49,7 @@
     "immer": "11.1.0",
     "is-electron": "^2.2.2",
     "jwt-decode": "^4.0.0",
+    "lrclib-api": "^2.0.4",
     "notistack": "^3.0.1",
     "oauth-pkce": "0.0.7",
     "postcss": "^8.5.5",

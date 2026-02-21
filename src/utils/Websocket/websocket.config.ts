@@ -14,7 +14,6 @@ export const initialSubscriptions = [
   { event_type: 'effect_set', id: 9004 },
   { event_type: 'client_connected', id: 9005 },
   { event_type: 'client_disconnected', id: 9006 },
-  { event_type: 'client_sync', id: 9007 },
   { event_type: 'playlist_started', id: 9008 },
   { event_type: 'playlist_advanced', id: 9009 },
   { event_type: 'playlist_stopped', id: 9010 },
@@ -87,10 +86,17 @@ export const handlerConfig = {
   effect_set: true,
   colors_updated: 'colors_updated',
   clients_updated: 'clients_updated',
+  song_detected: true,
   client_broadcast: (data: any) => ({
+    type: data.type,
+    event_type: data.event_type,
     broadcast_type: data.broadcast_type,
+    // broadcast_id: data.broadcast_id,
+    sender_uuid: data.sender_uuid,
     sender_id: data.sender_id,
     sender_name: data.sender_name,
+    sender_type: data.sender_type,
+    target_uuids: data.target_uuids,
     payload: data.payload
   })
 }

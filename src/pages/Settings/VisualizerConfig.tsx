@@ -28,11 +28,12 @@ import {
 import BladeSchemaForm from '../../components/SchemaForm/SchemaForm/SchemaForm'
 import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
-import { useEffect, useState } from 'react' // useState only for newVisName/showConfig
+import { useEffect, useState, useMemo } from 'react' // useState only for newVisName/showConfig
 import { defaultVisualizerConfigOptimistic } from '../../store/ui-persist/storeVisualizerConfigOptimistic'
 import Popover from '../../components/Popover/Popover'
 import { ClientType } from '../../store/ui/storeClientIdentity'
 import ClientEdit from './ClientEdit'
+import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
 interface VisualizerConfigProps {
   selectedClients: string[]
@@ -50,10 +51,12 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
   const globalFxEnabled = useVStore((state: VState) => state.fxEnabled) ?? false
   const globalShowFxPanel = useVStore((state: VState) => state.showFxPanel) ?? false
   const butterchurnPresetNames = useVStore((state: VState) => state.butterchurnPresetNames) || []
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const butterchurnConfig = useVStore((state: VState) => state.butterchurnConfig) || {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const visualizerConfigs = useVStore((state: VState) => state.visualizerConfigs) || {}
+  const butterchurnConfigRaw = useVStore((state: VState) => state.butterchurnConfig)
+  const butterchurnConfig = useMemo(() => butterchurnConfigRaw || {}, [butterchurnConfigRaw])
+  const visualizerConfigsRaw = useVStore((state: VState) => state.visualizerConfigs)
+  const visualizerConfigs = useMemo(() => visualizerConfigsRaw || {}, [visualizerConfigsRaw])
+  const clientIdentity = useStore((state) => state.clientIdentity)
+  const coreParams = useStore((state) => state.coreParams)
 
   // Zustand optimistic state for sub-instances in single mode
   const visualizerConfigOptimistic = useStore((state) => state.visualizerConfigOptimistic)
@@ -62,34 +65,44 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     (state) => state.updateVisualizerConfigOptimistic
   )
   useEffect(() => {
-    // Initialize if not set
-    if (!visualizerConfigOptimistic) {
-      setVisualizerConfigOptimistic(
-        defaultVisualizerConfigOptimistic(
+    // Always use the 'name' prop as the key for the main instance
+    const instance = typeof name === 'string' ? name : clientIdentity?.name || 'unknown-client'
+    // If this is the main instance, never fall back to 'unknown-client'
+    const key = typeof name === 'string' ? name : instance
+    if (!visualizerConfigOptimistic || !visualizerConfigOptimistic[key]) {
+      setVisualizerConfigOptimistic({
+        ...(visualizerConfigOptimistic || {}),
+        ...defaultVisualizerConfigOptimistic(
           globalVisualType,
+          key,
           globalVisualType === 'butterchurn'
             ? butterchurnConfig
             : visualizerConfigs?.[globalVisualType] || {}
         )
-      )
+      })
     }
   }, [
     visualizerConfigOptimistic,
     setVisualizerConfigOptimistic,
     globalVisualType,
     butterchurnConfig,
-    visualizerConfigs
+    visualizerConfigs,
+    name,
+    clientIdentity?.name
   ])
 
   const broadcastToClients = useStore((state) => state.broadcastToClients)
-  const clientIdentity = useStore((state) => state.clientIdentity)
-
+  const { send, isConnected } = useWebSocket()
   // Helper: are we the main instance in single mode?
   const isCurrentClient =
     clientIdentity && selectedClients.length === 1 && selectedClients[0] === clientIdentity.clientId
 
   // Use correct state for UI display
-  const localState = visualizerConfigOptimistic
+  // Always use the 'name' prop as the key for the main instance
+  const instanceKey = typeof name === 'string' ? name : 'unknown-client'
+  const localState = visualizerConfigOptimistic?.[instanceKey]
+  // MAIN: use global state for UI/config, but always set optimistic value on update
+  // SUB: use per-instance optimistic state
   const visualType = single
     ? isCurrentClient
       ? globalVisualType
@@ -98,28 +111,33 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
   const isPlaying = single
     ? isCurrentClient
       ? globalIsPlaying
-      : (localState?.isPlaying[visualType] ?? false)
+      : (localState?.isPlaying ?? false)
     : globalIsPlaying
   const showOverlays = single
     ? isCurrentClient
       ? globalShowOverlays
-      : (localState?.showOverlays[visualType] ?? true)
+      : (localState?.showOverlays ?? true)
     : globalShowOverlays
   const autoChange = single
     ? isCurrentClient
       ? globalAutoChange
-      : (localState?.autoChange[visualType] ?? false)
+      : (localState?.autoChange ?? false)
     : globalAutoChange
   const fxEnabled = single
     ? isCurrentClient
       ? globalFxEnabled
-      : (localState?.fxEnabled[visualType] ?? false)
+      : (localState?.fxEnabled ?? false)
     : globalFxEnabled
   const showFxPanel = single
     ? isCurrentClient
       ? globalShowFxPanel
-      : (localState?.showFxPanel[visualType] ?? false)
+      : (localState?.showFxPanel ?? false)
     : globalShowFxPanel
+
+  // For config/model: main uses global, sub uses optimistic
+  // Only declare vtKey/optimisticConfig once, at the top
+  const vtKey = typeof visualType === 'string' ? visualType : visualType[instanceKey]
+  const optimisticConfig = localState?.configs?.[vtKey] || {}
 
   // (removed duplicate broadcastToClients and clientIdentity)
   const [newVisName, setNewVisName] = useState('')
@@ -156,7 +174,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     }
     // Broadcast for others
     const otherClients = selectedClients.filter((id: string) => id !== clientIdentity.clientId)
-    if (otherClients.length && broadcastToClients) {
+    if (otherClients.length && broadcastToClients && isConnected) {
       broadcastToClients(
         {
           broadcast_type: 'custom',
@@ -167,7 +185,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
             ...extraPayload
           }
         },
-        clientIdentity.clientId
+        send
       )
     }
   }
@@ -194,8 +212,8 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
   const hasSchema = (visualizerId: string) => !!registry[visualizerId]
 
   // Get current config
-  const currentConfig =
-    visualType === 'butterchurn' ? butterchurnConfig : visualizerConfigs?.[visualType] || {}
+  // Use per-instance config if available, fallback to global config
+  // (vtKey and optimisticConfig already declared above)
 
   // Config change handler (multi-client: push and overwrite)
   const handleConfigChange = (visualizerId: string, update: any) => {
@@ -220,50 +238,62 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     const allClients = useStore.getState().clients || {}
     const totalClients = Object.keys(allClients).length
 
-    // Debug logging
-    console.debug('[VisualizerConfig] handleConfigChange called', {
-      visualizerId,
-      update,
-      fullUpdate,
-      selectedClients,
-      clientIdentity,
-      clientId: clientIdentity?.clientId,
-      totalClients,
-      allClients
-    })
+    // // Debug logging
+    // console.debug('[VisualizerConfig] handleConfigChange called', {
+    //   visualizerId,
+    //   update,
+    //   fullUpdate,
+    //   selectedClients,
+    //   clientIdentity,
+    //   clientId: clientIdentity?.clientId,
+    //   totalClients,
+    //   allClients
+    // })
 
     // Only execute local action if there is only one client in the system, or if the current instance is selected
     const isLocal =
       totalClients < 2 ||
       (clientIdentity && selectedClients.includes(clientIdentity.clientId || ''))
 
-    console.debug('[VisualizerConfig] Local action decision', {
-      isLocal,
-      reason:
-        totalClients < 2
-          ? 'totalClients < 2'
-          : clientIdentity && selectedClients.includes(clientIdentity.clientId || '')
-            ? 'current instance selected'
-            : 'not selected'
-    })
+    // console.debug('[VisualizerConfig] Local action decision', {
+    //   isLocal,
+    //   reason:
+    //     totalClients < 2
+    //       ? 'totalClients < 2'
+    //       : clientIdentity && selectedClients.includes(clientIdentity.clientId || '')
+    //         ? 'current instance selected'
+    //         : 'not selected'
+    // })
 
     if (isLocal) {
-      console.debug('[VisualizerConfig] Executing local update', { visualizerId, fullUpdate })
+      // console.debug('[VisualizerConfig] Executing local update', { visualizerId, fullUpdate })
       if (visualizerId === 'butterchurn') {
         updateButterchurnConfig?.(fullUpdate)
       } else {
         updateVisualizerConfig?.(visualizerId, fullUpdate)
       }
+      // Always update optimistic store for main client as well
+      if (single && isCurrentClient && typeof name === 'string') {
+        updateVisualizerConfigOptimistic(name, {
+          configs: {
+            ...localState?.configs,
+            [visualizerId]: {
+              ...localState?.configs?.[visualizerId],
+              ...fullUpdate
+            }
+          }
+        })
+      }
     } else {
-      console.debug('[VisualizerConfig] Skipping local update (not selected)')
+      // console.debug('[VisualizerConfig] Skipping local update (not selected)')
     }
 
-    // Broadcast full config to other clients
-    console.debug('[VisualizerConfig] Broadcasting to other clients (if any)', {
-      selectedClients,
-      clientIdentity,
-      clientId: clientIdentity?.clientId
-    })
+    // // Broadcast full config to other clients
+    // console.debug('[VisualizerConfig] Broadcasting to other clients (if any)', {
+    //   selectedClients,
+    //   clientIdentity,
+    //   clientId: clientIdentity?.clientId
+    // })
     handleMultiClientAction(null, 'set_visual_config', { visualizerId, config: fullUpdate })
   }
 
@@ -276,18 +306,25 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
       single
         ? isCurrentClient
           ? globalVisualType
-          : visualizerConfigOptimistic?.visualType || globalVisualType
+          : visualizerConfigOptimistic?.[instanceKey]?.visualType || globalVisualType
         : globalVisualType
     )
     const prevIndex = currentIndex <= 0 ? visualizerIds.length - 1 : currentIndex - 1
     if (single) {
       if (isCurrentClient) {
-        if (visualizerIds[prevIndex]) setVisualType?.(visualizerIds[prevIndex])
-      } else {
-        if (visualizerIds[prevIndex])
-          updateVisualizerConfigOptimistic({
+        if (visualizerIds[prevIndex]) {
+          setVisualType?.(visualizerIds[prevIndex])
+          // Also update optimistic state for main instance
+          updateVisualizerConfigOptimistic(instanceKey, {
             visualType: visualizerIds[prevIndex]
           })
+        }
+      } else {
+        if (visualizerIds[prevIndex]) {
+          updateVisualizerConfigOptimistic(instanceKey, {
+            visualType: visualizerIds[prevIndex]
+          })
+        }
       }
       handleMultiClientAction(null, 'prev_visual')
     } else {
@@ -302,18 +339,25 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
       single
         ? isCurrentClient
           ? globalVisualType
-          : visualizerConfigOptimistic?.visualType || globalVisualType
+          : visualizerConfigOptimistic?.[instanceKey]?.visualType || globalVisualType
         : globalVisualType
     )
     const nextIndex = currentIndex >= visualizerIds.length - 1 ? 0 : currentIndex + 1
     if (single) {
       if (isCurrentClient) {
-        if (visualizerIds[nextIndex]) setVisualType?.(visualizerIds[nextIndex])
-      } else {
-        if (visualizerIds[nextIndex])
-          updateVisualizerConfigOptimistic({
+        if (visualizerIds[nextIndex]) {
+          setVisualType?.(visualizerIds[nextIndex])
+          // Also update optimistic state for main instance
+          updateVisualizerConfigOptimistic(instanceKey, {
             visualType: visualizerIds[nextIndex]
           })
+        }
+      } else {
+        if (visualizerIds[nextIndex]) {
+          updateVisualizerConfigOptimistic(instanceKey, {
+            visualType: visualizerIds[nextIndex]
+          })
+        }
       }
       handleMultiClientAction(null, 'next_visual')
     } else {
@@ -329,7 +373,10 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
 
     // Always add display mode and visual type
     params.append('display', 'true')
-    params.append('visual', visualType)
+    params.append(
+      'visual',
+      typeof visualType === 'string' ? visualType : visualType[instanceKey] || ''
+    )
 
     // Add global UI state parameters
     if (autoChange) params.append('autoChange', 'true')
@@ -338,7 +385,21 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
     if (newVisName) params.append('clientName', newVisName)
 
     // Add configuration parameters
-    const config = visualType === 'butterchurn' ? butterchurnConfig : currentConfig
+    // Use per-instance config for URL export as well
+    // (vtKey and optimisticConfig already declared above)
+    // Use global config for main, optimistic for subs
+    const config =
+      single && isCurrentClient
+        ? vtKey === 'butterchurn'
+          ? butterchurnConfig
+          : visualizerConfigs?.[vtKey] || {}
+        : vtKey === 'butterchurn'
+          ? optimisticConfig && Object.keys(optimisticConfig).length > 0
+            ? optimisticConfig
+            : butterchurnConfig
+          : optimisticConfig && Object.keys(optimisticConfig).length > 0
+            ? optimisticConfig
+            : visualizerConfigs?.[vtKey] || {}
 
     Object.entries(config).forEach(([key, value]) => {
       // Skip internal/runtime keys
@@ -354,9 +415,15 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
       }
     })
 
-    // Build URL for current origin (supports any port/host)
+    // Build URL for current origin (supports any port/host) open-external-link
     const url = `${window.location.origin}/#/visualiser?${params.toString()}`
-    window.open(url, '_blank')
+    const isCC = coreParams && Object.keys(coreParams).length > 0
+
+    if (isCC) {
+      window.api.send('toMain', { command: 'open-external-link', url })
+    } else {
+      window.open(url, '_blank')
+    }
   }
 
   return (
@@ -378,8 +445,7 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
         <Stack direction="row" spacing={2} flexGrow={1} alignItems={'flex-start'}>
           <Stack direction="column" sx={{ flexGrow: 1 }}>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              {name}
-              {name && type && <ClientEdit name={name} type={type} />}
+              {name} {name && type && isCurrentClient && <ClientEdit name={name} type={type} />}
               {name && showConfig && (
                 <Chip
                   color={clientIdentity?.name === name ? 'primary' : 'default'}
@@ -422,12 +488,9 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
                     size={single ? 'small' : 'medium'}
                     onClick={() =>
                       handleMultiClientAction(() => {
-                        if (single && !isCurrentClient) {
-                          updateVisualizerConfigOptimistic({
-                            isPlaying: {
-                              ...localState?.isPlaying,
-                              [visualType]: !(localState?.isPlaying?.[visualType] ?? false)
-                            }
+                        if (single && !isCurrentClient && typeof name === 'string') {
+                          updateVisualizerConfigOptimistic(instanceKey, {
+                            isPlaying: !isPlaying
                           })
                         } else {
                           togglePlay()
@@ -462,12 +525,9 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
                     size={single ? 'small' : 'medium'}
                     onClick={() =>
                       handleMultiClientAction(() => {
-                        if (single && !isCurrentClient) {
-                          updateVisualizerConfigOptimistic({
-                            showOverlays: {
-                              ...localState?.showOverlays,
-                              [visualType]: !(localState?.showOverlays?.[visualType] ?? true)
-                            }
+                        if (single && !isCurrentClient && typeof name === 'string') {
+                          updateVisualizerConfigOptimistic(instanceKey, {
+                            showOverlays: !showOverlays
                           })
                         } else {
                           toggleOverlays()
@@ -488,12 +548,9 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
                     size={single ? 'small' : 'medium'}
                     onClick={() =>
                       handleMultiClientAction(() => {
-                        if (single && !isCurrentClient) {
-                          updateVisualizerConfigOptimistic({
-                            autoChange: {
-                              ...localState?.autoChange,
-                              [visualType]: !(localState?.autoChange?.[visualType] ?? false)
-                            }
+                        if (single && !isCurrentClient && typeof name === 'string') {
+                          updateVisualizerConfigOptimistic(instanceKey, {
+                            autoChange: !autoChange
                           })
                         } else {
                           setAutoChange?.(!autoChange)
@@ -511,12 +568,9 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
                     size={single ? 'small' : 'medium'}
                     onClick={() =>
                       handleMultiClientAction(() => {
-                        if (single && !isCurrentClient) {
-                          updateVisualizerConfigOptimistic({
-                            fxEnabled: {
-                              ...localState?.fxEnabled,
-                              [visualType]: !(localState?.fxEnabled?.[visualType] ?? false)
-                            }
+                        if (single && !isCurrentClient && typeof name === 'string') {
+                          updateVisualizerConfigOptimistic(instanceKey, {
+                            fxEnabled: !fxEnabled
                           })
                         } else {
                           setFxEnabled?.(!fxEnabled)
@@ -534,12 +588,9 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
                     size="medium"
                     onClick={() =>
                       handleMultiClientAction(() => {
-                        if (single && !isCurrentClient) {
-                          updateVisualizerConfigOptimistic({
-                            showFxPanel: {
-                              ...localState?.showFxPanel,
-                              [visualType]: !(localState?.showFxPanel?.[visualType] ?? false)
-                            }
+                        if (single && !isCurrentClient && typeof name === 'string') {
+                          updateVisualizerConfigOptimistic(instanceKey, {
+                            showFxPanel: !showFxPanel
                           })
                         } else {
                           setShowFxPanel?.(!showFxPanel)
@@ -578,7 +629,13 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
           key="visualizer-select"
           size="medium"
           sx={{ width: '100%', mb: 2 }}
-          options={visualizers}
+          options={[...visualizers].sort((a, b) => {
+            if (a.category < b.category) return -1
+            if (a.category > b.category) return 1
+            if (a.displayName < b.displayName) return -1
+            if (a.displayName > b.displayName) return 1
+            return 0
+          })}
           groupBy={(option: any) => option.category}
           getOptionLabel={(option: any) => option.displayName}
           value={
@@ -589,11 +646,10 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
               if (single) {
                 if (isCurrentClient) {
                   setVisualType?.(newValue.id)
-                } else {
-                  updateVisualizerConfigOptimistic({
-                    visualType: newValue.id
-                  })
                 }
+                updateVisualizerConfigOptimistic(instanceKey, {
+                  visualType: newValue.id
+                })
                 handleMultiClientAction(null, 'set_visual_type', {
                   visualizerId: newValue.id
                 })
@@ -620,33 +676,54 @@ const VisualizerConfig = ({ selectedClients, single, name, type }: VisualizerCon
         />
         {hasSchema(single ? visualType : globalVisualType) && (
           <BladeSchemaForm
-            key={`schema-${single ? visualType : globalVisualType}`}
-            schema={getUISchema(single ? visualType : globalVisualType, currentConfig)}
+            key={`schema-${single ? vtKey : globalVisualType}`}
+            schema={getUISchema(
+              single ? vtKey : globalVisualType,
+              single && isCurrentClient
+                ? vtKey === 'butterchurn'
+                  ? butterchurnConfig
+                  : visualizerConfigs?.[vtKey] || {}
+                : vtKey === 'butterchurn'
+                  ? optimisticConfig && Object.keys(optimisticConfig).length > 0
+                    ? optimisticConfig
+                    : butterchurnConfig
+                  : optimisticConfig && Object.keys(optimisticConfig).length > 0
+                    ? optimisticConfig
+                    : visualizerConfigs?.[vtKey] || {}
+            )}
             model={
-              single && !isCurrentClient ? (localState?.configs?.[visualType] ?? {}) : currentConfig
+              single && isCurrentClient
+                ? vtKey === 'butterchurn'
+                  ? butterchurnConfig
+                  : visualizerConfigs?.[vtKey] || {}
+                : optimisticConfig && Object.keys(optimisticConfig).length > 0
+                  ? optimisticConfig
+                  : vtKey === 'butterchurn'
+                    ? butterchurnConfig
+                    : visualizerConfigs?.[vtKey] || {}
             }
             hideToggle
             onModelChange={(update) => {
-              if (single && !isCurrentClient) {
-                updateVisualizerConfigOptimistic({
+              if (single && !isCurrentClient && typeof name === 'string') {
+                updateVisualizerConfigOptimistic(instanceKey, {
                   configs: {
                     ...localState?.configs,
-                    [visualType]: {
-                      ...localState?.configs?.[visualType],
+                    [vtKey]: {
+                      ...localState?.configs?.[vtKey],
                       ...update
                     }
                   }
                 })
                 // Also send config to remote instance
                 handleMultiClientAction(null, 'set_visual_config', {
-                  visualizerId: visualType,
+                  visualizerId: vtKey,
                   config: {
-                    ...localState?.configs?.[visualType],
+                    ...localState?.configs?.[vtKey],
                     ...update
                   }
                 })
               } else {
-                handleConfigChange(single ? visualType : globalVisualType, update)
+                handleConfigChange(single ? vtKey : globalVisualType, update)
               }
             }}
           />

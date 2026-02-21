@@ -4,29 +4,20 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Checkbox,
-  FormControl,
-  IconButton,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
   Slider,
   Stack,
   Switch,
-  Tooltip,
-  Typography,
-  useTheme
+  Typography
 } from '@mui/material'
-import { ExpandMore, PlayArrow, Stop } from '@mui/icons-material'
+import { ExpandMore } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import useStore from '../../../../../store/useStore'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import { Ledfx } from '../../../../../api/ledfx'
+import AutoApplySelector from '../SpotifyWidgetPro/AutoApplySelector'
+import CardStack from './CardStack'
 
 const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => {
-  const theme = useTheme()
   const virtuals = useStore((state) => state.virtuals)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const thumbnailPath = useStore((state) => state.thumbnailPath)
@@ -307,84 +298,30 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
 
         {/* Virtual Device Selectors */}
         <Box sx={{ flexGrow: 1 }} />
-        <Stack
-          direction={'column'}
-          spacing={2}
-          sx={{
-            backgroundColor: theme.palette.background.paper,
-            pt: 2,
-            pr: 1,
-            pb: 1,
-            pl: 1,
-            borderRadius: 1
-          }}
-        >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <FormControl fullWidth>
-              <InputLabel>Gradient Virtuals</InputLabel>
-              <Select
-                multiple
-                value={gradientVirtuals}
-                onChange={handleGradientVirtualChange}
-                input={<OutlinedInput label="Gradient Virtuals" />}
-                renderValue={(selected) => selected.join(', ')}
-              >
-                {Object.keys(virtuals).map((vId) => (
-                  <MenuItem key={vId} value={vId}>
-                    <Checkbox checked={gradientVirtuals.includes(vId)} />
-                    <ListItemText primary={vId} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Tooltip title={gradientAutoApply ? 'Stop Auto' : 'Start Auto'}>
-              <IconButton
-                onClick={toggleGradientAutoApply}
-                disabled={
-                  gradientVirtuals.length === 0 ||
-                  selectedGradient === null ||
-                  extractedColors.length === 0
-                }
-                sx={{
-                  color: gradientAutoApply ? 'success.main' : 'primary.main'
-                }}
-              >
-                {gradientAutoApply ? <Stop /> : <PlayArrow />}
-              </IconButton>
-            </Tooltip>
-          </Stack>
-
-          <Stack direction="row" spacing={1} alignItems="center">
-            <FormControl fullWidth>
-              <InputLabel>Image Virtuals</InputLabel>
-              <Select
-                multiple
-                value={imageVirtuals}
-                onChange={handleImageVirtualChange}
-                input={<OutlinedInput label="Image Virtuals" />}
-                renderValue={(selected) => selected.join(', ')}
-              >
-                {Object.keys(virtuals).map((vId) => (
-                  <MenuItem key={vId} value={vId}>
-                    <Checkbox checked={imageVirtuals.includes(vId)} />
-                    <ListItemText primary={vId} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Tooltip title={imageAutoApply ? 'Stop Auto' : 'Start Auto'}>
-              <IconButton
-                onClick={toggleImageAutoApply}
-                disabled={imageVirtuals.length === 0 || extractedColors.length === 0}
-                sx={{
-                  color: imageAutoApply ? 'success.main' : 'primary.main'
-                }}
-              >
-                {imageAutoApply ? <Stop /> : <PlayArrow />}
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </Stack>
+        <CardStack>
+          <AutoApplySelector
+            label="Gradient Virtuals"
+            options={Object.keys(virtuals)}
+            value={gradientVirtuals}
+            onChange={handleGradientVirtualChange}
+            isActive={gradientAutoApply}
+            onToggle={toggleGradientAutoApply}
+            disabled={
+              gradientVirtuals.length === 0 ||
+              selectedGradient === null ||
+              extractedColors.length === 0
+            }
+          />
+          <AutoApplySelector
+            label="Image Virtuals"
+            options={Object.keys(virtuals)}
+            value={imageVirtuals}
+            onChange={handleImageVirtualChange}
+            isActive={imageAutoApply}
+            onToggle={toggleImageAutoApply}
+            disabled={imageVirtuals.length === 0 || extractedColors.length === 0}
+          />
+        </CardStack>
       </Stack>
     </Box>
   )

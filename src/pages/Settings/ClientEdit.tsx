@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { Edit } from '@mui/icons-material'
-import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 import { ClientType } from '../../store/ui/storeClientIdentity'
 import useStore from '../../store/useStore'
 import Popover from '../../components/Popover/Popover'
@@ -17,8 +16,8 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
 
   const [newName, setNewName] = useState(name || '')
   const [newType, setNewType] = useState<ClientType>(type || 'unknown')
-  const setClientName = useStore((state) => state.setClientName)
-  const { send } = useWebSocket()
+  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
+  const renameVisualizerInstance = useStore((state) => state.renameVisualizerInstance)
 
   return (
     <Popover
@@ -59,16 +58,19 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
         </Box>
       }
       onConfirm={() => {
+        const updates: any = {}
         if (newName && newName !== clientIdentity?.name) {
-          setClientName(newName)
-          if (send) {
-            send({
-              id: 10001,
-              type: 'update_client_info',
-              name: newName,
-              client_type: clientIdentity?.type || 'unknown'
-            })
+          // Rename the instance key in the optimistic store
+          if (renameVisualizerInstance && clientIdentity?.name) {
+            renameVisualizerInstance(clientIdentity.name, newName)
           }
+          updates.name = newName
+        }
+        if (newType && newType !== clientIdentity?.type) {
+          updates.type = newType
+        }
+        if (Object.keys(updates).length > 0) {
+          updateClientIdentity(updates)
         }
       }}
     />
