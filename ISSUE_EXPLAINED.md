@@ -33,3 +33,6 @@ The snapback issue has multiple root causes in the state synchronization logic:
 -   **Clean State Model**: Refactored both the sender and receiver to only store and transmit the configuration for the *active* visualizer. This satisfies the requirement that "butterchurn config should only be sent if type is butterchurn" and ensures the Redux state remains lean.
 -   **Fixed Receiver Logic**: Removed the ambiguous `butterchurnConfig` field from the broadcast payload in favor of a scoped `configs` map. Receivers now apply this map directly to the optimistic store without merging with stale data, effectively clearing any previous pollution.
 -   **Unified Configuration Logic**: In `VisualizerConfig.tsx`, `handleConfigChange` now replaces the `configs` map instead of merging, ensuring that the optimistic state only reflects the current reality of the visualiser.
+
+### Fix for Rename Race Condition
+-   **Atomic Update**: Modified `renameVisualizerInstance` in `storeVisualizerConfigOptimistic.ts` to perform both the optimistic store key rename and the `clientIdentity.name` update in a single atomic operation. This prevents the `useEffect` in `VisualizerConfig` from seeing a temporarily missing key and re-creating it with default values before the rename is complete.

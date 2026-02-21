@@ -60,11 +60,12 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
       onConfirm={() => {
         const updates: any = {}
         if (newName && newName !== clientIdentity?.name) {
-          // Rename the instance key in the optimistic store
+          // Rename the instance key in the optimistic store.
+          // This now also handles the clientIdentity.name update atomically
+          // to prevent race conditions during the rename process.
           if (renameVisualizerInstance && clientIdentity?.name) {
             renameVisualizerInstance(clientIdentity.name, newName)
           }
-          updates.name = newName
         }
         if (newType && newType !== clientIdentity?.type) {
           updates.type = newType
