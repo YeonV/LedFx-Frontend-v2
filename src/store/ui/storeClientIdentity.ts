@@ -82,6 +82,10 @@ const storeClientIdentity = (set: any) => {
         'clientIdentity/setClientType'
       ),
 
+    /**
+     * Updates multiple client identity fields atomically and persists to sessionStorage.
+     * This prevents multiple re-renders and synchronization loops.
+     */
     updateClientIdentity: (partial: Partial<ClientIdentity>) =>
       set(
         produce((state: IStore) => {

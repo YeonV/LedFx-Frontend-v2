@@ -27,9 +27,8 @@ const ClientManagementCard = () => {
   const clientIdentity = useStore((state) => state.clientIdentity)
   const clients = useStore((state) => state.clients)
   const getClients = useStore((state) => state.getClients)
-  const setClientType = useStore((state) => state.setClientType)
   const broadcastToClients = useStore((state) => state.broadcastToClients)
-  const setClientName = useStore((state) => state.setClientName)
+  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const { send, isConnected } = useWebSocket()
 
   const [localName, setLocalName] = useState(clientIdentity?.name || '')
@@ -48,9 +47,11 @@ const ClientManagementCard = () => {
 
   const handleUpdateInfo = () => {
     console.log('CM: update_client_info:', localName, localType)
-    // Update store only; WebSocketManager handles the websocket communication
-    setClientName(localName)
-    setClientType(localType)
+    // Update store atomically; WebSocketManager handles the websocket communication
+    updateClientIdentity({
+      name: localName,
+      type: localType
+    })
   }
 
   const getTypeColor = (

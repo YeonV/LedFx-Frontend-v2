@@ -16,8 +16,7 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
 
   const [newName, setNewName] = useState(name || '')
   const [newType, setNewType] = useState<ClientType>(type || 'unknown')
-  const setClientName = useStore((state) => state.setClientName)
-  const setClientType = useStore((state) => state.setClientType)
+  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const renameVisualizerInstance = useStore((state) => state.renameVisualizerInstance)
 
   return (
@@ -59,15 +58,19 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
         </Box>
       }
       onConfirm={() => {
+        const updates: any = {}
         if (newName && newName !== clientIdentity?.name) {
           // Rename the instance key in the optimistic store
           if (renameVisualizerInstance && clientIdentity?.name) {
             renameVisualizerInstance(clientIdentity.name, newName)
           }
-          setClientName(newName)
+          updates.name = newName
         }
         if (newType && newType !== clientIdentity?.type) {
-          setClientType(newType)
+          updates.type = newType
+        }
+        if (Object.keys(updates).length > 0) {
+          updateClientIdentity(updates)
         }
       }}
     />

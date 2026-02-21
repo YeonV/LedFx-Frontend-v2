@@ -1,9 +1,0 @@
-npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm.
-
-> ledfx@2.0.111-b2 dev
-> concurrently "cross-env BROWSER=none yarn start" "yarn electron"
-
-[1] yarn run v1.22.22
-[1] $ wait-on http://127.0.0.1:3000 && concurrently "npx tsc --project tsconfig.electron.json --watch" "wait-on public/electron.js && electron ."
-[0] yarn run v1.22.22
-[0] $ craco start

@@ -4,9 +4,17 @@ import { useWebSocket, useSubscription } from './WebSocketProvider'
 
 export const WebSocketManager = () => {
   const { send, isConnected } = useWebSocket()
-  const { virtuals, pixelGraphs, clientIdentity, getClients } = useStore()
+  const clientIdentity = useStore((state) => state.clientIdentity)
+  const virtuals = useStore((state) => state.virtuals)
+  const pixelGraphs = useStore((state) => state.pixelGraphs)
+  const getClients = useStore((state) => state.getClients)
+
   const hasSentInitialInfo = useRef(false)
-  const lastIdentityRef = useRef(clientIdentity)
+  // Store the properties we actually sync to avoid reference-related loops
+  const lastSyncRef = useRef({
+    name: clientIdentity?.name,
+    type: clientIdentity?.type
+  })
 
   // Handle clients_updated event
   useSubscription('clients_updated', () => {
@@ -29,35 +37,34 @@ export const WebSocketManager = () => {
     }
 
     if (isConnected && clientIdentity) {
+      const { name, type, deviceId } = clientIdentity
+
       if (!hasSentInitialInfo.current) {
         // Initial metadata registration
-        console.log('WSM: set_client_info', clientIdentity.name, clientIdentity.type)
+        console.log('WSM: set_client_info', name, type)
         send({
           id: 10001,
           type: 'set_client_info',
           data: {
-            device_id: clientIdentity.deviceId,
-            name: clientIdentity.name,
-            type: clientIdentity.type
+            device_id: deviceId,
+            name,
+            type
           }
         })
         hasSentInitialInfo.current = true
-        lastIdentityRef.current = clientIdentity
-      } else if (
-        clientIdentity.name !== lastIdentityRef.current?.name ||
-        clientIdentity.type !== lastIdentityRef.current?.type
-      ) {
+        lastSyncRef.current = { name, type }
+      } else if (name !== lastSyncRef.current.name || type !== lastSyncRef.current.type) {
         // Update metadata when identity changes in store
-        console.log('WSM: update_client_info', clientIdentity.name, clientIdentity.type)
+        console.log('WSM: update_client_info', name, type)
         send({
           id: 10002,
           type: 'update_client_info',
           data: {
-            name: clientIdentity.name,
-            type: clientIdentity.type
+            name,
+            type
           }
         })
-        lastIdentityRef.current = clientIdentity
+        lastSyncRef.current = { name, type }
       }
     }
   }, [isConnected, send, clientIdentity])

@@ -74,8 +74,7 @@ const Routings = () => {
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
-  const setClientName = useStore((state) => state.setClientName)
-  const setClientType = useStore((state) => state.setClientType)
+  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
@@ -165,16 +164,18 @@ const Routings = () => {
     }
     if (isDisplayMode && pathname === '/visualiser') {
       const nameToSet = clientName || `Visualiser${Date.now()}`
-      // Update Zustand/sessionStorage
+      // Update Zustand/sessionStorage atomically
       // WebSocketManager will handle the actual WS update based on these store changes
-      setClientName(nameToSet)
-      setClientType('visualiser')
+      updateClientIdentity({
+        name: nameToSet,
+        type: 'visualiser'
+      })
     }
     // Clean up on unmount
     return () => {
       document.body.classList.remove(className)
     }
-  }, [isDisplayMode, pathname, clientName, setClientName, setClientType])
+  }, [isDisplayMode, pathname, clientName, updateClientIdentity])
 
   useEffect(() => {
     if (pathname === '/visualiser') {
