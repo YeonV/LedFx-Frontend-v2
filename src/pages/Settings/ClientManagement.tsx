@@ -30,7 +30,7 @@ const ClientManagementCard = () => {
   const setClientType = useStore((state) => state.setClientType)
   const broadcastToClients = useStore((state) => state.broadcastToClients)
   const setClientName = useStore((state) => state.setClientName)
-  const { send } = useWebSocket()
+  const { send, isConnected } = useWebSocket()
 
   const [localName, setLocalName] = useState(clientIdentity?.name || '')
   const [localType, setLocalType] = useState<ClientType>(clientIdentity?.type || 'unknown')
@@ -39,26 +39,30 @@ const ClientManagementCard = () => {
     getClients()
   }, [getClients])
 
-  useEffect(() => {
-    if (clientIdentity) {
-      setLocalName(clientIdentity.name)
-      setLocalType(clientIdentity.type)
-    }
-  }, [clientIdentity])
+  // useEffect(() => {
+  //   if (clientIdentity) {
+  //     setLocalName(clientIdentity.name)
+  //     setLocalType(clientIdentity.type)
+  //   }
+  // }, [clientIdentity])
 
   const handleUpdateInfo = () => {
-    if (localName !== clientIdentity?.name || localType !== clientIdentity?.type) {
-      setClientName(localName)
-      setClientType(localType)
-      if (send) {
-        send({
-          id: 10001,
-          type: 'update_client_info',
+    console.log('CM: update_client_info:', localName, localType, clientIdentity)
+    // if (localName !== clientIdentity?.name || localType !== clientIdentity?.type) {
+    setClientName(localName)
+    setClientType(localType)
+    if (send) {
+      send({
+        id: 10001,
+        type: 'update_client_info',
+        data: {
+          device_id: clientIdentity.deviceId,
           name: localName,
           client_type: localType
-        })
-      }
+        }
+      })
     }
+    // }
   }
 
   const getTypeColor = (
@@ -123,7 +127,7 @@ const ClientManagementCard = () => {
         />
         <Select
           value={localType}
-          onChange={(e) => setClientType(e.target.value as ClientType)}
+          onChange={(e) => setLocalType(e.target.value as ClientType)}
           size="small"
           variant="outlined"
           sx={{ minWidth: 150 }}
@@ -204,14 +208,14 @@ const ClientManagementCard = () => {
         variant="outlined"
         startIcon={<Send />}
         onClick={() => {
-          if (clientIdentity && clientIdentity.clientId && broadcastToClients) {
+          if (clientIdentity && clientIdentity.clientId && broadcastToClients && isConnected) {
             broadcastToClients(
               {
                 broadcast_type: 'custom',
                 target: { mode: 'all' },
                 payload: { message: 'Test broadcast from ' + clientIdentity?.name }
               },
-              clientIdentity.clientId
+              send
             )
           }
         }}

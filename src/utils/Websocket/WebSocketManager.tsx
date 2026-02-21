@@ -14,6 +14,7 @@ export const WebSocketManager = () => {
   // Handle client_broadcast event
   useSubscription('client_broadcast', (data) => {
     // Dispatch custom event for components to handle broadcasts
+    // console.log('YZ2', data)
     const event = new CustomEvent('ledfx:client_broadcast', { detail: data })
     window.dispatchEvent(event)
   })
@@ -21,12 +22,22 @@ export const WebSocketManager = () => {
   // Send client info on connection
   useEffect(() => {
     if (isConnected && clientIdentity) {
+      console.log('WSM: set_client_info', clientIdentity.name, clientIdentity.type)
       send({
-        id: 9999,
+        id: 10001,
         type: 'set_client_info',
-        device_id: clientIdentity.deviceId,
-        name: clientIdentity.name,
-        client_type: clientIdentity.type
+        data: {
+          device_id: clientIdentity.deviceId,
+          name: clientIdentity.name
+        }
+      })
+      send({
+        id: 10002,
+        type: 'update_client_info',
+        data: {
+          device_id: clientIdentity.deviceId,
+          client_type: clientIdentity.type
+        }
       })
     }
   }, [isConnected, send, clientIdentity])

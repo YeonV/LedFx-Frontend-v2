@@ -71,8 +71,11 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
             send({
               id: 10001,
               type: 'update_client_info',
-              name: newName,
-              client_type: newType || clientIdentity?.type || 'unknown'
+              data: {
+                device_id: clientIdentity.deviceId,
+                name: newName,
+                client_type: newType || clientIdentity?.type || 'unknown'
+              }
             })
           }
         }
@@ -82,8 +85,11 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
             send({
               id: 10001,
               type: 'update_client_info',
-              name: newName || clientIdentity?.name || 'unknown-client',
-              client_type: newType
+              data: {
+                device_id: clientIdentity.deviceId,
+                name: newName || clientIdentity?.name || 'unknown-client',
+                client_type: newType
+              }
             })
           }
         }

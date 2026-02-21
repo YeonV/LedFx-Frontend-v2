@@ -165,20 +165,32 @@ const Routings = () => {
     } else {
       document.body.classList.remove(className)
     }
-    if (isDisplayMode && pathname === '/visualiser' && send) {
+    if (isDisplayMode && pathname === '/visualiser') {
       const nameToSet = clientName || `Visualiser${Date.now()}`
       // Update Zustand/sessionStorage
       setClientName(nameToSet)
       setClientType('visualiser')
-      setTimeout(() => {
-        console.log('Entering display mode - sending client info update')
-        send({
-          id: 10001,
-          type: 'update_client_info',
-          name: nameToSet,
-          client_type: 'visualiser'
-        })
-      }, 1000)
+      // setTimeout(() => {
+      //   console.log('Entering display mode - sending client info update')
+      //   // console.log('P: set_client_info', nameToSet, 'visualiser')
+      //   // send({
+      //   //   id: 10002,
+      //   //   type: 'set_client_info',
+      //   //   data: {
+      //   //     name: nameToSet,
+      //   //     client_type: 'visualiser'
+      //   //   }
+      //   // })
+      //   console.log('P: update_client_info', nameToSet, 'visualiser')
+      //   send({
+      //     id: 10001,
+      //     type: 'update_client_info',
+      //     data: {
+      //       name: nameToSet,
+      //       client_type: 'visualiser'
+      //     }
+      //   })
+      // }, 1000)
     }
     // Clean up on unmount
     return () => {
