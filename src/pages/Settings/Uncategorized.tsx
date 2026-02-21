@@ -71,8 +71,8 @@ const Uncategorized = () => {
         title="BG Visualiser (eats performance)"
         checked={features.bgvisualiser}
         onChange={() => setFeatures('bgvisualiser', !features.bgvisualiser)}
+        info={'BG Visualiser will disable Playground'}
       />
-      {/* {features.bgvisualiser && <VisualizerDevWidget />} */}
       {features.bgvisualiser && <VisualizerDevWidgetYZ />}
       <SettingsRow
         alpha

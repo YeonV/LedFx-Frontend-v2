@@ -161,13 +161,15 @@ const SettingsNew = () => {
             onClick={() => setMidiOpen(true)}
           />
         )}
-        <Tile
-          client
-          beta
-          icon={<Equalizer fontSize="large" />}
-          text="Visualiser"
-          onClick={() => navigate('/visualiser')}
-        />
+        {!features.bgvisualiser && (
+          <Tile
+            client
+            beta
+            icon={<Equalizer fontSize="large" />}
+            text="Visualiser Playground"
+            onClick={() => navigate('/visualiser')}
+          />
+        )}
       </Grid>
       {viewMode !== 'user' && (
         <SettingsAccordion

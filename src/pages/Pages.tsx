@@ -6,7 +6,7 @@ import {
   useNavigate,
   useLocation
 } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -146,8 +146,6 @@ const Routings = () => {
   })
   const location = useLocation()
   const { pathname } = location
-  const bgVisualiserBeforeRouteRef = useRef<boolean | null>(null)
-  // const showOverlaysBeforeDisplayRef = useRef<boolean | null>(null)
 
   // Check for display mode (OBS-friendly clean UI) - works with HashRouter
   const searchParams = new URLSearchParams(location.search)
@@ -176,28 +174,6 @@ const Routings = () => {
       document.body.classList.remove(className)
     }
   }, [isDisplayMode, pathname, clientName, updateClientIdentity])
-
-  useEffect(() => {
-    if (pathname === '/visualiser') {
-      // Entering /visualiser route - save current state and disable background
-      if (bgVisualiserBeforeRouteRef.current === null) {
-        bgVisualiserBeforeRouteRef.current = features.bgvisualiser
-        if (features.bgvisualiser) {
-          setFeatures('bgvisualiser', false)
-        }
-      }
-    } else {
-      // Leaving /visualiser route - restore previous state
-      if (bgVisualiserBeforeRouteRef.current === true) {
-        setFeatures('bgvisualiser', true)
-      }
-      // Reset ref when leaving (whether it was true or false)
-      if (bgVisualiserBeforeRouteRef.current !== null) {
-        bgVisualiserBeforeRouteRef.current = null
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
 
   return (
     <>

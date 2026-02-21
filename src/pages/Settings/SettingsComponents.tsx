@@ -13,7 +13,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material'
-import { ExpandMore } from '@mui/icons-material'
+import { ExpandMore, Info } from '@mui/icons-material'
 // import { ChevronRight, ExpandMore } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
@@ -202,7 +202,8 @@ export const SettingsRow = ({
   disabled = false,
   expert = false,
   beta = false,
-  alpha = false
+  alpha = false,
+  info = null
 }: {
   step?: string
   title: string
@@ -215,6 +216,7 @@ export const SettingsRow = ({
   expert?: boolean
   beta?: boolean
   alpha?: boolean
+  info?: string | null
 }) => {
   const classes = useStyles()
   const theme = useTheme()
@@ -257,6 +259,11 @@ export const SettingsRow = ({
           textAlign: 'right'
         }}
       >
+        {info && (
+          <Tooltip title={info}>
+            <Info fontSize="small" sx={{ mr: 2 }} />
+          </Tooltip>
+        )}
         {children ||
           (title === 'Beta Mode' ? (
             <Tooltip title="AlphaMode: Smartbar -> HackedByBlade! -> OK -> BladeAlpha">
