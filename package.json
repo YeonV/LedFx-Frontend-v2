@@ -126,6 +126,7 @@
     "test": "npm-run-all --parallel test:types test:lint",
     "test:types": "tsc --noEmit",
     "test:lint": "eslint src/ --max-warnings 0",
+    "test:pw": "playwright test",
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
