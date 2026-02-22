@@ -8,6 +8,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -35,3 +36,28 @@ yarn-error.log*
 
 # Playwright metadata
 .last-run.json
+
+# Restored ignore patterns
+/LedFx_core-*--win.exe
+/storybook-static
+/extraResources/*.app
+/extraResources/*.exe
+src/assets/DMG_BG.psd
+extraResources/*
+.github/workflows/workflow-file-private.yml
+.yarn_cache/*
+
+BladeTools.pfx
+storybook.log
+doctor-storybook.log
+
+*storybook.log
+public/app
+public/electron.js
+public/preload.js
+public/preload.cjs
+public/renderer.js
+src/api/docs/*
+docs/*
+public/modules/*
+public/yz-audio-visualiser.js
