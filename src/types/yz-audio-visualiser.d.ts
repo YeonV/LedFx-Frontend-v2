@@ -38,7 +38,7 @@ declare interface AstrofoxConfig {
     height: number;
 }
 
-declare type AstrofoxLayer = BarSpectrumLayer | WaveSpectrumLayer | SoundWaveLayer | SoundWave2Layer | TextLayer | ImageLayer | Geometry3DLayer | GroupLayer;
+declare type AstrofoxLayer = BarSpectrumLayer | WaveSpectrumLayer | SoundWaveLayer | SoundWave2Layer | TextLayer | ImageLayer | Geometry3DLayer | GroupLayer | NeonTunnelLayer | ReactiveOrbLayer | ParticleFieldLayer;
 
 declare interface AstrofoxLayerBase {
     id: string;
@@ -46,14 +46,14 @@ declare interface AstrofoxLayerBase {
     name: string;
     visible: boolean;
     opacity: number;
-    blendMode: (typeof BLEND_MODES)[number];
+    blendMode: BlendMode;
     x: number;
     y: number;
     rotation: number;
     scale: number;
 }
 
-declare type AstrofoxLayerType = 'barSpectrum' | 'waveSpectrum' | 'soundWave' | 'soundWave2' | 'text' | 'image' | 'geometry3d' | 'group';
+declare type AstrofoxLayerType = 'barSpectrum' | 'waveSpectrum' | 'soundWave' | 'soundWave2' | 'text' | 'image' | 'geometry3d' | 'group' | 'neonTunnel' | 'reactiveOrb' | 'particleField';
 
 declare interface BadTVConfig {
     distortion?: number;
@@ -93,15 +93,13 @@ declare interface BaseProperty {
 }
 
 /**
- * AstrofoxVisualiser - Layer-based audio visualizations inspired by Astrofox
+ * Astrofox Layer Types
  *
- * This component provides a layer-based composition system similar to Astrofox,
- * allowing users to stack multiple visual elements (text, spectrum bars, images, waveforms, 3D geometry)
- * with individual audio reactivity settings.
- *
- * Reference: https://github.com/astrofox-io/astrofox
+ * Type definitions for all Astrofox layer types and configurations.
  */
 declare const BLEND_MODES: readonly ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion"];
+
+declare type BlendMode = (typeof BLEND_MODES)[number];
 
 declare interface BloomConfig {
     threshold?: number;
@@ -163,11 +161,13 @@ declare interface FilmGrainConfig {
     speed?: number;
 }
 
+declare type FrequencyBand = 'bass' | 'mid' | 'high';
+
 declare interface Geometry3DLayer extends AstrofoxLayerBase {
     type: 'geometry3d';
-    shape: (typeof GEOMETRY_SHAPES)[number];
-    material: (typeof GEOMETRY_MATERIALS)[number];
-    shading: (typeof SHADING_TYPES)[number];
+    shape: GeometryShape;
+    material: GeometryMaterial;
+    shading: ShadingType;
     color: string;
     wireframe: boolean;
     edges: boolean;
@@ -182,6 +182,10 @@ declare interface Geometry3DLayer extends AstrofoxLayerBase {
 declare const GEOMETRY_MATERIALS: readonly ["Standard", "Basic", "Lambert", "Phong", "Normal"];
 
 declare const GEOMETRY_SHAPES: readonly ["Box", "Sphere", "Dodecahedron", "Icosahedron", "Octahedron", "Tetrahedron", "Torus", "Torus Knot"];
+
+declare type GeometryMaterial = (typeof GEOMETRY_MATERIALS)[number];
+
+declare type GeometryShape = (typeof GEOMETRY_SHAPES)[number];
 
 declare interface GlitchConfig {
     amount?: number;
@@ -248,6 +252,23 @@ declare interface MirrorConfig {
 
 declare type MirrorMode = 'horizontal' | 'vertical' | 'quadrant' | 'diagonal';
 
+declare interface NeonTunnelLayer extends AstrofoxLayerBase {
+    type: 'neonTunnel';
+    frequencyBands: FrequencyBand[];
+    audioSensitivity: number;
+    color: string;
+    wireframeThickness: number;
+    glowIntensity: number;
+    speed: number;
+    segments: number;
+    cameraShakeEnabled: boolean;
+    cameraShakeIntensity: number;
+    enableBloom: boolean;
+    bloomStrength: number;
+    enableRGBShift: boolean;
+    rgbShiftAmount: number;
+}
+
 declare interface NumberProperty extends BaseProperty {
     type: 'number' | 'integer'
     minimum?: number
@@ -260,6 +281,21 @@ declare interface ObjectProperty extends BaseProperty {
     type: 'object'
     properties: Record<string, SchemaProperty>
     required?: string[]
+}
+
+declare interface ParticleFieldLayer extends AstrofoxLayerBase {
+    type: 'particleField';
+    frequencyBands: FrequencyBand[];
+    audioSensitivity: number;
+    particleCount: number;
+    particleSize: number;
+    particleColor: string;
+    speed: number;
+    depth: number;
+    enableBloom: boolean;
+    bloomStrength: number;
+    enableRGBShift: boolean;
+    rgbShiftAmount: number;
 }
 
 declare interface PixelateConfig {
@@ -306,6 +342,21 @@ declare interface PostProcessingConfig {
     };
 }
 
+declare interface ReactiveOrbLayer extends AstrofoxLayerBase {
+    type: 'reactiveOrb';
+    frequencyBands: FrequencyBand[];
+    audioSensitivity: number;
+    color: string;
+    displacementAmount: number;
+    noiseScale: number;
+    subdivisions: number;
+    fresnelIntensity: number;
+    enableBloom: boolean;
+    bloomStrength: number;
+    enableRGBShift: boolean;
+    rgbShiftAmount: number;
+}
+
 /**
  * AUTO-GENERATED - DO NOT EDIT
  * Visualizer Registry
@@ -348,6 +399,8 @@ declare type SchemaPropertyType =
 | 'object'
 
 declare const SHADING_TYPES: readonly ["Smooth", "Flat"];
+
+declare type ShadingType = (typeof SHADING_TYPES)[number];
 
 declare interface SoundWave2Layer extends AstrofoxLayerBase {
     type: 'soundWave2';
