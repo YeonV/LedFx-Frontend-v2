@@ -2,10 +2,17 @@ const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 
-const RESULTS_DIR = 'test-results'
+const RESULTS_DIR = 'playwright/videos'
+const ANIMATED_DIR = 'playwright/animated'
+
+if (!fs.existsSync(ANIMATED_DIR)) {
+  fs.mkdirSync(ANIMATED_DIR, { recursive: true })
+}
 
 function convertToWebp(videoPath) {
-  const outputPath = videoPath.replace(/\.webm$/, '.webp')
+  const fileName = path.basename(videoPath).replace(/\.webm$/, '.webp')
+  const outputPath = path.join(ANIMATED_DIR, fileName)
+
   console.log(`Converting ${videoPath} to ${outputPath}...`)
 
   try {
@@ -35,6 +42,6 @@ function findVideos(dir) {
   }
 }
 
-console.log('🎬 Looking for Playwright videos in test-results/...\n')
+console.log(`🎬 Looking for Playwright videos in ${RESULTS_DIR}/...\n`)
 findVideos(RESULTS_DIR)
 console.log('\nDone.')

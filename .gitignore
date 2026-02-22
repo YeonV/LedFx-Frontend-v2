@@ -5,10 +5,6 @@
 
 # testing
 /coverage
-/test-results/
-/playwright-report/
-/blob-report/
-/test-results-pw/
 
 # production
 /build
@@ -32,14 +28,10 @@ yarn-error.log*
 /LedFx-Backend/
 /audio-visualiser/
 
-# Python junk
-__pycache__/
-*.pyc
-mock_sd.py
-*.log
+# Playwright Reports
+/playwright-report/
+/blob-report/
+/test-results-pw/
 
-# Screenshots/Videos
-*.png
-*.webm
-*.webp
-/screenshots/
+# Playwright metadata
+.last-run.json
