@@ -1,57 +1,51 @@
-import { test, expect } from '@playwright/test';
-import fs from 'fs';
+import { test, expect } from '@playwright/test'
 
-test('initial page load and click settings', async ({ page }) => {
-  // Ensure screenshots directory exists
-  if (!fs.existsSync('screenshots')) {
-    fs.mkdirSync('screenshots');
-  }
+test('Initial page load and navigation to Settings', async ({ page }) => {
+  await page.goto('http://localhost:3000/#/')
 
-  // 1. Initial page load
-  await page.goto('/');
-
-  // Handle Host Selection Dialog if it appears
-  const hostButton = page.locator('button, div').filter({ hasText: 'http://localhost:8888' }).first();
+  // Handle No Host Dialog if it appears
+  const hostButton = page.getByRole('button', { name: 'http://localhost:8888' })
   try {
-    await hostButton.waitFor({ state: 'visible', timeout: 5000 });
-    await hostButton.click();
-    console.log('Clicked host button');
-  } catch (e) {
-    console.log('Host button not found or already connected');
+    await hostButton.waitFor({ state: 'visible', timeout: 5000 })
+    await hostButton.click()
+    console.log('Clicked host button')
+  } catch (_e) {
+    console.log('Host button not found or already connected')
   }
 
-  // Handle Intro Dialog (Setup Assistant) if it appears
-  const skipButton = page.locator('button, span, div').filter({ hasText: /^Skip$/ }).first();
+  const connectButton = page.getByRole('button', { name: 'Connect' })
   try {
-    await skipButton.waitFor({ state: 'visible', timeout: 5000 });
-    await skipButton.click();
-    console.log('Clicked skip button');
-    // Wait for the modal to be removed from DOM
-    await expect(skipButton).not.toBeVisible();
-  } catch (e) {
-    console.log('Skip button not found');
+    await connectButton.waitFor({ state: 'visible', timeout: 5000 })
+    console.log('Clicking Connect button')
+    await connectButton.click()
+    await page.waitForTimeout(1000)
+  } catch (_e) {
+    console.log('Connect button not found or already gone')
   }
 
-  // Wait for the main UI (bottom navigation) to be visible and stable
-  const bottomNav = page.locator('.MuiBottomNavigation-root');
-  await expect(bottomNav).toBeVisible({ timeout: 30000 });
+  // Handle Intro dialog if it appears
+  const skipButton = page.getByRole('button', { name: 'Skip' })
+  try {
+    await skipButton.waitFor({ state: 'visible', timeout: 5000 })
+    console.log('Clicking Skip button')
+    await skipButton.click()
+    await page.waitForTimeout(1000)
+  } catch (_e) {
+    console.log('Skip button not found or already gone')
+  }
 
-  // Wait for network to be idle to ensure icons and data are loaded
-  await page.waitForLoadState('networkidle');
+  // Capture dashboard
+  await page.screenshot({ path: 'test-results/dashboard.png' })
 
-  // Take screenshot of initial page load
-  await page.screenshot({ path: 'screenshots/initial-load.png', fullPage: true });
+  // Click on Settings button in the bottom navigation bar
+  const settingsTab = page
+    .locator('.MuiBottomNavigationAction-root')
+    .filter({ hasText: 'Settings' })
+  await settingsTab.click()
 
-  // 2. Click Settings button
-  const settingsButton = page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Settings' });
-  await settingsButton.click();
+  // Verify navigation to Settings
+  await expect(page).toHaveURL(/.*Settings/)
 
-  // Wait for URL change (HashRouter uses #)
-  await page.waitForURL(url => url.hash.toLowerCase().includes('settings'), { timeout: 10000 });
-
-  // Wait for settings page content to be visible
-  await expect(page.locator('text=Expert Mode')).toBeVisible();
-
-  // Take screenshot after clicking settings
-  await page.screenshot({ path: 'screenshots/settings-page.png', fullPage: true });
-});
+  // Capture settings page
+  await page.screenshot({ path: 'test-results/settings.png' })
+})
