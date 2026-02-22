@@ -55,5 +55,4 @@ public/yz-audio-visualiser.js
 # Playwright
 /playwright-report
 /test-results
-/screenshots
 *.log
