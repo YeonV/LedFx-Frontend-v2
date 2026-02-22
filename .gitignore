@@ -1,16 +1,11 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# we want to start with a clean base
-#yarn.lock
-
 # dependencies
 /node_modules
 /.pnp
-.pnp.js
 /.yarn
+.pnp.js
+
 # testing
 /coverage
-/dist
 
 # production
 /build
@@ -27,6 +22,23 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# LedFx Specific
+/public/modules/yz-audio-visualiser.js
+.env
+
+# Cloned Repos (for testing)
+/LedFx-Backend/
+/audio-visualiser/
+
+# Playwright Reports
+/playwright-report/
+/blob-report/
+/test-results-pw/
+
+# Playwright metadata
+.last-run.json
+
+# Restored ignore patterns
 /LedFx_core-*--win.exe
 /storybook-static
 /extraResources/*.app
@@ -49,5 +61,4 @@ public/renderer.js
 src/api/docs/*
 docs/*
 public/modules/*
-.env
 public/yz-audio-visualiser.js
