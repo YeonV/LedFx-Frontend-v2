@@ -8,6 +8,9 @@ export const WebSocketManager = () => {
   const virtuals = useStore((state) => state.virtuals)
   const pixelGraphs = useStore((state) => state.pixelGraphs)
   const getClients = useStore((state) => state.getClients)
+  const clients = useStore((state) => state.clients)
+  const visualizerConfigOptimistic = useStore((state) => state.visualizerConfigOptimistic)
+  const deleteVisualizerInstance = useStore((state) => state.deleteVisualizerInstance)
 
   const hasSentInitialInfo = useRef(false)
   // Store the properties we actually sync to avoid reference-related loops
@@ -68,6 +71,39 @@ export const WebSocketManager = () => {
       }
     }
   }, [isConnected, send, clientIdentity])
+
+  // Cleanup stale visualizer config orphans belonging to this device
+  useEffect(() => {
+    if (
+      isConnected &&
+      clientIdentity?.deviceId &&
+      visualizerConfigOptimistic &&
+      Object.keys(clients).length > 0
+    ) {
+      const myDeviceId = clientIdentity.deviceId
+      const myCurrentName = clientIdentity.name
+      const connectedNames = Object.values(clients).map((c) => c.name)
+
+      Object.entries(visualizerConfigOptimistic).forEach(([instanceName, config]) => {
+        // If it belongs to our device, but isn't our current tab and isn't in the global clients list
+        if (
+          config.deviceId === myDeviceId &&
+          instanceName !== myCurrentName &&
+          !connectedNames.includes(instanceName)
+        ) {
+          console.log('WSM: Cleaning up stale visualizer orphan:', instanceName)
+          deleteVisualizerInstance?.(instanceName)
+        }
+      })
+    }
+  }, [
+    isConnected,
+    clients,
+    visualizerConfigOptimistic,
+    clientIdentity?.name,
+    clientIdentity?.deviceId,
+    deleteVisualizerInstance
+  ])
 
   useEffect(() => {
     if (isConnected && pixelGraphs.length > 0) {

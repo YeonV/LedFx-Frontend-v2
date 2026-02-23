@@ -2,6 +2,7 @@ import { produce } from 'immer'
 import type { IStore } from '../useStore'
 
 export interface VisualizerInstanceConfig {
+  deviceId?: string
   visualType: string
   isPlaying: boolean
   showOverlays: boolean
@@ -16,9 +17,11 @@ export type VisualizerConfigOptimisticState = Record<string, VisualizerInstanceC
 export const defaultVisualizerConfigOptimistic = (
   initialVisualType: string,
   initialName: string,
-  initialConfig: any
+  initialConfig: any,
+  deviceId?: string
 ): VisualizerConfigOptimisticState => ({
   [initialName]: {
+    deviceId,
     visualType: initialVisualType,
     isPlaying: false,
     showOverlays: true,
@@ -86,6 +89,7 @@ const storeVisualizerConfigOptimistic = (set: any) => ({
         if (!draft.visualizerConfigOptimistic[name]) {
           // Auto-initialize with default values if missing
           draft.visualizerConfigOptimistic[name] = {
+            deviceId: partial.deviceId || draft.clientIdentity?.deviceId,
             visualType: partial.visualType || 'butterchurn',
             isPlaying: false,
             showOverlays: true,
@@ -96,6 +100,11 @@ const storeVisualizerConfigOptimistic = (set: any) => ({
           }
         }
         Object.assign(draft.visualizerConfigOptimistic[name], partial)
+
+        // Ensure deviceId is set if missing (for legacy entries)
+        if (!draft.visualizerConfigOptimistic[name].deviceId && draft.clientIdentity?.deviceId) {
+          draft.visualizerConfigOptimistic[name].deviceId = draft.clientIdentity.deviceId
+        }
         // // Clever logging: print full state after update
         // if (typeof window !== 'undefined') {
         //   const state = draft.visualizerConfigOptimistic

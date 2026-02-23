@@ -107,7 +107,8 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
           resolvedInstanceKey,
           globalVisualType === 'butterchurn'
             ? butterchurnConfig
-            : visualizerConfigs?.[globalVisualType] || {}
+            : visualizerConfigs?.[globalVisualType] || {},
+          clientIdentity?.deviceId
         )
       })
     }
@@ -121,7 +122,8 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     resolvedInstanceKey,
     isCurrentClient,
     name,
-    clientIdentity?.name
+    clientIdentity?.name,
+    clientIdentity?.deviceId
   ])
 
   const broadcastToClients = useStore((state) => state.broadcastToClients)
