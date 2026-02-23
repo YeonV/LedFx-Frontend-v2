@@ -1,9 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import {
   Box,
-  TextField,
-  MenuItem,
-  Select,
   Typography,
   Table,
   TableBody,
@@ -13,26 +10,18 @@ import {
   TableRow,
   Paper,
   Chip,
-  Button,
-  Divider,
+  IconButton,
   Stack
 } from '@mui/material'
-import { Refresh, Send } from '@mui/icons-material'
+import { Refresh } from '@mui/icons-material'
 import useStore from '../../store/useStore'
-import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
-import type { ClientType } from '../../store/ui/storeClientIdentity'
 import type { ClientsMap } from '../../store/api/storeClients'
+import ClientEdit from './ClientEdit'
 
 const ClientManagementCard = () => {
-  const clientIdentity = useStore((state) => state.clientIdentity)
   const clients = useStore((state) => state.clients)
+  const clientIdentity = useStore((state) => state.clientIdentity)
   const getClients = useStore((state) => state.getClients)
-  const broadcastToClients = useStore((state) => state.broadcastToClients)
-  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
-  const { send, isConnected } = useWebSocket()
-
-  const [localName, setLocalName] = useState(clientIdentity?.name || '')
-  const [localType, setLocalType] = useState<ClientType>(clientIdentity?.type || 'unknown')
 
   useEffect(() => {
     getClients()
@@ -44,15 +33,6 @@ const ClientManagementCard = () => {
   //     setLocalType(clientIdentity.type)
   //   }
   // }, [clientIdentity])
-
-  const handleUpdateInfo = () => {
-    console.log('CM: update_client_info:', localName, localType)
-    // Update store atomically; WebSocketManager handles the websocket communication
-    updateClientIdentity({
-      name: localName,
-      type: localType
-    })
-  }
 
   const getTypeColor = (
     type: string
@@ -72,76 +52,30 @@ const ClientManagementCard = () => {
   }
 
   const formatTimestamp = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleString()
+    const now = new Date().getTime() / 1000
+    const diffSeconds = Math.floor(now - timestamp)
+    const rtf = new Intl.RelativeTimeFormat(navigator.language || 'en', { numeric: 'auto' })
+
+    if (Math.abs(diffSeconds) < 60) {
+      return rtf.format(-diffSeconds, 'second')
+    } else if (Math.abs(diffSeconds) < 3600) {
+      const diffMinutes = Math.floor(diffSeconds / 60)
+      return rtf.format(-diffMinutes, 'minute')
+    } else if (Math.abs(diffSeconds) < 86400) {
+      const diffHours = Math.floor(diffSeconds / 3600)
+      return rtf.format(-diffHours, 'hour')
+    } else {
+      const diffDays = Math.floor(diffSeconds / 86400)
+      return rtf.format(-diffDays, 'day')
+    }
   }
 
   const getClientCount = () => Object.keys(clients).length
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, justifyContent: 'space-between' }}>
-        <Box>
-          <Typography variant="h5">Client Management</Typography>
-          <Typography variant="body2" color="textSecondary">
-            Manage connected clients and broadcasts
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <Chip label={`${getClientCount()} client(s)`} size="small" />
-          <Button
-            size="small"
-            startIcon={<Refresh />}
-            onClick={() => getClients()}
-            variant="outlined"
-          >
-            Refresh
-          </Button>
-        </Box>
-      </Box>
-
-      <Divider sx={{ mb: 3 }} />
-
-      {/* Current Client Identity */}
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        This Client
-      </Typography>
-
-      <Stack direction="row" spacing={2} sx={{ mb: 3, alignItems: 'flex-end' }}>
-        <TextField
-          label="Client Name"
-          value={localName}
-          onChange={(e) => setLocalName(e.target.value)}
-          size="small"
-          fullWidth
-        />
-        <Select
-          value={localType}
-          onChange={(e) => setLocalType(e.target.value as ClientType)}
-          size="small"
-          variant="outlined"
-          sx={{ minWidth: 150 }}
-        >
-          <MenuItem value="controller">Controller</MenuItem>
-          <MenuItem value="visualiser">Visualiser</MenuItem>
-          <MenuItem value="mobile">Mobile</MenuItem>
-          <MenuItem value="display">Display</MenuItem>
-          <MenuItem value="api">API</MenuItem>
-          <MenuItem value="unknown">Unknown</MenuItem>
-        </Select>
-        <Button size="small" variant="contained" onClick={handleUpdateInfo} sx={{ minWidth: 100 }}>
-          Update
-        </Button>
-      </Stack>
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Connected Clients */}
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Connected Clients
-      </Typography>
-
       {getClientCount() === 0 ? (
-        <Typography variant="body2" color="textSecondary" sx={{ py: 2 }}>
+        <Typography variant="body2" color="textSecondary">
           No clients connected
         </Typography>
       ) : (
@@ -152,18 +86,28 @@ const ClientManagementCard = () => {
                 <TableCell>Name</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>IP Address</TableCell>
-                <TableCell>Connected At</TableCell>
-                <TableCell>Last Active</TableCell>
+                <TableCell sx={{ position: 'relative' }}>
+                  Connected At
+                  <IconButton
+                    size="small"
+                    onClick={() => getClients()}
+                    sx={{ position: 'absolute', right: 16, top: 0 }}
+                  >
+                    <Refresh />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {Object.entries(clients as ClientsMap).map(([uuid, client]) => (
                 <TableRow key={uuid}>
                   <TableCell>
-                    <Typography variant="body2">{client?.name}</Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {uuid.slice(0, 8)}...
-                    </Typography>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Typography variant="body2">{client?.name}</Typography>
+                      {client?.name === clientIdentity?.name && (
+                        <Chip label="Current" color="primary" size="small" />
+                      )}
+                    </Stack>
                   </TableCell>
                   <TableCell>
                     <Chip label={client?.type} color={getTypeColor(client?.type)} size="small" />
@@ -172,10 +116,12 @@ const ClientManagementCard = () => {
                     <Typography variant="body2">{client?.ip}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{formatTimestamp(client?.connected_at)}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">{formatTimestamp(client?.last_active)}</Typography>
+                    <Stack direction="row" justifyContent={'space-between'} alignItems="center">
+                      <Typography variant="body2">
+                        {formatTimestamp(client?.connected_at)}
+                      </Typography>
+                      <ClientEdit name={client?.name} type={client?.type} sx={{ pb: 0.5 }} />
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}
@@ -183,35 +129,6 @@ const ClientManagementCard = () => {
           </Table>
         </TableContainer>
       )}
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Broadcast Test */}
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Test Broadcast
-      </Typography>
-      <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-        Send a test broadcast to all connected clients
-      </Typography>
-      <Button
-        variant="outlined"
-        startIcon={<Send />}
-        onClick={() => {
-          if (clientIdentity && clientIdentity.clientId && broadcastToClients && isConnected) {
-            broadcastToClients(
-              {
-                broadcast_type: 'custom',
-                target: { mode: 'all' },
-                payload: { message: 'Test broadcast from ' + clientIdentity?.name }
-              },
-              send
-            )
-          }
-        }}
-        disabled={!clientIdentity?.clientId}
-      >
-        Send Test Broadcast
-      </Button>
     </Box>
   )
 }

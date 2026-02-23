@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SxProps,
+  TextField,
+  Theme
+} from '@mui/material'
 import { Edit } from '@mui/icons-material'
 import { ClientType } from '../../store/ui/storeClientIdentity'
 import useStore from '../../store/useStore'
@@ -8,9 +17,10 @@ import Popover from '../../components/Popover/Popover'
 interface ClientEditProps {
   name?: string
   type?: ClientType
+  sx?: SxProps<Theme> | undefined
 }
 
-const ClientEdit = ({ name, type }: ClientEditProps) => {
+const ClientEdit = ({ name, type, sx }: ClientEditProps) => {
   const clientIdentity = useStore((state) => state.clientIdentity)
   const clients = useStore((state) => state.clients)
 
@@ -25,7 +35,7 @@ const ClientEdit = ({ name, type }: ClientEditProps) => {
         .flatMap((c) => c.name)
         .includes(newName)}
       type="iconbutton"
-      sx={{ pt: 0, ml: 1, opacity: 0.7, color: 'gray' }}
+      sx={{ pt: 0, ml: 1, opacity: 0.7, color: 'gray', ...sx }}
       size="small"
       icon={<Edit fontSize="small" />}
       content={

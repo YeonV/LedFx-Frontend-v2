@@ -14,7 +14,7 @@ const ClientManagementDialog = () => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
       <DialogTitle>
-        Client Management
+        Connected Clients
         <IconButton
           aria-label="close"
           onClick={handleClose}
