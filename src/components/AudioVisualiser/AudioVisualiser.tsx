@@ -15,6 +15,7 @@ export interface AudioVisualiserProps {
   ConfigFormComponent?: React.ComponentType<any>
   onClose?: () => void
   configData?: any
+  storageName?: string
 }
 
 // Exposed API from VisualiserIso (via window.visualiserApi)
@@ -52,10 +53,17 @@ export interface VisualiserIsoRef {
 declare global {
   interface Window {
     visualiserApi?: VisualiserIsoRef
+    VISUALISER_STORAGE_NAME?: string
   }
 }
 
-const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
+const Visualiser = ({
+  backgroundMode,
+  storageName
+}: {
+  backgroundMode?: boolean
+  storageName?: string
+}) => {
   const [audioData, setAudioData] = useState<number[]>([])
   const setVisualizerInitialized = useStore((state) => state.ui.setVisualizerInitialized)
   const subscribedRef = useRef(false)
@@ -65,6 +73,11 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
   const effects = useStore((state) => state.schemas.effects)
   const { send, isConnected } = useWebSocket()
   const sendRef = useRef(send)
+
+  // Set storage name on window before module loads (fallback/convenience)
+  if (storageName) {
+    window.VISUALISER_STORAGE_NAME = storageName
+  }
 
   // Keep sendRef up to date without triggering effects
   useEffect(() => {
@@ -128,6 +141,7 @@ const Visualiser = ({ backgroundMode }: { backgroundMode?: boolean }) => {
           background: backgroundMode
         }}
         ConfigFormComponent={BladeSchemaForm}
+        storageName={storageName}
       />
     </>
   )
