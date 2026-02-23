@@ -174,6 +174,7 @@ const Devices = () => {
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'center',
+            alignItems: 'center',
             gap: '0.5rem',
             width: '100%',
             flexDirection: layout.itemDirection
