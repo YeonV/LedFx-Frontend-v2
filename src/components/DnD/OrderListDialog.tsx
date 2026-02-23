@@ -97,30 +97,42 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
     const sortedOrder = [...virtualOrder].sort((a, b) => {
       const vA = virtuals[a.virtId]
       const vB = virtuals[b.virtId]
-      if (!vA || !vB) return 0
+      const cA = clients[a.virtId]
+      const cB = clients[b.virtId]
+
+      if (!vA && !cA) return 1
+      if (!vB && !cB) return -1
 
       let valA: any, valB: any
 
       switch (field) {
         case 'name':
-          valA = vA.config.name.toLowerCase()
-          valB = vB.config.name.toLowerCase()
+          valA = (vA ? vA.config.name : cA.name).toLowerCase()
+          valB = (vB ? vB.config.name : cB.name).toLowerCase()
           break
         case 'type':
-          valA = vA.is_device
-            ? (devices[vA.is_device as string]?.type || 'device').toLowerCase()
-            : 'virtual'
-          valB = vB.is_device
-            ? (devices[vB.is_device as string]?.type || 'device').toLowerCase()
-            : 'virtual'
+          if (vA) {
+            valA = vA.is_device
+              ? (devices[vA.is_device as string]?.type || 'device').toLowerCase()
+              : 'virtual'
+          } else {
+            valA = cA.type.toLowerCase()
+          }
+          if (vB) {
+            valB = vB.is_device
+              ? (devices[vB.is_device as string]?.type || 'device').toLowerCase()
+              : 'virtual'
+          } else {
+            valB = cB.type.toLowerCase()
+          }
           break
         case 'dim':
-          valA = (vA.config.rows || 1) > 1 ? '2D' : '1D'
-          valB = (vB.config.rows || 1) > 1 ? '2D' : '1D'
+          valA = vA ? ((vA.config.rows || 1) > 1 ? '2D' : '1D') : '2D'
+          valB = vB ? ((vB.config.rows || 1) > 1 ? '2D' : '1D') : '2D'
           break
         case 'pixels':
-          valA = vA.pixel_count
-          valB = vB.pixel_count
+          valA = vA ? vA.pixel_count : 0
+          valB = vB ? vB.pixel_count : 0
           break
         default:
           return 0

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import { Alert, Collapse, Stack } from '@mui/material'
+import { Alert, Collapse } from '@mui/material'
 import useStore from '../../store/useStore'
 import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
@@ -36,6 +36,7 @@ const Devices = () => {
   const getVirtuals = useStore((state) => state.getVirtuals)
   const clients = useStore((state) => state.clients)
   const virtuals = useStore((state) => state.virtuals)
+  const virtualOrder = useStore((state) => state.virtualOrder)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const features = useStore((state) => state.features)
   const graphs = useStore((state) => state.graphsMulti)
@@ -164,34 +165,48 @@ const Devices = () => {
         </Alert>
       </Collapse>
       <div className={classes.cardWrapper}>
-        {virtuals && Object.keys(virtuals).length ? (
-          Object.keys(virtuals)
-            .filter((v) =>
-              showComplex
-                ? v
-                : !(v.endsWith('-mask') || v.endsWith('-foreground') || v.endsWith('-background'))
-            )
-            .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
-            .map((virtual, i) => <DeviceCard virtual={virtual} key={i} index={i} />)
+        {virtualOrder && virtualOrder.length ? (
+          virtualOrder
+            .filter((o) => {
+              const virtual = virtuals[o.virtId]
+              const client = clients[o.virtId]
+
+              if (virtual) {
+                const isComplex =
+                  o.virtId.endsWith('-mask') ||
+                  o.virtId.endsWith('-foreground') ||
+                  o.virtId.endsWith('-background')
+                if (!showComplex && isComplex) return false
+                if (!showGaps && o.virtId.startsWith('gap-')) return false
+                return true
+              }
+
+              if (client) {
+                return features.showVisualisersOnDevicesPage
+              }
+
+              return false
+            })
+            .map((o, i) => {
+              if (virtuals[o.virtId]) {
+                return <DeviceCard virtual={o.virtId} key={o.virtId} index={i} />
+              }
+              if (clients[o.virtId]) {
+                return (
+                  <VisualizerCard
+                    key={o.virtId}
+                    selectedClients={[o.virtId]}
+                    name={clients[o.virtId]?.name}
+                    type={clients[o.virtId]?.type}
+                  />
+                )
+              }
+              return null
+            })
         ) : (
           <NoYet type="Device" />
         )}
       </div>
-
-      {features.showVisualisersOnDevicesPage && (
-        <Stack spacing={2}>
-          {clients &&
-            Object.entries(clients).length > 0 &&
-            Object.entries(clients).map(([clientId, data]) => (
-              <VisualizerCard
-                key={clientId}
-                selectedClients={[clientId]}
-                name={data?.name}
-                type={data?.type}
-              />
-            ))}
-        </Stack>
-      )}
     </div>
   )
 }

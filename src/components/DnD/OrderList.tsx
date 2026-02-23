@@ -7,20 +7,30 @@ const OrderList: FC = () => {
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
   const virtuals = useStore((state) => state.virtuals)
+  const clients = useStore((state) => state.clients)
 
   const enrichedOrders: Order[] = virtualOrder
     .map((order) => {
       const vs = Object.keys(virtuals)
       const virt = vs.find((v) => virtuals[v].id === order.virtId)
-      if (virt === undefined) {
-        return null
-      } else {
+      if (virt !== undefined) {
         return {
           ...order,
           name: virtuals[virt]?.config.name,
           icon: virtuals[virt]?.config.icon_name
         } as Order
       }
+
+      const client = clients[order.virtId]
+      if (client !== undefined) {
+        return {
+          ...order,
+          name: client.name,
+          icon: 'tv'
+        } as Order
+      }
+
+      return null
     })
     .filter((order) => order !== null)
 
