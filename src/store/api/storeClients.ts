@@ -1,6 +1,7 @@
 import { produce } from 'immer'
 import { Ledfx } from '../../api/ledfx'
 import type { IStore } from '../useStore'
+import { IVirtualOrder } from './storeVirtuals'
 
 /**
  * Clients API Store
@@ -34,6 +35,16 @@ export interface BroadcastPayload {
 
 const storeClients = (set: any) => ({
   clients: {} as ClientsMap,
+  clientOrder: [] as IVirtualOrder[],
+  setClientOrder: (order: IVirtualOrder[]) => {
+    set(
+      produce((s: IStore) => {
+        s.clientOrder = order
+      }),
+      false,
+      'setClientOrder'
+    )
+  },
 
   getClients: async () => {
     const resp = await Ledfx('/api/clients')

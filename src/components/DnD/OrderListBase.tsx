@@ -17,6 +17,7 @@ export interface Order {
 }
 
 interface OrderListBaseProps {
+  droppableId?: string
   orders: Order[]
   setOrders: (_orders: Order[]) => void
 }
@@ -43,7 +44,11 @@ const getListStyle = (_isDraggingOver: boolean) => ({
   // background: isDraggingOver ? 'red' : 'transparent',
 })
 
-const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
+const OrderListBase: FC<OrderListBaseProps> = ({
+  droppableId = 'droppable',
+  orders,
+  setOrders
+}) => {
   const theme = useTheme() as Theme
 
   const showComplex = useStore((state) => state.showComplex)
@@ -60,7 +65,7 @@ const OrderListBase: FC<OrderListBaseProps> = ({ orders, setOrders }) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppable">
+      <Droppable droppableId={droppableId}>
         {(provided, snapshot) => (
           <List ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
             {orders.map((item, index) => (

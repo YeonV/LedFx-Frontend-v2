@@ -19,6 +19,8 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
   const graphs = useStore((state) => state.graphs)
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
+  const clientOrder = useStore((state) => state.clientOrder)
+  const setClientOrder = useStore((state) => state.setClientOrder)
   const graphsMulti = useStore((state) => state.graphsMulti)
   const removeEffectfromHistory = useStore((state) => state.removeEffectfromHistory)
   const clearEffect = useStore((state) => state.clearEffect)
@@ -129,13 +131,7 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
     // initial device order if not set
     const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]
     let changed = false
-    Object.keys(virtuals).forEach((s, i) => {
-      if (!v.some((o) => o.virtId === s)) {
-        v.push({ virtId: s, order: v.length })
-        changed = true
-      }
-    })
-    Object.keys(clients).forEach((s) => {
+    Object.keys(virtuals).forEach((s) => {
       if (!v.some((o) => o.virtId === s)) {
         v.push({ virtId: s, order: v.length })
         changed = true
@@ -144,8 +140,22 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
     if (changed) {
       setVirtualOrder(v)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtuals, clients])
+  }, [virtuals, setVirtualOrder, virtualOrder])
+
+  useEffect(() => {
+    // initial client order if not set
+    const c = JSON.parse(JSON.stringify(clientOrder)) as IVirtualOrder[]
+    let changed = false
+    Object.keys(clients).forEach((s) => {
+      if (!c.some((o) => o.virtId === s)) {
+        c.push({ virtId: s, order: c.length })
+        changed = true
+      }
+    })
+    if (changed) {
+      setClientOrder(c)
+    }
+  }, [clients, setClientOrder, clientOrder])
 
   const moveLeft = () => {
     const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]

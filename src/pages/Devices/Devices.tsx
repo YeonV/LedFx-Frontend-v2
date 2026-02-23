@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { makeStyles } from '@mui/styles'
-import { Alert, Collapse } from '@mui/material'
+import { Alert, Collapse, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 import DeviceCard from './DeviceCard/DeviceCard.wrapper'
 import NoYet from '../../components/NoYet'
@@ -37,6 +37,7 @@ const Devices = () => {
   const clients = useStore((state) => state.clients)
   const virtuals = useStore((state) => state.virtuals)
   const virtualOrder = useStore((state) => state.virtualOrder)
+  const clientOrder = useStore((state) => state.clientOrder)
   const setPixelGraphs = useStore((state) => state.setPixelGraphs)
   const features = useStore((state) => state.features)
   const graphs = useStore((state) => state.graphsMulti)
@@ -169,44 +170,37 @@ const Devices = () => {
           virtualOrder
             .filter((o) => {
               const virtual = virtuals[o.virtId]
-              const client = clients[o.virtId]
-
-              if (virtual) {
-                const isComplex =
-                  o.virtId.endsWith('-mask') ||
-                  o.virtId.endsWith('-foreground') ||
-                  o.virtId.endsWith('-background')
-                if (!showComplex && isComplex) return false
-                if (!showGaps && o.virtId.startsWith('gap-')) return false
-                return true
-              }
-
-              if (client) {
-                return features.showVisualisersOnDevicesPage
-              }
-
-              return false
+              if (!virtual) return false
+              const isComplex =
+                o.virtId.endsWith('-mask') ||
+                o.virtId.endsWith('-foreground') ||
+                o.virtId.endsWith('-background')
+              if (!showComplex && isComplex) return false
+              if (!showGaps && o.virtId.startsWith('gap-')) return false
+              return true
             })
-            .map((o, i) => {
-              if (virtuals[o.virtId]) {
-                return <DeviceCard virtual={o.virtId} key={o.virtId} index={i} />
-              }
-              if (clients[o.virtId]) {
-                return (
-                  <VisualizerCard
-                    key={o.virtId}
-                    selectedClients={[o.virtId]}
-                    name={clients[o.virtId]?.name}
-                    type={clients[o.virtId]?.type}
-                  />
-                )
-              }
-              return null
-            })
+            .map((o, i) => <DeviceCard virtual={o.virtId} key={o.virtId} index={i} />)
         ) : (
           <NoYet type="Device" />
         )}
       </div>
+
+      {features.showVisualisersOnDevicesPage && (
+        <Stack spacing={2} sx={{ width: '100%', alignItems: 'center', mt: 4 }}>
+          {clientOrder &&
+            clientOrder.length > 0 &&
+            clientOrder
+              .filter((o) => clients[o.virtId])
+              .map((o) => (
+                <VisualizerCard
+                  key={o.virtId}
+                  selectedClients={[o.virtId]}
+                  name={clients[o.virtId]?.name}
+                  type={clients[o.virtId]?.type}
+                />
+              ))}
+        </Stack>
+      )}
     </div>
   )
 }
