@@ -1,16 +1,21 @@
 import { FC, useState } from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Drawer from '@mui/material/Drawer'
-import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import Sort from '@mui/icons-material/Sort'
 import OrderList from './OrderList'
-import { ArrowBackIos, Save } from '@mui/icons-material'
-import { Divider, IconButton, Stack, Typography } from '@mui/material'
+import { ArrowBackIos, ArrowDownward, ArrowUpward, Save } from '@mui/icons-material'
+import {
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Drawer,
+  MenuItem,
+  ListItemIcon
+} from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { download } from '../../utils/helpers'
 import useStore from '../../store/useStore'
@@ -28,9 +33,107 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
 }) => {
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
+  const virtuals = useStore((state) => state.virtuals)
+  const devices = useStore((state) => state.devices)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
 
   const [open, setOpen] = useState(false)
+  const [sortField, setSortField] = useState<string | null>(null)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+
+  const renderSortButtons = () => (
+    <Stack direction="row" spacing={1} p={1} useFlexGap flexWrap="wrap">
+      <Button
+        size="small"
+        variant={sortField === 'name' ? 'contained' : 'text'}
+        onClick={() => handleSort('name')}
+        endIcon={
+          sortField === 'name' && (sortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />)
+        }
+      >
+        Name
+      </Button>
+      <Button
+        size="small"
+        variant={sortField === 'type' ? 'contained' : 'text'}
+        onClick={() => handleSort('type')}
+        endIcon={
+          sortField === 'type' && (sortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />)
+        }
+      >
+        Type
+      </Button>
+      <Button
+        size="small"
+        variant={sortField === 'dim' ? 'contained' : 'text'}
+        onClick={() => handleSort('dim')}
+        endIcon={
+          sortField === 'dim' && (sortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />)
+        }
+      >
+        1D/2D
+      </Button>
+      <Button
+        size="small"
+        variant={sortField === 'pixels' ? 'contained' : 'text'}
+        onClick={() => handleSort('pixels')}
+        endIcon={
+          sortField === 'pixels' && (sortDirection === 'asc' ? <ArrowUpward /> : <ArrowDownward />)
+        }
+      >
+        Pixels
+      </Button>
+    </Stack>
+  )
+
+  const handleSort = (field: string) => {
+    let newDirection: 'asc' | 'desc' = 'asc'
+    if (sortField === field) {
+      newDirection = sortDirection === 'asc' ? 'desc' : 'asc'
+    }
+    setSortField(field)
+    setSortDirection(newDirection)
+
+    const sortedOrder = [...virtualOrder].sort((a, b) => {
+      const vA = virtuals[a.virtId]
+      const vB = virtuals[b.virtId]
+      if (!vA || !vB) return 0
+
+      let valA: any, valB: any
+
+      switch (field) {
+        case 'name':
+          valA = vA.config.name.toLowerCase()
+          valB = vB.config.name.toLowerCase()
+          break
+        case 'type':
+          valA = vA.is_device
+            ? (devices[vA.is_device as string]?.type || 'device').toLowerCase()
+            : 'virtual'
+          valB = vB.is_device
+            ? (devices[vB.is_device as string]?.type || 'device').toLowerCase()
+            : 'virtual'
+          break
+        case 'dim':
+          valA = (vA.config.rows || 1) > 1 ? '2D' : '1D'
+          valB = (vB.config.rows || 1) > 1 ? '2D' : '1D'
+          break
+        case 'pixels':
+          valA = vA.pixel_count
+          valB = vB.pixel_count
+          break
+        default:
+          return 0
+      }
+
+      if (valA < valB) return newDirection === 'asc' ? -1 : 1
+      if (valA > valB) return newDirection === 'asc' ? 1 : -1
+      return 0
+    })
+
+    setVirtualOrder(sortedOrder.map((item, index) => ({ ...item, order: index })))
+  }
+
   const handleClickOpen = () => {
     setOpen(true)
     if (onOpen) {
@@ -122,6 +225,8 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
               </IconButton>
             </Stack>
             <Divider />
+            {renderSortButtons()}
+            <Divider />
             <OrderList />
           </div>
         </Drawer>
@@ -129,6 +234,8 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <DialogTitle>Change Order</DialogTitle>
           <DialogContent>
+            {renderSortButtons()}
+            <Divider />
             <OrderList />
           </DialogContent>
           <DialogActions>
