@@ -127,36 +127,6 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
     )
   }, [virtuals, devices, virtual])
 
-  useEffect(() => {
-    // initial device order if not set
-    const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]
-    let changed = false
-    Object.keys(virtuals).forEach((s) => {
-      if (!v.some((o) => o.virtId === s)) {
-        v.push({ virtId: s, order: v.length })
-        changed = true
-      }
-    })
-    if (changed) {
-      setVirtualOrder(v)
-    }
-  }, [virtuals, setVirtualOrder, virtualOrder])
-
-  useEffect(() => {
-    // initial client order if not set
-    const c = JSON.parse(JSON.stringify(clientOrder)) as IVirtualOrder[]
-    let changed = false
-    Object.keys(clients).forEach((s) => {
-      if (!c.some((o) => o.virtId === s)) {
-        c.push({ virtId: s, order: c.length })
-        changed = true
-      }
-    })
-    if (changed) {
-      setClientOrder(c)
-    }
-  }, [clients, setClientOrder, clientOrder])
-
   const moveLeft = () => {
     const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]
     const index = v.findIndex((o) => o.virtId === virtual)

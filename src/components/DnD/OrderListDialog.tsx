@@ -14,7 +14,11 @@ import {
   DialogActions,
   Drawer,
   MenuItem,
-  ListItemIcon
+  ListItemIcon,
+  Switch,
+  FormControlLabel,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { download } from '../../utils/helpers'
@@ -39,6 +43,8 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
   const devices = useStore((state) => state.devices)
   const clients = useStore((state) => state.clients)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
+  const layout = useStore((state) => state.uiPersist.layout)
+  const setLayout = useStore((state) => state.setLayout)
 
   const [open, setOpen] = useState(false)
   const [sortField, setSortField] = useState<{ [key: string]: string | null }>({
@@ -100,6 +106,44 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
           </Button>
         </>
       )}
+    </Stack>
+  )
+
+  const renderLayoutSettings = () => (
+    <Stack spacing={2} p={2}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={layout.separate2DDevices}
+            onChange={(e) => setLayout('separate2DDevices', e.target.checked)}
+          />
+        }
+        label="Separate 2D Devices"
+      />
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="body2">Section Direction</Typography>
+        <ToggleButtonGroup
+          size="small"
+          value={layout.sectionDirection}
+          exclusive
+          onChange={(_, val) => val && setLayout('sectionDirection', val)}
+        >
+          <ToggleButton value="column">Column</ToggleButton>
+          <ToggleButton value="row">Row</ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="body2">Item Direction</Typography>
+        <ToggleButtonGroup
+          size="small"
+          value={layout.itemDirection}
+          exclusive
+          onChange={(_, val) => val && setLayout('itemDirection', val)}
+        >
+          <ToggleButton value="column">Column</ToggleButton>
+          <ToggleButton value="row">Row</ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
     </Stack>
   )
 
@@ -219,11 +263,11 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
           <ListItemIcon>
             <Sort />
           </ListItemIcon>
-          Change Order
+          Adjust Layout
         </MenuItem>
       ) : (
         <Button onClick={handleClickOpen} startIcon={<Sort />}>
-          Open Order List
+          Adjust Layout
         </Button>
       )}
       {mode === 'drawer' ? (
@@ -245,7 +289,7 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
                 <ArrowBackIos />
               </Button>
               <Typography variant="h6" ml={0.5}>
-                Change Order
+                Adjust Layout
               </Typography>
               <IconButton sx={{ ml: 5 }} onClick={handleSave}>
                 <Save />
@@ -264,12 +308,25 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
               </IconButton>
             </Stack>
             <Divider />
+            {renderLayoutSettings()}
+            <Divider />
             <Typography variant="overline" sx={{ px: 2, pt: 1, display: 'block' }}>
-              Devices
+              {layout.separate2DDevices ? '1D Devices' : 'Devices'}
             </Typography>
             {renderSortButtons('virtuals')}
             <Divider />
-            <OrderList type="virtuals" />
+            <OrderList type="virtuals" dimFilter={layout.separate2DDevices ? '1D' : undefined} />
+            {layout.separate2DDevices && (
+              <>
+                <Divider />
+                <Typography variant="overline" sx={{ px: 2, pt: 1, display: 'block' }}>
+                  2D Devices
+                </Typography>
+                {renderSortButtons('virtuals')}
+                <Divider />
+                <OrderList type="virtuals" dimFilter="2D" />
+              </>
+            )}
             <Divider />
             <Typography variant="overline" sx={{ px: 2, pt: 1, display: 'block' }}>
               Visualizers
@@ -281,14 +338,27 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
         </Drawer>
       ) : (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-          <DialogTitle>Change Order</DialogTitle>
+          <DialogTitle>Adjust Layout</DialogTitle>
           <DialogContent>
+            {renderLayoutSettings()}
+            <Divider />
             <Typography variant="overline" sx={{ pt: 1, display: 'block' }}>
-              Devices
+              {layout.separate2DDevices ? '1D Devices' : 'Devices'}
             </Typography>
             {renderSortButtons('virtuals')}
             <Divider />
-            <OrderList type="virtuals" />
+            <OrderList type="virtuals" dimFilter={layout.separate2DDevices ? '1D' : undefined} />
+            {layout.separate2DDevices && (
+              <>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="overline" sx={{ pt: 1, display: 'block' }}>
+                  2D Devices
+                </Typography>
+                {renderSortButtons('virtuals')}
+                <Divider />
+                <OrderList type="virtuals" dimFilter="2D" />
+              </>
+            )}
             <Divider sx={{ my: 2 }} />
             <Typography variant="overline" sx={{ pt: 1, display: 'block' }}>
               Visualizers

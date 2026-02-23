@@ -64,6 +64,14 @@ const storeUIPersistActions = (set: any) => ({
       }),
       false,
       'uiPersist/setExpander'
+    ),
+  setLayout: (key: 'separate2DDevices' | 'sectionDirection' | 'itemDirection', val: any): void =>
+    set(
+      produce((state: IStore) => {
+        ;(state.uiPersist.layout as any)[key] = val
+      }),
+      false,
+      'uiPersist/setLayout'
     )
 })
 
