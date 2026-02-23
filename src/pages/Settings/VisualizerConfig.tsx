@@ -384,6 +384,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     if (fxEnabled) params.append('fxEnabled', 'true')
     if (showFxPanel) params.append('showFxPanel', 'true')
     if (newVisName) params.append('clientName', newVisName)
+    if (newVisName) params.append('storageName', `visualizer_${newVisName}`)
 
     // Add configuration parameters
     // Use per-instance config for URL export as well
