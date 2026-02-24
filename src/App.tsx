@@ -3,21 +3,21 @@ import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
 import { createTheme, ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 import isElectron from 'is-electron'
-import Cookies from 'universal-cookie'
 import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
 import './App.css'
-import { deleteFrontendConfig, initFrontendConfig } from './utils/helpers'
+import { initFrontendConfig } from './utils/helpers'
 import WaveLines from './components/Icons/waves'
 import Pages from './pages/Pages'
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider'
 import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes'
 import xmas from './assets/xmas.png'
 import newyear from './assets/fireworks.jpg'
-import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
 import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
 import useAppSubscriptions from './hooks/useAppSubscriptions'
+import useIpcHandlers from './hooks/useIpcHandlers'
+import useProtocolHandler from './hooks/useProtocolHandler'
 import { WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
@@ -27,46 +27,19 @@ import { Box } from '@mui/system'
 
 export default function App() {
   const { height, width } = useWindowDimensions()
-  const virtuals = useStore((state) => state.virtuals)
   const features = useStore((state) => state.features)
-  const protoCall = useStore((state) => state.protoCall)
-  const setEffect = useStore((state) => state.setEffect)
 
   // Mount global song detector auto-apply hook
   useSongDetectorAutoApply()
-  const setCurrentTrack = useStore((state) => state.setCurrentTrack)
-  const setProtoCall = useStore((state) => state.setProtoCall)
-  const setPlatform = useStore((state) => state.setPlatform)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const getSchemas = useStore((state) => state.getSchemas)
   const getClients = useStore((state) => state.getClients)
-  const shutdown = useStore((state) => state.shutdown)
-  const showSnackbar = useStore((state) => state.ui.showSnackbar)
-  const setCoreParams = useStore((state) => state.setCoreParams)
-  const setCoreStatus = useStore((state) => state.setCoreStatus)
   const changeTheme = useStore((state) => state.ui.changeTheme)
-  const reloadTheme = useStore((state) => state.ui.reloadTheme)
-  const toggleScenePLplay = useStore((state) => state.toggleScenePLplay)
-  const toggleScenePLrepeat = useStore((state) => state.toggleScenePLrepeat)
-  const scenePL = useStore((state) => state.scenePL)
-  const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
-  const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
-  const activateScene = useStore((state) => state.activateScene)
 
   useAppSubscriptions()
-
-  const handleNext = () => {
-    const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
-    setScenePLactiveIndex(nextIndex)
-    activateScene(scenePL[nextIndex])
-  }
-
-  const handlePrev = () => {
-    const prevIndex = (scenePLactiveIndex - 1 + scenePL.length) % scenePL.length
-    setScenePLactiveIndex(prevIndex)
-    activateScene(scenePL[prevIndex])
-  }
+  useIpcHandlers()
+  useProtocolHandler()
   const theme = useMemo(
     () =>
       createTheme({
@@ -106,243 +79,6 @@ export default function App() {
       window.api.send('toMain', { command: 'close-others' })
     }
   }, [])
-  window.api?.receive('fromMain', (parameters: any) => {
-    if (parameters === 'shutdown') {
-      shutdown()
-    }
-    if (parameters[0] === 'platform') {
-      setPlatform(parameters[1])
-    }
-    if (parameters[0] === 'currentdir') {
-      console.log(parameters[1])
-    }
-    if (parameters[0] === 'protocol') {
-      // console.log('protocol', parameters[1])
-      const protocolData = JSON.parse(parameters[1])
-      // Handle both Windows (commandLine array) and macOS (url string) formats
-      const protocolUrl = protocolData.url || protocolData.commandLine?.pop()
-      if (protocolUrl) {
-        setProtoCall(protocolUrl)
-      }
-    }
-    if (parameters[0] === 'snackbar') {
-      showSnackbar('info', parameters[1])
-    }
-    if (parameters[0] === 'coreParams') {
-      // console.log('coreParams', parameters[1])
-      setCoreParams(parameters[1])
-    }
-    if (parameters[0] === 'status') {
-      // console.log('status', parameters[1])
-      setCoreStatus(parameters[1])
-    }
-    if (parameters === 'clear-frontend') {
-      deleteFrontendConfig()
-    }
-    if (parameters[0] === 'all-windows') {
-      // console.log('all-windows', parameters[1])
-    }
-  })
-
-  useEffect(() => {
-    if (protoCall !== '') {
-      // Early exit for song protocol to avoid any side effects
-      if (protoCall.startsWith('ledfx://song/')) {
-        // Parse protocol URL more carefully to preserve paths with slashes
-        const urlWithoutProtocol = protoCall.replace('ledfx://', '')
-
-        // Split query string if present
-        const [pathPart, queryString] = urlWithoutProtocol.split('?')
-        const parts = pathPart.split('/')
-        const domain = parts[0]
-
-        if (domain === 'song' && parts.length >= 3) {
-          const device = parts[1]
-          // Decode song title only if it contains URL-encoded characters (macOS encodes, Windows doesn't)
-          const songTitle = parts[2].includes('%') ? decodeURIComponent(parts[2]) : parts[2]
-          const thumbnailPath = parts.slice(3).join('/') // Rejoin remaining parts for full path
-
-          // Parse query parameters for position tracking (song-detector-plus)
-          const queryParams = new URLSearchParams(queryString || '')
-          const position = queryParams.has('position')
-            ? parseFloat(queryParams.get('position')!)
-            : null
-          const duration = queryParams.has('duration')
-            ? parseFloat(queryParams.get('duration')!)
-            : null
-          const playing = queryParams.get('playing') === 'true'
-          const timestamp = queryParams.has('timestamp')
-            ? parseFloat(queryParams.get('timestamp')!)
-            : null
-
-          console.table({
-            Domain: domain,
-            Action: device,
-            Payload: songTitle,
-            Extra: thumbnailPath || 'none',
-            Position: position !== null ? `${position.toFixed(1)}s` : 'N/A',
-            Duration: duration !== null ? `${duration.toFixed(1)}s` : 'N/A',
-            Playing: playing,
-            Timestamp: timestamp !== null ? new Date(timestamp * 1000).toLocaleTimeString() : 'N/A'
-          })
-
-          // Backend serves thumbnails from ~/.ledfx/assets/ at /assets/ endpoint
-          const thumbnail = thumbnailPath ? `/assets/${decodeURIComponent(thumbnailPath)}` : null
-          // console.log(
-          //   'Song detector - Device:',
-          //   device,
-          //   'Song:',
-          //   songTitle,
-          //   'Thumbnail:',
-          //   thumbnail,
-          //   'Position:',
-          //   position,
-          //   'Duration:',
-          //   duration,
-          //   'Playing:',
-          //   playing
-          // )
-
-          // Ignore "Unknown" payloads
-          if (
-            songTitle === 'Unknown - Unknown' ||
-            songTitle === 'Unknown - No media is currently playing'
-          ) {
-            setProtoCall('')
-            return
-          }
-
-          if (device === 'ledfxcc' && songTitle.length > 3) {
-            setCurrentTrack(songTitle)
-            // Store thumbnail path for album art form
-            if (thumbnail) {
-              useStore.getState().setThumbnailPath(thumbnail)
-            }
-            // Store position data if available (from song-detector-plus)
-            if (position !== null || duration !== null) {
-              useStore.getState().setPositionData({
-                position,
-                duration,
-                playing,
-                timestamp
-              })
-            }
-          } else {
-            const virtual = Object.keys(virtuals).find((virt) => virtuals[virt].id === device)
-            if (virtual && songTitle.length > 3) {
-              setEffect(
-                device,
-                'texter2d',
-                {
-                  gradient:
-                    'linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)',
-                  option_2: false,
-                  flip: false,
-                  blur: 0,
-                  flip_horizontal: false,
-                  speed_option_1: 3,
-                  resize_method: 'Fast',
-                  gradient_roll: 0,
-                  alpha: false,
-                  value_option_1: 0.5,
-                  font: 'Blade-5x8',
-                  use_gradient: false,
-                  diag: false,
-                  test: false,
-                  impulse_decay: 0.1,
-                  mirror: false,
-                  flip_vertical: false,
-                  text_effect: 'Side Scroll',
-                  multiplier: 1,
-                  brightness: 1,
-                  text_color: '#ff0000',
-                  background_brightness: 1,
-                  rotate: 0,
-                  dump: false,
-                  option_1: false,
-                  height_percent: 50,
-                  background_color: '#000000',
-                  text: songTitle
-                },
-                true,
-                true
-              )
-            }
-          }
-          setProtoCall('')
-          return // Exit early for song protocol
-        }
-      }
-
-      // showSnackbar('info', `External call: ${protoCall}`)
-
-      // Parse protocol URL more carefully to preserve paths with slashes
-      const urlWithoutProtocol = protoCall.replace('ledfx://', '')
-
-      // For other protocols, use the old parsing method
-      const proto = urlWithoutProtocol.split('/').filter((n) => n)
-
-      console.table({
-        Domain: proto[0],
-        Action: proto[1],
-        Payload: proto[2],
-        Extra: proto[3]
-      })
-      if (proto[0] === 'callback') {
-        const cookies = new Cookies()
-        const expDate = new Date()
-        expDate.setHours(expDate.getHours() + 1)
-        cookies.remove('access_token', { path: '/integrations' })
-        cookies.set(
-          'access_token',
-          proto[1].replace('?code=', '').replace('#%2FIntegrations%3F', ''),
-          {
-            expires: expDate
-          }
-        )
-      } else if (proto[0] === 'auth') {
-        login(proto.join().split('redirect?')[1]).then(() => {
-          window.location.reload()
-        })
-      } else if (proto[0] === 'command') {
-        if (proto[1] === 'theme') {
-          if (proto[2] === 'light') {
-            window.localStorage.setItem('ledfx-theme', 'LightBw')
-            reloadTheme()
-          }
-          if (proto[2] === 'dark') {
-            window.localStorage.setItem('ledfx-theme', 'DarkBw')
-            reloadTheme()
-          }
-          if (proto[2] === 'reset') {
-            window.localStorage.setItem('ledfx-theme', 'DarkOrange')
-            reloadTheme()
-          }
-        } else if (proto[1] === 'playlist') {
-          if (proto[2] === 'next') {
-            handleNext()
-            showSnackbar('info', 'Next playlist')
-          } else if (proto[2] === 'previous' || proto[2] === 'prev') {
-            handlePrev()
-            showSnackbar('info', 'Previous playlist')
-          } else if (proto[2] === 'play' || proto[2] === 'stop' || proto[2] === 'pause') {
-            toggleScenePLplay()
-            showSnackbar('info', 'Toggle playlist')
-          } else if (proto[2] === 'repeat') {
-            toggleScenePLrepeat()
-            showSnackbar('info', 'Pause playlist')
-          }
-        }
-      } else if (proto[0] === 'song') {
-        // This block should not be reached as song is handled above
-        console.warn('Song protocol reached fallback handler - this should not happen')
-      } else {
-        showSnackbar('info', `External call: ${protoCall.replace('ledfx://', '')}`)
-      }
-      setProtoCall('')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [protoCall, showSnackbar, setProtoCall])
 
   return (
     <ThemeProviderNew theme={theme}>

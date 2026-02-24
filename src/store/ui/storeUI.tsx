@@ -83,7 +83,7 @@ const storeUI = (set: any) => ({
         ui: { ...state.ui, pgsX: x }
       }),
       false,
-      'ui/mgX'
+      'ui/pgsX'
     ),
   pgsY: 200,
   setPgsY: (y: number): void =>
@@ -92,7 +92,7 @@ const storeUI = (set: any) => ({
         ui: { ...state.ui, pgsY: y }
       }),
       false,
-      'ui/mgY'
+      'ui/pgsY'
     ),
   pgs: false,
   setPgs: (mg: boolean): void =>
