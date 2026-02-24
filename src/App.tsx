@@ -1,40 +1,45 @@
-import { useEffect, useMemo } from 'react'
-import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
-import { createTheme, ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material'
-import { SnackbarProvider } from 'notistack'
-import useStore from './store/useStore'
-import useWindowDimensions from './utils/useWindowDimension'
-import './App.css'
-import { initFrontendConfig } from './utils/helpers'
-import Pages from './pages/Pages'
-import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider'
 import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes'
-import FiledropProvider from './utils/FiledropProvider'
-import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
-import useAppSubscriptions from './hooks/useAppSubscriptions'
-import useIpcHandlers from './hooks/useIpcHandlers'
-import useProtocolHandler from './hooks/useProtocolHandler'
 import { WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
-import FireTvBar from './components/FireTv/FireTvBar'
+import { createTheme, ThemeProvider } from '@mui/material'
+import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
+import { initFrontendConfig } from './utils/helpers'
+import { useEffect, useMemo } from 'react'
+import { SnackbarProvider } from 'notistack'
+
+import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
+import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider'
 import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
 import Visualiser from './components/AudioVisualiser/AudioVisualiser'
+import useAppSubscriptions from './hooks/useAppSubscriptions'
+import useWindowDimensions from './utils/useWindowDimension'
+import useProtocolHandler from './hooks/useProtocolHandler'
+import FiledropProvider from './utils/FiledropProvider'
+import useIpcHandlers from './hooks/useIpcHandlers'
 import SpecialEvents from './components/SpecialEvents'
+import FireTvBar from './components/FireTv/FireTvBar'
+import AppStyles from './components/AppStyles'
+import useStore from './store/useStore'
+import Pages from './pages/Pages'
+
+import './App.css'
 
 export default function App() {
-  useWindowDimensions()
+  // 1. State & Selectors
   const features = useStore((state) => state.features)
-
-  // Mount global song detector auto-apply hook
-  useSongDetectorAutoApply()
   const getVirtuals = useStore((state) => state.getVirtuals)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const getSchemas = useStore((state) => state.getSchemas)
   const getClients = useStore((state) => state.getClients)
   const changeTheme = useStore((state) => state.ui.changeTheme)
 
+  // 2. Custom Hooks
+  useWindowDimensions()
+  useSongDetectorAutoApply()
   useIpcHandlers()
   useProtocolHandler()
+
+  // 3. Memoized values
   const theme = useMemo(
     () =>
       createTheme({
@@ -48,6 +53,7 @@ export default function App() {
     [changeTheme]
   )
 
+  // 4. Initialization Effects
   useEffect(() => {
     getVirtuals()
     getSystemConfig()
@@ -80,15 +86,8 @@ export default function App() {
             <WebSocketManager />
             <SpotifyProvider>
               <FiledropProvider>
-                <CssBaseline />
+                <AppStyles />
                 <FpsViewerWrapper />
-                <GlobalStyles
-                  styles={{
-                    body: {
-                      colorScheme: theme.palette.mode
-                    }
-                  }}
-                />
                 <Pages />
                 {features.firetv && <FireTvBar />}
               </FiledropProvider>
