@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useDynamicModule } from '@yz-dev/react-dynamic-module'
-import { useTheme } from '@mui/material'
+import { useTheme, Box } from '@mui/material'
 import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
@@ -130,7 +130,7 @@ const Visualiser = ({
     return null
   }
 
-  return (
+  const content = (
     <>
       <VisualiserWsControl />
       <AudioVisualiser
@@ -145,6 +145,25 @@ const Visualiser = ({
       />
     </>
   )
+
+  if (backgroundMode) {
+    return (
+      <Box
+        sx={{
+          width: '100vw',
+          height: 'calc(100vh - 64px)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: -1
+        }}
+      >
+        {content}
+      </Box>
+    )
+  }
+
+  return content
 }
 
 export default Visualiser

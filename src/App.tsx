@@ -6,12 +6,9 @@ import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
 import './App.css'
 import { initFrontendConfig } from './utils/helpers'
-import WaveLines from './components/Icons/waves'
 import Pages from './pages/Pages'
 import SpotifyProvider from './components/Integrations/Spotify/SpotifyProvider'
 import { ledfxThemes, ledfxTheme, common } from './themes/AppThemes'
-import xmas from './assets/xmas.png'
-import newyear from './assets/fireworks.jpg'
 import FiledropProvider from './utils/FiledropProvider'
 import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
 import useAppSubscriptions from './hooks/useAppSubscriptions'
@@ -22,10 +19,10 @@ import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
 import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
 import Visualiser from './components/AudioVisualiser/AudioVisualiser'
-import { Box } from '@mui/system'
+import SpecialEvents from './components/SpecialEvents'
 
 export default function App() {
-  const { height, width } = useWindowDimensions()
+  useWindowDimensions()
   const features = useStore((state) => state.features)
 
   // Mount global song detector auto-apply hook
@@ -36,7 +33,6 @@ export default function App() {
   const getClients = useStore((state) => state.getClients)
   const changeTheme = useStore((state) => state.ui.changeTheme)
 
-  useAppSubscriptions()
   useIpcHandlers()
   useProtocolHandler()
   const theme = useMemo(
@@ -67,11 +63,12 @@ export default function App() {
       'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
       'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
     )
-    if (window.location.pathname.includes('hassio_ingress'))
+    if (window.location.pathname.includes('hassio_ingress')) {
       console.info(
         '%c HomeAssistant detected ',
         'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
       )
+    }
   }, [])
 
   return (
@@ -79,6 +76,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={15}>
           <WebSocketProvider>
+            <HookLoader />
             <WebSocketManager />
             <SpotifyProvider>
               <FiledropProvider>
@@ -96,73 +94,16 @@ export default function App() {
               </FiledropProvider>
             </SpotifyProvider>
             {/* exclude for /visualiser */}
-            {features.bgvisualiser && (
-              <Box
-                sx={{
-                  width: '100vw',
-                  height: 'calc(100vh - 64px)',
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  zIndex: -1
-                }}
-              >
-                <Visualiser backgroundMode={true} />
-              </Box>
-            )}
+            {features.bgvisualiser && <Visualiser backgroundMode={true} />}
           </WebSocketProvider>
-          {features.waves && (
-            <WaveLines
-              startColor={theme.palette.primary.main}
-              stopColor={theme.palette.accent.main || '#ffdc0f'}
-              width={width - 8}
-              height={height}
-            />
-          )}
-          {new Date().getFullYear() === 2024 &&
-            new Date().getMonth() === 11 &&
-            new Date().getDate() >= 24 && (
-              <div
-                style={{
-                  margin: 'auto',
-                  backgroundImage: `url(${xmas})`,
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'bottom',
-                  display: 'block',
-                  zIndex: -1,
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                  opacity: 0.7
-                }}
-              />
-            )}
-          {new Date().getFullYear() === 2025 &&
-            new Date().getMonth() === 0 &&
-            new Date().getDate() === 1 && (
-              <div
-                style={{
-                  margin: 'auto',
-                  backgroundImage: `url(${newyear})`,
-                  backgroundSize: 'contain',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'bottom right',
-                  display: 'block',
-                  zIndex: -1,
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                  opacity: 0.7
-                }}
-              />
-            )}
+          <SpecialEvents />
         </SnackbarProvider>
       </ThemeProvider>
     </ThemeProviderNew>
   )
+}
+
+const HookLoader = () => {
+  useAppSubscriptions()
+  return null
 }

@@ -43,6 +43,15 @@ if (isElectron()) {
 In `useIpcHandlers.ts`, we register a listener via `window.api.receive`.
 
 **Technical Note:**
-Due to the current typing of the Electron preload bridge in this project, the `receive` method is typed as returning `void` or `never`. While standard React practice is to return a cleanup function from `useEffect` to remove listeners, we have omitted the call to `removeListener()` to resolve a TypeScript "Type 'never' has no call signatures" error.
+Due to the current typing of the Electron preload bridge in this project, the `receive` method is typed as returning `void` or `never`. While standard React practice is to return a cleanup function from `useEffect` to remove listeners, we initially encountered a TypeScript "Type 'never' has no call signatures" error.
 
-We rely on the `useEffect` dependency array and the stable nature of the root component to ensure listeners are not redundantly registered, though a future improvement to the preload bridge types to support cleanup is recommended.
+**Resolution:**
+We have implemented the cleanup by casting the return value of `receive` (the `removeListener` function) to `any`. This ensures that listeners are correctly removed on unmount, preventing memory leaks, while satisfying the compiler.
+
+```typescript
+return () => {
+  if (typeof removeListener === 'function') {
+    ;(removeListener as any)()
+  }
+}
+```
