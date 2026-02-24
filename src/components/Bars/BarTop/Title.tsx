@@ -30,6 +30,8 @@ const Title = (
           </Typography>
         </Tooltip>
         {!process.env.MS_STORE &&
+        !process.env.OFFICIAL &&
+        process.env.NODE_ENV !== 'development' &&
         newVerOnline &&
         frConfig?.updateUrl &&
         frConfig.releaseUrl &&
@@ -44,6 +46,8 @@ const Title = (
           </Button>
         ) : null}
         {!process.env.MS_STORE &&
+        process.env.OFFICIAL &&
+        process.env.NODE_ENV !== 'development' &&
         !isElectron() &&
         updateAvailable &&
         window.location.origin !== 'https://ledfx.stream' ? (
