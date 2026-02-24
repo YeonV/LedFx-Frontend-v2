@@ -418,5 +418,46 @@ export const migrations: Migrations = {
         }
       }
     }
+  }),
+  // Migration 43: Add uiPersist.layout with defaults if missing
+  43: produce((draft) => {
+    if (!draft.uiPersist) draft.uiPersist = {}
+    if (!draft.uiPersist.layout) {
+      draft.uiPersist.layout = {
+        separate2DDevices: false,
+        sectionDirection: 'column',
+        itemDirection: 'row',
+        sectionWidth: '100%'
+      }
+    } else {
+      if (typeof draft.uiPersist.layout.separate2DDevices === 'undefined')
+        draft.uiPersist.layout.separate2DDevices = false
+      if (typeof draft.uiPersist.layout.sectionDirection === 'undefined')
+        draft.uiPersist.layout.sectionDirection = 'column'
+      if (typeof draft.uiPersist.layout.itemDirection === 'undefined')
+        draft.uiPersist.layout.itemDirection = 'row'
+      if (typeof draft.uiPersist.layout.sectionWidth === 'undefined')
+        draft.uiPersist.layout.sectionWidth = '100%'
+    }
+  }),
+
+  // Migration 44: Ensure clientOrder exists
+  44: produce((draft) => {
+    if (typeof draft.clientOrder === 'undefined') {
+      draft.clientOrder = []
+    }
+  }),
+
+  // Migration 45: Ensure deviceId is set in visualizerConfigOptimistic, else clear
+  45: produce((draft) => {
+    if (draft.visualizerConfigOptimistic && draft.clientIdentity && draft.clientIdentity.deviceId) {
+      Object.values(draft.visualizerConfigOptimistic).forEach((v: any) => {
+        if (typeof v.deviceId === 'undefined') {
+          v.deviceId = draft.clientIdentity.deviceId
+        }
+      })
+    } else if (draft.visualizerConfigOptimistic) {
+      draft.visualizerConfigOptimistic = {}
+    }
   })
 }
