@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react'
 import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
 import { createTheme, ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
-import isElectron from 'is-electron'
 import useStore from './store/useStore'
 import useWindowDimensions from './utils/useWindowDimension'
 import './App.css'
@@ -73,11 +72,6 @@ export default function App() {
         '%c HomeAssistant detected ',
         'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
       )
-    if (isElectron()) {
-      window.api.send('toMain', { command: 'get-platform' })
-      window.api.send('toMain', { command: 'get-core-params' })
-      window.api.send('toMain', { command: 'close-others' })
-    }
   }, [])
 
   return (

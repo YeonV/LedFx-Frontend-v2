@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import isElectron from 'is-electron'
 import useStore from '../store/useStore'
 import { deleteFrontendConfig } from '../utils/helpers'
 
@@ -11,6 +12,7 @@ const useIpcHandlers = () => {
   const setCoreStatus = useStore((state) => state.setCoreStatus)
 
   useEffect(() => {
+    // Register IPC listener
     const removeListener = window.api?.receive('fromMain', (parameters: any) => {
       if (parameters === 'shutdown') {
         shutdown()
@@ -23,7 +25,6 @@ const useIpcHandlers = () => {
       }
       if (parameters[0] === 'protocol') {
         const protocolData = JSON.parse(parameters[1])
-        // Handle both Windows (commandLine array) and macOS (url string) formats
         const protocolUrl = protocolData.url || protocolData.commandLine?.pop()
         if (protocolUrl) {
           setProtoCall(protocolUrl)
@@ -41,14 +42,18 @@ const useIpcHandlers = () => {
       if (parameters === 'clear-frontend') {
         deleteFrontendConfig()
       }
-      if (parameters[0] === 'all-windows') {
-        // console.log('all-windows', parameters[1])
-      }
     })
+
+    // Bootstrap IPC calls
+    if (isElectron()) {
+      window.api?.send('toMain', { command: 'get-platform' })
+      window.api?.send('toMain', { command: 'get-core-params' })
+      window.api?.send('toMain', { command: 'close-others' })
+    }
 
     return () => {
       if (typeof removeListener === 'function') {
-        removeListener()
+        ;(removeListener as any)()
       }
     }
   }, [shutdown, setPlatform, setProtoCall, showSnackbar, setCoreParams, setCoreStatus])

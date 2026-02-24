@@ -24,7 +24,7 @@ const useElectronProtocol = () => {
           }
         }
       }
-      window.api.receive('fromMain', handler)
+      const removeListener = window.api.receive('fromMain', handler)
 
       // Request the value after handler is set up
       setTimeout(() => {
@@ -34,6 +34,12 @@ const useElectronProtocol = () => {
           defaultValue: null
         })
       }, 100)
+
+      return () => {
+        if (typeof removeListener === 'function') {
+          ;(removeListener as any)()
+        }
+      }
     }
   }, [isElect, navigate])
 }

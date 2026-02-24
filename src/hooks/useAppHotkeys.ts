@@ -7,7 +7,6 @@ const useAppHotkeys = () => {
   const navigate = useNavigate()
   const isElect = isElectron()
 
-  const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
 
   const setMp = useStore((state) => state.ui.setMp)
@@ -20,11 +19,12 @@ const useAppHotkeys = () => {
   const setStoreInspector = useStore((state) => state.ui.setStoreInspector)
   const setKeybinding = useStore((state) => state.ui.setKeybinding)
 
-  const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
   const setShowFeatures = useStore((state) => state.setShowFeatures)
 
-  useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
+  useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () =>
+    setSmartBarOpen(!useStore.getState().ui.bars?.smartBar.open)
+  )
   useHotkeys(['ctrl+alt+d'], () => setMp(!useStore.getState().ui.mp))
   useHotkeys(['ctrl+alt+p'], () => setPgs(!useStore.getState().ui.pgs))
   useHotkeys(['ctrl+alt+f'], () => setFpsViewer(!useStore.getState().ui.fpsViewer))
@@ -54,10 +54,11 @@ const useAppHotkeys = () => {
   )
 
   useHotkeys(['ctrl+alt+a'], () => {
-    setFeatures('beta', !features.beta)
-    setFeatures('alpha', !features.alpha)
-    setShowFeatures('alpha', !features.alpha)
-    setShowFeatures('beta', !features.beta)
+    const { beta, alpha } = useStore.getState().features
+    setFeatures('beta', !beta)
+    setFeatures('alpha', !alpha)
+    setShowFeatures('alpha', !alpha)
+    setShowFeatures('beta', !beta)
   })
 }
 
