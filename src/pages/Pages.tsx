@@ -7,7 +7,6 @@ import {
   useLocation
 } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import ScrollToTop from '../utils/scrollToTop'
@@ -40,27 +39,15 @@ import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
 import FloatingWidgets from './FloatingWidgets'
+import useAppHotkeys from '../hooks/useAppHotkeys'
 
 const Routings = () => {
   const theme = useTheme()
   const navigate = useNavigate()
   const isElect = isElectron()
-  const setKeybinding = useStore((state) => state.ui.setKeybinding)
-  const setMp = useStore((state) => state.ui.setMp)
-  const setFpsViewer = useStore((state) => state.ui.setFpsViewer)
-  const setMg = useStore((state) => state.ui.setMg)
-  const setPgs = useStore((state) => state.ui.setPgs)
-  const setSd = useStore((state) => state.ui.setSd)
-  const setSdPlus = useStore((state) => state.ui.setSdPlus)
-  const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
-  const setStoreInspector = useStore((state) => state.ui.setStoreInspector)
-  const features = useStore((state) => state.features)
-  const setFeatures = useStore((state) => state.setFeatures)
-  const setShowFeatures = useStore((state) => state.setShowFeatures)
   const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
-  const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open)
 
@@ -96,37 +83,8 @@ const Routings = () => {
     }
   }, [isElect, navigate])
 
-  useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
-  useHotkeys(['ctrl+alt+d'], () => setMp(!useStore.getState().ui.mp))
-  useHotkeys(['ctrl+alt+p'], () => setPgs(!useStore.getState().ui.pgs))
-  useHotkeys(['ctrl+alt+f'], () => setFpsViewer(!useStore.getState().ui.fpsViewer))
-  useHotkeys(['ctrl+alt+m'], () => setMg(!useStore.getState().ui.mg))
-  useHotkeys(['ctrl+alt+t'], () => setSd(!useStore.getState().ui.sd))
-  useHotkeys(['ctrl+alt+s'], () => setSdPlus(!useStore.getState().ui.sdPlus))
-  useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!useStore.getState().ui.globalColorWidget))
-  useHotkeys(['ctrl+alt+x'], () => setStoreInspector(!useStore.getState().ui.storeInspector))
-  useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!useStore.getState().ui.keybinding))
-  useHotkeys(['ctrl+alt+n'], () => navigate('/reactflow'))
-  useHotkeys(['ctrl+alt+g'], () => {
-    if (window.localStorage.getItem('guestmode') === 'activated') {
-      window.localStorage.removeItem('guestmode')
-    } else {
-      window.localStorage.setItem('guestmode', 'activated')
-    }
-    window.location.reload()
-  })
-  if (isElect) {
-    useHotkeys(['ctrl+alt+l'], () => { // eslint-disable-line
-      window.localStorage.setItem('lock', 'activated')
-      window.location.reload()
-    })
-  }
-  useHotkeys(['ctrl+alt+a'], () => {
-    setFeatures('beta', !features.beta)
-    setFeatures('alpha', !features.alpha)
-    setShowFeatures('alpha', !features.alpha)
-    setShowFeatures('beta', !features.beta)
-  })
+  useAppHotkeys()
+
   const location = useLocation()
   const { pathname } = location
 

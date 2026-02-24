@@ -17,7 +17,7 @@ import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
 import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
-import AppSubscriptions from './components/AppSubscriptions'
+import useAppSubscriptions from './hooks/useAppSubscriptions'
 import { WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
@@ -53,6 +53,8 @@ export default function App() {
   const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
   const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
   const activateScene = useStore((state) => state.activateScene)
+
+  useAppSubscriptions()
 
   const handleNext = () => {
     const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
@@ -348,7 +350,6 @@ export default function App() {
         <SnackbarProvider maxSnack={15}>
           <WebSocketProvider>
             <WebSocketManager />
-            <AppSubscriptions />
             <SpotifyProvider>
               <FiledropProvider>
                 <CssBaseline />

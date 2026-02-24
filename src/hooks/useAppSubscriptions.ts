@@ -1,7 +1,7 @@
 import useStore from '../store/useStore'
 import { useSubscription } from '../utils/Websocket/WebSocketProvider'
 
-const AppSubscriptions = () => {
+const useAppSubscriptions = () => {
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const setProtoCall = useStore((state) => state.setProtoCall)
 
@@ -39,7 +39,6 @@ const AppSubscriptions = () => {
     // Trigger existing protocol handler
     setProtoCall(protocolUrl)
   })
-  return null
 }
 
-export default AppSubscriptions
+export default useAppSubscriptions
