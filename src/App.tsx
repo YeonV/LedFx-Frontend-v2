@@ -17,7 +17,8 @@ import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
 import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
-import { useSubscription, WebSocketProvider } from './utils/Websocket/WebSocketProvider'
+import AppSubscriptions from './components/AppSubscriptions'
+import { WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
 import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
@@ -52,45 +53,6 @@ export default function App() {
   const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
   const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
   const activateScene = useStore((state) => state.activateScene)
-
-  const AppSubscriptions = () => {
-    useSubscription('show_message', (e: any) => {
-      showSnackbar(e.type, e.message)
-    })
-    useSubscription('scene_activated', (e: any) => {
-      showSnackbar('info', 'Scene activated: ' + e.scene_id)
-    })
-    useSubscription('song_detected', (e: any) => {
-      // Handle WebSocket song_detected event by converting to protocol format
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { title, artist, album, thumbnail, position, duration, playing, timestamp } = e
-
-      // Format as protocol URL to reuse existing handler logic
-      const songTitle = `${artist} - ${title}`
-      const thumbnailFilename = thumbnail ? thumbnail.split(/[/\\]/).pop() : ''
-
-      // Build protocol URL with query params
-      let protocolUrl = `ledfx://song/ledfxcc/${encodeURIComponent(songTitle)}`
-      if (thumbnailFilename) {
-        protocolUrl += `/${thumbnailFilename}`
-      }
-
-      const params = new URLSearchParams()
-      if (position !== null && position !== undefined) params.append('position', String(position))
-      if (duration !== null && duration !== undefined) params.append('duration', String(duration))
-      if (playing !== null && playing !== undefined) params.append('playing', String(playing))
-      if (timestamp !== null && timestamp !== undefined)
-        params.append('timestamp', String(timestamp))
-
-      if (params.toString()) {
-        protocolUrl += `?${params.toString()}`
-      }
-
-      // Trigger existing protocol handler
-      setProtoCall(protocolUrl)
-    })
-    return null
-  }
 
   const handleNext = () => {
     const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
