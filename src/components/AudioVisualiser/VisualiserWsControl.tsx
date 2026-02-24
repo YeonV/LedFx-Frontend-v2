@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useDebounce } from 'use-debounce'
 import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
 import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
@@ -27,6 +28,15 @@ const VisualiserWsControl = () => {
 
   const { send, isConnected } = useWebSocket()
 
+  const configToSync = useMemo(
+    () =>
+      visualType === 'butterchurn' ? butterchurnConfig || {} : visualizerConfigs[visualType] || {},
+    [visualType, butterchurnConfig, visualizerConfigs]
+  )
+
+  // Debounce the config sync to avoid flooding the network during slider drags
+  const [debouncedConfig] = useDebounce(configToSync, 100)
+
   useEffect(() => {
     if (!isConnected || clientIdentity.clientId === undefined) return
     broadcastToClients(
@@ -37,24 +47,13 @@ const VisualiserWsControl = () => {
           category: 'state-update',
           visualType,
           configs: {
-            [visualType]:
-              visualType === 'butterchurn'
-                ? butterchurnConfig || {}
-                : visualizerConfigs[visualType] || {}
+            [visualType]: debouncedConfig
           }
         }
       },
       send
     )
-  }, [
-    isConnected,
-    visualType,
-    butterchurnConfig,
-    send,
-    broadcastToClients,
-    visualizerConfigs,
-    clientIdentity.clientId
-  ])
+  }, [isConnected, visualType, debouncedConfig, send, broadcastToClients, clientIdentity.clientId])
 
   useSubscription('client_broadcast', (d) => {
     // console.log('MAN', d, clientIdentity)
