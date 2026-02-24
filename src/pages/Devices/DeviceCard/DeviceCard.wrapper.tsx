@@ -12,12 +12,15 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
   const schemas = useStore((state) => state.schemas)
   const virtuals = useStore((state) => state.virtuals)
   const devices = useStore((state) => state.devices)
+  const clients = useStore((state) => state.clients)
   const deleteVirtual = useStore((state) => state.deleteVirtual)
   const setDialogOpenAddDevice = useStore((state) => state.setDialogOpenAddDevice)
   const setDialogOpenAddVirtual = useStore((state) => state.setDialogOpenAddVirtual)
   const graphs = useStore((state) => state.graphs)
   const virtualOrder = useStore((state) => state.virtualOrder)
   const setVirtualOrder = useStore((state) => state.setVirtualOrder)
+  const clientOrder = useStore((state) => state.clientOrder)
+  const setClientOrder = useStore((state) => state.setClientOrder)
   const graphsMulti = useStore((state) => state.graphsMulti)
   const removeEffectfromHistory = useStore((state) => state.removeEffectfromHistory)
   const clearEffect = useStore((state) => state.clearEffect)
@@ -123,19 +126,6 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
         devices[Object.keys(devices).find((d) => d === virtual) || '']?.active_virtuals!.length > 0
     )
   }, [virtuals, devices, virtual])
-
-  useEffect(() => {
-    // initial device order if not set
-    const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]
-    Object.keys(virtuals).map((s, i) => {
-      if (!v.some((o) => o.virtId === s)) {
-        return v.push({ virtId: s, order: i })
-      }
-      return null
-    })
-    setVirtualOrder(v)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtuals])
 
   const moveLeft = () => {
     const v = JSON.parse(JSON.stringify(virtualOrder)) as IVirtualOrder[]

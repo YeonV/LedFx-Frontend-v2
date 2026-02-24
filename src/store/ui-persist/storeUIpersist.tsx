@@ -34,6 +34,11 @@ const storeUIPersist = () => ({
     space: true,
     stretch: true,
     variants: 'canvas' as PixelGraphVariant
+  },
+  layout: {
+    separate2DDevices: false,
+    sectionDirection: 'column' as 'column' | 'row',
+    itemDirection: 'row' as 'column' | 'row'
   }
 })
 
