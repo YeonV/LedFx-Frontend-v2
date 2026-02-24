@@ -16,29 +16,13 @@ import xmas from './assets/xmas.png'
 import newyear from './assets/fireworks.jpg'
 import login from './utils/login'
 import FiledropProvider from './utils/FiledropProvider'
-import FpsViewer from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer'
+import FpsViewerWrapper from './components/Integrations/Spotify/Widgets/FpsViewer/FpsViewer.wrapper'
 import { useSubscription, WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { WebSocketManager } from './utils/Websocket/WebSocketManager'
 import FireTvBar from './components/FireTv/FireTvBar'
-import { useFireTvStore } from './components/FireTv/useFireTvStore'
 import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
 import Visualiser from './components/AudioVisualiser/AudioVisualiser'
 import { Box } from '@mui/system'
-
-const FpsViewerWrapper = () => {
-  const fpsViewer = useStore((state) => state.ui.fpsViewer)
-  const fireTvBarHeight = useFireTvStore((state) => state.barHeight)
-  const theme = useTheme()
-
-  return (
-    <FpsViewer
-      open={fpsViewer}
-      bottom={60 + fireTvBarHeight}
-      left={5}
-      color={theme.palette.primary.main}
-    />
-  )
-}
 
 export default function App() {
   const { height, width } = useWindowDimensions()
