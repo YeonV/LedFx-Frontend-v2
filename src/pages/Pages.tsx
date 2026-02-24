@@ -1,12 +1,4 @@
-import {
-  HashRouter as Router,
-  BrowserRouter,
-  Routes,
-  Route,
-  useNavigate,
-  useLocation
-} from 'react-router-dom'
-import { useEffect } from 'react'
+import { HashRouter as Router, BrowserRouter, Routes, Route } from 'react-router-dom'
 import isElectron from 'is-electron'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import ScrollToTop from '../utils/scrollToTop'
@@ -40,81 +32,21 @@ import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
 import FloatingWidgets from './FloatingWidgets'
 import useAppHotkeys from '../hooks/useAppHotkeys'
+import useElectronProtocol from '../hooks/useElectronProtocol'
+import useDisplayMode from '../hooks/useDisplayMode'
 
 const Routings = () => {
   const theme = useTheme()
-  const navigate = useNavigate()
   const isElect = isElectron()
-  const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const xsmallScreen = useMediaQuery('(max-width: 475px)')
 
+  const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const leftBarOpen = useStore((state) => state.ui.bars && state.ui.bars.leftBar.open)
 
-  // Check for stored protocol callback on mount (for Electron production builds)
-  useEffect(() => {
-    if (isElect) {
-      let handled = false
-      const handler = (...args: any[]) => {
-        if (handled) return
-        const [message] = args
-        const [messageType, data] = message
-        if (messageType === 'store-value' && data?.key === 'protocol-callback') {
-          if (data.value && typeof data.value === 'string' && data.value.startsWith('ledfx://')) {
-            // Ignore song detector calls - they're handled in App.tsx
-            if (data.value.startsWith('ledfx://song/')) {
-              return
-            }
-            handled = true
-            navigate('/callback')
-          }
-        }
-      }
-      window.api.receive('fromMain', handler)
-
-      // Request the value after handler is set up
-      setTimeout(() => {
-        window.api.send('toMain', {
-          command: 'get-store-value',
-          key: 'protocol-callback',
-          defaultValue: null
-        })
-      }, 100)
-    }
-  }, [isElect, navigate])
-
+  useElectronProtocol()
   useAppHotkeys()
-
-  const location = useLocation()
-  const { pathname } = location
-
-  // Check for display mode (OBS-friendly clean UI) - works with HashRouter
-  const searchParams = new URLSearchParams(location.search)
-  const isDisplayMode = searchParams.get('display') === 'true'
-  const clientName = searchParams.get('clientName')
-
-  useEffect(() => {
-    // Add/remove class for displayMode visualiser
-    const className = 'displayModeVisualiser'
-    if (isDisplayMode && pathname === '/visualiser') {
-      document.body.classList.add(className)
-    } else {
-      document.body.classList.remove(className)
-    }
-    if (isDisplayMode && pathname === '/visualiser') {
-      const nameToSet = clientName || `Visualiser${Date.now()}`
-      // Update Zustand/sessionStorage atomically
-      // WebSocketManager will handle the actual WS update based on these store changes
-      updateClientIdentity({
-        name: nameToSet,
-        type: 'visualiser'
-      })
-    }
-    // Clean up on unmount
-    return () => {
-      document.body.classList.remove(className)
-    }
-  }, [isDisplayMode, pathname, clientName, updateClientIdentity])
+  const isDisplayMode = useDisplayMode()
 
   return (
     <>
