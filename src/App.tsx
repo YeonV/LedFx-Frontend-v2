@@ -25,6 +25,21 @@ import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
 import Visualiser from './components/AudioVisualiser/AudioVisualiser'
 import { Box } from '@mui/system'
 
+const FpsViewerWrapper = () => {
+  const fpsViewer = useStore((state) => state.ui.fpsViewer)
+  const fireTvBarHeight = useFireTvStore((state) => state.barHeight)
+  const theme = useTheme()
+
+  return (
+    <FpsViewer
+      open={fpsViewer}
+      bottom={60 + fireTvBarHeight}
+      left={5}
+      color={theme.palette.primary.main}
+    />
+  )
+}
+
 export default function App() {
   const { height, width } = useWindowDimensions()
   const virtuals = useStore((state) => state.virtuals)
@@ -53,10 +68,45 @@ export default function App() {
   const scenePLactiveIndex = useStore((state) => state.scenePLactiveIndex)
   const setScenePLactiveIndex = useStore((state) => state.setScenePLactiveIndex)
   const activateScene = useStore((state) => state.activateScene)
-  const fpsViewer = useStore((state) => state.ui.fpsViewer)
 
-  // Get FireTV bottom bar height
-  const fireTvBarHeight = useFireTvStore((state) => state.barHeight)
+  const AppSubscriptions = () => {
+    useSubscription('show_message', (e: any) => {
+      showSnackbar(e.type, e.message)
+    })
+    useSubscription('scene_activated', (e: any) => {
+      showSnackbar('info', 'Scene activated: ' + e.scene_id)
+    })
+    useSubscription('song_detected', (e: any) => {
+      // Handle WebSocket song_detected event by converting to protocol format
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { title, artist, album, thumbnail, position, duration, playing, timestamp } = e
+
+      // Format as protocol URL to reuse existing handler logic
+      const songTitle = `${artist} - ${title}`
+      const thumbnailFilename = thumbnail ? thumbnail.split(/[/\\]/).pop() : ''
+
+      // Build protocol URL with query params
+      let protocolUrl = `ledfx://song/ledfxcc/${encodeURIComponent(songTitle)}`
+      if (thumbnailFilename) {
+        protocolUrl += `/${thumbnailFilename}`
+      }
+
+      const params = new URLSearchParams()
+      if (position !== null && position !== undefined) params.append('position', String(position))
+      if (duration !== null && duration !== undefined) params.append('duration', String(duration))
+      if (playing !== null && playing !== undefined) params.append('playing', String(playing))
+      if (timestamp !== null && timestamp !== undefined)
+        params.append('timestamp', String(timestamp))
+
+      if (params.toString()) {
+        protocolUrl += `?${params.toString()}`
+      }
+
+      // Trigger existing protocol handler
+      setProtoCall(protocolUrl)
+    })
+    return null
+  }
 
   const handleNext = () => {
     const nextIndex = (scenePLactiveIndex + 1) % scenePL.length
@@ -146,44 +196,6 @@ export default function App() {
     }
   })
 
-  const AppSubscriptions = () => {
-    useSubscription('show_message', (e: any) => {
-      showSnackbar(e.type, e.message)
-    })
-    useSubscription('scene_activated', (e: any) => {
-      showSnackbar('info', 'Scene activated: ' + e.scene_id)
-    })
-    useSubscription('song_detected', (e: any) => {
-      // Handle WebSocket song_detected event by converting to protocol format
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { title, artist, album, thumbnail, position, duration, playing, timestamp } = e
-
-      // Format as protocol URL to reuse existing handler logic
-      const songTitle = `${artist} - ${title}`
-      const thumbnailFilename = thumbnail ? thumbnail.split(/[/\\]/).pop() : ''
-
-      // Build protocol URL with query params
-      let protocolUrl = `ledfx://song/ledfxcc/${encodeURIComponent(songTitle)}`
-      if (thumbnailFilename) {
-        protocolUrl += `/${thumbnailFilename}`
-      }
-
-      const params = new URLSearchParams()
-      if (position !== null && position !== undefined) params.append('position', String(position))
-      if (duration !== null && duration !== undefined) params.append('duration', String(duration))
-      if (playing !== null && playing !== undefined) params.append('playing', String(playing))
-      if (timestamp !== null && timestamp !== undefined)
-        params.append('timestamp', String(timestamp))
-
-      if (params.toString()) {
-        protocolUrl += `?${params.toString()}`
-      }
-
-      // Trigger existing protocol handler
-      setProtoCall(protocolUrl)
-    })
-    return null
-  }
   useEffect(() => {
     if (protoCall !== '') {
       // Early exit for song protocol to avoid any side effects
@@ -394,12 +406,7 @@ export default function App() {
             <SpotifyProvider>
               <FiledropProvider>
                 <CssBaseline />
-                <FpsViewer
-                  open={fpsViewer}
-                  bottom={60 + fireTvBarHeight}
-                  left={5}
-                  color={theme.palette.primary.main}
-                />
+                <FpsViewerWrapper />
                 <GlobalStyles
                   styles={{
                     body: {

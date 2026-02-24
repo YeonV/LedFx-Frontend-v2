@@ -49,16 +49,11 @@ import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
 import SettingsNew from './Settings/SettingsNew'
 import ElectronStoreInspector from '../components/DevTools/ElectronStoreInspector'
 
-const Routings = () => {
-  const theme = useTheme()
-  const navigate = useNavigate()
+const FloatingWidgets = () => {
   const isElect = isElectron()
   const keybinding = useStore((state) => state.ui.keybinding)
   const setKeybinding = useStore((state) => state.ui.setKeybinding)
   const mp = useStore((state) => state.ui.mp)
-  const setMp = useStore((state) => state.ui.setMp)
-  const fpsViewer = useStore((state) => state.ui.fpsViewer)
-  const setFpsViewer = useStore((state) => state.ui.setFpsViewer)
   const mg = useStore((state) => state.ui.mg)
   const setMg = useStore((state) => state.ui.setMg)
   const pgs = useStore((state) => state.ui.pgs)
@@ -70,6 +65,37 @@ const Routings = () => {
   const globalColorWidget = useStore((state) => state.ui.globalColorWidget)
   const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
   const storeInspector = useStore((state) => state.ui.storeInspector)
+  const setStoreInspector = useStore((state) => state.ui.setStoreInspector)
+
+  return (
+    <>
+      {mp && <Mp />}
+      {pgs && <PixelGraphSettingsFloating close={() => setPgs(false)} />}
+      {sd && <SongDetectorFloating close={() => setSd(false)} />}
+      {sdPlus && <SongDetectorPlusFloating close={() => setSdPlus(false)} />}
+      {mg && <MGraphFloating close={() => setMg(false)} />}
+      {keybinding && <Keybinding close={() => setKeybinding(false)} />}
+      {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
+      {isElect && storeInspector && (
+        <ElectronStoreInspector close={() => setStoreInspector(false)} />
+      )}
+      <SongDetectorScreen />
+    </>
+  )
+}
+
+const Routings = () => {
+  const theme = useTheme()
+  const navigate = useNavigate()
+  const isElect = isElectron()
+  const setKeybinding = useStore((state) => state.ui.setKeybinding)
+  const setMp = useStore((state) => state.ui.setMp)
+  const setFpsViewer = useStore((state) => state.ui.setFpsViewer)
+  const setMg = useStore((state) => state.ui.setMg)
+  const setPgs = useStore((state) => state.ui.setPgs)
+  const setSd = useStore((state) => state.ui.setSd)
+  const setSdPlus = useStore((state) => state.ui.setSdPlus)
+  const setGlobalColorWidget = useStore((state) => state.ui.setGlobalColorWidget)
   const setStoreInspector = useStore((state) => state.ui.setStoreInspector)
   const features = useStore((state) => state.features)
   const setFeatures = useStore((state) => state.setFeatures)
@@ -114,15 +140,15 @@ const Routings = () => {
   }, [isElect, navigate])
 
   useHotkeys(['ctrl+alt+y', 'ctrl+alt+z'], () => setSmartBarOpen(!smartBarOpen))
-  useHotkeys(['ctrl+alt+d'], () => setMp(!mp))
-  useHotkeys(['ctrl+alt+p'], () => setPgs(!pgs))
-  useHotkeys(['ctrl+alt+f'], () => setFpsViewer(!fpsViewer))
-  useHotkeys(['ctrl+alt+m'], () => setMg(!mg))
-  useHotkeys(['ctrl+alt+t'], () => setSd(!sd))
-  useHotkeys(['ctrl+alt+s'], () => setSdPlus(!sdPlus))
-  useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!globalColorWidget))
-  useHotkeys(['ctrl+alt+x'], () => setStoreInspector(!storeInspector))
-  useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!keybinding))
+  useHotkeys(['ctrl+alt+d'], () => setMp(!useStore.getState().ui.mp))
+  useHotkeys(['ctrl+alt+p'], () => setPgs(!useStore.getState().ui.pgs))
+  useHotkeys(['ctrl+alt+f'], () => setFpsViewer(!useStore.getState().ui.fpsViewer))
+  useHotkeys(['ctrl+alt+m'], () => setMg(!useStore.getState().ui.mg))
+  useHotkeys(['ctrl+alt+t'], () => setSd(!useStore.getState().ui.sd))
+  useHotkeys(['ctrl+alt+s'], () => setSdPlus(!useStore.getState().ui.sdPlus))
+  useHotkeys(['ctrl+alt+c'], () => setGlobalColorWidget(!useStore.getState().ui.globalColorWidget))
+  useHotkeys(['ctrl+alt+x'], () => setStoreInspector(!useStore.getState().ui.storeInspector))
+  useHotkeys(['ctrl+alt+k', 'ctrl+space'], () => setKeybinding(!useStore.getState().ui.keybinding))
   useHotkeys(['ctrl+alt+n'], () => navigate('/reactflow'))
   useHotkeys(['ctrl+alt+g'], () => {
     if (window.localStorage.getItem('guestmode') === 'activated') {
@@ -273,17 +299,7 @@ const Routings = () => {
             </>
           )}
         </Routes>
-        {mp && <Mp />}
-        {pgs && <PixelGraphSettingsFloating close={() => setPgs(false)} />}
-        {sd && <SongDetectorFloating close={() => setSd(false)} />}
-        {sdPlus && <SongDetectorPlusFloating close={() => setSdPlus(false)} />}
-        {mg && <MGraphFloating close={() => setMg(false)} />}
-        {keybinding && <Keybinding close={() => setKeybinding(false)} />}
-        {globalColorWidget && <GlobalColorWidget close={() => setGlobalColorWidget(false)} />}
-        {isElect && storeInspector && (
-          <ElectronStoreInspector close={() => setStoreInspector(false)} />
-        )}
-        <SongDetectorScreen />
+        <FloatingWidgets />
         {!isDisplayMode && <OneEffect noButton />}
         {!isDisplayMode && <NoHostDialog />}
         {!isDisplayMode && <ClientManagementDialog />}

@@ -52,8 +52,8 @@ const storeUI = (set: any) => ({
   mgX: 50,
   setMgX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.mgX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, mgX: x }
       }),
       false,
       'ui/mgX'
@@ -61,8 +61,8 @@ const storeUI = (set: any) => ({
   mgY: 200,
   setMgY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.mgY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, mgY: y }
       }),
       false,
       'ui/mgY'
@@ -79,8 +79,8 @@ const storeUI = (set: any) => ({
   pgsX: 50,
   setPgsX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.pgsX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, pgsX: x }
       }),
       false,
       'ui/mgX'
@@ -88,8 +88,8 @@ const storeUI = (set: any) => ({
   pgsY: 200,
   setPgsY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.pgsY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, pgsY: y }
       }),
       false,
       'ui/mgY'
@@ -115,8 +115,8 @@ const storeUI = (set: any) => ({
   keybindingX: 50,
   setKeybindingX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.keybindingX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, keybindingX: x }
       }),
       false,
       'ui/keybindingX'
@@ -124,8 +124,8 @@ const storeUI = (set: any) => ({
   keybindingY: 200,
   setKeybindingY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.keybindingY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, keybindingY: y }
       }),
       false,
       'ui/keybindingY'
@@ -142,8 +142,8 @@ const storeUI = (set: any) => ({
   sdX: 50,
   setSdX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.sdX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, sdX: x }
       }),
       false,
       'ui/sdX'
@@ -151,8 +151,8 @@ const storeUI = (set: any) => ({
   sdY: 200,
   setSdY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.sdY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, sdY: y }
       }),
       false,
       'ui/sdY'
@@ -169,8 +169,8 @@ const storeUI = (set: any) => ({
   sdPlusX: 50,
   setSdPlusX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.sdPlusX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, sdPlusX: x }
       }),
       false,
       'ui/sdPlusX'
@@ -178,8 +178,8 @@ const storeUI = (set: any) => ({
   sdPlusY: 200,
   setSdPlusY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.sdPlusY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, sdPlusY: y }
       }),
       false,
       'ui/sdPlusY'
@@ -205,8 +205,8 @@ const storeUI = (set: any) => ({
   globalColorWidgetX: 50,
   setGlobalColorWidgetX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.globalColorWidgetX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, globalColorWidgetX: x }
       }),
       false,
       'ui/globalColorWidgetX'
@@ -214,8 +214,8 @@ const storeUI = (set: any) => ({
   globalColorWidgetY: 200,
   setGlobalColorWidgetY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.globalColorWidgetY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, globalColorWidgetY: y }
       }),
       false,
       'ui/globalColorWidgetY'
@@ -232,8 +232,8 @@ const storeUI = (set: any) => ({
   storeInspectorX: 50,
   setStoreInspectorX: (x: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.storeInspectorX = x
+      (state: IStore) => ({
+        ui: { ...state.ui, storeInspectorX: x }
       }),
       false,
       'ui/storeInspectorX'
@@ -241,8 +241,8 @@ const storeUI = (set: any) => ({
   storeInspectorY: 200,
   setStoreInspectorY: (y: number): void =>
     set(
-      produce((state: IStore) => {
-        state.ui.storeInspectorY = y
+      (state: IStore) => ({
+        ui: { ...state.ui, storeInspectorY: y }
       }),
       false,
       'ui/storeInspectorY'
