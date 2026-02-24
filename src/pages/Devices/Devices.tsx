@@ -219,7 +219,7 @@ const Devices = () => {
         width: '100%'
       }}
     >
-      <Collapse in={infoAlerts.devices} sx={{ width: '100%' }}>
+      <Collapse in={infoAlerts.devices} sx={{ width: '100%', maxWidth: '500px', margin: '0 auto' }}>
         <Alert
           severity="info"
           onClose={() => {
@@ -241,12 +241,26 @@ const Devices = () => {
           gap: '2rem',
           width: '100%',
           justifyContent: 'center',
-          alignItems: layout.sectionDirection === 'row' ? 'flex-start' : 'center'
+          alignItems: layout.sectionDirection === 'row' ? 'flex-start' : 'center',
+          maxWidth: layout.sectionWidth,
+          flexWrap: layout.sectionWidth === '420px' ? 'wrap' : 'nowrap',
+          margin: '0 auto'
         }}
       >
-        {renderSection(layout.separate2DDevices ? '1D Devices' : 'Devices', virtuals1D, (o, i) => (
-          <DeviceCard virtual={o.virtId} key={o.virtId} index={i} />
-        ))}
+        {renderSection(
+          layout.separate2DDevices ||
+            (features.showVisualisersOnDevicesPage &&
+              features.bgvisualiser &&
+              Object.keys(clients).length > 0)
+            ? layout.separate2DDevices
+              ? '1D Devices'
+              : 'Devices'
+            : '',
+          virtuals1D,
+          (o, i) => (
+            <DeviceCard virtual={o.virtId} key={o.virtId} index={i} />
+          )
+        )}
 
         {layout.separate2DDevices &&
           renderSection('2D Devices', virtuals2D, (o, i) => (
@@ -254,6 +268,8 @@ const Devices = () => {
           ))}
 
         {features.showVisualisersOnDevicesPage &&
+          features.bgvisualiser &&
+          Object.keys(clients).length > 0 &&
           renderSection('Visualizers', activeClients, (o) => (
             <VisualizerCard
               key={o.virtId}

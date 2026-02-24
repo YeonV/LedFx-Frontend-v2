@@ -38,7 +38,8 @@ const storeUIPersist = () => ({
   layout: {
     separate2DDevices: false,
     sectionDirection: 'column' as 'column' | 'row',
-    itemDirection: 'row' as 'column' | 'row'
+    itemDirection: 'row' as 'column' | 'row',
+    sectionWidth: '100%' as '420px' | '870px' | '1320px' | '100%'
   }
 })
 

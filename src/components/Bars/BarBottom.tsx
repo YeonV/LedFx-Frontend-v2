@@ -224,6 +224,7 @@ export default function BarBottom() {
         {features.showMidiInBottomBar && <MidiInputDialog variant="navitem" />}
         {features.showGamepadInBottomBar && <Gamepad bottom={botHeight + 56} variant="navitem" />}
         {features.showVisualiserInBottomBar &&
+          !features.bgvisualiser &&
           !(window.localStorage.getItem('guestmode') === 'activated') && (
             <BottomNavigationAction
               label="Visualiser"

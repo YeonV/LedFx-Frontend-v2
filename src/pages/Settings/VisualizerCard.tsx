@@ -21,7 +21,8 @@ const VisualizerCard = ({ selectedClients, name, type }: VisualizerCardProps) =>
       onDoubleClick={(e) => e.stopPropagation()}
       sx={{
         maxWidth: 400,
-        p: 0
+        p: 0,
+        my: 1
       }}
     >
       <VisualizerConfig selectedClients={selectedClients} single name={name} type={type} />

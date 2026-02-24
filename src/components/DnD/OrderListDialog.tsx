@@ -121,6 +121,20 @@ const OrderListDialog: FC<OrderListDialogProps> = ({
         label="Separate 2D Devices"
       />
       <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="body2">Section Width</Typography>
+        <ToggleButtonGroup
+          size="small"
+          value={layout.sectionWidth}
+          exclusive
+          onChange={(_, val) => val && setLayout('sectionWidth', val)}
+        >
+          <ToggleButton value="420px">S</ToggleButton>
+          <ToggleButton value="870px">M</ToggleButton>
+          <ToggleButton value="1320px">L</ToggleButton>
+          <ToggleButton value="100%">Full</ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography variant="body2">Section Direction</Typography>
         <ToggleButtonGroup
           size="small"

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { test, expect } from '@playwright/test'
 
 test('Initial page load and navigation to Settings', async ({ page }) => {

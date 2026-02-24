@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { test, expect } from '@playwright/test'
 
 test('Add Virtual Device FAB interaction', async ({ page }) => {
