@@ -99,7 +99,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
               setViewMode('user')
               setShowFeatures('dev', false)
               setShowFeatures('streamto', false)
-              setShowFeatures('waves', false)
               setShowFeatures('effectfilter', false)
               setShowFeatures('cloud', false)
               setShowFeatures('wled', false)
@@ -107,7 +106,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
               setShowFeatures('spotify', false)
               setShowFeatures('webaudio', false)
               setFeatures('streamto', false)
-              setFeatures('waves', false)
               setFeatures('cloud', false)
               setFeatures('effectfilter', false)
               setFeatures('wled', false)
@@ -135,9 +133,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             }
             if (value === 'BladeWebaudio') {
               setShowFeatures('webaudio', true)
-            }
-            if (value === 'BladeWaves') {
-              setShowFeatures('waves', true)
             }
             if (value === 'BladeStreamTo') {
               setShowFeatures('streamto', true)
@@ -176,7 +171,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             setShowFeatures('streamto', true)
             setShowFeatures('cloud', true)
             setShowFeatures('effectfilter', true)
-            setShowFeatures('waves', true)
             setShowFeatures('wled', true)
             setShowFeatures('integrations', true)
             setShowFeatures('spotify', true)
@@ -184,7 +178,6 @@ const Bar = ({ handleClose, direct, maxWidth = 500, inputRef }: any) => {
             setShowFeatures('alpha', true)
             setShowFeatures('beta', true)
             setFeatures('streamto', true)
-            setFeatures('waves', true)
             setFeatures('cloud', true)
             setFeatures('wled', true)
             setFeatures('integrations', true)

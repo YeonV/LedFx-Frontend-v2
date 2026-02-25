@@ -498,12 +498,6 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                   style={{ fontSize: 16, paddingLeft: '0.25rem' }}
                 />
                 <SettingsRow
-                  title="Background Waves (eats performance)"
-                  checked={features.waves}
-                  onChange={() => setFeatures('waves', !features.waves)}
-                  style={{ fontSize: 16, paddingLeft: '0.25rem' }}
-                />
-                <SettingsRow
                   title="Scenes Playlist"
                   checked={features.scenePlaylist}
                   onChange={() => setFeatures('scenePlaylist', !features.scenePlaylist)}
