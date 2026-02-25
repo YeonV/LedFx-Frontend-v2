@@ -4,6 +4,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
+export const frontendConfig = 46
 
 export interface MigrationState {
   [key: string]: any
@@ -459,5 +460,25 @@ export const migrations: Migrations = {
     } else if (draft.visualizerConfigOptimistic) {
       draft.visualizerConfigOptimistic = {}
     }
+  }),
+  // Migration 46: Remove 'waves' feature and update UI state setters
+  46: produce((draft) => {
+    // Remove 'waves' from features if present
+    if (draft.storeFeatures && typeof draft.storeFeatures === 'object') {
+      if ('waves' in draft.storeFeatures) {
+        delete draft.storeFeatures.waves
+      }
+    }
+
+    // Remove 'waves' from feature lists
+    if (draft.features && Array.isArray(draft.features)) {
+      draft.features = draft.features.filter((f: any) => f !== 'waves')
+    }
+
+    // Refactor UI state setters if persisted in state
+    // (No-op for persisted state, but placeholder for future-proofing)
+    // If you have UI state setter functions stored, update them to direct state update pattern
+    // Example: (state: IStore) => ({ ui: { ...state.ui, mgX: x } })
+    // This migration ensures compatibility with new storeUI.tsx pattern
   })
 }

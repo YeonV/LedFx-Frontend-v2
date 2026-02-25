@@ -1,9 +1,20 @@
 /* eslint-disable */
 
 import { IMCell } from '../pages/Devices/EditVirtuals/EditMatrix/M.utils'
+import { frontendConfig } from '../store/migrate'
 
 export const drawerWidth = 240
-export const frontendConfig = 45
+
+export const WELCOME_MESSAGE = [
+  '%c Ledfx %c\n ReactApp by Blade ',
+  'padding: 10px 40px; color: #ffffff; border-radius: 5px 5px 0 0; background-color: #800000;',
+  'background: #fff; color: #800000; border-radius: 0 0 5px 5px;padding: 5px 0;'
+]
+
+export const HOME_ASSISTANT_MESSAGE = [
+  '%c HomeAssistant detected ',
+  'padding: 3px 5px; border-radius: 5px; color: #ffffff; background-color: #038fc7;'
+]
 
 export const formatTime = (dura: number) => {
   let seconds: string | number

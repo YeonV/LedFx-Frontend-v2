@@ -1,57 +1,58 @@
 import { HashRouter as Router, BrowserRouter, Routes, Route } from 'react-router-dom'
-import isElectron from 'is-electron'
+import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
+import ClientManagementDialog from '../components/Dialogs/ClientManagementDialog'
+import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
+import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
+import useElectronProtocol from '../hooks/useElectronProtocol'
+import MainContentWrapper from './MainContentWrapper'
+import FloatingWidgets from './FloatingWidgets'
+import useDisplayMode from '../hooks/useDisplayMode'
+import ReactFlowPage from './ReactFlow/ReactFlowPage'
+import LoginRedirect from './Login/LoginRedirect'
+import useAppHotkeys from '../hooks/useAppHotkeys'
+import NoHostDialog from '../components/Dialogs/NoHostDialog'
+import Integrations from './Integrations/Integrations'
+import SettingsNew from './Settings/SettingsNew'
 import ScrollToTop from '../utils/scrollToTop'
+import HostManager from '../components/Dialogs/HostManager'
+import MessageBar from '../components/Bars/BarMessage'
+import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
+import isElectron from 'is-electron'
+import OneEffect from '../components/Gamepad/OneEffect'
+import BottomBar from '../components/Bars/BarBottom'
+import SmartBar from '../components/Dialogs/SmartBar'
 import useStore from '../store/useStore'
-import '../App.css'
-
+import Devices from './Devices/Devices'
 import LeftBar from '../components/Bars/BarLeft'
 import TopBar from '../components/Bars/BarTop/BarTop'
-import BottomBar from '../components/Bars/BarBottom'
-import MessageBar from '../components/Bars/BarMessage'
-import NoHostDialog from '../components/Dialogs/NoHostDialog'
-import ClientManagementDialog from '../components/Dialogs/ClientManagementDialog'
-import Home from './Home/Home'
-import Devices from './Devices/Devices'
 import Device from './Device/Device'
 import Scenes from './Scenes/Scenes'
-import Integrations from './Integrations/Integrations'
-import LoginRedirect from './Login/LoginRedirect'
-import SmartBar from '../components/Dialogs/SmartBar'
-import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
+import Graph from './Graph/Graph'
+import Home from './Home/Home'
 import User from './User/User'
 import Lock from './Lock'
-import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
-import HostManager from '../components/Dialogs/HostManager'
-import Graph from './Graph/Graph'
-import OneEffect from '../components/Gamepad/OneEffect'
-import ReactFlowPage from './ReactFlow/ReactFlowPage'
-import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
-import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
-import SettingsNew from './Settings/SettingsNew'
-import FloatingWidgets from './FloatingWidgets'
-import MainContentWrapper from './MainContentWrapper'
-import useAppHotkeys from '../hooks/useAppHotkeys'
-import useElectronProtocol from '../hooks/useElectronProtocol'
-import useDisplayMode from '../hooks/useDisplayMode'
+import '../App.css'
 
 const Routings = () => {
   const isElect = isElectron()
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
+  const display = useDisplayMode()
+  const guest = window.localStorage.getItem('guestmode') === 'activated'
+  const locked = window.localStorage.getItem('lock') === 'activated'
 
   useElectronProtocol()
   useAppHotkeys()
-  const isDisplayMode = useDisplayMode()
 
   return (
     <>
       <ScrollToTop />
-      {!isDisplayMode && <MessageBar />}
-      {!isDisplayMode && <TopBar />}
-      {!isDisplayMode && <LeftBar />}
-      <MainContentWrapper isDisplayMode={isDisplayMode}>
+      {!display && <MessageBar />}
+      {!display && <TopBar />}
+      {!display && <LeftBar />}
+      <MainContentWrapper isDisplayMode={display}>
         <Routes>
-          {window.localStorage.getItem('lock') === 'activated' && isElect ? (
+          {locked && isElect ? (
             <Route path="*" element={<Lock />} />
           ) : (
             <>
@@ -62,46 +63,27 @@ const Routings = () => {
               <Route path="/device/:virtId" element={<Device />} />
               <Route path="/graph/:virtId" element={<Graph />} />
               <Route path="/scenes" element={<Scenes />} />
-              {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/integrations" element={<Integrations />} />
-              )}
-              {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/visualiser" element={<Visualiser backgroundMode={isDisplayMode} />} />
-              )}
-              {!(window.localStorage.getItem('guestmode') === 'activated') && (
-                <Route path="/settings" element={<SettingsNew />} />
-              )}
+              <Route path="/visualiser" element={<Visualiser backgroundMode={display} />} />
               <Route path="/user" element={<User />} />
               <Route path="/reactflow" element={<ReactFlowPage />} />
               <Route path="/YZflow" element={<ReactFlowPage />} />
               <Route path="/playlists" element={<BackendPlaylistPage />} />
+              {!guest && <Route path="/integrations" element={<Integrations />} />}
+              {!guest && <Route path="/settings" element={<SettingsNew />} />}
 
-              <Route
-                path="*"
-                element={
-                  !(window.localStorage.getItem('guestmode') === 'activated') ? (
-                    <Home />
-                  ) : (
-                    <Scenes />
-                  )
-                }
-              />
+              <Route path="*" element={!guest ? <Home /> : <Scenes />} />
             </>
           )}
         </Routes>
         <FloatingWidgets />
-        {!isDisplayMode && <OneEffect noButton />}
-        {!isDisplayMode && <NoHostDialog />}
-        {!isDisplayMode && <ClientManagementDialog />}
-        {!isDisplayMode && isElect && <HostManager />}
-        {!isDisplayMode && <FrontendPixelsTooSmall />}
-        {!isDisplayMode && (
-          <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />
-        )}
+        {!display && <OneEffect noButton />}
+        {!display && <NoHostDialog />}
+        {!display && <ClientManagementDialog />}
+        {!display && isElect && <HostManager />}
+        {!display && <FrontendPixelsTooSmall />}
+        {!display && <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />}
       </MainContentWrapper>
-      {!isDisplayMode && !(isElect && window.localStorage.getItem('lock') === 'activated') && (
-        <BottomBar />
-      )}
+      {!display && !(isElect && locked) && <BottomBar />}
     </>
   )
 }
