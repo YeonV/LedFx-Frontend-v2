@@ -1,47 +1,46 @@
 import { HashRouter as Router, BrowserRouter, Routes, Route } from 'react-router-dom'
-import isElectron from 'is-electron'
+import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
+import ClientManagementDialog from '../components/Dialogs/ClientManagementDialog'
+import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
+import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
+import useElectronProtocol from '../hooks/useElectronProtocol'
+import MainContentWrapper from './MainContentWrapper'
+import FloatingWidgets from './FloatingWidgets'
+import useDisplayMode from '../hooks/useDisplayMode'
+import ReactFlowPage from './ReactFlow/ReactFlowPage'
+import LoginRedirect from './Login/LoginRedirect'
+import useAppHotkeys from '../hooks/useAppHotkeys'
+import NoHostDialog from '../components/Dialogs/NoHostDialog'
+import Integrations from './Integrations/Integrations'
+import SettingsNew from './Settings/SettingsNew'
 import ScrollToTop from '../utils/scrollToTop'
+import HostManager from '../components/Dialogs/HostManager'
+import MessageBar from '../components/Bars/BarMessage'
+import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
+import isElectron from 'is-electron'
+import OneEffect from '../components/Gamepad/OneEffect'
+import BottomBar from '../components/Bars/BarBottom'
+import SmartBar from '../components/Dialogs/SmartBar'
 import useStore from '../store/useStore'
-import '../App.css'
-
+import Devices from './Devices/Devices'
 import LeftBar from '../components/Bars/BarLeft'
 import TopBar from '../components/Bars/BarTop/BarTop'
-import BottomBar from '../components/Bars/BarBottom'
-import MessageBar from '../components/Bars/BarMessage'
-import NoHostDialog from '../components/Dialogs/NoHostDialog'
-import ClientManagementDialog from '../components/Dialogs/ClientManagementDialog'
-import Home from './Home/Home'
-import Devices from './Devices/Devices'
 import Device from './Device/Device'
 import Scenes from './Scenes/Scenes'
-import Integrations from './Integrations/Integrations'
-import LoginRedirect from './Login/LoginRedirect'
-import SmartBar from '../components/Dialogs/SmartBar'
-import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
+import Graph from './Graph/Graph'
+import Home from './Home/Home'
 import User from './User/User'
 import Lock from './Lock'
-import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
-import HostManager from '../components/Dialogs/HostManager'
-import Graph from './Graph/Graph'
-import OneEffect from '../components/Gamepad/OneEffect'
-import ReactFlowPage from './ReactFlow/ReactFlowPage'
-import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
-import Visualiser from '../components/AudioVisualiser/AudioVisualiser'
-import SettingsNew from './Settings/SettingsNew'
-import FloatingWidgets from './FloatingWidgets'
-import MainContentWrapper from './MainContentWrapper'
-import useAppHotkeys from '../hooks/useAppHotkeys'
-import useElectronProtocol from '../hooks/useElectronProtocol'
-import useDisplayMode from '../hooks/useDisplayMode'
+import '../App.css'
 
 const Routings = () => {
   const isElect = isElectron()
   const setSmartBarOpen = useStore((state) => state.ui.bars && state.ui.setSmartBarOpen)
   const smartBarOpen = useStore((state) => state.ui.bars && state.ui.bars.smartBar.open)
+  const isDisplayMode = useDisplayMode()
 
   useElectronProtocol()
   useAppHotkeys()
-  const isDisplayMode = useDisplayMode()
 
   return (
     <>
