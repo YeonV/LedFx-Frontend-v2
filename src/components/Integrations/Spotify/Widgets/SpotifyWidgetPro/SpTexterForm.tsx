@@ -86,31 +86,45 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
   useEffect(() => {
     // Only apply if visualiser auto-apply is active
-    if (isActiveVisualisers && currentTrack !== '' && textVirtuals.length > 0) {
+    if (currentTrack !== '') {
       setTimeout(() => {
-        Ledfx('/api/effects', 'PUT', {
-          action: 'apply_global_effect',
-          type: 'texter2d',
-          config: { ...spotifyTexter, text: currentTrack },
-          fallback: spotifyTexter.fallback,
-          virtuals: textVirtuals
-        }).then(() => getVirtuals())
-        // Map selected names to IDs for isCurrentClient
-        // For each selected visualiser, update config (main and subs)
-        textVisualisers.forEach((name) => {
-          const id = nameToId[name]
-          const isCurrent = clientIdentity?.clientId === id
-          applyTextVisualiser(
-            { text: currentTrack, height_percent: 10, width_percent: 200 },
-            true,
-            isCurrent,
-            'texter',
-            'texter',
-            {
-              configs: {}
-            }
-          )
-        })
+        if (isActive && textVirtuals.length > 0) {
+          Ledfx('/api/effects', 'PUT', {
+            action: 'apply_global_effect',
+            type: 'texter2d',
+            config: { ...spotifyTexter, text: currentTrack },
+            fallback: spotifyTexter.fallback,
+            virtuals: textVirtuals
+          }).then(() => getVirtuals())
+        }
+        if (isActiveVisualisers && textVisualisers.length > 0) {
+          // Map selected names to IDs for isCurrentClient
+          // For each selected visualiser, update config (main and subs)
+          textVisualisers.forEach((name) => {
+            const id = nameToId[name]
+            const isCurrent = clientIdentity?.clientId === id
+            applyTextVisualiser(
+              {
+                text: currentTrack.split(' - ')[0] || '', // Artist name in text2 if available
+                text2: currentTrack.split(' - ')[1] || currentTrack.split(' - ')[0] || currentTrack, // Try to extract song name only
+                height_percent: 10,
+                width_percent: 200,
+                speed_option_1: 0.1,
+                offset_y2: 0.2,
+                offset_y: -0.2,
+                font: 'Stop',
+                font2: 'technique'
+              },
+              true,
+              isCurrent,
+              'bladeTexter',
+              'bladeTexter',
+              {
+                configs: {}
+              }
+            )
+          })
+        }
       }, 200)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

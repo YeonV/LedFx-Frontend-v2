@@ -26,7 +26,7 @@
 			"type": "npm",
 			"script": "install",
 			"problemMatcher": [],
-			"label": "Init Workspace",
+			"label": "Init Frontend",
 			"detail": "install dependencies from package"
 		}
 	]
