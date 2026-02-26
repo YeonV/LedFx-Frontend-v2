@@ -86,7 +86,13 @@ const VisualiserWsControl = () => {
               if (isPolymorphic) {
                 // Filter config to only include supported properties
                 const supportedConfig = Object.keys(config).reduce((acc, key) => {
-                  if (schema?.properties?.[key] !== undefined) {
+                  const hasProp =
+                    schema?.properties?.[key] !== undefined ||
+                    registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                    key === 'gradient' || // Special Case: always try gradient if requested
+                    key === 'image_source' // Special Case: always try image if requested
+
+                  if (hasProp) {
                     acc[key] = config[key]
                   }
                   return acc

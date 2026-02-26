@@ -70,11 +70,24 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     ? isActiveImageVisualisersGlobal
     : isActiveImageVisualisersLocal
 
+  // Virtuals Auto-Apply State
+  const gradientAutoApplyGlobal = useStore((state) => state.gradientAutoApply)
+  const imageAutoApplyGlobal = useStore((state) => state.imageAutoApply)
+  const setGradientAutoApplyGlobal = useStore((state) => state.setGradientAutoApply)
+  const setImageAutoApplyGlobal = useStore((state) => state.setImageAutoApply)
+
+  const [gradientAutoApplyLocal, setGradientAutoApplyLocal] = useState(false)
+  const [imageAutoApplyLocal, setImageAutoApplyLocal] = useState(false)
+
+  const isActiveGradientVirtuals = generalDetector
+    ? gradientAutoApplyGlobal
+    : gradientAutoApplyLocal
+  const isActiveImageVirtuals = generalDetector ? imageAutoApplyGlobal : imageAutoApplyLocal
+
   const [colors, setColors] = useState<string[]>([])
   const [albumArtUrl, setAlbumArtUrl] = useState<string>('')
   const [gradients, setGradients] = useState<string[]>([])
   const [selectedGradient, setSelectedGradient] = useState<number | null>(null)
-  const [isActive, setIsActive] = useState(false)
   const prevColorsRef = useRef<string>('')
   const prevAlbumArtRef = useRef<string>('')
 
@@ -211,36 +224,35 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     ]
   )
 
+  const applyGradientVirtuals = useCallback(async () => {
+    if (selectedGradient !== null && gradientVirtuals.length > 0) {
+      await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global',
+        gradient: gradients[selectedGradient],
+        virtuals: gradientVirtuals
+      })
+      getVirtuals()
+    }
+  }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
+
+  const applyImageVirtuals = useCallback(async () => {
+    if (albumArtUrl && imageVirtuals.length > 0) {
+      await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global_effect',
+        type: 'imagespin',
+        config: {
+          image_source: albumArtUrl,
+          min_size: 1
+        },
+        virtuals: imageVirtuals
+      })
+      getVirtuals()
+    }
+  }, [albumArtUrl, imageVirtuals, getVirtuals])
+
   const applyBoth = useCallback(
     async (once: boolean = false) => {
-      const promises: Promise<any>[] = []
-
-      if (selectedGradient !== null && gradientVirtuals.length > 0) {
-        promises.push(
-          Ledfx('/api/effects', 'PUT', {
-            action: 'apply_global',
-            gradient: gradients[selectedGradient],
-            virtuals: gradientVirtuals
-          })
-        )
-      }
-
-      if (albumArtUrl && imageVirtuals.length > 0) {
-        promises.push(
-          Ledfx('/api/effects', 'PUT', {
-            action: 'apply_global_effect',
-            type: 'imagespin',
-            config: {
-              image_source: albumArtUrl,
-              min_size: 1
-            },
-            virtuals: imageVirtuals
-          })
-        )
-      }
-
-      await Promise.all(promises)
-      getVirtuals()
+      await Promise.all([applyGradientVirtuals(), applyImageVirtuals()])
 
       // Also apply to visualizers
       if (selectedGradient !== null && gradientVisualisers.length > 0) {
@@ -255,20 +267,35 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       }
 
       if (once) {
-        setIsActive(false)
+        if (generalDetector) {
+          setGradientAutoApplyGlobal(false)
+          setImageAutoApplyGlobal(false)
+        } else {
+          setGradientAutoApplyLocal(false)
+          setImageAutoApplyLocal(false)
+        }
       } else {
-        setIsActive(true)
+        if (generalDetector) {
+          setGradientAutoApplyGlobal(true)
+          setImageAutoApplyGlobal(true)
+        } else {
+          setGradientAutoApplyLocal(true)
+          setImageAutoApplyLocal(true)
+        }
       }
     },
     [
+      applyGradientVirtuals,
+      applyImageVirtuals,
       selectedGradient,
-      gradientVirtuals,
       gradients,
       albumArtUrl,
-      imageVirtuals,
-      getVirtuals,
       gradientVisualisers,
-      imageVisualisers
+      imageVisualisers,
+      applyVisualiserConfig,
+      generalDetector,
+      setGradientAutoApplyGlobal,
+      setImageAutoApplyGlobal
     ]
   )
 
@@ -407,70 +434,82 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     if (selectedGradient === null && generatedGradients.length > 0) {
       setSelectedGradient(0)
     }
+  }, [colors]) // Only run when colors change to update generatedGradients
 
-    // Auto-reapply gradient when song changes (if currently active)
+  // AUTO-APPLY GRADIENT: Trigger on color change, toggle change, selection change
+  useEffect(() => {
     const colorsKey = colors.join(',')
-    if (colorsKey !== prevColorsRef.current) {
-      if (
-        isActive &&
-        selectedGradient !== null &&
-        gradientVirtuals.length > 0 &&
-        generatedGradients[selectedGradient]
-      ) {
-        // Directly call API without toggling isActive
-        const payload: any = {
-          action: 'apply_global',
-          gradient: generatedGradients[selectedGradient],
-          virtuals: gradientVirtuals
-        }
-        Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
-      }
-      if (
-        isActiveGradientVisualisers &&
-        selectedGradient !== null &&
-        gradientVisualisers.length > 0 &&
-        generatedGradients[selectedGradient]
-      ) {
-        applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: generatedGradients[selectedGradient]
-        })
-      }
-    }
+    const hasChanges = colorsKey !== prevColorsRef.current
     prevColorsRef.current = colorsKey
+
+    if (!hasChanges) return
+
+    if (
+      isActiveGradientVirtuals &&
+      selectedGradient !== null &&
+      gradientVirtuals.length > 0 &&
+      gradients[selectedGradient]
+    ) {
+      Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global',
+        gradient: gradients[selectedGradient],
+        virtuals: gradientVirtuals
+      }).then(() => getVirtuals())
+    }
+    if (
+      isActiveGradientVisualisers &&
+      selectedGradient !== null &&
+      gradientVisualisers.length > 0 &&
+      gradients[selectedGradient]
+    ) {
+      applyVisualiserConfig(gradientVisualisers, 'active', {
+        gradient: gradients[selectedGradient]
+      })
+    }
   }, [
     colors,
-    isActive,
+    isActiveGradientVirtuals,
+    isActiveGradientVisualisers,
     selectedGradient,
     gradientVirtuals,
+    gradientVisualisers,
+    gradients,
     getVirtuals,
-    isActiveGradientVisualisers,
-    gradientVisualisers
+    applyVisualiserConfig
   ])
 
   // Auto-reapply image when song changes (if currently active)
   useEffect(() => {
-    if (albumArtUrl && albumArtUrl !== prevAlbumArtRef.current) {
-      if (isActive && imageVirtuals.length > 0) {
-        // Directly call API without toggling isActive
-        const payload: any = {
-          action: 'apply_global_effect',
-          type: 'imagespin',
-          config: {
-            image_source: albumArtUrl,
-            min_size: 1
-          },
-          virtuals: imageVirtuals
-        }
-        Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
-      }
-      if (isActiveImageVisualisers && imageVisualisers.length > 0) {
-        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-          image_source: albumArtUrl
-        })
-      }
-    }
+    const hasChanges = albumArtUrl !== prevAlbumArtRef.current
     prevAlbumArtRef.current = albumArtUrl
-  }, [albumArtUrl, isActive, imageVirtuals, getVirtuals, isActiveImageVisualisers, imageVisualisers])
+
+    if (!hasChanges) return
+
+    if (isActiveImageVirtuals && imageVirtuals.length > 0) {
+      Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global_effect',
+        type: 'imagespin',
+        config: {
+          image_source: albumArtUrl,
+          min_size: 1
+        },
+        virtuals: imageVirtuals
+      }).then(() => getVirtuals())
+    }
+    if (isActiveImageVisualisers && imageVisualisers.length > 0) {
+      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+        image_source: albumArtUrl
+      })
+    }
+  }, [
+    albumArtUrl,
+    isActiveImageVirtuals,
+    isActiveImageVisualisers,
+    imageVirtuals,
+    imageVisualisers,
+    getVirtuals,
+    applyVisualiserConfig
+  ])
 
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
@@ -565,12 +604,27 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
   }
 
-  const toggleAutoApply = () => {
-    if (isActive) {
-      setIsActive(false)
+  const toggleAutoApplyGradientVirtuals = () => {
+    if (generalDetector) {
+      const newState = !gradientAutoApplyGlobal
+      setGradientAutoApplyGlobal(newState)
+      if (newState) applyGradientVirtuals()
     } else {
-      applyBoth()
-      setIsActive(true)
+      const newState = !gradientAutoApplyLocal
+      setGradientAutoApplyLocal(newState)
+      if (newState) applyGradientVirtuals()
+    }
+  }
+
+  const toggleAutoApplyImageVirtuals = () => {
+    if (generalDetector) {
+      const newState = !imageAutoApplyGlobal
+      setImageAutoApplyGlobal(newState)
+      if (newState) applyImageVirtuals()
+    } else {
+      const newState = !imageAutoApplyLocal
+      setImageAutoApplyLocal(newState)
+      if (newState) applyImageVirtuals()
     }
   }
 
@@ -644,8 +698,8 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           options={Object.keys(virtuals)}
           value={gradientVirtuals}
           onChange={handleGradientVirtualChange}
-          isActive={isActive}
-          onToggle={toggleAutoApply}
+          isActive={isActiveGradientVirtuals}
+          onToggle={toggleAutoApplyGradientVirtuals}
           disabled={gradientVirtuals.length === 0}
         />
         <AutoApplySelector
@@ -653,8 +707,8 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           options={Object.keys(virtuals)}
           value={imageVirtuals}
           onChange={handleImageVirtualChange}
-          isActive={isActive}
-          onToggle={toggleAutoApply}
+          isActive={isActiveImageVirtuals}
+          onToggle={toggleAutoApplyImageVirtuals}
           disabled={imageVirtuals.length === 0}
         />
       </CardStack>

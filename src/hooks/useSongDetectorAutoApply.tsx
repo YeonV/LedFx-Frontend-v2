@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../store/useStore'
 import { Ledfx } from '../api/ledfx'
+import { useVStore, type VState } from './vStore'
 
 /**
  * Global auto-apply hook for song detector
@@ -32,6 +33,23 @@ const useSongDetectorAutoApply = () => {
   const imageVirtuals = useStore((state) => state.imageVirtuals)
   const imageConfig = useStore((state) => state.imageConfig)
 
+  // Visualizer auto-apply state
+  const clients = useStore((state) => state.clients)
+  const clientIdentity = useStore((state) => state.clientIdentity)
+  const broadcastToClients = useStore((state) => state.broadcastToClients)
+  const updateVisualizerConfigOptimistic = useStore(
+    (state) => state.updateVisualizerConfigOptimistic
+  )
+
+  const gradientVisualisers = useStore((state) => state.gradientVisualisers || [])
+  const isActiveGradientVisualisers = useStore((state) => state.isActiveGradientVisualisers)
+  const imageVisualisers = useStore((state) => state.imageVisualisers || [])
+  const isActiveImageVisualisers = useStore((state) => state.isActiveImageVisualisers)
+
+  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
+  const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
+  const currentVisualType = useVStore((state: VState) => state.visualType)
+
   // Track previous values to detect changes
   const prevTextTrackRef = useRef<string>('')
   const prevColorTrackRef = useRef<string>('')
@@ -54,6 +72,88 @@ const useSongDetectorAutoApply = () => {
       Math.pow(rgb1.r - rgb2.r, 2) + Math.pow(rgb1.g - rgb2.g, 2) + Math.pow(rgb1.b - rgb2.b, 2)
     )
   }
+
+  const nameToId = clients
+    ? Object.entries(clients).reduce(
+        (acc, [id, data]) => {
+          if (data && data.name) acc[data.name] = id
+          return acc
+        },
+        {} as Record<string, string>
+      )
+    : {}
+
+  const applyVisualiserConfig = useCallback(
+    (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
+      const name = clientIdentity?.name || 'unknown-client'
+      const selectedIds = selectedVisualisers.map((n) => nameToId[n]).filter(Boolean)
+      const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
+
+      if (isCurrentClient) {
+        const targetId = visualizerId === 'active' ? currentVisualType : visualizerId
+        if (targetId) {
+          const api = (window as any).visualiserApi
+          const registry = api?.getVisualizerRegistry?.() || {}
+          const schema = registry[targetId]?.getUISchema?.()
+
+          const isPolymorphic = visualizerId === 'active'
+          const filteredUpdate = isPolymorphic
+            ? Object.keys(update).reduce((acc, key) => {
+                const hasProp =
+                  schema?.properties?.[key] !== undefined ||
+                  registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                  key === 'gradient' || // Special Case: always try gradient if requested
+                  key === 'image_source' // Special Case: always try image if requested
+
+                if (hasProp) {
+                  acc[key] = update[key]
+                }
+                return acc
+              }, {} as Record<string, any>)
+            : update
+
+          if (Object.keys(filteredUpdate).length > 0) {
+            if (targetId === 'butterchurn') {
+              updateButterchurnConfig?.(filteredUpdate)
+            } else {
+              updateVisualizerConfig?.(targetId, filteredUpdate)
+            }
+            updateVisualizerConfigOptimistic(name, {
+              configs: {
+                [targetId]: filteredUpdate
+              }
+            })
+          }
+        }
+      }
+
+      const otherClients = selectedIds.filter((id) => id !== clientIdentity?.clientId)
+      if (otherClients.length && broadcastToClients) {
+        broadcastToClients(
+          {
+            broadcast_type: 'custom',
+            target: { mode: 'uuids', uuids: otherClients },
+            payload: {
+              category: 'visualiser',
+              action: 'set_visual_config',
+              visualizerId: visualizerId,
+              config: update
+            }
+          },
+          (window as any).visualiserApi?.send || (() => {})
+        )
+      }
+    },
+    [
+      clientIdentity,
+      nameToId,
+      updateVisualizerConfig,
+      updateButterchurnConfig,
+      updateVisualizerConfigOptimistic,
+      broadcastToClients,
+      currentVisualType
+    ]
+  )
 
   // Helper: Filter similar colors
   const filterSimilarColors = useCallback((colorList: string[], threshold = 50): string[] => {
@@ -217,14 +317,16 @@ const useSongDetectorAutoApply = () => {
   // AUTO-APPLY GRADIENT: When gradients change (new song)
   useEffect(() => {
     const gradientsKey = gradients.join(',')
+    const hasChanges = gradientsKey !== prevGradientsRef.current
+    prevGradientsRef.current = gradientsKey
+
+    if (!hasChanges || gradientsKey === '') return
+
     if (
       gradientAutoApply &&
       gradientVirtuals.length > 0 &&
-      gradients.length > 0 &&
       selectedGradient !== null &&
-      gradients[selectedGradient] &&
-      gradientsKey !== prevGradientsRef.current &&
-      gradientsKey !== '' // Ensure we have actual gradients, not empty array
+      gradients[selectedGradient]
     ) {
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global',
@@ -232,19 +334,36 @@ const useSongDetectorAutoApply = () => {
         virtuals: gradientVirtuals
       }).then(() => getVirtuals())
     }
-    prevGradientsRef.current = gradientsKey
+
+    if (
+      isActiveGradientVisualisers &&
+      gradientVisualisers.length > 0 &&
+      selectedGradient !== null &&
+      gradients[selectedGradient]
+    ) {
+      applyVisualiserConfig(gradientVisualisers, 'active', {
+        gradient: gradients[selectedGradient]
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gradients, gradientAutoApply, selectedGradient, gradientVirtuals])
+  }, [
+    gradients,
+    gradientAutoApply,
+    selectedGradient,
+    gradientVirtuals,
+    isActiveGradientVisualisers,
+    gradientVisualisers,
+    applyVisualiserConfig
+  ])
 
   // AUTO-APPLY IMAGE: When album art changes (new song)
   useEffect(() => {
-    if (
-      imageAutoApply &&
-      thumbnailPath &&
-      thumbnailPath !== '' &&
-      imageVirtuals.length > 0 &&
-      thumbnailPath !== prevAlbumArtRef.current
-    ) {
+    const hasChanges = thumbnailPath !== prevAlbumArtRef.current
+    prevAlbumArtRef.current = thumbnailPath
+
+    if (!hasChanges || thumbnailPath === '') return
+
+    if (imageAutoApply && imageVirtuals.length > 0) {
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global_effect',
         type: 'imagespin',
@@ -255,9 +374,22 @@ const useSongDetectorAutoApply = () => {
         virtuals: imageVirtuals
       }).then(() => getVirtuals())
     }
-    prevAlbumArtRef.current = thumbnailPath
+
+    if (isActiveImageVisualisers && imageVisualisers.length > 0) {
+      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+        image_source: 'current_album_art.jpg'
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thumbnailPath, imageAutoApply, imageVirtuals, imageConfig])
+  }, [
+    thumbnailPath,
+    imageAutoApply,
+    imageVirtuals,
+    imageConfig,
+    isActiveImageVisualisers,
+    imageVisualisers,
+    applyVisualiserConfig
+  ])
 }
 
 export default useSongDetectorAutoApply

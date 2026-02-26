@@ -113,7 +113,12 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
           const isPolymorphic = visualizerId === 'active'
           const filteredUpdate = isPolymorphic
             ? Object.keys(update).reduce((acc, key) => {
-                if (schema?.properties?.[key] !== undefined) {
+                const hasProp =
+                  schema?.properties?.[key] !== undefined ||
+                  registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                  key === 'gradient' // Special Case: always try gradient if requested
+
+                if (hasProp) {
                   acc[key] = update[key]
                 }
                 return acc
@@ -198,33 +203,6 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
     }
   }, [imageAutoApply, setImageAutoApply, applyImage])
 
-  // Auto-apply for visualisers
-  useEffect(() => {
-    if (
-      isActiveGradientVisualisers &&
-      selectedGradient !== null &&
-      gradientVisualisers.length > 0 &&
-      gradients[selectedGradient]
-    ) {
-      applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: gradients[selectedGradient]
-      })
-    }
-  }, [
-    isActiveGradientVisualisers,
-    selectedGradient,
-    gradientVisualisers,
-    gradients,
-    applyVisualiserConfig
-  ])
-
-  useEffect(() => {
-    if (isActiveImageVisualisers && imageVisualisers.length > 0 && albumArtUrl) {
-      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-        image_source: albumArtUrl
-      })
-    }
-  }, [isActiveImageVisualisers, imageVisualisers, albumArtUrl, applyVisualiserConfig])
 
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
