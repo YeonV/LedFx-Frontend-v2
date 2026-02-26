@@ -36,6 +36,8 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     (state) => state.updateVisualizerConfigOptimistic
   )
   const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
+  const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
+  const currentVisualType = useVStore((state: VState) => state.visualType)
   const { send, isConnected } = useWebSocket()
 
   // Global visualizer state (Song Detector)
@@ -156,22 +158,45 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   )
 
   const applyVisualiserConfig = useCallback(
-    (selectedVisualisers: string[], visualType: string, update: Record<string, any>) => {
+    (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
       const name = clientIdentity?.name || 'unknown-client'
       const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
 
       if (isCurrentClient) {
-        updateVisualizerConfig(visualType, update)
-        updateVisualizerConfigOptimistic(name, {
-          configs: {
-            [visualType]: update
+        const targetId = visualizerId === 'active' ? currentVisualType : visualizerId
+        if (targetId) {
+          const api = (window as any).visualiserApi
+          const registry = api?.getVisualizerRegistry?.() || {}
+          const schema = registry[targetId]?.getUISchema?.()
+
+          const isPolymorphic = visualizerId === 'active'
+          const filteredUpdate = isPolymorphic
+            ? Object.keys(update).reduce((acc, key) => {
+                if (schema?.properties?.[key] !== undefined) {
+                  acc[key] = update[key]
+                }
+                return acc
+              }, {} as Record<string, any>)
+            : update
+
+          if (Object.keys(filteredUpdate).length > 0) {
+            if (targetId === 'butterchurn') {
+              updateButterchurnConfig?.(filteredUpdate)
+            } else {
+              updateVisualizerConfig(targetId, filteredUpdate)
+            }
+            updateVisualizerConfigOptimistic(name, {
+              configs: {
+                [targetId]: filteredUpdate
+              }
+            })
           }
-        })
+        }
       }
 
       handleMultiClientAction(selectedVisualisers, null, 'set_visual_config', {
-        visualizerId: visualType,
+        visualizerId,
         config: update
       })
     },
@@ -179,8 +204,10 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       clientIdentity,
       nameToId,
       updateVisualizerConfig,
+      updateButterchurnConfig,
       updateVisualizerConfigOptimistic,
-      handleMultiClientAction
+      handleMultiClientAction,
+      currentVisualType
     ]
   )
 
@@ -217,7 +244,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
       // Also apply to visualizers
       if (selectedGradient !== null && gradientVisualisers.length > 0) {
-        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+        applyVisualiserConfig(gradientVisualisers, 'active', {
           gradient: gradients[selectedGradient]
         })
       }
@@ -404,7 +431,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
         gradientVisualisers.length > 0 &&
         generatedGradients[selectedGradient]
       ) {
-        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+        applyVisualiserConfig(gradientVisualisers, 'active', {
           gradient: generatedGradients[selectedGradient]
         })
       }
@@ -503,7 +530,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       const newState = !isActiveGradientVisualisersGlobal
       setIsActiveGradientVisualisersGlobal(newState)
       if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
-        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+        applyVisualiserConfig(gradientVisualisers, 'active', {
           gradient: gradients[selectedGradient]
         })
       }
@@ -511,7 +538,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       const newState = !isActiveGradientVisualisersLocal
       setIsActiveGradientVisualisersLocal(newState)
       if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
-        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+        applyVisualiserConfig(gradientVisualisers, 'active', {
           gradient: gradients[selectedGradient]
         })
       }

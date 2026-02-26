@@ -70,11 +70,42 @@ const VisualiserWsControl = () => {
           case 'set_visual_config': {
             // Overwrite config for the given visualizerId
             const { visualizerId, config } = d.payload || {}
-            if (visualizerId && config) {
-              if (visualizerId === 'butterchurn') {
-                updateButterchurnConfig?.(config)
+            let targetId = visualizerId
+            if (!targetId || targetId === 'active') {
+              targetId = visualType
+            }
+            if (targetId && config) {
+              const api = (window as any).visualiserApi
+              const registry = api?.getVisualizerRegistry?.() || {}
+              const schema = registry[targetId]?.getUISchema?.()
+
+              // Only apply if the target effect supports the properties in the config
+              // or if we explicitly provided a visualizerId (force update)
+              const isPolymorphic = !visualizerId || visualizerId === 'active'
+
+              if (isPolymorphic) {
+                // Filter config to only include supported properties
+                const supportedConfig = Object.keys(config).reduce((acc, key) => {
+                  if (schema?.properties?.[key] !== undefined) {
+                    acc[key] = config[key]
+                  }
+                  return acc
+                }, {} as Record<string, any>)
+
+                if (Object.keys(supportedConfig).length > 0) {
+                  if (targetId === 'butterchurn') {
+                    updateButterchurnConfig?.(supportedConfig)
+                  } else {
+                    updateVisualizerConfig?.(targetId, supportedConfig)
+                  }
+                }
               } else {
-                updateVisualizerConfig?.(visualizerId, config)
+                // Force update as original
+                if (targetId === 'butterchurn') {
+                  updateButterchurnConfig?.(config)
+                } else {
+                  updateVisualizerConfig?.(targetId, config)
+                }
               }
             }
             break
