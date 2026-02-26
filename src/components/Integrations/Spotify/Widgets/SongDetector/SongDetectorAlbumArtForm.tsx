@@ -182,23 +182,79 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   }, [albumArtUrl, imageVirtuals, thumbnailPath, imageConfig, getVirtuals])
 
   const toggleGradientAutoApply = useCallback(() => {
-    if (gradientAutoApply) {
-      setGradientAutoApply(false)
-    } else {
-      applyGradient()
-      setGradientAutoApply(true)
-    }
-  }, [gradientAutoApply, setGradientAutoApply, applyGradient])
+    setGradientAutoApply(!gradientAutoApply)
+  }, [gradientAutoApply, setGradientAutoApply])
 
   const toggleImageAutoApply = useCallback(() => {
-    if (imageAutoApply) {
-      setImageAutoApply(false)
-    } else {
-      applyImage()
-      setImageAutoApply(true)
-    }
-  }, [imageAutoApply, setImageAutoApply, applyImage])
+    setImageAutoApply(!imageAutoApply)
+  }, [imageAutoApply, setImageAutoApply])
 
+  const prevIsActiveGradVisRef = useRef(false)
+  const prevIsActiveGradVirtRef = useRef(false)
+  const prevIsActiveImgVisRef = useRef(false)
+  const prevIsActiveImgVirtRef = useRef(false)
+  const prevColorsRef = useRef<string>('')
+  const prevAlbumArtRef = useRef<string>('')
+
+  // AUTO-APPLY GRADIENT: Trigger on color change, toggle change, selection change
+  useEffect(() => {
+    const colorsKey = gradients[selectedGradient] || ''
+    const hasChanges =
+      colorsKey !== prevColorsRef.current ||
+      isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
+      gradientAutoApply !== prevIsActiveGradVirtRef.current
+    prevColorsRef.current = colorsKey
+    prevIsActiveGradVisRef.current = isActiveGradientVisualisers
+    prevIsActiveGradVirtRef.current = gradientAutoApply
+
+    if (!hasChanges || colorsKey === '') return
+
+    if (gradientAutoApply) {
+      applyGradient()
+    }
+    if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
+      applyVisualiserConfig(gradientVisualisers, 'active', {
+        gradient: gradients[selectedGradient]
+      })
+    }
+  }, [
+    isActiveGradientVisualisers,
+    gradientAutoApply,
+    selectedGradient,
+    gradientVisualisers,
+    gradients,
+    applyGradient,
+    applyVisualiserConfig
+  ])
+
+  // Auto-reapply image when song changes (if currently active)
+  useEffect(() => {
+    const hasChanges =
+      albumArtUrl !== prevAlbumArtRef.current ||
+      isActiveImageVisualisers !== prevIsActiveImgVisRef.current ||
+      imageAutoApply !== prevIsActiveImgVirtRef.current
+    prevAlbumArtRef.current = albumArtUrl
+    prevIsActiveImgVisRef.current = isActiveImageVisualisers
+    prevIsActiveImgVirtRef.current = imageAutoApply
+
+    if (!hasChanges || albumArtUrl === '') return
+
+    if (imageAutoApply) {
+      applyImage()
+    }
+    if (isActiveImageVisualisers && imageVisualisers.length > 0) {
+      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+        image_source: albumArtUrl
+      })
+    }
+  }, [
+    albumArtUrl,
+    isActiveImageVisualisers,
+    imageAutoApply,
+    imageVisualisers,
+    applyImage,
+    applyVisualiserConfig
+  ])
 
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
@@ -227,23 +283,11 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   }
 
   const toggleGradientVisualiserAutoApply = () => {
-    const newState = !isActiveGradientVisualisers
-    setIsActiveGradientVisualisers(newState)
-    if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
-      applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: gradients[selectedGradient]
-      })
-    }
+    setIsActiveGradientVisualisers(!isActiveGradientVisualisers)
   }
 
   const toggleImageVisualiserAutoApply = () => {
-    const newState = !isActiveImageVisualisers
-    setIsActiveImageVisualisers(newState)
-    if (newState && imageVisualisers.length > 0 && albumArtUrl) {
-      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-        image_source: albumArtUrl
-      })
-    }
+    setIsActiveImageVisualisers(!isActiveImageVisualisers)
   }
 
   // Filter out stale names

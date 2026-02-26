@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../store/useStore'
 import { Ledfx } from '../api/ledfx'
 import { getVStore } from './vStore'
+import { useWebSocket } from '../utils/Websocket/WebSocketProvider'
 
 /**
  * Global auto-apply hook for song detector
@@ -45,6 +46,8 @@ const useSongDetectorAutoApply = () => {
   const isActiveGradientVisualisers = useStore((state) => state.isActiveGradientVisualisers)
   const imageVisualisers = useStore((state) => state.imageVisualisers || [])
   const isActiveImageVisualisers = useStore((state) => state.isActiveImageVisualisers)
+
+  const { send } = useWebSocket()
 
   // Track previous values to detect changes
   const prevTextTrackRef = useRef<string>('')
@@ -138,11 +141,11 @@ const useSongDetectorAutoApply = () => {
               config: update
             }
           },
-          (window as any).visualiserApi?.send || (() => {})
+          send
         )
       }
     },
-    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, broadcastToClients]
+    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, broadcastToClients, send]
   )
 
   // Helper: Filter similar colors
@@ -304,20 +307,21 @@ const useSongDetectorAutoApply = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack, textAutoApply, textVirtuals, spotifyTexter])
 
-  // AUTO-APPLY GRADIENT: When gradients change (new song)
+  // AUTO-APPLY GRADIENT: When gradients change (new song) or toggles change
   useEffect(() => {
     const gradientsKey = gradients.join(',')
-    const hasChanges = gradientsKey !== prevGradientsRef.current
+    const hasChanges =
+      gradientsKey !== prevGradientsRef.current ||
+      isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
+      gradientAutoApply !== prevIsActiveGradVirtRef.current
     prevGradientsRef.current = gradientsKey
+    prevIsActiveGradVisRef.current = isActiveGradientVisualisers
+    prevIsActiveGradVirtRef.current = gradientAutoApply
 
-    if (!hasChanges || gradientsKey === '') return
+    if (!hasChanges || gradientsKey === '' || selectedGradient === null || !gradients[selectedGradient])
+      return
 
-    if (
-      gradientAutoApply &&
-      gradientVirtuals.length > 0 &&
-      selectedGradient !== null &&
-      gradients[selectedGradient]
-    ) {
+    if (gradientAutoApply && gradientVirtuals.length > 0) {
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global',
         gradient: gradients[selectedGradient],
@@ -325,12 +329,7 @@ const useSongDetectorAutoApply = () => {
       }).then(() => getVirtuals())
     }
 
-    if (
-      isActiveGradientVisualisers &&
-      gradientVisualisers.length > 0 &&
-      selectedGradient !== null &&
-      gradients[selectedGradient]
-    ) {
+    if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
       applyVisualiserConfig(gradientVisualisers, 'active', {
         gradient: gradients[selectedGradient]
       })
@@ -346,10 +345,20 @@ const useSongDetectorAutoApply = () => {
     applyVisualiserConfig
   ])
 
-  // AUTO-APPLY IMAGE: When album art changes (new song)
+  const prevIsActiveGradVisRef = useRef(false)
+  const prevIsActiveGradVirtRef = useRef(false)
+  const prevIsActiveImgVisRef = useRef(false)
+  const prevIsActiveImgVirtRef = useRef(false)
+
+  // AUTO-APPLY IMAGE: When album art changes (new song) or toggles change
   useEffect(() => {
-    const hasChanges = thumbnailPath !== prevAlbumArtRef.current
+    const hasChanges =
+      thumbnailPath !== prevAlbumArtRef.current ||
+      isActiveImageVisualisers !== prevIsActiveImgVisRef.current ||
+      imageAutoApply !== prevIsActiveImgVirtRef.current
     prevAlbumArtRef.current = thumbnailPath
+    prevIsActiveImgVisRef.current = isActiveImageVisualisers
+    prevIsActiveImgVirtRef.current = imageAutoApply
 
     if (!hasChanges || thumbnailPath === '') return
 

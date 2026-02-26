@@ -427,11 +427,21 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
   }, [colors]) // Only run when colors change to update generatedGradients
 
+  const prevIsActiveGradVisRef = useRef(false)
+  const prevIsActiveGradVirtRef = useRef(false)
+  const prevIsActiveImgVisRef = useRef(false)
+  const prevIsActiveImgVirtRef = useRef(false)
+
   // AUTO-APPLY GRADIENT: Trigger on color change, toggle change, selection change
   useEffect(() => {
     const colorsKey = colors.join(',')
-    const hasChanges = colorsKey !== prevColorsRef.current
+    const hasChanges =
+      colorsKey !== prevColorsRef.current ||
+      isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
+      isActiveGradientVirtuals !== prevIsActiveGradVirtRef.current
     prevColorsRef.current = colorsKey
+    prevIsActiveGradVisRef.current = isActiveGradientVisualisers
+    prevIsActiveGradVirtRef.current = isActiveGradientVirtuals
 
     if (!hasChanges) return
 
@@ -471,8 +481,13 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
   // Auto-reapply image when song changes (if currently active)
   useEffect(() => {
-    const hasChanges = albumArtUrl !== prevAlbumArtRef.current
+    const hasChanges =
+      albumArtUrl !== prevAlbumArtRef.current ||
+      isActiveImageVisualisers !== prevIsActiveImgVisRef.current ||
+      isActiveImageVirtuals !== prevIsActiveImgVirtRef.current
     prevAlbumArtRef.current = albumArtUrl
+    prevIsActiveImgVisRef.current = isActiveImageVisualisers
+    prevIsActiveImgVirtRef.current = isActiveImageVirtuals
 
     if (!hasChanges) return
 
@@ -557,65 +572,33 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
   const toggleAutoApplyGradientVisualisers = () => {
     if (generalDetector) {
-      const newState = !isActiveGradientVisualisersGlobal
-      setIsActiveGradientVisualisersGlobal(newState)
-      if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
-        applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: gradients[selectedGradient]
-        })
-      }
+      setIsActiveGradientVisualisersGlobal(!isActiveGradientVisualisersGlobal)
     } else {
-      const newState = !isActiveGradientVisualisersLocal
-      setIsActiveGradientVisualisersLocal(newState)
-      if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
-        applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: gradients[selectedGradient]
-        })
-      }
+      setIsActiveGradientVisualisersLocal(!isActiveGradientVisualisersLocal)
     }
   }
 
   const toggleAutoApplyImageVisualisers = () => {
     if (generalDetector) {
-      const newState = !isActiveImageVisualisersGlobal
-      setIsActiveImageVisualisersGlobal(newState)
-      if (newState && imageVisualisers.length > 0 && albumArtUrl) {
-        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-          image_source: albumArtUrl
-        })
-      }
+      setIsActiveImageVisualisersGlobal(!isActiveImageVisualisersGlobal)
     } else {
-      const newState = !isActiveImageVisualisersLocal
-      setIsActiveImageVisualisersLocal(newState)
-      if (newState && imageVisualisers.length > 0 && albumArtUrl) {
-        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-          image_source: albumArtUrl
-        })
-      }
+      setIsActiveImageVisualisersLocal(!isActiveImageVisualisersLocal)
     }
   }
 
   const toggleAutoApplyGradientVirtuals = () => {
     if (generalDetector) {
-      const newState = !gradientAutoApplyGlobal
-      setGradientAutoApplyGlobal(newState)
-      if (newState) applyGradientVirtuals()
+      setGradientAutoApplyGlobal(!gradientAutoApplyGlobal)
     } else {
-      const newState = !gradientAutoApplyLocal
-      setGradientAutoApplyLocal(newState)
-      if (newState) applyGradientVirtuals()
+      setGradientAutoApplyLocal(!gradientAutoApplyLocal)
     }
   }
 
   const toggleAutoApplyImageVirtuals = () => {
     if (generalDetector) {
-      const newState = !imageAutoApplyGlobal
-      setImageAutoApplyGlobal(newState)
-      if (newState) applyImageVirtuals()
+      setImageAutoApplyGlobal(!imageAutoApplyGlobal)
     } else {
-      const newState = !imageAutoApplyLocal
-      setImageAutoApplyLocal(newState)
-      if (newState) applyImageVirtuals()
+      setImageAutoApplyLocal(!imageAutoApplyLocal)
     }
   }
 
