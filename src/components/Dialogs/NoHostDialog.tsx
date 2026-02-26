@@ -19,8 +19,8 @@ import {
 import { Add, Delete, ExpandMore, QrCodeScanner, Save } from '@mui/icons-material'
 import isElectron from 'is-electron'
 import useStore from '../../store/useStore'
-import mixedContent1 from '../../assets/mixedContent1.jpeg'
-import mixedContent2 from '../../assets/mixedContent2.jpeg'
+import mixedContent1 from '../../assets/mixedContent1.webp'
+import mixedContent2 from '../../assets/mixedContent2.webp'
 import QrScanner from '../QrScanner/QrScanner'
 import { getBaseUrl } from '../../utils/getBaseUrl'
 // import Instances from './Instances';

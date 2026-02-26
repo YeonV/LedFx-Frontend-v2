@@ -1,5 +1,5 @@
-import xmas from '../assets/xmas.png'
-import newyear from '../assets/fireworks.jpg'
+import xmas from '../assets/xmas.webp'
+import newyear from '../assets/fireworks.webp'
 
 const SpecialEvents = () => {
   const now = new Date()
