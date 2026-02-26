@@ -115,7 +115,10 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                 const hasProp =
                   schema?.properties?.[key] !== undefined ||
                   registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                  key === 'gradient' // Special Case: always try gradient if requested
+                  key === 'gradient' ||
+                  key === 'image_source' ||
+                  key === 'primary_color' ||
+                  key === 'secondary_color'
 
                 if (hasProp) {
                   acc[key] = update[key]
@@ -214,7 +217,9 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
     }
     if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
       applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: gradients[selectedGradient]
+        gradient: gradients[selectedGradient],
+        primary_color: extractedColors[0] || '#ff0000',
+        secondary_color: extractedColors[1] || '#0000ff'
       })
     }
   }, [

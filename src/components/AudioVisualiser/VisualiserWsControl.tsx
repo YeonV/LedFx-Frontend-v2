@@ -90,7 +90,9 @@ const VisualiserWsControl = () => {
                     schema?.properties?.[key] !== undefined ||
                     registry[targetId]?.defaultConfig?.[key] !== undefined ||
                     key === 'gradient' || // Special Case: always try gradient if requested
-                    key === 'image_source' // Special Case: always try image if requested
+                    key === 'image_source' || // Special Case: always try image if requested
+                    key === 'primary_color' ||
+                    key === 'secondary_color'
 
                   if (hasProp) {
                     acc[key] = config[key]

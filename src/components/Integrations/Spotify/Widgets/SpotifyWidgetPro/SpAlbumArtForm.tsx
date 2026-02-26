@@ -185,7 +185,17 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           const isPolymorphic = visualizerId === 'active'
           const filteredUpdate = isPolymorphic
             ? Object.keys(update).reduce((acc, key) => {
-                if (schema?.properties?.[key] !== undefined) {
+                const api = (window as any).visualiserApi
+                const registry = api?.getVisualizerRegistry?.() || {}
+                const hasProp =
+                  schema?.properties?.[key] !== undefined ||
+                  registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                  key === 'gradient' ||
+                  key === 'image_source' ||
+                  key === 'primary_color' ||
+                  key === 'secondary_color'
+
+                if (hasProp) {
                   acc[key] = update[key]
                 }
                 return acc
@@ -248,7 +258,9 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       // Also apply to visualizers
       if (selectedGradient !== null && gradientVisualisers.length > 0) {
         applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: gradients[selectedGradient]
+          gradient: gradients[selectedGradient],
+          primary_color: colors[0] || '#ff0000',
+          secondary_color: colors[1] || '#0000ff'
         })
       }
       if (albumArtUrl && imageVisualisers.length > 0) {
@@ -464,7 +476,9 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       gradients[selectedGradient]
     ) {
       applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: gradients[selectedGradient]
+          gradient: generatedGradients[selectedGradient],
+          primary_color: colors[0] || '#ff0000',
+          secondary_color: colors[1] || '#0000ff'
       })
     }
   }, [

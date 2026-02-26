@@ -104,7 +104,9 @@ const useSongDetectorAutoApply = () => {
                   schema?.properties?.[key] !== undefined ||
                   registry[targetId]?.defaultConfig?.[key] !== undefined ||
                   key === 'gradient' || // Special Case: always try gradient if requested
-                  key === 'image_source' // Special Case: always try image if requested
+                  key === 'image_source' || // Special Case: always try image if requested
+                  key === 'primary_color' ||
+                  key === 'secondary_color'
 
                 if (hasProp) {
                   acc[key] = update[key]
@@ -331,7 +333,9 @@ const useSongDetectorAutoApply = () => {
 
     if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
       applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: gradients[selectedGradient]
+        gradient: gradients[selectedGradient],
+        primary_color: extractedColors[0] || '#ff0000',
+        secondary_color: extractedColors[1] || '#0000ff'
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
