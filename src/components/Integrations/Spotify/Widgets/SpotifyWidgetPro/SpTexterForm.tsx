@@ -18,7 +18,7 @@ import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 import useStore from '../../../../../store/useStore'
 import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
 import { Ledfx } from '../../../../../api/ledfx'
-import { useVStore, type VState } from '../../../../../hooks/vStore'
+import { getVStore } from '../../../../../hooks/vStore'
 import AutoApplySelector from './AutoApplySelector'
 import CardStack from '../SongDetector/CardStack'
 
@@ -50,8 +50,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const updateVisualizerConfigOptimistic = useStore(
     (state) => state.updateVisualizerConfigOptimistic
   )
-  // VStore actions for global/main instance
-  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
   // Use global state for song detector
   const textAutoApplyGlobal = useStore((state) => state.textAutoApply)
   const textVirtualsGlobal = useStore((state) => state.textVirtuals)
@@ -211,7 +209,8 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     const name = clientIdentity?.name || 'unknown-client'
     // Main (current/global): use vstore for config update
     if (single && isCurrentClient) {
-      updateVisualizerConfig(visualType, update)
+      const vStore = getVStore()
+      vStore?.getState()?.updateVisualizerConfig?.(visualType, update)
       // Always update optimistic config for main instance as well
       updateVisualizerConfigOptimistic(name, {
         configs: {

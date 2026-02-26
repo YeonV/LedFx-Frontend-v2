@@ -13,7 +13,7 @@ import {
 import useStore from '../../../../../store/useStore'
 import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import { Ledfx } from '../../../../../api/ledfx'
-import { useVStore, type VState } from '../../../../../hooks/vStore'
+import { getVStore } from '../../../../../hooks/vStore'
 import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
 import AutoApplySelector from './AutoApplySelector'
 import CardStack from '../SongDetector/CardStack'
@@ -35,9 +35,6 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const updateVisualizerConfigOptimistic = useStore(
     (state) => state.updateVisualizerConfigOptimistic
   )
-  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
-  const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
-  const currentVisualType = useVStore((state: VState) => state.visualType)
   const { send, isConnected } = useWebSocket()
 
   // Global visualizer state (Song Detector)
@@ -177,7 +174,9 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
 
       if (isCurrentClient) {
-        const targetId = visualizerId === 'active' ? currentVisualType : visualizerId
+        const vStore = getVStore()
+        const vState = vStore?.getState()
+        const targetId = visualizerId === 'active' ? vState?.visualType : visualizerId
         if (targetId) {
           const api = (window as any).visualiserApi
           const registry = api?.getVisualizerRegistry?.() || {}
@@ -195,9 +194,9 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
           if (Object.keys(filteredUpdate).length > 0) {
             if (targetId === 'butterchurn') {
-              updateButterchurnConfig?.(filteredUpdate)
+              vState?.updateButterchurnConfig?.(filteredUpdate)
             } else {
-              updateVisualizerConfig(targetId, filteredUpdate)
+              vState?.updateVisualizerConfig?.(targetId, filteredUpdate)
             }
             updateVisualizerConfigOptimistic(name, {
               configs: {
@@ -213,15 +212,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
         config: update
       })
     },
-    [
-      clientIdentity,
-      nameToId,
-      updateVisualizerConfig,
-      updateButterchurnConfig,
-      updateVisualizerConfigOptimistic,
-      handleMultiClientAction,
-      currentVisualType
-    ]
+    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, handleMultiClientAction]
   )
 
   const applyGradientVirtuals = useCallback(async () => {

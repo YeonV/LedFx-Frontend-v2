@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../store/useStore'
 import { Ledfx } from '../api/ledfx'
-import { useVStore, type VState } from './vStore'
+import { getVStore } from './vStore'
 
 /**
  * Global auto-apply hook for song detector
@@ -46,10 +46,6 @@ const useSongDetectorAutoApply = () => {
   const imageVisualisers = useStore((state) => state.imageVisualisers || [])
   const isActiveImageVisualisers = useStore((state) => state.isActiveImageVisualisers)
 
-  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
-  const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
-  const currentVisualType = useVStore((state: VState) => state.visualType)
-
   // Track previous values to detect changes
   const prevTextTrackRef = useRef<string>('')
   const prevColorTrackRef = useRef<string>('')
@@ -90,7 +86,9 @@ const useSongDetectorAutoApply = () => {
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
 
       if (isCurrentClient) {
-        const targetId = visualizerId === 'active' ? currentVisualType : visualizerId
+        const vStore = getVStore()
+        const vState = vStore?.getState()
+        const targetId = visualizerId === 'active' ? vState?.visualType : visualizerId
         if (targetId) {
           const api = (window as any).visualiserApi
           const registry = api?.getVisualizerRegistry?.() || {}
@@ -114,9 +112,9 @@ const useSongDetectorAutoApply = () => {
 
           if (Object.keys(filteredUpdate).length > 0) {
             if (targetId === 'butterchurn') {
-              updateButterchurnConfig?.(filteredUpdate)
+              vState?.updateButterchurnConfig?.(filteredUpdate)
             } else {
-              updateVisualizerConfig?.(targetId, filteredUpdate)
+              vState?.updateVisualizerConfig?.(targetId, filteredUpdate)
             }
             updateVisualizerConfigOptimistic(name, {
               configs: {
@@ -144,15 +142,7 @@ const useSongDetectorAutoApply = () => {
         )
       }
     },
-    [
-      clientIdentity,
-      nameToId,
-      updateVisualizerConfig,
-      updateButterchurnConfig,
-      updateVisualizerConfigOptimistic,
-      broadcastToClients,
-      currentVisualType
-    ]
+    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, broadcastToClients]
   )
 
   // Helper: Filter similar colors

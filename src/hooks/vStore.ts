@@ -18,6 +18,8 @@ const initializeStore = () => {
   return storeInstance
 }
 
+export const getVStore = () => initializeStore()
+
 export function useVStore<T = IStore>(selector?: (state: IStore) => T): T {
   const store = initializeStore()
   if (!store) return undefined as unknown as T
