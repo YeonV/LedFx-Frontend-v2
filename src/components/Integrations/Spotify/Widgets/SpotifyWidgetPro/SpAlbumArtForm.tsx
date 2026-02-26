@@ -13,8 +13,12 @@ import {
 import useStore from '../../../../../store/useStore'
 import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import { Ledfx } from '../../../../../api/ledfx'
+import { useVStore, type VState } from '../../../../../hooks/vStore'
+import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
+import AutoApplySelector from './AutoApplySelector'
+import CardStack from '../SongDetector/CardStack'
 
-const SpAlbumArtForm = () => {
+const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const virtuals = useStore((state) => state.virtuals)
   const getVirtuals = useStore((state) => state.getVirtuals)
   const spotifyCtx = useContext(SpotifyStateContext)
@@ -24,6 +28,45 @@ const SpAlbumArtForm = () => {
   const imageVirtuals = useStore((state) => state.spotify.spotifyAlbumArtImageVirtuals)
   const setGradientVirtuals = useStore((state) => state.setSpotifyAlbumArtGradientVirtuals)
   const setImageVirtuals = useStore((state) => state.setSpotifyAlbumArtImageVirtuals)
+
+  const clients = useStore((state) => state.clients)
+  const clientIdentity = useStore((state) => state.clientIdentity)
+  const broadcastToClients = useStore((state) => state.broadcastToClients)
+  const updateVisualizerConfigOptimistic = useStore(
+    (state) => state.updateVisualizerConfigOptimistic
+  )
+  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
+  const { send, isConnected } = useWebSocket()
+
+  // Global visualizer state (Song Detector)
+  const gradientVisualisersGlobal = useStore((state) => state.gradientVisualisers || [])
+  const isActiveGradientVisualisersGlobal = useStore((state) => state.isActiveGradientVisualisers)
+  const setGradientVisualisersGlobal = useStore((state) => state.setGradientVisualisers)
+  const setIsActiveGradientVisualisersGlobal = useStore(
+    (state) => state.setIsActiveGradientVisualisers
+  )
+
+  const imageVisualisersGlobal = useStore((state) => state.imageVisualisers || [])
+  const isActiveImageVisualisersGlobal = useStore((state) => state.isActiveImageVisualisers)
+  const setImageVisualisersGlobal = useStore((state) => state.setImageVisualisers)
+  const setIsActiveImageVisualisersGlobal = useStore((state) => state.setIsActiveImageVisualisers)
+
+  // Local visualizer state
+  const [gradientVisualisersLocal, setGradientVisualisersLocal] = useState<string[]>([])
+  const [isActiveGradientVisualisersLocal, setIsActiveGradientVisualisersLocal] = useState(false)
+  const [imageVisualisersLocal, setImageVisualisersLocal] = useState<string[]>([])
+  const [isActiveImageVisualisersLocal, setIsActiveImageVisualisersLocal] = useState(false)
+
+  // Determine which state to use
+  const gradientVisualisers = generalDetector ? gradientVisualisersGlobal : gradientVisualisersLocal
+  const isActiveGradientVisualisers = generalDetector
+    ? isActiveGradientVisualisersGlobal
+    : isActiveGradientVisualisersLocal
+
+  const imageVisualisers = generalDetector ? imageVisualisersGlobal : imageVisualisersLocal
+  const isActiveImageVisualisers = generalDetector
+    ? isActiveImageVisualisersGlobal
+    : isActiveImageVisualisersLocal
 
   const [colors, setColors] = useState<string[]>([])
   const [albumArtUrl, setAlbumArtUrl] = useState<string>('')
@@ -71,6 +114,76 @@ const SpAlbumArtForm = () => {
     return filtered
   }
 
+  const nameToId = clients
+    ? Object.entries(clients).reduce(
+        (acc, [id, data]) => {
+          if (data && data.name) acc[data.name] = id
+          return acc
+        },
+        {} as Record<string, string>
+      )
+    : {}
+
+  const handleMultiClientAction = useCallback(
+    (
+      selectedVisualisers: string[],
+      localAction: (() => void) | null,
+      remoteAction: string,
+      extraPayload: Record<string, any> = {}
+    ) => {
+      if (!clientIdentity || !clientIdentity.clientId) return
+      const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
+      if (selectedIds.includes(clientIdentity.clientId) && localAction) {
+        localAction()
+      }
+      const otherClients = selectedIds.filter((id) => id !== clientIdentity.clientId)
+      if (otherClients.length && broadcastToClients && isConnected) {
+        broadcastToClients(
+          {
+            broadcast_type: 'custom',
+            target: { mode: 'uuids', uuids: otherClients },
+            payload: {
+              category: 'visualiser',
+              action: remoteAction,
+              ...extraPayload
+            }
+          },
+          send
+        )
+      }
+    },
+    [clientIdentity, nameToId, broadcastToClients, isConnected, send]
+  )
+
+  const applyVisualiserConfig = useCallback(
+    (selectedVisualisers: string[], visualType: string, update: Record<string, any>) => {
+      const name = clientIdentity?.name || 'unknown-client'
+      const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
+      const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
+
+      if (isCurrentClient) {
+        updateVisualizerConfig(visualType, update)
+        updateVisualizerConfigOptimistic(name, {
+          configs: {
+            [visualType]: update
+          }
+        })
+      }
+
+      handleMultiClientAction(selectedVisualisers, null, 'set_visual_config', {
+        visualizerId: visualType,
+        config: update
+      })
+    },
+    [
+      clientIdentity,
+      nameToId,
+      updateVisualizerConfig,
+      updateVisualizerConfigOptimistic,
+      handleMultiClientAction
+    ]
+  )
+
   const applyBoth = useCallback(
     async (once: boolean = false) => {
       const promises: Promise<any>[] = []
@@ -102,13 +215,34 @@ const SpAlbumArtForm = () => {
       await Promise.all(promises)
       getVirtuals()
 
+      // Also apply to visualizers
+      if (selectedGradient !== null && gradientVisualisers.length > 0) {
+        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+          gradient: gradients[selectedGradient]
+        })
+      }
+      if (albumArtUrl && imageVisualisers.length > 0) {
+        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+          image_source: albumArtUrl
+        })
+      }
+
       if (once) {
         setIsActive(false)
       } else {
         setIsActive(true)
       }
     },
-    [selectedGradient, gradientVirtuals, gradients, albumArtUrl, imageVirtuals, getVirtuals]
+    [
+      selectedGradient,
+      gradientVirtuals,
+      gradients,
+      albumArtUrl,
+      imageVirtuals,
+      getVirtuals,
+      gradientVisualisers,
+      imageVisualisers
+    ]
   )
 
   // Extract colors from album art
@@ -249,46 +383,67 @@ const SpAlbumArtForm = () => {
 
     // Auto-reapply gradient when song changes (if currently active)
     const colorsKey = colors.join(',')
-    if (
-      colorsKey !== prevColorsRef.current &&
-      isActive &&
-      selectedGradient !== null &&
-      gradientVirtuals.length > 0 &&
-      generatedGradients[selectedGradient]
-    ) {
-      // Directly call API without toggling isActive
-      const payload: any = {
-        action: 'apply_global',
-        gradient: generatedGradients[selectedGradient],
-        virtuals: gradientVirtuals
+    if (colorsKey !== prevColorsRef.current) {
+      if (
+        isActive &&
+        selectedGradient !== null &&
+        gradientVirtuals.length > 0 &&
+        generatedGradients[selectedGradient]
+      ) {
+        // Directly call API without toggling isActive
+        const payload: any = {
+          action: 'apply_global',
+          gradient: generatedGradients[selectedGradient],
+          virtuals: gradientVirtuals
+        }
+        Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
       }
-      Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
+      if (
+        isActiveGradientVisualisers &&
+        selectedGradient !== null &&
+        gradientVisualisers.length > 0 &&
+        generatedGradients[selectedGradient]
+      ) {
+        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+          gradient: generatedGradients[selectedGradient]
+        })
+      }
     }
     prevColorsRef.current = colorsKey
-  }, [colors, isActive, selectedGradient, gradientVirtuals, getVirtuals])
+  }, [
+    colors,
+    isActive,
+    selectedGradient,
+    gradientVirtuals,
+    getVirtuals,
+    isActiveGradientVisualisers,
+    gradientVisualisers
+  ])
 
   // Auto-reapply image when song changes (if currently active)
   useEffect(() => {
-    if (
-      albumArtUrl &&
-      albumArtUrl !== prevAlbumArtRef.current &&
-      isActive &&
-      imageVirtuals.length > 0
-    ) {
-      // Directly call API without toggling isActive
-      const payload: any = {
-        action: 'apply_global_effect',
-        type: 'imagespin',
-        config: {
-          image_source: albumArtUrl,
-          min_size: 1
-        },
-        virtuals: imageVirtuals
+    if (albumArtUrl && albumArtUrl !== prevAlbumArtRef.current) {
+      if (isActive && imageVirtuals.length > 0) {
+        // Directly call API without toggling isActive
+        const payload: any = {
+          action: 'apply_global_effect',
+          type: 'imagespin',
+          config: {
+            image_source: albumArtUrl,
+            min_size: 1
+          },
+          virtuals: imageVirtuals
+        }
+        Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
       }
-      Ledfx('/api/effects', 'PUT', payload).then(() => getVirtuals())
+      if (isActiveImageVisualisers && imageVisualisers.length > 0) {
+        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+          image_source: albumArtUrl
+        })
+      }
     }
     prevAlbumArtRef.current = albumArtUrl
-  }, [albumArtUrl, isActive, imageVirtuals, getVirtuals])
+  }, [albumArtUrl, isActive, imageVirtuals, getVirtuals, isActiveImageVisualisers, imageVisualisers])
 
   const handleGradientVirtualChange = (event: any) => {
     const value = event.target.value
@@ -306,8 +461,94 @@ const SpAlbumArtForm = () => {
     setImageVirtuals(selected)
   }
 
+  // Filter out stale names not in current clients
+  const filteredGradientVisualisers = gradientVisualisers.filter((name) => nameToId[name])
+  const filteredImageVisualisers = imageVisualisers.filter((name) => nameToId[name])
+
+  // Auto-cleanup state if stale names are present
+  useEffect(() => {
+    if (generalDetector) {
+      if (filteredGradientVisualisers.length !== gradientVisualisers.length) {
+        setGradientVisualisersGlobal(filteredGradientVisualisers)
+      }
+      if (filteredImageVisualisers.length !== imageVisualisers.length) {
+        setImageVisualisersGlobal(filteredImageVisualisers)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clients, gradientVisualisers, imageVisualisers])
+
+  const handleGradientVisualiserChange = (event: any) => {
+    const value = event.target.value
+    const selected = typeof value === 'string' ? value.split(',') : value
+    if (generalDetector) {
+      setGradientVisualisersGlobal(selected)
+    } else {
+      setGradientVisualisersLocal(selected)
+    }
+  }
+
+  const handleImageVisualiserChange = (event: any) => {
+    const value = event.target.value
+    const selected = typeof value === 'string' ? value.split(',') : value
+    if (generalDetector) {
+      setImageVisualisersGlobal(selected)
+    } else {
+      setImageVisualisersLocal(selected)
+    }
+  }
+
+  const toggleAutoApplyGradientVisualisers = () => {
+    if (generalDetector) {
+      const newState = !isActiveGradientVisualisersGlobal
+      setIsActiveGradientVisualisersGlobal(newState)
+      if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
+        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+          gradient: gradients[selectedGradient]
+        })
+      }
+    } else {
+      const newState = !isActiveGradientVisualisersLocal
+      setIsActiveGradientVisualisersLocal(newState)
+      if (newState && selectedGradient !== null && gradientVisualisers.length > 0) {
+        applyVisualiserConfig(gradientVisualisers, 'bladeGradient', {
+          gradient: gradients[selectedGradient]
+        })
+      }
+    }
+  }
+
+  const toggleAutoApplyImageVisualisers = () => {
+    if (generalDetector) {
+      const newState = !isActiveImageVisualisersGlobal
+      setIsActiveImageVisualisersGlobal(newState)
+      if (newState && imageVisualisers.length > 0 && albumArtUrl) {
+        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+          image_source: albumArtUrl
+        })
+      }
+    } else {
+      const newState = !isActiveImageVisualisersLocal
+      setIsActiveImageVisualisersLocal(newState)
+      if (newState && imageVisualisers.length > 0 && albumArtUrl) {
+        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+          image_source: albumArtUrl
+        })
+      }
+    }
+  }
+
+  const toggleAutoApply = () => {
+    if (isActive) {
+      setIsActive(false)
+    } else {
+      applyBoth()
+      setIsActive(true)
+    }
+  }
+
   return (
-    <Stack spacing={2} maxWidth={300}>
+    <Stack spacing={2} maxWidth={400}>
       {/* Album Art */}
       {albumArtUrl && (
         <Box
@@ -370,81 +611,57 @@ const SpAlbumArtForm = () => {
         </Box>
       )}
 
-      {/* Gradient Virtual Selection */}
-      <Box>
-        <Box sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 'bold' }}>Send Gradient To:</Box>
-        <Select
-          multiple
-          fullWidth
+      <CardStack>
+        <AutoApplySelector
+          label="Gradient Virtuals"
+          options={Object.keys(virtuals)}
           value={gradientVirtuals}
           onChange={handleGradientVirtualChange}
-          input={<OutlinedInput />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} size="small" />
-              ))}
-            </Box>
-          )}
-        >
-          {Object.keys(virtuals).map((vId) => (
-            <MenuItem key={vId} value={vId} disabled={imageVirtuals.includes(vId)}>
-              <Checkbox checked={gradientVirtuals.indexOf(vId) > -1} />
-              <ListItemText primary={vId} />
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
-
-      {/* Image Virtual Selection */}
-      <Box>
-        <Box sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 'bold' }}>Send Image To:</Box>
-        <Select
-          multiple
-          fullWidth
+          isActive={isActive}
+          onToggle={toggleAutoApply}
+          disabled={gradientVirtuals.length === 0}
+        />
+        <AutoApplySelector
+          label="Image Virtuals"
+          options={Object.keys(virtuals)}
           value={imageVirtuals}
           onChange={handleImageVirtualChange}
-          input={<OutlinedInput />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} size="small" />
-              ))}
-            </Box>
-          )}
-        >
-          {Object.keys(virtuals).map((vId) => (
-            <MenuItem key={vId} value={vId} disabled={gradientVirtuals.includes(vId)}>
-              <Checkbox checked={imageVirtuals.indexOf(vId) > -1} />
-              <ListItemText primary={vId} />
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
+          isActive={isActive}
+          onToggle={toggleAutoApply}
+          disabled={imageVirtuals.length === 0}
+        />
+      </CardStack>
 
-      {/* Action Buttons */}
-      {((selectedGradient !== null && gradientVirtuals.length > 0) ||
-        (albumArtUrl && imageVirtuals.length > 0)) && (
-        <Stack direction="row" spacing={1}>
-          <Button
-            fullWidth
-            variant="contained"
-            color={isActive ? 'primary' : 'inherit'}
-            onClick={() => {
-              if (isActive) {
-                setIsActive(false)
-              } else {
-                applyBoth(false)
-              }
-            }}
-          >
-            {isActive ? 'Stop' : 'Play'}
-          </Button>
-          <Button fullWidth variant="outlined" onClick={() => applyBoth(true)}>
-            Test Once
-          </Button>
-        </Stack>
-      )}
+      <CardStack>
+        <AutoApplySelector
+          label="Gradient Visualisers"
+          options={clients ? Object.entries(clients) : []}
+          value={generalDetector ? filteredGradientVisualisers : gradientVisualisers}
+          onChange={handleGradientVisualiserChange}
+          isActive={isActiveGradientVisualisers}
+          onToggle={toggleAutoApplyGradientVisualisers}
+          disabled={gradientVisualisers.length === 0}
+          getOptionLabel={([, data]) => data?.name || ''}
+          getOptionValue={([, data]) => data?.name || ''}
+          renderValue={(selected) => selected.join(', ')}
+        />
+        <AutoApplySelector
+          label="Image Visualisers"
+          options={clients ? Object.entries(clients) : []}
+          value={generalDetector ? filteredImageVisualisers : imageVisualisers}
+          onChange={handleImageVisualiserChange}
+          isActive={isActiveImageVisualisers}
+          onToggle={toggleAutoApplyImageVisualisers}
+          disabled={imageVisualisers.length === 0}
+          getOptionLabel={([, data]) => data?.name || ''}
+          getOptionValue={([, data]) => data?.name || ''}
+          renderValue={(selected) => selected.join(', ')}
+        />
+      </CardStack>
+
+      <Button fullWidth variant="outlined" onClick={() => applyBoth(true)}>
+        Test Once
+      </Button>
     </Stack>
   )
 }
