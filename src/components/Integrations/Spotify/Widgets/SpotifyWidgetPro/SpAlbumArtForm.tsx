@@ -1,11 +1,11 @@
-import { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react'
-import { Box, Stack, Button } from '@mui/material'
+import { useEffect, useState, useContext, useRef } from 'react'
+import { Box, Stack } from '@mui/material'
 import useStore from '../../../../../store/useStore'
 import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import { Ledfx } from '../../../../../api/ledfx'
-import { getVStore } from '../../../../../hooks/vStore'
-import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
-import { colorfulness, rgbSum } from '../../../../../utils/helpers'
+// import { getVStore } from '../../../../../hooks/vStore'
+// import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
+// import { colorfulness, rgbSum } from '../../../../../utils/helpers'
 import AutoApplySelector from './AutoApplySelector'
 import CardStack from '../SongDetector/CardStack'
 
@@ -20,43 +20,43 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const setGradientVirtuals = useStore((state) => state.setSpotifyAlbumArtGradientVirtuals)
   const setImageVirtuals = useStore((state) => state.setSpotifyAlbumArtImageVirtuals)
 
-  const clients = useStore((state) => state.clients)
-  const clientIdentity = useStore((state) => state.clientIdentity)
-  const broadcastToClients = useStore((state) => state.broadcastToClients)
-  const updateVisualizerConfigOptimistic = useStore(
-    (state) => state.updateVisualizerConfigOptimistic
-  )
-  const { send, isConnected } = useWebSocket()
+  // const clients = useStore((state) => state.clients)
+  // const clientIdentity = useStore((state) => state.clientIdentity)
+  // const broadcastToClients = useStore((state) => state.broadcastToClients)
+  // const updateVisualizerConfigOptimistic = useStore(
+  //   (state) => state.updateVisualizerConfigOptimistic
+  // )
+  // const { send, isConnected } = useWebSocket()
 
-  // Global visualizer state (Song Detector)
-  const gradientVisualisersGlobal = useStore((state) => state.gradientVisualisers || [])
-  const isActiveGradientVisualisersGlobal = useStore((state) => state.isActiveGradientVisualisers)
-  const setGradientVisualisersGlobal = useStore((state) => state.setGradientVisualisers)
-  const setIsActiveGradientVisualisersGlobal = useStore(
-    (state) => state.setIsActiveGradientVisualisers
-  )
+  // // Global visualizer state (Song Detector)
+  // const gradientVisualisersGlobal = useStore((state) => state.gradientVisualisers || [])
+  // const isActiveGradientVisualisersGlobal = useStore((state) => state.isActiveGradientVisualisers)
+  // const setGradientVisualisersGlobal = useStore((state) => state.setGradientVisualisers)
+  // const setIsActiveGradientVisualisersGlobal = useStore(
+  //   (state) => state.setIsActiveGradientVisualisers
+  // )
 
-  const imageVisualisersGlobal = useStore((state) => state.imageVisualisers || [])
-  const isActiveImageVisualisersGlobal = useStore((state) => state.isActiveImageVisualisers)
-  const setImageVisualisersGlobal = useStore((state) => state.setImageVisualisers)
-  const setIsActiveImageVisualisersGlobal = useStore((state) => state.setIsActiveImageVisualisers)
+  // const imageVisualisersGlobal = useStore((state) => state.imageVisualisers || [])
+  // const isActiveImageVisualisersGlobal = useStore((state) => state.isActiveImageVisualisers)
+  // const setImageVisualisersGlobal = useStore((state) => state.setImageVisualisers)
+  // const setIsActiveImageVisualisersGlobal = useStore((state) => state.setIsActiveImageVisualisers)
 
-  // Local visualizer state
-  const [gradientVisualisersLocal, setGradientVisualisersLocal] = useState<string[]>([])
-  const [isActiveGradientVisualisersLocal, setIsActiveGradientVisualisersLocal] = useState(false)
-  const [imageVisualisersLocal, setImageVisualisersLocal] = useState<string[]>([])
-  const [isActiveImageVisualisersLocal, setIsActiveImageVisualisersLocal] = useState(false)
+  // // Local visualizer state
+  // const [gradientVisualisersLocal, setGradientVisualisersLocal] = useState<string[]>([])
+  // const [isActiveGradientVisualisersLocal, setIsActiveGradientVisualisersLocal] = useState(false)
+  // const [imageVisualisersLocal, setImageVisualisersLocal] = useState<string[]>([])
+  // const [isActiveImageVisualisersLocal, setIsActiveImageVisualisersLocal] = useState(false)
 
   // Determine which state to use
-  const gradientVisualisers = generalDetector ? gradientVisualisersGlobal : gradientVisualisersLocal
-  const isActiveGradientVisualisers = generalDetector
-    ? isActiveGradientVisualisersGlobal
-    : isActiveGradientVisualisersLocal
+  // const gradientVisualisers = generalDetector ? gradientVisualisersGlobal : gradientVisualisersLocal
+  // const isActiveGradientVisualisers = generalDetector
+  //   ? isActiveGradientVisualisersGlobal
+  //   : isActiveGradientVisualisersLocal
 
-  const imageVisualisers = generalDetector ? imageVisualisersGlobal : imageVisualisersLocal
-  const isActiveImageVisualisers = generalDetector
-    ? isActiveImageVisualisersGlobal
-    : isActiveImageVisualisersLocal
+  // const imageVisualisers = generalDetector ? imageVisualisersGlobal : imageVisualisersLocal
+  // const isActiveImageVisualisers = generalDetector
+  //   ? isActiveImageVisualisersGlobal
+  //   : isActiveImageVisualisersLocal
 
   // Virtuals Auto-Apply State
   const gradientAutoApplyGlobal = useStore((state) => state.gradientAutoApply)
@@ -79,10 +79,10 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
   const prevColorsRef = useRef<string>('')
   const prevAlbumArtRef = useRef<string>('')
-  const prevIsActiveGradVisRef = useRef(false)
+  // const prevIsActiveGradVisRef = useRef(false)
   const prevIsActiveGradVirtRef = useRef(false)
   const prevSelectedGradientRef = useRef<number | null>(null)
-  const prevIsActiveImgVisRef = useRef(false)
+  // const prevIsActiveImgVisRef = useRef(false)
   const prevIsActiveImgVirtRef = useRef(false)
 
   // Get album art URL
@@ -123,234 +123,235 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     return filtered
   }
 
-  const nameToId = useMemo(
-    () =>
-      clients
-        ? Object.entries(clients).reduce(
-            (acc, [id, data]) => {
-              if (data && data.name) acc[data.name] = id
-              return acc
-            },
-            {} as Record<string, string>
-          )
-        : {},
-    [clients]
-  )
+  // const nameToId = useMemo(
+  //   () =>
+  //     clients
+  //       ? Object.entries(clients).reduce(
+  //           (acc, [id, data]) => {
+  //             if (data && data.name) acc[data.name] = id
+  //             return acc
+  //           },
+  //           {} as Record<string, string>
+  //         )
+  //       : {},
+  //   [clients]
+  // )
 
-  const handleMultiClientAction = useCallback(
-    (
-      selectedVisualisers: string[],
-      localAction: (() => void) | null,
-      remoteAction: string,
-      extraPayload: Record<string, any> = {}
-    ) => {
-      if (!clientIdentity || !clientIdentity.clientId) return
-      const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
-      if (selectedIds.includes(clientIdentity.clientId) && localAction) {
-        localAction()
-      }
-      const otherClients = selectedIds.filter((id) => id !== clientIdentity.clientId)
-      if (otherClients.length && broadcastToClients && isConnected) {
-        broadcastToClients(
-          {
-            broadcast_type: 'custom',
-            target: { mode: 'uuids', uuids: otherClients },
-            payload: {
-              category: 'visualiser',
-              action: remoteAction,
-              ...extraPayload
-            }
-          },
-          send
-        )
-      }
-    },
-    [clientIdentity, nameToId, broadcastToClients, isConnected, send]
-  )
+  // const handleMultiClientAction = useCallback(
+  //   (
+  //     selectedVisualisers: string[],
+  //     localAction: (() => void) | null,
+  //     remoteAction: string,
+  //     extraPayload: Record<string, any> = {}
+  //   ) => {
+  //     if (!clientIdentity || !clientIdentity.clientId) return
+  //     const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
+  //     if (selectedIds.includes(clientIdentity.clientId) && localAction) {
+  //       localAction()
+  //     }
+  //     const otherClients = selectedIds.filter((id) => id !== clientIdentity.clientId)
+  //     if (otherClients.length && broadcastToClients && isConnected) {
+  //       broadcastToClients(
+  //         {
+  //           broadcast_type: 'custom',
+  //           target: { mode: 'uuids', uuids: otherClients },
+  //           payload: {
+  //             category: 'visualiser',
+  //             action: remoteAction,
+  //             ...extraPayload
+  //           }
+  //         },
+  //         send
+  //       )
+  //     }
+  //   },
+  //   [clientIdentity, nameToId, broadcastToClients, isConnected, send]
+  // )
 
-  const applyVisualiserConfig = useCallback(
-    (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
-      const name = clientIdentity?.name || 'unknown-client'
-      const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
-      const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
+  // const applyVisualiserConfig = useCallback(
+  //   (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
+  //     const name = clientIdentity?.name || 'unknown-client'
+  //     const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
+  //     const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
 
-      if (isCurrentClient) {
-        const vStore = getVStore()
-        const vState = vStore?.getState()
-        const targetId = visualizerId === 'active' ? vState?.visualType : visualizerId
-        if (targetId) {
-          const api = (window as any).visualiserApi
-          const registry = api?.getVisualizerRegistry?.() || {}
-          const schema = registry[targetId]?.getUISchema?.()
+  //     if (isCurrentClient) {
+  //       const vStore = getVStore()
+  //       const vState = vStore?.getState()
+  //       const targetId = visualizerId === 'active' ? vState?.visualType : visualizerId
+  //       if (targetId) {
+  //         const api = (window as any).visualiserApi
+  //         const registry = api?.getVisualizerRegistry?.() || {}
+  //         const schema = registry[targetId]?.getUISchema?.()
 
-          const isPolymorphic = visualizerId === 'active'
-          const filteredUpdate = isPolymorphic
-            ? Object.keys(update).reduce(
-                (acc, key) => {
-                  const api = (window as any).visualiserApi
-                  const registry = api?.getVisualizerRegistry?.() || {}
-                  const hasProp =
-                    schema?.properties?.[key] !== undefined ||
-                    registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                    key === 'gradient' ||
-                    key === 'gradient2' ||
-                    key === 'image_source' ||
-                    key === 'primaryColor' ||
-                    key === 'secondaryColor' ||
-                    key === 'tertiaryColor' ||
-                    key === 'low_band' ||
-                    key === 'bassColor' ||
-                    key === 'mid_band' ||
-                    key === 'midColor' ||
-                    key === 'high_band' ||
-                    key === 'highColor' ||
-                    key === 'sunColor' ||
-                    key === 'backgroundColor' ||
-                    key === 'peakColor'
+  //         const isPolymorphic = visualizerId === 'active'
+  //         const filteredUpdate = isPolymorphic
+  //           ? Object.keys(update).reduce(
+  //               (acc, key) => {
+  //                 const api = (window as any).visualiserApi
+  //                 const registry = api?.getVisualizerRegistry?.() || {}
+  //                 const hasProp =
+  //                   schema?.properties?.[key] !== undefined ||
+  //                   registry[targetId]?.defaultConfig?.[key] !== undefined ||
+  //                   key === 'gradient' ||
+  //                   key === 'gradient2' ||
+  //                   key === 'image_source' ||
+  //                   key === 'primaryColor' ||
+  //                   key === 'secondaryColor' ||
+  //                   key === 'tertiaryColor' ||
+  //                   key === 'low_band' ||
+  //                   key === 'bassColor' ||
+  //                   key === 'mid_band' ||
+  //                   key === 'midColor' ||
+  //                   key === 'high_band' ||
+  //                   key === 'highColor' ||
+  //                   key === 'sunColor' ||
+  //                   key === 'backgroundColor' ||
+  //                   key === 'peakColor'
 
-                  if (hasProp) {
-                    acc[key] = update[key]
-                  }
-                  return acc
-                },
-                {} as Record<string, any>
-              )
-            : update
+  //                 if (hasProp) {
+  //                   acc[key] = update[key]
+  //                 }
+  //                 return acc
+  //               },
+  //               {} as Record<string, any>
+  //             )
+  //           : update
 
-          if (Object.keys(filteredUpdate).length > 0) {
-            if (targetId === 'butterchurn') {
-              vState?.updateButterchurnConfig?.(filteredUpdate)
-            } else {
-              vState?.updateVisualizerConfig?.(targetId, filteredUpdate)
-            }
-            updateVisualizerConfigOptimistic(name, {
-              configs: {
-                [targetId]: filteredUpdate
-              }
-            })
-          }
-        }
-      }
+  //         if (Object.keys(filteredUpdate).length > 0) {
+  //           if (targetId === 'butterchurn') {
+  //             vState?.updateButterchurnConfig?.(filteredUpdate)
+  //           } else {
+  //             vState?.updateVisualizerConfig?.(targetId, filteredUpdate)
+  //           }
+  //           updateVisualizerConfigOptimistic(name, {
+  //             configs: {
+  //               [targetId]: filteredUpdate
+  //             }
+  //           })
+  //         }
+  //       }
+  //     }
 
-      handleMultiClientAction(selectedVisualisers, null, 'set_visual_config', {
-        visualizerId,
-        config: update
-      })
-    },
-    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, handleMultiClientAction]
-  )
+  //     handleMultiClientAction(selectedVisualisers, null, 'set_visual_config', {
+  //       visualizerId,
+  //       config: update
+  //     })
+  //   },
+  //   [clientIdentity, nameToId, updateVisualizerConfigOptimistic, handleMultiClientAction]
+  // )
 
-  const applyGradientVirtuals = useCallback(async () => {
-    if (selectedGradient !== null && gradientVirtuals.length > 0) {
-      await Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global',
-        gradient: gradients[selectedGradient],
-        virtuals: gradientVirtuals
-      })
-      getVirtuals()
-    }
-  }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
+  // const applyGradientVirtuals = useCallback(async () => {
+  //   if (selectedGradient !== null && gradientVirtuals.length > 0) {
+  //     await Ledfx('/api/effects', 'PUT', {
+  //       action: 'apply_global',
+  //       gradient: gradients[selectedGradient],
+  //       virtuals: gradientVirtuals
+  //     })
+  //     getVirtuals()
+  //   }
+  // }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
 
-  const applyImageVirtuals = useCallback(async () => {
-    if (albumArtUrl && imageVirtuals.length > 0) {
-      await Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global_effect',
-        type: 'imagespin',
-        config: {
-          image_source: albumArtUrl,
-          min_size: 1
-        },
-        virtuals: imageVirtuals
-      })
-      getVirtuals()
-    }
-  }, [albumArtUrl, imageVirtuals, getVirtuals])
+  // const applyImageVirtuals = useCallback(async () => {
+  //   if (albumArtUrl && imageVirtuals.length > 0) {
+  //     await Ledfx('/api/effects', 'PUT', {
+  //       action: 'apply_global_effect',
+  //       type: 'imagespin',
+  //       config: {
+  //         image_source: albumArtUrl,
+  //         min_size: 1
+  //       },
+  //       virtuals: imageVirtuals
+  //     })
+  //     getVirtuals()
+  //   }
+  // }, [albumArtUrl, imageVirtuals, getVirtuals])
 
-  const applyBoth = useCallback(
-    async (once: boolean = false) => {
-      await Promise.all([applyGradientVirtuals(), applyImageVirtuals()])
+  // const applyBoth = useCallback(
+  //   async (once: boolean = false) => {
+  //     await Promise.all([applyGradientVirtuals(), applyImageVirtuals()])
 
-      // Also apply to visualizers
-      if (selectedGradient !== null && gradientVisualisers.length > 0) {
-        // Sort: most colorful first, grayish after, whitest second-last, blackest last
-        const sortedSpecial = [...colors].sort((a, b) => {
-          const cA = colorfulness(a)
-          const cB = colorfulness(b)
-          const sA = rgbSum(a)
-          const sB = rgbSum(b)
+  //     // Also apply to visualizers
+  //     if (selectedGradient !== null && gradientVisualisers.length > 0) {
+  //       // Sort: most colorful first, grayish after, whitest second-last, blackest last
+  //       const sortedSpecial = [...colors].sort((a, b) => {
+  //         const cA = colorfulness(a)
+  //         const cB = colorfulness(b)
+  //         const sA = rgbSum(a)
+  //         const sB = rgbSum(b)
 
-          // Case 1: Both colorful (high chroma) -> sort by chroma descending
-          if (cA > 30 && cB > 30) return cB - cA
-          // Case 2: One colorful, one gray -> colorful first
-          if (cA > 30) return -1
-          if (cB > 30) return 1
-          // Case 3: Both gray -> sort by brightness (whitest first)
-          return sB - sA
-        })
+  //         // Case 1: Both colorful (high chroma) -> sort by chroma descending
+  //         if (cA > 30 && cB > 30) return cB - cA
+  //         // Case 2: One colorful, one gray -> colorful first
+  //         if (cA > 30) return -1
+  //         if (cB > 30) return 1
+  //         // Case 3: Both gray -> sort by brightness (whitest first)
+  //         return sB - sA
+  //       })
 
-        applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: sortedSpecial[0] || '#0000ff',
-          // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
-          gradient2: sortedSpecial[1] || '#00ffff',
-          primaryColor: sortedSpecial[0] || '#00ffff',
-          secondaryColor: sortedSpecial[1] || '#0000ff',
-          tertiaryColor: sortedSpecial[2] || '#00ff00',
-          low_band: sortedSpecial[0] || '#00ffff',
-          bassColor: sortedSpecial[0] || '#00ffff',
-          mid_band: sortedSpecial[1] || '#0000ff',
-          midColor: sortedSpecial[1] || '#0000ff',
-          high_band: sortedSpecial[2] || '#ff00ff',
-          highColor: sortedSpecial[2] || '#ff00ff',
-          sunColor:
-            [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
-              (a, b) => colorfulness(b) - colorfulness(a)
-            )[0] || '#ffff00',
-          backgroundColor: '#000000',
-          // backgroundColor:
-          //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
-          peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
-        })
-      }
-      if (albumArtUrl && imageVisualisers.length > 0) {
-        applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-          image_source: albumArtUrl
-        })
-      }
+  //       applyVisualiserConfig(gradientVisualisers, 'active', {
+  //         gradient: sortedSpecial[0] || '#0000ff',
+  //         // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
+  //         gradient2: sortedSpecial[1] || '#00ffff',
+  //         primaryColor: sortedSpecial[0] || '#00ffff',
+  //         secondaryColor: sortedSpecial[1] || '#0000ff',
+  //         tertiaryColor: sortedSpecial[2] || '#00ff00',
+  //         low_band: sortedSpecial[0] || '#00ffff',
+  //         bassColor: sortedSpecial[0] || '#00ffff',
+  //         mid_band: sortedSpecial[1] || '#0000ff',
+  //         midColor: sortedSpecial[1] || '#0000ff',
+  //         high_band: sortedSpecial[2] || '#ff00ff',
+  //         highColor: sortedSpecial[2] || '#ff00ff',
+  //         sunColor:
+  //           [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
+  //             (a, b) => colorfulness(b) - colorfulness(a)
+  //           )[0] || '#ffff00',
+  //         backgroundColor: '#000000',
+  //         // backgroundColor:
+  //         //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
+  //         peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
+  //       })
+  //     }
+  //     if (albumArtUrl && imageVisualisers.length > 0) {
+  //       applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+  //         image_source: albumArtUrl
+  //       })
+  //     }
 
-      if (once) {
-        if (generalDetector) {
-          setGradientAutoApplyGlobal(false)
-          setImageAutoApplyGlobal(false)
-        } else {
-          setGradientAutoApplyLocal(false)
-          setImageAutoApplyLocal(false)
-        }
-      } else {
-        if (generalDetector) {
-          setGradientAutoApplyGlobal(true)
-          setImageAutoApplyGlobal(true)
-        } else {
-          setGradientAutoApplyLocal(true)
-          setImageAutoApplyLocal(true)
-        }
-      }
-    },
-    [
-      applyGradientVirtuals,
-      applyImageVirtuals,
-      selectedGradient,
-      gradientVisualisers,
-      albumArtUrl,
-      imageVisualisers,
-      colors,
-      applyVisualiserConfig,
-      generalDetector,
-      setGradientAutoApplyGlobal,
-      setImageAutoApplyGlobal
-    ]
-  )
+  //     if (once) {
+  //       if (generalDetector) {
+  //         setGradientAutoApplyGlobal(false)
+  //         setImageAutoApplyGlobal(false)
+  //       } else {
+  //         setGradientAutoApplyLocal(false)
+  //         setImageAutoApplyLocal(false)
+  //       }
+  //     } else {
+  //       if (generalDetector) {
+  //         setGradientAutoApplyGlobal(true)
+  //         setImageAutoApplyGlobal(true)
+  //       } else {
+  //         setGradientAutoApplyLocal(true)
+  //         setImageAutoApplyLocal(true)
+  //       }
+  //     }
+  //   },
+  //   [
+  //     applyGradientVirtuals,
+  //     applyImageVirtuals,
+  //     selectedGradient,
+  //     // gradientVisualisers,
+  //     albumArtUrl,
+  //     // imageVisualisers,
+  //     colors,
+  //     // applyVisualiserConfig,
+  //     generalDetector,
+  //     setGradientAutoApplyGlobal,
+  //     setImageAutoApplyGlobal
+  //   ]
+  // )
 
   // Extract colors from album art
+
   useEffect(() => {
     if (!albumArtUrl) return
 
@@ -492,12 +493,12 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     const colorsKey = colors.join(',')
     const hasChanges =
       colorsKey !== prevColorsRef.current ||
-      isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
+      // isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
       isActiveGradientVirtuals !== prevIsActiveGradVirtRef.current ||
       selectedGradient !== prevSelectedGradientRef.current
 
     prevColorsRef.current = colorsKey
-    prevIsActiveGradVisRef.current = isActiveGradientVisualisers
+    // prevIsActiveGradVisRef.current = isActiveGradientVisualisers
     prevIsActiveGradVirtRef.current = isActiveGradientVirtuals
     prevSelectedGradientRef.current = selectedGradient
 
@@ -516,74 +517,74 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           virtuals: gradientVirtuals
         }).then(() => getVirtuals())
       }
-      if (
-        isActiveGradientVisualisers &&
-        selectedGradient !== null &&
-        gradientVisualisers.length > 0 &&
-        gradients[selectedGradient]
-      ) {
-        // Sort: most colorful first, grayish after, whitest second-last, blackest last
-        const sortedSpecial = [...colors].sort((a, b) => {
-          const cA = colorfulness(a)
-          const cB = colorfulness(b)
-          const sA = rgbSum(a)
-          const sB = rgbSum(b)
+      // if (
+      //   isActiveGradientVisualisers &&
+      //   selectedGradient !== null &&
+      //   gradientVisualisers.length > 0 &&
+      //   gradients[selectedGradient]
+      // ) {
+      //   // Sort: most colorful first, grayish after, whitest second-last, blackest last
+      //   const sortedSpecial = [...colors].sort((a, b) => {
+      //     const cA = colorfulness(a)
+      //     const cB = colorfulness(b)
+      //     const sA = rgbSum(a)
+      //     const sB = rgbSum(b)
 
-          // Case 1: Both colorful (high chroma) -> sort by chroma descending
-          if (cA > 30 && cB > 30) return cB - cA
-          // Case 2: One colorful, one gray -> colorful first
-          if (cA > 30) return -1
-          if (cB > 30) return 1
-          // Case 3: Both gray -> sort by brightness (whitest first)
-          return sB - sA
-        })
+      //     // Case 1: Both colorful (high chroma) -> sort by chroma descending
+      //     if (cA > 30 && cB > 30) return cB - cA
+      //     // Case 2: One colorful, one gray -> colorful first
+      //     if (cA > 30) return -1
+      //     if (cB > 30) return 1
+      //     // Case 3: Both gray -> sort by brightness (whitest first)
+      //     return sB - sA
+      //   })
 
-        applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: sortedSpecial[0] || '#0000ff',
-          // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
-          gradient2: sortedSpecial[1] || '#00ffff',
-          primaryColor: sortedSpecial[0] || '#00ffff',
-          secondaryColor: sortedSpecial[1] || '#0000ff',
-          tertiaryColor: sortedSpecial[2] || '#00ff00',
-          low_band: sortedSpecial[0] || '#00ffff',
-          bassColor: sortedSpecial[0] || '#00ffff',
-          mid_band: sortedSpecial[1] || '#0000ff',
-          midColor: sortedSpecial[1] || '#0000ff',
-          high_band: sortedSpecial[2] || '#ff00ff',
-          highColor: sortedSpecial[2] || '#ff00ff',
-          sunColor:
-            [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
-              (a, b) => colorfulness(b) - colorfulness(a)
-            )[0] || '#ffff00',
-          backgroundColor: '#000000',
-          // backgroundColor:
-          //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
-          peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
-        })
-      }
+      //   applyVisualiserConfig(gradientVisualisers, 'active', {
+      //     gradient: sortedSpecial[0] || '#0000ff',
+      //     // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
+      //     gradient2: sortedSpecial[1] || '#00ffff',
+      //     primaryColor: sortedSpecial[0] || '#00ffff',
+      //     secondaryColor: sortedSpecial[1] || '#0000ff',
+      //     tertiaryColor: sortedSpecial[2] || '#00ff00',
+      //     low_band: sortedSpecial[0] || '#00ffff',
+      //     bassColor: sortedSpecial[0] || '#00ffff',
+      //     mid_band: sortedSpecial[1] || '#0000ff',
+      //     midColor: sortedSpecial[1] || '#0000ff',
+      //     high_band: sortedSpecial[2] || '#ff00ff',
+      //     highColor: sortedSpecial[2] || '#ff00ff',
+      //     sunColor:
+      //       [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
+      //         (a, b) => colorfulness(b) - colorfulness(a)
+      //       )[0] || '#ffff00',
+      //     backgroundColor: '#000000',
+      //     // backgroundColor:
+      //     //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
+      //     peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
+      //   })
+      // }
     }, 200)
 
     return () => clearTimeout(timer)
   }, [
     colors,
     isActiveGradientVirtuals,
-    isActiveGradientVisualisers,
+    // isActiveGradientVisualisers,
     selectedGradient,
     gradientVirtuals,
-    gradientVisualisers,
+    // gradientVisualisers,
     gradients,
-    getVirtuals,
-    applyVisualiserConfig
+    getVirtuals
+    // applyVisualiserConfig
   ])
 
   // Auto-reapply image when song changes (if currently active)
   useEffect(() => {
     const hasChanges =
       albumArtUrl !== prevAlbumArtRef.current ||
-      isActiveImageVisualisers !== prevIsActiveImgVisRef.current ||
+      // isActiveImageVisualisers !== prevIsActiveImgVisRef.current ||
       isActiveImageVirtuals !== prevIsActiveImgVirtRef.current
     prevAlbumArtRef.current = albumArtUrl
-    prevIsActiveImgVisRef.current = isActiveImageVisualisers
+    // prevIsActiveImgVisRef.current = isActiveImageVisualisers
     prevIsActiveImgVirtRef.current = isActiveImageVirtuals
 
     if (!hasChanges) return
@@ -599,19 +600,19 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
         virtuals: imageVirtuals
       }).then(() => getVirtuals())
     }
-    if (isActiveImageVisualisers && imageVisualisers.length > 0) {
-      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-        image_source: albumArtUrl
-      })
-    }
+    // if (isActiveImageVisualisers && imageVisualisers.length > 0) {
+    //   applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+    //     image_source: albumArtUrl
+    //   })
+    // }
   }, [
     albumArtUrl,
     isActiveImageVirtuals,
-    isActiveImageVisualisers,
+    // isActiveImageVisualisers,
     imageVirtuals,
-    imageVisualisers,
-    getVirtuals,
-    applyVisualiserConfig
+    // imageVisualisers,
+    getVirtuals
+    // applyVisualiserConfig
   ])
 
   const handleGradientVirtualChange = (event: any) => {
@@ -631,57 +632,57 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   }
 
   // Filter out stale names not in current clients
-  const filteredGradientVisualisers = gradientVisualisers.filter((name) => nameToId[name])
-  const filteredImageVisualisers = imageVisualisers.filter((name) => nameToId[name])
+  // const filteredGradientVisualisers = gradientVisualisers.filter((name) => nameToId[name])
+  // const filteredImageVisualisers = imageVisualisers.filter((name) => nameToId[name])
 
   // Auto-cleanup state if stale names are present
-  useEffect(() => {
-    if (generalDetector) {
-      if (filteredGradientVisualisers.length !== gradientVisualisers.length) {
-        setGradientVisualisersGlobal(filteredGradientVisualisers)
-      }
-      if (filteredImageVisualisers.length !== imageVisualisers.length) {
-        setImageVisualisersGlobal(filteredImageVisualisers)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clients, gradientVisualisers, imageVisualisers])
+  // useEffect(() => {
+  //   if (generalDetector) {
+  //     if (filteredGradientVisualisers.length !== gradientVisualisers.length) {
+  //       setGradientVisualisersGlobal(filteredGradientVisualisers)
+  //     }
+  //     if (filteredImageVisualisers.length !== imageVisualisers.length) {
+  //       setImageVisualisersGlobal(filteredImageVisualisers)
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [clients, gradientVisualisers, imageVisualisers])
 
-  const handleGradientVisualiserChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    if (generalDetector) {
-      setGradientVisualisersGlobal(selected)
-    } else {
-      setGradientVisualisersLocal(selected)
-    }
-  }
+  // const handleGradientVisualiserChange = (event: any) => {
+  //   const value = event.target.value
+  //   const selected = typeof value === 'string' ? value.split(',') : value
+  //   if (generalDetector) {
+  //     setGradientVisualisersGlobal(selected)
+  //   } else {
+  //     setGradientVisualisersLocal(selected)
+  //   }
+  // }
 
-  const handleImageVisualiserChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    if (generalDetector) {
-      setImageVisualisersGlobal(selected)
-    } else {
-      setImageVisualisersLocal(selected)
-    }
-  }
+  // const handleImageVisualiserChange = (event: any) => {
+  //   const value = event.target.value
+  //   const selected = typeof value === 'string' ? value.split(',') : value
+  //   if (generalDetector) {
+  //     setImageVisualisersGlobal(selected)
+  //   } else {
+  //     setImageVisualisersLocal(selected)
+  //   }
+  // }
 
-  const toggleAutoApplyGradientVisualisers = () => {
-    if (generalDetector) {
-      setIsActiveGradientVisualisersGlobal(!isActiveGradientVisualisersGlobal)
-    } else {
-      setIsActiveGradientVisualisersLocal(!isActiveGradientVisualisersLocal)
-    }
-  }
+  // const toggleAutoApplyGradientVisualisers = () => {
+  //   if (generalDetector) {
+  //     setIsActiveGradientVisualisersGlobal(!isActiveGradientVisualisersGlobal)
+  //   } else {
+  //     setIsActiveGradientVisualisersLocal(!isActiveGradientVisualisersLocal)
+  //   }
+  // }
 
-  const toggleAutoApplyImageVisualisers = () => {
-    if (generalDetector) {
-      setIsActiveImageVisualisersGlobal(!isActiveImageVisualisersGlobal)
-    } else {
-      setIsActiveImageVisualisersLocal(!isActiveImageVisualisersLocal)
-    }
-  }
+  // const toggleAutoApplyImageVisualisers = () => {
+  //   if (generalDetector) {
+  //     setIsActiveImageVisualisersGlobal(!isActiveImageVisualisersGlobal)
+  //   } else {
+  //     setIsActiveImageVisualisersLocal(!isActiveImageVisualisersLocal)
+  //   }
+  // }
 
   const toggleAutoApplyGradientVirtuals = () => {
     if (generalDetector) {
@@ -784,7 +785,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
         />
       </CardStack>
 
-      <CardStack>
+      {/* <CardStack>
         <AutoApplySelector
           label="Gradient Visualisers"
           options={clients ? Object.entries(clients) : []}
@@ -813,7 +814,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
       <Button fullWidth variant="outlined" onClick={() => applyBoth(true)}>
         Test Once
-      </Button>
+      </Button> */}
     </Stack>
   )
 }

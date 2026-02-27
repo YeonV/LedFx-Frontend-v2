@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
-import { getVStore, useVStore, type VState } from '../../hooks/vStore'
+import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
 import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 
@@ -72,7 +72,7 @@ const VisualiserWsControl = () => {
             const { visualizerId, config } = d.payload || {}
             let targetId = visualizerId
             if (!targetId || targetId === 'active') {
-              targetId = getVStore().getState().visualType
+              targetId = visualType
             }
             if (targetId && config) {
               const api = (window as any).visualiserApi
