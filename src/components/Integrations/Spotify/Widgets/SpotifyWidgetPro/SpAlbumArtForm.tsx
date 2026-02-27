@@ -1,9 +1,5 @@
 import { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react'
-import {
-  Box,
-  Stack,
-  Button
-} from '@mui/material'
+import { Box, Stack, Button } from '@mui/material'
 import useStore from '../../../../../store/useStore'
 import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import { Ledfx } from '../../../../../api/ledfx'
@@ -189,33 +185,36 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
           const isPolymorphic = visualizerId === 'active'
           const filteredUpdate = isPolymorphic
-            ? Object.keys(update).reduce((acc, key) => {
-                const api = (window as any).visualiserApi
-                const registry = api?.getVisualizerRegistry?.() || {}
-                const hasProp =
-                  schema?.properties?.[key] !== undefined ||
-                  registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                  key === 'gradient' ||
-                  key === 'gradient2' ||
-                  key === 'image_source' ||
-                  key === 'primaryColor' ||
-                  key === 'secondaryColor' ||
-                  key === 'tertiaryColor' ||
-                  key === 'low_band' ||
-                  key === 'bassColor' ||
-                  key === 'mid_band' ||
-                  key === 'midColor' ||
-                  key === 'high_band' ||
-                  key === 'highColor' ||
-                  key === 'sunColor' ||
-                  key === 'backgroundColor' ||
-                  key === 'peakColor'
+            ? Object.keys(update).reduce(
+                (acc, key) => {
+                  const api = (window as any).visualiserApi
+                  const registry = api?.getVisualizerRegistry?.() || {}
+                  const hasProp =
+                    schema?.properties?.[key] !== undefined ||
+                    registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                    key === 'gradient' ||
+                    key === 'gradient2' ||
+                    key === 'image_source' ||
+                    key === 'primaryColor' ||
+                    key === 'secondaryColor' ||
+                    key === 'tertiaryColor' ||
+                    key === 'low_band' ||
+                    key === 'bassColor' ||
+                    key === 'mid_band' ||
+                    key === 'midColor' ||
+                    key === 'high_band' ||
+                    key === 'highColor' ||
+                    key === 'sunColor' ||
+                    key === 'backgroundColor' ||
+                    key === 'peakColor'
 
-                if (hasProp) {
-                  acc[key] = update[key]
-                }
-                return acc
-              }, {} as Record<string, any>)
+                  if (hasProp) {
+                    acc[key] = update[key]
+                  }
+                  return acc
+                },
+                {} as Record<string, any>
+              )
             : update
 
           if (Object.keys(filteredUpdate).length > 0) {
