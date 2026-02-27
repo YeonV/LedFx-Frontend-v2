@@ -47,6 +47,8 @@ const useSongDetectorAutoApply = () => {
   const isActiveGradientVisualisers = useStore((state) => state.isActiveGradientVisualisers)
   const imageVisualisers = useStore((state) => state.imageVisualisers || [])
   const isActiveImageVisualisers = useStore((state) => state.isActiveImageVisualisers)
+  const textVisualisers = useStore((state) => state.textVisualisers || [])
+  const isActiveTextVisualisers = useStore((state) => state.isActiveVisualisers)
 
   const { send } = useWebSocket()
 
@@ -57,6 +59,7 @@ const useSongDetectorAutoApply = () => {
   const prevAlbumArtRef = useRef<string>('')
   const prevIsActiveGradVisRef = useRef(false)
   const prevIsActiveGradVirtRef = useRef(false)
+  const prevSelectedGradientRef = useRef<number | null>(null)
   const prevIsActiveImgVisRef = useRef(false)
   const prevIsActiveImgVirtRef = useRef(false)
   const prevIsActiveTextVirtRef = useRef(false)
@@ -316,9 +319,6 @@ const useSongDetectorAutoApply = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extractedColors, selectedGradient])
 
-  const textVisualisers = useStore((state) => state.textVisualisers || [])
-  const isActiveTextVisualisers = useStore((state) => state.isActiveVisualisers)
-
   // AUTO-APPLY TEXT: When track changes or toggle activates
   useEffect(() => {
     const hasChanges =
@@ -358,7 +358,6 @@ const useSongDetectorAutoApply = () => {
     }, 200)
 
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentTrack,
     textAutoApply,
@@ -371,16 +370,19 @@ const useSongDetectorAutoApply = () => {
     getVirtuals
   ])
 
-  // AUTO-APPLY GRADIENT: When gradients change (new song) or toggles change
+  // AUTO-APPLY GRADIENT: When gradients change (new song) or toggles change or selection change
   useEffect(() => {
     const gradientsKey = gradients.join(',')
     const hasChanges =
       gradientsKey !== prevGradientsRef.current ||
       isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
-      gradientAutoApply !== prevIsActiveGradVirtRef.current
+      gradientAutoApply !== prevIsActiveGradVirtRef.current ||
+      selectedGradient !== prevSelectedGradientRef.current
+
     prevGradientsRef.current = gradientsKey
     prevIsActiveGradVisRef.current = isActiveGradientVisualisers
     prevIsActiveGradVirtRef.current = gradientAutoApply
+    prevSelectedGradientRef.current = selectedGradient
 
     if (
       !hasChanges ||
@@ -390,55 +392,58 @@ const useSongDetectorAutoApply = () => {
     )
       return
 
-    if (gradientAutoApply && gradientVirtuals.length > 0) {
-      Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global',
-        gradient: gradients[selectedGradient],
-        virtuals: gradientVirtuals
-      }).then(() => getVirtuals())
-    }
+    const timer = setTimeout(() => {
+      if (gradientAutoApply && gradientVirtuals.length > 0) {
+        Ledfx('/api/effects', 'PUT', {
+          action: 'apply_global',
+          gradient: gradients[selectedGradient],
+          virtuals: gradientVirtuals
+        }).then(() => getVirtuals())
+      }
 
-    if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
-      // Sort: most colorful first, grayish after, whitest second-last, blackest last
-      const sortedSpecial = [...extractedColors].sort((a, b) => {
-        const cA = colorfulness(a)
-        const cB = colorfulness(b)
-        const sA = rgbSum(a)
-        const sB = rgbSum(b)
+      if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
+        // Sort: most colorful first, grayish after, whitest second-last, blackest last
+        const sortedSpecial = [...extractedColors].sort((a, b) => {
+          const cA = colorfulness(a)
+          const cB = colorfulness(b)
+          const sA = rgbSum(a)
+          const sB = rgbSum(b)
 
-        // Case 1: Both colorful (high chroma) -> sort by chroma descending
-        if (cA > 30 && cB > 30) return cB - cA
-        // Case 2: One colorful, one gray -> colorful first
-        if (cA > 30) return -1
-        if (cB > 30) return 1
-        // Case 3: Both gray -> sort by brightness (whitest first)
-        return sB - sA
-      })
+          // Case 1: Both colorful (high chroma) -> sort by chroma descending
+          if (cA > 30 && cB > 30) return cB - cA
+          // Case 2: One colorful, one gray -> colorful first
+          if (cA > 30) return -1
+          if (cB > 30) return 1
+          // Case 3: Both gray -> sort by brightness (whitest first)
+          return sB - sA
+        })
 
-      applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: sortedSpecial[0] || '#0000ff',
-        // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
-        gradient2: sortedSpecial[1] || '#00ffff',
-        primaryColor: sortedSpecial[0] || '#00ffff',
-        secondaryColor: sortedSpecial[1] || '#0000ff',
-        tertiaryColor: sortedSpecial[2] || '#00ff00',
-        low_band: sortedSpecial[0] || '#00ffff',
-        bassColor: sortedSpecial[0] || '#00ffff',
-        mid_band: sortedSpecial[1] || '#0000ff',
-        midColor: sortedSpecial[1] || '#0000ff',
-        high_band: sortedSpecial[2] || '#ff00ff',
-        highColor: sortedSpecial[2] || '#ff00ff',
-        sunColor:
-          [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
-            (a, b) => colorfulness(b) - colorfulness(a)
-          )[0] || '#ffff00',
-        backgroundColor: '#000000',
-        // backgroundColor:
-        //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
-        peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        applyVisualiserConfig(gradientVisualisers, 'active', {
+          gradient: sortedSpecial[0] || '#0000ff',
+          // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
+          gradient2: sortedSpecial[1] || '#00ffff',
+          primaryColor: sortedSpecial[0] || '#00ffff',
+          secondaryColor: sortedSpecial[1] || '#0000ff',
+          tertiaryColor: sortedSpecial[2] || '#00ff00',
+          low_band: sortedSpecial[0] || '#00ffff',
+          bassColor: sortedSpecial[0] || '#00ffff',
+          mid_band: sortedSpecial[1] || '#0000ff',
+          midColor: sortedSpecial[1] || '#0000ff',
+          high_band: sortedSpecial[2] || '#ff00ff',
+          highColor: sortedSpecial[2] || '#ff00ff',
+          sunColor:
+            [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
+              (a, b) => colorfulness(b) - colorfulness(a)
+            )[0] || '#ffff00',
+          backgroundColor: '#000000',
+          // backgroundColor:
+          //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
+          peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
+        })
+      }
+    }, 200)
+
+    return () => clearTimeout(timer)
   }, [
     gradients,
     gradientAutoApply,
@@ -447,13 +452,9 @@ const useSongDetectorAutoApply = () => {
     isActiveGradientVisualisers,
     gradientVisualisers,
     applyVisualiserConfig,
-    extractedColors
+    extractedColors,
+    getVirtuals
   ])
-
-  const prevIsActiveGradVisRef = useRef(false)
-  const prevIsActiveGradVirtRef = useRef(false)
-  const prevIsActiveImgVisRef = useRef(false)
-  const prevIsActiveImgVirtRef = useRef(false)
 
   // AUTO-APPLY IMAGE: When album art changes (new song) or toggles change
   useEffect(() => {

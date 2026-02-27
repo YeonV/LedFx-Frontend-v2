@@ -2,12 +2,6 @@ import { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'r
 import {
   Box,
   Stack,
-  Select,
-  MenuItem,
-  Checkbox,
-  ListItemText,
-  OutlinedInput,
-  Chip,
   Button
 } from '@mui/material'
 import useStore from '../../../../../store/useStore'
@@ -86,8 +80,14 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const [albumArtUrl, setAlbumArtUrl] = useState<string>('')
   const [gradients, setGradients] = useState<string[]>([])
   const [selectedGradient, setSelectedGradient] = useState<number | null>(null)
+
   const prevColorsRef = useRef<string>('')
   const prevAlbumArtRef = useRef<string>('')
+  const prevIsActiveGradVisRef = useRef(false)
+  const prevIsActiveGradVirtRef = useRef(false)
+  const prevSelectedGradientRef = useRef<number | null>(null)
+  const prevIsActiveImgVisRef = useRef(false)
+  const prevIsActiveImgVirtRef = useRef(false)
 
   // Get album art URL
   useEffect(() => {
@@ -340,8 +340,6 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       applyGradientVirtuals,
       applyImageVirtuals,
       selectedGradient,
-      gradients,
-      albumArtUrl,
       gradientVisualisers,
       imageVisualisers,
       applyVisualiserConfig,
@@ -489,81 +487,83 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
   }, [colors]) // Only run when colors change to update generatedGradients
 
-  const prevIsActiveGradVisRef = useRef(false)
-  const prevIsActiveGradVirtRef = useRef(false)
-  const prevIsActiveImgVisRef = useRef(false)
-  const prevIsActiveImgVirtRef = useRef(false)
-
   // AUTO-APPLY GRADIENT: Trigger on color change, toggle change, selection change
   useEffect(() => {
     const colorsKey = colors.join(',')
     const hasChanges =
       colorsKey !== prevColorsRef.current ||
       isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
-      isActiveGradientVirtuals !== prevIsActiveGradVirtRef.current
+      isActiveGradientVirtuals !== prevIsActiveGradVirtRef.current ||
+      selectedGradient !== prevSelectedGradientRef.current
+
     prevColorsRef.current = colorsKey
     prevIsActiveGradVisRef.current = isActiveGradientVisualisers
     prevIsActiveGradVirtRef.current = isActiveGradientVirtuals
+    prevSelectedGradientRef.current = selectedGradient
 
     if (!hasChanges) return
 
-    if (
-      isActiveGradientVirtuals &&
-      selectedGradient !== null &&
-      gradientVirtuals.length > 0 &&
-      gradients[selectedGradient]
-    ) {
-      Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global',
-        gradient: gradients[selectedGradient],
-        virtuals: gradientVirtuals
-      }).then(() => getVirtuals())
-    }
-    if (
-      isActiveGradientVisualisers &&
-      selectedGradient !== null &&
-      gradientVisualisers.length > 0 &&
-      gradients[selectedGradient]
-    ) {
-      // Sort: most colorful first, grayish after, whitest second-last, blackest last
-      const sortedSpecial = [...colors].sort((a, b) => {
-        const cA = colorfulness(a)
-        const cB = colorfulness(b)
-        const sA = rgbSum(a)
-        const sB = rgbSum(b)
+    const timer = setTimeout(() => {
+      if (
+        isActiveGradientVirtuals &&
+        selectedGradient !== null &&
+        gradientVirtuals.length > 0 &&
+        gradients[selectedGradient]
+      ) {
+        Ledfx('/api/effects', 'PUT', {
+          action: 'apply_global',
+          gradient: gradients[selectedGradient],
+          virtuals: gradientVirtuals
+        }).then(() => getVirtuals())
+      }
+      if (
+        isActiveGradientVisualisers &&
+        selectedGradient !== null &&
+        gradientVisualisers.length > 0 &&
+        gradients[selectedGradient]
+      ) {
+        // Sort: most colorful first, grayish after, whitest second-last, blackest last
+        const sortedSpecial = [...colors].sort((a, b) => {
+          const cA = colorfulness(a)
+          const cB = colorfulness(b)
+          const sA = rgbSum(a)
+          const sB = rgbSum(b)
 
-        // Case 1: Both colorful (high chroma) -> sort by chroma descending
-        if (cA > 30 && cB > 30) return cB - cA
-        // Case 2: One colorful, one gray -> colorful first
-        if (cA > 30) return -1
-        if (cB > 30) return 1
-        // Case 3: Both gray -> sort by brightness (whitest first)
-        return sB - sA
-      })
+          // Case 1: Both colorful (high chroma) -> sort by chroma descending
+          if (cA > 30 && cB > 30) return cB - cA
+          // Case 2: One colorful, one gray -> colorful first
+          if (cA > 30) return -1
+          if (cB > 30) return 1
+          // Case 3: Both gray -> sort by brightness (whitest first)
+          return sB - sA
+        })
 
-      applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: sortedSpecial[0] || '#0000ff',
-        // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
-        gradient2: sortedSpecial[1] || '#00ffff',
-        primaryColor: sortedSpecial[0] || '#00ffff',
-        secondaryColor: sortedSpecial[1] || '#0000ff',
-        tertiaryColor: sortedSpecial[2] || '#00ff00',
-        low_band: sortedSpecial[0] || '#00ffff',
-        bassColor: sortedSpecial[0] || '#00ffff',
-        mid_band: sortedSpecial[1] || '#0000ff',
-        midColor: sortedSpecial[1] || '#0000ff',
-        high_band: sortedSpecial[2] || '#ff00ff',
-        highColor: sortedSpecial[2] || '#ff00ff',
-        sunColor:
-          [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
-            (a, b) => colorfulness(b) - colorfulness(a)
-          )[0] || '#ffff00',
-        backgroundColor: '#000000',
-        // backgroundColor:
-        //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
-        peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
-      })
-    }
+        applyVisualiserConfig(gradientVisualisers, 'active', {
+          gradient: sortedSpecial[0] || '#0000ff',
+          // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
+          gradient2: sortedSpecial[1] || '#00ffff',
+          primaryColor: sortedSpecial[0] || '#00ffff',
+          secondaryColor: sortedSpecial[1] || '#0000ff',
+          tertiaryColor: sortedSpecial[2] || '#00ff00',
+          low_band: sortedSpecial[0] || '#00ffff',
+          bassColor: sortedSpecial[0] || '#00ffff',
+          mid_band: sortedSpecial[1] || '#0000ff',
+          midColor: sortedSpecial[1] || '#0000ff',
+          high_band: sortedSpecial[2] || '#ff00ff',
+          highColor: sortedSpecial[2] || '#ff00ff',
+          sunColor:
+            [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
+              (a, b) => colorfulness(b) - colorfulness(a)
+            )[0] || '#ffff00',
+          backgroundColor: '#000000',
+          // backgroundColor:
+          //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
+          peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
+        })
+      }
+    }, 200)
+
+    return () => clearTimeout(timer)
   }, [
     colors,
     isActiveGradientVirtuals,
@@ -778,7 +778,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
           options={Object.keys(virtuals)}
           value={imageVirtuals}
           onChange={handleImageVirtualChange}
-          isActive={isActiveImageVisuals}
+          isActive={isActiveImageVirtuals}
           onToggle={toggleAutoApplyImageVirtuals}
           disabled={imageVirtuals.length === 0}
         />

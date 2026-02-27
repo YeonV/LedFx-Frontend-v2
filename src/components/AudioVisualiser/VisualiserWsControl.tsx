@@ -85,31 +85,34 @@ const VisualiserWsControl = () => {
 
               if (isPolymorphic) {
                 // Filter config to only include supported properties
-                const supportedConfig = Object.keys(config).reduce((acc, key) => {
-                  const hasProp =
-                    schema?.properties?.[key] !== undefined ||
-                    registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                    key === 'gradient' ||
-                    key === 'gradient2' ||
-                    key === 'image_source' ||
-                    key === 'primaryColor' ||
-                    key === 'secondaryColor' ||
-                    key === 'tertiaryColor' ||
-                    key === 'low_band' ||
-                    key === 'bassColor' ||
-                    key === 'mid_band' ||
-                    key === 'midColor' ||
-                    key === 'high_band' ||
-                    key === 'highColor' ||
-                    key === 'sunColor' ||
-                    key === 'backgroundColor' ||
-                    key === 'peakColor'
+                const supportedConfig = Object.keys(config).reduce(
+                  (acc, key) => {
+                    const hasProp =
+                      schema?.properties?.[key] !== undefined ||
+                      registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                      key === 'gradient' ||
+                      key === 'gradient2' ||
+                      key === 'image_source' ||
+                      key === 'primaryColor' ||
+                      key === 'secondaryColor' ||
+                      key === 'tertiaryColor' ||
+                      key === 'low_band' ||
+                      key === 'bassColor' ||
+                      key === 'mid_band' ||
+                      key === 'midColor' ||
+                      key === 'high_band' ||
+                      key === 'highColor' ||
+                      key === 'sunColor' ||
+                      key === 'backgroundColor' ||
+                      key === 'peakColor'
 
-                  if (hasProp) {
-                    acc[key] = config[key]
-                  }
-                  return acc
-                }, {} as Record<string, any>)
+                    if (hasProp) {
+                      acc[key] = config[key]
+                    }
+                    return acc
+                  },
+                  {} as Record<string, any>
+                )
 
                 if (Object.keys(supportedConfig).length > 0) {
                   if (targetId === 'butterchurn') {

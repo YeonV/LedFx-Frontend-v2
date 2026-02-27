@@ -74,10 +74,18 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const textVisualisers = generalDetector ? visualisersGlobal : visualisersLocal
 
   // Dedicated isActive and toggle for visualisers (from store)
-  const isActiveVisualisers = useStore((state) => state.isActiveVisualisers)
-  const setIsActiveVisualisers = useStore((state) => state.setIsActiveVisualisers)
+  const isActiveVisualisersGlobal = useStore((state) => state.isActiveVisualisers)
+  const setIsActiveVisualisersGlobal = useStore((state) => state.setIsActiveVisualisers)
+  const [isActiveVisualisersLocal, setIsActiveVisualisersLocal] = useState(false)
+
+  const isActiveVisualisers = generalDetector ? isActiveVisualisersGlobal : isActiveVisualisersLocal
+
   const toggleAutoApplyVisualisers = () => {
-    setIsActiveVisualisers(!isActiveVisualisers)
+    if (generalDetector) {
+      setIsActiveVisualisersGlobal(!isActiveVisualisersGlobal)
+    } else {
+      setIsActiveVisualisersLocal(!isActiveVisualisersLocal)
+    }
   }
 
   // Determine which state to use based on generalDetector prop
@@ -142,7 +150,14 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
         )
       }
     },
-    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, broadcastToClients, isConnected, send]
+    [
+      clientIdentity,
+      nameToId,
+      updateVisualizerConfigOptimistic,
+      broadcastToClients,
+      isConnected,
+      send
+    ]
   )
 
   const prevTrackRef = useRef<string>('')
@@ -187,7 +202,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }, 200)
 
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentTrack,
     sendSpotifyTrack,
