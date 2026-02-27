@@ -340,12 +340,13 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       applyImageVirtuals,
       selectedGradient,
       gradientVisualisers,
+      albumArtUrl,
       imageVisualisers,
+      colors,
       applyVisualiserConfig,
       generalDetector,
       setGradientAutoApplyGlobal,
-      setImageAutoApplyGlobal,
-      colors
+      setImageAutoApplyGlobal
     ]
   )
 
@@ -484,7 +485,7 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     if (selectedGradient === null && generatedGradients.length > 0) {
       setSelectedGradient(0)
     }
-  }, [colors]) // Only run when colors change to update generatedGradients
+  }, [colors, selectedGradient]) // Only run when colors change to update generatedGradients
 
   // AUTO-APPLY GRADIENT: Trigger on color change, toggle change, selection change
   useEffect(() => {

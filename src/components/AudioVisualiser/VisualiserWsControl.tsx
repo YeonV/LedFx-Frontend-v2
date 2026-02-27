@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useDebounce } from 'use-debounce'
-import { useVStore, type VState } from '../../hooks/vStore'
+import { getVStore, useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
 import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 

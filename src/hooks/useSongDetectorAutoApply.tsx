@@ -473,7 +473,7 @@ const useSongDetectorAutoApply = () => {
         action: 'apply_global_effect',
         type: 'imagespin',
         config: {
-          image_source: albumArtUrl || 'current_album_art.jpg',
+          image_source: 'current_album_art.jpg',
           ...imageConfig
         },
         virtuals: imageVirtuals

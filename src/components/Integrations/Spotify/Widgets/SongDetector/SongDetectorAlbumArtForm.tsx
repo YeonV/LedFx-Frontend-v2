@@ -69,6 +69,8 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   const imageConfig = imageConfigGlobal
   const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
 
+  // const visualType = useVStore((state) => state.visualType)
+
   // Compute album art URL using backend API endpoint
   const albumArtUrl = thumbnailPath
     ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
@@ -104,6 +106,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
       const name = clientIdentity?.name || 'unknown-client'
       const selectedIds = selectedVisualisers.map((name) => nameToId[name]).filter(Boolean)
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
+      // console.log('YZ', visualType)
 
       if (isCurrentClient) {
         const vStore = getVStore()
@@ -191,19 +194,19 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   )
 
   const applyImage = useCallback(async () => {
-    if (albumArtUrl && imageVirtuals.length > 0 && thumbnailPath) {
+    if (imageVirtuals.length > 0) {
       await Ledfx('/api/effects', 'PUT', {
         action: 'apply_global_effect',
         type: 'imagespin',
         config: {
-          image_source: albumArtUrl || 'current_album_art.jpg',
+          image_source: 'current_album_art.jpg',
           ...imageConfig
         },
         virtuals: imageVirtuals
       })
       getVirtuals()
     }
-  }, [albumArtUrl, imageVirtuals, thumbnailPath, imageConfig, getVirtuals])
+  }, [imageVirtuals, imageConfig, getVirtuals])
 
   const toggleGradientAutoApply = useCallback(() => {
     setGradientAutoApply(!gradientAutoApply)
@@ -222,7 +225,8 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
 
   // AUTO-APPLY GRADIENT: Trigger on color change, toggle change, selection change
   useEffect(() => {
-    const colorsKey = gradients[selectedGradient] || ''
+    const colorsKey =
+      selectedGradient !== null && gradients[selectedGradient] ? gradients[selectedGradient] : ''
     const hasChanges =
       colorsKey !== prevColorsRef.current ||
       isActiveGradientVisualisers !== prevIsActiveGradVisRef.current ||
