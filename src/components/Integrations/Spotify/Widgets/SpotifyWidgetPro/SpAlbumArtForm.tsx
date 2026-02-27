@@ -15,6 +15,7 @@ import { SpotifyStateContext, SpStateContext } from '../../SpotifyProvider'
 import { Ledfx } from '../../../../../api/ledfx'
 import { getVStore } from '../../../../../hooks/vStore'
 import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
+import { colorfulness, rgbSum } from '../../../../../utils/helpers'
 import AutoApplySelector from './AutoApplySelector'
 import CardStack from '../SongDetector/CardStack'
 
@@ -191,9 +192,19 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
                   schema?.properties?.[key] !== undefined ||
                   registry[targetId]?.defaultConfig?.[key] !== undefined ||
                   key === 'gradient' ||
+                  key === 'gradient2' ||
                   key === 'image_source' ||
+                  key === 'primaryColor' ||
+                  key === 'secondaryColor' ||
+                  key === 'tertiaryColor' ||
+                  key === 'quaternaryColor' ||
                   key === 'primary_color' ||
-                  key === 'secondary_color'
+                  key === 'secondary_color' ||
+                  key === 'bg_color' ||
+                  key === 'low_band' ||
+                  key === 'mid_band' ||
+                  key === 'high_band' ||
+                  key === 'sunColor'
 
                 if (hasProp) {
                   acc[key] = update[key]
@@ -257,10 +268,42 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
       // Also apply to visualizers
       if (selectedGradient !== null && gradientVisualisers.length > 0) {
+        // Sort: most colorful first, grayish after, whitest second-last, blackest last
+        const sorted = [...colors].sort((a, b) => {
+          const cA = colorfulness(a)
+          const cB = colorfulness(b)
+          const sA = rgbSum(a)
+          const sB = rgbSum(b)
+
+          // Case 1: Both colorful (high chroma) -> sort by chroma descending
+          if (cA > 30 && cB > 30) return cB - cA
+          // Case 2: One colorful, one gray -> colorful first
+          if (cA > 30) return -1
+          if (cB > 30) return 1
+          // Case 3: Both gray -> sort by brightness (whitest first)
+          return sB - sA
+        })
+
+        // Final adjustment: ensure pure black is LAST and pure white is SECOND TO LAST in the pool
+        const pool = sorted.filter((c) => rgbSum(c) > 30 && rgbSum(c) < 730)
+        const white = sorted.find((c) => rgbSum(c) >= 730) || '#ffffff'
+        const black = sorted.find((c) => rgbSum(c) <= 30) || '#000000'
+        const finalPool = [...pool, white, black]
+
         applyVisualiserConfig(gradientVisualisers, 'active', {
           gradient: gradients[selectedGradient],
-          primary_color: colors[0] || '#ff0000',
-          secondary_color: colors[1] || '#0000ff'
+          gradient2: gradients[(selectedGradient + 1) % gradients.length],
+          primaryColor: finalPool[0],
+          secondaryColor: finalPool[1] || finalPool[0],
+          tertiaryColor: finalPool[2] || finalPool[0],
+          quaternaryColor: finalPool[3] || finalPool[0],
+          low_band: finalPool[0],
+          mid_band: finalPool[1] || finalPool[0],
+          high_band: finalPool[2] || finalPool[0],
+          sunColor: finalPool[0],
+          bg_color: finalPool[finalPool.length - 1], // Blackest
+          primary_color: finalPool[0],
+          secondary_color: finalPool[1] || finalPool[0]
         })
       }
       if (albumArtUrl && imageVisualisers.length > 0) {
@@ -475,10 +518,42 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       gradientVisualisers.length > 0 &&
       gradients[selectedGradient]
     ) {
+      // Sort: most colorful first, grayish after, whitest second-last, blackest last
+      const sorted = [...colors].sort((a, b) => {
+        const cA = colorfulness(a)
+        const cB = colorfulness(b)
+        const sA = rgbSum(a)
+        const sB = rgbSum(b)
+
+        // Case 1: Both colorful (high chroma) -> sort by chroma descending
+        if (cA > 30 && cB > 30) return cB - cA
+        // Case 2: One colorful, one gray -> colorful first
+        if (cA > 30) return -1
+        if (cB > 30) return 1
+        // Case 3: Both gray -> sort by brightness (whitest first)
+        return sB - sA
+      })
+
+      // Final adjustment: ensure pure black is LAST and pure white is SECOND TO LAST in the pool
+      const pool = sorted.filter((c) => rgbSum(c) > 30 && rgbSum(c) < 730)
+      const white = sorted.find((c) => rgbSum(c) >= 730) || '#ffffff'
+      const black = sorted.find((c) => rgbSum(c) <= 30) || '#000000'
+      const finalPool = [...pool, white, black]
+
       applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: generatedGradients[selectedGradient],
-          primary_color: colors[0] || '#ff0000',
-          secondary_color: colors[1] || '#0000ff'
+        gradient: gradients[selectedGradient],
+        gradient2: gradients[(selectedGradient + 1) % gradients.length],
+        primaryColor: finalPool[0],
+        secondaryColor: finalPool[1] || finalPool[0],
+        tertiaryColor: finalPool[2] || finalPool[0],
+        quaternaryColor: finalPool[3] || finalPool[0],
+        low_band: finalPool[0],
+        mid_band: finalPool[1] || finalPool[0],
+        high_band: finalPool[2] || finalPool[0],
+        sunColor: finalPool[0],
+        bg_color: finalPool[finalPool.length - 1], // Blackest
+        primary_color: finalPool[0],
+        secondary_color: finalPool[1] || finalPool[0]
       })
     }
   }, [

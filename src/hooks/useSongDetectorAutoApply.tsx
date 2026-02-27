@@ -3,6 +3,7 @@ import useStore from '../store/useStore'
 import { Ledfx } from '../api/ledfx'
 import { getVStore } from './vStore'
 import { useWebSocket } from '../utils/Websocket/WebSocketProvider'
+import { colorfulness, rgbSum } from '../utils/helpers'
 
 /**
  * Global auto-apply hook for song detector
@@ -72,20 +73,24 @@ const useSongDetectorAutoApply = () => {
     )
   }
 
-  const nameToId = clients
-    ? Object.entries(clients).reduce(
-        (acc, [id, data]) => {
-          if (data && data.name) acc[data.name] = id
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    : {}
+  // Memoize nameToId to avoid changing dependencies on every render
+  const nameToId = useCallback(() => {
+    return clients
+      ? Object.entries(clients).reduce(
+          (acc, [id, data]) => {
+            if (data && data.name) acc[data.name] = id
+            return acc
+          },
+          {} as Record<string, string>
+        )
+      : {}
+  }, [clients])
 
   const applyVisualiserConfig = useCallback(
     (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
       const name = clientIdentity?.name || 'unknown-client'
-      const selectedIds = selectedVisualisers.map((n) => nameToId[n]).filter(Boolean)
+      const nameToIdMap = nameToId()
+      const selectedIds = selectedVisualisers.map((n) => nameToIdMap[n]).filter(Boolean)
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
 
       if (isCurrentClient) {
@@ -99,20 +104,33 @@ const useSongDetectorAutoApply = () => {
 
           const isPolymorphic = visualizerId === 'active'
           const filteredUpdate = isPolymorphic
-            ? Object.keys(update).reduce((acc, key) => {
-                const hasProp =
-                  schema?.properties?.[key] !== undefined ||
-                  registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                  key === 'gradient' || // Special Case: always try gradient if requested
-                  key === 'image_source' || // Special Case: always try image if requested
-                  key === 'primary_color' ||
-                  key === 'secondary_color'
+            ? Object.keys(update).reduce(
+                (acc, key) => {
+                  const hasProp =
+                    schema?.properties?.[key] !== undefined ||
+                    registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                    key === 'gradient' ||
+                    key === 'gradient2' ||
+                    key === 'image_source' ||
+                    key === 'primaryColor' ||
+                    key === 'secondaryColor' ||
+                    key === 'tertiaryColor' ||
+                    key === 'quaternaryColor' ||
+                    key === 'primary_color' ||
+                    key === 'secondary_color' ||
+                    key === 'bg_color' ||
+                    key === 'low_band' ||
+                    key === 'mid_band' ||
+                    key === 'high_band' ||
+                    key === 'sunColor'
 
-                if (hasProp) {
-                  acc[key] = update[key]
-                }
-                return acc
-              }, {} as Record<string, any>)
+                  if (hasProp) {
+                    acc[key] = update[key]
+                  }
+                  return acc
+                },
+                {} as Record<string, any>
+              )
             : update
 
           if (Object.keys(filteredUpdate).length > 0) {
@@ -139,7 +157,7 @@ const useSongDetectorAutoApply = () => {
             payload: {
               category: 'visualiser',
               action: 'set_visual_config',
-              visualizerId: visualizerId,
+              visualizerId,
               config: update
             }
           },
@@ -320,7 +338,12 @@ const useSongDetectorAutoApply = () => {
     prevIsActiveGradVisRef.current = isActiveGradientVisualisers
     prevIsActiveGradVirtRef.current = gradientAutoApply
 
-    if (!hasChanges || gradientsKey === '' || selectedGradient === null || !gradients[selectedGradient])
+    if (
+      !hasChanges ||
+      gradientsKey === '' ||
+      selectedGradient === null ||
+      !gradients[selectedGradient]
+    )
       return
 
     if (gradientAutoApply && gradientVirtuals.length > 0) {
@@ -332,10 +355,42 @@ const useSongDetectorAutoApply = () => {
     }
 
     if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
+      // Sort: most colorful first, grayish after, whitest second-last, blackest last
+      const sorted = [...extractedColors].sort((a, b) => {
+        const cA = colorfulness(a)
+        const cB = colorfulness(b)
+        const sA = rgbSum(a)
+        const sB = rgbSum(b)
+
+        // Case 1: Both colorful (high chroma) -> sort by chroma descending
+        if (cA > 30 && cB > 30) return cB - cA
+        // Case 2: One colorful, one gray -> colorful first
+        if (cA > 30) return -1
+        if (cB > 30) return 1
+        // Case 3: Both gray -> sort by brightness (whitest first)
+        return sB - sA
+      })
+
+      // Final adjustment: ensure pure black is LAST and pure white is SECOND TO LAST in the pool
+      const pool = sorted.filter((c) => rgbSum(c) > 30 && rgbSum(c) < 730)
+      const white = sorted.find((c) => rgbSum(c) >= 730) || '#ffffff'
+      const black = sorted.find((c) => rgbSum(c) <= 30) || '#000000'
+      const finalPool = [...pool, white, black]
+
       applyVisualiserConfig(gradientVisualisers, 'active', {
         gradient: gradients[selectedGradient],
-        primary_color: extractedColors[0] || '#ff0000',
-        secondary_color: extractedColors[1] || '#0000ff'
+        gradient2: gradients[(selectedGradient + 1) % gradients.length],
+        primaryColor: finalPool[0],
+        secondaryColor: finalPool[1] || finalPool[0],
+        tertiaryColor: finalPool[2] || finalPool[0],
+        quaternaryColor: finalPool[3] || finalPool[0],
+        low_band: finalPool[0],
+        mid_band: finalPool[1] || finalPool[0],
+        high_band: finalPool[2] || finalPool[0],
+        sunColor: finalPool[0],
+        bg_color: finalPool[finalPool.length - 1], // Blackest
+        primary_color: finalPool[0],
+        secondary_color: finalPool[1] || finalPool[0]
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

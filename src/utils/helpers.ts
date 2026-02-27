@@ -222,3 +222,21 @@ export function deepEqual(obj1: any, obj2: any) {
 
   return true;
 }
+
+// Helper to get sum of RGB from hex color
+export const rgbSum = (hex: string) => {
+  const rgb = hex.replace('#', '')
+  const r = parseInt(rgb.substring(0, 2), 16)
+  const g = parseInt(rgb.substring(2, 4), 16)
+  const b = parseInt(rgb.substring(4, 6), 16)
+  return r + g + b
+}
+// Helper to get colorfulness (distance from gray)
+export const colorfulness = (hex: string) => {
+  const rgb = hex.replace('#', '')
+  const r = parseInt(rgb.substring(0, 2), 16)
+  const g = parseInt(rgb.substring(2, 4), 16)
+  const b = parseInt(rgb.substring(4, 6), 16)
+  // Colorfulness: max difference between channels
+  return Math.max(Math.abs(r - g), Math.abs(r - b), Math.abs(g - b))
+}
