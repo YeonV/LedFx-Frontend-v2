@@ -95,14 +95,15 @@ const VisualiserWsControl = () => {
                     key === 'primaryColor' ||
                     key === 'secondaryColor' ||
                     key === 'tertiaryColor' ||
-                    key === 'quaternaryColor' ||
-                    key === 'primary_color' ||
-                    key === 'secondary_color' ||
-                    key === 'bg_color' ||
                     key === 'low_band' ||
+                    key === 'bassColor' ||
                     key === 'mid_band' ||
+                    key === 'midColor' ||
                     key === 'high_band' ||
-                    key === 'sunColor'
+                    key === 'highColor' ||
+                    key === 'sunColor' ||
+                    key === 'backgroundColor' ||
+                    key === 'peakColor'
 
                   if (hasProp) {
                     acc[key] = config[key]

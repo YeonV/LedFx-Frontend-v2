@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useRef, useMemo } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -74,17 +74,6 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
     ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
     : ''
 
-  const applyGradient = useCallback(async () => {
-    if (selectedGradient !== null && gradientVirtuals.length > 0) {
-      await Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global',
-        gradient: gradients[selectedGradient],
-        virtuals: gradientVirtuals
-      })
-      getVirtuals()
-    }
-  }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
-
   const nameToId = useMemo(
     () =>
       clients
@@ -98,6 +87,17 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
         : {},
     [clients]
   )
+
+  const applyGradient = useCallback(async () => {
+    if (selectedGradient !== null && gradientVirtuals.length > 0) {
+      await Ledfx('/api/effects', 'PUT', {
+        action: 'apply_global',
+        gradient: gradients[selectedGradient],
+        virtuals: gradientVirtuals
+      })
+      getVirtuals()
+    }
+  }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
 
   const applyVisualiserConfig = useCallback(
     (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
@@ -117,6 +117,8 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
           const isPolymorphic = visualizerId === 'active'
           const filteredUpdate = isPolymorphic
             ? Object.keys(update).reduce((acc, key) => {
+                const api = (window as any).visualiserApi
+                const registry = api?.getVisualizerRegistry?.() || {}
                 const hasProp =
                   schema?.properties?.[key] !== undefined ||
                   registry[targetId]?.defaultConfig?.[key] !== undefined ||
@@ -126,14 +128,15 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                   key === 'primaryColor' ||
                   key === 'secondaryColor' ||
                   key === 'tertiaryColor' ||
-                  key === 'quaternaryColor' ||
-                  key === 'primary_color' ||
-                  key === 'secondary_color' ||
-                  key === 'bg_color' ||
                   key === 'low_band' ||
+                  key === 'bassColor' ||
                   key === 'mid_band' ||
+                  key === 'midColor' ||
                   key === 'high_band' ||
-                  key === 'sunColor'
+                  key === 'highColor' ||
+                  key === 'sunColor' ||
+                  key === 'backgroundColor' ||
+                  key === 'peakColor'
 
                 if (hasProp) {
                   acc[key] = update[key]
@@ -190,7 +193,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
         action: 'apply_global_effect',
         type: 'imagespin',
         config: {
-          image_source: 'current_album_art.jpg',
+          image_source: albumArtUrl || 'current_album_art.jpg',
           ...imageConfig
         },
         virtuals: imageVirtuals
@@ -232,7 +235,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
     }
     if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
       // Sort: most colorful first, grayish after, whitest second-last, blackest last
-      const sorted = [...extractedColors].sort((a, b) => {
+      const sortedSpecial = [...extractedColors].sort((a, b) => {
         const cA = colorfulness(a)
         const cB = colorfulness(b)
         const sA = rgbSum(a)
@@ -247,26 +250,27 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
         return sB - sA
       })
 
-      // Final adjustment: ensure pure black is LAST and pure white is SECOND TO LAST in the pool
-      const pool = sorted.filter((c) => rgbSum(c) > 30 && rgbSum(c) < 730)
-      const white = sorted.find((c) => rgbSum(c) >= 730) || '#ffffff'
-      const black = sorted.find((c) => rgbSum(c) <= 30) || '#000000'
-      const finalPool = [...pool, white, black]
-
       applyVisualiserConfig(gradientVisualisers, 'active', {
-        gradient: gradients[selectedGradient],
-        gradient2: gradients[(selectedGradient + 1) % gradients.length],
-        primaryColor: finalPool[0],
-        secondaryColor: finalPool[1] || finalPool[0],
-        tertiaryColor: finalPool[2] || finalPool[0],
-        quaternaryColor: finalPool[3] || finalPool[0],
-        low_band: finalPool[0],
-        mid_band: finalPool[1] || finalPool[0],
-        high_band: finalPool[2] || finalPool[0],
-        sunColor: finalPool[0],
-        bg_color: finalPool[finalPool.length - 1], // Blackest
-        primary_color: finalPool[0],
-        secondary_color: finalPool[1] || finalPool[0]
+        gradient: sortedSpecial[0] || '#0000ff',
+        // gradient: selectedGradient !== null ? gradients[selectedGradient] : sortedSpecial[1] || '',
+        gradient2: sortedSpecial[1] || '#00ffff',
+        primaryColor: sortedSpecial[0] || '#00ffff',
+        secondaryColor: sortedSpecial[1] || '#0000ff',
+        tertiaryColor: sortedSpecial[2] || '#00ff00',
+        low_band: sortedSpecial[0] || '#00ffff',
+        bassColor: sortedSpecial[0] || '#00ffff',
+        mid_band: sortedSpecial[1] || '#0000ff',
+        midColor: sortedSpecial[1] || '#0000ff',
+        high_band: sortedSpecial[2] || '#ff00ff',
+        highColor: sortedSpecial[2] || '#ff00ff',
+        sunColor:
+          [sortedSpecial[sortedSpecial.length - 2], sortedSpecial[3]].sort(
+            (a, b) => colorfulness(b) - colorfulness(a)
+          )[0] || '#ffff00',
+        backgroundColor: '#000000',
+        // backgroundColor:
+        //   sortedSpecial.length > 0 ? sortedSpecial[sortedSpecial.length - 1] : '#000000',
+        peakColor: sortedSpecial.length > 1 ? sortedSpecial[sortedSpecial.length - 2] : '#ffffff'
       })
     }
   }, [
@@ -276,7 +280,8 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
     gradientVisualisers,
     gradients,
     applyGradient,
-    applyVisualiserConfig
+    applyVisualiserConfig,
+    extractedColors
   ])
 
   // Auto-reapply image when song changes (if currently active)
