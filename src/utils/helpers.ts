@@ -240,3 +240,36 @@ export const colorfulness = (hex: string) => {
   // Colorfulness: max difference between channels
   return Math.max(Math.abs(r - g), Math.abs(r - b), Math.abs(g - b))
 }
+
+/**
+ * Normalizes a visualizer ID by handling common mismatches between backend and frontend.
+ * Also performs case-insensitive matching against the provided registry.
+ */
+export const normalizeVisualizerId = (id: string, registry: Record<string, any> = {}): string => {
+  if (!id) return id
+
+  // 1. Direct Mappings (Backend -> Frontend)
+  const mappings: Record<string, string> = {
+    bands_matrix: 'bandsmatrix',
+    digitalrain2d: 'digitalrain',
+    texter2d: 'texter',
+    plasmawled: 'plasmawled2d',
+    flame2d: 'flame',
+    soap2d: 'soap',
+    waterfall2d: 'waterfall'
+  }
+
+  let normalized = mappings[id.toLowerCase()] || id
+
+  // 2. Case-insensitive lookup in registry
+  const registryKeys = Object.keys(registry)
+  if (registryKeys.length > 0) {
+    const exactMatch = registryKeys.find((k) => k === normalized)
+    if (exactMatch) return exactMatch
+
+    const caseInsensitiveMatch = registryKeys.find((k) => k.toLowerCase() === normalized.toLowerCase())
+    if (caseInsensitiveMatch) return caseInsensitiveMatch
+  }
+
+  return normalized
+}

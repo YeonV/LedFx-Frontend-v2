@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import useStore from '../store/useStore'
 import { useVStore } from './vStore'
-import { colorfulness, rgbSum } from '../utils/helpers'
+import { colorfulness, rgbSum, normalizeVisualizerId } from '../utils/helpers'
 import { useWebSocket } from '../utils/Websocket/WebSocketProvider'
 
 // --- Visualisers Hook ---
@@ -56,10 +56,11 @@ export const useSongDetectorVisualisersAutoApply = () => {
       const selectedIds = selectedVisualisers.map((n) => nameToIdMap[n]).filter(Boolean)
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
       if (isCurrentClient) {
-        const targetId = visualizerId === 'active' ? visualType : visualizerId
-        if (targetId) {
+        const rawTargetId = visualizerId === 'active' ? visualType : visualizerId
+        if (rawTargetId) {
           const api = (window as any).visualiserApi
           const registry = api?.getVisualizerRegistry?.() || {}
+          const targetId = normalizeVisualizerId(rawTargetId, registry)
           const schema = registry[targetId]?.getUISchema?.()
           const isPolymorphic = visualizerId === 'active'
           const filteredUpdate = isPolymorphic
@@ -68,21 +69,33 @@ export const useSongDetectorVisualisersAutoApply = () => {
                   const hasProp =
                     schema?.properties?.[key] !== undefined ||
                     registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                    key === 'gradient' ||
-                    key === 'gradient2' ||
-                    key === 'image_source' ||
-                    key === 'primaryColor' ||
-                    key === 'secondaryColor' ||
-                    key === 'tertiaryColor' ||
-                    key === 'low_band' ||
-                    key === 'bassColor' ||
-                    key === 'mid_band' ||
-                    key === 'midColor' ||
-                    key === 'high_band' ||
-                    key === 'highColor' ||
-                    key === 'sunColor' ||
-                    key === 'backgroundColor' ||
-                    key === 'peakColor'
+                    [
+                      'gradient',
+                      'gradient2',
+                      'image_source',
+                      'primaryColor',
+                      'secondaryColor',
+                      'tertiaryColor',
+                      'low_band',
+                      'bassColor',
+                      'mid_band',
+                      'midColor',
+                      'high_band',
+                      'highColor',
+                      'sunColor',
+                      'backgroundColor',
+                      'peakColor',
+                      'text',
+                      'text2',
+                      'font',
+                      'font2',
+                      'speed',
+                      'speed_option_1',
+                      'height_percent',
+                      'width_percent',
+                      'offset_y',
+                      'offset_y2'
+                    ].includes(key)
                   if (hasProp) {
                     acc[key] = update[key]
                   }

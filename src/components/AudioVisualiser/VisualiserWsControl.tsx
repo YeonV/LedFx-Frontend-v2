@@ -4,6 +4,7 @@ import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
 import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 import { useSongDetectorVisualisersAutoApply } from '../../hooks/useSongDetectorVisualisersAutoApply'
+import { normalizeVisualizerId } from '../../utils/helpers'
 
 const VisualiserWsControl = () => {
   const clientIdentity = useStore((state) => state.clientIdentity)
@@ -61,25 +62,40 @@ const VisualiserWsControl = () => {
   useSubscription('client_broadcast', (d) => {
     // console.log('MAN', d, clientIdentity)
     if (d.sender_uuid !== clientIdentity?.clientId && d.payload?.category === 'visualiser') {
-      // console.log(clientIdentity?.clientId, d)
-      if (d.target_uuids?.includes(clientIdentity?.clientId)) {
+      // Correctly handle target modes: 'all' and 'type' should be processed by everyone
+      // 'uuids' and 'names' should be filtered based on the local client
+      const isTargetedToMe =
+        d.target?.mode === 'all' ||
+        (d.target?.mode === 'type' && d.target?.value === clientIdentity?.type) ||
+        (d.target?.mode === 'uuids' && d.target?.uuids?.includes(clientIdentity?.clientId)) ||
+        (d.target?.mode === 'names' && d.target?.names?.includes(clientIdentity?.name)) ||
+        d.target_uuids?.includes(clientIdentity?.clientId) // Legacy support
+
+      if (isTargetedToMe) {
         // console.log('BOOOOM', d)
         switch (d.payload?.action) {
           case 'set_visual_type': {
             // Overwrite visual type
-            if (d.payload?.visualizerId) setVisualType?.(d.payload.visualizerId)
+            if (d.payload?.visualizerId) {
+              const api = (window as any).visualiserApi
+              const registry = api?.getVisualizerRegistry?.() || {}
+              const normalizedId = normalizeVisualizerId(d.payload.visualizerId, registry)
+              setVisualType?.(normalizedId)
+            }
             break
           }
           case 'set_visual_config': {
             // Overwrite config for the given visualizerId
             const { visualizerId, config } = d.payload || {}
-            let targetId = visualizerId
-            if (!targetId || targetId === 'active') {
-              targetId = visualType
+            let rawTargetId = visualizerId
+            if (!rawTargetId || rawTargetId === 'active') {
+              rawTargetId = visualType
             }
-            if (targetId && config) {
+
+            if (rawTargetId && config) {
               const api = (window as any).visualiserApi
               const registry = api?.getVisualizerRegistry?.() || {}
+              const targetId = normalizeVisualizerId(rawTargetId, registry)
               const schema = registry[targetId]?.getUISchema?.()
 
               // Only apply if the target effect supports the properties in the config
@@ -93,21 +109,33 @@ const VisualiserWsControl = () => {
                     const hasProp =
                       schema?.properties?.[key] !== undefined ||
                       registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                      key === 'gradient' ||
-                      key === 'gradient2' ||
-                      key === 'image_source' ||
-                      key === 'primaryColor' ||
-                      key === 'secondaryColor' ||
-                      key === 'tertiaryColor' ||
-                      key === 'low_band' ||
-                      key === 'bassColor' ||
-                      key === 'mid_band' ||
-                      key === 'midColor' ||
-                      key === 'high_band' ||
-                      key === 'highColor' ||
-                      key === 'sunColor' ||
-                      key === 'backgroundColor' ||
-                      key === 'peakColor'
+                      [
+                        'gradient',
+                        'gradient2',
+                        'image_source',
+                        'primaryColor',
+                        'secondaryColor',
+                        'tertiaryColor',
+                        'low_band',
+                        'bassColor',
+                        'mid_band',
+                        'midColor',
+                        'high_band',
+                        'highColor',
+                        'sunColor',
+                        'backgroundColor',
+                        'peakColor',
+                        'text',
+                        'text2',
+                        'font',
+                        'font2',
+                        'speed',
+                        'speed_option_1',
+                        'height_percent',
+                        'width_percent',
+                        'offset_y',
+                        'offset_y2'
+                      ].includes(key)
 
                     if (hasProp) {
                       acc[key] = config[key]
