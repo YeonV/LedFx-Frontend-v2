@@ -72,7 +72,7 @@ const VisualiserWsControl = () => {
             const { visualizerId, config } = d.payload || {}
             let targetId = visualizerId
             if (!targetId || targetId === 'active') {
-              targetId = visualType
+              targetId = getVStore().getState().visualType
             }
             if (targetId && config) {
               const api = (window as any).visualiserApi
@@ -89,10 +89,20 @@ const VisualiserWsControl = () => {
                   const hasProp =
                     schema?.properties?.[key] !== undefined ||
                     registry[targetId]?.defaultConfig?.[key] !== undefined ||
-                    key === 'gradient' || // Special Case: always try gradient if requested
-                    key === 'image_source' || // Special Case: always try image if requested
+                    key === 'gradient' ||
+                    key === 'gradient2' ||
+                    key === 'image_source' ||
+                    key === 'primaryColor' ||
+                    key === 'secondaryColor' ||
+                    key === 'tertiaryColor' ||
+                    key === 'quaternaryColor' ||
                     key === 'primary_color' ||
-                    key === 'secondary_color'
+                    key === 'secondary_color' ||
+                    key === 'bg_color' ||
+                    key === 'low_band' ||
+                    key === 'mid_band' ||
+                    key === 'high_band' ||
+                    key === 'sunColor'
 
                   if (hasProp) {
                     acc[key] = config[key]

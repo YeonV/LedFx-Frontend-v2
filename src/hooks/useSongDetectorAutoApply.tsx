@@ -55,6 +55,15 @@ const useSongDetectorAutoApply = () => {
   const prevColorTrackRef = useRef<string>('')
   const prevGradientsRef = useRef<string>('')
   const prevAlbumArtRef = useRef<string>('')
+  const prevIsActiveGradVisRef = useRef(false)
+  const prevIsActiveGradVirtRef = useRef(false)
+  const prevIsActiveImgVisRef = useRef(false)
+  const prevIsActiveImgVirtRef = useRef(false)
+
+  const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
+  const albumArtUrl = thumbnailPath
+    ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
+    : ''
 
   // Helper: Calculate color distance (Euclidean distance in RGB space)
   const colorDistance = (hex1: string, hex2: string): number => {
@@ -426,7 +435,7 @@ const useSongDetectorAutoApply = () => {
         action: 'apply_global_effect',
         type: 'imagespin',
         config: {
-          image_source: 'current_album_art.jpg',
+          image_source: albumArtUrl || 'current_album_art.jpg',
           ...imageConfig
         },
         virtuals: imageVirtuals
@@ -435,7 +444,7 @@ const useSongDetectorAutoApply = () => {
 
     if (isActiveImageVisualisers && imageVisualisers.length > 0) {
       applyVisualiserConfig(imageVisualisers, 'bladeImage', {
-        image_source: 'current_album_art.jpg'
+        image_source: albumArtUrl
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

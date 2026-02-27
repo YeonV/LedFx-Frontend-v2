@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -85,15 +85,19 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
     }
   }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
 
-  const nameToId = clients
-    ? Object.entries(clients).reduce(
-        (acc, [id, data]) => {
-          if (data && data.name) acc[data.name] = id
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    : {}
+  const nameToId = useMemo(
+    () =>
+      clients
+        ? Object.entries(clients).reduce(
+            (acc, [id, data]) => {
+              if (data && data.name) acc[data.name] = id
+              return acc
+            },
+            {} as Record<string, string>
+          )
+        : {},
+    [clients]
+  )
 
   const applyVisualiserConfig = useCallback(
     (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useCallback, useRef } from 'react'
+import { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react'
 import {
   Box,
   Stack,
@@ -127,15 +127,19 @@ const SpAlbumArtForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     return filtered
   }
 
-  const nameToId = clients
-    ? Object.entries(clients).reduce(
-        (acc, [id, data]) => {
-          if (data && data.name) acc[data.name] = id
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    : {}
+  const nameToId = useMemo(
+    () =>
+      clients
+        ? Object.entries(clients).reduce(
+            (acc, [id, data]) => {
+              if (data && data.name) acc[data.name] = id
+              return acc
+            },
+            {} as Record<string, string>
+          )
+        : {},
+    [clients]
+  )
 
   const handleMultiClientAction = useCallback(
     (
