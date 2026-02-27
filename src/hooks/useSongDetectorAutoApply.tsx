@@ -59,6 +59,8 @@ const useSongDetectorAutoApply = () => {
   const prevIsActiveGradVirtRef = useRef(false)
   const prevIsActiveImgVisRef = useRef(false)
   const prevIsActiveImgVirtRef = useRef(false)
+  const prevIsActiveTextVirtRef = useRef(false)
+  const prevIsActiveTextVisRef = useRef(false)
 
   const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
   const albumArtUrl = thumbnailPath
@@ -314,16 +316,24 @@ const useSongDetectorAutoApply = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extractedColors, selectedGradient])
 
-  // AUTO-APPLY TEXT: When track changes
+  const textVisualisers = useStore((state) => state.textVisualisers || [])
+  const isActiveTextVisualisers = useStore((state) => state.isActiveVisualisers)
+
+  // AUTO-APPLY TEXT: When track changes or toggle activates
   useEffect(() => {
-    if (
-      textAutoApply &&
-      currentTrack &&
-      currentTrack !== '' &&
-      textVirtuals.length > 0 &&
-      currentTrack !== prevTextTrackRef.current
-    ) {
-      setTimeout(() => {
+    const hasChanges =
+      currentTrack !== prevTextTrackRef.current ||
+      textAutoApply !== prevIsActiveTextVirtRef.current ||
+      isActiveTextVisualisers !== prevIsActiveTextVisRef.current
+
+    prevTextTrackRef.current = currentTrack
+    prevIsActiveTextVirtRef.current = textAutoApply
+    prevIsActiveTextVisRef.current = isActiveTextVisualisers
+
+    if (!hasChanges || currentTrack === '') return
+
+    const timer = setTimeout(() => {
+      if (textAutoApply && textVirtuals.length > 0) {
         Ledfx('/api/effects', 'PUT', {
           action: 'apply_global_effect',
           type: 'texter2d',
@@ -331,11 +341,35 @@ const useSongDetectorAutoApply = () => {
           fallback: spotifyTexter.fallback,
           virtuals: textVirtuals
         }).then(() => getVirtuals())
-      }, 200)
-    }
-    prevTextTrackRef.current = currentTrack
+      }
+      if (isActiveTextVisualisers && textVisualisers.length > 0) {
+        applyVisualiserConfig(textVisualisers, 'bladeTexter', {
+          text: currentTrack.split(' - ')[0] || '',
+          text2: currentTrack.split(' - ')[1] || currentTrack.split(' - ')[0] || currentTrack,
+          height_percent: 10,
+          width_percent: 200,
+          speed_option_1: 0.1,
+          offset_y2: 0.2,
+          offset_y: -0.2,
+          font: 'Stop',
+          font2: 'technique'
+        })
+      }
+    }, 200)
+
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, textAutoApply, textVirtuals, spotifyTexter])
+  }, [
+    currentTrack,
+    textAutoApply,
+    textVirtuals,
+    spotifyTexter,
+    isActiveTextVisualisers,
+    textVisualisers,
+    applyVisualiserConfig,
+    clientIdentity,
+    getVirtuals
+  ])
 
   // AUTO-APPLY GRADIENT: When gradients change (new song) or toggles change
   useEffect(() => {

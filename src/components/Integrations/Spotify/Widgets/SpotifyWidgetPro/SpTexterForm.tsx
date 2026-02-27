@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -50,6 +50,10 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const updateVisualizerConfigOptimistic = useStore(
     (state) => state.updateVisualizerConfigOptimistic
   )
+  const broadcastToClients = useStore((state) => state.broadcastToClients)
+  const clientIdentity = useStore((state) => state.clientIdentity)
+  const { send, isConnected } = useWebSocket()
+
   // Use global state for song detector
   const textAutoApplyGlobal = useStore((state) => state.textAutoApply)
   const textVirtualsGlobal = useStore((state) => state.textVirtuals)
@@ -82,49 +86,107 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
 
   const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
 
-  useEffect(() => {
-    // Only apply if visualiser auto-apply is active
-    if (currentTrack !== '') {
-      setTimeout(() => {
-        if (isActive && textVirtuals.length > 0) {
-          Ledfx('/api/effects', 'PUT', {
-            action: 'apply_global_effect',
-            type: 'texter2d',
-            config: { ...spotifyTexter, text: currentTrack },
-            fallback: spotifyTexter.fallback,
-            virtuals: textVirtuals
-          }).then(() => getVirtuals())
-        }
-        if (isActiveVisualisers && textVisualisers.length > 0) {
-          // Map selected names to IDs for isCurrentClient
-          // For each selected visualiser, update config (main and subs)
-          textVisualisers.forEach((name) => {
-            const id = nameToId[name]
-            const isCurrent = clientIdentity?.clientId === id
-            applyTextVisualiser(
-              {
-                text: currentTrack.split(' - ')[0] || '', // Artist name in text2 if available
-                text2: currentTrack.split(' - ')[1] || currentTrack.split(' - ')[0] || currentTrack, // Try to extract song name only
-                height_percent: 10,
-                width_percent: 200,
-                speed_option_1: 0.1,
-                offset_y2: 0.2,
-                offset_y: -0.2,
-                font: 'Stop',
-                font2: 'technique'
-              },
-              true,
-              isCurrent,
-              'bladeTexter',
-              'bladeTexter',
-              {
-                configs: {}
-              }
-            )
+  // Build a name-to-id map for all current clients
+  const nameToId = useMemo(
+    () =>
+      clients
+        ? Object.entries(clients).reduce(
+            (acc, [id, data]) => {
+              if (data && data.name) acc[data.name] = id
+              return acc
+            },
+            {} as Record<string, string>
+          )
+        : {},
+    [clients]
+  )
+
+  const applyVisualiserConfig = useCallback(
+    (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
+      const name = clientIdentity?.name || 'unknown-client'
+      const selectedIds = selectedVisualisers.map((n) => nameToId[n]).filter(Boolean)
+      const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
+
+      if (isCurrentClient) {
+        const vStore = getVStore()
+        const vState = vStore?.getState()
+        const targetId = visualizerId === 'active' ? vState?.visualType : visualizerId
+        if (targetId) {
+          if (targetId === 'butterchurn') {
+            vState?.updateButterchurnConfig?.(update)
+          } else {
+            vState?.updateVisualizerConfig?.(targetId, update)
+          }
+          updateVisualizerConfigOptimistic(name, {
+            configs: {
+              [targetId]: update
+            }
           })
         }
-      }, 200)
-    }
+      }
+
+      const otherClients = selectedIds.filter((id) => id !== clientIdentity?.clientId)
+      if (otherClients.length && broadcastToClients && isConnected) {
+        broadcastToClients(
+          {
+            broadcast_type: 'custom',
+            target: { mode: 'uuids', uuids: otherClients },
+            payload: {
+              category: 'visualiser',
+              action: 'set_visual_config',
+              visualizerId,
+              config: update
+            }
+          },
+          send
+        )
+      }
+    },
+    [clientIdentity, nameToId, updateVisualizerConfigOptimistic, broadcastToClients, isConnected, send]
+  )
+
+  const prevTrackRef = useRef<string>('')
+  const prevIsActiveVirtRef = useRef<boolean>(false)
+  const prevIsActiveVisRef = useRef<boolean>(false)
+
+  useEffect(() => {
+    const hasChanges =
+      currentTrack !== prevTrackRef.current ||
+      isActive !== prevIsActiveVirtRef.current ||
+      isActiveVisualisers !== prevIsActiveVisRef.current
+
+    prevTrackRef.current = currentTrack
+    prevIsActiveVirtRef.current = isActive
+    prevIsActiveVisRef.current = isActiveVisualisers
+
+    if (!hasChanges || currentTrack === '') return
+
+    const timer = setTimeout(() => {
+      if (isActive && textVirtuals.length > 0) {
+        Ledfx('/api/effects', 'PUT', {
+          action: 'apply_global_effect',
+          type: 'texter2d',
+          config: { ...spotifyTexter, text: currentTrack },
+          fallback: spotifyTexter.fallback,
+          virtuals: textVirtuals
+        }).then(() => getVirtuals())
+      }
+      if (isActiveVisualisers && textVisualisers.length > 0) {
+        applyVisualiserConfig(textVisualisers, 'bladeTexter', {
+          text: currentTrack.split(' - ')[0] || '',
+          text2: currentTrack.split(' - ')[1] || currentTrack.split(' - ')[0] || currentTrack,
+          height_percent: 10,
+          width_percent: 200,
+          speed_option_1: 0.1,
+          offset_y2: 0.2,
+          offset_y: -0.2,
+          font: 'Stop',
+          font2: 'technique'
+        })
+      }
+    }, 200)
+
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentTrack,
@@ -132,7 +194,10 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     spotifyTexter,
     textVirtuals,
     isActiveVisualisers,
-    textVisualisers
+    textVisualisers,
+    isActive,
+    applyVisualiserConfig,
+    getVirtuals
   ])
 
   const handleTextVirtualChange = (event: any) => {
@@ -157,93 +222,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       getVirtuals()
     }
   }
-  // Apply effect to selected visualisers (clients) using multi-client aware logic
-
-  const broadcastToClients = useStore((state) => state.broadcastToClients)
-  const clientIdentity = useStore((state) => state.clientIdentity)
-  const { send, isConnected } = useWebSocket()
-
-  const handleMultiClientAction = (
-    localAction: (() => void) | null,
-    remoteAction: string,
-    extraPayload: Record<string, any> = {}
-  ) => {
-    if (!clientIdentity || !clientIdentity.clientId) return
-    // Map selected names to IDs for all usages
-    const selectedIds = textVisualisers.map((name: string) => nameToId[name]).filter(Boolean)
-    // Local for current instance
-    if (selectedIds.includes(clientIdentity.clientId) && localAction) {
-      localAction()
-    }
-    // Broadcast for others
-    const otherClients = selectedIds.filter((id: string) => id !== clientIdentity.clientId)
-
-    if (otherClients.length && broadcastToClients && isConnected) {
-      broadcastToClients(
-        {
-          broadcast_type: 'custom',
-          // target: { mode: 'all' },
-          target: { mode: 'uuids', uuids: otherClients },
-          payload: {
-            category: 'visualiser',
-            action: remoteAction,
-            ...extraPayload
-          }
-        },
-        send
-      )
-    }
-  }
-
-  // Apply effect to selected visualisers (clients)
-  // Apply effect to selected visualisers (clients)
-  const applyTextVisualiser = (
-    update: Record<string, any>,
-    single: boolean,
-    isCurrentClient: boolean,
-    visualType: string,
-    globalVisualType: string,
-    localState: any
-  ) => {
-    // Get the current name and id
-    const name = clientIdentity?.name || 'unknown-client'
-    // Main (current/global): use vstore for config update
-    if (single && isCurrentClient) {
-      const vStore = getVStore()
-      vStore?.getState()?.updateVisualizerConfig?.(visualType, update)
-      // Always update optimistic config for main instance as well
-      updateVisualizerConfigOptimistic(name, {
-        configs: {
-          ...localState?.configs,
-          [visualType]: {
-            ...localState?.configs?.[visualType],
-            ...update
-          }
-        }
-      })
-    } else if (single && typeof name === 'string') {
-      // Sub: only update optimistic config and broadcast
-      updateVisualizerConfigOptimistic(name, {
-        configs: {
-          ...localState?.configs,
-          [visualType]: {
-            ...localState?.configs?.[visualType],
-            ...update
-          }
-        }
-      })
-      handleMultiClientAction(null, 'set_visual_config', {
-        visualizerId: visualType,
-        config: {
-          ...localState?.configs?.[visualType],
-          ...update
-        }
-      })
-    }
-  }
-
-  // Config change handler for main/global instance (not used, handled in applyTextVisualiser)
-  // const handleConfigChange = (visualizerId: string, update: any) => {}
 
   const toggleAutoApply = () => {
     if (isActive) {
@@ -254,7 +232,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       }
     } else {
       applyText()
-      // applyTextVisualiser()
       if (generalDetector) {
         setTextAutoApply(true)
       } else {
@@ -263,22 +240,8 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     }
   }
 
-  // Build a name-to-id map for all current clients
-  const nameToId = clients
-    ? Object.entries(clients).reduce(
-        (acc, [id, data]) => {
-          if (data && data.name) acc[data.name] = id
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    : {}
-
-  // textVisualisers now stores names instead of IDs
-  // Filter out stale names not in current clients
   const filteredTextVisualisers = textVisualisers.filter((name: string) => nameToId[name])
 
-  // Auto-cleanup state if stale names are present
   useEffect(() => {
     if (filteredTextVisualisers.length !== textVisualisers.length) {
       setTextVisualisers(filteredTextVisualisers)
@@ -286,7 +249,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clients, textVisualisers])
 
-  // Handler: convert selected names to state
   const handleTextVisualiserChangeByName = (event: any) => {
     const value = event.target.value
     if (generalDetector) {
@@ -368,7 +330,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
               </BladeFrame>
             </Stack>
             <Stack direction="row" spacing={1}>
-              {/* all booleans */}
               <BladeFrame style={{ width: '25%' }} title="Gradient">
                 <Switch
                   checked={spotifyTexter.use_gradient}
