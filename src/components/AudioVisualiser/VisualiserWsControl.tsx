@@ -3,6 +3,7 @@ import { useDebounce } from 'use-debounce'
 import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
 import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
+import { useSongDetectorVisualisersAutoApply } from '../../hooks/useSongDetectorVisualisersAutoApply'
 
 const VisualiserWsControl = () => {
   const clientIdentity = useStore((state) => state.clientIdentity)
@@ -36,6 +37,8 @@ const VisualiserWsControl = () => {
 
   // Debounce the config sync to avoid flooding the network during slider drags
   const [debouncedConfig] = useDebounce(configToSync, 100)
+
+  useSongDetectorVisualisersAutoApply()
 
   useEffect(() => {
     if (!isConnected || clientIdentity.clientId === undefined) return

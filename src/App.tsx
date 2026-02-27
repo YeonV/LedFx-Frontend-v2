@@ -5,7 +5,7 @@ import { SnackbarProvider } from 'notistack'
 import { WebSocketProvider } from './utils/Websocket/WebSocketProvider'
 import { ThemeProvider as ThemeProviderNew } from '@mui/styles'
 import { HOME_ASSISTANT_MESSAGE, initFrontendConfig, WELCOME_MESSAGE } from './utils/helpers'
-import useSongDetectorAutoApply from './hooks/useSongDetectorAutoApply'
+import { useSongDetectorVirtualsAutoApply } from './hooks/useSongDetectorVirtualsAutoApply'
 import useAppSubscriptions from './hooks/useAppSubscriptions'
 import useWindowDimensions from './utils/useWindowDimension'
 import useProtocolHandler from './hooks/useProtocolHandler'
@@ -32,7 +32,7 @@ export default function App() {
   const getClients = useStore((state) => state.getClients)
 
   useWindowDimensions()
-  useSongDetectorAutoApply()
+  useSongDetectorVirtualsAutoApply()
   useIpcHandlers()
   useProtocolHandler()
 
