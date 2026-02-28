@@ -120,7 +120,9 @@ const ClientManagementCard = () => {
                       <Typography variant="body2">
                         {formatTimestamp(client?.connected_at)}
                       </Typography>
-                      <ClientEdit name={client?.name} type={client?.type} sx={{ pb: 0.5 }} />
+                      {client?.name === clientIdentity?.name && (
+                        <ClientEdit name={client?.name} type={client?.type} sx={{ pb: 0.5 }} />
+                      )}
                     </Stack>
                   </TableCell>
                 </TableRow>

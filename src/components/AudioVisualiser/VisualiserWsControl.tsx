@@ -3,6 +3,8 @@ import { useDebounce } from 'use-debounce'
 import { useVStore, type VState } from '../../hooks/vStore'
 import useStore from '../../store/useStore'
 import { useSubscription, useWebSocket } from '../../utils/Websocket/WebSocketProvider'
+import { useSongDetectorVisualisersAutoApply } from '../../hooks/useSongDetectorVisualisersAutoApply'
+import { normalizeVisualizerId } from '../../utils/helpers'
 
 const VisualiserWsControl = () => {
   const clientIdentity = useStore((state) => state.clientIdentity)
@@ -20,6 +22,7 @@ const VisualiserWsControl = () => {
   const visualizerConfigs = useVStore((state: VState) => state.visualizerConfigs)
   const butterchurnConfig = useVStore((state: VState) => state.butterchurnConfig)
   const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
+  const updateAstrofoxConfig = useVStore((state: VState) => state.updateAstrofoxConfig)
   const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
   const broadcastToClients = useStore((state) => state.broadcastToClients)
   const updateVisualizerConfigOptimistic = useStore(
@@ -36,6 +39,8 @@ const VisualiserWsControl = () => {
 
   // Debounce the config sync to avoid flooding the network during slider drags
   const [debouncedConfig] = useDebounce(configToSync, 100)
+
+  useSongDetectorVisualisersAutoApply()
 
   useEffect(() => {
     if (!isConnected || clientIdentity.clientId === undefined) return
@@ -58,23 +63,107 @@ const VisualiserWsControl = () => {
   useSubscription('client_broadcast', (d) => {
     // console.log('MAN', d, clientIdentity)
     if (d.sender_uuid !== clientIdentity?.clientId && d.payload?.category === 'visualiser') {
-      // console.log(clientIdentity?.clientId, d)
-      if (d.target_uuids?.includes(clientIdentity?.clientId)) {
+      // Correctly handle target modes: 'all' and 'type' should be processed by everyone
+      // 'uuids' and 'names' should be filtered based on the local client
+      const isTargetedToMe =
+        d.target?.mode === 'all' ||
+        (d.target?.mode === 'type' && d.target?.value === clientIdentity?.type) ||
+        (d.target?.mode === 'uuids' && d.target?.uuids?.includes(clientIdentity?.clientId)) ||
+        (d.target?.mode === 'names' && d.target?.names?.includes(clientIdentity?.name)) ||
+        d.target_uuids?.includes(clientIdentity?.clientId) // Legacy support
+
+      if (isTargetedToMe) {
         // console.log('BOOOOM', d)
         switch (d.payload?.action) {
           case 'set_visual_type': {
             // Overwrite visual type
-            if (d.payload?.visualizerId) setVisualType?.(d.payload.visualizerId)
+            if (d.payload?.visualizerId) {
+              const api = (window as any).visualiserApi
+              const registry = api?.getVisualizerRegistry?.() || {}
+              const normalizedId = normalizeVisualizerId(d.payload.visualizerId, registry)
+              setVisualType?.(normalizedId)
+            }
             break
           }
           case 'set_visual_config': {
             // Overwrite config for the given visualizerId
             const { visualizerId, config } = d.payload || {}
-            if (visualizerId && config) {
-              if (visualizerId === 'butterchurn') {
-                updateButterchurnConfig?.(config)
+            let rawTargetId = visualizerId
+            if (!rawTargetId || rawTargetId === 'active') {
+              rawTargetId = visualType
+            }
+
+            if (rawTargetId && config) {
+              const api = (window as any).visualiserApi
+              const registry = api?.getVisualizerRegistry?.() || {}
+              const targetId = normalizeVisualizerId(rawTargetId, registry)
+              const schema = registry[targetId]?.getUISchema?.()
+
+              // Only apply if the target effect supports the properties in the config
+              // or if we explicitly provided a visualizerId (force update)
+              const isPolymorphic = !visualizerId || visualizerId === 'active'
+
+              if (isPolymorphic) {
+                // Filter config to only include supported properties
+                const supportedConfig = Object.keys(config).reduce(
+                  (acc, key) => {
+                    const hasProp =
+                      schema?.properties?.[key] !== undefined ||
+                      registry[targetId]?.defaultConfig?.[key] !== undefined ||
+                      [
+                        'gradient',
+                        'gradient2',
+                        'image_source',
+                        'primaryColor',
+                        'secondaryColor',
+                        'tertiaryColor',
+                        'low_band',
+                        'bassColor',
+                        'mid_band',
+                        'midColor',
+                        'high_band',
+                        'highColor',
+                        'sunColor',
+                        'backgroundColor',
+                        'peakColor',
+                        'text',
+                        'text2',
+                        'font',
+                        'font2',
+                        'speed',
+                        'speed_option_1',
+                        'height_percent',
+                        'width_percent',
+                        'offset_y',
+                        'offset_y2'
+                      ].includes(key)
+
+                    if (hasProp) {
+                      acc[key] = config[key]
+                    }
+                    return acc
+                  },
+                  {} as Record<string, any>
+                )
+
+                if (Object.keys(supportedConfig).length > 0) {
+                  if (targetId === 'butterchurn') {
+                    updateButterchurnConfig?.(supportedConfig)
+                  } else if (targetId === 'astrofox') {
+                    updateAstrofoxConfig?.(supportedConfig)
+                  } else {
+                    updateVisualizerConfig?.(targetId, supportedConfig)
+                  }
+                }
               } else {
-                updateVisualizerConfig?.(visualizerId, config)
+                // Force update as original
+                if (targetId === 'butterchurn') {
+                  updateButterchurnConfig?.(config)
+                } else if (targetId === 'astrofox') {
+                  updateAstrofoxConfig?.(config)
+                } else {
+                  updateVisualizerConfig?.(targetId, config)
+                }
               }
             }
             break

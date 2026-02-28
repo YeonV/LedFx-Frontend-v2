@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -16,19 +15,14 @@ import GradientPicker from '../../../../SchemaForm/components/GradientPicker/Gra
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
 
 import useStore from '../../../../../store/useStore'
-import { useWebSocket } from '../../../../../utils/Websocket/WebSocketProvider'
-import { Ledfx } from '../../../../../api/ledfx'
-import { useVStore, type VState } from '../../../../../hooks/vStore'
-import AutoApplySelector from './AutoApplySelector'
 import CardStack from '../SongDetector/CardStack'
+import VirtualTextSelector from './VirtualTextSelector'
+import VisualiserTextSelector from './VisualiserTextSelector'
+import React from 'react'
 
 const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const schemas = useStore((state) => state.schemas)
-  const virtuals = useStore((state) => state.virtuals)
-  const clients = useStore((state) => state.clients)
-  const currentTrack = useStore((state) => state.spotify.currentTrack)
   const spotifyTexter = useStore((state) => state.spotify.spotifyTexter)
-  const sendSpotifyTrack = useStore((state) => state.spotify.sendSpotifyTrack)
   const colors = useStore((state) => state.colors)
 
   const setSpTexterTextColor = useStore((state) => state.setSpTexterTextColor)
@@ -46,256 +40,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
   const setSpTexterBackgroundBrightness = useStore((state) => state.setSpTexterBackgroundBrightness)
   const setSpTexterFont = useStore((state) => state.setSpTexterFont)
   const setSpTexterTextEffect = useStore((state) => state.setSpTexterTextEffect)
-  const getVirtuals = useStore((state) => state.getVirtuals)
-  const updateVisualizerConfigOptimistic = useStore(
-    (state) => state.updateVisualizerConfigOptimistic
-  )
-  // VStore actions for global/main instance
-  const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
-  // Use global state for song detector
-  const textAutoApplyGlobal = useStore((state) => state.textAutoApply)
-  const textVirtualsGlobal = useStore((state) => state.textVirtuals)
-  const setTextAutoApply = useStore((state) => state.setTextAutoApply)
-  const setTextVirtuals = useStore((state) => state.setTextVirtuals)
-
-  // Local state for non-song-detector mode
-  const [textVirtualsLocal, setTextVirtualsLocal] = useState<string[]>([])
-  const [isActiveLocal, setIsActiveLocal] = useState(false)
-
-  // Visualiser selection state (Zustand store)
-  const visualisersGlobal = useStore((state) => state.textVisualisers || [])
-  const setTextVisualisers = useStore((state) => state.setTextVisualisers)
-  // Local visualiser state for non-global mode
-  const [visualisersLocal, setVisualisersLocal] = useState<string[]>([])
-
-  // Use global or local state for visualisers
-  const textVisualisers = generalDetector ? visualisersGlobal : visualisersLocal
-
-  // Dedicated isActive and toggle for visualisers (from store)
-  const isActiveVisualisers = useStore((state) => state.isActiveVisualisers)
-  const setIsActiveVisualisers = useStore((state) => state.setIsActiveVisualisers)
-  const toggleAutoApplyVisualisers = () => {
-    setIsActiveVisualisers(!isActiveVisualisers)
-  }
-
-  // Determine which state to use based on generalDetector prop
-  const textVirtuals = generalDetector ? textVirtualsGlobal : textVirtualsLocal
-  const isActive = generalDetector ? textAutoApplyGlobal : isActiveLocal
-
-  const matrix = Object.keys(virtuals).filter((v: string) => (virtuals[v].config.rows || 1) > 1)
-
-  useEffect(() => {
-    // Only apply if visualiser auto-apply is active
-    if (currentTrack !== '') {
-      setTimeout(() => {
-        if (isActive && textVirtuals.length > 0) {
-          Ledfx('/api/effects', 'PUT', {
-            action: 'apply_global_effect',
-            type: 'texter2d',
-            config: { ...spotifyTexter, text: currentTrack },
-            fallback: spotifyTexter.fallback,
-            virtuals: textVirtuals
-          }).then(() => getVirtuals())
-        }
-        if (isActiveVisualisers && textVisualisers.length > 0) {
-          // Map selected names to IDs for isCurrentClient
-          // For each selected visualiser, update config (main and subs)
-          textVisualisers.forEach((name) => {
-            const id = nameToId[name]
-            const isCurrent = clientIdentity?.clientId === id
-            applyTextVisualiser(
-              {
-                text: currentTrack.split(' - ')[0] || '', // Artist name in text2 if available
-                text2: currentTrack.split(' - ')[1] || currentTrack.split(' - ')[0] || currentTrack, // Try to extract song name only
-                height_percent: 10,
-                width_percent: 200,
-                speed_option_1: 0.1,
-                offset_y2: 0.2,
-                offset_y: -0.2,
-                font: 'Stop',
-                font2: 'technique'
-              },
-              true,
-              isCurrent,
-              'bladeTexter',
-              'bladeTexter',
-              {
-                configs: {}
-              }
-            )
-          })
-        }
-      }, 200)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    currentTrack,
-    sendSpotifyTrack,
-    spotifyTexter,
-    textVirtuals,
-    isActiveVisualisers,
-    textVisualisers
-  ])
-
-  const handleTextVirtualChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    if (generalDetector) {
-      setTextVirtuals(selected)
-    } else {
-      setTextVirtualsLocal(selected)
-    }
-  }
-
-  const applyText = async () => {
-    if (textVirtuals.length > 0 && currentTrack) {
-      await Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global_effect',
-        type: 'texter2d',
-        config: { ...spotifyTexter, text: currentTrack },
-        fallback: spotifyTexter.fallback,
-        virtuals: textVirtuals
-      })
-      getVirtuals()
-    }
-  }
-  // Apply effect to selected visualisers (clients) using multi-client aware logic
-
-  const broadcastToClients = useStore((state) => state.broadcastToClients)
-  const clientIdentity = useStore((state) => state.clientIdentity)
-  const { send, isConnected } = useWebSocket()
-
-  const handleMultiClientAction = (
-    localAction: (() => void) | null,
-    remoteAction: string,
-    extraPayload: Record<string, any> = {}
-  ) => {
-    if (!clientIdentity || !clientIdentity.clientId) return
-    // Map selected names to IDs for all usages
-    const selectedIds = textVisualisers.map((name: string) => nameToId[name]).filter(Boolean)
-    // Local for current instance
-    if (selectedIds.includes(clientIdentity.clientId) && localAction) {
-      localAction()
-    }
-    // Broadcast for others
-    const otherClients = selectedIds.filter((id: string) => id !== clientIdentity.clientId)
-
-    if (otherClients.length && broadcastToClients && isConnected) {
-      broadcastToClients(
-        {
-          broadcast_type: 'custom',
-          // target: { mode: 'all' },
-          target: { mode: 'uuids', uuids: otherClients },
-          payload: {
-            category: 'visualiser',
-            action: remoteAction,
-            ...extraPayload
-          }
-        },
-        send
-      )
-    }
-  }
-
-  // Apply effect to selected visualisers (clients)
-  // Apply effect to selected visualisers (clients)
-  const applyTextVisualiser = (
-    update: Record<string, any>,
-    single: boolean,
-    isCurrentClient: boolean,
-    visualType: string,
-    globalVisualType: string,
-    localState: any
-  ) => {
-    // Get the current name and id
-    const name = clientIdentity?.name || 'unknown-client'
-    // Main (current/global): use vstore for config update
-    if (single && isCurrentClient) {
-      updateVisualizerConfig(visualType, update)
-      // Always update optimistic config for main instance as well
-      updateVisualizerConfigOptimistic(name, {
-        configs: {
-          ...localState?.configs,
-          [visualType]: {
-            ...localState?.configs?.[visualType],
-            ...update
-          }
-        }
-      })
-    } else if (single && typeof name === 'string') {
-      // Sub: only update optimistic config and broadcast
-      updateVisualizerConfigOptimistic(name, {
-        configs: {
-          ...localState?.configs,
-          [visualType]: {
-            ...localState?.configs?.[visualType],
-            ...update
-          }
-        }
-      })
-      handleMultiClientAction(null, 'set_visual_config', {
-        visualizerId: visualType,
-        config: {
-          ...localState?.configs?.[visualType],
-          ...update
-        }
-      })
-    }
-  }
-
-  // Config change handler for main/global instance (not used, handled in applyTextVisualiser)
-  // const handleConfigChange = (visualizerId: string, update: any) => {}
-
-  const toggleAutoApply = () => {
-    if (isActive) {
-      if (generalDetector) {
-        setTextAutoApply(false)
-      } else {
-        setIsActiveLocal(false)
-      }
-    } else {
-      applyText()
-      // applyTextVisualiser()
-      if (generalDetector) {
-        setTextAutoApply(true)
-      } else {
-        setIsActiveLocal(true)
-      }
-    }
-  }
-
-  // Build a name-to-id map for all current clients
-  const nameToId = clients
-    ? Object.entries(clients).reduce(
-        (acc, [id, data]) => {
-          if (data && data.name) acc[data.name] = id
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    : {}
-
-  // textVisualisers now stores names instead of IDs
-  // Filter out stale names not in current clients
-  const filteredTextVisualisers = textVisualisers.filter((name: string) => nameToId[name])
-
-  // Auto-cleanup state if stale names are present
-  useEffect(() => {
-    if (filteredTextVisualisers.length !== textVisualisers.length) {
-      setTextVisualisers(filteredTextVisualisers)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clients, textVisualisers])
-
-  // Handler: convert selected names to state
-  const handleTextVisualiserChangeByName = (event: any) => {
-    const value = event.target.value
-    if (generalDetector) {
-      setTextVisualisers(typeof value === 'string' ? value.split(',') : value)
-    } else {
-      setVisualisersLocal(typeof value === 'string' ? value.split(',') : value)
-    }
-  }
 
   return (
     <Box
@@ -369,7 +113,6 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
               </BladeFrame>
             </Stack>
             <Stack direction="row" spacing={1}>
-              {/* all booleans */}
               <BladeFrame style={{ width: '25%' }} title="Gradient">
                 <Switch
                   checked={spotifyTexter.use_gradient}
@@ -484,30 +227,11 @@ const SpTexterForm = ({ generalDetector }: { generalDetector?: boolean }) => {
       </Accordion>
 
       <CardStack>
-        <AutoApplySelector
-          label="Text Virtuals"
-          options={matrix}
-          value={textVirtuals}
-          onChange={handleTextVirtualChange}
-          isActive={isActive}
-          onToggle={toggleAutoApply}
-          disabled={textVirtuals.length === 0}
-        />
-        <AutoApplySelector
-          label="Text Visualisers"
-          options={clients ? Object.entries(clients) : []}
-          value={generalDetector ? filteredTextVisualisers : textVisualisers}
-          onChange={handleTextVisualiserChangeByName}
-          isActive={isActiveVisualisers}
-          onToggle={toggleAutoApplyVisualisers}
-          disabled={textVisualisers.length === 0}
-          getOptionLabel={([, data]) => data?.name || ''}
-          getOptionValue={([, data]) => data?.name || ''}
-          renderValue={(selected) => selected.join(', ')}
-        />
+        <VirtualTextSelector generalDetector={generalDetector} />
+        <VisualiserTextSelector generalDetector={generalDetector} />
       </CardStack>
     </Box>
   )
 }
 
-export default SpTexterForm
+export default React.memo(SpTexterForm)

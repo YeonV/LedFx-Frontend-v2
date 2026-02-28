@@ -144,6 +144,26 @@ const storeSongDectector = (set: any) => ({
   // Gradient auto-apply state
   gradientAutoApply: false,
   gradientVirtuals: [] as string[],
+  gradientVisualisers: [] as string[],
+  isActiveGradientVisualisers: false,
+  setGradientVisualisers: (visualisers: string[]) => {
+    set(
+      produce((state: any) => {
+        state.gradientVisualisers = visualisers
+      }),
+      false,
+      'songDetector/setGradientVisualisers'
+    )
+  },
+  setIsActiveGradientVisualisers: (active: boolean) => {
+    set(
+      produce((state: any) => {
+        state.isActiveGradientVisualisers = active
+      }),
+      false,
+      'songDetector/setIsActiveGradientVisualisers'
+    )
+  },
   selectedGradient: null as number | null,
   gradients: [] as string[],
   extractedColors: [] as string[],
@@ -195,6 +215,26 @@ const storeSongDectector = (set: any) => ({
   // Image auto-apply state
   imageAutoApply: false,
   imageVirtuals: [] as string[],
+  imageVisualisers: [] as string[],
+  isActiveImageVisualisers: false,
+  setImageVisualisers: (visualisers: string[]) => {
+    set(
+      produce((state: any) => {
+        state.imageVisualisers = visualisers
+      }),
+      false,
+      'songDetector/setImageVisualisers'
+    )
+  },
+  setIsActiveImageVisualisers: (active: boolean) => {
+    set(
+      produce((state: any) => {
+        state.isActiveImageVisualisers = active
+      }),
+      false,
+      'songDetector/setIsActiveImageVisualisers'
+    )
+  },
   imageConfig: {
     background_brightness: 1,
     background_color: '#000000',

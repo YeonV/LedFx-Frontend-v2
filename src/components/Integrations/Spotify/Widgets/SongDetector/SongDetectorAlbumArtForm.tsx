@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -13,37 +12,22 @@ import { ExpandMore } from '@mui/icons-material'
 import GradientPicker from '../../../../SchemaForm/components/GradientPicker/GradientPicker'
 import useStore from '../../../../../store/useStore'
 import BladeFrame from '../../../../SchemaForm/components/BladeFrame'
-import { Ledfx } from '../../../../../api/ledfx'
-import AutoApplySelector from '../SpotifyWidgetPro/AutoApplySelector'
-import CardStack from './CardStack'
+import VisualiserGradientImageSelectors from './VisualiserGradientImageSelectors'
+import VirtualGradientImageSelectors from './VirtualGradientImageSelectors'
 
 const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => {
-  const virtuals = useStore((state) => state.virtuals)
-  const getVirtuals = useStore((state) => state.getVirtuals)
   const thumbnailPath = useStore((state) => state.thumbnailPath)
 
   // Use global state for gradient and image auto-apply
-  const gradientVirtualsGlobal = useStore((state) => state.gradientVirtuals)
-  const imageVirtualsGlobal = useStore((state) => state.imageVirtuals)
-  const selectedGradientGlobal = useStore((state) => state.selectedGradient)
-  const gradientsGlobal = useStore((state) => state.gradients)
+  const selectedGradient = useStore((state) => state.selectedGradient)
+  const gradients = useStore((state) => state.gradients)
   const extractedColors = useStore((state) => state.extractedColors)
-  const gradientAutoApply = useStore((state) => state.gradientAutoApply)
-  const imageAutoApply = useStore((state) => state.imageAutoApply)
   const imageConfigGlobal = useStore((state) => state.imageConfig)
 
-  const setGradientVirtualsGlobal = useStore((state) => state.setGradientVirtuals)
-  const setImageVirtualsGlobal = useStore((state) => state.setImageVirtuals)
-  const setSelectedGradientGlobal = useStore((state) => state.setSelectedGradient)
-  const setGradientAutoApply = useStore((state) => state.setGradientAutoApply)
-  const setImageAutoApply = useStore((state) => state.setImageAutoApply)
-  const setImageConfigGlobal = useStore((state) => state.setImageConfig)
+  const setSelectedGradient = useStore((state) => state.setSelectedGradient)
+  const setImageConfig = useStore((state) => state.setImageConfig)
 
   // Use global state directly
-  const gradientVirtuals = gradientVirtualsGlobal
-  const imageVirtuals = imageVirtualsGlobal
-  const selectedGradient = selectedGradientGlobal
-  const gradients = gradientsGlobal
   const imageConfig = imageConfigGlobal
   const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
 
@@ -51,66 +35,6 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
   const albumArtUrl = thumbnailPath
     ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
     : ''
-
-  const applyGradient = useCallback(async () => {
-    if (selectedGradient !== null && gradientVirtuals.length > 0) {
-      await Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global',
-        gradient: gradients[selectedGradient],
-        virtuals: gradientVirtuals
-      })
-      getVirtuals()
-    }
-  }, [selectedGradient, gradientVirtuals, gradients, getVirtuals])
-
-  const applyImage = useCallback(async () => {
-    if (albumArtUrl && imageVirtuals.length > 0 && thumbnailPath) {
-      await Ledfx('/api/effects', 'PUT', {
-        action: 'apply_global_effect',
-        type: 'imagespin',
-        config: {
-          image_source: 'current_album_art.jpg',
-          ...imageConfig
-        },
-        virtuals: imageVirtuals
-      })
-      getVirtuals()
-    }
-  }, [albumArtUrl, imageVirtuals, thumbnailPath, imageConfig, getVirtuals])
-
-  const toggleGradientAutoApply = useCallback(() => {
-    if (gradientAutoApply) {
-      setGradientAutoApply(false)
-    } else {
-      applyGradient()
-      setGradientAutoApply(true)
-    }
-  }, [gradientAutoApply, setGradientAutoApply, applyGradient])
-
-  const toggleImageAutoApply = useCallback(() => {
-    if (imageAutoApply) {
-      setImageAutoApply(false)
-    } else {
-      applyImage()
-      setImageAutoApply(true)
-    }
-  }, [imageAutoApply, setImageAutoApply, applyImage])
-
-  const handleGradientVirtualChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    // Remove from image virtuals if present
-    setImageVirtualsGlobal(imageVirtuals.filter((v) => !selected.includes(v)))
-    setGradientVirtualsGlobal(selected)
-  }
-
-  const handleImageVirtualChange = (event: any) => {
-    const value = event.target.value
-    const selected = typeof value === 'string' ? value.split(',') : value
-    // Remove from gradient virtuals if present
-    setGradientVirtualsGlobal(gradientVirtuals.filter((v) => !selected.includes(v)))
-    setImageVirtualsGlobal(selected)
-  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -154,7 +78,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                     {gradients.map((gradient, idx) => (
                       <Box
                         key={idx}
-                        onClick={() => setSelectedGradientGlobal(idx)}
+                        onClick={() => setSelectedGradient(idx)}
                         sx={{
                           flex: 1,
                           minWidth: 60,
@@ -205,8 +129,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                         valueLabelDisplay="auto"
                         value={imageConfig.brightness}
                         onChange={(_e, v) =>
-                          typeof v === 'number' &&
-                          setImageConfigGlobal({ ...imageConfig, brightness: v })
+                          typeof v === 'number' && setImageConfig({ ...imageConfig, brightness: v })
                         }
                       />
                     </BladeFrame>
@@ -219,7 +142,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                         value={imageConfig.background_brightness}
                         onChange={(_e, v) =>
                           typeof v === 'number' &&
-                          setImageConfigGlobal({ ...imageConfig, background_brightness: v })
+                          setImageConfig({ ...imageConfig, background_brightness: v })
                         }
                       />
                     </BladeFrame>
@@ -234,7 +157,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                         valueLabelDisplay="auto"
                         value={imageConfig.blur}
                         onChange={(_e, v) =>
-                          typeof v === 'number' && setImageConfigGlobal({ ...imageConfig, blur: v })
+                          typeof v === 'number' && setImageConfig({ ...imageConfig, blur: v })
                         }
                       />
                     </BladeFrame>
@@ -246,8 +169,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                         valueLabelDisplay="auto"
                         value={imageConfig.min_size}
                         onChange={(_e, v) =>
-                          typeof v === 'number' &&
-                          setImageConfigGlobal({ ...imageConfig, min_size: v })
+                          typeof v === 'number' && setImageConfig({ ...imageConfig, min_size: v })
                         }
                       />
                     </BladeFrame>
@@ -259,7 +181,7 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                     title="BG Color"
                     pickerBgColor={imageConfig.background_color}
                     sendColorToVirtuals={(v: string) =>
-                      setImageConfigGlobal({ ...imageConfig, background_color: v })
+                      setImageConfig({ ...imageConfig, background_color: v })
                     }
                   />
 
@@ -267,25 +189,21 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
                     <BladeFrame style={{ flex: 1 }} title="Clip">
                       <Switch
                         checked={imageConfig.clip}
-                        onChange={(_e, b) => setImageConfigGlobal({ ...imageConfig, clip: b })}
+                        onChange={(_e, b) => setImageConfig({ ...imageConfig, clip: b })}
                         color="primary"
                       />
                     </BladeFrame>
                     <BladeFrame style={{ flex: 1 }} title="Flip H">
                       <Switch
                         checked={imageConfig.flip_horizontal}
-                        onChange={(_e, b) =>
-                          setImageConfigGlobal({ ...imageConfig, flip_horizontal: b })
-                        }
+                        onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_horizontal: b })}
                         color="primary"
                       />
                     </BladeFrame>
                     <BladeFrame style={{ flex: 1 }} title="Flip V">
                       <Switch
                         checked={imageConfig.flip_vertical}
-                        onChange={(_e, b) =>
-                          setImageConfigGlobal({ ...imageConfig, flip_vertical: b })
-                        }
+                        onChange={(_e, b) => setImageConfig({ ...imageConfig, flip_vertical: b })}
                         color="primary"
                       />
                     </BladeFrame>
@@ -298,30 +216,8 @@ const SongDetectorAlbumArtForm = ({ preview = true }: { preview?: boolean }) => 
 
         {/* Virtual Device Selectors */}
         <Box sx={{ flexGrow: 1 }} />
-        <CardStack>
-          <AutoApplySelector
-            label="Gradient Virtuals"
-            options={Object.keys(virtuals)}
-            value={gradientVirtuals}
-            onChange={handleGradientVirtualChange}
-            isActive={gradientAutoApply}
-            onToggle={toggleGradientAutoApply}
-            disabled={
-              gradientVirtuals.length === 0 ||
-              selectedGradient === null ||
-              extractedColors.length === 0
-            }
-          />
-          <AutoApplySelector
-            label="Image Virtuals"
-            options={Object.keys(virtuals)}
-            value={imageVirtuals}
-            onChange={handleImageVirtualChange}
-            isActive={imageAutoApply}
-            onToggle={toggleImageAutoApply}
-            disabled={imageVirtuals.length === 0 || extractedColors.length === 0}
-          />
-        </CardStack>
+        <VirtualGradientImageSelectors />
+        <VisualiserGradientImageSelectors />
       </Stack>
     </Box>
   )
