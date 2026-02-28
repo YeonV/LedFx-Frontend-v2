@@ -110,9 +110,11 @@ const Visualiser = ({
   }, [])
 
   useSubscription('graph_update', handleGraphUpdate)
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
 
   const { status, as: AudioVisualiser } = useDynamicModule<AudioVisualiserProps>({
-    src: '/modules/yz-audio-visualiser.js',
+    src: isCC ? 'modules/yz-audio-visualiser.js' : '/modules/yz-audio-visualiser.js',
     from: 'YzAudioVisualiser',
     import: 'default'
   })
