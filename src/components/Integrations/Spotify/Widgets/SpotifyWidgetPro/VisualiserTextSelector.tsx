@@ -17,6 +17,7 @@ const VisualiserTextSelector = ({ generalDetector }: { generalDetector?: boolean
   const { send, isConnected } = useWebSocket()
   const visualType = useVStore((state) => state.visualType)
   const updateButterchurnConfig = useVStore((state) => state.updateButterchurnConfig)
+  const updateAstrofoxConfig = useVStore((state) => state.updateAstrofoxConfig)
   const updateVisualizerConfig = useVStore((state) => state.updateVisualizerConfig)
 
   // Visualiser selection state (Zustand store)
@@ -69,6 +70,8 @@ const VisualiserTextSelector = ({ generalDetector }: { generalDetector?: boolean
         if (targetId) {
           if (targetId === 'butterchurn') {
             updateButterchurnConfig?.(update)
+          } else if (targetId === 'astrofox') {
+            updateAstrofoxConfig?.(update)
           } else {
             updateVisualizerConfig?.(targetId, update)
           }
@@ -105,6 +108,7 @@ const VisualiserTextSelector = ({ generalDetector }: { generalDetector?: boolean
       visualType,
       updateVisualizerConfigOptimistic,
       updateButterchurnConfig,
+      updateAstrofoxConfig,
       updateVisualizerConfig,
       send
     ]

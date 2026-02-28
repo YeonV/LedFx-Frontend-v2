@@ -177,6 +177,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
   // Actions from store
   const setVisualType = useVStore((state: VState) => state.setVisualType)
   const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
+  const updateAstrofoxConfig = useVStore((state: VState) => state.updateAstrofoxConfig)
   const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
   const togglePlay = useVStore((state: VState) => state.togglePlay)
   const toggleOverlays = useVStore((state: VState) => state.toggleOverlays)
@@ -280,6 +281,8 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     if (isLocal) {
       if (visualizerId === 'butterchurn') {
         updateButterchurnConfig?.(fullUpdate)
+      } else if (visualizerId === 'astrofox') {
+        updateAstrofoxConfig?.(fullUpdate)
       } else {
         updateVisualizerConfig?.(visualizerId, fullUpdate)
       }

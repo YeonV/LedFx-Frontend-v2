@@ -22,6 +22,7 @@ const VisualiserWsControl = () => {
   const visualizerConfigs = useVStore((state: VState) => state.visualizerConfigs)
   const butterchurnConfig = useVStore((state: VState) => state.butterchurnConfig)
   const updateButterchurnConfig = useVStore((state: VState) => state.updateButterchurnConfig)
+  const updateAstrofoxConfig = useVStore((state: VState) => state.updateAstrofoxConfig)
   const updateVisualizerConfig = useVStore((state: VState) => state.updateVisualizerConfig)
   const broadcastToClients = useStore((state) => state.broadcastToClients)
   const updateVisualizerConfigOptimistic = useStore(
@@ -148,6 +149,8 @@ const VisualiserWsControl = () => {
                 if (Object.keys(supportedConfig).length > 0) {
                   if (targetId === 'butterchurn') {
                     updateButterchurnConfig?.(supportedConfig)
+                  } else if (targetId === 'astrofox') {
+                    updateAstrofoxConfig?.(supportedConfig)
                   } else {
                     updateVisualizerConfig?.(targetId, supportedConfig)
                   }
@@ -156,6 +159,8 @@ const VisualiserWsControl = () => {
                 // Force update as original
                 if (targetId === 'butterchurn') {
                   updateButterchurnConfig?.(config)
+                } else if (targetId === 'astrofox') {
+                  updateAstrofoxConfig?.(config)
                 } else {
                   updateVisualizerConfig?.(targetId, config)
                 }

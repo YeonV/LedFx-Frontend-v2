@@ -13,7 +13,6 @@ export const useSongDetectorVirtualsAutoApply = () => {
   const gradientAutoApply = useStore((state) => state.gradientAutoApply)
   const gradientVirtuals = useStore((state) => state.gradientVirtuals)
   const selectedGradient = useStore((state) => state.selectedGradient)
-  const gradients = useStore((state) => state.gradients)
   const setGradients = useStore((state) => state.setGradients)
   const setSelectedGradient = useStore((state) => state.setSelectedGradient)
   const extractedColors = useStore((state) => state.extractedColors)
@@ -21,14 +20,12 @@ export const useSongDetectorVirtualsAutoApply = () => {
   const imageAutoApply = useStore((state) => state.imageAutoApply)
   const imageVirtuals = useStore((state) => state.imageVirtuals)
   const imageConfig = useStore((state) => state.imageConfig)
+  const albumArtCacheBuster = useStore((state) => state.albumArtCacheBuster)
 
   // Track previous values to detect changes
   const prevTextTrackRef = useRef<string>('')
   const prevColorTrackRef = useRef<string>('')
-  const prevGradientsRef = useRef<string>('')
   const prevAlbumArtRef = useRef<string>('')
-  const prevIsActiveGradVirtRef = useRef(false)
-  const prevSelectedGradientRef = useRef<number | null>(null)
   const prevIsActiveImgVirtRef = useRef(false)
   const prevIsActiveTextVirtRef = useRef(false)
 
@@ -140,7 +137,18 @@ export const useSongDetectorVirtualsAutoApply = () => {
     if (selectedGradient === null && generatedGradients.length > 0) {
       setSelectedGradient(0)
     }
-  }, [extractedColors, selectedGradient, setGradients, setSelectedGradient])
+    // Microtask: trigger auto-apply after gradients are set
+    Promise.resolve().then(() => {
+      if (gradientAutoApply && gradientVirtuals.length > 0 && generatedGradients.length > 0) {
+        Ledfx('/api/effects', 'PUT', {
+          action: 'apply_global',
+          gradient: generatedGradients[0],
+          virtuals: gradientVirtuals
+        }).then(() => getVirtuals())
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [extractedColors])
 
   // AUTO-APPLY TEXT: When track changes or toggle activates
   useEffect(() => {
@@ -164,41 +172,19 @@ export const useSongDetectorVirtualsAutoApply = () => {
   }, [currentTrack, textAutoApply, textVirtuals, spotifyTexter, getVirtuals])
 
   // AUTO-APPLY GRADIENT: When gradients change (new song) or toggles change or selection change
-  useEffect(() => {
-    const gradientsKey = gradients.join(',')
-    const hasChanges =
-      gradientsKey !== prevGradientsRef.current ||
-      gradientAutoApply !== prevIsActiveGradVirtRef.current ||
-      selectedGradient !== prevSelectedGradientRef.current
-    prevGradientsRef.current = gradientsKey
-    prevIsActiveGradVirtRef.current = gradientAutoApply
-    prevSelectedGradientRef.current = selectedGradient
-    if (
-      !hasChanges ||
-      gradientsKey === '' ||
-      selectedGradient === null ||
-      !gradients[selectedGradient]
-    )
-      return
-    const timer = setTimeout(() => {
-      if (gradientAutoApply && gradientVirtuals.length > 0) {
-        Ledfx('/api/effects', 'PUT', {
-          action: 'apply_global',
-          gradient: gradients[selectedGradient],
-          virtuals: gradientVirtuals
-        }).then(() => getVirtuals())
-      }
-    }, 200)
-    return () => clearTimeout(timer)
-  }, [gradients, gradientAutoApply, selectedGradient, gradientVirtuals, getVirtuals])
+  // Remove the old gradient auto-apply effect, now handled in the gradients generation effect
 
   // AUTO-APPLY IMAGE: When album art changes (new song) or toggles change
   useEffect(() => {
+    const albumArtUrl =
+      thumbnailPath && albumArtCacheBuster
+        ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
+        : ''
     const hasChanges =
-      thumbnailPath !== prevAlbumArtRef.current || imageAutoApply !== prevIsActiveImgVirtRef.current
-    prevAlbumArtRef.current = thumbnailPath
+      albumArtUrl !== prevAlbumArtRef.current || imageAutoApply !== prevIsActiveImgVirtRef.current
+    prevAlbumArtRef.current = albumArtUrl
     prevIsActiveImgVirtRef.current = imageAutoApply
-    if (!hasChanges || thumbnailPath === '') return
+    if (!hasChanges || !albumArtUrl) return
     if (imageAutoApply && imageVirtuals.length > 0) {
       Ledfx('/api/effects', 'PUT', {
         action: 'apply_global_effect',
@@ -210,5 +196,5 @@ export const useSongDetectorVirtualsAutoApply = () => {
         virtuals: imageVirtuals
       }).then(() => getVirtuals())
     }
-  }, [thumbnailPath, imageAutoApply, imageVirtuals, imageConfig, getVirtuals])
+  }, [thumbnailPath, albumArtCacheBuster, imageAutoApply, imageVirtuals, imageConfig, getVirtuals])
 }

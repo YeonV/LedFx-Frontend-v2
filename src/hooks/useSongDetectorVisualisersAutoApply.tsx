@@ -9,6 +9,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
   const visualType = useVStore((state) => state.visualType)
   const updateButterchurnConfig = useVStore((state) => state.updateButterchurnConfig)
   const updateVisualizerConfig = useVStore((state) => state.updateVisualizerConfig)
+  const updateAstrofoxConfig = useVStore((state) => state.updateAstrofoxConfig)
   const clients = useStore((state) => state.clients)
   const clientIdentity = useStore((state) => state.clientIdentity)
   const broadcastToClients = useStore((state) => state.broadcastToClients)
@@ -52,6 +53,8 @@ export const useSongDetectorVisualisersAutoApply = () => {
 
   const applyVisualiserConfig = useCallback(
     (selectedVisualisers: string[], visualizerId: string, update: Record<string, any>) => {
+      // DEBUG: Log every call to applyVisualiserConfig
+      // console.log('[applyVisualiserConfig] visualizerId:', visualizerId, 'update:', update)
       const name = clientIdentity?.name || 'unknown-client'
       const nameToIdMap = nameToId()
       const selectedIds = selectedVisualisers.map((n) => nameToIdMap[n]).filter(Boolean)
@@ -68,12 +71,15 @@ export const useSongDetectorVisualisersAutoApply = () => {
         const test = useVStore?.getState()?.visualType || visualType
         const rawTargetId = visualizerId === 'active' ? test : visualizerId
         if (rawTargetId) {
-          console.log('Determined target visualizer ID:', rawTargetId)
+          // console.log('Determined target visualizer ID:', rawTargetId)
           const api = (window as any).visualiserApi
           const registry = api?.getVisualizerRegistry?.() || {}
           const targetId = normalizeVisualizerId(rawTargetId, registry)
           const schema = registry[targetId]?.getUISchema?.()
           const isPolymorphic = visualizerId === 'active'
+          // DEBUG: Log schema and registry for targetId
+          // console.log('[applyVisualiserConfig] schema:', schema)
+          // console.log('[applyVisualiserConfig] registry[targetId]:', registry[targetId])
           const filteredUpdate = isPolymorphic
             ? Object.keys(update).reduce(
                 (acc, key) => {
@@ -84,6 +90,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
                       'gradient',
                       'gradient2',
                       'image_source',
+                      'background_source',
                       'primaryColor',
                       'secondaryColor',
                       'tertiaryColor',
@@ -116,17 +123,21 @@ export const useSongDetectorVisualisersAutoApply = () => {
               )
             : update
 
-          console.log('so far so good', { targetId, filteredUpdate })
+          // DEBUG: Log filteredUpdate after filtering
+          // console.log('[applyVisualiserConfig] filteredUpdate:', filteredUpdate)
+          // console.log('so far so good', { targetId, filteredUpdate })
           if (Object.keys(filteredUpdate).length > 0) {
-            console.log(
-              'Applying visualiser config to',
-              targetId,
-              rawTargetId,
-              visualizerConfigOptimistic?.[clientIdentity?.name || 'unknown-client']?.visualType,
-              filteredUpdate
-            )
+            // console.log(
+            //   'Applying visualiser config to',
+            //   targetId,
+            //   rawTargetId,
+            //   visualizerConfigOptimistic?.[clientIdentity?.name || 'unknown-client']?.visualType,
+            //   filteredUpdate
+            // )
             if (targetId === 'butterchurn') {
               updateButterchurnConfig?.(filteredUpdate)
+            } else if (targetId === 'astrofox') {
+              updateAstrofoxConfig?.(filteredUpdate)
             } else {
               updateVisualizerConfig?.(
                 clientIdentity?.name
@@ -166,6 +177,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
       clientIdentity,
       visualType,
       updateButterchurnConfig,
+      updateAstrofoxConfig,
       updateVisualizerConfig,
       nameToId,
       updateVisualizerConfigOptimistic,
@@ -210,7 +222,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
     prevGradientsRef.current = gradientsKey
     prevIsActiveGradVisRef.current = isActiveGradientVisualisers
     prevSelectedGradientRef.current = selectedGradient
-    console.log(':(')
+    // console.log(':(')
     if (
       !hasChanges ||
       gradientsKey === '' ||
@@ -218,12 +230,12 @@ export const useSongDetectorVisualisersAutoApply = () => {
       !gradients[selectedGradient]
     )
       return
-    console.log(
-      ':)',
-      isActiveGradientVisualisers,
-      gradientVisualisers.length > 0,
-      gradients[selectedGradient]
-    )
+    // console.log(
+    //   ':)',
+    //   isActiveGradientVisualisers,
+    //   gradientVisualisers.length > 0,
+    //   gradients[selectedGradient]
+    // )
     // const timer =
     setTimeout(() => {
       if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
@@ -237,7 +249,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
           if (cB > 30) return 1
           return sB - sA
         })
-        console.log('EY', visualType)
+        // console.log('EY', visualType)
         applyVisualiserConfig(gradientVisualisers, 'active', {
           gradient:
             visualType === 'bladeTexter'
@@ -282,15 +294,20 @@ export const useSongDetectorVisualisersAutoApply = () => {
   useEffect(() => {
     const hasChanges =
       thumbnailPath !== prevAlbumArtRef.current ||
-      isActiveImageVisualisers !== prevIsActiveImgVisRef.current
-    prevAlbumArtRef.current = thumbnailPath
-    prevIsActiveImgVisRef.current = isActiveImageVisualisers
+      isActiveImageVisualisers !== prevIsActiveImgVisRef.current ||
+      albumArtCacheBuster !== (prevAlbumArtRef as any).cacheBuster
     const albumArtUrl = thumbnailPath
       ? `${window.localStorage.getItem('ledfx-host')}/api/assets/download?path=${thumbnailPath.replace('/assets/', '')}&cb=${albumArtCacheBuster}`
       : ''
-    if (!hasChanges || thumbnailPath === '') return
+    if (!hasChanges || thumbnailPath === '') {
+      return
+    }
+    // Only update refs after confirming a change
+    prevAlbumArtRef.current = thumbnailPath
+    ;(prevAlbumArtRef as any).cacheBuster = albumArtCacheBuster
+    prevIsActiveImgVisRef.current = isActiveImageVisualisers
     if (isActiveImageVisualisers && imageVisualisers.length > 0) {
-      applyVisualiserConfig(imageVisualisers, 'bladeImage', {
+      applyVisualiserConfig(imageVisualisers, 'active', {
         image_source: albumArtUrl
       })
     }

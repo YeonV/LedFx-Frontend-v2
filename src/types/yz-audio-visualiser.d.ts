@@ -38,6 +38,11 @@ declare interface AstrofoxConfig {
     height: number;
     primaryColor?: string;
     secondaryColor?: string;
+    tertiaryColor?: string;
+    gradient?: string;
+    gradient2?: string;
+    image_source?: string;
+    background_source?: string;
 }
 
 declare type AstrofoxLayer = BarSpectrumLayer | WaveSpectrumLayer | SoundWaveLayer | SoundWave2Layer | TextLayer | ImageLayer | Geometry3DLayer | GroupLayer | NeonTunnelLayer | ReactiveOrbLayer | ParticleFieldLayer;
