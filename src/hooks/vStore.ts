@@ -23,3 +23,9 @@ export function useVStore<T = IStore>(selector?: (state: IStore) => T): T {
   if (!store) return undefined as unknown as T
   return selector ? store(selector) : store()
 }
+
+// Attach getState as a static method to useVStore
+useVStore.getState = function (): IStore | undefined {
+  const store = initializeStore()
+  return store?.getState ? store.getState() : undefined
+}

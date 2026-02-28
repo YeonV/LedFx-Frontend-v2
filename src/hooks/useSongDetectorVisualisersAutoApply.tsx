@@ -15,6 +15,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
   const updateVisualizerConfigOptimistic = useStore(
     (state) => state.updateVisualizerConfigOptimistic
   )
+  const visualizerConfigOptimistic = useStore((state) => state.visualizerConfigOptimistic)
   const gradientVisualisers = useStore((state) => state.gradientVisualisers || [])
   const isActiveGradientVisualisers = useStore((state) => state.isActiveGradientVisualisers)
   const imageVisualisers = useStore((state) => state.imageVisualisers || [])
@@ -55,9 +56,19 @@ export const useSongDetectorVisualisersAutoApply = () => {
       const nameToIdMap = nameToId()
       const selectedIds = selectedVisualisers.map((n) => nameToIdMap[n]).filter(Boolean)
       const isCurrentClient = clientIdentity && selectedIds.includes(clientIdentity.clientId || '')
+      // console.log('Applying visualiser config', {
+      //   visualizerId,
+      //   update,
+      //   selectedVisualisers,
+      //   name,
+      //   isCurrentClient,
+      //   visualType
+      // })
       if (isCurrentClient) {
-        const rawTargetId = visualizerId === 'active' ? visualType : visualizerId
+        const test = useVStore?.getState()?.visualType || visualType
+        const rawTargetId = visualizerId === 'active' ? test : visualizerId
         if (rawTargetId) {
+          console.log('Determined target visualizer ID:', rawTargetId)
           const api = (window as any).visualiserApi
           const registry = api?.getVisualizerRegistry?.() || {}
           const targetId = normalizeVisualizerId(rawTargetId, registry)
@@ -104,11 +115,26 @@ export const useSongDetectorVisualisersAutoApply = () => {
                 {} as Record<string, any>
               )
             : update
+
+          console.log('so far so good', { targetId, filteredUpdate })
           if (Object.keys(filteredUpdate).length > 0) {
+            console.log(
+              'Applying visualiser config to',
+              targetId,
+              rawTargetId,
+              visualizerConfigOptimistic?.[clientIdentity?.name || 'unknown-client']?.visualType,
+              filteredUpdate
+            )
             if (targetId === 'butterchurn') {
               updateButterchurnConfig?.(filteredUpdate)
             } else {
-              updateVisualizerConfig?.(targetId, filteredUpdate)
+              updateVisualizerConfig?.(
+                clientIdentity?.name
+                  ? visualizerConfigOptimistic?.[clientIdentity?.name || 'unknown-client']
+                      .visualType || targetId
+                  : targetId,
+                filteredUpdate
+              )
             }
             updateVisualizerConfigOptimistic(name, {
               configs: {
@@ -136,6 +162,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
       }
     },
     [
+      visualizerConfigOptimistic,
       clientIdentity,
       visualType,
       updateButterchurnConfig,
@@ -183,6 +210,7 @@ export const useSongDetectorVisualisersAutoApply = () => {
     prevGradientsRef.current = gradientsKey
     prevIsActiveGradVisRef.current = isActiveGradientVisualisers
     prevSelectedGradientRef.current = selectedGradient
+    console.log(':(')
     if (
       !hasChanges ||
       gradientsKey === '' ||
@@ -190,7 +218,14 @@ export const useSongDetectorVisualisersAutoApply = () => {
       !gradients[selectedGradient]
     )
       return
-    const timer = setTimeout(() => {
+    console.log(
+      ':)',
+      isActiveGradientVisualisers,
+      gradientVisualisers.length > 0,
+      gradients[selectedGradient]
+    )
+    // const timer =
+    setTimeout(() => {
       if (isActiveGradientVisualisers && gradientVisualisers.length > 0) {
         const sortedSpecial = [...extractedColors].sort((a, b) => {
           const cA = colorfulness(a)
@@ -202,9 +237,16 @@ export const useSongDetectorVisualisersAutoApply = () => {
           if (cB > 30) return 1
           return sB - sA
         })
+        console.log('EY', visualType)
         applyVisualiserConfig(gradientVisualisers, 'active', {
-          gradient: sortedSpecial[0] || '#0000ff',
-          gradient2: sortedSpecial[1] || '#00ffff',
+          gradient:
+            visualType === 'bladeTexter'
+              ? sortedSpecial[0] || '#0000ff'
+              : gradients[selectedGradient],
+          gradient2:
+            visualType === 'bladeTexter'
+              ? sortedSpecial[1] || '#00ffff'
+              : gradients[selectedGradient === gradients.length - 1 ? 0 : selectedGradient + 1],
           primaryColor: sortedSpecial[0] || '#00ffff',
           secondaryColor: sortedSpecial[1] || '#0000ff',
           tertiaryColor: sortedSpecial[2] || '#00ff00',
@@ -223,14 +265,17 @@ export const useSongDetectorVisualisersAutoApply = () => {
         })
       }
     }, 200)
-    return () => clearTimeout(timer)
+    // return () => clearTimeout(timer)
   }, [
     gradients,
+
+    // JSON.stringify(gradients),
     selectedGradient,
     isActiveGradientVisualisers,
     gradientVisualisers,
     applyVisualiserConfig,
-    extractedColors
+    extractedColors,
+    visualType
   ])
 
   // AUTO-APPLY IMAGE: When album art changes (new song) or toggles change

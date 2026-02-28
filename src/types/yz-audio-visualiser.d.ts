@@ -36,6 +36,8 @@ declare interface AstrofoxConfig {
     backgroundColor: string;
     width: number;
     height: number;
+    primaryColor?: string;
+    secondaryColor?: string;
 }
 
 declare type AstrofoxLayer = BarSpectrumLayer | WaveSpectrumLayer | SoundWaveLayer | SoundWave2Layer | TextLayer | ImageLayer | Geometry3DLayer | GroupLayer | NeonTunnelLayer | ReactiveOrbLayer | ParticleFieldLayer;
@@ -377,25 +379,25 @@ declare interface RGBShiftConfig {
     radial?: boolean;
 }
 
-declare type SchemaProperty =
-| StringProperty
-| NumberProperty
-| BooleanProperty
-| ArrayProperty
+declare type SchemaProperty = 
+| StringProperty 
+| NumberProperty 
+| BooleanProperty 
+| ArrayProperty 
 | ObjectProperty
 
 /**
  * Base Schema Types
- *
+ * 
  * Foundation types for all visualizer schemas
  */
 
-declare type SchemaPropertyType =
-| 'string'
-| 'number'
-| 'integer'
-| 'boolean'
-| 'array'
+declare type SchemaPropertyType = 
+| 'string' 
+| 'number' 
+| 'integer' 
+| 'boolean' 
+| 'array' 
 | 'object'
 
 declare const SHADING_TYPES: readonly ["Smooth", "Flat"];
@@ -2193,8 +2195,8 @@ declare interface VisualiserIsoProps {
     backendAudioData?: number[];
     ConfigFormComponent?: React.ComponentType<any>;
     configData?: any;
-    onClose?: () => void;
     storageName?: string;
+    onClose?: () => void;
 }
 
 /**
