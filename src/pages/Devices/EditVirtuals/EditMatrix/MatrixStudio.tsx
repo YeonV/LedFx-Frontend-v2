@@ -6,6 +6,7 @@ import Slide from '@mui/material/Slide'
 import IconButton from '@mui/material/IconButton'
 import BladeIcon from '../../../../components/Icons/BladeIcon/BladeIcon'
 import { IDevice, IMCell, MatrixStudioProps } from './M.utils'
+import useStore from '../../../../store/useStore'
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -43,8 +44,11 @@ const MatrixStudioButton = ({
     setOpen(false)
   }
 
+  const coreParams = useStore((state) => state.coreParams)
+  const isCC = coreParams && Object.keys(coreParams).length > 0
+
   const { status, as: MatrixStudio } = useDynamicModule<MatrixStudioProps>({
-    src: '/modules/yz-matrix-studio.js',
+    src: isCC ? 'modules/yz-matrix-studio.js' : '/modules/yz-matrix-studio.js',
     from: 'YzMatrixStudio',
     import: 'MatrixStudio'
   })
