@@ -12,7 +12,7 @@ export interface ClientMetadata {
   ip: string
   device_id: string
   name: string
-  type: 'controller' | 'visualiser' | 'mobile' | 'display' | 'api' | 'unknown'
+  type: 'controller' | 'visualiser' | 'mobile' | 'display' | 'api' | 'not-set'
   connected_at: number
   last_active: number
 }

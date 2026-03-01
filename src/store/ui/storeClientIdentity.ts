@@ -7,7 +7,7 @@ import type { IStore } from '../useStore'
  * Persisted via Zustand middleware for unique device identification
  */
 
-export type ClientType = 'controller' | 'visualiser' | 'mobile' | 'display' | 'api' | 'unknown'
+export type ClientType = 'controller' | 'visualiser' | 'mobile' | 'display' | 'api' | 'not-set'
 
 export interface ClientIdentity {
   deviceId: string
@@ -47,7 +47,7 @@ const getSessionClientIdentity = (deviceId: string): ClientIdentity => {
   return {
     deviceId,
     name: `Client-${deviceId.slice(4, 12)}`,
-    type: 'unknown'
+    type: 'not-set'
   }
 }
 

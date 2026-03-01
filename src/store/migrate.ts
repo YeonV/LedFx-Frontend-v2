@@ -4,7 +4,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
-export const frontendConfig = 46
+export const frontendConfig = 47
 
 export interface MigrationState {
   [key: string]: any
@@ -480,5 +480,21 @@ export const migrations: Migrations = {
     // If you have UI state setter functions stored, update them to direct state update pattern
     // Example: (state: IStore) => ({ ui: { ...state.ui, mgX: x } })
     // This migration ensures compatibility with new storeUI.tsx pattern
+  }),
+  47: produce((draft) => {
+    // Update persisted clientIdentity if present
+    if (draft.clientIdentity && draft.clientIdentity.type === 'unknown') {
+      draft.clientIdentity.type = 'not-set'
+    }
+
+    // Update any entries in the clients map
+    if (draft.clients && typeof draft.clients === 'object') {
+      Object.keys(draft.clients).forEach((k) => {
+        const c: any = (draft.clients as any)[k]
+        if (c && c.type === 'unknown') {
+          c.type = 'not-set'
+        }
+      })
+    }
   })
 }

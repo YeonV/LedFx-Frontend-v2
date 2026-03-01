@@ -75,7 +75,7 @@ const storeDialogs = (set: any) => ({
     wledSegments: true,
     openRgb: true,
     launchpad: true,
-    lifx: true
+    lifx: false
   },
   setAssistant: (kind: 'wled' | 'wledSegments' | 'openRgb' | 'launchpad' | 'lifx', val: boolean) =>
     set(

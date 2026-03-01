@@ -25,7 +25,7 @@ const ClientEdit = ({ name, type, sx }: ClientEditProps) => {
   const clients = useStore((state) => state.clients)
 
   const [newName, setNewName] = useState(name || '')
-  const [newType, setNewType] = useState<ClientType>(type || 'unknown')
+  const [newType, setNewType] = useState<ClientType>(type || 'not-set')
   const updateClientIdentity = useStore((state) => state.updateClientIdentity)
   const renameVisualizerInstance = useStore((state) => state.renameVisualizerInstance)
 
@@ -62,7 +62,7 @@ const ClientEdit = ({ name, type, sx }: ClientEditProps) => {
               <MenuItem value="mobile">Mobile</MenuItem>
               <MenuItem value="display">Display</MenuItem>
               <MenuItem value="api">API</MenuItem>
-              <MenuItem value="unknown">Unknown</MenuItem>
+              <MenuItem value="not-set">Not Set</MenuItem>
             </Select>
           </FormControl>
         </Box>
