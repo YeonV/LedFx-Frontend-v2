@@ -12,7 +12,8 @@ import {
   IconButton,
   Button,
   Tooltip,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@mui/material'
 import { styled } from '@mui/styles'
 
@@ -54,7 +55,7 @@ const TopBar = () => {
   const history = useNavigate()
   const theme = useTheme()
   const isTv = window.location.href.includes('isAndroidTv=true')
-
+  const smallScreen = useMediaQuery('(max-width:768px)')
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [frConfig, setFrConfig] = useState<FrontendConfig | null>(null)
   const latestTag = useStore((state) => state.ui.latestTag)
@@ -305,7 +306,23 @@ const TopBar = () => {
             <div style={{ position: 'absolute', top: 0, left: 16 }}>
               {LeftButtons(pathname, history, leftBarOpen, handleLeftBarOpen)}
 
-              {isAndroidApp() && (
+              {/* {isAndroidApp() && ( */}
+              {smallScreen ? (
+                <Tooltip
+                  title="Stop Service & Exit"
+                  placement="left"
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    left: 90,
+                    textTransform: 'none'
+                  }}
+                >
+                  <IconButton color="inherit" onClick={() => exitAndroidApp()}>
+                    <BladeIcon style={{ position: 'relative' }} name="mdi:exit-to-app" />
+                  </IconButton>
+                </Tooltip>
+              ) : (
                 <Button
                   variant="text"
                   size="small"
@@ -323,6 +340,7 @@ const TopBar = () => {
                   Stop Service & Exit
                 </Button>
               )}
+              {/* )} */}
             </div>
             {process.env.NODE_ENV === 'development' && false && <CrashButton />}
 
