@@ -12,6 +12,7 @@ export const test = base.extend<{ page: import('@playwright/test').Page }>({
     await page.evaluate(() => localStorage.clear())
     await page.reload()
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(page)
   }
 })

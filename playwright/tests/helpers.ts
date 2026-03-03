@@ -22,6 +22,7 @@ export const clearDialogs = async (page: Page): Promise<void> => {
     console.log('Connecting to http://localhost:7777')
     await page.getByText('http://localhost:7777').click()
     await page.waitForTimeout(1000)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_e) {
     console.log('No Host dialog not shown or already connected')
   }
@@ -33,6 +34,7 @@ export const clearDialogs = async (page: Page): Promise<void> => {
     console.log('Clicking Skip button')
     await skipButton.click()
     await page.waitForTimeout(1000)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_e) {
     console.log('Skip button not found or already gone')
   }
