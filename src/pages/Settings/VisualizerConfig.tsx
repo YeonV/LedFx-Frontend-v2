@@ -481,6 +481,7 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
                 <Tooltip title="Next visualizer">
                   <IconButton
                     key="next"
+                    aria-label="next-visualizer"
                     size={single ? 'small' : 'medium'}
                     onClick={handleNextVisual}
                   >

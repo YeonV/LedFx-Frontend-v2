@@ -43,6 +43,7 @@ const ClientEdit = ({ name, type, sx }: ClientEditProps) => {
           <TextField
             size="small"
             label="Name"
+            id="client-name-input"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
           />

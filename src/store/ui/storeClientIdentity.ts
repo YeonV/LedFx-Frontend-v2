@@ -18,7 +18,10 @@ export interface ClientIdentity {
 
 // Generate persistent device ID
 const generateDeviceId = (): string => {
-  const uuid = crypto.randomUUID()
+  const uuid =
+    typeof crypto?.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`
   return `web-${uuid}`
 }
 
