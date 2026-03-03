@@ -64,3 +64,6 @@ public/modules/*
 public/yz-audio-visualiser.js
 playwright/.pids.json
 test-results/*
+playwright/animated/*
+playwright/videos/*
+playwright/screenshots/*
