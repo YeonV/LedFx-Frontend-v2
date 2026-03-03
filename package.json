@@ -127,7 +127,7 @@
     "test:types": "tsc --noEmit",
     "test:lint": "eslint src/ --max-warnings 0",
     "test:pw": "playwright test -c playwright/playwright.config.ts",
-    "check-env": "node playwright/scripts/check-env.cjs",
+    "posttest:pw": "node playwright/scripts/video-to-webp.cjs",
     "test:video-to-webp": "node playwright/scripts/video-to-webp.cjs",
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",

@@ -1,38 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
+import { clearDialogs } from './helpers'
 
 test('Visualiser Features and Show Visualiser', async ({ page }) => {
   // Increase timeout for this complex test
   test.setTimeout(60000)
 
-  await page.goto('http://localhost:3000/#/')
+  await page.goto('/#/')
 
-  // Function to handle known dialogs
-  const clearDialogs = async () => {
-    // Handle No Host Dialog
-    const connectButton = page.getByRole('button', { name: 'Connect' })
-    try {
-      await connectButton.waitFor({ state: 'visible', timeout: 5000 })
-      console.log('Clicking Connect button')
-      await connectButton.click()
-      await page.waitForTimeout(1000)
-    } catch (_e) {
-      console.log('Connect button not found or already gone')
-    }
-
-    // Handle Intro dialog if it appears
-    const skipButton = page.getByRole('button', { name: 'Skip' })
-    try {
-      await skipButton.waitFor({ state: 'visible', timeout: 5000 })
-      console.log('Clicking Skip button')
-      await skipButton.click()
-      await page.waitForTimeout(1000)
-    } catch (_e) {
-      console.log('Skip button not found or already gone')
-    }
-  }
-
-  await clearDialogs()
+  await clearDialogs(page)
 
   console.log('Navigating to Settings')
   // Go to Settings
@@ -82,29 +58,52 @@ test('Visualiser Features and Show Visualiser', async ({ page }) => {
   await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
   await page.waitForTimeout(1000)
 
-  // Create a Virtual Device
-  console.log('Creating Virtual Device')
-  await page.locator('.MuiFab-root[aria-label="add"]').click()
-  await page.getByRole('menuitem', { name: 'Add Virtual Device' }).click()
-  await page.getByRole('button', { name: 'Add' }).click()
-  await page.waitForTimeout(2000)
-
-  // Open TopBar menu
+  // Open TopBar context menu
   console.log('Opening TopBar menu')
-  await page.getByLabel('menu').click()
+  await page.getByLabel('display more actions').click()
+  await page.waitForTimeout(300) // wait for menu animation
   await page.screenshot({ path: 'test-results/show-visualisers-menu-item.png' })
 
   console.log('Toggling Show Visualisers')
-  await page.getByRole('menuitem', { name: 'Show Visualisers' }).click()
+  const showVisualisersItem = page.getByRole('menuitem', { name: 'Show Visualisers' })
+  const hideVisualisersItem = page.getByRole('menuitem', { name: 'Hide Visualisers' })
+  if (await showVisualisersItem.isVisible()) {
+    await showVisualisersItem.click()
+  } else if (await hideVisualisersItem.isVisible()) {
+    // Already showing — close the menu without toggling off
+    console.log('Visualisers already showing')
+  }
+  await page.waitForTimeout(300)
+  await page.keyboard.press('Escape')
 
   console.log('Waiting for Visualiser Card')
-  const visualiserCard = page.locator('.MuiCard-root').filter({ hasText: 'Visualiser' })
+  // The section heading is an overline Typography "Visualizers"; walk up to its Stack parent
+  // then find the MuiCard-root within it — avoids relying on the auto-generated client name
+  const visualiserCard = page
+    .locator('span.MuiTypography-overline', { hasText: 'Visualizers' })
+    .locator('..')
+    .locator('.MuiCard-root')
+    .first()
   await expect(visualiserCard).toBeVisible({ timeout: 15000 })
 
   await page.screenshot({ path: 'test-results/show-visualisers.png' })
 
+  console.log('Opening ClientEdit popover')
+  await visualiserCard.locator('h6 button').click()
+  await page.waitForTimeout(300)
+
+  await page.locator('#client-name-input').clear()
+  await page.locator('#client-name-input').fill('Main')
+
+  await page.getByRole('combobox', { name: 'Type' }).click()
+  await page.getByRole('option', { name: 'Controller' }).click()
+
+  await page.locator('button:has([data-testid="CheckIcon"])').click()
+  await page.waitForTimeout(300)
+  await page.screenshot({ path: 'test-results/client-edit.png' })
+
   console.log('Clicking Next on Visualiser Card')
-  await visualiserCard.getByRole('button').filter({ hasText: 'Next' }).click()
-  await page.waitForTimeout(1000)
+  await visualiserCard.getByRole('button', { name: 'next-visualizer' }).click()
+  await page.waitForTimeout(2000)
   await page.screenshot({ path: 'test-results/visualiser-next.png' })
 })

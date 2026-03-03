@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
+  globalSetup: './tests/global.setup.ts',
+  globalTeardown: './tests/global.teardown.ts',
   testDir: './tests',
   outputDir: './videos',
   fullyParallel: true,
@@ -9,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:2000',
     trace: 'on-first-retry',
     screenshot: 'on',
     video: 'on' // Required for animated webp/gif generation
