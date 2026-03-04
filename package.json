@@ -129,6 +129,8 @@
     "test:pw": "playwright test -c playwright/playwright.config.ts",
     "posttest:pw": "node playwright/scripts/video-to-webp.cjs",
     "test:video-to-webp": "node playwright/scripts/video-to-webp.cjs",
+    "docs:matrix": "node playwright/scripts/spec-to-md.cjs playwright/tests/matrix-device.spec.ts ../backend/docs/howto/dummy_matrix.md",
+    "docs:visualiser": "node playwright/scripts/spec-to-md.cjs playwright/tests/visualiser-features.spec.ts ../backend/docs/howto/visualiser.md",
     "eject": "react-scripts eject",
     "predeploy": "yarn buildgh",
     "deploy": "gh-pages -d build",
