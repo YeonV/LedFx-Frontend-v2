@@ -246,3 +246,7 @@ if (outPath) {
 } else {
   process.stdout.write(md)
 }
+
+console.log('\nDone.\n')
+console.log('To open last HTML report run:\n')
+console.log('  yarn playwright show-report\n')

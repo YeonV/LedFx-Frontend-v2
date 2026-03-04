@@ -6,7 +6,7 @@ const ffmpegPath = require('ffmpeg-static')
 const RESULTS_DIR = 'playwright/videos'
 const REPORT_DATA_DIR = 'playwright-report/data'
 const ANIMATED_DIR = 'playwright/animated'
-const SKIP_SECONDS = 7 // cut the setup/connection noise from the start of every recording
+const SKIP_SECONDS = 3 // cut the setup/connection noise from the start of every recording
 
 if (!fs.existsSync(ANIMATED_DIR)) {
   fs.mkdirSync(ANIMATED_DIR, { recursive: true })
@@ -93,5 +93,3 @@ if (fs.existsSync(REPORT_DATA_DIR)) {
 }
 
 console.log('\nDone.\n')
-console.log('To open last HTML report run:\n')
-console.log('  yarn playwright show-report\n')

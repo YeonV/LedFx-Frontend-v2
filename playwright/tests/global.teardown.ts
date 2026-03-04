@@ -9,11 +9,32 @@ const __dirname = path.dirname(__filename)
 const PIDS_FILE = path.join(__dirname, '..', '.pids.json')
 const PWTEST_CONFIG = path.resolve(__dirname, '..', '..', '..', 'backend', 'pwtest')
 
-/** Kill a process tree on Windows using taskkill (no-op if pid is undefined) */
+/** Kill a process tree (cross-platform) */
 function killTree(pid: number | undefined, label: string) {
   if (!pid) return
   try {
-    execSync(`taskkill /PID ${pid} /T /F`, { stdio: 'ignore' })
+    if (process.platform === 'win32') {
+      execSync(`taskkill /PID ${pid} /T /F`, { stdio: 'ignore' })
+    } else {
+      // On macOS/Linux: kill the entire process group
+      try {
+        // Get the process group ID and kill all processes in it
+        const pgid = execSync(`ps -o pgid= -p ${pid}`, { stdio: ['ignore', 'pipe', 'ignore'] })
+          .toString()
+          .trim()
+        if (pgid) {
+          execSync(`kill -9 -- -${pgid}`, { stdio: 'ignore' })
+        }
+      } catch {
+        // Fallback: kill children then the process itself
+        try {
+          execSync(`pkill -KILL -P ${pid}`, { stdio: 'ignore' })
+        } catch {
+          /* no children */
+        }
+        process.kill(pid, 'SIGKILL')
+      }
+    }
     console.log(`[global teardown] Killed ${label} (PID ${pid})`)
   } catch {
     console.log(`[global teardown] ${label} (PID ${pid}) was already gone`)
