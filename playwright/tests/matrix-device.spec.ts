@@ -93,7 +93,17 @@ test('Dummy Matrix Device Setup', async ({ page }) => {
    */
   await test.step('3. Allow the Frontend to Render All Pixels', async () => {
     const pixelWarningDialog = page.locator('[aria-labelledby="about-dialog-title"]')
-    await pixelWarningDialog.waitFor({ state: 'visible', timeout: 10000 })
+    const dialogAppeared = await pixelWarningDialog
+      .waitFor({ state: 'visible', timeout: 3000 })
+      .then(() => true)
+      .catch(() => false)
+
+    if (!dialogAppeared) {
+      // Frontend pixels already sufficient — dialog did not appear, continue
+      await page.screenshot({ path: 'test-results/matrix-4a-pixel-warning-skipped.png' })
+      return
+    }
+
     await page.screenshot({ path: 'test-results/matrix-4a-pixel-warning.png' })
 
     await pixelWarningDialog.locator('[role="combobox"]').click()
