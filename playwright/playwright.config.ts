@@ -24,11 +24,11 @@ export default defineConfig({
         // Try enabling SwiftShader/software GL and ignore GPU blocklist on macOS
         launchOptions: {
           args: [
-            '--use-gl=swiftshader',
+            '--use-gl=angle',
+            '--use-angle=swiftshader',
             '--ignore-gpu-blocklist',
-            '--enable-accelerated-2d-canvas',
             '--enable-webgl',
-            '--enable-webgl2-compute-context'
+            '--enable-gpu-rasterization'
           ],
           headless: true
         }
