@@ -1,6 +1,7 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
+const ffmpegPath = require('ffmpeg-static')
 
 const RESULTS_DIR = 'playwright/videos'
 const REPORT_DATA_DIR = 'playwright-report/data'
@@ -17,7 +18,7 @@ function trimVideo(videoPath) {
   try {
     // Output-side -ss is frame-accurate (unlike input-side fast-seek + stream copy)
     execSync(
-      `ffmpeg -i "${videoPath}" -ss ${SKIP_SECONDS} -vcodec libvpx-vp9 -an -y "${tmp}"`,
+      `"${ffmpegPath}" -i "${videoPath}" -ss ${SKIP_SECONDS} -vcodec libvpx-vp9 -an -y "${tmp}"`,
       { stdio: 'pipe' }
     )
     fs.renameSync(tmp, videoPath)
@@ -27,7 +28,7 @@ function trimVideo(videoPath) {
     // Try simpler fallback: copy streams, keyframe-aligned (faster, less accurate)
     try {
       execSync(
-        `ffmpeg -ss ${SKIP_SECONDS} -i "${videoPath}" -c copy -y "${tmp}"`,
+        `"${ffmpegPath}" -ss ${SKIP_SECONDS} -i "${videoPath}" -c copy -y "${tmp}"`,
         { stdio: 'pipe' }
       )
       fs.renameSync(tmp, videoPath)
@@ -52,7 +53,7 @@ function convertToWebp(videoPath) {
     // -ss before -i = fast input seek (already trimmed, so offset is 0 here)
     // -vf "fps=10,scale=800:-1:flags=lanczos" reduces size and quality for better sharing
     execSync(
-      `ffmpeg -i "${videoPath}" -vf "fps=10,scale=800:-1:flags=lanczos" -vcodec libwebp -lossless 0 -compression_level 6 -q:v 50 -loop 0 -preset default -an -y "${outputPath}"`,
+      `"${ffmpegPath}" -i "${videoPath}" -vf "fps=10,scale=800:-1:flags=lanczos" -vcodec libwebp -lossless 0 -compression_level 6 -q:v 50 -loop 0 -preset default -an -y "${outputPath}"`,
       { stdio: 'inherit' }
     )
     console.log(`✅ Success: ${outputPath}`)
