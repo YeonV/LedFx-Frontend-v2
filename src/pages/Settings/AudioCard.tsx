@@ -25,6 +25,7 @@ import {
   VolumeOff,
   Info
 } from '@mui/icons-material'
+import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const AudioCard = ({ className }: any) => {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -36,6 +37,7 @@ const AudioCard = ({ className }: any) => {
   const [driverPreference, setDriverPreference] = useState<string>('ask')
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
+  const getSchemas = useStore((state) => state.getSchemas)
   const schema = useStore((state) => state?.schemas?.audio?.schema)
   const model = useStore((state) => state?.config?.audio)
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
@@ -44,6 +46,10 @@ const AudioCard = ({ className }: any) => {
   const setUsePerDeviceDelay = useStore((state) => state.setUsePerDeviceDelay)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
+  useSubscription('audio_device_list_changed', () => {
+    getSchemas(true) // for now: refresh schemas; later use /api/audio/devices -> devices
+    getSystemConfig() // for now: refresh config; later use /api/audio/devices -> active_device_index
+  })
 
   // Listen for electron messages
   window.api?.receive('fromMain', (args: any) => {

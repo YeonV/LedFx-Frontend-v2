@@ -22,7 +22,8 @@ export const initialSubscriptions = [
   { event_type: 'colors_updated', id: 9013 },
   { event_type: 'song_detected', id: 9014 },
   { event_type: 'clients_updated', id: 9015 },
-  { event_type: 'client_broadcast', id: 9016 }
+  { event_type: 'client_broadcast', id: 9016 },
+  { event_type: 'audio_device_list_changed', id: 9017 }
 ]
 
 // A declarative "recipe" for how to handle incoming events.
