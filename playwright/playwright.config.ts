@@ -19,7 +19,20 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        // Try enabling SwiftShader/software GL and ignore GPU blocklist on macOS
+        launchOptions: {
+          args: [
+            '--use-gl=swiftshader',
+            '--ignore-gpu-blocklist',
+            '--enable-accelerated-2d-canvas',
+            '--enable-webgl',
+            '--enable-webgl2-compute-context'
+          ],
+          headless: true
+        }
+      }
     }
   ]
 })
