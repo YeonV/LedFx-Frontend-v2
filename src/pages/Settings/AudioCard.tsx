@@ -37,8 +37,6 @@ const AudioCard = ({ className }: any) => {
   const [driverPreference, setDriverPreference] = useState<string>('ask')
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const getSystemConfig = useStore((state) => state.getSystemConfig)
-  const getSchemas = useStore((state) => state.getSchemas)
-  const getAudioDevices = useStore((state) => state.getAudioDevices)
   const schema = useStore((state) => state?.schemas?.audio?.schema)
   const model = useStore((state) => state?.config?.audio)
   const perDeviceDelay = useStore((state) => state?.perDeviceDelay)
@@ -47,9 +45,6 @@ const AudioCard = ({ className }: any) => {
   const setUsePerDeviceDelay = useStore((state) => state.setUsePerDeviceDelay)
   const coreParams = useStore((state) => state.coreParams)
   const isCC = coreParams && Object.keys(coreParams).length > 0
-  useSubscription('audio_device_list_changed', () => {
-    getAudioDevices() // Refresh audio devices list and active device index
-  })
 
   // Listen for electron messages
   window.api?.receive('fromMain', (args: any) => {

@@ -4,7 +4,11 @@ import { useSubscription } from '../utils/Websocket/WebSocketProvider'
 const useAppSubscriptions = () => {
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const setProtoCall = useStore((state) => state.setProtoCall)
+  const getAudioDevices = useStore((state) => state.getAudioDevices)
 
+  useSubscription('audio_device_list_changed', () => {
+    getAudioDevices() // Refresh audio devices list and active device index
+  })
   useSubscription('show_message', (e: any) => {
     showSnackbar(e.type, e.message)
   })
