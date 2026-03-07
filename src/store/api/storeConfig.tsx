@@ -172,6 +172,25 @@ const storeConfig = (set: any) => ({
       'api/getUserPresets'
     )
   },
+  getAudioDevices: async () => {
+    const resp = await Ledfx('/api/audio/devices')
+    if (resp && resp.devices !== undefined && resp.active_device_index !== undefined) {
+      set(
+        produce((state: IStore) => {
+          // Update the audio device list in the schema
+          if (state.schemas?.audio?.schema?.properties?.audio_device) {
+            state.schemas.audio.schema.properties.audio_device.enum = resp.devices
+          }
+          // Update the active device index in the config
+          if (state.config?.audio) {
+            state.config.audio.audio_device = resp.active_device_index
+          }
+        }),
+        false,
+        'api/gotAudioDevices'
+      )
+    }
+  },
   setSystemConfig: async (config: any) => await Ledfx('/api/config', 'PUT', config),
   deleteSystemConfig: async () => await Ledfx('/api/config', 'DELETE'),
   importSystemConfig: async (config: any) => await Ledfx('/api/config', 'POST', config)
