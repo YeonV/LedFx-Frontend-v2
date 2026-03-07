@@ -167,7 +167,7 @@
     "compile-electron:default": "cp ./app/electron.ts ./build/electron.js && cp ./app/preload.ts ./build/preload.cjs && cp ./app/renderer.ts ./build/renderer.js && cp ./app/serviceWorker.ts ./build/serviceWorker.js",
     "electron": "wait-on http://127.0.0.1:3000 && concurrently --kill-others \"npx tsc --project tsconfig.electron.json --watch\" \"wait-on public/electron.js && electron .\"",
     "electrons": "wait-on https://localhost:3000 && concurrently --kill-others \"npx tsc --project tsconfig.electron.json --watch\" \"wait-on public/electron.js && electron .\"",
-    "postinstall": "electron-builder install-app-deps && patch-package",
+    "postinstall": "electron-builder install-app-deps && patch-package && yarn get:visualiser && yarn playwright install",
     "prebuild-storybook": "run-script-os",
     "prebuild-storybook:win32": "set PUBLIC_URL=/LedFx-Frontend-v2/docs",
     "prebuild-storybook:default": "PUBLIC_URL=/LedFx-Frontend-v2/docs",
