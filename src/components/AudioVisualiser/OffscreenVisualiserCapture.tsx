@@ -1,4 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
+import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
+import useStore from '../../store/useStore'
 
 interface OffscreenVisualiserCaptureProps {
   enabled?: boolean
@@ -21,7 +23,7 @@ const OffscreenVisualiserCapture = ({
   enabled = false,
   width = 128,
   height = 128,
-  targetDevice: _targetDevice = 'visualiser-capture',
+  targetDevice = 'visualiser-capture',
   fps = 30,
   showPreview = false
 }: OffscreenVisualiserCaptureProps) => {
@@ -33,6 +35,27 @@ const OffscreenVisualiserCapture = ({
   const captureIntervalRef = useRef<number | null>(null)
   const workerRef = useRef<Worker | null>(null)
   const [sourceCanvasReady, setSourceCanvasReady] = useState(false)
+
+  // Backpressure: track if we're waiting for worker to finish
+  const processingRef = useRef(false)
+  const droppedFramesRef = useRef(0)
+
+  // Latest-only message queue: only keep most recent frame
+  const pendingMessageRef = useRef<any>(null)
+  const sendLoopRef = useRef<number | null>(null)
+  const messageIdRef = useRef(0)
+
+  // Stats aggregation for once-per-second logging
+  const statsRef = useRef({
+    mainThread: { count: 0, drawTime: 0, previewTime: 0, bitmapTime: 0, postTime: 0, total: 0 },
+    worker: { count: 0, drawTime: 0, extractTime: 0, rgbTime: 0, base64Time: 0, total: 0 },
+    websocket: { count: 0, sendTime: 0, overwritten: 0 },
+    lastLogTime: 0,
+    droppedFrames: 0
+  })
+
+  const { send, isConnected } = useWebSocket()
+  const clientId = useStore((state) => state.clientIdentity.clientId)
 
   // Create offscreen canvas for capturing at target resolution
   useEffect(() => {
@@ -47,14 +70,98 @@ const OffscreenVisualiserCapture = ({
 
       worker.onmessage = (e) => {
         if (e.data.type === 'ready') {
-          console.log('[OffscreenVisualiserCapture] Worker ready')
+          // Worker initialized
         } else if (e.data.type === 'captured') {
-          // Log timing from worker occasionally
-          if (Math.random() < 0.033) {
-            console.log('[OffscreenVisualiserCapture] Worker timing:')
-            console.log(`  - Draw bitmap: ${e.data.drawTime.toFixed(2)}ms`)
-            console.log(`  - getImageData: ${e.data.extractTime.toFixed(2)}ms`)
-            console.log(`  - Total: ${e.data.totalTime.toFixed(2)}ms (${e.data.pixelCount} bytes)`)
+          // Store latest message (overwrites previous if not sent yet)
+          if (isConnected && targetDevice) {
+            const hadPending = pendingMessageRef.current !== null
+
+            // Match backend expected format: frontend_visualiser_data
+            pendingMessageRef.current = {
+              id: messageIdRef.current++,
+              type: 'frontend_visualiser_data',
+              client_id: clientId,
+              vis_id: targetDevice,
+              pixels: e.data.pixelData.data, // base64-encoded RGB data
+              shape: [e.data.pixelData.height, e.data.pixelData.width], // [rows, cols]
+              encoding: 'base64-rgb' // Backend needs to decode: base64 -> RGB byte array
+            }
+
+            // Track overwrites (old frame dropped)
+            if (hadPending) {
+              statsRef.current.websocket.overwritten++
+            }
+          }
+
+          // Aggregate stats
+          const timing = e.data.timing
+          const stats = statsRef.current
+          stats.worker.count++
+          stats.worker.drawTime += timing.drawTime
+          stats.worker.extractTime += timing.extractTime
+          stats.worker.rgbTime += timing.rgbConvertTime
+          stats.worker.base64Time += timing.base64EncodeTime
+          stats.worker.total += timing.totalTime
+
+          // Worker finished, ready for next frame
+          processingRef.current = false
+
+          // Log aggregated stats once per second (single line)
+          const now = performance.now()
+          if (stats.lastLogTime === 0) {
+            stats.lastLogTime = now
+          } else if (now - stats.lastLogTime >= 1000) {
+            const elapsed = (now - stats.lastLogTime) / 1000
+
+            if (stats.mainThread.count > 0 || stats.worker.count > 0) {
+              const mainAvg =
+                stats.mainThread.count > 0
+                  ? (stats.mainThread.total / stats.mainThread.count).toFixed(1)
+                  : '0.0'
+              const workerAvg =
+                stats.worker.count > 0
+                  ? (stats.worker.total / stats.worker.count).toFixed(1)
+                  : '0.0'
+              const actualFps = (stats.mainThread.count / elapsed).toFixed(1)
+
+              const parts = [
+                `FPS: ${actualFps}/${fps}`,
+                `Main: ${mainAvg}ms`,
+                `Worker: ${workerAvg}ms`,
+                `WS: ${stats.websocket.count} sent`
+              ]
+
+              if (stats.websocket.overwritten > 0) {
+                parts.push(`${stats.websocket.overwritten} overwritten`)
+              }
+              if (stats.droppedFrames > 0) {
+                parts.push(`${stats.droppedFrames} dropped`)
+              }
+
+              console.log(`[OffscreenVizCapture] ${parts.join(' | ')}`)
+            }
+
+            // Reset stats
+            stats.mainThread = {
+              count: 0,
+              drawTime: 0,
+              previewTime: 0,
+              bitmapTime: 0,
+              postTime: 0,
+              total: 0
+            }
+            stats.worker = {
+              count: 0,
+              drawTime: 0,
+              extractTime: 0,
+              rgbTime: 0,
+              base64Time: 0,
+              total: 0
+            }
+            stats.websocket = { count: 0, sendTime: 0, overwritten: 0 }
+            stats.droppedFrames = 0
+            stats.lastLogTime = now
+            droppedFramesRef.current = 0
           }
         }
       }
@@ -94,37 +201,12 @@ const OffscreenVisualiserCapture = ({
       // Initialize worker with dimensions (it will create its own OffscreenCanvas)
       worker.postMessage({ type: 'init', width, height })
 
-      console.log('[OffscreenVisualiserCapture] Canvases created:', {
-        width,
-        height
-      })
-
       // Try to find the visualiser canvas
       const findVisualiserCanvas = () => {
-        // ONLY search within the background visualizer container
         const bgContainer = document.querySelector('[data-background-visualizer="true"]')
-        if (!bgContainer) {
-          console.log('[OffscreenVisualiserCapture] Background visualizer container not found yet')
-          return false
-        }
+        if (!bgContainer) return false
 
         const canvases = bgContainer.querySelectorAll('canvas')
-        console.log(
-          '[OffscreenVisualiserCapture] Searching for visualiser canvas in background container, found',
-          canvases.length,
-          'canvases'
-        )
-
-        // Log all canvases for debugging
-        Array.from(canvases).forEach((c, idx) => {
-          console.log(`[OffscreenVisualiserCapture] Canvas ${idx}:`, {
-            width: c.width,
-            height: c.height,
-            id: c.id,
-            className: c.className,
-            isOurs: c === canvasRef.current || c === offscreen
-          })
-        })
 
         for (const c of canvases) {
           // Skip our own canvases
@@ -134,44 +216,23 @@ const OffscreenVisualiserCapture = ({
           if (c.width > 400 && c.height > 300) {
             sourceCanvasRef.current = c
             setSourceCanvasReady(true)
-            console.log('[OffscreenVisualiserCapture] Found background visualiser canvas:', {
-              width: c.width,
-              height: c.height,
-              id: c.id,
-              className: c.className
-            })
             return true
           }
         }
-        console.log('[OffscreenVisualiserCapture] No suitable visualiser canvas found yet')
         return false
       }
 
-      // Try to find it immediately, then keep trying
-      if (!findVisualiserCanvas()) {
-        console.log('[OffscreenVisualiserCapture] Will retry finding visualiser canvas every 500ms')
-        findCanvasIntervalRef.current = setInterval(() => {
-          if (findVisualiserCanvas()) {
-            // Don't clear interval - keep monitoring in case canvas changes
-            console.log('[OffscreenVisualiserCapture] Canvas found, will continue monitoring')
-          }
-        }, 500)
-      } else {
-        // Found immediately, but still monitor for changes
-        console.log('[OffscreenVisualiserCapture] Starting canvas monitoring interval')
-        findCanvasIntervalRef.current = setInterval(() => {
-          // Check if current canvas is still valid
-          if (sourceCanvasRef.current && !document.body.contains(sourceCanvasRef.current)) {
-            console.log('[OffscreenVisualiserCapture] Canvas changed, searching for new one...')
-            sourceCanvasRef.current = null
-            setSourceCanvasReady(false)
-            findVisualiserCanvas()
-          } else if (!sourceCanvasRef.current) {
-            // Try to find it again
-            findVisualiserCanvas()
-          }
-        }, 500)
-      }
+      // Try to find it immediately, then keep monitoring
+      findVisualiserCanvas()
+      findCanvasIntervalRef.current = setInterval(() => {
+        if (sourceCanvasRef.current && !document.body.contains(sourceCanvasRef.current)) {
+          sourceCanvasRef.current = null
+          setSourceCanvasReady(false)
+          findVisualiserCanvas()
+        } else if (!sourceCanvasRef.current) {
+          findVisualiserCanvas()
+        }
+      }, 500)
     } catch (error) {
       console.error('[OffscreenVisualiserCapture] Failed to create canvases:', error)
     }
@@ -190,19 +251,63 @@ const OffscreenVisualiserCapture = ({
       }
       sourceCanvasRef.current = null
       setSourceCanvasReady(false)
+      processingRef.current = false
+      droppedFramesRef.current = 0
     }
-  }, [enabled, width, height, showPreview])
+  }, [enabled, width, height, showPreview, send, isConnected, targetDevice, fps, clientId])
+
+  // Send loop: Only send latest message when WebSocket is ready
+  useEffect(() => {
+    if (!enabled || !isConnected) {
+      pendingMessageRef.current = null
+      return
+    }
+
+    const sendLoop = () => {
+      const message = pendingMessageRef.current
+
+      // Send if we have a message pending
+      if (message) {
+        const t0 = performance.now()
+        send(message)
+        const t1 = performance.now()
+
+        pendingMessageRef.current = null
+
+        // Track send timing
+        statsRef.current.websocket.count++
+        statsRef.current.websocket.sendTime += t1 - t0
+      }
+
+      sendLoopRef.current = requestAnimationFrame(sendLoop) as any
+    }
+
+    sendLoop()
+
+    return () => {
+      if (sendLoopRef.current) {
+        cancelAnimationFrame(sendLoopRef.current as number)
+        sendLoopRef.current = null
+      }
+      pendingMessageRef.current = null
+    }
+  }, [enabled, isConnected, send])
 
   // Capture frame - offload expensive work to worker
   const captureAndSend = useCallback(async () => {
     if (!sourceCanvasRef.current) return
 
+    // Backpressure: skip frame if worker is still processing previous frame
+    if (processingRef.current) {
+      droppedFramesRef.current++
+      statsRef.current.droppedFrames++
+      return
+    }
+
     const source = sourceCanvasRef.current
 
     // Check if the source canvas is still in the DOM
-    // If the user changes visualizations, a new canvas is created
     if (!document.body.contains(source)) {
-      console.log('[OffscreenVisualiserCapture] Source canvas no longer in DOM, resetting...')
       sourceCanvasRef.current = null
       setSourceCanvasReady(false)
       return
@@ -213,6 +318,8 @@ const OffscreenVisualiserCapture = ({
     try {
       // Draw to offscreen canvas first (do the expensive rescale once)
       if (!offscreenCtxRef.current || !offscreenCanvasRef.current) return
+
+      processingRef.current = true
 
       offscreenCtxRef.current.drawImage(source, 0, 0, width, height)
 
@@ -238,18 +345,18 @@ const OffscreenVisualiserCapture = ({
 
         const t4 = performance.now()
 
-        // Log main thread timing occasionally
-        if (Math.random() < 0.033) {
-          console.log('[OffscreenVisualiserCapture] Main thread timing:')
-          console.log(`  - Offscreen drawImage (rescale): ${(t1 - t0).toFixed(2)}ms`)
-          console.log(`  - Preview copy: ${(t2 - t1).toFixed(2)}ms`)
-          console.log(`  - createImageBitmap: ${(t3 - t2).toFixed(2)}ms`)
-          console.log(`  - postMessage: ${(t4 - t3).toFixed(2)}ms`)
-          console.log(`  - Main thread total: ${(t4 - t0).toFixed(2)}ms`)
-        }
+        // Aggregate main thread stats
+        const stats = statsRef.current
+        stats.mainThread.count++
+        stats.mainThread.drawTime += t1 - t0
+        stats.mainThread.previewTime += t2 - t1
+        stats.mainThread.bitmapTime += t3 - t2
+        stats.mainThread.postTime += t4 - t3
+        stats.mainThread.total += t4 - t0
       }
     } catch (error) {
       console.error('[OffscreenVisualiserCapture] Error capturing frame:', error)
+      processingRef.current = false
     }
   }, [width, height, showPreview])
 
@@ -264,8 +371,6 @@ const OffscreenVisualiserCapture = ({
       }
       return
     }
-
-    console.log('[OffscreenVisualiserCapture] Starting capture loop at', fps, 'fps')
 
     // Use requestAnimationFrame to sync with visualizer rendering
     let lastCaptureTime = performance.now()
