@@ -5,6 +5,7 @@ import useStore from '../../store/useStore'
 import { useWebSocket, useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import VisualiserWsControl from './VisualiserWsControl'
+import OffscreenVisualiserCapture from './OffscreenVisualiserCapture'
 // import '../../fonts.css'
 // import { useVStore, VState } from '../../hooks/vStore'
 
@@ -74,6 +75,22 @@ const Visualiser = ({
   const { send, isConnected } = useWebSocket()
   const sendRef = useRef(send)
 
+  // Offscreen capture settings
+  const offscreenCaptureEnabled = useStore(
+    (state) => state.uiPersist.offscreenCapture?.enabled ?? false
+  )
+  const offscreenCaptureShowPreview = useStore(
+    (state) => state.uiPersist.offscreenCapture?.showPreview ?? false
+  )
+  const offscreenCaptureWidth = useStore((state) => state.uiPersist.offscreenCapture?.width ?? 128)
+  const offscreenCaptureHeight = useStore(
+    (state) => state.uiPersist.offscreenCapture?.height ?? 128
+  )
+  const offscreenCaptureFps = useStore((state) => state.uiPersist.offscreenCapture?.fps ?? 30)
+  const offscreenCaptureTargetDevice = useStore(
+    (state) => state.uiPersist.offscreenCapture?.targetDevice ?? 'visualiser-capture'
+  )
+
   // Set storage name on window before module loads (fallback/convenience)
   if (storageName) {
     window.VISUALISER_STORAGE_NAME = storageName
@@ -135,6 +152,16 @@ const Visualiser = ({
   const content = (
     <>
       <VisualiserWsControl />
+      {offscreenCaptureEnabled && (
+        <OffscreenVisualiserCapture
+          enabled={offscreenCaptureEnabled}
+          width={offscreenCaptureWidth}
+          height={offscreenCaptureHeight}
+          fps={offscreenCaptureFps}
+          targetDevice={offscreenCaptureTargetDevice}
+          showPreview={offscreenCaptureShowPreview}
+        />
+      )}
       <AudioVisualiser
         theme={theme}
         effects={effects}
@@ -151,6 +178,7 @@ const Visualiser = ({
   if (backgroundMode) {
     return (
       <Box
+        data-background-visualizer="true"
         sx={{
           width: '100vw',
           height: 'calc(100vh - 64px)',
