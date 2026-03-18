@@ -104,6 +104,7 @@ const LaunchpadButtonMap = ({
   const open = Boolean(anchorEl)
   const lp = MidiDevices[midiType][midiModel] as IMidiDevice
   const isRgb = 'rgb' in lp.fn && lp.fn.rgb
+  const isLaunchpadMiniMK3 = midiType === 'Launchpad' && midiModel === 'MiniMK3'
 
   const output =
     WebMidi.enabled &&
@@ -176,31 +177,47 @@ const LaunchpadButtonMap = ({
       )
     if (rowI === 0 && butI === 3) return <PlayArrow />
     if (rowI === 0 && butI === 4)
-      return (
-        <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-          <br />
-          Session Mixer
-        </Typography>
-      )
+      if (isLaunchpadMiniMK3) {
+        return (
+          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+            Session
+          </Typography>
+        )
+      } else {
+        return (
+          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+            <br />
+            Session Mixer
+          </Typography>
+        )
+      }
     if (rowI === 0 && butI === 5)
       return (
         <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-          Note
+          {isLaunchpadMiniMK3 ? 'Drums' : 'Note'}
         </Typography>
       )
     if (rowI === 0 && butI === 6)
       return (
         <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-          Custom
+          {isLaunchpadMiniMK3 ? 'Keys' : 'Custom'}
         </Typography>
       )
     if (rowI === 0 && butI === 7)
-      return (
-        <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-          <br />
-          Capture MIDI
-        </Typography>
-      )
+      if (isLaunchpadMiniMK3) {
+        return (
+          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+            User
+          </Typography>
+        )
+      } else {
+        return (
+          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+            <br />
+            Capture MIDI
+          </Typography>
+        )
+      }
     if (rowI === 0 && butI === 8)
       return (
         <BladeIcon
@@ -211,14 +228,34 @@ const LaunchpadButtonMap = ({
           name="launchpad"
         />
       )
-    if (rowI === 1 && butI === 8) return <RightButton>Volume</RightButton>
-    if (rowI === 2 && butI === 8) return <RightButton>Pan</RightButton>
-    if (rowI === 3 && butI === 8) return <RightButton>Send&nbsp;B</RightButton>
-    if (rowI === 4 && butI === 8) return <RightButton>Send&nbsp;A</RightButton>
-    if (rowI === 5 && butI === 8) return <RightButton>Stop&nbsp;Clip</RightButton>
-    if (rowI === 6 && butI === 8) return <RightButton>Mute</RightButton>
-    if (rowI === 7 && butI === 8) return <RightButton>Solo</RightButton>
-    if (rowI === 8 && butI === 8) return <RightButton>Record&nbsp;Arm</RightButton>
+    if (isLaunchpadMiniMK3) {
+      if (rowI === 1 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 2 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 3 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 4 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 5 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 6 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 7 && butI === 8) return <ArrowForwardIos />
+      if (rowI === 8 && butI === 8)
+        return (
+          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+            Stop
+            <br />
+            Solo
+            <br />
+            Mute
+          </Typography>
+        )
+    } else {
+      if (rowI === 1 && butI === 8) return <RightButton>Volume</RightButton>
+      if (rowI === 2 && butI === 8) return <RightButton>Pan</RightButton>
+      if (rowI === 3 && butI === 8) return <RightButton>Send&nbsp;B</RightButton>
+      if (rowI === 4 && butI === 8) return <RightButton>Send&nbsp;A</RightButton>
+      if (rowI === 5 && butI === 8) return <RightButton>Stop&nbsp;Clip</RightButton>
+      if (rowI === 6 && butI === 8) return <RightButton>Mute</RightButton>
+      if (rowI === 7 && butI === 8) return <RightButton>Solo</RightButton>
+      if (rowI === 8 && butI === 8) return <RightButton>Record&nbsp;Arm</RightButton>
+    }
 
     if (showMapping) {
       const uiButtonNumberStr = `${9 - rowI}${butI + 1}`
