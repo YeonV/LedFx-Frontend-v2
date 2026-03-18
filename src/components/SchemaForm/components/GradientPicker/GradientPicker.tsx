@@ -63,6 +63,34 @@ const GradientPicker = ({
       defaultColors[k] = g
     })
 
+  // Find the name of the currently selected gradient
+  const getGradientName = (gradientValue: string): string | null => {
+    if (!gradientValue || !colors) return null
+
+    const normalized = normalizeGradient(gradientValue)
+
+    // Search in all color/gradient collections
+    const allCollections = [
+      colors?.gradients?.builtin,
+      colors?.gradients?.user,
+      colors?.colors?.builtin,
+      colors?.colors?.user
+    ]
+
+    for (const collection of allCollections) {
+      if (collection) {
+        const entry = Object.entries(collection).find(([_, value]) =>
+          normalizeGradient(value as string) === normalized
+        )
+        if (entry) return entry[0]
+      }
+    }
+
+    return null
+  }
+
+  const selectedGradientName = getGradientName(pickerBgColorInt)
+
   const handleClick = (event: any) => {
     setAnchorEl(anchorEl ? null : event.currentTarget)
   }
@@ -85,6 +113,41 @@ const GradientPicker = ({
     setPickerBgColorInt(normalizeGradient(pickerBgColor))
   }, [pickerBgColor, setPickerBgColorInt])
 
+  useEffect(() => {
+    // Add tooltips to gradient tiles with gradient names
+    if (!open || !colors) return
+
+    const addTooltips = () => {
+      const tiles = document.querySelectorAll('.gradient-picker .default-color-panel_item')
+      const gradientNames: string[] = []
+
+      // Collect all gradient names in order
+      if (colors?.gradients?.builtin) {
+        Object.keys(colors.gradients.builtin).forEach((name) => gradientNames.push(name))
+      }
+      if (colors?.gradients?.user) {
+        Object.keys(colors.gradients.user).forEach((name) => gradientNames.push(name))
+      }
+      if (colors?.colors?.builtin) {
+        Object.keys(colors.colors.builtin).forEach((name) => gradientNames.push(name))
+      }
+      if (colors?.colors?.user) {
+        Object.keys(colors.colors.user).forEach((name) => gradientNames.push(name))
+      }
+
+      // Add title attribute to each tile
+      tiles.forEach((tile, index) => {
+        if (index < gradientNames.length) {
+          tile.setAttribute('title', gradientNames[index])
+        }
+      })
+    }
+
+    // Run after React has rendered the color picker
+    const timer = setTimeout(addTooltips, 100)
+    return () => clearTimeout(timer)
+  }, [open, colors])
+
   return (
     <div
       className={`${classes.wrapper} step-effect-${index} gradient-picker`}
@@ -102,6 +165,16 @@ const GradientPicker = ({
     >
       <label className="MuiFormLabel-root" style={{ background: theme.palette.background.paper }}>
         {title && title.replaceAll('_', ' ').replaceAll('background', 'bg').replaceAll('name', '')}
+        {selectedGradientName && (
+          <span style={{
+            marginLeft: '0.5rem',
+            fontWeight: 'normal',
+            opacity: 0.7,
+            fontSize: '0.85em'
+          }}>
+            ({selectedGradientName})
+          </span>
+        )}
       </label>
       {}
       <div
@@ -146,7 +219,7 @@ const GradientPicker = ({
               setPickerBgColorInt(normalized)
               return sendColorToVirtuals(normalized)
             }}
-            popupWidth={288}
+            popupWidth={346}
             showAlpha={false}
             value={pickerBgColorInt}
             defaultColors={Object.values(defaultColors)}
