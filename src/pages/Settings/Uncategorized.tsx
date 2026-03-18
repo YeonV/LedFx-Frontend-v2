@@ -90,6 +90,12 @@ const Uncategorized = () => {
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
       </SettingsRow>
+      <SettingsRow
+        title="Effect Grid View"
+        checked={features.effectGridView}
+        onChange={() => setFeatures('effectGridView', !features.effectGridView)}
+        info="Use new grid view for effect selection (shows all effects at once)"
+      />
     </>
   )
 }

@@ -4,4 +4,5 @@ export interface EffectDropDownProps {
   groups?: any
   showFilter?: boolean
   title: string
+  viewMode?: 'list' | 'grid'
 }

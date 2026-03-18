@@ -11,6 +11,7 @@ export type IFeatures =
   | 'webaudio'
   | 'streamto'
   | 'effectfilter'
+  | 'effectGridView'
   | 'transitions'
   | 'frequencies'
   | 'go'
@@ -45,6 +46,10 @@ export type IFeatures =
   | 'showVisualisersOnDevicesPage'
 
 const storeFeatures = (set: any) => ({
+
+
+
+
   features: {
     dev: false,
     cloud: false,
@@ -55,6 +60,7 @@ const storeFeatures = (set: any) => ({
     webaudio: false,
     streamto: false,
     effectfilter: false,
+    effectGridView: false,
     transitions: false,
     frequencies: false,
     go: false,
@@ -98,6 +104,7 @@ const storeFeatures = (set: any) => ({
     webaudio: false,
     streamto: false,
     effectfilter: false,
+    effectGridView: false,
     transitions: false,
     frequencies: false,
     go: false,
