@@ -125,22 +125,29 @@ const GradientPicker = ({
     if (colors?.colors?.user)
       Object.keys(colors.colors.user).forEach((name) => gradientNames.push(name))
 
-    const addTitles = (tiles: NodeListOf<Element>) => {
-      tiles.forEach((tile, index) => {
-        if (index < gradientNames.length && !tile.getAttribute('title')) {
-          tile.setAttribute('title', gradientNames[index])
-        }
-      })
+    const addTitles = (container: Element) => {
+      const tiles = container.querySelectorAll('.gradient-picker .default-color-panel_item')
+      if (tiles.length > 0) {
+        tiles.forEach((tile, index) => {
+          if (index < gradientNames.length && !tile.getAttribute('title')) {
+            tile.setAttribute('title', gradientNames[index])
+          }
+        })
+        return true
+      }
+      return false
     }
 
-    const observer = new MutationObserver(() => {
-      // Scope observation to popper element
-      const popperEl = document.getElementById(id)
-      if (!popperEl) return
+    // Try to add titles immediately (popper might already exist)
+    const popperEl = document.getElementById(id)
+    if (popperEl && addTitles(popperEl)) {
+      return // Already done, no need to observe
+    }
 
-      const tiles = popperEl.querySelectorAll('.gradient-picker .default-color-panel_item')
-      if (tiles.length > 0) {
-        addTitles(tiles)
+    // If not found, observe DOM until popper appears
+    const observer = new MutationObserver(() => {
+      const el = document.getElementById(id)
+      if (el && addTitles(el)) {
         observer.disconnect()
       }
     })
