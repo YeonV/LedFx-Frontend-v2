@@ -2,22 +2,18 @@ import { useState, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
-  AppBar,
-  Toolbar,
   IconButton,
   Typography,
   TextField,
   InputAdornment,
   Slide,
   ToggleButton,
-  ToggleButtonGroup,
   useTheme,
   alpha,
   Box,
   Card,
   CardActionArea,
-  CardContent,
-  Chip
+  CardContent
 } from '@mui/material'
 import { Close, Search } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
@@ -26,6 +22,7 @@ import { forwardRef } from 'react'
 interface Effect {
   id: string
   name: string
+  category?: string
 }
 
 interface EffectGridSelectorProps {
@@ -46,6 +43,39 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />
 })
 
+const categoryColors: Record<string, string> = {
+  'Non-Reactive': '#4B4E6B',
+  BPM: '#6A757E',
+  Classic: '#4F3E4C',
+  Atmospheric: '#3E4B65',
+  '2D': '#505758',
+  Matrix: '#2B3A42',
+  Diagnostic: '#8A4C6C',
+  Simple: '#5C6B7E'
+}
+
+const defaultColors = [
+  '#4B4E6B',
+  '#6A757E',
+  '#4F3E4C',
+  '#3E4B65',
+  '#505758',
+  '#2B3A42',
+  '#8A4C6C',
+  '#5C6B7E'
+]
+
+const categoryOrder = [
+  'Non-Reactive',
+  'BPM',
+  'Classic',
+  'Atmospheric',
+  '2D',
+  'Matrix',
+  'Simple',
+  'Diagnostic'
+]
+
 const EffectGridSelector = ({
   open,
   onClose,
@@ -56,88 +86,113 @@ const EffectGridSelector = ({
 }: EffectGridSelectorProps) => {
   const theme = useTheme()
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [hiddenCategories, setHiddenCategories] = useState<string[]>([])
 
-  const categoryOrder = useMemo(
-    () => ['Non-Reactive', 'BPM', 'Classic', 'Atmospheric', '2D', 'Matrix', 'Diagnostic'],
-    []
-  )
+  const allEffects = useMemo(() => {
+    if (!groups) return []
 
-  const categoryColors: Record<string, { bg: string; chip: string }> = {
-    'Non-Reactive': { bg: '#3a3d50', chip: '#4B4E6B' },
-    BPM: { bg: '#545c64', chip: '#6A757E' },
-    Classic: { bg: '#4a5568', chip: '#5C6B7E' },
-    Atmospheric: { bg: '#3f4a59', chip: '#4F5A69' },
-    '2D': { bg: '#4a4e69', chip: '#5A5E79' },
-    Matrix: { bg: '#3d405b', chip: '#4D506B' },
-    Diagnostic: { bg: '#2d3748', chip: '#3D4758' }
-  }
-
-  const handleCategoryChange = (_: React.MouseEvent<HTMLElement>, newCategories: string[]) => {
-    setSelectedCategories(newCategories)
-  }
-
-  const filteredGroups = useMemo(() => {
-    if (!groups) return {}
-
-    const result: { [key: string]: Effect[] } = {}
-
+    const effects: Effect[] = []
     Object.keys(groups).forEach((category) => {
-      const effects = groups[category].filter((effect) => {
-        const matchesSearch =
-          searchQuery === '' ||
-          effect.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          category.toLowerCase().includes(searchQuery.toLowerCase())
-
-        const matchesCategory =
-          selectedCategories.length === 0 || selectedCategories.includes(category)
-
-        return matchesSearch && matchesCategory
+      groups[category].forEach((effect: any) => {
+        effects.push({ ...effect, category })
       })
+    })
+    return effects
+  }, [groups])
 
-      if (effects.length > 0) {
-        result[category] = effects
-      }
+  const filteredEffects = useMemo(() => {
+    const filtered = allEffects.filter((effect) => {
+      const matchesSearch =
+        searchQuery === '' ||
+        effect.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (effect.category && effect.category.toLowerCase().includes(searchQuery.toLowerCase()))
+
+      const matchesCategory = effect.category && !hiddenCategories.includes(effect.category)
+
+      return matchesSearch && matchesCategory
     })
 
-    return result
-  }, [groups, searchQuery, selectedCategories])
+    const order = categoryOrder.filter((c) => filtered.some((e) => e.category === c))
+    const others = [
+      ...new Set(
+        filtered.filter((e) => !order.includes(e.category || '')).map((e) => e.category || '')
+      )
+    ]
+
+    return [...filtered].sort((a, b) => {
+      const aOrder = order.indexOf(a.category || '')
+      const bOrder = order.indexOf(b.category || '')
+      if (aOrder !== -1 && bOrder !== -1) return aOrder - bOrder
+      if (aOrder !== -1) return -1
+      if (bOrder !== -1) return 1
+      const aOthers = others.indexOf(a.category || '')
+      const bOthers = others.indexOf(b.category || '')
+      return aOthers - bOthers
+    })
+  }, [allEffects, searchQuery, hiddenCategories])
+
+  const toggleCategory = (category: string) => {
+    setHiddenCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+    )
+  }
 
   const handleEffectSelect = (effectId: string) => {
     onChange(effectId)
     onClose()
   }
 
+  const getEffectColor = (effect: Effect) => {
+    const category = effect.category || 'Non-Reactive'
+    if (categoryColors[category]) return categoryColors[category]
+    const hash = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    return defaultColors[hash % defaultColors.length]
+  }
+
+  const getChipColor = (category: string) => {
+    if (categoryColors[category]) return categoryColors[category]
+    const hash = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    return defaultColors[hash % defaultColors.length]
+  }
+
   return (
     <Dialog
-      fullScreen
       open={open}
       onClose={onClose}
       TransitionComponent={Transition}
+      maxWidth={false}
       sx={{
         '& .MuiDialog-paper': {
-          backgroundColor: theme.palette.background.default
+          width: '80vw',
+          maxWidth: 'none',
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+          borderRadius: 2
         }
       }}
     >
-      <AppBar
+      <Box
         sx={{
-          position: 'relative',
-          backgroundColor:
-            theme.palette.mode === 'dark'
-              ? alpha(theme.palette.background.paper, 0.9)
-              : alpha(theme.palette.background.paper, 0.95),
-          backdropFilter: 'blur(10px)',
-          color: theme.palette.text.primary,
-          boxShadow: 'none',
-          borderBottom: `1px solid ${theme.palette.divider}`
+          display: 'flex',
+          flexDirection: 'column',
+          border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+          borderRadius: 2,
+          overflow: 'hidden'
         }}
       >
-        <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={onClose} aria-label="close">
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            p: 2,
+            backgroundColor: 'transparent',
+            borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`
+          }}
+        >
+          <IconButton edge="start" onClick={onClose} aria-label="close" sx={{ mr: 2 }}>
             <Close />
           </IconButton>
-          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+          <Typography variant="h6" component="div" sx={{ flex: 1 }}>
             {title}
           </Typography>
           <TextField
@@ -154,7 +209,6 @@ const EffectGridSelector = ({
               )
             }}
             sx={{
-              mr: 2,
               minWidth: 250,
               '& .MuiOutlinedInput-root': {
                 backgroundColor: alpha(theme.palette.action.active, 0.04),
@@ -164,190 +218,159 @@ const EffectGridSelector = ({
               }
             }}
           />
-        </Toolbar>
-        <Box sx={{ px: 2, pb: 2 }}>
-          <ToggleButtonGroup
-            value={selectedCategories}
-            onChange={handleCategoryChange}
-            aria-label="categories"
-            size="small"
-            sx={{
-              flexWrap: 'wrap',
-              gap: 0.5,
-              '& .MuiToggleButton-root': {
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: '16px !important',
-                px: 2,
-                py: 0.5,
-                fontSize: '0.75rem',
-                textTransform: 'none',
-                '&.Mui-selected': {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.15),
-                  color: theme.palette.primary.main,
-                  borderColor: theme.palette.primary.main,
-                  '&:hover': {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.25)
-                  }
-                }
-              }
-            }}
-          >
-            <ToggleButton value="" aria-label="all">
-              All
-            </ToggleButton>
-            {categoryOrder.map((category) => (
-              <ToggleButton key={category} value={category} aria-label={category}>
-                {category}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
         </Box>
-      </AppBar>
-
-      <DialogContent
-        sx={{
-          p: 3,
-          overflowY: 'auto',
-          '&::-webkit-scrollbar': {
-            width: '8px'
-          },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: 'transparent'
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.divider,
-            borderRadius: '4px',
-            '&:hover': {
-              backgroundColor: theme.palette.action.hover
-            }
-          }
-        }}
-      >
-        {Object.keys(filteredGroups).length === 0 ? (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '50vh',
-              flexDirection: 'column',
-              gap: 2
-            }}
-          >
-            <Typography variant="h6" color="text.secondary">
-              No effects found
-            </Typography>
-            <Typography variant="body2" color="text.disabled">
-              Try adjusting your search or filters
-            </Typography>
-          </Box>
-        ) : (
-          Object.entries(filteredGroups)
-            .sort(([a], [b]) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b))
-            .map(([category, effects]) => {
-              const colors = categoryColors[category] || {
-                bg: theme.palette.mode === 'dark' ? '#2d2d2d' : '#f5f5f5',
-                chip: theme.palette.mode === 'dark' ? '#3d3d3d' : '#e0e0e0'
-              }
-
+        <Box sx={{ px: 2, py: 1.5, backgroundColor: 'transparent' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            {(categoryOrder.filter((c) => groups && Object.keys(groups).includes(c)).length > 0
+              ? categoryOrder.filter((c) => groups && Object.keys(groups).includes(c))
+              : Object.keys(groups || {})
+            ).map((category) => {
+              const isVisible = !hiddenCategories.includes(category)
+              const chipColor = getChipColor(category)
               return (
-                <Box key={category} sx={{ mb: 4 }}>
-                  <Box
+                <ToggleButton
+                  key={category}
+                  value={category}
+                  aria-label={category}
+                  selected={isVisible}
+                  onClick={() => toggleCategory(category)}
+                  sx={{
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: '16px !important',
+                    px: 1.5,
+                    py: 0.5,
+                    textTransform: 'none',
+                    color: theme.palette.text.primary,
+                    backgroundColor: isVisible ? chipColor : 'transparent',
+                    '&.Mui-selected': {
+                      backgroundColor: chipColor,
+                      '&:hover': {
+                        backgroundColor: chipColor
+                      }
+                    },
+                    '&:hover': {
+                      backgroundColor: isVisible ? chipColor : alpha(chipColor, 0.15)
+                    }
+                  }}
+                >
+                  {category}
+                </ToggleButton>
+              )
+            })}
+          </Box>
+        </Box>
+
+        <DialogContent
+          sx={{
+            p: 2,
+            flex: 1,
+            overflowY: 'auto',
+            backgroundColor: 'transparent',
+            '&::-webkit-scrollbar': {
+              width: '8px'
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: 'transparent'
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: theme.palette.divider,
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: theme.palette.action.hover
+              }
+            }
+          }}
+        >
+          {filteredEffects.length === 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                flexDirection: 'column',
+                gap: 2
+              }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                No effects found
+              </Typography>
+              <Typography variant="body2" color="text.disabled">
+                Try adjusting your search or filters
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                gap: 0.75
+              }}
+            >
+              {filteredEffects.map((effect) => {
+                const isSelected = effect.id === value
+                const bgColor = getEffectColor(effect)
+
+                return (
+                  <Card
+                    key={effect.id}
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      mb: 2
+                      backgroundColor: isSelected
+                        ? alpha(theme.palette.primary.main, 0.3)
+                        : bgColor,
+                      border: isSelected
+                        ? `2px solid ${theme.palette.primary.main}`
+                        : `1px solid ${theme.palette.divider}`,
+                      borderRadius: 1,
+                      transition: 'all 0.15s ease',
+                      overflow: 'hidden',
+                      '&:hover': {
+                        transform: 'scale(1.03)',
+                        boxShadow: theme.shadows[3],
+                        borderColor: theme.palette.primary.main
+                      }
                     }}
                   >
-                    <Chip
-                      label={category}
-                      size="small"
+                    <CardActionArea
+                      onClick={() => handleEffectSelect(effect.id)}
                       sx={{
-                        backgroundColor: colors.chip,
-                        color: theme.palette.text.primary,
-                        fontWeight: 600,
-                        fontSize: '0.75rem'
+                        height: '100%',
+                        px: 0.5,
+                        py: 1
                       }}
-                    />
-                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
-                      ({effects.length})
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: 'grid',
-                      gridTemplateColumns: {
-                        xs: 'repeat(2, 1fr)',
-                        sm: 'repeat(3, 1fr)',
-                        md: 'repeat(4, 1fr)',
-                        lg: 'repeat(6, 1fr)'
-                      },
-                      gap: 1.5
-                    }}
-                  >
-                    {effects.map((effect) => {
-                      const isSelected = effect.id === value
-
-                      return (
-                        <Card
-                          key={effect.id}
+                    >
+                      <CardContent
+                        sx={{
+                          p: '2px !important',
+                          '&:last-child': {
+                            pb: '2px !important'
+                          }
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
                           sx={{
-                            backgroundColor: isSelected
-                              ? alpha(theme.palette.primary.main, 0.15)
-                              : colors.bg,
-                            border: isSelected
-                              ? `2px solid ${theme.palette.primary.main}`
-                              : `1px solid ${theme.palette.divider}`,
-                            borderRadius: 2,
-                            transition: 'all 0.2s ease',
+                            fontWeight: isSelected ? 600 : 400,
+                            color: theme.palette.text.primary,
+                            textAlign: 'center',
+                            lineHeight: 1.2,
+                            display: 'block',
                             overflow: 'hidden',
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: theme.shadows[4],
-                              borderColor: theme.palette.primary.main
-                            }
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
                           }}
                         >
-                          <CardActionArea
-                            onClick={() => handleEffectSelect(effect.id)}
-                            sx={{
-                              height: '100%',
-                              p: 1.5
-                            }}
-                          >
-                            <CardContent
-                              sx={{
-                                p: '8px !important',
-                                '&:last-child': {
-                                  pb: '8px !important'
-                                }
-                              }}
-                            >
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: isSelected ? 600 : 400,
-                                  color: theme.palette.text.primary,
-                                  textAlign: 'center',
-                                  lineHeight: 1.3,
-                                  fontSize: '0.8rem'
-                                }}
-                              >
-                                {effect.name}
-                              </Typography>
-                            </CardContent>
-                          </CardActionArea>
-                        </Card>
-                      )
-                    })}
-                  </Box>
-                </Box>
-              )
-            })
-        )}
-      </DialogContent>
+                          {effect.name}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                )
+              })}
+            </Box>
+          )}
+        </DialogContent>
+      </Box>
     </Dialog>
   )
 }
