@@ -229,13 +229,7 @@ const LaunchpadButtonMap = ({
         />
       )
     if (isLaunchpadMiniMK3) {
-      if (rowI === 1 && butI === 8) return <ArrowForwardIos />
-      if (rowI === 2 && butI === 8) return <ArrowForwardIos />
-      if (rowI === 3 && butI === 8) return <ArrowForwardIos />
-      if (rowI === 4 && butI === 8) return <ArrowForwardIos />
-      if (rowI === 5 && butI === 8) return <ArrowForwardIos />
-      if (rowI === 6 && butI === 8) return <ArrowForwardIos />
-      if (rowI === 7 && butI === 8) return <ArrowForwardIos />
+      if (rowI >= 1 && rowI <= 7 && butI === 8) return <ArrowForwardIos />
       if (rowI === 8 && butI === 8)
         return (
           <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
