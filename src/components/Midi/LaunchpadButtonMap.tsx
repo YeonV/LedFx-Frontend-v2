@@ -35,7 +35,7 @@ import {
 } from '@mui/material'
 import useStore from '../../store/useStore'
 import Assign from '../Gamepad/Assign'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { WebMidi } from 'webmidi'
 import LaunchpadButton from './LaunchpadButton'
 import { defaultMapping, IMapping } from '../../store/ui/storeMidi'
@@ -104,6 +104,14 @@ const LaunchpadButtonMap = ({
   const open = Boolean(anchorEl)
   const lp = MidiDevices[midiType][midiModel] as IMidiDevice
   const isRgb = 'rgb' in lp.fn && lp.fn.rgb
+
+  const selectMinWidth = useMemo(() => {
+    const allModels = Object.values(MidiDevices).flatMap((type) => Object.keys(type))
+    const longestModel = allModels.reduce((a, b) => (a.length > b.length ? a : b))
+    const currentDevice = `${midiType} ${midiModel}`
+    const longest = currentDevice.length > longestModel.length ? currentDevice : longestModel
+    return `${longest.length * 11 + 60}px`
+  }, [midiType, midiModel])
 
   const output =
     WebMidi.enabled &&
@@ -474,7 +482,7 @@ const LaunchpadButtonMap = ({
               </ListItemIcon>
               <ListItemText primary={midiType + ' ' + midiModel} />
             </MenuItem>
-            <Stack sx={{ pl: 2, pr: 1, mb: 1 }}>
+            <Stack sx={{ pl: 2, pr: 1, mb: 1, minWidth: selectMinWidth }}>
               <Select fullWidth disableUnderline defaultValue={'Preconfigured'}>
                 {Object.keys(MidiDevices).map((mType) => (
                   <Box key={mType}>
