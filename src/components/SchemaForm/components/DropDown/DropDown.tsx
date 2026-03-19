@@ -31,7 +31,7 @@ const EffectDropDown = ({
     ]
   },
   showFilter = false,
-  viewMode = 'grid'
+  viewMode = 'list'
 }: EffectDropDownProps) => {
   const [gridOpen, setGridOpen] = useState(false)
 

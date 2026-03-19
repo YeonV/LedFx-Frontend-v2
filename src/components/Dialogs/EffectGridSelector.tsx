@@ -142,18 +142,13 @@ const EffectGridSelector = ({
     onClose()
   }
 
-  const getEffectColor = (effect: Effect) => {
-    const category = effect.category || 'Non-Reactive'
-    if (categoryColors[category]) return categoryColors[category]
-    const hash = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-    return defaultColors[hash % defaultColors.length]
-  }
-
-  const getChipColor = (category: string) => {
-    if (categoryColors[category]) return categoryColors[category]
-    const hash = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-    return defaultColors[hash % defaultColors.length]
-  }
+  const getCategoryColor = useMemo(() => {
+    return (category: string) => {
+      if (categoryColors[category]) return categoryColors[category]
+      const hash = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+      return defaultColors[hash % defaultColors.length]
+    }
+  }, [])
 
   return (
     <Dialog
@@ -226,7 +221,7 @@ const EffectGridSelector = ({
               : Object.keys(groups || {})
             ).map((category) => {
               const isVisible = !hiddenCategories.includes(category)
-              const chipColor = getChipColor(category)
+              const chipColor = getCategoryColor(category)
               return (
                 <ToggleButton
                   key={category}
@@ -236,7 +231,7 @@ const EffectGridSelector = ({
                   onClick={() => toggleCategory(category)}
                   sx={{
                     border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: '16px !important',
+                    borderRadius: '16px',
                     px: 1.5,
                     py: 0.5,
                     textTransform: 'none',
@@ -309,7 +304,7 @@ const EffectGridSelector = ({
             >
               {filteredEffects.map((effect) => {
                 const isSelected = effect.id === value
-                const bgColor = getEffectColor(effect)
+                const bgColor = getCategoryColor(effect.category || 'Non-Reactive')
 
                 return (
                   <Card
@@ -341,9 +336,9 @@ const EffectGridSelector = ({
                     >
                       <CardContent
                         sx={{
-                          p: '2px !important',
+                          p: '2px',
                           '&:last-child': {
-                            pb: '2px !important'
+                            pb: '2px'
                           }
                         }}
                       >
