@@ -38,21 +38,11 @@ const OffscreenVisualiserCapture = ({
 
   // Backpressure: track if we're waiting for worker to finish
   const processingRef = useRef(false)
-  const droppedFramesRef = useRef(0)
 
   // Latest-only message queue: only keep most recent frame
   const pendingMessageRef = useRef<any>(null)
   const sendLoopRef = useRef<number | null>(null)
   const messageIdRef = useRef(0)
-
-  // Stats aggregation for once-per-second logging
-  const statsRef = useRef({
-    mainThread: { count: 0, drawTime: 0, previewTime: 0, bitmapTime: 0, postTime: 0, total: 0 },
-    worker: { count: 0, drawTime: 0, extractTime: 0, rgbTime: 0, base64Time: 0, total: 0 },
-    websocket: { count: 0, sendTime: 0, overwritten: 0 },
-    lastLogTime: 0,
-    droppedFrames: 0
-  })
 
   const { send, isConnected } = useWebSocket()
   const clientId = useStore((state) => state.clientIdentity.clientId)
@@ -74,95 +64,19 @@ const OffscreenVisualiserCapture = ({
         } else if (e.data.type === 'captured') {
           // Store latest message (overwrites previous if not sent yet)
           if (isConnected && targetDevice) {
-            const hadPending = pendingMessageRef.current !== null
-
-            // Match backend expected format: frontend_visualiser_data
             pendingMessageRef.current = {
               id: messageIdRef.current++,
               type: 'frontend_visualiser_data',
               client_id: clientId,
               vis_id: targetDevice,
-              pixels: e.data.pixelData.data, // base64-encoded RGB data
-              shape: [e.data.pixelData.height, e.data.pixelData.width], // [rows, cols]
-              encoding: 'base64-rgb' // Backend needs to decode: base64 -> RGB byte array
-            }
-
-            // Track overwrites (old frame dropped)
-            if (hadPending) {
-              statsRef.current.websocket.overwritten++
+              pixels: e.data.pixelData.data,
+              shape: [e.data.pixelData.height, e.data.pixelData.width],
+              encoding: 'base64-rgb'
             }
           }
-
-          // Aggregate stats
-          const timing = e.data.timing
-          const stats = statsRef.current
-          stats.worker.count++
-          stats.worker.drawTime += timing.drawTime
-          stats.worker.extractTime += timing.extractTime
-          stats.worker.rgbTime += timing.rgbConvertTime
-          stats.worker.base64Time += timing.base64EncodeTime
-          stats.worker.total += timing.totalTime
 
           // Worker finished, ready for next frame
           processingRef.current = false
-
-          // Log aggregated stats once per second (single line)
-          const now = performance.now()
-          if (stats.lastLogTime === 0) {
-            stats.lastLogTime = now
-          } else if (now - stats.lastLogTime >= 1000) {
-            const elapsed = (now - stats.lastLogTime) / 1000
-
-            if (stats.mainThread.count > 0 || stats.worker.count > 0) {
-              const mainAvg =
-                stats.mainThread.count > 0
-                  ? (stats.mainThread.total / stats.mainThread.count).toFixed(1)
-                  : '0.0'
-              const workerAvg =
-                stats.worker.count > 0
-                  ? (stats.worker.total / stats.worker.count).toFixed(1)
-                  : '0.0'
-              const actualFps = (stats.mainThread.count / elapsed).toFixed(1)
-
-              const parts = [
-                `FPS: ${actualFps}/${fps}`,
-                `Main: ${mainAvg}ms`,
-                `Worker: ${workerAvg}ms`,
-                `WS: ${stats.websocket.count} sent`
-              ]
-
-              if (stats.websocket.overwritten > 0) {
-                parts.push(`${stats.websocket.overwritten} overwritten`)
-              }
-              if (stats.droppedFrames > 0) {
-                parts.push(`${stats.droppedFrames} dropped`)
-              }
-
-              console.log(`[OffscreenVizCapture] ${parts.join(' | ')}`)
-            }
-
-            // Reset stats
-            stats.mainThread = {
-              count: 0,
-              drawTime: 0,
-              previewTime: 0,
-              bitmapTime: 0,
-              postTime: 0,
-              total: 0
-            }
-            stats.worker = {
-              count: 0,
-              drawTime: 0,
-              extractTime: 0,
-              rgbTime: 0,
-              base64Time: 0,
-              total: 0
-            }
-            stats.websocket = { count: 0, sendTime: 0, overwritten: 0 }
-            stats.droppedFrames = 0
-            stats.lastLogTime = now
-            droppedFramesRef.current = 0
-          }
         }
       }
 
@@ -252,7 +166,6 @@ const OffscreenVisualiserCapture = ({
       sourceCanvasRef.current = null
       setSourceCanvasReady(false)
       processingRef.current = false
-      droppedFramesRef.current = 0
     }
   }, [enabled, width, height, showPreview, send, isConnected, targetDevice, fps, clientId])
 
@@ -266,17 +179,9 @@ const OffscreenVisualiserCapture = ({
     const sendLoop = () => {
       const message = pendingMessageRef.current
 
-      // Send if we have a message pending
       if (message) {
-        const t0 = performance.now()
         send(message)
-        const t1 = performance.now()
-
         pendingMessageRef.current = null
-
-        // Track send timing
-        statsRef.current.websocket.count++
-        statsRef.current.websocket.sendTime += t1 - t0
       }
 
       sendLoopRef.current = requestAnimationFrame(sendLoop) as any
@@ -298,11 +203,7 @@ const OffscreenVisualiserCapture = ({
     if (!sourceCanvasRef.current) return
 
     // Backpressure: skip frame if worker is still processing previous frame
-    if (processingRef.current) {
-      droppedFramesRef.current++
-      statsRef.current.droppedFrames++
-      return
-    }
+    if (processingRef.current) return
 
     const source = sourceCanvasRef.current
 
@@ -313,19 +214,13 @@ const OffscreenVisualiserCapture = ({
       return
     }
 
-    const t0 = performance.now()
-
     try {
-      // Draw to offscreen canvas first (do the expensive rescale once)
       if (!offscreenCtxRef.current || !offscreenCanvasRef.current) return
 
       processingRef.current = true
 
       offscreenCtxRef.current.drawImage(source, 0, 0, width, height)
 
-      const t1 = performance.now()
-
-      // Copy offscreen to preview (cheap 128x128 → 128x128 blit, no rescaling)
       if (showPreview && canvasRef.current) {
         const ctx = canvasRef.current.getContext('2d')
         if (ctx) {
@@ -333,26 +228,9 @@ const OffscreenVisualiserCapture = ({
         }
       }
 
-      const t2 = performance.now()
-
-      // Create ImageBitmap and transfer to worker for getImageData
       if (workerRef.current) {
         const bitmap = await createImageBitmap(offscreenCanvasRef.current)
-        const t3 = performance.now()
-
-        // Transfer bitmap to worker (zero-copy transfer)
         workerRef.current.postMessage({ type: 'capture', bitmap }, [bitmap])
-
-        const t4 = performance.now()
-
-        // Aggregate main thread stats
-        const stats = statsRef.current
-        stats.mainThread.count++
-        stats.mainThread.drawTime += t1 - t0
-        stats.mainThread.previewTime += t2 - t1
-        stats.mainThread.bitmapTime += t3 - t2
-        stats.mainThread.postTime += t4 - t3
-        stats.mainThread.total += t4 - t0
       }
     } catch (error) {
       console.error('[OffscreenVisualiserCapture] Error capturing frame:', error)

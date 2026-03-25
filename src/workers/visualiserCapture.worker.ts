@@ -31,23 +31,12 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
 
     case 'capture':
       if (ctx && offscreenCanvas && bitmap) {
-        const t0 = performance.now()
-
-        // Draw the bitmap to our canvas
+        // Draw bitmap to worker-side canvas (GPU→CPU stall happens here, off main thread)
         ctx.drawImage(bitmap, 0, 0, width, height)
-
-        const t1 = performance.now()
-
-        // Extract pixel data (expensive GPU→CPU transfer, but off main thread)
         const imageData = ctx.getImageData(0, 0, width, height)
-
-        const t2 = performance.now()
-
-        // Close the bitmap to free memory
         bitmap.close()
 
-        // Encode pixel data for WebSocket transmission
-        // Convert RGBA to RGB (drop alpha channel to save bandwidth)
+        // Convert RGBA to RGB (drop alpha to save bandwidth)
         const rgbaData = imageData.data
         const rgbData = new Uint8Array(width * height * 3)
         let rgbIndex = 0
@@ -59,15 +48,15 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
           // Skip alpha (rgbaData[i + 3])
         }
 
-        const t3 = performance.now()
-
         // Convert to base64 for JSON transmission
-        // Alternative: could use binary WebSocket frames
-        const base64 = btoa(String.fromCharCode(...rgbData))
+        // Chunked to avoid call stack overflow (spread is slow for 49k+ args)
+        let binary = ''
+        const chunkSize = 8192
+        for (let i = 0; i < rgbData.length; i += chunkSize) {
+          binary += String.fromCharCode(...rgbData.subarray(i, i + chunkSize))
+        }
+        const base64 = btoa(binary)
 
-        const t4 = performance.now()
-
-        // Send back the encoded data and timing
         self.postMessage({
           type: 'captured',
           pixelData: {
@@ -75,15 +64,7 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
             height,
             encoding: 'base64-rgb',
             data: base64
-          },
-          timing: {
-            drawTime: t1 - t0,
-            extractTime: t2 - t1,
-            rgbConvertTime: t3 - t2,
-            base64EncodeTime: t4 - t3,
-            totalTime: t4 - t0
-          },
-          bytesSaved: rgbaData.length - rgbData.length
+          }
         })
       }
       break
