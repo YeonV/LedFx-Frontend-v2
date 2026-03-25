@@ -147,9 +147,10 @@ export const useSongDetectorVisualisersAutoApply = () => {
                 filteredUpdate
               )
             }
+            const existingConfig = visualizerConfigOptimistic?.[name]?.configs?.[targetId] || {}
             updateVisualizerConfigOptimistic(name, {
               configs: {
-                [targetId]: filteredUpdate
+                [targetId]: { ...existingConfig, ...filteredUpdate }
               }
             })
           }
