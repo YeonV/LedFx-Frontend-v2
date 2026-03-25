@@ -48,24 +48,10 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
           // Skip alpha (rgbaData[i + 3])
         }
 
-        // Convert to base64 for JSON transmission
-        // Chunked to avoid call stack overflow (spread is slow for 49k+ args)
-        let binary = ''
-        const chunkSize = 8192
-        for (let i = 0; i < rgbData.length; i += chunkSize) {
-          binary += String.fromCharCode(...rgbData.subarray(i, i + chunkSize))
-        }
-        const base64 = btoa(binary)
-
-        self.postMessage({
-          type: 'captured',
-          pixelData: {
-            width,
-            height,
-            encoding: 'base64-rgb',
-            data: base64
-          }
-        })
+        // Return raw RGB buffer zero-copy to main thread
+        self.postMessage({ type: 'captured', rgbBuffer: rgbData.buffer, width, height }, [
+          rgbData.buffer
+        ])
       }
       break
   }

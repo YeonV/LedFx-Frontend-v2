@@ -2,6 +2,48 @@ import { useEffect, useRef, useCallback, useState } from 'react'
 import { useWebSocket } from '../../utils/Websocket/WebSocketProvider'
 import useStore from '../../store/useStore'
 
+/**
+ * Binary frame format for frontend_visualiser_data:
+ * [1] uint8  message_type = 0x01
+ * [2] uint16 width (LE)
+ * [2] uint16 height (LE)
+ * [1] uint8  vis_id byte length
+ * [N] bytes  vis_id (UTF-8)
+ * [1] uint8  client_id byte length
+ * [M] bytes  client_id (UTF-8)
+ * [.] bytes  RGB pixels (width * height * 3)
+ */
+const enc = new TextEncoder()
+function buildBinaryFrame(
+  visId: string,
+  clientId: string,
+  w: number,
+  h: number,
+  rgbBuffer: ArrayBuffer
+): ArrayBuffer {
+  const visIdBytes = enc.encode(visId)
+  const clientIdBytes = enc.encode(clientId)
+  const frame = new ArrayBuffer(
+    1 + 2 + 2 + 1 + visIdBytes.length + 1 + clientIdBytes.length + rgbBuffer.byteLength
+  )
+  const view = new DataView(frame)
+  const bytes = new Uint8Array(frame)
+  let o = 0
+  view.setUint8(o++, 0x01)
+  view.setUint16(o, w, true)
+  o += 2
+  view.setUint16(o, h, true)
+  o += 2
+  view.setUint8(o++, visIdBytes.length)
+  bytes.set(visIdBytes, o)
+  o += visIdBytes.length
+  view.setUint8(o++, clientIdBytes.length)
+  bytes.set(clientIdBytes, o)
+  o += clientIdBytes.length
+  bytes.set(new Uint8Array(rgbBuffer), o)
+  return frame
+}
+
 interface OffscreenVisualiserCaptureProps {
   enabled?: boolean
   width?: number
@@ -39,12 +81,11 @@ const OffscreenVisualiserCapture = ({
   // Backpressure: track if we're waiting for worker to finish
   const processingRef = useRef(false)
 
-  // Latest-only message queue: only keep most recent frame
-  const pendingMessageRef = useRef<any>(null)
+  // Latest-only frame queue: only keep most recent binary frame
+  const pendingMessageRef = useRef<ArrayBuffer | null>(null)
   const sendLoopRef = useRef<number | null>(null)
-  const messageIdRef = useRef(0)
 
-  const { send, isConnected } = useWebSocket()
+  const { sendBinary, isConnected } = useWebSocket()
   const clientId = useStore((state) => state.clientIdentity.clientId)
 
   // Create offscreen canvas for capturing at target resolution
@@ -62,17 +103,14 @@ const OffscreenVisualiserCapture = ({
         if (e.data.type === 'ready') {
           // Worker initialized
         } else if (e.data.type === 'captured') {
-          // Store latest message (overwrites previous if not sent yet)
-          if (isConnected && targetDevice) {
-            pendingMessageRef.current = {
-              id: messageIdRef.current++,
-              type: 'frontend_visualiser_data',
-              client_id: clientId,
-              vis_id: targetDevice,
-              pixels: e.data.pixelData.data,
-              shape: [e.data.pixelData.height, e.data.pixelData.width],
-              encoding: 'base64-rgb'
-            }
+          if (isConnected && targetDevice && clientId) {
+            pendingMessageRef.current = buildBinaryFrame(
+              targetDevice,
+              clientId,
+              e.data.width,
+              e.data.height,
+              e.data.rgbBuffer
+            )
           }
 
           // Worker finished, ready for next frame
@@ -167,7 +205,7 @@ const OffscreenVisualiserCapture = ({
       setSourceCanvasReady(false)
       processingRef.current = false
     }
-  }, [enabled, width, height, showPreview, send, isConnected, targetDevice, fps, clientId])
+  }, [enabled, width, height, showPreview, sendBinary, isConnected, targetDevice, fps, clientId])
 
   // Send loop: Only send latest message when WebSocket is ready
   useEffect(() => {
@@ -180,7 +218,7 @@ const OffscreenVisualiserCapture = ({
       const message = pendingMessageRef.current
 
       if (message) {
-        send(message)
+        sendBinary(message)
         pendingMessageRef.current = null
       }
 
@@ -196,7 +234,7 @@ const OffscreenVisualiserCapture = ({
       }
       pendingMessageRef.current = null
     }
-  }, [enabled, isConnected, send])
+  }, [enabled, isConnected, sendBinary])
 
   // Capture frame - offload expensive work to worker
   const captureAndSend = useCallback(async () => {

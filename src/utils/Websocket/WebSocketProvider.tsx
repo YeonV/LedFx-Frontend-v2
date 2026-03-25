@@ -6,6 +6,7 @@ import { initialSubscriptions, handlerConfig } from './websocket.config'
 
 export interface WebSocketApi {
   send: (_data: any) => void
+  sendBinary: (_buffer: ArrayBuffer) => void
   subscribe: (_eventName: string, _callback: (_data: any) => void) => () => void
   isConnected: boolean
   getSocket: () => Sockette | null
@@ -14,6 +15,7 @@ export interface WebSocketApi {
 
 const WebSocketContext = createContext<WebSocketApi>({
   send: () => console.error('WebSocketProvider not mounted'),
+  sendBinary: () => console.error('WebSocketProvider not mounted'),
   subscribe: () => () => console.error('WebSocketProvider not mounted'),
   isConnected: false,
   getSocket: () => null,
@@ -28,6 +30,10 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
 
   const send = useCallback((data: any) => {
     ws.current?.send(JSON.stringify(data))
+  }, [])
+
+  const sendBinary = useCallback((buffer: ArrayBuffer) => {
+    ws.current?.send(buffer)
   }, [])
 
   const getSocket = useCallback(() => ws.current, [])
@@ -140,7 +146,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     }
   }, [send])
 
-  const value = { send, subscribe, isConnected, getSocket, errorState }
+  const value = { send, sendBinary, subscribe, isConnected, getSocket, errorState }
 
   return <WebSocketContext.Provider value={value}>{children}</WebSocketContext.Provider>
 }
