@@ -45,8 +45,8 @@ const storeUIPersist = () => ({
     enabled: false,
     width: 128,
     height: 128,
-    fps: 15,
-    targetDevice: 'visualiser-capture',
+    fps: 30,
+    targetDevice: 'unused', // for future use
     showPreview: false
   }
 })

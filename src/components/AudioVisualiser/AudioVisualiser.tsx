@@ -79,17 +79,6 @@ const Visualiser = ({
   const offscreenCaptureEnabled = useStore(
     (state) => state.uiPersist.offscreenCapture?.enabled ?? false
   )
-  const offscreenCaptureShowPreview = useStore(
-    (state) => state.uiPersist.offscreenCapture?.showPreview ?? false
-  )
-  const offscreenCaptureWidth = useStore((state) => state.uiPersist.offscreenCapture?.width ?? 128)
-  const offscreenCaptureHeight = useStore(
-    (state) => state.uiPersist.offscreenCapture?.height ?? 128
-  )
-  const offscreenCaptureFps = useStore((state) => state.uiPersist.offscreenCapture?.fps ?? 30)
-  const offscreenCaptureTargetDevice = useStore(
-    (state) => state.uiPersist.offscreenCapture?.targetDevice ?? 'visualiser-capture'
-  )
 
   // Set storage name on window before module loads (fallback/convenience)
   if (storageName) {
@@ -152,16 +141,7 @@ const Visualiser = ({
   const content = (
     <>
       <VisualiserWsControl />
-      {offscreenCaptureEnabled && (
-        <OffscreenVisualiserCapture
-          enabled={offscreenCaptureEnabled}
-          width={offscreenCaptureWidth}
-          height={offscreenCaptureHeight}
-          fps={offscreenCaptureFps}
-          targetDevice={offscreenCaptureTargetDevice}
-          showPreview={offscreenCaptureShowPreview}
-        />
-      )}
+      {offscreenCaptureEnabled && <OffscreenVisualiserCapture />}
       <AudioVisualiser
         theme={theme}
         effects={effects}

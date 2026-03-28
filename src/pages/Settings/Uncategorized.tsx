@@ -24,9 +24,6 @@ const Uncategorized = () => {
     (state) => state.uiPersist.offscreenCapture?.height ?? 128
   )
   const offscreenCaptureFps = useStore((state) => state.uiPersist.offscreenCapture?.fps ?? 30)
-  const offscreenCaptureTargetDevice = useStore(
-    (state) => state.uiPersist.offscreenCapture?.targetDevice ?? 'visualiser-capture'
-  )
 
   return (
     <>
@@ -135,16 +132,6 @@ const Uncategorized = () => {
                     onChange={(e) => setOffscreenCapture('fps', parseInt(e.target.value) || 30)}
                     inputProps={{ min: 1, max: 120 }}
                     sx={{ width: 100 }}
-                  />
-                </SettingsRow>
-
-                <SettingsRow title="Target Device ID">
-                  <TextField
-                    size="small"
-                    value={offscreenCaptureTargetDevice}
-                    onChange={(e) => setOffscreenCapture('targetDevice', e.target.value)}
-                    placeholder="visualiser-capture"
-                    sx={{ width: 200 }}
                   />
                 </SettingsRow>
 

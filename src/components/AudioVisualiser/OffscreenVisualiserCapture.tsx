@@ -44,15 +44,6 @@ function buildBinaryFrame(
   return frame
 }
 
-interface OffscreenVisualiserCaptureProps {
-  enabled?: boolean
-  width?: number
-  height?: number
-  targetDevice?: string
-  fps?: number
-  showPreview?: boolean
-}
-
 /**
  * OffscreenVisualiserCapture
  *
@@ -61,17 +52,17 @@ interface OffscreenVisualiserCaptureProps {
  *
  * This allows the frontend visualiser to drive LED devices via the backend.
  */
-const OffscreenVisualiserCapture = ({
-  enabled = false,
-  width = 128,
-  height = 128,
-  targetDevice = 'visualiser-capture',
-  fps = 30,
-  showPreview = false
-}: OffscreenVisualiserCaptureProps) => {
+const OffscreenVisualiserCapture = () => {
+  const width = useStore((state) => state.uiPersist.offscreenCapture?.width ?? 128)
+  const height = useStore((state) => state.uiPersist.offscreenCapture?.height ?? 128)
+  const targetDevice = useStore(
+    (state) => state.uiPersist.offscreenCapture?.targetDevice ?? 'unused' // for future use
+  )
+  const fps = useStore((state) => state.uiPersist.offscreenCapture?.fps ?? 30)
+  const showPreview = useStore((state) => state.uiPersist.offscreenCapture?.showPreview ?? false)
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null)
-  const offscreenCtxRef = useRef<CanvasRenderingContext2D | null>(null)
+  const previewCtxRef = useRef<CanvasRenderingContext2D | null>(null)
   const sourceCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const findCanvasIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const captureIntervalRef = useRef<number | null>(null)
@@ -81,17 +72,29 @@ const OffscreenVisualiserCapture = ({
   // Backpressure: track if we're waiting for worker to finish
   const processingRef = useRef(false)
 
-  // Latest-only frame queue: only keep most recent binary frame
-  const pendingMessageRef = useRef<ArrayBuffer | null>(null)
-  const sendLoopRef = useRef<number | null>(null)
-
   const { sendBinary, isConnected } = useWebSocket()
   const clientId = useStore((state) => state.clientIdentity.clientId)
 
+  // Refs for volatile values — keeps the heavy setup effect stable
+  const isConnectedRef = useRef(isConnected)
+  const targetDeviceRef = useRef(targetDevice)
+  const clientIdRef = useRef(clientId)
+  const sendBinaryRef = useRef(sendBinary)
+  useEffect(() => {
+    isConnectedRef.current = isConnected
+  }, [isConnected])
+  useEffect(() => {
+    targetDeviceRef.current = targetDevice
+  }, [targetDevice])
+  useEffect(() => {
+    clientIdRef.current = clientId
+  }, [clientId])
+  useEffect(() => {
+    sendBinaryRef.current = sendBinary
+  }, [sendBinary])
+
   // Create offscreen canvas for capturing at target resolution
   useEffect(() => {
-    if (!enabled) return
-
     try {
       // Initialize Web Worker for off-thread pixel processing
       const worker = new Worker(
@@ -103,13 +106,15 @@ const OffscreenVisualiserCapture = ({
         if (e.data.type === 'ready') {
           // Worker initialized
         } else if (e.data.type === 'captured') {
-          if (isConnected && targetDevice && clientId) {
-            pendingMessageRef.current = buildBinaryFrame(
-              targetDevice,
-              clientId,
-              e.data.width,
-              e.data.height,
-              e.data.rgbBuffer
+          if (isConnectedRef.current && targetDeviceRef.current && clientIdRef.current) {
+            sendBinaryRef.current(
+              buildBinaryFrame(
+                targetDeviceRef.current,
+                clientIdRef.current,
+                e.data.width,
+                e.data.height,
+                e.data.rgbBuffer
+              )
             )
           }
 
@@ -132,23 +137,9 @@ const OffscreenVisualiserCapture = ({
         canvas.style.opacity = '1'
         canvas.style.backgroundColor = '#000'
         canvasRef.current = canvas
+        previewCtxRef.current = canvas.getContext('2d')
         document.body.appendChild(canvas)
       }
-
-      // Create offscreen canvas for main thread preview/capture
-      const offscreen = document.createElement('canvas')
-      offscreen.width = width
-      offscreen.height = height
-
-      // Get context with optimization for frequent reads
-      const ctx = offscreen.getContext('2d', { willReadFrequently: false })
-      if (!ctx) {
-        console.error('[OffscreenVisualiserCapture] Failed to get 2D context')
-        return
-      }
-
-      offscreenCanvasRef.current = offscreen
-      offscreenCtxRef.current = ctx
 
       // Initialize worker with dimensions (it will create its own OffscreenCanvas)
       worker.postMessage({ type: 'init', width, height })
@@ -162,7 +153,7 @@ const OffscreenVisualiserCapture = ({
 
         for (const c of canvases) {
           // Skip our own canvases
-          if (c === canvasRef.current || c === offscreen) continue
+          if (c === canvasRef.current) continue
           // Look for a canvas that's reasonably large (likely the visualiser)
           // Also ensure it's not the tiny default canvas (300x150)
           if (c.width > 400 && c.height > 300) {
@@ -205,36 +196,7 @@ const OffscreenVisualiserCapture = ({
       setSourceCanvasReady(false)
       processingRef.current = false
     }
-  }, [enabled, width, height, showPreview, sendBinary, isConnected, targetDevice, fps, clientId])
-
-  // Send loop: Only send latest message when WebSocket is ready
-  useEffect(() => {
-    if (!enabled || !isConnected) {
-      pendingMessageRef.current = null
-      return
-    }
-
-    const sendLoop = () => {
-      const message = pendingMessageRef.current
-
-      if (message) {
-        sendBinary(message)
-        pendingMessageRef.current = null
-      }
-
-      sendLoopRef.current = requestAnimationFrame(sendLoop) as any
-    }
-
-    sendLoop()
-
-    return () => {
-      if (sendLoopRef.current) {
-        cancelAnimationFrame(sendLoopRef.current as number)
-        sendLoopRef.current = null
-      }
-      pendingMessageRef.current = null
-    }
-  }, [enabled, isConnected, sendBinary])
+  }, [width, height, showPreview, fps])
 
   // Capture frame - offload expensive work to worker
   const captureAndSend = useCallback(async () => {
@@ -253,22 +215,23 @@ const OffscreenVisualiserCapture = ({
     }
 
     try {
-      if (!offscreenCtxRef.current || !offscreenCanvasRef.current) return
-
       processingRef.current = true
 
-      offscreenCtxRef.current.drawImage(source, 0, 0, width, height)
+      // GPU-accelerated resize in a single step — no intermediate canvas
+      const bitmap = await createImageBitmap(source, {
+        resizeWidth: width,
+        resizeHeight: height,
+        resizeQuality: 'low'
+      })
 
-      if (showPreview && canvasRef.current) {
-        const ctx = canvasRef.current.getContext('2d')
-        if (ctx) {
-          ctx.drawImage(offscreenCanvasRef.current, 0, 0)
-        }
+      if (showPreview && previewCtxRef.current) {
+        previewCtxRef.current.drawImage(bitmap, 0, 0)
       }
 
       if (workerRef.current) {
-        const bitmap = await createImageBitmap(offscreenCanvasRef.current)
         workerRef.current.postMessage({ type: 'capture', bitmap }, [bitmap])
+      } else {
+        bitmap.close()
       }
     } catch (error) {
       console.error('[OffscreenVisualiserCapture] Error capturing frame:', error)
@@ -278,8 +241,8 @@ const OffscreenVisualiserCapture = ({
 
   // Hook into the visualiser's render loop
   useEffect(() => {
-    // Only start interval if enabled AND we have a source canvas
-    if (!enabled || !sourceCanvasReady) {
+    // Only start interval if we have a source canvas
+    if (!sourceCanvasReady) {
       // Clean up any existing interval
       if (captureIntervalRef.current) {
         cancelAnimationFrame(captureIntervalRef.current as number)
@@ -293,7 +256,7 @@ const OffscreenVisualiserCapture = ({
     const targetFrameInterval = 1000 / fps
 
     const captureFrame = () => {
-      if (!enabled || !sourceCanvasReady) return
+      if (!sourceCanvasReady) return
 
       const now = performance.now()
       const elapsed = now - lastCaptureTime
@@ -315,7 +278,7 @@ const OffscreenVisualiserCapture = ({
         captureIntervalRef.current = null
       }
     }
-  }, [enabled, sourceCanvasReady, captureAndSend, fps])
+  }, [sourceCanvasReady, captureAndSend, fps])
 
   // This component doesn't render anything visible (except debug canvas)
   return null

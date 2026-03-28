@@ -89,7 +89,7 @@ const storeUIPersistActions = (set: any) => ({
             width: 128,
             height: 128,
             fps: 30,
-            targetDevice: 'visualiser-capture',
+            targetDevice: 'unused', // for future use
             showPreview: false
           }
         }
