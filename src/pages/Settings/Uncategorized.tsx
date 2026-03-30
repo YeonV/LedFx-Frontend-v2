@@ -87,7 +87,7 @@ const Uncategorized = () => {
         <>
           <VisualizerDevWidgetYZ />
           <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-            <SettingsRow title="Visualiser to Device Capture">
+            <SettingsRow title="BG Visualiser to Frontend Effect">
               <SettingsSwitch
                 checked={offscreenCaptureEnabled}
                 onChange={(e) => setOffscreenCapture('enabled', e.target.checked)}
