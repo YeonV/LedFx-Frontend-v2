@@ -18,6 +18,8 @@ import { SettingsInputComponent } from '@mui/icons-material'
 const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 'navitem' }) => {
   const theme = useTheme()
   const midiInput = useStore((state) => state.midiInput)
+  const midiType = useStore((state) => state.midiType)
+  const midiModel = useStore((state) => state.midiModel)
   const [fullScreen, setFullScreen] = useState(false)
   const midiOpen = useStore((state) => state.midiOpen)
   const setMidiOpen = useStore((state) => state.setMidiOpen)
@@ -70,9 +72,19 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
               justifyContent={'space-between'}
               sx={{ width: '100%' }}
             >
-              <span>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
                 <BladeIcon name="mdi:midi" style={{ marginRight: '1rem' }} />{' '}
                 {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
+                {midiType && midiModel && (
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ ml: 2 }}
+                  >
+                    ({midiType} {midiModel})
+                  </Typography>
+                )}
               </span>
               {(!midiInput || midiInput === '') && (
                 <Typography variant="body2" color="text.secondary">
