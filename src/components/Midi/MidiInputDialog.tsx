@@ -72,7 +72,7 @@ const MidiInputDialog = ({ variant = 'iconbutton' }: { variant?: 'iconbutton' | 
               justifyContent={'space-between'}
               sx={{ width: '100%' }}
             >
-              <span>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
                 <BladeIcon name="mdi:midi" style={{ marginRight: '1rem' }} />{' '}
                 {/\((.*?)\)/.exec(midiInput)?.[1]} Input Configuration
                 {midiType && midiModel && (
