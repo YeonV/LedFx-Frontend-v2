@@ -40,11 +40,7 @@ export const ContextMenuItems = ({ slug, onClose }: ContextMenuItemsProps) => {
           />
           <MenuLine
             key="device-copyto"
-            icon={
-              <BladeIcon
-                name={features.streamto ? 'mdi:content-copy' : 'mdi:content-copy-outline'}
-              />
-            }
+            icon={<BladeIcon name={'mdi:content-copy'} />}
             text={`${features.streamto ? 'Hide' : 'Show'} Copy To`}
             onClick={() => setFeatures('streamto', !features.streamto)}
           />
@@ -73,6 +69,12 @@ export const ContextMenuItems = ({ slug, onClose }: ContextMenuItemsProps) => {
             icon={<BladeIcon name={showHex ? 'mdi:pound' : 'mdi:pound-box-outline'} />}
             text={`${showHex ? 'Hide' : 'Show'} Hex-Input in GradientPicker`}
             onClick={() => setShowHex(!showHex)}
+          />
+          <MenuLine
+            key="device-effectgrid"
+            icon={<BladeIcon name={features.effectGridView ? 'mdi:grid' : 'mdi:grid-off'} />}
+            text={`${features.effectGridView ? 'Hide' : 'Show'} Effect Grid`}
+            onClick={() => setFeatures('effectGridView', !features.effectGridView)}
           />
           <MenuLine
             key="device-automagic"

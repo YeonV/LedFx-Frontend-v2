@@ -1,4 +1,5 @@
 import DropDown from './DropDown'
+import useStore from '../../../../store/useStore'
 
 export interface EffectDropDownProps {
   effects: any
@@ -8,6 +9,7 @@ export interface EffectDropDownProps {
   getVirtuals: any
   ommit?: string[]
   title?: string
+  viewMode?: 'list' | 'grid'
 }
 
 const EffectDropDown = ({
@@ -16,8 +18,12 @@ const EffectDropDown = ({
   features,
   setEffect,
   ommit,
-  title = 'Effect Type'
+  title = 'Effect Type',
+  viewMode
 }: EffectDropDownProps) => {
+  // Use feature flag to determine view mode if not explicitly provided
+  const effectGridViewEnabled = useStore((state) => state.features.effectGridView)
+  const actualViewMode = viewMode !== undefined ? viewMode : (effectGridViewEnabled ? 'grid' : 'list')
   const effectNames =
     effects &&
     Object.keys(effects)
@@ -58,6 +64,7 @@ const EffectDropDown = ({
             ? 'Last Effect'
             : 'Currently Inactive'
       }
+      viewMode={actualViewMode}
     />
   )
 }
