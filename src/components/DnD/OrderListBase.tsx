@@ -116,6 +116,7 @@ const OrderListBase: FC<OrderListBaseProps> = ({
                       }}
                       onClick={(e) => e.stopPropagation()}
                       size="small"
+                      color="default"
                     />
                     <BladeIcon
                       name={snapshot.isDragging ? 'DragHandle' : 'DragIndicator'}
