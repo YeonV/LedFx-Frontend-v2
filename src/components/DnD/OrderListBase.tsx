@@ -3,6 +3,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
+import Switch from '@mui/material/Switch'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { useTheme } from '@mui/styles'
@@ -53,6 +54,8 @@ const OrderListBase: FC<OrderListBaseProps> = ({
 
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
+  const hiddenVirtuals = useStore((state) => state.hiddenVirtuals)
+  const toggleVirtualVisibility = useStore((state) => state.toggleVirtualVisibility)
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
@@ -105,6 +108,16 @@ const OrderListBase: FC<OrderListBaseProps> = ({
                       />
                     </ListItemIcon>
                     <ListItemText primary={item.name || item.virtId} />
+                    <Switch
+                      checked={!hiddenVirtuals.includes(item.virtId)}
+                      onChange={(e) => {
+                        e.stopPropagation()
+                        toggleVirtualVisibility(item.virtId)
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      size="small"
+                      color="default"
+                    />
                     <BladeIcon
                       name={snapshot.isDragging ? 'DragHandle' : 'DragIndicator'}
                       sx={{}}

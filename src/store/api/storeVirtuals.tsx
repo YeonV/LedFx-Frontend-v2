@@ -29,6 +29,30 @@ const storeVirtuals = (set: any) => ({
       'setVirtualOrder'
     )
   },
+  hiddenVirtuals: [] as string[],
+  setHiddenVirtuals: (virtIds: string[]) => {
+    set(
+      produce((s: IStore) => {
+        s.hiddenVirtuals = virtIds
+      }),
+      false,
+      'setHiddenVirtuals'
+    )
+  },
+  toggleVirtualVisibility: (virtId: string) => {
+    set(
+      produce((s: IStore) => {
+        const index = s.hiddenVirtuals.indexOf(virtId)
+        if (index > -1) {
+          s.hiddenVirtuals.splice(index, 1)
+        } else {
+          s.hiddenVirtuals.push(virtId)
+        }
+      }),
+      false,
+      'toggleVirtualVisibility'
+    )
+  },
   newBlender: '',
   setNewBlender: (v: string) =>
     set(

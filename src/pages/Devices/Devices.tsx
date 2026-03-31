@@ -24,6 +24,7 @@ const Devices = () => {
   const graphsMulti = useStore((state) => state.graphsMulti)
   const showComplex = useStore((state) => state.showComplex)
   const showGaps = useStore((state) => state.showGaps)
+  const hiddenVirtuals = useStore((state) => state.hiddenVirtuals)
   const newBlender = useStore((state) => state.newBlender)
   const setNewBlender = useStore((state) => state.setNewBlender)
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
@@ -195,6 +196,7 @@ const Devices = () => {
       o.virtId.endsWith('-background')
     if (!showComplex && isComplex) return false
     if (!showGaps && o.virtId.startsWith('gap-')) return false
+    if (hiddenVirtuals.includes(o.virtId)) return false
     return true
   })
 
