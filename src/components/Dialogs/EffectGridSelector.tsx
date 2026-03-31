@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, forwardRef } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { Close, Search } from '@mui/icons-material'
 import { TransitionProps } from '@mui/material/transitions'
-import { forwardRef } from 'react'
 
 interface Effect {
   id: string

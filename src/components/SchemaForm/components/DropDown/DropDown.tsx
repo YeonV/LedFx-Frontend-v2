@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { TextField, InputAdornment } from '@mui/material'
+import { Typography } from '@mui/material'
 import { ArrowDropDown } from '@mui/icons-material'
 import { EffectDropDownProps } from './DropDown.props'
 import EffectTypeDialog from '../../../Dialogs/EffectTypeDialog'
 import EffectGridSelector from '../../../Dialogs/EffectGridSelector'
+import BladeFrame from '../BladeFrame'
 
 const EffectDropDown = ({
   value = '',
@@ -51,28 +52,44 @@ const EffectDropDown = ({
     <>
       {viewMode === 'grid' ? (
         <>
-          {/* Grid View - Clickable TextField trigger */}
-          <TextField
-            label={title}
-            value={allEffects?.name || ''}
+          <BladeFrame
+            title={title}
             onClick={() => setGridOpen(true)}
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2 }}
-            InputProps={{
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <ArrowDropDown />
-                </InputAdornment>
-              ),
-              sx: { cursor: 'pointer' }
+            style={{
+              cursor: 'pointer',
+              marginBottom: 0,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: 0
             }}
-            inputProps={{
-              style: { cursor: 'pointer' }
-            }}
-          />
-
+          >
+            <Typography
+              variant="body1"
+              sx={{
+                flexGrow: 1,
+                padding: '16px 1.2rem 14px 1.2rem',
+                borderRadius: '10px',
+                border: '1px solid #666666',
+                '&:hover': {
+                  border: '1px solid #f9f9fb'
+                }
+              }}
+            >
+              {allEffects?.name || 'Choose Effect'}
+              <ArrowDropDown
+                sx={{
+                  position: 'absolute',
+                  right: 10,
+                  top: 16,
+                  paddingBottom: 1,
+                  fontSize: 30,
+                  zIndex: 0
+                }}
+              />
+            </Typography>
+          </BladeFrame>
           <EffectGridSelector
             open={gridOpen}
             onClose={() => setGridOpen(false)}
