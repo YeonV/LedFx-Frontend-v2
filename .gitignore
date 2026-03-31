@@ -67,3 +67,4 @@ test-results/*
 playwright/animated/*
 playwright/videos/*
 playwright/screenshots/*
+/.idea/
