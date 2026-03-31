@@ -20,7 +20,9 @@ export const createLedFunctions = (
     typeof color === 'number' ? color : colors[color as keyof typeof colors]
   ],
   ledFlash: (buttonNumber: number, color: keyof typeof colors | number) => [
-    solid_mode,buttonNumber,0, //flash is between two colors, reset to black first one
+    solid_mode,
+    buttonNumber,
+    0, // flash is between two colors, reset to black first one
     flash_mode,
     buttonNumber,
     typeof color === 'number' ? color : colors[color as keyof typeof colors]

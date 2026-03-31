@@ -177,20 +177,12 @@ const LaunchpadButtonMap = ({
       )
     if (rowI === 0 && butI === 3) return <PlayArrow />
     if (rowI === 0 && butI === 4)
-      if (isLaunchpadMiniMK3) {
-        return (
-          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-            Session
-          </Typography>
-        )
-      } else {
-        return (
-          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-            <br />
-            Session Mixer
-          </Typography>
-        )
-      }
+      return (
+        <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+          <br />
+          Session{isLaunchpadMiniMK3 ? '' : ' Mixer'}
+        </Typography>
+      )
     if (rowI === 0 && butI === 5)
       return (
         <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
@@ -204,20 +196,12 @@ const LaunchpadButtonMap = ({
         </Typography>
       )
     if (rowI === 0 && butI === 7)
-      if (isLaunchpadMiniMK3) {
-        return (
-          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-            User
-          </Typography>
-        )
-      } else {
-        return (
-          <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
-            <br />
-            Capture MIDI
-          </Typography>
-        )
-      }
+      return (
+        <Typography textTransform={'none'} variant="caption" color={'InactiveCaptionText'}>
+          <br />
+          {isLaunchpadMiniMK3 ? 'User' : 'Capture MIDI'}
+        </Typography>
+      )
     if (rowI === 0 && butI === 8)
       return (
         <BladeIcon

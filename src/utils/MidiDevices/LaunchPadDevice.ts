@@ -107,4 +107,8 @@ export interface LaunchpadMiniMK3Device extends BaseDevice {
   }
 }
 
-export type LaunchpadDevice = LaunchpadXDevice | LaunchpadSDevice | LaunchpadMK2Device | LaunchpadMiniMK3Device
+export type LaunchpadDevice =
+  | LaunchpadXDevice
+  | LaunchpadSDevice
+  | LaunchpadMK2Device
+  | LaunchpadMiniMK3Device
