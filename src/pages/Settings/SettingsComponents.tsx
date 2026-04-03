@@ -252,7 +252,7 @@ export const SettingsRow = ({
       <div
         style={{
           display: 'flex',
-          color: disabled ? '#000' : '#7b7a7c',
+          color: disabled ? '#000' : 'inherit',
           flexGrow: 1,
           justifyContent: 'flex-end',
           alignItems: 'center',

@@ -92,15 +92,8 @@ const Uncategorized = () => {
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
       </SettingsRow>
-      <SettingsRow
-        beta
-        title="Sendspin Servers (multi-room audio)"
-      >
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => setDialogOpenSendspinManager(true)}
-        >
+      <SettingsRow beta title="Sendspin Servers (HA Music Assistant)">
+        <Button size="small" variant="outlined" onClick={() => setDialogOpenSendspinManager(true)}>
           Manage
         </Button>
       </SettingsRow>
