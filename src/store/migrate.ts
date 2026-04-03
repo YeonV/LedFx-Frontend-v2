@@ -4,7 +4,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
-export const frontendConfig = 47
+export const frontendConfig = 48
 
 export interface MigrationState {
   [key: string]: any
@@ -495,6 +495,18 @@ export const migrations: Migrations = {
           c.type = 'not-set'
         }
       })
+    }
+  }),
+  // Migration 48: Add sendspin feature flag and dialog state
+  48: produce((draft) => {
+    if (draft.features && typeof draft.features.sendspin === 'undefined') {
+      draft.features.sendspin = false
+    }
+    if (draft.showFeatures && typeof draft.showFeatures.sendspin === 'undefined') {
+      draft.showFeatures.sendspin = false
+    }
+    if (draft.dialogs && !draft.dialogs.sendspinManager) {
+      draft.dialogs.sendspinManager = { open: false }
     }
   })
 }

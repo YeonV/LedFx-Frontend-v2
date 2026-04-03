@@ -3,12 +3,14 @@ import LogColorFilterSelect from './LogFilterSelect'
 import { SettingsRow } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
+import { Button } from '@mui/material'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
+  const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
 
   return (
     <>
@@ -89,6 +91,18 @@ const Uncategorized = () => {
       />
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
+      </SettingsRow>
+      <SettingsRow
+        beta
+        title="Sendspin Servers (multi-room audio)"
+      >
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setDialogOpenSendspinManager(true)}
+        >
+          Manage
+        </Button>
       </SettingsRow>
     </>
   )

@@ -72,6 +72,7 @@ export interface ISystemConfig {
   startup_scene_id: string
   lifx_broadcast_address?: string
   lifx_discovery_timeout?: number
+  sendspin_servers?: Record<string, { server_url: string; client_name: string }>
 }
 
 const storeConfig = (set: any) => ({
@@ -111,6 +112,11 @@ const storeConfig = (set: any) => ({
               scenes: undefined
             }
           } as ISystemConfig
+          // Sync sendspin servers from config so the manage dialog always has data
+          if (resp.sendspin_servers && typeof resp.sendspin_servers === 'object') {
+            state.sendspinServers = resp.sendspin_servers
+            state.sendspinAvailable = true
+          }
         }),
         false,
         'api/gotSystemConfig'
