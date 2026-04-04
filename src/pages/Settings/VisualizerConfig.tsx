@@ -289,11 +289,13 @@ const VisualizerConfig = ({ selectedClients = [], single, name, type }: Visualiz
     }
 
     // ALWAYS update optimistic store for the current instance/card
-    // We only keep the config for the active visualizer to prevent pollution
+    // Merge with existing optimisticConfig to avoid overwriting unchanged fields
+    // (updateVisualizerConfigOptimistic does a shallow Object.assign, so configs[id]
+    //  would be replaced with just the delta without this spread)
     if (typeof resolvedInstanceKey === 'string') {
       updateVisualizerConfigOptimistic(resolvedInstanceKey, {
         configs: {
-          [visualizerId]: fullUpdate
+          [visualizerId]: { ...optimisticConfig, ...fullUpdate }
         }
       })
     }

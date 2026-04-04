@@ -60,6 +60,20 @@ const VisualiserWsControl = () => {
     )
   }, [isConnected, visualType, debouncedConfig, send, broadcastToClients, clientIdentity.clientId])
 
+  // Watch for butterchurn preset index changes and load the preset
+  useEffect(() => {
+    if (
+      visualType === 'butterchurn' &&
+      butterchurnConfig?.currentPresetIndex !== undefined &&
+      typeof butterchurnConfig.currentPresetIndex === 'number'
+    ) {
+      const api = (window as any).visualiserApi
+      if (api?.loadPreset) {
+        api.loadPreset(butterchurnConfig.currentPresetIndex)
+      }
+    }
+  }, [visualType, butterchurnConfig?.currentPresetIndex])
+
   useSubscription('client_broadcast', (d) => {
     // console.log('MAN', d, clientIdentity)
     if (d.sender_uuid !== clientIdentity?.clientId && d.payload?.category === 'visualiser') {

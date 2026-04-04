@@ -25,7 +25,6 @@ import {
   VolumeOff,
   Info
 } from '@mui/icons-material'
-import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 
 const AudioCard = ({ className }: any) => {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -275,6 +274,7 @@ const AudioCard = ({ className }: any) => {
           onChange={(e) => setUsePerDeviceDelay(e.target.checked)}
         />
       </SettingsRow>
+
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg">
         <DialogTitle>Per Device Delay</DialogTitle>
         <DialogContent>
