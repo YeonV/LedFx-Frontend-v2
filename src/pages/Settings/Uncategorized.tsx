@@ -1,14 +1,29 @@
 import useStore from '../../store/useStore'
 import LogColorFilterSelect from './LogFilterSelect'
-import { SettingsRow } from './SettingsComponents'
+import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
+import { Box, TextField } from '@mui/material'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
+
+  // Offscreen capture state
+  const offscreenCaptureEnabled = useStore(
+    (state) => state.uiPersist.offscreenCapture?.enabled ?? false
+  )
+  const offscreenCaptureShowPreview = useStore(
+    (state) => state.uiPersist.offscreenCapture?.showPreview ?? false
+  )
+  const setOffscreenCapture = useStore((state) => state.setOffscreenCapture)
+  const offscreenCaptureWidth = useStore((state) => state.uiPersist.offscreenCapture?.width ?? 128)
+  const offscreenCaptureHeight = useStore(
+    (state) => state.uiPersist.offscreenCapture?.height ?? 128
+  )
+  const offscreenCaptureFps = useStore((state) => state.uiPersist.offscreenCapture?.fps ?? 30)
 
   return (
     <>
@@ -68,7 +83,69 @@ const Uncategorized = () => {
         onChange={() => setFeatures('bgvisualiser', !features.bgvisualiser)}
         info={'BG Visualiser will disable Playground'}
       />
-      {features.bgvisualiser && <VisualizerDevWidgetYZ />}
+      {features.bgvisualiser && (
+        <>
+          <VisualizerDevWidgetYZ />
+          <Box sx={{ mb: 3, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+            <SettingsRow title="BG Visualiser to Frontend Effect">
+              <SettingsSwitch
+                checked={offscreenCaptureEnabled}
+                onChange={(e) => setOffscreenCapture('enabled', e.target.checked)}
+              />
+            </SettingsRow>
+
+            {offscreenCaptureEnabled && (
+              <>
+                <SettingsRow title="Capture Resolution">
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <TextField
+                      label="Width"
+                      type="number"
+                      size="small"
+                      value={offscreenCaptureWidth}
+                      onChange={(e) =>
+                        setOffscreenCapture('width', parseInt(e.target.value) || 128)
+                      }
+                      inputProps={{ min: 1, max: 1024 }}
+                      sx={{ width: 100 }}
+                    />
+                    <span>×</span>
+                    <TextField
+                      label="Height"
+                      type="number"
+                      size="small"
+                      value={offscreenCaptureHeight}
+                      onChange={(e) =>
+                        setOffscreenCapture('height', parseInt(e.target.value) || 128)
+                      }
+                      inputProps={{ min: 1, max: 1024 }}
+                      sx={{ width: 100 }}
+                    />
+                  </Box>
+                </SettingsRow>
+
+                <SettingsRow title="Capture FPS">
+                  <TextField
+                    type="number"
+                    size="small"
+                    value={offscreenCaptureFps}
+                    onChange={(e) => setOffscreenCapture('fps', parseInt(e.target.value) || 30)}
+                    inputProps={{ min: 1, max: 120 }}
+                    sx={{ width: 100 }}
+                  />
+                </SettingsRow>
+
+                <SettingsRow title="Show Debug Preview">
+                  <SettingsSwitch
+                    checked={offscreenCaptureShowPreview}
+                    onChange={(e) => setOffscreenCapture('showPreview', e.target.checked)}
+                  />
+                </SettingsRow>
+              </>
+            )}
+          </Box>
+        </>
+      )}
       <SettingsRow
         alpha
         title="LedFx Cloud"

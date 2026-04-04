@@ -75,6 +75,28 @@ const storeUIPersistActions = (set: any) => ({
       }),
       false,
       'uiPersist/setLayout'
+    ),
+  setOffscreenCapture: (
+    key: 'enabled' | 'width' | 'height' | 'fps' | 'targetDevice' | 'showPreview',
+    val: any
+  ): void =>
+    set(
+      produce((state: IStore) => {
+        // Initialize offscreenCapture if it doesn't exist
+        if (!state.uiPersist.offscreenCapture) {
+          state.uiPersist.offscreenCapture = {
+            enabled: false,
+            width: 128,
+            height: 128,
+            fps: 30,
+            targetDevice: 'unused', // for future use
+            showPreview: false
+          }
+        }
+        ;(state.uiPersist.offscreenCapture as any)[key] = val
+      }),
+      false,
+      'uiPersist/setOffscreenCapture'
     )
 })
 
