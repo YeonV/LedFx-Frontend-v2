@@ -11,6 +11,7 @@ const Uncategorized = () => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
   const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
+  const backendFeatures = useStore((state) => state.backendFeatures)
 
   return (
     <>
@@ -92,11 +93,17 @@ const Uncategorized = () => {
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
       </SettingsRow>
-      <SettingsRow beta title="Sendspin Servers (HA Music Assistant)">
-        <Button size="small" variant="outlined" onClick={() => setDialogOpenSendspinManager(true)}>
-          Manage
-        </Button>
-      </SettingsRow>
+      {backendFeatures.sendspin && (
+        <SettingsRow beta title="Sendspin Servers (HA Music Assistant)">
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => setDialogOpenSendspinManager(true)}
+          >
+            Manage
+          </Button>
+        </SettingsRow>
+      )}
     </>
   )
 }

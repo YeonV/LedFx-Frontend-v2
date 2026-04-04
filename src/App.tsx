@@ -30,6 +30,7 @@ export default function App() {
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const getSchemas = useStore((state) => state.getSchemas)
   const getClients = useStore((state) => state.getClients)
+  const getInfo = useStore((state) => state.getInfo)
 
   useWindowDimensions()
   useSongDetectorVirtualsAutoApply()
@@ -41,7 +42,8 @@ export default function App() {
     getSystemConfig()
     getSchemas()
     getClients()
-  }, [getVirtuals, getSystemConfig, getSchemas, getClients])
+    getInfo()
+  }, [getVirtuals, getSystemConfig, getSchemas, getClients, getInfo])
 
   useEffect(() => {
     initFrontendConfig()
