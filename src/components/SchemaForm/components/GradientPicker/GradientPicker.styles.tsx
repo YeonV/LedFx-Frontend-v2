@@ -6,7 +6,8 @@ const useStyles = makeStyles(() => ({
     borderRadius: 10,
     display: 'flex',
     flexWrap: 'wrap',
-    maxWidth: '308px',
+    maxWidth: '370px', // Matches popupWidth + padding (346 + 24px)
+    maxHeight: '80vh',
     overflow: 'auto',
     '& .gradient-result': {
       display: 'none'
@@ -40,7 +41,30 @@ const useStyles = makeStyles(() => ({
         backgroundColor: 'transparent'
       },
     '& .popup_tabs-body': {
-      paddingBottom: 4
+      paddingBottom: 4,
+      maxHeight: 'none',
+      overflow: 'visible'
+    },
+    '& .default-colors': {
+      maxHeight: 'none',
+      overflow: 'visible'
+    },
+    '& .default-color-panel': {
+      maxHeight: 'none',
+      overflow: 'visible'
+    },
+    '& .colorpicker .default-color-panel': {
+      maxHeight: 'none',
+      overflow: 'visible'
+    },
+    '& .default-color-panel_item': {
+      cursor: 'pointer',
+      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+      '&:hover': {
+        transform: 'scale(1.1)',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+        zIndex: 10
+      }
     }
   },
   addButton: {

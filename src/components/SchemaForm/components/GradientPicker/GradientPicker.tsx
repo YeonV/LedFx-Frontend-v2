@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import Popper from '@mui/material/Popper'
 import ReactGPicker from 'react-gcolor-picker'
 import { TextField, Button, useTheme } from '@mui/material'
@@ -63,6 +63,32 @@ const GradientPicker = ({
       defaultColors[k] = g
     })
 
+  // Find the name of the currently selected gradient
+  const selectedGradientName = useMemo(() => {
+    if (!pickerBgColorInt || !colors) return null
+
+    const normalized = normalizeGradient(pickerBgColorInt)
+
+    // Search in all color/gradient collections
+    const allCollections = [
+      colors?.gradients?.builtin,
+      colors?.gradients?.user,
+      colors?.colors?.builtin,
+      colors?.colors?.user
+    ]
+
+    for (const collection of allCollections) {
+      if (collection) {
+        const entry = Object.entries(collection).find(
+          ([_, value]) => normalizeGradient(value as string) === normalized
+        )
+        if (entry) return entry[0]
+      }
+    }
+
+    return null
+  }, [pickerBgColorInt, colors])
+
   const handleClick = (event: any) => {
     setAnchorEl(anchorEl ? null : event.currentTarget)
   }
@@ -85,6 +111,51 @@ const GradientPicker = ({
     setPickerBgColorInt(normalizeGradient(pickerBgColor))
   }, [pickerBgColor, setPickerBgColorInt])
 
+  useEffect(() => {
+    if (!open || !colors || !id) return
+
+    // Pre-compute gradient names
+    const gradientNames: string[] = []
+    if (colors?.gradients?.builtin)
+      Object.keys(colors.gradients.builtin).forEach((name) => gradientNames.push(name))
+    if (colors?.gradients?.user)
+      Object.keys(colors.gradients.user).forEach((name) => gradientNames.push(name))
+    if (colors?.colors?.builtin)
+      Object.keys(colors.colors.builtin).forEach((name) => gradientNames.push(name))
+    if (colors?.colors?.user)
+      Object.keys(colors.colors.user).forEach((name) => gradientNames.push(name))
+
+    const addTitles = (container: Element) => {
+      const tiles = container.querySelectorAll('.gradient-picker .default-color-panel_item')
+      if (tiles.length > 0) {
+        tiles.forEach((tile, index) => {
+          if (index < gradientNames.length && !tile.getAttribute('title')) {
+            tile.setAttribute('title', gradientNames[index])
+          }
+        })
+        return true
+      }
+      return false
+    }
+
+    // Try to add titles immediately (popper might already exist)
+    const popperEl = document.getElementById(id)
+    if (popperEl && addTitles(popperEl)) {
+      return // Already done, no need to observe
+    }
+
+    // If not found, observe DOM until popper appears
+    const observer = new MutationObserver(() => {
+      const el = document.getElementById(id)
+      if (el && addTitles(el)) {
+        observer.disconnect()
+      }
+    })
+
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [open, colors, id])
+
   return (
     <div
       className={`${classes.wrapper} step-effect-${index} gradient-picker`}
@@ -102,6 +173,18 @@ const GradientPicker = ({
     >
       <label className="MuiFormLabel-root" style={{ background: theme.palette.background.paper }}>
         {title && title.replaceAll('_', ' ').replaceAll('background', 'bg').replaceAll('name', '')}
+        {selectedGradientName && (
+          <span
+            style={{
+              marginLeft: '0.5rem',
+              fontWeight: 'normal',
+              opacity: 0.7,
+              fontSize: '0.85em'
+            }}
+          >
+            ({selectedGradientName})
+          </span>
+        )}
       </label>
       {}
       <div
@@ -146,7 +229,7 @@ const GradientPicker = ({
               setPickerBgColorInt(normalized)
               return sendColorToVirtuals(normalized)
             }}
-            popupWidth={288}
+            popupWidth={346} // Width of color picker popup (fits 9 gradient tiles per row)
             showAlpha={false}
             value={pickerBgColorInt}
             defaultColors={Object.values(defaultColors)}
