@@ -132,7 +132,20 @@ const storeActions = (set: any) => ({
       timeout: 0,
       action: 'restart'
     }),
-  getInfo: async () => await Ledfx('/api/info'),
+  backendFeatures: { sendspin: false } as Record<string, boolean>,
+  getInfo: async () => {
+    const resp = await Ledfx('/api/info')
+    if (resp?.features) {
+      set(
+        produce((state: IStore) => {
+          state.backendFeatures = { ...state.backendFeatures, ...resp.features }
+        }),
+        false,
+        'api/gotInfo'
+      )
+    }
+    return resp
+  },
   getUpdateInfo: async (snackbar: boolean) =>
     await Ledfx('/api/check_for_updates', 'GET', {}, snackbar),
   getPing: async (virtId: string) => await Ledfx(`/api/ping/${virtId}`),

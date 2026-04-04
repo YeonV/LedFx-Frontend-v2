@@ -14,6 +14,7 @@ import {
 import { Info } from '@mui/icons-material'
 import MicIcon from '@mui/icons-material/Mic'
 import SpeakerIcon from '@mui/icons-material/Speaker'
+import HubIcon from '@mui/icons-material/Hub'
 import BladeBoolean from '../components/Boolean/BladeBoolean'
 import BladeSelect from '../components/String/BladeSelect'
 import BladeSlider from '../components/Number/BladeSlider'
@@ -160,7 +161,9 @@ const SchemaForm = ({
                             value={e}
                             // disabled={group[c][e].indexOf('[Loopback]') > -1}
                           >
-                            {group[c][e].indexOf('[Loopback]') > -1 ? (
+                            {c.toLowerCase() === 'sendspin' ? (
+                              <HubIcon style={{ marginRight: '10px' }} />
+                            ) : group[c][e].indexOf('[Loopback]') > -1 ? (
                               <SpeakerIcon style={{ marginRight: '10px' }} />
                             ) : (
                               <MicIcon style={{ marginRight: '10px' }} />

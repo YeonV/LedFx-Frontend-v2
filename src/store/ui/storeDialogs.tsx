@@ -68,6 +68,9 @@ const storeDialogs = (set: any) => ({
     },
     clientManagement: {
       open: false
+    },
+    sendspinManager: {
+      open: false
     }
   },
   assistant: {
@@ -221,6 +224,16 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/ClientManagement'
+    ),
+  setDialogOpenSendspinManager: (open: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.sendspinManager = {
+          open
+        }
+      }),
+      false,
+      'api/dialog/SendspinManager'
     )
 })
 

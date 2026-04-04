@@ -3,13 +3,15 @@ import LogColorFilterSelect from './LogFilterSelect'
 import { SettingsRow, SettingsSwitch } from './SettingsComponents'
 // import VisualizerDevWidget from './VisualizerDevWidget'
 import VisualizerDevWidgetYZ from './VisualizerDevWidgetYZ'
-import { Box, TextField } from '@mui/material'
+import { Box, TextField, Button } from '@mui/material'
 
 const Uncategorized = () => {
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
+  const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
+  const backendFeatures = useStore((state) => state.backendFeatures)
 
   // Offscreen capture state
   const offscreenCaptureEnabled = useStore(
@@ -167,6 +169,17 @@ const Uncategorized = () => {
       <SettingsRow alpha title="Log Filtering">
         <LogColorFilterSelect />
       </SettingsRow>
+      {backendFeatures.sendspin && (
+        <SettingsRow beta title="Sendspin Servers (HA Music Assistant)">
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => setDialogOpenSendspinManager(true)}
+          >
+            Manage
+          </Button>
+        </SettingsRow>
+      )}
     </>
   )
 }
