@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback } from 'react'
 import { Slider, Input, TextField, Typography, useTheme, Box } from '@mui/material'
 import useStyles from './BladeSlider.styles'
 import { BladeSliderInnerProps, BladeSliderProps } from './BladeSlider.props'
+import { useNumericInput } from '../../../../hooks/useNumericInput'
 
 const BladeSliderInner = ({
   schema = undefined,
@@ -26,70 +27,34 @@ const BladeSliderInner = ({
         ? schema.default
         : 1
 
-  const [value, setValue] = useState(computedValue)
+  const isInteger = step === 1
+
+  const handleUpstream = useCallback((v: number) => onChange(model_id, v), [model_id, onChange])
+
+  const {
+    displayValue,
+    handleFocus,
+    handleChange: handleInputChange,
+    handleBlur,
+    setFromSlider
+  } = useNumericInput({
+    value: computedValue,
+    onChange: handleUpstream,
+    min: schema.minimum,
+    max: schema.maximum,
+    step: step || (schema.maximum > 1 ? 0.1 : 0.01),
+    isInteger
+  })
 
   const handleSliderChange = useCallback(
     (_event: any, newValue: any) => {
-      if (newValue !== value) {
-        setValue(newValue)
-      }
+      setFromSlider(newValue as number)
     },
-    [value]
+    [setFromSlider]
   )
 
-  const handleInputChange = useCallback(
-    (event: any) => {
-      const rawValue = event.target.value
-
-      // Allow empty string temporarily
-      if (rawValue === '') {
-        setValue('')
-        return
-      }
-
-      const numValue = Number(rawValue)
-      // Clamp value to valid range
-      const clampedValue = Math.max(
-        schema.minimum ?? -Infinity,
-        Math.min(schema.maximum ?? Infinity, numValue)
-      )
-
-      setValue(clampedValue)
-      onChange(model_id, clampedValue)
-    },
-    [model_id, onChange, schema.minimum, schema.maximum]
-  )
-
-  const handleBlur = useCallback(() => {
-    // On blur, ensure value is within bounds (handles empty string case)
-    if (value === '' || value < schema.minimum) {
-      setValue(schema.minimum || 0)
-      onChange(model_id, schema.minimum || 0)
-    } else if (value > schema.maximum) {
-      setValue(schema.maximum)
-      onChange(model_id, schema.maximum)
-    }
-  }, [value, schema.minimum, schema.maximum, model_id, onChange])
-
-  const handleTextChange = useCallback(
-    (event: any) => {
-      const rawValue = Number(event.target.value)
-
-      // Clamp to valid range before setting and sending
-      const clampedValue = Math.max(
-        schema.minimum ?? -Infinity,
-        Math.min(schema.maximum ?? Infinity, rawValue)
-      )
-
-      setValue(clampedValue)
-      onChange(model_id, clampedValue)
-    },
-    [model_id, onChange, schema.minimum, schema.maximum]
-  )
-
-  useEffect(() => {
-    setValue(computedValue)
-  }, [computedValue])
+  // For the text-only path, reuse the same hook handlers
+  const handleTextChange = handleInputChange
 
   return typeof schema.maximum === 'number' && !textfield ? (
     <>
@@ -99,17 +64,13 @@ const BladeSliderInner = ({
           valueLabelDisplay="auto"
           disabled={disabled}
           step={step || (schema.maximum > 1 ? 0.1 : 0.01)}
-          valueLabelFormat={
-            model_id === 'delay_ms'
-              ? `${typeof value === 'number' ? value : 0}\xa0ms`
-              : `${typeof value === 'number' ? value : 0}`
-          }
+          valueLabelFormat={model_id === 'delay_ms' ? `${computedValue}\xa0ms` : `${computedValue}`}
           min={schema.minimum || 0}
           max={schema.maximum}
-          value={typeof value === 'number' ? value : 0}
+          value={computedValue}
           onChange={handleSliderChange}
           className={`slider-${full ? 'full' : 'half'}`}
-          onChangeCommitted={(e, b) => onChange(model_id, b)}
+          onChangeCommitted={(_e, b) => handleUpstream(b as number)}
           style={{
             color: '#aaa',
             ...style,
@@ -135,9 +96,10 @@ const BladeSliderInner = ({
           backgroundColor: theme.palette.divider,
           height: 32
         }}
-        value={value}
+        value={displayValue}
         margin="dense"
         onChange={handleInputChange}
+        onFocus={handleFocus}
         onBlur={handleBlur}
         endAdornment={model_id === 'delay_ms' ? 'ms\xa0' : null}
         inputProps={{
@@ -161,9 +123,9 @@ const BladeSliderInner = ({
       step={null}
       min={marks[0]}
       max={marks[marks.length - 1]}
-      value={typeof value === 'number' ? value : 0}
+      value={computedValue}
       onChange={handleSliderChange}
-      onChangeCommitted={(e, b) => onChange(model_id, b)}
+      onChangeCommitted={(_e, b) => handleUpstream(b as number)}
       style={{ ...style, width: '100%' }}
     />
   ) : (
@@ -177,8 +139,10 @@ const BladeSliderInner = ({
         }
       }}
       type="number"
-      value={value}
+      value={displayValue}
       onChange={handleTextChange}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       helperText={!hideDesc && schema.description}
       style={{
         ...style,
