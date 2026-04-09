@@ -70,6 +70,7 @@ export interface ISystemConfig {
   flush_on_deactivate: boolean
   ui_brightness_boost: number
   startup_scene_id: string
+  startup_playlist_id: string
   lifx_broadcast_address?: string
   lifx_discovery_timeout?: number
   sendspin_servers?: Record<string, { server_url: string; client_name: string }>

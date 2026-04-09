@@ -32,6 +32,7 @@ const GeneralCard = () => {
   const getSystemConfig = useStore((state) => state.getSystemConfig)
   const setSystemConfig = useStore((state) => state.setSystemConfig)
   const scenes = useStore((state) => state.scenes)
+  const playlists = useStore((state) => state.playlists)
   const setIntro = useStore((state) => state.setIntro)
   const isAndroid = process.env.REACT_APP_LEDFX_ANDROID === 'true'
 
@@ -229,6 +230,23 @@ const GeneralCard = () => {
           {Object.keys(scenes).map((scene) => (
             <MenuItem key={scene} value={scene}>
               {scenes[scene].name}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+      <div className={`${classes.settingsRow} step-settings-twelve `} style={{ flexBasis: '100%' }}>
+        <label>Playlist on startup</label>
+        <Select
+          value={settings.startup_playlist_id || ''}
+          disableUnderline
+          onChange={(e) => onSystemSettingsChange('startup_playlist_id', e.target.value)}
+        >
+          <MenuItem key={'none'} value={''}>
+            {'None'}
+          </MenuItem>
+          {Object.keys(playlists).map((playlistId) => (
+            <MenuItem key={playlistId} value={playlistId}>
+              {playlists[playlistId].name}
             </MenuItem>
           ))}
         </Select>
