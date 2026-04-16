@@ -4,7 +4,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
-export const frontendConfig = 49
+export const frontendConfig = 50
 
 export interface MigrationState {
   [key: string]: any
@@ -513,5 +513,10 @@ export const migrations: Migrations = {
   49: produce((draft) => {
     draft.config = draft.config || {}
     draft.config.startup_playlist_id = ''
+  }),
+  // Migration 50: Add sendspin_always_on to config
+  50: produce((draft) => {
+    draft.config = draft.config || {}
+    draft.config.sendspin_always_on = false
   })
 }

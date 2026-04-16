@@ -31,6 +31,7 @@ import {
   Save,
   Cancel
 } from '@mui/icons-material'
+import { Switch, FormControlLabel } from '@mui/material'
 import useStore from '../../store/useStore'
 
 interface FormState {
@@ -55,6 +56,9 @@ const SendspinDialog = () => {
   const renameSendspinServer = useStore((state) => state.renameSendspinServer)
   const discoverSendspinServers = useStore((state) => state.discoverSendspinServers)
   const clearSendspinDiscovered = useStore((state) => state.clearSendspinDiscovered)
+  const config = useStore((state) => state.config)
+  const setSystemConfig = useStore((state) => state.setSystemConfig)
+  const getSystemConfig = useStore((state) => state.getSystemConfig)
 
   const [form, setForm] = useState<FormState>(emptyForm())
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -197,7 +201,21 @@ const SendspinDialog = () => {
           <Typography variant="subtitle1" fontWeight={600}>
             Configured Servers
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  size="small"
+                  checked={!!config.sendspin_always_on}
+                  onChange={() => {
+                    setSystemConfig({ sendspin_always_on: !config.sendspin_always_on }).then(() => getSystemConfig())
+                  }}
+                  disabled={!available}
+                />
+              }
+              label="Always On"
+              sx={{ mr: 1 }}
+            />
             <Button
               size="small"
               variant="outlined"
