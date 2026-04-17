@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import TextField from '@mui/material/TextField'
+import { useNumericInput } from '../hooks/useNumericInput'
 
 interface NumberProps {
   min: number
@@ -10,59 +11,46 @@ interface NumberProps {
 }
 
 const Number: React.FC<NumberProps> = ({ min, max, value, onChange, onBlur }) => {
-  const [inputValue, setInputValue] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
-
-  const handleFocus = useCallback(() => {
-    setIsEditing(true)
-    setInputValue(String(value))
-  }, [value])
+  // Bridge: the hook calls onChange(numericValue), but callers expect onChange(event)
+  // We propagate the event directly from handleChange, and wrap blur
+  const {
+    displayValue,
+    handleFocus,
+    handleChange: hookHandleChange,
+    handleBlur: hookHandleBlur
+  } = useNumericInput({
+    value,
+    onChange: () => {
+      // Live upstream handled via event passthrough below
+    },
+    min,
+    max,
+    isInteger: true
+  })
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = e.target.value
-      setInputValue(rawValue)
-
-      // Only propagate valid numbers
-      if (rawValue !== '') {
-        const numericValue = parseFloat(rawValue)
-        if (!isNaN(numericValue)) {
-          onChange(e)
-        }
+      hookHandleChange(e)
+      // Propagate valid numbers upstream via the original event-based API
+      const numericValue = parseFloat(e.target.value)
+      if (!isNaN(numericValue) && e.target.value !== '') {
+        onChange(e)
       }
     },
-    [onChange]
+    [hookHandleChange, onChange]
   )
 
   const handleBlur = useCallback(
     (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsEditing(false)
-      setInputValue('')
-
-      const numericValue = parseFloat(e.target.value)
-
-      // Validate and clamp on blur
-      if (isNaN(numericValue) || e.target.value === '') {
-        e.target.value = min.toString()
-        onChange(e)
-      } else if (numericValue > max) {
-        e.target.value = max.toString()
-        onChange(e)
-      } else if (numericValue < min) {
-        e.target.value = min.toString()
-        onChange(e)
-      }
-
-      if (onBlur) {
-        onBlur(e)
-      }
+      hookHandleBlur(e)
+      if (onBlur) onBlur(e)
     },
-    [min, max, onChange, onBlur]
+    [hookHandleBlur, onBlur]
   )
 
   return (
     <TextField
-      value={isEditing ? inputValue : value}
+      value={displayValue}
       name="quantity"
       type="number"
       onChange={handleChange}

@@ -1,4 +1,6 @@
+import { useCallback } from 'react'
 import { Slider, Stack, TextField } from '@mui/material'
+import { useNumericInput } from '../../../../hooks/useNumericInput'
 
 const SliderInput = ({
   min = 0,
@@ -21,6 +23,19 @@ const SliderInput = ({
   units?: string
   setValue: (_v: number) => void
 }) => {
+  const isInteger = step === 1
+
+  const handleUpstream = useCallback((v: number) => setValue(v), [setValue])
+
+  const { displayValue, handleFocus, handleChange, handleBlur, setFromSlider } = useNumericInput({
+    value,
+    onChange: handleUpstream,
+    min,
+    max,
+    step,
+    isInteger
+  })
+
   return (
     <Stack direction={'row'} alignItems={'center'} sx={sx}>
       <label style={{ width: title && titleWidth, flexShrink: 0 }}>{title}</label>
@@ -29,7 +44,7 @@ const SliderInput = ({
           flexGrow: 1
         }}
         value={value}
-        onChange={(_e, v) => setValue(v as number)}
+        onChange={(_e, v) => setFromSlider(v as number)}
         valueLabelDisplay="auto"
         min={min}
         max={max}
@@ -45,8 +60,10 @@ const SliderInput = ({
         }}
         variant="standard"
         type="number"
-        value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
+        value={displayValue}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
     </Stack>
   )
