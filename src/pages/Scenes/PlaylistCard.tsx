@@ -4,6 +4,7 @@ import { PlaylistConfig } from '../../api/ledfx.types'
 import PlaylistCardMenu from './PlaylistCardMenu'
 import { Stack } from '@mui/system'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
+import { DragHandle, DragHandleProps } from '../../components/DnD/SortableCardGrid'
 
 interface PlaylistCardProps {
   playlistId: string
@@ -16,6 +17,7 @@ interface PlaylistCardProps {
   isActive?: boolean
   classes: any
   flow?: boolean
+  dragHandleProps?: DragHandleProps
 }
 
 const PlaylistCard = ({
@@ -26,7 +28,8 @@ const PlaylistCard = ({
   handleEditPlaylist,
   isActive = false,
   classes,
-  flow
+  flow,
+  dragHandleProps
 }: PlaylistCardProps) => {
   const theme = useTheme()
 
@@ -131,13 +134,16 @@ const PlaylistCard = ({
             </Typography>
           </Stack>
           {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <PlaylistCardMenu
-              playlistId={playlistId}
-              editPlaylist={() => {
-                console.log('Editing playlist:', playlistId)
-                handleEditPlaylist(playlistId)
-              }}
-            />
+            <Stack direction="row" alignItems="center" spacing={0}>
+              <PlaylistCardMenu
+                playlistId={playlistId}
+                editPlaylist={() => {
+                  console.log('Editing playlist:', playlistId)
+                  handleEditPlaylist(playlistId)
+                }}
+              />
+              {dragHandleProps && <DragHandle {...dragHandleProps} />}
+            </Stack>
           )}
         </CardActions>
       </Card>
