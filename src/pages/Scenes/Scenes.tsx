@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useCallback } from 'react'
 import { Chip, Alert, Collapse, useMediaQuery, Grid, Box, Stack } from '@mui/material'
 import useStore from '../../store/useStore'
 import NoYet from '../../components/NoYet'
@@ -10,6 +10,7 @@ import useStyles from './Scenes.styles'
 import { ISceneOrder } from '../../store/api/storeScenes'
 import SceneCard from './SceneCard'
 import BackendPlaylist from './BackendPlaylist/BackendPlaylist'
+import SortableCardGrid from '../../components/DnD/SortableCardGrid'
 
 const Scenes = () => {
   const classes = useStyles()
@@ -61,6 +62,34 @@ const Scenes = () => {
 
   const sceneBlenderFilter = (sc: string) =>
     scenes[sc] && !scenes[sc].scene_tags?.split(',')?.includes('blender')
+
+  const sortedSceneIds = useMemo(() => {
+    const filtered = (
+      sceneActiveTags.length ? Object.keys(scenes).filter(sceneFilter) : Object.keys(scenes)
+    ).filter(sceneBlenderFilter)
+
+    return filtered.sort((a, b) => {
+      const orderA = sceneOrder.find((o) => o.sceneId === a)?.order ?? 999
+      const orderB = sceneOrder.find((o) => o.sceneId === b)?.order ?? 999
+      return orderA - orderB
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenes, sceneOrder, sceneActiveTags])
+
+  const handleSceneReorder = useCallback(
+    (newIds: string[]) => {
+      const newOrder: ISceneOrder[] = newIds.map((id, index) => ({
+        sceneId: id,
+        order: index
+      }))
+      // Preserve order entries for scenes not currently visible (e.g. filtered out)
+      const visibleSet = new Set(newIds)
+      const hiddenOrders = sceneOrder.filter((o) => !visibleSet.has(o.sceneId))
+      setSceneOrder([...newOrder, ...hiddenOrders])
+    },
+    [sceneOrder, setSceneOrder]
+  )
+
   return (
     <>
       <div
@@ -168,24 +197,20 @@ const Scenes = () => {
               }}
             >
               {scenes && Object.keys(scenes).length ? (
-                (sceneActiveTags.length
-                  ? Object.keys(scenes).filter(sceneFilter)
-                  : Object.keys(scenes)
-                )
-                  .filter(sceneBlenderFilter)
-                  .map((s, i) => {
-                    return (
-                      <SceneCard
-                        key={i}
-                        sceneId={s}
-                        scene={scenes[s]}
-                        order={sceneOrder.find((o) => o.sceneId === s)?.order || 0}
-                        handleActivateScene={handleActivateScene}
-                        features={features}
-                        classes={classes}
-                      />
-                    )
-                  })
+                <SortableCardGrid items={sortedSceneIds} onReorder={handleSceneReorder}>
+                  {(id, dragHandleProps) => (
+                    <SceneCard
+                      key={id}
+                      sceneId={id}
+                      scene={scenes[id]}
+                      order={0}
+                      handleActivateScene={handleActivateScene}
+                      features={features}
+                      classes={classes}
+                      dragHandleProps={dragHandleProps}
+                    />
+                  )}
+                </SortableCardGrid>
               ) : (
                 <NoYet type="Scene" />
               )}

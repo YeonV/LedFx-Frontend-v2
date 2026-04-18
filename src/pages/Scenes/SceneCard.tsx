@@ -4,6 +4,7 @@ import SceneImage from './ScenesImage'
 import { StoredSceneConfig } from '../../api/ledfx.types'
 import BladeIcon from '../../components/Icons/BladeIcon/BladeIcon'
 import { Stack } from '@mui/system'
+import { DragHandle, DragHandleProps } from '../../components/DnD/SortableCardGrid'
 
 const SceneCard = ({
   sceneId,
@@ -12,7 +13,8 @@ const SceneCard = ({
   handleActivateScene,
   features,
   classes,
-  flow
+  flow,
+  dragHandleProps
 }: {
   sceneId: string
   scene: StoredSceneConfig
@@ -21,6 +23,7 @@ const SceneCard = ({
   features: any
   classes: any
   flow?: boolean
+  dragHandleProps?: DragHandleProps
 }) => {
   const theme = useTheme()
 
@@ -75,7 +78,10 @@ const SceneCard = ({
             </Typography>
           </Stack>
           {!(window.localStorage.getItem('guestmode') === 'activated') && (
-            <ScenesMenu sceneId={sceneId} flow />
+            <Stack direction="row" alignItems="center" spacing={0}>
+              <ScenesMenu sceneId={sceneId} flow />
+              {dragHandleProps && <DragHandle {...dragHandleProps} />}
+            </Stack>
           )}
         </CardActions>
       </Card>
