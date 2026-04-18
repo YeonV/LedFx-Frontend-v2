@@ -7,7 +7,6 @@ import {
   useSensors,
   DragEndEvent
 } from '@dnd-kit/core'
-import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -17,7 +16,9 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { DragIndicator } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import { Grid, IconButton } from '@mui/material'
+
+type SyntheticListenerMap = NonNullable<ReturnType<typeof useSortable>['listeners']>
 
 export interface DragHandleProps {
   listeners: SyntheticListenerMap | undefined
@@ -49,9 +50,9 @@ function SortableCardWrapper({
   }
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <Grid ref={setNodeRef} style={style}>
       {children({ listeners, attributes })}
-    </div>
+    </Grid>
   )
 }
 
