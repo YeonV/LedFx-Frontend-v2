@@ -68,7 +68,7 @@ const SceneCard = ({
           }}
           className="step-scenes-five"
         >
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{ overflow: 'hidden', minWidth: 0 }}>
             {flow && <BladeIcon name={'Wallpaper'} />}
             <Typography className={classes.sceneTitle} variant="h5" component="h2">
               {scene.name || sceneId}

@@ -124,7 +124,7 @@ const PlaylistCard = ({
             width: '100%'
           }}
         >
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{ overflow: 'hidden', minWidth: 0 }}>
             {flow && <BladeIcon name={'PlaylistPlay'} />}
             <Typography className={classes.sceneTitle} variant="h5" component="h2">
               {playlist?.name || playlistId}
