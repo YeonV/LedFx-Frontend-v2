@@ -139,9 +139,7 @@ const NowPlayingDialog = () => {
   const virtualIds = Object.keys(virtuals || {})
 
   // Only matrix virtuals (rows > 1) are valid for track text and album art
-  const matrixVirtualIds = virtualIds.filter(
-    (id) => ((virtuals[id]?.config as any)?.rows ?? 1) > 1
-  )
+  const matrixVirtualIds = virtualIds.filter((id) => ((virtuals[id]?.config as any)?.rows ?? 1) > 1)
 
   // Derive available gradient variants from artwork response,
   // falling back to the configured variant so the dropdown is never empty
