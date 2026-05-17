@@ -393,12 +393,14 @@ const NowPlayingDialog = () => {
               </FormControl>
 
               <FormControl size="small" fullWidth sx={formControlSx}>
-                <InputLabel sx={labelSx}>Preset</InputLabel>
+                <InputLabel sx={labelSx}>
+                  Preset - Ledfx or User Preset for Texter2d effect
+                </InputLabel>
 
                 <Select
                   displayEmpty
                   value={trackTextPreset}
-                  label="Preset"
+                  label="Preset - Ledfx or User Preset for Texter2d effect"
                   disabled={!available}
                   onChange={(e) => {
                     setTrackTextPreset(e.target.value as string)
