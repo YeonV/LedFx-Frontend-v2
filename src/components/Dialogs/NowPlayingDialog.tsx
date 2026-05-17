@@ -11,6 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  ListSubheader,
   Slider,
   Button,
   Divider,
@@ -31,6 +32,8 @@ const NowPlayingDialog = () => {
   const getNowPlaying = useStore((state) => state.getNowPlaying)
   const updateNowPlayingConfig = useStore((state) => state.updateNowPlayingConfig)
   const virtuals = useStore((state) => state.virtuals)
+  const getLedFxPresets = useStore((state) => state.getLedFxPresets)
+  const userPresetsAll = useStore((state) => state.config?.user_presets)
 
   const config = nowPlayingState?.config
   const metadata = nowPlayingState?.metadata
@@ -51,6 +54,10 @@ const NowPlayingDialog = () => {
   const [albumArtVirtuals, setAlbumArtVirtuals] = useState<string[]>([])
 
   const [dirty, setDirty] = useState(false)
+
+  // Texter2d presets for the Track Text preset dropdown
+  const [ledfxTexterPresets, setLedfxTexterPresets] = useState<Record<string, { name: string }>>({})
+  const userTexterPresets = (userPresetsAll as any)?.texter2d ?? {}
 
   // Sync local state from server config
   useEffect(() => {
@@ -73,8 +80,11 @@ const NowPlayingDialog = () => {
   useEffect(() => {
     if (open) {
       getNowPlaying()
+      getLedFxPresets().then((allPresets: any) => {
+        setLedfxTexterPresets(allPresets?.texter2d ?? {})
+      })
     }
-  }, [open, getNowPlaying])
+  }, [open, getNowPlaying, getLedFxPresets])
 
   // Two-stage update: on track change start a 3s fallback timer; on gradient change
   // cancel the timer and update immediately (gradient_changed means artwork is ready).
@@ -357,6 +367,22 @@ const NowPlayingDialog = () => {
                   <MenuItem value="">
                     <em>Default</em>
                   </MenuItem>
+                  {Object.keys(ledfxTexterPresets).length > 0 && (
+                    <ListSubheader>LedFx Presets</ListSubheader>
+                  )}
+                  {Object.entries(ledfxTexterPresets).map(([id, p]) => (
+                    <MenuItem key={`ledfx_${id}`} value={id}>
+                      {p.name ?? id}
+                    </MenuItem>
+                  ))}
+                  {Object.keys(userTexterPresets).length > 0 && (
+                    <ListSubheader>My Presets</ListSubheader>
+                  )}
+                  {Object.entries(userTexterPresets).map(([id, p]: any) => (
+                    <MenuItem key={`user_${id}`} value={id}>
+                      {p.name ?? id}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </>
