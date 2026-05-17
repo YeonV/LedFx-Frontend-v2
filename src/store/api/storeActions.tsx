@@ -132,7 +132,7 @@ const storeActions = (set: any) => ({
       timeout: 0,
       action: 'restart'
     }),
-  backendFeatures: { sendspin: false } as Record<string, boolean>,
+  backendFeatures: { sendspin: false, now_playing: false } as Record<string, boolean>,
   getInfo: async () => {
     const resp = await Ledfx('/api/info')
     if (resp?.features) {

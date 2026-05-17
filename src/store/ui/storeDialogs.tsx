@@ -71,6 +71,9 @@ const storeDialogs = (set: any) => ({
     },
     sendspinManager: {
       open: false
+    },
+    nowPlayingManager: {
+      open: false
     }
   },
   assistant: {
@@ -234,6 +237,16 @@ const storeDialogs = (set: any) => ({
       }),
       false,
       'api/dialog/SendspinManager'
+    ),
+  setDialogOpenNowPlayingManager: (open: boolean) =>
+    set(
+      produce((state: IStore) => {
+        state.dialogs.nowPlayingManager = {
+          open
+        }
+      }),
+      false,
+      'api/dialog/NowPlayingManager'
     )
 })
 

@@ -45,6 +45,7 @@ export type IFeatures =
   | 'bgvisualiser'
   | 'showVisualisersOnDevicesPage'
   | 'sendspin'
+  | 'now_playing'
 
 const storeFeatures = (set: any) => ({
   features: {
@@ -90,7 +91,8 @@ const storeFeatures = (set: any) => ({
     showVisualiserInBottomBar: false,
     bgvisualiser: false,
     showVisualisersOnDevicesPage: false,
-    sendspin: false
+    sendspin: false,
+    now_playing: false
   },
   showFeatures: {
     dev: false,
@@ -135,7 +137,8 @@ const storeFeatures = (set: any) => ({
     showVisualiserInBottomBar: false,
     bgvisualiser: false,
     showVisualisersOnDevicesPage: false,
-    sendspin: false
+    sendspin: false,
+    now_playing: false
   },
   setFeatures: (feat: IFeatures, use: boolean): void =>
     set(

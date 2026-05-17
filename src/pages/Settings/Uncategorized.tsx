@@ -11,6 +11,7 @@ const Uncategorized = () => {
   const blenderAutomagic = useStore((state) => state.uiPersist.blenderAutomagic)
   const setBlenderAutomagic = useStore((state) => state.setBlenderAutomagic)
   const setDialogOpenSendspinManager = useStore((state) => state.setDialogOpenSendspinManager)
+  const setDialogOpenNowPlayingManager = useStore((state) => state.setDialogOpenNowPlayingManager)
   const backendFeatures = useStore((state) => state.backendFeatures)
 
   // Offscreen capture state
@@ -180,6 +181,15 @@ const Uncategorized = () => {
           </Button>
         </SettingsRow>
       )}
+      <SettingsRow beta title="Now Playing">
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setDialogOpenNowPlayingManager(true)}
+        >
+          Manage
+        </Button>
+      </SettingsRow>
     </>
   )
 }

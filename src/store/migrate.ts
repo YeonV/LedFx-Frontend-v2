@@ -4,7 +4,7 @@ import { produce } from 'immer'
 import { Ledfx } from '../api/ledfx'
 import useStore, { IStore } from './useStore'
 import store from '../app/app/utils/store.mjs'
-export const frontendConfig = 50
+export const frontendConfig = 51
 
 export interface MigrationState {
   [key: string]: any
@@ -518,5 +518,17 @@ export const migrations: Migrations = {
   50: produce((draft) => {
     draft.config = draft.config || {}
     draft.config.sendspin_always_on = false
+  }),
+  // Migration 51: Add now_playing feature flag and dialog state
+  51: produce((draft) => {
+    if (draft.features && typeof draft.features.now_playing === 'undefined') {
+      draft.features.now_playing = false
+    }
+    if (draft.showFeatures && typeof draft.showFeatures.now_playing === 'undefined') {
+      draft.showFeatures.now_playing = false
+    }
+    if (draft.dialogs && !draft.dialogs.nowPlayingManager) {
+      draft.dialogs.nowPlayingManager = { open: false }
+    }
   })
 }

@@ -23,7 +23,9 @@ export const initialSubscriptions = [
   { event_type: 'song_detected', id: 9014 },
   { event_type: 'clients_updated', id: 9015 },
   { event_type: 'client_broadcast', id: 9016 },
-  { event_type: 'audio_device_list_changed', id: 9017 }
+  { event_type: 'audio_device_list_changed', id: 9017 },
+  { event_type: 'now_playing_track_changed', id: 9018 },
+  { event_type: 'now_playing_gradient_changed', id: 9019 }
 ]
 
 // A declarative "recipe" for how to handle incoming events.
@@ -88,6 +90,8 @@ export const handlerConfig = {
   colors_updated: 'colors_updated',
   clients_updated: 'clients_updated',
   song_detected: true,
+  now_playing_track_changed: true,
+  now_playing_gradient_changed: true,
   client_broadcast: (data: any) => ({
     type: data.type,
     event_type: data.event_type,

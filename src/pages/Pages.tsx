@@ -2,6 +2,7 @@ import { HashRouter as Router, BrowserRouter, Routes, Route } from 'react-router
 import FrontendPixelsTooSmall from '../components/Dialogs/FrontendPixelsTooSmall'
 import ClientManagementDialog from '../components/Dialogs/ClientManagementDialog'
 import SendspinDialog from '../components/Dialogs/SendspinDialog'
+import NowPlayingDialog from '../components/Dialogs/NowPlayingDialog'
 import SpotifyLoginRedirect from './Integrations/Spotify/SpotifyLoginRedirect'
 import BackendPlaylistPage from './Scenes/BackendPlaylistPage'
 import useElectronProtocol from '../hooks/useElectronProtocol'
@@ -81,6 +82,7 @@ const Routings = () => {
         {!display && <NoHostDialog />}
         {!display && <ClientManagementDialog />}
         {!display && <SendspinDialog />}
+        {!display && <NowPlayingDialog />}
         {!display && isElect && <HostManager />}
         {!display && <FrontendPixelsTooSmall />}
         {!display && <SmartBar open={smartBarOpen} setOpen={setSmartBarOpen} direct={false} />}

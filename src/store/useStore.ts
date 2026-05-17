@@ -38,6 +38,7 @@ import storeClientIdentity from './ui/storeClientIdentity'
 import storeClients from './api/storeClients'
 import storeVisualizerConfigOptimistic from './ui-persist/storeVisualizerConfigOptimistic'
 import storeSendspin from './api/storeSendspin'
+import storeNowPlaying from './api/storeNowPlaying'
 
 const useStore = create(
   devtools(
@@ -81,7 +82,8 @@ const useStore = create(
           ...storeClients(set),
           ...storeCloud(set),
           ...storeVisualizerConfigOptimistic(set),
-          ...storeSendspin(set)
+          ...storeSendspin(set),
+          ...storeNowPlaying(set)
         })
       ),
       {
