@@ -24,6 +24,23 @@ import useStore from '../../store/useStore'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import type { NowPlayingConfig } from '../../store/api/storeNowPlaying'
 
+const labelSx = {
+  fontWeight: 700,
+  color: 'common.white',
+  backgroundColor: 'background.paper',
+  px: 0.5,
+  transform: 'translate(14px, -12px) scale(0.75)',
+
+  '&.Mui-focused': {
+    color: 'common.white'
+  }
+}
+
+const formControlSx = {
+  mt: 2,
+  mb: 2
+}
+
 const NowPlayingDialog = () => {
   const open = useStore((state) => state.dialogs.nowPlayingManager?.open || false)
   const setDialogOpenNowPlayingManager = useStore((state) => state.setDialogOpenNowPlayingManager)
@@ -139,7 +156,9 @@ const NowPlayingDialog = () => {
         virtual_ids: albumArtVirtuals
       }
     }
+
     const ok = await updateNowPlayingConfig(newConfig)
+
     if (ok) {
       setDirty(false)
       getNowPlaying()
@@ -202,19 +221,27 @@ const NowPlayingDialog = () => {
                   component="img"
                   src={artwork.url}
                   alt="Album art"
-                  sx={{ width: 112, height: 112, borderRadius: 1, objectFit: 'cover' }}
+                  sx={{
+                    width: 112,
+                    height: 112,
+                    borderRadius: 1,
+                    objectFit: 'cover'
+                  }}
                 />
               )}
+
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="subtitle2" noWrap>
                   {metadata.title ?? 'Unknown'}
                 </Typography>
+
                 <Typography variant="caption" color="text.secondary" noWrap>
                   {metadata.artist ?? 'Unknown'}
                   {metadata.album ? ` — ${metadata.album}` : ''}
                 </Typography>
               </Box>
             </Box>
+
             {nowPlayingState?.current_gradient && (
               <Box
                 sx={{
@@ -232,6 +259,7 @@ const NowPlayingDialog = () => {
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
           Gradient Application
         </Typography>
+
         <Box sx={{ mb: 2, pl: 1 }}>
           <FormControlLabel
             control={
@@ -246,8 +274,10 @@ const NowPlayingDialog = () => {
             }
             label="Apply extracted gradients on track change"
           />
-          <FormControl size="small" fullWidth sx={{ mt: 1, mb: 1 }}>
-            <InputLabel>Variant</InputLabel>
+
+          <FormControl size="small" fullWidth sx={formControlSx}>
+            <InputLabel sx={labelSx}>Variant</InputLabel>
+
             <Select
               value={gradientVariant}
               label="Variant"
@@ -264,8 +294,10 @@ const NowPlayingDialog = () => {
               ))}
             </Select>
           </FormControl>
-          <FormControl size="small" fullWidth sx={{ mb: 1 }}>
-            <InputLabel>Target Virtuals</InputLabel>
+
+          <FormControl size="small" fullWidth sx={formControlSx}>
+            <InputLabel sx={labelSx}>Target Virtuals</InputLabel>
+
             <Select
               multiple
               value={gradientVirtuals}
@@ -286,6 +318,7 @@ const NowPlayingDialog = () => {
               ))}
             </Select>
           </FormControl>
+
           <Typography variant="caption" color="text.secondary">
             Leave empty to apply to all virtuals with active effects.
           </Typography>
@@ -297,6 +330,7 @@ const NowPlayingDialog = () => {
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
           Track Text Display
         </Typography>
+
         <Box sx={{ mb: 2, pl: 1 }}>
           <FormControlLabel
             control={
@@ -311,12 +345,14 @@ const NowPlayingDialog = () => {
             }
             label="Switch to text effect on track change"
           />
+
           {trackTextEnabled && (
             <>
               <Box sx={{ mb: 1 }}>
                 <Typography variant="caption" color="text.secondary">
                   Duration: {trackTextDuration === 0 ? 'Permanent' : `${trackTextDuration}s`}
                 </Typography>
+
                 <Slider
                   size="small"
                   value={trackTextDuration}
@@ -328,12 +364,15 @@ const NowPlayingDialog = () => {
                     markDirty()
                   }}
                 />
+
                 <Typography variant="caption" color="text.secondary">
                   0 = permanent (no restore to previous effect)
                 </Typography>
               </Box>
-              <FormControl size="small" fullWidth sx={{ mb: 1 }}>
-                <InputLabel>Target Virtuals (Matrix)</InputLabel>
+
+              <FormControl size="small" fullWidth sx={formControlSx}>
+                <InputLabel sx={labelSx}>Target Virtuals (Matrix)</InputLabel>
+
                 <Select
                   multiple
                   value={trackTextVirtuals}
@@ -352,8 +391,10 @@ const NowPlayingDialog = () => {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl size="small" fullWidth sx={{ mb: 1 }}>
-                <InputLabel shrink>Preset</InputLabel>
+
+              <FormControl size="small" fullWidth sx={formControlSx}>
+                <InputLabel sx={labelSx}>Preset</InputLabel>
+
                 <Select
                   displayEmpty
                   value={trackTextPreset}
@@ -367,17 +408,21 @@ const NowPlayingDialog = () => {
                   <MenuItem value="">
                     <em>Default</em>
                   </MenuItem>
+
                   {Object.keys(ledfxTexterPresets).length > 0 && (
                     <ListSubheader>LedFx Presets</ListSubheader>
                   )}
+
                   {Object.entries(ledfxTexterPresets).map(([id, p]) => (
                     <MenuItem key={`ledfx_${id}`} value={id}>
                       {p.name ?? id}
                     </MenuItem>
                   ))}
+
                   {Object.keys(userTexterPresets).length > 0 && (
                     <ListSubheader>My Presets</ListSubheader>
                   )}
+
                   {Object.entries(userTexterPresets).map(([id, p]: any) => (
                     <MenuItem key={`user_${id}`} value={id}>
                       {p.name ?? id}
@@ -395,6 +440,7 @@ const NowPlayingDialog = () => {
         <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
           Album Art Display
         </Typography>
+
         <Box sx={{ mb: 2, pl: 1 }}>
           <FormControlLabel
             control={
@@ -409,12 +455,14 @@ const NowPlayingDialog = () => {
             }
             label="Switch to image effect on artwork change"
           />
+
           {albumArtEnabled && (
             <>
               <Box sx={{ mb: 1 }}>
                 <Typography variant="caption" color="text.secondary">
                   Duration: {albumArtDuration === 0 ? 'Permanent' : `${albumArtDuration}s`}
                 </Typography>
+
                 <Slider
                   size="small"
                   value={albumArtDuration}
@@ -426,12 +474,15 @@ const NowPlayingDialog = () => {
                     markDirty()
                   }}
                 />
+
                 <Typography variant="caption" color="text.secondary">
                   0 = permanent (no restore to previous effect)
                 </Typography>
               </Box>
-              <FormControl size="small" fullWidth sx={{ mb: 1 }}>
-                <InputLabel>Target Virtuals (Matrix)</InputLabel>
+
+              <FormControl size="small" fullWidth sx={formControlSx}>
+                <InputLabel sx={labelSx}>Target Virtuals (Matrix)</InputLabel>
+
                 <Select
                   multiple
                   value={albumArtVirtuals}
