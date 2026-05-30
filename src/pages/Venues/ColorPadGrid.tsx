@@ -67,7 +67,7 @@ function PadEditorDialog({ open, pad, onClose, onSave }: PadEditorProps) {
       <DialogContent>
         <GradientPicker
           pickerBgColor={currentColor}
-          isGradient={currentColor.includes('gradient')}
+          isGradient={true}
           colors={colors}
           sendColorToVirtuals={handleColorChange}
           handleAddGradient={(name: string, color: string) => addColor({ [name]: color })}
@@ -88,9 +88,10 @@ function PadEditorDialog({ open, pad, onClose, onSave }: PadEditorProps) {
 
 interface Props {
   venue: Venue
+  isEditMode: boolean
 }
 
-export default function ColorPadGrid({ venue }: Props) {
+export default function ColorPadGrid({ venue, isEditMode }: Props) {
   const activeVenueId = useStore((state) => state.activeVenueId)
   const activeOverridePadIndex = useStore((state) => state.activeOverridePadIndex)
   const activateVenueOverride = useStore((state) => state.activateVenueOverride)
@@ -98,42 +99,22 @@ export default function ColorPadGrid({ venue }: Props) {
   const updateVenuePad = useStore((state) => state.updateVenuePad)
 
   const [editingPadIndex, setEditingPadIndex] = useState<number | null>(null)
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const { cols, pads } = venue.color_pads
 
-  const handlePointerDown = useCallback(
+  const handleClick = useCallback(
     (index: number) => {
-      longPressTimer.current = setTimeout(() => {
-        longPressTimer.current = null
+      if (isEditMode) {
         setEditingPadIndex(index)
-      }, 600)
-    },
-    []
-  )
-
-  const handlePointerUp = useCallback(
-    (index: number) => {
-      if (longPressTimer.current !== null) {
-        clearTimeout(longPressTimer.current)
-        longPressTimer.current = null
-        // Short tap → toggle override
-        if (activeOverridePadIndex === index) {
+      } else {
+        if (activeOverridePadIndex === index && activeVenueId === venue.id) {
           clearVenueOverride(venue.id)
         } else {
           activateVenueOverride(venue.id, index)
         }
       }
     },
-    [activeOverridePadIndex, venue.id, activateVenueOverride, clearVenueOverride]
-  )
-
-  const handleContextMenu = useCallback(
-    (e: React.MouseEvent, index: number) => {
-      e.preventDefault()
-      setEditingPadIndex(index)
-    },
-    []
+    [isEditMode, activeOverridePadIndex, activeVenueId, venue.id, activateVenueOverride, clearVenueOverride]
   )
 
   const handlePadSave = useCallback(
@@ -164,26 +145,22 @@ export default function ColorPadGrid({ venue }: Props) {
           return (
             <Tooltip
               key={i}
-              title={`Pad ${row}×${col} — long-press or right-click to edit`}
+              title={isEditMode ? `Edit pad ${row}×${col}` : `Pad ${row}×${col}`}
               placement="top"
             >
               <Paper
                 elevation={isActive ? 8 : 2}
-                onPointerDown={() => handlePointerDown(i)}
-                onPointerUp={() => handlePointerUp(i)}
-                onPointerLeave={() => {
-                  if (longPressTimer.current) {
-                    clearTimeout(longPressTimer.current)
-                    longPressTimer.current = null
-                  }
-                }}
-                onContextMenu={(e) => handleContextMenu(e, i)}
+                onClick={() => handleClick(i)}
                 sx={{
                   width: 64,
                   height: 64,
                   background: bg,
                   cursor: 'pointer',
-                  border: isActive ? `3px solid white` : '3px solid transparent',
+                  border: isActive
+                    ? '3px solid white'
+                    : isEditMode
+                    ? '3px dashed rgba(255,255,255,0.4)'
+                    : '3px solid transparent',
                   outline: isActive ? '2px solid rgba(255,255,255,0.5)' : 'none',
                   display: 'flex',
                   alignItems: 'center',
@@ -193,7 +170,7 @@ export default function ColorPadGrid({ venue }: Props) {
                   '&:hover': { opacity: 0.85 }
                 }}
               >
-                {isActive && (
+                {isActive && !isEditMode && (
                   <Typography variant="caption" sx={{ color: textColor, fontWeight: 'bold' }}>
                     ON
                   </Typography>
@@ -204,8 +181,9 @@ export default function ColorPadGrid({ venue }: Props) {
         })}
       </Box>
       <Typography variant="caption" color="text.secondary">
-        Tap a pad to activate color override · Tap again to clear · Long-press or right-click to
-        edit color
+        {isEditMode
+          ? 'Click a pad to change its color or gradient'
+          : 'Tap a pad to activate color override · Tap again to clear'}
       </Typography>
       {editingPadIndex !== null && (
         <PadEditorDialog

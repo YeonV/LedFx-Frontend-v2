@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -16,7 +17,6 @@ import {
 } from '@mui/material'
 import { Add, Delete, Edit, MeetingRoom } from '@mui/icons-material'
 import useStore from '../../store/useStore'
-import VenueView from './VenueView'
 
 interface CreateVenueDialogProps {
   open: boolean
@@ -87,13 +87,11 @@ function CreateVenueDialog({ open, onClose, onSave, initial }: CreateVenueDialog
 
 export default function VenuesPage() {
   const venues = useStore((state) => state.venues)
-  const activeVenueId = useStore((state) => state.activeVenueId)
   const getVenues = useStore((state) => state.getVenues)
   const createVenue = useStore((state) => state.createVenue)
   const updateVenue = useStore((state) => state.updateVenue)
   const deleteVenue = useStore((state) => state.deleteVenue)
-  const setActiveVenueId = useStore((state) => state.setActiveVenueId)
-  const clearVenueOverride = useStore((state) => state.clearVenueOverride)
+  const navigate = useNavigate()
 
   const [createOpen, setCreateOpen] = useState(false)
   const [editVenue, setEditVenue] = useState<{ id: string; name: string; rows: number; cols: number } | null>(null)
@@ -123,32 +121,17 @@ export default function VenuesPage() {
 
   const handleDelete = useCallback(
     async (venueId: string) => {
-      if (activeVenueId === venueId) {
-        await clearVenueOverride(venueId)
-        setActiveVenueId(null)
-      }
       await deleteVenue(venueId)
     },
-    [activeVenueId, clearVenueOverride, setActiveVenueId, deleteVenue]
+    [deleteVenue]
   )
 
   const handleEnter = useCallback(
     (venueId: string) => {
-      setActiveVenueId(venueId)
+      navigate('/venues/' + venueId)
     },
-    [setActiveVenueId]
+    [navigate]
   )
-
-  const handleLeave = useCallback(async () => {
-    if (activeVenueId) {
-      await clearVenueOverride(activeVenueId)
-    }
-    setActiveVenueId(null)
-  }, [activeVenueId, clearVenueOverride, setActiveVenueId])
-
-  if (activeVenueId && venues[activeVenueId]) {
-    return <VenueView venue={venues[activeVenueId]} onLeave={handleLeave} />
-  }
 
   const venueList = Object.values(venues)
 

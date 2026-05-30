@@ -34,6 +34,7 @@ import User from './User/User'
 import Lock from './Lock'
 import '../App.css'
 import VenuesPage from './Venues/VenuesPage'
+import VenueViewPage from './Venues/VenueViewPage'
 
 const Routings = () => {
   const isElect = isElectron()
@@ -73,6 +74,7 @@ const Routings = () => {
               {!guest && <Route path="/integrations" element={<Integrations />} />}
               {!guest && <Route path="/settings" element={<SettingsNew />} />}
               <Route path="/venues" element={<VenuesPage />} />
+              <Route path="/venues/:venueId" element={<VenueViewPage />} />
 
               <Route path="*" element={!guest ? <Home /> : <Scenes />} />
             </>

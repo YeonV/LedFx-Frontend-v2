@@ -75,7 +75,7 @@ export default function VenueView({ venue, onLeave }: Props) {
       <Typography variant="subtitle1" gutterBottom>
         Color Override Pads
       </Typography>
-      <ColorPadGrid venue={venue} />
+      <ColorPadGrid venue={venue} isEditMode={false} />
 
       <Divider sx={{ my: 3 }} />
 

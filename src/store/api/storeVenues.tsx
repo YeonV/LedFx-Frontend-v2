@@ -66,30 +66,32 @@ const storeVenues = (set: any) => ({
 
   createVenue: async (name: string, rows = 4, cols = 4) => {
     const resp = await Ledfx('/api/venues', 'POST', { name, rows, cols })
-    if (resp && resp.venue) {
+    const venue = resp?.data?.venue
+    if (venue) {
       set(
         produce((s: IStore) => {
-          s.venues[resp.venue.id] = resp.venue
+          s.venues[venue.id] = venue
         }),
         false,
         'venues/created'
       )
-      return resp.venue as Venue
+      return venue as Venue
     }
     return null
   },
 
   updateVenue: async (venueId: string, data: Partial<Pick<Venue, 'name' | 'color_pads'>>) => {
     const resp = await Ledfx(`/api/venues/${venueId}`, 'PUT', data)
-    if (resp && resp.venue) {
+    const venue = resp?.data?.venue
+    if (venue) {
       set(
         produce((s: IStore) => {
-          s.venues[venueId] = resp.venue
+          s.venues[venueId] = venue
         }),
         false,
         'venues/updated'
       )
-      return resp.venue as Venue
+      return venue as Venue
     }
     return null
   },
@@ -118,15 +120,16 @@ const storeVenues = (set: any) => ({
       action: 'add_virtual',
       virtual_id: virtualId
     })
-    if (resp && resp.venue) {
+    const venue = resp?.data?.venue
+    if (venue) {
       set(
         produce((s: IStore) => {
-          s.venues[venueId] = resp.venue
+          s.venues[venueId] = venue
         }),
         false,
         'venues/addedVirtual'
       )
-      return resp.venue as Venue
+      return venue as Venue
     }
     return null
   },
@@ -136,15 +139,16 @@ const storeVenues = (set: any) => ({
       action: 'remove_virtual',
       virtual_id: virtualId
     })
-    if (resp && resp.venue) {
+    const venue = resp?.data?.venue
+    if (venue) {
       set(
         produce((s: IStore) => {
-          s.venues[venueId] = resp.venue
+          s.venues[venueId] = venue
         }),
         false,
         'venues/removedVirtual'
       )
-      return resp.venue as Venue
+      return venue as Venue
     }
     return null
   },
@@ -188,15 +192,16 @@ const storeVenues = (set: any) => ({
     updatedPads[padIndex] = pad
     const updatedColorPads = { ...currentVenue.color_pads, pads: updatedPads }
     const resp = await Ledfx(`/api/venues/${venueId}`, 'PUT', { color_pads: updatedColorPads })
-    if (resp && resp.venue) {
+    const venue = resp?.data?.venue
+    if (venue) {
       set(
         produce((s: IStore) => {
-          s.venues[venueId] = resp.venue
+          s.venues[venueId] = venue
         }),
         false,
         'venues/padUpdated'
       )
-      return resp.venue as Venue
+      return venue as Venue
     }
     return null
   }
