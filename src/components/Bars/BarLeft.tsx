@@ -1,6 +1,6 @@
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { ChevronLeft, ChevronRight, MeetingRoom } from '@mui/icons-material'
+import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import {
   ListItem,
   ListItemIcon,
@@ -174,31 +174,6 @@ const LeftBar = () => {
               </ListItem>
             </Link>
           ))}
-      </List>
-      <Divider />
-      <List>
-        <Link style={{ textDecoration: 'none' }} to="/venues">
-          <ListItem
-            sx={
-              pathname === '/venues'
-                ? {
-                    backgroundColor: theme.palette.secondary.main,
-                    boxShadow: theme.shadows[12],
-                    '&:hover,&:focus,&:visited,&': {
-                      backgroundColor: theme.palette.secondary.main,
-                      boxShadow: theme.shadows[12]
-                    },
-                    color: '#fff'
-                  }
-                : {}
-            }
-          >
-            <ListItemIcon>
-              <MeetingRoom />
-            </ListItemIcon>
-            <ListItemText primary="Venues" />
-          </ListItem>
-        </Link>
       </List>
       <Divider />
     </Drawer>
