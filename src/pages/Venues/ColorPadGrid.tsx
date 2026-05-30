@@ -1,31 +1,85 @@
-import { useCallback, useState, useRef } from 'react'
-import { Box, Tooltip, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material'
+import { useCallback, useEffect, useState } from 'react'
+import ReactGPicker from 'react-gcolor-picker'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
+  Typography
+} from '@mui/material'
 import useStore from '../../store/useStore'
-import type { Venue, ColorPad } from '../../store/api/storeVenues'
-import GradientPicker from '../../components/SchemaForm/components/GradientPicker/GradientPicker'
+import type { ColorPad, Venue } from '../../store/api/storeVenues'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-/** Return a CSS background string for a pad (solid color or gradient). */
-function padBackground(pad: ColorPad): string {
-  if (pad.gradient) return pad.gradient
-  if (pad.color) return pad.color
-  return '#444'
+const PAD_SIZES = { S: 40, M: 56, L: 72, XL: 96 } as const
+type PadSizeKey = keyof typeof PAD_SIZES
+
+/** Normalize a gradient string to always include an explicit angle. */
+function normalizeGradient(colorStr: string): string {
+  if (!colorStr || !colorStr.includes('linear-gradient')) return colorStr
+  if (colorStr.match(/linear-gradient\s*\(\s*\d+deg/)) return colorStr
+  return colorStr.replace(/linear-gradient\s*\(/, 'linear-gradient(90deg, ')
 }
 
-/** Return true if the color is visually dark (for text contrast). */
-function isDark(cssColor: string): boolean {
-  if (cssColor.startsWith('linear-gradient')) return true
-  try {
-    const c = cssColor.replace('#', '')
-    if (c.length !== 6) return true
-    const r = parseInt(c.slice(0, 2), 16)
-    const g = parseInt(c.slice(2, 4), 16)
-    const b = parseInt(c.slice(4, 6), 16)
-    return (r * 299 + g * 587 + b * 114) / 1000 < 128
-  } catch {
-    return true
+/** Return the auto-palette default hex color for pad i of n (mirrors backend). */
+function defaultPadColor(padIndex: number, totalPads: number): string {
+  if (totalPads === 0) return '#ff0000'
+  const h = (padIndex / totalPads) * 360
+  const s = 1
+  const l = 0.5
+  const c = (1 - Math.abs(2 * l - 1)) * s
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
+  const m = l - c / 2
+  let r = 0, g = 0, b = 0
+  if (h < 60) { r = c; g = x; b = 0 }
+  else if (h < 120) { r = x; g = c; b = 0 }
+  else if (h < 180) { r = 0; g = c; b = x }
+  else if (h < 240) { r = 0; g = x; b = c }
+  else if (h < 300) { r = x; g = 0; b = c }
+  else { r = c; g = 0; b = x }
+  return '#' + [r + m, g + m, b + m].map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')
+}
+
+/** Build the background sx props for a pad. Gradients require backgroundImage. */
+function padSx(pad: ColorPad, padSize: number, isActive: boolean, isEditMode: boolean) {
+  const isGrad = Boolean(pad.gradient)
+  const bg = pad.gradient ?? pad.color ?? '#444'
+  return {
+    width: padSize,
+    height: padSize,
+    ...(isGrad ? { backgroundImage: bg, backgroundColor: 'transparent' } : { backgroundColor: bg }),
+    cursor: 'pointer',
+    border: isActive
+      ? '3px solid white'
+      : isEditMode
+      ? '3px dashed rgba(255,255,255,0.4)'
+      : '3px solid transparent',
+    outline: isActive ? '2px solid rgba(255,255,255,0.5)' : 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    userSelect: 'none',
+    transition: 'all 0.15s',
+    '&:hover': { opacity: 0.85 }
   }
+}
+
+/** Return true if a background color is visually dark (for text contrast). */
+function isDark(pad: ColorPad): boolean {
+  if (pad.gradient) return true
+  const c = (pad.color ?? '#000').replace('#', '')
+  if (c.length !== 6) return true
+  const r = parseInt(c.slice(0, 2), 16)
+  const g = parseInt(c.slice(2, 4), 16)
+  const b = parseInt(c.slice(4, 6), 16)
+  return (r * 299 + g * 587 + b * 114) / 1000 < 128
 }
 
 // ─── Pad editor dialog ───────────────────────────────────────────────────────
@@ -33,27 +87,33 @@ function isDark(cssColor: string): boolean {
 interface PadEditorProps {
   open: boolean
   pad: ColorPad
+  padIndex: number
+  totalPads: number
   onClose: () => void
   onSave: (pad: ColorPad) => void
 }
 
-function PadEditorDialog({ open, pad, onClose, onSave }: PadEditorProps) {
-  const [currentColor, setCurrentColor] = useState<string>(pad.gradient ?? pad.color ?? '#ff0000')
+function PadEditorDialog({ open, pad, padIndex, totalPads, onClose, onSave }: PadEditorProps) {
+  const initialColor = normalizeGradient(pad.gradient ?? pad.color ?? '#ff0000')
+  const [currentColor, setCurrentColor] = useState<string>(initialColor)
+  const [confirmReset, setConfirmReset] = useState(false)
+
   const colors = useStore((state) => state.colors)
   const getColors = useStore((state) => state.getColors)
-  const addColor = useStore((state) => state.addColor)
-  const showHex = useStore((state) => state.uiPersist.showHex)
 
-  // Fetch colors on first open
-  const fetchedRef = useRef(false)
-  if (open && !fetchedRef.current) {
-    fetchedRef.current = true
-    if (!colors || Object.keys(colors).length === 0) getColors()
-  }
+  useEffect(() => {
+    if (open) {
+      setCurrentColor(normalizeGradient(pad.gradient ?? pad.color ?? '#ff0000'))
+      setConfirmReset(false)
+      if (!colors || Object.keys(colors).length === 0) getColors()
+    }
+  }, [open, pad, colors, getColors])
 
-  const handleColorChange = useCallback((value: string) => {
-    setCurrentColor(value)
-  }, [])
+  const defaultColors: string[] = []
+  if (colors?.gradients?.builtin) defaultColors.push(...Object.values(colors.gradients.builtin) as string[])
+  if (colors?.gradients?.user) defaultColors.push(...Object.values(colors.gradients.user) as string[])
+  if (colors?.colors?.builtin) defaultColors.push(...Object.values(colors.colors.builtin) as string[])
+  if (colors?.colors?.user) defaultColors.push(...Object.values(colors.colors.user) as string[])
 
   const handleSave = () => {
     const isGradient = currentColor.includes('gradient')
@@ -61,24 +121,51 @@ function PadEditorDialog({ open, pad, onClose, onSave }: PadEditorProps) {
     onClose()
   }
 
+  const handleResetClick = () => {
+    if (confirmReset) {
+      setCurrentColor(defaultPadColor(padIndex, totalPads))
+      setConfirmReset(false)
+    } else {
+      setConfirmReset(true)
+    }
+  }
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm">
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>Edit Pad Color</DialogTitle>
-      <DialogContent>
-        <GradientPicker
-          pickerBgColor={currentColor}
-          isGradient={true}
-          colors={colors}
-          sendColorToVirtuals={handleColorChange}
-          handleAddGradient={(name: string, color: string) => addColor({ [name]: color })}
-          showHex={showHex}
+      <DialogContent sx={{ pt: 1, pb: 0 }}>
+        <ReactGPicker
+          colorBoardHeight={150}
+          debounce
+          debounceMS={200}
+          format="hex"
+          gradient
+          solid
+          showAlpha={false}
+          popupWidth={288}
+          value={currentColor}
+          defaultColors={defaultColors}
+          onChange={(c: string) => setCurrentColor(normalizeGradient(c))}
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave} variant="contained">
-          Apply
-        </Button>
+      <DialogActions sx={{ justifyContent: 'space-between', px: 2 }}>
+        {confirmReset ? (
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Typography variant="caption" color="warning.main">Reset to default?</Typography>
+            <Button size="small" color="warning" onClick={handleResetClick}>Confirm</Button>
+            <Button size="small" onClick={() => setConfirmReset(false)}>Cancel</Button>
+          </Box>
+        ) : (
+          <Button size="small" color="inherit" onClick={handleResetClick}>
+            Reset to Default
+          </Button>
+        )}
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSave} variant="contained">
+            Apply
+          </Button>
+        </Box>
       </DialogActions>
     </Dialog>
   )
@@ -99,8 +186,11 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
   const updateVenuePad = useStore((state) => state.updateVenuePad)
 
   const [editingPadIndex, setEditingPadIndex] = useState<number | null>(null)
+  const [padSizeKey, setPadSizeKey] = useState<PadSizeKey>('M')
+  const padSize = PAD_SIZES[padSizeKey]
 
   const { cols, pads } = venue.color_pads
+  const gap = 8
 
   const handleClick = useCallback(
     (index: number) => {
@@ -127,19 +217,36 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
 
   return (
     <>
+      {/* Size selector */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Typography variant="caption" color="text.secondary">Size:</Typography>
+        <ToggleButtonGroup
+          size="small"
+          value={padSizeKey}
+          exclusive
+          onChange={(_, v) => v && setPadSizeKey(v as PadSizeKey)}
+        >
+          {(Object.keys(PAD_SIZES) as PadSizeKey[]).map((k) => (
+            <ToggleButton key={k} value={k} sx={{ px: 1, py: 0.25, fontSize: '0.7rem' }}>
+              {k}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Box>
+
+      {/* Pad grid */}
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gap: 1,
-          maxWidth: cols * 72,
-          mb: 1
+          gridTemplateColumns: `repeat(${cols}, ${padSize}px)`,
+          gap: `${gap}px`,
+          mb: 1,
+          width: 'fit-content'
         }}
       >
         {pads.map((pad, i) => {
           const isActive = activeVenueId === venue.id && activeOverridePadIndex === i
-          const bg = padBackground(pad)
-          const textColor = isDark(bg) ? '#fff' : '#000'
+          const textColor = isDark(pad) ? '#fff' : '#000'
           const row = Math.floor(i / cols) + 1
           const col = (i % cols) + 1
           return (
@@ -151,24 +258,7 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
               <Paper
                 elevation={isActive ? 8 : 2}
                 onClick={() => handleClick(i)}
-                sx={{
-                  width: 64,
-                  height: 64,
-                  background: bg,
-                  cursor: 'pointer',
-                  border: isActive
-                    ? '3px solid white'
-                    : isEditMode
-                    ? '3px dashed rgba(255,255,255,0.4)'
-                    : '3px solid transparent',
-                  outline: isActive ? '2px solid rgba(255,255,255,0.5)' : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  userSelect: 'none',
-                  transition: 'all 0.15s',
-                  '&:hover': { opacity: 0.85 }
-                }}
+                sx={padSx(pad, padSize, isActive, isEditMode)}
               >
                 {isActive && !isEditMode && (
                   <Typography variant="caption" sx={{ color: textColor, fontWeight: 'bold' }}>
@@ -180,15 +270,19 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
           )
         })}
       </Box>
+
       <Typography variant="caption" color="text.secondary">
         {isEditMode
           ? 'Click a pad to change its color or gradient'
           : 'Tap a pad to activate color override · Tap again to clear'}
       </Typography>
+
       {editingPadIndex !== null && (
         <PadEditorDialog
           open
           pad={pads[editingPadIndex]}
+          padIndex={editingPadIndex}
+          totalPads={pads.length}
           onClose={() => setEditingPadIndex(null)}
           onSave={handlePadSave}
         />
