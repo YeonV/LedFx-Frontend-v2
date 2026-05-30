@@ -100,7 +100,7 @@ export default function ColorPadGrid({ venue }: Props) {
   const [editingPadIndex, setEditingPadIndex] = useState<number | null>(null)
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const { rows, cols, pads } = venue.color_pads
+  const { cols, pads } = venue.color_pads
 
   const handlePointerDown = useCallback(
     (index: number) => {
