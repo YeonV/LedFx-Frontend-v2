@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactGPicker from 'react-gcolor-picker'
 import {
   Box,
@@ -24,8 +24,16 @@ type PadSizeKey = keyof typeof PAD_SIZES
 /** Normalize a gradient string to always include an explicit angle. */
 function normalizeGradient(colorStr: string): string {
   if (!colorStr || !colorStr.includes('linear-gradient')) return colorStr
-  if (colorStr.match(/linear-gradient\s*\(\s*\d+deg/)) return colorStr
-  return colorStr.replace(/linear-gradient\s*\(/, 'linear-gradient(90deg, ')
+  // No angle specified — add 90deg (left-to-right)
+  if (!colorStr.match(/linear-gradient\s*\(\s*\d+deg/)) {
+    return colorStr.replace(/linear-gradient\s*\(/, 'linear-gradient(90deg, ')
+  }
+  return colorStr
+}
+
+/** Replace 180deg (ReactGPicker's first-time default) with 90deg. */
+function fixDefaultAngle(colorStr: string): string {
+  return colorStr.replace(/linear-gradient\s*\(\s*180deg/, 'linear-gradient(90deg')
 }
 
 /** Return the auto-palette default hex color for pad i of n (mirrors backend). */
@@ -55,6 +63,7 @@ function padSx(pad: ColorPad, padSize: number, isActive: boolean, isEditMode: bo
     width: padSize,
     height: padSize,
     ...(isGrad ? { backgroundImage: bg, backgroundColor: 'transparent' } : { backgroundColor: bg }),
+    backgroundClip: 'padding-box',
     cursor: 'pointer',
     border: isActive
       ? '3px solid white'
@@ -97,14 +106,18 @@ function PadEditorDialog({ open, pad, padIndex, totalPads, onClose, onSave }: Pa
   const initialColor = normalizeGradient(pad.gradient ?? pad.color ?? '#ff0000')
   const [currentColor, setCurrentColor] = useState<string>(initialColor)
   const [confirmReset, setConfirmReset] = useState(false)
+  // Tracks whether the picker had a gradient value before the most recent onChange
+  const wasGradientRef = useRef(Boolean(pad.gradient))
 
   const colors = useStore((state) => state.colors)
   const getColors = useStore((state) => state.getColors)
 
   useEffect(() => {
     if (open) {
-      setCurrentColor(normalizeGradient(pad.gradient ?? pad.color ?? '#ff0000'))
+      const c = normalizeGradient(pad.gradient ?? pad.color ?? '#ff0000')
+      setCurrentColor(c)
       setConfirmReset(false)
+      wasGradientRef.current = c.includes('gradient')
       if (!colors || Object.keys(colors).length === 0) getColors()
     }
   }, [open, pad, colors, getColors])
@@ -121,9 +134,22 @@ function PadEditorDialog({ open, pad, padIndex, totalPads, onClose, onSave }: Pa
     onClose()
   }
 
+  const handleChange = (c: string) => {
+    let normalized = normalizeGradient(c)
+    const isNowGradient = normalized.includes('gradient')
+    // Fix ReactGPicker's 180deg default only on the first solid→gradient switch
+    if (isNowGradient && !wasGradientRef.current) {
+      normalized = fixDefaultAngle(normalized)
+    }
+    wasGradientRef.current = isNowGradient
+    setCurrentColor(normalized)
+  }
+
   const handleResetClick = () => {
     if (confirmReset) {
-      setCurrentColor(defaultPadColor(padIndex, totalPads))
+      const def = defaultPadColor(padIndex, totalPads)
+      setCurrentColor(def)
+      wasGradientRef.current = false
       setConfirmReset(false)
     } else {
       setConfirmReset(true)
@@ -134,19 +160,37 @@ function PadEditorDialog({ open, pad, padIndex, totalPads, onClose, onSave }: Pa
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>Edit Pad Color</DialogTitle>
       <DialogContent sx={{ pt: 1, pb: 0 }}>
-        <ReactGPicker
-          colorBoardHeight={150}
-          debounce
-          debounceMS={200}
-          format="hex"
-          gradient
-          solid
-          showAlpha={false}
-          popupWidth={288}
-          value={currentColor}
-          defaultColors={defaultColors}
-          onChange={(c: string) => setCurrentColor(normalizeGradient(c))}
-        />
+        {/* Override ReactGPicker's hardcoded white backgrounds to match app theme */}
+        <Box
+          sx={(theme) => ({
+            '& .colorpicker, & .popup_tabs, & .popup_tabs-header, & .color-picker-panel': {
+              backgroundColor: `${theme.palette.background.paper} !important`
+            },
+            '& .popup_tabs-header-label': {
+              color: `${theme.palette.text.secondary} !important`
+            },
+            '& .popup_tabs-header-label-active': {
+              color: `${theme.palette.text.primary} !important`,
+              backgroundColor: `${theme.palette.background.paper} !important`
+            },
+            '& .gradient-result': { display: 'none' },
+            '& .input_rgba': { display: 'none' }
+          })}
+        >
+          <ReactGPicker
+            colorBoardHeight={150}
+            debounce
+            debounceMS={200}
+            format="hex"
+            gradient
+            solid
+            showAlpha={false}
+            popupWidth={288}
+            value={currentColor}
+            defaultColors={defaultColors}
+            onChange={handleChange}
+          />
+        </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'space-between', px: 2 }}>
         {confirmReset ? (

@@ -160,6 +160,7 @@ const storeVenues = (set: any) => ({
     if (resp) {
       set(
         produce((s: IStore) => {
+          s.activeVenueId = venueId
           s.activeOverridePadIndex = padIndex
         }),
         false,
@@ -175,6 +176,7 @@ const storeVenues = (set: any) => ({
     if (resp) {
       set(
         produce((s: IStore) => {
+          s.activeVenueId = null
           s.activeOverridePadIndex = null
         }),
         false,
