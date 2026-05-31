@@ -9,6 +9,7 @@ import storeUser from './ui/storeUser'
 import storeDialogs from './ui/storeDialogs'
 import storeSpotify from './ui/storeSpotify'
 import storeQLC from './ui/storeQLC'
+import storeDmxInput from './ui/storeDmxInput'
 import storeWebAudio from './ui/storeWebAudio'
 import storeCloud from './ui/storeCloud'
 import storeDevices from './api/storeDevices'
@@ -22,6 +23,7 @@ import storeActions from './api/storeActions'
 import storeColors from './api/storeColors'
 import storeSpotifyActions from './ui/storeSpotifyActions'
 import storeQLCActions from './ui/storeQLCActions'
+import storeDmxInputActions from './ui/storeDmxInputActions'
 import storeNotifications from './ui/storeNotifications'
 import storePad from './ui/storePad'
 import storeMidi from './ui/storeMidi'
@@ -52,6 +54,7 @@ const useStore = create(
           uiPersist: storeUIPersist(),
           spotify: storeSpotify(),
           qlc: storeQLC(),
+          ...storeDmxInput(),
           user: storeUser(set),
           ...storeMatrix(set),
           ...storeUIPersistActions(set),
@@ -62,6 +65,7 @@ const useStore = create(
           ...storeTours(set),
           ...storeSpotifyActions(set),
           ...storeQLCActions(set),
+          ...storeDmxInputActions(set),
           ...storeGeneral(set),
           ...storeDialogs(set),
           ...storeFeatures(set),
@@ -113,7 +117,8 @@ const useStore = create(
                   'externalStudioRef',
                   'clientIdentity',
                   'activeVenueId',
-                  'activeOverridePadIndex'
+                  'activeOverridePadIndex',
+                  'dmxInput'
                 ].includes(key)
             )
           )
