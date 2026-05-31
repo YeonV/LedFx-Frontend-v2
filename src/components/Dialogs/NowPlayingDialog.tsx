@@ -23,6 +23,7 @@ import { Close, Save } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import { useSubscription } from '../../utils/Websocket/WebSocketProvider'
 import type { NowPlayingConfig } from '../../store/api/storeNowPlaying'
+import { getImageUrl } from '../../utils/imageUrl'
 
 const labelSx = {
   fontWeight: 700,
@@ -216,10 +217,10 @@ const NowPlayingDialog = () => {
             }}
           >
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              {artwork?.url && (
+              {artwork?.hash && (
                 <Box
                   component="img"
-                  src={artwork.url}
+                  src={`${getImageUrl('now_playing/now_playing.jpg')}&cb=${artwork.hash}`}
                   alt="Album art"
                   sx={{
                     width: 112,
