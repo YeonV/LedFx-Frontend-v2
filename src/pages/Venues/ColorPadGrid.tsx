@@ -10,7 +10,6 @@ import {
   Paper,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
   Typography
 } from '@mui/material'
 import useStore from '../../store/useStore'
@@ -230,7 +229,7 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
   const updateVenuePad = useStore((state) => state.updateVenuePad)
 
   const [editingPadIndex, setEditingPadIndex] = useState<number | null>(null)
-  const [padSizeKey, setPadSizeKey] = useState<PadSizeKey>('M')
+  const [padSizeKey, setPadSizeKey] = useState<PadSizeKey>('XL')
   const padSize = PAD_SIZES[padSizeKey]
 
   const { cols, pads } = venue.color_pads
@@ -291,15 +290,9 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
         {pads.map((pad, i) => {
           const isActive = activeVenueId === venue.id && activeOverridePadIndex === i
           const textColor = isDark(pad) ? '#fff' : '#000'
-          const row = Math.floor(i / cols) + 1
-          const col = (i % cols) + 1
           return (
-            <Tooltip
-              key={i}
-              title={isEditMode ? `Edit pad ${row}×${col}` : `Pad ${row}×${col}`}
-              placement="top"
-            >
               <Paper
+                key={i}
                 elevation={isActive ? 8 : 2}
                 onClick={() => handleClick(i)}
                 sx={padSx(pad, padSize, isActive, isEditMode)}
@@ -310,7 +303,6 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
                   </Typography>
                 )}
               </Paper>
-            </Tooltip>
           )
         })}
       </Box>
