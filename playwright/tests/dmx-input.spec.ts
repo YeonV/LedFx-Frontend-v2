@@ -185,5 +185,6 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
     // "Virtual: ..." prefix rather than requiring an exact name match.
     await expect(mappingRow.getByText(/^Virtual: /)).toBeVisible()
     await page.screenshot({ path: 'test-results/dmx-8-mapping-saved.png' })
+    await page.screenshot({ path: 'playwright/screenshots/dmx-input-mapping.png', fullPage: true })
   })
 })
