@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { test, expect } from './fixtures'
 import { clearDialogs } from './helpers'
 
@@ -11,9 +10,7 @@ import { clearDialogs } from './helpers'
  * Tapping the active pad again clears the override and restores normal
  * playback.
  */
-test('Venues: create venue, add virtual, activate and clear color override', async ({
-  page
-}) => {
+test('Venues: create venue, add virtual, activate and clear color override', async ({ page }) => {
   test.setTimeout(90000)
 
   await page.goto('/#/')
@@ -98,9 +95,7 @@ test('Venues: create venue, add virtual, activate and clear color override', asy
     await page.getByRole('option', { name: virtualName }).click()
     await page.waitForTimeout(1000)
 
-    await expect(
-      page.locator('.MuiChip-root').filter({ hasText: virtualName })
-    ).toBeVisible({
+    await expect(page.locator('.MuiChip-root').filter({ hasText: virtualName })).toBeVisible({
       timeout: 10000
     })
     await page.screenshot({ path: 'test-results/venues-5-virtual-added.png' })
@@ -138,5 +133,123 @@ test('Venues: create venue, add virtual, activate and clear color override', asy
     await expect(firstPad.getByText('ON')).not.toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Override Active')).not.toBeVisible({ timeout: 10000 })
     await page.screenshot({ path: 'test-results/venues-7-override-cleared.png' })
+  })
+
+  /**
+   * @doc
+   * Map the venue's virtual as a DMX Input Fixture target (via the
+   * Integrations page), which marks this venue as **DMX-mapped**. Only
+   * DMX-mapped venues show a pause control on the Venues list.
+   */
+  await test.step('7. Map the Venue Virtual via a DMX Input Integration', async () => {
+    await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Settings' }).click()
+    await page.waitForTimeout(1000)
+
+    const expertCheckbox = page.getByLabel('Expert Mode')
+    await expertCheckbox.waitFor({ state: 'visible' })
+    if (!(await expertCheckbox.isChecked())) {
+      await expertCheckbox.click()
+      await page.waitForTimeout(500)
+    }
+
+    const featuresAccordion = page.getByRole('button', { name: /Features/ })
+    await featuresAccordion.click()
+    await page.waitForTimeout(500)
+
+    const featuresRegion = page.getByRole('region', { name: 'Features' })
+    const integrationsRow = featuresRegion.locator('input[type="checkbox"]').first()
+    await integrationsRow.waitFor({ state: 'visible' })
+    if (!(await integrationsRow.isChecked())) {
+      await integrationsRow.click()
+      await page.waitForTimeout(500)
+    }
+
+    await page
+      .locator('.MuiBottomNavigationAction-root')
+      .filter({ hasText: 'Integrations' })
+      .click()
+    await page.waitForTimeout(1000)
+
+    await page.locator('.MuiFab-root[aria-label="add"]').click()
+    await page.waitForTimeout(500)
+    await page.getByRole('menuitem', { name: 'Add Integration' }).click()
+
+    const addDialog = page.getByRole('dialog')
+    await addDialog.waitFor({ state: 'visible' })
+    await addDialog.getByRole('combobox').first().click()
+    await page.getByRole('option', { name: 'DMX Input' }).click()
+    await page.waitForTimeout(500)
+    await addDialog.getByRole('button', { name: 'Add' }).click()
+    await addDialog.waitFor({ state: 'detached', timeout: 10000 })
+    await expect(page.getByText('DMX Input').first()).toBeVisible({ timeout: 10000 })
+
+    const integrationCard = page.locator('.MuiCard-root').filter({ hasText: 'DMX Input' }).last()
+    await integrationCard.getByRole('switch', { name: 'status' }).click()
+    await expect(async () => {
+      await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
+      await page.waitForTimeout(300)
+      await page
+        .locator('.MuiBottomNavigationAction-root')
+        .filter({ hasText: 'Integrations' })
+        .click()
+      await expect(integrationCard.getByText('Current Status: Listening')).toBeVisible({
+        timeout: 3000
+      })
+    }).toPass({ timeout: 20000 })
+
+    await integrationCard.getByRole('button', { name: 'DMX Input settings' }).click()
+    const screen = page.getByRole('dialog').filter({ hasText: 'DMX Input Mappings' })
+    await screen.waitFor({ state: 'visible' })
+
+    await screen.getByRole('button', { name: 'Add Mapping' }).click()
+    const mappingDialog = page.getByRole('dialog').filter({ hasText: 'Add DMX Mapping' })
+    await mappingDialog.waitFor({ state: 'visible' })
+    await mappingDialog.getByLabel('Name').fill('Venue Fixture Mapping')
+    await mappingDialog.getByLabel('Type').click()
+    await page.getByRole('option', { name: 'Fixture (wash)' }).click()
+    await page.waitForTimeout(500)
+
+    // The Virtual dropdown defaults to the first virtual in the backend's
+    // list (by creation order), which may not be the venue's own virtual if
+    // other specs ran earlier in the same suite and created virtuals first.
+    // Explicitly select the venue's virtual by name.
+    await mappingDialog.getByLabel('Virtual').click()
+    await page.getByRole('option', { name: virtualName }).click()
+    await page.waitForTimeout(500)
+
+    const saveButton = mappingDialog.getByRole('button', { name: 'Save' })
+    await expect(saveButton).toBeEnabled({ timeout: 10000 })
+    await saveButton.click()
+    await mappingDialog.waitFor({ state: 'detached', timeout: 10000 })
+
+    await screen.getByRole('button', { name: 'back' }).click()
+    await screen.waitFor({ state: 'detached', timeout: 10000 })
+  })
+
+  /**
+   * @doc
+   * Back on the Venues list, the venue now shows a pause icon-button
+   * (it's DMX-mapped via its member virtual). Use it to mute, then resume,
+   * DMX Input takeover for the whole venue.
+   */
+  await test.step('8. Pause and Resume DMX Input on the Venue', async () => {
+    await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Venues' }).click()
+    await page.waitForTimeout(1000)
+
+    const venueCard = page.locator('.MuiCard-root').filter({ hasText: venueName }).first()
+    const pauseButton = venueCard.getByRole('button', { name: 'pause-dmx' })
+    await expect(pauseButton).toBeVisible({ timeout: 10000 })
+    await page.screenshot({ path: 'test-results/venues-8-pause-button.png' })
+
+    await pauseButton.click()
+    await expect(venueCard.getByRole('button', { name: 'resume-dmx' })).toBeVisible({
+      timeout: 10000
+    })
+    await page.screenshot({ path: 'test-results/venues-9-venue-paused.png' })
+
+    await venueCard.getByRole('button', { name: 'resume-dmx' }).click()
+    await expect(venueCard.getByRole('button', { name: 'pause-dmx' })).toBeVisible({
+      timeout: 10000
+    })
   })
 })

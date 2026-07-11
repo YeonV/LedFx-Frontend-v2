@@ -19,6 +19,10 @@ export interface Venue {
   name: string
   virtual_ids: string[]
   color_pads: VenueColorPads
+  /** True if this venue is currently paused for DMX Input processing. */
+  paused?: boolean
+  /** True if a DMX Input mapping currently targets this venue (or one of its virtuals). */
+  dmx_mapped?: boolean
 }
 
 const storeVenues = (set: any) => ({
@@ -206,6 +210,23 @@ const storeVenues = (set: any) => ({
       return venue as Venue
     }
     return null
+  },
+
+  setVenuePause: async (venueId: string, paused: boolean) => {
+    const resp = await Ledfx(`/api/venues/${venueId}/pause`, 'PUT', { paused })
+    if (resp && resp.status === 'success') {
+      set(
+        produce((s: IStore) => {
+          if (s.venues[venueId]) {
+            s.venues[venueId].paused = paused
+          }
+        }),
+        false,
+        'venues/pauseSet'
+      )
+      return true
+    }
+    return false
   }
 })
 

@@ -15,7 +15,7 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material'
-import { Add, Delete, Edit, MeetingRoom } from '@mui/icons-material'
+import { Add, Delete, Edit, MeetingRoom, Pause, PlayArrow } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 
 interface CreateVenueDialogProps {
@@ -91,6 +91,7 @@ export default function VenuesPage() {
   const createVenue = useStore((state) => state.createVenue)
   const updateVenue = useStore((state) => state.updateVenue)
   const deleteVenue = useStore((state) => state.deleteVenue)
+  const setVenuePause = useStore((state) => state.setVenuePause)
   const navigate = useNavigate()
 
   const [createOpen, setCreateOpen] = useState(false)
@@ -138,6 +139,13 @@ export default function VenuesPage() {
     [navigate]
   )
 
+  const handleTogglePause = useCallback(
+    (venueId: string, paused: boolean) => {
+      setVenuePause(venueId, !paused)
+    },
+    [setVenuePause]
+  )
+
   const venueList = Object.values(venues)
 
   return (
@@ -164,7 +172,27 @@ export default function VenuesPage() {
             <Box key={venue.id} sx={{ minWidth: 240, maxWidth: 320, flex: '1 1 240px' }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">{venue.name}</Typography>
+                  <Box
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                  >
+                    <Typography variant="h6">{venue.name}</Typography>
+                    {venue.dmx_mapped && (
+                      <Tooltip title={venue.paused ? 'Resume DMX Input' : 'Pause DMX Input'}>
+                        <IconButton
+                          size="small"
+                          color={venue.paused ? 'warning' : 'default'}
+                          onClick={() => handleTogglePause(venue.id, !!venue.paused)}
+                          aria-label={venue.paused ? 'resume-dmx' : 'pause-dmx'}
+                        >
+                          {venue.paused ? (
+                            <PlayArrow fontSize="small" />
+                          ) : (
+                            <Pause fontSize="small" />
+                          )}
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </Box>
                   <Typography variant="body2" color="text.secondary">
                     {venue.virtual_ids.length} virtual
                     {venue.virtual_ids.length !== 1 ? 's' : ''}

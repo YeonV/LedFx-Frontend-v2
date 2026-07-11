@@ -7,7 +7,9 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const PIDS_FILE = path.join(__dirname, '..', '.pids.json')
-const PWTEST_CONFIG = path.resolve(__dirname, '..', '..', '..', 'backend', 'pwtest')
+const BACKEND_DIR =
+  process.env.PW_BACKEND_DIR || path.resolve(__dirname, '..', '..', '..', 'backend')
+const PWTEST_CONFIG = path.join(BACKEND_DIR, 'pwtest')
 
 /** Kill a process tree (cross-platform) */
 function killTree(pid: number | undefined, label: string) {

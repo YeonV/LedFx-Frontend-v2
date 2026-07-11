@@ -24,6 +24,32 @@ const storeDmxInputActions = (set: any) => ({
     return null
   },
 
+  // Global pause/resume of the whole DMX Input integration. The persisted
+  // paused flag lives on the integration's own `data` (as returned by
+  // GET /api/integrations, alongside `active`/`config`) rather than on the
+  // mapping-editor payload, so update that slice of the store on success.
+  setDmxInputPause: async (integrationId: string, paused: boolean) => {
+    const resp = await Ledfx(`/api/integrations/dmx_input/${integrationId}/pause`, 'PUT', {
+      paused
+    })
+    if (resp && resp.status === 'success') {
+      set(
+        produce((state: IStore) => {
+          if (state.integrations[integrationId]) {
+            state.integrations[integrationId].data = {
+              ...state.integrations[integrationId].data,
+              paused
+            }
+          }
+        }),
+        false,
+        'dmxInput/setPause'
+      )
+      return true
+    }
+    return false
+  },
+
   // Lightweight poll used by the live monitor / DMX-learn (only updates live_dmx)
   getDmxLive: async (integrationId: string) => {
     const resp = await Ledfx(

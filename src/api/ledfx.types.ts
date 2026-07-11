@@ -3400,6 +3400,10 @@ export interface Effect {
   streaming: boolean;
   last_effect?: "bands" | "bands_matrix" | "bar" | "blade_power_plus" | "bleep" | "blender" | "block_reflections" | "blocks" | "clone" | "concentric" | "crawler" | "digitalrain2d" | "energy" | "energy2" | "equalizer" | "equalizer2d" | "fade" | "filter" | "fire" | "flame2d" | "game_of_life" | "gifplayer" | "glitch" | "gradient" | "hierarchy" | "imagespin" | "keybeat2d" | "lava_lamp" | "magnitude" | "marching" | "melt" | "melt_and_sparkle" | "metro" | "multiBar" | "noise2d" | "pitchSpectrum" | "pixels" | "plasma2d" | "plasmawled" | "power" | "radial" | "rain" | "rainbow" | "random_flash" | "real_strobe" | "scan" | "scan_and_flare" | "scan_multi" | "scroll" | "scroll_plus" | "singleColor" | "soap2d" | "spectrum" | "strobe" | "texter2d" | "vumeter" | "water" | "waterfall2d" | "wavelength" | null;
   effect: Partial<EffectSpecific>; 
+  /** True if a DMX Input mapping currently targets this virtual, directly or via venue membership. */
+  dmx_mapped?: boolean;
+  /** True if this virtual's DMX Input processing is currently paused. */
+  dmx_paused?: boolean;
 }
 /**
  * Convenience type for a Virtual object using the universal Effect type.
@@ -3417,6 +3421,10 @@ export interface Effect {
   streaming: boolean;
   last_effect?: EffectType | null;
   effect: Effect; 
+  /** True if a DMX Input mapping currently targets this virtual, directly or via venue membership. */
+  dmx_mapped?: boolean;
+  /** True if this virtual's DMX Input processing is currently paused. */
+  dmx_paused?: boolean;
 }
 
 /**

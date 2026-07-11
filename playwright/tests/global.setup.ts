@@ -7,7 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const PIDS_FILE = path.join(__dirname, '..', '.pids.json')
-const BACKEND_DIR = path.resolve(__dirname, '..', '..', '..', 'backend')
+const BACKEND_DIR =
+  process.env.PW_BACKEND_DIR || path.resolve(__dirname, '..', '..', '..', 'backend')
 const FRONTEND_DIR = path.resolve(__dirname, '..', '..')
 
 /** Poll backend until /api/info responds with a name containing 'LedFx' */
@@ -31,7 +32,7 @@ async function waitForBackend(timeoutMs = 60000): Promise<void> {
 }
 
 /** Poll frontend until /manifest.json responds with a name containing 'LedFx' */
-async function waitForFrontend(timeoutMs = 60000): Promise<void> {
+async function waitForFrontend(timeoutMs = 180000): Promise<void> {
   const url = 'http://localhost:2000/manifest.json'
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {

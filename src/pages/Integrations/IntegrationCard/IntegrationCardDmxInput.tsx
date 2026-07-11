@@ -6,8 +6,17 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
-import { CardActions, CardHeader, Switch, Link, useTheme, Avatar } from '@mui/material'
-import { QuestionMark } from '@mui/icons-material'
+import {
+  CardActions,
+  CardHeader,
+  Switch,
+  Link,
+  useTheme,
+  Avatar,
+  Box,
+  Tooltip
+} from '@mui/material'
+import { QuestionMark, PauseCircle } from '@mui/icons-material'
 import Popover from '../../../components/Popover/Popover'
 import useStore from '../../../store/useStore'
 import useIntegrationCardStyles from './IntegrationCard.styles'
@@ -21,10 +30,14 @@ const IntegrationCardDmxInput = ({ integration }: any) => {
   const deleteIntegration = useStore((state) => state.deleteIntegration)
   const toggleIntegration = useStore((state) => state.toggleIntegration)
   const setDialogOpenAddIntegration = useStore((state) => state.setDialogOpenAddIntegration)
+  const setDmxInputPause = useStore((state) => state.setDmxInputPause)
 
   const [expanded, setExpanded] = useState(false)
   const variant = 'outlined'
   const color = 'inherit'
+
+  const integrationId = integrations[integration]?.id
+  const dmxPaused = Boolean(integrations[integration]?.data?.paused)
 
   const handleExpandClick = () => setExpanded(!expanded)
 
@@ -38,6 +51,12 @@ const IntegrationCardDmxInput = ({ integration }: any) => {
 
   const handleActivateIntegration = (integ: any) => {
     toggleIntegration({ id: integ.id }).then(() => getIntegrations())
+  }
+
+  const handleTogglePause = () => {
+    if (integrationId) {
+      setDmxInputPause(integrationId, !dmxPaused)
+    }
   }
 
   return integrations[integration]?.config ? (
@@ -56,11 +75,29 @@ const IntegrationCardDmxInput = ({ integration }: any) => {
                   : 'Unknown'
         }`}
         action={
-          <Switch
-            aria-label="status"
-            checked={integrations[integration].active}
-            onClick={() => handleActivateIntegration(integrations[integration])}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Tooltip title={dmxPaused ? 'Resume DMX Input' : 'Pause DMX Input'}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <PauseCircle
+                  fontSize="small"
+                  sx={{
+                    opacity: dmxPaused ? 1 : 0.4,
+                    color: dmxPaused ? 'warning.main' : 'inherit'
+                  }}
+                />
+                <Switch
+                  slotProps={{ input: { 'aria-label': 'Pause DMX', role: 'switch' } }}
+                  checked={dmxPaused}
+                  onClick={handleTogglePause}
+                />
+              </Box>
+            </Tooltip>
+            <Switch
+              slotProps={{ input: { 'aria-label': 'status', role: 'switch' } }}
+              checked={integrations[integration].active}
+              onClick={() => handleActivateIntegration(integrations[integration])}
+            />
+          </Box>
         }
         avatar={
           <Avatar aria-label="dmx" sx={{ width: 56, height: 56, color: '#fff' }}>

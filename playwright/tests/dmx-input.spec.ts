@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { test, expect } from './fixtures'
 import { clearDialogs } from './helpers'
 
@@ -123,7 +122,7 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
    */
   await test.step('4. Activate the Integration', async () => {
     const card = page.locator('.MuiCard-root').filter({ hasText: 'DMX Input' }).first()
-    await card.getByRole('switch').click()
+    await card.getByRole('switch', { name: 'status' }).click()
 
     // The card's live status text only refreshes on mount (no websocket
     // push for integration status), so force a refetch by navigating away
@@ -131,7 +130,10 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
     await expect(async () => {
       await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
       await page.waitForTimeout(300)
-      await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Integrations' }).click()
+      await page
+        .locator('.MuiBottomNavigationAction-root')
+        .filter({ hasText: 'Integrations' })
+        .click()
       await expect(card.getByText('Current Status: Listening')).toBeVisible({ timeout: 3000 })
     }).toPass({ timeout: 20000 })
 
@@ -161,6 +163,14 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
     await mappingDialog.getByLabel('Type').click()
     await page.getByRole('option', { name: 'Fixture (wash)' }).click()
     await page.waitForTimeout(500)
+
+    // The Virtual dropdown defaults to the first virtual in the backend's
+    // list (by creation order), which may not be the one created in step 1
+    // if other specs ran earlier in the same suite and created their own
+    // virtuals first. Explicitly select our target virtual by name.
+    await mappingDialog.getByLabel('Virtual').click()
+    await page.getByRole('option', { name: virtualName }).click()
+    await page.waitForTimeout(500)
     await page.screenshot({ path: 'test-results/dmx-7-mapping-dialog.png' })
 
     const saveButton = mappingDialog.getByRole('button', { name: 'Save' })
@@ -186,5 +196,99 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
     await expect(mappingRow.getByText(/^Virtual: /)).toBeVisible()
     await page.screenshot({ path: 'test-results/dmx-8-mapping-saved.png' })
     await page.screenshot({ path: 'playwright/screenshots/dmx-input-mapping.png', fullPage: true })
+
+    await screen.getByRole('button', { name: 'back' }).click()
+    await screen.waitFor({ state: 'detached', timeout: 10000 })
+  })
+
+  /**
+   * @doc
+   * Verify the mapped Virtual now shows a **DMX** chip on the Devices
+   * dashboard (since it's targeted by the Fixture mapping above), then use
+   * the chip to pause and resume this virtual's DMX Input processing.
+   */
+  await test.step('7. Pause and Resume DMX Input on the Device Card', async () => {
+    await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
+    await page.waitForTimeout(1000)
+
+    const deviceCard = page.locator('.MuiCard-root').filter({ hasText: virtualName }).first()
+    const dmxChip = deviceCard.getByRole('button', { name: 'pause-dmx' })
+    await expect(dmxChip).toBeVisible({ timeout: 10000 })
+    await page.screenshot({ path: 'test-results/dmx-9-device-chip.png' })
+
+    await dmxChip.click()
+    await expect(deviceCard.getByRole('button', { name: 'resume-dmx' })).toBeVisible({
+      timeout: 10000
+    })
+    await page.screenshot({ path: 'test-results/dmx-10-device-paused.png' })
+
+    await deviceCard.getByRole('button', { name: 'resume-dmx' }).click()
+    await expect(deviceCard.getByRole('button', { name: 'pause-dmx' })).toBeVisible({
+      timeout: 10000
+    })
+  })
+
+  /**
+   * @doc
+   * Flip the integration's **Pause DMX** switch to globally mute all DMX
+   * Input processing, and confirm the state survives navigating away and
+   * back (i.e. it's persisted server-side, not just local UI state).
+   */
+  await test.step('8. Globally Pause and Resume the DMX Input Integration', async () => {
+    await page
+      .locator('.MuiBottomNavigationAction-root')
+      .filter({ hasText: 'Integrations' })
+      .click()
+    await page.waitForTimeout(1000)
+
+    const card = page.locator('.MuiCard-root').filter({ hasText: 'DMX Input' }).first()
+    const pauseSwitch = card.getByRole('switch', { name: 'Pause DMX' })
+    await expect(pauseSwitch).not.toBeChecked()
+    await pauseSwitch.click()
+    await expect(pauseSwitch).toBeChecked()
+    await page.screenshot({ path: 'test-results/dmx-11-globally-paused.png' })
+
+    // Confirm the paused state is persisted server-side by navigating away
+    // and back, which forces a fresh fetch of the integration's data.
+    await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
+    await page.waitForTimeout(300)
+    await page
+      .locator('.MuiBottomNavigationAction-root')
+      .filter({ hasText: 'Integrations' })
+      .click()
+    await expect(
+      page
+        .locator('.MuiCard-root')
+        .filter({ hasText: 'DMX Input' })
+        .first()
+        .getByRole('switch', { name: 'Pause DMX' })
+    ).toBeChecked({ timeout: 10000 })
+
+    // Resume so we leave the integration in a clean state.
+    await page
+      .locator('.MuiCard-root')
+      .filter({ hasText: 'DMX Input' })
+      .first()
+      .getByRole('switch', { name: 'Pause DMX' })
+      .click()
+    await expect(
+      page
+        .locator('.MuiCard-root')
+        .filter({ hasText: 'DMX Input' })
+        .first()
+        .getByRole('switch', { name: 'Pause DMX' })
+    ).not.toBeChecked()
+
+    // Deactivate the integration afterwards to release the Art-Net UDP
+    // port (6454) — otherwise a later spec in the same suite run (e.g.
+    // venues.spec.ts, which adds and activates its own DMX Input
+    // integration) would fail to bind it.
+    await page
+      .locator('.MuiCard-root')
+      .filter({ hasText: 'DMX Input' })
+      .first()
+      .getByRole('switch', { name: 'status' })
+      .click()
+    await page.waitForTimeout(500)
   })
 })

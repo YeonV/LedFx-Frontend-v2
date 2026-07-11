@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { Delete, Pause, PestControl, PlayArrow, Stop, SyncProblem } from '@mui/icons-material'
-import { Box, CircularProgress, Fade, Stack, Theme } from '@mui/material'
+import { Box, Chip, CircularProgress, Fade, Stack, Theme, Tooltip } from '@mui/material'
 import Popover from '../../../components/Popover/Popover'
 import EditVirtuals from '../EditVirtuals/EditVirtuals'
 import PixelGraph from '../../../components/PixelGraph/PixelGraph'
@@ -55,7 +55,10 @@ const DeviceCard = ({
   graphsActive = true,
   showMatrix = false,
   onContextMenu,
-  lastEffect
+  lastEffect,
+  dmxMapped = false,
+  dmxPaused = false,
+  handleToggleDmxPause = () => console.log('TOGGLE DMX PAUSE')
 }: DeviceCardProps) => {
   const classes = useStyle()
   const theme = useTheme()
@@ -321,6 +324,29 @@ const DeviceCard = ({
               <Button variant="text" disabled size="small">
                 <PestControl />
               </Button>
+            )}
+            {dmxMapped && (
+              <Tooltip title={dmxPaused ? 'Resume DMX Input' : 'Pause DMX Input'}>
+                <Chip
+                  label="DMX"
+                  size="small"
+                  color={dmxPaused ? 'warning' : 'default'}
+                  icon={
+                    dmxPaused ? (
+                      <PlayArrow style={{ fontSize: 16 }} />
+                    ) : (
+                      <Pause style={{ fontSize: 16 }} />
+                    )
+                  }
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleToggleDmxPause()
+                  }}
+                  sx={{ zIndex: 3, ml: 0.5, cursor: 'pointer' }}
+                  aria-label={dmxPaused ? 'resume-dmx' : 'pause-dmx'}
+                />
+              </Tooltip>
             )}
           </div>
 
