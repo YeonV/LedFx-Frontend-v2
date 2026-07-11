@@ -341,6 +341,7 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
           return (
             <Paper
               key={i}
+              data-testid={`color-pad-${i}`}
               elevation={isActive ? 8 : 2}
               onClick={() => handleClick(i)}
               sx={padSx(pad, padSize, isActive, isEditMode)}
