@@ -94,7 +94,12 @@ export default function VenuesPage() {
   const navigate = useNavigate()
 
   const [createOpen, setCreateOpen] = useState(false)
-  const [editVenue, setEditVenue] = useState<{ id: string; name: string; rows: number; cols: number } | null>(null)
+  const [editVenue, setEditVenue] = useState<{
+    id: string
+    name: string
+    rows: number
+    cols: number
+  } | null>(null)
 
   useEffect(() => {
     getVenues()

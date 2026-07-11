@@ -44,14 +44,44 @@ function defaultPadColor(padIndex: number, totalPads: number): string {
   const c = (1 - Math.abs(2 * l - 1)) * s
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
   const m = l - c / 2
-  let r = 0, g = 0, b = 0
-  if (h < 60) { r = c; g = x; b = 0 }
-  else if (h < 120) { r = x; g = c; b = 0 }
-  else if (h < 180) { r = 0; g = c; b = x }
-  else if (h < 240) { r = 0; g = x; b = c }
-  else if (h < 300) { r = x; g = 0; b = c }
-  else { r = c; g = 0; b = x }
-  return '#' + [r + m, g + m, b + m].map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')
+  let r = 0
+  let g = 0
+  let b = 0
+  if (h < 60) {
+    r = c
+    g = x
+    b = 0
+  } else if (h < 120) {
+    r = x
+    g = c
+    b = 0
+  } else if (h < 180) {
+    r = 0
+    g = c
+    b = x
+  } else if (h < 240) {
+    r = 0
+    g = x
+    b = c
+  } else if (h < 300) {
+    r = x
+    g = 0
+    b = c
+  } else {
+    r = c
+    g = 0
+    b = x
+  }
+  return (
+    '#' +
+    [r + m, g + m, b + m]
+      .map((v) =>
+        Math.round(v * 255)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  )
 }
 
 /** Build the background sx props for a pad. Gradients require backgroundImage. */
@@ -67,8 +97,8 @@ function padSx(pad: ColorPad, padSize: number, isActive: boolean, isEditMode: bo
     border: isActive
       ? '3px solid white'
       : isEditMode
-      ? '3px dashed rgba(255,255,255,0.4)'
-      : '3px solid transparent',
+        ? '3px dashed rgba(255,255,255,0.4)'
+        : '3px solid transparent',
     outline: isActive ? '2px solid rgba(255,255,255,0.5)' : 'none',
     display: 'flex',
     alignItems: 'center',
@@ -122,10 +152,13 @@ function PadEditorDialog({ open, pad, padIndex, totalPads, onClose, onSave }: Pa
   }, [open, pad, colors, getColors])
 
   const defaultColors: string[] = []
-  if (colors?.gradients?.builtin) defaultColors.push(...Object.values(colors.gradients.builtin) as string[])
-  if (colors?.gradients?.user) defaultColors.push(...Object.values(colors.gradients.user) as string[])
-  if (colors?.colors?.builtin) defaultColors.push(...Object.values(colors.colors.builtin) as string[])
-  if (colors?.colors?.user) defaultColors.push(...Object.values(colors.colors.user) as string[])
+  if (colors?.gradients?.builtin)
+    defaultColors.push(...(Object.values(colors.gradients.builtin) as string[]))
+  if (colors?.gradients?.user)
+    defaultColors.push(...(Object.values(colors.gradients.user) as string[]))
+  if (colors?.colors?.builtin)
+    defaultColors.push(...(Object.values(colors.colors.builtin) as string[]))
+  if (colors?.colors?.user) defaultColors.push(...(Object.values(colors.colors.user) as string[]))
 
   const handleSave = () => {
     const isGradient = currentColor.includes('gradient')
@@ -194,9 +227,15 @@ function PadEditorDialog({ open, pad, padIndex, totalPads, onClose, onSave }: Pa
       <DialogActions sx={{ justifyContent: 'space-between', px: 2 }}>
         {confirmReset ? (
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Typography variant="caption" color="warning.main">Reset to default?</Typography>
-            <Button size="small" color="warning" onClick={handleResetClick}>Confirm</Button>
-            <Button size="small" onClick={() => setConfirmReset(false)}>Cancel</Button>
+            <Typography variant="caption" color="warning.main">
+              Reset to default?
+            </Typography>
+            <Button size="small" color="warning" onClick={handleResetClick}>
+              Confirm
+            </Button>
+            <Button size="small" onClick={() => setConfirmReset(false)}>
+              Cancel
+            </Button>
           </Box>
         ) : (
           <Button size="small" color="inherit" onClick={handleResetClick}>
@@ -247,7 +286,14 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
         }
       }
     },
-    [isEditMode, activeOverridePadIndex, activeVenueId, venue.id, activateVenueOverride, clearVenueOverride]
+    [
+      isEditMode,
+      activeOverridePadIndex,
+      activeVenueId,
+      venue.id,
+      activateVenueOverride,
+      clearVenueOverride
+    ]
   )
 
   const handlePadSave = useCallback(
@@ -262,7 +308,9 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
     <>
       {/* Size selector */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-        <Typography variant="caption" color="text.secondary">Size:</Typography>
+        <Typography variant="caption" color="text.secondary">
+          Size:
+        </Typography>
         <ToggleButtonGroup
           size="small"
           value={padSizeKey}
@@ -291,18 +339,18 @@ export default function ColorPadGrid({ venue, isEditMode }: Props) {
           const isActive = activeVenueId === venue.id && activeOverridePadIndex === i
           const textColor = isDark(pad) ? '#fff' : '#000'
           return (
-              <Paper
-                key={i}
-                elevation={isActive ? 8 : 2}
-                onClick={() => handleClick(i)}
-                sx={padSx(pad, padSize, isActive, isEditMode)}
-              >
-                {isActive && !isEditMode && (
-                  <Typography variant="caption" sx={{ color: textColor, fontWeight: 'bold' }}>
-                    ON
-                  </Typography>
-                )}
-              </Paper>
+            <Paper
+              key={i}
+              elevation={isActive ? 8 : 2}
+              onClick={() => handleClick(i)}
+              sx={padSx(pad, padSize, isActive, isEditMode)}
+            >
+              {isActive && !isEditMode && (
+                <Typography variant="caption" sx={{ color: textColor, fontWeight: 'bold' }}>
+                  ON
+                </Typography>
+              )}
+            </Paper>
           )
         })}
       </Box>

@@ -75,7 +75,11 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
 
   // Build a flat list of individual selectable segments across all virtuals
   // Each entry: { label, segment: [deviceId, start, end, invert] }
-  const segmentOptions: Array<{ label: string; segment: [string, number, number, boolean]; isDevice: boolean }> = []
+  const segmentOptions: Array<{
+    label: string
+    segment: [string, number, number, boolean]
+    isDevice: boolean
+  }> = []
   for (const vKey of virtualKeys) {
     const virt = virtuals[vKey]
     const segs = virt.segments || []
@@ -112,9 +116,7 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
           <Select value={value} style={{ width: '100%' }} onChange={handleChange}>
             {segmentOptions.map((opt, idx) => (
               <MenuItem value={JSON.stringify(opt.segment)} key={idx}>
-                {!opt.isDevice && (
-                  <SubdirectoryArrowRight color="disabled" sx={{ mr: 1 }} />
-                )}
+                {!opt.isDevice && <SubdirectoryArrowRight color="disabled" sx={{ mr: 1 }} />}
                 {opt.label}
               </MenuItem>
             ))}

@@ -47,6 +47,7 @@ export default function VenueViewPage() {
     return () => {
       setPixelGraphs([])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-subscribe when virtual_ids actually change
   }, [venue?.virtual_ids, setPixelGraphs])
 
   const handleBack = useCallback(async () => {
@@ -155,9 +156,20 @@ export default function VenueViewPage() {
                     {v.config?.name ?? v.id}
                   </Typography>
                   {effectName ? (
-                    <Chip label={effectName} size="small" variant="outlined" sx={{ height: 18, fontSize: '0.65rem' }} />
+                    <Chip
+                      label={effectName}
+                      size="small"
+                      variant="outlined"
+                      sx={{ height: 18, fontSize: '0.65rem' }}
+                    />
                   ) : (
-                    <Chip label="No effect" size="small" variant="outlined" color="default" sx={{ height: 18, fontSize: '0.65rem', opacity: 0.5 }} />
+                    <Chip
+                      label="No effect"
+                      size="small"
+                      variant="outlined"
+                      color="default"
+                      sx={{ height: 18, fontSize: '0.65rem', opacity: 0.5 }}
+                    />
                   )}
                 </Box>
                 <PixelGraph virtId={v.id} active={v.active} db />

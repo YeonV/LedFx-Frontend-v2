@@ -1,13 +1,5 @@
 import { useCallback, useState } from 'react'
-import {
-  Box,
-  Button,
-  Chip,
-  Typography,
-  Divider,
-  Autocomplete,
-  TextField
-} from '@mui/material'
+import { Box, Button, Chip, Typography, Divider, Autocomplete, TextField } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
 import useStore from '../../store/useStore'
 import type { Venue } from '../../store/api/storeVenues'
@@ -53,9 +45,7 @@ export default function VenueView({ venue, onLeave }: Props) {
     [venue.id, removeVirtualFromVenue]
   )
 
-  const memberVirtuals = venue.virtual_ids
-    .map((id) => virtuals[id])
-    .filter(Boolean)
+  const memberVirtuals = venue.virtual_ids.map((id) => virtuals[id]).filter(Boolean)
 
   const notYetAdded = availableVirtuals.filter((v) => !venue.virtual_ids.includes(v.id))
 
