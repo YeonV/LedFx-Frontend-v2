@@ -59,6 +59,7 @@ export default function DmxInputScreen({
           size={size}
           disabled={disabled}
           className={className}
+          aria-label={label || 'DMX Input settings'}
         >
           {label}
           {!startIcon && icon}
