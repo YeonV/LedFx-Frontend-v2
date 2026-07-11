@@ -121,6 +121,7 @@ test('Venues: create venue, add virtual, activate and clear color override', asy
     await expect(firstPad.getByText('ON')).toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Override Active')).toBeVisible({ timeout: 10000 })
     await page.screenshot({ path: 'test-results/venues-6-override-active.png' })
+    await page.screenshot({ path: 'playwright/screenshots/venues-override.png', fullPage: true })
   })
 
   /**
