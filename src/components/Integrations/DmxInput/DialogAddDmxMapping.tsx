@@ -12,7 +12,8 @@ import {
   FormControlLabel,
   Box,
   Typography,
-  IconButton
+  IconButton,
+  Slider
 } from '@mui/material'
 import { Add, Edit } from '@mui/icons-material'
 import useStore from '../../../store/useStore'
@@ -58,11 +59,19 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
   const [rCh, setRCh] = useState(1)
   const [gCh, setGCh] = useState(2)
   const [bCh, setBCh] = useState(3)
-  const [modeCh, setModeCh] = useState(1)
-  const [dimmerCh, setDimmerCh] = useState(2)
-  const [fxRCh, setFxRCh] = useState(3)
-  const [fxGCh, setFxGCh] = useState(4)
-  const [fxBCh, setFxBCh] = useState(5)
+  const [dimmerCh, setDimmerCh] = useState(1)
+  const [fxRCh, setFxRCh] = useState(2)
+  const [fxGCh, setFxGCh] = useState(3)
+  const [fxBCh, setFxBCh] = useState(4)
+  // Fixture wash only: 0 = every strobe pulse renders (default, today's
+  // exact behaviour), 100 = pulses fire with real-fixture-like randomness.
+  // Stored/sent to the backend inverted, as strobe_probability = 1 - x/100.
+  const [strobeRandomness, setStrobeRandomness] = useState(0)
+
+  // Per-type last-entered field values, so switching a mapping's type in
+  // this dialog (or across dialog sessions, once saved) re-populates each
+  // type's previous fields instead of resetting to schema defaults.
+  const [typeFieldCache, setTypeFieldCache] = useState<Record<string, Record<string, unknown>>>({})
 
   // target
   const [venueId, setVenueId] = useState('')
@@ -86,11 +95,12 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
       setBCh(Array.isArray(ch) ? (ch[2] ?? 3) : 3)
     } else if (m.type === 'fixture') {
       const d = !Array.isArray(ch) ? ch : {}
-      setModeCh(d.mode ?? (Array.isArray(ch) ? ch[0] : 1) ?? 1)
-      setDimmerCh(d.dimmer ?? (Array.isArray(ch) ? ch[1] : 2) ?? 2)
-      setFxRCh(d.r ?? (Array.isArray(ch) ? ch[2] : 3) ?? 3)
-      setFxGCh(d.g ?? (Array.isArray(ch) ? ch[3] : 4) ?? 4)
-      setFxBCh(d.b ?? (Array.isArray(ch) ? ch[4] : 5) ?? 5)
+      setDimmerCh(d.dimmer ?? (Array.isArray(ch) ? ch[0] : 1) ?? 1)
+      setFxRCh(d.r ?? (Array.isArray(ch) ? ch[1] : 2) ?? 2)
+      setFxGCh(d.g ?? (Array.isArray(ch) ? ch[2] : 3) ?? 3)
+      setFxBCh(d.b ?? (Array.isArray(ch) ? ch[3] : 4) ?? 4)
+      const sp = m.strobe_probability ?? 1
+      setStrobeRandomness(Math.round((1 - sp) * 100))
     }
     if (m.virtual_id) {
       setTargetKind('virtual')
@@ -100,6 +110,69 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
       setVenueId(m.venue_id)
       setPadIndex(m.pad_index ?? 0)
     }
+    setTypeFieldCache(m._type_field_cache || {})
+  }
+
+  // Snapshot of the fields currently entered for a given mapping type, used
+  // both to persist the per-type cache and to restore it on type switch.
+  const captureCurrentTypeFields = (t: DmxMapping['type']): Record<string, unknown> => {
+    if (t === 'trigger') {
+      return {
+        channels: [triggerCh],
+        on_threshold: onThreshold,
+        off_threshold: offThreshold,
+        venue_id: venueId,
+        pad_index: padIndex
+      }
+    }
+    if (t === 'color') {
+      return {
+        channels: [rCh, gCh, bCh],
+        target_kind: targetKind,
+        venue_id: venueId,
+        virtual_id: virtualId
+      }
+    }
+    return {
+      channels: { dimmer: dimmerCh, r: fxRCh, g: fxGCh, b: fxBCh },
+      virtual_id: virtualId,
+      strobe_probability: 1 - strobeRandomness / 100
+    }
+  }
+
+  const applyCachedTypeFields = (t: DmxMapping['type'], cached?: Record<string, unknown>) => {
+    if (!cached) return
+    const ch: any = cached.channels
+    if (t === 'trigger') {
+      setTriggerCh(Array.isArray(ch) ? (ch[0] ?? 1) : 1)
+      setOnThreshold((cached.on_threshold as number) ?? 128)
+      setOffThreshold((cached.off_threshold as number) ?? 96)
+      if (cached.venue_id) setVenueId(cached.venue_id as string)
+      if (cached.pad_index !== undefined) setPadIndex(cached.pad_index as number)
+    } else if (t === 'color') {
+      setRCh(Array.isArray(ch) ? (ch[0] ?? 1) : 1)
+      setGCh(Array.isArray(ch) ? (ch[1] ?? 2) : 2)
+      setBCh(Array.isArray(ch) ? (ch[2] ?? 3) : 3)
+      if (cached.target_kind) setTargetKind(cached.target_kind as TargetKind)
+      if (cached.venue_id) setVenueId(cached.venue_id as string)
+      if (cached.virtual_id) setVirtualId(cached.virtual_id as string)
+    } else {
+      const d = !Array.isArray(ch) ? (ch as Record<string, number>) : {}
+      setDimmerCh(d.dimmer ?? 1)
+      setFxRCh(d.r ?? 2)
+      setFxGCh(d.g ?? 3)
+      setFxBCh(d.b ?? 4)
+      if (cached.virtual_id) setVirtualId(cached.virtual_id as string)
+      const sp = (cached.strobe_probability as number) ?? 1
+      setStrobeRandomness(Math.round((1 - sp) * 100))
+    }
+  }
+
+  const handleTypeChange = (newType: DmxMapping['type']) => {
+    const nextCache = { ...typeFieldCache, [type]: captureCurrentTypeFields(type) }
+    setTypeFieldCache(nextCache)
+    applyCachedTypeFields(newType, nextCache[newType])
+    setType(newType)
   }
 
   const handleOpen = () => {
@@ -161,16 +234,15 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
       }
     } else if (type === 'fixture') {
       m.channels = {
-        mode: Number(modeCh),
         dimmer: Number(dimmerCh),
         r: Number(fxRCh),
         g: Number(fxGCh),
         b: Number(fxBCh)
       }
-      m.on_threshold = Number(onThreshold)
-      m.off_threshold = Number(offThreshold)
       m.virtual_id = virtualId
+      m.strobe_probability = Number((1 - strobeRandomness / 100).toFixed(2))
     }
+    m._type_field_cache = { ...typeFieldCache, [type]: captureCurrentTypeFields(type) }
     return m
   }
 
@@ -223,7 +295,7 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
                 label="Type"
                 size="small"
                 value={type}
-                onChange={(e) => setType(e.target.value as DmxMapping['type'])}
+                onChange={(e) => handleTypeChange(e.target.value as DmxMapping['type'])}
                 sx={{ width: 160 }}
               >
                 <MenuItem value="trigger">Trigger (button)</MenuItem>
@@ -264,7 +336,6 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
               )}
               {type === 'fixture' && (
                 <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-                  {channelField('Mode ch', modeCh, setModeCh)}
                   {channelField('Dimmer ch', dimmerCh, setDimmerCh)}
                   {channelField('Red ch', fxRCh, setFxRCh)}
                   {channelField('Green ch', fxGCh, setFxGCh)}
@@ -273,8 +344,36 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
               )}
             </Box>
 
-            {/* Thresholds (trigger + fixture mode toggle) */}
-            {(type === 'trigger' || type === 'fixture') && (
+            {/* Strobe randomness (fixture wash only): real fixtures each run
+                their own oscillator so multiple fixtures visibly drift out
+                of sync -- LedFx mirrors the dimmer frame-perfectly by
+                default, which can look artificially "locked" next to real
+                fixtures. Raising this makes each detected strobe pulse have
+                a chance to be suppressed instead of always firing. */}
+            {type === 'fixture' && (
+              <Box>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Strobe randomness: {strobeRandomness}%
+                </Typography>
+                <Slider
+                  aria-label="Strobe randomness"
+                  value={strobeRandomness}
+                  onChange={(_e, v) => setStrobeRandomness(v as number)}
+                  step={5}
+                  min={0}
+                  max={100}
+                  marks={[
+                    { value: 0, label: '0% (off)' },
+                    { value: 100, label: '100%' }
+                  ]}
+                  valueLabelDisplay="auto"
+                  sx={{ maxWidth: 360 }}
+                />
+              </Box>
+            )}
+
+            {/* Thresholds (trigger button press only; fixture wash has no gate) */}
+            {type === 'trigger' && (
               <Stack direction="row" spacing={2}>
                 <TextField
                   label="On threshold"

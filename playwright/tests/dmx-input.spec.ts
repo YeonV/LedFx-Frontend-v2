@@ -143,8 +143,10 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
   /**
    * @doc
    * Open the integration's settings screen and add a **Fixture** mapping —
-   * this drives a Virtual as a dumb DMX wash (mode/dimmer/RGB channels)
-   * rather than needing a Venue to exist.
+   * this drives a Virtual as a dumb DMX wash (dimmer/RGB channels, engaged
+   * continuously with no on/off threshold) rather than needing a Venue to
+   * exist. Also exercise the new **Strobe randomness** slider (only shown
+   * for the Fixture type).
    */
   await test.step('5. Configure a Fixture Mapping', async () => {
     const card = page.locator('.MuiCard-root').filter({ hasText: 'DMX Input' }).first()
@@ -160,7 +162,7 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
     await mappingDialog.waitFor({ state: 'visible' })
 
     await mappingDialog.getByLabel('Name').fill(mappingName)
-    await mappingDialog.getByLabel('Type').click()
+    await mappingDialog.getByLabel('Type', { exact: true }).click()
     await page.getByRole('option', { name: 'Fixture (wash)' }).click()
     await page.waitForTimeout(500)
 
@@ -171,6 +173,18 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
     await mappingDialog.getByLabel('Virtual').click()
     await page.getByRole('option', { name: virtualName }).click()
     await page.waitForTimeout(500)
+
+    // The Strobe randomness slider only appears for the Fixture type.
+    const strobeSlider = mappingDialog.getByRole('slider', { name: 'Strobe randomness' })
+    await expect(strobeSlider).toBeVisible()
+    await expect(mappingDialog.getByText('Strobe randomness: 0%')).toBeVisible()
+
+    // Drag it up to 40% via keyboard (more reliable than pointer drag math).
+    await strobeSlider.focus()
+    for (let i = 0; i < 8; i += 1) {
+      await strobeSlider.press('ArrowRight')
+    }
+    await expect(mappingDialog.getByText('Strobe randomness: 40%')).toBeVisible()
     await page.screenshot({ path: 'test-results/dmx-7-mapping-dialog.png' })
 
     const saveButton = mappingDialog.getByRole('button', { name: 'Save' })
@@ -203,11 +217,53 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
 
   /**
    * @doc
+   * Regression coverage for the per-type mapping config cache: re-open the
+   * saved Fixture mapping, confirm the Strobe randomness setting persisted
+   * (survives a full save/reload round-trip, not just the open dialog
+   * session), switch its type to Color and back to Fixture, and confirm the
+   * Fixture-specific fields (channels, strobe randomness) were restored
+   * from cache instead of reset to schema defaults.
+   */
+  await test.step('7. Strobe randomness persists and survives a type switch', async () => {
+    const card = page.locator('.MuiCard-root').filter({ hasText: 'DMX Input' }).first()
+    await card.getByRole('button', { name: 'DMX Input settings' }).click()
+
+    const screen = page.getByRole('dialog').filter({ hasText: 'DMX Input Mappings' })
+    await screen.waitFor({ state: 'visible' })
+    const mappingRow = screen.locator('tr').filter({ hasText: mappingName })
+    await mappingRow.getByRole('button', { name: 'Edit' }).click()
+
+    const mappingDialog = page.getByRole('dialog').filter({ hasText: 'Edit DMX Mapping' })
+    await mappingDialog.waitFor({ state: 'visible' })
+    await expect(mappingDialog.getByText('Strobe randomness: 40%')).toBeVisible()
+
+    // Switch away to Color, then back to Fixture — the cache must restore
+    // both the strobe setting and the channel values instead of resetting.
+    await mappingDialog.getByLabel('Type', { exact: true }).click()
+    await page.getByRole('option', { name: 'Color (live RGB)' }).click()
+    await page.waitForTimeout(300)
+    await mappingDialog.getByLabel('Type', { exact: true }).click()
+    await page.getByRole('option', { name: 'Fixture (wash)' }).click()
+    await page.waitForTimeout(300)
+
+    await expect(mappingDialog.getByText('Strobe randomness: 40%')).toBeVisible()
+    await expect(mappingDialog.getByLabel('Dimmer ch')).toHaveValue('1')
+    await page.screenshot({ path: 'test-results/dmx-9-type-cache-restored.png' })
+
+    await mappingDialog.getByRole('button', { name: 'Cancel' }).click()
+    await mappingDialog.waitFor({ state: 'detached', timeout: 10000 })
+
+    await screen.getByRole('button', { name: 'back' }).click()
+    await screen.waitFor({ state: 'detached', timeout: 10000 })
+  })
+
+  /**
+   * @doc
    * Verify the mapped Virtual now shows a **DMX** chip on the Devices
    * dashboard (since it's targeted by the Fixture mapping above), then use
    * the chip to pause and resume this virtual's DMX Input processing.
    */
-  await test.step('7. Pause and Resume DMX Input on the Device Card', async () => {
+  await test.step('8. Pause and Resume DMX Input on the Device Card', async () => {
     await page.locator('.MuiBottomNavigationAction-root').filter({ hasText: 'Devices' }).click()
     await page.waitForTimeout(1000)
 
@@ -234,7 +290,7 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
    * Input processing, and confirm the state survives navigating away and
    * back (i.e. it's persisted server-side, not just local UI state).
    */
-  await test.step('8. Globally Pause and Resume the DMX Input Integration', async () => {
+  await test.step('9. Globally Pause and Resume the DMX Input Integration', async () => {
     await page
       .locator('.MuiBottomNavigationAction-root')
       .filter({ hasText: 'Integrations' })

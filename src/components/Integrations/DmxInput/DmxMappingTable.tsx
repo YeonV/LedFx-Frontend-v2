@@ -28,7 +28,7 @@ const channelSummary = (m: DmxMapping): string => {
     return Array.isArray(ch) ? `R${ch[0]} G${ch[1]} B${ch[2]}` : ''
   }
   if (m.type === 'fixture' && !Array.isArray(ch)) {
-    return `M${ch.mode} D${ch.dimmer} R${ch.r} G${ch.g} B${ch.b}`
+    return `D${ch.dimmer} R${ch.r} G${ch.g} B${ch.b}`
   }
   return JSON.stringify(ch)
 }
@@ -99,9 +99,7 @@ export default function DmxMappingTable({ integrationId }: Props) {
               <TableCell>{channelSummary(m)}</TableCell>
               <TableCell>{targetSummary(m)}</TableCell>
               <TableCell>
-                {m.type === 'trigger' || m.type === 'fixture'
-                  ? `${m.on_threshold ?? 128} / ${m.off_threshold ?? 96}`
-                  : '—'}
+                {m.type === 'trigger' ? `${m.on_threshold ?? 128} / ${m.off_threshold ?? 96}` : '—'}
               </TableCell>
               <TableCell>{m.active === false ? 'No' : 'Yes'}</TableCell>
               <TableCell align="right">
