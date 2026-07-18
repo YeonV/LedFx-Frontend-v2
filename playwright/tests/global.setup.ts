@@ -31,7 +31,7 @@ async function waitForBackend(timeoutMs = 60000): Promise<void> {
 }
 
 /** Poll frontend until /manifest.json responds with a name containing 'LedFx' */
-async function waitForFrontend(timeoutMs = 60000): Promise<void> {
+async function waitForFrontend(timeoutMs = 180000): Promise<void> {
   const url = 'http://localhost:2000/manifest.json'
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {

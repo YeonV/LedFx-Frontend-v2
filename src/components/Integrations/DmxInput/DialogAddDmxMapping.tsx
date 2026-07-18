@@ -58,11 +58,10 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
   const [rCh, setRCh] = useState(1)
   const [gCh, setGCh] = useState(2)
   const [bCh, setBCh] = useState(3)
-  const [modeCh, setModeCh] = useState(1)
-  const [dimmerCh, setDimmerCh] = useState(2)
-  const [fxRCh, setFxRCh] = useState(3)
-  const [fxGCh, setFxGCh] = useState(4)
-  const [fxBCh, setFxBCh] = useState(5)
+  const [dimmerCh, setDimmerCh] = useState(1)
+  const [fxRCh, setFxRCh] = useState(2)
+  const [fxGCh, setFxGCh] = useState(3)
+  const [fxBCh, setFxBCh] = useState(4)
 
   // target
   const [venueId, setVenueId] = useState('')
@@ -86,11 +85,10 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
       setBCh(Array.isArray(ch) ? (ch[2] ?? 3) : 3)
     } else if (m.type === 'fixture') {
       const d = !Array.isArray(ch) ? ch : {}
-      setModeCh(d.mode ?? (Array.isArray(ch) ? ch[0] : 1) ?? 1)
-      setDimmerCh(d.dimmer ?? (Array.isArray(ch) ? ch[1] : 2) ?? 2)
-      setFxRCh(d.r ?? (Array.isArray(ch) ? ch[2] : 3) ?? 3)
-      setFxGCh(d.g ?? (Array.isArray(ch) ? ch[3] : 4) ?? 4)
-      setFxBCh(d.b ?? (Array.isArray(ch) ? ch[4] : 5) ?? 5)
+      setDimmerCh(d.dimmer ?? (Array.isArray(ch) ? ch[0] : 1) ?? 1)
+      setFxRCh(d.r ?? (Array.isArray(ch) ? ch[1] : 2) ?? 2)
+      setFxGCh(d.g ?? (Array.isArray(ch) ? ch[2] : 3) ?? 3)
+      setFxBCh(d.b ?? (Array.isArray(ch) ? ch[3] : 4) ?? 4)
     }
     if (m.virtual_id) {
       setTargetKind('virtual')
@@ -161,14 +159,11 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
       }
     } else if (type === 'fixture') {
       m.channels = {
-        mode: Number(modeCh),
         dimmer: Number(dimmerCh),
         r: Number(fxRCh),
         g: Number(fxGCh),
         b: Number(fxBCh)
       }
-      m.on_threshold = Number(onThreshold)
-      m.off_threshold = Number(offThreshold)
       m.virtual_id = virtualId
     }
     return m
@@ -264,7 +259,6 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
               )}
               {type === 'fixture' && (
                 <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-                  {channelField('Mode ch', modeCh, setModeCh)}
                   {channelField('Dimmer ch', dimmerCh, setDimmerCh)}
                   {channelField('Red ch', fxRCh, setFxRCh)}
                   {channelField('Green ch', fxGCh, setFxGCh)}
@@ -273,8 +267,8 @@ export default function DialogAddDmxMapping({ integrationId, editMapping, editIn
               )}
             </Box>
 
-            {/* Thresholds (trigger + fixture mode toggle) */}
-            {(type === 'trigger' || type === 'fixture') && (
+            {/* Thresholds (trigger button press only; fixture wash has no gate) */}
+            {type === 'trigger' && (
               <Stack direction="row" spacing={2}>
                 <TextField
                   label="On threshold"

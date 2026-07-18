@@ -141,8 +141,9 @@ test('DMX Input: add integration, activate, and configure a mapping', async ({ p
   /**
    * @doc
    * Open the integration's settings screen and add a **Fixture** mapping —
-   * this drives a Virtual as a dumb DMX wash (mode/dimmer/RGB channels)
-   * rather than needing a Venue to exist.
+   * this drives a Virtual as a dumb DMX wash (dimmer/RGB channels, engaged
+   * continuously with no on/off threshold) rather than needing a Venue to
+   * exist.
    */
   await test.step('5. Configure a Fixture Mapping', async () => {
     const card = page.locator('.MuiCard-root').filter({ hasText: 'DMX Input' }).first()
