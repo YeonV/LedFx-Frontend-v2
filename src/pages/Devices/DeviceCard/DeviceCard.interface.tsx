@@ -111,4 +111,16 @@ export interface DeviceCardProps {
    * last effect
    */
   lastEffect?: null | string
+  /**
+   * Is this virtual currently targeted by a DMX Input mapping (directly or via venue)
+   */
+  dmxMapped?: boolean
+  /**
+   * Is this virtual's DMX Input processing currently paused
+   */
+  dmxPaused?: boolean
+  /**
+   * Handle Function - toggle DMX Input pause for this virtual
+   */
+  handleToggleDmxPause?: any
 }

@@ -6,7 +6,8 @@ import {
   Dashboard,
   ElectricalServices,
   QueueMusic,
-  AccountTree
+  AccountTree,
+  MeetingRoom
 } from '@mui/icons-material'
 import { useLocation, Link } from 'react-router-dom'
 import useStore from '../../store/useStore'
@@ -189,6 +190,15 @@ export default function BarBottom() {
           value="/Scenes"
           icon={<BladeIcon name="mdi:image" />}
           style={bottomBarOpen.indexOf('Scenes') > -1 ? { color: theme.palette.primary.main } : {}}
+        />
+
+        <BottomNavigationAction
+          component={Link}
+          to="/venues"
+          label="Venues"
+          value="/venues"
+          icon={<MeetingRoom />}
+          style={bottomBarOpen.indexOf('venues') > -1 ? { color: theme.palette.primary.main } : {}}
         />
 
         {features.showPlaylistInBottomBar &&

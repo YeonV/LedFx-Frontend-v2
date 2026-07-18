@@ -72,14 +72,36 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       }
     })
     .filter((v) => (showGaps ? v : !v.startsWith('gap-')))
-    .filter((v) => virtuals[v].segments.length === 1)
 
-  const segments = virtualKeys.reduce((acc: any, v) => {
-    acc[virtuals[v].config.name] = virtuals[v].segments.flat()
-    return acc
-  }, {})
+  // Build a flat list of individual selectable segments across all virtuals
+  // Each entry: { label, segment: [deviceId, start, end, invert] }
+  const segmentOptions: Array<{
+    label: string
+    segment: [string, number, number, boolean]
+    isDevice: boolean
+  }> = []
+  for (const vKey of virtualKeys) {
+    const virt = virtuals[vKey]
+    const segs = virt.segments || []
+    if (segs.length === 0) continue
+    const name = virt.config?.name ?? vKey
+    if (segs.length === 1) {
+      segmentOptions.push({
+        label: name,
+        segment: segs[0] as [string, number, number, boolean],
+        isDevice: !!virt.is_device
+      })
+    } else {
+      segs.forEach((seg: any, idx: number) => {
+        segmentOptions.push({
+          label: `${name} — seg ${idx + 1}`,
+          segment: seg as [string, number, number, boolean],
+          isDevice: !!virt.is_device
+        })
+      })
+    }
+  }
 
-  // console.log(segments)
   return (
     <Dialog
       disableEscapeKeyDown
@@ -92,19 +114,12 @@ function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
       <DialogContent dividers>
         <BladeFrame full>
           <Select value={value} style={{ width: '100%' }} onChange={handleChange}>
-            {Object.keys(segments).map((v) => {
-              const k = virtualKeys.find((vi) => virtuals[vi].config.name === v)
-              return (
-                <MenuItem value={JSON.stringify({ [v]: segments[v] })} key={v}>
-                  {k && virtuals[k].is_device ? (
-                    ''
-                  ) : (
-                    <SubdirectoryArrowRight color="disabled" sx={{ mr: 1 }} />
-                  )}
-                  {v}
-                </MenuItem>
-              )
-            })}
+            {segmentOptions.map((opt, idx) => (
+              <MenuItem value={JSON.stringify(opt.segment)} key={idx}>
+                {!opt.isDevice && <SubdirectoryArrowRight color="disabled" sx={{ mr: 1 }} />}
+                {opt.label}
+              </MenuItem>
+            ))}
           </Select>
         </BladeFrame>
       </DialogContent>
@@ -138,45 +153,39 @@ function AddExistingSegmentDialog({ virtual, config = {} }: { virtual: any; conf
     if (!newValue) {
       return
     }
-    const [name, segments] = Object.entries(JSON.parse(newValue))[0] as [
-      string,
-      [string, number, number, boolean]
-    ]
-    // console.log(name)
-    // console.log(segments)
-    if (name && segments) {
-      const deviceKey = Object.keys(deviceList).find((d) => deviceList[d].id === segments[0])
-      const device = deviceKey ? deviceList[deviceKey] : undefined
-      // console.log(device)
-      const temp = [...virtual.segments, segments]
-      const test = temp.filter((t) => t.length === 4)
+    // newValue is now a JSON-stringified [deviceId, start, end, invert] segment
+    const segments = JSON.parse(newValue) as [string, number, number, boolean]
+    if (!Array.isArray(segments) || segments.length !== 4) return
+    const deviceKey = Object.keys(deviceList).find((d) => deviceList[d].id === segments[0])
+    const device = deviceKey ? deviceList[deviceKey] : undefined
+    const temp = [...virtual.segments, segments]
+    const test = temp.filter((t: any) => t.length === 4)
 
-      updateSegments(virtual.id, test).then(() => {
-        getVirtuals()
-        if (device && virtual.active === false && virtual.segments.length === 0) {
-          if (
-            device.active_virtuals &&
-            device.active_virtuals[0] &&
-            virtuals &&
-            virtuals[device.active_virtuals[0]] &&
-            virtuals[device.active_virtuals[0]].effect &&
-            virtuals[device.active_virtuals[0]].effect.type
-          ) {
-            setEffect(
-              virtual.id,
-              virtuals[device.active_virtuals[0]].effect.type as string,
-              virtuals[device.active_virtuals[0]].effect.config,
-              true
-            )
-          } else {
-            setEffect(virtual.id, 'rainbow', {}, true)
-          }
+    updateSegments(virtual.id, test).then(() => {
+      getVirtuals()
+      if (device && virtual.active === false && virtual.segments.length === 0) {
+        if (
+          device.active_virtuals &&
+          device.active_virtuals[0] &&
+          virtuals &&
+          virtuals[device.active_virtuals[0]] &&
+          virtuals[device.active_virtuals[0]].effect &&
+          virtuals[device.active_virtuals[0]].effect.type
+        ) {
+          setEffect(
+            virtual.id,
+            virtuals[device.active_virtuals[0]].effect.type as string,
+            virtuals[device.active_virtuals[0]].effect.config,
+            true
+          )
+        } else {
+          setEffect(virtual.id, 'rainbow', {}, true)
         }
-        if (device) {
-          highlightSegment(virtual.id, device.id, segments[1], segments[2], false)
-        }
-      })
-    }
+      }
+      if (device) {
+        highlightSegment(virtual.id, device.id, segments[1], segments[2], false)
+      }
+    })
   }
 
   return (

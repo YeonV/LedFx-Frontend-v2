@@ -168,6 +168,22 @@ const storeVirtuals = (set: any) => ({
   addVirtual: async (config: any) => await Ledfx('/api/virtuals', 'POST', config),
   updateVirtual: async (virtId: string, active: boolean) =>
     await Ledfx(`/api/virtuals/${virtId}`, 'PUT', { active }),
+  setVirtualDmxPause: async (virtId: string, paused: boolean) => {
+    const resp = await Ledfx(`/api/virtuals/${virtId}/dmx_pause`, 'PUT', { paused })
+    if (resp && resp.status === 'success') {
+      set(
+        produce((state: IStore) => {
+          if (state.virtuals[virtId]) {
+            state.virtuals[virtId].dmx_paused = paused
+          }
+        }),
+        false,
+        'api/setVirtualDmxPause'
+      )
+      return true
+    }
+    return false
+  },
   deleteVirtual: async (virtId: string) => await Ledfx(`/api/virtuals/${virtId}`, 'DELETE'),
   clearEffect: async (virtId: string) => await Ledfx(`/api/virtuals/${virtId}/effects`, 'DELETE'),
   setEffect: async (

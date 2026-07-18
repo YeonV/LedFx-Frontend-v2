@@ -22,6 +22,7 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
   const removeEffectfromHistory = useStore((state) => state.removeEffectfromHistory)
   const clearEffect = useStore((state) => state.clearEffect)
   const updateVirtual = useStore((state) => state.updateVirtual)
+  const setVirtualDmxPause = useStore((state) => state.setVirtualDmxPause)
   const activateDevice = useStore((state) => state.activateDevice)
   const showMatrix = useStore((state) => state.showMatrix)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -115,6 +116,12 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
 
   const handleActivateDevice = (e: any) => {
     activateDevice(e).then(() => getDevices())
+  }
+
+  const handleToggleDmxPause = () => {
+    if (virtual && virtuals[virtual]) {
+      setVirtualDmxPause(virtual, !virtuals[virtual]?.dmx_paused)
+    }
   }
 
   useEffect(() => {
@@ -222,6 +229,9 @@ const DeviceCardWrapper = ({ virtual, index }: { virtual: any; index: number }) 
         additionalStyle={{
           order
         }}
+        dmxMapped={!!virtuals[virtual]?.dmx_mapped}
+        dmxPaused={!!virtuals[virtual]?.dmx_paused}
+        handleToggleDmxPause={handleToggleDmxPause}
       />
       <Popover
         id={id}

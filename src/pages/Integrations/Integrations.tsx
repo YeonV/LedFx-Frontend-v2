@@ -5,6 +5,7 @@ import IntegrationCard from './IntegrationCard/IntegrationCard'
 import NoYet from '../../components/NoYet'
 import IntegrationCardSpotify from './IntegrationCard/IntegrationCardSpotify'
 import IntegrationCardQLC from './IntegrationCard/IntegrationCardQLC'
+import IntegrationCardDmxInput from './IntegrationCard/IntegrationCardDmxInput'
 
 const useStyles = makeStyles(() => ({
   cardWrapper: {
@@ -36,6 +37,8 @@ const Integrations = () => {
             <IntegrationCardSpotify integration={integration} key={i} />
           ) : integrations[integration].type === 'qlc' ? (
             <IntegrationCardQLC integration={integration} key={i} />
+          ) : integrations[integration].type === 'dmx_input' ? (
+            <IntegrationCardDmxInput integration={integration} key={i} />
           ) : (
             <IntegrationCard integration={integration} key={i} />
           )
