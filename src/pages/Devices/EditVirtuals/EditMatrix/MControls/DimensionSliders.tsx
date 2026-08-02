@@ -1,15 +1,10 @@
 import { Box, Slider, Stack, Typography } from '@mui/material'
-import { Ledfx } from '../../../../../api/ledfx'
-import { processArray } from '../processMatrix'
 import useStore from '../../../../../store/useStore'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 
-const DimensionSliders = ({ virtual }: { virtual: any }) => {
-  const getVirtuals = useStore((state) => state.getVirtuals)
-  const getDevices = useStore((state) => state.getDevices)
-  const addVirtual = useStore((state) => state.addVirtual)
+const DimensionSliders = () => {
   const virtual2dLimit = useStore((state) => state.ui.virtual2dLimit)
-  const { rowN, colN, setRowNumber, setColNumber, m } = useMatrixEditorContext()
+  const { rowN, colN, setRowNumber, setColNumber, saveMatrix } = useMatrixEditorContext()
 
   return (
     <Stack
@@ -30,26 +25,9 @@ const DimensionSliders = ({ virtual }: { virtual: any }) => {
             onChange={(e, newRowNumber) =>
               typeof newRowNumber === 'number' && setRowNumber(newRowNumber)
             }
-            onChangeCommitted={(e, newRowNumber) => {
-              if (typeof newRowNumber === 'number') {
-                addVirtual({
-                  id: virtual.id,
-                  config: { rows: newRowNumber }
-                })
-                  .then(() => {
-                    getVirtuals()
-                    getDevices()
-                  })
-                  .then(() => {
-                    Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-                      segments: processArray(m.flat(), virtual.id)
-                    }).then(() => {
-                      getVirtuals()
-                      getDevices()
-                    })
-                  })
-              }
-            }}
+            // saveMatrix writes rows and segments together from the resized
+            // matrix, so both sliders persist through the same single path.
+            onChangeCommitted={() => saveMatrix()}
           />
         </Box>
         {rowN}
@@ -66,14 +44,7 @@ const DimensionSliders = ({ virtual }: { virtual: any }) => {
             onChange={(e, newColNumber) =>
               typeof newColNumber === 'number' && setColNumber(newColNumber)
             }
-            onChangeCommitted={() => {
-              Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-                segments: processArray(m.flat(), virtual.id)
-              }).then(() => {
-                getVirtuals()
-                getDevices()
-              })
-            }}
+            onChangeCommitted={() => saveMatrix()}
           />
         </Box>
         {colN}

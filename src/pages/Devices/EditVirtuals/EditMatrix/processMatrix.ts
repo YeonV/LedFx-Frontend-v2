@@ -62,33 +62,40 @@ export function processArray(inputArray: InputType[], gapname = ''): OutputType[
   return outputArray
 }
 
-export function reverseProcessArray(outputArray: OutputType[], rows?: number): InputType[][] {
+/**
+ * Rebuilds a matrix from a segment list, chunked `cols` cells per row.
+ *
+ * Segments carry no group information, so one id is synthesised per segment as
+ * a fallback. It is deliberately prefixed: the previous `row-col` form produced
+ * '0-0' for the first segment, which collides with the empty-cell sentinel in
+ * MCell and made that whole segment invisible to the group tools. Real group
+ * ids are layered back on afterwards by `applyStoredGroups`.
+ */
+export function reverseProcessArray(outputArray: OutputType[], cols?: number): InputType[][] {
   const inputArray: InputType[] = []
   const finalArray: InputType[][] = []
-  let group: string = '0-0'
 
   for (let i = 0; i < outputArray.length; i += 1) {
     const [deviceId, startPixel, endPixel, flip] = outputArray[i]
+    const group = `seg-${i}`
     if (deviceId.startsWith('gap-')) {
       for (let j = startPixel; j <= endPixel; j += 1) {
         inputArray.push({ deviceId: '', pixel: j, group: '0-0' })
       }
     } else if (flip) {
       for (let j = endPixel; j >= startPixel; j -= 1) {
-        group = `${Math.floor(i / (rows || 1))}-${i % (rows || 1)}`
         inputArray.push({ deviceId, pixel: j, group })
       }
     } else {
       for (let j = startPixel; j <= endPixel; j += 1) {
-        group = `${Math.floor(i / (rows || 1))}-${i % (rows || 1)}`
         inputArray.push({ deviceId, pixel: j, group })
       }
     }
   }
 
-  if (rows) {
-    for (let i = 0; i < inputArray.length; i += rows) {
-      finalArray.push(inputArray.slice(i, i + rows))
+  if (cols) {
+    for (let i = 0; i < inputArray.length; i += cols) {
+      finalArray.push(inputArray.slice(i, i + cols))
     }
     return finalArray
   }

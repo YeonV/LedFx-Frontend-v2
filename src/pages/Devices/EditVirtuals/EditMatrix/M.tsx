@@ -1,4 +1,4 @@
-import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
+import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react'
 import { Box, Button, Stack, Typography } from '@mui/material'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import { DndContext } from '@dnd-kit/core'
@@ -105,8 +105,6 @@ const EditMatrix = forwardRef<EditMatrixRef, { virtual: any }>(({ virtual }, ref
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [contextMenuCell, setContextMenuCell] = useState<[number, number]>([-1, -1])
 
-  const [initialSnapshot, setInitialSnapshot] = useState<any>(null)
-
   // --- EVENT HANDLERS ---
   const handleContextMenu = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -128,28 +126,21 @@ const EditMatrix = forwardRef<EditMatrixRef, { virtual: any }>(({ virtual }, ref
   const closeMenu = () => setAnchorEl(null)
 
   // --- LIFECYCLE EFFECTS ---
+  // "Dirty" means the matrix differs from what is persisted, so the baseline is
+  // owned by the hook and re-based by saveMatrix rather than frozen at mount.
   useEffect(() => {
-    // On mount, or when the virtual ID changes, take a snapshot.
-    if (matrixEditorApi.m) {
-      setInitialSnapshot(JSON.parse(JSON.stringify(matrixEditorApi.m)))
-    }
-    // Always reset the dirty flag when a new virtual is loaded.
-    setVirtualEditorIsDirty(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [virtual.id, setVirtualEditorIsDirty])
+    setVirtualEditorIsDirty(!deepEqual(matrixEditorApi.savedSnapshot, matrixEditorApi.m))
+  }, [matrixEditorApi.m, matrixEditorApi.savedSnapshot, setVirtualEditorIsDirty])
 
+  // Resizing starts from a blank grid. This must not run on mount, where the
+  // dimensions haven't changed at all and `m` already holds the matrix
+  // useMatrixEditor just rebuilt from the virtual's segments.
+  const dimensionsInitialised = useRef(false)
   useEffect(() => {
-    // Whenever the matrix 'm' changes, compare it to the snapshot.
-    if (initialSnapshot && matrixEditorApi.m) {
-      if (!deepEqual(initialSnapshot, matrixEditorApi.m)) {
-        setVirtualEditorIsDirty(true)
-      } else {
-        setVirtualEditorIsDirty(false)
-      }
+    if (!dimensionsInitialised.current) {
+      dimensionsInitialised.current = true
+      return
     }
-  }, [matrixEditorApi.m, initialSnapshot, setVirtualEditorIsDirty])
-
-  useEffect(() => {
     matrixEditorApi.setM(Array(matrixEditorApi.rowN).fill(Array(matrixEditorApi.colN).fill(MCell)))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matrixEditorApi.rowN, matrixEditorApi.colN, matrixEditorApi.setM])

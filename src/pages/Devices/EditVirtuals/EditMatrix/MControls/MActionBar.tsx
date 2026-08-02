@@ -16,12 +16,15 @@ import {
 import { Box, Collapse, Divider, IconButton, Stack, Tooltip } from '@mui/material'
 import { useMatrixEditorContext } from '../MatrixEditorContext'
 import DimensionSliders from './DimensionSliders'
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import useStore from '../../../../../store/useStore'
 import Webcam from '../../../../../components/Webcam/Webcam'
 import GroupControls from './GroupControls'
 import BladeIcon from '../../../../../components/Icons/BladeIcon/BladeIcon'
 import MatrixStudioButton from '../MatrixStudio'
+import { assignStudioColors } from '../studioPalette'
+import { findUnknownDevices, type UnknownDevice } from '../importMatrix'
+import ImportDevicesDialog from '../ImportDevicesDialog'
 
 const MActionBar = ({
   virtual,
@@ -52,6 +55,7 @@ const MActionBar = ({
 
   const features = useStore((state) => state.features)
   const getDevices = useStore((state) => state.getDevices)
+  const addDevice = useStore((state) => state.addDevice)
   const devices = useStore((state) => state.devices)
   const virtuals = useStore((state) => state.virtuals)
   const virtualOrder = useStore((state) => state.virtualOrder)
@@ -60,7 +64,6 @@ const MActionBar = ({
   const setPendingMatrixLayout = useStore((state) => state.ui.setPendingMatrixLayout)
   const showSnackbar = useStore((state) => state.ui.showSnackbar)
   const virtualEditorIsDirty = useStore((state) => state.virtualEditorIsDirty)
-  const setVirtualEditorIsDirty = useStore((state) => state.setVirtualEditorIsDirty)
   const setExternalEditorOpen = useStore((state) => state.setExternalEditorOpen)
 
   const setExternalStudioRef = useStore((state) => state.setExternalStudioRef)
@@ -78,27 +81,33 @@ const MActionBar = ({
       virtualIdToOrderMap.set(vo.virtId, vo.order)
     })
 
+    const eligible = Object.entries(devices).filter(
+      ([id, device]) =>
+        device.config.pixel_count !== undefined &&
+        !id.startsWith('gap-') &&
+        ['mask', 'foreground', 'background'].every((suffix) => !id.endsWith(suffix))
+    )
+
+    // Hand the studio a fixed palette family per device. It only auto-assigns
+    // to devices that arrive without one, so this is what makes a layout reopen
+    // in the colours it was left with.
+    const studioColors = assignStudioColors(eligible.map(([id]) => id))
+
     return {
       name: virtual.id,
       matrixData: m,
-      deviceList: Object.entries(devices)
-        .filter(
-          ([id, device]) =>
-            device.config.pixel_count !== undefined &&
-            !id.startsWith('gap-') &&
-            ['mask', 'foreground', 'background'].every((suffix) => !id.endsWith(suffix))
-        )
-        .map(([id, device]) => {
-          const virtualId = deviceIdToVirtualIdMap.get(id)
-          const order = virtualId ? virtualIdToOrderMap.get(virtualId) : undefined
+      deviceList: eligible.map(([id, device]) => {
+        const virtualId = deviceIdToVirtualIdMap.get(id)
+        const order = virtualId ? virtualIdToOrderMap.get(virtualId) : undefined
 
-          return {
-            deviceId: id,
-            count: device.config.pixel_count!,
-            name: device.config.name || id,
-            order
-          }
-        })
+        return {
+          deviceId: id,
+          count: device.config.pixel_count!,
+          name: device.config.name || id,
+          order,
+          colors: studioColors.get(id)
+        }
+      })
     }
   }, [virtual.id, m, devices, virtualOrder, virtuals])
 
@@ -133,14 +142,103 @@ const MActionBar = ({
   //   if (event.target) event.target.value = ''
   // }
 
+  // A layout held back because it references devices LedFx does not have.
+  const [pendingImport, setPendingImport] = useState<{
+    matrixData: any
+    unknown: UnknownDevice[]
+  } | null>(null)
+  const [creatingDevices, setCreatingDevices] = useState(false)
+
+  /**
+   * Single gate for every way a layout enters the editor - internal studio,
+   * external studio and dropped JSON file. An unknown device id makes the
+   * backend reject the entire segment list on save, so it is caught here rather
+   * than surfacing later as a save that silently reverts.
+   */
+  const applyImportedMatrix = useCallback(
+    (matrixData: any) => {
+      if (!Array.isArray(matrixData)) return
+      const unknown = findUnknownDevices(matrixData, devices)
+      if (unknown.length === 0) {
+        setM(matrixData)
+        showSnackbar('success', 'Matrix layout imported!')
+        return
+      }
+      setPendingImport({ matrixData, unknown })
+    },
+    [devices, setM, showSnackbar]
+  )
+
+  const confirmImportWithDummies = useCallback(async () => {
+    if (!pendingImport) return
+    setCreatingDevices(true)
+    try {
+      for (const device of pendingImport.unknown) {
+        // Sequential: each POST rewrites the device config file, so parallel
+        // creates can drop one another's entry.
+        await addDevice({
+          type: 'dummy',
+          config: {
+            center_offset: 0,
+            icon_name: 'mdi:help-circle-outline',
+            name: device.deviceId,
+            pixel_count: device.pixelCount,
+            refresh_rate: 64
+          }
+        })
+      }
+      await getDevices()
+
+      // Ledfx() swallows request failures into a snackbar, so confirm against a
+      // fresh device list rather than assuming every create landed. Importing a
+      // layout that still cannot be saved would put back exactly the silent
+      // revert this dialog exists to prevent.
+      const stillMissing = findUnknownDevices(pendingImport.matrixData, useStore.getState().devices)
+      if (stillMissing.length > 0) {
+        showSnackbar(
+          'error',
+          `Could not create ${stillMissing.map((d) => d.deviceId).join(', ')} - layout not imported`
+        )
+        setPendingImport({ ...pendingImport, unknown: stillMissing })
+        return
+      }
+
+      setM(pendingImport.matrixData)
+      showSnackbar(
+        'success',
+        `Created ${pendingImport.unknown.length} dummy device${pendingImport.unknown.length === 1 ? '' : 's'} and imported the layout`
+      )
+      setPendingImport(null)
+    } finally {
+      setCreatingDevices(false)
+    }
+  }, [pendingImport, addDevice, getDevices, setM, showSnackbar])
+
   useEffect(() => {
     if (pendingMatrixLayout) {
-      setM(pendingMatrixLayout.matrixData)
-      showSnackbar('success', 'Matrix layout imported!')
+      applyImportedMatrix(pendingMatrixLayout.matrixData)
       setPendingMatrixLayout(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingMatrixLayout])
+
+  // A studio window that has been opened but not yet handed its layout. Held in
+  // a ref so the message listener below can reach the latest payload without
+  // resubscribing every time the matrix changes.
+  const pendingStudioTransfer = useRef<{
+    window: Window
+    url: string
+    payload: typeof studioData
+  } | null>(null)
+
+  const sendStudioPayload = useCallback(() => {
+    const pending = pendingStudioTransfer.current
+    if (!pending || pending.window.closed) return
+    // Exactly once: the studio reloads its state from every payload it gets, so
+    // a late duplicate would discard whatever the user had already drawn.
+    pendingStudioTransfer.current = null
+    pending.window.postMessage({ ...pending.payload, source: 'LedFx' }, pending.url)
+  }, [])
 
   useEffect(() => {
     const handleEditorUpdate = (event: MessageEvent) => {
@@ -164,37 +262,40 @@ const MActionBar = ({
       // console.log('Received message from MatrixStudio:', event.data)
 
       const data = event.data
+      // The studio signals when its own listener is live; hand the layout over
+      // then rather than hoping it booted inside the fallback timeout.
+      if (data?.source === 'MatrixStudio' && data.action === 'ready') {
+        sendStudioPayload()
+        return
+      }
       if (data && Array.isArray(data.matrixData) && data.source === 'MatrixStudio') {
         setExternalStudioRef(null)
-        setM(data.matrixData)
-        showSnackbar('success', 'Matrix layout updated!')
+        applyImportedMatrix(data.matrixData)
         // --- When data is received, the session is over. Unlock the UI. ---
         setExternalEditorOpen(false)
       }
     }
     window.addEventListener('message', handleEditorUpdate)
     return () => window.removeEventListener('message', handleEditorUpdate)
-  }, [setM, showSnackbar, setExternalEditorOpen, setExternalStudioRef])
-
-  const mountTimeRef = useRef<number>(Date.now())
-
-  useEffect(() => {
-    const uptime = Date.now() - mountTimeRef.current
-
-    if (uptime > 3000) {
-      return
-    }
-    if (m.length > 0 && m[0]?.length > 0) {
-      const matrixIsEmpty = m?.every((row: any) => row.every((cell: any) => cell.deviceId === ''))
-      if (matrixIsEmpty) {
-        resetMatrix()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [m])
+  }, [
+    applyImportedMatrix,
+    showSnackbar,
+    setExternalEditorOpen,
+    setExternalStudioRef,
+    sendStudioPayload
+  ])
 
   return (
     <Box>
+      <ImportDevicesDialog
+        unknown={pendingImport?.unknown ?? null}
+        busy={creatingDevices}
+        onCreate={confirmImportWithDummies}
+        onCancel={() => {
+          setPendingImport(null)
+          showSnackbar('info', 'Import discarded - the matrix is unchanged')
+        }}
+      />
       <Collapse in={camMapper}>
         {camMapper && (
           <Box
@@ -232,7 +333,7 @@ const MActionBar = ({
             backgroundColor: 'background.paper'
           }}
         >
-          <DimensionSliders virtual={virtual} />
+          <DimensionSliders />
         </Box>
       </Collapse>
       <Box
@@ -329,24 +430,24 @@ const MActionBar = ({
                 size="large"
                 onClick={() => {
                   const url =
-                    process.env.NODE_ENV === 'production' // quickly reversed logic for testing
+                    process.env.NODE_ENV === 'production'
                       ? 'https://studio.ledfx.stream'
                       : 'http://localhost:5173'
                   setExternalEditorOpen(true)
                   const newWindow = window.open(url, '_blank')
-                  setTimeout(() => {
-                    if (newWindow) {
-                      setExternalStudioRef(newWindow)
-                      newWindow.postMessage({ ...studioData, source: 'LedFx' }, url)
-                    } else {
-                      showSnackbar(
-                        'error',
-                        'Failed to open MatrixStudio. Please check your popup blocker.'
-                      )
-                      // If it fails to open, immediately reset the flag.
-                      setExternalEditorOpen(false)
-                    }
-                  }, 500)
+                  if (!newWindow) {
+                    showSnackbar(
+                      'error',
+                      'Failed to open MatrixStudio. Please check your popup blocker.'
+                    )
+                    setExternalEditorOpen(false)
+                    return
+                  }
+                  setExternalStudioRef(newWindow)
+                  pendingStudioTransfer.current = { window: newWindow, url, payload: studioData }
+                  // The studio normally asks for the layout as soon as it is
+                  // listening. This only covers builds that predate that signal.
+                  setTimeout(sendStudioPayload, 500)
                 }}
               >
                 <BladeIcon name="yz:logo2" />
@@ -355,9 +456,7 @@ const MActionBar = ({
             <MatrixStudioButton
               defaultValue={studioData?.matrixData}
               deviceList={studioData?.deviceList}
-              handleSave={(data) => {
-                setM(data)
-              }}
+              handleSave={(data) => applyImportedMatrix(data)}
             />
             <Divider orientation="vertical" flexItem />
           </Stack>
@@ -382,10 +481,7 @@ const MActionBar = ({
               <IconButton
                 color={virtualEditorIsDirty ? 'error' : 'inherit'}
                 size="large"
-                onClick={() => {
-                  setVirtualEditorIsDirty(false)
-                  saveMatrix()
-                }}
+                onClick={() => saveMatrix()}
               >
                 <Save />
               </IconButton>

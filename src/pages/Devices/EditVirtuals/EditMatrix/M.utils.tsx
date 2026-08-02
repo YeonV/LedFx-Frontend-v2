@@ -26,9 +26,43 @@ export type IMCell = {
 
 export const MCell: IMCell = { deviceId: '', pixel: 0, group: '0-0' }
 
+/**
+ * Pulls the group ids out of a matrix so they can be persisted separately.
+ * Empty cells are stored as '' to keep the grid rectangular, which makes the
+ * shape check in {@link applyStoredGroups} cheap and unambiguous.
+ */
+export const extractGroups = (m: IMCell[][]): string[][] =>
+  m.map((row) => row.map((cell) => (cell.deviceId ? (cell.group ?? '') : '')))
+
+/**
+ * Restores persisted group ids onto a matrix rebuilt from segments.
+ *
+ * Segments carry no group information, so `reverseProcessArray` can only
+ * synthesise one id per segment - which splits or merges the groups the user
+ * actually drew. This puts the real ones back. A stored grid whose shape no
+ * longer matches (after a resize, say) is ignored in favour of the synthesised
+ * ids rather than being force-fitted.
+ */
+export const applyStoredGroups = (m: IMCell[][], stored?: string[][]): IMCell[][] => {
+  if (!stored || stored.length !== m.length) return m
+  if (m.length > 0 && stored[0]?.length !== m[0]?.length) return m
+  return m.map((row, r) =>
+    row.map((cell, c) => {
+      const group = stored[r]?.[c]
+      // Only populated cells carry a group; empty ones keep the MCell sentinel.
+      return cell.deviceId && group ? { ...cell, group } : cell
+    })
+  )
+}
+
+/** Mirrors `IDevice` in yz-matrix-studio; this is the shape sent to the studio. */
 export interface IDevice {
   deviceId: string
   count: number
+  name?: string
+  order?: number
+  /** Palette family for this device, see {@link assignStudioColors}. */
+  colors?: readonly [string, string, string, string]
 }
 
 /**

@@ -5,6 +5,8 @@ import { IMCell } from './M.utils'
 export interface MatrixEditorAPI {
   // State for the View Components
   m: IMCell[][]
+  /** The matrix as last persisted to the backend; the baseline for the dirty check. */
+  savedSnapshot: IMCell[][]
   rowN: number
   colN: number
   selectedGroup: string

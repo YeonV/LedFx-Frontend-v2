@@ -2,7 +2,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core'
 import { produce } from 'immer'
-import { MCell, IMCell } from './M.utils'
+import { MCell, IMCell, extractGroups, applyStoredGroups } from './M.utils'
 import { processArray, reverseProcessArray } from './processMatrix'
 import { transpose } from '../../../../utils/helpers'
 import { Ledfx } from '../../../../api/ledfx'
@@ -10,16 +10,36 @@ import type { MatrixEditorAPI } from './MatrixEditorAPI.types'
 import useStore from '../../../../store/useStore'
 
 export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
+  // Dummy device that backs every empty cell in the saved segment list.
+  const gapDeviceId = `gap-${virtual.id}`
+
+  // Group ids the backend cannot store, kept per virtual in the persisted store.
+  const storedGroups = useStore((state) => state.matrixGroups[virtual.id])
+  const setMatrixGroups = useStore((state) => state.setMatrixGroups)
+
   // --- STATE MANAGEMENT ---
   const [rowN, setRowNumber] = useState<number>(virtual.config.rows || 8)
   const [colN, setColNumber] = useState<number>(
     Math.ceil(virtual.pixel_count / (virtual.config.rows || 1)) || 8
   )
+
+  // Rebuild from segments, then layer the real groups back over the ids
+  // reverseProcessArray had to invent.
+  const loadMatrix = useCallback(
+    (segments: any[], cols: number) =>
+      applyStoredGroups(reverseProcessArray(segments, cols), storedGroups),
+    [storedGroups]
+  )
+
   const [m, setM] = useState<IMCell[][]>(() =>
     virtual.segments.length > 0
-      ? reverseProcessArray(virtual.segments, colN)
+      ? loadMatrix(virtual.segments, colN)
       : Array(rowN).fill(Array(colN).fill(MCell))
   )
+  // Baseline for the dirty check: the matrix as it was last written to the
+  // backend. Every producer of `m` builds new arrays, so holding the saved
+  // reference is a valid snapshot and deepEqual short-circuits on identity.
+  const [savedSnapshot, setSavedSnapshot] = useState<IMCell[][]>(m)
   const [selectedGroup, setSelectedGroup] = useState<string>('')
   const [dndMode, setDndMode] = useState<'pixel' | 'group'>('pixel')
   const [dnd, setDnd] = useState<boolean>(false)
@@ -30,7 +50,6 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
   const [error, setError] = useState<{ row: number; col: number }[]>([])
 
   const devices = useStore((state) => state.devices)
-  const initialMatrixSnapshot = useStore((state) => state.virtualEditorSnapshot)
 
   // Zustand hooks for external actions
   const getVirtuals = useStore((state) => state.getVirtuals)
@@ -48,12 +67,22 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
         groups.add(cell.group)
       }
     })
-    // This is also where we can set the initial pixelGroups count
-    if (pixelGroups === 0 && groups.size > 0) {
-      setPixelGroups(groups.size)
-    }
     return Array.from(groups)
-  }, [m, pixelGroups])
+  }, [m])
+
+  // Seed the new-group counter past every `group-N` already on the grid, so a
+  // fresh placement cannot land on an id that is in use. The count alone was
+  // not enough: a grid holding group-0 and group-2, or ids minted by Matrix
+  // Studio, would still hand out a colliding number.
+  useEffect(() => {
+    if (pixelGroups !== 0 || uniqueGroups.length === 0) return
+    setPixelGroups(
+      uniqueGroups.reduce((next, group) => {
+        const match = /^group-(\d+)$/.exec(group)
+        return match ? Math.max(next, Number(match[1]) + 1) : next
+      }, uniqueGroups.length)
+    )
+  }, [uniqueGroups, pixelGroups])
 
   // --- ACTIONS & HANDLERS ---
   const executeGroupMove = useCallback(
@@ -147,62 +176,82 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
     }
   }, [])
 
+  const createGapDevice = useCallback(
+    () =>
+      addDevice({
+        type: 'dummy',
+        config: {
+          center_offset: 0,
+          icon_name: 'mdi:eye-off',
+          name: gapDeviceId,
+          pixel_count: 4096,
+          refresh_rate: 64
+        }
+      }),
+    [addDevice, gapDeviceId]
+  )
+
+  // processArray emits a `gap-<virtualId>` segment for every run of empty
+  // cells, but the dummy device backing them is only created for virtuals that
+  // start out with no segments at all. Any other virtual saved with a hole in
+  // it gets the whole POST rejected with "Invalid device id" and rolled back,
+  // so the layout silently refuses to persist. Re-check against a freshly
+  // fetched device list before creating one: add_new_device derives the id
+  // straight from the name without de-duplicating.
+  const ensureGapDevice = useCallback(
+    (segments: ReturnType<typeof processArray>) => {
+      const gapExists = () =>
+        Object.values(useStore.getState().devices).some((d: any) => d.id === gapDeviceId)
+
+      if (!segments.some(([deviceId]) => deviceId === gapDeviceId)) return Promise.resolve()
+      if (gapExists()) return Promise.resolve()
+
+      return getDevices()
+        .then(() => (gapExists() ? null : createGapDevice()))
+        .then(() => getDevices())
+    },
+    [gapDeviceId, getDevices, createGapDevice]
+  )
+
+  // `rows` and `segments` describe the same grid and must always be written
+  // together from the same matrix: on load the column count is derived as
+  // pixel_count / rows, so a mismatched pair re-chunks the flat pixel list at
+  // the wrong width and the matrix comes back scrambled.
   const saveMatrix = useCallback(() => {
-    const currentRows = m.length
-    const currentCols = m[0]?.length || 0
+    const saved = m
+    const rows = saved.length
+    const segments = processArray(saved.flat(), virtual.id)
 
-    // --- THE FIX: Compare against the correct snapshot from the store ---
-    const initialRows = initialMatrixSnapshot?.length || 0
-    const initialCols = initialMatrixSnapshot?.[0]?.length || 0
-
-    const dimensionsChanged = currentRows !== initialRows || currentCols !== initialCols
-
-    if (dimensionsChanged) {
-      console.log('Dimensions changed. Performing two-step save...')
-      addVirtual({
-        id: virtual.id,
-        config: { ...virtual.config, rows: currentRows }
-      })
-        .then(() => {
-          return Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-            segments: processArray(m.flat(), virtual.id)
-          })
+    return ensureGapDevice(segments)
+      .then(() =>
+        addVirtual({
+          id: virtual.id,
+          config: { ...virtual.config, rows }
         })
-        .then(() => {
-          getVirtuals()
-          getDevices()
-        })
-    } else {
-      console.log('Dimensions unchanged. Performing standard save...')
-      Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-        segments: processArray(m.flat(), virtual.id)
-      }).then(() => {
+      )
+      .then(() => Ledfx(`/api/virtuals/${virtual.id}`, 'POST', { segments }))
+      .then((res: any) => {
+        // Only re-base the dirty check when the backend actually accepted the
+        // segments. It rolls back to the previous ones on a validation failure,
+        // and the matrix on screen is then genuinely still unsaved.
+        if (res?.status === 'success') {
+          setSavedSnapshot(saved)
+          // Groups have no home in the segment list, so they are persisted
+          // alongside it. Only on success, so they stay in step with what the
+          // backend actually holds.
+          setMatrixGroups(virtual.id, extractGroups(saved))
+        }
         getVirtuals()
         getDevices()
       })
-    }
-  }, [m, virtual, initialMatrixSnapshot, addVirtual, getVirtuals, getDevices])
+  }, [m, virtual, ensureGapDevice, addVirtual, getVirtuals, getDevices, setMatrixGroups])
 
-  const handleSetRowNumber = useCallback(
-    (n: number) => {
-      addVirtual({ id: virtual.id, config: { rows: n } })
-        .then(() => {
-          getVirtuals()
-          getDevices()
-        })
-        .then(() => saveMatrix())
-      setRowNumber(n)
-    },
-    [addVirtual, getDevices, getVirtuals, saveMatrix, virtual.id]
-  )
+  // Dimension changes are local state only. Persisting them is the job of the
+  // slider's onChangeCommitted, so dragging doesn't fire a save (and a rows
+  // write built from the pre-resize matrix) for every intermediate value.
+  const handleSetRowNumber = useCallback((n: number) => setRowNumber(n), [])
 
-  const handleSetColNumber = useCallback(
-    (n: number) => {
-      saveMatrix()
-      setColNumber(n)
-    },
-    [saveMatrix]
-  )
+  const handleSetColNumber = useCallback((n: number) => setColNumber(n), [])
 
   const transposeMatrix = useCallback(() => setM(transpose(m)), [m])
   const swapVertical = useCallback(() => setM(produce((draft) => draft.reverse())), [])
@@ -216,8 +265,8 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
     []
   )
   const resetMatrix = useCallback(
-    () => setM(reverseProcessArray(virtual.segments, colN)),
-    [virtual.segments, colN]
+    () => setM(loadMatrix(virtual.segments, colN)),
+    [virtual.segments, colN, loadMatrix]
   )
   const clearMatrix = useCallback(() => {
     setM(Array(rowN).fill(Array(colN).fill(MCell)))
@@ -258,22 +307,10 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
 
   useEffect(() => {
     if (virtual.segments.length === 0) {
-      if (!Object.values(devices).some((d) => d.id === `gap-${virtual.id}`)) {
-        // add new device
-        addDevice({
-          type: 'dummy',
-          config: {
-            center_offset: 0,
-            icon_name: 'mdi:eye-off',
-            name: `gap-${virtual.id}`,
-            pixel_count: 4096,
-            refresh_rate: 64
-          }
-        }).then(() => {
+      if (!Object.values(devices).some((d) => d.id === gapDeviceId)) {
+        createGapDevice().then(() => {
           Ledfx(`/api/virtuals/${virtual.id}`, 'POST', {
-            segments: [
-              [`gap-${virtual.id}`, 0, virtual.config.rows * virtual.config.rows - 1, false]
-            ]
+            segments: [[gapDeviceId, 0, virtual.config.rows * virtual.config.rows - 1, false]]
           }).then(() => {
             getDevices()
             getVirtuals().then(() => {
@@ -287,13 +324,21 @@ export const useMatrixEditor = (virtual: any): MatrixEditorAPI => {
         })
       }
     } else {
-      setM(reverseProcessArray(virtual.segments, colN))
+      setM(loadMatrix(virtual.segments, colN))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // EditMatrix is not remounted when the edited virtual changes, so a new
+  // virtual needs a fresh baseline or its matrix reads as unsaved.
+  useEffect(() => {
+    setSavedSnapshot(m)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [virtual.id])
+
   return {
     m,
+    savedSnapshot,
     rowN,
     colN,
     selectedGroup,
