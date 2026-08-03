@@ -62,9 +62,10 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const isCustomMode = useFireTvStore((state) => state.isCustomMode)
   const setDefaultButtons = useFireTvStore((state) => state.setDefaultButtons)
   const isLandscape = useMediaQuery('(orientation: landscape)')
+  const androidUpdates = useStore((state) => state.androidUpdates)
   const { updateAvailable, downloading, handleUpdate, latestVersion, needsInstallPermission } =
     useAndroidUpdateChecker({
-      enabled: features.firetv
+      enabled: features.firetv && androidUpdates === 'enabled'
     })
   const SCROLL_AMOUNT = window.innerHeight * 0.6 // 60% of viewport height
   const platform = useStore((state) => state.platform)

@@ -14,6 +14,84 @@ interface AndroidUpdateConfig {
   enabled?: boolean
 }
 
+/**
+ * Latest release tag, cached for the lifetime of the page.
+ *
+ * Several components use this hook (App, About, the FireTV bar) and each mount
+ * used to fire its own request at GitHub's unauthenticated API. One lookup per
+ * app launch is plenty - the "Re-check" button passes force to bypass it.
+ */
+let cachedTag: string | null = null
+let inflight: Promise<string | null> | null = null
+
+/**
+ * Split a tag into its release version and build number: v2.1.6-b21 -> 2.1.6, 21.
+ *
+ * The build number has to be compared numerically. Treating the whole string as
+ * a semver prerelease would order b9 above b10, since that comparison is
+ * lexical.
+ */
+const versionParts = (version: string): { base: string; build: number } => {
+  const [base, build] = version.replace(/^v/, '').split('-b')
+  // No -b suffix means a final release, which outranks every beta of the same
+  // base - 2.1.6 is newer than 2.1.6-b21, not older.
+  return { base, build: build === undefined ? Infinity : parseInt(build, 10) }
+}
+
+/** Standard comparator: positive when `a` is the newer build. */
+const compareTags = (a: string, b: string): number => {
+  const left = versionParts(a)
+  const right = versionParts(b)
+  const base = compareVersions(left.base, right.base)
+  if (base !== 0) return base
+  // Subtracting would yield NaN when both are final releases (Infinity).
+  if (left.build === right.build) return 0
+  return left.build < right.build ? -1 : 1
+}
+
+/** Whether `tag` describes a newer build than the running one. */
+const isNewer = (tag: string, currentVersion: string): boolean =>
+  compareTags(tag, currentVersion) > 0
+
+const fetchLatestTag = (
+  repoOwner: string,
+  repoName: string,
+  force: boolean
+): Promise<string | null> => {
+  if (!force && cachedTag !== null) return Promise.resolve(cachedTag)
+  if (!force && inflight) return inflight
+
+  const request = (async () => {
+    // Deliberately not /releases/latest: that endpoint skips pre-releases, and
+    // every Android beta so far has been one - it answers "b19" to a phone
+    // already running b21. The list endpoint includes them, but orders by
+    // created_at rather than version, so pick the newest tag ourselves.
+    const res = await fetch(
+      `https://api.github.com/repos/${repoOwner}/${repoName}/releases?per_page=30`
+    )
+    if (!res.ok) {
+      console.error(`Failed to fetch latest APK version: ${res.status}`)
+      return null
+    }
+    const releases = await res.json()
+    const tags = (Array.isArray(releases) ? releases : [])
+      .filter((release) => !release.draft && typeof release.tag_name === 'string')
+      .map((release) => release.tag_name as string)
+    if (!tags.length) return null
+
+    cachedTag = tags.reduce((best, tag) => (compareTags(tag, best) > 0 ? tag : best))
+    return cachedTag
+  })()
+
+  inflight = request
+  request
+    .catch(() => undefined)
+    .then(() => {
+      if (inflight === request) inflight = null
+    })
+  return request
+}
+
 export const useAndroidUpdateChecker = ({
   repoOwner = 'YeonV',
   repoName = 'LedFx-Builds',
@@ -28,37 +106,24 @@ export const useAndroidUpdateChecker = ({
 
   // Exposed as well as run on mount, so a "Check for Update" button can
   // re-query rather than only reporting whatever was fetched at mount.
-  const checkForUpdate = useCallback(async () => {
-    if (!isAndroidApp()) return
-    setChecking(true)
-    try {
-      const res = await fetch(
-        `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`
-      )
-      if (!res.ok) {
-        console.error(`Failed to fetch latest APK version: ${res.status}`)
-        return
+  // Pass force to bypass the per-launch cache.
+  const checkForUpdate = useCallback(
+    async (force = false) => {
+      if (!isAndroidApp()) return
+      setChecking(true)
+      try {
+        const tagName = await fetchLatestTag(repoOwner, repoName, force)
+        if (!tagName) return
+        setLatestVersion(tagName)
+        setUpdateAvailable(isNewer(tagName, currentVersion))
+      } catch (error) {
+        console.error('Error checking for APK update:', error)
+      } finally {
+        setChecking(false)
       }
-
-      const release = await res.json()
-      const tagName = release.tag_name as string
-      setLatestVersion(tagName)
-
-      const latest = tagName.replace('v', '')
-      const current = currentVersion
-
-      const isUpdateAvailable =
-        latest.includes('-b') && current.includes('-b')
-          ? compareVersions(latest.split('-b')[1], current.split('-b')[1]) === 1
-          : compareVersions(latest, current) === 1
-
-      setUpdateAvailable(isUpdateAvailable)
-    } catch (error) {
-      console.error('Error checking for APK update:', error)
-    } finally {
-      setChecking(false)
-    }
-  }, [repoOwner, repoName, currentVersion])
+    },
+    [repoOwner, repoName, currentVersion]
+  )
 
   useEffect(() => {
     if (!enabled || !isAndroidApp()) return

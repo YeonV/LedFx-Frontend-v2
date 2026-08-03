@@ -17,6 +17,7 @@ import SpecialEvents from './components/SpecialEvents'
 import useAppTheme from './hooks/useAppTheme'
 import Visualiser from './components/AudioVisualiser/AudioVisualiser'
 import FireTvBar from './components/FireTv/FireTvBar'
+import AndroidUpdater from './components/FireTv/AndroidUpdater'
 import AppStyles from './components/AppStyles'
 import useStore from './store/useStore'
 import Pages from './pages/Pages'
@@ -72,6 +73,7 @@ export default function App() {
             {features.bgvisualiser && <Visualiser backgroundMode={true} />}
           </WebSocketProvider>
           <SpecialEvents />
+          <AndroidUpdater />
         </SnackbarProvider>
       </ThemeProvider>
     </ThemeProviderNew>

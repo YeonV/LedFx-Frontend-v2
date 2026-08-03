@@ -4,6 +4,8 @@ import type { IStore } from '../useStore'
 
 const isBrowser = typeof window !== 'undefined'
 
+export type AndroidUpdateConsent = 'unset' | 'enabled' | 'declined'
+
 const getDefaultHost = () => {
   if (isElectron()) {
     if (isBrowser) {
@@ -181,6 +183,44 @@ const storeGeneral = (set: any) => ({
       }),
       false,
       'general/setIsLogged'
+    ),
+
+  /**
+   * Whether the user opted in to the Android in-app updater.
+   *
+   * Tri-state on purpose: a boolean cannot tell "has not been asked yet" apart
+   * from "said no", which would re-prompt on every launch. 'unset' means ask,
+   * 'declined' means never ask again (but Settings -> About stays available).
+   *
+   * This records *intent* only. Android can revoke the install-unknown-apps
+   * grant at any time, so canInstallPackages() remains the authority on whether
+   * an install can actually happen.
+   */
+  androidUpdates: 'unset' as AndroidUpdateConsent,
+  setAndroidUpdates: (consent: AndroidUpdateConsent) =>
+    set(
+      produce((state: IStore) => {
+        state.androidUpdates = consent
+      }),
+      false,
+      'general/setAndroidUpdates'
+    ),
+
+  /**
+   * Release tag the user dismissed the update banner for.
+   *
+   * Stored per version rather than as a flag so dismissing b22 does not also
+   * silence b23 - otherwise "not now" once means never hearing about an update
+   * again.
+   */
+  androidUpdateDismissed: null as string | null,
+  setAndroidUpdateDismissed: (version: string | null) =>
+    set(
+      produce((state: IStore) => {
+        state.androidUpdateDismissed = version
+      }),
+      false,
+      'general/setAndroidUpdateDismissed'
     )
 })
 

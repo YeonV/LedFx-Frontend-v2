@@ -17,6 +17,7 @@ import fversion from '../../../package.json'
 import { SettingsRow, SettingsSlider } from '../../pages/Settings/SettingsComponents'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
 import { isAndroidApp } from '../FireTv/android.bridge'
+import { requestUpdateGrantIfNeeded } from '../FireTv/androidUpdateConsent'
 import { useAndroidUpdateChecker } from '../FireTv/useAndroidUpdateChecker'
 
 export default function AboutDialog({ className, children, startIcon }: any) {
@@ -38,7 +39,22 @@ export default function AboutDialog({ className, children, startIcon }: any) {
   // /api/check_for_updates reports LedFx core releases, which are not
   // installable on Android. There we track our own APK builds instead.
   const onAndroid = isAndroidApp()
-  const android = useAndroidUpdateChecker({ enabled: onAndroid })
+  const androidUpdates = useStore((state) => state.androidUpdates)
+  const setAndroidUpdates = useStore((state) => state.setAndroidUpdates)
+  const androidUpdatesOn = androidUpdates === 'enabled'
+  // Opted out means opted out: no release lookup happens at all.
+  const android = useAndroidUpdateChecker({ enabled: onAndroid && androidUpdatesOn })
+
+  // Also the way back in for anyone who declined, or who set the app up before
+  // the consent step existed and so was never asked.
+  const handleToggleAndroidUpdates = () => {
+    if (androidUpdatesOn) {
+      setAndroidUpdates('declined')
+      return
+    }
+    setAndroidUpdates('enabled')
+    requestUpdateGrantIfNeeded()
+  }
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -139,6 +155,14 @@ export default function AboutDialog({ className, children, startIcon }: any) {
               </CardContent>
             </Card>
 
+            {onAndroid && (
+              <SettingsRow
+                title="Check for app updates"
+                checked={androidUpdatesOn}
+                onChange={handleToggleAndroidUpdates}
+              />
+            )}
+
             <SettingsRow title="Update Notification: wait min">
               <SettingsSlider
                 value={updateNotificationInterval}
@@ -172,7 +196,7 @@ export default function AboutDialog({ className, children, startIcon }: any) {
         <DialogActions>
           {onAndroid ? (
             <>
-              {android.updateAvailable && (
+              {androidUpdatesOn && android.updateAvailable && (
                 <Button
                   color={android.needsInstallPermission ? 'warning' : 'primary'}
                   onClick={android.handleUpdate}
@@ -185,13 +209,17 @@ export default function AboutDialog({ className, children, startIcon }: any) {
                       : `Install ${android.latestVersion}`}
                 </Button>
               )}
-              <Button onClick={android.checkForUpdate} disabled={android.checking}>
-                {android.checking
-                  ? 'Checking…'
-                  : android.updateAvailable
-                    ? 'Re-check'
-                    : 'Check for Update'}
-              </Button>
+              {androidUpdatesOn ? (
+                <Button onClick={() => android.checkForUpdate(true)} disabled={android.checking}>
+                  {android.checking
+                    ? 'Checking…'
+                    : android.updateAvailable
+                      ? 'Re-check'
+                      : 'Check for Update'}
+                </Button>
+              ) : (
+                <Button onClick={handleToggleAndroidUpdates}>Enable Updates</Button>
+              )}
             </>
           ) : (
             <>

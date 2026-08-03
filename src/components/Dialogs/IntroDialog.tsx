@@ -28,6 +28,8 @@ import BladeScene from '../../pages/Home/BladeScene'
 import BladeSchemaForm from '../SchemaForm/SchemaForm/SchemaForm'
 import BladeIcon from '../Icons/BladeIcon/BladeIcon'
 import { SettingsRow } from '../../pages/Settings/SettingsComponents'
+import { isAndroidApp } from '../FireTv/android.bridge'
+import { UPDATE_CONSENT, requestUpdateGrantIfNeeded } from '../FireTv/androidUpdateConsent'
 
 export default function IntroDialog({ handleScan, scanning, setScanning }: any) {
   const intro = useStore((state) => state.intro)
@@ -83,6 +85,13 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
   const setFeatures = useStore((state) => state.setFeatures)
   const features = useStore((state) => state.features)
 
+  const androidUpdates = useStore((state) => state.androidUpdates)
+  const setAndroidUpdates = useStore((state) => state.setAndroidUpdates)
+  // Decided once, at mount. Answering flips `androidUpdates`, and if that
+  // dropped the step from `steps` the array would shrink while activeStep had
+  // already advanced past its old end - steps[activeStep] would be undefined.
+  const [askForUpdateConsent] = useState(() => isAndroidApp() && androidUpdates === 'unset')
+
   const schem = useStore((state) => state?.schemas?.audio?.schema)
   const schema = {
     properties: {
@@ -116,9 +125,8 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
     {
       key: 'setup',
       title:
-        'Start Setup-Assistant?' + process.env.REACT_APP_LEDFX_ANDROID === 'true'
-          ? ' (Android)'
-          : '',
+        'Start Setup Assistant' +
+        (process.env.REACT_APP_LEDFX_ANDROID === 'true' ? ' for Android?' : ' ?'),
       label_left: 'Nah, im an expert. Just let me in',
       label_right: 'Yes, please show me around',
       action_left: () => {
@@ -273,6 +281,25 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
         label_right: 'Confirm',
         action_left: (): any => false,
         action_right: () => handleNext()
+      },
+      askForUpdateConsent && {
+        key: 'updates',
+        icon: 'systemUpdate',
+        title: UPDATE_CONSENT.title,
+        label_left: UPDATE_CONSENT.decline,
+        label_right: UPDATE_CONSENT.accept,
+        action_left: () => {
+          setAndroidUpdates('declined')
+          handleNext()
+        },
+        action_right: () => {
+          setAndroidUpdates('enabled')
+          // Ask for the install-unknown-apps grant here, while the user has
+          // just agreed to it, rather than ambushing them with a system
+          // settings screen halfway through their first update.
+          requestUpdateGrantIfNeeded()
+          handleNext()
+        }
       },
       {
         key: 'tour',
@@ -626,6 +653,18 @@ export default function IntroDialog({ handleScan, scanning, setScanning }: any) 
                 )}
               </Box>
             </div>
+          )}
+          {steps[activeStep].key === 'updates' && (
+            <Typography
+              variant="body1"
+              textAlign="center"
+              sx={{ px: 2, pt: 2, maxWidth: 600, marginX: 'auto' }}
+            >
+              {UPDATE_CONSENT.body}
+              <br />
+              <br />
+              {UPDATE_CONSENT.footnote}
+            </Typography>
           )}
           <Stack
             direction={small ? 'column' : 'row'}
