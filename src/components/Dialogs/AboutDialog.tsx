@@ -16,6 +16,8 @@ import useStore from '../../store/useStore'
 import fversion from '../../../package.json'
 import { SettingsRow, SettingsSlider } from '../../pages/Settings/SettingsComponents'
 import useSliderStyles from '../../components/SchemaForm/components/Number/BladeSlider.styles'
+import { isAndroidApp } from '../FireTv/android.bridge'
+import { useAndroidUpdateChecker } from '../FireTv/useAndroidUpdateChecker'
 
 export default function AboutDialog({ className, children, startIcon }: any) {
   const sliderClasses = useSliderStyles()
@@ -32,6 +34,11 @@ export default function AboutDialog({ className, children, startIcon }: any) {
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [releaseUrl, setReleaseUrl] = useState('')
   const fgitInfo = GitInfo()
+
+  // /api/check_for_updates reports LedFx core releases, which are not
+  // installable on Android. There we track our own APK builds instead.
+  const onAndroid = isAndroidApp()
+  const android = useAndroidUpdateChecker({ enabled: onAndroid })
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -163,10 +170,37 @@ export default function AboutDialog({ className, children, startIcon }: any) {
           </div>
         </DialogContent>
         <DialogActions>
-          {updateAvailable && (
-            <Button onClick={handleDownloadNewVersion}>Download New Version</Button>
+          {onAndroid ? (
+            <>
+              {android.updateAvailable && (
+                <Button
+                  color={android.needsInstallPermission ? 'warning' : 'primary'}
+                  onClick={android.handleUpdate}
+                  disabled={android.downloading}
+                >
+                  {android.downloading
+                    ? 'Downloading…'
+                    : android.needsInstallPermission
+                      ? 'Allow install, then return'
+                      : `Install ${android.latestVersion}`}
+                </Button>
+              )}
+              <Button onClick={android.checkForUpdate} disabled={android.checking}>
+                {android.checking
+                  ? 'Checking…'
+                  : android.updateAvailable
+                    ? 'Re-check'
+                    : 'Check for Update'}
+              </Button>
+            </>
+          ) : (
+            <>
+              {updateAvailable && (
+                <Button onClick={handleDownloadNewVersion}>Download New Version</Button>
+              )}
+              <Button onClick={handleCheckForUpdate}>Check for Update</Button>
+            </>
           )}
-          <Button onClick={handleCheckForUpdate}>Check for Update</Button>
           <Button onClick={handleClose} autoFocus>
             OK
           </Button>

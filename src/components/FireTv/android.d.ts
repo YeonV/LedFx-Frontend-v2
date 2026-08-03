@@ -7,6 +7,10 @@ declare global {
       getAllSupportedAbis?: () => string
       downloadAndInstallApk: (url: string) => void
       getAppVersion: () => string
+      /** False until the user allows "Install unknown apps" for LedFx (Android 8+). */
+      canInstallPackages?: () => boolean
+      /** Opens the per-app "Install unknown apps" settings screen. */
+      requestInstallPermission?: () => void
     }
   }
 }

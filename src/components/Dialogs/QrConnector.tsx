@@ -62,9 +62,10 @@ const QrConnector: React.FC<QrConnectorProps> = ({
   const isCustomMode = useFireTvStore((state) => state.isCustomMode)
   const setDefaultButtons = useFireTvStore((state) => state.setDefaultButtons)
   const isLandscape = useMediaQuery('(orientation: landscape)')
-  const { updateAvailable, downloading, handleUpdate, latestVersion } = useAndroidUpdateChecker({
-    enabled: features.firetv
-  })
+  const { updateAvailable, downloading, handleUpdate, latestVersion, needsInstallPermission } =
+    useAndroidUpdateChecker({
+      enabled: features.firetv
+    })
   const SCROLL_AMOUNT = window.innerHeight * 0.6 // 60% of viewport height
   const platform = useStore((state) => state.platform)
 
@@ -315,7 +316,9 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                 <Button
                   size="small"
                   variant="contained"
-                  color="error"
+                  // Stays clickable while waiting on the grant: tapping again
+                  // reopens the settings screen if the user backed out of it.
+                  color={needsInstallPermission ? 'warning' : 'error'}
                   onClick={handleUpdate}
                   disabled={downloading}
                   startIcon={
@@ -323,7 +326,11 @@ const QrConnector: React.FC<QrConnectorProps> = ({
                   }
                   sx={{ padding: '2px 20px', borderRadius: '8px' }}
                 >
-                  {downloading ? 'Downloading...' : `Update APK (${latestVersion})`}
+                  {downloading
+                    ? 'Downloading...'
+                    : needsInstallPermission
+                      ? 'Allow install, then return'
+                      : `Update APK (${latestVersion})`}
                 </Button>
               )}
               <Typography

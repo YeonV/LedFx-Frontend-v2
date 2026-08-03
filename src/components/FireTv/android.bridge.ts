@@ -47,6 +47,24 @@ export const getAndroidAppVersion = (): string => {
   return 'unknown'
 }
 
+/**
+ * Whether the app is allowed to install APKs.
+ *
+ * From Android 8 the REQUEST_INSTALL_PACKAGES manifest permission is not
+ * enough - the user has to allow "Install unknown apps" for LedFx specifically.
+ * Older APKs have no such bridge method, so assume true and let the native side
+ * handle it rather than blocking the update.
+ */
+export const canInstallPackages = (): boolean => {
+  if (!window.AndroidRemoteControl?.canInstallPackages) return true
+  return window.AndroidRemoteControl.canInstallPackages()
+}
+
+/** Sends the user to the per-app "Install unknown apps" settings screen. */
+export const requestInstallPermission = () => {
+  window.AndroidRemoteControl?.requestInstallPermission?.()
+}
+
 export const downloadAndInstallApk = (url: string) => {
   if (window.AndroidRemoteControl?.downloadAndInstallApk) {
     console.log(`Requesting APK download: ${url}`)
